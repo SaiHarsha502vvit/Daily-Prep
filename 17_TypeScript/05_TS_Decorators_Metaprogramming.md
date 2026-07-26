@@ -1190,18 +1190,25 @@ in framework registries. This code produces observable side effects.
 
 ### Consequences for TypeScript Developers
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  COMPILE-TIME FEATURE         │  DECORATOR FEATURE              │
-├───────────────────────────────┼─────────────────────────────────┤
-│  Type erased                 │  Metadata persists              │
-│  No runtime cost             │  WeakMap/storage overhead       │
-│  Tree-shakeable              │  Cannot be tree-shaken          │
-│  TS catches errors           │  Bugs appear at RUNTIME only    │
-│  Pure annotation             │  Observable side effect         │
-│  No runtime verification     │  Zod/runtimetype validation     │
-└───────────────────────────────┴─────────────────────────────────┘
-```
+**Compile-time TypeScript features vs decorator-driven metadata —
+why the two behave so differently at runtime:**
+
+| Aspect                       | Compile-time feature (interface, type, generic) | Decorator with metadata                                |
+|------------------------------|--------------------------------------------------|--------------------------------------------------------|
+| Runtime presence             | Fully erased — not in the emitted JS            | Persists as calls to the decorator + reflect-metadata  |
+| Bundle-size cost             | Zero                                             | Adds function calls per decorated declaration + a `WeakMap` / `Symbol.metadata` bag |
+| Tree-shakeability            | Bundlers strip unused type-level code            | Decorator calls run at class-definition time — not tree-shakable |
+| Where errors surface         | `tsc` blocks the build                           | Metadata mismatches only surface when the code runs    |
+| Effects                      | Pure annotation (compiler only)                  | Observable side effect (registers, mutates prototype, stores metadata) |
+| Runtime validation of payloads | Not provided — use Zod at boundaries           | Not provided by the decorator itself — use Zod / class-validator |
+
+**Rule of thumb.** A wrong decorator annotation is a *compile-time*
+bug. Wrong metadata *stored by* a decorator is a *runtime* bug and
+only shows up when the decorated code executes. That's why every
+serious decorator-based stack (NestJS, TypeORM, Angular) pairs
+decorators with runtime validation (Zod, class-validator) — the
+decorators wire things together, the validators enforce shape at
+the boundary.
 
 **Rule of thumb:** If a decorator is wrong in TypeScript, you get a compile
 error. If the **metadata** stored by a decorator is wrong at runtime, you
@@ -1260,12 +1267,12 @@ Q: What is the limitation of field decorators compared to
 
 ## Reality Check
 
-**"Decorators are TypeScript's feature"** ? Decorators are a JAVASCRIPT standard (stage 3, shipping) that TypeScript implemented EARLY under a different, incompatible design � and the two-era split is the practical knowledge: experimentalDecorators is the legacy dialect (Angular, NestJS, TypeORM built empires on it, with emitDecoratorMetadata powering their DI via reflect-metadata), while TS 5.0+ implements the standard dialect (different signatures, context objects instead of parameter positions, NO parameter decorators, no metadata emission). Frameworks pin the legacy flag; new standard-mode code cannot use framework decorators expecting the old shape. Which dialect a codebase runs is question one.
+**"Decorators are TypeScript's feature"** ? Decorators are a JAVASCRIPT standard (stage 3, shipping) that TypeScript implemented EARLY under a different, incompatible design — and the two-era split is the practical knowledge: experimentalDecorators is the legacy dialect (Angular, NestJS, TypeORM built empires on it, with emitDecoratorMetadata powering their DI via reflect-metadata), while TS 5.0+ implements the standard dialect (different signatures, context objects instead of parameter positions, NO parameter decorators, no metadata emission). Frameworks pin the legacy flag; new standard-mode code cannot use framework decorators expecting the old shape. Which dialect a codebase runs is question one.
 
-**"Decorators are declarative annotations"** ? Decorators are FUNCTIONS THAT RUN � at class-definition time, not instantiation: each is called once when the class evaluates, wrapping or replacing what it decorates, in a defined order (bottom-up per member, member-then-class). Consequences people discover in production: decorator side effects fire at import time (module load order matters), a method decorator that returns a wrapper pays its cost on every call forever, and state stashed in decorator closures is CLASS-level shared unless keyed per-instance. "Annotation" thinking treats them as inert labels; they are executed metaprogramming with a lifecycle.
+**"Decorators are declarative annotations"** ? Decorators are FUNCTIONS THAT RUN — at class-definition time, not instantiation: each is called once when the class evaluates, wrapping or replacing what it decorates, in a defined order (bottom-up per member, member-then-class). Consequences people discover in production: decorator side effects fire at import time (module load order matters), a method decorator that returns a wrapper pays its cost on every call forever, and state stashed in decorator closures is CLASS-level shared unless keyed per-instance. "Annotation" thinking treats them as inert labels; they are executed metaprogramming with a lifecycle.
 
-**"DI frameworks read your parameter types at runtime"** ? Runtime type reading is a LEGACY-MODE ILLUSION with sharp limits: emitDecoratorMetadata writes design:paramtypes as CONSTRUCTOR REFERENCES � which means interfaces vanish (erased � an interface-typed parameter emits Object, hence injection tokens and @Inject annotations), unions and generics degrade, and circular imports emit undefined (the NestJS forwardRef ceremony exists solely for this). The standard decorator proposal deliberately dropped metadata emission; modern DI is moving to explicit tokens and factory registration. Understanding that the magic was always a compiler-emitted lookup table � and a lossy one � dissolves both the awe and the debugging confusion.
+**"DI frameworks read your parameter types at runtime"** ? Runtime type reading is a LEGACY-MODE ILLUSION with sharp limits: emitDecoratorMetadata writes design:paramtypes as CONSTRUCTOR REFERENCES — which means interfaces vanish (erased — an interface-typed parameter emits Object, hence injection tokens and @Inject annotations), unions and generics degrade, and circular imports emit undefined (the NestJS forwardRef ceremony exists solely for this). The standard decorator proposal deliberately dropped metadata emission; modern DI is moving to explicit tokens and factory registration. Understanding that the magic was always a compiler-emitted lookup table — and a lossy one — dissolves both the awe and the debugging confusion.
 
-**"Metaprogramming in TS means decorators"** ? The TYPE SYSTEM is the metaprogramming surface with better ergonomics for most jobs: mapped types generate derived shapes at compile time (zero runtime), template literal types generate string unions, satisfies validates configuration � while decorators only touch classes, and classes are a shrinking share of TS codebases. The runtime metaprogramming toolkit beyond decorators � Proxy for interception, Reflect for operations, Symbol.hasInstance and friends for protocol hooks � covers the dynamic cases without decorator syntax. Decorators are one aisle in the store; class-centric frameworks made them look like the store.
+**"Metaprogramming in TS means decorators"** ? The TYPE SYSTEM is the metaprogramming surface with better ergonomics for most jobs: mapped types generate derived shapes at compile time (zero runtime), template literal types generate string unions, satisfies validates configuration — while decorators only touch classes, and classes are a shrinking share of TS codebases. The runtime metaprogramming toolkit beyond decorators — Proxy for interception, Reflect for operations, Symbol.hasInstance and friends for protocol hooks — covers the dynamic cases without decorator syntax. Decorators are one aisle in the store; class-centric frameworks made them look like the store.
 
-**"Adopting decorators is a syntax decision"** ? It is a TOOLCHAIN COMMITMENT: bundlers and transpilers must agree on the dialect (esbuild/swc/Babel each support the two eras differently � and useDefineForClassFields interacts, changing field-initialization semantics that some legacy decorator patterns silently depended on), test runners must transform identically, and published libraries expose the choice to consumers. The failure mode is version-skew heisenbugs: code that works under ts-node breaks under the bundler because one implements standard and the other legacy. Decorator adoption belongs in an ADR with the pinned dialect and the tool matrix � not in a style guide.
+**"Adopting decorators is a syntax decision"** ? It is a TOOLCHAIN COMMITMENT: bundlers and transpilers must agree on the dialect (esbuild/swc/Babel each support the two eras differently — and useDefineForClassFields interacts, changing field-initialization semantics that some legacy decorator patterns silently depended on), test runners must transform identically, and published libraries expose the choice to consumers. The failure mode is version-skew heisenbugs: code that works under ts-node breaks under the bundler because one implements standard and the other legacy. Decorator adoption belongs in an ADR with the pinned dialect and the tool matrix — not in a style guide.

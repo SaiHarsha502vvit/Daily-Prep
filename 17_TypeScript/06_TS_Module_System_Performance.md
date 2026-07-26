@@ -180,19 +180,37 @@ extensions, and aligns with how Vite/esbuild resolve modules.
 
 ### Resolution Strategy Comparison
 
-```
-┌─────────────────────┬────────────┬────────────┬────────────┬────────────┐
-│ Feature             │ node       │ node16     │ nodeNext   │ bundler    │
-├─────────────────────┼────────────┼────────────┼────────────┼────────────┤
-│ CJS (require)       │ ✅         │ ✅         │ ✅         │ ✅         │
-│ ESM (import)        │ ✅         │ ✅         │ ✅         │ ✅         │
-│ exports field       │ ❌         │ ✅         │ ✅         │ ✅         │
-│ .js extension req.  │ ❌         │ ✅         │ ✅         │ ❌         │
-│ Extensionless import│ ❌         │ ❌         │ ❌         │ ✅         │
-│ Custom aliases      │ ✅         │ ✅         │ ✅         │ ✅         │
-│ Use case            │ Legacy CJS │ Node 16+   │ Node 16+   │ Vite/esbuild│
-└─────────────────────┴────────────┴────────────┴────────────┴────────────┘
-```
+**The four `moduleResolution` strategies — what each supports and
+which one you actually want:**
+
+| Feature                          | `node` (legacy CJS) | `node16` / `nodenext` | `bundler`      |
+|----------------------------------|---------------------|-----------------------|----------------|
+| CommonJS `require`               | Yes                 | Yes                   | Yes            |
+| ESM `import`                     | Yes                 | Yes                   | Yes            |
+| Package `"exports"` field        | Ignored             | **Yes** (respected)   | Yes            |
+| `.js` extension on relative imports | Optional         | **Required** for ESM  | Optional       |
+| Extension-less imports (`./util`)| Yes                 | ESM: no; CJS: yes     | Yes            |
+| `paths` / path aliases           | Yes                 | Yes                   | Yes            |
+| Intended for                     | Old code paths      | Node 16+, dual publish| Vite, esbuild, Webpack, any real bundler |
+
+**How to pick, one line each:**
+
+- **`bundler`** — you have a bundler (Vite / esbuild / Webpack / Turbopack).
+  This is what the vast majority of projects want. It matches how the
+  bundler actually resolves, so `tsc` won't reject imports the bundler
+  is fine with, and vice versa.
+- **`node16`** or **`nodenext`** — you are shipping a Node package
+  (library, CLI, server). These strictly follow Node's own ESM/CJS
+  rules — including requiring the `.js` extension on relative ESM
+  imports — so what compiles is what Node will actually load.
+- **`node`** — legacy only. Doesn't respect the `"exports"` field,
+  which means it silently accepts imports that will fail on modern
+  Node. If you inherited it, plan the move to `bundler` or `node16`.
+
+**Rule.** `moduleResolution` must match the tool that actually
+resolves your imports at runtime (Node) or build time (your
+bundler). Mismatch is the direct cause of "works on my machine, fails
+in CI/prod" import errors.
 
 ---
 
@@ -1313,12 +1331,12 @@ Q: What is a const type parameter?
 
 ## Reality Check
 
-**"import type is an optimization nicety"** ? Type-only imports are CORRECTNESS machinery under modern build architecture: single-file transpilers (esbuild, swc, Babel � how most code builds now) cannot see across files (isolatedModules), so they cannot know whether an imported name is a type (erase it) or a value (keep it) � verbatimModuleSyntax makes YOU declare it, and getting it wrong ships either a phantom runtime import (bundle bloat, circular-import triggers, side-effect timing changes) or a missing one (runtime crash). The import type discipline is how TS stays compatible with the transpile-per-file world; treating it as style produces bugs that only appear under the bundler.
+**"import type is an optimization nicety"** ? Type-only imports are CORRECTNESS machinery under modern build architecture: single-file transpilers (esbuild, swc, Babel — how most code builds now) cannot see across files (isolatedModules), so they cannot know whether an imported name is a type (erase it) or a value (keep it) — verbatimModuleSyntax makes YOU declare it, and getting it wrong ships either a phantom runtime import (bundle bloat, circular-import triggers, side-effect timing changes) or a missing one (runtime crash). The import type discipline is how TS stays compatible with the transpile-per-file world; treating it as style produces bugs that only appear under the bundler.
 
-**"Circular imports either work or crash � you'd notice"** ? Circulars mostly HALF-work, which is worse: ESM live bindings mean a module mid-cycle sees its dependency in a partially-initialized state � imported VALUES read as undefined at module-evaluation time but work later (the class extends Undefined crash at load, the constant that is undefined only when imported via one specific path), while type-only cycles are completely harmless (erased). The debugging pattern: initialization-order crashes that move when imports reorder are cycles; the tooling (madge, eslint-plugin-import/no-cycle) finds them; the fix is extracting the shared piece downward, and import type breaks the false cycles for free.
+**"Circular imports either work or crash — you'd notice"** ? Circulars mostly HALF-work, which is worse: ESM live bindings mean a module mid-cycle sees its dependency in a partially-initialized state — imported VALUES read as undefined at module-evaluation time but work later (the class extends Undefined crash at load, the constant that is undefined only when imported via one specific path), while type-only cycles are completely harmless (erased). The debugging pattern: initialization-order crashes that move when imports reorder are cycles; the tooling (madge, eslint-plugin-import/no-cycle) finds them; the fix is extracting the shared piece downward, and import type breaks the false cycles for free.
 
-**"tsc is slow because TypeScript is slow"** ? Type-CHECKING is the slow half, and the industry's answer was to SPLIT the pipeline: transpilation by native tools in milliseconds (esbuild/swc � types simply stripped), checking run separately (tsc --noEmit in CI, the editor's language server locally) � so "TS build performance" is really checker performance, and its levers are structural: skipLibCheck (stop re-verifying node_modules declarations), incremental with .tsbuildinfo, project references splitting the graph, and interface-over-intersection preferences that check faster. Blaming the language while running the pre-split pipeline is paying 2019 costs in the tool era that fixed them.
+**"tsc is slow because TypeScript is slow"** ? Type-CHECKING is the slow half, and the industry's answer was to SPLIT the pipeline: transpilation by native tools in milliseconds (esbuild/swc — types simply stripped), checking run separately (tsc --noEmit in CI, the editor's language server locally) — so "TS build performance" is really checker performance, and its levers are structural: skipLibCheck (stop re-verifying node_modules declarations), incremental with .tsbuildinfo, project references splitting the graph, and interface-over-intersection preferences that check faster. Blaming the language while running the pre-split pipeline is paying 2019 costs in the tool era that fixed them.
 
-**"Slow types are a build problem, not a code problem"** ? Pathological TYPES have identifiable shapes you can refactor like slow code: huge union PRODUCTS (template-literal combinatorics multiplying members � a five-way cross of unions instantiates into thousands), deep conditional recursion (depth ceilings and exponential re-instantiation), and repeated expansion of unnamed intermediate types (naming forces caching � the same reason CTEs beat repeated subqueries). Diagnosis is tooling, not vibes: tsc --extendedDiagnostics for check time, --generateTrace with the analyzer for WHICH type burns it. "The editor got laggy in this file" is a performance bug report against a type � treat it like one.
+**"Slow types are a build problem, not a code problem"** ? Pathological TYPES have identifiable shapes you can refactor like slow code: huge union PRODUCTS (template-literal combinatorics multiplying members — a five-way cross of unions instantiates into thousands), deep conditional recursion (depth ceilings and exponential re-instantiation), and repeated expansion of unnamed intermediate types (naming forces caching — the same reason CTEs beat repeated subqueries). Diagnosis is tooling, not vibes: tsc --extendedDiagnostics for check time, --generateTrace with the analyzer for WHICH type burns it. "The editor got laggy in this file" is a performance bug report against a type — treat it like one.
 
-**"Declaration files are for library publishers"** ? Every serious TS codebase OPERATES declaration machinery daily: ambient declarations typing untyped dependencies and globals (the env.d.ts everyone copies without understanding � declare global requires the file to be a module, the classic silent-failure), module AUGMENTATION extending Express Request or theme objects (interface merging across module boundaries � powerful, and a spooky-action source when an augmentation in one corner changes types everywhere), and triple-slash-free lib/types configuration deciding which globals even exist. The d.ts layer is where "TypeScript sees a different world than runtime" bugs originate � publisher or not, someone on the team must own the world-model.
+**"Declaration files are for library publishers"** ? Every serious TS codebase OPERATES declaration machinery daily: ambient declarations typing untyped dependencies and globals (the env.d.ts everyone copies without understanding — declare global requires the file to be a module, the classic silent-failure), module AUGMENTATION extending Express Request or theme objects (interface merging across module boundaries — powerful, and a spooky-action source when an augmentation in one corner changes types everywhere), and triple-slash-free lib/types configuration deciding which globals even exist. The d.ts layer is where "TypeScript sees a different world than runtime" bugs originate — publisher or not, someone on the team must own the world-model.

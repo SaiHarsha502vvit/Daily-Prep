@@ -109,23 +109,35 @@ function isUser(obj: unknown): obj is User {
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  The REAL differences (not "they're basically the same"):        ║
-║                                                                  ║
-║  interface:                                                      ║
-║  → DECLARATION MERGING (can be extended across files)            ║
-║  → extends keyword for inheritance                               ║
-║  → Better error messages (shows interface name)                  ║
-║  → Best for: object shapes, public APIs, library types           ║
-║                                                                  ║
-║  type:                                                           ║
-║  → UNIONS & INTERSECTIONS (type A = B | C)                       ║
-║  → Mapped types, conditional types                               ║
-║  → Can alias primitives (type ID = string)                       ║
-║  → Best for: unions, computed types, utility types               ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **The one hinge that decides `type` vs `interface`:** *declaration
+> merging*. Every other bullet you'll read online is downstream of
+> this fact.
+>
+> **`interface` is *open*.** Two `interface User { ... }` blocks with
+> the same name automatically merge into a single interface with the
+> union of their members. This is how `Window`, `Express.Request`,
+> and `React.HTMLAttributes` get extended: a library author declares
+> the base shape, and consumers add properties by declaring the same
+> name in their own `.d.ts` files.
+>
+> **`type` is *closed*.** Two `type User = ...` blocks with the same
+> name is a duplicate-identifier error. Once you `type`-alias
+> something, no one downstream can add to it — they have to define a
+> new name and intersect (`type UserPlus = User & { ... }`).
+>
+> **Everything else follows from what each grammar accepts.**
+> `type` can alias a primitive, a union, a tuple, a mapped type, a
+> conditional type — the whole type-level language. `interface`
+> accepts only object shapes and `extends`. That's why you'll see
+> people say "use `type` for unions, `interface` for objects": not
+> because there's a rule, but because those are the only cases each
+> can express.
+>
+> **Practical guidance:**
+> - Public API types you want library consumers to extend → `interface`.
+> - Anything that requires unions, primitives, tuples, or mapped
+>   types → `type`.
+> - Inside a private module, either works. Pick one and be consistent.
 
 ```typescript
 // Declaration merging — ONLY interface can do this
@@ -176,30 +188,51 @@ interface Employee extends Person {
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE SECURITY CLEARANCE ANALOGY                                  ║
-║                                                                  ║
-║  any    = NO security (VIP badge — go anywhere, do anything)     ║
-║         Disables ALL type checking. Defeats purpose of TS.       ║
-║         Use: legacy code migration, truly dynamic values         ║
-║                                                                  ║
-║  unknown = MAXIMUM security (visitor badge — must be verified)   ║
-║         Can hold any value, but MUST narrow before using.        ║
-║         Use: API responses, user input, unknown JSON             ║
-║                                                                  ║
-║  never  = IMPOSSIBLE (the locked room nobody can enter)          ║
-║         No value can ever be this type.                          ║
-║         Use: exhaustive checks, impossible states                ║
-║                                                                  ║
-║  TYPE HIERARCHY:                                                 ║
-║    any/unknown (top — accepts everything)                        ║
-║         │                                                        ║
-║    string, number, boolean, object... (middle)                   ║
-║         │                                                        ║
-║    never (bottom — accepts nothing)                              ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **`any`, `unknown`, and `never` are the extreme corners of the type
+> lattice — what the checker actually does when it sees each:**
+>
+> **`any` — the compiler stands down.** When a value is typed `any`,
+> the checker skips every rule for that value: any property access
+> is allowed, any assignment is allowed in either direction (from
+> `any` and to `any`), any call is allowed with any arguments. There
+> is no runtime enforcement (types are erased), so all the
+> guarantees you thought TS gave you *vanish for any code path that
+> touches this value*. `any` is a hole through the entire type
+> system. Use it only during migration or when interoperating with
+> genuinely dynamic values, and even then, contain it to a single
+> function.
+>
+> **`unknown` — the compiler makes you prove the shape.** `unknown`
+> can *hold* any value (assignments to `unknown` are allowed), but
+> the checker refuses to let you *do* anything with it until you
+> narrow it: `typeof x === "string"`, `x instanceof Error`, a user
+> type guard, a `if ("id" in x)` check. Once you've narrowed,
+> control-flow analysis grants you the narrowed type inside that
+> branch. This is the safe "I don't know yet" type — API responses,
+> `JSON.parse`, `catch (e: unknown)`, third-party payloads.
+>
+> **`never` — the impossible value.** No runtime value can inhabit
+> `never`. It's the return type of functions that always throw or
+> loop forever, the type of an exhaustively-narrowed default branch,
+> and the result of type operations that eliminate everything
+> (`Exclude<'a' | 'b', 'a' | 'b'>` = `never`). Its practical
+> superpower: assigning any other type to `never` is an error, so it
+> lets you write exhaustiveness checks that break the compiler the
+> moment you add a new union member without handling it.
+>
+> **The lattice, in one line:**
+>
+> ```
+> unknown    (top: everything is assignable IN)
+>    │
+>    string, number, boolean, User, ...   (concrete types)
+>    │
+> never      (bottom: nothing is assignable IN)
+> ```
+>
+> `any` sits *outside* the lattice — it's a special "checker off"
+> marker rather than a type. That's why `any` is dangerous and
+> `unknown` is the disciplined replacement.
 
 ```typescript
 // any: Compiler trusts you blindly (DANGEROUS)
@@ -282,25 +315,50 @@ const dog: Dog = cat; // No error?!
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  STRUCTURAL vs NOMINAL TYPING                                    ║
-║                                                                  ║
-║  Java/C# (Nominal): "Are you wearing the RIGHT uniform?"         ║
-║  → Cat and Dog must explicitly implement the same interface      ║
-║  → Same shape ≠ same type                                        ║
-║                                                                  ║
-║  TypeScript (Structural): "Can you do the JOB?"                  ║
-║  → If it has name:string and meow():void, it's compatible        ║
-║  → TS doesn't care what you CALL yourself, only what you CAN DO  ║
-║  → Like hiring: "Can you code in Java?" not "Did you go to MIT?" ║
-║                                                                  ║
-║  This is WHY:                                                    ║
-║  - An object literal with extra props can be assigned            ║
-║  - Classes from different files with same shape are compatible   ║
-║  - You don't need `implements` to satisfy an interface           ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **Structural typing, derived from what the checker actually does.**
+> When TypeScript checks `const dog: Dog = cat`, it does *not* look
+> up the identity of the source or target type. It walks the target
+> type's members and asks, for each one: does the source type have a
+> compatible member with the same name? If yes for every member, the
+> assignment is allowed.
+>
+> In the `Cat` / `Dog` example, both types declare `name: string` and
+> `meow(): void`. So when the checker verifies `dog: Dog = cat`, it
+> asks: does `cat` have a `name: string`? Yes. Does `cat` have a
+> `meow(): void`? Yes. Assignment allowed. The fact that one type
+> is *called* `Cat` and the other `Dog` never enters the check.
+>
+> **Contrast with Java / C# (nominal).** Those languages record the
+> declared type identity and only accept assignments when the source
+> type's *declared name* matches (or explicitly `implements` /
+> `extends`) the target's. Same members, different names → rejected.
+>
+> **Two consequences you use every day:**
+>
+> 1. **Object literals with extra properties are compatible** (an
+>    "excess property" check runs *only* on fresh object literals to
+>    catch typos, not on aliased values). This is why you can hand
+>    a plain object to a function expecting a typed shape without
+>    ceremony.
+> 2. **Classes from unrelated files are interchangeable if their
+>    shapes match.** No `implements`, no shared base class needed —
+>    if your class has the right members, it satisfies the interface.
+>
+> **The trap and how to opt out.** Structural compatibility means
+> `Dollars` and `Euros` — both `{ amount: number }` — are freely
+> interchangeable. That's a bug waiting to happen. The escape is a
+> *branded type*: intersect a phantom, unique field into the type so
+> two structurally-equal types stop being structurally-equal:
+>
+> ```typescript
+> type Dollars = number & { readonly __brand: 'dollars' };
+> type Euros   = number & { readonly __brand: 'euros'   };
+> const usd = 100 as Dollars;
+> const eur: Euros = usd;   // ❌ the brand doesn't match
+> ```
+>
+> Now the checker refuses the cross-assignment even though the
+> underlying `number` runtime value is identical.
 
 ```typescript
 // This is valid TS — no explicit relationship needed:
@@ -339,34 +397,28 @@ const eur: Euros = usd; // ❌ Error! Different brands.
 
 "What does `strict: true` actually enable?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  strict: true = Seatbelt + Airbag + ABS + Lane Assist            ║
-║                                                                  ║
-║  It enables 8 individual flags:                                  ║
-║                                                                  ║
-║  strictNullChecks     → null/undefined aren't assignable to      ║
-║                         other types. MOST IMPORTANT. Catches     ║
-║                         "Cannot read property of null" at        ║
-║                         compile time instead of runtime.         ║
-║                                                                  ║
-║  noImplicitAny        → Must explicitly type when TS can't infer ║
-║                                                                  ║
-║  strictFunctionTypes  → Function parameter types checked         ║
-║                         contravariantly (catches subtle bugs)    ║
-║                                                                  ║
-║  strictBindCallApply  → bind/call/apply are correctly typed      ║
-║                                                                  ║
-║  strictPropertyInitialization → Class properties must be         ║
-║                         initialized in constructor               ║
-║                                                                  ║
-║  noImplicitThis       → Must type `this` in functions            ║
-║                                                                  ║
-║  useUnknownInCatchVariables → catch(e) is unknown, not any       ║
-║                                                                  ║
-║  alwaysStrict         → Emits "use strict" in JS output          ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **`strict: true` enables eight individual flags at once. This is
+> the one setting that separates "typed JavaScript" from "typed
+> JavaScript with actual guarantees":**
+>
+> | Flag                              | Bug class it catches                                                                       |
+> |-----------------------------------|--------------------------------------------------------------------------------------------|
+> | `strictNullChecks`                | *The big one.* `null` / `undefined` assigned where they weren't declared — "Cannot read properties of null" at compile time instead of prod. |
+> | `noImplicitAny`                   | Parameters and variables the checker couldn't infer — forces you to name the type.        |
+> | `strictFunctionTypes`             | Callback parameters checked contravariantly (catches the classic Array<A> → Array<B> aliasing bug). |
+> | `strictBindCallApply`             | `.bind` / `.call` / `.apply` with wrong-typed arguments (previously typed as `any`).       |
+> | `strictPropertyInitialization`    | Class fields declared and typed but never assigned in a constructor.                       |
+> | `noImplicitThis`                  | `this` used where the checker can't figure out what it refers to.                          |
+> | `useUnknownInCatchVariables`      | `catch (e)` starts as `unknown` (was `any`) — forces you to narrow `e` before touching it. |
+> | `alwaysStrict`                    | Emits `"use strict"` at runtime and parses in strict mode.                                 |
+>
+> **Turning strict on later is painful.** Every retrofit team says
+> the same thing: turn it on from the first commit. Retrofitting to
+> `strictNullChecks` alone on a mature codebase is a multi-month
+> project because every `getUserById()` you had returning `User` was
+> secretly returning `User | undefined` and no caller was checking.
+> Now every caller needs a null check — which is a *good* thing, but
+> now, not for the last two years, all at once.
 
 ---
 
@@ -376,23 +428,60 @@ const eur: Euros = usd; // ❌ Error! Different brands.
 
 "Explain generics beyond just `<T>`."
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  GENERICS = A Function for Types                                 ║
-║                                                                  ║
-║  Regular function: takes VALUE, returns VALUE                    ║
-║    function double(n: number): number { return n * 2; }          ║
-║                                                                  ║
-║  Generic: takes TYPE, returns TYPE                               ║
-║    type Wrapper<T> = { value: T; timestamp: Date };              ║
-║    Wrapper<string> → { value: string; timestamp: Date }          ║
-║    Wrapper<number> → { value: number; timestamp: Date }          ║
-║                                                                  ║
-║  Analogy: A gift box. The box is generic — it doesn't care       ║
-║  what's inside. But once you put shoes in (Wrapper<Shoes>),      ║
-║  the box "knows" it contains shoes and can tell you so.          ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **A generic is a *function whose input and output are types*.**
+> Regular functions take values and return values; generics take
+> types and return types. Nothing at all runs at generic-call sites;
+> the checker just substitutes.
+>
+> Consider:
+>
+> ```typescript
+> type Wrapper<T> = { value: T; timestamp: Date };
+> ```
+>
+> This declares a *type-level function* `Wrapper`. When you write
+> `Wrapper<string>`, the checker substitutes `string` for `T` in the
+> body and produces the type `{ value: string; timestamp: Date }`.
+> Writing `Wrapper<number>` produces `{ value: number; timestamp: Date }`.
+> The two are *different types* the checker treats as unrelated —
+> assigning one to the other is an error.
+>
+> **Constraints narrow the argument.** `<T extends { length: number }>`
+> means "T can be anything, but it must at least have a `length`
+> property". This lets you *use* `.length` inside the function body
+> and still be generic in the rest of the shape:
+>
+> ```typescript
+> function longest<T extends { length: number }>(a: T, b: T): T {
+>   return a.length >= b.length ? a : b;
+> }
+> longest("hello", "hi");       // T = string, ok
+> longest([1, 2, 3], [1, 2]);   // T = number[], ok
+> longest(10, 20);              // ❌ number has no length
+> ```
+>
+> **`keyof` and `T[K]` unlock generic property access.**
+>
+> ```typescript
+> function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
+>   return obj[key];
+> }
+> ```
+>
+> Here the checker infers `T` from `obj`, then constrains `K` to the
+> literal-string union of `T`'s keys. The return type `T[K]` looks
+> up the value type at that key. So `getProperty({ name: 'Alice',
+> age: 25 }, 'name')` returns `string`, `getProperty(..., 'age')`
+> returns `number`, and `getProperty(..., 'foo')` is a *compile-time
+> error* because `'foo'` isn't in `keyof { name: string; age: number }`.
+>
+> **Conditional types are branching at the type level.** `T extends
+> string ? "yes" : "no"` reads exactly as it looks — if the type
+> `T` is assignable to `string`, the result is the literal type
+> `"yes"`, otherwise `"no"`. Add `infer` and you can pluck a piece
+> out during the check: `T extends Promise<infer U> ? U : T` unwraps
+> a promise if there is one. This one construct is the heart of
+> every "smart" utility type (`ReturnType`, `Parameters`, `Awaited`).
 
 ```typescript
 // Constraint: "T must have a length property"
@@ -424,29 +513,56 @@ type B = IsString<number>; // "no"
 
 "Why do some codebases ban enums?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  ENUM PROBLEMS                                                   ║
-║                                                                  ║
-║  1. They generate RUNTIME code (unlike most TS features):        ║
-║     enum Color { Red, Green, Blue }                              ║
-║     compiles to:                                                 ║
-║     var Color; (function(Color) {                                ║
-║       Color[Color["Red"] = 0] = "Red"; ...                       ║
-║     })(Color || (Color = {}));                                   ║
-║     → More JS shipped to browser. Defeats tree shaking.          ║
-║                                                                  ║
-║  2. Numeric enums have unsafe reverse mapping:                   ║
-║     Color[999] = undefined, but TS won't complain                ║
-║                                                                  ║
-║  3. const enum has different behavior and esbuild issues         ║
-║                                                                  ║
-║  ALTERNATIVE: Union types + as const                             ║
-║  const COLORS = ['red', 'green', 'blue'] as const;               ║
-║  type Color = typeof COLORS[number]; // 'red'|'green'|'blue'     ║
-║  → No runtime code, tree-shakable, same type safety              ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **The three reasons codebases ban enums — with the mechanism, not
+> just the complaint:**
+>
+> **1. Enums generate runtime code.** Unlike interfaces, type
+> aliases, and generics (all erased), an `enum` declaration compiles
+> to a real JavaScript object at runtime:
+>
+> ```javascript
+> // TS: enum Color { Red, Green, Blue }
+> // JS output:
+> var Color;
+> (function (Color) {
+>   Color[Color["Red"]   = 0] = "Red";
+>   Color[Color["Green"] = 1] = "Green";
+>   Color[Color["Blue"]  = 2] = "Blue";
+> })(Color || (Color = {}));
+> ```
+>
+> That's real JavaScript in your bundle. Every enum ships bytes to
+> the browser and can't be tree-shaken (the object might be
+> referenced anywhere). A codebase with 40 enums pays a real size
+> tax for a language feature it doesn't strictly need.
+>
+> **2. Numeric enums have unsafe reverse mapping.** Because the
+> compiled object contains both `Color[0] = "Red"` and `Color["Red"]
+> = 0`, `Color[999]` returns `undefined` at runtime *without a
+> compile-time error*. Numeric enums accept any number where they're
+> typed — including numbers that aren't valid members. String enums
+> are safer but still generate the runtime object.
+>
+> **3. `const enum` has its own problems.** `const enum` inlines
+> members at each call site, which sounds like the win. But it
+> breaks under `isolatedModules` (Babel, esbuild, ts-loader with
+> transpileOnly), because those transpilers see one file at a time
+> and don't have the enum declaration in scope. Enable
+> `--isolatedModules` and half your `const enum` uses stop compiling.
+>
+> **The replacement pattern — `as const` + a derived union type:**
+>
+> ```typescript
+> const COLORS = ['red', 'green', 'blue'] as const;
+> type Color = typeof COLORS[number];   // 'red' | 'green' | 'blue'
+> ```
+>
+> `COLORS` is a real runtime array (tree-shakeable, iterable, no
+> reverse-map trap). `Color` is a compile-time union with exactly
+> the same safety as a string enum — mistyped members fail the
+> checker, exhaustive `switch` works, `keyof`/`typeof` play nicely.
+> Zero runtime code beyond the array you were going to declare
+> anyway.
 
 ---
 
@@ -584,12 +700,12 @@ const keys = Object.keys(user) as (keyof User)[];
 
 ## Reality Check
 
-**"TS deep-reasoning questions are about obscure syntax"** ? The freeze moments probe the four SEMANTIC engines under the syntax: structural assignability (why an extra-property object passes via variable but not literal), variance (why Array<Dog> assigned to Array<Animal> is unsound-but-allowed while function parameters flip), distribution (why your conditional produced a union of results), and widening/narrowing flow (why the type changed between two lines). Syntax-level prep � memorizing what infer looks like � misses that every hard question is one of these four engines running where you did not expect it.
+**"TS deep-reasoning questions are about obscure syntax"** ? The freeze moments probe the four SEMANTIC engines under the syntax: structural assignability (why an extra-property object passes via variable but not literal), variance (why Array<Dog> assigned to Array<Animal> is unsound-but-allowed while function parameters flip), distribution (why your conditional produced a union of results), and widening/narrowing flow (why the type changed between two lines). Syntax-level prep — memorizing what infer looks like — misses that every hard question is one of these four engines running where you did not expect it.
 
-**"If it compiles, the types are correct"** ? TypeScript is DELIBERATELY unsound in documented places, and knowing the escape routes is the deep knowledge: method-parameter BIVARIANCE (an (animal) handler assignable where (dog) is expected � via method shorthand syntax), array covariance (push a Cat into the Dogs array through its Animal alias � runtime surprise, compile-time silence), type assertions and any as unchecked doors, and index access without noUncheckedIndexedAccess claiming T where undefined lurks. The mature stance: the checker is a powerful ally with known blind spots, and the blind-spot map � not blind faith � is what senior TS reasoning consists of.
+**"If it compiles, the types are correct"** ? TypeScript is DELIBERATELY unsound in documented places, and knowing the escape routes is the deep knowledge: method-parameter BIVARIANCE (an (animal) handler assignable where (dog) is expected — via method shorthand syntax), array covariance (push a Cat into the Dogs array through its Animal alias — runtime surprise, compile-time silence), type assertions and any as unchecked doors, and index access without noUncheckedIndexedAccess claiming T where undefined lurks. The mature stance: the checker is a powerful ally with known blind spots, and the blind-spot map — not blind faith — is what senior TS reasoning consists of.
 
-**"Narrowing follows logic; the checker just applies it"** ? Narrowing follows CONTROL-FLOW ANALYSIS with specific, learnable limits � the freeze moments live at the limits: narrowing does not survive CALLBACK boundaries (the if-guard before an arrow function does not narrow inside it � the callback may run later, the checker is right and everyone is annoyed), does not track aliased mutations (obj.a checked, obj passed to a function, check invalidated? � depends on what the checker can see), and forgets across await points less than people fear but resets on reassignment. "Why did my narrowing disappear" always has one of three answers: closure boundary, mutation possibility, or reassignment � a checkable list, not compiler moodiness.
+**"Narrowing follows logic; the checker just applies it"** ? Narrowing follows CONTROL-FLOW ANALYSIS with specific, learnable limits — the freeze moments live at the limits: narrowing does not survive CALLBACK boundaries (the if-guard before an arrow function does not narrow inside it — the callback may run later, the checker is right and everyone is annoyed), does not track aliased mutations (obj.a checked, obj passed to a function, check invalidated? — depends on what the checker can see), and forgets across await points less than people fear but resets on reassignment. "Why did my narrowing disappear" always has one of three answers: closure boundary, mutation possibility, or reassignment — a checkable list, not compiler moodiness.
 
-**"Function overloads are how you type flexible functions"** ? Overloads are resolution-ORDER machinery with sharp edges the questions exploit: the checker tries signatures TOP-DOWN and takes the first match (specific-above-general or the general one shadows everything), the implementation signature is INVISIBLE to callers, and union-typed arguments match NO single overload (the classic "why can't I call my own overloaded function with A | B"). Half of apparent overload needs dissolve into union parameters or generics with conditionals � and knowing WHICH tool each flexibility pattern wants (overloads for genuinely different arity/return pairings, unions for value alternatives, generics for relationship preservation) is the actual competence being probed.
+**"Function overloads are how you type flexible functions"** ? Overloads are resolution-ORDER machinery with sharp edges the questions exploit: the checker tries signatures TOP-DOWN and takes the first match (specific-above-general or the general one shadows everything), the implementation signature is INVISIBLE to callers, and union-typed arguments match NO single overload (the classic "why can't I call my own overloaded function with A | B"). Half of apparent overload needs dissolve into union parameters or generics with conditionals — and knowing WHICH tool each flexibility pattern wants (overloads for genuinely different arity/return pairings, unions for value alternatives, generics for relationship preservation) is the actual competence being probed.
 
-**"Deep TS knowledge is measured by writing complex types"** ? It is measured by READING failures: decoding a six-line instantiation-depth error to the one-line cause, explaining why an inferred type widened, predicting what a distributive conditional does to never (vanishes � the empty-union edge every Exclude question hinges on), and knowing when the fix is a type-level change versus an architectural one (the impossible-to-type API that should be redesigned, not conquered). Complex-type WRITING is occasionally needed; complex-error READING is daily � and interview deep-dives increasingly hand you a broken snippet and grade the diagnosis, not a blank file and grade the cleverness.
+**"Deep TS knowledge is measured by writing complex types"** ? It is measured by READING failures: decoding a six-line instantiation-depth error to the one-line cause, explaining why an inferred type widened, predicting what a distributive conditional does to never (vanishes — the empty-union edge every Exclude question hinges on), and knowing when the fix is a type-level change versus an architectural one (the impossible-to-type API that should be redesigned, not conquered). Complex-type WRITING is occasionally needed; complex-error READING is daily — and interview deep-dives increasingly hand you a broken snippet and grade the diagnosis, not a blank file and grade the cleverness.

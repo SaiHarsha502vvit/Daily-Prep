@@ -122,23 +122,30 @@ npx tsc --watch              # Watch mode (auto-recompile)
 }
 ```
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHY strict: true IS NON-NEGOTIABLE:                                 ║
-║                                                                      ║
-║  strict: true enables 7 flags at once:                               ║
-║  • noImplicitAny — no guessing types                                 ║
-║  • strictNullChecks — null is NOT assignable to string               ║
-║  • strictFunctionTypes — function parameter variance checks          ║
-║  • strictBindCallApply — type-safe bind/call/apply                   ║
-║  • strictPropertyInitialization — class fields must be init'd        ║
-║  • noImplicitThis — error if `this` type is unknown                  ║
-║  • alwaysStrict — emit "use strict" in every file                    ║
-║                                                                      ║
-║  REASONING: Without strict, TS gives a FALSE sense of safety.        ║
-║  You think you have type protection but you don't. Start strict.     ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> **`strict: true` is non-negotiable — what it turns on and why each
+> matters:**
+>
+> `strict: true` is a single switch that enables seven flags. Together
+> they change what the type checker *rejects*, not what it emits.
+> The compiled JS is identical either way; the difference is which
+> bugs the compiler refuses to let ship.
+>
+> | Flag                             | What the checker starts rejecting                                                      |
+> |----------------------------------|----------------------------------------------------------------------------------------|
+> | `noImplicitAny`                  | Any parameter or variable whose type the checker couldn't infer — forces you to name it. |
+> | `strictNullChecks`               | `null` and `undefined` assigned to non-nullable types — the biggest safety win.       |
+> | `strictFunctionTypes`            | Callbacks passed where the parameter types don't match contravariantly.                |
+> | `strictBindCallApply`            | `f.call`/`.apply`/`.bind` with mismatched argument types (previously typed as `any`).  |
+> | `strictPropertyInitialization`   | Class fields declared but never assigned in a constructor.                             |
+> | `noImplicitThis`                 | `this` used inside a function whose call-site can't fix the receiver.                  |
+> | `alwaysStrict`                   | Parses every file in strict mode and emits `"use strict"` at runtime.                  |
+>
+> **The failure mode without strict.** The checker still *runs*, but
+> most unsafe patterns silently degrade to `any` — you get the
+> appearance of type safety with none of the guarantees. That's how a
+> team ends up with green CI, no compile errors, and a production
+> `Cannot read properties of undefined` at the demo. Turn strict on
+> from day one; retrofit is painful.
 
 ---
 
@@ -291,20 +298,28 @@ type Cat = Animal & {
   purr(): void;
 };
 
-// INTERFACE vs TYPE — When to use which?
-// ┌──────────────┬───────────────────┬───────────────────────┐
-// │ Feature      │ interface         │ type                  │
-// ├──────────────┼───────────────────┼───────────────────────┤
-// │ Object shape │ ✅                │ ✅                   │
-// │ Extend       │ extends           │ & (intersection)      │
-// │ Merge (decl) │ ✅ (auto-merge)   │ ❌                   │
-// │ Primitives   │ ❌                │ ✅ (type X = string) │
-// │ Union        │ ❌                │ ✅ (type X = A | B)  │
-// │ Tuple        │ ❌                │ ✅                   │
-// │ Mapped types │ ❌                │ ✅                   │
-// └──────────────┴───────────────────┴───────────────────────┘
-// RULE: Use `interface` for objects/classes. Use `type` for everything else.
+// See the interface-vs-type table below.
 ```
+
+**`interface` vs `type` — what each can express and why to pick which:**
+
+| Capability                          | `interface`                          | `type`                                 |
+|-------------------------------------|--------------------------------------|----------------------------------------|
+| Describe an object shape            | Yes                                  | Yes                                    |
+| Extend an existing shape            | `extends`                            | `&` (intersection)                     |
+| Declaration merging across files    | **Yes** — same name auto-merges     | No — duplicate identifier             |
+| Alias a primitive (`type Id = string`) | No                                | Yes                                    |
+| Union of types (`A \| B`)           | No                                   | Yes                                    |
+| Tuple / fixed-length array types    | No                                   | Yes                                    |
+| Mapped types (`{ [K in keyof T]: ... }`) | No                              | Yes                                    |
+
+**Rule of thumb.** Reach for `interface` when a type describes an
+object or class shape you might extend later — especially public API
+types that library consumers may want to augment (declaration
+merging is what lets them). Reach for `type` for anything the
+`interface` grammar can't express: unions, primitives, tuples, and
+mapped/conditional types. Being consistent inside a codebase
+matters more than being clever.
 
 ### Declaration Merging (Interface Superpower)
 
@@ -621,25 +636,29 @@ TypeScript prevents "impossible" assertions — you can't assert `string` as `nu
 
 ## 9. TypeScript vs JavaScript — When Each is Better
 
-```
-USE TYPESCRIPT WHEN:                       USE JS WHEN:
-┌──────────────────────────────┐  ┌───────────────────────────┐
-│ Team project (2+ devs)      │  │ Quick prototype / script   │
-│ Large codebase (>1000 LOC)  │  │ Simple automation tasks    │
-│ API contracts matter        │  │ Learning JS fundamentals   │
-│ Refactoring is frequent     │  │ Config files (vite, etc.)  │
-│ Code is long-lived          │  │ Tiny utility scripts       │
-│ Complex state management    │  │ Browser console debugging  │
-│ Library/package authoring   │  │                            │
-└──────────────────────────────┘  └───────────────────────────┘
+**When TypeScript pays off vs when plain JavaScript is fine:**
 
-FACT: TypeScript has ZERO runtime cost. It compiles completely
-away. The only cost is compilation time (usually <1s with Vite).
+| Use TypeScript when...                    | Use plain JavaScript when...          |
+|-------------------------------------------|---------------------------------------|
+| Team project with 2+ contributors         | One-off script or throwaway prototype |
+| Codebase > ~1000 LOC                      | A dozen lines of automation           |
+| API contracts across modules matter       | You're teaching / learning JS itself  |
+| You refactor often                        | Config files (`vite.config.js`, etc.) |
+| Code is long-lived                        | Tiny utility scripts                  |
+| Complex state (Redux, forms, wizards)     | Browser-console debugging one-liners  |
+| You're publishing a library                | —                                    |
 
-ANALOGY: TS is like spellcheck in a Word document.
-It doesn't change what you write — it helps you write correctly.
-The final document (JS) is the same, but with fewer mistakes.
-```
+**The mechanism, so you don't overrate TS.** TypeScript has *zero
+runtime cost*. `tsc` type-checks your source, then erases every type
+annotation and emits plain JavaScript — the same JS a hand-written
+equivalent would produce. There is no runtime type check at all. So
+TS buys you *pre-run* protection: bugs the checker catches before
+your code ever executes. It buys you nothing against runtime data
+(malformed API responses, external inputs) unless you also validate
+at the boundary — that's what libraries like Zod / Yup do. Everywhere
+inside your codebase where the compiler enforces the shapes, the
+guarantee is total; everywhere data enters from outside, it isn't.
+Draw the boundary and validate it, or accept that `any` will find you.
 
 ---
 
@@ -694,12 +713,12 @@ Q: What is `as const`?
 
 ## Reality Check
 
-**"TypeScript adds runtime type safety"** ? Types are ERASED at compilation � zero runtime checking exists: an API returning the wrong shape flows through your perfectly-typed code and explodes three files later, because the annotation was a compile-time claim, not a guard. The boundary discipline this forces: validate at every trust edge (API responses, JSON.parse, localStorage, user input) with runtime validators (zod/valibot) that DERIVE the static type from the schema � one source of truth, checked once at the border, trusted inside. Typed code with unvalidated borders is confidence theater.
+**"TypeScript adds runtime type safety"** ? Types are ERASED at compilation — zero runtime checking exists: an API returning the wrong shape flows through your perfectly-typed code and explodes three files later, because the annotation was a compile-time claim, not a guard. The boundary discipline this forces: validate at every trust edge (API responses, JSON.parse, localStorage, user input) with runtime validators (zod/valibot) that DERIVE the static type from the schema — one source of truth, checked once at the border, trusted inside. Typed code with unvalidated borders is confidence theater.
 
-**"any is for when you don't know the type yet"** ? any is CONTAGIOUS DISABLEMENT: it silences checking on everything it touches and spreads through every operation downstream � one any parameter and the function body is effectively JavaScript. The actual I-don't-know type is unknown: it accepts anything but forces narrowing before use, converting "trust me" into "prove it." The grep-able health metric is real: any-count trends measure how much of the codebase has opted out. noImplicitAny plus treating explicit any as a review flag is the floor, not zealotry.
+**"any is for when you don't know the type yet"** ? any is CONTAGIOUS DISABLEMENT: it silences checking on everything it touches and spreads through every operation downstream — one any parameter and the function body is effectively JavaScript. The actual I-don't-know type is unknown: it accepts anything but forces narrowing before use, converting "trust me" into "prove it." The grep-able health metric is real: any-count trends measure how much of the codebase has opted out. noImplicitAny plus treating explicit any as a review flag is the floor, not zealotry.
 
-**"Structural typing is duck typing with extra steps"** ? Structural COMPATIBILITY is checked statically and completely � but its corners are the daily surprises: any object with the right shape passes (no branding � two semantically different IDs interchangeable unless you brand them), EXCESS property checking fires only on object LITERALS assigned directly (the same object via a variable passes � why inline props get flagged and extracted ones do not), and empty interfaces match everything. Nominal-typing habits from Java produce both false confidence (assuming names matter) and confusion (why did this literal error when the variable version didn't).
+**"Structural typing is duck typing with extra steps"** ? Structural COMPATIBILITY is checked statically and completely — but its corners are the daily surprises: any object with the right shape passes (no branding — two semantically different IDs interchangeable unless you brand them), EXCESS property checking fires only on object LITERALS assigned directly (the same object via a variable passes — why inline props get flagged and extracted ones do not), and empty interfaces match everything. Nominal-typing habits from Java produce both false confidence (assuming names matter) and confusion (why did this literal error when the variable version didn't).
 
-**"Type inference means annotations are optional style"** ? Inference has a DIRECTION and annotations are its control points: parameters cannot be inferred (they are the input contract � annotate always), return types are inferred but annotating them converts silent contract drift into local errors (a refactor changing your return shape errors AT the function, not at forty call sites), and let widens literals ("GET" becomes string) where const and as const preserve them. The senior pattern is deliberate: annotate boundaries (exports, parameters, returns of public functions), infer internals � inference as implementation detail, annotation as contract.
+**"Type inference means annotations are optional style"** ? Inference has a DIRECTION and annotations are its control points: parameters cannot be inferred (they are the input contract — annotate always), return types are inferred but annotating them converts silent contract drift into local errors (a refactor changing your return shape errors AT the function, not at forty call sites), and let widens literals ("GET" becomes string) where const and as const preserve them. The senior pattern is deliberate: annotate boundaries (exports, parameters, returns of public functions), infer internals — inference as implementation detail, annotation as contract.
 
-**"strict mode is for greenfield projects"** ? strict is a BUNDLE whose members pay differently, and knowing them beats all-or-nothing: strictNullChecks is the one that eliminates a whole production bug class (null is billion-dollar-mistake tracked in the types � without it, null is assignable to everything and the checker is lying to you), noImplicitAny stops silent unsoundness spread, strictFunctionTypes fixes variance holes. Migration is per-flag, per-directory viable � and the teams that "can't afford strict" are paying for it in the incident channel instead: every strictNullChecks error was a potential runtime TypeError the compiler had been forbidden to mention.
+**"strict mode is for greenfield projects"** ? strict is a BUNDLE whose members pay differently, and knowing them beats all-or-nothing: strictNullChecks is the one that eliminates a whole production bug class (null is billion-dollar-mistake tracked in the types — without it, null is assignable to everything and the checker is lying to you), noImplicitAny stops silent unsoundness spread, strictFunctionTypes fixes variance holes. Migration is per-flag, per-directory viable — and the teams that "can't afford strict" are paying for it in the incident channel instead: every strictNullChecks error was a potential runtime TypeError the compiler had been forbidden to mention.

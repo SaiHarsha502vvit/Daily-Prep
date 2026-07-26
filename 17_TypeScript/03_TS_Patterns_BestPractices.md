@@ -275,19 +275,26 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
   if (e.key === "Enter") submitForm();
 };
 
-// Common Event Types Reference:
-// ┌───────────────────────┬───────────────────────────────┐
-// │ Event                 │ Type                          │
-// ├───────────────────────┼───────────────────────────────┤
-// │ onClick               │ React.MouseEvent<HTMLElement>  │
-// │ onChange              │ React.ChangeEvent<HTMLElement> │
-// │ onSubmit              │ React.FormEvent<HTMLElement>   │
-// │ onKeyDown/Up          │ React.KeyboardEvent<>         │
-// │ onFocus/Blur          │ React.FocusEvent<>            │
-// │ onDrag*               │ React.DragEvent<>             │
-// │ onScroll              │ React.UIEvent<>               │
-// └───────────────────────┴───────────────────────────────┘
+// (Common React-event types — see the table below the code block.)
 ```
+
+**Common React event handler types — which generic to import for
+each handler prop:**
+
+| Handler prop            | Event type                                            | Notes                                                                                          |
+|-------------------------|-------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| `onClick`               | `React.MouseEvent<HTMLButtonElement>`                 | Swap the element to match the JSX tag (`HTMLDivElement`, etc.)                                 |
+| `onChange` (`<input>`)  | `React.ChangeEvent<HTMLInputElement>`                 | Use `HTMLTextAreaElement` for `<textarea>`, `HTMLSelectElement` for `<select>`                 |
+| `onSubmit`              | `React.FormEvent<HTMLFormElement>`                    | `e.currentTarget` is typed as the form, so `new FormData(e.currentTarget)` works               |
+| `onKeyDown` / `onKeyUp` | `React.KeyboardEvent<HTMLInputElement>`               | `e.key` is `string`; use string literals like `"Enter"`, `"Escape"`, `"ArrowDown"`             |
+| `onFocus` / `onBlur`    | `React.FocusEvent<HTMLElement>`                       | `relatedTarget` is the element receiving focus (useful for tab-key trap detection)             |
+| `onDragStart` / `onDrop`| `React.DragEvent<HTMLDivElement>`                     | `dataTransfer` is fully typed — no need for `as any` on file drops                          |
+| `onScroll`              | `React.UIEvent<HTMLDivElement>`                       | Fires many times per scroll — you almost always want to throttle                             |
+
+**Rule of thumb.** Import the event type from `React.*`, parameterise
+it with the HTML element the handler is attached to, and let
+`e.currentTarget` do the work — it's typed as your element, so you
+can call `.value`, `.checked`, `.files`, etc. without casts.
 
 ---
 
@@ -578,36 +585,38 @@ declare namespace NodeJS {
 
 ## 7. Migration Strategy — JS to TS
 
+**JS → TS migration is a strict three-phase progression — and stopping
+at Phase 1 is worse than not starting.**
+
+```mermaid
+flowchart TB
+    P1["<b>Phase 1 — Setup</b><br/><br/>npm install -D typescript<br/>npx tsc --init<br/>allowJs: true, strict: false<br/>rename .js → .ts one file at a time"]
+    P2["<b>Phase 2 — Gradual typing</b><br/><br/>start with leaf files (utils, helpers)<br/>type function signatures<br/>replace any with real types, one at a time<br/>work outward toward API / state / components"]
+    P3["<b>Phase 3 — Strict mode</b><br/><br/>enable strict flags ONE AT A TIME:<br/>noImplicitAny → strictNullChecks<br/>→ strictFunctionTypes → rest<br/>fix errors from each flag before enabling next<br/>finally set strict: true"]
+    STOP["⚠️ Stopping here is worse than plain JS —<br/>you have TypeScript's ceremony<br/>with none of its safety, and every dev<br/>on the team now trusts the types<br/>that aren't actually enforced."]
+
+    P1 -- "must continue" --> P2
+    P2 -- "must continue" --> P3
+    P1 -. "if you stop here" .-> STOP
 ```
-MIGRATING JS → TS (Step by Step):
 
-Phase 1: SETUP
-┌─────────────────────────────────────────────────────────────┐
-│ 1. npm install -D typescript                                │
-│ 2. npx tsc --init                                           │
-│ 3. Set allowJs: true, strict: false initially               │
-│ 4. Rename .js → .ts one file at a time                      │
-└─────────────────────────────────────────────────────────────┘
+**Why the ordering matters, not just the destination:**
 
-Phase 2: GRADUAL TYPING
-┌─────────────────────────────────────────────────────────────┐
-│ 1. Start with leaf files (utils, helpers — no dependencies) │
-│ 2. Add types to function signatures                         │
-│ 3. Replace `any` with proper types one by one               │
-│ 4. Move toward core files (API, state, components)          │
-└─────────────────────────────────────────────────────────────┘
+- Phase 1 keeps every existing file working (`allowJs: true` — the
+  compiler accepts JS side-by-side with TS). This is the only way to
+  ship a partial migration without a big-bang rewrite.
+- Phase 2 has to move *outward from leaves* because typing a leaf
+  file has zero risk (nothing depends on it), while typing a core
+  module first surfaces every downstream `any` at once.
+- Phase 3 flags must be flipped one at a time because each unlocks a
+  different bug class; flipping `strict: true` in one go on a large
+  codebase produces hundreds of errors at once and the team gives up.
 
-Phase 3: STRICT MODE
-┌─────────────────────────────────────────────────────────────┐
-│ 1. Enable strict flags ONE AT A TIME:                       │
-│    noImplicitAny → strictNullChecks → strictFunctionTypes   │
-│ 2. Fix errors from each flag before enabling next           │
-│ 3. Eventually set strict: true                              │
-└─────────────────────────────────────────────────────────────┘
-
-RULE: Never stop at Phase 1. Phase 1 TS is worse than JS
-because it gives FALSE confidence. Reach Phase 3.
-```
+**The rule.** Never let a migration end at Phase 1. Phase-1 TypeScript
+is worse than JavaScript because it gives everyone a *false* sense of
+safety — code that would have been reviewed for null-checks in JS is
+now waved through because "it's typed", except it isn't. Push to
+Phase 3 or roll back.
 
 ---
 
@@ -722,12 +731,12 @@ Q: How do you type a function that accepts any object with a specific key?
 
 ## Reality Check
 
-**"interface versus type is a style war with no stakes"** ? The differences are mechanical and occasionally load-bearing: interfaces MERGE declarations (the extension mechanism library augmentation depends on � and a foot-gun inside apps where an accidental same-name interface silently merges), interfaces error more readably on extension conflicts, types alone express unions/conditionals/mapped forms, and error messages display differently (aliases can inline into hovers). The convention that survives contact � interfaces for object contracts others implement/extend/augment, types for everything else � exists because of these mechanics, not aesthetics. Knowing WHY retires the war.
+**"interface versus type is a style war with no stakes"** ? The differences are mechanical and occasionally load-bearing: interfaces MERGE declarations (the extension mechanism library augmentation depends on — and a foot-gun inside apps where an accidental same-name interface silently merges), interfaces error more readably on extension conflicts, types alone express unions/conditionals/mapped forms, and error messages display differently (aliases can inline into hovers). The convention that survives contact — interfaces for object contracts others implement/extend/augment, types for everything else — exists because of these mechanics, not aesthetics. Knowing WHY retires the war.
 
-**"Enums are how TypeScript does constants"** ? Enums are the feature the ecosystem walked back from, for reasons worth owning: they generate RUNTIME code (violating types-are-erased � an import that survives compilation, awkward for tree-shaking and erasableSyntaxOnly tooling), numeric enums accept... any number silently in older versions and reverse-map weirdly, and const-enum inlining breaks under isolatedModules. The modern replacement is the as-const object plus a derived union type (keyof typeof) � same autocomplete and exhaustiveness, zero runtime surprises, string-debuggable values. Legacy enums are fine to leave; NEW enums need a justification.
+**"Enums are how TypeScript does constants"** ? Enums are the feature the ecosystem walked back from, for reasons worth owning: they generate RUNTIME code (violating types-are-erased — an import that survives compilation, awkward for tree-shaking and erasableSyntaxOnly tooling), numeric enums accept... any number silently in older versions and reverse-map weirdly, and const-enum inlining breaks under isolatedModules. The modern replacement is the as-const object plus a derived union type (keyof typeof) — same autocomplete and exhaustiveness, zero runtime surprises, string-debuggable values. Legacy enums are fine to leave; NEW enums need a justification.
 
-**"Type guards are for narrowing unknown API data"** ? User-defined guards (x is T) are TRUST INJECTION points � the compiler believes your predicate body unconditionally, and a wrong guard is worse than a cast because it looks like proof: the discipline is keeping guard bodies trivially auditable or generated (zod's safeParse as the guard). The underused members of the narrowing family: assertion functions (asserts x is T � throw-or-narrow, perfect for invariant helpers), discriminant-based narrowing that needs NO guard at all (design the union with a tag and switch on it � the zero-trust option), and exhaustiveness via never in the default arm (adding a union member breaks every switch that must handle it � the type system as change-impact analysis).
+**"Type guards are for narrowing unknown API data"** ? User-defined guards (x is T) are TRUST INJECTION points — the compiler believes your predicate body unconditionally, and a wrong guard is worse than a cast because it looks like proof: the discipline is keeping guard bodies trivially auditable or generated (zod's safeParse as the guard). The underused members of the narrowing family: assertion functions (asserts x is T — throw-or-narrow, perfect for invariant helpers), discriminant-based narrowing that needs NO guard at all (design the union with a tag and switch on it — the zero-trust option), and exhaustiveness via never in the default arm (adding a union member breaks every switch that must handle it — the type system as change-impact analysis).
 
-**"Generics make code reusable"** ? Application-code generics earn their complexity only when they PRESERVE type relationships through a transformation (the function that returns what it was given, keyed lookups where the key narrows the value � function get<K extends keyof T>(obj: T, k: K): T[K]); generics that merely abstract for abstraction's sake (one type parameter used once, in a signature nobody calls polymorphically) are complexity without preservation. The two working heuristics: a type parameter should appear TWICE or constrain something, and the constraint (extends) is where the design lives � unconstrained T is usually a question not yet answered.
+**"Generics make code reusable"** ? Application-code generics earn their complexity only when they PRESERVE type relationships through a transformation (the function that returns what it was given, keyed lookups where the key narrows the value — function get<K extends keyof T>(obj: T, k: K): T[K]); generics that merely abstract for abstraction's sake (one type parameter used once, in a signature nobody calls polymorphically) are complexity without preservation. The two working heuristics: a type parameter should appear TWICE or constrain something, and the constraint (extends) is where the design lives — unconstrained T is usually a question not yet answered.
 
-**"Utility types cover composition; combine them freely"** ? Deep utility-type COMPOSITIONS (Partial of Pick of Omit of...) are how codebases accrete unreadable type plumbing: each layer is fine, the stack becomes a hover-tooltip of doom and an error-message generator that buries the actual mismatch six instantiations deep. The maintainable pattern is NAMING intermediate shapes (type DraftUser = ... as a real, documented concept) and deriving in one visible step from a single source-of-truth type � derivation trees with named nodes, not anonymous utility pipelines. If the hover tooltip needs horizontal scrolling, the design was outsourced to the utility belt.
+**"Utility types cover composition; combine them freely"** ? Deep utility-type COMPOSITIONS (Partial of Pick of Omit of...) are how codebases accrete unreadable type plumbing: each layer is fine, the stack becomes a hover-tooltip of doom and an error-message generator that buries the actual mismatch six instantiations deep. The maintainable pattern is NAMING intermediate shapes (type DraftUser = ... as a real, documented concept) and deriving in one visible step from a single source-of-truth type — derivation trees with named nodes, not anonymous utility pipelines. If the hover tooltip needs horizontal scrolling, the design was outsourced to the utility belt.

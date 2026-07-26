@@ -203,15 +203,19 @@ class QueryBuilder<T> {
 
 ## 2. Utility Types — Built-in Type Transformations
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  TS provides 15+ built-in utility types. These transform             ║
-║  existing types into new ones WITHOUT rewriting.                     ║
-║                                                                      ║
-║  WHY: Avoid duplicating type definitions. If User changes,           ║
-║  all derived types (PartialUser, UserSummary) update too.            ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> **Utility types are pre-baked transformations that take a type and
+> return a related type.** TypeScript ships ~15 of them so you don't
+> have to write the mapped-type gymnastics by hand. The important
+> mental model: a utility type is a *function whose input and output
+> are types* — not runtime code. `Partial<User>` doesn't run
+> anywhere; it's a compile-time expression that produces a new
+> object-shape type where every property is optional.
+>
+> **Why this matters.** When `User` changes, every derived type
+> (`Partial<User>`, `Pick<User, "id" | "name">`, an update DTO, a
+> response DTO) updates in lockstep. Rewrite once, propagate
+> everywhere. That's the single largest win in a typed codebase —
+> avoiding the "rename in 40 places" chore that kills refactors.
 
 ```typescript
 interface User {
@@ -320,25 +324,33 @@ type CreateUserParams = Parameters<typeof createUser>;
 
 ### Utility Types Cheat Sheet
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  Utility Type         │ What It Does          │ Use Case             ║
-║  ─────────────────────┼───────────────────────┼──────────────────    ║
-║  Partial<T>           │ All props optional     │ Update/patch APIs   ║
-║  Required<T>          │ All props required     │ Config defaults     ║
-║  Readonly<T>          │ All props readonly     │ Immutable data      ║
-║  Pick<T, K>           │ Keep only K props      │ API responses       ║
-║  Omit<T, K>           │ Remove K props         │ Create DTOs         ║
-║  Record<K, V>         │ Object K→V mapping     │ Dictionaries        ║
-║  Extract<T, U>        │ Keep matching types    │ Filter unions       ║
-║  Exclude<T, U>        │ Remove matching types  │ Filter unions       ║
-║  NonNullable<T>       │ Remove null/undefined  │ After null check    ║
-║  ReturnType<F>        │ Function return type   │ Infer from fn       ║
-║  Parameters<F>        │ Function param tuple   │ Wrapper functions   ║
-║  Awaited<T>           │ Unwrap Promise<T>      │ Async return types  ║
-║  ConstructorParams<C> │ Constructor params     │ Factory patterns    ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+**The utility types you'll actually reach for — what each does,
+how, and when it earns its place:**
+
+| Utility           | Transformation                                     | Mechanism (rough)                                              | When to reach for it                            |
+|-------------------|----------------------------------------------------|----------------------------------------------------------------|-------------------------------------------------|
+| `Partial<T>`      | All props become optional                          | `{ [K in keyof T]?: T[K] }`                                    | PATCH/update DTOs                               |
+| `Required<T>`     | All props become required                          | `{ [K in keyof T]-?: T[K] }` (strips `?`)                      | Config with defaults filled in                  |
+| `Readonly<T>`     | All props become `readonly`                        | `{ readonly [K in keyof T]: T[K] }`                            | Immutable snapshots, Redux state                |
+| `Pick<T, K>`      | Keep only the named keys                           | `{ [P in K]: T[P] }`                                           | API response DTOs, narrowing a shape            |
+| `Omit<T, K>`      | Drop the named keys                                | `Pick<T, Exclude<keyof T, K>>`                                 | Strip `id` / `createdAt` for creation DTOs      |
+| `Record<K, V>`    | Object with keys `K`, values `V`                   | `{ [P in K]: V }`                                              | Dictionaries, enum-keyed lookup tables          |
+| `Extract<T, U>`   | Keep union members assignable to `U`               | Distributive conditional `T extends U ? T : never`             | Filter a union to the shapes you want           |
+| `Exclude<T, U>`   | Drop union members assignable to `U`               | Distributive conditional `T extends U ? never : T`             | Remove `null` / a specific case from a union    |
+| `NonNullable<T>`  | Remove `null` and `undefined`                      | `Exclude<T, null \| undefined>`                                | After a runtime null-check narrows the value    |
+| `ReturnType<F>`   | Extract the function's return type                 | `F extends (...args: any) => infer R ? R : never`              | Deriving types from an existing function        |
+| `Parameters<F>`   | Extract the parameters as a tuple                  | `F extends (...args: infer P) => any ? P : never`              | Wrapper / decorator functions preserving args   |
+| `Awaited<T>`      | Unwrap `Promise<T>` (recursively)                  | Conditional + `infer` unwrapping                               | Typing what an async function returns           |
+| `ConstructorParameters<C>` | Extract constructor params as a tuple     | Same shape as `Parameters` but for `new`                       | Factory / builder wrappers                      |
+
+**How to read a utility type when you meet one.** Every entry in the
+column labelled "Mechanism" is expressible in plain TypeScript — the
+`lib.es5.d.ts` file literally contains those one-liners. Reading them
+teaches you the two moves the type system uses everywhere:
+*mapped types* (`{ [K in keyof T]: ... }`) and *conditional +
+`infer`* (`T extends X ? A : B`, sometimes plucking a piece with
+`infer`). Once you internalise those two moves, you can write your
+own utility types for shapes the standard library doesn't cover.
 
 ---
 
@@ -718,12 +730,12 @@ Q: Explain conditional types distribution?
 
 ## Reality Check
 
-**"Advanced types are for library authors"** ? The advanced-type PAYOFF concentrates in application code at exactly the places bugs do: discriminated unions making illegal STATES unrepresentable (loading/error/success where error-with-data cannot compile � versus the boolean-flag soup where it can), template literals typing route params and event names, mapped types keeping derived shapes in sync with their source automatically (change the source, every derivative updates or errors). The library-author frame is backwards: libraries EXPORT this machinery precisely because applications are where the invariants live.
+**"Advanced types are for library authors"** ? The advanced-type PAYOFF concentrates in application code at exactly the places bugs do: discriminated unions making illegal STATES unrepresentable (loading/error/success where error-with-data cannot compile — versus the boolean-flag soup where it can), template literals typing route params and event names, mapped types keeping derived shapes in sync with their source automatically (change the source, every derivative updates or errors). The library-author frame is backwards: libraries EXPORT this machinery precisely because applications are where the invariants live.
 
-**"Conditional types are type-level if statements"** ? The mechanics that actually matter are the ones the if-statement analogy hides: conditionals DISTRIBUTE over unions by default (T extends U applied to A | B runs per-member � the reason Exclude works at all, and the reason your conditional exploded a union unexpectedly; brackets [T] extends [U] suppress it), infer declares type VARIABLES bound by pattern-matching (ReturnType is destructuring at the type level), and never is the identity that vanishes from unions (the filtering mechanism itself). Distribution is the semantics; the if-analogy without it produces types that work by coincidence.
+**"Conditional types are type-level if statements"** ? The mechanics that actually matter are the ones the if-statement analogy hides: conditionals DISTRIBUTE over unions by default (T extends U applied to A | B runs per-member — the reason Exclude works at all, and the reason your conditional exploded a union unexpectedly; brackets [T] extends [U] suppress it), infer declares type VARIABLES bound by pattern-matching (ReturnType is destructuring at the type level), and never is the identity that vanishes from unions (the filtering mechanism itself). Distribution is the semantics; the if-analogy without it produces types that work by coincidence.
 
-**"Mapped types transform object types"** ? The full toolkit is transformation plus RENAMING plus arithmetic: key remapping via as (as `get${Capitalize<K>}` generating getter names, as-never FILTERING keys by value type � the pick-all-functions idiom), modifier arithmetic (-readonly and -? REMOVE what +adds � Mutable and Required are minus-signs, the part nobody discovers alone), and homomorphic preservation (mapping over keyof T keeps optionality/readonly per-key � why Partial composes cleanly but hand-rolled index signatures lose the modifiers). Without remapping and minus-modifiers, half the standard-library utility types are unreproducible magic.
+**"Mapped types transform object types"** ? The full toolkit is transformation plus RENAMING plus arithmetic: key remapping via as (as `get${Capitalize<K>}` generating getter names, as-never FILTERING keys by value type — the pick-all-functions idiom), modifier arithmetic (-readonly and -? REMOVE what +adds — Mutable and Required are minus-signs, the part nobody discovers alone), and homomorphic preservation (mapping over keyof T keeps optionality/readonly per-key — why Partial composes cleanly but hand-rolled index signatures lose the modifiers). Without remapping and minus-modifiers, half the standard-library utility types are unreproducible magic.
 
 **"Type-level programming is Turing-complete cleverness to avoid"** ? There is a real line, but it runs through MAINTENANCE COST, not cleverness: types that mirror your domain (a union of event names driving payload lookup, a mapped config schema) pay rent forever; types that implement algorithms (type-level parsers, arithmetic via tuple lengths) cost every reader and eventually hit recursion-depth ceilings and instantiation-explosion build times. The audit question for any impressive type: when a requirement changes, does this type UPDATE the change or fight it? Rent-payers update; trophies fight. Avoid trophies, not power.
 
-**"satisfies is another way to write a type annotation"** ? satisfies checks WITHOUT WIDENING � the annotation trade-off it dissolves: colon-annotation validates but forgets (config: Record<string, Color> then config.primary is just Color, literal gone), as-const preserves but validates nothing, satisfies does both (validated against the constraint, inferred at full literal precision � config.primary stays "#ff0000", typos still error). Its natural habitat is config objects, route tables, and theme definitions consumed by literal-hungry APIs. It is the newest member of the precision toolkit and the tell that someone's TS knowledge postdates 4.9.
+**"satisfies is another way to write a type annotation"** ? satisfies checks WITHOUT WIDENING — the annotation trade-off it dissolves: colon-annotation validates but forgets (config: Record<string, Color> then config.primary is just Color, literal gone), as-const preserves but validates nothing, satisfies does both (validated against the constraint, inferred at full literal precision — config.primary stays "#ff0000", typos still error). Its natural habitat is config objects, route tables, and theme definitions consumed by literal-hungry APIs. It is the newest member of the precision toolkit and the tell that someone's TS knowledge postdates 4.9.
