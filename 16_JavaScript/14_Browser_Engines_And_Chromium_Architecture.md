@@ -10,6 +10,9 @@
 
 1. [Four Different Things People Call "The Browser"](#1-four-different-things-people-call-the-browser)
 2. [Where Today's Engines Actually Came From — A Real History](#2-where-todays-engines-actually-came-from--a-real-history)
+   - 2a. [Where the Name "JavaScript" Actually Came From](#2a-where-the-name-javascript-actually-came-from)
+   - 2b. [What "JavaScript Runtime" Actually Means](#2b-what-javascript-runtime-actually-means)
+   - 2c. [The Actual History: JavaScript Genuinely Had No Compiler At All, For Years](#2c-the-actual-history-javascript-genuinely-had-no-compiler-at-all-for-years)
 3. [Chromium vs. Chrome — The Open Project vs. The Product](#3-chromium-vs-chrome--the-open-project-vs-the-product)
 4. [The Chromium Family — Who Else Runs on Blink + V8](#4-the-chromium-family--who-else-runs-on-blink--v8)
 5. [Why Modern Browsers Run Multiple Processes At All](#5-why-modern-browsers-run-multiple-processes-at-all)
@@ -81,6 +84,51 @@ graph TD
 ```
 
 > **Why this history is worth actually knowing, not just skimming.** It answers, with mechanism instead of trivia, three questions engineers genuinely ask: "why does V8 feel unrelated to Blink even though they ship together?" (because they ARE unrelated — V8 was built from scratch in 2008 specifically as a separate project from the rendering engine, and that separateness is architecturally real, not just a naming quirk). "Why is Safari's engine called both 'WebKit' and sometimes 'WebCore'?" (WebKit is the umbrella name for the combination; WebCore is specifically the rendering-engine component inside it — the same component Google forked into Blink). "Why do people worry about a 'Chromium monoculture'?" (because Blink and WebKit share a common ancestor but have been developed independently since 2013, while Gecko never shared that ancestry at all — so today's "big three" engine diversity is really Blink, WebKit, and Gecko, and two of those three trace back to the same 1998 codebase).
+
+### 2a. Where the Name "JavaScript" Actually Came From
+
+The history above traced the *engines*. This is a genuinely separate story about the *language itself* — where its name came from, and it's worth telling slowly because almost every developer has absorbed a wrong assumption from the name alone, without ever being told the actual sequence of events that produced it.
+
+**Step one — May 1995, ten days, one engineer, one browser company.** Netscape Communications — the company whose browser, Netscape Navigator, was at the time the dominant way most people accessed the web — wanted to add a lightweight scripting capability directly into web pages, so that a page's HTML could react to things happening in the browser (a button being clicked, a form being filled in) without needing a full round-trip to a server. Netscape assigned this to an engineer named **Brendan Eich**, and gave him an extremely short window to produce a working prototype: widely reported as about **ten days**. What Eich built in that window became the very first version of what we now call JavaScript. This detail matters for understanding some of the language's more famously odd design choices (like how equality comparisons and type coercion behave) — a language sketched out in ten days, under deadline pressure, to be shipped as fast as possible, is a very different kind of design process than a language committee spends years deliberating over, and several of JavaScript's quirks trace directly back to decisions made in that short window that later became impossible to change without breaking the web.
+
+**Step two — the internal name was "Mocha."** During its initial development inside Netscape, before it shipped to anyone, the language was called **Mocha** — an internal codename, never a public product name.
+
+**Step three — September 1995, it briefly shipped as "LiveScript."** When Netscape put an early beta of the language into a Netscape Navigator 2.0 beta release, they called it **LiveScript**. If you'd looked at Netscape's own beta documentation in September 1995, you would have seen this name, not "JavaScript" — the rename happens next, and it's the part of this story most developers have never actually heard.
+
+**Step four — December 1995, "LiveScript" becomes "JavaScript" — and this rename is the actual origin of decades of confusion.** Sun Microsystems, the company that owned and had recently released the **Java** programming language, was, in late 1995, in the process of generating enormous industry buzz around Java as the future of programming — Java was the hot new thing that every tech publication was writing about. Netscape and Sun struck a licensing and co-marketing agreement, and as part of that deal, Netscape renamed **LiveScript** to **JavaScript** specifically to associate their new scripting language with Java's momentum and buzz — a marketing decision, not a technical one. Sun Microsystems held the trademark on the name "JavaScript" as a direct consequence of this agreement (a trademark that, after Oracle's acquisition of Sun, eventually passed to Oracle, which still holds it today).
+
+> **Why "JavaScript" being a marketing rename matters, concretely.** JavaScript and Java are not related languages in any technical sense that the shared name would suggest. Java is statically typed, class-based, and compiles ahead-of-time to a portable bytecode format (run by the JVM — the Java Virtual Machine, a genuinely different kind of runtime than anything in Chapter 12 or 13). JavaScript, as this entire module has covered, is dynamically typed and prototype-based (Chapter 3), and its "compilation" is an internal engine implementation detail most developers never see (Chapter 12). The two languages share roughly the amount of genuine technical kinship that "Car" and "Carpet" share by starting with the same four letters. The persistent belief that JavaScript is "Java's little scripting cousin," or a simplified version of Java, or built by the same people, or in any way derived from Java's design — is a direct, traceable consequence of a 1995 marketing decision, not a technical fact about either language's actual history or design.
+
+**Step five — 1996 to 1997, standardization, and a second, quieter naming split.** As JavaScript's popularity grew, and as Microsoft shipped its own compatible-but-distinct implementation (called **JScript**, specifically renamed to avoid directly infringing Sun's "JavaScript" trademark — the exact same trademark-avoidance reasoning that produces "Chromium" as the name for the non-Google-branded open project, from Section 3 above, playing out a decade earlier for a different reason), Netscape submitted the language to **ECMA International**, a vendor-neutral standards organization, specifically so that a language multiple competing browser vendors were now implementing could have ONE agreed-upon specification that wasn't owned by any single company. Because "JavaScript" was Sun's trademark, ECMA could not publish a standard literally named "the JavaScript specification" — so the standard itself was published in 1997 under the name **ECMAScript**. This is the exact same relationship as Chromium/Chrome from Section 3, one level up the stack: **ECMAScript is the open, vendor-neutral standard; "JavaScript" is Netscape's (and, by inheritance, the industry's) trademarked, branded name for a specific, conforming implementation of that standard.** When you hear "ES2015," "ES6," "ES2020" — that's a version number of the ECMAScript *specification*; "JavaScript" is what virtually everyone calls any engine (V8, SpiderMonkey, JavaScriptCore) that implements that specification.
+
+```mermaid
+graph TD
+    Eich["May 1995<br/>Brendan Eich writes the language<br/>at Netscape in ~10 days"]
+    Eich -->|"internal codename"| Mocha["Mocha<br/>(never public)"]
+    Mocha -->|"Sept 1995 beta release"| LiveScript["LiveScript<br/>(shipped in a Netscape 2.0 beta)"]
+    LiveScript -->|"Dec 1995 — Netscape/Sun<br/>marketing + licensing deal"| JavaScript["JavaScript<br/>(rides Java's buzz — NOT technically related to Java)"]
+    JavaScript -->|"1996-97 — submitted for<br/>vendor-neutral standardization"| ECMAScript["ECMAScript<br/>(the actual specification, published by ECMA International —<br/>'JavaScript' remained Sun/Oracle's trademarked name for an implementation)"]
+```
+
+### 2b. What "JavaScript Runtime" Actually Means
+
+The word "runtime" gets used loosely enough that it's worth pinning down precisely, especially since Chapters 4, 12, and 13 all used it without ever stopping to define it as its own term.
+
+> **The core definition.** A **runtime**, for any programming language, is the complete environment that exists WHILE a program is executing — as opposed to the tools that exist only BEFORE execution (an editor, a compiler, a linter). For a language like C, the runtime is thin: mostly just the operating system and a small standard-library support layer, because a C compiler does almost all of its work ahead of time, producing a finished machine-code binary that the OS just loads and runs. For JavaScript, the runtime is enormous and is doing continuous, active work for the entire lifetime of the program — this is the actual technical reason JavaScript is called a **runtime language** far more often than languages like C or Rust are: not because JavaScript is uniquely "runtime" in some category C isn't, but because JavaScript's runtime is where almost ALL of the interesting, ongoing behavior lives, making the term worth emphasizing specifically for JS in a way it usually isn't for AOT-compiled languages.
+>
+> **What's actually inside "the JavaScript runtime," concretely, tying together everything this module has already covered.** It is NOT just the JS engine (V8, Section 1's "piece two"). A JavaScript runtime is the *combination* of: the JS engine itself (Chapter 12 — parsing, Ignition, TurboFan, the heap and GC), PLUS a host environment that supplies everything the engine alone cannot do (Chapter 4's whole "V8 doesn't know what setTimeout is" point) — in a browser, that host environment is the Web APIs (DOM, fetch, setTimeout, all implemented by Blink and the browser's C++ layer, Section 1's "piece three"); in Node.js, that host environment is libuv plus Node's own C++ bindings (Chapter 13). **"The JavaScript runtime" is always this pairing — an engine plus a host environment — never the engine alone.** This is precisely why "browser JavaScript" and "Node.js" can run the exact same core language (identical `Array.prototype.map`, identical closures, identical `async`/`await` — all engine-level, Chapter 12) while having completely different capabilities (a browser runtime has `document`; a Node runtime has `fs`) — the difference is entirely in which host environment is paired with the engine, not in the language or the engine itself.
+>
+> **Why "interpreted language" is the OTHER label people reach for, and why it's also worth being precise about.** JavaScript is very commonly described as an "interpreted language," in contrast to a "compiled language" like C. This label describes something real, but it describes it from the *developer's* vantage point, not the *engine's* — and conflating those two vantage points is exactly the kind of "jumping over an intermediate step" that causes confusion. From a developer's workflow, JavaScript IS interpreted-like: you write a `.js` file and a runtime executes it directly — there is no separate "run a compiler, produce a binary, then run the binary" step you have to perform yourself, the way there is with C. That workflow-level fact is completely true and is what "interpreted language" is actually describing. But — and this is the connection back to Chapter 12 that closes the loop — internally, V8 genuinely does compile your JavaScript: first to bytecode (Ignition), and for hot code, all the way to real optimized machine code (TurboFan). "Interpreted vs. compiled" as a *label for the language* is really a claim about **whether the developer must run an explicit build step**, not a claim about **what the engine does with the code once it's handed to it** — and JavaScript is unusual precisely because those two things point in different directions: developer-facing workflow says "interpreted" (no build step), engine-internal reality says "compiled, in multiple tiers" (Chapter 12's whole Ignition/TurboFan pipeline). Both statements are correct; they're just answers to two different questions that happen to share the same casual conversation.
+
+### 2c. The Actual History: JavaScript Genuinely Had No Compiler At All, For Years
+
+Section 2b just made a nuanced claim about *today's* JavaScript: the developer-facing "interpreted" label and the engine-internal "compiled, in tiers" reality point in different directions *simultaneously*, in the same running engine. That nuance did not always exist — and walking through *when* it started to exist is itself a piece of missing history, separate from both the engine-lineage story (Section 2) and the naming story (Section 2a).
+
+**Phase one — 1995 to roughly 2008: JavaScript engines were pure tree-walking interpreters, with no compilation step of any kind, anywhere.** Brendan Eich's original engine (Section 2a), and for over a decade afterward every major browser's JS engine that followed it — Netscape's own later engines, early SpiderMonkey, Microsoft's JScript engine, early KJS/JavaScriptCore before Apple's later investments — worked the same fundamental way: take the AST (Section 3a of Chapter 12 covers exactly what an AST is, in detail), and **walk it directly, node by node, executing each node's meaning as you visit it**, every single time that code runs. There was no bytecode stage. There was no machine-code stage. There was no "compile once, run many times" idea in these engines at all — executing `a + b` for the thousandth time did exactly the same amount of AST-node-visiting work as executing it the first time, with zero memory of anything learned from the previous 999 executions. This is what "JavaScript is an interpreted language" meant *literally and completely* for JavaScript's first thirteen years — not the nuanced, partially-true modern claim from Section 2b, but a flatly accurate description of how every engine actually worked, with no asterisk needed.
+
+**Phase two — September 2008: V8 launches, and introduces compilation to mainstream JavaScript engines for the first time.** This is the same 2008 launch from Section 2, Step three — but the detail worth isolating here specifically is what it changed about *execution strategy*, independent of the multi-process architecture story this chapter otherwise focuses on. V8's original 2008 design (before Ignition/TurboFan existed — those came later, refining the same basic idea) compiled JavaScript **directly to native machine code**, skipping tree-walking interpretation entirely, using a component internally called "Full-codegen." This was a genuinely new idea for a mainstream JS engine at the time: instead of re-interpreting the same AST nodes over and over on every execution, compile the function to real machine code *once*, then just run that machine code directly on every subsequent call — the same core insight Section 2 of Chapter 12 attributes to the tension between "fast to produce" and "fast to run," except at launch V8 hadn't yet built the two-tier Ignition/TurboFan system this module's Chapter 12 describes; it simply compiled everything, immediately, with no interpreter tier at all. (The tiered Ignition-then-TurboFan pipeline Chapter 12 teaches is V8's own *later* refinement of this same compile-everything idea — introduced specifically because compiling EVERY function immediately, including ones called once and never again, wastes compilation time exactly as Chapter 12 Section 3 describes; Ignition's bytecode-interpreter tier was added afterward as the fix for that waste, not as part of V8's original 2008 design.)
+
+**Why this two-phase history is the actual, complete answer to "does JavaScript have a compiler."** Before 2008: no, genuinely, for every mainstream engine — the honest answer was a flat "no compiler, pure interpretation," full stop. After 2008, and accelerating as other engines followed V8's lead (SpiderMonkey and JavaScriptCore both later built their own JIT compilation, following the pattern V8 had proven out): yes, every mainstream JS engine compiles JavaScript internally, in some tiered form resembling Chapter 12's Ignition/TurboFan pipeline — while the *language* kept, and still keeps, its interpreted-feeling, no-build-step developer workflow from Section 2b, because that workflow property was never about whether an engine compiles internally; it was always about whether *you*, the developer, have to run a separate compile step yourself before your code can execute. V8's 2008 innovation changed what happens invisibly, inside the engine, after you hit "run" — it did not, and could not, change the developer-facing fact that hitting "run" on a `.js` file has never required a separate build step the way compiling a `.c` file does.
 
 ---
 
@@ -322,6 +370,38 @@ You open a page doing real-time 3D rendering via WebGL alongside an autoplaying 
 ## 16. Interview Quick-Fire
 
 ```
+Q: Where did the name "JavaScript" actually come from?
+→ Netscape engineer Brendan Eich built the language in ~10 days in May 1995
+  (internal codename "Mocha"). It briefly shipped as "LiveScript" in a
+  September 1995 beta. In December 1995, Netscape renamed it "JavaScript"
+  as part of a marketing/licensing deal with Sun Microsystems, to ride
+  Java's buzz — the two languages are not technically related.
+
+Q: What's the actual relationship between "JavaScript" and "ECMAScript"?
+→ "JavaScript" was Sun's (later Oracle's) trademark, so when Netscape
+  submitted the language to ECMA International for vendor-neutral
+  standardization in 1996-97, the published standard had to be named
+  something else: ECMAScript. ECMAScript is the open specification;
+  "JavaScript" is the trademarked name for an implementation of it —
+  the same relationship as Chromium (open project) vs. Chrome (branded
+  product), one layer further down the stack.
+
+Q: What does "the JavaScript runtime" actually refer to?
+→ The engine (V8) PLUS a host environment (Web APIs in a browser, libuv +
+  Node bindings in Node.js) — never the engine alone. This is why the
+  identical JS language behaves identically in both, but has completely
+  different available capabilities (DOM vs fs) depending on which host
+  environment the same engine is paired with.
+
+Q: Is JavaScript "interpreted" or "compiled"? Which is correct?
+→ Both, answering different questions. From the developer's workflow, it's
+  interpreted-like — no explicit build step before running a .js file,
+  unlike C. From the engine's internal behavior, V8 genuinely compiles
+  it in multiple tiers (Ignition to bytecode, TurboFan to optimized
+  machine code — Chapter 12). "Interpreted vs compiled" as applied to a
+  language describes the developer-facing workflow; it says nothing
+  about what the engine does internally once the code is handed to it.
+
 Q: What's the difference between a "rendering engine" and a "JavaScript engine"?
 → Two separate components with separate jobs. The rendering engine (Blink,
   WebKit, Gecko) turns HTML+CSS into pixels — parsing, layout, paint,
@@ -386,6 +466,10 @@ Q: How do Chromium's isolated processes actually communicate?
 ---
 
 ## 17. Reality Check
+
+**"JavaScript is Java's scripting cousin — simpler Java, basically"** → The two languages share a name because of a December 1995 Netscape/Sun MARKETING deal (renaming "LiveScript" to "JavaScript" specifically to ride Java's industry buzz), not because of any technical relationship. Java is static, class-based, and compiles ahead-of-time to JVM bytecode; JavaScript is dynamic, prototype-based (Chapter 3), and its internal compilation is a V8 implementation detail (Chapter 12) unrelated to the JVM in any way. The shared four letters at the start of both names is the entire basis for the "cousin" belief — there is no shared design lineage, shared team, or shared runtime underneath it.
+
+**"JavaScript" and "ECMAScript" are two names for two different things"** → They're the SAME language at two different layers, exactly mirroring Chromium-vs-Chrome from this chapter's Section 3. ECMAScript is the open, vendor-neutral specification published by ECMA International (necessary specifically because "JavaScript" was Sun's trademark and couldn't be the standard's own name). "JavaScript" is the common name for any engine — V8, SpiderMonkey, JavaScriptCore — that implements that specification. "ES2020 added optional chaining" and "JavaScript added optional chaining" are describing the identical event from two vocabularies, not two different things.
 
 **"Chrome uses V8, so V8 is what makes pages render"** → V8 runs JavaScript and has zero involvement in parsing HTML/CSS or painting pixels — that's Blink's job, an entirely separate, independently developed component that happens to ship alongside V8. A page with NO JavaScript at all still fully renders via Blink alone; V8 never even starts. Treating "V8" as shorthand for "whatever Chrome does with a page" conflates two projects with different histories, different codebases, and different teams that only share a release schedule.
 

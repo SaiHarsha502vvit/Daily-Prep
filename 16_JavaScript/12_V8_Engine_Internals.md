@@ -10,7 +10,9 @@
 
 1. [What V8 Actually Owns](#1-what-v8-actually-owns)
 2. [From Source Text to Running Code — The Pipeline](#2-from-source-text-to-running-code--the-pipeline)
+   - 2a. ["Cold," "Warm," and "Hot" Code — the Vocabulary This Pipeline Is Named Around](#2a-cold-warm-and-hot-code--the-vocabulary-this-whole-pipeline-is-named-around)
 3. [Parsing — Why V8 Reads Your Code Twice](#3-parsing--why-v8-reads-your-code-twice)
+   - 3a. [The Step Most Explanations Skip — Tokens, Then the AST, Worked in Full](#3a-the-step-most-explanations-skip-what-tokenize-then-build-an-ast-actually-looks-like)
 4. [Ignition — The Bytecode Interpreter](#4-ignition--the-bytecode-interpreter)
 5. [Hidden Classes — The Mechanism Behind "Consistent Object Shapes Are Fast"](#5-hidden-classes--the-mechanism-behind-consistent-object-shapes-are-fast)
 6. [Inline Caches — Why the Same Line of Code Gets Faster](#6-inline-caches--why-the-same-line-of-code-gets-faster)
@@ -69,6 +71,16 @@ sequenceDiagram
 
 This whole pipeline exists because of one tension: **compiling straight to optimized machine code is slow to produce but fast to run; interpreting bytecode is fast to produce but slow to run.** A web page loads hundreds of functions that run once and never again (event handler setup, one-time init). Fully optimizing all of them would waste time compiling code that never benefits. Only functions that actually run *many times* (loops, hot call sites) earn the cost of full optimization. The two-tier pipeline is V8 paying the optimization cost only where it pays off.
 
+### 2a. "Cold," "Warm," and "Hot" Code — the Vocabulary This Whole Pipeline Is Named Around
+
+The words "hot" and "cold" just appeared above without being formally defined, and they're used constantly in any real discussion of JIT engines — worth pausing on before going further, because they're not vague marketing language, they're a precise **temperature classification of a specific function, based on how many times it has actually been called (or how many times a specific loop inside it has actually iterated) so far in the current program's run.** The temperature is not a property of the source code sitting in your file — the exact same function is "cold" the moment the process starts and can become "hot" ninety seconds later, purely as a consequence of how often it happened to be called in between. Three tiers, each mapped onto a real, specific V8 component you've already met above:
+
+- **Cold code** — a function that has been called few enough times (in the simplest mental model: once, or a handful of times) that V8 has no reason to believe it's worth spending any compilation effort on beyond the cheapest possible option. Cold code runs on **Ignition**, interpreted from bytecode, with the full per-instruction overhead Section 4 will describe (no shortcuts, no speculation, just faithfully executing whatever the bytecode says, one instruction at a time). Every function in your program is cold the very first time it runs — there is no way to skip this tier, because V8 has no data yet about how the function behaves.
+- **Warm code** — a function whose call count has crossed a first threshold, signaling it's probably worth a *little* extra compilation investment, but not yet proven hot enough to justify TurboFan's expensive, full speculative-optimization treatment. This is specifically what **Sparkplug** (mentioned above) exists for: a genuinely fast, non-optimizing compiler that turns Ignition's bytecode into straightforward machine code with almost no analysis — no type speculation, no inlining, none of TurboFan's expensive reasoning — just a mechanical, instruction-by-instruction translation from bytecode to machine code, fast enough to compile that V8 can afford to do it eagerly for a much larger set of functions than it could ever afford to run through TurboFan.
+- **Hot code** — a function whose call count (or whose loop-iteration count, for a long-running loop inside an otherwise rarely-called function) has crossed a second, much higher threshold, marking it as worth TurboFan's genuinely expensive, full speculative-optimization treatment — everything Section 8 describes: reading the accumulated type feedback, betting on the patterns observed so far, compiling machine code that hard-codes those assumptions and skips every check that would otherwise be needed to handle cases that, statistically, aren't happening for this particular function.
+
+> **Why three tiers instead of the two this chapter mostly talks about.** The two-tier mental model (Ignition interprets, TurboFan optimizes) is the right *conceptual* story — it's what makes the tension in the paragraph above ("compiling straight to optimized code is slow to produce, interpreting is slow to run") make sense, and it's accurate for how V8 worked for most of its history. But it leaves a real gap: a function that's genuinely called often — say, a few hundred times a second — is running interpreted (slow per-call) for potentially a long stretch of real wall-clock time before it accumulates enough calls to justify TurboFan's expensive analysis. Sparkplug's whole reason for existing is to shrink exactly that gap: give "warm" functions a cheap, fast, no-analysis compile almost immediately, so they're running as (unoptimized, but real) machine code well before they'd have qualified for TurboFan, rather than staying stuck on Ignition's slower interpreted execution the entire time they're warming up.
+
 ---
 
 ## 3. Parsing — Why V8 Reads Your Code Twice
@@ -98,14 +110,82 @@ console.log(add(1, 2)); // <- THIS call triggers the full parse of add(),
 
 **The practical consequence — the IIFE-wrapping advice you've seen in old style guides.** Wrapping code in `(function() { ... })()` used to be recommended partly because eagerly-invoked functions get parsed immediately (no benefit there), while *unwrapped top-level code outside any function* has always been eagerly, fully parsed — there's no "call" event to defer to. The pre-parse optimization is specifically about function bodies that might never run. It has nothing to do with variable scoping (that's a separate, still-valid reason to use module scope or an IIFE) — but the performance folklore around it usually conflates the two.
 
+### 3a. The Step Most Explanations Skip: What "Tokenize, Then Build an AST" Actually Looks Like
+
+Section 3's definition said parsing turns source text into an AST "through tokenization." That single word is doing a lot of quiet work — it names an entire intermediate stage that most explanations of parsing skip straight past, jumping from "here's your source code" directly to "here's your AST" as if that were one step. It is not one step. It is at least two, each producing its own distinct, inspectable data structure, and seeing both of those structures — not just being told they exist — is what makes "parsing" stop being a black box.
+
+**Stage one: the raw source string.** Before anything else, this is all V8 has — a flat sequence of characters, with no concept yet of "this is a keyword" or "this is a variable name." For a tiny function:
+
+```javascript
+function add(a, b) {
+  return a + b;
+}
+```
+
+To the very first stage of the parser, this is not yet "a function." It is exactly this, and nothing more: the 39 characters `f`, `u`, `n`, `c`, `t`, `i`, `o`, `n`, ` `, `a`, `d`, `d`, `(`, `a`, `,`, ` `, `b`, `)`, ` `, `{`, and so on, one after another, with no grouping, no meaning, no structure — a string, indistinguishable in kind from a text file that happens to contain no valid JavaScript at all. Nothing about "characters" alone tells you where one meaningful unit ends and the next begins; `function` and `add` are separated by a space in this example, but JavaScript's grammar does not actually require whitespace everywhere (`a+b` is exactly as valid as `a + b`), so even "split on spaces" is not a real strategy. Something has to walk this character stream and decide, character by character, where the meaningful boundaries fall.
+
+**Stage two: the lexer (or "scanner") turns characters into tokens.** This is the piece that actually does that boundary-finding — a component inside V8's parser called the **lexer**, whose only job is to consume the raw character stream and group it into **tokens**: the smallest units that have independent meaning in JavaScript's grammar. A token is not a character — it's a small, classified chunk, tagged with a type (`Keyword`, `Identifier`, `Punctuator`, `NumericLiteral`, and so on) and, usually, the exact text it matched. Running the lexer over the `add` function above produces this token stream — this is a genuinely real intermediate artifact, not a simplification, and it is the actual input the next stage receives:
+
+```
+Keyword      "function"
+Identifier   "add"
+Punctuator   "("
+Identifier   "a"
+Punctuator   ","
+Identifier   "b"
+Punctuator   ")"
+Punctuator   "{"
+Keyword      "return"
+Identifier   "a"
+Punctuator   "+"
+Identifier   "b"
+Punctuator   ";"
+Punctuator   "}"
+```
+
+Notice precisely what this stream does and does not contain. It has *flattened away whitespace entirely* — there is no token for the space between `function` and `add`, because whitespace carries no grammatical meaning in this context and the lexer's whole job is to discard exactly the parts of the source that don't matter, keeping only the parts that do. It has also *classified* each chunk — the lexer already knows `return` is a `Keyword` and `add` is an `Identifier`, a decision it makes by comparing each matched chunk of characters against JavaScript's fixed list of reserved keywords. But — and this is the crucial limitation of this stage, the exact reason a further step is still needed — the token stream is still **flat**. It is a *list*, one token after another, with no nesting, no grouping, no representation of the fact that `a`, `+`, and `b` together form one arithmetic expression, or that `return a + b;` together forms one statement, or that the whole thing lives inside the body of `add`. A flat list of tokens cannot, by itself, answer "what is the second argument's name?" or "what expression does this function return?" — those are structural questions, and a flat list has no structure to query.
+
+**Stage three: the parser proper turns the flat token stream into a nested AST.** This is the step that actually builds structure, by walking the token stream left to right while applying JavaScript's grammar rules — rules like "a `function` keyword is followed by an optional identifier, then a parenthesized, comma-separated parameter list, then a brace-delimited block of statements" — and, every time a rule matches, creating a **node** in a tree to represent it, with that node's children being whatever sub-structures the rule says belong inside it. For the exact same `add` function, here is the AST this stage produces — shown as the same kind of plain, inspectable JSON-like structure that real tools (Babel, ESLint, the `acorn` parser V8's own approach is conceptually descended from) actually produce and that you can generate yourself by pasting this function into any online "AST explorer":
+
+```
+FunctionDeclaration
+├── id: Identifier "add"
+├── params:
+│     ├── Identifier "a"
+│     └── Identifier "b"
+└── body: BlockStatement
+      └── ReturnStatement
+            └── argument: BinaryExpression "+"
+                  ├── left: Identifier "a"
+                  └── right: Identifier "b"
+```
+
+Now the structural questions from the previous paragraph have real answers, reachable by walking the tree: "what is the second parameter's name?" is `params[1].name`, literally a tree traversal. "What expression does this function return?" is `body.argument`, again a direct path down the tree. This is the entire point of building a nested tree instead of stopping at the flat token list — a tree is a data structure that *represents relationships* (this token is *inside* this statement, this expression is *the argument to* this return), which a flat list of tokens fundamentally cannot do no matter how you tag the individual tokens.
+
+**Why this two-stage split (lexer, then parser) exists at all, instead of one stage doing everything at once.** It's a genuine, deliberate engineering decision, not an accident of implementation history: separating "what are the meaningful chunks" (lexing) from "how do those chunks nest into structure" (parsing) means each stage can be simple and fast at the one job it does. The lexer never has to think about grammar nesting — it just needs to recognize "this sequence of characters is a valid identifier" or "this is the `+` operator," independent of where that token ends up in the tree. The parser never has to think about individual characters or whitespace — it operates purely on the already-classified token stream, reasoning only about grammar rules. Collapsing both into one combined pass is possible (some hand-written toy parsers do exactly that) but produces code that has to simultaneously track character-level state (am I inside a string literal? a comment? does this dash belong to a number or an operator?) *and* grammar-level state (am I inside a function body? an argument list?) at every single step — a combinatorial mess that the two-stage split avoids by strictly separating those two concerns into two passes, each of which only has to hold one kind of state in its head at a time.
+
+**Connecting this back to pre-parsing, precisely.** Section 3 described V8's pre-parse step as "just enough to find the function's boundaries and check for syntax errors, without building a full AST for the inside." Now that both intermediate stages are visible, that description can be made exact: pre-parsing still runs the **lexer** over the function's entire body (it has to — finding the matching closing `}` requires tokenizing far enough to count brace-nesting depth correctly, since a `}` inside a string literal or a nested object doesn't count, and only a real token-aware scan can tell the difference). What pre-parsing *skips* is stage three — it does NOT run the full grammar-rule-matching pass that would produce `ReturnStatement` and `BinaryExpression` nodes for the body. It tokenizes, notices where the matching `}` falls, records "a function named `add` lives between these two source positions, taking these two parameter names," and discards the token stream without ever building the nested tree. The full AST — the actual `FunctionDeclaration`/`BlockStatement`/`ReturnStatement`/`BinaryExpression` structure shown above — gets built for the first time on the *second* pass, the one triggered specifically by the function actually being called.
+
 ---
 
 ## 4. Ignition — The Bytecode Interpreter
 
-Once a function is fully parsed into an AST, Ignition compiles that AST into **bytecode** — not machine code, an intermediate instruction set specific to V8, interpreted rather than run directly by the CPU.
+Once a function is fully parsed into an AST (both stages from Section 3a complete — tokens grouped into a nested tree), Ignition compiles that AST into **bytecode** — not machine code, an intermediate instruction set specific to V8, interpreted rather than run directly by the CPU. This is a *third* distinct representation of the same function, on top of the two from Section 3a (token stream, then AST) — and, exactly as with those two, it's worth seeing what it actually looks like rather than only being told it exists.
 
 > **Why bytecode and not machine code, immediately.** Machine code is fast to run but large and slow to generate well (a good compiler does register allocation, instruction scheduling, dead-code elimination — all expensive analysis). Generating *naive* machine code is possible but produces code barely faster than a good interpreter, for a much higher generation cost and a much larger memory footprint (machine code is bulkier per operation than compact bytecode). For code that runs once, that trade is a pure loss. Ignition's bytecode is deliberately compact — small enough that a memory-constrained mobile device can hold bytecode for far more of the page's code than it could hold optimized machine code for the same code.
->
+
+**What bytecode is: a small, fixed set of simple instructions operating on registers and an accumulator.** Where the AST represents `a + b` as a *tree node* (a `BinaryExpression` with two children), bytecode represents the same computation as a short, linear *sequence of instructions* — the same shift from "nested structure" to "flat sequence" that happened once already (tokens were flat, the AST made them nested; now bytecode flattens the AST back into a sequence, but a sequence of much richer, execution-ready instructions rather than raw tokens). Compiling the `add` function's AST from Section 3a into Ignition bytecode produces something in the following shape (V8's exact instruction mnemonics shift slightly between versions — you can see the precise, current output for any function yourself by running `node --print-bytecode --print-bytecode-filter=add your-script.js`, which is worth actually doing once, so this stops being something you were told and becomes something you watched happen):
+
+```
+StackCheck                  ; verify there's enough stack space to proceed
+Ldar  a1                    ; LOAD the second argument (b) into the accumulator
+Add   a0                    ; ADD the first argument (a) to the accumulator's
+                             ; current value (b) — accumulator now holds a + b
+Return                       ; return whatever's currently in the accumulator
+```
+
+Two things about this shape are worth sitting with, because they explain *why* this representation is what Ignition actually runs. First, notice there is exactly one implicit "working slot" — the **accumulator** — that most instructions read from and write to, rather than every instruction naming two full operands the way `a + b` does in source. This is a deliberate register-machine design: keeping most instructions accumulator-centric (read the accumulator, combine with one named value, leave the result in the accumulator) makes each individual bytecode instruction shorter to encode — fewer bytes per instruction directly serves the "keep this compact" goal from the paragraph above. Second, notice this is *already* the representation Section 5 and Section 6's mechanisms (hidden classes, inline caches) attach themselves to: an `Add` instruction, a property-read instruction like `LdaNamedProperty` — these are the actual, specific bytecode instructions whose executions get recorded into feedback vectors, not an abstract "the interpreter runs your code" gesture. When Section 4's next paragraph says "every time a bytecode instruction touches a value... Ignition records what it saw," this `Add` instruction, right here, executing with `a0` and the accumulator both holding small integers, is a concrete instance of exactly that recording happening.
+
 > **What Ignition does while it interprets, that a naive interpreter wouldn't.** Every time a bytecode instruction touches a value — a property read, an arithmetic op, a function call — Ignition records what it saw into a **feedback vector** attached to that specific call site: "this `+` operation's operands were both small integers," "this `.name` access was on an object shaped like `Map47`." This is pure bookkeeping laid on top of interpretation — cheap to collect because Ignition is already looking at the value to execute the operation anyway. That feedback is the entire input TurboFan will later use to decide what to assume.
 
 This is the mechanism that makes the next four sections possible: **hidden classes** and **elements kinds** are what Ignition's feedback vectors actually record; **inline caches** are how that recorded feedback speeds up Ignition's *own* interpretation, before TurboFan is even involved.
