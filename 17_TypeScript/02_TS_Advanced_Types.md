@@ -368,6 +368,25 @@ own utility types for shapes the standard library doesn't cover.
 
 ## 3. Mapped Types — Type Algebra
 
+> **What `[K in keyof T]` is actually looping over — the two-step
+> mechanism underneath every mapped type in this section.**
+> `keyof T` is not a keyword that "means iterate" — it's its own
+> expression, evaluating to a **union of string-literal types**, one
+> per property name `T` declares. For `User` from Section 2
+> (`id, name, email, age, role`), `keyof User` literally IS the type
+> `"id" | "name" | "email" | "age" | "role"` — you can assign a
+> mapped type's key expression to a variable and see this directly:
+> `type K = keyof User;` gives you that exact union. The `in`
+> keyword is the second half: borrowed from mapped-type syntax
+> specifically to mean "for each member of this union, produce one
+> property with that name" — so `{ [K in keyof T]: T[K] }` reads as
+> "for each literal `K` in that union, add a property named `K` whose
+> type is `T[K]` (indexing `T` by that same literal — Section 1's
+> `keyof` constraint pattern, reused as the VALUE side here)." Every
+> variant below is this same two-step loop with one thing changed —
+> `?` adds optionality, `readonly` adds the modifier, `as` (further
+> down) changes the produced KEY instead of the value.
+
 ```typescript
 // MAPPED TYPE: Transform each property of an existing type.
 // Syntax:  { [K in keyof T]: NewType }
@@ -433,6 +452,20 @@ This evaluates to `{ name?: string; age?: number; }`. The ID and Date are comple
 </details>
 
 ## 4. Conditional Types — Type-Level If/Else
+
+> **Why distribution (further down) isn't "how if/else naturally
+> behaves with unions" — it's a specific rule tied to one exact
+> syntactic shape.** A conditional type only distributes when the
+> checked type is a **bare/naked type parameter** — literally just
+> `T`, alone, with nothing wrapped around it, on the left of
+> `extends`. `T extends string ? true : false` qualifies; `[T]
+> extends [string] ? true : false` does not, because the type being
+> checked is now the tuple `[T]`, not `T` itself, even though `T` is
+> still in there. This single syntactic distinction — bare `T` vs `T`
+> wrapped in anything — is the entire on/off switch for distribution,
+> which is why Section 4's Challenge fix (wrapping both sides in `[
+> ]`) works: it doesn't change the LOGIC, it changes whether the
+> checked type still counts as "bare" in the compiler's eyes.
 
 ```typescript
 // Syntax:  T extends U ? TrueType : FalseType
@@ -658,8 +691,18 @@ function reducer(state: State, action: Action): State {
 
 ## 7. Type Challenges — Practice Problems
 
+Every solution below composes mechanisms already derived in this
+chapter — the interesting part in each is the one detail that ISN'T
+obvious from gluing the pieces together naively.
+
 ```typescript
 // CHALLENGE 1: Implement DeepPartial
+// The Function guard is the detail a naive version misses: a function
+// type technically extends `object` too (it has .length, .name, .call —
+// TS's type system doesn't distinguish "callable" from "has properties"
+// at this check). Without the inner `extends Function` branch, recursing
+// into a function type would try to make its non-existent "properties"
+// partial, silently corrupting the callable signature into `{}`.
 type DeepPartial<T> = {
   [K in keyof T]?: T[K] extends object
     ? T[K] extends Function
@@ -672,18 +715,30 @@ type DeepPartial<T> = {
 type Flatten<T> = T extends (infer U)[] ? U : T;
 
 // CHALLENGE 3: Implement TupleToUnion
+// T[number] indexes the tuple by the TYPE `number` (not a specific
+// literal index) — "what's the type at any numeric index" for a tuple
+// with different types per slot is exactly the union of every slot's
+// type. Same trick as Chapter 1 Section 7's `(typeof colors)[number]`.
 type TupleToUnion<T extends readonly any[]> = T[number];
 type Test = TupleToUnion<[string, number, boolean]>; // string | number | boolean
 
 // CHALLENGE 4: Implement NonEmptyArray
+// [T, ...T[]] is a tuple with one MANDATORY first element followed by a
+// rest of zero-or-more — the type-level encoding of "at least one item,"
+// which is precisely why arr[0] below is T, never T | undefined.
 type NonEmptyArray<T> = [T, ...T[]];
 function firstElement<T>(arr: NonEmptyArray<T>): T {
   return arr[0]; // No undefined possible!
 }
 
 // CHALLENGE 5: Implement StrictOmit (errors on invalid keys)
+// Plain Omit accepts ANY string as K, valid key or not, because its
+// definition (Section 2's cheat sheet) routes through Exclude<keyof T, K>,
+// which silently no-ops if K was never a real key to begin with. Adding
+// the constraint `K extends keyof T` moves that check to the CALL site —
+// passing a typo'd key now fails immediately, at StrictOmit<T, K>, instead
+// of silently producing a type identical to T with nothing omitted.
 type StrictOmit<T, K extends keyof T> = Omit<T, K>;
-// Unlike Omit, this errors if K is not actually a key of T
 ```
 
 ---
