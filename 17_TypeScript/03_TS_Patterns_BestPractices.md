@@ -622,6 +622,18 @@ Phase 3 or roll back.
 
 ## 8. Performance Tips
 
+> **Why interfaces are the cheaper choice for the checker, specifically
+> (not a superstition).** Chapter 1 established that an `interface`
+> declaration doesn't bind a type directly — it CONTRIBUTES to a
+> named, nominal entity the checker can resolve once and refer back to
+> by that name everywhere it's used. A `type` alias built from unions,
+> intersections, or mapped types has no such stable identity to hash
+> on — the checker has to structurally re-expand the expression at
+> each usage site to know what it currently resolves to. For a handful
+> of types this difference is invisible; on a large codebase with deep
+> utility-type composition (the Reality Check's "hover tooltip of
+> doom"), the repeated re-expansion is measurable in `tsc` build time.
+
 ```typescript
 // 1. Use `interface` over `type` for objects (faster for TS compiler):
 interface User { name: string } // ✅ Cached by name
