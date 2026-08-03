@@ -4,20 +4,40 @@
 
 ## 5W1H — Why This Chapter?
 
-WHAT: Objects are JS's universal data structure. Prototypes are
-JS's inheritance mechanism. Classes (ES6) are sugar on top.
-
-WHY: Everything in JS is (or behaves like) an object.
-Understanding prototypes explains: why [].map works,
-how inheritance works, what `class` really does.
-
-WHO: Anyone doing JS — React props are objects, APIs return
-objects, DOM elements are objects.
-
-WHEN: After understanding functions and closures (Ch 2).
-
-HOW: Every object has an internal [[Prototype]] link to another
-object. When you access a property, JS walks this chain.
+> **What objects are, underneath the syntax.** An object is JavaScript's
+> one general-purpose data structure — a set of key-value pairs, plus
+> one extra piece of hidden machinery every object carries: a link to
+> another object it can borrow behavior from. That link is the
+> **prototype chain**, and it's the entire inheritance system this
+> chapter exists to teach — not a side topic, THE topic.
+>
+> **Why prototypes specifically, and not something else.** JavaScript
+> was built without classical classes (ES6's `class` came 20 years
+> later, and — Section 5 below proves this precisely — never actually
+> added a new runtime mechanism, only new syntax over the existing
+> one). With no built-in class system, the language needed *some*
+> answer to "how does one object reuse another object's behavior
+> without copying it." Prototypal inheritance is that answer: instead
+> of instances being stamped from a class template, objects link
+> directly to other objects, and property lookup walks that link chain
+> live, at access time. This single mechanism is why `[].map` works
+> (the array doesn't carry its own copy of `map` — it's found by
+> walking to `Array.prototype`, Section 4 traces this exactly), why
+> `instanceof` works, and what `class` compiles down to.
+>
+> **Where this shows up whether you notice it or not.** Every array,
+> every DOM element, every object literal you've ever written has a
+> prototype chain, even if you've never called
+> `Object.getPrototypeOf`. React props objects, `fetch` response
+> bodies, `Date` instances — all of them resolve methods through this
+> exact mechanism.
+>
+> **When to learn this relative to what came before.** After Chapter
+> 2's closures, because Section 1 below shows a factory-function
+> object-creation style that leans on closures directly — you need
+> that mechanism already in hand to see why factories are a genuine
+> alternative to prototypes, not just a different syntax for the same
+> thing.
 
 ---
 
@@ -100,6 +120,28 @@ for prototype-free lookup tables.
 ---
 
 ## 2. Property Descriptors — What Properties Really Are
+
+> **Why three separate, independent flags — not one "protection
+> level."** It would be simpler to give every property a single
+> setting like "locked" or "unlocked." JavaScript instead gives every
+> property *three independent* booleans specifically because the three
+> things they control are genuinely different concerns that real code
+> needs to mix and match: **`writable`** governs whether *assignment*
+> (`obj.x = y`) is allowed — nothing to do with visibility.
+> **`enumerable`** governs whether the property shows up in `for...in`,
+> `Object.keys()`, and spread — nothing to do with whether you can
+> change it. **`configurable`** governs whether the *descriptor itself*
+> can be changed or the property deleted — a meta-level lock on the
+> other two flags. Because they're independent, you can build
+> combinations a single "locked/unlocked" flag could never express: a
+> property that's writable but hidden from `Object.keys()` (internal
+> bookkeeping state a library wants to update but not expose), or a
+> property that's visible and readable but permanently fixed in value
+> (a public constant). Every object literal property you write gets
+> all three flags set to `true` by default — `{ name: "Harsha" }`
+> creates `name` as writable, enumerable, and configurable, with no
+> ceremony, because that default matches what an ordinary property
+> should do.
 
 ```javascript
 const obj = { name: "Harsha" };
@@ -533,6 +575,37 @@ const range = new Range(1, 5);
 for (const n of range) console.log(n); // 1, 2, 3, 4, 5
 [...range]; // [1, 2, 3, 4, 5] — spread works too!
 ```
+
+**What `for...of` actually does, mechanically — this is the iterator
+protocol, and it's the same protocol spread (`[...range]`),
+destructuring an iterable, and `Array.from` all use underneath:**
+
+1. `for...of` looks up `range[Symbol.iterator]` — exactly the same
+   prototype-chain property lookup Section 4 traced for `arr.map`,
+   just with a Symbol as the key instead of a string.
+2. It **calls** that function. The function's job (by convention every
+   iterable must follow) is to return an **iterator object** — any
+   object with a `.next()` method. `Range`'s version returns a fresh
+   object literal with `current` and `end` captured in its closure
+   (Chapter 2, Section 4's exact mechanism — this is a closure holding
+   the iteration's private state).
+3. `for...of` then calls `.next()` repeatedly. Each call must return an
+   object shaped `{ value, done }`. While `done` is `false`, the loop
+   body runs with `value` bound to the loop variable, and `.next()` is
+   called again for the next iteration.
+4. The loop stops the moment a `.next()` call returns `done: true` —
+   note `Range`'s implementation doesn't even bother setting `value` on
+   that final call, because `for...of` never reads `value` once
+   `done` is `true`.
+
+**Why this is worth knowing as a protocol, not just a `Range` example.**
+`Array.prototype[Symbol.iterator]`, `Map.prototype[Symbol.iterator]`,
+`Set.prototype[Symbol.iterator]`, and every generator function you'll
+meet later all implement this *exact same* `{ next() → { value, done }
+}` shape. Once you've traced it once by hand, `for...of`, spread, and
+destructuring an iterable all stop being separate features you
+memorized and become three different call sites for one mechanism you
+understand.
 
 ---
 
