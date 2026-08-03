@@ -23,6 +23,7 @@
 11. [Garbage Collection — Scavenge and Mark-Sweep-Compact](#11-garbage-collection--scavenge-and-mark-sweep-compact)
 12. [Closures in V8 Terms — What a Closure Actually Pins in Memory](#12-closures-in-v8-terms--what-a-closure-actually-pins-in-memory)
 13. [Reading It Yourself — DevTools and `--trace` Flags](#13-reading-it-yourself--devtools-and---trace-flags)
+    - 13a. [Watching Cold → Warm → Hot Happen, With `--trace-opt`](#13a-watching-cold--warm--hot-happen-with---trace-opt)
 
 ---
 
@@ -455,6 +456,100 @@ Everything above is directly observable, not just theoretical:
 - **`node --trace-deopt your-script.js`** prints every deoptimization V8 performs, with the reason (e.g., `wrong map`, meaning a hidden-class mismatch — exactly Section 9's mechanism) and the function/line it happened at.
 - **`node --trace-ic your-script.js`** prints inline cache state transitions (`Monomorphic` → `Polymorphic` → `Megamorphic`) as they happen, letting you find the exact call site where a hot function's property access degraded.
 - **`%GetOptimizationStatus`, `%HasFastProperties`** and other V8-only intrinsics (usable with `node --allow-natives-syntax`) let you query a specific object's or function's optimization state directly from your own code — useful for building minimal, isolated repros of the mechanisms in this chapter rather than trusting folklore.
+
+### 13a. Watching Cold → Warm → Hot Happen, With `--trace-opt`
+
+Section 2a defined the three temperatures. This is how to actually
+**watch** a function cross those thresholds, on your own machine,
+instead of taking the definitions on faith.
+
+> **The flag: `--trace-opt`.** This prints one line every time
+> TurboFan (or Maglev, on newer V8) decides a function has earned
+> optimized compilation — the exact moment "warm/hot" stops being an
+> abstract label and becomes an event you can see. Pair it with
+> `--trace-deopt` (already listed above) to see the matching event
+> when an optimized function gets thrown back to Ignition.
+
+**Step 1 — write a function that gets called enough times to actually
+qualify, and run it with the flag:**
+
+```javascript
+// hot-test.js
+function add(a, b) {
+  return a + b;
+}
+
+for (let i = 0; i < 1_000_000; i++) {
+  add(i, i + 1);
+}
+```
+
+```bash
+node --trace-opt --trace-deopt hot-test.js
+```
+
+You'll see output naming `add` once it's marked and compiled — that
+line is TurboFan's decision, timestamped, for a function that started
+this run **cold**, spent its early calls **interpreted by Ignition**
+(Section 4), and crossed into what Section 2a called **hot** once its
+call count justified the compile.
+
+**Step 2 — force a deopt on purpose, and watch `--trace-deopt` catch
+it, closing the loop with Section 9:**
+
+```javascript
+// deopt-test.js
+function add(a, b) {
+  return a + b;
+}
+
+for (let i = 0; i < 1_000_000; i++) {
+  add(i, i + 1); // every call so far: Smi + Smi
+}
+
+add("surprise", "!"); // one call with strings — breaks the assumption
+```
+
+Run this with the same two flags. You'll see the `--trace-opt` line
+for `add` becoming optimized partway through the numeric loop, and
+then — immediately after the `add("surprise", "!")` call — a
+`--trace-deopt` line naming `add` and a reason (V8 reports something
+to the effect of a type/map mismatch — Section 9's "the guard failed"
+event, happening in front of you instead of described in prose).
+
+**Step 3 — query a function's status directly from inside your own
+script, using `%GetOptimizationStatus`.** This needs
+`--allow-natives-syntax`, since `%`-prefixed calls are V8-internal
+intrinsics not meant for normal code:
+
+```javascript
+// status-test.js
+function add(a, b) {
+  return a + b;
+}
+
+for (let i = 0; i < 1_000_000; i++) add(i, i + 1);
+
+// %GetOptimizationStatus returns a bitmask. The exact bit meanings
+// have changed across V8 versions, so don't hardcode "what number
+// means optimized" from a blog post -- print the raw value and cross
+// check it against your installed V8's own source
+// (v8/test/mjsunit/mjsunit.js defines the current constants) rather
+// than trusting a number that may already be stale for your version.
+console.log(%GetOptimizationStatus(add));
+```
+
+```bash
+node --allow-natives-syntax status-test.js
+```
+
+**Why building the habit of checking, rather than assuming, matters.**
+Every claim in Sections 2a, 4, 8, and 9 about "this function is now
+hot" or "this call site went megamorphic" is something you can verify
+on your own machine with your own code, on your specific V8 version —
+which is a stronger foundation for reasoning about a real production
+slowdown than remembering a rule from this chapter and hoping it still
+applies to whatever engine version is actually running.
 
 ---
 
