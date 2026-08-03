@@ -4,19 +4,29 @@
 
 ## 5W1H — Why This Chapter?
 
-WHAT: ES6 (2015) was the biggest upgrade in JS history. Since
-then, yearly releases add new features. This chapter
-covers everything from ES6 through ES2024.
-
-WHY: Modern JS is a DIFFERENT language from pre-2015 JS.
-React, Node, and all modern frameworks assume ES6+.
-Interview questions heavily test ES6+ understanding.
-
-WHO: Every JS developer writing code after 2015.
-
-HOW: We cover: template literals, destructuring (recap),
-modules, Map/Set, WeakRef, Proxy, iterators/generators,
-optional chaining, and newer additions through 2024.
+> **What changed, and why it's fair to call it a different language.**
+> ES6 (2015) added, in one release, more surface area than the
+> previous decade combined: `let`/`const`, classes, arrow functions,
+> template literals, destructuring, modules, promises, `Map`/`Set`,
+> generators. Every year since has added more on top (this chapter's
+> Section 6 catalogs ES2020 through ES2024 specifically). Code written
+> against pre-2015 JS and code written today can look like two
+> different languages sharing a name — which is exactly why "modern
+> JS" is a meaningful phrase rather than just marketing.
+>
+> **Why this matters beyond trivia.** Every framework you'll touch —
+> React, Vue, Node's own ecosystem — assumes this vocabulary exists.
+> `import`/`export` isn't optional flavor; it's how virtually all
+> modern JS is packaged. Destructuring isn't a nice-to-have; React
+> function components are *written* in it (`function Card({ title,
+> onClick }) { ... }`).
+>
+> **How this chapter is organized.** Each feature gets shown with
+> real, runnable code and — where the feature changes actual
+> *semantics*, not just spelling (this chapter's own Reality Check
+> section names several: optional chaining's short-circuit scope,
+> nullish coalescing vs `||`, module static analysis) — the mechanism
+> behind why it behaves the way it does, not just what to type.
 
 ---
 
@@ -99,22 +109,28 @@ const merged = { ...defaults, ...prefs };
 
 ### 5W1H: WHY Modules?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: ES Modules let you split code into separate files and         ║
-║        import/export between them.                                   ║
-║                                                                      ║
-║  WHY:  Before modules, all JS shared one global scope.               ║
-║        → Variable collisions, dependency chaos, huge files.          ║
-║        Modules give each file its own scope + explicit deps.         ║
-║                                                                      ║
-║  HOW:  Two module systems exist:                                     ║
-║        • ES Modules (ESM): import/export — standard, browser+Node    ║
-║        • CommonJS (CJS): require/module.exports — Node legacy        ║
-║                                                                      ║
-║  REASONING: React uses ESM. Node is moving to ESM. Learn ESM.        ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> **What.** ES Modules let you split code across files, with each file
+> declaring exactly what it exposes (`export`) and exactly what it
+> needs from elsewhere (`import`) — no implicit sharing.
+>
+> **Why, derived from the alternative.** Before modules, every
+> `<script>` tag's top-level code landed in ONE shared global
+> namespace — Chapter 1's Scope Chain section derived why an
+> uncontrolled shared namespace causes name collisions between
+> unrelated code. Modules are that same scoping fix applied at the
+> file level: each module gets its own top-level scope, and the only
+> things visible outside it are whatever it explicitly `export`s.
+>
+> **How — two systems, and where the full mechanism lives.** ES
+> Modules (`import`/`export`, this section) and CommonJS
+> (`require`/`module.exports`, Node's original system) are NOT two
+> spellings of the same thing — they differ in loading order (async
+> vs sync), how circular dependencies resolve, and whether static
+> analysis (tree-shaking) is even possible.
+> [Chapter 13, Section 6](13_NodeJS_Architecture.md#6-the-module-system--commonjs-vs-esm)
+> derives both mechanisms in full, including exactly what a circular
+> `require` returns and why. This section stays focused on ESM syntax,
+> the form you should default to today.
 
 ```javascript
 // ──── math.js (exporting) ────
@@ -168,25 +184,30 @@ export { default as Card } from "./Card.js";
 // Now: import { Button, Input, Card } from "./components";
 ```
 
-```
-ESM vs CommonJS:
-┌──────────────────┬──────────────────┬───────────────────┐
-│ Feature          │ ESM              │ CommonJS          │
-├──────────────────┼──────────────────┼───────────────────┤
-│ Syntax           │ import/export    │ require/module.   │
-│                  │                  │ exports           │
-│ Loading          │ Async (parallel) │ Sync (blocking)   │
-│ Tree-shaking     │ Yes (static)     │ No (dynamic)      │
-│ Top-level await  │ Yes              │ No                │
-│ Browser support  │ Yes              │ No (needs bundler)│
-│ File extension   │ .mjs / .js       │ .cjs / .js        │
-│ Future           │ Standard         │ Legacy            │
-└──────────────────┴──────────────────┴───────────────────┘
+**ESM vs CommonJS, at a glance (full mechanism — circular-require
+behavior, live bindings vs snapshots — in
+[Chapter 13, Section 6](13_NodeJS_Architecture.md#6-the-module-system--commonjs-vs-esm)):**
 
-TREE-SHAKING: ESM imports are STATIC (analyzed at compile time).
-Bundlers (Webpack/Vite) can remove unused exports (dead code).
-CommonJS is dynamic — bundler can't know what's used.
-```
+| Feature          | ESM (`import`/`export`) | CommonJS (`require`/`module.exports`) |
+|-------------------|---------------------------|------------------------------------------|
+| Loading           | Asynchronous               | Synchronous (blocking)                    |
+| Tree-shaking      | Yes — dependency graph is static, resolved before any code runs | No — `require()` calls are just function calls, resolved dynamically at runtime |
+| Top-level `await` | Yes                        | No                                        |
+| Browser support   | Yes, natively               | No — needs a bundler                      |
+| File extension    | `.mjs`, or `.js` with `"type": "module"` | `.cjs`, or `.js` by default          |
+| Status             | The standard going forward  | Legacy, still dominant in older Node code |
+
+**Why tree-shaking specifically needs ESM's static structure.** A
+bundler can only safely delete an unused export if it can PROVE,
+without running your code, that nothing imports it. ESM's `import`
+statements must sit at the top level (Chapter 13's exact reasoning:
+static analysis has to see the whole dependency graph before
+execution) — so a bundler can trace every `import` and prune anything
+never referenced. CommonJS's `require()` is an ordinary function call
+that could be inside a conditional, a loop, or built from a
+dynamically-computed string — there's no way to prove ahead of time
+what a `require()` call will resolve to without actually running the
+code, so a bundler has nothing safe to delete.
 
 ---
 
@@ -777,6 +798,18 @@ Q: What is the Proxy object?
 
 ## V8 Engine Internals — How JavaScript ACTUALLY Runs
 
+> **This section is a condensed recap — the full depth now lives in
+> dedicated chapters.** [Chapter 12 — V8 Engine Internals](12_V8_Engine_Internals.md)
+> covers everything below with worked examples: the actual token
+> stream and AST for a real function, actual Ignition bytecode, why
+> hidden-class transitions depend on property insertion ORDER (not
+> just final property names), elements kinds (the array-specific
+> parallel mechanism this section doesn't cover at all), and a traced
+> deoptimization sequence. [Chapter 4](04_JS_Async_Promises.md) has the
+> event loop as a cast-and-sequence-diagram trace of a real snippet.
+> Use this section as a quick-reference recap; go to those chapters
+> for the mechanism spelled out step by step.
+
 ```
 WHAT IS V8?
   V8 is Google's open-source JavaScript engine — used in Chrome and Node.js.
@@ -902,7 +935,13 @@ THE COMPONENTS:
 
   WEB APIs (Browser) / libuv (Node.js):
   Handles: setTimeout, fetch, DOM events, setInterval, I/O.
-  These run in SEPARATE THREADS (C++ threads in V8).
+  NOT all of this needs a separate thread — sockets and timers use
+  real OS-level async I/O (epoll/kqueue/IOCP) with ZERO extra threads.
+  Only genuinely blocking work (Node's fs, dns.lookup, some crypto)
+  gets shipped to a small background thread pool, because those
+  specific OS APIs have no non-blocking equivalent to call instead.
+  See Chapter 13, Section 4 for exactly which operations need a
+  thread and why sockets specifically don't.
   When done → push callback to the appropriate queue.
 
   CALLBACK QUEUE (Task Queue / Macrotask Queue):
