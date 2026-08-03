@@ -260,30 +260,28 @@ fn(); // ?
 
 ### Deep Reasoning: The 5 Rules (Priority Order)
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  `this` BINDING RULES — Like "Whose Name Tag Am I Wearing?"      ║
-║                                                                  ║
-║  Priority (highest → lowest):                                    ║
-║                                                                  ║
-║  1. new Binding       → new Person()    → this = new object      ║
-║     "Creating a new person — they get their own name tag"        ║
-║                                                                  ║
-║  2. Explicit Binding  → fn.call(obj)    → this = obj             ║
-║     "I'm TELLING you whose name tag to wear"                     ║
-║     Also: fn.apply(obj), fn.bind(obj)                            ║
-║                                                                  ║
-║  3. Implicit Binding  → obj.greet()     → this = obj             ║
-║     "The object before the dot owns the name tag"                ║
-║                                                                  ║
-║  4. Arrow Function    → () => {}        → this = enclosing scope ║
-║     "I don't have my own name tag — I use my parent's"           ║
-║                                                                  ║
-║  5. Default Binding   → greet()         → this = window/undef    ║
-║     "Nobody claimed me — I'm a free agent"                       ║
-║     (window in browser, undefined in strict mode)                ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **The mechanism — the engine checks these five conditions in order,
+> at the moment a function is CALLED, and stops at the first match.**
+> [Chapter 2, Section 3](02_JS_Functions_Closures.md#3-this-keyword--the-most-confusing-part-of-js)
+> derives this exact same priority chain as a decision tree — the
+> ordering below is not five independent facts to memorize, it's the
+> output of one algorithm the engine runs on every function call:
+>
+> 1. **`new` binding** — `new Person()` → `this` is the brand-new
+>    object `new` just allocated. Highest priority because `new`
+>    *invents* a receiver that overrides anything else.
+> 2. **Explicit binding** — `fn.call(obj)` / `fn.apply(obj)` /
+>    `fn.bind(obj)` → `this` is whatever object you explicitly passed.
+> 3. **Implicit binding** — `obj.greet()` → `this` is the object
+>    written immediately before the dot at the call site.
+> 4. **Arrow functions** — opt out of this whole system entirely: no
+>    call-time binding happens at all. `this` resolves the same way
+>    any other identifier an arrow doesn't declare resolves — by
+>    walking the lexical scope chain outward to wherever the arrow was
+>    *written*.
+> 5. **Default binding** — a bare `greet()` call with none of the
+>    above → `this` falls through to `globalThis` (sloppy mode) or
+>    `undefined` (strict mode / ES modules).
 
 **Answering the question:**
 
@@ -294,12 +292,17 @@ const fn = obj.greet;
 fn(); // undefined — Rule 5 (no object before dot = default binding)
 ```
 
-**WHY arrow functions don't have their own `this`:**
-
-- Arrow functions were designed for callbacks where you WANT the parent's `this`
-- Before arrows, people wrote `const self = this;` everywhere
-- Arrow functions solve this by **lexically binding `this`** at creation time
-- Think of it as: regular functions ask "who called me?" while arrow functions ask "where was I born?"
+**Why arrow functions don't have their own `this` — not a design
+preference, a consequence of what an arrow function IS.** Ordinary
+functions each get a fresh `this` binding decided at CALL time (the
+five rules above). Arrow functions were specifically built to skip
+that machinery — they have no `this` slot of their own to bind at
+all, which is exactly why `this` inside one resolves through the
+ordinary lexical scope chain instead: there's no call-time rule left
+to consult, so the engine falls back to the only other resolution
+mechanism it has, the same outward-scope walk [Chapter 1's Scope
+Chain section](01_JS_Foundations.md#5-scope--the-visibility-rules)
+already covers for any other undeclared identifier.
 
 ### The Trap: `this` in Event Handlers
 
@@ -332,19 +335,27 @@ class Button {
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  Abstract Equality Algorithm (== ) — Step by Step                ║
-║                                                                  ║
-║  1. Same type? → Use === algorithm (strict comparison)           ║
-║  2. null == undefined? → true (SPECIAL RULE — they're "nothing") ║
-║  3. Number vs String? → Convert string to number, then compare   ║
-║  4. Boolean vs anything? → Convert boolean to number first       ║
-║     true → 1, false → 0, then re-apply algorithm                 ║
-║  5. Object vs primitive? → Call ToPrimitive (valueOf/toString)   ║
-║  6. Otherwise? → false                                           ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **The Abstract Equality algorithm, as the spec actually defines it
+> — a sequence of concrete steps, not a vague "type coercion"
+> gesture:**
+>
+> 1. Same type on both sides? → Delegate entirely to the `===`
+>    algorithm (no coercion needed or performed).
+> 2. One side `null`, the other `undefined`? → `true` — a special
+>    case the spec carves out because those two are defined to be
+>    interchangeable under `==` and nothing else.
+> 3. Number vs String? → Convert the string operand to a number via
+>    `ToNumber`, then compare as numbers.
+> 4. Boolean vs anything? → Convert the boolean to a number first
+>    (`true → 1`, `false → 0`), then re-run this entire algorithm on
+>    the result — booleans never compare directly, they're always
+>    reduced to numbers first.
+> 5. Object vs primitive? → Call `ToPrimitive` on the object (try
+>    `valueOf()`, fall back to `toString()` — the exact algorithm
+>    [Chapter 1's `[] + {}` challenge](01_JS_Foundations.md#2-data-types--the-8-types)
+>    already traced for the `+` operator), then re-run this algorithm
+>    on the resulting primitive.
+> 6. Nothing above matched? → `false`.
 
 **Walking through tricky cases:**
 
@@ -391,32 +402,21 @@ const c = 3;
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  HOISTING IS NOT "MOVING CODE TO THE TOP"                        ║
-║                                                                  ║
-║  What ACTUALLY happens:                                          ║
-║  JavaScript has TWO phases for each scope:                       ║
-║                                                                  ║
-║  Phase 1: CREATION (scanning)                                    ║
-║    - var a    → allocate memory, initialize to undefined         ║
-║    - let b    → allocate memory, DO NOT initialize (TDZ)         ║
-║    - const c  → allocate memory, DO NOT initialize (TDZ)         ║
-║    - function → allocate memory, STORE the entire function       ║
-║                                                                  ║
-║  Phase 2: EXECUTION (line by line)                               ║
-║    - console.log(a) → undefined (var was initialized)            ║
-║    - console.log(b) → ReferenceError! (in TDZ)                   ║
-║    - console.log(c) → ReferenceError! (in TDZ)                   ║
-║                                                                  ║
-║  var:   hoisted + initialized to undefined                       ║
-║  let:   hoisted + NOT initialized (Temporal Dead Zone)           ║
-║  const: hoisted + NOT initialized (Temporal Dead Zone)           ║
-║  func:  hoisted + fully initialized with function body           ║
-╚══════════════════════════════════════════════════════════════════╝
-```
-
-**Analogy:** Think of `var` like a hotel reservation — when you arrive (execution), your room exists but it's empty (undefined). `let`/`const` are like a VIP reservation — the room exists on paper but you're NOT allowed in until check-in time (your declaration line). Trying to enter early gets you thrown out (ReferenceError).
+> **Hoisting is not code moving — it's what a two-pass scope-processing
+> model looks like from the outside.** [Chapter 1, Section 6](01_JS_Foundations.md#6-hoisting--the-invisible-move)
+> derives this in full, including WHY function declarations get their
+> entire body hoisted while `var` gets only its name — traced all the
+> way down to the actual AST node shapes ([Chapter 12, Section 3a](12_V8_Engine_Internals.md#3a-the-step-most-explanations-skip-what-tokenize-then-build-an-ast-actually-looks-like)):
+> a `FunctionDeclaration` node is self-contained (params + body live
+> in that one node), so the creation-phase scan can build the whole
+> callable function immediately; a `var` declaration's *value* lives
+> in a separate `AssignmentExpression` node that hasn't executed yet,
+> so creation phase has nothing to initialize it with except
+> `undefined`. The summary, with that mechanism now in hand instead of
+> a memorized rule: `var` → hoisted, initialized to `undefined`.
+> `let`/`const` → hoisted, but deliberately left uninitialized (the
+> Temporal Dead Zone) until execution reaches the real declaration
+> line. `function` declarations → hoisted fully built and callable.
 
 ### The Follow-Up Trap: Function Hoisting
 
@@ -434,6 +434,10 @@ var bar = function () {
 // WHY? `var bar` is hoisted as undefined.
 // Calling undefined() → TypeError.
 // The function BODY isn't hoisted — only the var declaration is.
+// (This is the function-expression case of the same AST-shape
+// distinction above: `var bar = function(){}` is a var declaration
+// whose VALUE happens to be a function — the value still only
+// exists once the assignment's line actually executes.)
 ```
 
 ---
@@ -496,28 +500,35 @@ console.log("E");
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  TASK QUEUE HIERARCHY                                            ║
-║                                                                  ║
-║  Priority (runs first → last):                                   ║
-║                                                                  ║
-║  1. 🔴 Call Stack (synchronous) — console.log('E')                ║
-║  2. 🟡 Microtask Queue — Promise.then, queueMicrotask,            ║
-║                          MutationObserver                        ║
-║  3. 🟢 Animation Frame — requestAnimationFrame (before repaint)   ║
-║  4. 🔵 Macrotask Queue — setTimeout, setInterval, I/O             ║
-║                                                                  ║
-║  OUTPUT: E, B, C, D, A                                           ║
-║  (sync first → all microtasks → rAF → macrotask)                 ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **This extends [Chapter 4, Section 1](04_JS_Async_Promises.md#1-the-event-loop--the-core-mental-model)'s
+> two-queue model with a THIRD checkpoint Chapter 4 didn't need for its
+> example: `requestAnimationFrame`.** The full priority order, the
+> content that actually matters here:
+>
+> 1. **Call stack (synchronous)** — `console.log('E')` runs immediately,
+>    before the engine ever yields.
+> 2. **Microtask queue** — `Promise.then`, `queueMicrotask`,
+>    `MutationObserver`. Drained COMPLETELY once the stack empties.
+> 3. **Animation frame callbacks** — `requestAnimationFrame`. The
+>    browser runs these specifically right before the next repaint —
+>    a checkpoint that sits BETWEEN "all microtasks are done" and
+>    "pick the next macrotask," because painting needs to happen at a
+>    predictable point relative to both.
+> 4. **Macrotask queue** — `setTimeout`, `setInterval`, I/O callbacks.
+>    Exactly one runs per full loop cycle.
+>
+> **Output: `E, B, C, D, A`** — sync first, then every microtask,
+> then the animation-frame callback, then finally the timer.
 
-**Why Microtasks Before Macrotasks?**
-
-- The spec says: after EACH macrotask, drain ALL microtasks
-- This prevents starvation — if a Promise.then() schedules another Promise.then(), BOTH run before the next setTimeout
-- Danger: infinite microtask loop blocks the entire browser (no repaint, no user input)
+**Why microtasks run before macrotasks — the spec rule, and the
+failure mode it creates.** The specification requires the ENTIRE
+microtask queue to drain after every single macrotask (or after the
+initial synchronous run) before the loop is allowed to touch anything
+else. This is what prevents a subtle starvation bug: if a
+`Promise.then()` schedules another `Promise.then()`, BOTH run before
+the loop is even allowed to glance at the next `setTimeout`. Taken to
+its extreme, this same rule becomes a real danger — an infinite chain
+of self-scheduling microtasks:
 
 ```javascript
 // DANGER: Infinite microtask loop — browser FREEZES
@@ -566,20 +577,21 @@ Once the first promise settles, the outer promise is settled. Other promises con
 
 **JavaScript is ALWAYS pass by value. But for objects, the "value" is a reference (pointer).**
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE MAILBOX ANALOGY                                             ║
-║                                                                  ║
-║  Primitives = Passing a piece of paper                           ║
-║  → You get a COPY. Changing yours doesn't affect mine.           ║
-║                                                                  ║
-║  Objects = Passing a piece of paper with a MAILBOX ADDRESS       ║
-║  → You get a copy of the ADDRESS.                                ║
-║  → We can both change the contents of the mailbox (mutation).    ║
-║  → But if you write a NEW address on your paper,                 ║
-║    my paper still has the old address (reassignment).            ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **This is [Chapter 1's stack/heap model](01_JS_Foundations.md#2-data-types--the-8-types)
+> applied to function calls specifically — not a new mechanism, the
+> exact same "assignment copies the stack slot" rule from that
+> section, just triggered by passing an argument instead of writing
+> `let x = y`.** A function parameter is a fresh stack slot, and
+> calling a function copies whatever sits in the caller's slot into
+> it — for a primitive, that's the value itself (a true, independent
+> copy); for an object, that's the pointer (the object's actual heap
+> data is never copied, only the address pointing at it). Two
+> consequences fall directly out of that one rule: mutating *through*
+> the copied pointer (`param.name = 'x'`) reaches the same heap object
+> the caller can also see — because both pointers hold the identical
+> address. Reassigning the parameter itself (`param = {...}`) only
+> overwrites that one stack slot's pointer value — the caller's own
+> slot, and the address it holds, is completely untouched.
 
 ```javascript
 // Primitives: true pass-by-value
@@ -621,27 +633,31 @@ console.log(original.name); // 'Original' — PROOF: not pass-by-reference
 
 ### Deep Reasoning
 
-These use COMPLETELY DIFFERENT algorithms:
+These use COMPLETELY DIFFERENT algorithms — the apparent paradox
+dissolves the moment you name which algorithm each operator actually
+invokes:
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  TWO DIFFERENT CHECKS                                            ║
-║                                                                  ║
-║  [] == false  → Uses Abstract Equality (coercion algorithm)      ║
-║     Step 1: false → 0                                            ║
-║     Step 2: [].toString() → ""                                   ║
-║     Step 3: "" → 0                                               ║
-║     Step 4: 0 == 0 → TRUE                                        ║
-║                                                                  ║
-║  [] ? ... → Uses ToBoolean (truthiness check)                    ║
-║     Rule: ALL objects are truthy (no conversion, just check)     ║
-║     [] is an object → truthy → 'yes'                             ║
-║                                                                  ║
-║  THESE ARE DIFFERENT OPERATIONS!                                 ║
-║  == performs TYPE COERCION (complex multi-step algorithm)        ║
-║  ? performs TRUTHINESS CHECK (simple: is it in the falsy list?)  ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **`[] == false` invokes Abstract Equality** (Section 4's exact
+> step-by-step algorithm, applied here): `false` converts to `0`
+> (step 4), `[]` converts to a primitive via `ToPrimitive` — its
+> `toString()` gives `""` (step 5) — `""` then converts to `0` (step
+> 3), and `0 == 0` is `true`. Four coercion steps, each one a rule
+> from the SAME algorithm Section 4 already walked in full.
+>
+> **`[] ? 'yes' : 'no'` invokes `ToBoolean`, a completely different,
+> much simpler algorithm.** `ToBoolean` never coerces types across
+> comparisons — it just checks one thing: is this value one of the
+> eight specific falsy values? An array is not one of the eight
+> (Section below lists all eight), so it's truthy — full stop, no
+> multi-step conversion chain at all.
+>
+> **The actual lesson:** `==` and truthiness checks are not two views
+> of "the same coercion" — they're two *different, independently
+> defined* spec algorithms that happen to both apply to `[]` in this
+> example and land on different conclusions because they're asking
+> different questions (`AbstractEquality` asks "do these become equal
+> after full coercion," `ToBoolean` asks "is this specific value in
+> the eight-item falsy list").
 
 **The Falsy List (MEMORIZE — only 8 values):**
 
@@ -661,34 +677,44 @@ These use COMPLETELY DIFFERENT algorithms:
 
 ### Deep Reasoning
 
-It IS syntactic sugar, but saying "just syntactic sugar" dismisses crucial differences:
+It IS syntactic sugar in the technical sense (Chapter 4 confirms this
+directly), but "just" undersells what changes because of it.
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  async/await IS sugar, BUT:                                      ║
-║                                                                  ║
-║  1. ERROR HANDLING                                               ║
-║     Promise: .catch() is easy to forget → silent failures        ║
-║     await:   try/catch works naturally, like synchronous code    ║
-║                                                                  ║
-║  2. DEBUGGING                                                    ║
-║     Promise chains: stack traces are meaningless                 ║
-║     await: stack traces show the ACTUAL line that failed         ║
-║                                                                  ║
-║  3. CONDITIONAL LOGIC                                            ║
-║     Promise chains: "if this then fetch that then..."            ║
-║     → Deeply nested .then().then().then()                        ║
-║     await: just write if/else normally                           ║
-║                                                                  ║
-║  4. LOOP ITERATION                                               ║
-║     Promise: Can't use for...of with sequential async operations ║
-║     await:   for (const item of items) await process(item);      ║
-║                                                                  ║
-║  5. IMPLICIT PROMISE WRAPPING                                    ║
-║     async function always returns a Promise, even if you         ║
-║     return a plain value                                         ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **What "sugar" actually means here, precisely — the mechanism, not
+> just the syntax comparison.** [Chapter 4, Section 5](04_JS_Async_Promises.md#5-advanced-async-patterns)
+> derives this exactly: `await` performs the SAME suspend-and-resume
+> trick a generator's `yield` does — pause this function's execution
+> context, hand control back to the caller, resume from this exact
+> point once the promise settles. Before native `async`/`await`
+> existed, libraries built the identical pattern BY HAND: a generator
+> that `yield`s promises, driven by a wrapper function that calls
+> `.next()` each time the yielded promise resolves. `async`/`await`
+> is that same hand-built pattern turned into first-class syntax — the
+> mechanism underneath didn't change, but making it native syntax
+> unlocked capabilities a library-level implementation never could:
+>
+> 1. **Error handling reuses the language's OWN control-flow
+>    primitive.** `try/catch` already knows how to unwind a suspended
+>    execution context (Chapter 7's call-stack-unwind model) — because
+>    `await` genuinely suspends the SAME execution context `try/catch`
+>    is watching, a rejected awaited promise can be caught by an
+>    ordinary `catch` block. A `.then()` chain has no execution
+>    context for `try/catch` to attach to at all — it's manually
+>    threaded through `.catch()` calls that are trivially easy to omit.
+> 2. **Debugging gets real stack traces** because the suspended context
+>    IS a real stack frame the debugger already knows how to display —
+>    not a synthetic reconstruction from chained `.then()` callback
+>    identities.
+> 3. **Conditional logic and loops read like ordinary control flow**
+>    because they ARE ordinary control flow — `if`/`else` and `for`
+>    operating on a genuinely paused function, not a data pipeline of
+>    chained callbacks that has to simulate branching by nesting more
+>    `.then()` calls.
+> 4. **`async` functions always return a Promise, even for a plain
+>    `return value`** — this is Chapter 4's Promise-as-reified-future-value
+>    idea enforced structurally: the caller of an `async` function
+>    always gets something awaitable back, with zero special-casing
+>    for "did this particular call actually need to wait on anything."
 
 ```javascript
 // Promise chain — hard to read with conditions
@@ -767,20 +793,36 @@ Yes — `await` unwraps the rejected promise and throws the rejection value as a
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  Map vs WeakMap — The Library Analogy                            ║
-║                                                                  ║
-║  Map = Library catalog                                           ║
-║  → Every book you register stays cataloged FOREVER               ║
-║  → Even if nobody reads it, the library keeps it (memory leak)   ║
-║                                                                  ║
-║  WeakMap = Library with automatic book retirement                ║
-║  → When nobody is reading a book (no references), it's removed   ║
-║  → The catalog doesn't prevent retirement (weak reference)       ║
-║  → You can't browse the catalog (not iterable) — by design!      ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **This is [Chapter 12's garbage collection model](12_V8_Engine_Internals.md#11-garbage-collection--scavenge-and-mark-sweep-compact)
+> — reachability traced from roots — with one specific rule changed
+> for exactly one kind of reference.** Chapter 12 derived that V8's
+> GC marks an object "alive" if it's reachable by walking references
+> outward from a set of roots (globals, the call stack, active
+> closures). A normal `Map`'s keys are **strong references** — as far
+> as the GC's reachability walk is concerned, `map.set(element, data)`
+> makes `element` reachable via the map for as long as the map itself
+> is reachable, full stop, regardless of whether anything else in the
+> program still cares about `element`. A `WeakMap`'s keys are
+> specifically defined to be **invisible to that reachability walk** —
+> the GC's trace simply does not count a `WeakMap` key reference when
+> deciding if the keyed object is alive. The moment nothing ELSE in
+> the program still points to that object, the GC can collect it
+> exactly as if the `WeakMap` entry didn't exist — and when that
+> happens, the entry is automatically gone too.
+>
+> **Why this one rule change explains every other constraint on
+> `WeakMap`, not as separate arbitrary restrictions but as
+> consequences of the same fact.** Keys must be objects specifically
+> because reachability tracing is a concept that only applies to heap
+> objects — primitives (Chapter 1's stack-vs-heap split) aren't
+> tracked by the GC's reachability graph at all, so "weakly reference
+> a primitive" isn't a coherent operation to define. `WeakMap` isn't
+> iterable and has no `.size` for the same underlying reason: which
+> entries currently exist depends on exactly when the GC last ran a
+> collection cycle, which the spec deliberately leaves unobservable —
+> exposing a live, iterable count would leak GC timing into program
+> behavior, turning a non-deterministic implementation detail into
+> something code could accidentally depend on.
 
 ```javascript
 // MEMORY LEAK WITH MAP
@@ -817,25 +859,31 @@ function processElement(element) {
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  GENERATORS vs ASYNC/AWAIT                                       ║
-║                                                                  ║
-║  Generator:  Pauses and resumes at yield points                  ║
-║              Control stays with the CALLER                       ║
-║              Can yield multiple values                           ║
-║              Used for: iteration, lazy sequences, state machines ║
-║                                                                  ║
-║  Async:      Pauses at await points                              ║
-║              Control goes to the EVENT LOOP                      ║
-║              Returns ONE final value (Promise)                   ║
-║              Used for: asynchronous I/O                          ║
-║                                                                  ║
-║  Analogy:                                                        ║
-║  Generator = Bookmark in a book. You read, pause, come back.     ║
-║  Async     = Ordering food delivery. You wait, do other things.  ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **Both use the identical suspend-and-resume mechanism** — [Chapter
+> 4, Section 5](04_JS_Async_Promises.md#5-advanced-async-patterns)
+> and Section 10 above both derive this: `yield` and `await` are the
+> same underlying "pause this execution context, hand control back,
+> remember exactly where to resume" trick. What actually differs is
+> **who drives the resumption and what triggers it**, not the pause
+> mechanism itself:
+>
+> - **Generator:** YOU explicitly drive it — nothing resumes a paused
+>   generator except your own code calling `.next()` again. Control
+>   returns to whoever called `.next()` (the CALLER), not to some
+>   external scheduler. Because you control each step, a generator
+>   can `yield` as many times as you like, each yield handing back
+>   one value — which is exactly why generators are the natural fit
+>   for lazy sequences (Chapter 3's iterator protocol, one `.next()`
+>   per element, computed only when asked).
+> - **`async`/`await`:** the RUNTIME drives it — resumption is
+>   triggered automatically the moment the awaited promise settles,
+>   scheduled onto the microtask queue (Chapter 4's event loop),
+>   with no explicit "please continue" call from your code at all.
+>   An `async` function has exactly one meaningful "final" value (what
+>   it eventually returns, wrapped in the one Promise the whole call
+>   produces) rather than a sequence of yielded values, because its
+>   entire job is "wait for one or more async operations, then
+>   produce one result" — not "lazily produce a stream of values."
 
 ```javascript
 // Generator: Infinite Fibonacci (lazy — only computes when asked)
@@ -875,46 +923,41 @@ Generator: O(1) — stores only the current execution state (stack frame: local 
 
 **This isn't a JavaScript bug — it's how IEEE 754 floating point works in EVERY language.**
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE RULER ANALOGY                                               ║
-║                                                                  ║
-║  Imagine a ruler that only has marks at 1/2, 1/4, 1/8, 1/16...   ║
-║  (powers of 2). Now try to measure 1/10 (0.1).                   ║
-║  You can't land exactly on it — you get close but not exact.     ║
-║                                                                  ║
-║  Binary representation:                                          ║
-║  0.1 = 0.0001100110011001100110011... (repeating forever)        ║
-║  Stored as: 0.1000000000000000055511151231257827021181583...     ║
-║                                                                  ║
-║  0.2 = 0.001100110011001100110011... (repeating forever)         ║
-║  Stored as: 0.2000000000000000111022302462515654042363167...     ║
-║                                                                  ║
-║  0.1 + 0.2 = 0.30000000000000004  (not exactly 0.3)              ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **The mechanism: binary can't exactly represent most decimal
+> fractions, the same way decimal can't exactly represent 1/3.**
+> JavaScript's `number` type stores every value as an IEEE-754 double
+> — a fixed 64-bit binary format. Binary fractions can only exactly
+> represent values built from sums of powers of 2 (1/2, 1/4, 1/8,
+> 1/16, ...). `0.1` in decimal is `1/10`, and 10 has a prime factor
+> (5) that never divides evenly into any power of 2 — so, exactly like
+> `1/3` has no finite decimal expansion (`0.333...`, forever),
+> `0.1` has no finite BINARY expansion:
+>
+> ```
+> 0.1 (decimal) = 0.0001100110011001100110011... (binary, repeating forever)
+> ```
+>
+> Since the format only has 64 bits total, that infinite repetition
+> gets cut off and rounded to the nearest representable value —
+> `0.1` is actually stored as approximately
+> `0.1000000000000000055511151231257827021181583...`, and `0.2` as
+> approximately `0.2000000000000000111022302462515654042363167...`.
+> Add those two ALREADY-rounded values together and the tiny errors
+> compound into a result that's measurably off from the also-rounded
+> `0.3`: `0.30000000000000004`.
 
 ```javascript
 0.1 + 0.2 === 0.3; // false
 0.1 + 0.2; // 0.30000000000000004
 
-// Solutions:
-// 1. Epsilon comparison
-(Math.abs(0.1 + 0.2 - 0.3) <
-  Number.EPSILON(
-    // true
+// Solution 1: epsilon comparison — check "close enough" instead of exact equality
+Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON; // true
 
-    // 2. Fixed point (multiply, compute, divide)
-    0.1 * 10 + 0.2 * 10,
-  ) /
-    10 ===
-  0.3(
-    // true
+// Solution 2: fixed-point — scale up to integers, compute, scale back down
+(0.1 * 10 + 0.2 * 10) / 10 === 3; // true
 
-    // 3. toFixed (for display, returns string)
-    0.1 + 0.2,
-  ).toFixed(1)) ===
-  "0.3"; // true
+// Solution 3: toFixed — for DISPLAY only, returns a string, not for comparison
+(0.1 + 0.2).toFixed(1) === "0.3"; // true
 
 // For financial calculations: NEVER use float! Use integer cents.
 // $1.10 + $2.20 → 110 + 220 = 330 → $3.30
@@ -930,33 +973,39 @@ Generator: O(1) — stores only the current execution state (stack frame: local 
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE TDZ IS A TIME ZONE, NOT A CODE ZONE                         ║
-║                                                                  ║
-║  {                                                               ║
-║    // ← TDZ for `x` STARTS here (scope begins)                   ║
-║    console.log(x); // ReferenceError: x is in TDZ                ║
-║    // ← TDZ continues...                                         ║
-║    let x = 10;     // ← TDZ ENDS here (initialization)           ║
-║    console.log(x); // 10 ✅                                       ║
-║  }                                                               ║
-║                                                                  ║
-║  The variable EXISTS in memory (hoisted), but accessing it       ║
-║  before initialization is FORBIDDEN by the spec. This is by      ║
-║  DESIGN — to catch bugs early.                                   ║
-║                                                                  ║
-║  var: "Here's undefined until you initialize" = silent bug       ║
-║  let: "You CAN'T use this yet" = loud error (better!)            ║
-╚══════════════════════════════════════════════════════════════════╝
-```
-
-**Why TDZ exists (the design reasoning):**
-
-- var's behavior of silently returning `undefined` caused countless bugs
-- const MUST have TDZ — you can't access a const before it has a value
-- let got TDZ for consistency with const (both are block-scoped)
-- The TDZ makes bugs visible at development time, not production time
+> **The TDZ is a time zone, not a code zone — the same creation-phase
+> / execution-phase split [Chapter 1, Section 6](01_JS_Foundations.md#6-hoisting--the-invisible-move)
+> already derived, with one additional design choice layered on top.**
+> `let x` genuinely IS hoisted — creation phase finds the declaration
+> and reserves the name `x` in scope, exactly like `var`. What's
+> different is what creation phase does with that reservation:
+> instead of initializing it to `undefined` (as it does for `var`), it
+> leaves `x` in a deliberately unusable state. The "dead zone" is the
+> span between scope entry (when the name gets reserved) and the
+> actual `let x = 10` line executing (when it becomes usable) — call
+> it a *time* zone because the exact same physical LINE of code
+> (`console.log(x)`) behaves differently depending on WHEN in the
+> program's execution it runs relative to the declaration, not on
+> anything about the code's structure.
+>
+> ```javascript
+> {
+>   // TDZ for `x` starts here — scope entry
+>   console.log(x); // ReferenceError: x is in the TDZ
+>   let x = 10; // TDZ ends here — x becomes usable
+>   console.log(x); // 10
+> }
+> ```
+>
+> **Why the language chose this design, given `var` already existed
+> without it.** `var`'s silent `undefined` was a genuine, repeated
+> source of production bugs — a typo or a race between declaration
+> order and usage failed silently instead of loudly. `let`/`const`
+> deliberately trade that leniency for an immediate, loud
+> `ReferenceError` the instant the mistake happens, at the exact line
+> where it happens — turning a class of bug that used to surface as
+> confusing `undefined`s somewhere downstream into one that's caught
+> the moment it occurs.
 
 ---
 
@@ -968,22 +1017,30 @@ Generator: O(1) — stores only the current execution state (stack frame: local 
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE RECEPTION DESK ANALOGY                                      ║
-║                                                                  ║
-║  WITHOUT delegation (1000 buttons = 1000 handlers):              ║
-║  → Like hiring a personal receptionist for each room             ║
-║  → Adding 1000 rooms? Hire 1000 more people.                     ║
-║  → Expensive, slow to set up, wasteful.                          ║
-║                                                                  ║
-║  WITH delegation (1 handler on parent):                          ║
-║  → Like having ONE receptionist at the front desk                ║
-║  → Any room request comes to the desk first (event bubbles up)   ║
-║  → Desk checks which room the request is for (event.target)      ║
-║  → Works for rooms that haven't been built yet! (dynamic)        ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **This works BECAUSE of the bubble phase [Chapter 5's event
+> propagation sequence diagram](05_JS_DOM_BrowserAPIs.md#5-events--how-user-interaction-works)
+> already traced in full.** A click on any button doesn't just fire at
+> that button — Chapter 5 derived that after the target phase, the
+> event walks back UP the tree (button → parent → parent's parent →
+> ... → `document`), and any listener anywhere along that walk gets a
+> chance to run, receiving `event.target` as "which specific descendant
+> actually got clicked." A single listener on a shared parent container
+> is sitting on that walk for EVERY descendant click, without needing
+> to be individually attached to each one — it reads `event.target` to
+> figure out which button fired, the same mechanism Chapter 5's
+> `.closest('.card')` example already demonstrated.
+>
+> **Why this beats one-listener-per-element on two axes at once.**
+> Memory: 1,000 individual listeners means 1,000 separate listener
+> registrations the browser tracks; one delegated listener is one
+> registration regardless of how many buttons exist underneath it.
+> Dynamic content: a button added to the DOM *after* the individual
+> listeners were attached never got one — but a delegated listener on
+> an ancestor that already existed catches clicks on ANY descendant,
+> including ones that didn't exist yet when the listener was
+> registered, because the listener doesn't care which specific element
+> is clicked — it only cares that the click bubbled through it, which
+> every descendant's click always will.
 
 ```javascript
 // BAD: 1000 handlers (memory heavy, breaks for dynamic elements)
