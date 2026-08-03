@@ -4,21 +4,33 @@
 
 ## 5W1H — Why This Chapter?
 
-WHAT: Functions are FIRST-CLASS citizens in JS. They can be
-stored in variables, passed as arguments, returned from
-other functions. Closures emerge from this + lexical scope.
-
-WHY: Closures power React hooks, event handlers, callbacks,
-module patterns, currying, memoization — everything.
-"If you understand closures, you understand JS."
-
-WHO: Every JS developer. Every React developer (useState IS
-a closure). Every Node developer (callbacks are closures).
-
-WHEN: After understanding scope (Chapter 1).
-
-HOW: Functions create scope → inner functions remember outer
-scope → that's a closure. It's that simple (and profound).
+> **What "first-class" means, precisely — not just a label.** A
+> language treats functions as first-class when a function is a value
+> like any other: it can be stored in a variable, passed as an
+> argument, returned from another function, and stuffed into an array
+> or object — no special syntax required, no restrictions a `number`
+> or `string` wouldn't also have. JavaScript functions satisfy every
+> one of those; that's the entire content of the label.
+>
+> **Why this chapter follows Chapter 1's scope chapter directly, and
+> not, say, objects or async.** Closures — this chapter's central
+> concept — are not a separate feature bolted onto functions. They are
+> the *direct, mechanical consequence* of combining two things Chapter
+> 1 already gave you: functions being values you can return and pass
+> around, and lexical scoping (the Scope Chain section) determining
+> what a piece of code can see based on where it was *written*. Once
+> both of those are true simultaneously, closures aren't something the
+> language had to add — they're something that becomes unavoidable.
+> Section 4 below derives exactly why.
+>
+> **Where this shows up, concretely, so the abstraction lands.** React's
+> `useState` is a closure holding a component's value between renders.
+> Every `debounce`/`throttle` utility is a closure holding a timer ID.
+> Every module pattern that hides internal state is a closure standing
+> in for what other languages use a `private` class field for. This
+> isn't a list of unrelated use cases — it's the same one mechanism,
+> derived once in Section 4, showing up everywhere state needs to
+> survive between calls without being globally visible.
 
 ---
 
@@ -538,11 +550,40 @@ Array.prototype.myReduce = function (callback, initialValue) {
 
 ## 6. IIFE — Immediately Invoked Function Expression
 
-```javascript
-// WHAT: A function that runs immediately after creation.
-// WHY:  Creates a private scope. Avoids polluting global namespace.
-// WHEN: Less common now (we have modules), but appears in libraries.
+> **What it is, and why the syntax looks the way it does — not just
+> "that's the pattern."** An IIFE is a function that's called the
+> instant it's defined, specifically to get a private, throwaway scope
+> — the Scope Chain mechanism from Chapter 1 applied deliberately: any
+> `const`/`let` declared inside never leaks past the function's closing
+> `}`, so it's a clean way to run setup code without adding a single
+> name to whatever scope contains it (historically the global scope,
+> before ES6 modules made this less necessary for that specific
+> purpose).
+>
+> **Why it needs the wrapping parentheses — this is the detail almost
+> every explanation skips, and it's the exact same parser ambiguity
+> Chapter 1's `{} + []` challenge already introduced you to.** Write
+> `function() { ... }();` at the START of a statement, and it's a
+> `SyntaxError` — not because JavaScript can't call functions
+> immediately, but because of how the parser decides what kind of node
+> to build. When the parser sees the keyword `function` at the
+> beginning of a statement, its grammar rule commits to building a
+> **`FunctionDeclaration`** node — and a `FunctionDeclaration` node has
+> no slot in the grammar for "and now call it" immediately after its
+> closing brace; declarations are meant to be *referenced later*, not
+> invoked in place. Wrapping the function in parentheses —
+> `(function() { ... })` — forces a different parse: parentheses can
+> only ever contain an *expression*, never a declaration, so the parser
+> is forced down the **`FunctionExpression`** path instead — a
+> `FunctionExpression` node genuinely does have a "and now call it"
+> slot right after it, which is exactly what the trailing `()` fills.
+> The parentheses aren't decoration or convention — they're the one
+> lever that changes which AST node type gets built for the exact same
+> function-keyword-and-body text, the same underlying "same source
+> text, meaningfully different parse depending on position" mechanism
+> Chapter 1 already showed you with `{} + []`.
 
+```javascript
 (function () {
   const secret = "hidden";
   console.log("IIFE ran!"); // Runs immediately
@@ -573,6 +614,23 @@ Calculator.add(10).subtract(3).getResult(); // 7
 ---
 
 ## 7. Currying & Partial Application
+
+> **Currying is not a new mechanism — it's closures, applied to
+> arguments instead of to internal state.** Section 4 derived that a
+> closure is a function bundled with a live pointer to the environment
+> it was created in. `curriedAdd(5)` creates exactly that: an inner
+> function whose environment contains a binding for `a = 5`, and that
+> inner function is what gets returned. Calling `add5(3)` doesn't
+> re-run `curriedAdd` — it invokes the already-existing inner function,
+> which reads `a` from the environment it's still pointing at (the
+> identical "environment chain lookup, not a snapshot" mechanism
+> Section 4's sequence diagram traced for the `outer`/`inner`/`count`
+> example) and combines it with the new argument `b`. Every "curried"
+> function is, mechanically, nothing more than one function returning
+> another function that closes over the first function's parameter —
+> the exact same shape as `createMultiplier` from Section 4's use
+> cases, just with a name ("currying") for the specific pattern of
+> doing it to build up a full argument list one call at a time.
 
 ```javascript
 // CURRYING: Transform f(a, b, c) into f(a)(b)(c)
@@ -661,10 +719,39 @@ processInput("  Hello World  "); // "hello world!"
 
 ## 9. Recursion (JS-Specific Notes)
 
-```javascript
-// JS has no tail-call optimization in practice (except Safari).
-// So recursive functions CAN blow the stack. Be mindful of depth.
+> **Why recursion has a depth limit at all — this is [Chapter 1,
+> Section 8](01_JS_Foundations.md#8-execution-context--how-js-runs-your-code)'s
+> Execution Context and Call Stack mechanism, not a separate JS quirk.**
+> Every call to a recursive function — including a call to *itself* —
+> pushes a brand-new execution context onto the call stack, exactly the
+> way any function call does. `flatten([1,[2,[3]]])` calling
+> `flatten([2,[3]])` calling `flatten([3])` pushes three separate
+> execution contexts, one per still-unfinished call, each waiting for
+> its inner call to return before it can pop. Chapter 1 derived that
+> the call stack is a **fixed-size** region, unlike the heap — so a
+> recursive function that goes deep enough (thousands of nested levels)
+> eventually pushes more execution contexts than that fixed region has
+> room for, and you get the exact same `RangeError: Maximum call stack
+> size exceeded` Chapter 1 predicted for any uncontrolled-recursion
+> case, whether or not the recursion was intentional.
+>
+> **What "tail-call optimization" would fix, and why relying on it in
+> JS today is unsafe.** In a language with proper tail calls, if a
+> function's *very last action* is to return the result of calling
+> another function (or itself) with nothing left to do afterward, the
+> engine can reuse the current execution context instead of pushing a
+> new one — because there's genuinely nothing left in the current call
+> that still needs its own context once the tail call's result comes
+> back. The ECMAScript spec technically allows this optimization, and
+> Safari's JavaScriptCore implements it — but V8 (Chrome, Node,
+> Edge) and Firefox's SpiderMonkey do not, despite the spec permitting
+> it, because implementing it fully turned out to conflict with how
+> those engines' debuggers construct stack traces. The practical
+> consequence: write recursion as if NO engine will ever save you with
+> tail-call optimization, because for the two most widely-deployed
+> engines, none will.
 
+```javascript
 // Classic: Flatten nested array
 function flatten(arr) {
   return arr.reduce(
