@@ -4,47 +4,75 @@
 
 ## 5W1H — Why This Chapter?
 
-WHAT: How to catch, handle, and debug errors in JavaScript.
-Covers try/catch, custom errors, debugging tools, and
-patterns for production-ready error handling.
-
-WHY: Every app has errors. The difference between a junior and
-senior developer is how they HANDLE errors. Unhandled
-errors crash apps, lose data, and frustrate users.
-
-WHO: Everyone — frontend (API failures, user input), backend
-(DB errors, network issues), React (error boundaries).
-
-WHEN: From day one. Error handling isn't an afterthought.
-
-HOW: try/catch for sync, .catch for promises, Error Boundaries
-for React, global handlers as safety nets.
+> **What error handling actually is, mechanically.** Throwing an error
+> doesn't just "signal failure" — it unwinds the **call stack** (the
+> exact structure Chapter 1, Section 8 built: execution contexts,
+> pushed on call, popped on return). A `throw` pops execution contexts
+> one by one, skipping their remaining code, until it finds one
+> wrapped in a `catch` block — or reaches the bottom of the stack with
+> none found, which is what an "uncaught exception" actually means.
+> Understanding error handling well requires already having Chapter
+> 1's call-stack model in hand; this chapter is largely that model
+> applied to the *abnormal* exit path instead of the normal one.
+>
+> **Why this separates junior from senior code, concretely.** An
+> unhandled error doesn't just log something ugly — it can leave your
+> program in an inconsistent state (a database write half-completed, a
+> UI showing stale data next to a broken component) BECAUSE the stack
+> unwound past code that assumed it would finish running. Good error
+> handling isn't about suppressing errors — it's about making sure the
+> unwind stops at a point where the program can recover to a
+> consistent state, or fail in a way that's safe and diagnosable.
+>
+> **Where this shows up.** Every boundary where your program's
+> assumptions can be wrong from the outside: an API response with an
+> unexpected shape, user input that doesn't validate, a database
+> connection that drops. React's Error Boundaries (Section 8) are a
+> component-tree-specific version of exactly this same "contain the
+> failure so it doesn't take down everything" principle.
+>
+> **How, mapped to WHERE the failure can occur.** `try/catch` for
+> synchronous throws. `.catch`/`await` + `try/catch` for promise
+> rejections (Chapter 4's Promise state machine). Global handlers
+> (`window.onerror`, `process.on('uncaughtException')`) as the last
+> safety net for anything that slips past both — Section 2 below
+> derives exactly why some errors need that net and can't be caught
+> any other way.
 
 ---
 
 ## 1. Error Types in JavaScript
 
-```
-BUILT-IN ERROR TYPES:
-┌───────────────────┬─────────────────────────────────────────┐
-│ Type              │ When It Occurs                          │
-├───────────────────┼─────────────────────────────────────────┤
-│ SyntaxError       │ Invalid code: if ( { → parsing fails    │
-│ ReferenceError    │ Accessing undefined variable            │
-│ TypeError         │ Wrong type operation: null.map()        │
-│ RangeError        │ Number out of range: new Array(-1)      │
-│ URIError          │ Bad URI: decodeURI("%")                 │
-│ EvalError         │ Old eval() error (rarely seen)          │
-│ AggregateError    │ Promise.any() all reject                │
-│ InternalError     │ Engine error: too much recursion (FF)   │
-└───────────────────┴─────────────────────────────────────────┘
+**The built-in error types, and when each actually fires:**
 
-ALL inherit from Error → has: message, name, stack (trace)
+| Type              | When it occurs                              |
+|--------------------|-----------------------------------------------|
+| `SyntaxError`      | Invalid code: `if ( {` — parsing fails        |
+| `ReferenceError`   | Accessing an undeclared variable              |
+| `TypeError`        | Wrong-type operation: `null.map()`            |
+| `RangeError`       | Number out of range: `new Array(-1)`          |
+| `URIError`         | Bad URI: `decodeURI("%")`                     |
+| `EvalError`        | Legacy `eval()` error (rarely seen today)     |
+| `AggregateError`   | `Promise.any()` where every promise rejected  |
+| `InternalError`    | Engine-level error, e.g. too much recursion (Firefox-specific) |
 
-MOST COMMON in practice:
-TypeError (cannot read property of undefined) — #1 JS error
-ReferenceError (variable is not defined)
-```
+**Most common in practice:** `TypeError` (reading a property off
+`undefined`/`null` is the single most frequent JS error in production)
+and `ReferenceError` (referencing a name that was never declared).
+
+> **Why `instanceof Error` works for every single one of these — and
+> for your own custom error classes too.** This isn't a special rule
+> for errors; it's [Chapter 3, Section 4](03_JS_Objects_Prototypes.md#4-prototypes--jss-inheritance-mechanism)'s
+> prototype-chain lookup, applied to exactly one specific chain.
+> `TypeError.prototype`'s `[[Prototype]]` points to `Error.prototype`
+> — so `instanceof Error` on a `TypeError` walks that chain (Chapter
+> 3's exact traced mechanism for `arr instanceof Array`) and finds a
+> match one link up. When Section 3 below has you write
+> `class ValidationError extends AppError extends Error`, `class
+> extends` is doing nothing more exotic than wiring up that same
+> chain three links deep — `instanceof Error` on a `ValidationError`
+> walks `ValidationError.prototype → AppError.prototype →
+> Error.prototype`, the identical walk, just longer.
 
 ```javascript
 // ANATOMY of an Error:
@@ -133,6 +161,31 @@ try {
   }
 }
 ```
+
+> **Why `try/catch` genuinely cannot catch the `setTimeout` throw
+> above — not a limitation to memorize, a direct consequence of the
+> call-stack model [Chapter 1, Section 8](01_JS_Foundations.md#8-execution-context--how-js-runs-your-code)
+> already gave you.** `try/catch` works by wrapping a *region of the
+> call stack* — while any code inside the `try` block is still on the
+> stack, a `throw` unwinds frames until it finds that `catch`. The
+> callback passed to `setTimeout` does not run *inside* that region at
+> all. [Chapter 4, Section 1](04_JS_Async_Promises.md#1-the-event-loop--the-core-mental-model)
+> traced exactly this: `setTimeout` hands the callback to the runtime,
+> the `try` block finishes and is POPPED off the stack completely
+> (Chapter 1's "functions are pushed when called, popped when they
+> return" — the `try` block's containing function returns normally,
+> with no error, because nothing inside it threw *synchronously*),
+> and only THEN — a full macrotask-queue cycle later — does the event
+> loop push the timer callback onto a **brand-new, empty call stack**.
+> By the time `throw new Error("Async!")` actually executes, the
+> `catch` that used to be on the stack is long gone; there is no
+> longer any stack frame connecting the two. This is precisely why
+> `await` fixes it (Section above, "RIGHT" example): `await` keeps the
+> `async` function's own execution context *suspended on the stack's
+> behalf* (the exact generator-style suspension [Chapter 4, Section 5](04_JS_Async_Promises.md#5-advanced-async-patterns)
+> derived) until the promise settles, so the `catch` block is still
+> "in scope" — still connected via the stack — when the rejection
+> actually happens.
 
 ---
 
