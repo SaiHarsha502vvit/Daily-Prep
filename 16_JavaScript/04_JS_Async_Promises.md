@@ -171,32 +171,43 @@ getUser(1, (err, user) => {
 
 ### 5W1H: WHAT is a Promise?
 
+> **What a Promise actually is, beneath the `.then` syntax.** A Promise
+> is an ordinary JavaScript **object** — the same kind of thing as
+> `{}` or `[]`, holding internal state — that represents a value which
+> doesn't exist *yet*. That's the entire idea: JavaScript had no way to
+> hand someone "the eventual result of this operation" as a value they
+> could store in a variable, pass to a function, or return from a
+> function, until Promises made "a future value" into a real,
+> first-class object like any other.
+>
+> **Why callbacks alone couldn't solve this — the actual gap, not just
+> "callback hell is ugly."** A callback is a function you hand to
+> *someone else*, trusting them to call it correctly — exactly once,
+> with the right arguments, even in error cases. Nothing in the
+> language enforces any of that; it's a convention, and conventions get
+> violated (called twice, never called, called with inconsistent
+> error-vs-success argument shapes depending on which library wrote
+> it). A Promise fixes this by putting the *guarantees* — settles
+> exactly once, callbacks always run async even for an
+> already-resolved promise, one uniform way to signal success vs
+> failure — inside the object itself, enforced by the language, not by
+> hoping every function author who calls your callback got the
+> convention right. `.then` chaining is a readability improvement on
+> top of that; the guarantees are the actual fix.
+>
+> **The state machine those guarantees produce (a Promise is a state
+> machine with exactly one transition — see the diagram below):**
+
 ```
-WHAT: A Promise is an object representing a FUTURE value.
-      It will eventually be either FULFILLED (success) or
-      REJECTED (failure).
-
-WHY:  Promises solve callback hell with chaining (.then).
-      They provide .catch for centralized error handling.
-      They enable async/await (Chapter section 4).
-
-ANALOGY: A promise is like an order receipt at a restaurant.
-You place an order → get a receipt (promise). Eventually:
-• Your food arrives (fulfilled) → enjoy it (.then)
-• Kitchen is out of ingredients (rejected) → handle it (.catch)
-• While waiting, you can do other things (non-blocking).
-
-STATES (a Promise is a state machine with exactly one transition):
-
     ┌─────────────┐   resolve(value)   ┌─────────────┐
     │   PENDING   │ ───────────────▶ │  FULFILLED  │
     │             │                    └─────────────┘
     │             │   reject(reason)  ┌─────────────┐
     │             │ ───────────────▶ │  REJECTED   │
     └─────────────┘                    └─────────────┘
+```
 
 Once settled (fulfilled/rejected), a promise NEVER changes state.
-```
 
 ```javascript
 // CREATING a Promise:
@@ -469,6 +480,38 @@ for await (const page of fetchPages("/api/users")) {
 }
 ```
 
+> **How a generator actually pauses and resumes — this is [Chapter 1,
+> Section 8](01_JS_Foundations.md#8-execution-context--how-js-runs-your-code)'s
+> execution-context model, with one rule relaxed.** Every ordinary
+> function call pushes an execution context onto the call stack, and
+> that context is destroyed the moment the function returns — Chapter
+> 1 was explicit that contexts are strictly popped, never kept around.
+> A generator function breaks exactly that one rule: calling
+> `idGenerator()` does NOT run the function body yet — it creates a
+> generator object whose execution context is **suspended**, held
+> alive off the stack instead of being torn down. Each `.next()` call
+> resumes that suspended context from exactly the bytecode instruction
+> after the last `yield`, with every local variable (`id` in the
+> example above) still holding whatever value it had when execution
+> paused — because the context itself was never destroyed, only
+> parked. `yield` is the instruction that says "suspend here, hand this
+> value back, and remember exactly where to resume."
+>
+> **Why this matters beyond generators themselves: `async`/`await` is
+> built on exactly this mechanism.** An `async` function's `await` is,
+> under the hood, doing the same suspend-and-resume trick a generator's
+> `yield` does — "pause this function's execution context right here,
+> hand control back to the caller, and resume from this exact point
+> once the awaited promise settles." This isn't a loose analogy: before
+> `async`/`await` existed as its own syntax, libraries implemented the
+> identical pattern by hand, wrapping a generator (`yield`ing promises)
+> in a driver function that called `.next()` each time the yielded
+> promise resolved — literally building `await` out of `yield` plus
+> Section 3's Promise machinery. `async`/`await` later became native
+> syntax specifically so nobody had to hand-write that driver anymore
+> — but the underlying mechanism, suspend-a-context and resume-it-later,
+> is the exact same one you just watched `idGenerator` use.
+
 ### AbortController — Cancelling Async Operations
 
 ```javascript
@@ -636,6 +679,49 @@ async function asyncPool(limit, items, iteratorFn) {
 // Process 5 URLs at a time:
 await asyncPool(5, urls, (url) => fetch(url).then((r) => r.json()));
 ```
+
+> **This function is dense — worth walking through what each moving
+> piece is actually doing, because copy-pasting it without understanding
+> it is a common source of "why isn't this actually limiting
+> concurrency" bugs.**
+>
+> **The self-removing promise trick.** `executing` is meant to hold
+> only the promises that are *currently still running*. The line
+> `p.then(() => executing.splice(executing.indexOf(e), 1))` builds a
+> new promise (`e`) that, the moment `p` finishes, removes `e` from the
+> `executing` array — so `executing`'s length is always a live count of
+> "how many started-but-not-finished operations exist right now," not
+> "how many operations have started in total." Without this
+> self-removal, `executing` would only ever grow, and the pool would
+> stop admitting new work after the first `limit` items forever.
+>
+> **The actual throttle.** `if (executing.length >= limit) await
+> Promise.race(executing)` is the entire limiting mechanism: once
+> `limit` operations are simultaneously in flight, the loop stops
+> starting new ones and waits for *any one* of the current batch to
+> finish (`Promise.race` — Section 3's "first to settle wins"
+> combinator) before continuing to the next iteration. This is why the
+> function needs `Promise.race` specifically and not `Promise.all` —
+> `all` would wait for the ENTIRE current batch to finish before
+> starting anything new, serializing the pool into batches instead of
+> keeping a smooth rolling window of exactly `limit` operations in
+> flight at all times.
+>
+> **What `if (items.length >= limit)` is actually for — the part that
+> looks like a typo but isn't.** `items.length` never changes during
+> the loop (`items` is the original array, untouched by `for...of`),
+> so this condition evaluates the SAME way on every single iteration —
+> it is not a per-iteration check the way it's positioned might
+> suggest. Its real job: if the total number of items is *smaller* than
+> the limit (say, 3 items with a limit of 5), no throttling could ever
+> be necessary — you'll never reach `limit` simultaneous operations no
+> matter what — so this condition short-circuits the entire
+> concurrency-tracking block (building `e`, pushing to `executing`,
+> potentially awaiting `Promise.race`) as wasted bookkeeping in that
+> case, and just lets every item fire immediately. When the array is at
+> least as large as the limit — the case this function actually exists
+> for — the condition is trivially true throughout, and the real work
+> happens in the two lines inside it.
 
 ---
 
