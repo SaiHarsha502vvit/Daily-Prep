@@ -4,22 +4,38 @@
 
 ## 5W1H — Why This Chapter?
 
-WHAT: The DOM (Document Object Model) is the browser's in-memory
-representation of your HTML. Browser APIs are the tools
-the browser gives JS to interact with the page and more.
-
-WHY: React abstracts the DOM — but you MUST understand what's
-underneath. Debugging, performance, third-party libraries,
-vanilla JS projects, and interview questions require it.
-
-WHO: Every frontend developer. Even React devs need DOM
-knowledge for refs, portals, and performance tuning.
-
-WHEN: After understanding JS fundamentals + async.
-
-WHERE: Only in browsers (not Node.js). Node has no DOM.
-
-HOW: HTML → Parser → DOM Tree. JS accesses via `document` API.
+> **What this chapter actually covers, precisely.** Chapters 1–4
+> taught JavaScript **the language** — a specification that says
+> nothing about web pages, buttons, or HTML. Everything in this
+> chapter — `document`, `addEventListener`, `fetch`, `localStorage` —
+> is not part of that language spec at all. It's supplied by the
+> **host environment**: the browser hands the JS engine an extra set
+> of objects and functions it can call, on top of the language itself.
+> [Chapter 14, Section 2b](14_Browser_Engines_And_Chromium_Architecture.md#2b-what-javascript-runtime-actually-means)
+> named this precisely: "the JavaScript runtime" is always engine +
+> host environment together, never the engine alone — this entire
+> chapter is a tour of what ONE specific host environment (the
+> browser) adds.
+>
+> **Why you need this even though React exists.** React's whole job is
+> to generate the DOM operations this chapter teaches — you write JSX,
+> React eventually calls `appendChild`, `setAttribute`, and friends on
+> your behalf. Not knowing what's underneath doesn't make the DOM go
+> away; it just means you can't reason about `ref`s (a direct handle to
+> a real DOM node, bypassing React entirely), can't debug why a
+> third-party jQuery widget fights React for control of a node, and
+> can't read a performance profile that's timestamped in terms of
+> "layout" and "paint" — DOM-level concepts React's abstraction
+> deliberately hides from your day-to-day code but not from your
+> understanding.
+>
+> **Where this lives, specifically, and why Node has none of it.**
+> Everything here is provided by the **browser's** host environment.
+> [Chapter 13](13_NodeJS_Architecture.md) covers Node's *different* host
+> environment (`fs`, `libuv`, `Buffer`) — same JS engine underneath
+> either way, completely different set of extra objects bolted on,
+> because a server process has no page to represent and a browser tab
+> has no filesystem to expose.
 
 ---
 
@@ -127,6 +143,31 @@ const cardsArray = [...cards]; // Spread
 // or: Array.from(cards)
 cardsArray.filter((card) => card.classList.contains("active"));
 ```
+
+> **Live vs static, mechanically — not just "one auto-updates."** A
+> `HTMLCollection` from `getElementsByClassName`/`getElementsByTagName`
+> is not a copied-out list of elements at all — it's closer to a saved
+> query, re-run against the live DOM every time you touch it. Accessing
+> `.length` or indexing into it doesn't read a stored count; it asks
+> the DOM "how many elements currently match this criteria, right
+> now?" A `NodeList` from `querySelectorAll`, by contrast, is computed
+> **once**, at the moment you call it — the matching elements are
+> copied into a fixed array-like structure, and nothing you do to the
+> DOM afterward changes what's already in that list.
+>
+> **Why this produces the specific "skipped every other element" bug.**
+> Removing an element from a live `HTMLCollection` while iterating it
+> shrinks the collection's *live* length on every removal — if you're
+> looping with `for (let i = 0; i < collection.length; i++)` and
+> removing `collection[i]` each time, the element that was at index
+> `i+1` slides down to become the new index `i` the instant you remove
+> the old one, but your loop has already moved on to `i+1` — you skip
+> it entirely. A static `NodeList` from `querySelectorAll` never has
+> this problem: removing elements from the DOM doesn't shrink a list
+> that was already fully computed and copied before the loop started.
+> This is the exact mechanism behind "static is safer" — not a vague
+> safety feeling, a specific category of iteration bug that live
+> collections make possible and static ones structurally cannot have.
 
 ---
 
