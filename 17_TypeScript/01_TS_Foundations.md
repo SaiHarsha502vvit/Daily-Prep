@@ -215,29 +215,40 @@ function infiniteLoop(): never {
 }
 ```
 
+> **Why "top" and "bottom" are the right words here, not just labels.**
+> TypeScript's type checker is fundamentally an **assignability**
+> checker — every rule reduces to "can a value of type A go where a
+> type B is expected?" `unknown` sits at the top because EVERY other
+> type is assignable **to** it (any string, number, or object can be
+> stored in an `unknown` variable — that's what makes it a safe
+> catch-all), but `unknown` is assignable to almost nothing else
+> without narrowing first. `never` sits at the bottom for the exact
+> opposite reason: nothing is assignable **to** it (there is no value
+> that could ever legally be a `never`), which is precisely why
+> reaching a `never`-typed variable in a switch's `default` branch
+> proves every real case was already handled — if any case had been
+> missed, the leftover type there wouldn't be empty.
+
+```mermaid
+graph TD
+    unknown["unknown — TOP type<br/>(everything is assignable TO it)"]
+    unknown --> string
+    unknown --> number
+    unknown --> boolean
+    unknown --> object["object"]
+    object --> Array
+    object --> Function
+    object --> Literal["{...}"]
+    unknown --> null
+    unknown --> undefined
+    unknown --> void
+    unknown -.->|"opts OUT of checking<br/>entirely, not a normal subtype"| any["any — SPECIAL"]
+    string --> never["never — BOTTOM type<br/>(nothing is assignable TO it)"]
+    number --> never
+    boolean --> never
 ```
-TYPE HIERARCHY:
 
-unknown  ← TOP type (anything assignable TO it)
-  │
-  ├── string
-  ├── number
-  ├── boolean
-  ├── object
-  │     ├── Array
-  │     ├── Function
-  │     └── {...}
-  ├── null
-  ├── undefined
-  ├── void
-  └── any ← SPECIAL (opts out of type checking entirely)
-
-never  ← BOTTOM type (nothing assignable TO it)
-
-REASONING: unknown = "I don't know yet, so check before using"
-any = "I don't care, let me do whatever" (dangerous)
-never = "This can never happen" (exhaustive checks)
-```
+`any` is drawn with a dashed line on purpose — it isn't really part of the hierarchy at all; assigning to or from `any` skips the assignability check completely, which is exactly why it's dangerous (Section 2's `anything.foo.bar()` compiles with zero complaint) and why `unknown` — a real, checked member of the hierarchy — is the safe substitute.
 
 ---
 
@@ -340,6 +351,22 @@ interface Array<T> {
 // extend global types. TypeScript uses it extensively internally.
 // Types CANNOT merge — that's a key difference.
 ```
+
+> **Why `interface` can merge and `type` structurally cannot — this
+> is a consequence of what each declaration actually IS to the
+> compiler, not an arbitrary rule.** An `interface Foo {...}`
+> declaration doesn't create a type by itself — it **contributes** a
+> set of members to whatever type is bound to the name `Foo` in that
+> scope. When the checker sees a second `interface Foo {...}`, it
+> doesn't see a conflict; it sees a second contribution, and combines
+> both member sets into one shape before anyone uses `Foo`. A `type
+> Foo = {...}` is different in kind: it's a single, one-time binding
+> from the name `Foo` to one specific type, evaluated once. A second
+> `type Foo = {...}` isn't "another contribution" — there's no
+> mechanism for a type alias to contribute anything — it's an attempt
+> to bind the same name a second time, which the checker correctly
+> reports as a duplicate identifier, the same error you'd get
+> re-declaring any other binding twice in one scope.
 
 ---
 
@@ -478,6 +505,24 @@ const p: Person = { name: "Harsha", age: 24 };
 </details>
 
 ## 6. Type Narrowing — Making TS Smarter
+
+> **The mechanism narrowing runs on: TypeScript tracks a type per
+> VARIABLE-AT-A-PROGRAM-POINT, not one fixed type per variable for
+> its whole lifetime.** Declaring `x: string | number` doesn't mean
+> "x is permanently the union" — it means "at this point, all the
+> checker knows is that x is one of these." When code branches on a
+> runtime check (`typeof x === "string"`), the checker walks each
+> branch of that `if` separately and asks the same question every
+> guard below answers differently: "given that this specific
+> condition is true, which members of the union could actually
+> satisfy it?" Inside the `string` branch, only `string` satisfies
+> `typeof x === "string"`, so the checker narrows `x`'s tracked type
+> to just `string` for the rest of that branch — a NEW, more specific
+> fact that only holds inside that one block, not a change to `x`'s
+> declared type. This is why narrowing is called **control-flow
+> analysis**: the same variable can hold a different tracked type in
+> different branches of the same function, purely because the
+> checker is following the control flow, not just the declaration.
 
 ```typescript
 // TS narrows types using these guards:
