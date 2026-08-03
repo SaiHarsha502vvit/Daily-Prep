@@ -17,6 +17,9 @@
 | 9   | [Browser Internals](09_Browser_Internals_Rendering.md) | Rendering pipeline, CSSOM, compositing        |
 | 10  | [Web Workers](10_Web_Workers_ServiceWorkers.md)        | Workers, SharedWorker, ServiceWorker          |
 | 11  | [Advanced Web APIs](11_Advanced_Web_APIs.md)           | WebSocket, WebRTC, IndexedDB, Notifications   |
+| 12  | [V8 Engine Internals](12_V8_Engine_Internals.md)       | Ignition, TurboFan, hidden classes, inline caches, elements kinds, GC generations |
+| 13  | [Node.js Architecture](13_NodeJS_Architecture.md)      | libuv event loop phases, thread pool, streams/backpressure, CJS vs ESM |
+| 14  | [Browser Engines & Chromium Architecture](14_Browser_Engines_And_Chromium_Architecture.md) | Blink/WebKit/Gecko history, Chromium vs Chrome, multi-process architecture, Site Isolation |
 
 ---
 
