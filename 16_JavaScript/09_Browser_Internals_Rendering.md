@@ -37,53 +37,52 @@
 
 ## 1. Navigation — From URL to First Byte
 
+> **Why these four steps run in this exact order and none can be
+> skipped or reordered — each one is a hard prerequisite for the
+> next, not just "the way it's usually done."** `https://example.com`
+> names a domain, not an address; the OS network stack cannot open a
+> connection to a name, only to an IP — so DNS resolution has to
+> finish first. TCP's three-way handshake then has to complete before
+> ANY bytes can flow reliably in either direction — TLS is not a
+> separate connection, it's an encrypted conversation carried inside
+> the TCP stream the handshake just opened, so it cannot start a
+> moment earlier. Only once that encrypted channel exists can the
+> browser safely send the HTTP request line and headers — sending them
+> any sooner would mean sending the request in plaintext, defeating
+> HTTPS entirely. Four steps, four dependencies, one strict order:
+
+```mermaid
+sequenceDiagram
+    participant C as Browser (Client)
+    participant D as DNS
+    participant S as Server
+
+    Note over C,D: STEP 1 — DNS Resolution (0-100ms)
+    C->>D: "example.com" — Browser Cache -> OS Cache -> Router -> ISP -> Root DNS
+    D-->>C: 93.184.216.34
+
+    Note over C,S: STEP 2 — TCP Handshake (~1 round trip, 30-100ms)
+    C->>S: SYN
+    S-->>C: SYN-ACK
+    C->>S: ACK
+
+    Note over C,S: STEP 3 — TLS Handshake, HTTPS only (~1-2 round trips, 50-200ms)
+    C->>S: ClientHello (supported ciphers)
+    S-->>C: ServerHello + Certificate
+    Note over C: verify certificate,<br/>generate session key
+    C->>S: Encrypted "Finished"
+
+    Note over C,S: STEP 4 — HTTP Request (TTFB 100-500ms typically)
+    C->>S: GET /products HTTP/2
+    S-->>C: HTML response begins
 ```
-  User types: https://example.com/products
 
-  ┌── STEP 1: DNS RESOLUTION ─────────────────────────────────────────┐
-  │                                                                    │
-  │  Browser Cache → OS Cache → Router → ISP DNS → Root DNS           │
-  │  "example.com" → 93.184.216.34                                    │
-  │  Time: 0-100ms (cached: 0ms, uncached: 20-100ms)                 │
-  │                                                                    │
-  └──────────────────────────┬─────────────────────────────────────────┘
-                             ▼
-  ┌── STEP 2: TCP HANDSHAKE ──────────────────────────────────────────┐
-  │                                                                    │
-  │  Client → SYN → Server                                            │
-  │  Client ← SYN-ACK ← Server                                       │
-  │  Client → ACK → Server                                            │
-  │  Time: 1 round trip (~30-100ms depending on distance)             │
-  │                                                                    │
-  └──────────────────────────┬─────────────────────────────────────────┘
-                             ▼
-  ┌── STEP 3: TLS HANDSHAKE (HTTPS) ──────────────────────────────────┐
-  │                                                                    │
-  │  Client → ClientHello (supported ciphers) → Server                │
-  │  Client ← ServerHello + Certificate ← Server                     │
-  │  Client verifies certificate, generates session key               │
-  │  Client → Encrypted "Finished" → Server                           │
-  │  Time: 1-2 more round trips (~50-200ms)                           │
-  │                                                                    │
-  └──────────────────────────┬─────────────────────────────────────────┘
-                             ▼
-  ┌── STEP 4: HTTP REQUEST ───────────────────────────────────────────┐
-  │                                                                    │
-  │  GET /products HTTP/2                                              │
-  │  Host: example.com                                                 │
-  │  Accept: text/html                                                 │
-  │                                                                    │
-  │  Server processes → returns HTML                                   │
-  │  Time to First Byte (TTFB): 100-500ms typically                   │
-  │                                                                    │
-  └────────────────────────────────────────────────────────────────────┘
-
-  TOTAL before browser sees first byte: 200-800ms!
-
-  OPTIMIZATION: Preconnect to known domains:
-  <link rel="preconnect" href="https://api.example.com">
-  (starts DNS + TCP + TLS early while HTML is still loading)
-```
+Add it up and the browser can easily burn **200-800ms before the
+first byte of HTML arrives** — and that's the number `preconnect`
+targets: `<link rel="preconnect" href="https://api.example.com">`
+tells the browser to run Steps 1-3 (DNS + TCP + TLS) early, in
+parallel with the current page still loading, so that by the time
+code actually needs that origin, only Step 4 is left to pay for.
 
 ---
 
@@ -378,6 +377,21 @@
   This is why z-index matters — it changes the paint order.
 ```
 
+> **Why this exact order, and not some other one.** Painting is a
+> "painter's algorithm" — each step draws directly on top of whatever
+> was drawn before it, with no way to paint "underneath" something
+> already there. So the order has to go back-to-front by visual
+> layering intent: background first because everything else sits ON
+> the background, then border, then children last among those (so a
+> child's content visibly sits on top of its own parent's background
+> and border, not hidden beneath them), and outline dead last because
+> an outline is drawn around the outside of an element and is meant to
+> stay visible even when children fill the element's interior.
+> `z-index` matters because it's the one lever that lets you override
+> step 4's default DOM-order painting — without it, later DOM siblings
+> always paint over earlier ones simply because they're painted later
+> in this same sequence.
+
 ---
 
 > 🔬 **Section Challenge — 6. Paint — Drawing Pixels**
@@ -394,31 +408,28 @@
 
 ## 7. Compositing — GPU Layers
 
+> **Why splitting into layers helps — it's Section 6's Paint step,
+> applied selectively instead of globally.** Painting means "convert
+> this region into pixels." Without layers, animating one element
+> forces the browser to redraw that region on the SAME surface as
+> everything around it, so the whole shared surface repaints. A GPU
+> layer gives one element its own separate pixel surface (its own
+> texture). Now animating it means the GPU just repositions or
+> re-blends that one already-painted texture against the others — the
+> other layers' pixels are untouched and reused as-is, because they
+> were never drawn onto the same surface to begin with.
+>
+> **Why THESE specific properties are what promotes an element to its
+> own layer.** Each one is a property the browser can apply without
+> touching the pixels themselves: `transform` repositions/rotates/
+> scales an existing texture, `opacity` re-blends one, and
+> `<video>`/`<canvas>`/WebGL already produce pixels from a source
+> outside the normal paint step. Because none of these require
+> re-running Paint, isolating the element onto its own layer lets the
+> GPU handle the change alone, completely skipping the CPU.
+
 ```
-  Modern browsers don't paint everything onto ONE surface.
-  They split the page into LAYERS and composite them on the GPU.
-
-
-  WHY LAYERS?
-  ═══════════
-
-  If an animation only needs to repaint ONE layer,
-  the rest of the page stays cached — much faster!
-
-
-  WHAT CREATES A NEW LAYER:
-  ═════════════════════════
-
-  • transform: translateZ(0) or translate3d(0,0,0) → forces GPU layer
-  • will-change: transform (tells browser to prepare a layer)
-  • position: fixed or sticky
-  • opacity animation
-  • <video>, <canvas>, WebGL
-  • CSS filters (blur, etc.)
-
-
-  THE COMPOSITING PROCESS:
-  ════════════════════════
+  THE COMPOSITING PROCESS — layers stack, then the GPU merges them:
 
   ┌── Layer 1 (background) ──────────────────────────┐
   │  Static page content                              │
@@ -432,23 +443,19 @@
   │  │  opacity: 0.5 background + modal content   │   │
   │  └────────────────────────────────────────────┘   │
   └───────────────────────────────────────────────────┘
-
-  GPU composites layers together → final pixels on screen.
-
-
-  ╔═══════════════════════════════════════════════════════════════╗
-  ║  THE PERFORMANCE TIERS:                                       ║
-  ║                                                               ║
-  ║  BEST:  Composite-only (transform, opacity)                  ║
-  ║         → GPU handles it, no CPU layout/paint needed         ║
-  ║                                                               ║
-  ║  OK:    Paint-only (color, background, shadow)                ║
-  ║         → CPU repaints, but no layout recalculation          ║
-  ║                                                               ║
-  ║  WORST: Layout (width, height, margin, top, left, font-size) ║
-  ║         → CPU recalculates layout + repaint + composite      ║
-  ╚═══════════════════════════════════════════════════════════════╝
 ```
+
+> **Why the three performance tiers below are a strict ladder, not
+> three independent options.** Each tier is defined by which upstream
+> stage a change can skip — and Section 5 already established that
+> Layout cascades to descendants while Paint doesn't, so skipping
+> Layout is worth more than skipping Paint:
+
+| Tier | Properties | What runs | Why |
+|---|---|---|---|
+| **Best** — composite-only | `transform`, `opacity` | GPU only | Repositions/re-blends an existing texture — no CPU work, no Layout cascade ([§5](#5-layout-reflow--calculating-geometry)) to trigger |
+| **OK** — paint-only | `color`, `background-color`, `box-shadow` | CPU repaint + Composite | Geometry is unchanged (no cascade), but the pixels themselves differ, so Paint ([§6](#6-paint--drawing-pixels)) must redraw them |
+| **Worst** — layout | `width`, `height`, `margin`, `top`, `left`, `font-size` | Layout + Paint + Composite | Geometry changed — Section 5's cascade rule forces recalculating descendants, THEN repainting, THEN recompositing |
 
 ---
 
@@ -541,43 +548,46 @@
 
 ## 9. JavaScript Execution & the Event Loop in the Browser
 
+> **Why JS execution and every rendering step share one thread — the
+> same call-stack constraint [Chapter 1, Section 8](01_JS_Foundations.md#8-execution-context--how-js-runs-your-code)
+> derived, extended to cover more than just JS.** A single Call Stack
+> means one place instructions execute at a time — Chapter 1 used that
+> to explain stack overflow and synchronous blocking. This chapter's
+> Sections 2-7 (DOM updates, style calculation, layout, paint) are ALL
+> instructions that also have to run somewhere, and Chromium schedules
+> them on that identical main thread, not a separate one. So a long
+> JS task doesn't just delay other JS — it delays style/layout/paint
+> too, because they're all competing for the one thread this section's
+> heading covers. ([Chapter 10, Section 1](10_Web_Workers_ServiceWorkers.md#1-why-we-need-workers--the-main-thread-problem)
+> traces the exact frame-drop consequence of this.)
+
+Every one of those tasks has to fit inside a hard budget, or frames get dropped:
+
+| Work item | Typical cost |
+|---|---|
+| Input events (click, scroll) | ~2ms |
+| JavaScript execution | ~6ms |
+| `requestAnimationFrame` callbacks | ~1ms |
+| Style calculation | ~2ms |
+| Layout | ~2ms |
+| Paint | ~2ms |
+| Composite | ~1ms |
+| **Total** | **~16ms — fits inside the 16.67ms/frame budget at 60fps** |
+
+`1000ms / 60 ≈ 16.67ms` is the budget because 60fps means one frame every sixtieth of a second — so **50ms of JS doesn't just feel "a bit slow," it consumes roughly `50 / 16.67 ≈ 3` entire frames** worth of budget, and all three get dropped, not slowed down.
+
+> **Where rendering fits into the event loop — and why it sits exactly
+> there.** The macrotask/microtask draining order below is [Chapter 4](04_JS_Async_Promises.md)'s
+> event loop mechanism, unchanged — this chapter adds what the browser
+> does AFTER a task's microtasks finish. Rendering needs a fully
+> settled DOM to paint correctly: if the browser tried to render in
+> the middle of a microtask chain, it could paint a half-finished
+> intermediate state a script never intended anyone to see. So the
+> browser waits until the Call Stack is empty AND every queued
+> microtask has drained — Chapter 4's own guarantee — before it's
+> safe to treat the DOM as stable enough to measure and draw:
+
 ```
-  THE BROWSER'S MAIN THREAD:
-  ══════════════════════════
-
-  The SAME thread handles:
-  • JavaScript execution
-  • DOM updates
-  • Style calculations
-  • Layout
-  • Paint
-
-  This is why long JavaScript tasks = FROZEN UI!
-
-
-  ONE FRAME AT 60fps = 16.67ms BUDGET:
-  ════════════════════════════════════
-
-  ┌─ 16.67ms frame ──────────────────────────────────────┐
-  │                                                       │
-  │  Input events (click, scroll)   │  ~2ms              │
-  │  JavaScript execution           │  ~6ms              │
-  │  requestAnimationFrame          │  ~1ms              │
-  │  Style calculation              │  ~2ms              │
-  │  Layout                         │  ~2ms              │
-  │  Paint                          │  ~2ms              │
-  │  Composite                      │  ~1ms              │
-  │  ─────────────────────────────────────                │
-  │  Total: ~16ms  ← fits in budget!                     │
-  │                                                       │
-  └───────────────────────────────────────────────────────┘
-
-  If your JS takes 50ms → you MISS 3 frames → visible jank!
-
-
-  BROWSER EVENT LOOP ORDER:
-  ═════════════════════════
-
   1. Run ONE macrotask (setTimeout, setInterval, I/O, events)
   2. Run ALL microtasks (Promise.then, queueMicrotask, MutationObserver)
   3. If it's time to render (usually 60 times/second):
@@ -607,44 +617,33 @@
 
 ## 10. Reflow vs Repaint — What Triggers What
 
-```
-  ┌──────────────────────────────────────────────────────────────────┐
-  │                                                                  │
-  │  REFLOW (Layout change):                                        │
-  │  Triggers: Layout → Paint → Composite (EXPENSIVE)              │
-  │                                                                  │
-  │  These CSS properties cause reflow:                              │
-  │  width, height, padding, margin, border-width,                  │
-  │  top, left, right, bottom, font-size, font-family,             │
-  │  display, position, float, overflow, text-align                 │
-  │                                                                  │
-  │  These JS operations cause reflow (FORCED SYNCHRONOUS LAYOUT): │
-  │  element.offsetHeight, element.offsetWidth,                     │
-  │  element.getBoundingClientRect(),                               │
-  │  element.scrollTop, element.clientHeight,                       │
-  │  getComputedStyle(element)                                      │
-  │                                                                  │
-  ├──────────────────────────────────────────────────────────────────┤
-  │                                                                  │
-  │  REPAINT (Visual change only):                                   │
-  │  Triggers: Paint → Composite (MODERATE)                         │
-  │                                                                  │
-  │  These CSS properties cause repaint (NOT reflow):               │
-  │  color, background-color, background-image,                     │
-  │  border-color, outline, visibility, box-shadow                  │
-  │                                                                  │
-  ├──────────────────────────────────────────────────────────────────┤
-  │                                                                  │
-  │  COMPOSITE ONLY (GPU):                                           │
-  │  Triggers: Composite only (CHEAPEST)                            │
-  │                                                                  │
-  │  These CSS properties skip layout AND paint:                    │
-  │  transform, opacity                                              │
-  │                                                                  │
-  │  → This is why you animate with transform, not left/top!       │
-  │                                                                  │
-  └──────────────────────────────────────────────────────────────────┘
-```
+> **Same three tiers [Section 7](#7-compositing--gpu-layers) already
+> ranked, now mapped to the concrete properties that land in each
+> one** — "reflow" is this chapter's name for the Worst tier
+> (Layout → Paint → Composite), "repaint" for the OK tier
+> (Paint → Composite only):
+
+| Tier | Triggered by CSS | Cost |
+|---|---|---|
+| **Reflow** (Layout → Paint → Composite) | `width`, `height`, `padding`, `margin`, `border-width`, `top`/`left`/`right`/`bottom`, `font-size`, `font-family`, `display`, `position`, `float`, `overflow`, `text-align` | Expensive — geometry changed, Section 5's cascade applies |
+| **Repaint** (Paint → Composite) | `color`, `background-color`, `background-image`, `border-color`, `outline`, `visibility`, `box-shadow` | Moderate — pixels change, geometry doesn't |
+| **Composite-only** (Composite) | `transform`, `opacity` | Cheapest — this is why you animate with `transform`, not `left`/`top` |
+
+> **Why certain JS *reads* — not just CSS writes — also force a
+> reflow, on their own, with no animation involved.** Browsers are
+> lazy about layout: a style **write** like `el.style.height = ...`
+> doesn't recalculate anything immediately, it just flags the layout
+> as "dirty" and defers the real work until the browser actually needs
+> it (batching many writes into one recalculation is exactly why this
+> is cheap). But `el.offsetHeight` is a **read**, and it has to return
+> an exact, pixel-correct number — there's no way to answer "how tall
+> is this, right now" from a layout that's known to be stale. So the
+> browser has no choice but to pause JS and run the deferred Layout
+> step synchronously, immediately, just to answer that one read. That
+> forced, out-of-schedule Layout is what makes `offsetHeight`,
+> `offsetWidth`, `getBoundingClientRect()`, `scrollTop`,
+> `clientHeight`, and `getComputedStyle()` reflow triggers even though
+> none of them is a "change" at all.
 
 ### Layout Thrashing — The #1 Performance Killer
 
@@ -682,26 +681,24 @@ items.forEach((item, i) => {
 
 ## 11. requestAnimationFrame & Rendering Pipeline Timing
 
-```
-  requestAnimationFrame runs BEFORE the browser paints.
-  It's synchronized with the display refresh rate (usually 60Hz).
+> **"rAF runs before paint" isn't a separate feature — it's step 3a
+> of [Section 9](#9-javascript-execution--the-event-loop-in-the-browser)'s
+> event loop, which you've already seen.** `setTimeout` schedules a
+> **macrotask** — Chapter 4's queue, with zero awareness that
+> rendering exists at all; the browser might run it, then still be
+> mid-frame, then run it again before ever reaching step 3.
+> `requestAnimationFrame` instead schedules its callback to run at a
+> fixed position INSIDE the render step itself — specifically before
+> style calculation and layout — so the browser can guarantee it fires
+> exactly once per frame, never more, and never in the middle of one:
 
-
-  WHY rAF INSTEAD OF setTimeout:
-  ═══════════════════════════════
-
-  setTimeout(fn, 16) → "run after 16ms" (approximately)
-  • Not synced to screen refresh
-  • May fire in the middle of a frame
-  • May fire multiple times before browser paints
-  • May be throttled in background tabs
-
-  requestAnimationFrame(fn) → "run before next paint"
-  • Synced to screen refresh rate
-  • Exactly one call per frame
-  • Automatically paused when tab is hidden
-  • Receives timestamp for precise animation
-```
+| | `setTimeout(fn, 16)` | `requestAnimationFrame(fn)` |
+|---|---|---|
+| Scheduled as | A macrotask — "run after ~16ms" | Step 3a of the render phase — "run before next paint" |
+| Sync to screen refresh | No — plain timer, unaware rendering exists | Yes — runs once per actual frame |
+| Can fire mid-frame / twice before paint | Yes — causes visible tearing | No — the loop's structure makes this impossible |
+| Background tabs | Keeps firing (until browser-specific throttling) | Automatically paused — no frames to align to |
+| Gives a timestamp | No — you'd call `Date.now()` yourself | Yes — passed as the callback's argument, for precise elapsed-time math |
 
 ```javascript
 // Smooth animation with rAF:
@@ -739,47 +736,35 @@ requestAnimationFrame(animate);
 
 ## 12. How Browsers Optimize — Batching, Layers, and Compositing
 
+**Batching is [Section 10](#10-reflow-vs-repaint--what-triggers-what)'s lazy-write/eager-read rule, applied to multiple writes in a row** — every write just re-flags "dirty," so three writes with no read between them still only cost one deferred Layout; a read forces that pending Layout to run immediately, right where it appears:
+
+```javascript
+// These 3 writes DON'T cause 3 separate reflows:
+element.style.width = "200px";
+element.style.height = "100px";
+element.style.margin = "10px";
+// Browser batches these → ONE reflow at next paint
+
+// BUT reading layout properties FORCES immediate reflow:
+element.style.width = "200px";
+const w = element.offsetWidth; // FORCES reflow NOW!
+element.style.height = "100px"; // invalidates again
+const h = element.offsetHeight; // FORCES ANOTHER reflow!
 ```
-  BROWSERS ARE SMART — they batch DOM changes:
-  ═════════════════════════════════════════════
 
-  // These 3 writes DON'T cause 3 separate reflows:
-  element.style.width = '200px';
-  element.style.height = '100px';
-  element.style.margin = '10px';
-  // Browser batches these → ONE reflow at next paint
+**Virtual scrolling attacks the cost at its source: [Section 5](#5-layout-reflow--calculating-geometry) established that Layout has to visit every node in the render tree**, and a 10,000-row list means 10,000 nodes it has to size and position — most of them scrolled off-screen and invisible. Keeping only the ~20 rows currently in the viewport in the DOM, and swapping their content as the user scrolls, holds the render tree at a constant ~20 nodes regardless of how large the underlying list is — Layout's cost stops scaling with list size at all. (Libraries: `react-window`, `react-virtuoso`, `tanstack-virtual`.)
 
-  // BUT reading layout properties FORCES immediate reflow:
-  element.style.width = '200px';
-  const w = element.offsetWidth; // FORCES reflow NOW!
-  element.style.height = '100px'; // invalidates again
-  const h = element.offsetHeight; // FORCES ANOTHER reflow!
+**`contain` attacks a different cost: [Section 5](#5-layout-reflow--calculating-geometry)'s cascade rule forces the browser to assume, by default, that ANY layout change might affect ancestors or siblings** — that's WHY one accordion item resizing can shift everything below it. `contain` is an explicit promise from the developer that breaks that assumption on purpose for one subtree:
 
-
-  VIRTUAL SCROLLING — How browsers handle 10,000 items:
-  ═════════════════════════════════════════════════════
-
-  DON'T: Render 10,000 DOM elements
-  → 10,000 nodes in render tree → massive layout/paint
-
-  DO: Render only ~20 visible items
-  → As user scrolls, swap items in/out
-  → Total DOM nodes: always ~20 regardless of list size
-  → Libraries: react-window, react-virtuoso, tanstack-virtual
-
-
-  CONTAIN PROPERTY — Tell browser to limit recalculations:
-  ═══════════════════════════════════════════════════════
-
-  .card {
-    contain: layout;   /* layout changes inside don't affect outside */
-    contain: paint;    /* painting inside doesn't bleed outside */
-    contain: content;  /* shorthand for layout + paint + style */
-  }
-
-  This tells the browser: "Changes inside this element WON'T affect
-  anything outside it" → browser can skip recalculating the rest of the page.
+```css
+.card {
+  contain: layout; /* layout changes inside don't affect outside */
+  contain: paint; /* painting inside doesn't bleed outside */
+  contain: content; /* shorthand for layout + paint + style */
+}
 ```
+
+With that promise in place, the browser no longer has to defensively recheck the rest of the page when something inside `.card` changes — it can trust the boundary and skip work it would otherwise be forced to redo just in case.
 
 ---
 
@@ -792,12 +777,12 @@ requestAnimationFrame(animate);
 
 ## Reality Check
 
-**"The browser renders HTML as it parses it"** ? Parsing feeds a PIPELINE with blocking rules people build careers on misunderstanding: CSS blocks RENDERING (not parsing — but scripts wait for CSSOM because they might read styles), synchronous scripts block PARSING (defer/async/module exist to break exactly this), and the preload scanner races ahead fetching despite blocks. The practical decode of every waterfall chart is these three rules; "why is my page white for two seconds" is almost always one of them firing as designed.
+**"The browser renders HTML as it parses it"** → Parsing feeds a PIPELINE with blocking rules people build careers on misunderstanding: CSS blocks RENDERING (not parsing — but scripts wait for CSSOM because they might read styles), synchronous scripts block PARSING (defer/async/module exist to break exactly this), and the preload scanner races ahead fetching despite blocks. The practical decode of every waterfall chart is these three rules; "why is my page white for two seconds" is almost always one of them firing as designed.
 
-**"Layout, paint, composite are stages of the same cost"** ? They are a COST LADDER you climb involuntarily: transform/opacity changes can stay composite-only (GPU moves existing textures — cheap, the entire basis of performant animation), color/shadow changes add paint, and geometry changes (width, top, font-size) trigger layout which cascades to everything below. The engineering rule: animate only transform and opacity; the debugging rule: DevTools Performance shows WHICH rung each frame paid, and jank investigations start by finding who forced layout. will-change is the escape hatch that costs memory per layer — a hint, not a sprinkle.
+**"Layout, paint, composite are stages of the same cost"** → They are a COST LADDER you climb involuntarily: transform/opacity changes can stay composite-only (GPU moves existing textures — cheap, the entire basis of performant animation), color/shadow changes add paint, and geometry changes (width, top, font-size) trigger layout which cascades to everything below. The engineering rule: animate only transform and opacity; the debugging rule: DevTools Performance shows WHICH rung each frame paid, and jank investigations start by finding who forced layout. will-change is the escape hatch that costs memory per layer — a hint, not a sprinkle.
 
-**"requestAnimationFrame runs at 60fps"** ? rAF runs BEFORE THE NEXT PAINT, whatever rate the display and load dictate (120Hz monitors, throttled background tabs where it stops entirely, dropped frames under load) — its guarantee is phase, not frequency: your callback sees a consistent pre-layout moment, making it the correct slot for read-then-write DOM choreography and the wrong tool for timing (durations come from the timestamp argument, never from counting calls). Animation logic that assumes 16.67ms per tick drifts on every device that is not a 60Hz desktop — which is now most devices.
+**"requestAnimationFrame runs at 60fps"** → rAF runs BEFORE THE NEXT PAINT, whatever rate the display and load dictate (120Hz monitors, throttled background tabs where it stops entirely, dropped frames under load) — its guarantee is phase, not frequency: your callback sees a consistent pre-layout moment, making it the correct slot for read-then-write DOM choreography and the wrong tool for timing (durations come from the timestamp argument, never from counting calls). Animation logic that assumes 16.67ms per tick drifts on every device that is not a 60Hz desktop — which is now most devices.
 
-**"The main thread runs my JavaScript"** ? The main thread runs your JS AND parsing AND style AND layout AND paint setup AND event dispatch — one queue for all of it, which is why "my code is fast" pages still jank (the 4ms handler fires during a 12ms layout on a frame that also parses a chunk). Long-task thinking replaces function thinking: anything over 50ms freezes input visibly; the levers are chunking (scheduler.yield / setTimeout seams), moving pure computation to workers, and CSS containment to fence layout blast radius. The metric that captures it all is INP — input delay is main-thread arithmetic, not mystery.
+**"The main thread runs my JavaScript"** → The main thread runs your JS AND parsing AND style AND layout AND paint setup AND event dispatch — one queue for all of it, which is why "my code is fast" pages still jank (the 4ms handler fires during a 12ms layout on a frame that also parses a chunk). Long-task thinking replaces function thinking: anything over 50ms freezes input visibly; the levers are chunking (scheduler.yield / setTimeout seams), moving pure computation to workers, and CSS containment to fence layout blast radius. The metric that captures it all is INP — input delay is main-thread arithmetic, not mystery.
 
-**"Reflow bugs are fixed by touching the DOM less"** ? The trigger is not touches but SYNC GEOMETRY READS after writes: one read (offsetHeight, getComputedStyle, getBoundingClientRect) after one style write forces a full layout flush mid-frame; a loop of them is layout thrashing at N flushes per frame. Fixes are ordering, not abstinence: batch all reads, then all writes (or split across rAF phases), cache geometry that cannot have changed, and use ResizeObserver/IntersectionObserver to be TOLD about geometry instead of polling for it. The same DOM touch count, reordered, is the 10x difference — the model is flush-scheduling, not frugality.
+**"Reflow bugs are fixed by touching the DOM less"** → The trigger is not touches but SYNC GEOMETRY READS after writes: one read (offsetHeight, getComputedStyle, getBoundingClientRect) after one style write forces a full layout flush mid-frame; a loop of them is layout thrashing at N flushes per frame. Fixes are ordering, not abstinence: batch all reads, then all writes (or split across rAF phases), cache geometry that cannot have changed, and use ResizeObserver/IntersectionObserver to be TOLD about geometry instead of polling for it. The same DOM touch count, reordered, is the 10x difference — the model is flush-scheduling, not frugality.
