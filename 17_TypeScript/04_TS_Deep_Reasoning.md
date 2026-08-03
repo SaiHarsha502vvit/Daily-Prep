@@ -572,6 +572,24 @@ type B = IsString<number>; // "no"
 
 "What's the difference between these three?"
 
+> **Why `Readonly<T>` stops at one level but `as const` goes all the
+> way down — two genuinely different mechanisms, not the same trick
+> applied with different effort.** Chapter 2 derived `Readonly<T>`'s
+> actual definition: `{ readonly [K in keyof T]: T[K] }` — a mapped
+> type that adds the `readonly` modifier to each top-level key, then
+> leaves `T[K]` exactly as it already was. If `T[K]` is itself an
+> object type, that nested type is untouched — nothing in the
+> definition recurses into it. `as const`, by contrast, isn't a type
+> transformation applied to an existing type at all — it's a compiler
+> directive that changes HOW an object literal gets its type inferred
+> in the first place, and that inference process is naturally
+> recursive: every literal nested inside the outer literal (a nested
+> object, an array) also gets the "don't widen, mark readonly"
+> treatment as the compiler walks the whole literal structure. Same
+> vocabulary word ("readonly"), two unrelated code paths — one a
+> single non-recursive mapped-type formula, the other a recursive
+> inference-time directive.
+
 ```typescript
 // readonly on property → prevents reassignment of ONE property
 interface User {
@@ -609,7 +627,16 @@ const config2 = { api: "https://example.com", retries: 3 };
 
 "How do you type a value that can be multiple different shapes?"
 
-```typescript
+> This example returns JSX, which is why the file it lives in has to
+> be named `.tsx`, not `.ts` — the plain `.ts` parser doesn't
+> recognize `<Spinner />` as JSX at all (it reads `<` as the start of
+> a type-argument list and fails to parse), which is the exact error
+> you'd hit pasting this into a `.ts` file. The pattern itself
+> (switch on the discriminant, TS narrows per case) is identical
+> whether the branches return JSX or plain values — only the file
+> extension changes.
+
+```tsx
 // THE PATTERN: One shared property (discriminant) with literal types
 type ApiResponse =
   | { status: 'loading' }
