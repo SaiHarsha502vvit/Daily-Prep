@@ -164,59 +164,63 @@ WHY this matters: understanding `this`, inheritance.
 
 ### JS Engine — How Code Actually Runs
 
-```
-Your JS code → Engine (V8 in Chrome/Node) → Machine code
+**How your code actually gets from a `.js` file to running machine
+instructions** is a full, separate mechanism — this chapter isn't the
+place to build it in detail (you don't have closures or the event loop
+yet, both of which the full story leans on), but a short, accurate
+preview matters more than a compressed diagram would:
 
-┌──────────────────────────────────────────────────────────┐
-│  SOURCE CODE: let x = 5 + 3;                             │
-│       │                                                  │
-│       ▼                                                  │
-│  PARSER → Abstract Syntax Tree (AST)                     │
-│       │                                                  │
-│       ▼                                                  │
-│  INTERPRETER (Ignition) → Bytecode (runs immediately)    │
-│       │                                                  │
-│       ▼ (if code runs frequently → "hot")                │
-│  JIT COMPILER (TurboFan) → Optimized machine code        │
-│                                                          │
-│  This is why JS is fast despite being "interpreted"      │
-└──────────────────────────────────────────────────────────┘
+Your source text is first turned into a tree-shaped representation
+(an **AST** — Abstract Syntax Tree) that captures the code's
+*structure*, not its characters. That tree is then compiled to a
+compact intermediate form called **bytecode**, which V8's interpreter
+(**Ignition**) runs directly. If a function turns out to be called
+very often — the engine tracks this — a second compiler
+(**TurboFan**) recompiles just that function into genuinely optimized
+machine code, betting on the patterns it observed. This two-speed
+design (start fast and interpret, then selectively optimize what's
+actually hot) is *why* JavaScript can be both "starts running
+instantly" and "fast in tight loops" at the same time — two goals
+that would conflict if the engine only had one strategy.
 
-REASONING: V8 uses JIT (Just-In-Time) compilation.
-It interprets first (fast startup) then optimizes hot paths
-(fast execution). Best of both worlds.
-```
+**[Chapter 12 — V8 Engine Internals](12_V8_Engine_Internals.md)**
+builds every piece of this for real: the actual token stream and AST
+for a real function, actual bytecode, the exact mechanism that makes
+"hot" measurable, and why mixing property-insertion order or value
+types silently makes your code slower. Come back to it once
+Chapters 2–11 give you the vocabulary (closures, prototypes, the
+event loop) that chapter leans on.
 
 ---
 
 ## 2. Data Types — The 8 Types
 
-```
-JS has 7 PRIMITIVE types + 1 OBJECT type = 8 total
+JavaScript has **7 primitive types** and **1 object type** — 8 total.
+The split matters because it's not just a classification, it's a
+promise about *how a value behaves when you assign or pass it*
+(Section "Value vs Reference" below derives exactly what that promise is).
 
-PRIMITIVES (immutable, stored by VALUE):
-┌───────────────┬─────────────────────────────────────────┐
-│ Type          │ Example                    │ typeof     │
-├───────────────┼─────────────────────────────────────────┤
-│ number        │ 42, 3.14, NaN, Infinity   │ "number"    │
-│ string        │ "hello", 'world', `hi`    │ "string"    │
-│ boolean       │ true, false                │ "boolean"  │
-│ undefined     │ undefined (not assigned)   │ "undefined"│
-│ null          │ null (intentional empty)   │ "object" ⚠ │
-│ symbol        │ Symbol("id") (unique)      │ "symbol"   │
-│ bigint        │ 9007199254740992n          │ "bigint"   │
-└───────────────┴─────────────────────────────────────────┘
+**The 7 primitives — immutable, always copied by value:**
 
-NON-PRIMITIVE (mutable, stored by REFERENCE):
-┌───────────────┬─────────────────────────────────────────┐
-│ object        │ {}, [], function, Date, RegExp, Map,    │
-│               │ Set, WeakMap, WeakSet                   │
-└───────────────┴─────────────────────────────────────────┘
+| Type        | Example                    | `typeof` result |
+|-------------|-----------------------------|------------------|
+| `number`    | `42`, `3.14`, `NaN`, `Infinity` | `"number"`   |
+| `string`    | `"hello"`, `'world'`, `` `hi` `` | `"string"`  |
+| `boolean`   | `true`, `false`              | `"boolean"`     |
+| `undefined` | `undefined` (not assigned)   | `"undefined"`   |
+| `null`      | `null` (intentional empty)   | `"object"` ⚠️    |
+| `symbol`    | `Symbol("id")` (unique)      | `"symbol"`      |
+| `bigint`    | `9007199254740992n`          | `"bigint"`      |
 
-⚠ typeof null === "object" is a BUG from 1995. Never fixed.
-⚠ typeof NaN === "number" — NaN is "Not a Number" but is a
-   number type. Use Number.isNaN() to check.
-```
+**The 1 non-primitive type — mutable, always copied by reference:**
+
+| Type     | Covers                                                          |
+|----------|-------------------------------------------------------------------|
+| `object` | `{}`, `[]`, functions, `Date`, `RegExp`, `Map`, `Set`, `WeakMap`, `WeakSet` — everything that isn't one of the 7 primitives above |
+
+> **Why `typeof null === "object"` — the actual mechanism, not just "it's a bug."** V8's very first implementation (and every engine since, for compatibility) represents values internally using a small **type tag** stored in the low bits of the value's machine representation — a cheap way to answer "what kind of thing is this" without a separate lookup. Objects were tagged `000`. `null`, meanwhile, was represented as the machine's null pointer — which is *all zero bits*. A null pointer's low bits are `000` purely because ALL of its bits are zero, which happens to be indistinguishable from the object tag using that same bit-check. `typeof` reports "object" not because `null` conceptually is one, but because its bit pattern accidentally matches the object tag's bit pattern. Fixing this today would break every `typeof x === 'object'` null-check already deployed on the web — so it stays, permanently, as the language's oldest still-visible implementation detail.
+>
+> **Why `typeof NaN === "number"`.** `NaN` (Not-a-Number) is, perhaps confusingly, a specific *value within* the `number` type — the IEEE-754 floating-point standard JavaScript's `number` type is built on reserves certain bit patterns specifically to represent "this arithmetic operation had no valid numeric result" (like `0/0` or `Math.sqrt(-1)`). It's a number in the sense that it lives in the same 64-bit floating-point representation every other number does — it just represents "no valid result" rather than a quantity. This is also exactly why `NaN === NaN` is `false`: per the IEEE-754 spec, NaN is defined to compare unequal to everything, including itself — a deliberate spec choice (so that a chain of computations that produces NaN can't accidentally be "fixed" by comparing it to a stored copy of itself), not an engine quirk. Use `Number.isNaN(x)` to actually test for it.
 
 ### Value vs Reference — The #1 Source of Bugs
 
@@ -242,21 +246,56 @@ let obj4 = structuredClone(obj1); // Deep copy (modern)
 let obj5 = JSON.parse(JSON.stringify(obj1)); // Deep copy (old way)
 ```
 
-```
-MEMORY VISUALIZATION:
+**Why primitives live on the stack and objects live on the heap —
+derived, not just diagrammed.** The call stack is a fixed-size,
+extremely fast region of memory that grows and shrinks in strict
+last-in-first-out order as functions call and return (Section 8 of
+this chapter covers the stack itself in depth). Because of that strict
+ordering, the stack can only efficiently hold values whose *size is
+known in advance and never changes* — a `number` is always the same
+fixed number of bytes, a `boolean` is always the same fixed number of
+bytes. Objects are the opposite: `{ name: "Harsha" }` might grow a new
+property tomorrow, might already be enormous today — there's no fixed
+size to reserve stack space for. So V8 allocates objects on the
+**heap** — a much larger, more flexible region with no fixed
+ordering — and the stack holds only a small, fixed-size **pointer**
+(a memory address) telling you *where on the heap* the actual object
+data lives.
 
-STACK (primitives)         HEAP (objects)
-┌──────────────┐           ┌──────────────────┐
-│ a: 10        │           │ { name: "Harsha" }│ ← address 0x1A
-│ b: 20        │           └──────────────────┘
-│ obj1: 0x1A ──┼──────────────────┘
-│ obj2: 0x1A ──┼──────────────────┘  (same address!)
-└──────────────┘
-
-REASONING: Primitives are small → stored directly on stack.
-Objects can be large → stored on heap, stack holds a pointer.
-Assignment copies what's on the stack (value OR pointer).
 ```
+STACK (fixed-size slots, LIFO)      HEAP (flexible-size, no ordering)
+┌──────────────────┐                ┌────────────────────┐
+│ a: 10             │                │ { name: "Harsha" } │ ← address 0x1A
+│ b: 20             │                └────────────────────┘
+│ obj1: 0x1A ───────┼────────────────────────┘
+│ obj2: 0x1A ───────┼────────────────────────┘  (same address!)
+└───────────────────┘
+```
+
+**What this diagram predicts, correctly, about the code above.**
+`let b = a` copies the fixed-size *value* `10` into `b`'s own stack
+slot — two completely independent numbers from that point on,
+exactly what the earlier example showed. `let obj2 = obj1` copies the
+fixed-size *pointer* `0x1A` into `obj2`'s stack slot — both variables
+now hold the same address, pointing at the identical heap object,
+which is exactly why mutating through either variable is visible
+through both. Assignment in JavaScript **always** copies whatever sits
+in the stack slot — for a primitive that's the value itself, for an
+object reference that's the pointer, never the object's actual
+contents. This single rule (*"assignment copies the stack slot,
+never the heap data"*) is the whole mechanism behind every value-vs-reference
+surprise you'll ever hit.
+
+*(One honest caveat, so this doesn't overclaim precision: "stack for
+primitives, heap for objects" is the correct mental model for
+reasoning about JS's copy semantics, and it's how this module will
+keep referring to it — but Chapter 12's V8-internals treatment shows
+the real engine takes further liberties on top of this, like
+sometimes proving an object never escapes a function and allocating
+it on the stack anyway. That's a performance optimization layered on
+top of the model here — it never changes what your code observes,
+only how fast it runs, so the mental model above remains completely
+reliable for predicting behavior.)*
 
 ---
 
@@ -277,15 +316,38 @@ Assignment copies what's on the stack (value OR pointer).
 
 ### 5W1H: WHY does coercion exist?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: JS automatically converts types when operators expect them.   ║
-║  WHY:  Brendan Eich designed JS in 10 days for beginners.            ║
-║        He wanted "5" + 3 to "just work" instead of crashing.         ║
-║  WHEN: Every comparison (==), arithmetic, string concatenation.      ║
-║  HOW:  Internal algorithms: ToPrimitive, ToNumber, ToString.         ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> **What.** JavaScript automatically converts a value from one type to
+> another when an operator expects a type it wasn't given — you write
+> `"5" + 3`, and rather than throwing an error for "you can't add a
+> string and a number," the engine converts one side and proceeds.
+>
+> **Why this design choice, not just "that's how it is."** Section 2a
+> of this chapter's naming history (see [Chapter 14](14_Browser_Engines_And_Chromium_Architecture.md))
+> covers the ten-day origin story in full — the relevant piece here is
+> that Brendan Eich built the language for exactly this purpose:
+> letting a page author with little programming background write
+> something like `"Total: " + price` and have it *work*, rather than
+> crash with a type error the author has no framework for
+> understanding yet. Coercion is a deliberate leniency choice, not an
+> oversight — and like most leniency choices, it trades predictability
+> for accessibility, which is exactly why professional codebases claw
+> some of that predictability back with `===` (covered next) and,
+> increasingly, TypeScript.
+>
+> **When it fires.** Every `==` comparison, every arithmetic operator
+> except when both sides are already the same type, every template
+> literal interpolation, every place a value needs to become a string
+> for display or a number for math.
+>
+> **How, mechanically.** The ECMAScript spec defines named internal
+> algorithms for this — `ToPrimitive`, `ToNumber`, `ToString` — that
+> every engine implements identically because the *spec* defines the
+> exact steps, not just the outcome. `ToPrimitive` is the one worth
+> remembering by name: it's what runs first whenever an object needs
+> to become a primitive (as in `[] + {}`, worked through in this
+> section's Challenge below) — it tries the object's `valueOf()`
+> method, and if that doesn't yield a primitive, falls back to
+> `toString()`.
 
 ```javascript
 // STRING + anything = STRING (concatenation wins)
@@ -320,22 +382,31 @@ if ([]) console.log("truthy!"); // PRINTS! empty array is truthy
 
 ### The == vs === Rule (and REASONING)
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  == (loose equality): Converts types THEN compares                   ║
-║  === (strict equality): Compares WITHOUT conversion                  ║
-║                                                                      ║
-║  RULE: ALWAYS use === unless you have a specific reason for ==.      ║
-║                                                                      ║
-║  REASONING: == has 22 type conversion rules in the spec.             ║
-║  Nobody can remember all 22. === has 0 conversion rules.             ║
-║  Predictable code > clever code.                                     ║
-║                                                                      ║
-║  The ONLY acceptable == use:                                         ║
-║  if (value == null) // checks for BOTH null and undefined            ║
-║  // equivalent to: if (value === null || value === undefined)        ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> **`==` (loose equality)** converts types first, then compares.
+> **`===` (strict equality)** compares without any conversion — if the
+> types differ, the answer is `false` immediately, no further steps.
+>
+> **The rule, and the reasoning behind it, not just the rule.** Default
+> to `===`. The ECMAScript spec's Abstract Equality Comparison
+> Algorithm (what `==` actually runs) has over twenty distinct branches
+> covering every pairing of types — nobody holds all of them reliably
+> in working memory, which means `==` isn't "sometimes surprising," it's
+> "reliably surprising for any pairing you haven't specifically
+> memorized." `===` has zero conversion branches: what you see is what
+> gets compared, full stop.
+>
+> **The one acceptable `==` use, and why this specific case is safe
+> when the general rule isn't.** `value == null` checks for *both*
+> `null` and `undefined` in one comparison, because those two values
+> are specifically defined (as a spec-level special case, not a
+> coincidence) to loosely-equal each other and nothing else — no
+> number, string, or object ever loosely-equals `null` except `null`
+> and `undefined` themselves. That narrowness is exactly what makes it
+> safe: `value == null` cannot accidentally match `0`, `""`, or any
+> other value the general `==` rules would ambush you with — it's
+> spec-guaranteed to catch precisely {`null`, `undefined`} and nothing
+> else, which is why this one exception is written into style guides
+> instead of banned along with every other `==` use.
 
 ---
 
@@ -363,18 +434,30 @@ For `[] + {}`:
 
 ### 5W1H: WHY Three Ways?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: var (1995), let (2015/ES6), const (2015/ES6)                  ║
-║  WHY three? var had bugs (hoisting, no block scope). let/const       ║
-║  were added to FIX those bugs while keeping var for backward         ║
-║  compatibility.                                                      ║
-║  WHEN to use each:                                                   ║
-║  • const: DEFAULT choice. ~90% of variables.                         ║
-║  • let: When you NEED to reassign (loops, accumulators).             ║
-║  • var: NEVER in modern code. Legacy only.                           ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> **What.** Three ways to declare a variable, from three different
+> eras of the language: `var` (1995, the original), `let` and `const`
+> (ES6 / 2015, added specifically to fix problems `var` couldn't fix
+> without breaking every existing script that depended on its behavior).
+>
+> **Why three, instead of fixing `var` in place.** JavaScript has never
+> had a breaking-change release — every script written in 1996 is
+> still required to run correctly in a 2026 browser (this is the same
+> "the web must not break" constraint that shapes Chapter 14's whole
+> Site Isolation and multi-process story). `var`'s function-scoping and
+> undefined-initialized hoisting (both covered in detail below) can't
+> be changed without risking that some deployed-since-1996 script
+> silently starts behaving differently. So instead of fixing `var`,
+> ES6 added `let` and `const` as new keywords with corrected behavior,
+> and left `var` exactly as it always was — for compatibility, not
+> because anyone still recommends using it.
+>
+> **When to use each, as a decision, not a preference.** `const` is
+> the default — reach for it first, always, for every variable. Switch
+> to `let` only at the specific moment you discover you need to
+> reassign the binding (a loop counter, an accumulator). Never reach
+> for `var` in code you're writing today; you'll only encounter it
+> reading code written before 2015 or by someone who hasn't updated
+> their habits since.
 
 ```javascript
 // SCOPE comparison:
@@ -406,22 +489,21 @@ obj = {}; // ❌ TypeError! Can't reassign the variable.
 // not the value itself. For true immutability, use Object.freeze().
 ```
 
-```
-COMPARISON TABLE:
-┌──────────┬──────────┬──────────┬──────────┐
-│ Feature  │  var     │  let     │  const   │
-├──────────┼──────────┼──────────┼──────────┤
-│ Scope    │ function │  block   │  block   │
-│ Hoisting │ yes(undef)│ yes(TDZ)│ yes(TDZ) │
-│ Reassign │  yes     │  yes    │  NO       │
-│ Redeclare│  yes     │  no     │  no       │
-│ Use in   │  never   │ ~10%    │ ~90%      │
-│ 2025+    │          │         │           │
-└──────────┴──────────┴──────────┴──────────┘
+**The full comparison, as a table you can actually query, not just skim:**
 
-TDZ = Temporal Dead Zone (the time between hoisting and
-declaration where accessing the variable throws an error)
-```
+| Feature              | `var`               | `let`                | `const`               |
+|-----------------------|----------------------|------------------------|-------------------------|
+| Scope                 | function              | block                  | block                   |
+| Hoisting behavior     | yes — initialized to `undefined` | yes — but stays in the TDZ | yes — but stays in the TDZ |
+| Can reassign?         | yes                   | yes                    | **no**                  |
+| Can redeclare in same scope? | yes            | no (SyntaxError)        | no (SyntaxError)         |
+| Recommended usage today | never             | when you need to reassign | default — reach for this first |
+
+TDZ = **Temporal Dead Zone** — the span of code between a scope
+starting and the `let`/`const` declaration line actually being reached.
+Accessing the variable during that span throws, rather than silently
+returning `undefined` the way `var` would. The Hoisting section below
+derives exactly why this exists and what problem it's solving.
 
 ---
 
@@ -429,45 +511,57 @@ declaration where accessing the variable throws an error)
 
 ### 5W1H: WHAT is Scope?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Scope determines WHERE a variable is accessible.              ║
-║  WHY:  Without scope, all variables would be global → chaos.         ║
-║  HOW:  JS uses LEXICAL (static) scoping — scope is determined        ║
-║        by WHERE you WRITE the code, not where you call it.           ║
-╚══════════════════════════════════════════════════════════════════════╝
+> **What.** Scope is the answer to "from this line of code, which
+> variable names are visible?" Every variable has a *region* of code
+> where referencing its name resolves to it, and outside that region
+> the same name either resolves to something else or doesn't resolve
+> at all.
+>
+> **Why this needs to exist at all.** Imagine the alternative: every
+> variable in a program lives in one single, flat, global namespace.
+> Two functions written by two different people (or the same person, six
+> months apart) that both happen to use a loop counter named `i` would
+> silently stomp on each other's `i` — not a compile error, not a
+> runtime error, just quietly wrong results the moment both functions
+> run in the same program. Scope is the mechanism that lets `i` inside
+> one function be a completely different `i` from the one inside
+> another function, without either author having to coordinate names
+> with the other in advance.
+>
+> **How JavaScript resolves it: lexical (static) scoping.** "Lexical"
+> means scope is determined by *where in the source code you physically
+> wrote a piece of code* — not by which function happened to call it,
+> not by anything that varies at runtime. You can look at the raw text
+> of a JavaScript file, with zero knowledge of how it will ever be
+> invoked, and determine exactly what every variable name resolves to
+> at every line, purely from nesting. This is the property that makes
+> closures (next chapter) predictable — a closure's variable access is
+> fixed the moment you *write* it, unaffected by the different contexts
+> it might later be *called* from.
+
+```mermaid
+graph TD
+    subgraph Global["GLOBAL SCOPE — const API_URL. Accessible everywhere; attached to `window` in a browser."]
+        subgraph Function["FUNCTION SCOPE — inside greet(name). const msg is visible here and in every nested block."]
+            subgraph Block["BLOCK SCOPE — inside the if. const upper is visible ONLY here."]
+                UpperVar["upper<br/>(only reachable from inside this if block)"]
+            end
+            MsgVar["msg<br/>(reachable inside greet AND inside the if block)"]
+        end
+        UrlVar["API_URL<br/>(reachable everywhere in the file)"]
+    end
 ```
 
-```
-THREE TYPES OF SCOPE:
-
-┌─── GLOBAL SCOPE ──────────────────────────────────────────┐
-│  const API_URL = "https://api.example.com";               │
-│  // Accessible EVERYWHERE. Attached to window (browser).  │
-│                                                           │
-│  ┌─── FUNCTION SCOPE ───────────────────────────────┐     │
-│  │  function greet(name) {                           │    │
-│  │    const msg = "Hello " + name;                   │    │
-│  │    // msg accessible here + inner blocks          │    │
-│  │                                                   │    │
-│  │    ┌─── BLOCK SCOPE ──────────────────────┐      │     │
-│  │    │  if (name) {                          │      │    │
-│  │    │    const upper = name.toUpperCase();   │      │   │
-│  │    │    // upper only accessible HERE       │      │   │
-│  │    │    // Can access msg (outer scope) ✅ │      │     │
-│  │    │    // Can access API_URL (global) ✅  │      │     │
-│  │    │  }                                    │      │    │
-│  │    └───────────────────────────────────────┘      │    │
-│  │    // upper NOT accessible here ❌               │      │
-│  │  }                                                │    │
-│  └───────────────────────────────────────────────────┘    │
-│  // msg NOT accessible here ❌                             │
-└───────────────────────────────────────────────────────────┘
-
-RULE: Inner scopes can access outer scopes (scope chain).
-Outer scopes CANNOT access inner scopes.
-This is the foundation of CLOSURES (next chapter).
-```
+**The rule this diagram makes visible, not just states:** an inner
+scope can always see everything in every scope that contains it — the
+`if` block can read `msg` (its parent function's variable) and
+`API_URL` (the global) without any special syntax. The reverse is
+never true: `greet`'s body cannot read `upper`, because `upper` only
+exists inside the `if` block, and once you've left that block (in the
+source text — remember, lexical scoping cares about *where you wrote*
+the code) the name simply isn't in scope anymore. This one-directional
+visibility — **inward-in, never outward-out** — is the entire
+foundation the next chapter's closures are built on.
 
 ### The Scope Chain (Lookup Mechanism)
 
@@ -505,20 +599,61 @@ function outer() {
 
 ### 5W1H: WHAT is Hoisting?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: JS "moves" declarations to the top of their scope BEFORE      ║
-║        executing any code. (Technically, it's about creation         ║
-║        phase vs execution phase — nothing physically moves.)         ║
-║                                                                      ║
-║  WHY:  The JS engine makes TWO passes:                               ║
-║        Pass 1 (Creation): Find all declarations, allocate memory.    ║
-║        Pass 2 (Execution): Run code line by line.                    ║
-║                                                                      ║
-║  WHEN: This happens with var, function declarations, let/const.      ║
-║        But BEHAVIOR differs between them.                            ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> **What "hoisting" is describing, precisely.** JavaScript behaves *as
+> if* every declaration were moved to the top of its scope before any
+> code runs. Nothing is physically relocated — this is a description
+> of an observable effect, not a literal mechanism. The real mechanism
+> is that the engine processes each scope in **two distinct passes**,
+> and hoisting is just what that two-pass process looks like from the
+> outside.
+>
+> **Why two passes, derived from what you already know about
+> parsing.** [Chapter 12, Section 3a](12_V8_Engine_Internals.md#3a-the-step-most-explanations-skip-what-tokenize-then-build-an-ast-actually-looks-like)
+> showed that before any code runs, the engine has already fully
+> parsed the scope into an AST — a tree where every declaration
+> (`var x`, `function greet() {}`, `let y`) is already sitting there
+> as a distinct, identifiable node, in a tree the engine can walk in
+> whatever order it wants, independent of the order those nodes appear
+> in the source text. **Pass 1 ("creation phase")** walks that
+> already-built tree specifically looking for declaration nodes, and
+> for each one it finds, reserves a name for it in the current scope
+> — before pass 2 has executed a single line. **Pass 2 ("execution
+> phase")** then walks the tree again, this time in source order,
+> actually running each statement. Hoisting is simply what happens
+> when pass 1 finds a name before pass 2's source-order walk would
+> have reached its declaration line.
+>
+> **Why function declarations get the *entire function*, but `var` only
+> gets its *name* — this is the detail that gets skipped most often,
+> and it follows directly from the AST shapes Chapter 12 Section 3a
+> showed you.** A `FunctionDeclaration` AST node is **self-contained**
+> — its `params` and `body` are children of that same node, so the
+> complete function is available the instant pass 1's scan reaches
+> that one node; pass 1 can build the actual callable function object
+> right then, during creation phase, with nothing further needed. A
+> `var x = 5` declaration, by contrast, is really **two separate
+> pieces** in the AST: a bare declaration node (`var x`, contributing
+> only the *name* `x` to the scope) and a *separate* assignment
+> operation (`x = 5`) that only runs during pass 2, in its original
+> source position. Pass 1 sees the declaration node and reserves the
+> name `x`, initialized to `undefined` because that's literally all
+> the information available at that point — the value `5` doesn't
+> exist yet as far as pass 1 is concerned, because it lives in a
+> different node that pass 1 doesn't execute. This isn't an arbitrary
+> rule to memorize — it's a direct, mechanical consequence of
+> "a function declaration's AST node contains its whole body" versus
+> "a var declaration's AST node contains only a name, with the value
+> living in a separate node that hasn't run yet."
+>
+> **When this applies.** `var`, function declarations, `let`, `const`,
+> and `class` are all hoisted in the sense above — pass 1 finds all of
+> them. What differs between them is what pass 1 does once it finds
+> each one: for `var`, initialize to `undefined`; for a function
+> declaration, build the complete function immediately; for
+> `let`/`const`/`class`, reserve the name but leave it **uninitialized**
+> — deliberately unusable — until pass 2's execution reaches the actual
+> declaration line. That deliberately-unusable window is the
+> **Temporal Dead Zone**, worked through concretely below.
 
 ```javascript
 // WHAT JS SEES vs WHAT ACTUALLY HAPPENS:
@@ -553,24 +688,30 @@ let y = 10;
 // Accessing it before declaration throws immediately.
 ```
 
-```
-HOISTING SUMMARY:
+**The complete picture, as a queryable table — what pass 1 does for
+each declaration form, and what that leaves you able to do before the
+declaration line is actually reached:**
 
-┌───────────────────┬────────────┬────────────────────┐
-│ Declaration       │ Hoisted?   │ Value before line? │
-├───────────────────┼────────────┼────────────────────┤
-│ var x = 5         │ Yes        │ undefined          │
-│ let x = 5         │ Yes (TDZ)  │ ReferenceError     │
-│ const x = 5       │ Yes (TDZ)  │ ReferenceError     │
-│ function f() {}   │ Yes (full) │ The function itself│
-│ var f = () => {}  │ Yes        │ undefined          │
-│ class C {}        │ Yes (TDZ)  │ ReferenceError     │
-└───────────────────┴────────────┴────────────────────┘
+| Declaration          | Found by pass 1? | Value/state before its line is reached |
+|------------------------|-------------------|-------------------------------------------|
+| `var x = 5`             | Yes               | `undefined`                                |
+| `let x = 5`             | Yes (TDZ)         | Throws `ReferenceError`                     |
+| `const x = 5`           | Yes (TDZ)         | Throws `ReferenceError`                     |
+| `function f() {}`       | Yes (fully built) | The complete, callable function             |
+| `var f = () => {}`      | Yes (name only)   | `undefined` (the arrow function itself is an assignment, same as any `var`) |
+| `class C {}`            | Yes (TDZ)         | Throws `ReferenceError`                     |
 
-REASONING: TDZ exists to catch bugs. If you use a variable
-before declaring it, that's almost certainly a mistake.
-let/const throw immediately instead of silently being undefined.
-```
+**Why the TDZ exists as a deliberate design choice, not an accident.**
+Before ES6, `var`'s "hoisted to `undefined`" behavior meant using a
+variable before its declaration line failed *silently* — no error, just
+a confusing `undefined` propagating through your program until it
+caused a symptom somewhere else entirely, often far from the actual
+mistake. `let`/`const`/`class` close that gap on purpose: if you
+reference the name before pass 2 has actually initialized it, that is,
+provably, always a mistake — there's no legitimate reason to read a
+`let` variable before its own declaration line — so instead of handing
+you a silent `undefined` to debug later, the engine throws immediately,
+at the exact line where the mistake actually is.
 
 ---
 
@@ -630,33 +771,71 @@ const { a, ...rest } = { a: 1, b: 2, c: 3 };
 
 ## 8. Execution Context — How JS Runs Your Code
 
+> **What an execution context actually bundles together.** Every time
+> JS is about to run a chunk of code — the top-level script, or any
+> function call — the engine creates a small record, an **execution
+> context**, holding exactly three things: a **Variable Environment**
+> (every `var`/`let`/`const`/function declared in this specific
+> invocation), a **Scope Chain** (a link to the parent scope's
+> execution context, so lookups can walk outward — the exact mechanism
+> the Scope Chain section above traced), and a **`this` binding** (this
+> chapter's Story 3 walked through how call-site, not definition-site,
+> decides this value).
+>
+> **The two kinds, and why "Global" is really just a special case of
+> "Function."** A **Global Execution Context** is created exactly once,
+> when the script starts. A **Function Execution Context** is created
+> fresh on every single call to every function — call the same function
+> three times, get three separate execution contexts, each with its
+> own independent Variable Environment (this is, not coincidentally,
+> the exact same per-call independence that makes recursion possible at
+> all — each recursive call needs its own copy of the function's local
+> variables, and a fresh execution context per call is precisely how
+> that independence is provided).
+>
+> **Why the Global execution context's `this` differs between a browser
+> and Node — not a coincidence, a direct consequence of Chapter 13's
+> module-wrapping mechanism.** In a browser, top-level `this` is
+> `window`, because there is no wrapping — your script runs directly at
+> the global scope, where `this` defaults to the global object. In
+> Node, top-level `this` is `module.exports`, and
+> [Chapter 13, Section 6](13_NodeJS_Architecture.md#6-the-module-system--commonjs-vs-esm)
+> is where the actual mechanism lives: Node never runs your file's code
+> directly at global scope — it wraps your entire file's contents in a
+> function, `function(exports, require, module, __filename, __dirname) { /* your code */ }`,
+> and *calls* that wrapper function with `this` explicitly set to
+> `module.exports`. Your file's top-level `this` isn't special Node
+> magic — it's the completely ordinary "implicit binding" rule (Story 3
+> above, rule 3 of the `this` rules) applied to a function call you
+> didn't write yourself but that Node makes on your behalf, every time.
+
+**The Call Stack — where execution contexts actually live while
+they're active.** The stack is a strictly ordered (LIFO — last in,
+first out) region: an execution context is **pushed** onto it the
+moment its function is called, and **popped** off the moment that
+function returns.
+
 ```
-Every time JS runs code, it creates an EXECUTION CONTEXT.
-
-┌──────────────────────────────────────────────────────────┐
-│  EXECUTION CONTEXT contains:                             │
-│                                                          │
-│  1. Variable Environment (variables, functions)          │
-│  2. Scope Chain (link to parent scopes)                  │
-│  3. `this` binding (depends on HOW function is called)   │
-└──────────────────────────────────────────────────────────┘
-
-TYPES:
-• Global Execution Context: Created when script starts.
-  In browser: this = window. In Node: this = module.exports.
-
-• Function Execution Context: Created for each function call.
-  Has its own variables, scope chain, and `this`.
-
-CALL STACK:
 ┌───────────────┐
 │ inner()       │ ← currently executing
 │ outer()       │ ← waiting for inner() to finish
 │ Global        │ ← waiting for outer() to finish
 └───────────────┘
-Functions are PUSHED when called, POPPED when they return.
-Stack Overflow = too many pushes without pops (infinite recursion)
 ```
+
+> **Why "stack overflow" is a real, fixed limit — and why it's the
+> stack specifically, not the heap, that has this limit.** [Chapter 12,
+> Section 10](12_V8_Engine_Internals.md#10-the-memory-heap--generations-not-one-big-pile)
+> covers V8's memory model in full, but the relevant fact here: the call
+> stack is allocated as a small, **fixed-size** region up front — unlike
+> the heap, which can keep growing as your program allocates more
+> objects, the stack's size is capped at process-start and never
+> resized. Every function call pushes a new execution context onto that
+> fixed region; a function that calls itself without ever hitting a
+> base case (uncontrolled recursion) keeps pushing new contexts with
+> nothing ever popping, and the fixed region eventually runs out of
+> room — `RangeError: Maximum call stack size exceeded`, JavaScript's
+> specific name for what's generically called a stack overflow.
 
 ---
 
@@ -997,12 +1176,12 @@ All declarations (`var`, `let`, `const`) are hoisted. BUT: `var` is initialized 
 
 ## Reality Check
 
-**"var, let, and const differ by mutability"** ? The deeper split is SCOPING and the temporal dead zone: var is function-scoped and hoists initialized-to-undefined (the classic leaked loop variable), let/const are block-scoped and hoist UNINITIALIZED � referencing them before the declaration line throws, which is the TDZ. And const freezes the BINDING, not the value: const arr = [] happily accepts pushes. Three keywords, three different lifecycle stories � mutability is the least interesting of the differences.
+**"var, let, and const differ by mutability"** → The deeper split is SCOPING and the temporal dead zone: var is function-scoped and hoists initialized-to-undefined (the classic leaked loop variable), let/const are block-scoped and hoist UNINITIALIZED — referencing them before the declaration line throws, which is the TDZ. And const freezes the BINDING, not the value: const arr = [] happily accepts pushes. Three keywords, three different lifecycle stories — mutability is the least interesting of the differences.
 
-**"== is broken, always use ==="** ? The rule is right; believing it makes coercion knowledge optional is wrong: coercion still fires in if conditions (truthiness � 0, empty string, NaN, null, undefined are falsy and that IS load-bearing logic), in template literals, in plus-operator string contexts, and in sort's default STRING comparison ([10, 9, 1].sort() gives [1, 10, 9] � the bug every dashboard has shipped once). You can ban == and still be ambushed by coercion daily; the defense is knowing the five coercion sites, not just the one operator.
+**"== is broken, always use ==="** → The rule is right; believing it makes coercion knowledge optional is wrong: coercion still fires in if conditions (truthiness — 0, empty string, NaN, null, undefined are falsy and that IS load-bearing logic), in template literals, in plus-operator string contexts, and in sort's default STRING comparison ([10, 9, 1].sort() gives [1, 10, 9] — the bug every dashboard has shipped once). You can ban == and still be ambushed by coercion daily; the defense is knowing the five coercion sites, not just the one operator.
 
-**"Everything in JavaScript is an object"** ? Seven primitives (string, number, bigint, boolean, symbol, null, undefined) are NOT objects � they are auto-WRAPPED on property access ("x".length boxes momentarily), which is why the slogan feels true and why primitives still copy by value while objects copy by reference. That value-versus-reference line is the real content: it decides every equality check, every function-argument mutation surprise, and every "why did changing the copy change the original."
+**"Everything in JavaScript is an object"** → Seven primitives (string, number, bigint, boolean, symbol, null, undefined) are NOT objects — they are auto-WRAPPED on property access ("x".length boxes momentarily), which is why the slogan feels true and why primitives still copy by value while objects copy by reference. That value-versus-reference line is the real content: it decides every equality check, every function-argument mutation surprise, and every "why did changing the copy change the original."
 
-**"Number handles integers fine in practice"** ? Number is IEEE-754 double: integers are exact only to 2^53-1 (Number.MAX_SAFE_INTEGER), beyond which 9007199254740993 === 9007199254740992 is TRUE � database IDs and financial totals hit this in production, which is why Twitter API returns id_str and why BigInt exists. Plus the classics: 0.1 + 0.2 !== 0.3, NaN !== NaN (use Number.isNaN), and parseInt("08") historical octal traps. Money in cents-as-integers, IDs as strings, tolerance for float comparison � the three rules that prevent the whole category.
+**"Number handles integers fine in practice"** → Number is IEEE-754 double: integers are exact only to 2^53-1 (Number.MAX_SAFE_INTEGER), beyond which 9007199254740993 === 9007199254740992 is TRUE — database IDs and financial totals hit this in production, which is why Twitter API returns id_str and why BigInt exists. Plus the classics: 0.1 + 0.2 !== 0.3, NaN !== NaN (use Number.isNaN), and parseInt("08") historical octal traps. Money in cents-as-integers, IDs as strings, tolerance for float comparison — the three rules that prevent the whole category.
 
-**"this follows the surrounding code"** ? this is bound by the CALL SITE, per call, by four rules in priority order: new-binding, explicit (call/apply/bind), implicit (obj.method() � the receiver before the dot), default (undefined in strict mode, globalThis otherwise) � plus the arrow-function exception that CAPTURES lexical this instead of binding at all. Every this bug is one of two errors: reading it lexically when it binds dynamically (extracted method loses its receiver), or using an arrow where dynamic binding was needed (object methods, event handlers wanting the element). Learn the four-rule dispatch and the exception; the mystique evaporates.
+**"this follows the surrounding code"** → this is bound by the CALL SITE, per call, by four rules in priority order: new-binding, explicit (call/apply/bind), implicit (obj.method() — the receiver before the dot), default (undefined in strict mode, globalThis otherwise) — plus the arrow-function exception that CAPTURES lexical this instead of binding at all. Every this bug is one of two errors: reading it lexically when it binds dynamically (extracted method loses its receiver), or using an arrow where dynamic binding was needed (object methods, event handlers wanting the element). Learn the four-rule dispatch and the exception; the mystique evaporates.
