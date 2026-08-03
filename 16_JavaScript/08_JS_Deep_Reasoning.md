@@ -66,27 +66,28 @@ console.log("4");
 
 ### Deep Reasoning (Senior)
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE EVENT LOOP — Like a Restaurant Kitchen                      ║
-║                                                                  ║
-║  🧑‍🍳 Chef (Call Stack) = Synchronous code                        ║
-║  📋 VIP Order Queue (Microtask Queue) = Promises, queueMicrotask  ║
-║  📝 Regular Order Queue (Macrotask Queue) = setTimeout, setInt.   ║
-║                                                                  ║
-║  RULE: Chef finishes CURRENT dish → checks ALL VIP orders        ║
-║        → then takes ONE regular order → repeat                   ║
-║                                                                  ║
-║  Step 1: console.log('1')        → Stack: execute → prints "1"   ║
-║  Step 2: setTimeout(fn, 0)       → Web API → Macrotask Queue     ║
-║  Step 3: Promise.then(fn)        → Microtask Queue               ║
-║  Step 4: console.log('4')        → Stack: execute → prints "4"   ║
-║  Step 5: Stack empty → drain Microtask Queue → prints "3"        ║
-║  Step 6: Take next Macrotask → prints "2"                        ║
-║                                                                  ║
-║  OUTPUT: 1, 4, 3, 2                                              ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **The mechanism, traced step by step — the numbered order is the
+> actual content; the kitchen labels below are just names for the
+> real participants.** Call Stack = synchronous code executing right
+> now. Microtask Queue = `Promise.then`/`queueMicrotask` callbacks.
+> Macrotask Queue = `setTimeout`/`setInterval` callbacks. The rule the
+> trace below enforces: the stack empties, THEN the *entire* microtask
+> queue drains, THEN exactly ONE macrotask runs, then repeat.
+>
+> | Step | Line executed | What happens | Output so far |
+> |---|---|---|---|
+> | 1 | `console.log('1')` | Runs synchronously on the stack | `1` |
+> | 2 | `setTimeout(fn, 0)` | Handed to the runtime → lands in the **macrotask** queue | `1` |
+> | 3 | `Promise.resolve().then(fn)` | Enqueued in the **microtask** queue | `1` |
+> | 4 | `console.log('4')` | Runs synchronously | `1, 4` |
+> | 5 | Stack now empty | Loop drains the microtask queue completely first | `1, 4, 3` |
+> | 6 | Microtasks empty | Loop finally takes the one pending macrotask | `1, 4, 3, 2` |
+>
+> [Chapter 4, Section 1](04_JS_Async_Promises.md#1-the-event-loop--the-core-mental-model)
+> traces this exact same mechanism with a full sequence diagram and a
+> five-actor cast (engine, runtime, both queues, the loop itself) if
+> you want to see it laid out with even more intermediate detail than
+> the table above.
 
 **Why `setTimeout(fn, 0)` doesn't mean "run immediately":**
 
@@ -147,24 +148,20 @@ for (var i = 0; i < 5; i++) {
 
 **Output: `5, 5, 5, 5, 5`**
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHY 5,5,5,5,5 — The Shared Whiteboard Analogy                   ║
-║                                                                  ║
-║  var i = shared whiteboard in the function                       ║
-║  Each setTimeout callback gets a REFERENCE to that whiteboard    ║
-║  NOT a snapshot of what was written when it was created          ║
-║                                                                  ║
-║  Loop iteration 0: "Hey callback, when you run, read whiteboard" ║
-║  Loop iteration 1: "Hey callback, when you run, read whiteboard" ║
-║  Loop iteration 2: "Hey callback, when you run, read whiteboard" ║
-║  Loop iteration 3: "Hey callback, when you run, read whiteboard" ║
-║  Loop iteration 4: "Hey callback, when you run, read whiteboard" ║
-║  Loop ends:        whiteboard now says 5                         ║
-║                                                                  ║
-║  1 second later: all 5 callbacks read whiteboard → all see 5     ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **The mechanism, precisely — not "shares a whiteboard" as the
+> explanation, but as a label for what's actually happening.**
+> [Chapter 2, Section 4](02_JS_Functions_Closures.md#4-closures--the-most-important-concept)
+> derived this exactly: a closure holds a pointer to the *environment*
+> it was created in, and reads through that pointer live — never a
+> value frozen at creation time. `var` is function-scoped (Chapter 1),
+> so all five loop iterations share **one single environment record**
+> holding one `i` binding. Every one of the five callbacks captures a
+> pointer to that *same* environment record — not five different
+> snapshots, one shared cell. By the time any callback actually runs
+> (a full second later, well after the synchronous loop has already
+> finished all five iterations), that one shared `i` holds its final
+> value: `5`. All five callbacks read the identical cell and all five
+> see the identical, final value.
 
 **Why `var` causes this:**
 
@@ -173,11 +170,16 @@ for (var i = 0; i < 5; i++) {
 - The closure captures the **variable itself**, not its value at capture time
 - By the time setTimeout callbacks run, the loop has finished and `i = 5`
 
-**Why `let` fixes it:**
-
-- `let` is **block-scoped** — each loop iteration creates a NEW binding
-- Each callback captures a DIFFERENT `i` variable
-- It's like each callback gets its own private notebook instead of sharing a whiteboard
+**Why `let` fixes it, mechanically — not "its own notebook," but its
+own environment record.** `let` is block-scoped: [Chapter 1's Scope
+Chain section](01_JS_Foundations.md#5-scope--the-visibility-rules)
+established that each `{ }` block gets its own scope, and a `for
+(let ...)` loop goes one step further — the specification creates a
+**fresh environment record, with a fresh `i` binding, for every single
+iteration**. Each callback's closure points to a *different* record.
+Five callbacks, five distinct environment records, five distinct
+values frozen at the moment each iteration's callback was created —
+`0, 1, 2, 3, 4`, not five reads of one shared cell.
 
 ```javascript
 // Fix 1: let (modern — creates new binding per iteration)
