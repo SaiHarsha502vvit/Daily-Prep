@@ -25,20 +25,28 @@
 
 ## 1. Intersection Observer — Visibility Detection
 
-```
-  WHAT IT DOES:
-  Efficiently detects when an element enters or exits the viewport.
+> **Why IntersectionObserver is cheap where scroll-event polling is
+> expensive — it's not a faster version of the same technique, it's a
+> completely different source of truth.** A `scroll` listener has to
+> run YOUR JavaScript on the main thread, synchronously, up to
+> hundreds of times per second, and inside that handler you'd
+> typically call something like `getBoundingClientRect()` — exactly
+> the kind of layout-property read [Chapter 9, Section 10](09_Browser_Internals_Rendering.md#10-reflow-vs-repaint--what-triggers-what)
+> showed forces a synchronous reflow. IntersectionObserver instead
+> piggybacks on work the browser's own **Compositor** is already doing
+> every frame ([Chapter 9, Section 7](09_Browser_Internals_Rendering.md#7-compositing--gpu-layers)) —
+> it checks intersection as part of that existing pipeline, off the
+> main thread, and only wakes your callback when the answer actually
+> changes (crosses a threshold), instead of on every single frame
+> regardless of whether anything relevant happened.
 
+```
   USE CASES:
   • Lazy loading images
   • Infinite scroll (load more when bottom visible)
   • Animate elements on scroll
   • Track ad impressions
   • Sticky header visibility detection
-
-  WHY NOT scroll events?
-  • scroll fires 100s of times/sec → performance killer
-  • IntersectionObserver is async, batched, GPU-accelerated
 ```
 
 ```javascript
@@ -112,10 +120,19 @@ function useIntersectionObserver(ref, options = {}) {
 
 ## 2. Resize Observer — Element Size Changes
 
+> **Why "NOT the same as window resize" — an element's box can change
+> for reasons that have nothing to do with the window.** `window`'s
+> `resize` event fires only when the viewport itself changes — the
+> user resizing the browser window. But a specific element can change
+> size while the window stays fixed: a sibling sidebar collapses and
+> the flex/grid layout gives this element more space, a web font
+> finishes loading and text reflows wider, a parent's `display`
+> toggles. `window.onresize` has no way to notice any of that — it
+> only ever fires on the ONE thing it watches. `ResizeObserver`
+> instead watches the element's own computed box directly, so it
+> fires for every actual cause of that specific element's size
+> changing, window-driven or not:
 ```
-  WHAT IT DOES:
-  Watches elements for size changes. NOT the same as window resize!
-
   USE CASES:
   • Responsive component that adapts to its container size
   • Chart/canvas that redraws when container resizes
@@ -184,11 +201,24 @@ function ResponsiveChart() {
 
 ## 3. Mutation Observer — DOM Change Detection
 
+> **Why this is a microtask-batched replacement for something that
+> used to exist as synchronous DOM events — and why that predecessor
+> had to be deprecated.** Browsers once had "Mutation Events" that
+> fired an event immediately, synchronously, for every single DOM
+> change — the instant a node was added, `DOMNodeInserted` fired right
+> there, mid-mutation. That's a re-entrancy trap: if the handler
+> itself mutated the DOM (very common — auto-initializing a component
+> often does exactly that), it would trigger ANOTHER synchronous
+> event, which could trigger another, nesting the call stack deeper
+> with every change and collapsing performance on anything but tiny
+> pages. `MutationObserver` fixes this by never running synchronously
+> inside the mutation at all — it collects every change that happens
+> during the current synchronous block of code into one array, and
+> only delivers them as a single batched callback once that
+> synchronous work finishes (a microtask, [Chapter 4](04_JS_Async_Promises.md)'s
+> queue) — a component you initialize inside that callback can safely
+> mutate the DOM again without re-entering itself:
 ```
-  WHAT IT DOES:
-  Watches for DOM changes: child additions/removals, attribute changes,
-  text content changes.
-
   USE CASES:
   • Third-party script detection (did an ad inject elements?)
   • Rich text editor change tracking
@@ -233,20 +263,26 @@ mutationObserver.observe(document.body, {
 
 ## 4. Web Storage API — localStorage & sessionStorage
 
-```
-  ┌──────────────────┬─────────────────────┬──────────────────────┐
-  │                  │ localStorage         │ sessionStorage       │
-  ├──────────────────┼─────────────────────┼──────────────────────┤
-  │ Lifetime         │ Until manually      │ Until tab/window     │
-  │                  │ cleared             │ closes               │
-  │ Scope            │ Same origin (all    │ Same origin, SAME    │
-  │                  │ tabs/windows)       │ tab only             │
-  │ Size limit       │ ~5-10 MB            │ ~5-10 MB             │
-  │ Sent to server?  │ No                  │ No                   │
-  │ Sync/Async       │ Synchronous (blocks │ Synchronous          │
-  │                  │ main thread!)       │                      │
-  └──────────────────┴─────────────────────┴──────────────────────┘
-```
+| | `localStorage` | `sessionStorage` |
+|---|---|---|
+| Lifetime | Until manually cleared | Until tab/window closes |
+| Scope | Same origin, ALL tabs/windows | Same origin, SAME tab only |
+| Size limit | ~5-10 MB | ~5-10 MB |
+| Sent to server? | No | No |
+| Sync/Async | Synchronous | Synchronous |
+
+> **Why "synchronous" is flagged as a real cost, not a neutral
+> implementation detail.** `localStorage.setItem` and `getItem` run to
+> completion before your next line of JS executes — there's no
+> callback, no `await`, because the call itself blocks. That's fine
+> for a handful of small reads, but [Chapter 10, Section 1](10_Web_Workers_ServiceWorkers.md#1-why-we-need-workers--the-main-thread-problem)
+> already established the cost of ANY main-thread-blocking work: it
+> eats directly into the ~16ms-per-frame budget, alongside JS
+> execution, style, layout, and paint. A large `JSON.parse` of a big
+> stored blob, or many synchronous reads in a hot path, can each cost
+> a dropped frame the exact same way a slow loop does — `localStorage`
+> isn't exempt from that budget just because it "feels like" reading a
+> local variable.
 
 ```javascript
 // Basic usage:
@@ -269,23 +305,38 @@ window.addEventListener("storage", (e) => {
 });
 ```
 
-```
-  ╔══════════════════════════════════════════════════╗
-  ║  SECURITY WARNING:                               ║
-  ║                                                   ║
-  ║  NEVER store sensitive data in localStorage:      ║
-  ║  • No JWTs or auth tokens                        ║
-  ║  • No passwords or API keys                      ║
-  ║  • No personal identifiable information (PII)    ║
-  ║                                                   ║
-  ║  WHY? Any JS on the page can read it (XSS risk). ║
-  ║  Use httpOnly cookies for auth tokens instead.    ║
-  ╚══════════════════════════════════════════════════╝
-```
+> ⚠️ **Security warning — never store JWTs, auth tokens, passwords,
+> API keys, or PII in `localStorage`.** The mechanism: `localStorage`
+> has exactly one access boundary — same-origin — and NO protection
+> against scripts that are already running in that origin, whether
+> you wrote them or an attacker injected them via an XSS
+> vulnerability. Any injected `<script>` can call
+> `localStorage.getItem('token')` as freely as your own code can;
+> there's no way to mark an entry "JS can't read this." An `httpOnly`
+> cookie is different specifically because it's invisible to
+> `document.cookie` and every other JS API by design — that
+> invisibility (not the storage location itself) is what makes it the
+> correct place for an auth token.
 
 ---
 
 ## 5. IndexedDB — Client-Side Database
+
+> **Why IndexedDB's entire API is callback/Promise-shaped where
+> localStorage's is a plain synchronous call — direct consequence of
+> what each one is built for.** Section 4 just established that
+> synchronous work blocks the main thread for its full duration,
+> which is fine for a handful of small key-value reads but not for
+> what IndexedDB is actually designed to hold: hundreds of MB,
+> indexed, queryable, potentially requiring real disk I/O. If
+> `store.get(key)` blocked synchronously the way `localStorage.getItem`
+> does, a single query against a large object store could freeze the
+> UI for however long the underlying I/O takes — an unbounded,
+> unpredictable cost the frame budget can't absorb. Making every
+> operation asynchronous (`onsuccess`/`onerror`, wrapped in Promises
+> below) means the main thread stays free to keep rendering while the
+> browser does that work in the background, regardless of how large
+> the query turns out to be:
 
 ```
   WHEN TO USE INDEXEDDB:
@@ -294,9 +345,6 @@ window.addEventListener("storage", (e) => {
   • Offline-first apps with sync
   • Caching API responses with complex queries
   • Storing blobs (images, files)
-
-  localStorage: Simple key-value, 5MB, synchronous
-  IndexedDB:    Full database, 100s of MB, asynchronous
 ```
 
 ```javascript
@@ -472,16 +520,30 @@ function useWebSocket(url) {
 
 ## 7. Server-Sent Events — One-Way Streaming
 
-```
-  WebSocket: Bidirectional (client ↔ server)
-  SSE:       Server → Client only (one-way push)
+> **Why SSE can be "just HTTP" while Section 6 needed an entire
+> Upgrade handshake to switch protocols.** WebSocket needed that
+> handshake because it needs a genuinely bidirectional channel — the
+> client must be able to push a frame at any moment, which plain HTTP
+> request/response can't express. SSE doesn't need that: it's still
+> exactly one HTTP request and one HTTP response, the only twist is
+> that the server never finishes sending the response body — it keeps
+> the connection open and keeps writing chunks (`data: ...\n\n`) to it
+> indefinitely. Because there's no protocol switch, no proxy or
+> firewall needs to understand anything beyond "a slow HTTP response,"
+> which is precisely why it survives infrastructure that has never
+> heard of the WebSocket Upgrade header. And because it's not a raw
+> socket you manage yourself but a purpose-built browser API
+> (`EventSource`), reconnection-on-drop is something the browser
+> implements for you once, instead of logic every WebSocket consumer
+> has to hand-roll — that's what "auto-reconnect built-in" actually
+> means:
 
-  WHY USE SSE OVER WEBSOCKET?
-  • Simpler (just HTTP!)
-  • Auto-reconnect built-in
-  • Works through firewalls/proxies
-  • Perfect for: notifications, live feeds, progress updates
-```
+| | WebSocket | SSE |
+|---|---|---|
+| Direction | Bidirectional (client ↔ server) | Server → Client only |
+| Transport | Upgraded connection, own frame protocol | Plain HTTP response that never closes |
+| Reconnect | You implement it | Built into `EventSource` |
+| Best for | Chat, gaming, collaborative editing | Notifications, live feeds, progress updates |
 
 ```javascript
 // Client:
@@ -530,15 +592,16 @@ eventSource.close();
 
 ## 8. Fetch API — Advanced Patterns
 
+`fetch` on its own has no timeout, no retry, and no cancellation — these four patterns are the missing pieces every production codebase ends up building, using primitives the platform already provides.
+
+**Timeout via cancellation, because `fetch` has no timeout option of its own.** `AbortController` is the platform's general-purpose "stop this in-flight operation" primitive — `fetch` accepts its `.signal` and rejects with an `AbortError` the instant `.abort()` is called, so a plain `setTimeout` calling `abort()` is the entire mechanism a fetch-level timeout needs:
+
 ```javascript
-// Abort a request (timeout):
 const controller = new AbortController();
 const timeoutId = setTimeout(() => controller.abort(), 5000);
 
 try {
-  const response = await fetch("/api/data", {
-    signal: controller.signal,
-  });
+  const response = await fetch("/api/data", { signal: controller.signal });
   clearTimeout(timeoutId);
   const data = await response.json();
 } catch (error) {
@@ -546,8 +609,11 @@ try {
     console.log("Request timed out");
   }
 }
+```
 
-// Retry with exponential backoff:
+**Exponential backoff, because a fixed retry delay makes outages worse, not better.** If every failed client retries after the exact same 1 second, they all hammer the server again in the exact same instant — the "thundering herd" that turns a brief blip into a sustained outage. Doubling the delay each attempt (`1000 * 2^attempt`, capped at 10s) spreads retries out over time and gives a struggling server increasing room to recover instead of being retried into the ground:
+
+```javascript
 async function fetchWithRetry(url, options = {}, maxRetries = 3) {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
@@ -563,15 +629,21 @@ async function fetchWithRetry(url, options = {}, maxRetries = 3) {
     }
   }
 }
+```
 
-// Parallel requests:
+**Parallel requests via `Promise.all`, because three independent `await`s in sequence pay three round-trips back to back for no reason.** None of these three requests depends on another's result, so there's nothing to gain from serializing them — `Promise.all` starts all three immediately and resumes once every one has settled, paying roughly the cost of the SLOWEST request instead of the SUM of all three:
+
+```javascript
 const [users, products, orders] = await Promise.all([
   fetch("/api/users").then((r) => r.json()),
   fetch("/api/products").then((r) => r.json()),
   fetch("/api/orders").then((r) => r.json()),
 ]);
+```
 
-// Stream response (large files):
+**Streaming, because `response.json()` cannot report progress or yield a single byte until the ENTIRE body has arrived.** `.json()`/`.text()` buffer the whole response before resolving — for a large file, that means "0% done" for the entire download and then an instant jump to 100%. `response.body` exposes the underlying `ReadableStream` directly: each `reader.read()` resolves as soon as the NEXT chunk arrives over the wire, so progress can be reported incrementally instead of only at the very end:
+
+```javascript
 const response = await fetch("/api/large-data");
 const reader = response.body.getReader();
 const decoder = new TextDecoder();
@@ -588,6 +660,29 @@ while (true) {
 ---
 
 ## 9. Clipboard API — Copy/Paste Programmatically
+
+> **Why reading the clipboard needs explicit permission but this
+> chapter's other storage APIs (Sections 4-5) don't.** `localStorage`
+> and IndexedDB are scoped per-origin — one site can never read
+> another site's data. The system clipboard has NO such scoping: it's
+> one shared slot the whole OS reads and writes, so whatever the user
+> last copied from their password manager, a 2FA code, or a private
+> message is sitting there regardless of which page they're currently
+> on. Letting any page silently call `readText()` would mean any page
+> could exfiltrate that unrelated, potentially sensitive data — so the
+> platform requires an explicit permission grant (and, in practice, a
+> real user gesture like a click) before a read is allowed. Writing is
+> treated as lower-risk — worst case a malicious page fills your
+> clipboard with junk, rather than stealing anything — so
+> `writeText()` is generally allowed as part of a user gesture without
+> a separate permission prompt.
+>
+> **Why the fallback path (`execCommand('copy')`) looks so different
+> from the modern API.** It's not copying anything directly — it's
+> triggering the browser's copy command against whatever text is
+> currently SELECTED on the page. That's why the fallback has to
+> create an off-screen `<textarea>`, fill it, and explicitly `.select()`
+> it first: there's nothing else for `execCommand('copy')` to act on.
 
 ```javascript
 // Copy text:
@@ -625,6 +720,20 @@ async function copyRichContent() {
 
 ## 10. Notification & Vibration API
 
+> **Why notifications need the same permission-gate as Clipboard
+> reads, for a related reason.** A `Notification` doesn't render
+> inside your tab — it's OS-level UI that shows up in the system tray
+> or lock screen, visible even when the browser isn't the focused
+> window. If any page could fire these unrestricted, notification
+> spam would make the feature worthless within days — every site
+> would blast the user constantly. The permission prompt is the
+> platform forcing an explicit, per-origin opt-in before a page gets
+> access to UI that lives outside its own tab. Vibration doesn't
+> return anything to protect and directly drives real hardware
+> instead — it's a no-op on any device without a vibration motor
+> (desktops), and browsers cap pattern length/duration to stop a page
+> from turning a phone into a constant buzzer.
+
 ```javascript
 // Request permission first:
 async function enableNotifications() {
@@ -660,6 +769,26 @@ navigator.vibrate(0); // Stop vibration
 ---
 
 ## 11. Geolocation API
+
+> **Why this API takes two callback functions instead of returning a
+> Promise, unlike everything else in this chapter.** Geolocation
+> shipped around 2009 — years before Promises existed anywhere in
+> JavaScript (they weren't standardized until ES2015). Every Web API
+> designed after Promises became the norm (`fetch`, Clipboard,
+> IndexedDB wrapped in Promises above) follows that shape; Geolocation
+> predates the convention and was never redesigned, so it's a useful
+> marker of "this API is old" on sight, independent of what it does.
+>
+> **Why `enableHighAccuracy` explicitly trades battery for
+> precision.** The browser can resolve a position from several
+> sources of very different cost: WiFi network fingerprinting and
+> cell-tower triangulation are cheap and fast but only accurate to
+> roughly city-block scale, while the GPS chip gives meter-level
+> accuracy but has to power up a radio and hold a satellite fix, which
+> draws real, sustained battery. By default the browser is free to
+> pick whichever cheap source answers fast enough; `enableHighAccuracy:
+> true` is an explicit instruction to prefer GPS's precision even at
+> that battery cost.
 
 ```javascript
 // Get current position (one-time):
@@ -704,6 +833,20 @@ navigator.geolocation.clearWatch(watchId);
 
 ## 12. Broadcast Channel — Cross-Tab Communication
 
+> **Why this exists as a separate API when Section 4's `storage`
+> event already crosses tabs.** The `storage` event only fires as a
+> side effect of an ACTUAL `localStorage` write — using it for
+> messaging means writing (and cleaning up) a throwaway key every time
+> you want to say something, persisting data you never actually
+> wanted to keep, purely to trigger the side effect. `BroadcastChannel`
+> is a purpose-built pub/sub channel with no storage underneath it at
+> all: `postMessage` on one tab's channel instance fires `onmessage`
+> on every OTHER same-origin tab's channel instance with the same
+> name, directly, nothing written to disk. It's the same "one origin,
+> many tabs" topology [Chapter 10, Section 5](10_Web_Workers_ServiceWorkers.md#5-sharedworker--one-worker-multiple-tabs)'s
+> SharedWorker fan-in solved for a shared WebSocket connection, applied
+> here to plain message-passing instead:
+
 ```
   PROBLEM: User logs out in one tab. Other tabs still show as logged in.
   SOLUTION: Broadcast Channel sends messages between same-origin tabs.
@@ -744,26 +887,20 @@ themeChannel.onmessage = (event) => {
 // authChannel.close();
 ```
 
-```
-  ╔════════════════════════════════════════════════════════════╗
-  ║  API COMPARISON TABLE:                                     ║
-  ║                                                            ║
-  ║  ┌──────────────────┬───────────────┬───────────────────┐ ║
-  ║  │ Need             │ API           │ Alternative       │ ║
-  ║  ├──────────────────┼───────────────┼───────────────────┤ ║
-  ║  │ Element visible? │ Intersection  │ scroll events     │ ║
-  ║  │ Element resized? │ Resize        │ window.onresize   │ ║
-  ║  │ DOM changed?     │ Mutation      │ DOM events        │ ║
-  ║  │ Store <5MB       │ localStorage  │ cookies           │ ║
-  ║  │ Store >5MB       │ IndexedDB     │ Cache API         │ ║
-  ║  │ Two-way realtime │ WebSocket     │ polling           │ ║
-  ║  │ Server push      │ SSE           │ long polling      │ ║
-  ║  │ Cross-tab sync   │ Broadcast Ch. │ storage event     │ ║
-  ║  │ Copy/paste       │ Clipboard API │ execCommand       │ ║
-  ║  │ Location         │ Geolocation   │ IP-based lookup   │ ║
-  ║  └──────────────────┴───────────────┴───────────────────┘ ║
-  ╚════════════════════════════════════════════════════════════╝
-```
+Every "alternative" column below is the OLDER, more expensive way to answer the same question — the pattern this whole chapter has been deriving section by section: a purpose-built async API replacing a synchronous poll or a workaround.
+
+| Need | API | Older alternative |
+|---|---|---|
+| Element visible? | IntersectionObserver | `scroll` events |
+| Element resized? | ResizeObserver | `window.onresize` |
+| DOM changed? | MutationObserver | Deprecated DOM Mutation Events |
+| Store <5MB | localStorage | cookies |
+| Store >5MB | IndexedDB | Cache API |
+| Two-way realtime | WebSocket | polling |
+| Server push | SSE | long polling |
+| Cross-tab sync | BroadcastChannel | `storage` event |
+| Copy/paste | Clipboard API | `execCommand` |
+| Location | Geolocation | IP-based lookup |
 
 ---
 
