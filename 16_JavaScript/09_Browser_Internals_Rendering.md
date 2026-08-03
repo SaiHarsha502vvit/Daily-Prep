@@ -4,6 +4,18 @@
 
 > **"When you type a URL and press Enter, a cascade of 15+ steps happens before pixels appear on screen. Understanding this pipeline is the difference between 'it works' and 'it works FAST.' Every performance optimization maps to a specific stage in this pipeline."**
 
+> **Where this pipeline actually runs, in the bigger picture.** Every
+> stage below â€” HTML parsing, CSSOM, layout, paint â€” executes inside
+> ONE specific OS process: a sandboxed **Renderer process**.
+> [Chapter 14](14_Browser_Engines_And_Chromium_Architecture.md),
+> Sections 6â€“9 zoom out to that process-level view: how a Renderer
+> gets spun up for a navigation, why it's deliberately sandboxed away
+> from your filesystem and network, and how the GPU process this
+> chapter's Compositing section (7) hands work off to fits into the
+> full multi-process picture. This chapter stays zoomed IN â€” what
+> happens inside that one process; Chapter 14 is the zoomed-OUT view
+> of everything around it.
+
 ---
 
 ## Table of Contents
@@ -780,12 +792,12 @@ requestAnimationFrame(animate);
 
 ## Reality Check
 
-**"The browser renders HTML as it parses it"** ? Parsing feeds a PIPELINE with blocking rules people build careers on misunderstanding: CSS blocks RENDERING (not parsing — but scripts wait for CSSOM because they might read styles), synchronous scripts block PARSING (defer/async/module exist to break exactly this), and the preload scanner races ahead fetching despite blocks. The practical decode of every waterfall chart is these three rules; "why is my page white for two seconds" is almost always one of them firing as designed.
+**"The browser renders HTML as it parses it"** ? Parsing feeds a PIPELINE with blocking rules people build careers on misunderstanding: CSS blocks RENDERING (not parsing â€” but scripts wait for CSSOM because they might read styles), synchronous scripts block PARSING (defer/async/module exist to break exactly this), and the preload scanner races ahead fetching despite blocks. The practical decode of every waterfall chart is these three rules; "why is my page white for two seconds" is almost always one of them firing as designed.
 
-**"Layout, paint, composite are stages of the same cost"** ? They are a COST LADDER you climb involuntarily: transform/opacity changes can stay composite-only (GPU moves existing textures — cheap, the entire basis of performant animation), color/shadow changes add paint, and geometry changes (width, top, font-size) trigger layout which cascades to everything below. The engineering rule: animate only transform and opacity; the debugging rule: DevTools Performance shows WHICH rung each frame paid, and jank investigations start by finding who forced layout. will-change is the escape hatch that costs memory per layer — a hint, not a sprinkle.
+**"Layout, paint, composite are stages of the same cost"** ? They are a COST LADDER you climb involuntarily: transform/opacity changes can stay composite-only (GPU moves existing textures â€” cheap, the entire basis of performant animation), color/shadow changes add paint, and geometry changes (width, top, font-size) trigger layout which cascades to everything below. The engineering rule: animate only transform and opacity; the debugging rule: DevTools Performance shows WHICH rung each frame paid, and jank investigations start by finding who forced layout. will-change is the escape hatch that costs memory per layer â€” a hint, not a sprinkle.
 
-**"requestAnimationFrame runs at 60fps"** ? rAF runs BEFORE THE NEXT PAINT, whatever rate the display and load dictate (120Hz monitors, throttled background tabs where it stops entirely, dropped frames under load) — its guarantee is phase, not frequency: your callback sees a consistent pre-layout moment, making it the correct slot for read-then-write DOM choreography and the wrong tool for timing (durations come from the timestamp argument, never from counting calls). Animation logic that assumes 16.67ms per tick drifts on every device that is not a 60Hz desktop — which is now most devices.
+**"requestAnimationFrame runs at 60fps"** ? rAF runs BEFORE THE NEXT PAINT, whatever rate the display and load dictate (120Hz monitors, throttled background tabs where it stops entirely, dropped frames under load) â€” its guarantee is phase, not frequency: your callback sees a consistent pre-layout moment, making it the correct slot for read-then-write DOM choreography and the wrong tool for timing (durations come from the timestamp argument, never from counting calls). Animation logic that assumes 16.67ms per tick drifts on every device that is not a 60Hz desktop â€” which is now most devices.
 
-**"The main thread runs my JavaScript"** ? The main thread runs your JS AND parsing AND style AND layout AND paint setup AND event dispatch — one queue for all of it, which is why "my code is fast" pages still jank (the 4ms handler fires during a 12ms layout on a frame that also parses a chunk). Long-task thinking replaces function thinking: anything over 50ms freezes input visibly; the levers are chunking (scheduler.yield / setTimeout seams), moving pure computation to workers, and CSS containment to fence layout blast radius. The metric that captures it all is INP — input delay is main-thread arithmetic, not mystery.
+**"The main thread runs my JavaScript"** ? The main thread runs your JS AND parsing AND style AND layout AND paint setup AND event dispatch â€” one queue for all of it, which is why "my code is fast" pages still jank (the 4ms handler fires during a 12ms layout on a frame that also parses a chunk). Long-task thinking replaces function thinking: anything over 50ms freezes input visibly; the levers are chunking (scheduler.yield / setTimeout seams), moving pure computation to workers, and CSS containment to fence layout blast radius. The metric that captures it all is INP â€” input delay is main-thread arithmetic, not mystery.
 
-**"Reflow bugs are fixed by touching the DOM less"** ? The trigger is not touches but SYNC GEOMETRY READS after writes: one read (offsetHeight, getComputedStyle, getBoundingClientRect) after one style write forces a full layout flush mid-frame; a loop of them is layout thrashing at N flushes per frame. Fixes are ordering, not abstinence: batch all reads, then all writes (or split across rAF phases), cache geometry that cannot have changed, and use ResizeObserver/IntersectionObserver to be TOLD about geometry instead of polling for it. The same DOM touch count, reordered, is the 10x difference — the model is flush-scheduling, not frugality.
+**"Reflow bugs are fixed by touching the DOM less"** ? The trigger is not touches but SYNC GEOMETRY READS after writes: one read (offsetHeight, getComputedStyle, getBoundingClientRect) after one style write forces a full layout flush mid-frame; a loop of them is layout thrashing at N flushes per frame. Fixes are ordering, not abstinence: batch all reads, then all writes (or split across rAF phases), cache geometry that cannot have changed, and use ResizeObserver/IntersectionObserver to be TOLD about geometry instead of polling for it. The same DOM touch count, reordered, is the 10x difference â€” the model is flush-scheduling, not frugality.
