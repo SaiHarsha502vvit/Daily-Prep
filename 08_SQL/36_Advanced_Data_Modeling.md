@@ -487,14 +487,14 @@ draw_star_schema()
 
 **Predecessors (with years):**
 - **3NF / Normalization (Codd)** (1970): E.F. Codd's relational model and normal forms established scientific database design principles
-- **Data Warehouse (Inmon)** (1990): Bill Inmon defined the enterprise data warehouse as a subject-oriented, integrated, nonvolatile, time-variant collection
-- **Star Schema (Kimball)** (1996): Ralph Kimball popularized the star schema with centralized fact tables and denormalized dimension tables for BI performance
+- **Data Warehouse (Inmon)** (1992): Bill Inmon's *Building the Data Warehouse* defined the enterprise data warehouse as a subject-oriented, integrated, nonvolatile, time-variant collection
 - **Kimball Group** (1992): Kimball founded the consulting practice that trained generations of data warehouse practitioners
-- **Data Vault (Linstedt)** (2000): Dan Linstedt created Data Vault modeling for auditability, scalability, and multi-source integration in enterprise data warehouses
+- **Star Schema (Kimball)** (1996): Ralph Kimball popularized the star schema with centralized fact tables and denormalized dimension tables for BI performance
 - **Snowflake schema** (1990s): Normalized extension of star schema where dimension tables are further normalized, reducing storage but increasing query complexity
+- **Data Vault (Linstedt)** (2000): Dan Linstedt created Data Vault modeling for auditability, scalability, and multi-source integration in enterprise data warehouses
 
 **Evolution narrative:**
-Database design evolved from Inmon's top-down normalized data warehouse (1990) toward Kimball's bottom-up star schema (1996) optimized for query performance. Star schema's denormalized dimensions enabled fast BI aggregations but made tracking change history difficult, driving Kimball's SCD patterns and Linstedt's Data Vault (2000) for audit-heavy use cases. The industry converged on pragmatic approaches: normalized OLTP databases, denormalized analytical schemas, and specialized patterns for specific analytical workloads.
+Database design evolved from Inmon's top-down normalized data warehouse (1992) toward Kimball's bottom-up star schema (1996) optimized for query performance. Star schema's denormalized dimensions enabled fast BI aggregations but made tracking change history difficult, driving Kimball's SCD patterns and Linstedt's Data Vault (2000) for audit-heavy use cases. The industry converged on pragmatic approaches: normalized OLTP databases, denormalized analytical schemas, and specialized patterns for specific analytical workloads.
 
 **Modern practice anchor:**
 Modern data modeling combines transactional normalization for application databases, star schema for analytical BI, and Data Vault for enterprise data integration—each pattern serving its appropriate workload while maintaining data integrity.
