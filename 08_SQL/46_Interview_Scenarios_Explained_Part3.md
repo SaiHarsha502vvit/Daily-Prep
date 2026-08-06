@@ -244,11 +244,18 @@ ON orders (status)
 WHERE deleted_at IS NULL;
 -- This index only contains the 5M active rows → 10x smaller → 10x faster
 
--- MySQL equivalent: No partial indexes, but you can use a generated column
+-- MySQL has no true partial-index equivalent. A generated column that's
+-- NULL for deleted rows does NOT shrink the index the way it would in
+-- PostgreSQL: MySQL/InnoDB DOES store NULL entries in B-tree indexes
+-- (excluding all-NULL-key rows from an index is Oracle's behavior, not
+-- MySQL's -- a search using `col IS NULL` in MySQL can use an index for
+-- exactly this reason). The index below still contains all 50M rows.
 ALTER TABLE orders ADD COLUMN is_active BOOLEAN GENERATED ALWAYS AS
     (CASE WHEN deleted_at IS NULL THEN TRUE ELSE NULL END) STORED;
 CREATE INDEX idx_orders_active ON orders (is_active, status);
--- NULL values aren't indexed in MySQL → only active rows in index
+-- What actually works in MySQL: periodically move soft-deleted rows to an
+-- archive table, so the "live" orders table (and its indexes) only ever
+-- holds active rows -- there's no filtered-index shortcut to reach for.
 ```
 
 ```java
@@ -672,7 +679,7 @@ MeterRegistryCustomizer<MeterRegistry> metricsConfig() {
 ### Historical Evolution (Extended)
 
 **Additional predecessors:**
-- **Stripe Engineering (2015)**: Codified the expand-contract migration pattern as "parallel change" — adding columns in expand phase, swapping in contract phase, eliminating downtime migrations
+- **Martin Fowler, "Parallel Change" (2014)**: Named and formalized the expand-contract migration pattern in his bliki — adding columns in an expand phase, swapping in a contract phase, eliminating downtime migrations (no verifiable source ties this specifically to "Stripe Engineering (2015)," a claim also found and corrected in Chapter 41's Historical Evolution)
 - **PostgreSQL Global Development Group (2014)**: JSONB added in PostgreSQL 9.4 — binary JSON storage with GIN indexing enabling schema-flexible tables without abandoning the relational model
 
 **Brief evolution note:**
