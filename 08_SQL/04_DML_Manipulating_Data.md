@@ -309,12 +309,12 @@ SELECT * FROM employees WHERE is_active = FALSE;
 DELETE FROM employees WHERE is_active = FALSE;
 
 -- Use LIMIT for large deletes (avoid locking table too long)
--- Delete in batches
-REPEAT
-    DELETE FROM large_table
-    WHERE condition = TRUE
-    LIMIT 10000;
-UNTIL ROW_COUNT() = 0 END REPEAT;
+-- Delete in batches -- REPEAT/UNTIL is a MySQL procedural construct, only
+-- legal inside a stored routine body. As standalone SQL, re-run this same
+-- statement from application code (cron job, script) until it affects 0 rows:
+DELETE FROM large_table
+WHERE condition = TRUE
+LIMIT 10000;
 
 -- Soft delete (recommended for important data)
 UPDATE employees SET is_active = FALSE, deleted_at = NOW()

@@ -157,11 +157,15 @@ INSERT INTO logs (message) VALUES
 DELETE FROM old_logs WHERE created_at < '2023-01-01';  -- Millions of rows!
 
 -- GOOD (delete in batches)
-REPEAT
-    DELETE FROM old_logs
-    WHERE created_at < '2023-01-01'
-    LIMIT 10000;
-UNTIL ROW_COUNT() = 0 END REPEAT;
+-- REPEAT/UNTIL is a MySQL *procedural* construct -- only legal inside a stored
+-- routine body, not as standalone SQL. In practice, batch deletes are driven
+-- by an external loop (cron job, script) that re-runs this same statement:
+DELETE FROM old_logs
+WHERE created_at < '2023-01-01'
+LIMIT 10000;
+-- ...repeat from application code until affected-row count returns 0.
+-- Each batch is its own short transaction, so no single DELETE holds a lock
+-- long enough to block concurrent reads/writes for more than a moment.
 
 
 -- ═══════════════════════════════════════════════════════════════════════════════
