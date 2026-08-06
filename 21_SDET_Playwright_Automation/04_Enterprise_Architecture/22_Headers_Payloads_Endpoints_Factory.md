@@ -538,29 +538,24 @@ const citation = await citationsClient.create(
 );
 ```
 
-Here is exactly what happens, step by step:
+Here is exactly what happens, step by step — four collaborators, each with exactly one job:
 
-```
-① PayloadsCitation.pending({ customerId: account.userId })
-   → returns { customerId: 'USR-001', amount: 150, status: 'PENDING', ... }
+```mermaid
+sequenceDiagram
+    participant Test
+    participant Factory as PayloadsCitation
+    participant Client as citationsClient
+    participant API as Staging API
 
-② citationsClient.create(↑ payload)
-   → calls this.request.post(
-       Endpoints.citations.create(),           → 'https://staging-api.company.com/api/v2/citations'
-       {
-         headers: HeadersCrm.auth(this.accessToken),
-                            → { 'Authorization': 'Bearer eyJ...', 'Content-Type': 'application/json', 'X-Tenant-ID': 'ACME-001', ... }
-         data: ↑ payload,   → { customerId: 'USR-001', amount: 150, status: 'PENDING', ... }
-       }
-     )
-   → Playwright sends: POST https://staging-api.company.com/api/v2/citations
-                       Headers: { Authorization: Bearer..., Content-Type: application/json, ... }
-                       Body: { "customerId": "USR-001", "amount": 150, ... }
-   → API returns: 201 { citationId: 'CIT-001', status: 'PENDING', ... }
-   → this.assertStatus(response, 201, 'create citation') → passes
-   → return response.json()
+    Test->>Factory: pending({ customerId: account.userId })
+    Factory-->>Test: { customerId: 'USR-001', amount: 150, status: 'PENDING', ... }
 
-③ Test receives: { citationId: 'CIT-001', status: 'PENDING', customerId: 'USR-001', ... }
+    Test->>Client: create(payload)
+    Note over Client: builds the request:<br/>URL: Endpoints.citations.create()<br/>headers: HeadersCrm.auth(accessToken)<br/>data: payload
+    Client->>API: POST /api/v2/citations<br/>Headers: Authorization, Content-Type, X-Tenant-ID<br/>Body: { customerId, amount, status: 'PENDING' }
+    API-->>Client: 201 { citationId: 'CIT-001', status: 'PENDING', ... }
+    Note over Client: assertStatus(response, 201, 'create citation') -- passes
+    Client-->>Test: response.json()
 ```
 
 **The test spec file sees:** `await citationsClient.create(PayloadsCitation.pending({ customerId: account.userId }))`.

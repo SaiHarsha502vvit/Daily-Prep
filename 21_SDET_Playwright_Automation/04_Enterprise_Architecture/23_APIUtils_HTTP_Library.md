@@ -345,8 +345,25 @@ private async sleepWithBackoff(attempt: number): Promise<void> {
   const delayMs = Math.floor(Math.random() * window);
   await new Promise(res => setTimeout(res, delayMs));
 }
+```
 
-// Every HTTP method routes through executeWithRetry:
+The three exit paths through the loop, made explicit:
+
+```mermaid
+flowchart TD
+    Start(["operation() called"]) --> Try{"Threw a network error?<br/>(DNS, TCP reset, TLS)"}
+    Try -->|yes| LastAttempt1{"Last attempt?"}
+    LastAttempt1 -->|yes| ThrowNet["throw the network error"]
+    LastAttempt1 -->|no| Backoff1["sleepWithBackoff(attempt)"]
+    Backoff1 --> Start
+
+    Try -->|no — got a response| StatusCheck{"status in RETRIABLE_STATUSES<br/>(408/429/502/503/504)<br/>AND attempts remain?"}
+    StatusCheck -->|yes| Backoff2["sleepWithBackoff(attempt)"]
+    Backoff2 --> Start
+    StatusCheck -->|"no — 4xx, or a 5xx<br/>on the last attempt"| Process["processResponse()<br/>decides return vs throw"]
+```
+
+```typescript
 async get<T = unknown>(url: string, options: RequestOptions = {}): Promise<ApiResponse<T>> {
   return this.executeWithRetry<T>(
     () => this.request.get(url, {
