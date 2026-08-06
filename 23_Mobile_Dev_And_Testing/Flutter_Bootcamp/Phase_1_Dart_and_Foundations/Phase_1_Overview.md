@@ -26,6 +26,7 @@ The capstone: a **Personal Profile App** — your first portfolio piece.
 | [Week_05_Navigation_and_State.md](Week_05_Navigation_and_State.md) | Navigation & State | Navigator stack, routes, passing data, lifting state up |
 | [Week_05b_Navigation_Challenges.md](Week_05b_Navigation_Challenges.md) | Navigation Challenges | Typed push/pop, IndexedStack vs state loss, build a route matcher |
 | [Week_06_Project_ProfileApp.md](Week_06_Project_ProfileApp.md) | Project: Profile App | All Phase 1 skills combined in your first real app |
+| [Week_06b_ProfileApp_Challenges.md](Week_06b_ProfileApp_Challenges.md) | Profile App Challenges | Extend, break, and stress-test the app you just built |
 
 ---
 

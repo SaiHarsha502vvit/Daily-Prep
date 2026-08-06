@@ -16,11 +16,11 @@ The capstone: an **Expense Tracker** built with Clean Architecture and BLoC.
 | File | Topic | Core Skills |
 |------|-------|-------------|
 | [Week_20_BLoC_Pattern.md](Week_20_BLoC_Pattern.md) | BLoC Pattern | Events, States, Cubits, BlocBuilder/BlocListener, stream mechanics |
-| [Week_20b_BLoC_Challenges.md](Week_20b_BLoC_Challenges.md) | BLoC Challenges | buildWhen scope, the SnackBar bug, fix a double-payment race, test emit sequences |
+| [Week_20b_BLoC_Challenges.md](Week_20b_BLoC_Challenges.md) | BLoC Challenges | Emit-after-close race, event delivery timing, an undo/redo stack with droppable() |
 | [Week_21_Clean_Architecture.md](Week_21_Clean_Architecture.md) | Clean Architecture | Layers, SOLID, Repository pattern, DI, platform channels |
-| [Week_21b_Clean_Architecture_Challenges.md](Week_21b_Clean_Architecture_Challenges.md) | Clean Architecture Challenges | Refactor a fat widget, swap implementations with GetIt, split a God class |
+| [Week_21b_Clean_Architecture_Challenges.md](Week_21b_Clean_Architecture_Challenges.md) | Clean Architecture Challenges | Spot a layer violation, dependency-rule quiz, swap backends without touching a UseCase |
 | [Week_22_Advanced_Animations_CustomPaint.md](Week_22_Advanced_Animations_CustomPaint.md) | Advanced Animations & CustomPaint | Explicit animations, CustomPainter, Lottie, staggered sequences |
-| [Week_22b_Advanced_Animation_Challenges.md](Week_22b_Advanced_Animation_Challenges.md) | Animation & CustomPaint Challenges | Fix shouldRepaint, compute chart coordinates by hand, Lottie-vs-code judgment |
+| [Week_22b_Advanced_Animation_Challenges.md](Week_22b_Advanced_Animation_Challenges.md) | Animation & CustomPaint Challenges | An always-repainting bug, Canvas/layer mechanics, an interpolating bar chart |
 | [Week_23_Project_ExpenseTracker.md](Week_23_Project_ExpenseTracker.md) | Project: Expense Tracker | Clean Architecture + BLoC + charts, the Phase 5 capstone |
 
 ---

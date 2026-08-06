@@ -779,6 +779,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Weather App Challenges](Week_15b_WeatherApp_Challenges.md) — extend, break, and stress-test the actual app you just built.
+
 **Phase 3 Complete.**
 
 **Next → [Phase 4: Firebase & Storage](../Phase_4_Firebase_and_Storage/Phase_4_Overview.md)**

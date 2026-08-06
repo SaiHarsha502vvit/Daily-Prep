@@ -1936,7 +1936,7 @@ Beyond developer time, an app has real cash costs. Plan for these in your runway
 
 ## Bootcamp Complete
 
-You've covered 26 weeks of Flutter — from `void main()` to a production-grade enterprise chat app with:
+You've covered 27 weeks of Flutter — from `void main()` to a production-grade enterprise chat app with:
 
 | Phase | Key Skills | Enterprise Patterns |
 |--|--|--|
@@ -1946,6 +1946,8 @@ You've covered 26 weeks of Flutter — from `void main()` to a production-grade 
 | Phase 4 | Firestore, Auth, Hive, offline-first | Token refresh, sync engine, migrations, data privacy |
 | Phase 5 | BLoC, Clean Architecture, charts | BLoC observer, feature flags, multi-module, HydratedBloc |
 | Phase 6 | Testing, profiling, CI/CD, chat | APM/Sentry, contract tests, staged rollouts, security hardening |
+
+**One more thing before you call it done** → [Chat App Challenges](Week_27b_ChatApp_Challenges.md) — a real subscription bug hiding in this project's own typing indicator, an FCM Two Truths and a Lie, and a full-stack test suite for the send-message flow that closes out the entire bootcamp.
 
 **What's next:**
 - Explore WebSocket architecture for real-time beyond Firestore

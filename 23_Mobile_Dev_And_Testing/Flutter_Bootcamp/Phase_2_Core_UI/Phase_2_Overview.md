@@ -24,6 +24,7 @@ The capstone: a **Shopping App UI Clone** — you pick a real app and replicate 
 | [Week_10_Gestures_and_Custom_Widgets.md](Week_10_Gestures_and_Custom_Widgets.md) | Gestures & Custom Widgets | GestureDetector, drag-drop, Dismissible, widget composition |
 | [Week_10b_Gesture_Challenges.md](Week_10b_Gesture_Challenges.md) | Gesture Challenges | Reproduce arena conflicts, build Dismissible from scratch, child-vs-builder design |
 | [Week_11_Project_ShoppingApp.md](Week_11_Project_ShoppingApp.md) | Project: Shopping App | All Phase 2 skills combined in a real clone |
+| [Week_11b_ShoppingApp_Challenges.md](Week_11b_ShoppingApp_Challenges.md) | Shopping App Challenges | Extend, break, and stress-test the app you just built |
 
 ---
 

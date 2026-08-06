@@ -1056,6 +1056,8 @@ Phase 6 is about making this app production-ready:
 - Week 26: CI/CD — GitHub Actions, automated builds, deployment
 - Week 27: Chat App capstone with FCM and real-time messaging
 
+**Want to actually get fluent, not just informed?** → [Expense Tracker Challenges](Week_23b_ExpenseTracker_Challenges.md) — extend, break, and stress-test the actual app you just built.
+
 ---
 
 **Next → [Week 24: Testing](../Phase_6_Quality_and_Deployment/Week_24_Testing.md)**

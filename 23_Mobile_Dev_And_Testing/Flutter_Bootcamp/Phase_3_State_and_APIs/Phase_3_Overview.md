@@ -22,6 +22,7 @@ The capstone: a **Weather App** using live OpenWeatherMap data.
 | [Week_14_HTTP_and_REST_APIs.md](Week_14_HTTP_and_REST_APIs.md) | HTTP & REST APIs | Dio, JSON parsing, Repository pattern, error handling, Interceptors |
 | [Week_14b_HTTP_Challenges.md](Week_14b_HTTP_Challenges.md) | HTTP Challenges | Predict interceptor order, hide Dio behind a repository, retry with backoff |
 | [Week_15_Project_WeatherApp.md](Week_15_Project_WeatherApp.md) | Project: Weather App | Live API + Riverpod + full error/loading/data states |
+| [Week_15b_WeatherApp_Challenges.md](Week_15b_WeatherApp_Challenges.md) | Weather App Challenges | Extend, break, and stress-test the app you just built |
 
 ---
 

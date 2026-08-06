@@ -1047,6 +1047,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Shopping App Challenges](Week_11b_ShoppingApp_Challenges.md) — extend, break, and stress-test the actual app you just built.
+
 **Phase 2 Complete.**
 
 **Next → [Phase 3: State Management & APIs](../Phase_3_State_and_APIs/Phase_3_Overview.md)**

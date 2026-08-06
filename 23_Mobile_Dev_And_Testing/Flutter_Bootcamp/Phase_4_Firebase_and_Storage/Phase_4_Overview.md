@@ -16,11 +16,11 @@ By the end, you'll build a full Notes App where users can sign in, create notes 
 | File | Topic | Core Skills |
 |------|-------|-------------|
 | [Week_16_Firebase_Firestore.md](Week_16_Firebase_Firestore.md) | Firebase & Firestore | Firestore CRUD, real-time listeners, offline cache, StreamProvider |
-| [Week_16b_Firestore_Challenges.md](Week_16b_Firestore_Challenges.md) | Firestore Challenges | Simulate real-time listeners, test security rules, a clock-skew sync bug |
+| [Week_16b_Firestore_Challenges.md](Week_16b_Firestore_Challenges.md) | Firestore Challenges | A listener-in-build() leak, offline `.get()` behavior, optimistic update with rollback |
 | [Week_17_Authentication.md](Week_17_Authentication.md) | Authentication | Firebase Auth, Google Sign-In, auth state streams, security rules |
-| [Week_17b_Authentication_Challenges.md](Week_17b_Authentication_Challenges.md) | Authentication Challenges | Flicker-free routing, token-expiry math, a sign-out data leak |
+| [Week_17b_Authentication_Challenges.md](Week_17b_Authentication_Challenges.md) | Authentication Challenges | currentUser vs authStateChanges, multi-device sign-out truth, a 3-state router |
 | [Week_18_Local_Storage.md](Week_18_Local_Storage.md) | Local Storage | SharedPreferences, Hive, SQLite, offline-first pattern |
-| [Week_18b_Storage_Challenges.md](Week_18b_Storage_Challenges.md) | Storage Challenges | Offline sync-queue pattern, decision matrix, Hive's box.watch() |
+| [Week_18b_Storage_Challenges.md](Week_18b_Storage_Challenges.md) | Storage Challenges | The fresh-install crash, Hive delete semantics, an offline write-retry queue |
 | [Week_19_Project_NotesApp.md](Week_19_Project_NotesApp.md) | Project: Notes App | Cloud sync + offline cache + auth, feature-based architecture |
 
 ---

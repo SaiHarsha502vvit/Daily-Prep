@@ -1106,6 +1106,8 @@ Answer these before marking the project done:
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Profile App Challenges](Week_06b_ProfileApp_Challenges.md) — extend, break, and stress-test the actual app you just built.
+
 **Phase 1 Complete.** You now have the foundations. Next phase covers the widget toolkit — deep dives into every widget category Flutter offers.
 
 **Next → [Phase 2 Overview: Core UI Mastery](../Phase_2_Core_UI/Phase_2_Overview.md)**

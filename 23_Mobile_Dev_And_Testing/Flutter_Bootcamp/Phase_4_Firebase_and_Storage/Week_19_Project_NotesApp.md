@@ -747,6 +747,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Notes App Challenges](Week_19b_NotesApp_Challenges.md) — extend, break, and stress-test the actual app you just built.
+
 **Phase 4 Complete.**
 
 **Next → [Phase 5: Advanced Patterns](../Phase_5_Advanced_Patterns/Phase_5_Overview.md)**
