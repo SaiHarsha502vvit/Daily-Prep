@@ -11,12 +11,14 @@ Know what happens beneath your SQL queries — B-Trees, WAL, MVCC, Buffer Pool, 
 
 ## Part 1: Storage Engines — The Heart of a Database
 
-## B-Tree │ Lsm-Tree
+### B-Tree vs LSM-Tree
 
-| Read speed | Fast | Slower | (may check multiple SSTables) |
-| Write speed | Slower | Fast | (sequential writes, no random I/O) |
-| Space amp. | Lower | Higher | (old versions in SSTables) |
-| Write amp. | Lower | Higher | (compaction rewrites data) |
+| Metric | B-Tree | LSM-Tree | Why |
+| --- | --- | --- | --- |
+| Read speed | Fast | Slower | LSM may have to check multiple SSTables |
+| Write speed | Slower | Fast | LSM writes sequentially — no random I/O |
+| Space amplification | Lower | Higher | LSM keeps old versions across SSTables until compaction runs |
+| Write amplification | Lower | Higher | LSM compaction rewrites the same data multiple times |
 
 ---
 
@@ -97,15 +99,42 @@ COVERING INDEX:
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+The same four steps, traced as a sequence — and what happens on crash depending on exactly where it lands:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant WAL as WAL (disk, sequential)
+    participant BP as Buffer Pool (RAM)
+    participant Data as Data files (disk, random)
+
+    Client->>WAL: 1. Write "Page 42: 300 → 500"
+    WAL-->>Client: fsync'd to disk
+    Client->>BP: 2. Modify page in memory
+    Client->>Client: 3. Acknowledge "COMMIT OK"
+    Note over BP,Data: 4. Eventually, at checkpoint...
+    BP->>Data: Flush dirty pages to disk
+
+    rect rgb(255, 230, 230)
+    Note over Client,Data: Crash between step 1 and step 4
+    Data->>WAL: On restart: replay WAL from last checkpoint
+    WAL->>Data: Reconstruct the lost in-memory change
+    end
+```
+
+Step 3 is why WAL makes commits durable *without* waiting for the (slow, random-I/O) data-page write: the client is told "COMMIT OK" as soon as the change is safely on disk in the WAL, not once the actual data page has been updated. Step 4 can happen whenever it's convenient — if the server crashes before it does, replaying the WAL reconstructs exactly what step 4 would have written.
+
 ---
 
 ## Part 4: MVCC (Multi-Version Concurrency Control)
 
-## Version │ Balance │ Created │ Expired
+### Example: One Row's Version Chain
 
-| v1 | $100 | txn 10 | txn 20 |
-| v2 | $150 | txn 20 | txn 35 |
-| v3 | $200 | txn 35 | — | ← current |
+| Version | Balance | Created by txn | Expired by txn |
+| --- | --- | --- | --- |
+| v1 | $100 | 10 | 20 |
+| v2 | $150 | 20 | 35 |
+| v3 | $200 | 35 | — (current) |
 
 ---
 
@@ -161,9 +190,11 @@ Frequent checkpoints flush dirty pages sooner, so crash recovery replays less WA
 
 ## Part 6: Query Execution — How SELECT Actually Works
 
-## Algorithm │ Complexity │ When Used
+### Join Algorithm Complexity
 
-| Nested Loop | O(N × M) | Small tables, or inner has index |
+| Algorithm | Complexity | When Used |
+| --- | --- | --- |
+| Nested Loop | O(N × M) | Small tables, or the inner side has a usable index |
 | Hash Join | O(N + M) | Large tables, no useful index |
 | Merge Join | O(N + M) | Both inputs already sorted |
 
