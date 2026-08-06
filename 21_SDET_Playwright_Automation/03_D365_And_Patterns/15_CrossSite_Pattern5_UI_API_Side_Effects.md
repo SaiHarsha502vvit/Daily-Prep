@@ -21,26 +21,33 @@
 
 ## 1. The "Success Theatre" Anti-Pattern
 
-```
-What the UI shows:
-  ┌────────────────────────────────┐
-  │  ✓ Order placed successfully!  │  ← UI shows this
-  │  Order ID: ORD-12345           │
-  └────────────────────────────────┘
+The UI shows the exact same "✓ Order placed successfully! Order ID: ORD-12345" message in BOTH scenarios below — a UI-only test cannot tell them apart, which is the entire mechanism behind this anti-pattern:
 
-What actually happened (possible scenarios):
-  Scenario A — Everything worked:
-    Backend → Order DB → Notification Service → SMS + Email → Warehouse API ✓
+```mermaid
+sequenceDiagram
+    participant UI as Customer Portal (UI)
+    participant BE as Backend
+    participant DB as Order DB
+    participant Notif as Notification Service
+    participant WH as Warehouse API
 
-  Scenario B — Silent failure:
-    Backend → Order DB ✓
-              ↓
-              Notification Service → FAILED (timeout, wrong endpoint)
-              Warehouse API → FAILED (auth error)
+    UI->>BE: place order
+    BE->>DB: write order
+    DB-->>BE: OK
+    BE-->>UI: ✓ "Order placed successfully!"
 
-  Your UI-only test passes in BOTH scenarios.
-  The customer's order confirmation never arrives.
-  The warehouse never gets the order.
+    alt Scenario A — everything worked
+        BE->>Notif: send confirmation
+        Notif-->>BE: OK (SMS + Email sent)
+        BE->>WH: notify warehouse
+        WH-->>BE: OK
+    else Scenario B — silent failure downstream
+        BE->>Notif: send confirmation
+        Notif--xBE: FAILED (timeout, wrong endpoint)
+        BE->>WH: notify warehouse
+        WH--xBE: FAILED (auth error)
+        Note over UI,WH: UI already showed success BEFORE these calls even ran —<br/>the customer never gets their confirmation, the warehouse never ships it,<br/>and a UI-only test PASSES either way.
+    end
 ```
 
 **The fix:** After the UI shows success, verify the DOWNSTREAM EFFECTS via API.

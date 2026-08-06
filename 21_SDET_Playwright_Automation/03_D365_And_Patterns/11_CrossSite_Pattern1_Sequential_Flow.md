@@ -40,30 +40,29 @@ Does Site B accept Site A's authentication? If they share an SSO cookie on the s
 
 ## 2. The Sequential Flow Pattern — Full Architecture
 
-```
-                    ┌─────────────────────┐
-                    │   Data Accumulator   │  ← TypeScript object scoped to the test
-                    │   (lives in memory)  │
-                    └────────┬────────────┘
-                             │ populated by
-                             ▼
-┌──────────────┐     Step 1: Admin creates user
-│  Admin CRM   │ ──────────────────────────────► data.userId = 'C-123'
-│  (D365 App)  │     Step 2: Copy credentials   data.email = 'test@co.com'
-└──────────────┘ ──────────────────────────────► data.tempPassword = 'Tmp!Pass1'
-                             │
-                             ▼
-┌──────────────┐     Step 3: Navigate to customer portal
-│  Customer    │ ──────────────────────────────► uses data.email + data.tempPassword
-│  Portal      │     Step 4: Login succeeds
-│  (JSP App)   │ ──────────────────────────────► data.loginSucceeded = true
-└──────────────┘     Step 5: Verify onboarding banner
-                             │
-                             ▼
-┌──────────────┐     Step 6: Cross-validate via API
-│  User API    │ ──────────────────────────────► uses data.userId
-│  (REST)      │ ◄─────────────────────────────  returns { status: 'onboarding' }
-└──────────────┘     Step 7: Assert API agrees with UI
+The one TypeScript object (`data`) is what makes this a single connected test instead of three unrelated ones — every site either writes to it or reads from what an earlier site wrote:
+
+```mermaid
+sequenceDiagram
+    participant CRM as Admin CRM (D365 App)
+    participant Data as Data Accumulator<br/>(in-memory TS object)
+    participant Portal as Customer Portal (JSP App)
+    participant API as User API (REST)
+
+    Note over CRM,API: Step 1-2 — Admin CRM
+    CRM->>Data: write data.userId = 'C-123'
+    CRM->>Data: write data.email, data.tempPassword
+
+    Note over CRM,API: Step 3-5 — Customer Portal
+    Portal->>Data: read data.email + data.tempPassword
+    Portal->>Portal: log in as the new user
+    Portal->>Data: write data.loginSucceeded = true
+    Portal->>Portal: verify onboarding banner visible
+
+    Note over CRM,API: Step 6-7 — Cross-validate via API
+    API->>Data: read data.userId
+    API-->>API: GET user status
+    API->>API: assert response.status === 'onboarding'<br/>(API agrees with what the UI showed)
 ```
 
 ---

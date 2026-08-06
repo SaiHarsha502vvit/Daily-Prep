@@ -375,48 +375,26 @@ await element.click(); // Playwright auto-waits for actionability before clickin
 
 ## 9. The Complete D365 Diagnostic Flowchart
 
-```
-My D365 locator failed or returned wrong data
-                 │
-                 ▼
-    Does count() return 0?
-    (page.locator('...').count())
-                 │
-         ┌───── YES ─────────────────────────────────────────────┐
-         │                                                        │
-         ▼                                                        │
-  Is element inside an IFrame?                                   │
-  (Run browser console IFrame dump script)                       │
-         │                                                        │
-    ┌─── YES                                                      │
-    │    └─► Use frameLocator('iframe[name="..."]').locator(...)  │
-    │        If still 0: check for nested IFrame                  │
-    │                                                             │
-    └─── NO                                                       │
-         │                                                        │
-         ▼                                                        │
-  Has the component rendered yet?                                 │
-  (Is this a tab content, dialog, or conditional field?)          │
-         │                                                        │
-    ┌─── YES: Click the tab/open the dialog first ──────────────►│
-    └─── NO: Wrong selector — check data-automation-key dump      │
-                                                                  │
-    ────────────────────────────────────────────────────────────►│
-                                                                  │
-    count() returns 1+ but isVisible() = false                    │
-                 │                                                │
-                 ▼                                                │
-    Is element on inactive tab? ─► YES: Click the tab first      │
-    Is element display:none? ──► YES: Check for conditional rule  │
-    Is element height:0? ──────► YES: Check collapsed section     │
-                                                                  │
-    count() > 0, isVisible() = true, but textContent is wrong/empty
-                 │
-                 ▼
-    Is this STALE render? ─► YES: Use toHaveText(expectedValue)   │
-    Is data still loading? ─► YES: Use not.toHaveText('')          │
-    Is spinner still showing? → Wait for spinner to go             │
-    Is it OData slow? ──────► toHaveText(expected, {timeout:45000})│
+```mermaid
+flowchart TD
+    Start(["My D365 locator failed<br/>or returned wrong data"]) --> Count{"count() == 0?"}
+
+    Count -->|YES| Iframe{"Is element inside<br/>an IFrame?<br/>(run IFrame dump script)"}
+    Iframe -->|YES| UseFrame["Use frameLocator('iframe[name=...]')<br/>.locator(...)<br/>Still 0? Check for a NESTED IFrame"]
+    Iframe -->|NO| Rendered{"Has the component<br/>rendered yet?<br/>(tab content, dialog,<br/>conditional field?)"}
+    Rendered -->|YES| ClickFirst["Click the tab / open<br/>the dialog first"]
+    Rendered -->|NO| WrongSelector["Wrong selector —<br/>check data-automation-key dump"]
+
+    Count -->|"NO -- count is 1+"| Visible{"isVisible() == false?"}
+    Visible -->|inactive tab| VisTab["Click the tab first"]
+    Visible -->|display:none| VisDisplay["Check for a conditional rule"]
+    Visible -->|height:0| VisHeight["Check collapsed section"]
+
+    Visible -->|"visible, but text<br/>wrong/empty"| Text{"Why is the text wrong?"}
+    Text -->|stale render| TextStale["Use toHaveText(expectedValue) --<br/>auto-retries until it matches"]
+    Text -->|data still loading| TextLoading["Use not.toHaveText('')"]
+    Text -->|spinner still showing| TextSpinner["Wait for spinner to go<br/>(toHaveCount(0))"]
+    Text -->|OData slow| TextOData["toHaveText(expected,<br/>{timeout: 45000})"]
 ```
 
 ---
