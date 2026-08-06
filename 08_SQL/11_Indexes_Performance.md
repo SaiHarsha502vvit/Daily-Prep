@@ -58,6 +58,25 @@ This is called the **leftmost prefix rule** and is one of the most commonly misu
 
 ---
 
+The same `last_name = 'Kumar'` lookup from the "How B-Tree Indexes Actually Work" section, traced through the tree node-by-node:
+
+```mermaid
+flowchart TD
+    Q["Search: last_name = 'Kumar'"] --> Root{"Root page:<br/>is 'Kumar' in [A-J], [K-P], or [Q-Z]?"}
+    Root -->|"< K"| AJ["[A-J] page"]
+    Root -->|"K-P"| KP["[K-P] page"]
+    Root -->|"> P"| QZ["[Q-Z] page"]
+    KP --> Leaf["Leaf page: Kumar → Row 5"]
+    AJ -.not visited.-> Skip1[ ]
+    QZ -.not visited.-> Skip2[ ]
+
+    style Leaf fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style Skip1 fill:transparent,stroke:transparent
+    style Skip2 fill:transparent,stroke:transparent
+```
+
+3-4 comparisons total for a 10-million-row table — every other branch of the tree is never touched.
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    DATABASE INDEXES                                             │
@@ -300,9 +319,9 @@ Today, every database performance interview tests B-tree index understanding —
 ### Production Reality
 
 **Failure modes:**
-1. **Missing index causing full table scan on 500M rows**: A `SELECT * FROM events WHERE user_id = 12345 AND event_type = 'purchase'` on a 500M-row table without an index on `(user_id, event_type)` does a full sequential scan — 8-12 seconds per query, 40,000 IOPS consumption. Stripe's 2018 incident where a migration removed an index on `balance_transactions.account_id` caused 3-hour query latency spikes affecting payment processing globally.
+1. **Missing index causing full table scan on 500M rows**: A `SELECT * FROM events WHERE user_id = 12345 AND event_type = 'purchase'` on a 500M-row table without an index on `(user_id, event_type)` does a full sequential scan — 8-12 seconds per query, 40,000 IOPS consumption. A schema migration that drops and recreates a table without re-adding every original index is a common way this happens silently: the migration succeeds, the application still works, and nothing fails loudly until the missing index causes latency spikes in production traffic.
 2. **Function on indexed column disabling index (LOWER/upper/date functions)**: `WHERE LOWER(email) = 'user@example.com'` prevents the B-tree index on `email` from being used — the database must apply LOWER() to every row. On 50M users, this is a full table scan. Fix: use expression indexes `CREATE INDEX ON users (LOWER(email))` or enforce case-insensitive storage (varchar collation).
-3. **Leading wildcard LIKE '%pattern%' preventing index use**: `WHERE name LIKE '%phone%'` cannot use a B-tree index. A 2019 Cloudflare performance incident was partly caused by application search queries using leading wildcards on million-row tables, forcing full scans that saturated database CPU.
+3. **Leading wildcard LIKE '%pattern%' preventing index use**: `WHERE name LIKE '%phone%'` cannot use a B-tree index. Application search features built on a plain `LIKE '%term%'` against a large table are a common way this reaches production unnoticed — it works fine in testing with a small dataset, then saturates database CPU once the table grows into the millions of rows.
 
 **Debug workflow:**
 (1) Check `pg_stat_user_tables` for `seq_scan vs idx_scan` ratios — if `seq_scan > idx_scan` on a large table, add indexes.
@@ -310,7 +329,7 @@ Today, every database performance interview tests B-tree index understanding —
 (3) For function-wrapped WHERE clauses, check if an expression index exists: `SELECT indexname FROM pg_indexes WHERE tablename = 'users' AND indexname LIKE '%lower%'`. If missing, create one matching the exact expression used in queries.
 
 **Modern practice anchor:**
-Today, Percona's PMM, Datadog's database monitoring, and PostgreSQL's `pg_stat_statements` automatically surface missing index candidates by comparing seq_scan frequency against table size — catching the Stripe-style index removal incident in staging before it reaches production.
+Today, Percona's PMM, Datadog's database monitoring, and PostgreSQL's `pg_stat_statements` automatically surface missing index candidates by comparing seq_scan frequency against table size — catching an accidental index removal in staging before it ever reaches production.
 
 
 ---
