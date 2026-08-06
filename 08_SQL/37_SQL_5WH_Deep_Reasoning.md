@@ -84,7 +84,7 @@ LEFT JOIN orders o ON u.user_id = o.user_id;
 
 <details><summary>Answer</summary>
 
-**Who chooses?** The query optimizer — it uses table statistics (row counts, cardinality, data distribution histograms) to estimate cost of each algorithm. **When Hash Join?** When neither join column has a useful index AND both tables are large. The optimizer loads `customers` (smaller table) into a hash map in memory, then streams `orders` rows and hashes `customer_id` to look up matches in O(1). Memory usage = size of smaller table. **When Nested Loop?** When `customers.id` is a PRIMARY KEY (and thus has a B-tree index). For each of the 10M `orders` rows, it does an index lookup on `customers` — O(log 50K) ≈ 16 operations. With index: nested loop wins. **Index that changes decision:** `INDEX ON orders(customer_id)` — now the optimizer can also use an index range scan from the `customers` side. Run `EXPLAIN ANALYZE` to see the chosen algorithm and actual vs estimated row counts.
+**Who chooses?** The query optimizer — it uses table statistics (row counts, cardinality, data distribution histograms) to estimate the cost of each algorithm. **When Hash Join?** This is the default winner for the join as described: it touches all 10M `orders` rows against all 50K `customers` rows, with neither side filtered down first. The optimizer builds a hash table on the smaller side (`customers`, 50K rows — comfortably fits in `work_mem`), then does one sequential scan of `orders`, hashing `customer_id` for an O(1) probe per row. Total cost ≈ one scan of each table plus 10M cheap in-memory lookups — and the PK index on `customers.id` doesn't even help here, because hash join never consults it. **When does Nested Loop (with index) win instead?** When the OUTER/driving side is small — e.g., a WHERE clause first filters `orders` down to a handful of rows (one customer's recent orders). For a few outer rows, doing that many index lookups into `customers` (each ~O(log 50K) ≈ 16 B-tree comparisons, but each also a random page access) beats paying to build a hash table at all. Nested Loop + Index wins on SMALL outer inputs — the same 10M-row full join still favors Hash Join even with the index present. **What changes the decision:** anything that shrinks the outer side (a selective WHERE filter on `orders`) pushes the optimizer toward Nested Loop; a `work_mem` too small to hold the `customers` hash table pushes it toward Merge Join instead. Run `EXPLAIN ANALYZE` to see the chosen algorithm and actual vs estimated row counts.
 
 </details>
 
@@ -423,10 +423,10 @@ Professional:
 ### Historical Evolution
 
 **Predecessors (with years):**
-- **5W1H Framework ( journalism)** (1800s): The question framework for comprehensive inquiry emerged from journalism's need for complete story coverage
-- **SQL-92** (1992): Major SQL standard revision that formalized query execution semantics and logical processing order
+- **5W1H Framework (journalism)** (1800s): The question framework for comprehensive inquiry emerged from journalism's need for complete story coverage
 - **Bloom's Taxonomy (Bloom)** (1956): Benjamin Bloom's educational taxonomy provided hierarchical cognitive classification framework
 - **Query optimization (Selinger)** (1979): Patricia Selinger's Access Path Selection paper formalized cost-based query optimization in System R
+- **SQL-92** (1992): Major SQL standard revision that formalized query execution semantics and logical processing order
 - **SQL execution order formalization** (1990s): Database textbooks codified the logical evaluation order (FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY) for teaching
 
 **Evolution narrative:**
