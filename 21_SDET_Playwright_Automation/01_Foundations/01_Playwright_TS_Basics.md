@@ -874,14 +874,17 @@ await expect(page.locator("#btn")).toBeEnabled(); // re-polls
 await expect(page.locator("img")).toHaveAttribute("src", /logo/); // re-polls
 ```
 
-**How the retry loop works internally:**
+**How the retry loop works internally** — this is a genuine loop, not a linear sequence, which is why it can either resolve early or run for the full timeout:
 
-```
-Step 1: Evaluate the locator → find element(s) in DOM
-Step 2: Check the condition (text matches? visible? count correct?)
-Step 3: Condition met? → resolve Promise → assertion PASSES ✅
-Step 4: Condition NOT met? → wait ~100ms → go to Step 1
-Step 5: Timeout reached (default 5000ms)? → throw AssertionError ❌
+```mermaid
+flowchart TD
+    Start(["expect(locator).toHaveText(...) called"]) --> Eval["Evaluate the locator —<br/>find element(s) in DOM, right now"]
+    Eval --> Check{"Condition met?<br/>(text matches? visible?<br/>count correct?)"}
+    Check -->|yes| Pass["resolve Promise<br/>assertion PASSES ✅"]
+    Check -->|no| Timeout{"Timeout reached?<br/>(default 5000ms)"}
+    Timeout -->|no| Wait["wait ~100ms"]
+    Wait --> Eval
+    Timeout -->|yes| Fail["throw AssertionError ❌"]
 ```
 
 The key: **both the locator query AND the condition check are re-evaluated on every retry**. If the DOM changes between retries (React re-render, async data load), Playwright picks up the new state automatically.
