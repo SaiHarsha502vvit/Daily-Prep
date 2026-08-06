@@ -4,7 +4,7 @@
 
 ---
 
-## Chapter 22: Mini Projects
+## Chapter 18a: Mini Projects
 
 ### Project 1: E-commerce Analytics Dashboard
 
@@ -443,12 +443,6 @@ DELIMITER ;
 ```
 
 ---
-
-# ═══════════════════════════════════════════════════════════════════
-
-# MERGED FROM: 04_SQL_Practice_Projects.md (WHY-HOW Framework Edition)
-
-# ═══════════════════════════════════════════════════════════════════
 
 # 🎯 SQL Practice Projects & Interview Questions
 

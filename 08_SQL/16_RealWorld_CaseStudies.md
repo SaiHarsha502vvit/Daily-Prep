@@ -2,7 +2,7 @@
 
 ---
 
-## Chapter 20: Real-World Case Studies
+## Chapter 16: Real-World Case Studies
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -234,16 +234,6 @@ GROUP BY c.customer_id, c.segment, c.tenure_days;
 ```
 
 ---
-
-_"Part 4 Complete! You now understand Query Optimization, Analytics Patterns, Data Warehousing, and ETL."_
-
----
-
-# ═══════════════════════════════════════════════════════════════════
-
-# MERGED FROM: 05_RealWorld_Problems_DSA.md (WHY-HOW Framework Edition)
-
-# ═══════════════════════════════════════════════════════════════════
 
 # 🔥 SQL Production Disasters & Lessons Learned
 
