@@ -105,19 +105,37 @@ INSERT INTO orders_new SELECT * FROM orders WHERE id BETWEEN 1 AND 1000000;
 INSERT INTO orders_new SELECT * FROM orders WHERE id BETWEEN 1000001 AND 2000000;
 -- ... continue in chunks
 
--- 3. Set up trigger to capture live writes during migration
+-- 3. Set up triggers to capture ALL live writes during migration.
+-- An INSERT-only trigger is NOT enough: orders get updated (status, total)
+-- and occasionally deleted, and those rows are already loaded into
+-- orders_new from step 2 -- an INSERT trigger will never fire for them again,
+-- so their changes silently never reach orders_new. Mirror all three.
 DELIMITER //
-CREATE TRIGGER orders_sync AFTER INSERT ON orders
+CREATE TRIGGER orders_sync_insert AFTER INSERT ON orders
 FOR EACH ROW
 BEGIN
     INSERT INTO orders_new VALUES (NEW.id, NEW.customer_id, NEW.total, NEW.created_at)
     ON DUPLICATE KEY UPDATE customer_id = NEW.customer_id, total = NEW.total;
 END //
+
+CREATE TRIGGER orders_sync_update AFTER UPDATE ON orders
+FOR EACH ROW
+BEGIN
+    UPDATE orders_new
+    SET customer_id = NEW.customer_id, total = NEW.total, created_at = NEW.created_at
+    WHERE id = NEW.id;
+END //
+
+CREATE TRIGGER orders_sync_delete AFTER DELETE ON orders
+FOR EACH ROW
+BEGIN
+    DELETE FROM orders_new WHERE id = OLD.id;
+END //
 DELIMITER ;
 
 -- 4. Final cutover (brief lock)
 RENAME TABLE orders TO orders_old, orders_new TO orders;
--- 5. Drop trigger and old table after verification
+-- 5. Drop triggers and old table after verification
 ```
 
 ### Spring Boot / Backend Solution
@@ -341,7 +359,7 @@ CREATE TABLE orders_good (
 );
 
 -- SOLUTION 2: UUID v7 (time-ordered) — best of both worlds
--- PostgreSQL 17+ has native uuid_generate_v7()
+-- PostgreSQL 18+ has a native uuidv7() function
 -- For older versions, or MySQL:
 CREATE TABLE orders_best (
     id BINARY(16) PRIMARY KEY,  -- UUID v7: time-prefix ensures sequential inserts
@@ -975,11 +993,11 @@ SELECT pg_reload_conf();
 
 🔬 **Section Challenge — Scenario 10: Transaction Log Eating All Disk Space**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (Reasoning):** A team runs `DBCC SHRINKFILE` on their SQL Server transaction log every night to keep it small — but it grows right back to the same size by the next morning, and performance keeps getting worse. What's actually causing the log to stay large, and what's the real fix?
 
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+Shrinking the log doesn't address why it grew in the first place — check `log_reuse_wait_desc` (from the query earlier in this scenario): it's very likely stuck at `LOG_BACKUP` (no log backups are being taken) or `ACTIVE_TRANSACTION` (something long-running is holding the log open). Until that clears, SQL Server can't mark old VLFs (virtual log files) as reusable, so every night's writes force the log to grow again — and each autogrow event briefly pauses writes and carves out more, smaller VLFs, making fragmentation worse over time. The nightly shrink is pure wasted work: it pays the cost of a rewrite, then immediately pays the cost of regrowth. Real fix: take regular log backups (`BACKUP LOG ... TO DISK`) so completed transactions actually clear the log, or switch to `SIMPLE` recovery if point-in-time restore isn't needed — either way, stop shrinking and let the log settle at a size that fits the real workload.
 
 </details>
 
@@ -1519,7 +1537,7 @@ SET work_mem = '128MB';      -- Per-operation sort/hash memory
 **Additional predecessors:**
 - **Dennis Ritchie (1970s)**: INT 32-bit signed integer (2^31-1 = 2.1B max) standardized in C for Unix — why database auto-increment columns hit walls
 - **Twitter (2010)**: Snowflake ID — 64-bit distributed ID with timestamp + machine + sequence; solved Twitter's multi-datacenter uniqueness problem
-- **Lehost & Padget (2001)**: UUID v1 (MAC address + timestamp) — early attempt at distributed IDs; clock-synchronization vulnerabilities discovered later
+- **Leach & Salz, RFC 4122 (2005)**: UUID v1 (MAC address + timestamp) formally standardized, building on the older DCE UUID spec from Apollo/OSF — an early attempt at distributed IDs; embedding a MAC address turned out to leak host identity, one reason later versions moved to pure randomness (v4) or time-ordering without MAC exposure (v7)
 
 **Brief evolution note:**
 Auto-increment INTEGER primary keys dominated from the 1970s-2000s because disk was precious and single-machine databases were the norm. The 2.1B ceiling was considered "unreachable." When social media and IoT hit billions of rows per table, teams scrambled to BIGINT or UUID migrations. UUID v4 (random) caused B-Tree write amplification, prompting UUID v7 (RFC 9562, 2024) — time-ordered 128-bit IDs that preserve B-Tree insert efficiency while remaining globally unique.
