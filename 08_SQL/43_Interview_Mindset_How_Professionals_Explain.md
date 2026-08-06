@@ -462,7 +462,9 @@ dual-write, backfill, swap — with zero downtime. BIGINT gives us
 last 250 billion years."
 ```
 
----🔬 **Section Challenge — 🏆 Part 9: The 30-Second Elevator Summary**
+---
+
+🔬 **Section Challenge — 🏆 Part 9: The 30-Second Elevator Summary**
 
 **Challenge 1 (Elevator Pitch Optimization):** You are in a senior engineering interview. The interviewer asks: "Tell me about a time you fixed a slow API." Your instinct is to say: "The API was slow because the table was huge, so I added an index to the email column and it got faster."
 Rewrite this into a professional, 30-second SIREN-framework elevator summary that incorporates scale, technical specifics, and prevention.
