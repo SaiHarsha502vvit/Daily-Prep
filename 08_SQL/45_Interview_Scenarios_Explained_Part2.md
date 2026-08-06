@@ -52,7 +52,7 @@ UPDATE accounts SET balance = balance + 50 WHERE user_id = 1;   -- BLOCKED! A ho
 -- One transaction is rolled back automatically
 ```
 
-"**The classic prevention strategy is consistent lock ordering.** If all transactions always lock lower user IDs before higher ones, cicrcular waits become impossible:"
+"**The classic prevention strategy is consistent lock ordering.** If all transactions always lock lower user IDs before higher ones, circular waits become impossible:"
 
 ```java
 // SOLUTION: Always lock in a consistent order
@@ -219,29 +219,27 @@ Account findByIdForUpdate(@Param("id") Long id);
 
 ### 📚 Theory: Comparison Table
 
-```
 | Approach     | Contention | Throughput | Complexity | Use When            |
-|-------------|-----------|-----------|-----------|---------------------|
-| Optimistic  | Low       | High      | Medium    | Rare conflicts       |
-| Atomic SQL  | Any       | Highest   | Low       | Simple operations    |
-| Pessimistic | High      | Lower     | Low       | Frequent conflicts   |
-| Serializable| Any       | Lowest    | Low       | Must be correct      |
+| ------------ | ---------- | ---------- | ---------- | -------------------- |
+| Optimistic   | Low        | High       | Medium     | Rare conflicts        |
+| Atomic SQL   | Any        | Highest    | Low        | Simple operations      |
+| Pessimistic  | High       | Lower      | Low        | Frequent conflicts     |
+| Serializable | Any        | Lowest     | Low        | Must be correct        |
 
-Optimistic Locking: O(1) with retry
+**Optimistic Locking: O(1) with retry**
 - First attempt: always succeeds in reading
 - Conflict: retry loop — typically succeeds in 1-2 retries
 - If contention > 10% of requests → switch to pessimistic
 
-Pessimistic Locking: O(1) but with wait
+**Pessimistic Locking: O(1) but with wait**
 - Guarantees exclusive access immediately
 - Other threads wait (block) → throughput decreases linearly
 - If holds locks > 100ms → danger of connection pool exhaustion
 
-Atomic SQL: O(1) always
+**Atomic SQL: O(1) always**
 - Database handles everything in one operation
 - No application-level concern about races
 - Limited to simple arithmetic (can't do complex business logic)
-```
 
 ### 🔄 Variants
 
@@ -328,18 +326,17 @@ COMMIT;
 
 ### 📚 Theory: Isolation Levels Explained
 
-```
 | Level            | Dirty Read | Non-Repeatable Read | Phantom Read |
-|-----------------|-----------|--------------------|--------------|
-| READ UNCOMMITTED | Possible  | Possible           | Possible     |
-| READ COMMITTED   | ✗         | Possible           | Possible     |
-| REPEATABLE READ  | ✗         | ✗                  | Possible*    |
-| SERIALIZABLE     | ✗         | ✗                  | ✗            |
+| ---------------- | ---------- | -------------------- | ------------- |
+| READ UNCOMMITTED | Possible   | Possible              | Possible       |
+| READ COMMITTED   | ✗          | Possible              | Possible       |
+| REPEATABLE READ  | ✗          | ✗                     | Possible*      |
+| SERIALIZABLE     | ✗          | ✗                     | ✗              |
 
-* PostgreSQL's REPEATABLE READ actually prevents phantoms too
-  (it uses MVCC snapshot isolation, not traditional locking)
+\* PostgreSQL's REPEATABLE READ actually prevents phantoms too
+(it uses MVCC snapshot isolation, not traditional locking)
 
-The Three Anomalies Explained:
+**The Three Anomalies Explained:**
 1. DIRTY READ: See uncommitted data from another transaction
    → Other transaction might rollback → you acted on ghost data
 
@@ -349,13 +346,12 @@ The Three Anomalies Explained:
 3. PHANTOM READ: Run same query twice, get different ROWS
    → Another transaction committed an INSERT/DELETE between your queries
 
-PostgreSQL MVCC Implementation:
+**PostgreSQL MVCC Implementation:**
 - Each transaction gets a snapshot ID (xid) at start
 - Each row has xmin (created by xid) and xmax (deleted by xid)
 - Read only sees rows where: xmin < my_xid AND (xmax > my_xid OR xmax = 0)
 - This is WHY PostgreSQL never locks for reads — it reads from its own snapshot
 - Trade-off: Dead rows accumulate → VACUUM needed to reclaim space
-```
 
 ### 🔄 Variants
 
@@ -571,29 +567,26 @@ public void handleStockReservationFailed(StockReservationFailedEvent event) {
 
 ### 📚 Theory
 
-```
-Orchestration vs Choreography:
+**Orchestration vs Choreography:**
 
-| Aspect       | Orchestration          | Choreography           |
-|-------------|----------------------|----------------------|
-| Flow control| Central coordinator   | Distributed (events)  |
-| Coupling    | All services known   | Loosely coupled        |
-| Debugging   | Easy — single place  | Hard — trace events    |
-| Complexity  | Simple if few steps  | Better for many services|
-| Failure     | Easy to handle       | Need correlation IDs   |
+| Aspect      | Orchestration        | Choreography              |
+| ----------- | --------------------- | -------------------------- |
+| Flow control | Central coordinator   | Distributed (events)       |
+| Coupling     | All services known    | Loosely coupled            |
+| Debugging    | Easy — single place    | Hard — trace events         |
+| Complexity   | Simple if few steps    | Better for many services    |
+| Failure      | Easy to handle         | Need correlation IDs        |
 
-When to use which:
+**When to use which:**
 - ≤ 5 services in saga → Orchestration (simpler, debuggable)
-- > 5 services → Choreography (avoids God orchestrator)
+- \> 5 services → Choreography (avoids God orchestrator)
 - Financial transactions → Orchestration (easier to audit)
 
-Idempotency is CRITICAL in sagas:
-Each compensating action must be idempotent because:
-- Network failures → retries → same action executes multiple times
-- "Refund order #123" must be safe to call 3 times
-- Achieve with: idempotency key on every operation
-  INSERT INTO refunds (saga_id, amount)
-  ON CONFLICT (saga_id) DO NOTHING;  -- Second call is harmless
+**Idempotency is CRITICAL in sagas.** Each compensating action must be idempotent because network failures → retries → the same action can execute multiple times, and "refund order #123" must be safe to call 3 times. Achieve this with an idempotency key on every operation:
+
+```sql
+INSERT INTO refunds (saga_id, amount)
+ON CONFLICT (saga_id) DO NOTHING;  -- Second call is harmless
 ```
 
 ---
@@ -880,34 +873,37 @@ public OrderResult callPaymentService(Order order) {
 
 ### 📚 Theory
 
+**Retry Amplification:**
 ```
-Retry Amplification:
 - Service handles 100 req/s normally
 - Service starts failing 50% of requests
-- With 3 retries: 100 + 50 + 25 = 175 req/s actual load
+- With retries: 100 + 50 + 25 + ... = extra load piled onto an already-struggling service
 - Service now fails 80%
-- With 3 retries: 100 + 80 + 64 = 244 req/s actual load
+- With retries: 100 + 80 + 64 + ... = even more load
 - Service now fails 95%...
 - CASCADING FAILURE — the retries CAUSE the outage to worsen
+```
 
-Circuit Breaker States:
+**Circuit Breaker States:**
+```
   CLOSED ─────(failures > threshold)──→ OPEN
     ↑                                      │
     │                                (timeout period)
     │                                      ↓
     └──────(test succeeds)────────── HALF-OPEN
                                     (test fails → back to OPEN)
-
-Strategy Comparison:
-| Pattern              | Protection Level | Complexity |
-|---------------------|:----------------:|:----------:|
-| No retry            | None             | Trivial    |
-| Immediate retry     | Negative (worse) | Low        |
-| Exponential backoff | Medium           | Low        |
-| Backoff + jitter    | Good             | Medium     |
-| Circuit breaker     | Excellent        | Medium     |
-| Bulkhead + CB       | Best             | High       |
 ```
+
+**Strategy Comparison:**
+
+| Pattern              | Protection Level | Complexity |
+| --------------------- | :---------------: | :----------: |
+| No retry              | None               | Trivial       |
+| Immediate retry        | Negative (worse)    | Low            |
+| Exponential backoff     | Medium               | Low             |
+| Backoff + jitter         | Good                   | Medium           |
+| Circuit breaker           | Excellent               | Medium             |
+| Bulkhead + CB               | Best                       | High                 |
 
 ---
 
@@ -930,7 +926,7 @@ Strategy Comparison:
 ### Historical Evolution (Extended)
 
 **Additional predecessors:**
-- **Edgar F. Codd (1970)**: Published "A Relational Model of Data for Large Shared Data Banks" — introduced the 12 rules that define relational databases and the theoretical foundation for ACID
+- **Edgar F. Codd (1970)**: Published "A Relational Model of Data for Large Shared Data Banks" — introduced the relational model itself (tables, relations, normalization) that became the theoretical foundation for ACID. Codd's famous "12 rules" for what counts as a true relational DBMS came 15 years later, in a separate 1985 Computerworld article, "Is Your DBMS Really Relational?"
 - **David Reed (1978)**: Coined "Multi-Version Concurrency Control" at MIT — the foundational paper enabling readers to never block writers, now used in PostgreSQL, Oracle, SQL Server
 - **ANSI/ISO (1992)**: SQL-92 standard formalized four isolation levels (READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, SERIALIZABLE) — providing the vocabulary still used today
 
