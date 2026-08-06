@@ -450,7 +450,7 @@ Today, LeetCode SQL Medium/Hard problems with window functions and recursive CTE
 ### Production Reality
 
 **Failure modes:**
-1. **N+1 ORM query on large result sets (Facebook 2011)**: Frameworks like Hibernate executing one query per related object. With 10,000 employees each having a department lookup, this means 10,001 queries instead of 1 JOIN. Facebook's early PHP ORM generated N+1 queries that brought MySQL servers to their knees at 10M+ user scale. Fix: use JOINs or batch-fetch strategies.
+1. **N+1 ORM query on large result sets**: Frameworks like Hibernate executing one query per related object. With 10,000 employees each having a department lookup, this means 10,001 queries instead of 1 JOIN. This is one of the most common production performance bugs precisely because it's invisible in development — a test dataset of 20 employees generates 21 fast queries with no noticeable lag, and the same code only becomes a real problem once the table has grown by three or four orders of magnitude. Fix: use JOINs or batch-fetch strategies.
 2. **ORDER BY without LIMIT on 10M-row export**: A query like `SELECT * FROM orders ORDER BY order_date` on a 10M-row table causes the database to sort the entire result set in memory (or spill to disk), producing 10M rows to the client. This blocks the connection for minutes and can cause OOM. Fix: always add `LIMIT` or use keyset pagination.
 3. **Missing index on foreign key causing sequential scan**: A JOIN between `orders` (100M rows) and `customers` (10M rows) without an index on `orders.customer_id` forces a nested loop or hash join reading 100M rows. PostgreSQL's `pg_stat_user_tables` shows `seq_scan >> idx_scan`. Fix: `CREATE INDEX ON orders(customer_id)`.
 
