@@ -90,7 +90,11 @@ you when to use which.
 // LEGACY DECORATOR (experimentalDecorators: true)
 // ============================================================
 
-function logged(
+// Named loggedLegacy/loggedStage3, not both "logged" — they're the SAME
+// concept shown two ways for comparison, but two functions of the same
+// name in one scope is a duplicate-identifier error the moment you try
+// to actually run both halves of this comparison together.
+function loggedLegacy(
   target: Object,                    // The prototype (for instance methods)
   propertyKey: string | symbol,      // Method name
   descriptor: PropertyDescriptor
@@ -106,7 +110,7 @@ function logged(
 }
 
 class LegacyService {
-  @logged
+  @loggedLegacy
   fetchData(id: string) {
     return { id, data: "result" };
   }
@@ -116,7 +120,7 @@ class LegacyService {
 // STAGE 3 DECORATOR (TS 5.0+)
 // ============================================================
 
-function logged(
+function loggedStage3(
   target: Function,                        // The constructor (class itself)
   context: ClassMethodDecoratorContext
 ) {
@@ -135,7 +139,7 @@ function logged(
 }
 
 class Stage3Service {
-  @logged
+  @loggedStage3
   fetchData(id: string) {
     return { id, data: "result" };
   }
@@ -207,10 +211,14 @@ TypeScript erased the type of.
 ### What a Class Decorator Receives
 
 ```typescript
-// CLASS DECORATOR SIGNATURE:
-type ClassDecorator = (value: Function, context: ClassDecoratorContext) => Function | void;
+// STAGE 3 CLASS DECORATOR SIGNATURE:
+// (named Stage3ClassDecorator here deliberately — TypeScript's OWN lib
+// already defines a global `ClassDecorator` type, and it's the LEGACY
+// shape below, not this one. Reusing that name would silently collide.)
+type Stage3ClassDecorator = (value: Function, context: ClassDecoratorContext) => Function | void;
 
-// LEGACY SIGNATURE (experimentalDecorators):
+// LEGACY SIGNATURE (experimentalDecorators) — this IS what the global
+// `ClassDecorator` type actually refers to if you use it in your own code:
 type LegacyClassDecorator = (constructor: Function) => void | Function;
 ```
 
@@ -250,12 +258,10 @@ interface Logger {
   log(msg: string): void;
 }
 
+@Injectable("Logger")
 class ConsoleLogger implements Logger {
   log(msg: string) { console.log(`[LOG] ${msg}`); }
 }
-
-@Injectable("Logger")
-class ConsoleLogger { log(msg: string) { console.log(`[LOG] ${msg}`); } }
 
 interface Database {
   query(sql: string): Promise<unknown[]>;
@@ -371,7 +377,10 @@ returns — which means you can wrap, modify, replace, or prevent method executi
 
 ```typescript
 // METHOD DECORATOR SIGNATURE (Stage 3):
-type MethodDecorator = (
+// (named Stage3MethodDecorator, not MethodDecorator, for the same reason
+// as Section 2's Stage3ClassDecorator — `MethodDecorator` is already a
+// global TypeScript lib type, and it describes the LEGACY signature.)
+type Stage3MethodDecorator = (
   value: Function,                    // The method function itself
   context: ClassMethodDecoratorContext
 ) => Function | void;                 // Return new function to replace it
@@ -397,6 +406,11 @@ function timed(
 ): Function {
   return function (this: unknown, ...args: unknown[]) {
     const start = performance.now();
+    // `this` is `unknown` here on purpose — a decorator can't know in
+    // advance what class it'll end up attached to — so reading
+    // `.constructor.name` needs an explicit cast rather than relying on
+    // `this` narrowing itself, which TS won't do for you automatically:
+    const className = (this as object)?.constructor?.name ?? "unknown";
     const result = (target as (...a: unknown[]) => unknown).call(this, ...args);
 
     // Handle both sync and async:
@@ -405,7 +419,7 @@ function timed(
         .then((value) => {
           const elapsed = performance.now() - start;
           console.log(
-            `[TIMED] ${this.constructor.name}.${String(context.name)} ` +
+            `[TIMED] ${className}.${String(context.name)} ` +
             `took ${elapsed.toFixed(2)}ms`,
           );
           return value;
@@ -413,7 +427,7 @@ function timed(
         .catch((error) => {
           const elapsed = performance.now() - start;
           console.error(
-            `[TIMED] ${this.constructor.name}.${String(context.name)} ` +
+            `[TIMED] ${className}.${String(context.name)} ` +
             `failed after ${elapsed.toFixed(2)}ms`,
           );
           throw error;
@@ -422,7 +436,7 @@ function timed(
 
     const elapsed = performance.now() - start;
     console.log(
-      `[TIMED] ${this.constructor.name}.${String(context.name)} ` +
+      `[TIMED] ${className}.${String(context.name)} ` +
       `took ${elapsed.toFixed(2)}ms`,
     );
     return result;
@@ -463,6 +477,23 @@ function retry(options: { attempts: number; backoffMs: number }) {
   };
 }
 
+// Reads parameter names back out of a function's own source text — a real,
+// if fragile, old technique (pre-ES6 Angular DI used it too): Function.prototype.toString()
+// returns the original source, so a regex over the text between the first
+// "(" and its matching ")" recovers the names. It breaks under minification
+// (names get renamed) and can't handle destructured parameters — good enough
+// for a validation decorator's error messages, not something to rely on
+// in a production DI container:
+function extractParamNames(fn: Function): string[] {
+  const src = fn.toString();
+  const match = src.match(/\(([^)]*)\)/);
+  if (!match || !match[1].trim()) return [];
+  return match[1]
+    .split(",")
+    .map((p) => p.trim().split("=")[0].trim().replace(/^\.\.\./, ""))
+    .filter(Boolean);
+}
+
 // VALIDATION DECORATOR — checks preconditions:
 function validated(
   target: Function,
@@ -471,6 +502,7 @@ function validated(
   return function (this: unknown, ...args: unknown[]) {
     // Extract parameter names using a regex on the function source
     const paramNames = extractParamNames(target);
+    const className = (this as object)?.constructor?.name ?? "unknown";
 
     for (let i = 0; i < args.length; i++) {
       const value = args[i];
@@ -478,7 +510,7 @@ function validated(
 
       if (value === null || value === undefined) {
         throw new Error(
-          `[VALIDATION] ${this.constructor.name}.${String(context.name)}: ` +
+          `[VALIDATION] ${className}.${String(context.name)}: ` +
           `Parameter '${paramName}' (index ${i}) must not be null/undefined`,
         );
       }
@@ -549,20 +581,30 @@ property reads and writes at a finer grain than method decorators.
 
 ```typescript
 // STAGE 3 ACCESSOR DECORATOR:
-function observed(
-  value: unknown,
-  context: ClassAccessorDecoratorContext
-) {
-  let stored = value;
+// <This, Value> matters here, not decoration — without it, `stored` and
+// the get/set signatures collapse to `unknown`, and TS rejects applying
+// this decorator to a `number` or `string` accessor (the return type
+// wouldn't match what the accessor declares). The generic lets the SAME
+// decorator function specialize correctly per call site, inferring
+// This = Product, Value = number for `price` and Value = string for `name`.
+function observed<This, Value>(
+  target: ClassAccessorDecoratorTarget<This, Value>,
+  context: ClassAccessorDecoratorContext<This, Value>,
+): ClassAccessorDecoratorResult<This, Value> {
+  let stored: Value;
 
   return {
-    get() {
+    get(this: This) {
       console.log(`[GET] ${String(context.name)}`);
       return stored;
     },
-    set(newValue: unknown) {
+    set(this: This, newValue: Value) {
       console.log(`[SET] ${String(context.name)} = ${newValue}`);
       stored = newValue;
+    },
+    init(this: This, initialValue: Value) {
+      stored = initialValue;
+      return initialValue;
     },
   };
 }
@@ -588,49 +630,37 @@ class Config {
 
 ### Bounded Method Pattern (Accessors + Methods)
 
+> **Why this needs `context.addInitializer`, specifically — a method
+> decorator alone genuinely cannot solve this.** A method decorator's
+> `target` is the raw method FUNCTION — not the class, not the
+> prototype. Whatever function the decorator returns gets installed as
+> `EventEmitter.prototype.onMessage`, but that's still one shared
+> function on the shared prototype; reading `emitter.onMessage` just
+> walks the prototype chain and hands back that same unbound function
+> reference, exactly as if no decorator had run. Fixing `this`
+> requires code that runs **once per instance, during construction**
+> — which is precisely what `context.addInitializer` exists for: it
+> registers a callback the runtime calls for every new instance, with
+> `this` correctly set to that instance, letting the decorator install
+> a per-instance bound copy that shadows the shared prototype method:
+
 ```typescript
 // PROBLEM: Class methods lose `this` when passed as callbacks:
 // const handler = instance.method;  // `this` is lost!
 
-// SOLUTION: Use an accessor decorator that binds methods:
-
-function bound(
-  value: Function,
-  context: ClassMethodDecoratorContext
-): Function {
+// SOLUTION: addInitializer runs once per instance at construction time,
+// with `this` set to that instance — install a bound copy right there:
+function bound(target: Function, context: ClassMethodDecoratorContext) {
   if (context.kind !== "method") {
     throw new Error("@bound can only decorate methods");
   }
-
   const methodName = context.name;
-  return function (this: unknown, ...args: unknown[]) {
-    return (value as (...a: unknown[]) => unknown).call(this, ...args);
-  } as unknown as Function;
-}
 
-// Register a new getter on the class that returns a bound version:
-function bound<T extends Function>(
-  target: T,
-  context: ClassMethodDecoratorContext,
-): T {
-  const methodName = String(context.name);
-
-  // Add a getter on the prototype that returns a bound method
-  Object.defineProperty(target.prototype, methodName, {
-    get() {
-      // Create and cache the bound function on the instance
-      const boundFn = (value as (...a: unknown[]) => unknown).bind(this);
-      // Replace the getter so subsequent accesses are instant
-      Object.defineProperty(this, methodName, {
-        value: boundFn,
-        configurable: true,
-        writable: true,
-      });
-      return boundFn;
-    },
+  context.addInitializer(function (this: unknown) {
+    (this as Record<string | symbol, unknown>)[methodName] = (
+      target as (...args: unknown[]) => unknown
+    ).bind(this);
   });
-
-  return target;
 }
 
 class EventEmitter {
@@ -642,7 +672,7 @@ class EventEmitter {
 
 const emitter = new EventEmitter();
 const handler = emitter.onMessage; // `this` is preserved!
-handler("Hello"); // Works correctly
+handler("Hello"); // Works correctly — logs "Message: Hello"
 ```
 
 ---
@@ -674,21 +704,29 @@ handler("Hello"); // Works correctly
 - **Correct approach** for `@readonly` on auto-accessor fields
 
 ```typescript
-function readonly(
-  _value: unknown,
-  context: ClassAccessorDecoratorContext
-) {
+function readonly<This, Value>(
+  target: ClassAccessorDecoratorTarget<This, Value>,
+  context: ClassAccessorDecoratorContext<This, Value>,
+): ClassAccessorDecoratorResult<This, Value> {
   let initialized = false;
+  let stored: Value;
   return {
-    get() { return _value; },
-    set(v: unknown) {
+    get(this: This) {
+      return stored;
+    },
+    set(this: This, v: Value) {
       if (initialized) {
         throw new Error(
           `Cannot reassign readonly property '${String(context.name)}'`,
         );
       }
-      _value = v;
+      stored = v;
       initialized = true;
+    },
+    init(this: This, initialValue: Value) {
+      stored = initialValue;
+      initialized = true;
+      return initialValue;
     },
   };
 }
@@ -824,36 +862,53 @@ using the legacy `reflect-metadata` polyfill.
 
 ### How Symbol.metadata Works
 
-```typescript
-// Symbol.metadata is defined in the ECMAScript spec.
-// Every class automatically gets a Symbol.metadata key on its constructor.
+> **Two real, easy-to-hit gotchas before the example.** First,
+> `tsconfig.json` needs `"lib": ["ESNext"]` (or newer) — with an older
+> `lib` setting the compiler doesn't even know the TYPE
+> `SymbolConstructor.metadata` exists yet, and errors before you get
+> anywhere near running the code. Second, and more surprising:
+> `Symbol.metadata` is a very recent addition to the ECMAScript spec,
+> and as of many current Node/browser versions, it doesn't exist yet
+> as an actual well-known symbol on the global `Symbol` object at
+> RUNTIME — `typeof Symbol.metadata` prints `"undefined"` even once
+> the `lib` fix above makes it compile. TypeScript's compiled decorator
+> output still relies on that symbol existing to key its metadata
+> storage by, so on a runtime without native support, the standard fix
+> (from the proposal's own reference polyfill) is one line at the top
+> of your entry file: `(Symbol as any).metadata ??= Symbol("Symbol.metadata");`
+> Skip it, and every `context.metadata` access below silently
+> becomes `undefined`, crashing on the first write.
 
+```typescript
+(Symbol as any).metadata ??= Symbol("Symbol.metadata"); // see note above
+
+// A class with NO decorators at all does NOT get a metadata object for
+// free — Symbol.metadata is undefined until something actually creates
+// it (a decorator being applied is what triggers that, next):
 class Point {
   x: number = 0;
   y: number = 0;
 }
+const meta = (Point as any)[Symbol.metadata];
+console.log(meta); // undefined — nothing has written metadata for Point yet
 
-const meta = Point[Symbol.metadata];
-console.log(meta); // Metadata object describing the class structure
-
-// In Stage 3, decorators can set this via context.metadata:
-function schema(schema: object) {
+// In Stage 3, decorators can set this via context.metadata. Note the
+// context type here covers BOTH the class decorator AND the accessor
+// decorators below — accessor fields use ClassAccessorDecoratorContext,
+// not ClassFieldDecoratorContext (that's for plain, non-accessor fields):
+function schema(schemaObj: object) {
   return function (
     value: unknown,
-    context: ClassDecoratorContext | ClassFieldDecoratorContext,
+    context: ClassDecoratorContext | ClassAccessorDecoratorContext,
   ) {
     // context.metadata is a WeakMap-like storage keyed by class identity
     // You can set arbitrary JSON-compatible values
-    (context.metadata as Record<string, unknown>)[
-      "jsonSchema"
-    ] = schema;
-
-    return value;
+    (context.metadata as Record<string, unknown>)["jsonSchema"] = schemaObj;
   };
 }
 
 @schema({ type: "object", properties: { x: { type: "number" } } })
-class Point {
+class PointWithSchema {
   @schema({ type: "number" })
   accessor x: number = 0;
 
@@ -862,8 +917,8 @@ class Point {
 }
 
 // Read at runtime:
-const schemaData = Point[Symbol.metadata]?.jsonSchema;
-console.log(schemaData); // { type: "object", properties: {...} }
+const schemaData = (PointWithSchema as any)[Symbol.metadata]?.jsonSchema;
+console.log(schemaData); // { type: "object", properties: { x: { type: "number" } } }
 ```
 
 ### The WeakMap Design Under the Hood
@@ -1045,7 +1100,11 @@ function Required() {
 // Validator utility:
 function validate<T extends object>(instance: T): string[] {
   const errors: string[] = [];
-  const entries = Object.entries(instance) as [keyof T, unknown][];
+  // Extract<keyof T, string>, not the full keyof T — Object.entries() only
+  // ever returns string keys at runtime (it drops symbol keys entirely), but
+  // keyof T is a generic upper bound that also includes number and symbol,
+  // which validators.get() (a Map<string | symbol, ...>) won't accept.
+  const entries = Object.entries(instance) as [Extract<keyof T, string>, unknown][];
 
   for (const [key, value] of entries) {
     const rules = validators.get(key);
@@ -1091,16 +1150,18 @@ console.log(validate(request));
 ```typescript
 // OnPush-style change detection using accessor decorators:
 
-function observable(
-  initialValue: unknown,
-  context: ClassAccessorDecoratorContext,
-) {
-  let current = initialValue;
-  const listeners: Set<(v: unknown) => void> = new Set();
+function observable<This, Value>(
+  target: ClassAccessorDecoratorTarget<This, Value>,
+  context: ClassAccessorDecoratorContext<This, Value>,
+): ClassAccessorDecoratorResult<This, Value> {
+  let current: Value;
+  const listeners: Set<(v: Value) => void> = new Set();
 
   return {
-    get() { return current; },
-    set(newValue: unknown) {
+    get(this: This) {
+      return current;
+    },
+    set(this: This, newValue: Value) {
       if (current !== newValue) {
         const oldValue = current;
         current = newValue;
@@ -1109,6 +1170,10 @@ function observable(
         // Trigger change detection (simulated)
         scheduleReRender(oldValue, newValue);
       }
+    },
+    init(this: This, initialValue: Value) {
+      current = initialValue;
+      return initialValue;
     },
   };
 }
