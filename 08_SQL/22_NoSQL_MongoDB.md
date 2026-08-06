@@ -161,7 +161,7 @@ SET lock:order:456 "owner-id" NX EX 30  // acquire lock for 30s
 
 ---
 
-## Part 4: Advanced Aggregation Framework
+## Part 5: Advanced Aggregation Framework
 
 ```javascript
 /* MongoDB's Aggregation Framework is equivalent to SQL's GROUP BY, 
@@ -217,7 +217,7 @@ db.products.aggregate([
 
 ---
 
-## Part 5: Indexing Mastery — The ESR Rule
+## Part 6: Indexing Mastery — The ESR Rule
 
 ```javascript
 /* Creating indexes in MongoDB isn't random. If you query multiple fields, 
@@ -237,7 +237,7 @@ db.users.find({ status: "active", score: { $gt: 50 } }).sort({ age: 1 });
 // ✅ GOOD INDEX (The ESR Rule): { status: 1, age: 1, score: 1 }
 db.users.createIndex({ status: 1, age: 1, score: 1 });
 // Why this works:
-// 1. (E) Quality field 'status' instantly narrows down the tree.
+// 1. (E)quality field 'status' instantly narrows down the tree.
 // 2. (S) Sort field 'age' means the results are ALREADY naturally sorted in the B-Tree.
 // 3. (R) Range field 'score' filters the remaining documents perfectly.
 
@@ -251,7 +251,7 @@ db.users.find(
 
 ---
 
-## Part 6: Distributed Architecture (High Availability)
+## Part 7: Distributed Architecture (High Availability)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -284,43 +284,6 @@ db.users.find(
 │  This is a "Hot Shard" anti-pattern. Pick a key with high cardinality           │
 │  (e.g., UserId) that distributes writes evenly across the cluster.               │
 └─────────────────────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Part 7: Redis Quick Reference
-
-```
-// ── Data Structures ──
-SET user:1:name "John"            // String
-GET user:1:name                   // → "John"
-
-HSET user:1 name "John" age 30   // Hash (like a mini document)
-HGETALL user:1                    // → name: John, age: 30
-
-LPUSH queue:orders "order123"     // List (queue/stack)
-RPOP queue:orders                 // → "order123"
-
-SADD user:1:tags "premium" "vip"  // Set (unique values)
-SISMEMBER user:1:tags "premium"   // → true
-
-ZADD leaderboard 100 "Alice" 85 "Bob"  // Sorted Set (ranked data)
-ZREVRANGE leaderboard 0 9              // Top 10 by score
-
-// ── Common Use Cases ──
-// Caching: SET + TTL
-SET api:response:key "{json}" EX 300    // cache for 5 minutes
-
-// Rate Limiting
-INCR rate:user:123:minute
-EXPIRE rate:user:123:minute 60
-
-// Session Storage
-HSET session:abc userId "123" role "admin" expiry "1700000000"
-
-// Distributed Lock (Redlock)
-SET lock:order:456 "owner-id" NX EX 30  // acquire lock for 30s
-// NX = only if not exists (atomic)
 ```
 
 ---
