@@ -200,7 +200,7 @@ Top 50 SQL interview questions now include window functions (LAG/LEAD, RANK), CT
 ### Production Reality
 
 **Failure modes:**
-1. **SELECT * in production workloads**: Interview queries use `SELECT *` freely, but in production on a table with 20 VARCHAR(2000) columns and a BLOB for file attachments, this causes 8-second page load times as the app transfers megabytes per row. Stack Overflow's 2013 slow-down was partially traced to `SELECT *` pulling unneeded BLOB columns over the wire.
+1. **SELECT * in production workloads**: Interview queries use `SELECT *` freely, but in production on a table with 20 VARCHAR(2000) columns and a BLOB for file attachments, this causes 8-second page load times as the app transfers megabytes per row it doesn't need — the query is functionally correct and passes every test, but every row now costs 100x the bandwidth an explicit column list would.
 2. **ORDER BY without LIMIT on unbounded results**: A query written as practice exercise `SELECT * FROM employees ORDER BY hire_date` — when called without pagination — sorts 50,000 rows and streams them all. In a web API this causes timeout and memory exhaustion. Fix: always apply keyset or offset pagination.
 3. **NULL handling surprises in production filters**: An interview query `WHERE dept_id != 5` silently drops NULL dept_id rows (NULL != 5 evaluates to NULL, not TRUE). In a production report this means the "unassigned" bucket is always zero. Every SQL developer discovers this bug in their first month on the job.
 
