@@ -350,10 +350,18 @@ If your query returns too many rows, the optimizer correctly ignores the index.
    Fix: CREATE STATISTICS japan_lang ON country, language FROM users;
 
 3. PARAMETERIZED QUERIES (prepared statements):
-   First execution with WHERE status = 'rare_status' → index scan plan
-   Plan cached. Next call with WHERE status = 'active' (50% of table) → same plan
-   But should have been seq scan for 'active'!
-   PostgreSQL 12+: Adaptive plan caching (switches after 5 bad generic plans)
+   PostgreSQL plans the first 5 executions as CUSTOM plans (each one
+   freshly optimized for that call's actual parameter values), then
+   compares their average cost to a generic plan's estimated cost --
+   only switching TO the generic plan from the 6th execution onward if
+   it looks cheap enough to be worth skipping replanning. (This custom/
+   generic choice has existed since PostgreSQL 9.2, not just "12+".)
+   Danger case: if those first 5 calls happen to use a rare parameter
+   value (WHERE status = 'rare_status' → index scan), the average cost
+   looks artificially cheap, so Postgres may lock in a generic index-scan
+   plan that then gets reused for common values (WHERE status = 'active',
+   50% of the table) where a seq scan would actually be faster.
+   Fix: SET plan_cache_mode = force_custom_plan; for parameter-sensitive queries
 
 4. IMPLICIT TYPE CASTS:
    WHERE varchar_column = 123  -- 123 is integer
@@ -752,7 +760,7 @@ Database internals knowledge translates directly to production debugging — und
 
 ## Reality Check
 
-**"B-tree is the only index structure that matters"** → B-tree handles equality and range queries. Hash indexes handle only equality (faster than B-tree for exact match but no range support). GIN indexes handle full-text search and JSONB containment. GiST indexes handle geometric and geographic queries. BRIN indexes handle very large tables with naturally ordered data (10000x smaller than B-tree). Choosing the wrong index type is as bad as having no index.
+**"B-tree is the only index structure that matters"** → B-tree handles equality and range queries. Hash indexes handle only equality (faster than B-tree for exact match but no range support). GIN indexes handle full-text search and JSONB containment. GiST indexes handle geometric and geographic queries. BRIN indexes handle very large tables with naturally ordered data (often 1,000-10,000x smaller than B-tree, depending on table size and data correlation). Choosing the wrong index type is as bad as having no index.
 
 **"MVCC means readers never block writers"** → In PostgreSQL MVCC, readers see a snapshot and do not block writers — true. But writers CAN block writers: two transactions updating the same row results in one waiting for the other to commit. Also, long-running transactions prevent VACUUM from reclaiming dead tuples, causing table bloat. MVCC is not free — it trades lock contention for storage overhead (dead rows) and maintenance requirements (VACUUM).
 
