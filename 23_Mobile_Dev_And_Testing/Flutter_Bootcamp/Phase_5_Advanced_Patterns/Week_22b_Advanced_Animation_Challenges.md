@@ -168,4 +168,133 @@ class _MixedScreenState extends State<MixedScreen> {
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — The Painter That Never Stops Repainting
+
+```dart
+class BarChartPainter extends CustomPainter {
+  BarChartPainter(this.values);
+  final List<double> values;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    debugPrint('Painting bar chart...');
+    // ...draws bars based on `values`...
+  }
+
+  @override
+  bool shouldRepaint(covariant BarChartPainter oldDelegate) => true;
+}
+```
+
+This chart sits on a screen that also has an unrelated pulsing loading spinner elsewhere, animating at 60fps. The chart's own `values` never change after the initial load. Watch the console — "Painting bar chart..." prints continuously, dozens of times a second, for as long as the spinner keeps spinning. Why does an animation happening in a *completely different widget* cause this painter to keep repainting?
+
+<details><summary>Diagnosis & Fix</summary>
+
+🔴 **Explanation:** `shouldRepaint` hardcoded to `true` means Flutter repaints this `CustomPaint` on **every single frame where a repaint of anything in the vicinity is triggered** — and an unrelated 60fps spinner animation is constantly marking frames dirty. Without `RepaintBoundary` isolating the chart into its own compositor layer, and with `shouldRepaint` always saying "yes, repaint me," the chart's `paint()` genuinely re-executes 60 times a second even though its own data hasn't changed once. This is the mirror-image bug of [Week 10's rating-bar Boss Battle](../Phase_2_Core_UI/Week_10b_Gesture_Challenges.md#-boss-battle--a-custom-reorderable-rating-widget), which warned against `shouldRepaint` always returning `false` (stale data) — this is the opposite mistake, always returning `true` (wasted GPU work). The fix:
+
+```dart
+@override
+bool shouldRepaint(covariant BarChartPainter oldDelegate) =>
+    !listEquals(oldDelegate.values, values);
+```
+
+(`listEquals` from `package:flutter/foundation.dart` — comparing `List` contents, since default `List` `==` is identity-based, the same [Point-in-a-Set trap](../Phase_1_Dart_and_Foundations/Week_01b_Dart_Coding_Challenges.md#t3-4-medium-the-classic-gotcha--correct-equality-for-value-objects) from Week 1.) Wrapping the `CustomPaint` in a `RepaintBoundary` is a further, complementary fix — it isolates this subtree into its own GPU-cacheable layer, so even *legitimate* repaints happening elsewhere on screen don't force this layer to be re-composited alongside them.
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — Canvas & Layers
+
+**A.** `Canvas.drawPath`, `drawRect`, and similar calls are recorded onto a `Picture` object — they don't paint pixels immediately, synchronously, the instant you call them.
+
+**B.** A `CustomPainter`'s `paint()` method runs on the UI (Dart) isolate, not the raster thread.
+
+**C.** Wrapping a `CustomPaint` in `RepaintBoundary` means its `shouldRepaint` method is never checked again after the very first paint — the boundary permanently freezes it.
+
+<details><summary>Which one's the lie</summary>
+
+**C is the lie.** `RepaintBoundary` changes **what else** has to repaint alongside a given subtree (isolating it into its own compositor layer so sibling/ancestor repaints don't force it to redraw too) — it does not disable or bypass the `CustomPainter`'s own `shouldRepaint` logic. The painter inside a `RepaintBoundary` still gets asked "should you repaint?" every time something marks it dirty (a new `CustomPaint` instance with different data, a `Listenable` it's watching firing, etc.) — the boundary is about *isolation of repaint scope*, not about *freezing* the content.
+
+🔴 **Explanation:** A and B are both true and connect directly to [Week 21's GPU rendering pipeline content](Week_21_Clean_Architecture.md) — `Canvas` calls build up a `Picture` (a recorded list of drawing commands) rather than executing immediately, which is precisely what makes the `shouldRepaint` optimization meaningful in the first place: skipping `paint()` skips *re-recording* that picture, not re-running some already-rasterized pixels. B is true because layout, paint-recording, and widget/element reconciliation all happen on the UI isolate — actual GPU rasterization of the recorded `Picture` is a separate step on the raster thread, covered in [Week 21's invisible machinery](Week_21_Clean_Architecture.md).
+
+</details>
+
+---
+
+### 👹 Boss Battle — An Interpolating Bar Chart
+
+**The spec:** build a bar chart that, when its underlying data changes (e.g., new expense totals loaded), **animates smoothly** from the old bar heights to the new ones over 500ms — not an instant jump-cut. Combine a custom `Tween<List<double>>` (or per-bar interpolation), an `AnimationController`, and a `CustomPainter` whose `shouldRepaint` correctly detects genuine data changes.
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+class ListDoubleTween extends Tween<List<double>> {
+  ListDoubleTween({required List<double> super.begin, required List<double> super.end});
+
+  @override
+  List<double> lerp(double t) {
+    return List.generate(
+      end!.length,
+      (i) => begin![i] + (end![i] - begin![i]) * t,
+    );
+  }
+}
+
+class AnimatedBarChart extends StatefulWidget {
+  const AnimatedBarChart({super.key, required this.values});
+  final List<double> values;
+  @override
+  State<AnimatedBarChart> createState() => _AnimatedBarChartState();
+}
+
+class _AnimatedBarChartState extends State<AnimatedBarChart> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 500),
+  );
+  late Animation<List<double>> _animation = ListDoubleTween(begin: widget.values, end: widget.values)
+      .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+  @override
+  void didUpdateWidget(covariant AnimatedBarChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!listEquals(oldWidget.values, widget.values)) {
+      _animation = ListDoubleTween(begin: oldWidget.values, end: widget.values)
+          .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) => CustomPaint(
+        size: const Size(300, 200),
+        painter: BarChartPainter(_animation.value),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+```
+
+🔴 **Explanation:** the custom `ListDoubleTween` is [T9-4's `CardStyleTween` pattern](../Phase_2_Core_UI/Week_09b_Animation_Challenges.md#w9-4-hard--write-a-custom-tween) applied to a `List<double>` instead of a combined color+radius struct — `lerp(t)` produces a full new list where every bar's height is independently interpolated at the same `t`, guaranteeing all bars animate in lockstep rather than drifting out of sync. `didUpdateWidget` is where the "old values → new values" transition gets set up **fresh** on each genuine data change — rebuilding the `Tween` with `begin: oldWidget.values` (not the animation's current mid-flight value) means if new data arrives while a previous animation is still running, this simplified version restarts cleanly from the last-known widget values rather than attempting to smoothly redirect a still-animating interpolation, a reasonable simplification worth noting explicitly rather than pretending it's seamless in every edge case.
+
+</details>
+
+---
+
 **Next → [Week 23: Project — Expense Tracker](Week_23_Project_ExpenseTracker.md)**

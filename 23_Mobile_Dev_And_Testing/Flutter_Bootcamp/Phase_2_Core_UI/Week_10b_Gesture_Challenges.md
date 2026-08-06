@@ -229,4 +229,116 @@ class _TapScaleState extends State<_TapScale> {
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🎭 Two Truths and a Lie — Gestures
+
+**A.** Wrapping a widget in `GestureDetector` with only an `onTap` handler and no `behavior` set means taps only register on the widget's own painted (non-transparent) pixels, not its full layout bounds if it has transparent areas.
+
+**B.** `InkWell` requires a `Material` ancestor somewhere above it in the tree to render its ripple effect, and will throw or silently fail to ripple without one.
+
+**C.** Two sibling `GestureDetector`s that both wrap `onTap` handlers around non-overlapping widgets can never end up in the same gesture arena for a single tap.
+
+<details><summary>Which one's the lie</summary>
+
+**A is the lie.** By default, `GestureDetector`'s hit-testing behavior for a widget **without** an explicit background/paint is `HitTestBehavior.deferToChild` — meaning it only registers hits within its child's actual layout bounds as a bounding box, generally *not* pixel-level transparency-aware at all (that would be far more expensive to compute per-tap). The practical trap this causes: a `GestureDetector` wrapping an `Icon` with lots of invisible padding around it (from the icon's own intrinsic bounding box) still catches taps anywhere in that full bounding box, transparent or not — the opposite intuition from what's stated in A. If you specifically want taps to register anywhere within a widget's rectangular bounds *even over fully empty/transparent space* (a common need for making small icons easier to tap), that's `HitTestBehavior.opaque` — worth knowing this exists, separate from the (false) transparency-awareness claim in A.
+
+🔴 **Explanation:** B is true and is the reason wrapping content in a `Material` widget (or just using `Scaffold`, which provides one) is a near-universal requirement the moment you reach for `InkWell` — without it, taps still register but the ripple visually does nothing. C is also true — sibling `GestureDetector`s over genuinely non-overlapping regions never compete for the same pointer event at all; the arena only has multiple contestants when the *same* pointer sequence could plausibly be claimed by more than one recognizer, which requires actual spatial/logical overlap.
+
+</details>
+
+---
+
+### ⚡ Speed Round — 5 Questions, 2 Minutes
+
+1. Does `onTap` fire before or after `onTapUp`, for the exact same successful tap?
+2. Is `GestureDetector.onLongPress` mutually exclusive with `onTap` firing for the same touch sequence, or can both fire?
+3. Does a `Draggable` widget's `onDragEnd` fire if the drag is cancelled (e.g., the app loses focus mid-drag), or only on a normal release?
+4. If a `CustomPainter`'s `shouldRepaint` always returns `false`, does the painter's `paint()` method ever run again after the first frame?
+5. Does `RawGestureDetector` give you more control than `GestureDetector`, or is it strictly a simpler/more restricted version?
+
+<details><summary>Answers</summary>
+
+1. **After.** The sequence for a successful tap is `onTapDown` → `onTapUp` → `onTap` — `onTap` is the final "this was confirmed as a complete tap" signal, firing after the pointer-up details are already available.
+2. **Mutually exclusive** for one gesture sequence — a long-press and a tap are competing interpretations of the same pointer-down-then-up sequence; the arena resolves to exactly one winner (whichever recognizer's conditions are met based on timing/movement), not both.
+3. **`onDragEnd` still fires**, with `details.wasAccepted` telling you whether it was a successful drop or a cancellation — it's not skipped on cancellation, its *details* just report the outcome differently.
+4. **No** — with `shouldRepaint` hardcoded to `false`, Flutter skips calling `paint()` again on subsequent frames for that painter (assuming nothing else forces a full repaint), even if the underlying data the painter was drawing has changed. This is a common real bug: change your data, forget to also flip whatever `shouldRepaint` checks, and the canvas silently stops updating.
+5. **More control, not more restricted** — `RawGestureDetector` lets you register custom `GestureRecognizerFactory` instances directly, which is what `GestureDetector` itself is built on top of internally; you'd drop down to it specifically when you need a gesture recognizer `GestureDetector`'s convenience API doesn't expose a named parameter for.
+
+</details>
+
+---
+
+### 👹 Boss Battle — A Custom Reorderable Rating Widget
+
+**The spec:** combine this week's `CustomPainter` knowledge and gesture handling into one widget: a 5-star rating selector where the user can either **tap** a star to set a whole-number rating, or **drag** left/right across the stars to set the rating fluidly (including half-stars, rounded to the nearest 0.5) — all rendered with `CustomPainter`, not five separate `Icon` widgets.
+
+**Constraints:** (1) dragging must feel continuous — no visible "jump" between stars as the finger moves, (2) the painter must not rebuild/repaint on every single pixel of drag movement if the resulting rounded rating hasn't actually changed, (3) tapping and dragging both end up calling the same underlying `_setRating(double value)` — don't duplicate the rounding/clamping logic between the two gesture paths.
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+class StarRating extends StatefulWidget {
+  const StarRating({super.key, required this.onChanged});
+  final ValueChanged<double> onChanged;
+  @override
+  State<StarRating> createState() => _StarRatingState();
+}
+
+class _StarRatingState extends State<StarRating> {
+  double _rating = 0;
+  static const _starCount = 5;
+
+  void _setRatingFromDx(double dx, double totalWidth) {
+    final raw = (dx / totalWidth) * _starCount;
+    final rounded = (raw * 2).round() / 2; // nearest 0.5
+    final clamped = rounded.clamp(0.0, _starCount.toDouble());
+    if (clamped != _rating) {
+      setState(() => _rating = clamped);
+      widget.onChanged(_rating);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return GestureDetector(
+          onTapDown: (details) => _setRatingFromDx(details.localPosition.dx, constraints.maxWidth),
+          onHorizontalDragUpdate: (details) => _setRatingFromDx(details.localPosition.dx, constraints.maxWidth),
+          child: CustomPaint(
+            size: Size(constraints.maxWidth, 40),
+            painter: _StarPainter(rating: _rating),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _StarPainter extends CustomPainter {
+  _StarPainter({required this.rating});
+  final double rating;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // draw 5 stars, filling each proportionally based on `rating`
+    // (full implementation omitted — the shouldRepaint logic below is the point)
+  }
+
+  @override
+  bool shouldRepaint(covariant _StarPainter oldDelegate) => oldDelegate.rating != rating;
+}
+```
+
+🔴 **Explanation:** requirement (3) is satisfied by routing **both** `onTapDown` and `onHorizontalDragUpdate` through the same `_setRatingFromDx` — a tap is really just a drag that happens to have zero movement, and treating them identically (both give you a `localPosition`) avoids writing the rounding math twice. Requirement (2) is `shouldRepaint`'s job specifically: `_setRatingFromDx` already only calls `setState` when the *rounded* value actually changes (the `if (clamped != _rating)` guard), so dragging your finger by one pixel within the same half-star zone never triggers a rebuild or a repaint at all — this is the exact same "don't rebuild for no-op changes" discipline as [Week 12's `context.select`](../Phase_3_State_and_APIs/Week_12b_State_Management_Challenges.md#w12-2-medium--prove-contextselect-narrows-the-rebuild-scope), applied to a `CustomPainter` instead of a widget subscription.
+
+</details>
+
+---
+
 **Next → [Week 11: Project — Shopping App](Week_11_Project_ShoppingApp.md)**

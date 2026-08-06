@@ -214,4 +214,139 @@ Then build a `CustomScrollView` with a `SliverAppBar` and a long `SliverList`, a
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — The Scroll-to-Top Button That Never Appears
+
+```dart
+class FeedScreen extends StatefulWidget {
+  const FeedScreen({super.key});
+  @override
+  State<FeedScreen> createState() => _FeedScreenState();
+}
+
+class _FeedScreenState extends State<FeedScreen> {
+  final ScrollController _controller = ScrollController();
+  bool _showScrollTop = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      final showNow = _controller.offset > 300;
+      _showScrollTop = showNow; // <-- bug is on this line
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ListView.builder(
+        controller: _controller,
+        itemCount: 100,
+        itemBuilder: (_, i) => ListTile(title: Text('Item $i')),
+      ),
+      floatingActionButton: _showScrollTop
+          ? FloatingActionButton(
+              onPressed: () => _controller.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeOut),
+              child: const Icon(Icons.arrow_upward),
+            )
+          : null,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+```
+
+Scroll down past 300px. The button should appear. It doesn't. There's no crash, no error — just nothing visibly happening. Find it.
+
+<details><summary>Diagnosis & Fix</summary>
+
+🔴 **Explanation:** `_showScrollTop = showNow;` genuinely does update the field's value — but it does so **outside of `setState`**, inside a plain listener callback. Flutter has no idea the value changed, because nothing told it to rebuild — this is the exact same mechanism as [Week 12's ChangeNotifier bug](../Phase_3_State_and_APIs/Week_12b_State_Management_Challenges.md#w12-1-medium--changenotifier--listenablebuilder-no-package): mutating a field is invisible to the widget tree unless something explicitly triggers a rebuild. The fix:
+
+```dart
+_controller.addListener(() {
+  final showNow = _controller.offset > 300;
+  if (showNow != _showScrollTop) {
+    setState(() => _showScrollTop = showNow);
+  }
+});
+```
+
+The `if (showNow != _showScrollTop)` guard is worth noticing too — without it, you'd call `setState` on *every single scroll pixel* while scrolled past 300, not just at the crossing point, which works but wastes a rebuild per frame for no benefit once you're already past the threshold.
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — Slivers
+
+**A.** `SliverList` and `SliverGrid` both only build the children currently within the viewport plus a small cache extent — neither one builds its entire item count upfront.
+
+**B.** A `CustomScrollView` can contain both sliver widgets (`SliverAppBar`, `SliverList`) and non-sliver widgets (`Container`, `Text`) directly as children, mixed freely.
+
+**C.** `shrinkWrap: true` on a `ListView` makes it measure and lay out all of its children to determine its own size, defeating the lazy-building behavior that makes `ListView.builder` efficient in the first place.
+
+<details><summary>Which one's the lie</summary>
+
+**B is the lie.** `CustomScrollView.slivers` requires every direct child to actually **be** a sliver (`SliverList`, `SliverAppBar`, `SliverToBoxAdapter`, etc.) — you cannot drop a plain `Container` or `Text` directly into that list; it'll fail to compile (wrong type) or, if you do it via a widget expecting `Widget` generically, misbehave badly at layout time, because slivers and box widgets speak fundamentally different layout protocols (`SliverConstraints`/`SliverGeometry` vs. `BoxConstraints`/`Size`). To put ordinary box widgets inside a `CustomScrollView`, you wrap them: `SliverToBoxAdapter(child: Text('...'))` — that adapter is precisely the bridge between the two protocols.
+
+🔴 **Explanation:** A and C are both true and both important. A is [W7-1's](#w7-1-easy--prove-listviewbuilder-is-actually-lazy) core proof extended to grids. C is the reason `shrinkWrap: true` isn't a free "make it fit" fix — it's a genuine trade-off (from [W4-2](../Phase_1_Dart_and_Foundations/Week_04b_Layout_Challenges.md#w4-2-medium--reproduce-and-fix-unbounded-height-two-ways)) that only makes sense for short, bounded lists.
+
+</details>
+
+---
+
+### ⚔️ Refactor Duel — From `Column` to `ListView.builder`, Prove the Win
+
+This works. It's also a scalability trap.
+
+```dart
+class MessageList extends StatelessWidget {
+  const MessageList({required this.messages});
+  final List<String> messages;
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: messages.map((m) => ListTile(title: Text(m))).toList(),
+      ),
+    );
+  }
+}
+```
+
+**Task:** refactor to `ListView.builder`. Then, without running anything, argue in one or two sentences why the refactored version scales to 50,000 messages and the original doesn't — refer back to [W7-1](#w7-1-easy--prove-listviewbuilder-is-actually-lazy) if you need to.
+
+<details><summary>Solution & Explanation</summary>
+
+```dart
+class MessageList extends StatelessWidget {
+  const MessageList({required this.messages});
+  final List<String> messages;
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: messages.length,
+      itemBuilder: (_, i) => ListTile(title: Text(messages[i])),
+    );
+  }
+}
+```
+
+🔴 **Explanation:** the original calls `.map(...).toList()` **eagerly** — every single `ListTile` for every message is constructed the moment `build()` runs, whether or not it's ever scrolled into view, exactly the "plain `children:`" failure mode proven in [W7-1](#w7-1-easy--prove-listviewbuilder-is-actually-lazy). `ListView.builder`'s `itemBuilder` is a factory the viewport calls on demand — at 50,000 messages, the original builds 50,000 `ListTile`s (and everything nested inside each) up front, most of which paint zero pixels; the refactored version builds roughly a screen's worth, regardless of whether the list holds 50 or 50,000 items.
+
+</details>
+
+---
+
 **Next → [Week 8: Forms & Input](Week_08_Forms_and_Input.md) · [Forms Challenges](Week_08b_Forms_Challenges.md)**

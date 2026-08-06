@@ -199,4 +199,144 @@ Task 2: the `.maybeWhen()` version compiles, and a user watching a failed fetch 
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — The Search That Fetches for Every Keystroke
+
+```dart
+final searchQueryProvider = StateProvider<String>((ref) => '');
+
+final searchResultsProvider = FutureProvider<List<String>>((ref) async {
+  final query = ref.watch(searchQueryProvider);
+  debugPrint('Fetching results for "$query"');
+  await Future.delayed(const Duration(milliseconds: 500));
+  return ['Result for $query 1', 'Result for $query 2'];
+});
+
+class SearchField extends ConsumerWidget {
+  const SearchField({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return TextField(
+      onChanged: (value) => ref.read(searchQueryProvider.notifier).state = value,
+      decoration: const InputDecoration(labelText: 'Search'),
+    );
+  }
+}
+```
+
+Typing "flutter" (7 keystrokes) into the search field. Predict how many "Fetching results..." lines print, and for which partial queries, before checking.
+
+<details><summary>Diagnosis & Fix</summary>
+
+All 7 keystrokes ("f", "fl", "flu", "flut", "flutt", "flutte", "flutter") each trigger a separate fetch — 7 network calls for one search intent, most of them for queries the user never actually wanted results for.
+
+🔴 **Explanation:** `searchResultsProvider` does `ref.watch(searchQueryProvider)` — meaning it re-runs its entire body every time `searchQueryProvider`'s value changes, and every keystroke changes it. This is the Riverpod-flavored version of the exact race/waste problem from [Week 8's async validation Bug Hunt](../Phase_2_Core_UI/Week_08b_Forms_Challenges.md#w8-3-hard--debounced-async-validation-and-the-race-condition-it-can-hide) — but here Riverpod's `family` + a manual debounce-via-`Timer` inside the provider, or (cleaner) debouncing at the `onChanged` call site before it ever touches `searchQueryProvider`, both work:
+
+```dart
+// Debounce at the source — only update the provider after the user pauses:
+Timer? _debounce;
+onChanged: (value) {
+  _debounce?.cancel();
+  _debounce = Timer(const Duration(milliseconds: 400), () {
+    ref.read(searchQueryProvider.notifier).state = value;
+  });
+},
+```
+
+This way, `searchQueryProvider` (and therefore `searchResultsProvider`, which watches it) only updates once per pause in typing, not once per keystroke — the same [T4-1 debounce mechanism](../Phase_1_Dart_and_Foundations/Week_01b_Dart_Coding_Challenges.md#t4-1-medium--debounce-a-stream-the-search-bar-pattern) from Week 1, applied at the `TextField` callback instead of a raw `Stream`.
+
+</details>
+
+---
+
+### ⚡ Speed Round — 5 Questions, 2 Minutes
+
+1. Can you call `ref.watch()` on a provider from inside another provider's body (not from a widget)?
+2. Does `ProviderScope` need to wrap your entire `MaterialApp`, or just the parts that use Riverpod?
+3. If two completely unrelated `Provider`s (no `ref.watch` connection between them) both exist in the same `ProviderContainer`, does updating one ever cause the other to recompute?
+4. Does `ref.invalidate(someProvider)` immediately re-run the provider synchronously, or just mark it for the next read?
+5. Can a `FutureProvider` be `.autoDispose` and `.family` at the same time?
+
+<details><summary>Answers</summary>
+
+1. **Yes** — this is exactly how `cartTotalProvider` watching `cartItemsProvider` worked in [Week 13's core content](Week_13_Riverpod.md); providers can depend on other providers, forming a dependency graph, not just a flat list.
+2. **Needs to wrap the whole app** in virtually all real setups — `ProviderScope` creates the single `ProviderContainer` instance that every `ref.watch`/`ref.read` call anywhere in the tree resolves against; wrapping only part of the tree means widgets outside it have no container to find.
+3. **No** — completely independent providers with no `ref.watch` link between them never trigger each other; the dependency graph is explicit, not "everything in the same container might affect everything else."
+4. **Marks it for invalidation** — the actual re-computation happens the next time something reads it (lazily), not immediately and synchronously at the moment `invalidate` is called.
+5. **Yes** — `FutureProvider.autoDispose.family<T, Arg>(...)` is a completely standard combination; each distinct argument gets its own independently-cached, independently-auto-disposed entry, same mechanism as [W13-2](#w13-2-medium--family-provider-identity-prove-the-caching) but with disposal added on top.
+
+</details>
+
+---
+
+### 👹 Boss Battle — Search With Debounce, Cancellation, and Loading States
+
+**The spec:** combine everything from this week and the Bug Hunt above into one real search feature: a search field that (1) debounces input by 400ms before triggering a fetch, (2) shows a loading spinner only while actually fetching (not during the debounce wait itself — those are different states a user should be able to tell apart), (3) if the user types a new query while a fetch is still in flight, the stale in-flight result must never overwrite the newer query's eventual result, (4) uses `.autoDispose` so leaving the search screen cleans everything up.
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+final searchQueryProvider = StateProvider.autoDispose<String>((ref) => '');
+
+final searchResultsProvider = FutureProvider.autoDispose<List<String>>((ref) async {
+  final query = ref.watch(searchQueryProvider);
+  if (query.isEmpty) return [];
+
+  // ref.onDispose fires if a NEWER provider invocation supersedes this one —
+  // Riverpod cancels the old Future's relevance automatically when the
+  // watched dependency changes again before this one resolves.
+  await Future.delayed(const Duration(milliseconds: 500)); // simulated network call
+  return ['Result for "$query" #1', 'Result for "$query" #2'];
+});
+
+class SearchScreen extends ConsumerStatefulWidget {
+  const SearchScreen({super.key});
+  @override
+  ConsumerState<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends ConsumerState<SearchScreen> {
+  Timer? _debounce;
+
+  void _onChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      ref.read(searchQueryProvider.notifier).state = value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final results = ref.watch(searchResultsProvider);
+    return Column(
+      children: [
+        TextField(onChanged: _onChanged),
+        results.when(
+          data: (list) => Expanded(child: ListView(children: list.map(Text.new).toList())),
+          loading: () => const CircularProgressIndicator(),
+          error: (e, st) => Text('Error: $e'),
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+}
+```
+
+🔴 **Explanation:** requirement (2)'s subtlety — the debounce `Timer` lives entirely **outside** Riverpod, in the widget's own `State`, and `searchQueryProvider` (and therefore the loading spinner tied to `searchResultsProvider`) only changes *after* the debounce settles. During the 400ms debounce wait itself, nothing is loading yet from Riverpod's perspective — a more polished version would show a distinct "typing..." indicator during the debounce window, separate from the `AsyncValue.loading()` state, precisely because they're different moments in the pipeline. Requirement (3) — stale results never winning — comes largely for free from `FutureProvider`'s own dependency-tracking: when `searchQueryProvider` changes again before the previous `searchResultsProvider` future resolves, Riverpod's internal provider-element lifecycle treats the old computation as superseded, and only the latest one's result is ever exposed through `ref.watch` — the same request-generation-counter idea from [Week 8's fix](../Phase_2_Core_UI/Week_08b_Forms_Challenges.md#w8-3-hard--debounced-async-validation-and-the-race-condition-it-can-hide), but handled by the framework instead of hand-rolled.
+
+</details>
+
+---
+
 **Next → [Week 14: HTTP & REST APIs](Week_14_HTTP_and_REST_APIs.md) · [HTTP Challenges](Week_14b_HTTP_Challenges.md)**

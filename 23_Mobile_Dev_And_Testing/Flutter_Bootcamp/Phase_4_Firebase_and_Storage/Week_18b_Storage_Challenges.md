@@ -161,4 +161,102 @@ void main() {
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — Crashes Only on a Fresh Install
+
+```dart
+Future<int> getHighScore() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getInt('high_score')!; // force-unwrap
+}
+```
+
+Works perfectly throughout development — you've been testing on a device/emulator that's had the app installed (and a score saved) for weeks. It crashes immediately for every brand-new user on a fresh install. Why does dev testing never catch this?
+
+<details><summary>Diagnosis & Fix</summary>
+
+🔴 **Explanation:** `prefs.getInt('high_score')` returns `int?` — `null` if that key has never been written. On your dev device, you've almost certainly saved a high score at some point during testing, so the key always exists and the `!` force-unwrap never gets tested against the `null` case. A brand-new install has never called `setInt('high_score', ...)` even once — `getInt` correctly returns `null`, and `!` throws. The fix is a sensible default, not a force-unwrap:
+
+```dart
+Future<int> getHighScore() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getInt('high_score') ?? 0;
+}
+```
+
+The broader lesson: **"works on my dev device" is a specifically dangerous kind of false confidence for anything reading persisted state** — your dev device has accumulated state over weeks of testing that a real fresh install never has. Always mentally (or actually) test the fresh-install path for any code reading from `SharedPreferences`, `Hive`, or `sqflite`.
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — Local Storage Mechanics
+
+**A.** `SharedPreferences` data persists across an app update (installing a new version over the old one) on both Android and iOS.
+
+**B.** `Box.delete(key)` on an already-open Hive box requires closing the box first, or it throws an error.
+
+**C.** `sqflite` does not handle schema migrations automatically — you're responsible for writing your own `onUpgrade` callback logic to alter tables between versions.
+
+<details><summary>Which one's the lie</summary>
+
+**B is the lie.** `box.delete(key)` (removing one entry) is a completely normal operation to call on an **open** box — that's the whole point of the API; you don't close and reopen a Hive box just to delete one entry, any more than you'd close a `Map` to remove one key from it. What genuinely does need careful handling around open/closed state is `Hive.deleteBoxFromDisk(name)` — deleting the *entire box file* — which has its own considerations, but that's a different operation from `box.delete(key)`.
+
+🔴 **Explanation:** A is true and worth knowing explicitly — `SharedPreferences` (backed by `NSUserDefaults` on iOS, `SharedPreferences` XML on Android, per [Week 18's core content](Week_18_Local_Storage.md)) survives app updates on both platforms; it's only lost on full app *uninstall*, not on update. C is also true, and it's the actual reason teams often reach for Hive or Firestore instead of `sqflite` for early-stage apps — schema migrations are real, manual work in `sqflite`, not something Flutter handles for you automatically the way, say, a Room/Core Data migration tool might on native platforms.
+
+</details>
+
+---
+
+### 👹 Boss Battle — Offline-First Write Queue With Retry
+
+**The spec:** implement the exact offline-first pattern described in [Week 18's core content](Week_18_Local_Storage.md) — but build the actual mechanism, not just describe it. Requirements: (1) creating a note writes to a local Hive box **immediately**, marked with a `synced: false` flag, (2) a `syncPendingNotes()` function attempts to push all `synced: false` notes to a simulated remote API, (3) on success, flip that note's flag to `synced: true`; on failure, leave it `synced: false` so a later retry picks it up again, (4) calling `syncPendingNotes()` a second time must **not** re-push notes that already succeeded on the first call.
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+class LocalNote {
+  LocalNote({required this.id, required this.title, this.synced = false});
+  final String id;
+  final String title;
+  bool synced;
+}
+
+class NoteSyncService {
+  NoteSyncService(this._box);
+  final Box<LocalNote> _box;
+
+  Future<void> createNote(String title) async {
+    final note = LocalNote(id: DateTime.now().millisecondsSinceEpoch.toString(), title: title);
+    await _box.put(note.id, note); // written to disk immediately, synced: false
+  }
+
+  Future<void> syncPendingNotes() async {
+    final pending = _box.values.where((n) => !n.synced).toList();
+
+    for (final note in pending) {
+      try {
+        await FakeRemoteApi.pushNote(note.id, note.title); // simulated network call
+        note.synced = true;
+        await _box.put(note.id, note); // persist the updated flag
+      } catch (e) {
+        debugPrint('Sync failed for ${note.id}, will retry later: $e');
+        // deliberately do nothing else — synced stays false, next call retries it
+      }
+    }
+  }
+}
+```
+
+🔴 **Explanation:** requirement (4) — no re-pushing already-synced notes — comes from the `.where((n) => !n.synced)` filter re-running fresh on **every** call to `syncPendingNotes()`, rather than tracking "what was pending when this function started" as a fixed snapshot; a note that flips to `synced: true` mid-loop is simply excluded from any *future* call's filter, automatically. Note that the write-then-sync split (`createNote` writes locally and returns immediately; syncing happens as a separate, possibly-much-later step) is exactly why the user experience feels instant even on a bad connection — the same principle as the optimistic-update Boss Battle in [Week 16's Bonus Round](Week_16b_Firestore_Challenges.md#-boss-battle--optimistic-update-with-rollback), but here the "local truth first, remote truth eventually" split is the entire architecture, not just one button's behavior.
+
+</details>
+
+---
+
 **Next → [Week 19: Project — Notes App](Week_19_Project_NotesApp.md)**

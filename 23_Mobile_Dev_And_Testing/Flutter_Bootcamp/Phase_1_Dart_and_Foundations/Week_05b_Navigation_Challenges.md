@@ -276,4 +276,142 @@ Map<String, String>? matchRoute(String pattern, String path) {
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — The Back Button That Skips a Screen
+
+```dart
+Future<void> _completeCheckout(BuildContext context) async {
+  await Navigator.push(context, MaterialPageRoute(builder: (_) => const PaymentProcessingScreen()));
+  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const OrderConfirmedScreen()));
+}
+```
+
+Called from a "Place Order" button on a `CheckoutScreen`. The intent: show a brief processing screen, then land on order confirmation, with the back button from confirmation returning to the cart/checkout flow (not back through processing). Run through it mentally — what does the back button actually do from `OrderConfirmedScreen`, and is that actually the bug, or is something else wrong first?
+
+<details><summary>Diagnosis & Fix</summary>
+
+🔴 **Explanation:** trace the stack carefully. Start: `[..., CheckoutScreen]`. `await Navigator.push(... PaymentProcessingScreen)` → `[..., CheckoutScreen, PaymentProcessingScreen]`. Then `Navigator.pushReplacement(... OrderConfirmedScreen)` replaces the **current top of stack**, which by this point is `PaymentProcessingScreen` — giving `[..., CheckoutScreen, OrderConfirmedScreen]`. So the back button from confirmation actually lands back on `CheckoutScreen` — which sounds right at first glance, except: **that's exactly the checkout screen the user just paid from**, letting them press back after a completed order and see a "Place Order" button still sitting there, inviting a duplicate charge if tapped again. This isn't a crash-bug, it's a UX/business-logic bug hiding inside correct-looking navigation code — the actual fix usually needs `pushAndRemoveUntil` to clear the entire checkout flow off the stack, not just replace one screen:
+
+```dart
+Navigator.pushAndRemoveUntil(
+  context,
+  MaterialPageRoute(builder: (_) => const OrderConfirmedScreen()),
+  (route) => route.isFirst, // clear everything back to the app's root
+);
+```
+
+The lesson: predicting *what's on the stack* (this week's core skill) isn't just an academic exercise — getting it wrong silently ships a "can accidentally double-order" bug that a functional test clicking through the happy path would never catch.
+
+</details>
+
+---
+
+### 🧩 Code Jumble — Reassemble the Typed Round-Trip
+
+These lines implement a working "pick a color, return it to the caller" flow — correct but shuffled. Reorder them (some lines belong in the caller, some in the picker screen; keep that grouping straight).
+
+```
+  Navigator.pop(context, Colors.blue);
+final Color? picked = await Navigator.push<Color>(
+    MaterialPageRoute(builder: (_) => const ColorPickerScreen()),
+if (picked != null) setState(() => _selectedColor = picked);
+  );
+    context,
+```
+
+<details><summary>Reassembled</summary>
+
+```dart
+final Color? picked = await Navigator.push<Color>(
+    context,
+    MaterialPageRoute(builder: (_) => const ColorPickerScreen()),
+  );
+if (picked != null) setState(() => _selectedColor = picked);
+
+// ...inside ColorPickerScreen, on the user's tap:
+  Navigator.pop(context, Colors.blue);
+```
+
+🔴 **Explanation:** the structural constraint forcing this order: `Navigator.push`'s **arguments** (`context`, then the `MaterialPageRoute`) must appear together and in that order — swap them and it doesn't compile. The `await` must come before anything that uses `picked`, obviously, but the more interesting ordering fact is that the `Navigator.pop(context, Colors.blue)` line lives in a **completely different widget** (the picker screen) from the three lines around the `await` (the caller) — reassembling this jumble correctly requires recognizing that "one flow" in your head spans two separate `build()` methods executing at very different times, connected only by the `Future` that `push<Color>` returns.
+
+</details>
+
+---
+
+### 👹 Boss Battle — A Guarded Multi-Step Wizard
+
+**The spec:** build a 3-step signup wizard (`StepOne` → `StepTwo` → `StepThree`) where: (1) each step passes its collected data forward to the next via constructor, (2) the back button from any step returns to the previous step with that step's previously-entered data still shown (not blank), (3) `StepThree`'s "Finish" button clears the **entire wizard** off the stack and lands on a `HomeScreen` — pressing back from `HomeScreen` must NOT be able to re-enter the wizard at all, (4) if the user backs all the way out of `StepOne`, nothing crashes.
+
+Design your own data-passing shape (a class? a record threaded through each `push`?) before opening the solution.
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+typedef SignupData = ({String? name, String? email, String? password});
+
+class StepOne extends StatelessWidget {
+  const StepOne({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ElevatedButton(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const StepTwo(data: (name: 'Ana', email: null, password: null))),
+        ),
+        child: const Text('Next'),
+      ),
+    );
+  }
+}
+
+class StepTwo extends StatelessWidget {
+  const StepTwo({super.key, required this.data});
+  final SignupData data;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ElevatedButton(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => StepThree(data: (name: data.name, email: 'ana@x.com', password: null)),
+          ),
+        ),
+        child: const Text('Next'),
+      ),
+    );
+  }
+}
+
+class StepThree extends StatelessWidget {
+  const StepThree({super.key, required this.data});
+  final SignupData data;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ElevatedButton(
+        onPressed: () => Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
+          (route) => false, // clear EVERYTHING, including the app's original root
+        ),
+        child: const Text('Finish'),
+      ),
+    );
+  }
+}
+```
+
+🔴 **Explanation:** requirement (2) — back returning to a step with its data intact — is satisfied "for free" by the fact that each step is a genuinely separate route holding its own already-built widget with its own constructor data; popping back to it doesn't rebuild it from scratch, it reveals the exact instance that was already sitting underneath, same mechanism as [Week 5's core content](Week_05_Navigation_and_State.md) on why popping back is instant. Requirement (3) is `pushAndRemoveUntil` with `(route) => false` — a predicate that's never true, meaning "remove every single existing route, no exceptions," which is different from `(route) => route.isFirst` (used in the Bug Hunt above) — that variant keeps the app's original root; this one doesn't. Choosing between those two predicates *is* the actual design decision this Boss Battle is testing.
+
+</details>
+
+---
+
 **Next → [Week 6: Project — Profile App](Week_06_Project_ProfileApp.md)**

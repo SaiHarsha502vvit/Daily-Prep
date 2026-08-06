@@ -221,4 +221,119 @@ _authSub = widget.authStream.listen((uid) {
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — The App That Doesn't Notice You Signed Out
+
+```dart
+class HomeGate extends StatelessWidget {
+  const HomeGate({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    return user != null ? const HomeScreen() : const LoginScreen();
+  }
+}
+```
+
+Registered as the app's root widget. Sign-in works — after logging in, the app correctly shows `HomeScreen`. But calling `FirebaseAuth.instance.signOut()` from deep inside `HomeScreen` (e.g., a "Log out" button) doesn't return the user to `LoginScreen` — the app just sits there, still showing `HomeScreen`, until something else happens to trigger a totally unrelated rebuild. Why?
+
+<details><summary>Diagnosis & Fix</summary>
+
+🔴 **Explanation:** `FirebaseAuth.instance.currentUser` is a **plain synchronous getter** — reading it doesn't subscribe you to anything. `HomeGate.build()` runs exactly once (when its own parent first builds it, or on an unrelated rebuild), reads whatever `currentUser` happens to be *at that instant*, and then never looks again. `signOut()` genuinely changes `currentUser` to `null` — but nothing tells `HomeGate` to rebuild and re-read it, the same underlying mechanism as [Week 12's ChangeNotifier bug](../Phase_3_State_and_APIs/Week_12b_State_Management_Challenges.md#w12-1-medium--changenotifier--listenablebuilder-no-package): a value changing silently is invisible to the widget tree unless something explicitly triggers a rebuild. The fix — subscribe to the **stream** instead of reading the snapshot once:
+
+```dart
+class HomeGate extends StatelessWidget {
+  const HomeGate({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        final user = snapshot.data;
+        return user != null ? const HomeScreen() : const LoginScreen();
+      },
+    );
+  }
+}
+```
+
+`authStateChanges()` emits a new event on sign-in, sign-out, and token refresh — `StreamBuilder` rebuilds automatically on each one. This is precisely why every real Firebase Auth setup routes through the stream, never a one-shot `currentUser` read, for anything that needs to react to auth state over time.
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — Firebase Auth Semantics
+
+**A.** `FirebaseAuth.instance.currentUser` can already be non-null the very first time your app checks it on startup, before `authStateChanges()` has emitted its first event — if a previous session was persisted to the device.
+
+**B.** Calling `signOut()` on one device immediately invalidates that same user's active session/ID token on all of their *other* currently signed-in devices too.
+
+**C.** `createUserWithEmailAndPassword` and `signInWithEmailAndPassword` both return the same type, `UserCredential`.
+
+<details><summary>Which one's the lie</summary>
+
+**B is the lie.** `signOut()` only clears the **local** session on the device it's called from — it does not remotely revoke ID tokens already issued to that user's other signed-in devices. Those tokens simply remain valid until they expire naturally, which per [Week 17's core content](Week_17_Authentication.md) on the 1-hour JWT expiry, means another device could keep working for up to an hour after a "sign out everywhere" expectation, unless you specifically call server-side token revocation (via the Admin SDK) — a genuinely different, heavier operation than the client-side `signOut()` most apps use.
+
+🔴 **Explanation:** A is true and is exactly why `authStateChanges()` is the correct thing to key your app's routing off of rather than checking `currentUser` at one fixed moment — Firebase persists the session locally, so a returning user can already be "logged in" before your app has done anything. C is also true — both methods return `Future<UserCredential>`, which is why error-handling code for signup and login often looks nearly identical (same exception types, same `UserCredential.user` access pattern).
+
+</details>
+
+---
+
+### 👹 Boss Battle — A Three-State Router (Guest / Incomplete / Ready)
+
+**The spec:** extend the auth-gate pattern above into three states, not two: (1) not signed in → `LoginScreen`, (2) signed in but hasn't completed their profile yet (a `displayName` field is empty/null) → `CompleteProfileScreen`, (3) signed in with a complete profile → `HomeScreen`. The router must react live to **both** auth state changes and profile-completion changes (e.g., the moment the user finishes `CompleteProfileScreen`, the router should advance to `HomeScreen` without a manual navigation call).
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+sealed class AuthGateState {}
+class NotSignedIn extends AuthGateState {}
+class ProfileIncomplete extends AuthGateState {}
+class Ready extends AuthGateState {}
+
+class AppRouter extends StatelessWidget {
+  const AppRouter({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, authSnapshot) {
+        final user = authSnapshot.data;
+        if (user == null) return const LoginScreen();
+
+        // React live to profile-doc changes too, not just auth state:
+        return StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseFirestore.instance.collection('users').doc(user.uid).snapshots(),
+          builder: (context, profileSnapshot) {
+            final displayName = profileSnapshot.data?.get('displayName') as String?;
+            final state = (displayName == null || displayName.isEmpty)
+                ? ProfileIncomplete()
+                : Ready();
+
+            return switch (state) {
+              ProfileIncomplete() => const CompleteProfileScreen(),
+              Ready() => const HomeScreen(),
+              NotSignedIn() => const LoginScreen(), // unreachable here, but exhaustive
+            };
+          },
+        );
+      },
+    );
+  }
+}
+```
+
+🔴 **Explanation:** the nested `StreamBuilder`s aren't accidental complexity — they reflect two genuinely independent sources of truth that need to be watched simultaneously: auth state lives in Firebase Auth, profile completion lives in a Firestore document, and the router needs to react to *either* changing. The `sealed class AuthGateState` with an exhaustive `switch` is [T3-3's compiler-enforced-exhaustiveness pattern](../Phase_1_Dart_and_Foundations/Week_01b_Dart_Coding_Challenges.md#t3-3-medium--sealed-classes-let-the-compiler-catch-missing-cases) applied to routing logic — if a fourth state ever gets added (say, "account suspended"), the compiler flags every `switch` over `AuthGateState` that doesn't handle it, rather than that new state silently falling through to whatever the old default case happened to be.
+
+</details>
+
+---
+
 **Next → [Week 18: Local Storage](Week_18_Local_Storage.md) · [Storage Challenges](Week_18b_Storage_Challenges.md)**

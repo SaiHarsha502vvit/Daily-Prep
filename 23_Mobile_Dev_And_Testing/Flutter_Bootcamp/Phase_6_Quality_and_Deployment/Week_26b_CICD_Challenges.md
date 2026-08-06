@@ -134,6 +134,157 @@ end
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — The Pipeline That Ships Broken Builds
+
+```yaml
+name: Flutter CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+      - run: flutter pub get
+      - run: flutter build appbundle --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: build/app/outputs/bundle/release/app-release.aab
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+      - run: flutter pub get
+      - run: flutter test
+```
+
+Both jobs run, both eventually show green on GitHub. A broken change — one that fails `flutter test` — got merged to `main` last week, and the broken `.aab` was still sitted in the workflow's artifacts, downloadable, despite the `test` job having correctly failed. What's structurally wrong with this workflow, given that `test` failing didn't stop `build` from producing (and uploading) an artifact?
+
+<details><summary>Diagnosis & Fix</summary>
+
+🔴 **Explanation:** `build` and `test` are two **completely independent jobs** with no relationship declared between them — by default, GitHub Actions runs all jobs in a workflow **in parallel**, unless you explicitly say otherwise. `test` failing doesn't stop `build` from running, because nothing told GitHub Actions that `build` should depend on `test` succeeding first. The fix is a `needs:` key:
+
+```yaml
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+      - run: flutter pub get
+      - run: flutter test
+
+  build:
+    needs: test # <-- build will NOT start until test succeeds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+      - run: flutter pub get
+      - run: flutter build appbundle --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: build/app/outputs/bundle/release/app-release.aab
+```
+
+With `needs: test`, if `test` fails, `build` is automatically skipped entirely — no artifact gets produced or uploaded from a commit whose tests didn't pass. This is a genuinely common real-world CI misconfiguration: two jobs that *look* related because they're in the same file, but say nothing to the scheduler about actually depending on each other.
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — Deployment Practices
+
+**A.** A build number (the `+15` in `1.2.0+15`) must strictly increase with every single upload to a store, even between different tracks (internal, beta, production) of the same app.
+
+**B.** Signing keystores and certificates should be committed directly into the git repository so CI workflows have reliable access to them.
+
+**C.** `flutter build appbundle --release` and `flutter build apk --release` produce different file formats — the Play Store requires the `.aab` (App Bundle) for new app submissions, not a raw `.apk`.
+
+<details><summary>Which one's the lie</summary>
+
+**B is the lie**, and it's not a subtle one — signing keys and certificates are exactly the kind of secret this bootcamp's own git safety practices exist to prevent from ever reaching a commit. They belong in CI secrets (GitHub Actions' encrypted secrets, decoded to a file at build time via a step, then discarded) — never in the repository itself, where they'd be visible to anyone with read access, permanently present in git history even if later "removed" in a subsequent commit.
+
+🔴 **Explanation:** A and C are both true and both worth knowing precisely. A matters because it's easy to assume build numbers only need to increase within one track — they actually need to strictly increase across every upload to the app, period, regardless of which track received the previous one. C is the reason [this week's core content](Week_26_CICD_and_Deployment.md) always shows `flutter build appbundle`, not `flutter build apk`, when the target is a real Play Store submission — the `.apk` format still has legitimate uses (direct sideloading, some CI artifact-testing setups) but isn't what the Play Store accepts for new app uploads.
+
+</details>
+
+---
+
+### 🏗️ Build It Blind — Design a Three-Stage Pipeline
+
+No YAML given. Spec only:
+
+> Design (write, from scratch) a GitHub Actions workflow with three stages: a `test` job that must pass before anything else runs; a `build` job that, once tests pass, builds Android and iOS artifacts **in parallel with each other** (not one after the other — they don't depend on each other, only on `test`); and a `deploy` job that only runs when both builds succeed, only triggers on pushes to `main` (not on pull requests or other branches), and uploads to an internal testing track automatically with no manual approval step.
+
+Think through the `needs:` graph on paper before writing any YAML — which jobs depend on which, and which can run concurrently.
+
+<details><summary>One reasonable solution</summary>
+
+```yaml
+name: Flutter CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+      - run: flutter pub get
+      - run: flutter test
+
+  build_android:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+      - run: flutter build appbundle --release
+      - uses: actions/upload-artifact@v4
+        with: { name: android-release, path: build/app/outputs/bundle/release/app-release.aab }
+
+  build_ios:
+    needs: test
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+      - run: flutter build ios --release --no-codesign
+
+  deploy_internal:
+    needs: [build_android, build_ios]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploy to internal track — actual fastlane/upload steps here"
+```
+
+🔴 **Explanation:** the key structural insight — `build_android` and `build_ios` both list `needs: test` but **not** each other, which is exactly what makes GitHub Actions run them concurrently once `test` passes, rather than sequentially; jobs only wait for each other when one explicitly appears in the other's `needs:` list. `deploy_internal`'s `needs: [build_android, build_ios]` (a list, not a single value) means it waits for **both** to succeed, not just one. The `if: github.ref == 'refs/heads/main' && github.event_name == 'push'` condition is what stops this from also trying to deploy on every pull request — without it, opening a PR against `main` would trigger `test` and both builds (harmless, useful even) but also attempt an internal-track deploy from unmerged code, which is not what anyone wants.
+
+</details>
+
+---
+
 ## Bootcamp Complete
 
 Every teaching week from Week 1 through Week 26 now has a hands-on challenge companion. If you've worked through even half of these seriously — actually solving before opening `<details>`, actually running the "prove it yourself" problems instead of taking the explanation on faith — you have a genuinely different relationship with this material than someone who only read the weekly content. That's the whole point.

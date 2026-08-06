@@ -275,4 +275,176 @@ String? Function(String?) combineValidators(List<String? Function(String?)> vali
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🕵️ Code Review — Three Comments on One Form
+
+A teammate left three review comments on this signup form. Figure out what each one is pointing at and fix it — the comments describe the *symptom*, not the fix.
+
+```dart
+class SignupForm extends StatefulWidget {
+  const SignupForm({super.key});
+  @override
+  State<SignupForm> createState() => _SignupFormState();
+}
+
+class _SignupFormState extends State<SignupForm> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextField(controller: _emailController, decoration: const InputDecoration(labelText: 'Email')),
+        // 💬 Reviewer: "typing a password here shows it in plain text to
+        //    anyone looking at the screen — is that intentional?"
+        TextField(controller: _passwordController, decoration: const InputDecoration(labelText: 'Password')),
+        ElevatedButton(
+          onPressed: () async {
+            // 💬 Reviewer: "this spins forever on a slow network — nothing
+            //    tells the user their tap registered"
+            await FakeApi.signup(_emailController.text, _passwordController.text);
+            Navigator.pop(context);
+          },
+          child: const Text('Sign Up'),
+        ),
+      ],
+      // 💬 Reviewer: "I got a red screen when I backed out of this form
+      //    mid-typing — something about controllers?"
+    );
+  }
+}
+```
+
+<details><summary>What each comment means, and the fixes</summary>
+
+**Comment 1 (plain-text password):** add `obscureText: true` to the password field's `TextField`. Nothing else about the code is wrong — this is purely a missing property, easy to miss because the field otherwise "works" perfectly during a quick manual test.
+
+```dart
+TextField(controller: _passwordController, obscureText: true, decoration: const InputDecoration(labelText: 'Password')),
+```
+
+**Comment 2 (no loading feedback):** the button has no notion of "in progress" — tapping it during a slow `await` gives zero visual feedback, and (worse, though not what the reviewer flagged) nothing stops a second tap from firing a second signup request while the first is still pending. Needs a loading flag:
+
+```dart
+bool _isSubmitting = false;
+
+ElevatedButton(
+  onPressed: _isSubmitting ? null : () async {
+    setState(() => _isSubmitting = true);
+    await FakeApi.signup(_emailController.text, _passwordController.text);
+    if (!mounted) return;
+    Navigator.pop(context);
+  },
+  child: _isSubmitting ? const CircularProgressIndicator() : const Text('Sign Up'),
+),
+```
+
+**Comment 3 (red screen on back-out):** the two `TextEditingController`s are created but never disposed — [Week 3's leak lesson](../Phase_1_Dart_and_Foundations/Week_03b_Lifecycle_Challenges.md#w3-3-medium--prove-a-timer-leak-with-a-counter-not-a-guess) applies to controllers exactly as it does to timers. Missing `dispose()` here specifically risks a "used after being disposed" exception if anything (an animation, a listener) tries to touch the controller after the widget is gone — needs:
+
+```dart
+@override
+void dispose() {
+  _emailController.dispose();
+  _passwordController.dispose();
+  super.dispose();
+}
+```
+
+🔴 **Explanation:** this format mirrors an actual PR review — the comments tell you *what the reviewer observed*, not the line number or the fix. Comment 2 in particular has a second bug hiding inside the first one's fix (double-submit) that a less careful read would miss entirely.
+
+</details>
+
+---
+
+### ⚡ Speed Round — 5 Questions, 2 Minutes
+
+1. Does `TextEditingController()` need to be created inside `initState`, or can it be a field initializer directly (`final _c = TextEditingController();`)?
+2. If a `TextFormField`'s `validator` returns `null`, does that mean the field failed validation or passed it?
+3. Does calling `formKey.currentState!.validate()` automatically prevent the `onPressed` callback's *own* code from running if a field is invalid, or do you still need an `if` check?
+4. Does `FocusNode.unfocus()` also dismiss the on-screen keyboard, or only remove logical focus?
+5. Is `TextEditingController.text` safe to read synchronously at any point, or does it require an `await`?
+
+<details><summary>Answers</summary>
+
+1. **Either works** for a `late final` or direct field initializer, since `TextEditingController()`'s constructor doesn't depend on anything from `initState` — but see [Week 1's `late` lesson](../Phase_1_Dart_and_Foundations/Week_01b_Dart_Coding_Challenges.md#-two-truths-and-a-lie--late) if the initial text depends on a `widget.` property, which does require deferring past the point where `widget` becomes available.
+2. **Passed.** `null` from a validator means "no error" — this trips people up because it reads backwards at first (a `null` *error* meaning success).
+3. **You still need the `if` check.** `validate()` returns a `bool` and paints error text as a side effect — it does not, by itself, stop any code after it from running; that's on you, same as [W8-1](#w8-1-easy--raw-globalkeyformstate-mechanics).
+4. **Both**, in the common case — `unfocus()` removes logical focus, and because nothing else claims focus immediately after, the platform's IME typically dismisses the keyboard as a consequence. It's not guaranteed in every scenario (e.g., another field immediately requesting focus keeps the keyboard up), but for a simple "dismiss on submit" case, it works.
+5. **Yes, synchronous.** `.text` is a plain in-memory getter — no `await` needed, unlike anything actually touching the network or disk.
+
+</details>
+
+---
+
+### 👹 Boss Battle — A Multi-Field Form With Cross-Field Validation
+
+**The spec:** build a "change password" form with three fields: current password, new password, confirm new password. Requirements: (1) new password must be at least 8 characters, (2) confirm must exactly match new password — and this check must **re-run live** as the user edits either field, not just on submit, (3) the submit button is disabled entirely (not just validated-on-tap) while any requirement is unmet, (4) all three `TextEditingController`s are properly disposed.
+
+The interesting design problem: requirement (2) is a **cross-field** validation — Flutter's built-in `validator:` on `TextFormField` only sees that one field's own value. How do you validate one field against another's live value?
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+class ChangePasswordForm extends StatefulWidget {
+  const ChangePasswordForm({super.key});
+  @override
+  State<ChangePasswordForm> createState() => _ChangePasswordFormState();
+}
+
+class _ChangePasswordFormState extends State<ChangePasswordForm> {
+  final _currentController = TextEditingController();
+  final _newController = TextEditingController();
+  final _confirmController = TextEditingController();
+  bool _isValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _newController.addListener(_revalidate);
+    _confirmController.addListener(_revalidate);
+  }
+
+  void _revalidate() {
+    final valid = _newController.text.length >= 8 &&
+        _newController.text == _confirmController.text;
+    if (valid != _isValid) setState(() => _isValid = valid);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextField(controller: _currentController, obscureText: true, decoration: const InputDecoration(labelText: 'Current password')),
+        TextField(controller: _newController, obscureText: true, decoration: const InputDecoration(labelText: 'New password')),
+        TextField(controller: _confirmController, obscureText: true, decoration: const InputDecoration(labelText: 'Confirm new password')),
+        ElevatedButton(
+          onPressed: _isValid ? () { /* submit */ } : null,
+          child: const Text('Change Password'),
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    _currentController.dispose();
+    _newController.dispose();
+    _confirmController.dispose();
+    super.dispose();
+  }
+}
+```
+
+🔴 **Explanation:** the cross-field problem is solved by sidestepping `validator:` entirely for the cross-field piece — instead, both relevant controllers get a listener (`addListener`, the same primitive from [W7's scroll-position bug hunt](Week_07b_Scrolling_Challenges.md#-bug-hunt--the-scroll-to-top-button-that-never-appears)) that re-runs a shared `_revalidate()` check on every keystroke in *either* field, storing the result in one `_isValid` flag the submit button reads directly. This is a genuinely different pattern from the single-field `validator:` callbacks in this week's core content — cross-field rules almost always need this "listen to both, compute together" shape rather than per-field isolated validators.
+
+</details>
+
+---
+
 **Next → [Week 9: Animations](Week_09_Animations.md) · [Animation Challenges](Week_09b_Animation_Challenges.md)**

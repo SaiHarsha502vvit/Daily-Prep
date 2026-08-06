@@ -204,4 +204,128 @@ class AuthTokenManager {
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic — and this one leans hard into "make you think," because most Clean Architecture mistakes aren't crashes, they're rule violations that compile and run perfectly fine while quietly making the codebase worse. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — Spot the Layer Violation (Nothing Crashes Here)
+
+This code runs. Tests pass. Nothing throws. It's still wrong, and the "bug" won't show up as a runtime error — it'll show up three months from now as "why can't I unit-test this without spinning up Firebase."
+
+```dart
+// domain/usecases/get_expenses.dart
+class GetExpenses {
+  Future<List<Expense>> call() async {
+    final snapshot = await FirebaseFirestore.instance.collection('expenses').get();
+    return snapshot.docs.map((doc) => Expense.fromFirestore(doc)).toList();
+  }
+}
+```
+
+Find the violation. Then explain, concretely, what breaks *because* of it — not just "it's against the rules."
+
+<details><summary>Diagnosis & Fix</summary>
+
+🔴 **Explanation:** `GetExpenses` lives in `domain/usecases/` — the domain layer, which per [this week's core content](Week_21_Clean_Architecture.md) is supposed to be **pure Dart, zero Flutter/Firebase imports**. This `UseCase` imports `cloud_firestore` directly and calls it inline, completely bypassing the `IExpenseRepository` abstraction the whole architecture exists to enforce. The concrete, not-abstract cost: **you cannot unit-test `GetExpenses` without a real or emulated Firestore instance** — there's no way to substitute a fake data source, because the use case *is* the data source now, tangled together. The fix restores the boundary:
+
+```dart
+// domain/repositories/expense_repository.dart
+abstract class IExpenseRepository {
+  Future<List<Expense>> getExpenses();
+}
+
+// domain/usecases/get_expenses.dart — pure Dart again, zero Firebase import
+class GetExpenses {
+  GetExpenses(this._repository);
+  final IExpenseRepository _repository;
+  Future<List<Expense>> call() => _repository.getExpenses();
+}
+
+// data/repositories/firebase_expense_repository.dart — Firebase import lives HERE now
+class FirebaseExpenseRepository implements IExpenseRepository {
+  @override
+  Future<List<Expense>> getExpenses() async {
+    final snapshot = await FirebaseFirestore.instance.collection('expenses').get();
+    return snapshot.docs.map((doc) => Expense.fromFirestore(doc)).toList();
+  }
+}
+```
+
+Now `GetExpenses` can be unit-tested by constructing it with a `MockExpenseRepository` — exactly [this week's core content](Week_21_Clean_Architecture.md) on why the dependency rule exists in the first place, seen here as a violation you had to actually spot rather than one that was told to you upfront.
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — Dependency Rules
+
+**A.** The domain layer should never import anything from `package:flutter/material.dart`.
+
+**B.** A repository *implementation* class (in the data layer) is allowed to import Dio or Firestore directly; the abstract repository *interface* it implements (in the domain layer) must not.
+
+**C.** With constructor-based dependency injection, a `UseCase` class is expected to call `GetIt.instance<T>()` directly, inside its own methods, to fetch whatever dependencies it needs.
+
+<details><summary>Which one's the lie</summary>
+
+**C is the lie.** The entire value of constructor injection — the pattern used throughout [this week's `GetExpensesUseCase(repository: sl<IExpenseRepository>())` example](Week_21_Clean_Architecture.md) — is that dependencies are handed to a class from the **outside**, at construction time, by whoever is wiring the object graph together (GetIt's registration code, or a test's `setUp()`). If a `UseCase` instead calls `GetIt.instance<T>()` internally, it now depends directly on the service locator itself, and you've lost the ability to simply pass a `MockExpenseRepository` into its constructor for a test — you'd have to fight with GetIt's global registration state instead, which is precisely the friction constructor injection exists to avoid.
+
+🔴 **Explanation:** A and B are both true and are two sides of the same dependency rule — A is the "domain has zero framework imports" rule stated directly; B is the more subtle version of it, clarifying that the rule applies to the *interface* (which lives in the domain layer) and not to the *implementation* (which deliberately lives in the data layer specifically so it's allowed to import whatever external package it needs).
+
+</details>
+
+---
+
+### 👹 Boss Battle — Swap the Backend Without Touching the UseCase
+
+**The spec:** the real test of dependency inversion — build an `IExpenseRepository` interface, **two** separate implementations (`FirebaseExpenseRepository` and `InMemoryExpenseRepository`, the second one purely for tests, holding data in a `List` field), a `GetExpenses` use case depending only on the interface, and a small `main()`-style wiring function that can register **either** implementation with GetIt based on a flag — without a single line of `GetExpenses` itself ever changing.
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+abstract class IExpenseRepository {
+  Future<List<Expense>> getExpenses();
+  Future<void> addExpense(Expense expense);
+}
+
+class FirebaseExpenseRepository implements IExpenseRepository {
+  @override
+  Future<List<Expense>> getExpenses() async { /* real Firestore call */ throw UnimplementedError(); }
+  @override
+  Future<void> addExpense(Expense expense) async { /* real Firestore call */ }
+}
+
+class InMemoryExpenseRepository implements IExpenseRepository {
+  final List<Expense> _expenses = [];
+  @override
+  Future<List<Expense>> getExpenses() async => List.unmodifiable(_expenses);
+  @override
+  Future<void> addExpense(Expense expense) async => _expenses.add(expense);
+}
+
+class GetExpenses {
+  GetExpenses(this._repository);
+  final IExpenseRepository _repository;
+  Future<List<Expense>> call() => _repository.getExpenses();
+}
+
+final sl = GetIt.instance;
+
+void configureDependencies({required bool useFakeBackend}) {
+  if (useFakeBackend) {
+    sl.registerSingleton<IExpenseRepository>(InMemoryExpenseRepository());
+  } else {
+    sl.registerSingleton<IExpenseRepository>(FirebaseExpenseRepository());
+  }
+  sl.registerFactory<GetExpenses>(() => GetExpenses(sl<IExpenseRepository>()));
+}
+```
+
+🔴 **Explanation:** this is the entire architectural payoff made concrete, not asserted — `GetExpenses` was written once and never touched again while the backend underneath it flipped between a real Firestore-backed implementation and an in-memory fake, purely by changing what `configureDependencies` registers. `InMemoryExpenseRepository` isn't a mocking-library mock — it's a genuine, real implementation of the same interface, just backed by a `List` instead of a network call, which is exactly the "swap Firebase for a different database without touching the UI/business logic" claim from [this week's core content](Week_21_Clean_Architecture.md), demonstrated rather than just stated.
+
+</details>
+
+---
+
 **Next → [Week 22: Advanced Animations & CustomPaint](Week_22_Advanced_Animations_CustomPaint.md) · [Animation & CustomPaint Challenges](Week_22b_Advanced_Animation_Challenges.md)**

@@ -231,4 +231,115 @@ After 5 taps: `nonConstBuildCount` reads **500** (100 non-const items × 5 rebui
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — The Summary Widget That Recomputes 60 Times a Second
+
+```dart
+class ExpenseSummary extends StatelessWidget {
+  const ExpenseSummary({super.key, required this.expenses});
+  final List<Expense> expenses;
+
+  @override
+  Widget build(BuildContext context) {
+    final sorted = [...expenses]..sort((a, b) => b.amount.compareTo(a.amount));
+    final total = expenses.fold(0.0, (sum, e) => sum + e.amount);
+    final topCategory = _computeTopCategory(sorted); // groups + sorts again internally
+
+    return Column(children: [
+      Text('Total: \$${total.toStringAsFixed(2)}'),
+      Text('Top category: $topCategory'),
+    ]);
+  }
+}
+```
+
+This widget sits on a dashboard screen that also has a pulsing "syncing..." indicator animating elsewhere on the same screen. `expenses` itself is static — loaded once, never mutated while this screen is open. Using what you know from [Week 22's painter Bug Hunt](../Phase_5_Advanced_Patterns/Week_22b_Advanced_Animation_Challenges.md#-bug-hunt--the-painter-that-never-stops-repainting), predict what's actually happening here before opening the answer.
+
+<details><summary>Diagnosis & Fix</summary>
+
+🔴 **Explanation:** this is the *widget-rebuild* version of the exact same mistake as the `CustomPainter`'s always-`true` `shouldRepaint` — the unrelated pulsing animation forces its own ancestor/sibling subtree to rebuild on every frame (an `AnimationController` driving a `setState` or `AnimatedBuilder` somewhere nearby), and if `ExpenseSummary` sits inside that rebuilding subtree without any isolation, its `build()` re-runs every single frame too — recomputing an `O(n log n)` sort and a full re-grouping of potentially thousands of expenses, 60 times a second, for data that never changed. The fix is to stop treating this as layout-time work: compute it once, outside `build()`, and only recompute when the actual input changes:
+
+```dart
+// As a Riverpod derived provider (only recomputes when `expensesProvider` changes):
+final sortedExpensesProvider = Provider<List<Expense>>((ref) {
+  final expenses = ref.watch(expensesProvider);
+  return [...expenses]..sort((a, b) => b.amount.compareTo(a.amount));
+});
+```
+
+Riverpod (or a `Provider` selector, same idea) caches the derived value and only re-runs the computation when its own `ref.watch` dependency actually changes — completely decoupled from how often the *widget* rebuilds for unrelated reasons like a nearby animation. This is the same "derive once, not on every rebuild" discipline as [Week 12's `context.select`](../Phase_3_State_and_APIs/Week_12b_State_Management_Challenges.md#w12-2-medium--prove-contextselect-narrows-the-rebuild-scope), applied to expensive computation instead of just rebuild scope.
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — Profiling Reality
+
+**A.** Profiling in `--debug` mode gives frame-timing numbers accurate enough to trust, because the Dart VM's JIT overhead is negligible for typical animation code.
+
+**B.** `RepaintBoundary` isolates a subtree's paint output into its own GPU-cacheable layer, so a repaint triggered by a sibling elsewhere on screen doesn't force this subtree to redraw too.
+
+**C.** DevTools' CPU profiler works by sampling — checking "what's executing right now" at a fixed interval — not by tracing every single function call exactly; a function called once for 200ms and a function called 1000 times for 0.2ms each can look very different in the resulting flame chart despite costing the same total time.
+
+<details><summary>Which one's the lie</summary>
+
+**A is the lie**, and it's the one with the most real-world consequence if you get it wrong — `--debug` mode runs on the JIT-interpreted Dart VM with bounds checking, type assertions, and other debug-only overhead all active, running measurably slower (often 2-5x) than the AOT-compiled `--profile`/`--release` builds real users experience. A layout that appears janky in `--debug` might be perfectly smooth in `--profile`, and worse, a genuine performance problem that only manifests at production speed can be invisible in `--debug` if the JIT overhead happens to mask it. **Every performance claim in this bootcamp about frame timing assumes `--profile` mode** — this is precisely why it's the very first Verify question for this week.
+
+🔴 **Explanation:** B and C are both true and both directly practical — B is the mechanism that makes `RepaintBoundary` a real, not-just-theoretical fix for the Bug Hunt above (wrapping `ExpenseSummary` in one would prevent the nearby spinner's repaints from cascading into it, even independent of the caching fix). C is the sampling-vs-tracing distinction that explains why a profiler's flame chart can look surprising at first glance — a function that's *slow but called once* and a function that's *fast but called constantly* can cost the same wall-clock time yet appear completely differently sized in the chart.
+
+</details>
+
+---
+
+### 👹 Boss Battle — Fix a Laggy List, One Diagnosis at a Time
+
+**The spec:** you're handed this deliberately unoptimized list (a real-world-shaped mess, not a single isolated bug). Find and fix **all four** distinct performance problems, in whatever order you discover them — don't just apply "best practices" blindly, diagnose each one first (what would DevTools' Performance tab actually show for each?).
+
+```dart
+class ProductList extends StatelessWidget {
+  const ProductList({super.key, required this.products});
+  final List<Product> products;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: products.map((p) {
+        final discountedPrice = _applyComplexDiscountLogic(p); // expensive, recalculated every rebuild
+        return Container(
+          padding: EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Image.network(p.imageUrl), // no cacheWidth/cacheHeight — decodes at full resolution
+              Text(p.name),
+              Text('\$${discountedPrice.toStringAsFixed(2)}'),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+```
+
+<details><summary>The four problems and fixes</summary>
+
+**1. `ListView` with eager `children:`, not `.builder`** — same trap as [Week 7's Refactor Duel](../Phase_2_Core_UI/Week_07b_Scrolling_Challenges.md#-refactor-duel--from-column-to-listviewbuilder-prove-the-win). Fix: `ListView.builder(itemCount: products.length, itemBuilder: (_, i) { ... })`.
+
+**2. `_applyComplexDiscountLogic(p)` recalculated on every rebuild, for every item** — same shape as this file's own Bug Hunt above. Fix: precompute discounted prices once when `products` loads (or memoize per-product, keyed by product ID, if discount logic can change independently).
+
+**3. `Image.network` with no size hints** — decodes the image at its full native resolution even if displayed at 40×40 logical pixels, wasting memory and decode time. Fix: `Image.network(p.imageUrl, cacheWidth: 80, cacheHeight: 80)` (roughly 2x the display size, accounting for device pixel ratio) — the decoder downsamples during decode instead of after, which is dramatically cheaper.
+
+**4. No `const` anywhere it could apply** — `Container(padding: EdgeInsets.all(12), ...)` isn't `const` (missing the keyword, and `EdgeInsets.all(12)` could be `const EdgeInsets.all(12)`), meaning nothing here benefits from [Week 2's const-skips-reconciliation optimization](../Phase_1_Dart_and_Foundations/Week_02b_Widget_Rebuild_Challenges.md#w2-1-easy--one-build-method-vs-three) even for the parts of each row that never actually change.
+
+🔴 **Explanation:** the point of finding all four rather than being told "here are four bugs, fix each" is that real performance debugging in DevTools rarely hands you a numbered list — you see one symptom (jank while scrolling) and have to work backward through the Performance tab's flame chart to find which of potentially several compounding causes is actually responsible, then fix, re-profile, and check whether the symptom is gone or just reduced.
+
+</details>
+
+---
+
 **Next → [Week 26: CI/CD & Deployment](Week_26_CICD_and_Deployment.md) · [CI/CD Challenges](Week_26b_CICD_Challenges.md)**

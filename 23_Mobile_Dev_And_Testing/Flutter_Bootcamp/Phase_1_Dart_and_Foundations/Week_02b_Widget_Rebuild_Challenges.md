@@ -304,4 +304,137 @@ List<String> reconcile(List<Type> oldTypes, List<Type> newTypes) {
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — The Counter That Updates the Wrong Widget
+
+```dart
+class ProductCard extends StatefulWidget {
+  const ProductCard({required this.name});
+  final String name;
+  @override
+  State<ProductCard> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  int _quantity = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(widget.name),
+        Text('Qty: $_quantity'),
+        ElevatedButton(
+          onPressed: () => setState(() => _quantity++),
+          child: const Text('+'),
+        ),
+      ],
+    );
+  }
+}
+
+// Rendered as:
+class ProductGrid extends StatelessWidget {
+  const ProductGrid({required this.names});
+  final List<String> names;
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: names.map((n) => ProductCard(name: n)).toList());
+  }
+}
+```
+
+This one doesn't crash and doesn't obviously misbehave for a static list. The bug shows up the moment `names` changes — say, a search filter removes the second product from a 3-product list. Predict what happens to the quantities shown for the remaining products before opening the answer.
+
+<details><summary>Diagnosis & Fix</summary>
+
+Remove the second product ("Banana," say) from a 3-item list `['Apple', 'Banana', 'Cherry']` where you'd bumped Banana's and Cherry's quantities to 3 and 2 respectively. After the filter, the list is `['Apple', 'Cherry']` — and the quantity that displays for Cherry is **Banana's old quantity (3)**, not Cherry's own (2).
+
+🔴 **Explanation:** no `key` is passed to `ProductCard` in the `.map()` call — exactly the mechanism from [W2-2](#w2-2-medium--keys-and-the-reordering-bug), but arriving via list *removal* instead of shuffling. Flutter matches elements by type-and-position: position 1 used to hold "Banana"'s element (internal `_quantity = 3`), and after removal, position 1 holds "Cherry"'s widget — but Flutter reuses the *element* at position 1, carrying over its `_quantity = 3` state, not Cherry's actual `_quantity = 2`. Fix: `ProductCard(key: ValueKey(n), name: n)` — same fix as W2-2, different trigger (filtering, not reordering) to prove the bug isn't specific to one kind of list mutation.
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — `const` and Rebuilds
+
+**A.** A `const` widget is guaranteed to be the exact same object instance across every rebuild where it's constructed with identical arguments.
+
+**B.** Marking a widget `const` prevents its `State` object from ever being recreated, even if its parent's `key` changes.
+
+**C.** Two separately-written `const Text('Hi')` expressions, in different files, still produce the same canonical object at runtime.
+
+<details><summary>Which one's the lie</summary>
+
+**B is the lie.** `const` has nothing to do with element/state identity across a `key` change — if the `key` on a widget changes, Flutter treats it as a fundamentally different widget regardless of whether it's `const`, tears down the old element, and creates a new one (running `initState` fresh). `const` only means "this exact widget instance is reused across rebuilds *at the same position with the same key* when the constructor arguments are identical" — it has no power to override key-based identity, which always wins.
+
+🔴 **Explanation:** this distinction matters because it's tempting to think "`const` = never rebuilds, ever" as an absolute rule. It's a rule about *reconciliation shortcuts*, not about overriding the fundamental type-and-key matching algorithm from [W2-4](#w2-4-hard-bonus--implement-flutters-own-reconciliation-rule). A and C are both true: constant expressions are canonicalized by the Dart compiler at compile time — identical `const` expressions anywhere in your codebase really do collapse to one shared object.
+
+</details>
+
+---
+
+### ⚡ Speed Round — 5 Questions, 2 Minutes
+
+1. Does calling `setState(() {})` with an **empty** callback body still trigger a rebuild?
+2. If a `StatelessWidget`'s constructor arguments never change, does Flutter still call `build()` again when its parent rebuilds?
+3. Is `BuildContext` the same object across every call to a widget's `build()` method, or a new one each time?
+4. Does wrapping a widget in `RepaintBoundary` change whether it *rebuilds* (widget tree), or only whether it *repaints* (paint layer)?
+5. Can two different `Element`s in the tree simultaneously hold references to the exact same `const` widget instance?
+
+<details><summary>Answers</summary>
+
+1. **Yes.** `setState`'s job is just "mark this element dirty" — the callback body content is irrelevant to that; even an empty one triggers a rebuild.
+2. **Yes, by default.** Unless that `StatelessWidget` is itself `const`, Flutter still calls its `build()` again — being a `StatelessWidget` alone doesn't skip rebuilds, only `const` (or manual `shouldRebuild`-style optimizations) does.
+3. **The same object**, for as long as the element stays mounted at that position — `BuildContext` *is* the `Element`, and the element persists across rebuilds (that's the whole point of the three-tree model from this week).
+4. **Only repainting**, not rebuilding. `RepaintBoundary` isolates the *paint* layer into its own GPU-cacheable layer — the widget/element tree reconciliation still happens normally above and below it.
+5. **Yes** — that's exactly what "canonicalized" means; the same `const` widget object can legitimately be referenced from multiple places in the tree simultaneously (e.g., the same `const Divider()` used in ten different list separators).
+
+</details>
+
+---
+
+### 🏗️ Build It Blind — A Rebuild-Scope Debugging Tool
+
+No starter code. Spec only:
+
+> Build something reusable that wraps any widget and, whenever that widget rebuilds, briefly flashes a colored border around it for 200ms before fading out — purely as a visual debugging aid to spot unexpected rebuilds during development, without needing to add `debugPrint` everywhere by hand.
+
+Decide the API yourself: is it a widget wrapper? A function? What does it need to detect "a rebuild happened," given that a `StatelessWidget` has no lifecycle hook that fires specifically on rebuild? Think before you open the solution — this is the hard part of the exercise.
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+class RebuildFlash extends StatefulWidget {
+  const RebuildFlash({super.key, required this.child});
+  final Widget child;
+  @override
+  State<RebuildFlash> createState() => _RebuildFlashState();
+}
+
+class _RebuildFlashState extends State<RebuildFlash> {
+  @override
+  Widget build(BuildContext context) {
+    // build() itself IS the rebuild signal — every call to this method
+    // means Flutter decided this element needs rebuilding.
+    Future.microtask(() => setState(() {})); // trivial: real version would drive an AnimationController
+    return Container(
+      decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2)),
+      child: widget.child,
+    );
+  }
+}
+```
+
+🔴 **Explanation:** the key design insight — the one you had to arrive at yourself — is that `build()` being **called at all** is the rebuild signal; there's no separate "onRebuild" callback because `build()` running *is* what a rebuild means. A fuller version would drive an `AnimationController` that resets to full opacity and fades out on every `build()` call, rather than the toy `Future.microtask` placeholder above (left simplified so the core insight isn't buried in animation boilerplate). If your solution reached for `didUpdateWidget` instead — reasonable instinct, but note it only fires when the widget is reused with new constructor args, not on every rebuild in general (a rebuild can also be triggered by an ancestor's `InheritedWidget` change, which doesn't call `didUpdateWidget`).
+
+</details>
+
+---
+
 **Next → [Week 3: Widget Lifecycle](Week_03_Widget_Lifecycle.md) · [Lifecycle Challenges](Week_03b_Lifecycle_Challenges.md)**

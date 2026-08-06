@@ -232,4 +232,109 @@ void main() async {
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — The Test That Fails for the Wrong Reason
+
+```dart
+testWidgets('tapping Login navigates to Home', (tester) async {
+  await tester.pumpWidget(const MyApp());
+  await tester.tap(find.text('Login'));
+  expect(find.text('Welcome Home'), findsOneWidget);
+});
+```
+
+This test fails. The developer who wrote it is confused — they tapped through the app manually and login navigation works perfectly. Before assuming the *feature* is broken, what should they check about the *test* first?
+
+<details><summary>Diagnosis & Fix</summary>
+
+🔴 **Explanation:** there's no `pump()` or `pumpAndSettle()` call after `tester.tap(...)` — the tap is registered, but **no frame is ever triggered to actually process its consequences**. Navigation transitions, `setState` calls, and any async work triggered by the tap all need at least one more frame (often several, for an animated page transition) to actually run and settle. Without pumping, `find.text('Welcome Home')` runs its check against the tree exactly as it stood the instant *before* the tap's effects had any chance to happen — the test isn't lying about the feature being broken, it's asking the wrong question at the wrong moment. The fix:
+
+```dart
+await tester.tap(find.text('Login'));
+await tester.pumpAndSettle(); // let the navigation transition (and any async work) finish
+expect(find.text('Welcome Home'), findsOneWidget);
+```
+
+The general lesson, worth internalizing before it costs debugging time on a real feature: **a failing widget test after an interaction is not automatically proof the feature is broken — check that you actually pumped a frame before concluding that.** This is precisely why [this week's core content](Week_24_Testing.md) treats `pump`/`pumpAndSettle` as foundational rather than boilerplate to memorize and forget.
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — Mocks, Fakes, and BLoC Testing
+
+**A.** `tester.pumpAndSettle()` will hang (loop until it hits an internal iteration limit and throws) if the widget under test contains an infinitely-repeating animation that never settles.
+
+**B.** A `Mock` and a `Fake` are interchangeable terms for the same concept — any test double that isn't the real production implementation.
+
+**C.** `blocTest`'s `seed:` parameter lets a test start the BLoC from a specific state directly, rather than needing to first replay whatever events would normally produce that state.
+
+<details><summary>Which one's the lie</summary>
+
+**B is the lie**, and getting this distinction right is genuinely worth the effort — a **Mock** is a test double you make *assertions about the interactions with* (`verify(mockRepo.deleteExpense(any)).called(1)` — did this specific call happen?), while a **Fake** is a lightweight but *genuinely working* alternative implementation (an in-memory `List`-backed repository, exactly like [Week 21's `InMemoryExpenseRepository`](../Phase_5_Advanced_Patterns/Week_21b_Clean_Architecture_Challenges.md#-boss-battle--swap-the-backend-without-touching-the-usecase)) that you use *as* the dependency, not just observe. Reaching for a heavyweight mocking framework when a 10-line Fake would do is a common over-engineering habit worth noticing in yourself.
+
+🔴 **Explanation:** A and C are both true. A is why [this week's core content](Week_24_Testing.md) warns against blindly calling `pumpAndSettle()` on every screen — a looping "loading" spinner or a continuously-repeating animation genuinely never "settles," and `pumpAndSettle` will eventually throw a timeout-style error rather than hang forever, but the fix (use `pump(duration)` with an explicit time instead) requires knowing this failure mode exists.
+
+</details>
+
+---
+
+### 👹 Boss Battle — Full-Stack Test for a Delete-With-Confirmation Flow
+
+**The spec:** write a complete test suite (not just one test) for this feature: tapping a delete icon shows a confirmation dialog; confirming calls `repository.deleteExpense(id)` and removes the item from the displayed list; cancelling closes the dialog and leaves everything untouched. Cover it at **three** levels: (1) a `blocTest` verifying the BLoC emits the right states when a delete-confirmed event fires, (2) a widget test verifying the dialog actually appears on tap and disappears correctly on cancel, (3) one test proving the item is genuinely gone from the rendered list after a confirmed delete — not just that some state field changed.
+
+<details><summary>One reasonable solution (structure — abbreviated bodies)</summary>
+
+```dart
+// 1. blocTest — the state machine, in isolation
+blocTest<ExpenseBloc, ExpenseState>(
+  'emits state without the deleted expense when DeleteConfirmed fires',
+  build: () {
+    when(mockRepo.deleteExpense('1')).thenAnswer((_) async => Right(unit));
+    return ExpenseBloc(repository: mockRepo)..add(LoadExpenses());
+  },
+  seed: () => ExpenseLoaded(expenses: [expenseA, expenseB]), // start already-loaded
+  act: (bloc) => bloc.add(const DeleteConfirmed(id: '1')),
+  expect: () => [
+    ExpenseLoaded(expenses: [expenseB]), // expenseA (id: '1') is gone
+  ],
+);
+
+// 2. Widget test — the dialog itself, independent of real deletion logic
+testWidgets('tapping delete icon shows confirmation dialog', (tester) async {
+  await tester.pumpWidget(makeTestableWidget(const ExpenseCard(expense: expenseA)));
+  await tester.tap(find.byIcon(Icons.delete));
+  await tester.pumpAndSettle();
+  expect(find.text('Delete this expense?'), findsOneWidget);
+
+  await tester.tap(find.text('Cancel'));
+  await tester.pumpAndSettle();
+  expect(find.text('Delete this expense?'), findsNothing); // dialog closed
+});
+
+// 3. Integration-style widget test — the actual end-to-end user-visible outcome
+testWidgets('confirming delete removes the item from the visible list', (tester) async {
+  await tester.pumpWidget(makeTestableWidgetWithBloc(mockBlocSeededWith([expenseA, expenseB])));
+  expect(find.text(expenseA.title), findsOneWidget);
+
+  await tester.tap(find.byIcon(Icons.delete).first);
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Confirm'));
+  await tester.pumpAndSettle();
+
+  expect(find.text(expenseA.title), findsNothing); // genuinely gone from the RENDERED tree
+});
+```
+
+🔴 **Explanation:** the three levels intentionally test **different things**, not the same thing three times — test 1 proves the state-machine logic is correct in complete isolation (using `seed:` from the Two Truths section above to skip straight to a loaded state, and a mock repository since this test cares about *interaction verification*: was `deleteExpense` called correctly). Test 2 proves the dialog UI itself behaves correctly, independent of whether deletion actually works underneath. Test 3 is the one that actually matters most to a real user and is the easiest to skip if you're not deliberate about it — it proves the **rendered widget tree** genuinely no longer shows the deleted item, which is a meaningfully stronger claim than "the state object's `expenses` list no longer contains it" (a bug in how that state gets turned into widgets could still leave the item visually present even with correct underlying state).
+
+</details>
+
+---
+
 **Next → [Week 25: Performance & Profiling](Week_25_Performance_and_Profiling.md) · [Performance Challenges](Week_25b_Performance_Challenges.md)**

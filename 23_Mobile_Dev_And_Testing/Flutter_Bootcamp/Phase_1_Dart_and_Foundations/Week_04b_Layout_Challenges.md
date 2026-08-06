@@ -233,4 +233,130 @@ Row(
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — The Card That Overflows Only Sometimes
+
+```dart
+class UserRow extends StatelessWidget {
+  const UserRow({required this.name, required this.email});
+  final String name, email;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const CircleAvatar(radius: 20),
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(email),
+          ],
+        ),
+        const Spacer(),
+        const Icon(Icons.chevron_right),
+      ],
+    );
+  }
+}
+```
+
+This renders perfectly for `UserRow(name: 'Ana', email: 'ana@x.com')`. It throws a yellow-and-black overflow error for `UserRow(name: 'Alexandria Montgomery-Fitzgerald', email: 'alexandria.montgomery.fitzgerald@enterprise-corp.com')`. Figure out why before opening the answer — the fix is one widget added in exactly one place.
+
+<details><summary>Diagnosis & Fix</summary>
+
+🔴 **Explanation:** the inner `Column` holding the name and email has **no width constraint of its own** — inside a `Row`, an unconstrained child (no `Expanded`/`Flexible` wrapper) gets *loose* horizontal constraints, meaning it's free to be as wide as its content wants. For a short name, that's fine — the `Row`'s total content fits. For a long name, the `Column` (and the `Text` widgets inside it) tries to be exactly as wide as the longest line of text, which can exceed the remaining horizontal space once you account for the avatar, spacing, and trailing icon — hence the overflow.
+
+Fix: wrap the `Column` in `Expanded`:
+
+```dart
+Expanded(
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(name, style: const TextStyle(fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
+      Text(email, overflow: TextOverflow.ellipsis),
+    ],
+  ),
+),
+```
+
+`Expanded` forces the `Column` into the *remaining* space after the avatar/spacing/icon are accounted for — tight, bounded constraints instead of "however wide you want." Adding `overflow: TextOverflow.ellipsis` on the `Text` widgets themselves handles the case where even the allotted remaining space isn't enough — this is the same "constraints going down" reasoning from this week's core content, just discovered via a bug instead of a diagram.
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — Constraints
+
+**A.** A widget can always choose to be *smaller* than the maximum size its constraints allow, but never larger.
+
+**B.** `Padding` is the only built-in widget capable of *shrinking* the constraint range it passes down to its child.
+
+**C.** `SizedBox` can pass down constraints that are tighter (more restrictive) than the constraints it itself received from its parent, for the dimensions it explicitly sets.
+
+<details><summary>Which one's the lie</summary>
+
+**B is the lie.** `Padding` shrinks constraints, yes — but it's far from the *only* widget that does. `Container` (when given explicit `padding`), `SizedBox` itself (forcing a specific width/height, which is a form of overriding/tightening what it passes down), `Center`, `ConstrainedBox`, and `AspectRatio` all modify the constraint range passed to their children in various ways. The general rule to actually internalize: **any widget can, in principle, shrink, loosen, or override the constraints it passes to its child** — it's not a special power reserved for one widget.
+
+🔴 **Explanation:** A is true and worth restating precisely — the constraint contract genuinely is one-directional: a widget's chosen size must fall within `[minWidth, maxWidth] × [minHeight, maxHeight]`; it cannot exceed the max, though tight constraints (min==max) remove the "choice" entirely. C is also true — this is literally what `SizedBox(width: 150)` did in [W4-1](#w4-1-easy--predict-constraints-at-three-nested-levels): it overrode the width dimension of the constraints it passed down to be tight at 150, while leaving height passed through unchanged.
+
+</details>
+
+---
+
+### 🏗️ Build It Blind — A "Constraint Debugger" Widget
+
+No starter code. Spec only:
+
+> Build a widget wrapper that, given any child, visually overlays the actual `BoxConstraints` that child received — printed as text, positioned in the corner, without disturbing the child's own layout or appearance otherwise. You should be able to wrap literally any existing widget in your app with this and instantly see what constraints it's working with, without manually adding a `LayoutBuilder` every time you're debugging a layout.
+
+Think about what widget primitives let you observe constraints without becoming the thing being constrained yourself — `LayoutBuilder` gives you constraints for its *own* position, but how do you attach that information as an overlay on top of an arbitrary child without changing that child's actual size?
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+class ConstraintDebugger extends StatelessWidget {
+  const ConstraintDebugger({super.key, required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
+          children: [
+            child,
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Container(
+                color: Colors.black54,
+                padding: const EdgeInsets.all(2),
+                child: Text(
+                  'w:${constraints.minWidth.toStringAsFixed(0)}-${constraints.maxWidth.toStringAsFixed(0)}\n'
+                  'h:${constraints.minHeight.toStringAsFixed(0)}-${constraints.maxHeight.toStringAsFixed(0)}',
+                  style: const TextStyle(color: Colors.yellow, fontSize: 9),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+```
+
+🔴 **Explanation:** the key design move — `LayoutBuilder` reports the constraints arriving at *this position in the tree*, which are the exact same constraints your `child` is about to receive, since `Stack` (unlike, say, `Padding`) passes its own received constraints straight through to its non-positioned children unchanged. Wrapping `child` in a `Stack` with a `Positioned` overlay lets you paint the debug text *on top of* the child without altering the child's own layout — the overlay is purely a paint-time addition, not a layout-affecting one. If you reached for `Column([child, Text(...)])` instead, that's a reasonable first instinct, but it changes the child's actual rendered position (pushes it up to make room) — precisely the "don't disturb the child's own layout" requirement in the spec you'd have violated.
+
+</details>
+
+---
+
 **Next → [Week 5: Navigation & State](Week_05_Navigation_and_State.md) · [Navigation Challenges](Week_05b_Navigation_Challenges.md)**

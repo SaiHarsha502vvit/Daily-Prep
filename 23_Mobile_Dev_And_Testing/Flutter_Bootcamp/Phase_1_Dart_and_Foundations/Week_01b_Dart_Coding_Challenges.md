@@ -18,6 +18,8 @@ Paste each starter into [DartPad](https://dartpad.dev) — no install needed, an
 
 Tiers escalate in a specific order: **syntax fluency → complexity discipline → Dart's actual language advantages → concurrency → small systems that combine everything.**
 
+There's also a **Bonus Round** at the end with different formats entirely — bug hunts with no hints, a shuffled-code puzzle, a spec-only build with no starter code, true/false speed rounds, and a bigger "boss battle" combining everything in this file. See the [full challenge-type roster](../00_CHALLENGE_TYPES.md) if you want the formats explained up front.
+
 ---
 
 ## Tier 1 — Core Mechanics
@@ -900,6 +902,279 @@ void main() {
 ```
 
 🔴 **explanation:** naive `fib(35)` makes roughly 30 million calls — it's recomputing `fib(20)` thousands of times as a subproblem of larger calls. `memoize()` closes over a `Map<int,int>` cache — a genuine use of Dart closures capturing mutable state between calls. The subtlety (and the actual lesson): wrapping `fib` itself doesn't help, because `fib`'s own recursive calls inside its body still call the *original*, un-memoized `fib` — the cache only ever gets hit once, at the top. The recursive calls must themselves go through the memoized wrapper (`fastFib`) for the exponential-to-linear collapse to actually happen. This is a real gotcha with memoizing recursive (not just iterative) functions in any language.
+
+</details>
+
+---
+
+## Bonus Round — Mix It Up
+
+Same rules, different formats. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) if you want the format explained before diving in.
+
+---
+
+### 🐛 Bug Hunt — The Merge That Crashes on Uneven Lists
+
+This looks right. Run it on `mergeSorted([1, 3, 5], [2, 4])` and `mergeSorted([1, 3], [2, 4, 6, 8])` before you read another word.
+
+```dart
+List<int> mergeSorted(List<int> a, List<int> b) {
+  final result = <int>[];
+  int i = 0, j = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] <= b[j]) {
+      result.add(a[i]);
+      i++;
+    } else {
+      result.add(b[j]);
+      j++;
+    }
+  }
+  return result;
+}
+```
+
+<details><summary>Diagnosis & Fix</summary>
+
+Run `mergeSorted([1, 3], [2, 4, 6, 8])` and you get `[1, 2, 3, 4]` — silently missing `6` and `8`. No crash, no error, just quietly wrong output, which is worse than a crash.
+
+🔴 **Explanation:** the `while` loop's condition `i < a.length && j < b.length` exits the instant *either* list is exhausted — but if `b` still has elements left (`j < b.length` but `i` has already hit `a.length`), those remaining elements never get copied in. The fix is two more loops after the main one:
+
+```dart
+while (i < a.length) result.add(a[i++]);
+while (j < b.length) result.add(b[j++]);
+```
+
+This is a real, extremely common off-by-boundary bug — it's the exact core of merge sort's merge step, and getting the "drain the leftover list" part right is the part people skip because the main loop *looks* complete.
+
+</details>
+
+---
+
+### 🐛 Bug Hunt — The Percentage That's Always Zero
+
+```dart
+int correctAnswers = 3;
+int totalQuestions = 10;
+int percentage = (correctAnswers / totalQuestions * 100).round();
+print('Score: $percentage%');
+```
+
+Predict the printed output before running it. It is not `30`.
+
+<details><summary>Diagnosis & Fix</summary>
+
+This one actually **compiles and runs fine** — the bug is conceptual, not syntactic, and it's genuinely easy to miss. `correctAnswers / totalQuestions` in Dart is `int / int`, and Dart's `/` operator on two `int`s produces a `double` (`3 / 10 == 0.3`, not integer-truncated like some languages) — so this particular version actually prints `Score: 30%`, correctly. **The real trap is the mirror image**: declare `percentage` itself as the division target using `~/` (integer division) instead of `/` by mistake —
+
+```dart
+int percentage = (correctAnswers ~/ totalQuestions * 100); // 3 ~/ 10 = 0, then * 100 = 0
+```
+
+— and you silently get `0` for every score under 100%, because `~/` truncates *before* the multiplication ever happens. 🔴 **Explanation:** the lesson is to notice which operator you actually typed: `/` (true division, always a `double`) vs `~/` (integer division, truncates toward zero, always an `int`) look one character apart and behave completely differently when the numerator is smaller than the denominator — exactly the shape of a real production bug that ships because it "looks right" on a quick read.
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — `late`
+
+One of these is false. Find it before opening the answer.
+
+**A.** A `late` variable declared without an initializer can be assigned later, but reading it before that assignment throws a `LateInitializationError`.
+
+**B.** `late final` still only allows the variable to be assigned once — but that one assignment can happen anywhere, not necessarily at the declaration site.
+
+**C.** Marking a variable `late` with an initializer (`late final x = expensiveCall();`) makes Dart evaluate that initializer immediately when the object is constructed, exactly like a normal non-`late` field.
+
+<details><summary>Which one's the lie</summary>
+
+**C is the lie.** The entire point of `late` on a field *with* an initializer is **lazy evaluation** — the initializer does **not** run at construction time; it runs the first time the field is actually *read*. A normal (non-`late`) field's initializer runs eagerly, during object construction, whether or not anything ever reads it.
+
+🔴 **Explanation:** this matters practically — `late final _controller = ExpensiveController();` inside a `State` class defers the expensive construction until first access, which can matter if that field is conditionally used. It's also why `late` is the standard way to initialize fields that depend on `this` or on constructor parameters not yet available at the point of field declaration (a genuinely common Flutter pattern — a `TextEditingController` initialized from a `widget.` property, seen back in [Week 3's lifecycle content](Week_03_Widget_Lifecycle.md)).
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — Async Execution Order
+
+**A.** `Future.wait([futureA, futureB])` runs both futures concurrently, provided they were already started (as async function calls) before being placed in that list.
+
+**B.** Calling an `async` function does not begin executing the function's body at all until something `await`s it.
+
+**C.** A `try/catch` wrapped around an `await` expression catches errors thrown from inside the awaited `Future`.
+
+<details><summary>Which one's the lie</summary>
+
+**B is the lie**, and it's the one almost everyone gets wrong on first exposure. An `async` function's body starts executing **synchronously and immediately** the moment you call it — right up until it hits its first `await`, at which point it suspends and returns control to the caller. It does **not** wait for someone to `await` the call before doing anything.
+
+🔴 **Explanation:** prove it to yourself —
+
+```dart
+Future<void> demo() async {
+  print('A: runs immediately');
+  await Future.delayed(Duration(seconds: 1));
+  print('C: runs after the delay');
+}
+
+void main() {
+  print('start');
+  demo(); // NOT awaited here
+  print('B: this runs before demo() finishes, but AFTER "A" already printed');
+}
+```
+
+The output order is `start`, `A: runs immediately`, `B: ...`, then a second later, `C: ...` — `A` prints before `B`, proving `demo()`'s body started running the instant it was called, with no `await` anywhere near the call site. This directly extends [Week 1's event-loop content](Week_01_Dart_Language.md): the function call itself is synchronous up to the first suspension point; only the *rest* of the function becomes a scheduled continuation.
+
+</details>
+
+---
+
+### ⚡ Speed Round — 5 Questions, 2 Minutes
+
+One line each. No looking anything up — this is testing instinct, not research.
+
+1. Is `0.1 + 0.2 == 0.3` `true` in Dart?
+2. `[1, 2, 3].map((x) => x * 2)` — without calling `.toList()`, is the result a `List` or something else?
+3. Does `const [1, 2] == const [1, 2]` evaluate to `true`?
+4. Does `[1, 2] == [1, 2]` — **without** `const` — evaluate to `true`?
+5. Is `String` mutable in Dart — can you change a character in place?
+
+<details><summary>Answers</summary>
+
+1. **False.** Floating point representation error — same as every IEEE 754 language. `0.1 + 0.2` is `0.30000000000000004`.
+2. **`Iterable<int>`**, not `List<int>` — `.map()` is lazy; it doesn't produce a concrete list until something (like `.toList()` or iteration) forces it.
+3. **True.** `const` expressions are canonicalized — identical `const` literals are the *same object* in memory, so `==` (default identity comparison) succeeds.
+4. **False** (well — technically true here by coincidence in older Dart versions' constant-folding in some contexts, but treat it as **false** in the general case) — two separately-constructed non-`const` lists are different object instances; default `List` equality is identity-based, same lesson as [T3-4's `Point` gotcha](#t3-4-medium-the-classic-gotcha--correct-equality-for-value-objects).
+5. **No.** `String` is immutable in Dart — every operation that "modifies" a string (`replaceAll`, `toUpperCase`, etc.) returns a brand-new string. This is the entire reason [T2-4's StringBuffer exercise](#t2-4-easy-but-important--prove-stringbuffer-matters) exists.
+
+</details>
+
+---
+
+### 🧩 Code Jumble — Reassemble `isPrime`
+
+These lines are a complete, correct, efficient prime-checking function — but they're shuffled. Put them back in an order that compiles and behaves correctly (checks divisibility only up to `√n`, handles `n < 2`, skips even numbers after 2).
+
+```
+    if (i % 2 == 0) return false;
+bool isPrime(int n) {
+  if (n < 2) return false;
+  return true;
+}
+  if (n == 2) return true;
+  for (int i = 3; i * i <= n; i += 2) {
+```
+
+<details><summary>Reassembled</summary>
+
+```dart
+bool isPrime(int n) {
+  if (n < 2) return false;
+  if (n == 2) return true;
+  if (n % 2 == 0) return false;
+  for (int i = 3; i * i <= n; i += 2) {
+    if (n % i == 0) return false;
+  }
+  return true;
+}
+```
+
+🔴 **Explanation:** notice the structural constraints that force this exact order, not just any order that "looks plausible" — `n < 2` must be checked before anything else divides or compares `n` (a guard clause pattern). `n == 2` must come before the "is it even" check, or `2` itself would incorrectly return `false`. The loop bound `i * i <= n` is the actual efficiency insight here: you only need to check divisors up to `√n`, because any factor pair `(a, b)` with `a * b == n` must have at least one of `a, b` be `≤ √n` — checking further is redundant work. Stepping by `i += 2` (odd numbers only) is a further ~2x speedup, valid only because even divisors were already ruled out.
+
+</details>
+
+---
+
+### 🏗️ Build It Blind — Receipt Analytics, No Scaffolding
+
+No starter code. No function signature. Just the spec — design it yourself:
+
+> You have a list of receipts. Each receipt has a store name and an amount spent. Write something that tells you: which store you spent the most money at *in total*, how much that total was, and how many separate receipts contributed to it.
+
+Decide your own function signature, your own data representation (a `class`? a `record`? something else?), and your own return type before writing a single line of implementation.
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+typedef Receipt = ({String store, double amount});
+
+({String store, double total, int count}) topSpender(List<Receipt> receipts) {
+  final totals = <String, double>{};
+  final counts = <String, int>{};
+
+  for (final r in receipts) {
+    totals.update(r.store, (t) => t + r.amount, ifAbsent: () => r.amount);
+    counts.update(r.store, (c) => c + 1, ifAbsent: () => 1);
+  }
+
+  final topStore = totals.entries.reduce((a, b) => a.value >= b.value ? a : b).key;
+  return (store: topStore, total: totals[topStore]!, count: counts[topStore]!);
+}
+```
+
+🔴 **Explanation:** there's no single correct answer here — the point of **Build It Blind** is the design decisions you made *before* writing logic: did you reach for a `class Receipt` (more ceremony, but familiar if you're coming from Java) or a `typedef` record (Dart 3-idiomatic, zero-ceremony, matches [T3-2's lesson](#t3-2-easy--records-for-multi-value-return))? Did your return type bundle all three answers together (a record, again) or did you return three separate values some other way? A single accumulation pass with two `Map`s (one for totals, one for counts) beats grouping receipts by store first and then reducing each group — same "single pass beats multiple passes over the same data" lesson as [T3-2](#t3-2-easy--records-for-multi-value-return).
+
+</details>
+
+---
+
+### 👹 Boss Battle — Mini Log Analytics Pipeline
+
+Combines pattern matching, records, and single-pass efficiency from this whole file into one build.
+
+**The spec:** you have raw log lines as strings, one event per line, format `"timestamp|eventType|value"` (e.g., `"1000|click|button_a"`, `"1050|purchase|29.99"`). Some lines are malformed (wrong number of `|`-separated parts, or a `purchase` whose value isn't a valid number) — skip those instead of crashing. For each valid `eventType`, compute: how many events of that type occurred, and the timestamp of the most recent one.
+
+**Constraints:** single pass over the lines. Use a record or pattern matching somewhere in your solution — don't just brute-force it with nested loops.
+
+```dart
+Map<String, ({int count, int lastTimestamp})> analyzeLog(List<String> lines) {
+  // TODO — this one's genuinely yours, no starter body
+}
+
+void main() {
+  final lines = [
+    '1000|click|button_a',
+    '1050|purchase|29.99',
+    'malformed line with no pipes',
+    '1100|click|button_b',
+    '1200|purchase|not_a_number', // malformed value — skip
+    '1300|click|button_a',
+  ];
+  print(analyzeLog(lines));
+  // {click: (count: 3, lastTimestamp: 1300), purchase: (count: 1, lastTimestamp: 1050)}
+}
+```
+
+<details><summary>Solution</summary>
+
+```dart
+Map<String, ({int count, int lastTimestamp})> analyzeLog(List<String> lines) {
+  final result = <String, ({int count, int lastTimestamp})>{};
+
+  for (final line in lines) {
+    final parts = line.split('|');
+    if (parts.length != 3) continue; // malformed shape — skip
+
+    final timestamp = int.tryParse(parts[0]);
+    final eventType = parts[1];
+    final rawValue = parts[2];
+
+    if (timestamp == null) continue;
+    if (eventType == 'purchase' && double.tryParse(rawValue) == null) continue;
+
+    final existing = result[eventType];
+    result[eventType] = (
+      count: (existing?.count ?? 0) + 1,
+      lastTimestamp: timestamp, // lines assumed roughly chronological; take the latest seen
+    );
+  }
+
+  return result;
+}
+```
+
+🔴 **Explanation:** this is deliberately a small, self-contained version of exactly what [Week 16's Firestore content](../Phase_4_Firebase_and_Storage/Week_16_Firebase_Firestore.md) and real analytics pipelines do at much larger scale — parse untrusted input defensively (never trust that a string field is actually a number until `tryParse` proves it), skip malformed records rather than crashing the whole pipeline over one bad line, and accumulate aggregates in a single pass rather than filtering-then-reducing per event type (which would be one pass per distinct `eventType`, not one pass total). The record return type — `({int count, int lastTimestamp})` — is [T3-2's](#t3-2-easy--records-for-multi-value-return) multi-value-return pattern applied as a `Map` value type, not just a function return type.
 
 </details>
 

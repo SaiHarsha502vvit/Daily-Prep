@@ -220,4 +220,127 @@ The reason `id` and `name` should generally **stay** strict `as String` rather t
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — The JSON Parser That Crashes on Real Data
+
+```dart
+class User {
+  User({required this.name, required this.email, required this.age});
+  final String name;
+  final String email;
+  final int age;
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      name: json['name'] as String,
+      email: json['email'] as String,
+      age: json['age'] as int,
+    );
+  }
+}
+```
+
+This works perfectly against your test data. It crashes in production the first time the API returns a user who hasn't set an age yet. Find the fix — and notice this is a "which field is genuinely optional" design question, not just a syntax fix.
+
+<details><summary>Diagnosis & Fix</summary>
+
+The crash: `type 'Null' is not a subtype of type 'int'` — `json['age']` is `null` (field omitted or explicitly null in the API response), and `as int` throws immediately on a `null` value, since `null` is not an `int`.
+
+🔴 **Explanation:** `as String` / `as int` are **unconditional, unsafe casts** — they throw the instant the actual runtime value doesn't match, with no fallback. The fix isn't just "make everything nullable" — it's deciding, per field, which ones are truly required (crash loudly and immediately if missing — better than limping along with corrupt data) and which are genuinely optional:
+
+```dart
+factory User.fromJson(Map<String, dynamic> json) {
+  return User(
+    name: json['name'] as String,        // required — throw if missing, that's a real data problem
+    email: json['email'] as String,      // required — same
+    age: json['age'] as int? ?? 0,       // optional — default sensibly if absent
+  );
+}
+```
+
+`as int?` (note the `?`) safely casts to a nullable `int`, allowing `null` through instead of throwing, and `?? 0` supplies the fallback. The lesson: **a crash on a missing required field is a feature (fail fast, don't ship corrupted state) — a crash on a genuinely optional field is a bug.** Deciding which is which requires actually knowing your API's contract, not blindly making every field nullable "to be safe" (which just replaces crashes with silent `null`s propagating through your whole app instead).
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — Dio Interceptors
+
+**A.** Request interceptors run in the order they were registered; response interceptors run in the **reverse** of that order.
+
+**B.** An interceptor can short-circuit a request entirely — resolving it with a fake/cached response without the request ever reaching the network.
+
+**C.** If a request interceptor throws, the actual HTTP request is still sent, but the response is discarded and the error is what the caller sees.
+
+<details><summary>Which one's the lie</summary>
+
+**C is the lie.** If a request interceptor throws (or calls `handler.reject(...)`), the request is **never sent** at all — the interceptor chain stops right there, before the network call happens. This matters practically: an auth interceptor that fails to attach a valid token can reject the request outright rather than letting a doomed, token-less call hit the server and fail there instead (wasting a round trip and potentially exposing more than necessary to the server).
+
+🔴 **Explanation:** A is true and genuinely non-obvious the first time you meet it — think of interceptors as nested layers wrapping the actual request, like an onion: request interceptors run outside-in (registration order), and response interceptors unwind inside-out (reverse registration order), the same way a stack of `try/finally` blocks unwinds. B is also true and is precisely how response caching, mock interceptors for testing, and offline-fallback strategies are commonly implemented in Dio — `handler.resolve(fakeResponse)` inside a request interceptor skips the network entirely.
+
+</details>
+
+---
+
+### 👹 Boss Battle — A Repository With Retry, Timeout, and Typed Errors
+
+**The spec:** build a `WeatherRepository` wrapping a Dio-based API call with: (1) automatic retry up to 3 times with exponential backoff (attempt 1: no delay, attempt 2: 500ms, attempt 3: 1000ms) — but **only** for network/timeout errors, never for 4xx client errors (retrying a malformed request is pointless), (2) a hard 5-second total timeout across all retries combined, not per-attempt, (3) a sealed `Result<T>` return type instead of throwing, so callers are compiler-forced to handle both success and failure.
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+sealed class Result<T> {}
+class Success<T> extends Result<T> {
+  Success(this.data);
+  final T data;
+}
+class Failure<T> extends Result<T> {
+  Failure(this.message);
+  final String message;
+}
+
+class WeatherRepository {
+  WeatherRepository(this._dio);
+  final Dio _dio;
+
+  Future<Result<Map<String, dynamic>>> getWeather(String city) async {
+    final stopwatch = Stopwatch()..start();
+    const maxAttempts = 3;
+
+    for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+      if (stopwatch.elapsed > const Duration(seconds: 5)) {
+        return Failure('Timed out after ${stopwatch.elapsedMilliseconds}ms');
+      }
+      try {
+        final response = await _dio.get('/weather', queryParameters: {'city': city});
+        return Success(response.data as Map<String, dynamic>);
+      } on DioException catch (e) {
+        final isClientError = e.response != null &&
+            e.response!.statusCode! >= 400 &&
+            e.response!.statusCode! < 500;
+        if (isClientError) {
+          return Failure('Request rejected: ${e.response?.statusCode}'); // don't retry
+        }
+        if (attempt == maxAttempts) {
+          return Failure('Failed after $maxAttempts attempts: ${e.message}');
+        }
+        await Future.delayed(Duration(milliseconds: 500 * (attempt - 1)));
+      }
+    }
+    return Failure('Unreachable'); // satisfies analyzer; loop always returns above
+  }
+}
+```
+
+🔴 **Explanation:** this Boss Battle threads together the sealed-class exhaustiveness lesson from [T3-3](../Phase_1_Dart_and_Foundations/Week_01b_Dart_Coding_Challenges.md#t3-3-medium--sealed-classes-let-the-compiler-catch-missing-cases) (a caller of `getWeather` must handle both `Success` and `Failure` via an exhaustive `switch` — no forgetting the error case), the retry-with-backoff shape from a general reliability pattern, and — the trickiest requirement — distinguishing retry-worthy failures (timeouts, connection errors, 5xx server errors) from retry-pointless ones (4xx client errors, where retrying the exact same malformed request just fails identically three times, wasting the user's 1.5 seconds of backoff for nothing). The overall 5-second budget (checked at the top of each loop iteration via `stopwatch.elapsed`) is what prevents "3 retries with backoff" from silently becoming "this call can take 10+ seconds under bad network conditions" — a real production concern this design forces you to confront explicitly rather than accidentally.
+
+</details>
+
+---
+
 **Next → [Week 15: Project — Weather App](Week_15_Project_WeatherApp.md)**

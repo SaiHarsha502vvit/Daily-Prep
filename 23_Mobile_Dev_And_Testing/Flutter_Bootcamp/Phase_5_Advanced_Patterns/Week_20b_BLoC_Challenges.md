@@ -219,4 +219,125 @@ assert((emittedStates[1] as SearchLoaded).results.first == 'Result for flutter')
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — Emit After Close
+
+```dart
+class SearchBloc extends Bloc<SearchEvent, SearchState> {
+  SearchBloc(this._api) : super(SearchInitial()) {
+    on<SearchQueryChanged>(_onQueryChanged);
+  }
+  final SearchApi _api;
+
+  Future<void> _onQueryChanged(SearchQueryChanged event, Emitter<SearchState> emit) async {
+    emit(SearchLoading());
+    final results = await _api.search(event.query); // slow network call
+    emit(SearchLoaded(results));
+  }
+}
+```
+
+Used inside a search screen. Tests pass. In real usage, users occasionally hit a red error screen with "Bad state: Cannot add new events after calling close" or "emit was called after an event handler completed normally" — but only when they navigate away from the search screen while a search is still in flight. What's actually happening?
+
+<details><summary>Diagnosis & Fix</summary>
+
+🔴 **Explanation:** when the user navigates away, the screen's `dispose()` (correctly) calls `searchBloc.close()`. But if `_onQueryChanged`'s `await _api.search(...)` is still pending at that exact moment, the handler is still "in the middle" of running — and when that `await` finally resolves, the very next line, `emit(SearchLoaded(results))`, tries to emit into a BLoC that's already closed. This is the exact same shape of race as [Week 3's `mounted` crash](../Phase_1_Dart_and_Foundations/Week_03b_Lifecycle_Challenges.md#w3-2-medium--reproduce-the-mounted-crash-then-fix-it) and [Week 16's Firestore listener-after-dispose issue](../Phase_4_Firebase_and_Storage/Week_16b_Firestore_Challenges.md) — an async operation outliving the thing that started it. The fix, using the `Emitter`'s own safety check:
+
+```dart
+Future<void> _onQueryChanged(SearchQueryChanged event, Emitter<SearchState> emit) async {
+  emit(SearchLoading());
+  final results = await _api.search(event.query);
+  if (emit.isDone) return; // the bloc closed while we were awaiting — bail out
+  emit(SearchLoaded(results));
+}
+```
+
+`emit.isDone` is BLoC's purpose-built equivalent of the `mounted` check — an `Emitter` knows whether its BLoC has closed, and checking it before a post-`await` `emit()` call is the correct, idiomatic guard, more precise than trying to track `isClosed` on the BLoC instance yourself.
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — BLoC Event/State Delivery
+
+**A.** With the default sequential event transformer, `on<SomeEvent>`'s handler for one event fully completes (including every `emit()` inside it) before the next queued event's handler begins.
+
+**B.** Calling `bloc.add(EventA)` immediately followed by `bloc.add(EventB)` guarantees `EventA`'s handler starts before `EventB`'s, given the default transformer.
+
+**C.** `emit(newState)` inside an event handler is a synchronous call that blocks until every `BlocBuilder` watching that state has finished rebuilding, before the handler's next line executes.
+
+<details><summary>Which one's the lie</summary>
+
+**C is the lie.** `emit()` pushes the new state into the BLoC's internal state stream/controller — same delivery mechanism as [Week 19/20's core content](Week_20_BLoC_Pattern.md) on `StreamController` and microtask-queue delivery. It does **not** block the event handler waiting for every listening `BlocBuilder` to actually finish rebuilding; the state delivery and the widget rebuild are asynchronous with respect to the handler's own execution. The event handler's next line runs essentially immediately after `emit()` returns, regardless of how long downstream widget rebuilds take.
+
+🔴 **Explanation:** A and B are both true, and both follow from the "event queue, one at a time" model — the default `EventTransformer` genuinely processes events sequentially, which is exactly why [Week 20's restartable()/droppable() transformers](Week_20_BLoC_Pattern.md) exist as an opt-in escape hatch when sequential processing isn't what you want for a specific event type (rapid search input, double-tapped buttons).
+
+</details>
+
+---
+
+### 👹 Boss Battle — Undo/Redo Stack for a Todo BLoC
+
+**The spec:** extend a `TodoBloc` (events: `AddTodo`, `RemoveTodo`, `ToggleTodo`) with undo/redo support — every mutating event pushes the *previous* state onto an undo stack before emitting the new one, an `UndoEvent` pops the undo stack and re-emits that prior state (pushing the state it's leaving onto a redo stack), and rapid-fire undo taps (a user holding down an undo button) must not skip states — use the `droppable()` `EventTransformer` from this week's core content so an undo already in flight isn't interrupted by a second one queued before the first finishes.
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+sealed class TodoEvent {}
+class AddTodo extends TodoEvent { AddTodo(this.title); final String title; }
+class ToggleTodo extends TodoEvent { ToggleTodo(this.id); final String id; }
+class UndoEvent extends TodoEvent {}
+class RedoEvent extends TodoEvent {}
+
+class TodoBloc extends Bloc<TodoEvent, TodoListState> {
+  TodoBloc() : super(TodoListState(items: [])) {
+    on<AddTodo>(_onAdd);
+    on<ToggleTodo>(_onToggle);
+    on<UndoEvent>(_onUndo, transformer: droppable());
+    on<RedoEvent>(_onRedo, transformer: droppable());
+  }
+
+  final List<TodoListState> _undoStack = [];
+  final List<TodoListState> _redoStack = [];
+
+  void _pushUndo() {
+    _undoStack.add(state);
+    _redoStack.clear(); // any new action invalidates the redo history
+  }
+
+  void _onAdd(AddTodo event, Emitter<TodoListState> emit) {
+    _pushUndo();
+    emit(state.copyWith(items: [...state.items, TodoItem(event.title)]));
+  }
+
+  void _onToggle(ToggleTodo event, Emitter<TodoListState> emit) {
+    _pushUndo();
+    emit(state.toggled(event.id));
+  }
+
+  void _onUndo(UndoEvent event, Emitter<TodoListState> emit) {
+    if (_undoStack.isEmpty) return;
+    _redoStack.add(state);
+    emit(_undoStack.removeLast());
+  }
+
+  void _onRedo(RedoEvent event, Emitter<TodoListState> emit) {
+    if (_redoStack.isEmpty) return;
+    _undoStack.add(state);
+    emit(_redoStack.removeLast());
+  }
+}
+```
+
+🔴 **Explanation:** `droppable()` on `UndoEvent` is the load-bearing design decision — without it, a user tapping "undo" five times rapidly could queue five `UndoEvent`s that each start processing before the previous one's (trivial, but still asynchronous by BLoC's model) handler finishes, and because `_onUndo` mutates two shared `List`s (`_undoStack`/`_redoStack`) without any synchronization, overlapping handlers could interleave in a way that corrupts the stacks. `droppable()` guarantees a second `UndoEvent` arriving while one is still being processed is simply discarded — exactly matching the "prevent double-charge" `PaymentEvent` example already covered in [Week 19/20's transformer content](Week_20_BLoC_Pattern.md), applied to a completely different problem (data structure integrity instead of duplicate side effects) to show the same tool solves more than one class of race.
+
+</details>
+
+---
+
 **Next → [Week 21: Clean Architecture](Week_21_Clean_Architecture.md) · [Architecture Challenges](Week_21b_Clean_Architecture_Challenges.md)**

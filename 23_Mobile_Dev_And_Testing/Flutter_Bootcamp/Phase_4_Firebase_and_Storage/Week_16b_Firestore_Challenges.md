@@ -142,4 +142,139 @@ This one can't run in DartPad — it needs Firestore's actual offline persistenc
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means. (These need a real Firebase project or the Firestore emulator to actually run — reason through them even if you can't execute right now.)
+
+---
+
+### 🐛 Bug Hunt — The Listener That Multiplies
+
+```dart
+class NotesScreen extends StatefulWidget {
+  const NotesScreen({super.key});
+  @override
+  State<NotesScreen> createState() => _NotesScreenState();
+}
+
+class _NotesScreenState extends State<NotesScreen> {
+  List<String> _notes = [];
+
+  @override
+  Widget build(BuildContext context) {
+    FirebaseFirestore.instance.collection('notes').snapshots().listen((snapshot) {
+      setState(() => _notes = snapshot.docs.map((d) => d['title'] as String).toList());
+    });
+
+    return ListView(children: _notes.map(Text.new).toList());
+  }
+}
+```
+
+Runs fine at first glance — notes appear, real-time updates seem to work. Something's quietly wrong that gets worse the more this screen rebuilds for unrelated reasons (rotating the device, a parent widget's `setState`, anything). What, and why?
+
+<details><summary>Diagnosis & Fix</summary>
+
+🔴 **Explanation:** `.snapshots().listen(...)` is called **inside `build()`** — this is the exact same category of bug as [Week 9's `AnimationController`-in-`build()` leak](../Phase_2_Core_UI/Week_09b_Animation_Challenges.md#-bug-hunt--the-animation-that-runs-once-and-never-again): every rebuild creates a **brand new** stream subscription to the same Firestore query, and the old subscription is never cancelled. After 5 unrelated rebuilds, you have 5 separate listeners all firing `setState` on every single Firestore change — each one redundantly reassigning the exact same `_notes` list, wasting 5x the work per update, and none of them ever get cleaned up. The fix: set up the subscription exactly once, in `initState`, and cancel it in `dispose`:
+
+```dart
+class _NotesScreenState extends State<NotesScreen> {
+  List<String> _notes = [];
+  late final StreamSubscription _subscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _subscription = FirebaseFirestore.instance.collection('notes').snapshots().listen((snapshot) {
+      setState(() => _notes = snapshot.docs.map((d) => d['title'] as String).toList());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => ListView(children: _notes.map(Text.new).toList());
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
+```
+
+**Rule to internalize, now proven twice in this bootcamp: nothing that creates an ongoing subscription — `AnimationController`, `Timer`, `StreamSubscription` — belongs inside `build()`. Ever.**
+
+</details>
+
+---
+
+### 🎭 Two Truths and a Lie — Firestore Offline Behavior
+
+**A.** `.snapshots()` keeps firing new events for as long as the listener is active, until you explicitly cancel it.
+
+**B.** With offline persistence enabled (the default on mobile), calling `.get()` while the device has no network connection immediately throws, because there's no way to fetch fresh data.
+
+**C.** A `.where()` query combining range filters (`>`, `<`) on two *different* fields typically requires a composite index that Firestore will not create automatically — you get a clear error with a console link to create it.
+
+<details><summary>Which one's the lie</summary>
+
+**B is the lie.** With offline persistence enabled, Firestore's SDK maintains a local cache — `.get()` while offline serves data **from that cache** (if any exists for the query) rather than throwing. It only fails if there's genuinely no cached data at all matching the query and no network to fetch it fresh. This offline-cache behavior is precisely what [Week 18's local storage content](Week_18_Local_Storage.md) refers to when discussing Firestore's built-in offline support as an alternative to hand-rolling your own Hive-based cache.
+
+🔴 **Explanation:** C is true and is a genuinely useful thing to know before it surprises you mid-project — Firestore's automatic single-field indexes don't cover compound range queries across multiple fields; you'll hit a `FAILED_PRECONDITION` error with a direct link to auto-generate the needed composite index in the Firebase console, the first time you write such a query.
+
+</details>
+
+---
+
+### 👹 Boss Battle — Optimistic Update With Rollback
+
+**The spec:** build a "toggle favorite" feature where tapping a heart icon updates the UI **instantly** (before Firestore confirms the write) — the classic "optimistic update" pattern for responsiveness — but if the Firestore write actually fails (simulate with a deliberately-broken document path), the UI must roll back to its previous state and show an error, not silently stay in the wrong (optimistic-but-unconfirmed) state forever.
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+class FavoriteButton extends StatefulWidget {
+  const FavoriteButton({super.key, required this.docId, required this.initialValue});
+  final String docId;
+  final bool initialValue;
+  @override
+  State<FavoriteButton> createState() => _FavoriteButtonState();
+}
+
+class _FavoriteButtonState extends State<FavoriteButton> {
+  late bool _isFavorite = widget.initialValue;
+
+  Future<void> _toggle() async {
+    final previousValue = _isFavorite;
+    setState(() => _isFavorite = !_isFavorite); // optimistic — update UI FIRST
+
+    try {
+      await FirebaseFirestore.instance
+          .collection('items')
+          .doc(widget.docId)
+          .update({'isFavorite': _isFavorite});
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isFavorite = previousValue); // roll back on failure
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to update — please try again')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(_isFavorite ? Icons.favorite : Icons.favorite_border),
+      onPressed: _toggle,
+    );
+  }
+}
+```
+
+🔴 **Explanation:** the design decision this exercise is really testing is capturing `previousValue` **before** the optimistic `setState` — without it, there'd be no way to know what to roll back *to* once the failure arrives, since `_isFavorite` has already moved on to the new (wrong, as it turns out) value by the time the `catch` block runs. The `mounted` check before the rollback `setState` is [Week 3's lesson](../Phase_1_Dart_and_Foundations/Week_03b_Lifecycle_Challenges.md#w3-2-medium--reproduce-the-mounted-crash-then-fix-it) applying directly here — the user could easily navigate away from this screen during the `await`, and the failure response would still arrive afterward. This pattern (update local state immediately, reconcile with the source of truth once the network confirms or denies) is genuinely how production apps like Instagram's like-button or Twitter's retweet button feel instant despite going over the network — you're building the real mechanism, not a simplified stand-in for it.
+
+</details>
+
+---
+
 **Next → [Week 17: Authentication](Week_17_Authentication.md) · [Authentication Challenges](Week_17b_Authentication_Challenges.md)**

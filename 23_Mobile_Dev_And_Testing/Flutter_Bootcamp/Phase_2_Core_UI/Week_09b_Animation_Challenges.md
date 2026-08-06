@@ -231,4 +231,170 @@ CardStyle lerp(double t) {
 
 ---
 
+## Bonus Round — Mix It Up
+
+Different formats, same topic. See [the full challenge-type roster](../00_CHALLENGE_TYPES.md) for what each icon means.
+
+---
+
+### 🐛 Bug Hunt — The Animation That Runs Once and Never Again
+
+```dart
+class PulsingDot extends StatefulWidget {
+  const PulsingDot({super.key});
+  @override
+  State<PulsingDot> createState() => _PulsingDotState();
+}
+
+class _PulsingDotState extends State<PulsingDot> with SingleTickerProviderStateMixin {
+  @override
+  Widget build(BuildContext context) {
+    final controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    )..repeat(reverse: true);
+
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) => Opacity(
+        opacity: 0.3 + (controller.value * 0.7),
+        child: const CircleAvatar(radius: 8, backgroundColor: Colors.red),
+      ),
+    );
+  }
+}
+```
+
+This compiles fine and the dot *does* pulse initially. But something is quietly very wrong, and it gets worse the longer the screen stays open. Find it before opening the answer — think about what's different from every other `AnimationController` example in this bootcamp.
+
+<details><summary>Diagnosis & Fix</summary>
+
+🔴 **Explanation:** `AnimationController(...)` is created **inside `build()`** — which means every single time this widget rebuilds (an ancestor's `setState`, an `InheritedWidget` change, anything), a **brand new** `AnimationController` is constructed and started, while the *old* one, still ticking away from the previous build, is never disposed. Each rebuild leaks one more running `AnimationController` — a `Ticker` registered with the scheduler, animating forever with nothing on screen still pointing at it. This is [Week 3's timer-leak lesson](../Phase_1_Dart_and_Foundations/Week_03b_Lifecycle_Challenges.md#w3-3-medium--prove-a-timer-leak-with-a-counter-not-a-guess) at its most severe — Flutter will even throw an assertion error in debug mode along the lines of *"AnimationController.dispose() must be called"* well before you run out of memory, but only once the `State` itself disposes, by which point dozens of leaked controllers might already exist. The fix is to build the `AnimationController` exactly once:
+
+```dart
+class _PulsingDotState extends State<PulsingDot> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 800),
+  )..repeat(reverse: true);
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) => Opacity(
+        opacity: 0.3 + (_controller.value * 0.7),
+        child: const CircleAvatar(radius: 8, backgroundColor: Colors.red),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+```
+
+**Rule to internalize: `AnimationController` construction belongs in a field initializer or `initState`, never in `build()`.**
+
+</details>
+
+---
+
+### 🔬 Diff Detective — Two Curve Applications
+
+Both compile. Both animate. They don't look the same.
+
+```dart
+// Version A
+Animation<double> anim = Tween<double>(begin: 0, end: 1)
+    .animate(CurvedAnimation(parent: controller, curve: Curves.easeIn));
+```
+
+```dart
+// Version B
+Animation<double> anim = CurvedAnimation(parent: controller, curve: Curves.easeIn)
+    .drive(Tween<double>(begin: 0, end: 1));
+```
+
+<details><summary>The actual difference</summary>
+
+🔴 **Explanation:** trick question, sort of — these two produce **functionally identical** results; `.drive()` is just `Tween`'s more composable alternative spelling of the same operation `.animate(CurvedAnimation(...))` performs. The genuinely different pair worth knowing is this one instead — compare **A** above against:
+
+```dart
+// Version C — curve applied to the TWEEN'S OUTPUT, not the progress input
+Animation<double> anim = controller.drive(
+  CurveTween(curve: Curves.easeIn),
+).drive(Tween<double>(begin: 0, end: 100));
+```
+
+Version C chains `CurveTween` (remapping `controller`'s raw `[0,1]` progress through the curve first) into a second `Tween` — mathematically this is the composition `tween(curve(t))`, same as A/B's `tween(curve.transform(t))`. So even C is equivalent here. The real trap most people actually hit is applying `Curves.easeIn` **after** a non-`[0,1]`-ranged `Tween` instead of before it — e.g., trying to curve a `ColorTween` output directly with arithmetic instead of curving the driving `t` value — which breaks because curves are defined to operate on progress values in `[0,1]`, not on arbitrary output ranges like colors or large numbers. The lesson: **always apply the curve to the `[0,1]` progress value, before it's fed into whatever `Tween` maps it to your actual output range** — chain curve-then-tween, never tween-then-curve.
+
+</details>
+
+---
+
+### 🏗️ Build It Blind — A Reusable "Attention Shake"
+
+No starter code. Spec only:
+
+> Build something that makes any widget shake side-to-side briefly (like an incorrect-password field on iOS) when triggered externally — the trigger should be something the caller can invoke on demand (e.g., after a failed form submission), not something that runs automatically.
+
+Decide: is this a widget with a public method the caller calls via a `GlobalKey`? A `ValueNotifier` the widget listens to? Something else? What does "shake" actually mean in terms of a `Tween` and a repeating-but-self-stopping `AnimationController`?
+
+<details><summary>One reasonable solution</summary>
+
+```dart
+class ShakeWidget extends StatefulWidget {
+  const ShakeWidget({super.key, required this.child});
+  final Widget child;
+  @override
+  State<ShakeWidget> createState() => ShakeWidgetState();
+}
+
+class ShakeWidgetState extends State<ShakeWidget> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 400),
+  );
+  late final Animation<double> _offset = TweenSequence<double>([
+    TweenSequenceItem(tween: Tween(begin: 0.0, end: -8.0), weight: 1),
+    TweenSequenceItem(tween: Tween(begin: -8.0, end: 8.0), weight: 2),
+    TweenSequenceItem(tween: Tween(begin: 8.0, end: 0.0), weight: 1),
+  ]).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+  void shake() => _controller.forward(from: 0);
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _offset,
+      builder: (context, child) => Transform.translate(offset: Offset(_offset.value, 0), child: child),
+      child: widget.child,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+
+// Usage — GlobalKey exposes the public shake() method to a caller:
+final shakeKey = GlobalKey<ShakeWidgetState>();
+// ...
+ShakeWidget(key: shakeKey, child: TextField(...));
+// ...on failed validation:
+shakeKey.currentState?.shake();
+```
+
+🔴 **Explanation:** the design decision worth noticing is `GlobalKey<ShakeWidgetState>()` — this is one of the few genuinely legitimate uses of `GlobalKey`: exposing an *imperative* method (`shake()`) on a widget that's otherwise built declaratively, for a caller elsewhere in the tree to invoke on demand. `TweenSequence` is the tool for "not a single smooth curve, but several distinct phases stitched together" — left-a-little, right-more, back-to-center — each `TweenSequenceItem`'s `weight` controls what fraction of the total duration that phase consumes, relative to the others (weights `1, 2, 1` here mean the middle swing takes twice as long as either end).
+
+</details>
+
+---
+
 **Next → [Week 10: Gestures & Custom Widgets](Week_10_Gestures_and_Custom_Widgets.md) · [Gesture Challenges](Week_10b_Gesture_Challenges.md)**
