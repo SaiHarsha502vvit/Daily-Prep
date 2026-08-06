@@ -337,18 +337,18 @@ GROUP BY c.cohort_month, cs.cohort_size;
 |                                                                  |
 |  Goal: "Did changing the button color increase purchases?"       |
 |                                                                  |
-|  Control (A):   Old blue button ? 10,000 users                   |
-|  Treatment (B): New green button ? 10,000 users                  |
+|  Control (A):   Old blue button → 10,000 users                   |
+|  Treatment (B): New green button → 10,000 users                  |
 |                                                                  |
 |  Metrics to compare:                                             |
-|  ? Conversion rate (% who purchased)                             |
-|  ? Revenue per user                                              |
-|  ? Average order value                                           |
+|  • Conversion rate (% who purchased)                             |
+|  • Revenue per user                                              |
+|  • Average order value                                           |
 |                                                                  |
 |  STATISTICAL RIGOR:                                              |
-|  ? Sample size: enough users to detect meaningful difference     |
-|  ? Significance: p-value or confidence interval                  |
-|  ? Segment analysis: does the effect hold across all groups?     |
+|  • Sample size: enough users to detect meaningful difference     |
+|  • Significance: p-value or confidence interval                  |
+|  • Segment analysis: does the effect hold across all groups?     |
 +------------------------------------------------------------------+
 ```
 
@@ -386,7 +386,7 @@ ORDER BY variant;
 -- variant    | users  | converters | conv_rate | rev/user | AOV   | orders
 -- control    | 10000  | 800        | 8.00%     | $12.50   | $156  | 900
 -- treatment  | 10000  | 960        | 9.60%     | $15.20   | $158  | 1080
--- ? Treatment has 20% higher conversion! But is it statistically significant?
+-- → Treatment has 20% higher conversion! But is it statistically significant?
 ```
 
 ### Segmented A/B Analysis
@@ -410,7 +410,7 @@ ORDER BY u.plan_type, e.variant;
 
 -- Might reveal: treatment helps free users (+30%)
 -- but HURTS premium users (-5%)
--- ? Decision: roll out only for free users
+-- → Decision: roll out only for free users
 ```
 
 ---
@@ -435,10 +435,10 @@ ORDER BY u.plan_type, e.variant;
 |             (5 = top 20%, 1 = bottom 20%)                        |
 |                                                                  |
 |  SEGMENTS:                                                       |
-|  RFM = 555  ? Champions (best customers | reward them!)          |
-|  RFM = 511  ? New customers (high recency, low frequency)        |
-|  RFM = 155  ? At risk (were big spenders, haven't been back)     |
-|  RFM = 111  ? Lost (haven't bought recently, rarely, cheaply)    |
+|  RFM = 555  → Champions (best customers | reward them!)          |
+|  RFM = 511  → New customers (high recency, low frequency)        |
+|  RFM = 155  → At risk (were big spenders, haven't been back)     |
+|  RFM = 111  → Lost (haven't bought recently, rarely, cheaply)    |
 +------------------------------------------------------------------+
 ```
 
@@ -475,7 +475,7 @@ SELECT
     recency_score,
     frequency_score,
     monetary_score,
-    recency_score || frequency_score || monetary_score AS rfm_segment,
+    recency_score::text || frequency_score::text || monetary_score::text AS rfm_segment,  -- PostgreSQL: || has no integer||integer operator, at least one side must be text
     CASE
         WHEN recency_score >= 4 AND frequency_score >= 4 AND monetary_score >= 4
             THEN 'Champions'

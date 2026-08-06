@@ -493,7 +493,7 @@ WITH RECURSIVE org_chart AS (
     FROM employees e
     JOIN org_chart oc ON e.manager_id = oc.emp_id
 )
-SELECT REPEAT('  ', depth) || name AS indented_name, depth, path
+SELECT CONCAT(REPEAT('  ', depth), name) AS indented_name, depth, path   -- MySQL: || is logical OR, not concat, by default
 FROM org_chart
 ORDER BY path;
 
