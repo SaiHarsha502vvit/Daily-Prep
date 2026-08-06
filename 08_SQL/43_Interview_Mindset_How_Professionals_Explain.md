@@ -473,7 +473,7 @@ Rewrite this into a professional, 30-second SIREN-framework elevator summary tha
 
 "**SITUATION:** Our user-lookup API latency degraded to 4 seconds during peak traffic for a table of 150 million users.
 **INVESTIGATION & ROOT CAUSE:** I analyzed the slow query logs and identified a full table scan occurring because the `WHERE` clause queried the `email` column, which lacked an index.
-**EXECUTION:** I introduced a B-Tree index on `email`, which reduced the lookup from an $O(N)$ sequential scan to an $O(\log N)$ traversal, dropping latency to 12ms.
+**EXECUTION:** I introduced a B-Tree index on `email`, which reduced the lookup from an O(N) sequential scan to an O(log N) traversal, dropping latency to 12ms.
 **NEXT Steps:** To prevent recurrence, I added an automated CI/CD check that warns if a query in our ORM targets a non-indexed column on tables exceeding 1M rows."
 
 </details>
@@ -501,7 +501,7 @@ Before your interview, for each scenario you study, verify:
 ### Historical Evolution (Extended)
 
 **Additional predecessors:**
-- **Rogers & McGehee (1970s)**: STAR interview framework originated in behavioral psychology; adopted by U.S. Foreign Service for diplomatic assessments
+- **DDI (Development Dimensions International), Targeted Selection (1974)**: Introduced the STAR framework (Situation, Task, Action, Result) as part of a structured behavioral-interviewing methodology — now the dominant framework for behavioral interviews across tech and other industries
 - **Harvard Business School (1980s)**: Case method pedagogy adapted to technical interviews; "explain your reasoning" became standard in consulting/engineering hiring
 
 **Brief evolution note:**
@@ -515,7 +515,7 @@ Technical interviews evolved from pure trivia Q&A (1990s) to systems-design disc
 3. **Monitoring gaps**: Critical dashboard shows green but underlying metric query times out — SLA dashboard shows 99.9% uptime while actual user-facing error rate is 5%
 
 **Debug workflow:**
-1. Check HikariCP metrics: `SELECT name, active, idle, waiting, pool_name FROM information_schema.jdbc_pool_properties` or JMX metrics endpoint
+1. Check HikariCP metrics: pool state lives in the JVM, not the database, so there's no `information_schema` view for it. Use the `HikariPoolMXBean` (`getActiveConnections()`, `getIdleConnections()`, `getThreadsAwaitingConnection()`) or Spring Boot Actuator's Micrometer-backed metrics (`hikaricp.connections.active`, `hikaricp.connections.idle`, `hikaricp.connections.pending`)
 2. Review connection usage over time: query `pg_stat_activity` for `state`, `query_start`, `wait_event` — identify long-running queries holding connections
 3. Validate monitoring query SLAs: run monitoring query from CLI and verify it completes within alert threshold — dashboards with failing underlying queries show false positives
 
