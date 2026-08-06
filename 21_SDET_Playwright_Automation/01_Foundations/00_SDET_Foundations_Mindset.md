@@ -343,7 +343,22 @@ DOMContentLoaded: HTML is parsed and DOM is constructed. CSS/images may still be
 
 ## 5. The Debugging Pipeline — From Failure to Root Cause in 5 Minutes
 
-When a test fails, you must diagnose it systematically. Do NOT make random changes hoping something works.
+When a test fails, you must diagnose it systematically. Do NOT make random changes hoping something works. The sequence matters — each step either resolves the failure or rules out a category of cause, narrowing what's left:
+
+```mermaid
+flowchart TD
+    Start(["Test fails"]) --> S1["STEP 1 — Read the failure message"]
+    S1 --> S2["STEP 2 — Open the Playwright trace<br/>npx playwright show-trace"]
+    S2 --> S3{"STEP 3 — Locator issue?<br/>wrong selector · strict-mode<br/>multi-match · inside Shadow DOM"}
+    S3 -->|yes| F1["Fix the locator"]
+    S3 -->|no, ruled out| S4{"STEP 4 — Timing issue?<br/>immediate fail = bad locator<br/>timeout fail = loading/race"}
+    S4 -->|yes| F2["Replace hard wait with<br/>a state-based wait"]
+    S4 -->|no, ruled out| S5{"STEP 5 — Data issue?<br/>created before this step ran?<br/>visible to this role?<br/>dirty state from a prior test?"}
+    S5 -->|yes| F3["Fix test-data setup/cleanup"]
+    S5 -->|no, ruled out| S6{"STEP 6 — Environment issue?<br/>staging healthy?<br/>CI slower than local?"}
+    S6 -->|yes| F4["Escalate / fix infra,<br/>rerun"]
+    S6 -->|no, ruled out| S7["STEP 7 — You found a REAL bug.<br/>File it with trace + screenshot<br/>+ reproduction steps."]
+```
 
 ```
 STEP 1: Read the failure message carefully.
