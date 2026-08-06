@@ -150,11 +150,11 @@ This is the D in ACID (Durability) — WAL guarantees it.
 
 🔬 **Section Challenge — 4. Transactions & ACID**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (Freeze Moment, extended):** Same power-failure scenario as above, but this time the crash happens mid-COMMIT — after the WAL record has been handed to the OS via `write()`, but BEFORE `fsync()` confirms it's actually on physical disk. Is the transaction durable on restart? Why does `fsync()`, specifically, matter here?
 
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+No — it is NOT durable. `write()` only hands data to the OS's page cache; the OS is free to buffer it in memory and delay the actual disk write. If power fails before `fsync()` completes, that WAL record can vanish along with the rest of volatile OS cache, even though the database's `write()` call already returned successfully and the app thinks the data is safely queued. `fsync()` (or equivalent `O_DSYNC`/`O_DIRECT` flags) is what forces the OS to actually flush the data to the physical storage medium — and COMMIT is not allowed to report success back to the client until that fsync completes. This is exactly why the Durability guarantee depends on fsync, and why disabling it (PostgreSQL's `fsync = off`, a real but dangerous tuning knob) trades durability for raw write speed.
 
 </details>
 

@@ -416,11 +416,11 @@ public class TransferService {
 
 🔬 **Section Challenge — Scenario 54: Deadlock — Two Transactions Waiting on Each Other**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (Reasoning):** T1 locks row A then tries to lock row B. T2 locks row B then tries to lock row A. Both wait forever. What does the database do automatically, and how do you prevent this pattern architecturally instead of just reacting to it?
 
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+The database's deadlock detector (a background thread that periodically builds a wait-for graph of who's blocked on whom) finds the cycle and kills one transaction — the "victim," usually chosen by least rollback cost or most recently started — with a deadlock error, letting the other proceed. The application must catch that error and retry the killed transaction; a deadlock victim is not a bug in your query, it's an expected outcome that code must handle. Architecturally, the real fix is prevention: always acquire locks on multiple rows in the SAME consistent order across every transaction and code path (e.g., always lock by ascending primary key, never "whatever order the request happened to touch them in") — this makes a wait-for cycle impossible to form in the first place, so there's nothing left for the detector to catch.
 
 </details>
 
@@ -461,11 +461,11 @@ COMMIT;
 
 🔬 **Section Challenge — Scenario 55: Phantom Read — Row Appears Mid-Transaction**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (Reasoning):** T1 runs `SELECT COUNT(*) FROM orders WHERE status='pending'` twice, 5 seconds apart, inside one transaction. Between the two SELECTs, T2 inserts and commits a new pending order. At READ COMMITTED, what does T1's second COUNT show, and does REPEATABLE READ change it?
 
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+At READ COMMITTED, each statement takes its own fresh snapshot, so T1's second COUNT DOES include T2's newly committed row — the count changes in the middle of T1's transaction even though T1 issued the "same" query twice. That's the phantom read anomaly: a new row satisfying the WHERE clause appears between two reads in the same transaction. REPEATABLE READ prevents it, in both major engines, though by different mechanisms: PostgreSQL takes one MVCC snapshot for the whole transaction, so the second SELECT still reflects the state as of the transaction's start; MySQL/InnoDB layers gap locks on top of MVCC for locking reads to physically block inserts into the scanned range. Either way, at REPEATABLE READ, T1's second COUNT matches the first.
 
 </details>
 
@@ -582,11 +582,11 @@ spring:
 
 🔬 **Section Challenge — Scenario 59: Long-Running Transaction Blocking All Writes**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (Reasoning):** A 45-minute analytics transaction is left open on the primary (`BEGIN`, several `SELECT`s, never `COMMIT`/`ROLLBACK`) while the same table is being written to constantly. Why does this stall writers, and what actually prevents it from happening again?
 
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+An open transaction — even a read-only one — holds back the vacuum horizon: PostgreSQL can't remove a dead row version that the still-running transaction's snapshot might still need to see, no matter how long ago that transaction actually read anything. So dead tuples pile up, table and index bloat grows, and eventually writes queue behind lock contention or simply slow to a crawl as the bloated table and indexes get harder to scan and update. The fix isn't reacting after the fact — it's `statement_timeout` and `idle_in_transaction_session_timeout` to automatically kill sessions that sit open too long, plus routing long analytics queries to a read replica instead of running them against the primary at all.
 
 </details>
 
@@ -996,11 +996,11 @@ SET statement_timeout = '300000';  -- 5 minutes max
 
 🔬 **Section Challenge — Scenario 68: Auto-Vacuum Blocked by Long Transaction**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (Reasoning):** You suspect a long-idle transaction is blocking autovacuum on a critical table, but `pg_stat_activity` shows dozens of open connections. How do you identify WHICH one is the actual culprit, and why does `age(backend_xmin)` matter more here than `age(query_start)`?
 
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+Filter `pg_stat_activity` to rows where `backend_xmin IS NOT NULL`, ordered by `age(backend_xmin) DESC` — `backend_xmin` is the oldest transaction ID a session's snapshot still depends on, so a large `age(backend_xmin)` directly identifies the connection holding back the vacuum horizon, regardless of what query it's running right now. `age(query_start)` only tells you how long the CURRENT statement has been executing — a session can sit `idle in transaction` for hours with `query_start` looking perfectly fresh (from its last quick `SELECT`), while its still-open transaction — and thus its `xmin` — is what's actually blocking vacuum from reclaiming dead tuples.
 
 </details>
 

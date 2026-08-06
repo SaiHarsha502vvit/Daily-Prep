@@ -712,11 +712,11 @@ WHERE id = 1 AND version = 5;  -- fails if someone else updated
 
 🔬 **Section Challenge — Pattern 5: Data Modification & Transactions (Q31-Q37)**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (Reasoning):** The optimistic-locking example above runs `UPDATE products SET stock=9, version=6 WHERE id=1 AND version=5` and then checks `rows_affected`. Under what condition does this fail safely, and why is checking `rows_affected == 0` essential instead of just trusting the UPDATE worked?
 
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+It fails safely whenever another transaction updated the SAME row (and bumped its version) between this transaction's SELECT and its UPDATE — the WHERE clause's `version = 5` no longer matches anything (the row's real version is now 6+), so the UPDATE matches ZERO rows and silently does nothing. Critically, an UPDATE that matches no rows is not a SQL error — it succeeds with `rows_affected = 0`. Without checking that count, the application would wrongly assume the update went through and proceed as if stock were now 9, when in reality nothing changed and the row still reflects whatever the OTHER transaction wrote — a lost update disguised as a successful one.
 
 </details>
 

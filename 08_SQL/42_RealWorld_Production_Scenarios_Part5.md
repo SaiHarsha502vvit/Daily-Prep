@@ -178,11 +178,11 @@ private void createOrder() { }  // ❌ Spring AOP can't proxy private methods!
 
 🔬 **Section Challenge — Scenario 102: @Transactional Not Working — No Rollback**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (Reasoning):** A developer calls `this.createOrder()` from another method inside the SAME Spring bean, where `createOrder()` is annotated `@Transactional`. No transaction starts — a failure inside it doesn't roll anything back. Why not, and what are the two standard fixes?
 
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+`@Transactional` is implemented via a dynamic proxy (JDK proxy or CGLIB) wrapped around the bean — the transaction start/commit/rollback logic lives on the PROXY, and only runs when a call comes THROUGH that proxy from outside the bean. A call to `this.createOrder()` from inside the same class is a plain Java method call on `this`, bypassing the proxy entirely — none of Spring's transactional advice ever executes, so there's no `BEGIN`, no rollback, nothing. Two standard fixes: (1) inject the bean into itself (`@Autowired private OrderService self;`) and call `self.createOrder()` so the call routes back through the proxy, or (2) move the `@Transactional` method into a separate bean/class and call it from there, so it's always invoked from outside.
 
 </details>
 

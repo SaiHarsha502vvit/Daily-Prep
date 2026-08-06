@@ -150,11 +150,11 @@ SHOW ENGINE INNODB STATUS;
 
 🔬 **Section Challenge — S11: Deadlock Between Two Transactions**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (Reasoning):** A deadlock just happened in production, but by the time you go look, both transactions are long gone and you have no idea which queries were involved. What should already be configured so you're never debugging a deadlock blind again — in both PostgreSQL and MySQL?
 
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+PostgreSQL: set `log_lock_waits = on` and a short `deadlock_timeout` (e.g. 1s) in `postgresql.conf` — every deadlock gets logged with the exact queries and locks involved, not just "a deadlock happened somewhere." MySQL/InnoDB: `SHOW ENGINE INNODB STATUS` always shows the "LATEST DETECTED DEADLOCK" with full query and lock detail, but only the MOST RECENT one — it's overwritten by the next deadlock. For a persistent record of every deadlock, enable `innodb_print_all_deadlocks = ON`, which sends each one to the error log instead of just holding the last one in memory.
 
 </details>
 
@@ -473,11 +473,11 @@ PostgreSQL 11+ "Virtual Column" Trick:
 
 🔬 **Section Challenge — S14: Long Transaction Blocking Schema Migration**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (Reasoning):** `ALTER TABLE orders ADD COLUMN status VARCHAR(20) DEFAULT 'pending'` on PostgreSQL 11+ should be instant (metadata-only). Instead it hangs for 10 minutes and every other query on `orders` piles up behind it. What's actually happening, and how do you find the culprit?
 
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+ADD COLUMN with a constant DEFAULT is metadata-only, but the ALTER still has to acquire an `ACCESS EXCLUSIVE` lock before it can even record that metadata change — and that lock request queues politely behind ANY transaction already touching the table, however briefly, even one that finished its actual work minutes ago and just never committed. Because `ACCESS EXCLUSIVE` is also the strictest lock PostgreSQL has, once the ALTER is queued waiting for it, every OTHER query on `orders` queues behind the ALTER too — one forgotten open transaction stalls the whole table. Find the culprit via `pg_stat_activity` joined with `pg_locks` on the relation, looking for the oldest still-open transaction touching `orders`. Prevention: `SET lock_timeout = '2s'` before running the ALTER, so it fails fast and can be retried instead of queuing indefinitely and blocking everything behind it.
 
 </details>
 
@@ -600,11 +600,11 @@ Each compensating action must be idempotent because:
 
 🔬 **Section Challenge — S15: Distributed Transaction Failure (Saga Pattern)**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (Reasoning):** A saga has 3 steps: reserve inventory → charge payment → ship order. Step 2 succeeds but the service crashes before step 3 runs. On restart, the orchestrator retries from step 2. What goes wrong if "charge payment" isn't idempotent, and how does an idempotency key fix it?
 
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+Without idempotency, retrying "charge payment" charges the customer a SECOND time — the orchestrator has no way to know step 2 already succeeded before the crash, so it just re-runs it from scratch. An idempotency key (e.g. the `saga_id`, stored with a UNIQUE constraint) turns the operation into "charge payment for saga X" instead of just "charge payment": the retry does `INSERT INTO charges (saga_id, amount) ... ON CONFLICT (saga_id) DO NOTHING`, sees the row already exists, and returns the previously-recorded result instead of charging again. That's what makes it safe for the orchestrator to blindly retry a crashed step as many times as it needs to.
 
 </details>
 

@@ -246,9 +246,6 @@ Prevention strategies:
 -- Set lock timeout (MySQL)
 SET innodb_lock_wait_timeout = 10;  -- 10 seconds
 
--- Set lock timeout (MySQL)
-SET innodb_lock_wait_timeout = 10;  -- 10 seconds
-
 -- PostgreSQL
 SET lock_timeout = '10s';
 ```

@@ -280,11 +280,11 @@ Everyone takes the exam ONE AT A TIME.
 
 🔬 **Section Challenge — 5. Transaction Isolation Levels: The Four Levels Explained**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (Reasoning):** The table above marks SERIALIZABLE as the only level that prevents phantom reads outright. What does PostgreSQL's SERIALIZABLE actually do differently from REPEATABLE READ to guarantee that, and what does it cost application code?
 
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+PostgreSQL's SERIALIZABLE builds on the same snapshot-isolation machinery as REPEATABLE READ, but adds runtime monitoring for dangerous patterns of concurrent reads and writes between transactions (Serializable Snapshot Isolation, SSI) that could produce a result inconsistent with ANY serial ordering of those transactions — even when no two transactions ever touched the same row directly. If it detects such a pattern, it aborts one of the transactions at commit time with `ERROR: could not serialize access due to read/write dependencies among transactions`, and the application must retry. The cost: a SERIALIZABLE transaction can be aborted for reasons that have nothing to do with a lock conflict on any specific row, so application code MUST be written to catch and retry that specific error — it isn't optional the way it is at weaker isolation levels.
 
 </details>
 
