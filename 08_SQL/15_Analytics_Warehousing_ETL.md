@@ -327,31 +327,22 @@ ORDER BY MIN(total);
 │  • MySQL, PostgreSQL, SQL Server         │  • Snowflake, Redshift, BigQuery     │
 │                                                                                 │
 │                                                                                 │
-│  DIMENSIONAL MODELING:                                                          │
-│  ┌────────────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                            │ │
-│  │            ┌─────────────────┐                                             │ │
-│  │            │   dim_product   │                                             │ │
-│  │            │   (Dimension)   │                                             │ │
-│  │            └────────┬────────┘                                             │ │
-│  │                     │                                                      │ │
-│  │  ┌─────────────┐    │    ┌─────────────┐                                  │  │
-│  │  │ dim_customer│────┼────│  dim_date   │                                  │  │
-│  │  │ (Dimension) │    │    │ (Dimension) │                                  │  │
-│  │  └─────────────┘    │    └─────────────┘                                  │  │
-│  │                     │                                                      │ │
-│  │            ┌────────▼────────┐                                             │ │
-│  │            │   fact_sales    │ ← Contains measures (amount, qty, etc.)    │  │
-│  │            │    (Fact)       │   and foreign keys to dimensions            │ │
-│  │            └─────────────────┘                                             │ │
-│  │                                                                            │ │
-│  │  STAR SCHEMA: Fact table in center, dimensions around it                   │ │
-│  │  SNOWFLAKE SCHEMA: Dimensions normalized into sub-dimensions               │ │
-│  │                                                                            │ │
-│  └────────────────────────────────────────────────────────────────────────────┘ │
+│  DIMENSIONAL MODELING: fact table in the center, dimensions radiate outward     │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
+```mermaid
+flowchart TD
+    P["dim_product<br/>(Dimension)"] --> F["fact_sales<br/>(Fact)<br/>measures: quantity, amount, profit...<br/>+ a foreign key to every dimension"]
+    C["dim_customer<br/>(Dimension)"] --> F
+    D["dim_date<br/>(Dimension)"] --> F
+    S["dim_store<br/>(Dimension)"] --> F
+
+    style F fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+```
+
+**Star schema** is exactly this: one fact table, dimensions denormalized (each dimension is a single flat table, no sub-tables) and connected directly to the fact table — fewer joins per query. **Snowflake schema** normalizes the dimensions themselves into sub-dimensions (e.g. `dim_product` referencing a separate `dim_category` table) — less storage redundancy, but more joins to reassemble a query.
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
