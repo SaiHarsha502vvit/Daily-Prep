@@ -264,7 +264,10 @@ INSERT INTO products (id, name, price) VALUES
 (3, 'Item C', 30.00),
 (4, 'Item D', 40.00),
 (5, 'Item E', 50.00);
--- Can include up to 1000 rows per statement
+-- Row limits vary by engine: SQL Server caps a single VALUES list at 1000 rows;
+-- MySQL and PostgreSQL have no fixed row-count cap, only a max statement/packet
+-- size (MySQL's max_allowed_packet) -- batch in the low thousands regardless,
+-- since one giant statement makes error recovery and progress tracking harder
 ```
 
 ### Method 2: INSERT...SELECT (Data Migration)
@@ -466,11 +469,11 @@ TRUNCATE TABLE large_table RESTART IDENTITY CASCADE;  -- Reset sequences, cascad
 
 🔬 **Section Challenge — 🔵 WHY: ETL = Extract, Transform, Load**
 
-**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+**Challenge 1 (Reasoning):** The pipeline above stages raw data into `raw_sales`/`raw_users`/`raw_products` *before* cleaning it, rather than cleaning directly during extraction. Why keep an unmodified copy at all — isn't that just wasted storage and an extra step?
 
 <details><summary>Answer</summary>
 
-Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+The staging layer exists because transformation logic is the part most likely to be wrong or to need changing. If cleaning happens inline during extraction and a bug is discovered in the cleaning rules (a regex that mis-parses 2% of phone numbers, a currency conversion using the wrong rate), the *raw* source data is gone — extraction already consumed it, and re-extracting from the original system may be impossible (the source system has moved on, an API only serves the last 30 days, a file was deleted after ingestion). With a staging copy, fixing the bug means re-running the transform step against data you already have, not re-running the whole pipeline against a source that may no longer exist in its original form. Staging also lets you validate before it matters: run data-quality checks against `raw_sales` and catch a broken source feed before it ever reaches `fact_sales`, instead of discovering the corruption in a production dashboard. The storage cost of keeping raw data is deliberately traded for the ability to debug and reprocess.
 
 </details>
 
@@ -786,7 +789,7 @@ WITH customer_stats AS (
         COUNT(*) as total_orders,
         SUM(total_amount) as total_revenue,
         AVG(total_amount) as avg_order_value,
-        EXTRACT(DAYS FROM MAX(order_date) - MIN(order_date)) / NULLIF(COUNT(*) - 1, 0) as avg_days_between_orders
+        (MAX(order_date)::DATE - MIN(order_date)::DATE) / NULLIF(COUNT(*) - 1, 0) as avg_days_between_orders  -- date - date is already an integer day count in PostgreSQL
     FROM orders
     WHERE status = 'completed'
     GROUP BY customer_id
@@ -862,11 +865,11 @@ FROM orders;
 
 🔬 **Section Challenge — 4.2 Value Functions**
 
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+**Challenge (Debug):** `LAST_VALUE(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date)` — without the explicit `ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING` frame used above — returns the *current row's own* `total_amount` for every row, not the customer's actual last order. Why does `LAST_VALUE` need an explicit frame when `FIRST_VALUE` on the same line doesn't?
 
 <details><summary>Answer</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+Every window function has a frame — the subset of the partition it can see — and the *default* frame (when you only specify `ORDER BY`, no explicit `ROWS`/`RANGE`) is "from the start of the partition through the current row," not the whole partition. `FIRST_VALUE` looks at the first row of that default frame, which is always the true first row of the partition regardless — so it happens to give the right answer even with the default frame. `LAST_VALUE` looks at the *last* row of that frame, and since the frame's upper bound is always "current row," the last row of the frame IS the current row — so `LAST_VALUE` degenerates into returning the current row's own value on every call. Widening the frame to `UNBOUNDED FOLLOWING` is what makes the frame's upper bound the true end of the partition instead of the current row. This asymmetry (FIRST_VALUE looks safe, LAST_VALUE silently isn't) is the single most common window-function bug in production SQL.
 
 </details>
 
@@ -898,11 +901,11 @@ FROM orders;
 
 🔬 **Section Challenge — 4.3 Aggregate Window Functions**
 
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+**Challenge (Reasoning):** The block above has `SUM(amount) OVER (ORDER BY order_date)` (running total) right next to `SUM(amount) OVER ()` (percentage of total, empty parentheses). Both are `SUM() OVER (...)`. Why does one accumulate and the other doesn't?
 
 <details><summary>Answer</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+The difference is entirely about what's inside the parentheses, not the aggregate function. `OVER (ORDER BY order_date)` — an `ORDER BY` with no `PARTITION BY` — defines a window frame that grows one row at a time as `order_date` increases: for row N, the frame is "every row from the start through row N," so `SUM()` over that frame is a running total. `OVER ()` — completely empty — has no `ORDER BY` at all, so there's no notion of "current row's position," and the frame defaults to the *entire* result set (or entire partition, if `PARTITION BY` is present) for every single row. `SUM() OVER ()` therefore computes the grand total once and repeats that same number on every row — which is exactly what you want as the denominator for `amount / SUM(amount) OVER () * 100`. The rule: presence of `ORDER BY` inside `OVER(...)` is what turns a window function from "whole-partition aggregate repeated on every row" into "running/cumulative aggregate."
 
 </details>
 
@@ -1182,9 +1185,11 @@ DO UPDATE SET
     quantity = EXCLUDED.quantity,
     total_amount = EXCLUDED.total_amount;
 
--- Track ETL runs
+-- Track ETL runs -- @@ROWCOUNT is T-SQL only; in PostgreSQL, capture the row
+-- count from the client driver's result (e.g. cursor.rowcount in psycopg2) or,
+-- inside a PL/pgSQL block, GET DIAGNOSTICS v_rows = ROW_COUNT after the INSERT
 INSERT INTO etl_log (table_name, rows_loaded, load_timestamp)
-VALUES ('fact_sales', @@ROWCOUNT, CURRENT_TIMESTAMP);
+VALUES ('fact_sales', :rows_loaded, CURRENT_TIMESTAMP);
 ```
 
 ---
@@ -1232,12 +1237,12 @@ Advanced SQL projects (star/snowflake schemas, SCD Type 2, incremental loads, db
 **Failure modes:**
 1. **ETL idempotency violations**: Running `etl_extract_leads` twice with the same batch_id re-inserts rows (no dedupe guard). The `etl_checksum` column is computed but never checked. Result: fact table doubles in row count on every re-run, corrupting all downstream revenue metrics.
 2. **Fan-out from multi-valued JOINs**: The `fact_leads` insert joins `stg_leads` → `dim_lead_source` using `source_name`. If two `dim_lead_source` rows share the same name (duplicate SCD entries), one lead generates N rows — A/B test counts become unreliable.
-3. **Round-robin session affinity failures**: dbt runs use round-robin target selection. A 5-target distribution runs transform step 1 on target A, step 2 on target B. Session-scoped temp tables (`CREATE TEMP TABLE`) vanish between targets, causing "relation does not exist" errors.
+3. **Incremental-load watermark drift**: the `WHERE o.updated_at > (SELECT MAX(load_timestamp) ...)` pattern (Section 6.3) reads the *last successful load's* timestamp as the watermark. If a source-side clock is a few minutes behind the ETL server, or a row is updated and committed a moment *after* the watermark query already ran but *before* that transaction's `updated_at` was visible to the extract, that row is silently skipped forever — it will never again be later than the (now-advanced) watermark. This is invisible until someone notices a specific record is permanently missing from the warehouse.
 
 **Debug workflow:**
 1. Add `UNIQUE` constraint on staging: `ALTER TABLE stg_leads ADD CONSTRAINT u_lead_batch UNIQUE (lead_id, etl_batch_id);` — violations fail the insert, preventing duplicates.
 2. Detect fan-out: `SELECT COUNT(*) AS total, COUNT(DISTINCT lead_id) AS unique_leads FROM fact_leads;` — if total > unique_leads × 1.0, fan-out exists.
-3. Replace round-robin with hash-based distribution: `DISTRIBUTION = HASH(source_key)` ensures rows for the same key land on the same target.
+3. For watermark drift, use a small overlap window instead of a razor-edge `>` comparison (`WHERE updated_at > last_watermark - INTERVAL '5 minutes'`), paired with an idempotent upsert (`ON CONFLICT ... DO UPDATE`) so the small number of re-processed rows are safely overwritten rather than duplicated.
 
 **Modern practice anchor:**
 Production ETL pipelines use `ON CONFLICT DO NOTHING` (PostgreSQL) or `MERGE INTO` (Snowflake/BigQuery) with checksum-based deduplication, not batch ID alone.
