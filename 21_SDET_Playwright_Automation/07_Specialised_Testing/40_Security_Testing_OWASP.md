@@ -732,7 +732,7 @@ test.describe("Security Response Headers @security @headers", () => {
 
 ---
 
-## ðŸ‹ï¸ Practice Challenges
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [Scenario] — IDOR in the Wild
 

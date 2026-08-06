@@ -690,7 +690,7 @@ test("Trace performance bottleneck", async ({ page }) => {
 });
 ```
 
-## ðŸ‹ï¸ Practice Challenges
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [Write It Yourself]
 

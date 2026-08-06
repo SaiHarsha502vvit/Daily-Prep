@@ -711,7 +711,7 @@ USE FUNCTIONAL TESTS FOR:                USE VISUAL TESTS FOR:
 
 ---
 
-## ðŸ‹ï¸ Practice Challenges
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — Why Separate OS Baselines?
 

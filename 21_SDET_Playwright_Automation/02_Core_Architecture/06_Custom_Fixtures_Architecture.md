@@ -240,10 +240,14 @@ This is critical for expensive operations like logging in.
 The fixture runs **once per test**. Fresh state for every test.
 
 ```typescript
-// This is implicitly:
+// The plain function form defaults to test scope:
 authToken: async ({ request }, use) => { ... }
-// Same as:
-authToken: { scope: 'test', async: true, async ({ request }, use) => { ... } }
+
+// The tuple form — [fn, options] — lets you set scope, timeout, and auto explicitly.
+// Below is the exact equivalent of the plain form above:
+authToken: [async ({ request }, use) => { ... }, { scope: 'test' }]
+
+// Change 'test' to 'worker' to switch scope; there is no separate "async: true" flag.
 ```
 
 Timeline with 10 tests:
@@ -572,7 +576,7 @@ You can override Playwright's built-in fixtures to inject behavior for all tests
 
 ```typescript
 // Override the built-in `page` fixture to auto-inject auth headers
-export const test = base.extend<{ page: Page }>({{
+export const test = base.extend<{ page: Page }>({
   page: async ({ page }, use) => {
     // Inject auth headers before every test's page usage
     await page.setExtraHTTPHeaders({
@@ -595,10 +599,12 @@ export const test = base.extend<{ page: Page }>({{
         consoleErrors.map(e => `  - ${e}`).join('\n'));
     }
   },
-}});
+});
 
-// Override `request` to add default headers to ALL API calls
-export const test = base.extend<{ request: APIRequestContext }>({{
+// Override `request` to add default headers to ALL API calls.
+// Note: this must be composed alongside the page override in ONE extend call
+// (a single module can only export one `test`). Merge them via extend({ page: ..., request: ... }).
+export const testWithRequest = base.extend<{ request: APIRequestContext }>({
   request: async ({ request }, use) => {
     // Playwright doesn't allow mutating the built-in request context directly,
     // but you can create a new one with defaults:
@@ -611,7 +617,7 @@ export const test = base.extend<{ request: APIRequestContext }>({{
     await use(authedRequest as unknown as APIRequestContext);
     await authedRequest.dispose();
   },
-}});
+});
 ```
 
 ---
@@ -620,32 +626,39 @@ export const test = base.extend<{ request: APIRequestContext }>({{
 
 Some fixtures (especially DB connections or multi-step logins) can be slow. Configure their timeout:
 
+Playwright has two separate timeout budgets that apply here, and mixing them up is a common source of confusion:
+
+- `use.actionTimeout` in `playwright.config.ts` bounds a single Playwright *action* (`click`, `fill`, `waitFor`) — it never bounds your fixture setup.
+- The `timeout` option in a fixture's tuple `[fn, { scope, timeout }]` bounds the entire fixture *setup + teardown*. If your fixture is worker-scoped and does a slow login sequence, this is the knob you want.
+
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-  // Global fixture timeout
   use: {
-    actionTimeout: 30_000,     // per-action timeout (click, fill, etc.)
+    actionTimeout: 30_000,     // per-action timeout (click, fill, etc.) — NOT for fixtures
   },
-
-  // Worker fixture timeout is separate:
-  // No built-in config — implement your own timeout wrapper:
 });
 
-// In fixture:
+// In the fixture: use the tuple's `timeout` to bound the whole setup+teardown block.
+// A Promise.race inside the body is only needed when you want a sub-step timeout
+// with a specific, human-readable error message (as below).
 account: [async ({ request }, use) => {
-  // Implement your own timeout for the login step
   const LOGIN_TIMEOUT_MS = 60_000;
 
-  const loginPromise = performLogin(request);  // your login function
+  const loginPromise = performLogin(request);
   const timeoutPromise = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error(`[account fixture] Login timed out after ${LOGIN_TIMEOUT_MS}ms`)), LOGIN_TIMEOUT_MS)
+    setTimeout(
+      () => reject(new Error(`[account fixture] Login timed out after ${LOGIN_TIMEOUT_MS}ms`)),
+      LOGIN_TIMEOUT_MS,
+    ),
   );
 
   const account = await Promise.race([loginPromise, timeoutPromise]);
   await use(account);
-}, { scope: 'worker', timeout: 120_000 }],  // ← Playwright fixture-level timeout
+}, { scope: 'worker', timeout: 120_000 }],   // ← the fixture-wide budget Playwright enforces
 ```
+
+The outer `timeout: 120_000` is the hard stop Playwright enforces on the whole fixture; the inner `Promise.race` gives you a friendlier message if just the login step drags. Use one, both, or neither depending on how loudly you need the failure to speak.
 
 ---
 

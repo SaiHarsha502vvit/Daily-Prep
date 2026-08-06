@@ -218,7 +218,8 @@ type ApiPath = `/api/${ApiVersion}/${ServiceName}` | `/api/${ApiVersion}/${Servi
 
 // Now the function only accepts valid-format paths:
 async function callTypeSafeEndpoint(method: HttpMethod, path: ApiPath) {
-  return request[method.toLowerCase() as Lowercase<HttpMethod>](../path);
+  // Dispatch to request.get / request.post / etc. based on the method.
+  return request[method.toLowerCase() as Lowercase<HttpMethod>](path);
 }
 
 callTypeSafeEndpoint('GET', '/api/v2/citations/CIT-001');   // ✅
@@ -933,12 +934,12 @@ This is the pattern used by the `TestDataFactory` from Section 1 — it takes a 
 
 ## Reality Check
 
-**"TypeScript types are runtime checks"** ? TypeScript types are COMPILE-TIME only. They are completely erased during transpilation to JavaScript. A function typed as accepting a string will happily receive a number at runtime if the value comes from an untyped source (API response, environment variable, JSON.parse). Use runtime validation (Zod, io-ts) at system boundaries where untyped data enters your typed code.
+**"TypeScript types are runtime checks"**→ TypeScript types are COMPILE-TIME only. They are completely erased during transpilation to JavaScript. A function typed as accepting a string will happily receive a number at runtime if the value comes from an untyped source (API response, environment variable, JSON.parse). Use runtime validation (Zod, io-ts) at system boundaries where untyped data enters your typed code.
 
-**"any type is acceptable when you are stuck"** ? Every any annotation disables TypeScript's entire type checking chain for that value. A function returning any infects every consumer: const user: any = getUser(); user.nonExistent.method() compiles successfully but crashes at runtime. Use unknown for values whose type you do not know � it forces you to narrow the type before using it, catching errors at compile time.
+**"any type is acceptable when you are stuck"**→ Every any annotation disables TypeScript's entire type checking chain for that value. A function returning any infects every consumer: const user: any = getUser(); user.nonExistent.method() compiles successfully but crashes at runtime. Use unknown for values whose type you do not know — it forces you to narrow the type before using it, catching errors at compile time.
 
-**"Generics are an advanced feature most SDETs do not need"** ? Generics make test utilities type-safe: a createFixture<T> function that returns a typed T instead of any, a Page Object base class that types its locators, or an API client that types its responses. Without generics, test utilities return any, losing all type safety benefits. Generics are essential for building reusable, type-safe test infrastructure.
+**"Generics are an advanced feature most SDETs do not need"**→ Generics make test utilities type-safe: a createFixture<T> function that returns a typed T instead of any, a Page Object base class that types its locators, or an API client that types its responses. Without generics, test utilities return any, losing all type safety benefits. Generics are essential for building reusable, type-safe test infrastructure.
 
-**"Type assertions (as Type) are safe"** ? Type assertions tell the compiler to trust you, not verify you. const data = JSON.parse(input) as UserData compiles regardless of what input actually contains. If input is malformed, you get runtime errors at usage sites far from the assertion. Use type guards (if ('name' in data)) or validation libraries for safe narrowing.
+**"Type assertions (as Type) are safe"**→ Type assertions tell the compiler to trust you, not verify you. const data = JSON.parse(input) as UserData compiles regardless of what input actually contains. If input is malformed, you get runtime errors at usage sites far from the assertion. Use type guards (if ('name' in data)) or validation libraries for safe narrowing.
 
-**"Strict TypeScript configuration slows development"** ? strict mode (strictNullChecks, noImplicitAny, strictFunctionTypes) catches bugs at compile time that would otherwise surface as flaky tests at runtime. A locator method that might return null throws a compile error instead of a runtime TypeError in CI at 2 AM. The upfront cost of satisfying the compiler saves debugging time that is 10x more expensive.
+**"Strict TypeScript configuration slows development"**→ strict mode (strictNullChecks, noImplicitAny, strictFunctionTypes) catches bugs at compile time that would otherwise surface as flaky tests at runtime. A locator method that might return null throws a compile error instead of a runtime TypeError in CI at 2 AM. The upfront cost of satisfying the compiler saves debugging time that is 10x more expensive.

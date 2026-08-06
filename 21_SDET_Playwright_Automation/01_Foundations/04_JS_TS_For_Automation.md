@@ -263,22 +263,37 @@ This is the most important section. If you get this wrong, your tests will be br
 
 ### 2.1 Why Does Async Exist at All?
 
-JavaScript runs on a **single thread**. It can only do one thing at a time. But many operations — like opening a browser, clicking a button, waiting for a network request — take TIME.
+JavaScript executes on a **single thread** — one call stack, one line of code running at any instant. But the *interesting* work in a Playwright test is not CPU work; it is *waiting*. Waiting for `page.goto` to return means waiting for DNS resolution, a TCP handshake, a TLS handshake, an HTTP response, and the browser to parse HTML. That is hundreds of milliseconds during which JavaScript itself has literally nothing to compute. If the single thread just sat there blocking on those hundreds of milliseconds, the whole runtime would freeze — no timers could fire, no other code could progress, no other network callback could be processed.
 
-If JavaScript stopped and waited for every slow operation, the whole program would freeze. So instead, it uses a system of **callbacks and Promises** to schedule work for later.
+The resolution is that JavaScript does not actually *do* the slow parts itself. It hands them off. `page.goto(url)` does two things in the JavaScript thread and then returns immediately:
 
-**The simplest mental model:**
+1. Tells the host (Node.js, or the browser) *"start this network operation for me and tell me when it's done."*
+2. Registers a callback (wrapped in a Promise) that should run when the host reports back.
+
+That is it. The JavaScript thread is now free. It runs the next line of your code, or whatever else is queued.
+
+Meanwhile, the operation runs in **another thread that is not JavaScript** — libuv's thread pool inside Node.js, or the browser's networking process. Those threads *can* block on I/O without freezing the JavaScript runtime, because they are not the JavaScript runtime.
+
+When the host finishes the operation, it pushes a message onto a **task queue**. The JavaScript thread's **event loop** is a very simple loop: *"is the call stack empty? If yes, take the next task off the queue and run it."* That callback is what resolves your Promise, which is what unblocks the code sitting on `await page.goto(...)`.
 
 ```
-Think of JavaScript like a restaurant chef.
-
-The chef (single thread) can only cook one dish at a time.
-But while a dish is in the oven (waiting for network/browser),
-the chef doesn't just stand there — they prep the next dish.
-
-async/await is how you tell the chef:
-"Wait for this oven dish to finish before plating it."
+JS thread          Host (libuv / browser network)      Task queue
+─────────          ────────────────────────────         ──────────
+page.goto(url) ──► "please fetch this URL"
+(returns Promise)
+(runs next code)                                        (empty)
+...                    (~400 ms of network I/O)         (empty)
+...                    done → pushes callback ──────►   [resolve(response)]
+(stack empties)                                         (event loop takes it)
+resumes after await ◄── callback runs, unwraps ─────── (empty again)
 ```
+
+The single thread never actually waited. It stayed busy running other code, and only came back to your `await page.goto(...)` line when the host had a real result to hand it.
+
+Two consequences fall out of this model, and both matter constantly in test code:
+
+- **A missing `await` is not a syntax error.** `page.click(...)` without `await` still hands the work to the host — the click still starts. Your code just does not pause, so the next line runs before the click resolves. That is the source of nearly every "sometimes passes, sometimes fails" bug in Sections 1.4 and 2.4.
+- **A CPU-heavy loop *does* freeze everything.** The single-thread rule only forgives you when you actually hand off to the host. `for (let i = 0; i < 1e9; i++) {}` blocks the event loop for seconds — Promises cannot resolve, timers cannot fire, Playwright's own internal messaging stalls. Test code almost never does this by accident, but a synchronous `while (Date.now() < deadline)` polling loop absolutely will.
 
 ---
 

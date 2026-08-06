@@ -43,7 +43,7 @@ The test only talks to the **Client**. It never sees URLs, headers, or raw JSON.
 ```typescript
 // ❌ String constant — looks simple, breaks silently
 const CITATIONS_URL = `${process.env.API_BASE_URL}/api/v2/citations`;
-const CITATION_BY_ID = `${process.env.API_BASE_URL}/api/v2/citations/${id}`; // ← ERROR: `i` is not defined here
+const CITATION_BY_ID = `${process.env.API_BASE_URL}/api/v2/citations/${id}`; // ← ERROR: `id` is not defined at this module-top scope
 ```
 
 `i` is not in scope when the constant is defined — it would need to be `undefined` or use a function:
@@ -811,12 +811,12 @@ export const Endpoints = {
 
 ## Reality Check
 
-**"Hardcoding API endpoints in tests is acceptable for small suites"** ? Even small suites grow. Hardcoded endpoints become a search-and-replace nightmare when API versioning changes from /api/v1/ to /api/v2/. Centralize endpoints in a constants file or factory from day one � the 10-minute investment prevents hours of find-and-replace across 50 test files.
+**"Hardcoding API endpoints in tests is acceptable for small suites"**→ Even small suites grow. Hardcoded endpoints become a search-and-replace nightmare when API versioning changes from /api/v1/ to /api/v2/. Centralize endpoints in a constants file or factory from day one — the 10-minute investment prevents hours of find-and-replace across 50 test files.
 
-**"Factory pattern for test data is over-engineering"** ? Test data factories (Builder or Factory pattern) prevent: duplicate test data definitions across test files, inconsistent test data (one test uses status=1, another uses status=active for the same thing), and test failures from unexpected data dependencies. A UserFactory.create({ role: 'admin' }) is clearer and more maintainable than 15 lines of JSON payload repeated in every test file.
+**"Factory pattern for test data is over-engineering"**→ Test data factories (Builder or Factory pattern) prevent: duplicate test data definitions across test files, inconsistent test data (one test uses status=1, another uses status=active for the same thing), and test failures from unexpected data dependencies. A UserFactory.create({ role: 'admin' }) is clearer and more maintainable than 15 lines of JSON payload repeated in every test file.
 
-**"Headers are set-and-forget configuration"** ? Headers change: authentication tokens expire, API keys rotate, content-type requirements change between endpoints, and custom headers for tracing or feature flags vary per request. Centralize header construction in a request helper that: generates fresh auth tokens, adds required tracing headers, and sets content-type based on the request payload.
+**"Headers are set-and-forget configuration"**→ Headers change: authentication tokens expire, API keys rotate, content-type requirements change between endpoints, and custom headers for tracing or feature flags vary per request. Centralize header construction in a request helper that: generates fresh auth tokens, adds required tracing headers, and sets content-type based on the request payload.
 
-**"One payload shape per endpoint"** ? Endpoints often accept different payload shapes: create (all fields), partial update (subset of fields), and validation test (intentionally invalid fields). Build payload factories with override capability: createUserPayload({ email: 'invalid' }) for testing validation, createUserPayload() for happy path. Testing only the happy path payload shape misses validation edge cases.
+**"One payload shape per endpoint"**→ Endpoints often accept different payload shapes: create (all fields), partial update (subset of fields), and validation test (intentionally invalid fields). Build payload factories with override capability: createUserPayload({ email: 'invalid' }) for testing validation, createUserPayload() for happy path. Testing only the happy path payload shape misses validation edge cases.
 
-**"Test data should mirror production data"** ? Production data has: personally identifiable information (PII) that must not appear in test code, extreme edge cases (100-character names, emoji in text fields, null bytes in strings), and volume that test environments cannot replicate. Use realistic PATTERNS (valid email format, reasonable name length) with synthetic VALUES (generated strings, test domain emails). Never copy production data into test fixtures.
+**"Test data should mirror production data"**→ Production data has: personally identifiable information (PII) that must not appear in test code, extreme edge cases (100-character names, emoji in text fields, null bytes in strings), and volume that test environments cannot replicate. Use realistic PATTERNS (valid email format, reasonable name length) with synthetic VALUES (generated strings, test domain emails). Never copy production data into test fixtures.

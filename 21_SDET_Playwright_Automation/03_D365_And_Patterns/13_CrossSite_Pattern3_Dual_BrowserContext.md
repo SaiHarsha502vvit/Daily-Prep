@@ -346,7 +346,9 @@ customerContext.on("request", (req) => {
 });
 ```
 
---- — Reusable for All Tests
+---
+
+## 7. Dual-Context Fixture — Reusable for All Tests
 
 Extract the context setup into a fixture so you don't repeat it:
 
@@ -964,12 +966,12 @@ export default defineConfig({
 
 ## Reality Check
 
-**"Two browser contexts simulate two different users"** ? Browser contexts provide isolated cookie jars and storage, which is correct for session isolation. But they share the same browser process, IP address, and user-agent string. Server-side rate limiting, IP-based blocking, or device fingerprinting may treat both contexts as the same user. For true multi-user simulation, use separate browser instances or different proxy configurations.
+**"Two browser contexts simulate two different users"**→ Browser contexts provide isolated cookie jars and storage, which is correct for session isolation. But they share the same browser process, IP address, and user-agent string. Server-side rate limiting, IP-based blocking, or device fingerprinting may treat both contexts as the same user. For true multi-user simulation, use separate browser instances or different proxy configurations.
 
-**"Dual contexts double resource consumption"** ? Each browser context creates an isolated environment but shares the browser process. The memory overhead per context is roughly 50-100MB (mostly for the renderer process). In CI with limited memory, opening 10 contexts for parallel user simulation may cause out-of-memory failures. Monitor CI runner memory when using multiple contexts.
+**"Dual contexts double resource consumption"**→ Each browser context creates an isolated environment but shares the browser process. The memory overhead per context is roughly 50-100MB (mostly for the renderer process). In CI with limited memory, opening 10 contexts for parallel user simulation may cause out-of-memory failures. Monitor CI runner memory when using multiple contexts.
 
-**"Context isolation means no interaction between contexts"** ? Contexts are isolated at the browser level, but the APPLICATION may not be isolated. Two contexts logged in as different users hitting the same API endpoint may interfere with each other if the API has non-user-scoped shared state (global caches, rate limiters, sequential counters). Test isolation must consider both browser-level and application-level state.
+**"Context isolation means no interaction between contexts"**→ Contexts are isolated at the browser level, but the APPLICATION may not be isolated. Two contexts logged in as different users hitting the same API endpoint may interfere with each other if the API has non-user-scoped shared state (global caches, rate limiters, sequential counters). Test isolation must consider both browser-level and application-level state.
 
-**"switchToContext is a Playwright API"** ? Unlike Selenium which has driver.switchTo(), Playwright works with context and page objects directly. You hold references to multiple pages from different contexts and interact with them by variable name. There is no global context switch. This means you must manage page references explicitly, which is more verbose but eliminates the class of bugs where you forget which context is active.
+**"switchToContext is a Playwright API"**→ Unlike Selenium which has driver.switchTo(), Playwright works with context and page objects directly. You hold references to multiple pages from different contexts and interact with them by variable name. There is no global context switch. This means you must manage page references explicitly, which is more verbose but eliminates the class of bugs where you forget which context is active.
 
-**"Dual context tests are inherently slower"** ? The setup cost (creating a second context and page) is roughly 200-500ms. The ongoing cost is minimal because Playwright communicates with both contexts through the same WebSocket connection to the browser. The perceived slowness usually comes from double authentication (logging in twice), which can be avoided with storageState reuse.
+**"Dual context tests are inherently slower"**→ The setup cost (creating a second context and page) is roughly 200-500ms. The ongoing cost is minimal because Playwright communicates with both contexts through the same WebSocket connection to the browser. The perceived slowness usually comes from double authentication (logging in twice), which can be avoided with storageState reuse.

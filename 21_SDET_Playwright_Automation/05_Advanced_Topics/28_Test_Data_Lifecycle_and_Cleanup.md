@@ -158,29 +158,37 @@ export class TestDataManager {
     return data;
   }
 
-  // Cleanup in reverse order (last created = first deleted, respects FK constraints)
+  // Cleanup in reverse order (last created = first deleted, respects FK constraints).
+  //
+  // IMPORTANT: this loop is SEQUENTIAL by design.
+  // If you replace it with Promise.all / Promise.allSettled over the reversed list,
+  // the whole point of LIFO cleanup is lost — every delete fires at once and the
+  // database sees the child and parent deletions racing. FK-constrained rows will
+  // fail with "violates foreign key constraint" errors that you cannot reproduce
+  // locally on a small dataset.
   async cleanup(): Promise<void> {
     const reversed = [...this.resources].reverse();
-    const results = await Promise.allSettled(
-      reversed.map(async (resource) => {
-        try {
-          await resource.deleteAsync();
-          console.log(`[TestDataManager] Cleaned up ${resource.type}`);
-        } catch (error) {
-          console.warn(
-            `[TestDataManager] Failed to clean up ${resource.type}:`,
-            error,
-          );
-          throw error; // re-throw so allSettled captures it as rejected
-        }
-      }),
-    );
+    let failures = 0;
 
-    const failures = results.filter((r) => r.status === "rejected");
-    if (failures.length > 0) {
+    for (const resource of reversed) {
+      try {
+        await resource.deleteAsync();
+        console.log(`[TestDataManager] Cleaned up ${resource.type}`);
+      } catch (error) {
+        failures++;
+        // Swallow — one failed cleanup must not prevent the next one from running.
+        // The count and warning below give the test operator visibility.
+        console.warn(
+          `[TestDataManager] Failed to clean up ${resource.type}:`,
+          error,
+        );
+      }
+    }
+
+    if (failures > 0) {
       console.warn(
-        `[TestDataManager] ${failures.length}/${results.length} cleanup operations failed.` +
-          " Test data may remain in the database.",
+        `[TestDataManager] ${failures}/${reversed.length} cleanup operations failed. ` +
+          "Test data may remain in the database — check the nightly janitor (Ch62 §1.3).",
       );
     }
 
@@ -627,7 +635,7 @@ If you see hundreds of 7-day-old test records: your teardown is broken. Fix the 
 
 ---
 
-## ðŸ‹ï¸ Practice Challenges
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — Which Strategy?
 

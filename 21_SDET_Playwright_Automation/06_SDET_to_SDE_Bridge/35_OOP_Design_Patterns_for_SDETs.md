@@ -810,7 +810,7 @@ class MasterSearchPage implements PageComponent {
 
 ---
 
-## ðŸ‹ï¸ Practice Challenges
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [OOP → Test Code]
 
@@ -1173,12 +1173,12 @@ const citation = await invoker.invoke(
 
 ## Reality Check
 
-**"Page Object Model is the only design pattern SDETs need"** ? POM is one pattern. Enterprise test frameworks use: Builder pattern (constructing complex test data), Factory pattern (creating page objects based on application state), Strategy pattern (different assertion strategies for different test types), Observer pattern (test event listeners for reporting), and Singleton pattern (shared browser instance). Knowing multiple patterns enables better framework design.
+**"Page Object Model is the only design pattern SDETs need"**→ POM is one pattern. Enterprise test frameworks use: Builder pattern (constructing complex test data), Factory pattern (creating page objects based on application state), Strategy pattern (different assertion strategies for different test types), Observer pattern (test event listeners for reporting), and Singleton pattern (shared browser instance). Knowing multiple patterns enables better framework design.
 
-**"Inheritance hierarchies make page objects reusable"** ? Deep inheritance (BasePage ? AuthenticatedPage ? AdminPage ? UserManagementPage) creates fragile hierarchies where changes to BasePage break all descendants. Prefer COMPOSITION: AdminPage has a NavigationComponent and a DataTable, not AdminPage extends AuthenticatedPage. Composition lets you mix and match components without inheritance chain constraints.
+**"Inheritance hierarchies make page objects reusable"**→ Deep inheritance (BasePage → AuthenticatedPage → AdminPage → UserManagementPage) creates fragile hierarchies where changes to BasePage break all descendants. Prefer COMPOSITION: AdminPage has a NavigationComponent and a DataTable, not AdminPage extends AuthenticatedPage. Composition lets you mix and match components without inheritance chain constraints.
 
-**"Design patterns should be applied everywhere"** ? A custom Logger wrapped in a Singleton with a Factory for creating formatter Strategies is over-engineered when console.log suffices. Patterns solve specific problems: use Builder when object construction is complex, Factory when the concrete type varies, and Strategy when behavior varies. A pattern without a problem is unnecessary complexity.
+**"Design patterns should be applied everywhere"**→ A custom Logger wrapped in a Singleton with a Factory for creating formatter Strategies is over-engineered when console.log suffices. Patterns solve specific problems: use Builder when object construction is complex, Factory when the concrete type varies, and Strategy when behavior varies. A pattern without a problem is unnecessary complexity.
 
-**"OOP is the only paradigm for test automation"** ? Functional programming patterns are equally valid: pure functions for test data transformation, higher-order functions for reusable assertion helpers, and closures for fixture scoping. TypeScript supports both paradigms. A functional approach (composable helper functions) can be simpler than an OOP approach (class hierarchies) for stateless test utilities.
+**"OOP is the only paradigm for test automation"**→ Functional programming patterns are equally valid: pure functions for test data transformation, higher-order functions for reusable assertion helpers, and closures for fixture scoping. TypeScript supports both paradigms. A functional approach (composable helper functions) can be simpler than an OOP approach (class hierarchies) for stateless test utilities.
 
-**"SOLID principles from production code apply directly to test code"** ? The Single Responsibility Principle in test code means a test verifies ONE behavior, not ONE assertion. A test for user registration that checks: form validation, submission, confirmation email, and database record verifies one BEHAVIOR (registration) with multiple assertions. Splitting into four tests creates redundant setup and slower execution.
+**"SOLID principles from production code apply directly to test code"**→ The Single Responsibility Principle in test code means a test verifies ONE behavior, not ONE assertion. A test for user registration that checks: form validation, submission, confirmation email, and database record verifies one BEHAVIOR (registration) with multiple assertions. Splitting into four tests creates redundant setup and slower execution.

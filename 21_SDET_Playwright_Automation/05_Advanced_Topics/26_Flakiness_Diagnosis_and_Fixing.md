@@ -377,19 +377,33 @@ await page.waitForFunction(() => {
 });
 await expect(page.locator('#loginBtn')).toHaveScreenshot('login-btn.png');
 
-// ✅ Fix B: disable all animations (best for visual regression tests)
-// playwright.config.ts:
-use: {
-  launchOptions: {
-    args: ['--disable-web-security'],  // Not this
+// ✅ Fix B: use Playwright's built-in `animations: 'disabled'` option on the
+// screenshot assertion. This is the officially supported route and is aware of
+// which animation frames are safe to freeze mid-transition.
+//
+// Two places to set it:
+
+// (1) Per-assertion — override for a single screenshot:
+await expect(page.locator('#loginBtn')).toHaveScreenshot('login-btn.png', {
+  animations: 'disabled',
+});
+
+// (2) Suite-wide default — playwright.config.ts:
+export default defineConfig({
+  expect: {
+    toHaveScreenshot: {
+      animations: 'disabled',    // pause CSS animations and transitions
+      caret:      'hide',        // hide the blinking text caret (another flake source)
+    },
   },
-  // Disable CSS animations via config:
-}
-// Or in beforeEach:
-await page.emulateMedia({ reducedMotion: 'reduce' });  // triggers prefers-reduced-motion
-// For Playwright visual tests specifically:
-// use: { screenshot: { animations: 'disabled' } }  // disables CSS animations during screenshot
-// This is in the screenshot options, not a CSS override
+});
+// Note: `animations` lives under `expect.toHaveScreenshot`, NOT under `use.screenshot`.
+// `use.screenshot` is 'off' | 'on' | 'only-on-failure' and controls when the automatic
+// failure screenshot is captured; it does not accept animation options.
+
+// ✅ Fix B (companion): also emulate prefers-reduced-motion for apps that respect it.
+// Only helps if the app actually reads the media query — many enterprise UIs don't.
+await page.emulateMedia({ reducedMotion: 'reduce' });
 
 // ✅ Fix C: inject a CSS override (guaranteed, works everywhere)
 test.beforeEach(async ({ page }) => {
@@ -689,7 +703,7 @@ analyzeFlakiness();
 
 ---
 
-## ðŸ‹ï¸ Practice Challenges
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — Trace Viewer Diagnosis
 

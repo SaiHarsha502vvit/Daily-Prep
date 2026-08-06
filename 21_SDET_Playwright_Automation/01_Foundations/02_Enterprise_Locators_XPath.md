@@ -438,43 +438,89 @@ await expect(page.locator('[data-id="customerName"]')).toHaveText("John Doe", {
 
 ---
 
-## 6. Shadow DOM — The Invisible DOM
+## 6. Shadow DOM — Why Some Elements Are Invisible to XPath (and What Playwright Does About It)
 
-Some enterprise components (Salesforce LWC, some D365 components, web components) put their DOM inside a **Shadow Root** — a completely separate DOM tree that is invisible to normal CSS selectors and XPath.
+Salesforce LWC, some D365 components, and every native web component put their internal DOM inside a **shadow root**. This section derives *why* that breaks XPath, why it does not break Playwright's CSS locators, and what "piercing" actually means at the DOM API level.
+
+### Step 1 — Why Shadow DOM exists at all
+
+A page hosts hundreds of third-party components: a date picker, a chart, a login widget. Without isolation, the page's global CSS (`.button { padding: 20px }`) would leak into every widget's internals and break their layout. Component authors need a way to say *"my `<button>` uses my styles, not yours."*
+
+The browser gives them this by letting a custom element attach a **shadow root** — a separate DOM tree that hangs off the custom element but is not part of the main document tree:
+
+```javascript
+class MyWidget extends HTMLElement {
+  connectedCallback() {
+    const shadow = this.attachShadow({ mode: "open" }); // ← creates a shadow root
+    shadow.innerHTML = `<style>button { background: red }</style>
+                        <button>Submit</button>`;
+  }
+}
+customElements.define("my-widget", MyWidget);
+```
+
+After this runs, the DOM has two trees:
 
 ```
-Normal DOM:
-  document → body → div.container → button  (visible to CSS and XPath)
-
-Shadow DOM:
-  document → body → custom-element → #shadow-root → button  (INVISIBLE to CSS/XPath)
-
-When you query the document:
-  document.querySelector('button')  → finds the normal button
-  /html/body//button                → finds the normal button
-
-  But: the shadow button is NOT found by either query.
-  It exists in a separate "shadow realm" that CSS/XPath cannot pierce.
+Main document tree                Shadow tree (owned by my-widget)
+─────────────────                 ─────────────────
+<html>                            <style>button { background: red }</style>
+  <body>                          <button>Submit</button>
+    <my-widget>  ────shadowRoot──►
 ```
 
-**Playwright's automatic Shadow DOM piercing:**
+The `<button>` is *not* a descendant of `<body>` in the main tree. It lives in a separate rooted tree that is *attached* to `<my-widget>` via the special `shadowRoot` property.
+
+### Step 2 — Why `document.querySelector('button')` misses the shadow button
+
+`document.querySelectorAll(selector)` is defined by the DOM spec as: *"traverse the subtree rooted at `document` and return every element matching `selector`."* It only walks nodes reachable via the normal `childNodes` / `firstChild` relations. **Shadow roots are not reachable that way** — they are only accessible via the special `.shadowRoot` property, which the traversal does not follow.
+
+So `document.querySelector('button')` never sees the shadow `<button>`. The same limit applies to `document.evaluate(xpath, ...)` — the XPath engine walks the exact same tree.
+
+This is the encapsulation the widget author wanted: outside code cannot accidentally reach into the widget's internals.
+
+### Step 3 — Why XPath cannot pierce, even when you want it to
+
+`document.evaluate` (the browser's XPath API) predates Shadow DOM by more than a decade and was never updated to cross shadow boundaries. There is no XPath axis like `shadow::` in any standard. When Playwright forwards an XPath string to the browser, the browser's XPath engine only sees the main tree. If your target is inside a shadow root, the query returns zero matches — not because the element does not exist, but because the engine cannot reach it.
+
+That is a hard limit of the XPath API, not something Playwright can work around.
+
+### Step 4 — Why Playwright's CSS locators *can* pierce
+
+Playwright does **not** just delegate CSS selectors to `document.querySelectorAll`. Its selector engine is a custom tree walker written in JavaScript that traverses the DOM element-by-element. When the walker meets a node that has a non-null `shadowRoot` property, it recursively descends into that shadow root as if it were part of the same tree, then continues matching the selector from there. That extra step — the code path `if (node.shadowRoot) walk(node.shadowRoot)` — is exactly what "piercing" means. There is no magic; it is a for-loop that follows one extra pointer.
+
+That is why:
 
 ```typescript
-// CSS locators AUTOMATICALLY pierce Shadow DOM in Playwright:
-await page.locator("custom-element button").click();
-// Playwright pierces into custom-element's shadow root to find the button
+// ✅ Works — Playwright's walker sees my-widget, then descends into its shadowRoot
+await page.locator("my-widget button").click();
 
-// getByRole also pierces Shadow DOM:
+// ✅ Works — getByRole is implemented on top of the same walker
 await page.getByRole("button", { name: "Submit" }).click();
 
-// BUT: XPath does NOT pierce Shadow DOM:
-// ❌ This FAILS if button is inside a shadow root:
+// ❌ Fails — Playwright hands the XPath string to document.evaluate,
+//    which never crosses the shadow boundary
 await page.locator('//button[text()="Submit"]').click();
+```
 
-// Diagnostic: Is this element in a Shadow DOM?
-// Open DevTools → Elements → look for #shadow-root nodes
-// Or: console.log(document.querySelector('your-selector')?.shadowRoot)
-// If shadowRoot is non-null, it's a shadow host
+### Step 5 — The one thing that stops even Playwright
+
+Piercing only works when `element.shadowRoot` is non-null, and it is non-null only for **open** shadow roots (`attachShadow({ mode: 'open' })`). If a component uses `mode: 'closed'`, the browser stores the shadow root internally but exposes `element.shadowRoot === null` to *any* JavaScript, including Playwright's walker. No test framework can reach inside a closed shadow root — the browser itself refuses to hand out the pointer. In practice, closed shadow roots are rare (most component libraries choose `open` because their own devtools need to inspect them), but if you find one, the only options are: ask the vendor to open it, or drive the component through its public API instead of clicking its internals.
+
+### Diagnostic — how to tell if an element is in Shadow DOM
+
+```typescript
+// In DevTools Elements panel: shadow hosts show a #shadow-root (open) child node.
+// In test code:
+const shadowInfo = await page.evaluate(() => {
+  const host = document.querySelector("my-widget");
+  return {
+    hostExists: !!host,
+    shadowRootExists: !!host?.shadowRoot,
+    mode: host?.shadowRoot?.mode ?? "closed-or-none",
+  };
+});
+// If shadowRootExists === false but hostExists === true, the shadow root is closed.
 ```
 
 ---

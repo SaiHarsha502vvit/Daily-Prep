@@ -4,6 +4,16 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-07-26 - 21_SDET_Playwright_Automation Explanation Clarity Review
+
+Added a file-by-file clarity review for the Playwright/SDET module:
+
+- New audit artifact: `21_SDET_Playwright_Automation/_meta/EXPLANATION_CLARITY_REVIEW_2026-07-26.md`
+- Scope: 168 authored Markdown files under `21_SDET_Playwright_Automation/`, excluding third-party `node_modules/` Markdown.
+- Ratings focus: whether each explanation is crystal clear, clear but dense, mixed/vague, or not learner-ready.
+- Main finding: teaching chapters are mostly strong; clarity issues concentrate in stale navigation/counts, old P1-P10/60-69 wording, stale chapter references, and `SDET_PROBLEM_SETS.md` mixing Java/JUnit content into the Playwright module.
+- No domain boundary or permanent repo rule changed.
+
 ## 2026-06-21 — 13_Developer_Essentials Folder Audit + Remediation (No Ferment)
 
 Comprehensive audit and 52-issue remediation across all 22 files in `13_Developer_Essentials/`. Triggered by user request for file-by-file pedagogical review. No new ferment — work was scoped by an inline master review (`/mnt/e/Dev_World/04_Practice/Daily-Prep/.kimchi/docs/audit_13_dev_essentials/MASTER_REVIEW.md`).

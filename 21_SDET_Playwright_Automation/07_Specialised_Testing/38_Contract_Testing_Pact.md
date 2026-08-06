@@ -680,7 +680,7 @@ Workflow:
 
 ---
 
-## ðŸ‹ï¸ Practice Challenge
+## 🏋️ Practice Challenge
 
 ### Challenge 1 [Write It Yourself]
 

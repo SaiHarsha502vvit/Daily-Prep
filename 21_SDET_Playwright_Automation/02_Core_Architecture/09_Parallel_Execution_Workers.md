@@ -504,7 +504,7 @@ Worker 2 starts:
 // The workerIndex lets each worker create a deterministically unique account
 // Useful when you want reproducible accounts (not random UUIDs) for debugging
 
-export const test = base.extend<{}, { account: TestAccount }>({{
+export const test = base.extend<{}, { account: TestAccount }>({
   account: [
     async ({ browser }, use, workerInfo) => {
       // workerInfo.workerIndex: 0, 1, 2, ... (sequential per worker)
@@ -532,7 +532,7 @@ export const test = base.extend<{}, { account: TestAccount }>({{
     },
     { scope: 'worker' }
   ],
-}});
+});
 ```
 
 ### `test.info()` — The Complete Reference
@@ -746,7 +746,7 @@ With `fullyParallel: true` (test-level): Local (2 workers): 100 tests per worker
 // ❌ The problem:
 let workerCustomerId: string;  // module level
 
-export const test = base.extend<{}, { account: Account }>({{
+export const test = base.extend<{}, { account: Account }>({
   account: [
     async ({ request }, use) => {
       const customer = await request.post('/api/customers', { data: { name: 'Test' } });
@@ -755,7 +755,7 @@ export const test = base.extend<{}, { account: Account }>({{
     },
     { scope: 'worker' }
   ],
-}});
+});
 
 // In test files:
 import { workerCustomerId } from '../../fixtures';  // someone imports this!

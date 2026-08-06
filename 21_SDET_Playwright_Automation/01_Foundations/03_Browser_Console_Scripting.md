@@ -507,7 +507,7 @@ The standard "Copy XPath" in Chrome produces useless absolute paths. This script
       'color: #00FFFF; font-size: 14px; padding: 4px;'
     );
     console.log(
-      `%cPlaywright: page.locator('${xpath.replace(/'/g, "\\'")}')",
+      `%cPlaywright: page.locator('${xpath.replace(/'/g, "\\'")}')`,
       'color: #90EE90;'
     );
 

@@ -544,7 +544,7 @@ Step 5 — Verify correctness:
 
 ---
 
-## ðŸ‹ï¸ Practice Challenges
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [Algorithm Design]
 

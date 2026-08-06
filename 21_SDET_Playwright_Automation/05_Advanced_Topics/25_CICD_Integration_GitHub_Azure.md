@@ -627,7 +627,7 @@ Rule 5: Least privilege.
 
 ---
 
-## ðŸ‹ï¸ Practice Challenges
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — `if: always()` in GitHub Actions
 

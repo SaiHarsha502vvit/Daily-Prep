@@ -362,17 +362,23 @@ const crmUrl = "https://crm.company.com"; // hardcoded URL
 //   CRM_URL=https://crm.company.com
 
 // In fixtures/index.ts:
-account: (async ({}, use) => {
-  await use({
-    email: process.env.ADMIN_EMAIL!,
-    accessToken: process.env.ADMIN_ACCESS_TOKEN!,
-    // ...
-  });
-},
-  // In test:
-  async ({ account }) => {
-    // test receives account.email — never sees the actual value in the code
-  });
+export const test = base.extend<{}, { account: AuthAccount }>({
+  account: [
+    async ({}, use) => {
+      await use({
+        email: process.env.ADMIN_EMAIL!,
+        accessToken: process.env.ADMIN_ACCESS_TOKEN!,
+        // ...other fields
+      });
+    },
+    { scope: 'worker' },
+  ],
+});
+
+// In a test file:
+test('example', async ({ account }) => {
+  // Test receives account.email — the plaintext value never appears in the source tree.
+});
 ```
 
 **Why?**
@@ -567,11 +573,13 @@ sequenceDiagram
 
 ### Global Setup vs. Hooks vs. Fixtures
 
-Enterprise suites separate setup logic by scope to maximize speed and stability.
+Enterprise suites separate setup logic by scope for a reason each layer earns:
 
-1. **`globalSetup`**: One-time database seeding, global auth token generation, or standing up local mock servers. Runs _before Playwright spins up workers_.
-2. **`beforeAll` / `afterAll`**: Shared setup for a specific test suite. **DANGER**: Data mutations here will cause cross-test contamination if tests run in parallel or manipulate the same records.
-3. **`beforeEach` / `afterEach`**: Pre/post-test cleanup. Prefer test-scoped **Fixtures** over `beforeEach` hooks, because fixtures automatically clean up even if the test fails or times out.
+1. **`globalSetup`** runs *once* in the main Playwright process, before any workers exist. This is the only phase where "once for the entire run" is literally true. Use it for work that must not be duplicated per worker: seeding a shared test database, calling a remote provisioning API, writing a `storageState.json` that every worker will load. Any state it produces has to be persisted somewhere workers can read — usually a file on disk — because worker processes do not inherit `globalSetup`'s memory.
+
+2. **`beforeAll` / `afterAll`** is the phase most testers coming from Jest or Mocha get wrong. In Playwright, `beforeAll` runs once *per worker process per describe block*, **not** once per describe block. If your suite runs with `workers: 4`, `beforeAll` in a shared describe runs **four times** — one per worker — because each worker is a separate Node.js process with its own module heap, its own imports, and its own hooks. A `beforeAll` that inserts a row with a fixed ID will race four inserts of the same ID. That is what "cross-test contamination" means here: not tests interfering with each other, but the *hook itself* running more times than the author expected. If you need something to happen exactly once, `globalSetup` is the only phase that guarantees it. If per-worker is what you want (a database connection pool, a browser context), `beforeAll` is fine — but generate unique IDs and treat the setup as parallel-safe.
+
+3. **`beforeEach` / `afterEach`** runs before/after every test. It works, but test-scoped **fixtures** are strictly better for setup that owns a resource: the fixture's teardown after `await use(...)` runs even when the test throws mid-body, and even when a `beforeEach` in the same test errored (a hook throw skips subsequent `beforeEach` and the test, but fixtures already partway set up still tear down). `afterEach` runs unconditionally too, but it has no built-in link to the resource it should clean up — you have to remember which variable holds what.
 
 ```typescript
 // ❌ Bad: cleanup in afterEach can fail if the test crashed mid-way
@@ -913,12 +921,12 @@ Summary of fixes: move credentials to environment variables + fixtures, rename s
 
 ## Reality Check
 
-**"Arrange-Act-Assert is enough structure for test scripts"** ? AAA structures individual tests but does not address: how tests share setup code (fixtures vs beforeEach), how tests share data (factory functions vs inline data), and how tests share assertions (custom matchers vs utility functions). Test script architecture is about the patterns BETWEEN tests, not just within them.
+**"Arrange-Act-Assert is enough structure for test scripts"**→ AAA structures individual tests but does not address: how tests share setup code (fixtures vs beforeEach), how tests share data (factory functions vs inline data), and how tests share assertions (custom matchers vs utility functions). Test script architecture is about the patterns BETWEEN tests, not just within them.
 
-**"beforeAll should set up data, afterAll should clean it up"** ? beforeAll runs once per worker, not once per suite. In parallel execution with 4 workers, beforeAll runs 4 times � potentially creating duplicate data or racing on shared resources. Use globalSetup for truly one-time setup. Use beforeAll only for worker-scoped resources (database connections, browser contexts).
+**"beforeAll should set up data, afterAll should clean it up"**→ beforeAll runs once per worker, not once per suite. In parallel execution with 4 workers, beforeAll runs 4 times — potentially creating duplicate data or racing on shared resources. Use globalSetup for truly one-time setup. Use beforeAll only for worker-scoped resources (database connections, browser contexts).
 
-**"Test independence means no shared state at all"** ? Tests should be independently RUNNABLE, not independently ISOLATED. Sharing read-only reference data (list of countries, configuration values) between tests is fine and efficient. Sharing MUTABLE state (a user that test A modifies and test B reads) creates order dependencies. The boundary is mutability, not sharing.
+**"Test independence means no shared state at all"**→ Tests should be independently RUNNABLE, not independently ISOLATED. Sharing read-only reference data (list of countries, configuration values) between tests is fine and efficient. Sharing MUTABLE state (a user that test A modifies and test B reads) creates order dependencies. The boundary is mutability, not sharing.
 
-**"Descriptive test names are enough documentation"** ? A test named should display error when payment fails does not explain: what kind of payment failure (declined card, network timeout, insufficient funds), what error is displayed (toast, inline message, error page), or what the preconditions are (logged in, cart has items). Test names should be specific enough that a failure report tells you exactly what scenario broke without reading the test code.
+**"Descriptive test names are enough documentation"**→ A test named should display error when payment fails does not explain: what kind of payment failure (declined card, network timeout, insufficient funds), what error is displayed (toast, inline message, error page), or what the preconditions are (logged in, cart has items). Test names should be specific enough that a failure report tells you exactly what scenario broke without reading the test code.
 
-**"Test files should mirror the application structure"** ? Test files should mirror USER JOURNEYS, not application structure. The application has: LoginPage, ProductPage, CartPage, CheckoutPage. Tests should be: purchase-flow.spec.ts, return-flow.spec.ts, account-management.spec.ts. Users do not think in pages � they think in goals. Test organization should reflect goals, not implementation.
+**"Test files should mirror the application structure"**→ Test files should mirror USER JOURNEYS, not application structure. The application has: LoginPage, ProductPage, CartPage, CheckoutPage. Tests should be: purchase-flow.spec.ts, return-flow.spec.ts, account-management.spec.ts. Users do not think in pages — they think in goals. Test organization should reflect goals, not implementation.

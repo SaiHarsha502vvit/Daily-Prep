@@ -850,7 +850,11 @@ sequenceDiagram
 
 3. **The latency varies.** On your machine, the round-trip is <1ms. On a CI server with shared CPU, it might be 10-50ms. On a remote browser grid, it might be 100-500ms. This is why timeouts that work locally can fail in CI.
 
-4. **Playwright batches intelligently.** When you write `await page.fill('#input', 'hello')`, Playwright sends multiple CDP commands (focus element, clear existing value, dispatch key events for each character) — but it handles the orchestration. You just see one `await`.
+4. **`fill()` does not type character by character — and that is a deliberate trade-off, not an implementation detail.** `await page.fill('#input', 'hello')` sends a small, fixed sequence of CDP commands: focus the element, clear it, set its value directly, then dispatch one synthetic `input` event (and `change`) so frameworks like React see the update. No `keydown`/`keypress`/`keyup` ever fires.
+
+   That is *fast* — one round-trip regardless of string length — but it is invisible to any code listening for real keystrokes: input masks, autocomplete-on-keyup, a "field is dirty" indicator wired to `keydown`. For those, Playwright has a second method, `locator.pressSequentially(text)`, which dispatches a genuine key event per character — proportionally slower (N round-trips for N characters), but indistinguishable from a user typing.
+
+   **The rule this derives:** default to `fill()` for ordinary form-filling — it is what you want almost always. Reach for `pressSequentially()` only when the test is specifically about keystroke-driven behaviour, and expect it to cost real time in your suite.
 
 ---
 

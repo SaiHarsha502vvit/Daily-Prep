@@ -374,8 +374,9 @@ test("Search results count is announced to screen readers via aria-live", async 
   // Find the aria-live region that announces result counts
   const liveRegion = page.locator("[aria-live]");
 
-  // Verify the live region exists and has the correct politeness level
-  await expect(liveRegion).toHaveCount({ minimum: 1 });
+  // Verify at least one live region exists (toHaveCount takes a number,
+  // not { minimum }; wait for the first live region to be attached instead)
+  await expect(liveRegion.first()).toBeAttached();
   const politeness = await liveRegion.first().getAttribute("aria-live");
   // 'polite' = announced after current speech finishes (correct for search results)
   // 'assertive' = interrupts current speech (for urgent alerts only)
@@ -636,7 +637,7 @@ async function assertA11yWithDebtTracking(results: AxeResults): Promise<void> {
 
 ---
 
-## ðŸ‹ï¸ Practice Challenges
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — Which axe Rule?
 

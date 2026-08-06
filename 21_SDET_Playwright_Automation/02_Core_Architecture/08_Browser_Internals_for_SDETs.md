@@ -228,7 +228,9 @@ await expect(page.locator("#MasterSearchDropdown-option")).toContainText(
 );
 
 // ✅ Wait for at least one data row
-await expect(page.locator(".ms-DetailsList-row")).toHaveCount({ minimum: 1 });
+// Wait for at least one row — Playwright's toHaveCount takes a number, not a { minimum } object,
+// so "at least 1" is expressed by waiting for the first row to be attached and visible:
+await expect(page.locator(".ms-DetailsList-row").first()).toBeVisible();
 ```
 
 **Strategy 2: Wait for the Network Response**
@@ -246,7 +248,9 @@ const [response] = await Promise.all([
   page.click("#searchButton"),
 ]);
 // Now the response is available AND the UI will shortly update
-await expect(page.locator(".ms-DetailsList-row")).toHaveCount({ minimum: 1 });
+// Wait for at least one row — Playwright's toHaveCount takes a number, not a { minimum } object,
+// so "at least 1" is expressed by waiting for the first row to be attached and visible:
+await expect(page.locator(".ms-DetailsList-row").first()).toBeVisible();
 ```
 
 **Strategy 3: `waitForLoadState` — Use Sparingly**
@@ -452,7 +456,9 @@ Alternative: inspect the DOM directly — look for a parent element with `role="
 await page.click("#searchButton");
 // No navigation fires — wait for content
 await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30000 });
-await expect(page.locator(".ms-DetailsList-row")).toHaveCount({ minimum: 1 });
+// Wait for at least one row — Playwright's toHaveCount takes a number, not a { minimum } object,
+// so "at least 1" is expressed by waiting for the first row to be attached and visible:
+await expect(page.locator(".ms-DetailsList-row").first()).toBeVisible();
 ```
 
 **JSP (server-rendered):**
@@ -463,7 +469,7 @@ await Promise.all([
   page.click("#searchButton"),
 ]);
 // All content is now in the DOM immediately
-await expect(page.locator("#resultTable tr")).toHaveCount({ minimum: 1 });
+await expect(page.locator("#resultTable tr").first()).toBeVisible();
 ```
 
 </details>
@@ -517,7 +523,7 @@ expect(capturedCitationId).toMatch(/^CIT-\d+$/);
 
 ---
 
-## 7. Chrome DevTools Protocol (CDP) \u2014 How Playwright Actually Talks to the Browser
+## 7. Chrome DevTools Protocol (CDP) — How Playwright Actually Talks to the Browser
 
 This is the missing layer most SDETs don't know about. When you call `await page.click('#btn')`, Playwright doesn't call a browser API. It sends a **JSON message over a WebSocket** to the browser's DevTools interface.
 
@@ -923,7 +929,9 @@ Alternative: inspect the DOM directly — look for a parent element with `role="
 await page.click("#searchButton");
 // No navigation fires — wait for content
 await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30000 });
-await expect(page.locator(".ms-DetailsList-row")).toHaveCount({ minimum: 1 });
+// Wait for at least one row — Playwright's toHaveCount takes a number, not a { minimum } object,
+// so "at least 1" is expressed by waiting for the first row to be attached and visible:
+await expect(page.locator(".ms-DetailsList-row").first()).toBeVisible();
 ```
 
 **JSP (server-rendered):**
@@ -934,7 +942,7 @@ await Promise.all([
   page.click("#searchButton"),
 ]);
 // All content is now in the DOM immediately
-await expect(page.locator("#resultTable tr")).toHaveCount({ minimum: 1 });
+await expect(page.locator("#resultTable tr").first()).toBeVisible();
 ```
 
 </details>

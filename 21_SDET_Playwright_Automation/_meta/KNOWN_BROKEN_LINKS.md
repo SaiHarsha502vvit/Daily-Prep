@@ -104,7 +104,7 @@ See "What's still flagged" above.
 
 ---
 
-## 2026-07-25 — restructure sweep
+## 2026-07-25 â€” restructure sweep
 
 Module root was re-organized (navigation files -> `00_Navigation/`, pathways -> `00_Pathways/`, governance docs -> `_meta/`, READINESS_RUBRIC -> `career/`, SDET_PROBLEM_SETS -> `08_Practice_And_Quizzes/`). All inbound/outbound links updated in the same commit.
 
@@ -112,7 +112,7 @@ The sweep also repaired 21 pre-existing dangling links left behind by the Phase 
 
 | Dead target | Rerouted to |
 | --- | --- |
-| `57_Playwright_Config_Theory_Catalog.md` | `56_Playwright_Config_Deep_Dive.md` (merge target — appendix) |
+| `57_Playwright_Config_Theory_Catalog.md` | `56_Playwright_Config_Deep_Dive.md` (merge target â€” appendix) |
 | `20_Practice_Resources_Learning_Path.md` | `00_Pathways/PATHWAY_01_LEARNING.md` |
 | `QUIZ_01_Playwright_MCQ.md` | `quiz_01_solutions/README.md` |
 | `QUIZ_02_Playwright_CodeChallenge.md` | `quiz_02_solutions/README.md` |

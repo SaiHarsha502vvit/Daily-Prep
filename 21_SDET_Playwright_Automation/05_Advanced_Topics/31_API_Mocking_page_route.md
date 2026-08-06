@@ -297,11 +297,22 @@ await page.route("**/api/v2/citations/CIT-001", (route) =>
 // This lets you mock "everything returns 500 except these specific endpoints"
 ```
 
+There is no `page.isRouted(url)` API to ask Playwright "is this URL currently being intercepted?" This is deliberate — a route handler only runs when a matching request actually fires, not when you register the pattern. If you want to be sure your mock is wired up, assert on the *effect*:
+
 ```typescript
-// Check if a URL is currently being routed:
-const isRouted = await page.routeFromHAR; // not a runtime check
-// There's no built-in "isRouted" API — design your mocks to be explicit
+let mockHit = false;
+await page.route('**/api/v2/citations/CIT-001', async (route) => {
+  mockHit = true;                                            // record that the handler ran
+  await route.fulfill({ status: 200, body: JSON.stringify({ citationId: 'CIT-001' }) });
+});
+await page.goto('/citations/CIT-001');
+await expect(page.locator('[data-testid="citation-status"]')).toBeVisible();
+expect(mockHit, 'Mock handler must have been invoked').toBe(true);
+// If mockHit is false: the pattern didn't match the actual request URL — check for
+// trailing slashes, query params, or a different origin (staging vs local).
 ```
+
+A closure boolean is the honest "isRouted" — it tells you the handler *ran*, which is what you actually care about. Registering a route the browser never triggers is a silent no-op; this pattern catches that immediately.
 
 ---
 
@@ -585,7 +596,7 @@ The Rule:
 
 ---
 
-## ðŸ‹ï¸ Practice Challenges
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — Mock or Not?
 
@@ -855,12 +866,12 @@ test("Shows error banner on API failure", async ({ page }) => {
 
 ## Reality Check
 
-**"Mocking API responses makes tests deterministic"** ? Mocking makes tests deterministic against KNOWN responses. It does NOT test: actual API response format changes (your mock is now wrong), error response handling (your mock always succeeds), and performance characteristics (your mock responds instantly but the real API takes 2 seconds). Complement mocked tests with a smaller suite of unmocked tests that hit real APIs.
+**"Mocking API responses makes tests deterministic"**→ Mocking makes tests deterministic against KNOWN responses. It does NOT test: actual API response format changes (your mock is now wrong), error response handling (your mock always succeeds), and performance characteristics (your mock responds instantly but the real API takes 2 seconds). Complement mocked tests with a smaller suite of unmocked tests that hit real APIs.
 
-**"page.route intercepts all network traffic"** ? page.route intercepts requests from the PAGE context (fetch, XHR, image loads). It does NOT intercept: requests from Service Workers, requests from Web Workers in some configurations, or requests made by the browser itself (favicon, prefetch). Also, route handlers run in Node.js context, not browser context � you cannot access page DOM from a route handler.
+**"page.route intercepts all network traffic"**→ page.route intercepts requests from the PAGE context (fetch, XHR, image loads). It does NOT intercept: requests from Service Workers, requests from Web Workers in some configurations, or requests made by the browser itself (favicon, prefetch). Also, route handlers run in Node.js context, not browser context — you cannot access page DOM from a route handler.
 
-**"Mocking should return minimal data"** ? Returning minimal mock data (only the fields your test uses) can cause the application to crash on unmocked fields that it references. Return REALISTIC mock data with all fields the application expects, then override specific fields for your test scenario. Use a factory function that generates complete response objects.
+**"Mocking should return minimal data"**→ Returning minimal mock data (only the fields your test uses) can cause the application to crash on unmocked fields that it references. Return REALISTIC mock data with all fields the application expects, then override specific fields for your test scenario. Use a factory function that generates complete response objects.
 
-**"Mock all external APIs by default"** ? Mock external APIs that are: slow (adds test execution time), flaky (reduces test reliability), rate-limited (causes CI failures), or require authentication (test credentials management). Do NOT mock your OWN APIs between frontend and backend � those test the real integration contract. The boundary for mocking is the boundary of your system.
+**"Mock all external APIs by default"**→ Mock external APIs that are: slow (adds test execution time), flaky (reduces test reliability), rate-limited (causes CI failures), or require authentication (test credentials management). Do NOT mock your OWN APIs between frontend and backend — those test the real integration contract. The boundary for mocking is the boundary of your system.
 
-**"page.route and page.unroute are always paired"** ? If you set up a route in a test and forget to unroute, subsequent tests in the same page context inherit the route handler, causing mysterious test interference. Use test fixtures that automatically clean up routes: create the route in beforeEach and unroute in afterEach, or use page.unrouteAll as cleanup.
+**"page.route and page.unroute are always paired"**→ If you set up a route in a test and forget to unroute, subsequent tests in the same page context inherit the route handler, causing mysterious test interference. Use test fixtures that automatically clean up routes: create the route in beforeEach and unroute in afterEach, or use page.unrouteAll as cleanup.

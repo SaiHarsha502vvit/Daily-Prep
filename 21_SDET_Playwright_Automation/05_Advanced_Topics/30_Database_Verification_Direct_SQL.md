@@ -675,7 +675,7 @@ const DB_ENV_VARS = [
 
 ---
 
-## ðŸ‹ï¸ Practice Challenges
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — When to Add DB Verification?
 
@@ -881,12 +881,12 @@ Rule: never use string interpolation for SQL in ANY environment. Parameterized q
 
 ## Reality Check
 
-**"UI assertions are sufficient for data verification"** ? The UI shows what the APPLICATION RENDERS, not what the DATABASE STORES. A caching bug can show correct data on the UI while the database has wrong data. A display formatting bug can show wrong data on the UI while the database is correct. Database verification catches the class of bugs where the data pipeline (controller ? service ? repository ? database) has errors invisible on the UI.
+**"UI assertions are sufficient for data verification"**→ The UI shows what the APPLICATION RENDERS, not what the DATABASE STORES. A caching bug can show correct data on the UI while the database has wrong data. A display formatting bug can show wrong data on the UI while the database is correct. Database verification catches the class of bugs where the data pipeline (controller → service → repository → database) has errors invisible on the UI.
 
-**"Direct SQL in tests couples tests to the database schema"** ? This coupling is intentional and valuable. If a schema change breaks your SQL verification queries, it reveals that the schema change needs application code updates too. The alternative � only testing through the UI � hides schema-application mismatches until users encounter them. Use a data access layer in your test code to centralize SQL queries and isolate schema coupling.
+**"Direct SQL in tests couples tests to the database schema"**→ This coupling is intentional and valuable. If a schema change breaks your SQL verification queries, it reveals that the schema change needs application code updates too. The alternative — only testing through the UI — hides schema-application mismatches until users encounter them. Use a data access layer in your test code to centralize SQL queries and isolate schema coupling.
 
-**"Test databases should be production replicas"** ? Production replicas contain PII (personal data), have massive volume (slow test queries), and change unpredictably (new data invalidates test assertions). Use: schema-identical empty databases with seed data, or TestContainers with migrations applied. Test data should be CREATED by the test, not assumed to exist.
+**"Test databases should be production replicas"**→ Production replicas contain PII (personal data), have massive volume (slow test queries), and change unpredictably (new data invalidates test assertions). Use: schema-identical empty databases with seed data, or TestContainers with migrations applied. Test data should be CREATED by the test, not assumed to exist.
 
-**"Cleaning up test data after each test is mandatory"** ? Cleanup is necessary for shared databases. But with TestContainers or per-test databases, cleanup is unnecessary � the entire database is destroyed after the test suite. Choose the isolation strategy that matches your infrastructure: cleanup for shared databases, disposal for isolated databases.
+**"Cleaning up test data after each test is mandatory"**→ Cleanup is necessary for shared databases. But with TestContainers or per-test databases, cleanup is unnecessary — the entire database is destroyed after the test suite. Choose the isolation strategy that matches your infrastructure: cleanup for shared databases, disposal for isolated databases.
 
-**"SQL verification should check every column"** ? Verify only the columns your test CHANGES or DEPENDS ON. An order creation test should verify: order total, customer ID, status, and item count. Verifying every column (created_at, updated_at, internal flags) makes tests brittle to unrelated changes. Use SELECT specific_columns, not SELECT *.
+**"SQL verification should check every column"**→ Verify only the columns your test CHANGES or DEPENDS ON. An order creation test should verify: order total, customer ID, status, and item count. Verifying every column (created_at, updated_at, internal flags) makes tests brittle to unrelated changes. Use SELECT specific_columns, not SELECT *.

@@ -271,11 +271,12 @@ async function waitForGridToLoad(
   // Wait for spinner to go away
   await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30000 });
 
-  // Wait for at least one data row (not just an empty grid shell)
-  await expect(page.locator(".ms-DetailsList-row")).toHaveCount(
-    { minimum: expectedMinRows },
-    { timeout: 30000 },
-  );
+  // Wait for at least one data row (not just an empty grid shell).
+  // Playwright's toHaveCount takes a specific number, so "at least N rows" is expressed
+  // by waiting for the Nth-from-top row to be attached — Playwright polls until it is.
+  await expect(
+    page.locator(".ms-DetailsList-row").nth(expectedMinRows - 1),
+  ).toBeAttached({ timeout: 30000 });
 }
 ```
 

@@ -731,7 +731,7 @@ test("GraphQL pagination handles 100 citations correctly", async ({
 
 ---
 
-## ðŸ‹ï¸ Practice Challenges
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — GraphQL Error Handling
 

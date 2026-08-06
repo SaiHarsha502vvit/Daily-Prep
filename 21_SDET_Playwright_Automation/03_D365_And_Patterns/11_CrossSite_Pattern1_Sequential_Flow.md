@@ -500,7 +500,7 @@ test.describe("User Onboarding — Cross-Website E2E @cross-site @regression", (
 // ─── D365 (React SPA) ─────────────────────────────────────────────────────
 await page.goto(process.env.ADMIN_CRM_URL!);
 await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30000 });
-await expect(page.locator(".ms-DetailsList-row")).toHaveCount({ minimum: 1 });
+await expect(page.locator(".ms-DetailsList-row").first()).toBeVisible();
 
 // ─── JSP / Servlet (server-rendered) ──────────────────────────────────────
 await page.goto(process.env.CUSTOMER_PORTAL_URL!);
@@ -818,12 +818,12 @@ Works if: the portal has its own login form and the user's credentials work ther
 
 ## Reality Check
 
-**"Sequential navigation between sites is always reliable"** ? Navigating from Site A to Site B mid-test introduces: DNS resolution time, TLS handshake, potentially different cookie domains, and page load performance variation. Each navigation is a potential timeout point. Set per-navigation timeouts rather than relying on global timeout, and add explicit waitForLoadState checks between site transitions.
+**"Sequential navigation between sites is always reliable"**→ Navigating from Site A to Site B mid-test introduces: DNS resolution time, TLS handshake, potentially different cookie domains, and page load performance variation. Each navigation is a potential timeout point. Set per-navigation timeouts rather than relying on global timeout, and add explicit waitForLoadState checks between site transitions.
 
-**"A single browser context works for cross-site flows"** ? A single context shares cookies across all origins by default, which may cause authentication conflicts: Site A session cookie might be sent to Site B if cookie scope is misconfigured. For cross-site testing where authentication is independent, use separate browser contexts. For SSO flows where authentication is shared, a single context is correct.
+**"A single browser context works for cross-site flows"**→ A single context shares cookies across all origins by default, which may cause authentication conflicts: Site A session cookie might be sent to Site B if cookie scope is misconfigured. For cross-site testing where authentication is independent, use separate browser contexts. For SSO flows where authentication is shared, a single context is correct.
 
-**"Cross-site tests can use the same baseURL"** ? baseURL applies to all page.goto calls with relative URLs. Cross-site tests by definition involve multiple base URLs. Use absolute URLs in cross-site tests, or create separate page instances from separate contexts with different configurations. Mixing relative URLs in a multi-site test causes navigation to the wrong origin.
+**"Cross-site tests can use the same baseURL"**→ baseURL applies to all page.goto calls with relative URLs. Cross-site tests by definition involve multiple base URLs. Use absolute URLs in cross-site tests, or create separate page instances from separate contexts with different configurations. Mixing relative URLs in a multi-site test causes navigation to the wrong origin.
 
-**"Redirect chains between sites are transparent"** ? A redirect from Site A to Site B may go through 2-5 intermediate URLs (authentication server, token exchange, consent page). Each redirect can fail independently. Playwright follows redirects automatically, but assertions on the final URL should use toHaveURL with a pattern or wait for a specific element on the final page rather than assuming the redirect chain completes instantly.
+**"Redirect chains between sites are transparent"**→ A redirect from Site A to Site B may go through 2-5 intermediate URLs (authentication server, token exchange, consent page). Each redirect can fail independently. Playwright follows redirects automatically, but assertions on the final URL should use toHaveURL with a pattern or wait for a specific element on the final page rather than assuming the redirect chain completes instantly.
 
-**"Sequential cross-site flows test real user behavior"** ? Real users have multiple tabs, switch between applications, and experience network interruptions between sites. Sequential automation tests the happy path through a single linear flow. Consider testing: what happens if the session expires on Site A while the user is on Site B? What if the browser back button is used mid-flow?
+**"Sequential cross-site flows test real user behavior"**→ Real users have multiple tabs, switch between applications, and experience network interruptions between sites. Sequential automation tests the happy path through a single linear flow. Consider testing: what happens if the session expires on Site A while the user is on Site B? What if the browser back button is used mid-flow?

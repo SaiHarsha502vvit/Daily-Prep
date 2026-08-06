@@ -278,105 +278,192 @@ export class APIUtils {
 
 ## 3b. Advanced `APIUtils`: Retry with Exponential Backoff
 
-APIs in staging environments are inherently flaky. A 502 Bad Gateway or 503 Service Unavailable often resolves if retried 2 seconds later. `APIUtils` is the perfect place to add an exponential backoff retry mechanism.
+Two decisions matter here, and getting either wrong turns retries from a stability tool into a bug magnifier: **what to retry** and **how long to wait between attempts**.
+
+**What to retry — only transient failures.** A 502/503/504 or a network error (DNS blip, TCP reset) usually resolves on its own within seconds; retrying is cheap and safe. A 4xx is *your* fault — a bad request will stay bad no matter how many times you resend it. Retrying 4xx wastes time, and in the case of 429 (rate-limited) actively makes things worse. Retrying non-idempotent methods (POST that creates a resource) risks creating duplicates if the first call actually succeeded but the response was lost — retry those only when the server exposes an idempotency key.
+
+**Why exponential backoff, not fixed intervals.** When a service is overloaded (503), every client that fails at the same moment starts a retry timer. If everyone retries at a fixed 1s, they all hit the service together 1s later — the *thundering herd* that keeps the service pinned. Doubling the delay each attempt (1s → 2s → 4s) spreads clients across a widening window, so the service gets breathing room. In production you also add **jitter** — a random 0-50% wobble on each delay — so retries don't re-synchronise across clients.
+
+The bug the naive version has: `processResponse` already throws on *any* non-ok status, so a retry loop wrapping it will retry 400s and 404s along with 500s. The fix is to inspect the raw response status *before* letting `processResponse` throw, and only enter the catch branch for transient failures.
 
 ```typescript
-  // Inside APIUtils class
+// Inside APIUtils
 
-  // Wrapper method for retries
-  private async executeWithRetry<T>(
-    operation: () => Promise<ApiResponse<T>>,
-    maxRetries = 3
-  ): Promise<ApiResponse<T>> {
-    let attempt = 0;
+// Statuses that are worth retrying (5xx server-side + 408 client timeout + 429 rate limit).
+// Everything else — 400, 401, 403, 404, 422 — will NOT be retried; the caller sees the throw
+// on the first attempt with the full error context.
+private static readonly RETRIABLE_STATUSES = new Set([408, 429, 502, 503, 504]);
 
-    while (attempt < maxRetries) {
-      try {
-        const response = await operation();
-        // If it's a 5xx error, we WANT it to throw so we can catch and retry
-        if (response.status >= 500 && response.status <= 599) {
-            throw new Error(`Server Error: ${response.status}`);
-        }
-        return response;
-      } catch (error: any) {
-        attempt++;
-        if (attempt >= maxRetries) {
-          throw error; // Retries exhausted
-        }
+private async executeWithRetry<T>(
+  operation: () => Promise<import('@playwright/test').APIResponse>,
+  method: string,
+  url: string,
+  options: RequestOptions,
+  maxAttempts = 3,
+): Promise<ApiResponse<T>> {
+  let lastError: unknown;
 
-        // Exponential backoff: 1s, 2s, 4s...
-        const delayMs = Math.pow(2, attempt - 1) * 1000;
-        console.warn(`[APIUtils] Retry ${attempt}/${maxRetries} after ${delayMs}ms due to: ${error.message}`);
-        await new Promise(res => setTimeout(res, delayMs));
-      }
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    let response: import('@playwright/test').APIResponse | undefined;
+    try {
+      response = await operation();
+    } catch (networkError) {
+      // Genuine network failure (DNS, TCP reset, TLS) — always retriable.
+      lastError = networkError;
+      if (attempt === maxAttempts) throw networkError;
+      await this.sleepWithBackoff(attempt);
+      continue;
     }
-    throw new Error('Unreachable');
+
+    const status = response.status();
+
+    // Retry only transient statuses. Everything else — including 4xx — goes straight
+    // to processResponse, which will throw with the full error body.
+    if (attempt < maxAttempts && APIUtils.RETRIABLE_STATUSES.has(status)) {
+      console.warn(
+        `[APIUtils] ${method} ${url} → ${status} (attempt ${attempt}/${maxAttempts}), retrying…`,
+      );
+      lastError = new Error(`Retriable status ${status}`);
+      await this.sleepWithBackoff(attempt);
+      continue;
+    }
+
+    // Non-retriable status OR last attempt on a retriable one — let processResponse
+    // decide whether to return or throw based on options.ignoreStatuses.
+    return this.processResponse<T>(response, method, url, options);
   }
 
-  // Update HTTP methods to use the retry wrapper
-  async get<T = unknown>(url: string, options: RequestOptions = {}): Promise<ApiResponse<T>> {
-    return this.executeWithRetry(async () => {
-      const response = await this.request.get(url, {
-        headers: { ...this.defaultHeaders, ...options.headers },
-        timeout: options.timeoutMs ?? 30_000,
-      });
-      return this.processResponse<T>(response, 'GET', url, options);
-    }, options.retries ?? 3); // Allow custom retry count
-  }
+  throw lastError ?? new Error('executeWithRetry: exhausted attempts without a response');
+}
+
+private async sleepWithBackoff(attempt: number): Promise<void> {
+  // Full jitter: pick a random delay in [0, 2^attempt * base]. Standard AWS pattern —
+  // decorrelates clients even better than fixed exponential does.
+  const base = 500;                                   // ms
+  const cap  = 10_000;                                // never wait longer than 10s
+  const window = Math.min(cap, base * 2 ** (attempt - 1));
+  const delayMs = Math.floor(Math.random() * window);
+  await new Promise(res => setTimeout(res, delayMs));
+}
+
+// Every HTTP method routes through executeWithRetry:
+async get<T = unknown>(url: string, options: RequestOptions = {}): Promise<ApiResponse<T>> {
+  return this.executeWithRetry<T>(
+    () => this.request.get(url, {
+      headers: { ...this.defaultHeaders, ...options.headers },
+      timeout: options.timeoutMs ?? 30_000,
+    }),
+    'GET', url, options,
+    options.maxAttempts ?? 3,
+  );
+}
 ```
+
+Notice `POST`/`PATCH`/`PUT` are deliberately not shown here. Retrying them safely requires either an idempotency-key header (the server dedupes on it) or the caller opting in explicitly. Default the retry count for mutating methods to `1` (no retry) and let callers pass a higher `maxAttempts` when they know the endpoint is safe to replay.
 
 ---
 
 ## 3c. Error Taxonomy & Normalisation
 
-Not all API errors are the same. A 401 means your token is dead, a 404 means the data is missing, and a 500 means the server crashed. `APIUtils` should categorize these errors so tests or fixtures can react accordingly.
+The reason to split errors into named subclasses is that **different failures deserve different reactions**. Fixtures that catch `AuthError` can refresh the token and retry. Fixtures that catch a `NotFoundError` know the resource is gone and can skip cleanup. A plain `Error` forces every catch site to parse the message string to decide what to do — which is what "stringly-typed error handling" is, and it always drifts.
+
+The important distinction the HTTP spec draws — and that most homegrown taxonomies get wrong — is between **401 Unauthorized** and **403 Forbidden**:
+
+- **401** means *"I don't know who you are."* The token is missing, malformed, or expired. Refreshing the token may fix it.
+- **403** means *"I know exactly who you are, and you're not allowed to do this."* The token is fine. Refreshing does nothing. Only a role change on the server can fix it.
+
+Putting them under the same class is a common bug: fixtures that catch it and try to refresh the token loop forever on 403s. Keep them separate.
 
 ```typescript
 // utils/api-errors.ts
+
+/** Base class — all HTTP errors extend this so tests can catch any of them uniformly. */
 export class ApiError extends Error {
-  constructor(
-    public status: number,
-    public url: string,
-    message: string,
-  ) {
+  constructor(public readonly status: number, public readonly url: string, message: string) {
     super(message);
-    this.name = "ApiError";
+    this.name = 'ApiError';
   }
 }
 
-export class AuthenticationError extends ApiError {
+/** 401 — token invalid/expired. Refreshing may recover. */
+export class AuthTokenError extends ApiError {
   constructor(url: string, message: string) {
     super(401, url, message);
-    this.name = "AuthenticationError";
+    this.name = 'AuthTokenError';
   }
 }
 
+/** 403 — token valid, user lacks permission. Refresh will NOT help. */
+export class PermissionDeniedError extends ApiError {
+  constructor(url: string, message: string) {
+    super(403, url, message);
+    this.name = 'PermissionDeniedError';
+  }
+}
+
+/** 404 — the resource is gone or was never there. Often expected in teardown. */
+export class NotFoundError extends ApiError {
+  constructor(url: string, message: string) {
+    super(404, url, message);
+    this.name = 'NotFoundError';
+  }
+}
+
+/** 5xx — server-side failure. Transient; the retry layer (Section 3b) handles it first. */
 export class ServerError extends ApiError {
   constructor(status: number, url: string, message: string) {
     super(status, url, message);
-    this.name = "ServerError";
+    this.name = 'ServerError';
   }
 }
 ```
 
-In `APIUtils.ts`, throw these specific errors:
+In `APIUtils.processResponse`, map the status code to the right subclass:
 
 ```typescript
 if (!response.ok() && !ignoreStatuses.includes(status)) {
   const body = await response.text();
-  const message = `[APIUtils] ${method} ${url} - ${status} ${response.statusText()}\n${body}`;
+  const message =
+    `[APIUtils] ${method} ${url}\n` +
+    `  Status: ${status} ${response.statusText()}\n` +
+    `  Response: ${body.substring(0, 500)}${body.length > 500 ? '… [truncated]' : ''}`;
 
-  if (status === 401 || status === 403) {
-    throw new AuthenticationError(url, message);
-  } else if (status >= 500) {
-    throw new ServerError(status, url, message);
-  } else {
-    throw new ApiError(status, url, message);
-  }
+  if (status === 401) throw new AuthTokenError(url, message);
+  if (status === 403) throw new PermissionDeniedError(url, message);
+  if (status === 404) throw new NotFoundError(url, message);
+  if (status >= 500)  throw new ServerError(status, url, message);
+  throw new ApiError(status, url, message);
 }
 ```
 
-_Benefit_: Your fixtures can catch `AuthenticationError` specifically and attempt a token refresh mid-test!
+**Fixture that acts on the distinction:**
+
+```typescript
+// Test-scoped client that transparently refreshes an expired token on 401 — but NOT on 403.
+citationsClient: async ({ request, account }, use) => {
+  const client = new CitationsApiClient(request, account.accessToken);
+
+  // Wrap the original create so a 401 triggers exactly one refresh + retry.
+  const originalCreate = client.create.bind(client);
+  client.create = async (payload) => {
+    try {
+      return await originalCreate(payload);
+    } catch (err) {
+      if (err instanceof AuthTokenError) {
+        const fresh = await refreshToken(request, account.refreshToken);
+        client.setAccessToken(fresh);           // client exposes a setter
+        return originalCreate(payload);         // one retry with the fresh token
+      }
+      // PermissionDeniedError, NotFoundError, ServerError — rethrow untouched.
+      throw err;
+    }
+  };
+
+  await use(client);
+},
+```
+
+The `if (err instanceof AuthTokenError)` check is the whole point of the taxonomy. With a plain `Error`, you would be pattern-matching on `.message`; with a base `ApiError`, you would be checking `.status === 401`; both work but neither expresses intent as clearly, and neither survives refactors as well as `instanceof`.
 
 ---
 
@@ -658,7 +745,7 @@ This tells you EXACTLY which API call failed without any code changes.
 
 ---
 
-## ðŸ‹ï¸ Practice Challenges
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — Why Composition Over Inheritance?
 
@@ -905,12 +992,12 @@ async waitForStatus(
 
 ## Reality Check
 
-**"Playwright APIRequestContext is the only way to make API calls in tests"** ? APIRequestContext shares the browser authentication state, which is convenient for testing API + UI flows. But for pure API testing, direct HTTP clients (fetch, axios) may be simpler. Choose based on whether you need browser cookie forwarding (use APIRequestContext) or independent API authentication (use fetch with explicit headers).
+**"Playwright APIRequestContext is the only way to make API calls in tests"**→ APIRequestContext shares the browser authentication state, which is convenient for testing API + UI flows. But for pure API testing, direct HTTP clients (fetch, axios) may be simpler. Choose based on whether you need browser cookie forwarding (use APIRequestContext) or independent API authentication (use fetch with explicit headers).
 
-**"Wrapping every API call in a utility function is necessary"** ? Wrap calls that are REUSED: login, create test data, verify side effects. Do not wrap one-off API calls made in a single test � the wrapper adds indirection without reuse benefit. The threshold: if the same API call appears in 3+ test files with the same setup, extract it into a utility.
+**"Wrapping every API call in a utility function is necessary"**→ Wrap calls that are REUSED: login, create test data, verify side effects. Do not wrap one-off API calls made in a single test — the wrapper adds indirection without reuse benefit. The threshold: if the same API call appears in 3+ test files with the same setup, extract it into a utility.
 
-**"API response assertions should check the full response body"** ? Asserting the entire response body makes tests brittle: any new field added to the API response breaks the test. Assert on the fields your test DEPENDS ON: status code, specific field values, and array lengths. Use expect(response).toMatchObject for partial matching � verify the structure you care about while ignoring fields you do not.
+**"API response assertions should check the full response body"**→ Asserting the entire response body makes tests brittle: any new field added to the API response breaks the test. Assert on the fields your test DEPENDS ON: status code, specific field values, and array lengths. Use expect(response).toMatchObject for partial matching — verify the structure you care about while ignoring fields you do not.
 
-**"API test utilities should handle retries internally"** ? Internal retries mask flaky APIs. If an API call needs retries, that indicates either a bug (fix it) or eventual consistency (test it explicitly). Retries in API utilities hide failures from test reports. If the API is genuinely eventually consistent, make the retry visible: await pollUntil(() => getOrder(id), order => order.status === 'confirmed').
+**"API test utilities should handle retries internally"**→ Internal retries mask flaky APIs. If an API call needs retries, that indicates either a bug (fix it) or eventual consistency (test it explicitly). Retries in API utilities hide failures from test reports. If the API is genuinely eventually consistent, make the retry visible: await pollUntil(() => getOrder(id), order => order.status === 'confirmed').
 
-**"Error responses do not need testing"** ? Error response testing catches: missing error codes that client applications depend on, information leakage in error messages (stack traces, SQL queries, internal paths), inconsistent error formats across endpoints, and missing rate limit headers. Test that error responses return the correct HTTP status, a consistent error body format, and no sensitive information.
+**"Error responses do not need testing"**→ Error response testing catches: missing error codes that client applications depend on, information leakage in error messages (stack traces, SQL queries, internal paths), inconsistent error formats across endpoints, and missing rate limit headers. Test that error responses return the correct HTTP status, a consistent error body format, and no sensitive information.
