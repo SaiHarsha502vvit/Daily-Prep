@@ -563,13 +563,20 @@ CREATE TABLE order_items (
     PRIMARY KEY (order_id, product_id)
 );
 
+-- Staff/system actors who process orders -- distinct from the customers
+-- who place them, and referenced by order_status_history.changed_by below.
+CREATE TABLE staff (
+    id   BIGSERIAL PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
 -- "who changed it and when" (§2.2) → history is an entity
 CREATE TABLE order_status_history (
     id         BIGSERIAL PRIMARY KEY,
     order_id   BIGINT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
     old_status TEXT,                                   -- NULL on creation
     new_status TEXT NOT NULL,
-    changed_by BIGINT REFERENCES users(id),
+    changed_by BIGINT REFERENCES staff(id),
     changed_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
