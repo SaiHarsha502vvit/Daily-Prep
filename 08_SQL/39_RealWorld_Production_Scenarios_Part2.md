@@ -373,8 +373,9 @@ ALTER TABLE products ADD FULLTEXT INDEX ft_name_desc (name, description);
 SELECT * FROM products
 WHERE MATCH(name, description) AGAINST('laptop gaming' IN BOOLEAN MODE);
 
--- Solution 4: Generated column for prefix search
--- If searches are always "starts with":
+-- Solution 4: Generated column for suffix search
+-- "Starts with" searches (name LIKE 'phone%') already use a normal index --
+-- no trick needed. This one is for the opposite case, "ends with":
 ALTER TABLE products ADD COLUMN name_reversed VARCHAR(255)
     GENERATED ALWAYS AS (REVERSE(name)) STORED;
 CREATE INDEX idx_name_rev ON products(name_reversed);
@@ -1101,10 +1102,17 @@ CREATE INDEX idx_orders_customer ON orders(customer_id);
 -- FIX: Materialized view refreshed every minute
 CREATE MATERIALIZED VIEW dashboard_stats AS
 SELECT
+    tenant_id,
     COUNT(*) FILTER (WHERE status = 'active') AS active_orders,
     SUM(total) FILTER (WHERE created_at > CURRENT_DATE) AS today_revenue,
     COUNT(DISTINCT customer_id) AS unique_customers_today
-FROM orders WHERE created_at > CURRENT_DATE - INTERVAL '30 days';
+FROM orders WHERE created_at > CURRENT_DATE - INTERVAL '30 days'
+GROUP BY tenant_id;
+
+-- REFRESH ... CONCURRENTLY requires a unique index on the view --
+-- without one, PostgreSQL refuses with "cannot refresh materialized
+-- view concurrently". tenant_id is also what makes each row unique here.
+CREATE UNIQUE INDEX idx_dashboard_stats_tenant ON dashboard_stats(tenant_id);
 
 REFRESH MATERIALIZED VIEW CONCURRENTLY dashboard_stats;
 -- 500 users all read from the materialized view = 0 query load
@@ -1158,7 +1166,7 @@ public class DashboardService {
 **Predecessors (with years):**
 - **Gavin King (2001)**: Created Hibernate — the ORM that popularized the N+1 query problem by making lazy loading the default, silently generating hundreds of queries from one entity access
 - **SQL practitioners (pre-2000s)**: SELECT * became ubiquitous as a shorthand — developers debugged by seeing all columns; the network and memory cost was not measured until web scale
-- **PostgreSQL Global Development Group (2000)**: PostgreSQL 7.0 introduced EXPLAIN ANALYZE — making query plans observable for the first time to non-DBA developers
+- **PostgreSQL Global Development Group (2002)**: PostgreSQL 7.2 introduced EXPLAIN ANALYZE — making query plans observable for the first time to non-DBA developers
 
 **Evolution narrative:**
 Query performance problems are as old as SQL itself. Early databases ran on expensive mainframes where every query was scrutinized. The PC era (1990s) democratized databases but also democratized bad patterns: SELECT * for convenience, no indexes because "disk is cheap," and ORMs that abstracted away the SQL generation. Hibernate (2001) was a productivity revolution that also became the N+1 query factory — developers who never saw the SQL it generated had no reason to worry about 1000 queries per page. The EXPLAIN ANALYZE command existed in commercial databases but PostgreSQL's open-source EXPLAIN made plan analysis accessible to everyone.
