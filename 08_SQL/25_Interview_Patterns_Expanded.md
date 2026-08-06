@@ -408,11 +408,11 @@ GROUP BY product_name;
 
 🔬 **Section Challenge — Pattern 3: Window Functions (Q13-Q20)**
 
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+**Challenge (Reasoning):** Q19's streak-detection trick subtracts `ROW_NUMBER()` (as a day count) from each login date to compute `grp`, then groups by `(user_id, grp)`. Walk through why consecutive login dates always land in the same `grp`, and why a single missed day breaks it into two groups.
 
 <details><summary>Answer</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+Take a user who logs in on Jan 1, 2, 3, then skips to Jan 5, 6. Ordered by date, `ROW_NUMBER()` assigns 1, 2, 3, 4, 5. Subtracting the row number from each date (as a day offset): Jan 1 − 1 day = Dec 31; Jan 2 − 2 days = Dec 31; Jan 3 − 3 days = Dec 31 — three different dates, same subtraction result, because both the date *and* the row number advanced by exactly one each time, so the gap between them stays constant. Jan 5 − 4 days = Jan 1; Jan 6 − 5 days = Jan 1 — a second, different constant. The row number only advances by 1 per row regardless of how large the actual date gap is, so the moment a date jumps by more than a day, the subtraction result shifts to a new constant, splitting the streak into a new group. `GROUP BY user_id, grp` then just counts how many rows share each constant — that count is the streak length. The trick works precisely because `ROW_NUMBER()` counts *rows*, not days, so it's insensitive to gaps by design, and the arithmetic converts "same row-to-row spacing as row-number spacing" into "identical computed value."
 
 </details>
 
