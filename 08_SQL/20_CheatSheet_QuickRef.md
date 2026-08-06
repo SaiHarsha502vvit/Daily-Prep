@@ -21,19 +21,19 @@
 > ║ JOIN TYPES ║
 > ╠═══════════════════════════════════════════════════════════════════════════╣
 > ║ INNER JOIN - Matching rows from both tables ║
-║ ⚠️ Pitfall: JOIN without ON or with ON always-true (ON 1=1) produces a Cartesian product — every row in the left table matches every row in the right table, exploding O(n×m). Always write a meaningful ON clause.
+> ║ ⚠️ Pitfall: JOIN without ON or with ON always-true (ON 1=1) produces a Cartesian product — every row in the left table matches every row in the right table, exploding O(n×m). Always write a meaningful ON clause.
 > ║ LEFT JOIN - All from left + matching from right ║
-║ ⚠️ Pitfall: Adding a WHERE filter on the right table (e.g., WHERE right.col IS NULL) converts LEFT JOIN to INNER JOIN silently — rows without matches disappear. Move right-table filters into the ON clause.
+> ║ ⚠️ Pitfall: Adding a WHERE filter on the right table (e.g., WHERE right.col IS NULL) converts LEFT JOIN to INNER JOIN silently — rows without matches disappear. Move right-table filters into the ON clause.
 > ║ RIGHT JOIN - All from right + matching from left ║
 > ║ FULL JOIN - All rows from both tables ║
 > ║ CROSS JOIN - Cartesian product ║
-║ ⚠️ Pitfall: CROSS JOIN has no ON clause — it returns |A| × |B| rows. Use with extreme care; on two 10,000-row tables this produces 100M rows and can crash the server.
+> ║ ⚠️ Pitfall: CROSS JOIN has no ON clause — it returns |A| × |B| rows. Use with extreme care; on two 10,000-row tables this produces 100M rows and can crash the server.
 > ║ SELF JOIN - Table joined to itself ║
 > ╚═══════════════════════════════════════════════════════════════════════════╝
 >
 > ╔═══════════════════════════════════════════════════════════════════════════╗
 > ║ AGGREGATE FUNCTIONS ║
-║ ⚠️ Pitfall: NULL in NOT IN — SELECT * FROM t WHERE col NOT IN (1, NULL) returns zero rows because NULL is unknown, and no known value equals an unknown value. Use NOT EXISTS or NOT IN with COALESCE to handle NULL explicitly.
+> ║ ⚠️ Pitfall: NULL in NOT IN — SELECT * FROM t WHERE col NOT IN (1, NULL) returns zero rows because NULL is unknown, and no known value equals an unknown value. Use NOT EXISTS or NOT IN with COALESCE to handle NULL explicitly.
 > ╠═══════════════════════════════════════════════════════════════════════════╣
 > ║ COUNT(\*) - Count all rows ║
 > ║ COUNT(column) - Count non-null values ║
@@ -92,14 +92,14 @@
 > ║ SELECT MAX(sal) FROM t WHERE sal < (SELECT MAX(sal) FROM t); ║
 > ║ ║
 > ║ -- Find duplicates ║
-> ║ SELECT col, COUNT(_) FROM t GROUP BY col HAVING COUNT(_) > 1; ║
+> ║ SELECT col, COUNT(\*) FROM t GROUP BY col HAVING COUNT(\*) > 1; ║
 > ║ ║
 > ║ -- Running total ║
-║ ⚠️ Pitfall: UNION ALL vs UNION — UNION deduplicates via sort (O(n log n), cannot stream results), while UNION ALL concatenates with no dedup (O(n), streams immediately). Use UNION ALL unless you explicitly need duplicate elimination.
+> ║ ⚠️ Pitfall: UNION ALL vs UNION — UNION deduplicates via sort (O(n log n), cannot stream results), while UNION ALL concatenates with no dedup (O(n), streams immediately). Use UNION ALL unless you explicitly need duplicate elimination.
 > ║ SUM(amount) OVER (ORDER BY date) AS running_total ║
 > ║ ║
 > ║ -- Top N per group ║
-> ║ SELECT _ FROM (SELECT _, ROW_NUMBER() OVER ║
+> ║ SELECT \* FROM (SELECT \*, ROW_NUMBER() OVER ║
 > ║ (PARTITION BY grp ORDER BY val DESC) rn FROM t) WHERE rn <= N; ║
 > ╚═══════════════════════════════════════════════════════════════════════════╝
 >
@@ -107,16 +107,16 @@
 > ║ OPTIMIZATION TIPS ║
 > ╠═══════════════════════════════════════════════════════════════════════════╣
 > ║ ✓ Use indexes on WHERE, JOIN, ORDER BY columns ║
-║ ⚠️ Pitfall: Index on a low-cardinality column (gender, is_active) returning >15-20% of rows is ignored by the optimizer — a sequential scan is faster. Use partial indexes (WHERE is_active = true) for high-density flag columns.
+> ║ ⚠️ Pitfall: Index on a low-cardinality column (gender, is_active) returning >15-20% of rows is ignored by the optimizer — a sequential scan is faster. Use partial indexes (WHERE is_active = true) for high-density flag columns.
 > ║ ✓ Avoid SELECT \* - select only needed columns ║
-║ ⚠️ Pitfall: SELECT * on a table with BLOB or VARCHAR(5000) columns pulls megabytes per row over the wire. A single API endpoint returning 100 rows could transfer 500MB if one column is a document store. Always name columns explicitly.
+> ║ ⚠️ Pitfall: SELECT * on a table with BLOB or VARCHAR(5000) columns pulls megabytes per row over the wire. A single API endpoint returning 100 rows could transfer 500MB if one column is a document store. Always name columns explicitly.
 > ║ ✓ Use EXPLAIN to analyze query plans ║
 > ║ ✓ Avoid functions on indexed columns in WHERE ║
 > ║ ✓ Use EXISTS instead of IN for large subqueries ║
 > ║ ✓ Batch large INSERT/UPDATE/DELETE operations ║
-║ ⚠️ Pitfall: A multi-million-row DELETE without a LIMIT holds row locks indefinitely and fills WAL. Batch deletes in chunks of 1,000-10,000 rows with a sleep between batches.
+> ║ ⚠️ Pitfall: A multi-million-row DELETE without a LIMIT holds row locks indefinitely and fills WAL. Batch deletes in chunks of 1,000-10,000 rows with a sleep between batches.
 > ║ ✓ Use LIMIT for pagination, prefer keyset over OFFSET ║
-║ ⚠️ Pitfall: OFFSET 10000 scans and throws away 10,000 rows every time — O(N) per page, linearly degrading. Keyset pagination (WHERE id > @last_id) is O(log N) regardless of page number.
+> ║ ⚠️ Pitfall: OFFSET 10000 scans and throws away 10,000 rows every time — O(N) per page, linearly degrading. Keyset pagination (WHERE id > @last_id) is O(log N) regardless of page number.
 > ║ ✓ Keep transactions short to avoid locks ║
 > ╚═══════════════════════════════════════════════════════════════════════════╝
 
