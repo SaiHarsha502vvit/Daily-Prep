@@ -764,45 +764,56 @@ problems that previously required workarounds.
 
 ### `const` Type Parameters (TS 5.0+) — Preserving Literal Types
 
-WHY: In TypeScript, generic type parameters normally widen literals:
+WHY: In TypeScript, generic type parameters normally widen literals **when
+inference has to reach through an intermediate container** — an array
+literal, an object literal, a tuple built from rest args. A single bare
+literal argument (`f("hello")` for `function f<T>(x: T)`) already infers
+the exact literal type `"hello"` on its own, in every TypeScript version —
+that part was never the problem `const` type parameters were built to
+solve. The actual problem shows up one level of nesting in:
+
 ```typescript
-function f<T>(x: T) { return x; }
-const result = f("hello");  // T = string, not "hello"
+function makeArray<T>(arr: T[]) { return arr; }
+const arr = makeArray(["a", "b", "c"]);
+// arr: string[] — TypeScript widened each element while inferring T for
+// the ARRAY as a whole. This is usually what you want (a mutable string[]
+// you can push new strings onto) — but sometimes you specifically want
+// the exact set of literals preserved instead.
 ```
 
-This is usually correct — you don't want `T = "hello"` for most uses. But
-sometimes you DO want literal preservation: for template literal types,
-const-assertion patterns, and functions that pass literals through.
-
-WHAT: A `const` modifier on type parameters tells TypeScript to infer the
-narrowest possible type (literal) instead of widening:
+WHAT: A `const` modifier on the type parameter tells TypeScript to infer
+the narrowest possible type from the ENTIRE argument — including anything
+nested inside it — instead of widening:
 
 ```typescript
-// WITHOUT const type parameter (TS 4.7+):
-function toRoute<T extends string>(path: T) { return path; }
-const route = toRoute("/users/:id");
-// route: string — TS widened to the constraint
-
-// WITH const type parameter (TS 5.0+):
-function toRoute<const T extends string>(path: T) { return path; }
-const route = toRoute("/users/:id");
-// route: "/users/:id" — literal preserved!
-
-// Practical use: type-safe route definitions
-type Route = { path: string; params: Record<string, string> };
-
-function defineRoute<const T extends string>(
-  path: T
-): Route & { path: T } {
-  return { path, params: {} };
+// WITHOUT const type parameter — array elements widen to their general type:
+function createTagSet<T>(tags: T[]) {
+  return { tags, has: (tag: T) => tags.includes(tag) };
 }
+const tagSet = createTagSet(["urgent", "bug", "feature"]);
+// tagSet.tags: string[] — the specific tag names are gone from the type
+tagSet.has("literally anything"); // compiles — no typo protection at all
 
-const r1 = defineRoute("/users/:id");
-// r1.path: "/users/:id" — used for route matching!
-
-const r2 = defineRoute("/posts/:slug");
-// r2.path: "/posts/:slug"
+// WITH const type parameter (TS 5.0+) — the exact literals survive:
+function createTagSetConst<const T>(tags: T[]) {
+  return { tags, has: (tag: T) => tags.includes(tag) };
+}
+const tagSetConst = createTagSetConst(["urgent", "bug", "feature"]);
+// tagSetConst.tags: ("urgent" | "bug" | "feature")[] — literal preserved!
+tagSetConst.has("urgent"); // fine — one of the three known literals
+// tagSetConst.has("urgnet");  // ❌ TS error — typo caught at compile time
 ```
+
+**Why the constraint you put on `T` also matters, separately from `const`.**
+Adding `T extends string` (rather than leaving `T` unconstrained) can
+ALSO make plain inference — no `const` needed — preserve the literal
+union for an array argument, because the constraint gives the inference
+algorithm a narrower target to match against. `const` is the general-purpose
+fix that works regardless of what constraint (if any) is on `T`; a
+well-chosen `extends` constraint is a narrower, situational way to get
+a similar result. When in doubt, reach for `const` — it's the version
+that doesn't depend on which constraint happens to trigger literal
+inference for that specific case.
 
 ### `using` & `Disposable` — Explicit Resource Management (TS 5.2+)
 
@@ -845,14 +856,19 @@ function getUser(id: string) {
   // Even if an exception is thrown above!
 }
 
-// COMPARISON with manual cleanup:
+// COMPARISON with manual cleanup — same class, same [Symbol.dispose]()
+// method, called by hand instead of automatically. This is the exact
+// call `using` makes FOR you above; writing it out shows precisely what
+// the new syntax removes: the try/finally boilerplate, and the risk of
+// someone adding a new early `return` inside the try block and forgetting
+// this cleanup exists at all.
 function getUserOld(id: string) {
   const db = new DatabaseConnection();
   try {
     db.connect();
     // ... do work ...
   } finally {
-    db.close();  // Easy to forget, easy to omit in error paths
+    db[Symbol.dispose](); // Easy to forget, easy to omit in error paths
   }
 }
 ```
@@ -897,42 +913,56 @@ position as an inference site. The type is resolved to `T` but TypeScript
 won't try to infer `T` from this position.
 
 ```typescript
-// WITHOUT NoInfer — TypeScript infers T from both arguments:
-function createPair<T>(a: T, b: T): [T, T] { return [a, b]; }
+// WITHOUT NoInfer — a SECOND parameter of the same type parameter can
+// still influence what gets accepted, by silently widening the inferred
+// union to include whatever that second argument turns out to be:
+function createStreetLightBad<C extends string>(colors: C[], defaultColor?: C) {
+  return { colors, defaultColor };
+}
+createStreetLightBad(["red", "yellow", "green"], "red");  // fine
+createStreetLightBad(["red", "yellow", "green"], "blue"); // ALSO compiles!
+// "blue" isn't one of the three declared colors, but because defaultColor
+// is ALSO typed C, TypeScript just widens C to "red" | "yellow" | "green" | "blue"
+// to make both arguments fit — silently accepting a color that was never
+// in the list, instead of rejecting the typo.
 
-const p = createPair("hello", 123);
-// T = string | number (widened union from both positions)
-// Result: [string | number, string | number]
+// WITH NoInfer — defaultColor can no longer influence what C is allowed
+// to be; C is pinned by `colors` alone, and defaultColor is just CHECKED
+// against whatever C already came out to:
+function createStreetLightGood<C extends string>(colors: C[], defaultColor?: NoInfer<C>) {
+  return { colors, defaultColor };
+}
+createStreetLightGood(["red", "yellow", "green"], "red");  // fine
+createStreetLightGood(["red", "yellow", "green"], "blue"); // ❌ correctly rejected —
+// C was already fixed to "red" | "yellow" | "green" from `colors` alone,
+// and "blue" doesn't match it.
 
-// WITH NoInfer — TypeScript infers T ONLY from `a`:
-function createPairFixed<T>(a: T, b: NoInfer<T>): [T, T] { return [a, b]; }
-
-const p2 = createPairFixed("hello", 123);
-// Error: Argument of type 'number' is not assignable to parameter of type 'string'
-// Because T = string (from "hello"), and 123 !== string
-// Without NoInfer: no error (T = string | number)
-
-// PRACTICAL USE: Factory functions that shouldn't re-infer from options:
+// PRACTICAL USE: a config factory where only ONE parameter should drive
+// inference, and a second parameter should just be checked against it:
 interface Config {
   timeout?: number;
   retries?: number;
 }
+type ApiConfig = Config & { apiKey: string };
 
 function createClient<T extends Config>(
   baseUrl: string,
-  options: NoInfer<Partial<T>> = {}  // Don't let options affect T inference
+  defaults: T,                        // T is inferred from HERE, and only here
+  overrides: NoInfer<Partial<T>> = {}, // checked against T, never widens it
 ): T {
-  // T is inferred from the return type annotation, not from options
-  return { baseUrl, ...options } as T;
+  return { ...defaults, ...overrides, baseUrl } as unknown as T;
 }
 
-// This ensures the caller specifies the exact Config type explicitly:
-type ApiConfig = Config & { apiKey: string };
-const client = createClient<ApiConfig>("https://api.example.com", {
-  timeout: 5000,
-  // If options didn't use NoInfer, TS might infer ApiConfig from options
-  // which could be incomplete — causing subtle type errors elsewhere
+const apiDefaults: ApiConfig = { apiKey: "secret", timeout: 3000 };
+const client = createClient("https://api.example.com", apiDefaults, {
+  timeout: 5000, // a real key of ApiConfig — accepted
 });
+// client: ApiConfig — inferred entirely from `defaults`, unaffected by `overrides`
+
+// createClient("https://api.example.com", apiDefaults, { retryCount: 3 });
+// ❌ "retryCount" isn't a key of ApiConfig — rejected immediately, instead
+// of silently being absorbed into a widened T the way createStreetLightBad
+// silently absorbed "blue" above.
 ```
 
 ---
@@ -941,54 +971,65 @@ const client = createClient<ApiConfig>("https://api.example.com", {
 
 **Challenge 1 (Design):** You are implementing a file parser that takes a
 path and returns a parsed result. You want TypeScript to infer the result
-type from the file extension — `parseConfig("config.json")` returns a
-`Config` type, `parseConfig("data.csv")` returns a `DataRow[]` type. You
-use `const` type parameters but find that TypeScript still widens the
-literal to `string`. What is the most likely cause, and how do you fix it?
+type from the file extension — `parseFile("config.json")` returns a
+`Config` type, `parseFile("data.csv")` returns a `DataRow[]` type. You
+declare `function parseFile<const T extends string>(path: T): ParseResult<T>`,
+but at one particular call site TypeScript still widens the result to a
+generic type instead of the specific one. What's the most likely cause?
 
 <details><summary>Answer</summary>
 
-**Scenario:** `const` type parameter not preserving literal types.
-**Trace:** A `const` type parameter does preserve the literal — but only
-when TypeScript infers it from an actual literal value. If the inference
-source is not a literal, `const` has no effect:
+**Scenario:** a `const` type parameter not preserving literal types at one
+specific call site, despite working everywhere else.
+
+**Trace — the cause is almost always upstream of the call, not the
+`const` type parameter itself.** `const T` tells TypeScript "when you
+infer T for THIS call, take the narrowest type available" — but it can
+only narrow what's still available to see. If the argument arrives as an
+already-widened `string` — because it passed through a `let` variable, or
+a variable with an explicit `: string` annotation — the literal
+information was erased BEFORE `parseFile` was ever called, and no amount
+of `const` on the type parameter can recover it:
 
 ```typescript
-// ❌ NOT a literal — parameter gets string type from variable
-const path = someConfigFile;  // type: string
-const result = parseFile<const string>(path);  // T = string
+function parseFile<const T extends string>(path: T) { /* ... */ }
 
-// ✅ IS a literal — const preserves it
-const result = parseFile<const string>("config.json");  // T = "/config.json" literal
+// Widened BEFORE the call — const type parameter can't help:
+let pathA: string = "config.json";     // `: string` annotation locks it
+parseFile(pathA);                       // T = string
+
+let pathB = "config.json";              // `let` ALSO widens, even with no annotation
+parseFile(pathB);                       // T = string
+
+// Literal preserved all the way to the call:
+parseFile("config.json");               // T = "config.json" — direct literal, always works
+const pathD = "config.json";            // plain `const` VARIABLE already keeps the literal —
+parseFile(pathD);                       // T = "config.json" — no `as const` needed here
 ```
 
-The second issue: `const` on type parameters works with **direct inference
-from literals**. But if the function has a return type annotation, TypeScript
-may infer the type parameter from the return type instead — creating a loop.
+**Why `let` is the actual culprit, most of the time.** This is the same
+widening rule Chapter 4 covers for plain variables, showing up again one
+layer removed: `let` always widens a literal initializer to its general
+type (`string`, `number`, …), because the compiler assumes a `let`
+binding might be reassigned later. A `const` **variable** binding
+(unrelated keyword reuse — this is JS's `const`, not the type-parameter
+`const`) does NOT widen, because it can't be reassigned. `const` type
+parameters exist for a DIFFERENT widening problem — arrays/objects
+losing their element literals during inference (Section 5's main
+example) — not for recovering a literal a `let` already threw away.
 
-**Fix:**
+**Fix:** change the upstream variable from `let` to `const`, or drop the
+explicit `: string` annotation and let inference keep the literal:
+
 ```typescript
-function parseFile<const T extends string>(
-  path: T
-): ParseResult<T> {  // Return type depends on T — inference flows through
-  // ...
-}
-
-// Direct call with literal — T inferred as literal, return type narrowed
-const config = parseFile("config.json");    // Config
-const data = parseFile("data.csv");         // DataRow[]
+const path = "config.json"; // const binding, no explicit widening annotation
+const result = parseFile(path); // T = "config.json" — preserved
 ```
 
-If you need to accept a variable but want literal inference from it, use
-`as const` at the call site:
-```typescript
-const path = "config.json" as const;
-const config = parseFile(path);  // T = "config.json" literal
-```
-
-**Rule:** `const` type parameter only works when TypeScript can infer from
-a literal expression. Variables are not literals (even with `as const` at
-declaration) unless the inference point sees the literal directly.
+**Rule:** before debugging the `const` type parameter itself, check
+whether the argument was already `string`-typed before it got there —
+`const T` only narrows what inference can still see, not what a `let`
+already flattened.
 
 </details>
 
@@ -1317,10 +1358,12 @@ Q: What is NoInfer<T> and when would you use it?
   influence the inferred result type).
 
 Q: What is a const type parameter?
-→ Introduced in TS 5.0, a const type parameter (fn<const T>(x: T))
-  forces TypeScript to infer the narrowest literal type instead of
-  widening. This preserves literal string types for path parameters,
-  template literals, and route definitions.
+→ Introduced in TS 5.0, `fn<const T>(x: T)` infers the narrowest literal
+  type from the WHOLE argument, including anything nested inside it — an
+  array literal's elements, an object literal's properties — instead of
+  widening them. A single bare literal argument already infers as its
+  exact literal type without `const`; the modifier matters specifically
+  once inference has to reach through a container like an array or object.
 ```
 
 ---
