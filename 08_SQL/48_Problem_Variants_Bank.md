@@ -194,7 +194,7 @@
 ### B8. DISTINCT on Unindexed Column
 
 **Setup:** `SELECT DISTINCT city FROM users` on 50M rows, no index on city → hash aggregate on full table.
-**Fix:** CREATE INDEX on (city) → Index Only Scan with skip scan (PostgreSQL 15+).
+**Fix:** CREATE INDEX on (city) → Index Only Scan (and, for composite indexes queried on a trailing column, skip scan as of PostgreSQL 18+).
 
 ### B9. Window Function Killing Performance
 
@@ -338,9 +338,8 @@
 
 ### E1. Pool Size Too Large
 
-**Setup:** 20 application instances × 50 connections each = 1000 connections to one PostgreSQL instance.
-**PostgreSQL can handle ~500 connections efficiently.
-**Fix:\*\* Use PgBouncer (connection pooler) between app and DB. 1000 app connections → 100 DB connections.
+**Setup:** 20 application instances × 50 connections each = 1000 connections to one PostgreSQL instance. PostgreSQL can handle ~500 connections efficiently.
+**Fix:** Use PgBouncer (connection pooler) between app and DB. 1000 app connections → 100 DB connections.
 
 ### E2. Connection Pool + Lambda/Serverless
 
@@ -695,7 +694,7 @@ INTERVIEW SIMULATION:
 - **ISO/IEC (1986, 1989, 1992, 1999, 2003, 2008, 2011, 2016, 2023)**: SQL standards evolution from SQL-86 (first standard) through SQL:2023 — each iteration added features (CTEs in SQL:1999, window functions in SQL:2003, recursive CTEs in SQL:1999) that changed what was considered "SQL knowledge"
 - **ACM (1960s)**: Problem-variant pedagogy formalized in computer science education — presenting a core problem with deliberate parameter/variant modifications to test deep understanding vs. rote memorization
 - **ICPC (1970)**: International Collegiate Programming Contest launched — established the competitive programming format of timed problem-solving with edge cases and variants that later influenced technical interview design
-- **Chandler Hulburd / LeetCode (2015)**: LeetCode founded — democratized problem-variant practice by providing an online platform with 3000+ problems, company-specific filters, and difficulty ratings used by millions preparing for technical interviews
+- **Winston Tang / LeetCode (2015)**: LeetCode founded — democratized problem-variant practice by providing an online platform with 3000+ problems, company-specific filters, and difficulty ratings used by millions preparing for technical interviews
 
 **Evolution narrative:**
 SQL interview preparation evolved through three eras. The certification era (1990s-2000s) tested SQL knowledge via multiple-choice exams on joins and subqueries. The stored-procedure era (2005-2012) tested SQL as part of full-stack development with emphasis on stored procedures and database design. The production-scenario era (2013+) shifted to real-world scenarios: here is the production incident, walk me through diagnosis and fix. This mirrors the shift from "know SQL syntax" to "operate SQL in production." Problem-variant banks like LeetCode's SQL section and this chapter's 100+ variants emerged because interviewers discovered that candidates who memorized solutions to 50 standard queries would freeze on a new twist — while candidates trained on variants could reason through novel scenarios.
