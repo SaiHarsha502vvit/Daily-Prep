@@ -94,9 +94,13 @@ WHERE <table_B>.<column> IS NULL;               -- Rows in A with no match in B
 │  ├────────┼─────────┼─────┤     ├─────────┼─────────────┤                       │
 │  │ 1      │ Alice   │ 10  │     │ 10      │ Engineering │                       │
 │  │ 2      │ Bob     │ 20  │     │ 20      │ Marketing   │                       │
-│  │ 3      │ Carol   │ 10  │     │ 30      │ Finance     │  ← No employees       │
-│  │ 4      │ Dave    │ 40  │← No dept  │                │                        │
-│  └────────┴─────────┴─────┘     └─────────┴─────────────┘                       │
+│  │ 3      │ Carol   │ 10  │     │ 30      │ Finance     │                       │
+│  │ 4      │ Dave    │ 40  │     └─────────┴─────────────┘                       │
+│  └────────┴─────────┴─────┘                                                    │
+│                                                                                 │
+│  Dave's dept=40 has no matching row in departments. Finance (30) has no        │
+│  matching row in employees. Both are the "unmatched" rows every JOIN type      │
+│  below treats differently.                                                    │
 │                                                                                 │
 │                                                                                 │
 │  1. INNER JOIN - Only matching rows from both tables                            │
