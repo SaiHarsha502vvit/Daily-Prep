@@ -444,11 +444,11 @@ ORDER BY ds.date;
 
 🔬 **Section Challenge — Part 4 — Advanced Window Functions for Analytics**
 
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+**Challenge (Reasoning):** The sessionization query computes `is_new_session` per event, then `SUM(is_new_session) OVER (PARTITION BY user_id ORDER BY event_timestamp)` to produce `session_id`. Why does summing a column of 0s and 1s produce a valid, unique session identifier per user?
 
 <details><summary>Answer</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+`is_new_session` is 1 exactly at the moment a new session begins (the first event ever, or any event more than 30 minutes after the previous one) and 0 for every event that continues the current session. A running `SUM()` over that column, ordered by time, only increases at those "new session" boundaries and stays flat everywhere else — so every event within the same session shares the same cumulative sum (because no 1s occurred between them), and the sum strictly increases by exactly 1 the moment a new session starts. The running total is therefore a monotonically increasing integer that's constant within a session and different across sessions — exactly the properties a session ID needs. This is the same "turn a boolean marker into a group ID via a running SUM" trick used for other grouping problems (e.g., detecting consecutive-value runs), just with a time-gap condition instead of a value-change condition marking the boundary.
 
 </details>
 
@@ -627,8 +627,8 @@ Today's advanced SQL analytics implements statistical testing (t-tests, chi-squa
 3. **Model drift in production**: Churn prediction model trained on 2023 data continues scoring 2024 users — accuracy drops from 87% to 61% over 6 months, no monitoring catches degradation
 
 **Debug workflow:**
-1. Run power analysis before launch: `SELECT power_t_test(alpha => 0.05, power => 0.8, effect_size => 0.05, std_dev => NULL)` to determine required sample size
-2. Validate statistical assumptions in SQL: check for normality with `SELECT skewness(val), kurtosis(val) FROM metric_series` before applying parametric tests
+1. Run power analysis before launch — PostgreSQL has no built-in power-analysis function (`power_t_test` isn't a real function in any mainstream SQL dialect); use the `statsmodels.stats.power.NormalIndPower` approach already shown in Part 1.3 to determine required sample size before the experiment starts, not after.
+2. Validate statistical assumptions before applying parametric tests: PostgreSQL also has no built-in `skewness()`/`kurtosis()` aggregates (unlike `STDDEV`/`VARIANCE`, which are standard). Pull the raw values with SQL and compute skew/kurtosis in Python with `scipy.stats.skew()` / `scipy.stats.kurtosis()`, or compute the third/fourth standardized moments manually via `SUM(POWER(val - avg_val, 3)) / (COUNT(*) * POWER(stddev_val, 3))`.
 3. Implement champion-challenger deployment with automatic rollback: query `experiment_results` table daily for p-value crossing significance threshold
 
 **Modern practice anchor:**
