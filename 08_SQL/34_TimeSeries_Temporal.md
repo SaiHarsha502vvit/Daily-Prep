@@ -113,9 +113,14 @@ FROM stock_prices
 WHERE symbol = 'AAPL';
 
 -- Exponential Moving Average (approximation with weights)
+-- EMA is defined recursively FORWARD in time: EMA(today) = alpha*price(today) + (1-alpha)*EMA(yesterday)
+-- so the anchor must be the OLDEST row (ORDER BY timestamp ASC), not the newest.
+-- Seeding from the newest row and walking backward would make each day's "EMA" depend on
+-- future prices -- it's not an EMA at all, and it forces the most recent value to exactly
+-- equal that day's raw price instead of smoothing it.
 WITH numbered AS (
     SELECT timestamp, price,
-           ROW_NUMBER() OVER (ORDER BY timestamp DESC) AS rn
+           ROW_NUMBER() OVER (ORDER BY timestamp ASC) AS rn
     FROM stock_prices WHERE symbol = 'AAPL'
 ),
 ema AS (
@@ -450,13 +455,13 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY metrics_hourly;
 **Predecessors (with years):**
 - **Temporal databases (Snodgrass)** (1995): Richard Snodgrass formalized temporal data management in SQL, establishing the theoretical foundation for bi-temporal modeling
 - **Slowly Changing Dimensions (Kimball)** (1996): Ralph Kimball documented SCD Type 2 and other dimension history tracking patterns for data warehousing
-- **BRIN index (PostgreSQL)** (2013): Block Range Indexes provided efficient indexing for naturally-ordered time-series data with minimal storage overhead
 - **SQL:2011 temporal extensions** (2011): The SQL standard added temporal data types and period predicates, formalizing time-series support in relational databases
 - **InfluxDB** (2013): Time-series database built specifically for metrics and events, pioneering the purpose-built TSDB category
+- **BRIN index (PostgreSQL 9.5)** (2016): Block Range Indexes provided efficient indexing for naturally-ordered time-series data with minimal storage overhead
 - **TimescaleDB** (2017): Hybrid approach combining PostgreSQL with time-series optimizations, bringing TSDB capabilities to existing SQL ecosystems
 
 **Evolution narrative:**
-Temporal data management was formalized by Snodgrass (1995) before most databases supported it natively. Data warehousing needs drove practical adoption with Kimball's SCD patterns (1996), teaching analysts how to track dimension changes. PostgreSQL's BRIN index (2013) enabled efficient time-series storage without the overhead of B-tree indexes. SQL:2011 finally standardized temporal features, while purpose-built time-series databases (InfluxDB 2013, TimescaleDB 2017) emerged to handle the massive scale of IoT and monitoring use cases.
+Temporal data management was formalized by Snodgrass (1995) before most databases supported it natively. Data warehousing needs drove practical adoption with Kimball's SCD patterns (1996), teaching analysts how to track dimension changes. SQL:2011 standardized temporal features at the language level around the same time purpose-built time-series databases emerged to handle IoT and monitoring scale (InfluxDB, 2013). PostgreSQL's BRIN index (9.5, 2016) then brought efficient time-series indexing to the relational world without the overhead of B-tree indexes, and TimescaleDB (2017) went further, bringing dedicated TSDB capabilities to the existing PostgreSQL ecosystem.
 
 **Modern practice anchor:**
 Today's time-series SQL combines native date/time types with window functions for sliding metrics, BRIN or partitioning for performance, and SCD Type 2 patterns for dimension history—while specialized TSDBs handle extreme scale IoT workloads.
