@@ -146,6 +146,23 @@ Output:
     ├── Jack Sales           | Sales Rep        | 2 | ...
 ```
 
+The same tree, as a tree — this is the shape the recursive CTE is actually walking, one `manager_id = ot.emp_id` join per level of depth:
+
+```mermaid
+flowchart TD
+    A[Alice CEO] --> B[Bob CTO]
+    A --> C[Carol CFO]
+    A --> E[Eve VP Sales]
+    B --> D[Dave VP Eng]
+    D --> F[Frank Lead]
+    F --> G[Grace Dev]
+    F --> H[Hank Dev]
+    C --> I[Ivy Analyst]
+    E --> J[Jack Sales]
+
+    style A fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px
+```
+
 ### 2.3 Find All Subordinates of a Manager
 
 ```sql
@@ -362,7 +379,7 @@ WITH RECURSIVE bom_explode AS (
     JOIN bom_explode be ON b.parent_part_id = be.part_id
 )
 SELECT
-    REPEAT('  ', depth - 1) || name AS component,
+    REPEAT('  ', depth - 1) || be.name AS component,  -- must qualify: both bom_explode and parts have a `name` column
     quantity AS total_needed,
     p.unit_cost,
     quantity * p.unit_cost AS total_cost
@@ -473,7 +490,13 @@ LIMIT 1;
 
 🔬 **Section Challenge — Part 5 — Graph Traversal in SQL**
 
-> >
+**Challenge (Reasoning):** The friend-network query filters `WHERE f.user_b != ALL(fn.path)`. What breaks if that condition is removed, given that friendships can naturally form cycles (A knows B, B knows C, C knows A)?
+
+<details><summary>Answer</summary>
+
+Without the cycle guard, the recursive member keeps rejoining `friendships` to whatever it just found, and a real social graph is full of cycles by nature — A→B→C→A is a completely normal friendship triangle, not corrupt data (unlike the org-chart case, where a manager cycle is *always* a data-integrity bug). Once the recursion reaches C and looks for C's connections, it finds A again — and since A → B → C → A doesn't violate any degree limit on its own, the engine would keep re-discovering the same triangle at ever-increasing `degree` values, forever, only stopping when `WHERE fn.degree < 3` eventually cuts it off (or not, if the depth guard were also missing). `f.user_b != ALL(fn.path)` prevents this by rejecting any candidate that's already been visited on *this specific path* — so the recursion can still explore A→B→C legitimately, it just refuses to walk back to a node already on the current chain. This is why graph traversal needs a visited-set check that plain tree traversal (Part 2-4) doesn't: trees are acyclic by construction, but graphs generally aren't.
+
+</details>
 
 ## Part 6 — Python Visualization of Hierarchies
 
@@ -533,7 +556,7 @@ plt.show()
 ✅ Set max depth/iterations as safety net
 ✅ Use UNION ALL (not UNION) for performance — dedup manually if needed
 ✅ Test with small data first — recursive bugs = infinite loops = crashed DB
-⚠️ PostgreSQL: set max_recursive_iterations if needed
+⚠️ PostgreSQL: no dedicated recursion-depth GUC exists — use the CYCLE clause (PG 14+) or a manual depth counter + WHERE guard, backstopped by statement_timeout
 ⚠️ MySQL: SET SESSION cte_max_recursion_depth = 1000;
 ⚠️ SQL Server: OPTION (MAXRECURSION 100)
 ```
@@ -573,8 +596,8 @@ Today's SQL applications use recursive CTEs for organizational hierarchies, grap
 3. **Cycle creating infinite loop in graph traversal**: Social network query finds bidirectional friend-of-friend relationships — without CYCLE clause, query runs until `work_mem` exhausted and process killed
 
 **Debug workflow:**
-1. Add CYCLE clause to recursive CTE: `CYCLE employee_id SET is_cycle USING cycle_path` to detect and terminate cycles early
-2. Set `max_recursion_depth` in Postgres: `ALTER DATABASE db SET max_recursion_depth = 500` — query fails fast instead of running indefinitely
+1. Add CYCLE clause to recursive CTE (PostgreSQL 14+): `CYCLE employee_id SET is_cycle USING cycle_path` to detect and terminate cycles early
+2. On PostgreSQL versions without CYCLE support, there's no dedicated recursion-depth setting to fall back on — add an explicit depth counter to the recursive member and `WHERE depth < N`, and set a `statement_timeout` as a blunt backstop so a runaway query fails fast instead of running indefinitely
 3. Verify hierarchy depth first: `SELECT MAX(level) FROM (WITH RECURSIVE ... SELECT level + 1 FROM ...) t` to establish expected depth bounds before production queries
 
 **Modern practice anchor:**
