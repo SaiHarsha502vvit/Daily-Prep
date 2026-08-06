@@ -120,20 +120,18 @@ Lesson: Benchmark at the scale you will be at, not at the scale you are at.
 
 Cypress runs in the **same JavaScript event loop** as the application under test. A Node proxy server sits between the browser and the internet — it intercepts HTTP traffic, injects Cypress runner code into every page, and gives Cypress direct access to the app's `window`, `document`, `localStorage`, and XHR/fetch calls.
 
-```
-┌─────────────────────────────────────────┐
-│  Browser (Chromium / Electron)          │
-│  ┌──────────────┐  ┌──────────────────┐ │
-│  │  Your app    │  │  Cypress runner  │ │
-│  │  (AUT)       │◄─►  (same origin)  │ │
-│  └──────────────┘  └──────────────────┘ │
-│           ▲                             │
-│           │ HTTP proxy                 │
-└───────────┼─────────────────────────────┘
-            │
-       Node.js server (Cypress)
-            │
-       Test file (JS/TS)
+```mermaid
+flowchart BT
+    Test["Test file (JS/TS)"] --> Node["Node.js server (Cypress)"]
+    Node -->|HTTP proxy| Browser
+    subgraph Browser["Browser (Chromium / Electron)"]
+        direction LR
+        AUT["Your app (AUT)"]
+        Runner["Cypress runner (same origin)"]
+        AUT <-->|same JS event loop| Runner
+    end
+
+    style Browser fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px
 ```
 
 **Implication:** Cypress commands are NOT async/await — they are a synchronous DSL that queues commands. You do NOT write `await cy.click()`. You write `cy.get('.btn').click()` and Cypress serialises and retries them internally.
@@ -528,29 +526,27 @@ Playwright's `APIRequestContext` is a first-class HTTP client baked into the fra
 
 Use this tree at your next architecture review or interview:
 
-```
-Do you need Java or Python?
-├── Yes → Selenium 4 (or Playwright Java/Python if new project)
-│
-└── No (JS/TS team)
-    │
-    Do you need Cucumber BDD as first-class?
-    ├── Yes → WebdriverIO + @wdio/cucumber-framework
-    │
-    └── No
-        │
-        Is the entire app on one origin (no OAuth redirects)?
-        ├── Yes + want commercial Test Runner/Cloud → Cypress
-        │
-        └── No / multi-domain / OAuth / SAML
-            │
-            Need WebKit/Safari coverage?
-            ├── Yes → Playwright
-            │
-            Need IE11?
-            ├── Yes → Selenium 4
-            │
-            Default → Playwright
+```mermaid
+flowchart TD
+    Q1{Need Java or Python?}
+    Q1 -->|Yes| R1["Selenium 4<br/>(or Playwright Java/Python if new project)"]
+    Q1 -->|No: JS/TS team| Q2{Need Cucumber BDD<br/>as first-class?}
+
+    Q2 -->|Yes| R2["WebdriverIO +<br/>@wdio/cucumber-framework"]
+    Q2 -->|No| Q3{Entire app on one origin<br/>-- no OAuth redirects?}
+
+    Q3 -->|"Yes + want commercial<br/>Test Runner/Cloud"| R3["Cypress"]
+    Q3 -->|No / multi-domain / OAuth / SAML| Q4{Need WebKit/Safari<br/>coverage?}
+
+    Q4 -->|Yes| R4["Playwright"]
+    Q4 -->|No| Q5{Need IE11?}
+
+    Q5 -->|Yes| R5["Selenium 4"]
+    Q5 -->|No| R6["Default: Playwright"]
+
+    style R3 fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    style R4 fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    style R6 fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
 ```
 
 ---

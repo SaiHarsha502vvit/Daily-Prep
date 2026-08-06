@@ -647,6 +647,23 @@ private async processResponse<T>(response, method, url, options): Promise<ApiRes
 
 The template is: **log → validate → parse → return**. The parsing step is the "variable" hook that different content types override. All callers of `get/post/patch/delete` go through the same template — consistent, impossible to forget error handling.
 
+The class diagram above shows *who* has the hook; this shows *where it fires* in the fixed sequence:
+
+```mermaid
+flowchart TD
+    Start(["processResponse() called"]) --> S1["Step 1: Log (fixed)"]
+    S1 --> S2["Step 2: Error check (fixed)"]
+    S2 --> S3{"Step 3: Parse body<br/>(the VARIABLE hook)"}
+    S3 -->|application/json| P1["response.json()"]
+    S3 -->|status 204| P2["undefined"]
+    S3 -->|else| P3["response.text()"]
+    P1 --> S4["Step 4: Return (fixed)"]
+    P2 --> S4
+    P3 --> S4
+
+    style S3 fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+```
+
 ---
 
 ## 6. Proxy Pattern — `page.route()` and the Managed Client

@@ -539,6 +539,23 @@ git bisect run npx playwright test tests/specs/citations/dispute.spec.ts --grep 
 # You can see exactly what changed → fix it
 ```
 
+The loop that turns 150 candidate commits into ~7 test runs:
+
+```mermaid
+flowchart TD
+    Start["150 commits between last-known-good and now-failing"] --> Mid["Check out the MIDDLE commit of what's left"]
+    Mid --> Run["Run: git bisect run npx playwright test ... --grep @smoke"]
+    Run -->|passes| Good["mark 'good' -- bug is in the UPPER half"]
+    Run -->|fails| Bad["mark 'bad' -- bug is in the LOWER half"]
+    Good --> Narrow{More than 1<br/>commit left?}
+    Bad --> Narrow
+    Narrow -->|yes: search space halved| Mid
+    Narrow -->|no| Found["Exact commit that broke the test<br/>~7 steps instead of 150"]
+
+    style Start fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style Found fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+```
+
 **Two-pointer thinking → parallel resource management:**
 
 ```typescript

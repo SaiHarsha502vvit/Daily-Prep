@@ -732,6 +732,29 @@ const order = buildExecutionOrder(deps);
 // Expected: C, B, A, D (topological order)
 ```
 
+The concrete graph the DFS is walking, and the cyclic case that breaks it:
+
+```mermaid
+graph LR
+    subgraph Valid["Valid DAG -- dfs pushes a node only after all its deps are done"]
+        direction LR
+        A1[testA] -->|depends on| B1[testB]
+        B1 -->|depends on| C1[testC]
+        D1[testD] -->|depends on| A1
+        D1 -->|depends on| C1
+    end
+    subgraph Cyclic["Cyclic case -- no node is ever 'done'"]
+        direction LR
+        A2[testA] -->|depends on| B2[testB]
+        B2 -->|depends on| A2
+    end
+
+    style Valid fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    style Cyclic fill:#ffebee,stroke:#e53935,stroke-width:2px
+```
+
+Push order for the valid DAG: `testC` first (no deps), then `testB` (its only dep, C, is done), then `testA`, then `testD` — giving `C, B, A, D`.
+
 There is a critical missing check. What happens if the dependency graph has a cycle (e.g., A→B→A), and how do you fix it?
 
 <details><summary>Answer</summary>
