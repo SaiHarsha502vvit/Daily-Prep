@@ -198,7 +198,9 @@ ALTER TABLE users DROP COLUMN phone;
 ALTER TABLE users RENAME COLUMN phone_number TO phone;
 ```
 
----🔬 **Section Challenge — Scenario 78: Column Type Change Breaks Data**
+---
+
+🔬 **Section Challenge — Scenario 78: Column Type Change Breaks Data**
 
 **Challenge 1 (The Re-Cast Trap):** You are migrating an old `user_id` column from `VARCHAR(50)` to `UUID`. You run `ALTER TABLE users ALTER COLUMN user_id TYPE UUID USING user_id::UUID;`. The migration fails halfway through because row #5,000,000 has a `user_id` of `'UNKNOWN'`. How do you safely cast valid UUIDs while nullifying invalid ones without crashing the migration?
 
@@ -219,6 +221,7 @@ END;
 This guarantees the transaction succeeds. You can then query for `WHERE user_id IS NULL` to handle the dirty data manually.
 
 </details>
+
 ## Scenario 79: Dropping Column That Application Still Reads
 
 ### 🔴 The Incident
@@ -367,10 +370,12 @@ Application starts sending `status = 'processing'` before the database ENUM is u
 ```sql
 -- PostgreSQL ENUM — adding a value
 ALTER TYPE order_status ADD VALUE 'processing' AFTER 'pending';
--- ✅ This is safe, but CANNOT be done inside a transaction!
+-- Since PG12, this CAN run inside a transaction -- but the new value still
+-- can't be USED (inserted, compared, cast) within that same transaction,
+-- only after it commits. Practically the same constraint either way:
 
 -- Deployment order:
--- 1. FIRST: Add ENUM value in database (migration runs)
+-- 1. FIRST: Add ENUM value in database (migration runs and commits)
 -- 2. THEN:  Deploy application code that uses new value
 -- Never the other way around!
 
@@ -386,18 +391,20 @@ ALTER TABLE orders ADD CONSTRAINT chk_status
 -- VARCHAR + CHECK = flexible, versionable, transactional
 ```
 
----🔬 **Section Challenge — Scenario 82: ENUM Type Extended — Deployment Order Matters**
+---
 
-**Challenge 1 (The Postgres ENUM Transaction Trap):** You are deploying a new feature and need to add `'refunded'` to your `order_status` ENUM. You wrap this in a Flyway migration: `ALTER TYPE order_status ADD VALUE 'refunded';`. Flyway runs migrations inside a transaction block by default. What error occurs when this executes against PostgreSQL, and how do you bypass it?
+🔬 **Section Challenge — Scenario 82: ENUM Type Extended — Deployment Order Matters**
+
+**Challenge 1 (The Postgres ENUM Transaction Trap):** You need to add `'refunded'` to your `order_status` ENUM and immediately backfill some rows with it, so you write one Flyway migration: `ALTER TYPE order_status ADD VALUE 'refunded'; UPDATE orders SET status = 'refunded' WHERE ...;`. What error occurs on modern PostgreSQL (12+), and how do you avoid it?
 
 <details><summary>Answer</summary>
 
-PostgreSQL will throw: `ERROR: ALTER TYPE ... ADD cannot run inside a transaction block`.
-Unlike most DDL operations in Postgres which are transactional, extending an ENUM type modifies system catalogs in a way that cannot be rolled back.
+PostgreSQL will throw: `ERROR: unsafe use of new value of enum type "refunded"` with a hint that new enum values must be committed before they can be used. Before PostgreSQL 12, `ALTER TYPE ... ADD VALUE` genuinely could not run inside a transaction block at all — but that restriction was lifted in PG12. What replaced it is narrower but still real: the newly added value isn't usable (in an INSERT, UPDATE, comparison, or cast) within the SAME transaction that added it, because the catalog change isn't visible for use until it actually commits. Flyway runs each migration file in one transaction by default, so a single migration that both adds the enum value and immediately uses it hits this wall every time.
 
-**The Fix:** You must instruct your migration tool to run this specific script _outside_ of a transaction. In Flyway, this is done by adding a configuration parameter or naming convention, or executing it manually before deployment. (Alternatively, as recommended, avoid ENUMs entirely and use `VARCHAR` + `CHECK` constraint, which _is_ transactional).
+**The Fix:** Split it into two migrations — one that only adds the value (and commits), and a later one (a subsequent Flyway run/deploy) that uses it. Alternatively, avoid ENUMs entirely and use `VARCHAR` + `CHECK` constraint, which has no such restriction and is fully transactional either way.
 
 </details>
+
 ## Scenario 83: Default Value Change Breaks INSERT Logic
 
 ### SQL Solution
@@ -484,7 +491,7 @@ ALTER TABLE orders DROP COLUMN discount;
 
 ```sql
 -- PROBLEM: Customer names with accents become garbled
--- "José García" → "José García"
+-- "José" → "JosÃ©"   (correct UTF-8 bytes for é, misread one byte at a time as Latin-1)
 -- Cause: Reading as latin1 but data is actually UTF-8
 
 -- Step 1: Detect encoding issues
@@ -1063,10 +1070,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 - **Facebook Infrastructure (2010)**: Published "Online Schema Change for MySQL" — the first open description of how to alter large tables without downtime using trigger-based dual-write
 - **GitHub Engineering (2016)**: Released gh-ost (GitHub Online Schema Tool) — replaced trigger-based migration with binary log capture, eliminating the trigger lock contention problem that plagued Facebook's approach
 - **MySQL Oracle (2013)**: MySQL 5.6 introduced ALGORITHM=INPLACE, LOCK=NONE for many DDL operations — native online DDL reducing the need for external tools for simple schema changes
-- **Stripe Engineering (2015)**: Codified the expand-contract (parallel change) migration pattern as company policy — adding nullable columns first, deploying code that writes to both, then dropping old column in a separate deployment
+- **Martin Fowler, "Parallel Change" (2014)**: Named and formalized the expand-contract migration pattern in his bliki, drawing together practices already used informally for safe schema and API evolution — adding nullable columns first, deploying code that writes to both, then dropping the old column in a separate deployment
 
 **Evolution narrative:**
-Schema migration was largely ignored as a problem until social-media-scale companies hit multi-hourALTER TABLE locks on tables with hundreds of millions of rows. Facebook's 2010 online schema change paper was the first systematic treatment — they used triggers to capture live changes while copying data to a shadow table. GitHub's gh-ost (2016) improved on this by using the MySQL binlog instead of triggers (avoiding trigger lock contention) and making the migration controllable via a pseudo-table with no triggers at all. The expand-contract pattern emerged independently at Stripe and other companies as the safest way to handle column renames and drops — it treats schema migration as a two-phase commit between code and database, never breaking either during transition.
+Schema migration was largely ignored as a problem until social-media-scale companies hit multi-hour ALTER TABLE locks on tables with hundreds of millions of rows. Facebook's 2010 online schema change paper was the first systematic treatment — they used triggers to capture live changes while copying data to a shadow table. GitHub's gh-ost (2016) improved on this by using the MySQL binlog instead of triggers (avoiding trigger lock contention) and making the migration controllable via a pseudo-table with no triggers at all. Fowler's expand-contract framing (2014) gave the industry a name and a formal three-phase structure for the safest way to handle column renames and drops — it treats schema migration as a multi-step handoff between code and database, never breaking either during transition.
 
 **Modern practice anchor:**
 Today, tools like Flyway and Liquibase formalize expand-contract as migration scripts, gh-ost handles MySQL online DDL, and PostgreSQL 11+ makes ADD COLUMN with DEFAULT instantaneous. The industry learned that schema changes are fundamentally different from code changes: during deployment, both old and new code must work with both old and new schema simultaneously.
