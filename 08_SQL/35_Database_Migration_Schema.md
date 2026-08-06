@@ -447,6 +447,7 @@ for env_name, conn_str in ENVIRONMENTS.items():
 │ Best for    │ Java/SQL  │ Enterprise │ Python/     │
 │             │ projects  │ projects   │ Flask/Django│
 └─────────────┴───────────┴────────────┴─────────────┘
+```
 
 ### Historical Evolution
 
@@ -461,7 +462,7 @@ for env_name, conn_str in ENVIRONMENTS.items():
 Early database deployments used manual SQL scripts with no versioning, making coordination across teams and environments chaotic. Liquibase (2006) pioneered declarative changes with XML changelogs, while Flyway (2010) brought simplicity-first SQL-script migrations to DevOps workflows. Alembic (2010) solved Python-specific needs by autogenerating migrations from SQLAlchemy model changes. As zero-downtime requirements grew, the expand-contract pattern emerged, and gh-ost (2016) demonstrated that triggerless migration was possible at scale.
 
 **Modern practice anchor:**
-Today's schema migrations combine versioned migration tools (Flyway/Liquibase/Alembic) with expand-contract patterns for safe online changes, automated testing in staging, and rollback procedures tested before production deployment.```
+Today's schema migrations combine versioned migration tools (Flyway/Liquibase/Alembic) with expand-contract patterns for safe online changes, automated testing in staging, and rollback procedures tested before production deployment.
 
 
 ---

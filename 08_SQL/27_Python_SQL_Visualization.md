@@ -504,6 +504,9 @@ What are you trying to show?
 Static report? → matplotlib/seaborn
 Interactive dashboard? → plotly
 Quick exploration? → pandas .plot()
+```
+
+---
 
 ### Historical Evolution
 
@@ -533,19 +536,19 @@ Modern Python/SQL visualization typically uses pandas to extract data, then matp
 3. Add datetime validation: `df['date'] = pd.to_datetime(df['date'], errors='coerce')` — if any rows become NaT, those rows had unparseable dates (wrong format, timezone strings) that would have rendered incorrectly.
 
 **Modern practice anchor:**
-Production visualization pipelines require server-side aggregation (SQL GROUP BY) before pandas ingest, not loading raw rows — this reduces 100M rows to 365 annual summary rows with correct dtype parsing.```
+Production visualization pipelines require server-side aggregation (SQL GROUP BY) before pandas ingest, not loading raw rows — this reduces 100M rows to 365 annual summary rows with correct dtype parsing.
 
 
 ---
 
 ## Reality Check
 
-**"Visualization makes data self-explanatory"** ? A chart without context is ambiguous. A line going up could be good (revenue) or bad (error rate). Visualizations need: titles that state what the chart shows, axis labels with units, reference lines for targets or baselines, and annotations for unusual data points. A chart that requires verbal explanation to understand is a failed visualization.
+**"Visualization makes data self-explanatory"** → A chart without context is ambiguous. A line going up could be good (revenue) or bad (error rate). Visualizations need: titles that state what the chart shows, axis labels with units, reference lines for targets or baselines, and annotations for unusual data points. A chart that requires verbal explanation to understand is a failed visualization.
 
-**"More data points make better charts"** ? Plotting 10 million raw data points creates an unreadable scatter cloud that takes minutes to render. Aggregate before visualizing: hourly averages instead of per-second values, percentile distributions instead of individual observations. The purpose of visualization is pattern recognition, which requires reducing data to its essential structure.
+**"More data points make better charts"** → Plotting 10 million raw data points creates an unreadable scatter cloud that takes minutes to render. Aggregate before visualizing: hourly averages instead of per-second values, percentile distributions instead of individual observations. The purpose of visualization is pattern recognition, which requires reducing data to its essential structure.
 
-**"Pie charts are good for showing proportions"** ? Humans are poor at comparing angles and areas. Two pie slices of 27 percent and 32 percent are visually indistinguishable. A sorted horizontal bar chart conveys the same proportional information with precise visual comparison. Use pie charts only when showing two or three categories where the relative sizes are dramatically different (80/20 split).
+**"Pie charts are good for showing proportions"** → Humans are poor at comparing angles and areas. Two pie slices of 27 percent and 32 percent are visually indistinguishable. A sorted horizontal bar chart conveys the same proportional information with precise visual comparison. Use pie charts only when showing two or three categories where the relative sizes are dramatically different (80/20 split).
 
-**"Color makes charts more informative"** ? Color without semantic meaning is decoration. Using 12 different colors for 12 product categories creates a chart that requires constant legend reference. Use color to encode meaning: red for negative, green for positive, sequential color scale for magnitude. Ensure charts are readable in grayscale (10 percent of men are colorblind) by using patterns or labels in addition to color.
+**"Color makes charts more informative"** → Color without semantic meaning is decoration. Using 12 different colors for 12 product categories creates a chart that requires constant legend reference. Use color to encode meaning: red for negative, green for positive, sequential color scale for magnitude. Ensure charts are readable in grayscale (10 percent of men are colorblind) by using patterns or labels in addition to color.
 
-**"Interactive dashboards are better than static reports"** ? Interactive dashboards invite exploration but not analysis. A stakeholder clicking through 20 filters draws random conclusions from sample sizes too small to be statistically significant. A curated static report with pre-analyzed insights, controlled comparisons, and written conclusions drives better decisions. Build dashboards for monitoring and static reports for decision-making.
+**"Interactive dashboards are better than static reports"** → Interactive dashboards invite exploration but not analysis. A stakeholder clicking through 20 filters draws random conclusions from sample sizes too small to be statistically significant. A curated static report with pre-analyzed insights, controlled comparisons, and written conclusions drives better decisions. Build dashboards for monitoring and static reports for decision-making.
