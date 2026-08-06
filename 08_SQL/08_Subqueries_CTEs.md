@@ -392,7 +392,7 @@ WITH RECURSIVE org_chart AS (
     INNER JOIN org_chart oc ON e.manager_id = oc.emp_id
 )
 SELECT
-    REPEAT('  ', level) || first_name AS employee_tree,
+    CONCAT(REPEAT('  ', level), first_name) AS employee_tree,   -- MySQL: || is logical OR, not concat, unless PIPES_AS_CONCAT is set
     level,
     path
 FROM org_chart
