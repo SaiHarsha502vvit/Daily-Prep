@@ -1164,4 +1164,6 @@ products.when(
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Riverpod Challenges](Week_13b_Riverpod_Challenges.md) — prove family caching with a fetch counter, test the autoDispose grace period, break AsyncValue exhaustiveness on purpose.
+
 **Next → [Week 14: HTTP & REST APIs](Week_14_HTTP_and_REST_APIs.md)**

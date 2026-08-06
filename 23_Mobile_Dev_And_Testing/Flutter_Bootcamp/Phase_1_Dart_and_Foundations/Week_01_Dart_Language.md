@@ -1373,4 +1373,6 @@ This is why `await` doesn't freeze the UI — it suspends only the awaiting func
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Dart Coding Challenges](Week_01b_Dart_Coding_Challenges.md) — 5 tiers of hands-on problems, syntax to efficiency to isolates, with runnable DartPad starters.
+
 **Next → [Week 2: Flutter Core Concepts](Week_02_Flutter_Core_Concepts.md)**

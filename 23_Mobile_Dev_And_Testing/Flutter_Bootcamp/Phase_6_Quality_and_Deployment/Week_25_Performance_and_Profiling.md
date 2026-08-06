@@ -1928,4 +1928,6 @@ For finding LEAKS: use Memory profiler
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Performance Challenges](Week_25b_Performance_Challenges.md) — reproduce jank with a Stopwatch, prove a subscription leak, quantify const's effect with real numbers, isolate-vs-async judgment calls.
+
 **Next → [Week 26: CI/CD and Deployment](Week_26_CICD_and_Deployment.md)**

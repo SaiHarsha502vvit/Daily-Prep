@@ -942,4 +942,6 @@ This is why CrossAxisAlignment.baseline is slightly more expensive
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Layout Challenges](Week_04b_Layout_Challenges.md) — predict real BoxConstraints numbers, fix the unbounded-height crash two ways, nail exact flex ratios.
+
 **Next → [Week 5: Navigation & State — Moving Between Screens](Week_05_Navigation_and_State.md)**

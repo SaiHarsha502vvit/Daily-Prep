@@ -1008,4 +1008,6 @@ ListView.builder(
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Scrolling Challenges](Week_07b_Scrolling_Challenges.md) — prove ListView.builder's laziness, fix a double-fetch bug, derive sticky-header opacity math.
+
 **Next → [Week 8: Forms & Input](Week_08_Forms_and_Input.md)**

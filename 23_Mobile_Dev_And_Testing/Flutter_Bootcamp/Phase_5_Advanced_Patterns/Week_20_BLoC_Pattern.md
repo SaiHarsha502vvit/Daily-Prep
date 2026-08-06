@@ -1006,4 +1006,6 @@ The `BlocBuilder`'s `buildWhen:` parameter is the `where()` filter. The `BlocLis
 
 ---
 
+**Want to actually get fluent, not just informed?** → [BLoC Challenges](Week_20b_BLoC_Challenges.md) — buildWhen scope, the BlocListener-vs-Builder SnackBar bug, fix a double-payment race, test a multi-emit sequence.
+
 **Next → [Week 21: Clean Architecture + SOLID](Week_21_Clean_Architecture.md)**

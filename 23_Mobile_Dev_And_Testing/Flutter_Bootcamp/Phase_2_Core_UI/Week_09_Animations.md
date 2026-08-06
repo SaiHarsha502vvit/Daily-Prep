@@ -854,4 +854,6 @@ The Raster thread (GPU work) is often the culprit for complex `CustomPainter` or
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Animation Challenges](Week_09b_Animation_Challenges.md) — compute curve values by hand, predict a staggered sequence, reproduce the Hero tag-mismatch crash, build a custom Tween.
+
 **Next → [Week 10: Gestures & Custom Widgets](Week_10_Gestures_and_Custom_Widgets.md)**

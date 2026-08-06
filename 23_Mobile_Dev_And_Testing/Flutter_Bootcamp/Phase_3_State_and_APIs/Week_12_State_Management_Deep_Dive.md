@@ -568,4 +568,6 @@ final unreadCount = context.select<NotificationModel, int>((n) => n.unreadCount)
 
 ---
 
+**Want to actually get fluent, not just informed?** → [State Management Challenges](Week_12b_State_Management_Challenges.md) — build ChangeNotifier from scratch, prove context.select's rebuild scope, classify ephemeral vs app state.
+
 **Next → [Week 13: Riverpod](Week_13_Riverpod.md)**

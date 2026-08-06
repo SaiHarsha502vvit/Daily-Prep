@@ -1390,4 +1390,6 @@ Step 3 requires the current element to be fully mounted with a parent. During `i
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Lifecycle Challenges](Week_03b_Lifecycle_Challenges.md) — predict exact print order, reproduce the `mounted` crash, prove a timer leak with a counter.
+
 **Next → [Week 4: Layout & Constraints — How Flutter Decides Where Everything Goes](Week_04_Layout_and_Constraints.md)**

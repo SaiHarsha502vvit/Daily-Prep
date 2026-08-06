@@ -1015,4 +1015,6 @@ Add a second job `build-android` to your workflow that:
 
 ---
 
+**Want to actually get fluent, not just informed?** → [CI/CD Challenges](Week_26b_CICD_Challenges.md) — write a GitHub Actions workflow from scratch, version-number arithmetic, diagnose a "works on my machine" CI failure, design a manual production gate.
+
 **Next → [Week 27: Project — Chat App (Phase 6 Capstone)](Week_27_Project_ChatApp.md)**

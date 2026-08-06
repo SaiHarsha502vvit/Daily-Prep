@@ -1170,4 +1170,6 @@ Requirements:
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Gesture Challenges](Week_10b_Gesture_Challenges.md) — reproduce an arena conflict, build Dismissible's core mechanic from scratch, child-vs-builder API design.
+
 **Next → [Week 11: Project — Shopping App](Week_11_Project_ShoppingApp.md)**

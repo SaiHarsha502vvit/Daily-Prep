@@ -16,8 +16,11 @@ The capstone: a **Weather App** using live OpenWeatherMap data.
 | File | Topic | Core Skills |
 |------|-------|-------------|
 | [Week_12_State_Management_Deep_Dive.md](Week_12_State_Management_Deep_Dive.md) | State Deep Dive | InheritedWidget, ChangeNotifier, Provider, ListenableBuilder, ephemeral vs app state |
+| [Week_12b_State_Management_Challenges.md](Week_12b_State_Management_Challenges.md) | State Management Challenges | Build ChangeNotifier from scratch, prove context.select, classify state |
 | [Week_13_Riverpod.md](Week_13_Riverpod.md) | Riverpod | All 5 provider types, ref.watch/read/listen, select, family, ConsumerWidget |
+| [Week_13b_Riverpod_Challenges.md](Week_13b_Riverpod_Challenges.md) | Riverpod Challenges | Prove family caching, test autoDispose timing, break AsyncValue exhaustiveness |
 | [Week_14_HTTP_and_REST_APIs.md](Week_14_HTTP_and_REST_APIs.md) | HTTP & REST APIs | Dio, JSON parsing, Repository pattern, error handling, Interceptors |
+| [Week_14b_HTTP_Challenges.md](Week_14b_HTTP_Challenges.md) | HTTP Challenges | Predict interceptor order, hide Dio behind a repository, retry with backoff |
 | [Week_15_Project_WeatherApp.md](Week_15_Project_WeatherApp.md) | Project: Weather App | Live API + Riverpod + full error/loading/data states |
 
 ---

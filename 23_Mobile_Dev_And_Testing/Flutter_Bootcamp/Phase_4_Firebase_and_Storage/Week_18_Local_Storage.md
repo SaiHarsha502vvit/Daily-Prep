@@ -1023,4 +1023,6 @@ This is a **Linux kernel primitive from the 1970s** — not an Android feature, 
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Storage Challenges](Week_18b_Storage_Challenges.md) — build the offline-sync-queue pattern, a storage-engine decision matrix, Hive's reactive box.watch().
+
 **Next → [Week 19: Project — Notes App](Week_19_Project_NotesApp.md)**

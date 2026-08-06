@@ -1125,4 +1125,6 @@ Trade-off: all tabs consume memory simultaneously. Instagram, YouTube, and most 
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Navigation Challenges](Week_05b_Navigation_Challenges.md) — typed push/pop round trips, IndexedStack vs state loss, predict the back stack, build a route matcher from scratch.
+
 **Next → [Week 6: Project — Personal Profile App](Week_06_Project_ProfileApp.md)**

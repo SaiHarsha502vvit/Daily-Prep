@@ -1042,4 +1042,6 @@ Flutter rebuilds the padding widget on every animation frame as `viewInsets.bott
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Forms Challenges](Week_08b_Forms_Challenges.md) — raw GlobalKey<FormState> mechanics, a real async-validation race condition, validator composition.
+
 **Next → [Week 9: Animations](Week_09_Animations.md)**

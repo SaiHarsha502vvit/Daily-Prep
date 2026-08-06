@@ -16,9 +16,13 @@ The capstone: a **Shopping App UI Clone** — you pick a real app and replicate 
 | File | Topic | Core Skills |
 |------|-------|-------------|
 | [Week_07_Scrolling_and_Slivers.md](Week_07_Scrolling_and_Slivers.md) | Scrolling & Slivers | ListView variants, GridView, infinite scroll, SliverAppBar, PageView |
+| [Week_07b_Scrolling_Challenges.md](Week_07b_Scrolling_Challenges.md) | Scrolling Challenges | Prove laziness, fix a pagination race, sticky-header opacity math |
 | [Week_08_Forms_and_Input.md](Week_08_Forms_and_Input.md) | Forms & Input | TextFormField, Form validation, FocusNode, DatePicker, Dropdown |
+| [Week_08b_Forms_Challenges.md](Week_08b_Forms_Challenges.md) | Forms Challenges | Raw FormState mechanics, an async-validation race condition, validator composition |
 | [Week_09_Animations.md](Week_09_Animations.md) | Animations | Implicit, explicit, staggered, Hero, page transitions |
+| [Week_09b_Animation_Challenges.md](Week_09b_Animation_Challenges.md) | Animation Challenges | Compute curves by hand, predict staggering, reproduce the Hero crash, custom Tween |
 | [Week_10_Gestures_and_Custom_Widgets.md](Week_10_Gestures_and_Custom_Widgets.md) | Gestures & Custom Widgets | GestureDetector, drag-drop, Dismissible, widget composition |
+| [Week_10b_Gesture_Challenges.md](Week_10b_Gesture_Challenges.md) | Gesture Challenges | Reproduce arena conflicts, build Dismissible from scratch, child-vs-builder design |
 | [Week_11_Project_ShoppingApp.md](Week_11_Project_ShoppingApp.md) | Project: Shopping App | All Phase 2 skills combined in a real clone |
 
 ---

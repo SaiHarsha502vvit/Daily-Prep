@@ -1593,4 +1593,6 @@ test('loadMore appends to existing items and updates cursor', () async {
 
 ---
 
+**Want to actually get fluent, not just informed?** → [HTTP Challenges](Week_14b_HTTP_Challenges.md) — predict interceptor order, build a Dio-hiding repository, retry with backoff, fix a real JSON null-safety crash.
+
 **Next → [Week 15: Project — Weather App](Week_15_Project_WeatherApp.md)**

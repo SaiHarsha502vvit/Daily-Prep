@@ -16,8 +16,11 @@ The capstone: a **full-stack Chat App** — the kind you'd put in a portfolio.
 | File | Topic | Core Skills |
 |------|-------|-------------|
 | [Week_24_Testing.md](Week_24_Testing.md) | Testing | Unit, widget, integration tests, blocTest, mocks vs fakes |
+| [Week_24b_Testing_Challenges.md](Week_24b_Testing_Challenges.md) | Testing Challenges | Mock vs Fake, fix a pumpAndSettle hang, structure a blocTest by hand |
 | [Week_25_Performance_and_Profiling.md](Week_25_Performance_and_Profiling.md) | Performance & Profiling | DevTools, rebuild optimization, background processing |
+| [Week_25b_Performance_Challenges.md](Week_25b_Performance_Challenges.md) | Performance Challenges | Reproduce jank, prove a leak, quantify const's effect, isolate judgment calls |
 | [Week_26_CICD_and_Deployment.md](Week_26_CICD_and_Deployment.md) | CI/CD & Deployment | GitHub Actions, Fastlane, App Store / Play Store |
+| [Week_26b_CICD_Challenges.md](Week_26b_CICD_Challenges.md) | CI/CD Challenges | Write a workflow from scratch, version arithmetic, diagnose a CI-only failure |
 | [Week_27_Project_ChatApp.md](Week_27_Project_ChatApp.md) | Project: Chat App | Capstone — real-time messaging, FCM, media, presence |
 
 **Start → [Week 24: Testing](Week_24_Testing.md)**

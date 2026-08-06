@@ -16,10 +16,15 @@ The capstone: a **Personal Profile App** — your first portfolio piece.
 | File | Topic | Core Skills |
 |------|-------|-------------|
 | [Week_01_Dart_Language.md](Week_01_Dart_Language.md) | Dart Language | Types, OOP, async/await, null safety, collections, the Dart VM |
+| [Week_01b_Dart_Coding_Challenges.md](Week_01b_Dart_Coding_Challenges.md) | Dart Coding Challenges | 18 hands-on problems: syntax, complexity, records/sealed classes, isolates |
 | [Week_02_Flutter_Core_Concepts.md](Week_02_Flutter_Core_Concepts.md) | Flutter Core Concepts | Widgets, the three trees, setState, hot reload, reconciliation |
+| [Week_02b_Widget_Rebuild_Challenges.md](Week_02b_Widget_Rebuild_Challenges.md) | Widget & Rebuild Challenges | Prove reconciliation, keys, const, and InheritedWidget with debugPrint |
 | [Week_03_Widget_Lifecycle.md](Week_03_Widget_Lifecycle.md) | Widget Lifecycle | initState, dispose, mounted, didUpdateWidget, controllers |
+| [Week_03b_Lifecycle_Challenges.md](Week_03b_Lifecycle_Challenges.md) | Lifecycle Challenges | Predict method order, reproduce the mounted crash, prove a timer leak |
 | [Week_04_Layout_and_Constraints.md](Week_04_Layout_and_Constraints.md) | Layout & Constraints | Row/Column/Stack, tight vs loose constraints, Expanded, LayoutBuilder |
+| [Week_04b_Layout_Challenges.md](Week_04b_Layout_Challenges.md) | Layout Challenges | Predict real BoxConstraints, fix unbounded-height crashes, exact flex math |
 | [Week_05_Navigation_and_State.md](Week_05_Navigation_and_State.md) | Navigation & State | Navigator stack, routes, passing data, lifting state up |
+| [Week_05b_Navigation_Challenges.md](Week_05b_Navigation_Challenges.md) | Navigation Challenges | Typed push/pop, IndexedStack vs state loss, build a route matcher |
 | [Week_06_Project_ProfileApp.md](Week_06_Project_ProfileApp.md) | Project: Profile App | All Phase 1 skills combined in your first real app |
 
 ---

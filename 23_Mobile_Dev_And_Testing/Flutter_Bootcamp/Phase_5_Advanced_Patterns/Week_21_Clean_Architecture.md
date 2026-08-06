@@ -2186,4 +2186,6 @@ registerLazySingleton<T>(() => T()):
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Clean Architecture Challenges](Week_21b_Clean_Architecture_Challenges.md) — refactor a fat widget into testable layers, swap implementations with GetIt, split a God class.
+
 **Next → [Week 22: Advanced Animations + CustomPainter Charts](Week_22_Advanced_Animations_CustomPaint.md)**

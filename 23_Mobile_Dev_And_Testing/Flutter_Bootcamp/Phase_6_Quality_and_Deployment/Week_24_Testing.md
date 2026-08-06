@@ -1281,4 +1281,6 @@ await tester.pump();
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Testing Challenges](Week_24b_Testing_Challenges.md) — write both a Mock and a Fake, fix a pumpAndSettle hang, structure a blocTest by hand.
+
 **Next → [Week 25: Performance and Profiling](Week_25_Performance_and_Profiling.md)**

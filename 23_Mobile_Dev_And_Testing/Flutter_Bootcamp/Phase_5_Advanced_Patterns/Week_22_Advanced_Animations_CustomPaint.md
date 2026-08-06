@@ -836,4 +836,6 @@ Stack(
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Advanced Animation Challenges](Week_22b_Advanced_Animation_Challenges.md) — fix a shouldRepaint bug, compute bar-chart coordinates by hand, prove RepaintBoundary isolation, Lottie-vs-code judgment calls.
+
 **Next → [Week 23: Project — Expense Tracker App](Week_23_Project_ExpenseTracker.md)**

@@ -1420,4 +1420,6 @@ This is why `const` is a performance optimization, not just a style marker. Ever
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Widget & Rebuild Challenges](Week_02b_Widget_Rebuild_Challenges.md) — predict-then-verify problems on reconciliation, keys, const, and InheritedWidget.
+
 **Next → [Week 3: Widget Lifecycle — Every Method, Every Edge Case](Week_03_Widget_Lifecycle.md)**

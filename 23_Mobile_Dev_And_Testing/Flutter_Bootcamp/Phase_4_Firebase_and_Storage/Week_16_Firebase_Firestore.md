@@ -1166,4 +1166,6 @@ Extend the notes app to a shared workspace:
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Firestore Challenges](Week_16b_Firestore_Challenges.md) — simulate real-time listeners, test security rule logic, reproduce a clock-skew sync bug.
+
 **Next → [Week 17: Firebase Authentication](Week_17_Authentication.md)**

@@ -1209,4 +1209,6 @@ Biometric authentication is a **local presence check** — it gates access to an
 
 ---
 
+**Want to actually get fluent, not just informed?** → [Authentication Challenges](Week_17b_Authentication_Challenges.md) — build flicker-free auth routing, token-expiry math, reproduce a sign-out data leak.
+
 **Next → [Week 18: Local Storage](Week_18_Local_Storage.md)**
