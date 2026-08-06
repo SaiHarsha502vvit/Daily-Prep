@@ -398,11 +398,23 @@ CALL transfer_employee(5, 2);
 
 🔬 **Section Challenge — Chapter 13: Stored Procedures & Functions**
 
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+**Challenge (Design):** The `ProcessOrders()` procedure above opens a cursor and loops row-by-row, running one `UPDATE` per pending order to set its priority. For 100,000 pending orders, why is this typically much slower than a set-based rewrite, and what would that rewrite look like?
 
 <details><summary>Answer</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+The cursor loop pays per-row overhead 100,000 times over: each `FETCH` crosses from the cursor's internal buffer into procedure variables, each `UPDATE` is its own statement with its own optimizer pass, lock acquisition, and (depending on the engine) its own write to the transaction log — even though every iteration is doing conceptually the same operation. A set-based rewrite expresses the same logic as a single statement and lets the engine apply it to every matching row in one pass:
+
+```sql
+UPDATE orders
+SET priority = CASE
+    WHEN total > 10000 THEN 'high'
+    WHEN total > 5000  THEN 'medium'
+    ELSE 'low'
+END
+WHERE status = 'pending';
+```
+
+One optimizer pass, one lock-acquisition strategy for the whole batch, one log write per page instead of per row. The general rule: reach for a cursor only when a row's processing genuinely depends on a value computed from a *previous* row (running totals without window-function support, procedural state machines) — anything expressible as "for every row matching X, set Y" should be a single `UPDATE`/`INSERT`/`DELETE`, never a loop.
 
 </details>
 
@@ -593,8 +605,8 @@ Today, production systems use views for column-level security (hiding salary/SSN
 
 **Failure modes:**
 1. **Trigger cascading causing invisible fires**: A `BEFORE UPDATE` trigger on `employees` that updates `department_budget` fires another trigger on `department_budget` that updates `expense_reports` — cascading 4 levels deep without any application code visible. When `expense_reports` stops accepting entries, debugging requires tracing the trigger chain manually. MySQL's `SHOW TRIGGERS` is the only visibility tool — there is no "trigger stack view".
-2. **N+1 query pattern embedded inside a stored procedure**: A stored procedure loops through employees with a cursor and runs `SELECT * FROM bonuses WHERE emp_id = v_emp_id` for each row — 10,000 employees = 10,001 queries in one `CALL`. This bypasses ORM query logging since it happens inside the DB. Instagram's 2012 performance issues were partly traced to complex stored procedures generating N+1 patterns invisible to their application-level query monitoring.
-3. **Recursive trigger infinite loop**: An `AFTER UPDATE` on `accounts` updates a `balance` column which fires another trigger on the same table, creating infinite recursion until the database hits `max_sp_recursion_depth` (default 0 in MySQL, causing crash; PostgreSQL hits `1040` recursion depth by default). This consumed all DB connections and took down the application for 2 hours in a 2019 fintech incident.
+2. **N+1 query pattern embedded inside a stored procedure**: A stored procedure loops through employees with a cursor and runs `SELECT * FROM bonuses WHERE emp_id = v_emp_id` for each row — 10,000 employees = 10,001 queries in one `CALL`. This is especially dangerous because it bypasses ORM/application-level query logging entirely — the N+1 pattern happens inside the database, invisible to the exact monitoring tools built to catch N+1 patterns in application code.
+3. **Recursive trigger infinite loop**: An `AFTER UPDATE` on `accounts` updates a `balance` column which fires another trigger on the same table, creating infinite recursion until the database hits `max_sp_recursion_depth` (default 0 in MySQL, causing crash; PostgreSQL hits `1040` recursion depth by default). Left unguarded, this kind of loop can exhaust every connection in the pool within seconds, since each recursive invocation holds its transaction open until the depth limit finally aborts it.
 
 **Debug workflow:**
 (1) Disable all triggers temporarily: `ALTER TABLE employees DISABLE TRIGGERS ALL;` — if the operation completes normally, a trigger is causing the issue. Re-enable one at a time to isolate the culprit.
