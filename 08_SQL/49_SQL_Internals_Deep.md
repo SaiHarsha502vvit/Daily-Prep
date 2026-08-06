@@ -133,8 +133,8 @@ FOUR ISOLATION LEVELS × THREE ANOMALIES:
 ║  READ COMMITTED          ║      No ✓    ║    YES ❌     ║    YES ❌      ║
 ║  (PostgreSQL default)    ║               ║               ║                ║
 ╠══════════════════════════╬═══════════════╬═══════════════╬════════════════╣
-║  REPEATABLE READ         ║      No ✓     ║     No ✓     ║    YES ❌      ║
-║  (MySQL InnoDB default)  ║               ║               ║  (MySQL: No ✓)  ║
+║  REPEATABLE READ         ║      No ✓     ║     No ✓     ║   YES ❌ (std) ║
+║  (MySQL InnoDB default)  ║               ║               ║ PG/MySQL: No ✓ ║
 ╠══════════════════════════╬═══════════════╬═══════════════╬════════════════╣
 ║  SERIALIZABLE            ║      No ✓    ║     No ✓     ║     No ✓      ║
 ║  (strictest, slowest)    ║               ║               ║                ║
@@ -184,11 +184,12 @@ SELECT balance FROM accounts
 -- Definition: Within ONE transaction, the same WHERE clause returns
 -- DIFFERENT ROWS because another transaction inserted/deleted rows.
 
--- Session A (REPEATABLE READ):        Session B:
+-- Session A (READ COMMITTED):         Session B:
 BEGIN;
 SELECT COUNT(*) FROM orders
   WHERE amount > 100;
 -- Returns: 50 orders
+                                        BEGIN;
                                         INSERT INTO orders
                                           (customer_id, amount)
                                           VALUES (5, 200);
@@ -196,8 +197,15 @@ SELECT COUNT(*) FROM orders
 SELECT COUNT(*) FROM orders
   WHERE amount > 100;
 -- Returns: 51 orders ← PHANTOM! New row appeared.
--- REPEATABLE READ prevents changes to SEEN rows, not NEW rows.
--- FIX: Use SERIALIZABLE isolation.
+-- READ COMMITTED re-snapshots on every statement, so B's newly
+-- committed row becomes visible mid-transaction.
+-- FIX: Use REPEATABLE READ. PostgreSQL's REPEATABLE READ takes ONE
+-- snapshot for the WHOLE transaction (true snapshot isolation, see the
+-- MVCC walkthrough above) -- rerun this exact example at REPEATABLE READ
+-- and the second SELECT still returns 50, not 51. MySQL/InnoDB also
+-- prevents this at REPEATABLE READ, via gap locks. Only the bare ANSI
+-- SQL standard minimum for REPEATABLE READ still technically permits
+-- phantoms -- real PostgreSQL and MySQL both exceed that minimum.
 
 -- ── SERIALIZABLE: Prevents ALL anomalies ───────────────────────────────────
 -- How? PostgreSQL uses Serializable Snapshot Isolation (SSI):
@@ -771,10 +779,10 @@ Now, when you insert new rows, there is physical empty space waiting on the disk
 ### Historical Evolution (Extended)
 
 **Additional predecessors:**
-- **Edgar F. Codd (1970)**: Proposed the relational model and 12 rules — every modern SQL database is an implementation of Codd's vision; rule 0 defines the database, rules 1-12 enumerate what relational means
+- **Edgar F. Codd (1970)**: Proposed the relational model — every modern SQL database is an implementation of Codd's vision. His famous "12 rules" for what counts as truly relational came 15 years later, in a separate 1985 Computerworld article
 - **Michael Stonebraker (1986)**: Led the POSTGRES project at UC Berkeley — introduced user-defined types, rules, and extensibility that made PostgreSQL possible
 - **MySQL AB (1995)**: MySQL 1.0 released — the first widely adopted open-source database, making SQL accessible to startups and individuals
-- **Heikki Linnakangas / InnoDB (1995)**: InnoDB storage engine — MVCC + row-level locking added to MySQL, enabling high-concurrency OLTP workloads that MyISAM could not support
+- **Heikki Tuuri / InnoDB (1995, integrated into MySQL 2001)**: Founded Innobase Oy and created the InnoDB storage engine — MVCC + row-level locking eventually shipped as part of MySQL starting in 2001, enabling high-concurrency OLTP workloads that MyISAM could not support
 - **YouTube/Vitess (2013)**: Vitess released open-source by YouTube — sharding middleware for MySQL that scaled YouTube to billions of queries/day; legitimized database middleware patterns
 
 **Brief evolution note:**
@@ -791,6 +799,6 @@ The internals described in this chapter trace directly to 1970s papers. Codd's r
 
 **"MVCC means no locking in PostgreSQL"** → PostgreSQL's MVCC (Multi-Version Concurrency Control) allows readers to not block writers (no read locks). But: writers still lock rows with row-level locks (`FOR UPDATE`, `FOR SHARE`, implicit on UPDATE/DELETE). DDL operations (ALTER TABLE) take access-exclusive locks that block ALL operations including reads. Certain index operations without `CONCURRENTLY` take locks. The statement "no locking" means no BLOCKING READ LOCKS — write locks and DDL locks still exist. Deadlocks still occur when two transactions try to update the same rows in different order.
 
-**"The query planner always chooses the most efficient plan"** → The query planner is a cost-based optimizer: it estimates costs using statistics and chooses the lowest-cost plan it finds. Limitations: it evaluates a subset of all possible plans (for 10 tables, there are 10! = 3.6M join orders — the planner uses dynamic programming with cutoffs), statistics may be stale (stale row count estimates lead to wrong join order choices), correlation between columns is not captured in single-column statistics (combined selectivity of WHERE a = 1 AND b = 2 is estimated as selectivities multiplied — wrong if a and b are correlated). `CREATE STATISTICS (dependencies) ON a, b FROM t` in PostgreSQL 14+ captures column correlations.
+**"The query planner always chooses the most efficient plan"** → The query planner is a cost-based optimizer: it estimates costs using statistics and chooses the lowest-cost plan it finds. Limitations: it evaluates a subset of all possible plans (for 10 tables, there are roughly N!/2 ≈ 1.8M possible join orderings (matching the join-order combinatorics shown earlier in this chapter) — the planner uses dynamic programming with cutoffs), statistics may be stale (stale row count estimates lead to wrong join order choices), correlation between columns is not captured in single-column statistics (combined selectivity of WHERE a = 1 AND b = 2 is estimated as selectivities multiplied — wrong if a and b are correlated). `CREATE STATISTICS (dependencies) ON a, b FROM t` in PostgreSQL 10+ captures column correlations.
 
 **"After a DELETE, the table immediately reclaims disk space"** → DELETE marks rows as dead (invisible to future transactions) but does NOT immediately reclaim space — the pages remain allocated. `VACUUM` (PostgreSQL) reclaims dead tuple space for reuse within the same table (reduces bloat but may not shrink the file). `VACUUM FULL` reclaims disk space and rewrites the table but takes an exclusive lock (blocking all access). In PostgreSQL, after a bulk DELETE, always run `VACUUM ANALYZE` to reclaim space and update statistics. MySQL InnoDB: `OPTIMIZE TABLE` reclaims space (equivalent to VACUUM FULL but can run online in some MySQL versions).
