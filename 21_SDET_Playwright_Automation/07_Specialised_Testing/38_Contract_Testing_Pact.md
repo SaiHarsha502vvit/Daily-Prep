@@ -557,6 +557,23 @@ BDCT flow:
   → You want zero-friction adoption for backend teams
 ```
 
+The traditional flow (diagrammed in Section 6 above) still needs the provider to run a Pact verifier. BDCT's whole point is removing that step — PactFlow does the comparison itself:
+
+```mermaid
+sequenceDiagram
+    participant Consumer
+    participant PactFlow
+    participant Provider
+
+    Consumer->>PactFlow: publish consumer contract (pact.json)
+    Provider->>PactFlow: publish OpenAPI spec (no Pact code required)
+    PactFlow->>PactFlow: compare contract vs spec
+    PactFlow-->>Consumer: mismatches reported (if any)
+    PactFlow-->>Provider: mismatches reported (if any)
+
+    Note over Provider,PactFlow: Unlike traditional Pact: the provider never runs a verifier
+```
+
 ```bash
 # BDCT: Upload your OpenAPI spec to PactFlow (provider side):
 npx pactflow publish-provider-contract \

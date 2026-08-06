@@ -113,6 +113,25 @@ You get an HTML report with every surviving mutant highlighted.
 
 ## 4. Reading a Stryker report
 
+The decision Stryker makes for every single mutant it generates:
+
+```mermaid
+flowchart TD
+    A["Stryker mutates one line of production code<br/>(e.g. &gt;= becomes &gt;)"] --> B["Re-run the existing test suite against the mutant"]
+    B --> C{What happens?}
+    C -->|A test fails| Killed["Killed -- tests caught the change"]
+    C -->|All tests pass| Survived["Survived -- tests aren't asserting enough"]
+    C -->|Tests hang| Timeout["Timeout -- counts as Killed"]
+    C -->|No test ran this line| NoCov["NoCoverage -- add a test"]
+    C -->|Mutant fails to typecheck| Compile["CompileError -- counts as Killed"]
+
+    style Killed fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    style Timeout fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    style Compile fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    style Survived fill:#ffebee,stroke:#e53935,stroke-width:2px
+    style NoCov fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+```
+
 | Status       | Meaning                                      | Action                                |
 | ------------ | -------------------------------------------- | ------------------------------------- |
 | Killed       | A test failed for the mutant                 | ✅ good                               |
