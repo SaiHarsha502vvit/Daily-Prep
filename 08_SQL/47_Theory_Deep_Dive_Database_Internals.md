@@ -642,15 +642,17 @@ The database optimizer chooses between three join strategies:
      → Index Scan on customers (already sorted by id)
      → Index Scan on orders (already sorted by customer_id)
 
-DECISION MATRIX:
-| Condition                          | Optimizer Chooses |
-|-----------------------------------|-------------------|
-| Small outer + index on inner      | Nested Loop       |
-| Large tables, no useful index     | Hash Join         |
-| Both sides sorted + large result  | Merge Join        |
-| Very small lookup table           | Nested Loop       |
-| Equi-join, medium tables          | Hash Join         |
 ```
+
+**Decision Matrix:**
+
+| Condition                         | Optimizer Chooses |
+| ---------------------------------- | ------------------- |
+| Small outer + index on inner        | Nested Loop           |
+| Large tables, no useful index         | Hash Join               |
+| Both sides sorted + large result        | Merge Join                |
+| Very small lookup table                   | Nested Loop                 |
+| Equi-join, medium tables                    | Hash Join                     |
 
 ### Reading an Execution Plan
 

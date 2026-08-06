@@ -206,17 +206,15 @@ CREATE INDEX idx_orders_metadata_source ON orders ((metadata->>'source'));
 
 ### 📚 When Each Approach Wins
 
-```
-| Criteria              | Normalized Table | JSONB Column     |
-|----------------------|:----------------:|:----------------:|
-| Query performance    | ★★★★★           | ★★★              |
-| Schema flexibility   | ★★               | ★★★★★           |
-| Data integrity       | ★★★★★           | ★★               |
-| Index efficiency     | ★★★★★           | ★★★ (GIN/expr)  |
-| Joins                | ★★★★★           | ★ (expensive)    |
-| Schema evolution     | ★★★ (migrations) | ★★★★ (flexible) |
-| Storage efficiency   | ★★★★             | ★★★ (overhead)   |
-```
+| Criteria            | Normalized Table  | JSONB Column      |
+| -------------------- | :-----------------: | :------------------: |
+| Query performance     | ★★★★★               | ★★★                   |
+| Schema flexibility     | ★★                   | ★★★★★                 |
+| Data integrity           | ★★★★★               | ★★                     |
+| Index efficiency           | ★★★★★               | ★★★ (GIN/expr)          |
+| Joins                         | ★★★★★               | ★ (expensive)             |
+| Schema evolution                 | ★★★ (migrations)     | ★★★★ (flexible)            |
+| Storage efficiency                  | ★★★★                 | ★★★ (overhead)              |
 
 ---
 
