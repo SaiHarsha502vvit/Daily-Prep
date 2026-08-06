@@ -106,7 +106,7 @@ WHY UUID v4 fragments B-Trees:
 - Measured impact: 30-60% more disk I/O for random inserts on large tables
 
 WHY UUID v7 fixes this:
-- UUID v7 = timestamp (48 bits) + randomness (80 bits)
+- UUID v7 = timestamp (48 bits) + version/variant markers (6 fixed bits) + randomness (74 bits)
 - First 48 bits are time-ordered → inserts are essentially sequential
 - Gets distributed generation + B-Tree friendliness
 ```
@@ -491,7 +491,10 @@ public Page<OrderDTO> getOrders(
 
     List<Order> orders;
     if (afterId == null) {
-        orders = orderRepo.findTopNByOrderByIdAsc(pageSize + 1);
+        // Note: Spring Data's "TopN"/"FirstN" derived-query keyword needs a literal
+        // digit baked into the method name (e.g. findTop20By...) -- it can't take a
+        // runtime count. Use a Pageable-based method instead, same as the else branch.
+        orders = orderRepo.findAllByOrderByIdAsc(PageRequest.of(0, pageSize + 1));
     } else {
         orders = orderRepo.findByIdGreaterThanOrderByIdAsc(afterId,
                                     PageRequest.of(0, pageSize + 1));
@@ -1104,7 +1107,7 @@ String findStatusById(@Param("id") Long id);
 **Additional predecessors:**
 - **Twitter (2010)**: Snowflake ID — 64-bit distributed ID (timestamp + machine_id + sequence) solving cross-datacenter uniqueness before UUID v7 existed
 - **Paul J. Leach / Microsoft (2005)**: UUID v4 (RFC 4122) — random 128-bit IDs enabling distributed generation but causing B-Tree fragmentation
-- **Friendster (2002)**: Early social network hitting auto-increment ID exhaustion at 100M users — lesson that sequential IDs don't scale past single-machine databases
+- **Early 2000s social networks**: Sites built on single-server relational databases with 32-bit auto-increment keys began hitting real capacity walls as user bases crossed hundreds of millions — one of several scaling pressures, alongside query performance, that pushed the industry toward sharding, BIGINT, and eventually distributed ID schemes
 
 **Brief evolution note:**
 The INT exhaustion problem is as old as relational databases themselves — the 2^31-1 ceiling was set when 2 billion records seemed astronomical. UUIDs emerged from the need for distributed generation (no coordinator), but their random nature created write amplification on B-Tree indexes. The industry eventually converged on UUID v7 (RFC 9562, 2024) — time-ordered 128-bit IDs that preserve both distributed uniqueness AND sequential B-Tree efficiency.
