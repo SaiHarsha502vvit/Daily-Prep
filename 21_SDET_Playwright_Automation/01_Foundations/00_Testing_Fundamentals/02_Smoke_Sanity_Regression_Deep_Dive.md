@@ -54,21 +54,14 @@ If you call everything "regression testing", you lose the ability to:
 
 Ask yourself ONE question to instantly classify which test type you need:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   "Am I checking if the BUILD is stable?"                       │
-│                                ↓ YES → SMOKE TEST               │
-│                                ↓ NO  ↓                          │
-│                                                                 │
-│   "Am I checking if a SPECIFIC FIX/CHANGE worked?"              │
-│                                ↓ YES → SANITY TEST              │
-│                                ↓ NO  ↓                          │
-│                                                                 │
-│   "Am I checking that EXISTING FEATURES still work?"            │
-│                                ↓ YES → REGRESSION TEST          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    Q1{"Am I checking if the<br/>BUILD is stable?"}
+    Q1 -->|YES| SMOKE["SMOKE TEST"]
+    Q1 -->|NO| Q2{"Am I checking if a<br/>SPECIFIC FIX/CHANGE worked?"}
+    Q2 -->|YES| SANITY["SANITY TEST"]
+    Q2 -->|NO| Q3{"Am I checking that<br/>EXISTING FEATURES still work?"}
+    Q3 -->|YES| REGRESSION["REGRESSION TEST"]
 ```
 
 Memorize this. Use it in interviews. Use it on the job.
@@ -759,33 +752,15 @@ public void thisTestIsKnownToBeFlaky() { ... }
 
 ## 6. The Relationship Between All Three
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                       FULL TEST LIFECYCLE                              │
-│                                                                        │
-│  BUILD ARRIVES                                                         │
-│       │                                                                │
-│       ▼                                                                │
-│  ┌─────────────────────────────────────────────────────────────┐       │
-│  │  SMOKE TEST                                                 │       │
-│  │  Duration: 5-15 min                                         │       │
-│  │  Scope: Entire app, shallow                                 │       │
-│  │  Runs: EVERY build                                          │       │
-│  └────────────────────────┬────────────────────────────────────┘       │
-│                           │ PASS                                       │
-│              ┌────────────┴───────────────┐                            │
-│              ▼                            ▼                            │
-│  ┌───────────────────┐      ┌─────────────────────────────────┐        │
-│  │  SANITY TEST      │      │  REGRESSION TEST                │        │
-│  │  (if build has    │      │  Duration: 30min - 4hrs         │        │
-│  │   a specific fix) │      │  Scope: All previous features   │        │
-│  │  Duration: 15-30m │      │  Runs: Every PR + nightly       │        │
-│  │  Scope: The fix   │      └─────────────────────────────────┘        │
-│  └───────────────────┘                   │                             │
-│              │                           │ PASS                        │
-│              │ PASS                      ▼                             │
-│              └──────────────► EXPLORATORY / UAT / RELEASE              │
-└────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    Build(["BUILD ARRIVES"]) --> Smoke["SMOKE TEST<br/>5-15 min · entire app, shallow<br/>runs on EVERY build"]
+    Smoke -->|FAIL| Stop["STOP — reject build<br/>nothing else runs"]
+    Smoke -->|PASS| Fork{ }
+    Fork --> Sanity["SANITY TEST<br/>(if build has a specific fix)<br/>15-30 min · scope: the fix"]
+    Fork --> Regression["REGRESSION TEST<br/>30 min - 4 hrs<br/>scope: all previous features<br/>runs every PR + nightly"]
+    Sanity -->|PASS| Release["EXPLORATORY / UAT / RELEASE"]
+    Regression -->|PASS| Release
 ```
 
 **Key principle**: Smoke ALWAYS runs first. Regression runs after smoke passes. Sanity runs in parallel with (or before) regression for the specific fix. If smoke fails, NOTHING ELSE runs.
