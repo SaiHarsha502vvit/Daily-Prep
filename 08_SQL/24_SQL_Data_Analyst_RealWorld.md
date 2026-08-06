@@ -109,9 +109,9 @@ CREATE TABLE experiments (
 |  Mar signup  | 800      | 400 (50%)|          |          |       |
 |                                                                  |
 |  WHAT THIS TELLS YOU:                                            |
-|  ? "Users signing up later months have BETTER retention"         |
-|  ? "We lose 50-60% of users in first month | fix onboarding!"    |
-|  ? "Month-3 retention stabilizes around 20% | our core users"    |
+|  • "Users signing up later months have BETTER retention"         |
+|  • "We lose 50-60% of users in first month | fix onboarding!"    |
+|  • "Month-3 retention stabilizes around 20% | our core users"    |
 +------------------------------------------------------------------+
 ```
 
