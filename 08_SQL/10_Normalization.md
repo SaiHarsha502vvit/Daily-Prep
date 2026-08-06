@@ -39,34 +39,17 @@
 
 ### Normal Forms
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    NORMAL FORMS HIERARCHY                                       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│                           ┌─────────────┐                                       │
-│                           │    BCNF     │ ← Every determinant is a candidate key│
-│                           └──────┬──────┘                                       │
-│                                  │                                              │
-│                           ┌──────▼──────┐                                       │
-│                           │     3NF     │ ← No transitive dependencies          │
-│                           └──────┬──────┘                                       │
-│                                  │                                              │
-│                           ┌──────▼──────┐                                       │
-│                           │     2NF     │ ← No partial dependencies             │
-│                           └──────┬──────┘                                       │
-│                                  │                                              │
-│                           ┌──────▼──────┐                                       │
-│                           │     1NF     │ ← Atomic values, no repeating groups  │
-│                           └──────┬──────┘                                       │
-│                                  │                                              │
-│                           ┌──────▼──────┐                                       │
-│                           │ Unnormalized│                                       │
-│                           └─────────────┘                                       │
-│                                                                                 │
-│  Each form builds on the previous one!                                          │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+Each form is strictly stronger than the one before it — a table can't be in 2NF without first satisfying every rule of 1NF:
+
+```mermaid
+flowchart TD
+    U["Unnormalized"] --> N1["1NF<br/>Atomic values, no repeating groups"]
+    N1 --> N2["2NF<br/>+ No partial dependencies"]
+    N2 --> N3["3NF<br/>+ No transitive dependencies"]
+    N3 --> BCNF["BCNF<br/>+ Every determinant is a candidate key"]
+
+    style U fill:#ffebee,stroke:#c62828,stroke-width:2px
+    style BCNF fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
 ```
 
 ### First Normal Form (1NF)
@@ -263,7 +246,7 @@ CREATE TABLE orders (
 - **Edgar F. Codd** (1970): Introduced 1NF, 2NF, and 3NF in his landmark paper — formally defining first normal form (atomic values), second normal form (no partial dependencies), and third normal form (no transitive dependencies) as the theoretical framework for database design.
 - **Raymond Boyce & Codd** (1974): Created Boyce-Codd Normal Form (BCNF) addressing edge cases where 3NF permitted anomalies — a stricter definition requiring every determinant to be a candidate key.
 - **Ronald Fagin** (1979): Introduced Fourth Normal Form (4NF) addressing multi-valued dependencies, and later 5NF (Projection-Definition Normal Form) for join dependencies — extending Codd's work to handle more complex real-world scenarios.
-- **Chris Date** (1992, 2004): In \"The Relational Model\" and subsequent writings, formalized 5NF and 6NF (Domain-Key Normal Form), and documented the theoretical underpinnings that explain why normalization solves insertion, update, and deletion anomalies.
+- **Chris Date** (1992, 2004): In "The Relational Model" and subsequent writings, formalized 5NF and 6NF (Domain-Key Normal Form), and documented the theoretical underpinnings that explain why normalization solves insertion, update, and deletion anomalies.
 
 **Evolution narrative:**
 Codd's normal forms emerged from a fundamental insight: data redundancy causes update anomalies. If a customer's address appears in 50 order rows and the customer moves, you must update all 50 rows — miss one and have inconsistent data. 1NF eliminated repeating groups (multi-valued attributes stored as comma-separated strings), 2NF eliminated partial dependencies (where a non-key column depends on only part of a composite key), and 3NF eliminated transitive dependencies (where a non-key column depends on another non-key column). BCNF tightened 3NF for cases like teacher→subject where the determinant was not a candidate key. Fagin's 4NF and 5NF addressed multi-valued and join dependencies respectively — edge cases that arise with complex many-to-many relationships. The practical result: a normalized schema eliminates redundancy at the cost of more joins; denormalization (intentional redundancy for read performance) is a deliberate trade-off made in data warehousing and read-heavy systems.
@@ -275,7 +258,7 @@ Today, every SQL interview tests your ability to identify normalization violatio
 
 **Failure modes:**
 1. **Over-normalization causing 5+ JOINs per query**: A schema with separate tables for `addresses`, `cities`, `states`, `countries`, and `address_types` means every address display requires 5 JOINs. A dashboard querying 10,000 customers triggers 50,000 join operations — 3-second response times. Fix: denormalize into a `customer_addresses` table with city/state/country columns for read-heavy dashboards.
-2. **Missing FK constraints producing orphan rows**: A `orders` table references `customers(customer_id)` but the FK constraint was never created. When a customer is deleted (even with `ON DELETE CASCADE`), orders from edge-case rollbacks remain with null or stale customer_ids, producing "ghost orders" in financial reports. Amazon's 2017 pricing bug was partly traced to orphaned product records from failed batch deletions.
+2. **Missing FK constraints producing orphan rows**: A `orders` table references `customers(customer_id)` but the FK constraint was never created. When a customer is deleted (even with `ON DELETE CASCADE`), orders from edge-case rollbacks remain with null or stale customer_ids, producing "ghost orders" in financial reports. Without an enforced FK, a failed or partial batch-delete job can silently leave exactly this kind of orphaned data behind, since nothing at the database level rejects the inconsistency.
 3. **Normalization without profiling actual query patterns**: A startup normalizes aggressively into 20 tables based on theoretical "3NF by default". Their most common query joins 8 tables to display a product catalog — 500ms per page load. The fix: profile with `pg_stat_statements` to find the most frequent queries, then denormalize just those patterns.
 
 **Debug workflow:**
