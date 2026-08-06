@@ -1,10 +1,10 @@
-**SQL Chapter 06/20** | [? Previous](05_Queries_SELECT_WHERE.md) | [Index](../00_MASTER_INDEX.md) | [Next ?](07_JOINs_Complete.md)
+**SQL Chapter 06/20** | [← Previous](05_Queries_SELECT_WHERE.md) | [Index](../00_MASTER_INDEX.md) | [Next →](07_JOINs_Complete.md)
 
 ---
 
 ## Chapter 6: Aggregate Functions & GROUP BY
 
-### ?? Understanding Aggregation — Collapsing Many Rows Into One
+### 🧠 Understanding Aggregation — Collapsing Many Rows Into One
 
 Aggregation is the process of **combining multiple rows into a single summary value**. Think of it as zooming out: instead of seeing every individual employee's salary, you see the average salary per department. This is fundamental to data analysis — business decisions are made on summaries, not individual records.
 
@@ -28,9 +28,9 @@ This distinction confuses everyone at first, but it's simple once you understand
 
 Think of it this way: WHERE decides which employees to consider. HAVING decides which departments to show in the final result.
 
-?? **Performance Tip:** Always prefer WHERE over HAVING when possible. Filtering rows early (with WHERE) means fewer rows to aggregate, which is faster. Only use HAVING for conditions that _require_ aggregate values.
+💡 **Performance Tip:** Always prefer WHERE over HAVING when possible. Filtering rows early (with WHERE) means fewer rows to aggregate, which is faster. Only use HAVING for conditions that _require_ aggregate values.
 
-#### ?? Formal Syntax — Aggregate Functions
+#### 📝 Formal Syntax — Aggregate Functions
 
 ```
 SELECT <aggregate_function>(<column_name>)
@@ -47,7 +47,7 @@ MIN(<column>)                                    -- Minimum value
 MAX(<column>)                                    -- Maximum value
 ```
 
-#### ?? Formal Syntax — GROUP BY with HAVING
+#### 📝 Formal Syntax — GROUP BY with HAVING
 
 ```
 SELECT <column1>, <column2>, <aggregate_function>(<column>)
@@ -58,7 +58,7 @@ GROUP BY <column1>, <column2>                    -- Creates groups
 [ORDER BY <column_or_aggregate> [ASC|DESC]];
 ```
 
-#### ?? Formal Syntax — ROLLUP & CUBE (Subtotals)
+#### 📝 Formal Syntax — ROLLUP & CUBE (Subtotals)
 
 ```
 -- ROLLUP: Generates subtotals in hierarchical order

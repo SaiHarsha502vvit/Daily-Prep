@@ -289,7 +289,7 @@ Today, every SQL interview tests your understanding of DECIMAL vs FLOAT for mone
 ### Production Reality
 
 **Failure modes:**
-1. **DECIMAL vs FLOAT precision bug in financial calculations**: The 1970s Penn Central accounting scandal (before modern databases but using the same floating-point principle) showed that aggregating many small rounding errors in floating-point arithmetic produced irreconcilable discrepancies in financial reports. In 2013, a Knight Capital Group rogue trading algorithm used floating-point for share counts and lost $440M in 45 minutes. Always use DECIMAL(p,s) for financial columns.
+1. **DECIMAL vs FLOAT precision bug in financial calculations**: this is the same class of bug behind the Knight Capital incident (2012, file 13 covers it in depth) — a deployment error, not a data-type bug, but it illustrates the same principle: financial systems have zero tolerance for the kind of small, silent, compounding errors that FLOAT introduces on every arithmetic operation. Always use DECIMAL(p,s) for financial columns; never FLOAT or DOUBLE.
 2. **VARCHAR(255) truncation in real-world fields**: A `VARCHAR(255)` limit on the `email` column was set in 2005 when emails were rarely over 50 chars. By 2020, Microsoft 365 and Google Workspace both issue emails with long routing paths exceeding 254 characters. An `INSERT` of a valid RFC-compliant email fails with data truncation, blocking sign-up flows. Fix: use `VARCHAR(320)` for emails (254 + domain) and never assume a fixed upper bound.
 
 **Debug workflow:**
