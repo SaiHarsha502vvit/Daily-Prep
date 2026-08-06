@@ -533,6 +533,7 @@ Need to choose? Ask:
 │ Is it a document interchange format?        → XML or JSON    │
 │ Default for new projects?                   → JSON (always)  │
 └─────────────────────────────────────────────────────────────┘
+```
 
 ### Historical Evolution
 
@@ -565,7 +566,6 @@ Today's SQL databases treat JSON as a first-class citizen with JSONB storage, GI
 
 **Modern practice anchor:**
 JSONB requires explicit GIN indexing for query performance — storage flexibility does not mean query performance is free.
-```
 
 
 ---
