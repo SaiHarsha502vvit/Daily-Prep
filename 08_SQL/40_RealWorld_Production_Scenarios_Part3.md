@@ -20,7 +20,7 @@
 | 57  | Dirty read: seeing uncommitted changes             | Isolation       |
 | 58  | Write skew: constraint violated across rows        | Anomaly         |
 | 59  | Long-running transaction blocking all writes       | Lock Contention |
-| 60  | Table lock escalation: row locks → table lock      | Lock            |
+| 60  | Bulk UPDATE holding millions of row locks          | Lock            |
 | 61  | Dual-write inconsistency: DB + cache out of sync   | Distributed     |
 | 62  | Idempotency failure: duplicate payment processed   | Distributed     |
 | 63  | Read-your-own-writes with replicas                 | Distributed     |
@@ -158,7 +158,13 @@ public class WalletService {
 
 🔬 **Section Challenge — Scenario 51: Double-Spend — Two Threads Deduct the Same Balance**
 
->
+**Challenge 1 (Reasoning):** FIX 1 (the atomic `UPDATE ... WHERE balance >= 80`) and FIX 2 (`SELECT ... FOR UPDATE` followed by a separate `UPDATE`) both correctly prevent the double-spend. Which should you prefer for a simple debit, and when do you actually need FIX 2 instead?
+
+<details><summary>Answer</summary>
+
+Prefer FIX 1 whenever the business logic fits in a single WHERE condition — it's one round-trip, and it holds a row lock for only the duration of the UPDATE itself. There's no separate SELECT for another transaction to race against, because the database does the read, the check, and the write as one atomic operation. FIX 2 (SELECT FOR UPDATE) earns its extra cost only when the validation genuinely can't be expressed in a single UPDATE's WHERE clause — checking conditions across multiple tables, running application-code logic between the read and the write, or needing to lock several rows before deciding what to write to any of them (exactly the situation Scenario 52's FIX 2 shows: `stock >= quantity AND customer_orders < max_per_customer`). FIX 2 holds its lock across a full round trip to the application and back, which is strictly worse than FIX 1 whenever FIX 1's simpler form is possible.
+
+</details>
 
 ## Scenario 52: Overselling — 100 People Buy the Last 1 Item
 
@@ -320,7 +326,13 @@ public UserProfile updateUser(@PathVariable Long id, @RequestBody UpdateRequest 
 
 🔬 **Section Challenge — Scenario 53: Lost Update — Two Users Edit Same Record**
 
->
+**Challenge 1 (Reasoning):** FIX 1 (a `version` column) rejects User B's save outright once User A has saved — even though User A only touched `name` and User B only touched `phone`, so there's no real conflict. FIX 2 (comparing the specific changed field) would let both through. Why is FIX 1's stricter behavior still the right default for most tables, and when does FIX 2's field-level approach actually pay off?
+
+<details><summary>Answer</summary>
+
+FIX 1's version bump is a conservative, whole-row compare-and-swap — it produces "false" conflicts like the name-vs-phone case, but it's simple, cheap (one column, one WHERE clause), and impossible to get wrong: ANY change by anyone else since you read the row is caught, regardless of which fields are involved or how those fields might relate to each other. FIX 2 avoids the false conflicts, but it's only safe when the fields being compared are truly independent — the moment two fields have a business relationship (`stock` and `reserved_stock` must sum correctly, `name` and `slug` must stay in sync), comparing just one of them can let a genuinely conflicting update through completely undetected. Field-level merging earns its complexity in collaborative-editing use cases (documents, forms with many independent fields) where false conflicts are frequent and annoying to users; version-column locking is the safer default everywhere else.
+
+</details>
 
 ## Scenario 54: Deadlock — Two Transactions Waiting on Each Other
 
@@ -519,10 +531,14 @@ COMMIT;
 -- If B tries to do the same: ERROR: could not serialize access
 -- Only A's change commits; B must retry and will see count = 1
 
--- FIX 2: Explicit lock on the CHECK row
+-- FIX 2: Explicit lock on the CHECK rows
+-- Note: FOR UPDATE cannot be combined with COUNT(*)/aggregates in PostgreSQL --
+-- locking clauses require each result row to map to one identifiable table row,
+-- which an aggregate breaks. Select and lock the actual rows instead, then count
+-- them in application code (or with a separate, non-locking COUNT(*) query).
 BEGIN;
-SELECT COUNT(*) FROM on_call_doctors WHERE on_call = TRUE FOR UPDATE;
--- Locks ALL on_call rows — B blocks here until A commits
+SELECT doctor_id FROM on_call_doctors WHERE on_call = TRUE FOR UPDATE;
+-- Locks every matching row — B blocks here until A commits
 ```
 
 ---
@@ -592,16 +608,24 @@ An open transaction — even a read-only one — holds back the vacuum horizon: 
 
 ## Scenario 60–63: Lock & Distributed Consistency Quick-Fire
 
-### Scenario 60: Row Lock Escalation to Table Lock
+### Scenario 60: Bulk UPDATE Holding Millions of Row Locks
 
 ```sql
--- MySQL InnoDB: Too many individual row locks → escalates to table lock
--- This blocks ALL other operations on the table
+-- Unlike SQL Server, MySQL InnoDB does NOT escalate many row locks into one
+-- table lock -- it's specifically engineered to avoid that (row lock storage
+-- is compact enough that holding millions of individual row locks doesn't
+-- exhaust memory the way it would force SQL Server to escalate).
+-- But a single giant UPDATE still holds a row lock on EVERY row it touches
+-- for the whole transaction's duration, and builds one massive undo-log
+-- entry to make that possible. In practice this has nearly the same effect
+-- as a table lock: any other transaction touching any of those millions of
+-- rows blocks until this one finally commits, replication lag spikes from
+-- the huge binlog event, and a failure partway means rolling back all of it.
 
--- FIX: Batch large updates to reduce lock count
+-- FIX: Batch large updates into smaller transactions
 -- BAD:
 UPDATE orders SET status = 'archived' WHERE created_at < '2024-01-01';
--- Locks 5M rows → escalates to table lock
+-- Locks and holds 5M rows for the entire (possibly minutes-long) transaction
 
 -- GOOD: Batch in chunks
 UPDATE orders SET status = 'archived'
@@ -610,7 +634,8 @@ WHERE id IN (
     WHERE created_at < '2024-01-01' AND status != 'archived'
     LIMIT 5000
 );
--- Repeat until 0 rows affected; locks only 5000 at a time
+-- Repeat until 0 rows affected; each batch commits and releases its locks
+-- quickly, keeping contention with other transactions bounded
 ```
 
 ### Scenario 61: Dual-Write Inconsistency (DB + Cache)
@@ -822,12 +847,18 @@ Flash sale: 10,000 users updating the same product row with optimistic locking. 
 @Service
 public class FlashSaleService {
 
-    // FIX 1: Pessimistic lock for hot rows (don't retry, just queue)
+    // FIX 1: Pessimistic lock for hot rows (wait your turn, don't retry)
     @Transactional
     public OrderResult purchaseWithPessimisticLock(Long productId, int qty) {
-        // SELECT FOR UPDATE SKIP LOCKED — immediately skip if locked
+        // Plain FOR UPDATE, NOT SKIP LOCKED: this targets ONE specific row by id,
+        // so there's no other equivalent row to skip to. SKIP LOCKED here would
+        // make the query return nothing -- falsely reporting sold-out -- the
+        // instant ANY other request holds the lock, even though stock might be
+        // fine once that request finishes. SKIP LOCKED belongs on queue-style
+        // queries picking from a pool of interchangeable candidate rows (job
+        // queues, "any available worker"), not a single named hot row like this.
         Product product = jdbc.queryForObject(
-            "SELECT * FROM products WHERE id = ? AND stock >= ? FOR UPDATE SKIP LOCKED",
+            "SELECT * FROM products WHERE id = ? AND stock >= ? FOR UPDATE",
             productMapper, productId, qty
         );
 
