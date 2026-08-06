@@ -250,10 +250,18 @@ authToken: [async ({ request }, use) => { ... }, { scope: 'test' }]
 // Change 'test' to 'worker' to switch scope; there is no separate "async: true" flag.
 ```
 
-Timeline with 10 tests:
+Timeline with 10 tests — the fixture's setup/teardown wraps EVERY single test:
 
-```
-Login → Test 1 → Logout → Login → Test 2 → Logout → ... (10 logins total)
+```mermaid
+sequenceDiagram
+    participant W as Worker
+    W->>W: Login
+    W->>W: Test 1
+    W->>W: Logout
+    W->>W: Login
+    W->>W: Test 2
+    W->>W: Logout
+    Note over W: ... repeats for all 10 tests —<br/>10 logins, 10 logouts total
 ```
 
 **Use when:** The test needs a guaranteed fresh auth state (e.g., a test that logs out as part of its steps, or tests that run as different users).
@@ -278,10 +286,17 @@ export const test = base.extend<{}, { sharedAuthToken: string }>({
 });
 ```
 
-Timeline with 10 tests and 1 worker:
+Timeline with 10 tests and 1 worker — the fixture's setup/teardown wraps the ENTIRE worker's test run, once:
 
-```
-Login → Test 1, Test 2, ..., Test 10 → Logout (1 login total)
+```mermaid
+sequenceDiagram
+    participant W as Worker
+    W->>W: Login (once)
+    W->>W: Test 1
+    W->>W: Test 2
+    Note over W: ... Test 3 through Test 10,<br/>all reusing the SAME token
+    W->>W: Logout (once)
+    Note over W: 1 login, 1 logout total — regardless of test count
 ```
 
 **Use when:** All tests in a worker run as the same user and you want to avoid the overhead of logging in before every single test. This is the right choice for the vast majority of enterprise test suites.
