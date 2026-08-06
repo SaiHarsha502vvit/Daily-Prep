@@ -373,12 +373,15 @@ spring:
 // BAD: Causes N+1
 @Entity
 public class Order {
-    @ManyToOne(fetch = FetchType.LAZY)  // Default for ManyToOne is EAGER!
+    @ManyToOne(fetch = FetchType.LAZY)  // explicit LAZY -- each access fires its own query
     private Customer customer;
 }
 
 // Query: SELECT * FROM orders → 1000 rows
 // Then for EACH order: SELECT * FROM customers WHERE id = ? → 1000 queries
+// (Note: @ManyToOne defaults to EAGER if you omit `fetch` entirely -- that's a
+// different problem, always joining even when the relationship isn't needed.
+// This example is explicitly LAZY and still gets N+1 from accessing it in a loop.)
 
 // FIX 1: JOIN FETCH
 @Query("SELECT o FROM Order o JOIN FETCH o.customer")
