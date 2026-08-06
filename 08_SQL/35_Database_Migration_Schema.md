@@ -317,8 +317,13 @@ ALTER TABLE large_table ADD COLUMN score INT DEFAULT 0;
 → Before PG 11: rewrites ENTIRE table = LOCKS for hours
 → PG 11+: instant (stores default in catalog)
 
-ALTER TABLE users ALTER COLUMN name TYPE TEXT;
+ALTER TABLE users ALTER COLUMN user_id TYPE BIGINT;  -- was INT
 → Rewrites table = LOCK. Could take hours on large tables!
+   (INT and BIGINT are different widths — not binary-coercible)
+
+ALTER TABLE users ALTER COLUMN name TYPE TEXT;  -- was VARCHAR(n)
+→ Instant, no rewrite. VARCHAR and TEXT share the same on-disk
+   representation, so PostgreSQL only has to update the catalog.
 ```
 
 ### 5.2 Safe Migration Patterns
@@ -454,12 +459,12 @@ for env_name, conn_str in ENVIRONMENTS.items():
 **Predecessors (with years):**
 - **Liquibase** (2006): Introduced XML-based changelog files for declarative database schema migration, enabling team collaboration
 - **Flyway** (2010): Founded by Axel Fontaine, focused on simplicity with SQL-script-based migrations for Java ecosystems
-- **Alembic** (2010): Created by Mike Bayer for SQLAlchemy, providing Python-native migration infrastructure with autogeneration from model changes
+- **Alembic** (2011): Created by Mike Bayer for SQLAlchemy, providing Python-native migration infrastructure with autogeneration from model changes
 - **Expand-contract pattern** (2010s): Industry practice of multi-phase migrations adding columns before removing old ones to avoid downtime
 - **gh-ost (GitHub)** (2016): GitHub's triggerless online schema change tool demonstrated safe live migrations without replication lag
 
 **Evolution narrative:**
-Early database deployments used manual SQL scripts with no versioning, making coordination across teams and environments chaotic. Liquibase (2006) pioneered declarative changes with XML changelogs, while Flyway (2010) brought simplicity-first SQL-script migrations to DevOps workflows. Alembic (2010) solved Python-specific needs by autogenerating migrations from SQLAlchemy model changes. As zero-downtime requirements grew, the expand-contract pattern emerged, and gh-ost (2016) demonstrated that triggerless migration was possible at scale.
+Early database deployments used manual SQL scripts with no versioning, making coordination across teams and environments chaotic. Liquibase (2006) pioneered declarative changes with XML changelogs, while Flyway (2010) brought simplicity-first SQL-script migrations to DevOps workflows. Alembic (2011) solved Python-specific needs by autogenerating migrations from SQLAlchemy model changes. As zero-downtime requirements grew, the expand-contract pattern emerged, and gh-ost (2016) demonstrated that triggerless migration was possible at scale.
 
 **Modern practice anchor:**
 Today's schema migrations combine versioned migration tools (Flyway/Liquibase/Alembic) with expand-contract patterns for safe online changes, automated testing in staging, and rollback procedures tested before production deployment.
