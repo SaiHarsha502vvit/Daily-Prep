@@ -20,6 +20,8 @@ The ACID properties are not arbitrary rules — each one prevents a specific cat
 
 **How it works internally:** The database uses a **Write-Ahead Log (WAL)**. Before making any change to the actual data, the database first writes the change to a log file. If a crash occurs, the database reads this log during recovery and either replays committed transactions or undoes incomplete ones.
 
+**Real incident — Knight Capital, August 2012:** A deployment error left old test code active on one of eight production trading servers. That code re-purposed a flag byte that the new code used for a different order type — with no way to atomically deploy-and-verify across all eight servers as a single unit, the mismatched server started executing a runaway sequence of live market orders. It bought and sold millions of shares in 45 minutes with no transactional boundary to roll the sequence back within, and no circuit breaker to halt it. The loss was $440 million, and the firm was sold within days. The lesson generalizes past databases: atomicity is only a guarantee within the boundary you draw one — a deployment across 8 servers with no atomic all-or-nothing switchover is exactly the "step 1 succeeded, step 2 never happened" failure mode this section describes, just at infrastructure scale instead of row scale.
+
 #### Consistency — "Valid State to Valid State"
 
 **What it prevents:** Data that violates your schema's rules. Consistency means every transaction takes the database from one valid state to another. "Valid" is defined by your constraints — foreign keys must reference existing rows, CHECK constraints must be satisfied, unique values must remain unique. If a transaction would violate any constraint, the entire transaction is rejected.
@@ -340,11 +342,11 @@ COMMIT;
 
 🔬 **Section Challenge — Part 3: Distributed Transactions (Microservices)**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (Reasoning):** An order Saga runs: (1) Order Service creates the order, (2) Inventory Service deducts stock, (3) Payment Service charges the card. Step 3 fails with a declined card. Step 1 and step 2 already committed locally. Why can't you just `ROLLBACK`, and what must happen instead?
 
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+There is no single database transaction spanning all three services — each step is its own local commit in its own service's database, so there is nothing left to roll back once step 3 fails; the ROLLBACK keyword has no cross-service meaning here. The Saga pattern's answer is **compensating transactions**: run new, forward-only operations that semantically undo the already-committed steps. Here that means Inventory Service runs a "restock" operation (add the deducted items back) and Order Service runs a "cancel" operation (mark the order as failed), each a normal local transaction in its own right. This is why Saga trades correctness guarantees for availability: between step 2 committing and the compensating restock committing, another customer could see the item as out-of-stock when it isn't (or vice versa) — a temporary inconsistent window that 2PC's blocking coordinator would have prevented, at the cost of holding locks across the network the whole time.
 
 </details>
 

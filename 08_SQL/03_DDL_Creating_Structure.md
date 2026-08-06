@@ -369,6 +369,18 @@ In MySQL 5.7 (InnoDB), many `ALTER TABLE` operations perform a **table rebuild**
 
 </details>
 
+### ALTER TABLE — Risk Classification
+
+Not all `ALTER TABLE` operations carry the same production risk. Classify every schema change before running it:
+
+| Risk level | Operations | Why |
+| --- | --- | --- |
+| ✅ **Safe** — any time | `ADD COLUMN` with default (MySQL 8.0+/PostgreSQL 11+), `CREATE INDEX CONCURRENTLY` (PostgreSQL), `ADD COLUMN` nullable, `DROP` an unused index | Metadata-only or non-blocking — no full table rewrite |
+| ⚠️ **Caution** — low-traffic window | `ADD INDEX` on a large table (blocking in MySQL < 8.0), `MODIFY COLUMN` (may rewrite the table), `ADD FOREIGN KEY` (validates existing rows), widening a `VARCHAR` | Can hold a lock for the duration of a full scan/rewrite |
+| 🚨 **Dangerous** — plan a maintenance window | `DROP COLUMN`, changing a column's data type, `RENAME TABLE`/`RENAME COLUMN` (breaks queries mid-deploy), adding `NOT NULL` to a column with existing NULLs, changing the primary key | Irreversible, or fails outright against current data |
+
+**Production migration checklist** before running any Caution/Dangerous change: test on staging with production-sized data → measure how long the migration locks the table → take a backup → prepare a rollback script → schedule the low-traffic window → monitor application error rates during and after → have someone who can revert on call.
+
 ### Historical Evolution
 
 **Predecessors (with years):**
