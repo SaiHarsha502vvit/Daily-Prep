@@ -490,13 +490,29 @@ E2E testing simulates a **complete user journey** from the first screen to the l
 
 It answers: "If I am the user, does the full flow actually work?"
 
-```
-E2E TEST FLOW — Payment Journey:
-┌─────────┐    ┌─────────┐    ┌────────────┐    ┌──────────┐    ┌─────────┐
-│  Login  │ →  │  Home   │ →  │  Citation  │ →  │  Payment │ →  │ Success │
-│ Screen  │    │  Screen │    │  Detail    │    │  Modal   │    │ Screen  │
-└─────────┘    └─────────┘    └────────────┘    └──────────┘    └─────────┘
-     ↑ Real app,  ↑ Real navigation,  ↑ Real API calls,  ↑ Real assertions
+```mermaid
+sequenceDiagram
+    actor User
+    participant App as Real app (device/emulator)
+    participant API as Real (or realistic) backend
+
+    User->>App: open app
+    App-->>User: Login Screen
+    User->>App: enter credentials, tap Login
+    App->>API: real auth request
+    API-->>App: session token
+    App-->>User: Home Screen
+    User->>App: tap a citation
+    App->>API: fetch citation detail
+    API-->>App: citation data
+    App-->>User: Citation Detail
+    User->>App: tap Pay
+    App-->>User: Payment Modal
+    User->>App: confirm payment
+    App->>API: real payment request
+    API-->>App: payment result
+    App-->>User: Success Screen
+    Note over User,API: Every arrow is a REAL call — no mocks anywhere in this chain.<br/>That's what makes it E2E instead of integration.
 ```
 
 ### What It Catches
@@ -1253,49 +1269,66 @@ Mutation Tests      | Periodic (monthly)           | CI scheduled   | NO (adviso
 
 ## 19. The SDLC Testing Map — What Runs When
 
-This shows WHERE in the Software Development Lifecycle each test type runs:
+This shows WHERE in the Software Development Lifecycle each test type runs — the same 15 test types from this chapter, now placed on the one timeline that ties them together:
 
-```
-DEVELOPMENT PHASE:
-  Developer writes code
-  ├── Pre-commit:  Unit tests (runs locally, blocks commit if red)
-  └── Push:        Unit + Integration + Widget tests (fast CI check)
+```mermaid
+flowchart TD
+    subgraph DEV["DEVELOPMENT — developer writes code"]
+        direction LR
+        D1["Pre-commit:<br/>Unit tests<br/>(local, blocks commit if red)"]
+        D2["Push:<br/>Unit + Integration + Widget<br/>(fast CI check)"]
+        D1 --> D2
+    end
 
-PULL REQUEST (PR) PHASE:
-  Code review opened
-  ├── CI pipeline: Unit + Integration + Widget + Smoke + Critical E2E
-  ├── Contract tests (if API changes)
-  ├── SAST security scan
-  └── Visual regression on changed screens
-  Blocks merge if any of above fails
+    subgraph PR["PULL REQUEST — code review opened"]
+        direction LR
+        P1["CI pipeline:<br/>Unit + Integration + Widget<br/>+ Smoke + Critical E2E"]
+        P2["Contract tests<br/>(if API changed)"]
+        P3["SAST security scan"]
+        P4["Visual regression<br/>on changed screens"]
+    end
 
-MERGE TO DEVELOP:
-  Full regression suite runs (nightly or post-merge)
-  Performance tests run on staging
-  All results reported to team
+    subgraph MERGE["MERGE TO DEVELOP"]
+        direction LR
+        M1["Full regression<br/>(nightly / post-merge)"]
+        M2["Performance tests<br/>on staging"]
+    end
 
-QA PHASE:
-  QA team receives new build
-  ├── Smoke test: Is the build testable?
-  ├── Sanity test: Did the specific fixes work?
-  ├── Regression: Did anything break?
-  └── Exploratory: What did we miss?
+    subgraph QA["QA PHASE — QA team receives new build"]
+        direction LR
+        Q1["Smoke:<br/>is the build testable?"] --> Q2["Sanity:<br/>did the specific fixes work?"]
+        Q2 --> Q3["Regression:<br/>did anything break?"]
+        Q3 --> Q4["Exploratory:<br/>what did we miss?"]
+    end
 
-STAGING / PRE-PRODUCTION:
-  UAT: Business stakeholders validate
-  Performance: Load + spike tests
-  Security: DAST + pen test
-  Accessibility: Screen reader testing
+    subgraph STAGE["STAGING / PRE-PRODUCTION"]
+        direction LR
+        S1["UAT — stakeholders validate"]
+        S2["Performance — load + spike"]
+        S3["Security — DAST + pen test"]
+        S4["Accessibility — screen reader"]
+    end
 
-PRODUCTION RELEASE:
-  Smoke test on production (just launched — verify it works)
-  Monitor: Error rates, crash rates, response times
-  If any spike → rollback
+    subgraph PROD["PRODUCTION RELEASE"]
+        direction LR
+        R1["Smoke test on production<br/>(just launched)"] --> R2{"Error/crash rate<br/>spikes?"}
+        R2 -->|yes| R3["Rollback"]
+        R2 -->|no| R4["Monitor"]
+    end
 
-POST-RELEASE:
-  Exploratory testing on real production data patterns
-  Mutation testing on critical modules (monthly)
-  Accessibility audit (quarterly)
+    subgraph POST["POST-RELEASE"]
+        direction LR
+        X1["Exploratory on real<br/>production data patterns"]
+        X2["Mutation testing<br/>on critical modules (monthly)"]
+        X3["Accessibility audit<br/>(quarterly)"]
+    end
+
+    DEV --> PR
+    PR -->|"blocks merge if<br/>any check fails"| MERGE
+    MERGE --> QA
+    QA --> STAGE
+    STAGE --> PROD
+    PROD --> POST
 ```
 
 ---
