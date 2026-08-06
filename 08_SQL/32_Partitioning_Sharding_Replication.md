@@ -223,7 +223,7 @@ def get_shard_id(user_id: int) -> int:
 def get_connection(user_id: int):
     shard_id = get_shard_id(user_id)
     return create_engine(SHARD_CONFIG[shard_id])
-
+```
 
 > 🔬 **Section Challenge — Part 2 — Database Sharding**
 >
@@ -236,6 +236,7 @@ def get_connection(user_id: int):
 > A static hash of `tenant_id` assumes all tenants have roughly equal load. To resolve this, you must migrate from Hash-based to **Directory-based (Lookup) Sharding**. The enterprise tenant is isolated onto their own dedicated shard (or multiple shards if you shard by `tenant_id + user_id`), while the lookup table routes the smaller tenants to shared shards.
 > </details>
 
+```python
 # Query a specific user → goes to ONE shard
 def get_user(user_id):
     engine = get_connection(user_id)
@@ -292,6 +293,35 @@ Foreign keys               | Not enforceable across shards
 │ Compromise between sync and async                         │
 └──────────────────────────────────────────────────────────┘
 ```
+
+The distinction is really about *when the client gets its COMMIT confirmation relative to replication* — which is easier to see as a sequence than as two side-by-side boxes:
+
+```mermaid
+sequenceDiagram
+    participant App
+    participant Primary
+    participant Replica
+
+    rect rgb(230, 245, 230)
+    Note over App,Replica: Synchronous
+    App->>Primary: WRITE
+    Primary->>Replica: replicate
+    Replica-->>Primary: ACK
+    Primary-->>App: COMMIT confirmed
+    Note over App: Client waited for the replica -- zero data loss, slower
+    end
+
+    rect rgb(255, 245, 230)
+    Note over App,Replica: Asynchronous
+    App->>Primary: WRITE
+    Primary-->>App: COMMIT confirmed
+    Note over App: Client already moved on...
+    Primary->>Replica: replicate (lag)
+    Note over Replica: ...before the replica even has the data yet
+    end
+```
+
+Synchronous makes the client's COMMIT *wait for* the replica's ACK before returning — the extra round trip is the cost of the zero-data-loss guarantee. Asynchronous returns COMMIT the moment the primary itself has durably written the change, and ships it to the replica afterward, on its own schedule — which is exactly why a replica can be several seconds behind and why reading from it right after a write can show stale data.
 
 ### 3.2 Read Replica Architecture
 
