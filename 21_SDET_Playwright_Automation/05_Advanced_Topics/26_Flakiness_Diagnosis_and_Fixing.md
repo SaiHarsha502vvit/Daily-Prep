@@ -96,7 +96,26 @@ TYPE 9 — Third-Party Service
 
 ## 2. The Diagnosis Flowchart
 
-When a test is flaky, follow this exact sequence:
+When a test is flaky, follow this exact sequence. The shape of the process — where it branches and where it loops back — is easy to lose in a step list, so here it is as a flowchart first:
+
+```mermaid
+flowchart TD
+    S1["Step 1: Reproduce locally<br/>--repeat-each=10"]
+    S1 -->|fails 0/10 -- CI-specific| S4["Step 4: Check CI-specific factors<br/>(slow machine / missing secret /<br/>stale storageState / assumed prior state)"]
+    S1 -->|fails 1-9/10 -- local reproducer| S2["Step 2: Get the trace<br/>--trace=on"]
+    S2 --> S3["Step 3: Compare passing vs failing trace<br/>(find the TIMING DIFFERENCE)"]
+    S3 --> S5["Step 5: Classify the type<br/>(Section 1 taxonomy)"]
+    S4 --> S5
+    S5 --> S6["Step 6: Apply ONE fix<br/>--repeat-each=50"]
+    S6 -->|still flaky: fix was wrong/incomplete| S2
+    S6 -->|passes 50/50| Done["Merge fix, monitor 1 week in CI"]
+
+    style S1 fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px
+    style S6 fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style Done fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+```
+
+Now the exact commands and detail for each step:
 
 ```
 Step 1: Reproduce locally

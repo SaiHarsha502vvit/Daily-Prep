@@ -99,23 +99,21 @@ The `blob` reporter + `merge-reports` is the official way to recombine sharded r
 
 ## 3. Test selection — only run what's affected
 
-```
-                            git diff origin/main...HEAD
-                                       │
-                                       ▼
-                              files changed list
-                                       │
-              ┌────────────────────────┼────────────────────────┐
-              ▼                        ▼                        ▼
-        production code          test files              shared utilities
-              │                        │                        │
-   touched files map ←─────────────────┴────────────────────────┘
-              │
-              ▼
-   test files that import (transitively) any touched file
-              │
-              ▼
-        playwright test <list>
+```mermaid
+flowchart TD
+    A["git diff origin/main...HEAD"] --> B["files changed list"]
+    B --> C1["production code"]
+    B --> C2["test files"]
+    B --> C3["shared utilities"]
+    C1 --> D["touched files map"]
+    C2 --> D
+    C3 --> D
+    D --> E["test files that import<br/>(transitively) any touched file"]
+    E --> F["playwright test &lt;list&gt;"]
+
+    style B fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style D fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px
+    style F fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
 ```
 
 ### Cheap implementation — file path heuristics

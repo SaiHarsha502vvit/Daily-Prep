@@ -59,18 +59,18 @@ The root problem: the AI was guessing. It had a static image, not a live DOM. It
 - Real error output from real test runs
 - Access to your file system (your POMs, fixtures, types)
 
-The architecture:
+The architecture — three collaborators, two different protocols (JSON-RPC between AI and MCP server, CDP between MCP server and the real browser):
 
-```
-┌──────────────────┐    JSON-RPC 2.0    ┌────────────────────────┐
-│   AI Model       │ ◄────────────────► │  Playwright MCP Server │
-│ (Claude/GPT/etc) │                    │  (chromium process)     │
-└──────────────────┘                    └───────────┬────────────┘
-                                                    │ CDP
-                                                    ▼
-                                         ┌──────────────────────┐
-                                         │   Your App (browser) │
-                                         └──────────────────────┘
+```mermaid
+sequenceDiagram
+    participant AI as AI Model (Claude/GPT/etc)
+    participant MCP as Playwright MCP Server (chromium process)
+    participant App as Your App (browser)
+
+    AI->>MCP: tools/call browser_navigate (JSON-RPC 2.0)
+    MCP->>App: navigate command (CDP)
+    App-->>MCP: DOM / accessibility state
+    MCP-->>AI: snapshot result (JSON-RPC 2.0)
 ```
 
 The AI sends tool calls like:

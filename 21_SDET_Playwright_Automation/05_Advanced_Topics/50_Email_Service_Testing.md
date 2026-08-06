@@ -603,6 +603,29 @@ test("@e2e order confirmation email with PDF attachment", async ({
 
 ### Multi-step approval chain (request -> approve -> notify)
 
+The test plays both human roles (requester and approver) itself, but the workflow it's verifying genuinely hands off between two people via email — that hand-off is the thing under test:
+
+```mermaid
+sequenceDiagram
+    participant Req as Requester (browser)
+    participant App as Application
+    participant Mail as Email Inbox
+    participant Appr as Approver (browser)
+
+    Req->>App: Submit request (reason, approver_email)
+    App-->>Req: "Request submitted"
+    App->>Mail: send "approval required" email
+
+    Appr->>Mail: waitForMessage(to: approver)
+    Mail-->>Appr: approval link
+    Appr->>App: open link, click "Approve"
+    App-->>Appr: "Approved"
+    App->>Mail: send "approved" notify email
+
+    Req->>Mail: waitForMessage(to: requester)
+    Mail-->>Req: notify email ("Approved by...")
+```
+
 ```typescript
 test("@e2e approval workflow sends notify email after approval", async ({
   page,

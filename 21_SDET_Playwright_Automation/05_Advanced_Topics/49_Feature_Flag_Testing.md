@@ -271,11 +271,16 @@ Every feature flag has a lifecycle. Tests should exist for every stage.
 
 ### Lifecycle stages
 
-```
-Creation → Rollout (0% → 100%) → Full adoption → Deprecation → Removal
-     │              │                      │                │
-     ▼              ▼                      ▼                ▼
-  Smoke test    Gradual ramp         Regression suite   Cleanup tests
+```mermaid
+flowchart LR
+    A["Creation<br/>(flag at 0%)"] --> B["Rollout<br/>(0% → 100%)"] --> C["Full adoption"] --> D["Deprecation"] --> E["Removal"]
+    A -.test type.-> A1["Smoke test"]
+    B -.test type.-> B1["Gradual ramp"]
+    C -.test type.-> C1["Regression suite"]
+    D -.test type.-> D1["Cleanup tests"]
+
+    style A fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px
+    style E fill:#ffebee,stroke:#e53935,stroke-width:2px
 ```
 
 ### Stage 1 — Creation (flag at 0%)
