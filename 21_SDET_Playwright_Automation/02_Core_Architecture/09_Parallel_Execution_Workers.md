@@ -116,11 +116,26 @@ Behaviour:
 - Tests **within the same file** run SEQUENTIALLY.
 - Test order within a file is preserved.
 
-```
-Worker 1: file_A: [test1 → test2 → test3]  ← sequential within file
-Worker 2: file_B: [test1 → test2 → test3]  ← sequential within file
-Worker 3: file_C: [test1 → test2]
-Worker 4: file_D: [test1 → test2 → test3 → test4]
+The 4 workers run at the same time as each other (parallel), but each worker's own tests run one after another (sequential) — both are true simultaneously, at different scopes:
+
+```mermaid
+flowchart LR
+    subgraph W1["Worker 1 — file_A"]
+        direction LR
+        A1[test1] --> A2[test2] --> A3[test3]
+    end
+    subgraph W2["Worker 2 — file_B"]
+        direction LR
+        B1[test1] --> B2[test2] --> B3[test3]
+    end
+    subgraph W3["Worker 3 — file_C"]
+        direction LR
+        C1[test1] --> C2[test2]
+    end
+    subgraph W4["Worker 4 — file_D"]
+        direction LR
+        D1[test1] --> D2[test2] --> D3[test3] --> D4[test4]
+    end
 ```
 
 **Use when:** Tests within a file depend on each other (create user in test 1, use user in test 2). This is common in enterprise E2E suites.

@@ -198,13 +198,17 @@ retries: process.env.CI ? 2 : 0,
 
 ## 5. The `timeout` cascade
 
-There are **four** timeout fields, and they nest:
+There are **four** timeout fields, and they nest — each one has to fit INSIDE its parent's remaining budget, which is why this is a containment relationship, not a sequence:
 
-```
-Suite total ─→ test.timeout ─→ test.step.timeout ─→ action/expect timeout
-   (config            (config              (per step                 (per call)
-   testTimeout?        timeout)              override)                 use.actionTimeout,
-   not directly)                                                       expect.timeout)
+```mermaid
+flowchart TD
+    subgraph Suite["Suite total<br/>(testTimeout — not directly configurable)"]
+        subgraph Test["test.timeout<br/>(config: timeout)"]
+            subgraph Step["test.step.timeout<br/>(per-step override)"]
+                Action["action/expect timeout<br/>(use.actionTimeout, expect.timeout)"]
+            end
+        end
+    end
 ```
 
 The framework example sets:
@@ -658,29 +662,16 @@ And rename `auth.global.ts` → `auth.setup.ts`, wrapping its content in a `test
 
 ## Appendix A — Lifecycle Diagram (globalSetup vs Dependencies vs globalTeardown)
 
-```
-TEST RUN STARTS
-       │
-       ▼
-GLOBAL SETUP — runs once, all projects
-→ Launch DB container, seed data, create storageState
-       │
-  ┌────┴────┐
-  ▼         ▼
-Setup    Setup       (dependency projects, run before their dependents)
-Project  Project
-  │         │
-  ▼         ▼
-E2E      E2E         (dependent projects, workers run in parallel)
-Tests    Tests
-  └────┬────┘
-       │
-       ▼
-GLOBAL TEARDOWN — runs once, always
-→ Stop DB container, upload artifacts, cleanup
-       │
-       ▼
-TEST RUN COMPLETE
+```mermaid
+flowchart TD
+    Start(["TEST RUN STARTS"]) --> GS["GLOBAL SETUP — runs once, all projects<br/>Launch DB container, seed data, create storageState"]
+    GS --> SP1["Setup Project A<br/>(dependency project)"]
+    GS --> SP2["Setup Project B<br/>(dependency project)"]
+    SP1 --> E1["E2E Tests A<br/>(workers run in parallel)"]
+    SP2 --> E2["E2E Tests B<br/>(workers run in parallel)"]
+    E1 --> GT["GLOBAL TEARDOWN — runs once, always<br/>Stop DB container, upload artifacts, cleanup"]
+    E2 --> GT
+    GT --> Done(["TEST RUN COMPLETE"])
 ```
 
 | Feature | Global Setup | Global Teardown | Dependencies |
