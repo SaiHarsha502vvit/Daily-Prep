@@ -186,18 +186,18 @@ DISTINCT removes duplicates based on the SELECT list. ORDER BY col2 means "sort 
 │  DATABASE TYPES:                                                                │
 │  ┌────────────────────────────────────────────────────────────────────────────┐ │
 │  │                                                                            │ │
-│  │  1. RELATIONAL (SQL) ─────────────────────────────────────────────────    │  │
+│  │  1. RELATIONAL (SQL) ─────────────────────────────────────────────────     │ │
 │  │     • Data in tables with rows & columns                                   │ │
 │  │     • Relationships via keys                                               │ │
 │  │     • Examples: MySQL, PostgreSQL, Oracle, SQL Server                      │ │
-│  │     • Best for: Structured data, transactions, reports                    │  │
+│  │     • Best for: Structured data, transactions, reports                     │ │
 │  │                                                                            │ │
-│  │  2. NoSQL ────────────────────────────────────────────────────────────    │  │
+│  │  2. NoSQL ────────────────────────────────────────────────────────────     │ │
 │  │     • Document: MongoDB (JSON-like documents)                              │ │
 │  │     • Key-Value: Redis (Fast caching)                                      │ │
 │  │     • Column-Family: Cassandra (Big data)                                  │ │
 │  │     • Graph: Neo4j (Relationships)                                         │ │
-│  │     • Best for: Unstructured data, scalability, flexibility               │  │
+│  │     • Best for: Unstructured data, scalability, flexibility                │ │
 │  │                                                                            │ │
 │  └────────────────────────────────────────────────────────────────────────────┘ │
 │                                                                                 │
