@@ -250,6 +250,15 @@ The k-gram index from §2.2–§2.4 was built for wildcards, but it precomputed 
 3. Rank the touched set by **Jaccard similarity** of k-gram sets (`|shared grams| / |grams in either|`) — a cheap set operation, no character-alignment needed.
 4. Run the *real* edit-distance computation only on the top few candidates by Jaccard score, and sort by actual edit distance.
 
+Step 3 specifically calls for **Jaccard similarity** (shared grams ÷ union of grams), not the simpler raw count of shared grams — and that choice is worth justifying with numbers, not just asserting. Take the query `moring` against two candidates already in the dictionary, `morning` (8 characters, 8 bigrams including boundaries) and `monitoring` (10 characters, 11 bigrams):
+
+```
+raw_overlap(moring, morning)    = 6 shared bigrams   jaccard = 6/9  = 0.667
+raw_overlap(moring, monitoring) = 7 shared bigrams   jaccard = 7/11 = 0.636
+```
+
+By raw overlap, `monitoring` wins — 7 shared bigrams beats `morning`'s 6. By Jaccard, `morning` wins — 0.667 beats 0.636. These two scoring rules **disagree on the top candidate**, so at most one of them is giving the right answer. Checking against the real edit distance (§2.7's DP, not a guess) settles it: `edit_distance(moring, morning) = 1`, `edit_distance(moring, monitoring) = 4` — `morning` is overwhelmingly the closer match, and Jaccard ranked it first; raw overlap didn't. The reason is exactly what raw overlap fails to account for: `monitoring` is a longer term with more total bigrams, so it has more *chances* to share a bigram with the query, independent of how similar the two words actually are as wholes. Jaccard divides by the union size specifically to cancel out that length bias — a term only scores well if a large *fraction* of both its own grams and the query's grams coincide, not just a large absolute count. This is the same normalization instinct as Chapter 1's sparsity argument and previews a recurring theme in Chapter 3: raw counts favor long documents/terms for reasons that have nothing to do with relevance, and every ranking signal in this course will need some form of length normalization to correct for it.
+
 Traced on the 35-term dictionary:
 
 ```
@@ -338,10 +347,12 @@ To choose the first 10 out of 12, the system needs a numeric score per document 
 | k-gram index | Precomputes, per k-length substring, which vocabulary terms contain it — same precompute-once idea as Chapter 1's inverted index, one level below words |
 | Wildcard resolution | Convert the pattern's *known* fragments into required k-grams, intersect their postings (Chapter 1's merge-walk AND, reused), then verify candidates against the real pattern |
 | k-gram false positives | Bigram co-occurrence proves substrings exist *somewhere* in a term, not in the right position — `moon` passes `mon*`'s bigram filter without starting with `mon` |
+| Smallest-first intersection | Intersecting multiple postings lists smallest-to-largest never lets the intermediate result grow back — touched 15 elements total vs. 43 for an arbitrary order on the same six lists |
 | Filtering power vs. k | Larger k gives more positional specificity (fewer false positives) but raises the minimum known-fragment length before a query gets any filtering at all; no single k dominates every pattern |
 | Hamming distance | Counts positional mismatches on equal-length strings; breaks on insertions/deletions because it has no way to represent a "shift" |
 | Edit distance (Levenshtein) | Minimum insert/delete/substitute operations between two strings; DP recurrence built from three neighboring subproblems, `O(len(a)·len(b))` to compute |
 | "Did you mean" pipeline | Reuses the k-gram index to cheaply shortlist plausible dictionary terms by Jaccard similarity, then runs real edit distance only on that shortlist — avoided 88.6% of comparisons in the worked example |
+| Jaccard vs. raw overlap | Raw shared-gram count favors longer terms for reasons unrelated to similarity (`monitoring` outscored `morning` on raw overlap); Jaccard normalizes by union size and got the ranking right, confirmed against true edit distance |
 | Real-word errors | A misspelling that happens to land on a *different valid word* passes dictionary lookup silently — correction never triggers because there's no miss to catch it |
 
 ## Where We Go Next
