@@ -82,7 +82,7 @@ intelligence     2    3.000     1.0986
 animal           1    6.000     1.7918
 ```
 
-(Full 42-term vocabulary table verified in Python — every value above is `df` counted directly from the corpus and `log(N/df)` computed from it.) The intuition: `the` occurs in 4 of 6 documents — almost useless for telling documents apart — while `animal` occurs in only 1 — highly specific. The raw ratio `N/df` already captures "rarer terms get bigger numbers": `the` gets 1.5, `animal` gets 6.0.
+(Full 43-term vocabulary table verified in Python — every value above is `df` counted directly from the corpus and `log(N/df)` computed from it.) The intuition: `the` occurs in 4 of 6 documents — almost useless for telling documents apart — while `animal` occurs in only 1 — highly specific. The raw ratio `N/df` already captures "rarer terms get bigger numbers": `the` gets 1.5, `animal` gets 6.0.
 
 Why take the *log* of that ratio instead of using `N/df` directly, or the simpler `N - df`? Because of how these three candidates behave as a term gets progressively rarer. Sweep `df` downward by repeated halving, at `N = 1024` for clean numbers:
 
@@ -134,7 +134,7 @@ New ranking: **doc 2 = doc 5 (1.5041) > doc 1 (0.8109) > doc 6 (0.4055) > doc 3 
 
 `tfidf(t, d)` is a single number for one term in one document. Compute it for *every* term in the vocabulary, for a given document, and the result is a vector — one coordinate per vocabulary term, most of them zero (a document only contains a small fraction of the whole vocabulary; the same sparsity observation as Chapter 1 §1.3, one representation up). Represent the query the same way: a vector over the same vocabulary, with `tf` counted from the query text itself.
 
-Made concrete, dropping zero coordinates (the corpus vocabulary has 42 distinct terms; each document only touches 7-12 of them):
+Made concrete, dropping zero coordinates (the corpus vocabulary has 43 distinct terms; each document only touches 8-12 of them):
 
 ```
 Doc 1 = "the quick brown fox jumps over the lazy dog"
