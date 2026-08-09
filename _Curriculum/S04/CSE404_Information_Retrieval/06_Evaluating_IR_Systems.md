@@ -88,6 +88,17 @@ F1 = harmonic_mean(P, R) = 2·P·R / (P+R)
 
 Recomputing the same sweep: at `recall = 0.01`, F1 reports `0.0198` — correctly reflecting a nearly useless system, in stark contrast to the arithmetic mean's misleading `0.505`. This is the **F-measure**, introduced by C.J. van Rijsbergen in *Information Retrieval* (2nd edition, 1979), derived there from a more general effectiveness measure that lets recall and precision be weighted differently; F1 is the special case that weighs them equally. The harmonic mean's bias toward the smaller input is exactly the property that makes it the right tool here: a search engine that returns nothing useful is not rescued by also being very precise about the nothing it returns.
 
+Van Rijsbergen's original formula is more general than the equal-weight F1 special case: `F_β = (1+β²)·P·R / (β²·P + R)`, where `β` sets how many times more important recall is than precision (`β=1` recovers plain F1). Verified on two systems that are exact mirrors of each other — one recall-heavy (`P=0.6, R=0.9`), one precision-heavy (`P=0.9, R=0.6`):
+
+```
+                    P=0.6,R=0.9 (recall-heavy)   P=0.9,R=0.6 (precision-heavy)
+F_0.5 (favors P)          0.6429                        0.8182
+F_1   (equal weight)      0.7200                        0.7200
+F_2   (favors R)          0.8182                        0.6429
+```
+
+`F_0.5` rewards the precision-heavy system and penalizes the recall-heavy one; `F_2` does the exact opposite; `F_1` can't tell them apart at all, scoring both `0.7200`. Which is correct depends entirely on what the search application actually needs — a legal discovery or medical-literature search system, where missing a relevant document is far costlier than showing an extra irrelevant one, would reasonably choose `β>1`; a system where a user only ever looks at the first result and total accuracy matters more than completeness would reasonably choose `β<1`. Plain F1's equal weighting is a default, not a law — this chapter uses it going forward for the same reason Chapter 3 used raw counts over log-scaled TF: it is the simpler, more traceable choice, not necessarily the correct one for any given real deployment.
+
 ## 6.5 Beyond Binary: Cumulative Gain and Its Blind Spot
 
 Precision, recall, and F1 all assume **binary** relevance — a document either counts or it doesn't — and none of them care about **order** within the retrieved set, only membership. Real relevance judgments are usually graded (a document can be highly relevant, marginally relevant, or not relevant at all), and order matters enormously to a real user, who reads top to bottom and rarely reaches result 10.

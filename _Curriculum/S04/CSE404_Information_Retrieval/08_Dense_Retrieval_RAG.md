@@ -117,7 +117,25 @@ Exact top-5: ['car', 'truck', 'cars', 'vehicle', 'driver']
 Overlap: 1/5 (just 'car' itself)
 ```
 
-Restricting the search to `0.185%` of the vocabulary bought a `~113x` speedup — and the result is genuinely different from the exact answer, not just re-ordered: `pickup` and `suv` are still plausibly car-related, but `truck`, `cars`, `vehicle`, and `driver` — four of the five true nearest neighbors — never even entered the candidate set, because they happened to land in a different hash bucket than `car` itself despite being close in the full space. This is the honest trade ANN search makes: **approximate** nearest neighbor, not exact — a small, tunable risk of missing a true best match, in exchange for a search that's actually affordable at scale. Production systems use far more refined index structures than random-hyperplane LSH — FAISS (Johnson, Douze, and Jégou, "Billion-Scale Similarity Search with GPUs," IEEE Transactions on Big Data, 2019) is the widely-used library implementing several such structures (including graph-based and quantization-based indexes) — but every one of them is negotiating the identical trade-off this minimal example just demonstrated directly.
+Restricting the search to `0.185%` of the vocabulary bought a `~113x` speedup — and the result is genuinely different from the exact answer, not just re-ordered: `pickup` and `suv` are still plausibly car-related, but `truck`, `cars`, `vehicle`, and `driver` — four of the five true nearest neighbors — never even entered the candidate set, because they happened to land in a different hash bucket than `car` itself despite being close in the full space. This is the honest trade ANN search makes: **approximate** nearest neighbor, not exact — a small, tunable risk of missing a true best match, in exchange for a search that's actually affordable at scale.
+
+The number of hyperplanes is the tuning knob — more hyperplanes means more, smaller buckets. Sweep it, keeping the same query and the same exact top-5 as the reference:
+
+```
+n_hyperplanes   bucket_size   pct_scanned   time_ms   overlap/5
+      2            52,916       13.229%      34.28        5
+      4            11,220        2.805%       7.43        1
+      6             2,433        0.608%       1.40        1
+      8               740        0.185%       0.65        1
+     10               227        0.057%       0.31        1
+     12                44        0.011%       0.24        1
+     16                 3        0.001%       0.14        1
+     20                 1        0.000%       0.17        1
+```
+
+Bucket size shrinks smoothly and predictably as hyperplanes are added — exactly as expected, since each extra hyperplane can only ever split existing buckets further, never merge them back together. Recall does **not** shrink nearly as smoothly: it's perfect at `n=2` (barely restrictive — still 13% of the vocabulary) and then drops straight to `1/5` at `n=4` and stays there all the way out to `n=20`, even as the candidate pool keeps shrinking by orders of magnitude underneath it. The mechanism explains why: once a single hyperplane happens to separate `car` from one of its true neighbors (say, `truck`), no number of *additional* hyperplanes can ever undo that split — every hyperplane can only subdivide buckets further, so a neighbor lost at `n=4` is lost for every larger `n` too, structurally, not by bad luck that more sampling could fix. Tuning `n_hyperplanes` trades speed for recall, but not along a smooth curve for any *specific* query — it's a much blunter instrument than that, which is exactly why production ANN libraries use multiple independent hash tables (not just one) and combine their candidate sets, recovering a smoother, more reliable trade-off than a single hyperplane family can offer on its own.
+
+Production systems use far more refined index structures than random-hyperplane LSH — FAISS (Johnson, Douze, and Jégou, "Billion-Scale Similarity Search with GPUs," IEEE Transactions on Big Data, 2019) is the widely-used library implementing several such structures (including graph-based and quantization-based indexes) — but every one of them is negotiating the identical trade-off this minimal example just demonstrated directly.
 
 ## 8.5 When It Breaks: The Fixed Vocabulary Problem
 
