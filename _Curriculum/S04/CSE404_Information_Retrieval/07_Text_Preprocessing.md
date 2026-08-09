@@ -114,6 +114,21 @@ Every one of these pairs is a singular/plural form of the *same* word — the ki
 
 These two failure modes are not tuning mistakes that a better rule set could eliminate entirely — they're the direct, unavoidable cost of using a fixed, *context-free* set of suffix rules to approximate what is really a semantic question ("do these two strings refer to the same underlying concept?"). A purely mechanical process, applied uniformly to every word regardless of what it means, will always occasionally merge things that shouldn't merge and separate things that should stay together.
 
+Porter's algorithm was refined into the **Snowball stemmer** (also by Porter, as a more systematic, extensible successor covering multiple languages) — a genuinely different rule set, not just a renamed copy. Run the same probe words through both, side by side:
+
+```
+word           Porter          Snowball
+running        run             run
+generously     gener           generous
+argument       argument        argument
+university     univers         univers
+organization   organ           organ
+```
+
+Snowball fixes `generously` (`gener`, a non-word under Porter, becomes `generous`, a real word, under Snowball's revised suffix handling) — but it reproduces §7.4's exact over-stemming failures unchanged: `university`/`organization` still collapse to `univers`/`organ`. A better, more carefully engineered rule set can fix specific rough edges; it cannot escape the structural ceiling §7.4 already identified, because the ceiling comes from using *any* fixed, context-free rule set at all, not from this particular one being insufficiently polished.
+
+A related, briefly-worth-naming technique addresses a different gap entirely: **part-of-speech (POS) tagging** labels each token with its grammatical role (noun, verb, adjective, ...) using its surrounding context, which is exactly the missing ingredient §7.5 flags below for choosing the correct lemma of an ambiguous word like "meeting." POS tagging doesn't reduce word forms itself — it supplies the contextual information lemmatization needs to do so correctly, filling in the "pos=" argument this chapter's lemmatizer calls have been assuming was already known.
+
 ## 7.5 Lemmatization: Why Some Reductions Need a Dictionary, Not Rules
 
 `better` and `good` are the same word, inflected — but there is no suffix relationship between them at all: `better` cannot be turned into `good` by stripping characters, because `good` isn't a prefix of `better` in any sense a suffix-stripping rule could express. No rule-based stemmer, however cleverly designed, can ever unify them; the relationship exists only in the reader's knowledge of English irregular comparatives, not in the spelling.
