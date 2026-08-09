@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [Start Here](00_START_HERE.md) | [Pace Log](02_Pace_Log.md) | [Audit Log](03_Content_Audit_Log.md) | [Master Index](../00_MASTER_INDEX.md)
 
 # 🗓️ Weekend SDET Plan — Block 1 (JavaScript Core)
 
@@ -120,7 +120,7 @@ This chapter gets **both days**. It's the highest-leverage 779 lines in the enti
 
 This is the day the plan earns its keep. No new material — measure, consolidate, and set the real pace.
 
-- [ ] **Pace audit** — fill in the log below honestly. How long did each day *actually* take vs. the 3-hour estimate?
+- [ ] **Pace audit** — [`02_Pace_Log.md`](02_Pace_Log.md), honestly. How long did each day *actually* take vs. the 3-hour estimate?
 - [ ] **Cold recall** — without notes, explain out loud: the event loop, closures, event bubbling, and `==` vs `===` coercion. Anything you fumble goes on the re-read list.
 - [ ] **Gap-fill** — re-read only the weakest sections from the last 3 weekends
 - [ ] **Problem sets** — work through the JS sections of [`16_PROBLEM_SETS.md`](../16_JavaScript/16_PROBLEM_SETS.md)
@@ -128,23 +128,13 @@ This is the day the plan earns its keep. No new material — measure, consolidat
 
 ---
 
-## Pace Log — fill this in as you go
+## Pace Log
 
-The point of Block 1. Be honest, especially about the last column.
+Lives in its own file so there's exactly one place to record: **[`02_Pace_Log.md`](02_Pace_Log.md)**
 
-| Date | Chapter / sections | Planned | Actual | Rating /5 | What I still can't explain |
-|---|---|---|---|---|---|
-| Sat 15 Aug | Ch01 Foundations | 3h | | | |
-| Sun 16 Aug | Ch02 Functions/Closures | 3h | | | |
-| Sat 22 Aug | Ch04 Async §1-3 | 3h | | | |
-| Sun 23 Aug | Ch04 Async §4-7 | 3h | | | |
-| Sat 29 Aug | Ch05 DOM | 3h | | | |
-| Sun 30 Aug | Checkpoint | 3h | | | |
+Fill in a row at the end of every study day — planned vs actual time, a 1-5 rating, and the one thing you still can't explain. That last column is the whole point of stopping at three weekends.
 
-**At the checkpoint, three questions decide Block 2:**
-1. Is 3 hours/day right, or should it be 2 or 4?
-2. Is one chapter/day right, or does a 1,000-line chapter genuinely need two days?
-3. Which topics need a second pass before TypeScript?
+The log also holds the **cold-recall checklist** and the three questions that decide what Block 2 looks like.
 
 ---
 

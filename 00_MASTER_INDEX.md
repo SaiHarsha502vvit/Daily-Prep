@@ -11,7 +11,8 @@
 | **Start Today's Practice**                   | [Daily Practice Index](12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md)                                                       |
 | Textbook Reading Order                       | [00_TEXTBOOK_PREFACE.md](00_TEXTBOOK_PREFACE.md)                                                                           |
 | 76-Day Study Calendar                        | [01_Getting_Started/02_Study_Plan_Calendar.md](01_Getting_Started/02_Study_Plan_Calendar.md)                               |
-| **1-Hour SDET Daily Path**                   | [01_Getting_Started/03_SDET_1Hour_Daily_Path.md](01_Getting_Started/03_SDET_1Hour_Daily_Path.md)                           |
+| **1-Hour SDET Daily Path** *(weekdays)*      | [01_Getting_Started/03_SDET_1Hour_Daily_Path.md](01_Getting_Started/03_SDET_1Hour_Daily_Path.md)                           |
+| **🎯 Weekend SDET Track** *(Sat/Sun)*        | [26_Weekend_SDET_Track/00_START_HERE.md](26_Weekend_SDET_Track/00_START_HERE.md)                                           |
 | DSA Guide (Foundations)                      | [09_Career_Reference/07_DSA_Guide_Foundations.md](09_Career_Reference/07_DSA_Guide_Foundations.md)                         |
 | **Java & Spring Boot (69 chapters)**         | [→ Jump to 07_Modern_Java/00_INDEX.md](07_Modern_Java/00_INDEX.md)                                                         |
 | **SQL (42 chapters)**                        | [→ Jump to 08_SQL/00_INDEX.md](08_SQL/00_INDEX.md)                                                                         |
