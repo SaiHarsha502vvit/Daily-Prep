@@ -1,175 +1,184 @@
 **Navigation**: [Back to Index](../00_MASTER_INDEX.md)
 
-# 🗓️ Weekend SDET Upskilling Plan — JavaScript → TypeScript → Playwright
+# 🗓️ Weekend SDET Plan — Block 1 (JavaScript Core)
 
 > **Created:** Sunday, 09 August 2026
-> **Format:** Saturdays + Sundays only (you work weekdays)
-> **Goal:** Become a stronger SDET — real depth in JS, then TS, then Playwright
-> **Span:** 18 weekends, Sat 15 Aug 2026 → Sun 13 Dec 2026
+> **This block:** 3 weekends — Sat 15 Aug → Sun 30 Aug 2026
+> **Then:** we measure actual pace and plan Block 2 from real data, not guesses
+> **Track:** JavaScript → TypeScript → Playwright · Goal: stronger SDET
 
 ---
 
-## Why This Order (JS → TS → Playwright)
+## Why Only 3 Weekends
 
-This isn't arbitrary sequencing. Each layer is the *substrate* the next one runs on, and skipping ahead is exactly why many automation engineers plateau:
+Planning 18 weekends up front assumes I know how fast you move through a 1,187-line chapter while typing every example by hand. I don't, and neither do you yet. So this block commits to three weekends, ends with a checkpoint that *measures* your real pace, and Block 2 gets built from that number.
 
-- **JavaScript first** — Playwright tests are JS/TS programs. Every flaky test you'll ever debug traces back to async behavior, event-loop ordering, or DOM lifecycle. If `await`, promises, and closures aren't second nature, you'll be pattern-matching Playwright syntax instead of reasoning about *why* a test failed.
-- **TypeScript second** — Playwright's API is TypeScript-first. Its fixtures, custom matchers, and page-object patterns lean hard on generics, utility types, and interfaces. Learning TS *after* JS means you understand what TS is adding, rather than treating types as syntax noise to satisfy the compiler.
-- **Playwright last** — by then you're not learning "a tool," you're applying two languages you already understand to a testing problem. That's the difference between an automation *user* and an SDET.
+Two things this protects against: a schedule so aggressive you fall behind in week 3 and quit, and one so soft you finish Block 1 having learned less than you could have.
 
-**The SDET-specific payoff:** `09_Browser_Internals_Rendering`, `12_V8_Engine_Internals`, `13_NodeJS_Architecture`, and `14_Browser_Engines_And_Chromium_Architecture` in the JS module are deliberately scheduled next to the Playwright architecture material — because Playwright's whole design (CDP, browser contexts, auto-waiting, the Node-side test runner driving a browser-side page) only makes sense once you know what a browser and a Node process actually do.
+---
+
+## What Block 1 Covers (and What It Deliberately Skips)
+
+Four chapters, chosen by **what breaks Playwright tests**, not by chapter order:
+
+| Priority for an SDET | Chapter | Why it's in Block 1 |
+|---|---|---|
+| 🔴 Critical | `04_JS_Async_Promises` | Every flaky test, every race condition, every "element not attached" |
+| 🔴 Critical | `05_JS_DOM_BrowserAPIs` | Every locator, every click that fired but did nothing |
+| 🟠 High | `02_JS_Functions_Closures` | Closures = how fixtures hold state; `this` = a daily footgun |
+| 🟡 Base | `01_JS_Foundations` | Coercion and scope rules that silently corrupt assertions |
+
+**Deliberately deferred to Block 2:** `03_JS_Objects_Prototypes` and `06_JS_Modern_ES6Plus`. Both are genuinely valuable — prototypes explain how Playwright's classes work, ES6+ is everywhere in modern test code — but neither is what makes a test *flake at 2am*. Async and DOM are. You'll get them next block.
+
+> **One note on your starting point:** you already write TypeScript professionally, so parts of Chapter 1 will be review. That's fine and expected — read it anyway, but at speed, and spend your saved time on §3 (coercion) and §8 (execution context), which are the two most people *think* they know. If a section is genuinely old news, mark it and move on. Honest skipping is fine; pretending is not.
 
 ---
 
 ## How Each Study Day Works
 
-**Core block: 3 hours.** Stretch block: +1 hour if you have it. Skipping the stretch is fine; skipping the core isn't.
+**Core: 3 hours.** Adjust after Weekend 1 once you know your real speed.
 
 | Block | What | Time |
 |---|---|---|
-| 📖 **Read** | One chapter, actively. Not a skim — stop at every code block and predict the output *before* reading on. | 45 min |
-| ⌨️ **Type** | Retype every code example by hand and run it. No copy-paste. Break it on purpose, see the error. | 45 min |
-| 🧩 **Practice** | The chapter's Section Challenge + matching problem-set questions. Write the answer before opening `<details>`. | 60 min |
-| ✍️ **Consolidate** | Write 5-10 lines in your own words: what this chapter changed about how you think. Note ONE thing you still can't explain. | 30 min |
-| 🔁 *Stretch* | *Revisit last weekend's "can't explain" note. Answer it, or bring it to Claude.* | *60 min* |
+| 📖 **Read** | Assigned sections, actively. Stop at every code block and predict the output *before* reading on. | 50 min |
+| ⌨️ **Type** | Retype every example by hand and run it. No copy-paste. Then break it on purpose and read the error. | 50 min |
+| 🧩 **Practice** | The chapter's Interview Quick-Fire + practice questions. Write your answer *before* opening `<details>`. | 50 min |
+| ✍️ **Consolidate** | 5-10 lines in your own words. Log ONE thing you still can't explain. | 20 min |
 
-**The rule that makes this work:** if you can't explain a concept out loud without looking, you haven't learned it — you've read it. The "can't explain" note is the most valuable line you write each day.
-
----
-
-## Phase 1 — JavaScript (Weekends 1-5)
-
-Source: [`16_JavaScript/`](../16_JavaScript/00_INDEX.md) · Problems: [`16_PROBLEM_SETS.md`](../16_JavaScript/16_PROBLEM_SETS.md)
-
-### Weekend 1 — Sat 15 Aug / Sun 16 Aug
-- [ ] **Sat:** [01_JS_Foundations](../16_JavaScript/01_JS_Foundations.md) — types, coercion, scope, hoisting
-- [ ] **Sun:** [02_JS_Functions_Closures](../16_JavaScript/02_JS_Functions_Closures.md) — closures, `this`, call/apply/bind
-- [ ] 🎯 *SDET link:* closures are how test fixtures hold state between setup and teardown
-
-### Weekend 2 — Sat 22 Aug / Sun 23 Aug
-- [ ] **Sat:** [03_JS_Objects_Prototypes](../16_JavaScript/03_JS_Objects_Prototypes.md) — prototype chain, inheritance
-- [ ] **Sun:** [04_JS_Async_Promises](../16_JavaScript/04_JS_Async_Promises.md) ⭐ — event loop, microtasks, promise combinators
-- [ ] 🎯 *SDET link:* **the single most important JS chapter for you.** Every `await page.click()`, every race-condition flake, every "element not attached" error lives here. Do not rush this one — if a weekend runs long, let it be this one.
-
-### Weekend 3 — Sat 29 Aug / Sun 30 Aug
-- [ ] **Sat:** [05_JS_DOM_BrowserAPIs](../16_JavaScript/05_JS_DOM_BrowserAPIs.md) — DOM tree, events, bubbling/capture
-- [ ] **Sun:** [06_JS_Modern_ES6Plus](../16_JavaScript/06_JS_Modern_ES6Plus.md) — destructuring, modules, optional chaining
-- [ ] 🎯 *SDET link:* DOM traversal + event model = why your locator matched 3 elements, and why `click()` fired but nothing happened
-
-### Weekend 4 — Sat 5 Sep / Sun 6 Sep
-- [ ] **Sat:** [07_JS_Error_Handling_Debugging](../16_JavaScript/07_JS_Error_Handling_Debugging.md) — error types, stack traces, async errors
-- [ ] **Sun:** [08_JS_Deep_Reasoning](../16_JavaScript/08_JS_Deep_Reasoning.md) — the "why" chapter
-- [ ] 🎯 *SDET link:* reading an async stack trace correctly is a daily SDET skill
-
-### Weekend 5 — Sat 12 Sep / Sun 13 Sep — **JS Checkpoint**
-- [ ] **Sat:** [09_Browser_Internals_Rendering](../16_JavaScript/09_Browser_Internals_Rendering.md) — parse, layout, paint, composite
-- [ ] **Sun:** [13_NodeJS_Architecture](../16_JavaScript/13_NodeJS_Architecture.md) — libuv, event loop phases, streams
-- [ ] ✅ **Checkpoint:** work through [`16_PROBLEM_SETS.md`](../16_JavaScript/16_PROBLEM_SETS.md). Can you explain the event loop, closures, and the prototype chain out loud, cold? If not, repeat the weak chapter before moving on.
-
-> *Deferred by design:* `10_Web_Workers_ServiceWorkers`, `11_Advanced_Web_APIs`, `12_V8_Engine_Internals`, `14_Browser_Engines_And_Chromium_Architecture` are scheduled later (Weekend 11), where they pair directly with Playwright's browser architecture and actually land.
+**The rule:** if you can't explain it out loud without looking, you read it — you didn't learn it. The "can't explain" line is the most valuable thing you write all day.
 
 ---
 
-## Phase 2 — TypeScript (Weekends 6-8)
+## Weekend 1 — Sat 15 Aug / Sun 16 Aug
+### Foundations + Closures
 
-Source: [`17_TypeScript/`](../17_TypeScript/00_INDEX.md) · Problems: [`17_PROBLEM_SETS.md`](../17_TypeScript/17_PROBLEM_SETS.md)
+**Saturday — [01_JS_Foundations](../16_JavaScript/01_JS_Foundations.md)** *(1,187 lines — the longest chapter in the block; pace yourself)*
+- [ ] §0 War Stories, §1 What IS JavaScript
+- [ ] §2 Data Types, **§3 Type Coercion** ⭐
+- [ ] §4 var/let/const, §5 Scope, §6 Hoisting
+- [ ] §7 Operators, **§8 Execution Context** ⭐, §9 Strict Mode
+- [ ] Interview Quick-Fire + Practice Questions
 
-### Weekend 6 — Sat 19 Sep / Sun 20 Sep
-- [ ] **Sat:** [01_TS_Foundations](../17_TypeScript/01_TS_Foundations.md) — structural typing, inference, narrowing
-- [ ] **Sun:** [02_TS_Advanced_Types](../17_TypeScript/02_TS_Advanced_Types.md) ⭐ — generics, conditional & mapped types, utility types
-- [ ] 🎯 *SDET link:* Playwright's `test.extend<MyFixtures>()` is generics. Custom matchers are declaration merging. This chapter is why they work.
+> 🎯 **SDET check — can you answer these cold?**
+> 1. Why does `expect('5' == 5).toBe(true)` pass but `'5' === 5` fail — and which one belongs in a test assertion?
+> 2. A `var` inside a `for` loop that registers callbacks gives you the same final value every time. Why, and what does `let` change?
 
-### Weekend 7 — Sat 26 Sep / Sun 27 Sep
-- [ ] **Sat:** [03_TS_Patterns_BestPractices](../17_TypeScript/03_TS_Patterns_BestPractices.md) — practical patterns
-- [ ] **Sun:** [04_TS_Deep_Reasoning](../17_TypeScript/04_TS_Deep_Reasoning.md) — the "why" chapter
-- [ ] 🎯 *SDET link:* typed page objects catch broken selectors at compile time instead of at 2am in CI
+**Sunday — [02_JS_Functions_Closures](../16_JavaScript/02_JS_Functions_Closures.md)** *(853 lines)*
+- [ ] §1 Declarations vs Expressions, §2 Parameters
+- [ ] **§3 `this` Keyword** ⭐ — the arrow-function vs regular-function distinction
+- [ ] **§4 Closures** ⭐ — the chapter's core
+- [ ] §5 Higher-Order Functions, §6 IIFE
+- [ ] §7 Currying, §8 Composition, §9 Recursion
+- [ ] Interview Quick-Fire + Reality Check
 
-### Weekend 8 — Sat 3 Oct / Sun 4 Oct — **TS Checkpoint**
-- [ ] **Sat:** [05_TS_Decorators_Metaprogramming](../17_TypeScript/05_TS_Decorators_Metaprogramming.md)
-- [ ] **Sun:** [06_TS_Module_System_Performance](../17_TypeScript/06_TS_Module_System_Performance.md) — `tsconfig`, module resolution, build perf
-- [ ] ✅ **Checkpoint:** [`17_PROBLEM_SETS.md`](../17_TypeScript/17_PROBLEM_SETS.md). You should be able to write a generic function with a constrained type parameter without looking it up.
-
----
-
-## Phase 3 — Playwright (Weekends 9-18)
-
-Source: [`21_SDET_Playwright_Automation/`](../21_SDET_Playwright_Automation/00_Start_Here.md) · Challenges: [`challenges/`](../21_SDET_Playwright_Automation/challenges/README.md)
-
-**Shift in rhythm:** from here, every weekend ends with *working code you wrote*, not just a chapter you read. Sat = learn, Sun = build.
-
-### Weekend 9 — Sat 10 Oct / Sun 11 Oct
-- [ ] **Sat:** [00_SDET_Foundations_Mindset](../21_SDET_Playwright_Automation/01_Foundations/00_SDET_Foundations_Mindset.md) + [00_Testing_Fundamentals](../21_SDET_Playwright_Automation/01_Foundations/00_Testing_Fundamentals/)
-- [ ] **Sun:** [01_Environment_Setup_and_First_Test](../21_SDET_Playwright_Automation/01_Foundations/01_Environment_Setup_and_First_Test.md) — get a real test running locally
-
-### Weekend 10 — Sat 17 Oct / Sun 18 Oct
-- [ ] **Sat:** [01_Playwright_TS_Basics](../21_SDET_Playwright_Automation/01_Foundations/01_Playwright_TS_Basics.md) + [04_JS_TS_For_Automation](../21_SDET_Playwright_Automation/01_Foundations/04_JS_TS_For_Automation.md)
-- [ ] **Sun:** [02_Enterprise_Locators_XPath](../21_SDET_Playwright_Automation/01_Foundations/02_Enterprise_Locators_XPath.md) + [03_Browser_Console_Scripting](../21_SDET_Playwright_Automation/01_Foundations/03_Browser_Console_Scripting.md)
-- [ ] 🏗️ **Challenge:** [CH01_Core_Infrastructure](../21_SDET_Playwright_Automation/challenges/CH01_Core_Infrastructure.md)
-
-### Weekend 11 — Sat 24 Oct / Sun 25 Oct — *browser internals week*
-- [ ] **Sat:** [02_Core_Architecture](../21_SDET_Playwright_Automation/02_Core_Architecture/) — how Playwright actually drives a browser
-- [ ] **Sun:** JS deep-dives that now pay off: [12_V8_Engine_Internals](../16_JavaScript/12_V8_Engine_Internals.md) + [14_Browser_Engines_And_Chromium_Architecture](../16_JavaScript/14_Browser_Engines_And_Chromium_Architecture.md)
-- [ ] 🏗️ **Challenge:** [CH02_Single_Website_POM](../21_SDET_Playwright_Automation/challenges/CH02_Single_Website_POM.md)
-
-### Weekend 12 — Sat 31 Oct / Sun 1 Nov
-- [ ] **Sat/Sun:** [03_D365_And_Patterns](../21_SDET_Playwright_Automation/03_D365_And_Patterns/) — Page Object Model done properly
-- [ ] 🏗️ **Challenge:** [CH03_API_UI_Cross_Validation](../21_SDET_Playwright_Automation/challenges/CH03_API_UI_Cross_Validation.md)
-
-### Weekend 13 — Sat 7 Nov / Sun 8 Nov
-- [ ] **Sat/Sun:** [04_Enterprise_Architecture](../21_SDET_Playwright_Automation/04_Enterprise_Architecture/) — fixtures, config, scaling a suite
-- [ ] 🏗️ **Challenge:** [CH04_New_Tab_Scenario](../21_SDET_Playwright_Automation/challenges/CH04_New_Tab_Scenario.md)
-
-### Weekend 14 — Sat 14 Nov / Sun 15 Nov
-- [ ] **Sat/Sun:** [05_Advanced_Topics](../21_SDET_Playwright_Automation/05_Advanced_Topics/) part 1 (network, auth, parallelism)
-- [ ] 🏗️ **Challenge:** [CH05_Cross_Website_Data_Bridge](../21_SDET_Playwright_Automation/challenges/CH05_Cross_Website_Data_Bridge.md)
-
-### Weekend 15 — Sat 21 Nov / Sun 22 Nov
-- [ ] **Sat/Sun:** [05_Advanced_Topics](../21_SDET_Playwright_Automation/05_Advanced_Topics/) part 2 (flakiness, retries, tracing)
-- [ ] 🏗️ **Challenge:** [CH06_Understand_Auth_Fixture](../21_SDET_Playwright_Automation/challenges/CH06_Understand_Auth_Fixture.md)
-
-### Weekend 16 — Sat 28 Nov / Sun 29 Nov
-- [ ] **Sat/Sun:** [07_Specialised_Testing](../21_SDET_Playwright_Automation/07_Specialised_Testing/) — visual, a11y, performance, mobile
-- [ ] 🏗️ **Challenge:** [CH07_Full_Cross_Site_Flow](../21_SDET_Playwright_Automation/challenges/CH07_Full_Cross_Site_Flow.md)
-
-### Weekend 17 — Sat 5 Dec / Sun 6 Dec — **capstone 1**
-- [ ] **Sat:** [06_SDET_to_SDE_Bridge](../21_SDET_Playwright_Automation/06_SDET_to_SDE_Bridge/)
-- [ ] 🏆 **Capstone:** [CAP_C1_Flaky_Test_Detector](../21_SDET_Playwright_Automation/challenges/CAP_C1_Flaky_Test_Detector.md)
-
-### Weekend 18 — Sat 12 Dec / Sun 13 Dec — **capstone 2 + close-out**
-- [ ] 🏆 **Capstone:** [CAP_C2_Custom_Reporter](../21_SDET_Playwright_Automation/challenges/CAP_C2_Custom_Reporter.md)
-- [ ] 🏆 **Capstone:** [CAP_C3_Test_Analytics_Dashboard](../21_SDET_Playwright_Automation/challenges/CAP_C3_Test_Analytics_Dashboard.md)
-- [ ] ✅ **Final:** [08_Practice_And_Quizzes](../21_SDET_Playwright_Automation/08_Practice_And_Quizzes/) + update your resume with the three capstones
+> 🎯 **SDET check:**
+> 1. A Playwright fixture needs to remember a value between setup and teardown. Which mechanism from §4 is that, and why doesn't a plain variable work?
+> 2. Why does `this` break when you pass a class method as a callback — and why does an arrow function fix it?
 
 ---
 
-## Progress Log
+## Weekend 2 — Sat 22 Aug / Sun 23 Aug ⭐
+### Async — the whole weekend
 
-Fill this in as you go — one line per study day. It's the honest record of what stuck.
+This chapter gets **both days**. It's the highest-leverage 779 lines in the entire JS module for an SDET. Every time you write `await page.click()` you're using this; every flaky test you'll ever debug is explained by it. If you only half-learn one chapter in Block 1, do not let it be this one.
 
-| Date | Chapter | Rating /5 | The thing I still can't explain |
-|---|---|---|---|
-| | | | |
+**Saturday — [04_JS_Async_Promises](../16_JavaScript/04_JS_Async_Promises.md), first half**
+- [ ] **§1 The Event Loop** ⭐ — build the mental model properly, draw it on paper
+- [ ] §2 Callbacks — the old way, and why it hurt
+- [ ] §3 Promises — states, chaining, error propagation
+
+> 🎯 **SDET check:** draw the event loop from memory — call stack, task queue, microtask queue. Then trace: `console.log(1); setTimeout(()=>console.log(2),0); Promise.resolve().then(()=>console.log(3)); console.log(4);` — what's the output order, and *why*?
+
+**Sunday — [04_JS_Async_Promises](../16_JavaScript/04_JS_Async_Promises.md), second half**
+- [ ] §4 Async/Await — what it desugars to
+- [ ] §5 Advanced Async Patterns — `all` / `allSettled` / `race` / `any`
+- [ ] **§6 Microtasks vs Macrotasks** ⭐ — the deep dive
+- [ ] §7 Common Async Patterns in Real Code
+- [ ] Interview Quick-Fire + Reality Check
+
+> 🎯 **SDET check:**
+> 1. You have 5 independent API calls in a test. Sequential `await`s vs `Promise.all` — what's the time difference, and when is `allSettled` the right call instead?
+> 2. A test passes locally and fails in CI. Explain — using the event loop, not vibes — how a timing difference produces that.
+
+---
+
+## Weekend 3 — Sat 29 Aug / Sun 30 Aug
+### DOM + Block Checkpoint
+
+**Saturday — [05_JS_DOM_BrowserAPIs](../16_JavaScript/05_JS_DOM_BrowserAPIs.md)** *(767 lines)*
+- [ ] §1 What IS the DOM, §2 Selecting Elements ⭐
+- [ ] §3 Traversing, §4 Creating & Modifying
+- [ ] **§5 Events** ⭐ — bubbling, capture, delegation
+- [ ] §6 Forms, §7 Storage APIs, §8 Fetch API
+- [ ] §9 Other Browser APIs, §10 Why React Exists
+
+> 🎯 **SDET check:**
+> 1. Your locator matched 3 elements when you expected 1. Using §2-3, name three different ways to make it unambiguous — and which is most resilient to a UI refactor.
+> 2. You clicked a button and nothing happened, but the click *did* fire. Using §5, give two mechanisms that explain it.
+
+**Sunday — Checkpoint (no new chapter)**
+
+This is the day the plan earns its keep. No new material — measure, consolidate, and set the real pace.
+
+- [ ] **Pace audit** — fill in the log below honestly. How long did each day *actually* take vs. the 3-hour estimate?
+- [ ] **Cold recall** — without notes, explain out loud: the event loop, closures, event bubbling, and `==` vs `===` coercion. Anything you fumble goes on the re-read list.
+- [ ] **Gap-fill** — re-read only the weakest sections from the last 3 weekends
+- [ ] **Problem sets** — work through the JS sections of [`16_PROBLEM_SETS.md`](../16_JavaScript/16_PROBLEM_SETS.md)
+- [ ] **Plan Block 2** — bring your numbers to Claude and we'll build the next block around your actual speed
+
+---
+
+## Pace Log — fill this in as you go
+
+The point of Block 1. Be honest, especially about the last column.
+
+| Date | Chapter / sections | Planned | Actual | Rating /5 | What I still can't explain |
+|---|---|---|---|---|---|
+| Sat 15 Aug | Ch01 Foundations | 3h | | | |
+| Sun 16 Aug | Ch02 Functions/Closures | 3h | | | |
+| Sat 22 Aug | Ch04 Async §1-3 | 3h | | | |
+| Sun 23 Aug | Ch04 Async §4-7 | 3h | | | |
+| Sat 29 Aug | Ch05 DOM | 3h | | | |
+| Sun 30 Aug | Checkpoint | 3h | | | |
+
+**At the checkpoint, three questions decide Block 2:**
+1. Is 3 hours/day right, or should it be 2 or 4?
+2. Is one chapter/day right, or does a 1,000-line chapter genuinely need two days?
+3. Which topics need a second pass before TypeScript?
+
+---
+
+## The Arc Ahead (sketch only — not committed)
+
+Not scheduled, deliberately. Here so you can see where this goes:
+
+- **Block 2 — JS finish:** Prototypes, ES6+, Error Handling/Debugging, Deep Reasoning
+- **Block 3 — JS for SDET:** Browser Internals, Node Architecture *(the two that make Playwright's design click)*
+- **Block 4-5 — TypeScript:** Foundations, Advanced Types ⭐, Patterns, Deep Reasoning, Decorators, Modules
+- **Block 6+ — Playwright:** Foundations → Core Architecture → POM → Enterprise → Advanced → 7 challenges → 3 capstones
+
+Each block gets planned when the previous one ends, sized to your measured pace.
 
 ---
 
 ## If You Miss a Weekend
 
-You will miss some. Plan for it now so it doesn't turn into quitting:
+You will. Plan for it now so it doesn't become quitting:
 
-- **Missed one day** — do it next weekend as a third session, or just drop it and move on. The schedule is a guide, not a debt.
-- **Missed a whole weekend** — shift everything one weekend later. Don't try to double up; two chapters in one day is how you end up reading without absorbing.
-- **Fell behind by a month** — don't restart. Skip forward to where the current phase is and keep going; you can backfill the middle later. Momentum beats completeness.
+- **Missed a day** — do it as a third session next weekend, or drop it. The schedule is a guide, not a debt.
+- **Missed a weekend** — shift everything one weekend later. Don't double up; two big chapters in a day is reading without absorbing.
+- **Fell behind badly** — don't restart. Jump to where the current block is and keep going. Momentum beats completeness.
 
-The one thing that *isn't* negotiable: **don't skip Weekend 2 (async) or Weekend 6 (advanced types).** Everything downstream leans on those two.
+Non-negotiable: **don't skip Weekend 2.** Everything downstream leans on async.
 
 ---
 
 ## Using This With Claude
 
-Each study day, just say what you're working on — e.g. *"Weekend 3 Saturday, DOM chapter"* — and Claude will pull the local date, confirm where you are in the plan, and work through it with you: explaining, quizzing, reviewing your code, or debugging your challenge attempt.
+Say where you are — e.g. *"Weekend 1 Saturday, foundations"* — and I'll pull the local date, confirm your position in the plan, and work the session with you.
 
-Good prompts for a study session:
-- *"Quiz me on last weekend's chapter before I start today's"*
-- *"I wrote this test and it's flaky — here's the code, help me reason about why"*
-- *"Explain why this Playwright locator matched 3 elements"*
-- *"I couldn't answer my 'can't explain' note from last week: [the question]"*
+Good session prompts:
+- *"Quiz me on last weekend before I start today"*
+- *"Here's my answer to the SDET check — is it right?"*
+- *"This test is flaky, here's the code — walk me through why using the event loop"*
+- *"I couldn't explain [X] from my log — teach me that properly"*
