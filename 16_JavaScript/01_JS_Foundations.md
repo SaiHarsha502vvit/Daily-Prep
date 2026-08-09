@@ -321,9 +321,9 @@ reliable for predicting behavior.)*
 > `"5" + 3`, and rather than throwing an error for "you can't add a
 > string and a number," the engine converts one side and proceeds.
 >
-> **Why this design choice, not just "that's how it is."** Section 2a
-> of this chapter's naming history (see [Chapter 14](14_Browser_Engines_And_Chromium_Architecture.md))
-> covers the ten-day origin story in full — the relevant piece here is
+> **Why this design choice, not just "that's how it is."**
+> [Chapter 14](14_Browser_Engines_And_Chromium_Architecture.md) covers
+> the ten-day origin story in full — the relevant piece here is
 > that Brendan Eich built the language for exactly this purpose:
 > letting a page author with little programming background write
 > something like `"Total: " + price` and have it *work*, rather than
@@ -372,9 +372,14 @@ null == 0; // false ← null doesn't coerce in ==
 NaN == NaN; // false ← NaN is not equal to ANYTHING, even itself
 
 // BOOLEAN coercion (truthy/falsy):
-// FALSY values (only 8 of them — MEMORIZE):
+// FALSY values — 8 at the language level (MEMORIZE):
 // false, 0, -0, 0n, "", null, undefined, NaN
 // Everything else is TRUTHY (including "0", "false", [], {})
+//
+// ...with exactly ONE host-environment exception: in a BROWSER,
+// `document.all` is also falsy — a deliberate legacy-compat hack in the
+// HTML spec ([[IsHTMLDDA]] internal slot) that makes it impersonate
+// `undefined`. Not present in Node. So: 8 in the language, 9 in a browser.
 
 if ("0") console.log("truthy!"); // PRINTS! "0" is truthy (non-empty string)
 if ([]) console.log("truthy!"); // PRINTS! empty array is truthy
@@ -387,32 +392,45 @@ if ([]) console.log("truthy!"); // PRINTS! empty array is truthy
 > types differ, the answer is `false` immediately, no further steps.
 >
 > **The rule, and the reasoning behind it, not just the rule.** Default
-> to `===`. The ECMAScript spec's Abstract Equality Comparison
-> Algorithm (what `==` actually runs) has over twenty distinct branches
-> covering every pairing of types — nobody holds all of them reliably
-> in working memory, which means `==` isn't "sometimes surprising," it's
-> "reliably surprising for any pairing you haven't specifically
-> memorized." `===` has zero conversion branches: what you see is what
-> gets compared, full stop.
+> to `===`. The algorithm `==` actually runs is called **`IsLooselyEqual`**
+> in the ECMAScript spec (§7.2.15 in ES2023 — historically named the
+> Abstract Equality Comparison Algorithm), and it branches on the *pairing*
+> of the two operand types: Number-vs-String converts one way,
+> String-vs-Number the other, Boolean-vs-anything converts the boolean
+> to a number first, Object-vs-primitive runs `ToPrimitive` on the object,
+> BigInt-vs-String parses the string, and so on down a chain of special
+> cases. Nobody holds that whole table reliably in working memory, which
+> means `==` isn't "sometimes surprising," it's "reliably surprising for
+> any pairing you haven't specifically memorized." `===` has zero
+> conversion branches: what you see is what gets compared, full stop.
 >
 > **The one acceptable `==` use, and why this specific case is safe
 > when the general rule isn't.** `value == null` checks for *both*
 > `null` and `undefined` in one comparison, because those two values
 > are specifically defined (as a spec-level special case, not a
 > coincidence) to loosely-equal each other and nothing else — no
-> number, string, or object ever loosely-equals `null` except `null`
-> and `undefined` themselves. That narrowness is exactly what makes it
-> safe: `value == null` cannot accidentally match `0`, `""`, or any
-> other value the general `==` rules would ambush you with — it's
-> spec-guaranteed to catch precisely {`null`, `undefined`} and nothing
-> else, which is why this one exception is written into style guides
-> instead of banned along with every other `==` use.
+> ordinary number, string, or object ever loosely-equals `null` except
+> `null` and `undefined` themselves. That narrowness is exactly what
+> makes it safe: `value == null` cannot accidentally match `0`, `""`,
+> or any other value the general `==` rules would ambush you with,
+> which is why this one exception is written into style guides instead
+> of banned along with every other `==` use.
+>
+> **The one exception to the exception (browser only).** `document.all`
+> also loosely-equals `null`, via the same `[[IsHTMLDDA]]` legacy-compat
+> slot that makes it falsy — it's specified to impersonate `undefined`
+> in exactly three operations: `ToBoolean`, `IsLooselyEqual`, and
+> `typeof`. So `document.all == null` is `true`. It's the *only* such
+> object, it exists purely so 1990s feature-detection code keeps working,
+> and it doesn't exist in Node at all — but if you're automating browsers,
+> know that "falsy" and "loosely equals null" are host-dependent, not
+> purely language-level, facts.
 
 ---
 
 🔬 **Section Challenge — 3. Type Coercion — JS's Most Confusing Feature**
 
-**Challenge 1 (Reasoning):** Explain the exact internal coercion algorithm that makes `[] + {}` evaluate to `"[object Object]"` but `{} + []` (in a console) evaluate to `0`.
+**Challenge 1 (Reasoning):** Explain the exact internal coercion algorithm that makes `[] + {}` evaluate to `"[object Object]"` but `{} + []`, typed at the start of a line in a **browser** console (Chrome DevTools), evaluate to `0`.
 
 <details><summary>Answer</summary>
 
@@ -427,6 +445,18 @@ For `[] + {}`:
 4. The JS parser interprets the leading `{}` not as an empty object, but as an **empty code block**.
 5. Thus, the expression is evaluated as `+ []` (unary plus on an empty array).
 6. `+` forces `ToNumber()`. `[].toString()` is `""`. `Number("")` is `0`.
+
+**⚠️ Try this in Node and you'll get a different answer — that's not you making a mistake.** The `0` result depends entirely on `{}` landing in *statement position*, where the parser is allowed to read it as a block. Change the position, change the answer:
+
+| How you write it | Result | Why |
+|---|---|---|
+| `{} + []` at the start of a line (Chrome DevTools) | `0` | `{}` parsed as an empty **block**, so it's `+[]` |
+| `({}) + []` | `"[object Object]"` | parens force **expression** position — a real object literal |
+| `{} + []` in the **Node REPL** | `"[object Object]"` | Node wraps REPL input in parens, so it's the row above |
+| `console.log({} + [])` | `"[object Object]"` | an argument is expression position |
+
+All four verified by execution on Node v22. The lesson isn't "memorise the table" — it's that **the same characters mean different things depending on where the parser meets them**, and a REPL that silently rewrites your input can hide that from you.
+
 **Debug/Design:** This exposes the danger of implicit coercion and the JS parser's ambiguity between object literals and code blocks. Never rely on implicit object-to-primitive conversion in arithmetic operations.
 </details>
 
@@ -845,7 +875,14 @@ function returns.
 
 <details><summary>Answer</summary>
 
-**Who created each EC?** The JS engine — one Global EC at script start, then one Function EC per call: `a()` pushed, `b()` pushed, `c()` pushed. **Call Stack at `console.log` moment:** `[Global, a, b, c]` (c on top). **Stack trace shows:** `c` (line X), `b` (line Y), `a` (line Z), `<anonymous>` (global). **When popped?** `c()` returns → c's EC popped. `b()` returns → b's EC popped. `a()` returns → a's EC popped. Global EC stays until script ends. **Each EC contains:** (1) Variable Environment — `let/const/var` bindings for that function. (2) Scope Chain — link to parent EC for variable lookup. (3) `this` binding — in non-arrow functions, depends on HOW `a/b/c` were called (here: as plain functions → `this = undefined` in strict mode, `window` in non-strict). **Key insight:** The call stack is LIFO — Last In, First Out. Stack overflow = call stack exceeded its size limit (V8 default: ~10,000 frames on most systems).
+**Who created each EC?** The JS engine — one Global EC at script start, then one Function EC per call: `a()` pushed, `b()` pushed, `c()` pushed. **Call Stack at `console.log` moment:** `[Global, a, b, c]` (c on top). **Stack trace shows:** `c` (line X), `b` (line Y), `a` (line Z), `<anonymous>` (global). **When popped?** `c()` returns → c's EC popped. `b()` returns → b's EC popped. `a()` returns → a's EC popped. Global EC stays until script ends. **Each EC contains:** (1) Variable Environment — `let/const/var` bindings for that function. (2) Scope Chain — link to parent EC for variable lookup. (3) `this` binding — in non-arrow functions, depends on HOW `a/b/c` were called (here: as plain functions → `this = undefined` in strict mode, `window` in non-strict). **Key insight:** The call stack is LIFO — Last In, First Out. Stack overflow = call stack exceeded its size limit. **Don't memorise a frame count** — the limit is a fixed *byte* budget, not a fixed number of frames, so the depth you actually get depends on how big each frame is (a function with more locals and parameters uses more bytes per frame, so you get fewer of them). Measured on Node v22.13.0, two functions recursing until they threw:
+
+| Function | Frames reached |
+|---|---|
+| `function thin() {...}` — 0 params, 0 locals | **12,549** |
+| `function fat(a…h) {...}` — 8 params, 15 locals | **3,058** |
+
+Same machine, same V8, same recursion — **75% fewer frames**, purely because each frame costs more bytes. Change the V8 version, the platform, or pass `--stack-size` and the numbers move again. The takeaway is the mechanism (fixed byte region, push per call, no pop = eventual overflow), not a figure to rely on.
 
 </details>
 
