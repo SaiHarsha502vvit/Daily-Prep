@@ -23,6 +23,10 @@ These files are NOT tutorials. They are comprehensive references — the kind of
 | [DOC_06b_Async_Patterns_Challenges.md](DOC_06b_Async_Patterns_Challenges.md) | Challenges: a shared-static-Map debounce bug, microtask-vs-event-queue quiz, reassemble the loading-state pattern |
 | [DOC_07_ADB_and_Dev_Tooling.md](DOC_07_ADB_and_Dev_Tooling.md) | ADB's client/server/daemon architecture, core commands, how `flutter run` and hot reload use it underneath, iOS-equivalent tooling, Appium Inspector's connection to the same layer |
 | [DOC_07b_ADB_and_Dev_Tooling_Challenges.md](DOC_07b_ADB_and_Dev_Tooling_Challenges.md) | Challenges: the emulator-localhost bug reproduced for real, adb piece-identification quiz, diagnose-from-symptom scenarios |
+| [DOC_08_Patterns_and_AntiPatterns.md](DOC_08_Patterns_and_AntiPatterns.md) | Architectural patterns (composition, lifted state, DI) and anti-patterns (God widgets, resources-in-build, layer violations) — cross-referenced to every Bug Hunt across this bootcamp that caught one |
+| [DOC_08b_Patterns_and_AntiPatterns_Challenges.md](DOC_08b_Patterns_and_AntiPatterns_Challenges.md) | Challenges: name-the-anti-pattern code review, premature-abstraction quiz, diagnose-from-symptom-report scenarios |
+| [DOC_09_Mobile_Debugging_Toolkit.md](DOC_09_Mobile_Debugging_Toolkit.md) | Unified debugging playbook — Flutter DevTools, ADB logcat, Appium Inspector, Playwright Trace Viewer, systematic diagnosis across every tool in this library |
+| [DOC_09b_Mobile_Debugging_Toolkit_Challenges.md](DOC_09b_Mobile_Debugging_Toolkit_Challenges.md) | Challenges: triage a vague bug report across the right tool, a multi-layer hybrid-app failure, reproduce a real crash log |
 
 ---
 

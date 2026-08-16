@@ -222,4 +222,5 @@ async function swipeLeft(page: Page) {
 **→ Related files:**
 - [01_Playwright_vs_Appium_Full_Comparison.md](01_Playwright_vs_Appium_Full_Comparison.md) — the foundational device-emulation and network-interception content this file builds on
 - [Flutter_Bootcamp/Reference/DOC_07_ADB_and_Dev_Tooling.md](Flutter_Bootcamp/Reference/DOC_07_ADB_and_Dev_Tooling.md) — the ADB mechanics Playwright's Android API depends on, and Appium Inspector's use of the same layer
+- [Flutter_Bootcamp/Reference/DOC_09_Mobile_Debugging_Toolkit.md](Flutter_Bootcamp/Reference/DOC_09_Mobile_Debugging_Toolkit.md) — Playwright's Trace Viewer/Inspector debugging tools in full, plus the cross-tool hybrid-app diagnosis flow this file's boundary table sets up
 - [02_Android_Native_Dev_And_Testing.md](02_Android_Native_Dev_And_Testing.md) / [03_iOS_Native_Dev_And_Testing.md](03_iOS_Native_Dev_And_Testing.md) — the native-side Appium/Espresso/XCUITest coverage this file's "native shell" boundary points to

@@ -197,6 +197,7 @@ flowchart TD
 
 **→ Related files:**
 - [DOC_07b_ADB_and_Dev_Tooling_Challenges.md](DOC_07b_ADB_and_Dev_Tooling_Challenges.md) — want to actually get fluent, not just informed? Challenges for this doc
+- [DOC_09_Mobile_Debugging_Toolkit.md](DOC_09_Mobile_Debugging_Toolkit.md) — the unified debugging playbook this doc's tools feed into
 - [DOC_06_Async_Patterns_Complete.md](DOC_06_Async_Patterns_Complete.md) — the Dart VM Service that `adb forward` tunnels hot reload through
 - [Phase_1_Dart_and_Foundations/Week_01_Dart_Language.md](../Phase_1_Dart_and_Foundations/Week_01_Dart_Language.md) — AOT vs JIT compilation, what hot reload is actually patching
 - [Phase_6_Quality_and_Deployment/Week_26_CICD_and_Deployment.md](../Phase_6_Quality_and_Deployment/Week_26_CICD_and_Deployment.md) — where `adb install`-style deployment fits into a CI pipeline
