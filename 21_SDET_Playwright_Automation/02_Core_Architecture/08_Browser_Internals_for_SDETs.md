@@ -126,6 +126,8 @@ page.getByRole("menuitem", { name: "Edit" });
 
 **How to find the real ARIA role:** Open Chrome DevTools → Elements panel → click the element → click "Accessibility" tab on the right. It shows the exact `role`, `name`, and `state` from the accessibility tree.
 
+**These aren't 4 independent trees — 2 of them are computed FROM the other 2, and that's exactly why they can disagree.** [Ch02](../01_Foundations/02_Enterprise_Locators_XPath.md) established the DOM as one rooted tree; this section adds three more, each a *derived* structure: the Render Tree is what you get by walking the DOM tree and, at each node, checking the matching CSSOM rule — keep the node only if its computed `display` isn't `none` — a filter-join over two trees, not a third independent source of truth. That's the precise mechanical reason `waitFor({ state: 'attached' })` (DOM tree membership) and `waitFor({ state: 'visible' })` (Render Tree membership) can give different answers for the identical element: they're querying the output of two different tree-computations, one of which is a strict filtered subset of the other's node set. The Accessibility Tree is not a filtered subset of anything — it's built by a *separate* mapping (DOM structure + ARIA attributes + implicit HTML semantics → accessibility nodes), which is exactly why a `<button>` inside a `role="menuitem"` `<li>` can report as `menuitem` in one tree while still being a `<button>` in the DOM tree: `getByRole` and `page.locator('button')` are walking genuinely different trees, not two views of the same one.
+
 ---
 
 ## 2. What Playwright's `{ state: 'visible' }` Actually Checks
@@ -596,6 +598,8 @@ DEBUG=pw:api npx playwright test mytest.spec.ts 2>&1 | head -100
 ## 8. The V8 Event Loop — Why Promise.all Works and `await` Suspends
 
 Understanding V8's event loop is the bridge between "using `await`" and "understanding WHY `await` works." This directly enables the `Promise.all` pattern you use for race conditions (new tab handling, network interception).
+
+**[Ch01](../01_Foundations/01_Playwright_TS_Basics.md#1-the-javascript-event-loop--why-async-exists-at-all) named ONE queue (a real FIFO Queue). Here's the fuller picture: there are actually two, and the difference between them is the whole reason `Promise.all`'s ordering guarantee holds.**
 
 ```
 V8 Event Loop has TWO queues:
