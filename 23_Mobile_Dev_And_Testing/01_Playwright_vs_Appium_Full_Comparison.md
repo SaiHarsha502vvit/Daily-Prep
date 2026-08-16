@@ -1,8 +1,10 @@
 # 01. Playwright vs Appium — Full Comparison
 
-**Navigation**: [📚 Folder Context](CONTEXT.md) | [Mobile Web & Hybrid Testing →](05_Mobile_Web_And_Hybrid_Playwright.md) | [Android Native →](02_Android_Native_Dev_And_Testing.md)
+**Navigation**: [📚 Folder Context](CONTEXT.md) | [Mobile Web & Hybrid Testing →](05_Mobile_Web_And_Hybrid_Playwright.md) | [Mobilewright (native, Playwright-powered) →](06_Mobilewright_Native_Testing.md) | [Android Native →](02_Android_Native_Dev_And_Testing.md)
 
 > **Reading contract**: This file teaches you HOW each tool works at the engine level, WHEN to use each one, and WHERE they overlap. By the end you will have a mental model that lets you pick the right tool for any mobile testing scenario — and explain that decision in an interview.
+
+> **A newer third option exists:** [Mobilewright](06_Mobilewright_Native_Testing.md) is a real, actively-developed framework positioning itself directly against Appium for native mobile automation, with a Playwright-inspired API. This file's Playwright/Appium comparison remains accurate and foundational — Mobilewright is genuinely built *on* the same architectural distinctions taught here (native accessibility tree vs. browser DOM), not a replacement for understanding them.
 
 ---
 
@@ -901,7 +903,7 @@ Use these when an interviewer asks about mobile testing:
 
 ---
 
-**Navigation**: [📚 Folder Context](CONTEXT.md) | [Mobile Web & Hybrid Testing →](05_Mobile_Web_And_Hybrid_Playwright.md) | [Android Native →](02_Android_Native_Dev_And_Testing.md)
+**Navigation**: [📚 Folder Context](CONTEXT.md) | [Mobile Web & Hybrid Testing →](05_Mobile_Web_And_Hybrid_Playwright.md) | [Mobilewright (native, Playwright-powered) →](06_Mobilewright_Native_Testing.md) | [Android Native →](02_Android_Native_Dev_And_Testing.md)
 
 
 ---

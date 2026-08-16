@@ -78,6 +78,75 @@ test('cart badge count updates after adding an item', async ({ page }) => {
 
 ---
 
+## Concept 2 — Dynamic Locators: Why a Playwright `Locator` Never Goes Stale
+
+Here's a fact worth sitting with, because it explains something you'll otherwise find mysterious: **a `Locator` object is not a reference to an element — it's a strategy for finding one, re-run fresh every single time you use it.** Per Playwright's own documentation: *"Every time a locator is used for an action, an up-to-date DOM element is located in the page."*
+
+```typescript
+// This does NOT "grab" an element once and hold onto it
+const addToCartButton = page.getByRole('button', { name: 'Add to Cart' });
+
+// The list re-renders here (a price update, a re-fetch, anything)...
+
+// ...and this STILL works correctly, because Playwright re-locates the
+// element fresh, right now, at the moment this line actually runs
+await addToCartButton.click();
+```
+
+**This is the direct, mechanical reason Playwright doesn't have the exact bug covered in [DOC_09's Appium debugging content](../Flutter_Bootcamp/Reference/DOC_09_Mobile_Debugging_Toolkit.md#2-element-not-found-nosuchelementexception):** an Appium `WebElement` genuinely is a captured reference to a specific node — cache it, let the screen re-render, and it goes stale (`StaleElementReferenceException`). A Playwright `Locator` was never a reference to begin with; storing one in a variable just stores the *search strategy*, and every action re-runs that search against whatever the DOM looks like right now.
+
+### Building Locators From Variables — Parameterized, Not Hardcoded
+
+```typescript
+function productCard(page: Page, productName: string) {
+  return page.getByRole('listitem').filter({ hasText: productName });
+}
+
+test('each product card has a working add-to-cart button', async ({ page }) => {
+  await page.goto('/products');
+
+  const iphoneCard = productCard(page, 'iPhone 15');
+  await iphoneCard.getByRole('button', { name: 'Add to Cart' }).click();
+
+  const pixelCard = productCard(page, 'Pixel 8');
+  await pixelCard.getByRole('button', { name: 'Add to Cart' }).click();
+});
+```
+
+A function that takes a value and *returns* a `Locator` is the standard shape for a parameterized/dynamic locator — genuinely no different in spirit from [Level 6's Page Object methods](Level_06_Page_Object_Model.md), just smaller in scope. This is also exactly what [Level 6's `SearchPage.tapResultByName()` challenge](Level_06_Page_Object_Model.md#-build-it-blind--design-a-searchpage-fixture) already used, without naming the underlying concept explicitly until now.
+
+### Filtering and Combining Locators
+
+```typescript
+// .filter({ hasText }) — narrow to elements containing specific text
+await page.getByRole('listitem').filter({ hasText: 'Product 2' })
+  .getByRole('button', { name: 'Add to cart' }).click();
+
+// .filter({ has }) — narrow to elements containing a specific DESCENDANT locator
+await page.getByRole('listitem')
+  .filter({ has: page.getByRole('heading', { name: 'Product 2' }) })
+  .click();
+
+// .and() — an element must match BOTH locators simultaneously
+const primarySubscribeButton = page.getByRole('button').and(page.getByTitle('Subscribe'));
+
+// .or() — match whichever of two locators appears (a race between two possible outcomes)
+const eitherToastOrDialog = page.getByText('Saved!').or(page.getByRole('dialog'));
+await eitherToastOrDialog.first().waitFor();
+```
+
+`.or()` is genuinely useful for a real mobile-testing situation: an action that might complete with a quick toast notification *or* trigger a confirmation dialog, and your test doesn't know which until it happens — `.or().first()` lets you assert against "whichever one shows up," rather than guessing.
+
+### `.nth()` — Present, But a Last Resort
+
+```typescript
+const secondListItem = page.getByRole('listitem').nth(1); // 0-indexed
+```
+
+Playwright's own documentation is explicit that positional selectors like `.nth()`/`.first()`/`.last()` are **not recommended** for anything beyond a genuine last resort — prefer a unique, content-based locator (a `.filter({ hasText })`, a specific `getByTestId`) whenever one is available. This is the same underlying lesson as [Week 2's `ValueKey(item.id)` vs `ValueKey(index)` rule](../Flutter_Bootcamp/Phase_1_Dart_and_Foundations/Week_02b_Widget_Rebuild_Challenges.md#w2-2-medium--keys-and-the-reordering-bug) from the Flutter side of this repo — identifying something by *position* is fragile the instant the underlying order can change; identifying it by *what it actually is* survives that change.
+
+---
+
 ## Solution — `expect(locator)` vs `expect(value)`, and Why It's Not Just Style
 
 ```typescript
@@ -141,6 +210,29 @@ For each, name the single best locator method from this level's priority list.
 3. `getByPlaceholder('Search products...')` — note this is a fallback specifically *because* there's no real label; if a label existed, `getByLabel` would be preferred even with a placeholder also present.
 4. `getByTestId(...)` — a purely visual indicator with no text and no natural role is exactly the case this level's priority list names as the legitimate use for test IDs.
 5. `getByText('3 items left in stock')` — non-interactive content is precisely what `getByText` is for, per this level's own priority list.
+
+</details>
+
+---
+
+### 🔬 Diff Detective — Two "Cache the Element" Habits, Different Outcomes
+
+A developer coming from Appium brings over a habit that makes sense in that world but means something different here.
+
+```typescript
+// Habit from Appium/Selenium-style testing: "grab the element once, reuse the reference"
+const addButton = page.getByRole('button', { name: 'Add to Cart' });
+
+await addButton.click(); // adds item 1
+// ...page re-renders: item added, button's surrounding DOM subtree is replaced...
+await addButton.click(); // adds item 2 — does this work, or throw?
+```
+
+In Appium/Selenium (a real `WebElement` reference), the second call risks a `StaleElementReferenceException` the moment that surrounding DOM subtree was replaced. What happens here, in Playwright?
+
+<details><summary>The actual difference</summary>
+
+🔴 **Explanation:** this code works correctly, both times, with no error — because [this level's own Dynamic Locators section](#concept-2--dynamic-locators-why-a-playwright-locator-never-goes-stale) already established the mechanism: `addButton` was never a captured element reference to begin with, it's a re-runnable search strategy. The second `.click()` re-locates the button fresh against whatever the DOM looks like *now*, completely unaffected by whether the previous surrounding markup was replaced. The habit of "grab it once, reuse the reference" is harmless in Playwright (it doesn't cause bugs), but it's worth understanding *why* it's harmless rather than assuming it's harmless everywhere — the exact same habit is a real, live bug source in Appium, per [DOC_09's `StaleElementReferenceException` content](../Flutter_Bootcamp/Reference/DOC_09_Mobile_Debugging_Toolkit.md#3-staleelementreferenceexception), because Appium's `WebElement` genuinely is a captured reference, not a re-runnable strategy.
 
 </details>
 
