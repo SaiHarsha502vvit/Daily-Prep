@@ -532,5 +532,6 @@ Result: A keeps its state, B keeps its state. CORRECT.
 ---
 
 **→ Related files:**
+- [DOC_05b_InheritedWidget_Keys_Challenges.md](DOC_05b_InheritedWidget_Keys_Challenges.md) — want to actually get fluent, not just informed? Challenges for this doc
 - [DOC_01_Rendering_Pipeline.md](DOC_01_Rendering_Pipeline.md) — Element tree reconciliation (where keys matter)
 - [DOC_04_BuildContext_Deep_Dive.md](DOC_04_BuildContext_Deep_Dive.md) — how `.of(context)` walks the tree

@@ -717,5 +717,7 @@ class _NavBarState extends State<NavBar> {
 ---
 
 **→ Related files:**
+- [DOC_06b_Async_Patterns_Challenges.md](DOC_06b_Async_Patterns_Challenges.md) — want to actually get fluent, not just informed? Challenges for this doc
 - [DOC_01_Rendering_Pipeline.md](DOC_01_Rendering_Pipeline.md) — how Dart's event loop connects to Flutter frames
+- [DOC_07_ADB_and_Dev_Tooling.md](DOC_07_ADB_and_Dev_Tooling.md) — how hot reload tunnels through ADB to reach the Dart VM Service this doc describes
 - [Phase_3_State_and_APIs/Week_13_Riverpod.md](../Phase_3_State_and_APIs/Week_13_Riverpod.md) — FutureProvider and StreamProvider (preferred over FutureBuilder in production)

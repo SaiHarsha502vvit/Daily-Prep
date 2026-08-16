@@ -1295,5 +1295,6 @@ Dismissible(
 ---
 
 **→ Related files:**
+- [DOC_02b_Widget_Catalog_Challenges.md](DOC_02b_Widget_Catalog_Challenges.md) — want to actually get fluent, not just informed? Challenges for this doc
 - [DOC_01_Rendering_Pipeline.md](DOC_01_Rendering_Pipeline.md) — how widgets become pixels
 - [DOC_03_Material3_Theming.md](DOC_03_Material3_Theming.md) — style all these widgets consistently

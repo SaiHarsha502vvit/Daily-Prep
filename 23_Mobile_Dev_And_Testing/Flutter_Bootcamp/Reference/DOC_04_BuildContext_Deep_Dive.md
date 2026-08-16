@@ -435,5 +435,6 @@ final size = _key.currentContext?.size;  // available after first frame
 ---
 
 **→ Related files:**
+- [DOC_04b_BuildContext_Challenges.md](DOC_04b_BuildContext_Challenges.md) — want to actually get fluent, not just informed? Challenges for this doc
 - [DOC_01_Rendering_Pipeline.md](DOC_01_Rendering_Pipeline.md) — Element tree explained
 - [DOC_05_InheritedWidget_Keys.md](DOC_05_InheritedWidget_Keys.md) — InheritedWidget (what `.of()` uses internally) + all Key types

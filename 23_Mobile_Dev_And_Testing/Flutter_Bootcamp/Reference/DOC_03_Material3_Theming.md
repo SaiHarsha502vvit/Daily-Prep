@@ -675,5 +675,6 @@ MaterialApp(
 ---
 
 **→ Related files:**
+- [DOC_03b_Material3_Theming_Challenges.md](DOC_03b_Material3_Theming_Challenges.md) — want to actually get fluent, not just informed? Challenges for this doc
 - [DOC_02_Widget_Catalog_Complete.md](DOC_02_Widget_Catalog_Complete.md) — all widgets that use these themes
 - [DOC_04_BuildContext_Deep_Dive.md](DOC_04_BuildContext_Deep_Dive.md) — how `Theme.of(context)` works
