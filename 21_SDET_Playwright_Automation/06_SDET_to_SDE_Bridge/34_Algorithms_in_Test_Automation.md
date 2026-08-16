@@ -398,6 +398,8 @@ projects: [
 // No two tests in the same project share state → activity selection satisfied.
 ```
 
+**Real-world precedent — this exact problem, solved at Meta's scale.** The "which tests give maximum coverage of the changed code in a limited time budget" problem above is the toy version of what Meta's engineering org calls **predictive test selection**, published on Meta's engineering blog and in a peer-reviewed paper at ICSE 2019 (["Predictive Test Selection," Engineering at Meta, Nov 2018](https://engineering.fb.com/2018/11/21/developer-tools/predictive-test-selection/)). Deployed in production, it selects a subset of tests per code change using a model learned from historical test-outcome data — and the published numbers are the DevOps case for doing this kind of prioritization seriously rather than ad hoc: it **doubles testing infrastructure efficiency** (roughly a third of the transitively-affected tests actually run) while still catching **over 99.9% of faulty changes** and **over 95% of individual test failures**. The mechanism differs from this section's density-sort greedy (Meta's is a learned ranking, not a hand-picked ratio), but the shape of the problem, and the reason it's worth solving carefully instead of "just run everything," is identical: CI compute is not free, and at large enough scale, the difference between a naive full run and a well-prioritized subset is measured in real infrastructure cost, not just developer wait time.
+
 ---
 
 ## 6. Priority Queues (Heaps) → Continuously-Updating Test Triage
@@ -616,6 +618,10 @@ await expect
   })
   .toBe(expected);
 ```
+
+**Real-world precedent — and a real gap in what's derived above.** `generateBackoffIntervals` above is plain exponential backoff — every caller retrying the same failure follows the *identical* interval sequence. The canonical source on why that's insufficient at scale is Marc Brooker's 2015 AWS Architecture Blog post, [**"Exponential Backoff and Jitter"**](https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/), still cited as the standard reference a decade later: when many clients fail at the same moment (a deploy, an outage, a shared dependency recovering) and all retry on the *same* exponential schedule, their retries **re-synchronize and hit the recovering service in lockstep waves** — the "thundering herd" problem — which can be enough load to knock a barely-recovered service back down. AWS's fix, now standard in most production SDKs (including AWS's own), is **jitter**: adding randomness to each interval so retries from different clients spread out instead of arriving in lockstep — e.g. "full jitter," `sleep = random(0, min(cap, base * 2^attempt))`, rather than the deterministic `base * 2^attempt` this section derives.
+
+For test automation specifically, the failure mode is smaller-stakes but the same shape: a CI cluster where hundreds of parallel workers all start polling a slow-to-warm-up service at the same instant, using the identical deterministic backoff sequence, can produce the same synchronized-retry-wave pattern against your own test environment — worth knowing even though a single test's `expect.poll()` retrying against an already-stable target, as in the example above, doesn't need jitter to behave correctly.
 
 ---
 

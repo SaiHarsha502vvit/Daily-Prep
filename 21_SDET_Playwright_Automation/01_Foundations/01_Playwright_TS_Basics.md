@@ -58,6 +58,8 @@ Every time you write `await page.click('#button')`, Playwright:
 4. The browser sends back a CDP confirmation
 5. The Promise resolves → your code resumes
 
+**This is two data structures you already know, not new theory.** The diagram's own labels are the giveaway: the **Call Stack** is a real Stack (LIFO) — `main()` pushes `await fetch(...)` on top, and only the top frame can be popped; JavaScript cannot skip down to a frame in the middle. The **Message Queue** is a real Queue (FIFO) — the response callback goes in at the back and comes out at the front, in the order events actually arrived, not the order your code happens to reference them. The event loop's entire job is one rule: *pop the stack until it's empty, then dequeue the next queued callback and push it onto the (now-empty) stack.* Every "why did my `await` resolve in this order and not that one" question in Playwright debugging is answerable by tracing which structure — stack or queue — the thing you're waiting on actually lives in. (Full Stack/Queue mechanics, incl. why cleanup code runs in reverse of creation order: [Ch33 Section 3](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md#3-queues-and-stacks--cleanup-order-and-event-ordering).)
+
 If you forget `await`:
 
 ```typescript
@@ -318,6 +320,8 @@ Locator (a DESCRIPTION of where to find an element — lazy evaluation)
    │  → Element is found each time you ACT on the locator
    │  → If the element doesn't exist yet, Playwright waits until it does (with timeout)
 ```
+
+**Notice this is a tree, not a chain.** One `Browser` can have many `BrowserContext`s (that's how parallel workers share one browser process); one `BrowserContext` can have many `Page`s (that's how the New Tab pattern works — [Ch12](../03_D365_And_Patterns/12_CrossSite_Pattern2_NewTab_SharedContext.md)); one `Page` has many `Locator`s. Drawn with the branching made explicit: `Browser → [Context₁, Context₂, ...] → [Page₁, Page₂, ...] → [Locator₁, Locator₂, ...]`. Isolation is a direct consequence of the tree shape, not a separate feature bolted on: two `Page`s under *different* `Context` subtrees share no state by construction (different cookie jars, different storage), while two `Page`s under the *same* `Context` deliberately share that context's state — which is exactly what the New Tab pattern relies on. "Which level of the tree do I isolate at" is the real question behind "should this be a new context or a new page," not a memorized rule.
 
 ### Why the Context is the Unit of Isolation
 
@@ -888,6 +892,8 @@ flowchart TD
 ```
 
 The key: **both the locator query AND the condition check are re-evaluated on every retry**. If the DOM changes between retries (React re-render, async data load), Playwright picks up the new state automatically.
+
+**This flowchart is an algorithm with a name: bounded polling with a termination condition.** `toHaveText()`'s built-in loop uses a fixed ~100ms interval, but `expect.poll()`'s own `intervals: [500, 1000, 2000]` option — used further down this section — is a hand-written exponential backoff sequence, the exact pattern [Ch34 Section 8](../06_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md#8-dynamic-programming--optimal-retry-backoff) derives from first principles and grounds in AWS's real "Exponential Backoff and Jitter" engineering post. The reason to know the name now, this early: the moment you're polling something *shared* — a queue depth, a feature flag service, anything many parallel test workers hit simultaneously rather than one isolated per-test locator — a fixed or naively-exponential interval is exactly the pattern that AWS's post warns synchronizes retries into a "thundering herd." A single test's `expect.poll()` against its own isolated data, as used here, doesn't have that problem; a polling helper reused across hundreds of parallel workers hitting the same backend might.
 
 ### One-Shot Methods (No retry)
 

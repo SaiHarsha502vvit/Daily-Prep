@@ -235,6 +235,10 @@ expect(createIndex).toBeLessThan(payIndex); // ← queue ordering assertion
 
 ---
 
+**Real-world precedent — this is DevOps infrastructure, not just test cleanup.** `terraform destroy` faces the identical FK-constraint problem `TestDataManager.cleanup()` solves: HashiCorp's own documentation ([`terraform/docs/destroying.md`](https://github.com/hashicorp/terraform/blob/main/docs/destroying.md)) confirms Terraform builds the same dependency graph it uses for `apply`, then destroys in **reverse dependency order** — an EC2 instance is destroyed before the security group it references, because deleting the security group first would fail with the instance still attached to it. That's the stack discipline of `TestDataManager` (push on create, pop on cleanup) running at the scale of real cloud infrastructure teardown: create parent-then-child, destroy child-then-parent, for the same structural reason — a resource can't be safely removed while something still depends on it existing.
+
+---
+
 ## 4. Trees → DOM Structure and POM Hierarchy
 
 **The DSA concept** (from [`../../03_Algorithms/05_Trees.md`](../../03_Algorithms/05_Trees.md)):
@@ -611,6 +615,8 @@ await citationsClient.create(customer.id, { amount: 100 });
 // If Worker 1 and Worker 2 run this simultaneously, Worker 2 might see
 // Worker 1's citation in the UI and assert the wrong total amount.
 ```
+
+**Real-world precedent — inconsistent shared state at the scale of a real trading firm.** On August 1, 2012, Knight Capital Group lost $440 million in 45 minutes when a deployment updated 7 of its 8 production trading servers with new code, but the 8th server kept a dormant feature flag from a system retired in 2003 — a **reused flag bit** that, on the un-updated server, now routed live order flow into that old, unintended code path. Within 45 minutes the mismatched server had executed over 4 million unintended trades. This is the identical failure shape as the two-worker citation bug above — different nodes (workers, here; servers, there) operating on **inconsistent shared state** — scaled from "wrong assertion in a test" to "$440M and a company sold off within days." The fix categories are the same too: either make every node's state identical (a consistent deployment, matching this section's eventual Thread-Local-Storage fix of giving every worker fully isolated state) or detect the inconsistency before it can act (a canary/staged rollout that would have caught server 8 diverging from the other 7 before it processed real order flow).
 
 **Thread Local Storage = Worker-Scoped Fixtures**
 
