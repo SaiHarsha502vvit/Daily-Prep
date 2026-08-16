@@ -1,11 +1,11 @@
 # 64. Dynamic Locators & Data Structures Inside POM Methods
 
-**Navigation**: [← Chapter 63: Static Analysis — ESLint](./63_Static_Analysis_ESLint_TypeScript_Playwright.md) | [Index](../00_INDEX.md) | [→ Chapter 65: Heaps & Union-Find](../06_SDET_to_SDE_Bridge/65_Heaps_And_Union_Find_Scheduling_And_Clustering.md)
+**Navigation**: [← Chapter 63: Static Analysis — ESLint](./63_Static_Analysis_ESLint_TypeScript_Playwright.md) | [Index](../00_INDEX.md)
 
 **Cross-links:**
 
 - [`02_Enterprise_Locators_XPath.md`](../01_Foundations/02_Enterprise_Locators_XPath.md) — the locator syntax this chapter builds parameterized selection on top of
-- [`34_Algorithms_in_Test_Automation.md`](../06_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md) — Big-O technique patterns (sliding window, two pointers); this chapter is the everyday-container layer underneath those
+- [`34_Algorithms_in_Test_Automation.md`](../06_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md) — Big-O technique patterns (sliding window, two pointers, heaps for triage, Union-Find for failure clustering); this chapter is the everyday-container layer underneath those
 - [`04_JS_TS_For_Automation.md`](../01_Foundations/04_JS_TS_For_Automation.md) — the async/TypeScript fundamentals these POM methods are written in
 - [`30_Database_Verification_Direct_SQL.md`](./30_Database_Verification_Direct_SQL.md) — the DB-side half of the UI-vs-source-of-truth cross-reference pattern in Section 4
 
@@ -371,4 +371,4 @@ This chapter is the connective layer between two chapters that already exist: [C
 
 ---
 
-**Navigation**: [← Chapter 63: Static Analysis — ESLint](./63_Static_Analysis_ESLint_TypeScript_Playwright.md) | [Index](../00_INDEX.md) | [→ Chapter 65: Heaps & Union-Find](../06_SDET_to_SDE_Bridge/65_Heaps_And_Union_Find_Scheduling_And_Clustering.md)
+**Navigation**: [← Chapter 63: Static Analysis — ESLint](./63_Static_Analysis_ESLint_TypeScript_Playwright.md) | [Index](../00_INDEX.md)

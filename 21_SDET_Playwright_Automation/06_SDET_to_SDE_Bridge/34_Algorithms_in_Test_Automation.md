@@ -29,6 +29,8 @@ This is wrong. Here is where algorithms appear every single day:
 8. Finding duplicate test IDs → two-pointer / HashMap
 9. Building retry logic → backoff algorithm
 10. Optimising a slow test suite → greedy / DP thinking
+11. Triaging failures as they stream in during a CI run → priority queue (heap)
+12. Grouping 10 failures into the real number of root causes → Union-Find
 
 Every algorithm has a test automation equivalent.
 This chapter makes those connections explicit.
@@ -50,7 +52,7 @@ The lesson: any assertion that iterates over "all results" is hiding an O(n²) t
 
 A test suite for a D365 module had 70 tests, each setting up its own data from scratch: login, navigate to admin, create record, navigate back, run assertion. Average setup time: 72 seconds per test. Total: 5,040 seconds (~84 minutes).
 
-Applying topological sort (Section 6): some tests could share setup data. Tests that only READ didn't need their own data — they could use data created by tests that WRITE. After mapping dependencies and reordering using DFS topological sort, 38 tests were able to share setup. Runtime: 14 minutes.
+Applying topological sort (Ch33 Section 5, Graph Algorithms): some tests could share setup data. Tests that only READ didn't need their own data — they could use data created by tests that WRITE. After mapping dependencies and reordering using DFS topological sort, 38 tests were able to share setup. Runtime: 14 minutes.
 
 The lesson: test execution order is a graph problem. Ignoring it costs you wall-clock time every single CI run.
 
@@ -394,7 +396,167 @@ projects: [
 
 ---
 
-## 6. Dynamic Programming → Optimal Retry Backoff
+## 6. Priority Queues (Heaps) → Continuously-Updating Test Triage
+
+**The structure:** a binary min-heap keeps a deliberately WEAKER invariant than a sorted array — only "every parent ≤ its children," not "the whole thing is sorted." That weaker guarantee is exactly what makes insert and extract-min O(log n) each, instead of a full re-sort's O(n log n).
+
+**Where Section 5's greedy approach stops being enough:** Section 5 sorts the full test list once, which is correct because the list doesn't change while you're selecting from it. A nightly regression run's failure queue doesn't have that property — failures stream in continuously as shards finish, over 20+ minutes, and a triage engineer (or bot) needs "what's the single highest-priority OPEN failure right now," updated as new ones land. The naive extension of Section 5's approach — keep the queue sorted, re-sort on every arrival — is correct but wasteful:
+
+```typescript
+let queue: [priority: number, test: string][] = [];
+function onNewFailure(priority: number, test: string) {
+  queue.push([priority, test]);
+  queue.sort((a, b) => a[0] - b[0]); // re-sorts the WHOLE queue, every arrival
+}
+function triageNext() {
+  return queue.shift(); // most urgent
+}
+```
+
+**The heap fix:**
+
+```typescript
+class MinHeap {
+  private data: [priority: number, item: string][] = [];
+  size(): number { return this.data.length; }
+
+  push(priority: number, item: string): void {
+    this.data.push([priority, item]);
+    let i = this.data.length - 1;
+    while (i > 0) {
+      const parent = (i - 1) >> 1;
+      if (this.data[parent][0] <= this.data[i][0]) break;
+      [this.data[parent], this.data[i]] = [this.data[i], this.data[parent]];
+      i = parent;
+    }
+  }
+
+  popMin(): [number, string] {
+    const top = this.data[0];
+    const last = this.data.pop()!;
+    if (this.data.length > 0) {
+      this.data[0] = last;
+      let i = 0;
+      while (true) {
+        const l = 2 * i + 1, r = 2 * i + 2;
+        let smallest = i;
+        if (l < this.data.length && this.data[l][0] < this.data[smallest][0]) smallest = l;
+        if (r < this.data.length && this.data[r][0] < this.data[smallest][0]) smallest = r;
+        if (smallest === i) break;
+        [this.data[i], this.data[smallest]] = [this.data[smallest], this.data[i]];
+        i = smallest;
+      }
+    }
+    return top;
+  }
+}
+```
+
+**Verified correctness** — scrambled insert order `[50, 10, 40, 5, 90, 20]`, checked the extraction order:
+
+```
+extraction order: [ 5, 10, 20, 40, 50, 90 ]   ← strictly ascending
+```
+
+**Benchmarked against the naive re-sort**, same workload — n items arriving, popping the most urgent every 3rd arrival (simulating triage happening concurrently with new failures streaming in):
+
+```
+n=500:  heap=1.12ms   sort-every-time=3.39ms    ratio=3.0x
+n=2000: heap=3.87ms   sort-every-time=24.03ms   ratio=6.2x
+n=5000: heap=5.74ms   sort-every-time=138.10ms  ratio=24.1x
+```
+
+The number to notice isn't "the heap is faster" — it's that the ratio itself **grows** with `n`: 3.0x at 500, 24.1x at 5,000. That's the O(n log n)-per-arrival (re-sort) vs O(log n)-per-arrival (heap) asymptotic gap made visible as a real, growing number instead of a Big-O claim taken on faith. A fixed constant-factor slowdown would stay flat; this doesn't.
+
+---
+
+## 7. Union-Find → Clustering Failures by Root Cause
+
+**The structure:** disjoint-set with path compression + union by rank. Related to but distinct from Story 2's topological sort (Section 0) and Section 5's dependency graph — those answer "what ORDER do things happen in"; Union-Find answers a different question: **"how many DISTINCT groups do these things really form."**
+
+**The problem it solves:** a nightly run comes back with 10 failing tests. The number that matters isn't 10 — it's how many *distinct root causes* are behind them, because that decides how many engineers get paged. The available signal is pairwise ("do these two tests share an error signature") but the grouping needs to be **transitive**: if A shares a signal with B, and B shares a signal with C, then A/B/C are one root cause — even though A and C were never directly compared.
+
+```typescript
+class UnionFind {
+  private parent = new Map<string, string>();
+  private rank = new Map<string, number>();
+
+  constructor(items: string[]) {
+    for (const x of items) { this.parent.set(x, x); this.rank.set(x, 0); }
+  }
+
+  find(x: string): string {
+    if (this.parent.get(x) !== x) {
+      this.parent.set(x, this.find(this.parent.get(x)!)); // path compression
+    }
+    return this.parent.get(x)!;
+  }
+
+  union(a: string, b: string): void {
+    const ra = this.find(a), rb = this.find(b);
+    if (ra === rb) return;
+    const rankA = this.rank.get(ra)!, rankB = this.rank.get(rb)!;
+    if (rankA < rankB) this.parent.set(ra, rb);
+    else if (rankA > rankB) this.parent.set(rb, ra);
+    else { this.parent.set(rb, ra); this.rank.set(ra, rankA + 1); }
+  }
+}
+```
+
+**Run against a real 10-failing-test scenario**, pairwise signals extracted from CI logs (matching error signature + affected fixture):
+
+```typescript
+const failingTests = [
+  "citation.dispute.spec", "citation.pay.spec", "citation.search.spec",
+  "customer.create.spec", "customer.merge.spec",
+  "report.export.spec", "report.schedule.spec",
+  "auth.login.spec", "auth.mfa.spec",
+  "notification.email.spec",
+];
+
+const sharedFailureSignals: [string, string, string][] = [
+  ["citation.dispute.spec", "citation.pay.spec", "ECONNREFUSED billing-api:8443"],
+  ["citation.pay.spec", "citation.search.spec", "ECONNREFUSED billing-api:8443"],
+  ["customer.create.spec", "customer.merge.spec", "duplicate key value violates unique constraint"],
+  ["auth.login.spec", "auth.mfa.spec", "TOTP clock skew > 30s"],
+  ["report.export.spec", "report.schedule.spec", "PDF render worker OOM"],
+  // notification.email.spec shares no signal with anything -- its own root cause
+];
+
+const uf = new UnionFind(failingTests);
+for (const [a, b] of sharedFailureSignals) uf.union(a, b);
+```
+
+```
+=== 10 failing tests -> clustered by shared root cause ===
+Cluster 1 (3 tests): citation.dispute.spec, citation.pay.spec, citation.search.spec
+Cluster 2 (2 tests): customer.create.spec, customer.merge.spec
+Cluster 3 (2 tests): report.export.spec, report.schedule.spec
+Cluster 4 (2 tests): auth.login.spec, auth.mfa.spec
+Cluster 5 (1 tests): notification.email.spec
+
+Total distinct root causes to investigate: 5 (not 10)
+```
+
+**The detail worth tracing by hand:** `citation.search.spec` was never directly compared against `citation.dispute.spec` — no such entry exists in `sharedFailureSignals`. It joined Cluster 1 purely transitively, through its direct link to `citation.pay.spec`. A naive "group only by direct pairwise match" approach would have missed this and reported 6 clusters instead of 5 — overstating the real on-call burden by one phantom incident.
+
+**Which structure for which question — the decision this chapter and Chapter 33 build toward:**
+
+```mermaid
+flowchart TD
+    Q["What are you actually asking?"]
+    Q -->|"What ORDER must things\nhappen in? (dependencies)"| G["Graph + topological sort\n(Ch33 Section 5, Story 2 above)"]
+    Q -->|"What's most urgent RIGHT NOW,\ngiven arrivals keep coming?"| H["Min-heap / priority queue\n(Section 6 above)"]
+    Q -->|"How many DISTINCT groups,\nfrom pairwise signals?"| U["Union-Find\n(this section)"]
+    Q -->|"Full list upfront, ranked once?"| S["Array.sort()\n(Section 5 above)"]
+
+    style H fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px
+    style U fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+```
+
+---
+
+## 8. Dynamic Programming → Optimal Retry Backoff
 
 **The algorithm** (from [`../../03_Algorithms/04a_DP_Internals.md`](../../03_Algorithms/04a_DP_Internals.md)):
 
@@ -447,7 +609,7 @@ await expect
 
 ---
 
-## 7. Pattern Recognition → Test Strategy Selection
+## 9. Pattern Recognition → Test Strategy Selection
 
 From [`../../20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md`](../../20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md), the idea is: given constraints, map to the right algorithm. The same applies to tests:
 
@@ -459,7 +621,7 @@ Given constraint/observation → Select test strategy
   → Use performance timing: page.on('response', r => measureTime(r))
 
 "Two services must process events in order"
-  → Use queue ordering assertion (Section 2 of Ch33)
+  → Use queue ordering assertion (Section 3 of Ch33)
   → Assert index(eventA) < index(eventB) in the notification list
 
 "Same data appears in 3 different places (UI, API, DB)"
@@ -504,7 +666,7 @@ Every practice challenge in this curriculum trains that graph.
 
 ---
 
-## 8. Brute Force → Optimal: Applied to Test Design
+## 10. Brute Force → Optimal: Applied to Test Design
 
 From [`../../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md`](../../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md):
 
@@ -883,6 +1045,46 @@ test("No fraud-pattern citation pairs exist", async ({ citationsClient }) => {
 
 ---
 
+### Challenge 6 [Trade-off Analysis] — Heap vs. Binary-Search-Insert
+
+A teammate suggests skipping the heap entirely: "just keep the queue sorted by inserting each new item at the correct position with a manual binary search + array splice, instead of a full re-sort." Does this fix the asymptotic problem Section 6's benchmark measured?
+
+<details><summary>Answer</summary>
+
+Partially, and the part it doesn't fix is the interesting part. Binary-searching for the correct insertion index is O(log n) — genuinely as cheap as the heap's O(log n) insert. But `Array.splice()` to insert at that index requires shifting every element after it by one position in memory, which is O(n) in the worst case (inserting near the front of a large array). So the total cost per insertion is O(log n) [search] + O(n) [shift] = **O(n)**, not O(log n) — better than re-sorting the whole array (O(n log n) per insertion), but still asymptotically worse than the heap's true O(log n) per insertion. The heap avoids the shift entirely because it doesn't maintain a fully sorted order at all times — only the weaker "parent ≤ children" invariant — which is precisely the trade Section 6 opened with: a heap is cheaper *because* it guarantees less than full sortedness, and a triage queue never needed full sortedness, only "give me the current minimum."
+
+</details>
+
+---
+
+### Challenge 7 [Correctness Under Change] — Union-Find with a New Signal
+
+In Section 7's example, suppose a new signal arrives: `["notification.email.spec", "auth.mfa.spec", "SMTP relay timeout"]` — a genuinely new, real correlation the earlier data didn't have. After calling `uf.union("notification.email.spec", "auth.mfa.spec")`, what happens to Cluster 4 and Cluster 5 from the transcribed output, and does the union-by-rank strategy affect the correctness of the result?
+
+<details><summary>Answer</summary>
+
+Cluster 4 (`auth.login.spec`, `auth.mfa.spec`) and Cluster 5 (`notification.email.spec`, alone) merge into a single cluster of 3 — because `union()` finds the current root of each side's cluster and attaches one tree under the other. After this call, `find()` on any of the three returns the same root, so they're reported as one cluster of 3, correctly reflecting that all three failures now trace to a common (if only just-discovered) root cause.
+
+Union-by-rank does **not** affect correctness — it only affects which of the two roots ends up as the new combined root, purely to keep the tree shallow for future `find()` calls. Whether `auth.login.spec`'s root or `notification.email.spec` ends up as the final root, `find()` on every member of the merged cluster returns the *same* value either way — the clustering result (who's grouped with whom) is identical regardless of which root wins; only the internal tree shape, and therefore future lookup speed, differs.
+
+</details>
+
+---
+
+### Challenge 8 [Structure Selection] — Union-Find vs. Graph Traversal
+
+A teammate proposes solving Section 7's clustering problem differently: build a graph where failing tests are nodes and shared-signal pairs are edges, then run a graph traversal (BFS/DFS — Section 5 of this chapter, or Ch33 Section 5) to find connected components instead of Union-Find. Would this produce the same clustering result? Is there a reason to prefer one approach over the other here?
+
+<details><summary>Answer</summary>
+
+Yes, it would produce the identical clustering — "connected components of an undirected graph" and "Union-Find's final groups after processing every edge as a union" are two different algorithms computing the exact same result; `citation.search.spec` would be found in the same component as `citation.dispute.spec` via a BFS/DFS path through `citation.pay.spec`, exactly mirroring Section 7's transitive union.
+
+The practical difference is in how naturally each fits the shape the data actually arrives in. Section 7's signals arrive as a *stream of pairwise facts* — "these two share a symptom" — discovered incrementally as CI logs are scanned, not as a complete graph handed over all at once. Union-Find processes each new fact with a single `union()` call and can report the current clustering at any point without redoing prior work — new signals just call `union()` again. A graph+BFS/DFS approach would need to either rebuild the adjacency list and rerun the full traversal every time a new signal arrives, or maintain incremental traversal state by hand, which Union-Find already does implicitly via path compression. When the question is fundamentally "group by transitive relation, updated incrementally," Union-Find is the structure built for exactly that; BFS/DFS is the more natural fit when the actual question is "is there a path from A to B," or "what's the order," as in Ch33 Section 5's topological-sort use case, not pure grouping.
+
+</details>
+
+---
+
 **Navigation**: [← Chapter 33: SDET→SDE CS Thinking](./33_SDET_to_SDE_CS_Thinking.md) | [Index](../00_INDEX.md) | [→ Chapter 35: OOP Design Patterns Deep-Dive for SDETs](./35_OOP_Design_Patterns_for_SDETs.md)
 
 
@@ -899,3 +1101,7 @@ test("No fraud-pattern citation pairs exist", async ({ citationsClient }) => {
 **"Graph algorithms are too theoretical for SDETs"** → Test dependency graphs, page navigation flows, and API call chains are all graphs. Detecting circular dependencies between test fixtures is cycle detection. Finding all tests affected by a code change is reachability analysis. Building the minimum set of API calls to reach a test state is shortest path. These are practical applications of graph algorithms that SDETs encounter regularly.
 
 **"Algorithmic optimization is premature in test code"** → Optimization is premature when the code is fast enough. But test suites that take 60 minutes instead of 10 minutes delay deployments by 50 minutes per pipeline run. Across 20 daily deployments, that is 16 hours of developer wait time per day. Optimizing test infrastructure has a direct and measurable ROI in developer productivity.
+
+**"A heap is just a faster sorted array"** → A heap is *not* sorted — only the root is guaranteed to be the minimum; sibling and cousin nodes have no defined order relative to each other. That's the entire reason it's cheap: it maintains a strictly weaker invariant than full sortedness, so restoring it after a change only costs O(log n) instead of the O(n log n) a full re-sort costs (Section 6's benchmark: 24.1x faster at n=5000, and the gap grows with n). If you need the full list in order at once, popping every element off a heap one at a time costs the same O(n log n) as sorting — a heap doesn't give you a sorted list for free, only fast repeated access to the current minimum.
+
+**"Union-Find and graph connected-components are basically the same thing, so it doesn't matter which you reach for"** → They compute the same result (Challenge 8 confirms it directly) — but "same result" isn't "same fit for the situation." Union-Find is built for data arriving as a stream of incremental pairwise facts with no need to ever hold a full graph in memory; BFS/DFS needs the graph structure built first, then traverses it. Reaching for a full graph rebuild on every new signal, when the actual shape of the problem is "another fact just arrived, update the grouping," is solving the right problem with the wrong-shaped tool.
