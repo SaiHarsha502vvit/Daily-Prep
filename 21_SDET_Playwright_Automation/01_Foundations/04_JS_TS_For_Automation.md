@@ -290,6 +290,8 @@ resumes after await ◄── callback runs, unwraps ─────── (empt
 
 The single thread never actually waited. It stayed busy running other code, and only came back to your `await page.goto(...)` line when the host had a real result to hand it.
 
+*(This "task queue" is the same structure [Ch01 Section 1](./01_Playwright_TS_Basics.md#1-the-javascript-event-loop--why-async-exists-at-all) names explicitly as a real FIFO Queue, with the JS call stack as a real LIFO Stack — worth a re-read here if that connection didn't stick the first time; this section is the deeper mechanical why, that section is the data-structure naming.)*
+
 Two consequences fall out of this model, and both matter constantly in test code:
 
 - **A missing `await` is not a syntax error.** `page.click(...)` without `await` still hands the work to the host — the click still starts. Your code just does not pause, so the next line runs before the click resolves. That is the source of nearly every "sometimes passes, sometimes fails" bug in Sections 1.4 and 2.4.
@@ -919,6 +921,8 @@ async function fetchWithRetry(
   }
 }
 ```
+
+**Notice the growth rate here specifically: `2000 * attempt` is LINEAR backoff** — attempt 1 waits 2s, attempt 2 waits 4s, attempt 3 waits 6s (each step adds a constant). That is a different, deliberate choice from the EXPONENTIAL backoff (`base * 2^attempt` — 2s, 4s, 8s, doubling each time) [Ch34 Section 8](../06_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md#8-dynamic-programming--optimal-retry-backoff) derives, which is itself grounded in AWS's real "Exponential Backoff and Jitter" post. Neither is universally correct: linear backoff gives up more slowly (more total attempts in a fixed time budget) but is gentler on a struggling service; exponential backs off faster and is the standard choice when the failure might be sustained (an outage, not a transient blip). This function's `maxRetries = 3` with linear steps is a reasonable choice for a single flaky call — it would be the wrong choice for hundreds of parallel workers all retrying the same recovering service at once, which is exactly the scenario Ch34 Section 8's jitter discussion covers.
 
 ---
 
