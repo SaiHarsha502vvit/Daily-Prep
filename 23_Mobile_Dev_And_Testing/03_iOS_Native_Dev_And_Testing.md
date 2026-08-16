@@ -1823,33 +1823,29 @@ public void faceIdFailure_showsErrorMessage() throws Exception {
 
 ## 14. iOS vs Android — Side-by-Side Comparison
 
-```
-┌─────────────────────────────┬──────────────────────────┬───────────────────────────┐
-│ Concept                     │ Android                  │ iOS                       │
-├─────────────────────────────┼──────────────────────────┼───────────────────────────┤
-│ Primary Language            │ Kotlin (Java legacy)     │ Swift (Obj-C legacy)      │
-│ UI Framework (modern)       │ Jetpack Compose          │ SwiftUI                   │
-│ UI Framework (traditional)  │ XML Layouts + Views      │ UIKit + Storyboards       │
-│ Screen unit                 │ Activity + Fragment      │ UIViewController          │
-│ Package/Bundle identifier   │ com.company.app          │ com.company.app           │
-│ Distribution package        │ .apk / .aab              │ .ipa / .app               │
-│ App store                   │ Google Play Store        │ Apple App Store           │
-│ Memory management           │ JVM Garbage Collector    │ ARC (ref counting)        │
-│ Null safety                 │ Kotlin ? operator        │ Swift Optional (?)        │
-│ Async code                  │ Coroutines + Flow        │ async/await + Combine     │
-│ Local DB                    │ Room (SQLite wrapper)    │ Core Data (SQLite wrapper)│
-│ Reactive query              │ Flow<List<T>>            │ @FetchRequest / Publisher │
-│ State management            │ ViewModel + StateFlow    │ @StateObject + @Published │
-│ App-wide state              │ Hilt DI (ViewModel)      │ @EnvironmentObject        │
-│ Unit testing                │ JUnit 5 + Mockito        │ XCTest (built-in)         │
-│ UI testing (native)         │ Espresso                 │ XCUITest                  │
-│ E2E testing                 │ Appium UIAutomator2      │ Appium XCUITest Driver    │
-│ Selector for testing        │ Resource ID / contentDesc│ accessibilityIdentifier   │
-│ Scroll in tests             │ UiScrollable             │ mobile: scroll command    │
-│ Biometric in tests          │ Via Appium + emulator    │ mobile: sendBiometricMatch│
-│ Test OS requirement         │ Any OS (CI friendly)     │ macOS ONLY (Xcode/Xcode)  │
-└─────────────────────────────┴──────────────────────────┴───────────────────────────┘
-```
+| Concept | Android | iOS |
+|---|---|---|
+| Primary Language | Kotlin (Java legacy) | Swift (Obj-C legacy) |
+| UI Framework (modern) | Jetpack Compose | SwiftUI |
+| UI Framework (traditional) | XML Layouts + Views | UIKit + Storyboards |
+| Screen unit | Activity + Fragment | UIViewController |
+| Package/Bundle identifier | com.company.app | com.company.app |
+| Distribution package | .apk / .aab | .ipa / .app |
+| App store | Google Play Store | Apple App Store |
+| Memory management | JVM Garbage Collector | ARC (ref counting) |
+| Null safety | Kotlin `?` operator | Swift Optional (`?`) |
+| Async code | Coroutines + Flow | async/await + Combine |
+| Local DB | Room (SQLite wrapper) | Core Data (SQLite wrapper) |
+| Reactive query | `Flow<List<T>>` | `@FetchRequest` / Publisher |
+| State management | ViewModel + StateFlow | `@StateObject` + `@Published` |
+| App-wide state | Hilt DI (ViewModel) | `@EnvironmentObject` |
+| Unit testing | JUnit 5 + Mockito | XCTest (built-in) |
+| UI testing (native) | Espresso | XCUITest |
+| E2E testing | Appium UIAutomator2 | Appium XCUITest Driver |
+| Selector for testing | Resource ID / contentDesc | accessibilityIdentifier |
+| Scroll in tests | UiScrollable | `mobile: scroll` command |
+| Biometric in tests | Via Appium + emulator | `mobile: sendBiometricMatch` |
+| Test OS requirement | Any OS (CI friendly) | macOS ONLY (Xcode) |
 
 > **Critical CI point**: iOS testing requires a macOS CI runner (e.g., GitHub Actions `macos-14`). Android can run on any Linux/Windows runner with the Android SDK. This is a significant operational cost difference — macOS runners are ~10x more expensive per minute on GitHub Actions.
 
@@ -1878,12 +1874,12 @@ public void faceIdFailure_showsErrorMessage() throws Exception {
 
 ## Reality Check
 
-**"iOS development is Swift and UIKit"** ? Modern iOS spans two UI paradigms and a rich framework ecosystem: the declarative SwiftUI ([15_React]'s reactive model, Apple's version � UI as a function of state, the @State/@Binding/@ObservedObject data flow) increasingly replacing or coexisting with imperative UIKit, the concurrency shift (Swift's async/await and actors [13_DE concurrency] replacing completion handlers and GCD), and the platform frameworks. The SwiftUI-versus-UIKit reality (the new apps in SwiftUI, the large existing apps in UIKit, the interop between them) mirrors the [Android] Compose-versus-Views transition. "Swift and UIKit" is one era; modern iOS is Swift with SwiftUI, structured concurrency, and the paradigm shift toward declarative reactive UI that the whole industry ([15_React, Compose]) converged on.
+**"iOS development is Swift and UIKit"** ? Modern iOS spans two UI paradigms and a rich framework ecosystem: the declarative SwiftUI ([15_React]'s reactive model, Apple's version — UI as a function of state, the @State/@Binding/@ObservedObject data flow) increasingly replacing or coexisting with imperative UIKit, the concurrency shift (Swift's async/await and actors [13_DE concurrency] replacing completion handlers and GCD), and the platform frameworks. The SwiftUI-versus-UIKit reality (the new apps in SwiftUI, the large existing apps in UIKit, the interop between them) mirrors the [Android] Compose-versus-Views transition. "Swift and UIKit" is one era; modern iOS is Swift with SwiftUI, structured concurrency, and the paradigm shift toward declarative reactive UI that the whole industry ([15_React, Compose]) converged on.
 
-**"iOS is easier to test because there's less fragmentation"** ? Less device fragmentation than Android (fewer devices, controlled OS updates) is real and does NOT make iOS testing easy: the same lifecycle-and-state challenges ([Android]'s equivalents � the app backgrounding, the state restoration), the XCUITest flakiness (the UI tests slow and timing-sensitive [21_SDET Ch26], the same synchronization problems), the simulator-versus-device gap ([Ch61] � the simulator that misses the real touch, performance, and hardware behaviors), the OS-version spread (smaller than Android but real � the API availability checks), and the App Store review and signing complexity (the provisioning, certificates, and the release process that is its own operational burden). "Less fragmentation therefore easier" captures one genuine advantage and ignores that iOS testing shares most of mobile's hard problems (lifecycle, flaky UI tests, simulator gaps) plus adds Apple-specific friction (signing, review, the closed ecosystem).
+**"iOS is easier to test because there's less fragmentation"** ? Less device fragmentation than Android (fewer devices, controlled OS updates) is real and does NOT make iOS testing easy: the same lifecycle-and-state challenges ([Android]'s equivalents — the app backgrounding, the state restoration), the XCUITest flakiness (the UI tests slow and timing-sensitive [21_SDET Ch26], the same synchronization problems), the simulator-versus-device gap ([Ch61] — the simulator that misses the real touch, performance, and hardware behaviors), the OS-version spread (smaller than Android but real — the API availability checks), and the App Store review and signing complexity (the provisioning, certificates, and the release process that is its own operational burden). "Less fragmentation therefore easier" captures one genuine advantage and ignores that iOS testing shares most of mobile's hard problems (lifecycle, flaky UI tests, simulator gaps) plus adds Apple-specific friction (signing, review, the closed ecosystem).
 
-**"SwiftUI and UIKit are interchangeable"** ? They are different paradigms with different models, and the interop is a real architectural concern: SwiftUI is declarative-reactive ([15_React] � recomposition on state change, the state-as-source-of-truth), UIKit is imperative (find and mutate views), and mixing them (the SwiftUI view hosting UIKit, the UIKit hosting SwiftUI � the UIHostingController/UIViewRepresentable bridges) is common in real apps and carries the impedance mismatch (the two data-flow models meeting). Plus SwiftUI's maturity gaps (the cases where you drop to UIKit for control SwiftUI does not expose). "Interchangeable" misses that they embody the imperative-versus-declarative split, that real apps bridge them, and that the choice and the bridging are architectural decisions with the same paradigm-mismatch considerations as [15_React]-in-a-legacy-app.
+**"SwiftUI and UIKit are interchangeable"** ? They are different paradigms with different models, and the interop is a real architectural concern: SwiftUI is declarative-reactive ([15_React] — recomposition on state change, the state-as-source-of-truth), UIKit is imperative (find and mutate views), and mixing them (the SwiftUI view hosting UIKit, the UIKit hosting SwiftUI — the UIHostingController/UIViewRepresentable bridges) is common in real apps and carries the impedance mismatch (the two data-flow models meeting). Plus SwiftUI's maturity gaps (the cases where you drop to UIKit for control SwiftUI does not expose). "Interchangeable" misses that they embody the imperative-versus-declarative split, that real apps bridge them, and that the choice and the bridging are architectural decisions with the same paradigm-mismatch considerations as [15_React]-in-a-legacy-app.
 
-**"Memory management is automatic with ARC"** ? Automatic Reference Counting handles most memory and leaves the RETAIN CYCLE as a real, common bug: the two objects referencing each other strongly (neither ever deallocated � the leak ARC cannot break), the closure capturing self strongly (the [16_JS] closure-retention in Swift form � the [weak self] dance that iOS developers internalize precisely because forgetting it leaks the view controller and everything it holds), and the delegate that should be weak. ARC is not garbage collection (it does not detect cycles � it counts references, and a cycle keeps the count above zero forever). "Automatic with ARC" is true for the acyclic common case and false exactly where retain cycles form � and the weak/unowned reference discipline (knowing when to break the cycle) is a core iOS skill precisely because ARC's automation stops at cycles, which closures and delegates create constantly.
+**"Memory management is automatic with ARC"** ? Automatic Reference Counting handles most memory and leaves the RETAIN CYCLE as a real, common bug: the two objects referencing each other strongly (neither ever deallocated — the leak ARC cannot break), the closure capturing self strongly (the [16_JS] closure-retention in Swift form — the [weak self] dance that iOS developers internalize precisely because forgetting it leaks the view controller and everything it holds), and the delegate that should be weak. ARC is not garbage collection (it does not detect cycles — it counts references, and a cycle keeps the count above zero forever). "Automatic with ARC" is true for the acyclic common case and false exactly where retain cycles form — and the weak/unowned reference discipline (knowing when to break the cycle) is a core iOS skill precisely because ARC's automation stops at cycles, which closures and delegates create constantly.
 
-**"App Store submission is the last step"** ? The App Store review and release process is an ongoing operational reality that shapes development, not a final upload: the review that can REJECT (the guideline violation, the rejection that delays release by days � the [21_SDET Ch62] release gate with an external gatekeeper you do not control), the signing and provisioning complexity (the certificates, profiles, and entitlements that break builds and CI � the iOS-specific [22_DevOps] deployment friction), the phased release and the inability to instantly patch (the bug shipped to the App Store that takes a review cycle to fix � the reason feature flags [21_SDET Ch61] matter more, to disable without resubmitting), and the version fragmentation (users who do not update). "Last step" misunderstands that App Store review, signing, and the slow-patch reality are constraints that shape the whole development and release strategy � the feature-flag decoupling, the careful release process, and the signing automation are responses to an ecosystem where you cannot just push a fix.
+**"App Store submission is the last step"** ? The App Store review and release process is an ongoing operational reality that shapes development, not a final upload: the review that can REJECT (the guideline violation, the rejection that delays release by days — the [21_SDET Ch62] release gate with an external gatekeeper you do not control), the signing and provisioning complexity (the certificates, profiles, and entitlements that break builds and CI — the iOS-specific [22_DevOps] deployment friction), the phased release and the inability to instantly patch (the bug shipped to the App Store that takes a review cycle to fix — the reason feature flags [21_SDET Ch61] matter more, to disable without resubmitting), and the version fragmentation (users who do not update). "Last step" misunderstands that App Store review, signing, and the slow-patch reality are constraints that shape the whole development and release strategy — the feature-flag decoupling, the careful release process, and the signing automation are responses to an ecosystem where you cannot just push a fix.
