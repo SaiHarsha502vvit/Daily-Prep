@@ -1,6 +1,6 @@
 # 62. Enterprise Test Operations — How Real Teams Run Automation at Scale
 
-**Navigation**: [← Chapter 61: Emulation & Environment Simulation](../05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 61: Emulation & Environment Simulation](../05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md) | [Index](../00_INDEX.md) | [→ Chapter 63: Static Analysis — ESLint](../05_Advanced_Topics/63_Static_Analysis_ESLint_TypeScript_Playwright.md)
 
 **Cross-links:**
 
@@ -218,7 +218,7 @@ Teams that skip the rhythm don't fail loudly — they decay silently until a reo
 
 ---
 
-**Navigation**: [← Chapter 61: Emulation & Environment Simulation](../05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 61: Emulation & Environment Simulation](../05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md) | [Index](../00_INDEX.md) | [→ Chapter 63: Static Analysis — ESLint](../05_Advanced_Topics/63_Static_Analysis_ESLint_TypeScript_Playwright.md)
 
 ---
 
