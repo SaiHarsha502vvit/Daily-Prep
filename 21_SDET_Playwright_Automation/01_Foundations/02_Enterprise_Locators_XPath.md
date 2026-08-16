@@ -54,6 +54,8 @@ document
    (page.locator('.citation-grid').locator('[role="row"]') — searches ONLY inside the grid)
 ```
 
+**Name what this actually is: a rooted tree, and the 3-step mental model is a real tree-search pattern.** `document` is the root; every element has exactly one parent (except the root) and zero or more children — that's the formal definition of a tree, not a loose metaphor. "Find an anchor, navigate to the target, scope the search" is the general shape of *every* tree query: locate a node with a known property, then bound your search to the smallest subtree that's guaranteed to contain what you actually want, instead of re-scanning the whole tree from the root every time. (Full tree terminology and traversal algorithms: [Ch33 Section 4](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md#4-trees--dom-structure-and-pom-hierarchy), [`03_Algorithms/05_Trees.md`](../../03_Algorithms/05_Trees.md).)
+
 ---
 
 ## 2. The Locator Priority Hierarchy — Best to Worst
@@ -265,6 +267,8 @@ attribute::         Attributes of the current node (shorthand: @)
 // Step 3: Inside that row, find the Approve button
 // Result: The Approve button for the CIT-001 row specifically
 ```
+
+**These axes are the two directions of tree traversal, with a name for the chained pattern.** `child::`/`descendant::` walk DOWN into a subtree — the same direction a depth-first search explores. `parent::`/`ancestor::` walk UP toward the root — the same direction you'd walk to find where two nodes' paths-to-root first meet. `following-sibling::`/`preceding-sibling::` move sideways at a fixed depth. The chained pattern just above — go up from a known node to find a shared container, then search back down from there — is a real, named algorithm: it's a **Lowest Common Ancestor** query (`//td[text()="CIT-001"]` and the `Approve` button are two nodes; `ancestor::tr` finds the nearest node whose subtree contains both), reduced to a single XPath step because you only need the *first* qualifying ancestor, not the formal LCA of two independently-specified nodes. The general algorithm — and why a naive "walk up from both nodes and compare parent chains" is O(depth) per query while precomputed binary lifting makes repeated LCA queries O(log n) — is derived in [`03_Algorithms/05_Trees.md`](../../03_Algorithms/05_Trees.md#lowest-common-ancestor-lca).
 
 ### Step 4 — Predicates (Filters)
 
@@ -488,6 +492,8 @@ That is a hard limit of the XPath API, not something Playwright can work around.
 ### Step 4 — Why Playwright's CSS locators *can* pierce
 
 Playwright does **not** just delegate CSS selectors to `document.querySelectorAll`. Its selector engine is a custom tree walker written in JavaScript that traverses the DOM element-by-element. When the walker meets a node that has a non-null `shadowRoot` property, it recursively descends into that shadow root as if it were part of the same tree, then continues matching the selector from there. That extra step — the code path `if (node.shadowRoot) walk(node.shadowRoot)` — is exactly what "piercing" means. There is no magic; it is a for-loop that follows one extra pointer.
+
+**In formal terms, a page with shadow roots is a forest, not a single tree — and piercing is plain depth-first search across it.** Section 1 established the main document as one rooted tree; each shadow root is a *second, independent* rooted tree, connected to the main one only by the non-containment `shadowRoot` pointer (not a real parent-child edge). Standard tree traversal (`querySelectorAll`, XPath) only follows real containment edges, so it never crosses into the second tree. Playwright's walker is a DFS that treats `shadowRoot` as one more edge to follow: visit a node, check its children, and — the one extra rule — check `shadowRoot` too, recursing into that tree exactly as if it were a child subtree. Same algorithm as searching a normal tree; one additional edge type in the traversal rule.
 
 That is why:
 
