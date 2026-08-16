@@ -10,6 +10,8 @@
 
 Every code sample across this track is checked against [playwright.dev](https://playwright.dev)'s own documentation as it's written — not recalled from memory.
 
+**Testing real native UI instead of a WebView?** This track's Level 9 pushes into Playwright's own (Android-only, experimental) device API as far as it goes — for a framework built specifically for native mobile UI, on both platforms, see the companion [Mobilewright_TypeScript/00_ROADMAP.md](../Mobilewright_TypeScript/00_ROADMAP.md) track.
+
 ---
 
 ## The Three Tiers
