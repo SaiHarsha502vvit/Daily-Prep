@@ -457,6 +457,8 @@ export class MasterSearchPage {
 // And: this.locators.mastersearchdropdown → TypeScript error: property does not exist
 ```
 
+**`this.locators` was a HashMap the whole time — the interface just makes the key set explicit.** [Ch33 Section 2](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md#2-hash-maps--test-data-lookup) covers `Record<K, V>`/`Map<K, V>` as O(1)-lookup-by-key for test *data*; this section is the identical structure holding *selectors* instead — same reasoning, different payload. The bug this section actually fixes (`this.locators.mastersearchdropdown` typo, silently `undefined` at runtime) is the general hash-map-without-a-schema risk: an untyped object literal lets you ask for a key that was never set and get `undefined` back instead of an error. The `MasterSearchLocators` interface is what turns that from a runtime KeyError-equivalent into a compile-time one — the map's key set becomes part of the type, not just a convention in someone's head.
+
 ---
 
 ## 9. Recommended POM Folder Structure
@@ -541,6 +543,8 @@ classDiagram
     }
     MasterSearchPageComp *-- WaitHelper : composes (has-a)
 ```
+
+**This diagram is drawing two different shapes, and that's the real reason one scales and the other doesn't.** The inheritance half is a tree — TypeScript/JavaScript classes have exactly one `extends` target, so every class has exactly one parent, the same one-parent constraint [Ch01](../01_Foundations/01_Playwright_TS_Basics.md) and [Ch02](../01_Foundations/02_Enterprise_Locators_XPath.md) already established for the DOM. The composition half is a graph, not a tree: `WaitHelper` has no such restriction — the exact same `WaitHelper` instance-shape can be composed into `MasterSearchPage`, `CaseManagementPage`, and a dozen others simultaneously, each holding its own reference to it. A tree structurally cannot express "this node has two unrelated parents"; a graph can. That's the precise, structural reason a "God Base Page" happens under inheritance and not under composition: cramming an unrelated capability into `BasePage` forces it onto *every* class in the tree below it (there's only one path down), while adding a new helper under composition only touches the classes that actually construct it — you're adding a node to a graph, not growing every branch of a tree.
 
 ```typescript
 // ── INHERITANCE approach ──────────────────────────────────────────────────
