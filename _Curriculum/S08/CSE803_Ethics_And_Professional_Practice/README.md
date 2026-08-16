@@ -31,7 +31,11 @@ A structured exploration of ethical issues in computing and software engineering
 
 ## Linked Existing Content
 
-- **TBD Shell (Phase 5)** — Ethics case studies
+- [`10_Enterprise_Systems/08_RealWorld_Incidents_DSA.md`](../../../10_Enterprise_Systems/08_RealWorld_Incidents_DSA.md) — Incident 8 covers Therac-25's race-condition mechanics in full; Ch01 here bridges to it rather than re-deriving, and adds the ethics-specific layer (which numbered ACM/IEEE principles the incident violates, and why)
+
+## Chapters
+
+1. [Professional Ethics Frameworks & Safety-Critical Systems](01_Professional_Ethics_Frameworks_And_Safety_Critical_Systems.md) — Weeks 1–2. ACM Code (7 principles) + IEEE/ACM SE Code (8 principles), enforcement (COPE, the Tao Li case), Therac-25 mapped to specific principle violations, the 3 consequence tracks (professional/civil/criminal)
 
 ## Assessment
 
