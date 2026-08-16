@@ -87,6 +87,8 @@ test("test B", async () => {
 });
 ```
 
+This is the exact shared-mutable-state failure [Ch33 Section 10](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md#10-concurrency--test-race-conditions-and-parallel-execution) names formally, one concrete instance in a growing list — the same class of bug as two parallel workers modifying one test account, and structurally the same as [Ch04's `forEach` trap](../01_Foundations/04_JS_TS_For_Automation.md): different symptom (data leaking between tests vs. actions firing out of order), identical root cause (a variable that outlives the single execution it should have been scoped to).
+
 ### The Right Way — Per-Test Accumulator Object
 
 ```typescript
@@ -583,6 +585,8 @@ test("Long multi-step flow", async ({ page }) => {
 // Step timeout MUST be < test timeout to be meaningful
 ```
 
+**This cascade is a tree of budgets, same shape as [Ch01's](../01_Foundations/01_Playwright_TS_Basics.md#3-the-architecture--browser-context-page-locator) `Browser → Context → Page → Locator` containment — just measuring time instead of DOM position.** Suite bounds test, test bounds step, step bounds action: each level's budget is a *child* of the level above, and Challenge 4's rule (a child's timeout is meaningless if it exceeds its parent's) is the general invariant for any tree of bounded scopes, not a Playwright-specific quirk — the same constraint shows up anywhere resource budgets nest (a function's own deadline can't outlive the deadline of whatever called it with a deadline).
+
 ---
 
 ## 9. Test Tags and Grep — Running Subsets of Your Suite
@@ -664,6 +668,8 @@ await retryStep(
   3000, // 3s between attempts
 );
 ```
+
+**A third point on the retry-delay spectrum this curriculum has now covered all of:** `retryStep`'s `delayMs = 2000` used unchanged across every attempt is **constant delay** — attempt 1, 2, 3 all wait the same 2s. That's a real, deliberate third option alongside [Ch04's linear backoff](../01_Foundations/04_JS_TS_For_Automation.md) (`2000 * attempt` — grows by a fixed amount each time) and [Ch34's exponential backoff with jitter](../06_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md#8-dynamic-programming--optimal-retry-backoff) (doubles each time, randomized to avoid synchronized retries). Constant delay is the right choice here specifically because the target isn't a struggling shared service under load — it's one browser waiting for one D365 render to finish, where "back off more aggressively over time" buys nothing; the render either finishes in a roughly fixed window or it's actually broken, and a growing delay would just make the flaky-but-working case slower to detect.
 
 ---
 
