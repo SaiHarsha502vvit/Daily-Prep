@@ -26,6 +26,7 @@ This folder teaches mobile development concepts and mobile testing together, so 
 | `00_Testing_Fundamentals_MOVED_TO_SDET.md`   | Redirect stub — testing-types content lives in `21_SDET_Playwright_Automation/`     |
 | `01_Playwright_vs_Appium_Full_Comparison.md` | Architecture, capabilities, trade-offs, decision tree                               |
 | `02_Android_Native_Dev_And_Testing.md`       | Android dev concepts + Espresso + UIAutomator2 + Appium + Playwright API layer      |
+| `03_Android/`                                | 9-chapter native Android deep-dive series (Architecture, Lifecycle, ViewModel/StateFlow, Compose, Room/DataStore, Retrofit/OkHttp, JUnit/Mockito, Instrumented/UI Tests, Hilt DI) — deeper than file 02's single-file treatment; a planned Chapter 10 (Performance/Memory) was never written, treat as an open content gap |
 | `03_iOS_Native_Dev_And_Testing.md`           | iOS dev concepts + XCUITest + Appium + Playwright API layer                         |
 | `04_Flutter_Dev_And_Testing.md`              | Flutter dev concepts + integration_test + Appium Flutter + Playwright API layer     |
 | `05_Mobile_Web_And_Hybrid_Playwright.md`     | Touch gesture simulation (what `Touchscreen` actually supports), geolocation/permissions, honest Capacitor/Ionic/React Native WebView testing boundaries via Playwright's Android API |
