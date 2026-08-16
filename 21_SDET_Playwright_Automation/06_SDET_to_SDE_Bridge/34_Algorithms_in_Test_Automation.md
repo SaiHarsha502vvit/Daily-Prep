@@ -6,6 +6,8 @@
 
 - [`../../03_Algorithms/01_Algorithm_Thinking.md`](../../03_Algorithms/01_Algorithm_Thinking.md) — The algorithm thinking framework that applies to test design
 - [`../../03_Algorithms/06e_Algorithm_Patterns.md`](../../03_Algorithms/06e_Algorithm_Patterns.md) — Patterns like sliding window, two pointers — appear directly in assertion design
+- [`../../02_Data_Structures/01f_Trees_Heaps.md`](../../02_Data_Structures/01f_Trees_Heaps.md) — Part 8 (Heaps) — the structure behind Section 6's CI-triage priority queue
+- [`../../03_Algorithms/14_Union_Find_DSU_Complete.md`](../../03_Algorithms/14_Union_Find_DSU_Complete.md) — the structure behind Section 7's failure-clustering, incl. verified history (Galler & Fischer 1964, Tarjan 1975)
 - [`../../14_Mental_Models/14_Optimization_Pipeline.md`](../../14_Mental_Models/14_Optimization_Pipeline.md) — Brute-force → optimise pipeline (how to improve slow tests)
 - [`../../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md`](../../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md) — Always start with brute force, then optimise
 - [`../../20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md`](../../20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md) — Constraint → algorithm selection maps to problem → test strategy
@@ -221,6 +223,8 @@ async function fetchAllPagesWithDuplicateCheck(
 - Duplicate detection is O(1) per item (HashSet) instead of O(n) per item (array scan)
 - Fails fast: stops at the first duplicate rather than collecting all data first
 
+**Real-world precedent:** this is not a toy pattern. Cloudflare's engineering blog documents building exactly this — a sliding-window counter — as the core of their edge rate limiter, publicly measured against **400 million real requests** for counting accuracy versus a naive fixed-window approach (["Counting things, a lot of different things"](https://blog.cloudflare.com/counting-things-a-lot-of-different-things/), Cloudflare Blog, April 2017). Their problem was structurally the same shape as this section's: track a rolling count per key (IP address, there; citation ID, in the test-automation version) without re-scanning history on every check. Sliding window vs. fixed window is also a genuine design fork in production rate limiters — Stripe's own writeup on their API rate limiter (["Scaling your API with rate limiters"](https://stripe.com/blog/rate-limiters), Stripe Blog, March 2017) documents choosing a **token bucket** instead, for a different reason (allowing controlled bursts rather than strict per-second smoothing) — a useful reminder that "the sliding-window pattern" and "the right rate-limiting algorithm" aren't the same choice: the pattern is general, which specific variant fits depends on what's being optimized for.
+
 ---
 
 ## 3. Two Pointers → Dual-Context Test Assertions
@@ -398,7 +402,9 @@ projects: [
 
 ## 6. Priority Queues (Heaps) → Continuously-Updating Test Triage
 
-**The structure:** a binary min-heap keeps a deliberately WEAKER invariant than a sorted array — only "every parent ≤ its children," not "the whole thing is sorted." That weaker guarantee is exactly what makes insert and extract-min O(log n) each, instead of a full re-sort's O(n log n).
+**The structure** (from [`../../02_Data_Structures/01f_Trees_Heaps.md`](../../02_Data_Structures/01f_Trees_Heaps.md), Part 8): a binary min-heap keeps a deliberately WEAKER invariant than a sorted array — only "every parent ≤ its children," not "the whole thing is sorted." That weaker guarantee is exactly what makes insert and extract-min O(log n) each, instead of a full re-sort's O(n log n).
+
+**Real-world precedent:** that DS chapter's own framing for *why* this structure exists is a hospital emergency room — patients arrive in random order, some critical, some minor, and first-come-first-served is the wrong policy; a heap gives O(1) access to "who's most urgent" and O(log n) to admit or discharge anyone. The same DS chapter lists where the pattern actually runs today: **OS process schedulers, network packet prioritization, and Dijkstra's shortest-path algorithm** all lean on a priority queue for the identical reason — "what's most urgent, right now, given arrivals I can't predict" is the general shape, and a CI triage queue is one more instance of it, not a special case invented for this chapter.
 
 **Where Section 5's greedy approach stops being enough:** Section 5 sorts the full test list once, which is correct because the list doesn't change while you're selecting from it. A nightly regression run's failure queue doesn't have that property — failures stream in continuously as shards finish, over 20+ minutes, and a triage engineer (or bot) needs "what's the single highest-priority OPEN failure right now," updated as new ones land. The naive extension of Section 5's approach — keep the queue sorted, re-sort on every arrival — is correct but wasteful:
 
@@ -472,9 +478,13 @@ The number to notice isn't "the heap is faster" — it's that the ratio itself *
 
 ## 7. Union-Find → Clustering Failures by Root Cause
 
-**The structure:** disjoint-set with path compression + union by rank. Related to but distinct from Story 2's topological sort (Section 0) and Section 5's dependency graph — those answer "what ORDER do things happen in"; Union-Find answers a different question: **"how many DISTINCT groups do these things really form."**
+**The structure** (from [`../../03_Algorithms/14_Union_Find_DSU_Complete.md`](../../03_Algorithms/14_Union_Find_DSU_Complete.md)): disjoint-set with path compression + union by rank. Related to but distinct from Story 2's topological sort (Section 0) and Section 5's dependency graph — those answer "what ORDER do things happen in"; Union-Find answers a different question: **"how many DISTINCT groups do these things really form."**
 
 **The problem it solves:** a nightly run comes back with 10 failing tests. The number that matters isn't 10 — it's how many *distinct root causes* are behind them, because that decides how many engineers get paged. The available signal is pairwise ("do these two tests share an error signature") but the grouping needs to be **transitive**: if A shares a signal with B, and B shares a signal with C, then A/B/C are one root cause — even though A and C were never directly compared.
+
+**Real-world precedent, two kinds.** First, the structure's own verified history (documented in the DS&Algo reference above): Galler and Fischer introduced tree-based union-find in **1964** to solve a real, concrete compiler problem — tracking which FORTRAN variables were forced to share memory by `EQUIVALENCE` statements. Robert Tarjan's **1975** analysis proved that path compression plus union by rank together give `O(m·α(n))` amortized time, where `α` is the inverse Ackermann function — for any input size that could ever physically exist, `α(n) ≤ 4`, so the structure is, for practical purposes, constant-time per operation. Fredman and Saks then proved in **1985** that this isn't just fast — it's *provably optimal*; nothing can do asymptotically better for this exact problem.
+
+Second, a modern, checkable application in exactly the kind of system this curriculum's own [Compilers course](../../_Curriculum/S07/CSE701_Compilers_And_Language_Processing/06_Type_Checking_And_Inference.md) covers: real compilers implementing Hindley-Milner-style type inference use Union-Find to perform **unification** — each type variable starts as its own singleton set, and every time the type checker unifies two types, it's a `union()` call; asking "what has this type variable been resolved to" is a `find()`. (Documented directly in implementation writeups such as [Max Bernstein's union-find notes](https://bernsteinbear.com/union-find/) and [Thunderseethe's "Tying up Type Inference"](https://thunderseethe.dev/posts/unification/).) The same 1964 compiler problem — "are these two things forced to be the same" — is still what real compilers use this structure for six decades later; a CI failure-clustering queue asking "are these two failures forced to be the same root cause" is the identical question, aimed at a different kind of "sameness."
 
 ```typescript
 class UnionFind {

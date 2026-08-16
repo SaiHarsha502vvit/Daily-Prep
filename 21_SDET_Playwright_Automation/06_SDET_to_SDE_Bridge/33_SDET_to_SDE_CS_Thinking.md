@@ -161,6 +161,8 @@ Every time you use Record<string, T> or Map<K, V> in test code,
 you are applying the hash map from your DSA guide.
 ```
 
+**Real-world precedent — HashMap's "O(1) average" has a documented worst case.** In December 2011, researchers Alexander Klink and Julian Wälde presented an attack at the 28th Chaos Communication Congress showing that PHP, Java, Python, Ruby, ASP.NET, and V8's hash table implementations all shared the same exploitable weakness: a predictable hash function meant an attacker could craft input keys that all collide into the same bucket, degrading that hash table's O(1) average lookup into O(n) per lookup and O(n²) total — a single crafted HTTP request could tie up a PHP server core for roughly 30 seconds (documented in the [CERT vulnerability note VU#903934](https://www.kb.cert.org/vuls/id/903934) and summarized in ["The Moment When You Realize Every Server in the World is Vulnerable"](https://tashian.com/articles/hash-table-attack/)). Every major language runtime patched this by randomizing their hash seed per-process. The lesson for test code specifically: "HashMap is O(1)" is an *average-case* guarantee that assumes reasonably distributed keys — it is not a worst-case guarantee, and a `TestDataManager` keyed by attacker-influenced or otherwise adversarial input (not just clean, internally-generated citation IDs) inherits the same theoretical failure mode, even if exploiting it deliberately is never the actual concern in test infrastructure.
+
 **Cross-reference interview bridge:**
 
 > If asked "implement a test data registry" in an SDE interview, you'd say:
@@ -343,6 +345,8 @@ const test = base.extend({
 ```
 
 **Cross-reference:** [`../../03_Algorithms/05c_Graphs_Fundamentals.md`](../../03_Algorithms/05c_Graphs_Fundamentals.md) — Topological sort for test setup order. [`../../03_Algorithms/05b_Graphs_Internals.md`](../../03_Algorithms/05b_Graphs_Internals.md) — DFS cycle detection.
+
+**Real-world precedent:** this isn't specific to test fixtures — it's how every major package manager installs your dependencies. When `npm install` (or `yarn`, `pnpm`) resolves a `package.json`, the set of declared dependencies forms a directed graph exactly like the fixture graph above (`A → B` meaning "A depends on B"), and the installer topologically sorts it to decide install order, using the identical DFS-with-cycle-detection this section just walked through — a circular `dependencies` chain between two packages is a real, documented failure mode installers have to guard against, not a hypothetical. The npm CLI's own RFC process has an open proposal (`npm/rfcs#707`) specifically about topologically sorting workspace packages so `npm run build --workspaces` executes each package only after the packages it depends on have already built — the exact "must create company before customer, must create customer before citation" constraint from this section's example, at the scale of an entire monorepo's build graph instead of a fixture chain.
 
 ---
 

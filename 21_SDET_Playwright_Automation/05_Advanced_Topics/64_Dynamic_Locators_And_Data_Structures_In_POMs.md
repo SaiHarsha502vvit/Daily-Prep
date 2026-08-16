@@ -175,7 +175,7 @@ Correct, no escaping, no error. The mechanical reason: `.filter({ hasText })` ne
 
 ## 4. The Everyday Data Structures — Scraping a Grid Into Something You Can Actually Verify
 
-Section 2 used an array and `.findIndex()` to solve a single-value lookup. Real POM work usually scrapes a whole table, and the two structures that come up constantly are `Set` (uniqueness) and `Map` (lookup) — not because they're exotic, but because "does the UI show any duplicates" and "does every row the API expects actually appear" are both O(1)-per-item questions if you reach for the right container, and O(n²) messes of nested loops if you don't.
+**The structures** (from [`../../02_Data_Structures/01e_HashTable.md`](../../02_Data_Structures/01e_HashTable.md) — `Map`/`Set` are both hash-table-backed): Section 2 used an array and `.findIndex()` to solve a single-value lookup. Real POM work usually scrapes a whole table, and the two structures that come up constantly are `Set` (uniqueness) and `Map` (lookup) — not because they're exotic, but because "does the UI show any duplicates" and "does every row the API expects actually appear" are both O(1)-per-item questions if you reach for the right container, and O(n²) messes of nested loops if you don't. (Worth knowing before leaning on that O(1): [Chapter 33 Section 2](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md#2-hash-maps--test-data-lookup) covers the documented 2011 real-world case where hash-table lookup degraded to O(n) under adversarial input — not a concern for scraped UI data specifically, but the reason "O(1) average" and "O(1) always" aren't the same claim.)
 
 ```mermaid
 flowchart LR
