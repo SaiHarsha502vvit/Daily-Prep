@@ -13,6 +13,11 @@
  *   throw new Error('Customer not found');
  *
  * QUESTION: Why is this an anti-pattern? Rewrite clickCustomerRow in one line.
+ *
+ * NOTE: filter({ hasText }) fixes THIS bug, but it introduces a different
+ * one the moment the visible text is a formatted value (currency, IDs
+ * with numeric prefixes) rather than a literal label — see Q21 for the
+ * substring-match trap and its fix.
  */
 
 import { type Page, type Locator, expect, test } from "@playwright/test";

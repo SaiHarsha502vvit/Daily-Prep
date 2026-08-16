@@ -44,6 +44,14 @@
 | [Q19_locator_nth_antipattern.ts](./Q19_locator_nth_antipattern.ts)     | 19 — The Locator nth Anti-Pattern       | MEDIUM     | `filter({ hasText })` replaces manual nth loop              |
 | [Q20_dynamic_fixture_options.ts](./Q20_dynamic_fixture_options.ts)     | 20 — Dynamic Fixture Options            | HARD       | `{ option: true }` + `test.use({})` override pattern        |
 
+### Part D — DSA in Test Automation (Challenges 21–23)
+
+| File                                                                       | Challenge                                    | Difficulty | Core concept                                                     |
+| --------------------------------------------------------------------------- | --------------------------------------------- | ---------- | ------------------------------------------------------------------ |
+| [Q21_hasText_substring_trap.ts](./Q21_hasText_substring_trap.ts)           | 21 — The hasText Substring Trap               | HARD       | `filter({ hasText })` is substring match, not `===`; parse-then-compare fix |
+| [Q22_ci_triage_heap.ts](./Q22_ci_triage_heap.ts)                           | 22 — Write the CI Triage Queue (Heap)         | HARD       | Min-heap vs re-sort-on-every-arrival; O(log n) vs O(n log n) per arrival |
+| [Q23_flaky_cluster_union_find.ts](./Q23_flaky_cluster_union_find.ts)       | 23 — Cluster Failures by Root Cause (Union-Find) | HARD       | Disjoint-set with path compression; transitive merge from pairwise signals |
+
 ---
 
 ## How to use these files
@@ -86,6 +94,8 @@ npx tsc --noEmit --project tsconfig.json \
 | Fixture scopes (Q08, Q14, Q17, Q20)   | [Ch 06 Custom Fixtures Architecture](../../02_Core_Architecture/06_Custom_Fixtures_Architecture.md)                             |
 | API / route mocking (Q16, Q18)        | [Ch 31 API Mocking via `page.route`](../../05_Advanced_Topics/31_API_Mocking_page_route.md)                                     |
 | POM component split (Q15)             | [Ch 18 Mega POM Architecture](../../04_Enterprise_Architecture/18_Mega_POM_Architecture.md)                                     |
+| Dynamic locators / data structures in POMs (Q21) | [Ch 64 Dynamic Locators & Data Structures](../../05_Advanced_Topics/64_Dynamic_Locators_And_Data_Structures_In_POMs.md)  |
+| Heaps & Union-Find for CI infrastructure (Q22, Q23) | [Ch 34 Algorithms in Test Automation, Sections 6-7](../../06_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md#6-priority-queues-heaps--continuously-updating-test-triage) |
 
 ---
 
