@@ -1,6 +1,6 @@
 # 63. Static Analysis — ESLint for TypeScript & Playwright
 
-**Navigation**: [← Chapter 62: Enterprise Test Operations](../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 62: Enterprise Test Operations](../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md) | [Index](../00_INDEX.md) | [→ Chapter 64: Dynamic Locators & Data Structures](./64_Dynamic_Locators_And_Data_Structures_In_POMs.md)
 
 **Cross-links:**
 
@@ -392,4 +392,4 @@ Static analysis catches *patterns* that are almost always mistakes — it can't 
 
 ---
 
-**Navigation**: [← Chapter 62: Enterprise Test Operations](../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 62: Enterprise Test Operations](../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md) | [Index](../00_INDEX.md) | [→ Chapter 64: Dynamic Locators & Data Structures](./64_Dynamic_Locators_And_Data_Structures_In_POMs.md)
