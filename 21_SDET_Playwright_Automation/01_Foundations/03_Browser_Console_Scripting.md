@@ -14,6 +14,20 @@
 
 ---
 
+## Skill Progression Map — Basic → Intermediate → Advanced
+
+This chapter spans a real skill range, and it's easy to stall halfway through without realizing there's a deliberate arc. Use this map to navigate by level rather than reading linearly if you already know the basics:
+
+| Level | Sections | What you can do after this level |
+|---|---|---|
+| **Basic** | §1 (REPL model), §2 (`$$`/`$`/`$x`/`$0`, `table`, `copy`, `inspect`), §11 (console-vs-page-context gotchas) | Find and count elements, read attributes/text, tell `$$` apart from `document.querySelectorAll`, avoid the #1 mistake of pasting console snippets straight into `page.evaluate()` |
+| **Intermediate** | §3 (DOM exploration patterns), §4 (React fiber extraction), §12 (`closest()`, event-delegation tracing, Live Expressions) | Diagnose *why* a locator fails (hidden vs. not-yet-loaded vs. wrong tree), find which ancestor actually owns a click handler, watch DOM state live without re-running commands |
+| **Advanced** | §5 (XPath generator script), §8–9 (performance/memory profiling), §10 (raw CDP), §13 (`debug()`, `queryObjects()`, Snippets, hand-rolled polling) | Write reusable, persisted diagnostic tooling; instrument the browser at the protocol level; reproduce Playwright's own retry mechanism by hand to understand it, not just use it |
+
+None of these levels are gated — a Playwright beginner can skip straight to §5's XPath generator and use it as a tool without understanding §13's `debug()` hook. The map exists so you know what you're skipping, not to enforce an order.
+
+---
+
 ## 1. The Console is a JavaScript REPL
 
 The browser console is a **Read-Eval-Print Loop** — you type JavaScript, it executes immediately in the context of the current page, and shows the result. This means you have full access to:
@@ -1071,6 +1085,202 @@ expect(
 | `Emulation.setTimezoneOverride`    | Fake timezone              | Test timezone-dependent formatting              |
 | `Input.dispatchMouseEvent`         | Raw mouse events           | Test drag-and-drop, canvas interactions         |
 | `Page.captureScreenshot`           | Screenshot with options    | Visual regression with specific parameters      |
+
+---
+
+## 11. [BASIC] Console Commands vs. Page-Context JavaScript — The Gotcha That Breaks New Playwright Code
+
+Every command used so far — `$$`, `$`, `$x`, `$0`, `monitor`, `getEventListeners`, `copy`, `inspect`, `table` — is a **DevTools Command Line API convenience**. Chrome injects them into the console's execution context specifically, and *only* there. They do not exist in the page's actual JavaScript runtime, which is exactly where `page.evaluate()`'s callback runs.
+
+**Verified directly, not assumed:**
+
+```typescript
+// Run inside page.evaluate() — this is the PAGE's real JS context, not DevTools console:
+const check = await page.evaluate(() => ({
+  dollarType: typeof globalThis["$"],
+  dollarDollarType: typeof globalThis["$$"],
+  dollarXType: typeof globalThis["$x"],
+}));
+console.log(check);
+// → { dollarType: 'undefined', dollarDollarType: 'undefined', dollarXType: 'undefined' }
+```
+
+`$`, `$$`, and `$x` are genuinely `undefined` inside `page.evaluate()`. This is the single most common reason a script that worked perfectly when pasted into DevTools throws `$ is not a function` the moment it's copied into a Playwright test. The fix is mechanical, once you know the mapping:
+
+| DevTools console (this chapter, §1-§10) | `page.evaluate()` / real page JS |
+|---|---|
+| `$('sel')` | `document.querySelector('sel')` |
+| `$$('sel')` | `document.querySelectorAll('sel')` — **see the array gotcha below** |
+| `$x('//xpath')` | `document.evaluate('//xpath', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null)` |
+| `$0` | no equivalent — `$0` only exists because DevTools tracks your last Elements-panel selection |
+
+**A second, sharper gotcha inside that same mapping — verified:**
+
+```typescript
+const arrayCheck = await page.evaluate(() => {
+  const nodeList = document.querySelectorAll("button");
+  return { isArray: Array.isArray(nodeList), hasMap: typeof nodeList.map === "function" };
+});
+console.log(arrayCheck);
+// → { isArray: false, hasMap: false }
+```
+
+`document.querySelectorAll()` returns a `NodeList` — array-*like*, but `Array.isArray()` is `false` and it has no `.map()`/`.filter()`. Chrome's console `$$()`, by contrast, is documented to return a real `Array` (it's implemented as `Array.from(document.querySelectorAll(...))` internally) — which is exactly why `$$('.row').map(el => el.textContent)` works instantly in the console and the same code, pasted verbatim into `page.evaluate()` using `document.querySelectorAll` instead of `$$`, throws `nodeList.map is not a function`. Wrap it: `Array.from(document.querySelectorAll('.row')).map(...)`.
+
+**One more basic-level tool worth knowing precisely: `element.dataset`.**
+
+```typescript
+// Verified:
+const attrs = await page.evaluate(() => {
+  const btn = document.querySelector('[data-testid="save"]'); // has data-testid AND data-role
+  return { ...btn.dataset };
+});
+console.log(attrs);
+// → { testid: 'save', role: 'primary' }
+```
+
+`.dataset` reads every `data-*` attribute on an element into one object in a single call, with `data-testid` becoming `dataset.testid` (kebab-case → camelCase, automatically) — faster than calling `.getAttribute()` once per attribute when you're exploring an unfamiliar element with several `data-*` hooks and don't yet know which one you want.
+
+---
+
+## 12. [INTERMEDIATE] Upward Traversal and Live Event Tracing
+
+### `closest()` — The Console-Native Complement to XPath's `ancestor::`
+
+Section 3's XPath axes cover `ancestor::` for climbing the tree from a known descendant. The DOM itself has a native, no-XPath-required equivalent that's faster to type mid-exploration:
+
+```javascript
+// Given a cell you've already found, find its containing row without writing XPath:
+const cell = $('[data-col-id="citationId"]');
+const row = cell.closest(".ms-DetailsRow"); // walks up until the selector matches, or null
+row.outerHTML;
+
+// closest() vs ancestor:: — same direction, different tool:
+// - closest(selector): CSS selector, native DOM API, works in page.evaluate() too
+//   (document.querySelector(...).closest(...) is real page-context JS, unlike $/$$/$x)
+// - //cell/ancestor::div[@class='row']: XPath, console-and-Playwright-locator only
+```
+
+### Tracing Event Delegation — Which Element *Actually* Owns the Handler
+
+`getEventListeners($0)` (§2) shows listeners on the element you selected. It does **not** tell you whether that element's own handler will fire, or whether a parent is using **event delegation** — attaching one listener high in the tree and checking `event.target` inside it. This is extremely common in React/Fluent UI grids (one listener on the grid, not one per row) and is a frequent source of "I attached a click listener to this exact button in my test setup, but `getEventListeners` shows nothing on it."
+
+```javascript
+// Step 1: confirm the clicked element itself has no listener
+getEventListeners($0); // → {} (empty — nothing attached directly)
+
+// Step 2: walk up checking each ancestor
+let el = $0;
+while (el) {
+  const listeners = getEventListeners(el);
+  if (Object.keys(listeners).length > 0) {
+    console.log("Listener found on:", el.tagName, el.className, listeners);
+    break;
+  }
+  el = el.parentElement;
+}
+// Typical D365/Fluent UI grid result: the listener is on the grid CONTAINER,
+// not the row or cell — delegation, not per-row binding.
+
+// Step 3: confirm with monitorEvents on the suspected owner
+monitorEvents(el, "click");
+// Click the original element — if the delegated listener fires,
+// the console logs the click event with el as currentTarget.
+```
+
+**Why this matters for test design:** if a handler is delegated to a container, a Playwright test that dispatches a synthetic click via `{ force: true }` on a detached or covered element can still "work" because the delegated listener only cares about `event.target`, not whether the click passed Playwright's normal actionability checks — worth knowing before reaching for `force: true` as a fix rather than a diagnostic red flag.
+
+### Live Expressions — Watching State Without Re-Running Commands
+
+DevTools' Console panel has an "Live Expression" eye icon (next to the prompt) that pins an expression and re-evaluates it continuously, showing the current value inline without you pressing Enter again:
+
+```javascript
+// Pin this as a Live Expression while manually interacting with the page:
+document.querySelectorAll(".ms-DetailsList-row").length
+// The pinned value updates in real time as rows load — watch the count
+// go from 0 to N without re-running the command after every click.
+
+document.querySelector(".ms-Spinner") === null
+// Pin this to watch the spinner disappear live — useful for eyeballing
+// exactly how long Phase 2 (Ch08 Section 3) actually takes before
+// you commit to a specific timeout value in a test.
+```
+
+---
+
+## 13. [ADVANCED] Debugger Hooks, Live Object Graphs, and Reusable Snippets
+
+### `debug(fn)` — Break Automatically, Without Placing a Breakpoint in Source
+
+`debug()` is a real, documented Chrome DevTools Command Line API function: pass it a function reference, and the debugger automatically pauses execution *inside that function*, every time it's called — without you ever opening the Sources panel to set a breakpoint.
+
+```javascript
+// Break automatically the next time this exact function runs:
+debug(someApp.handleSearchClick);
+// Now click Search in the UI — execution pauses inside handleSearchClick,
+// with the full call stack and local variables available, exactly as if
+// you'd set a breakpoint on its first line manually.
+
+// Stop breaking on it:
+undebug(someApp.handleSearchClick);
+```
+
+**SDET use case:** you know an event fires (from `monitorEvents`, §2) but need to see the exact application state at the moment it runs — arguments received, closure variables, what it's about to do next — without hunting through minified/bundled source for the right line to click a breakpoint gutter on.
+
+### `queryObjects(Constructor)` — Every Live Instance of a Class, Right Now
+
+```javascript
+// Find every live instance of a specific class currently held in memory:
+queryObjects(HTMLButtonElement);
+// → an array-like object of every <button> element instance currently alive
+
+// More useful for app-specific classes, if the app exposes them globally:
+queryObjects(window.CitationRow);
+// → every currently-instantiated CitationRow object — real, live references,
+//   not a DOM query. Two rows with identical rendered HTML can be genuinely
+//   different objects; queryObjects distinguishes them, document.querySelectorAll doesn't.
+```
+
+This is a real, documented Console Utilities API function — verified via [Chrome DevTools' official Console Utilities API reference](https://developer.chrome.com/docs/devtools/console/utilities). Useful for confirming a suspected object leak (§9): call `queryObjects(SomeClass)` before and after 10 repeated operations, and compare the count directly instead of inferring a leak from heap size alone.
+
+### DevTools Snippets — Stop Re-Pasting the XPath Generator
+
+Section 5's XPath generator script is long enough that re-pasting it into a fresh console tab every session is real friction. DevTools has a dedicated feature for exactly this: **Sources panel → Snippets tab → New Snippet** — paste any script once, name it, and run it from any page with `Ctrl+Enter` (or right-click → Run) forever after, without needing the source file open or pasted again. Snippets persist across DevTools sessions (stored in the browser profile, not the page), execute in the real page context (so `document`, `window`, and page-context APIs all work exactly as in `page.evaluate()` — the §11 console-vs-page distinction does **not** apply to Snippets), and are the practical way to build a personal or team library of the diagnostic scripts in this chapter instead of keeping them in a scratch text file you copy from.
+
+### Hand-Rolling the Retry Loop — Understanding Playwright's Own Mechanism by Rebuilding It
+
+Ch01 and [Ch08 Section 9](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md#9-actionability-checks--what-playwright-does-before-every-action) describe Playwright's built-in polling/actionability retry loop from the outside. Writing the same shape of loop yourself, directly in the console, against a real element, is the fastest way to actually understand what it's doing rather than trusting the description:
+
+```javascript
+// A hand-rolled version of what expect(locator).toHaveText() does internally:
+async function waitForText(selector, expectedText, timeoutMs = 10000, intervalMs = 100) {
+  const deadline = Date.now() + timeoutMs;
+  let attempts = 0;
+  while (Date.now() < deadline) {
+    attempts++;
+    const el = document.querySelector(selector);
+    const actual = el?.textContent?.trim();
+    if (actual === expectedText) {
+      console.log(`Matched after ${attempts} attempts (${Date.now() - (deadline - timeoutMs)}ms)`);
+      return el;
+    }
+    await new Promise((r) => setTimeout(r, intervalMs));
+  }
+  throw new Error(
+    `Timed out after ${attempts} attempts waiting for "${selector}" to have text "${expectedText}"`,
+  );
+}
+
+// Run it live against the actual D365 page:
+await waitForText("#statusCell", "PAID");
+// Watch the console log the real attempt count and elapsed time —
+// this IS the bounded-polling pattern Ch34 Section 6 formalizes with a
+// heap-based priority queue for the multi-target case; here it's the
+// single-target case, written by hand, so its cost (a fixed ~100ms poll
+// interval, same constant-delay choice Ch07 Section 10 makes for its own
+// single-target D365 render wait) is something you watched happen, not
+// something you were told about.
+```
 
 ---
 
