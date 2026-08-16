@@ -423,7 +423,7 @@ expect(citationData?.amount).toBe(150);
 
 ## 5. The Smart XPath Generator Script
 
-The standard "Copy XPath" in Chrome produces useless absolute paths. This script generates a stable, relative XPath when you click any element:
+The standard "Copy XPath" in Chrome produces useless absolute paths. This script generates a stable, relative XPath when you click any element — and the algorithm it runs is `current = current.parentElement` in a loop, i.e. a **path-to-root walk**: start at the clicked node, climb one parent at a time, and stop the moment a node has a stable attribute (or reach `document.body`). That's exactly the upward half of the ancestor traversal [Ch02 Section 3](./02_Enterprise_Locators_XPath.md#step-3--axes-navigation-in-all-directions) covers conceptually — this script is that algorithm, written out and run for real every time you click an element:
 
 ```javascript
 // Paste this entire block into the DevTools console and press Enter.
@@ -526,6 +526,8 @@ The standard "Copy XPath" in Chrome produces useless absolute paths. This script
   );
 })();
 ```
+
+**A small complexity note, worth knowing even though it doesn't matter here:** `parts.unshift(anchor)` inserts at the *front* of the array on every step of the climb. `Array.unshift` is O(n) — it has to shift every existing element over by one — so building an n-step path this way costs O(n²) total, not O(n). The fix, if it ever mattered, would be `parts.push(anchor)` while climbing and `parts.reverse()` once at the end — O(n) total. It doesn't matter here because `n` is DOM depth, which almost never exceeds a few dozen — the same "is this actually the bottleneck at this scale" question [Ch34's own Story 1](../06_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md) asks about a real O(n²) bug that DID matter, at n=40,000. Complexity is worth noticing on every loop; it's only worth *fixing* once you've checked what n actually is.
 
 **What makes this generator better than Chrome's built-in:**
 
