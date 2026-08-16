@@ -14,23 +14,19 @@ Every other Reference doc in this library is about Flutter's own internals — w
 
 **ADB (Android Debug Bridge)** is not one program — it's three cooperating pieces, and understanding the split explains almost every "adb isn't working" problem you'll ever hit.
 
-```
-┌─────────────────────────┐         ┌──────────────────────────┐
-│   Your development       │         │   Android device /        │
-│   machine                │         │   emulator                │
-│                           │         │                            │
-│  ┌─────────────────┐     │         │   ┌──────────────────┐    │
-│  │  adb (client)    │     │         │   │  adbd (daemon)    │    │
-│  │  the CLI you type│     │         │   │  runs ON the       │    │
-│  │  commands into    │     │         │   │  device itself     │    │
-│  └────────┬─────────┘     │         │   └─────────▲──────────┘    │
-│           │               │         │             │               │
-│  ┌────────▼─────────┐     │  USB or │             │               │
-│  │  adb server        │◄──┼─────────┼─────────────┘               │
-│  │  background process│    │  TCP/IP│                              │
-│  │  on port 5037      │     │  (port │                              │
-│  └────────────────────┘     │  5555) │                              │
-└──────────────────────────┘         └──────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph Host["Your development machine"]
+        client["adb (client)<br/>the CLI you type commands into"]
+        server["adb server<br/>background process, port 5037"]
+        client -->|"local IPC"| server
+    end
+
+    subgraph Target["Android device / emulator"]
+        daemon["adbd (daemon)<br/>runs ON the device itself"]
+    end
+
+    server -->|"USB or TCP/IP<br/>(port 5555)"| daemon
 ```
 
 **The three pieces:**
@@ -152,6 +148,39 @@ ADB is **Android-only** — iOS has no direct equivalent, because Apple's device
 
 ---
 
+## Appium Inspector — The Same Device Connection, a Different Job
+
+Everything above is about **development** — getting your own code onto a device and watching it run. Appium Inspector solves a different problem: **finding locators for automated test scripts**, and it reuses the exact same device-connection layer this doc has been describing, just through one more layer of indirection.
+
+**What it actually is:** a GUI (desktop app or the web-hosted version at `inspector.appiumpro.com`) that connects to a running **Appium server**, tells it to launch or attach to an app on a device, and displays a live, clickable UI hierarchy tree — tap any element on screen and Inspector shows you its `resource-id`, `accessibility id`, XPath, and other locator strategies you can paste directly into a test script.
+
+```mermaid
+flowchart TD
+    Inspector["Appium Inspector<br/>(GUI — you click elements here)"]
+    Server["Appium Server<br/>(Node.js process, WebDriver protocol)"]
+    Inspector -->|"WebDriver session request<br/>+ desired capabilities JSON"| Server
+
+    Server --> AndroidDriver["UiAutomator2 driver"]
+    Server --> IOSDriver["XCUITest driver"]
+
+    AndroidDriver -->|"same ADB connection<br/>this whole doc describes"| Adbd["adbd on the device"]
+    IOSDriver -->|"WebDriverAgent<br/>(a real XCUITest app Appium installs)"| WDA["WebDriverAgent process on the device"]
+
+    Adbd --> AndroidApp["Your Android app"]
+    WDA --> IOSApp["Your iOS app"]
+```
+
+**The part worth actually understanding, not just memorizing:** Appium Inspector never talks to a device directly at all — it only talks to the Appium *server*. The server is what dispatches to a platform-specific **driver** (`UiAutomator2` for Android, `XCUITest` for iOS), and each driver has a completely different mechanism for actually reaching into the app's UI hierarchy:
+
+- **Android (UiAutomator2 driver):** communicates with the device through the exact same `adbd` daemon this doc has covered from the start — Appium is, underneath, running ADB commands and parsing UI Automator's XML dump of the screen. If `adb devices` doesn't see your device, Appium Inspector won't either, for the identical reason.
+- **iOS (XCUITest driver):** Appium installs and launches **WebDriverAgent** — a real XCUITest test target — *on* the device, and talks to it over HTTP. This is Apple's own UI-testing framework being driven remotely, not an ADB-style bridge at all, matching this doc's own iOS-has-no-ADB-equivalent point from the comparison table above.
+
+**Why this belongs in a doc about ADB specifically:** a huge fraction of "Appium Inspector won't connect" problems are actually ADB problems wearing a different UI — an unauthorized device, a stale `adb server`, a device that `adb devices` doesn't list — because the Android driver's connection health is only as good as the ADB connection underneath it. Run `adb devices` first, before troubleshooting anything inside Inspector itself, the same triage instinct this doc's Quick Reference table already recommends for Flutter.
+
+**Where this fits relative to the rest of this bootcamp's tooling:** Appium Inspector finds locators for **native UI automation** scripts (Espresso/XCUITest-level interaction, driven through Appium) — a different job from Flutter's own `integration_test` package, and a different job from Playwright, which per this repo's own testing-tool boundaries automates mobile **web and hybrid WebView** content, not native widget trees. Three genuinely different tools for three genuinely different automation targets, not three competing options for the same job.
+
+---
+
 ## Quick Reference — When Something's Broken
 
 | Symptom | Likely cause | Fix |
@@ -162,6 +191,7 @@ ADB is **Android-only** — iOS has no direct equivalent, because Apple's device
 | `adb install` fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE` | The device has an existing install signed with a different key | `adb uninstall <package>` first, then reinstall |
 | Device shows as `unauthorized` in `adb devices` | The device hasn't approved this machine's debugging RSA key yet | Check the device screen for the authorization prompt; tap Allow |
 | `flutter doctor` shows Android toolchain issues | SDK licenses not accepted, or SDK path misconfigured | `flutter doctor --android-licenses`, or check `ANDROID_HOME`/`ANDROID_SDK_ROOT` |
+| Appium Inspector won't connect / times out on Android | The UiAutomator2 driver's ADB connection underneath it is broken, not Inspector itself | Run `adb devices` first — fix that connection before touching Inspector's session settings |
 
 ---
 

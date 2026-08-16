@@ -1,6 +1,6 @@
 # 04. Flutter — Development Concepts + Complete Testing Stack
 
-**Navigation**: [← iOS Native](03_iOS_Native_Dev_And_Testing.md) | [📚 Index](00_INDEX.md) | [Mobile Web & Hybrid →](05_Mobile_Web_And_Hybrid_Playwright.md)
+**Navigation**: [← iOS Native](03_iOS_Native_Dev_And_Testing.md) | [📚 Folder Context](CONTEXT.md) | [Mobile Web & Hybrid →](05_Mobile_Web_And_Hybrid_Playwright.md)
 
 > **Reading contract**: Flutter is fundamentally different from Android and iOS. It does not use native UI components at all — it draws every pixel itself. This chapter teaches you the Dart language basics you need, the Widget model, state management from simple to enterprise, and the complete testing stack. No prior Flutter or Dart experience assumed.
 
@@ -1847,7 +1847,7 @@ This is the Flutter equivalent of Android's `contentDescription` / iOS's `access
 
 ---
 
-**Navigation**: [← iOS Native](03_iOS_Native_Dev_And_Testing.md) | [📚 Index](00_INDEX.md) | [Mobile Web & Hybrid →](05_Mobile_Web_And_Hybrid_Playwright.md)
+**Navigation**: [← iOS Native](03_iOS_Native_Dev_And_Testing.md) | [📚 Folder Context](CONTEXT.md) | [Mobile Web & Hybrid →](05_Mobile_Web_And_Hybrid_Playwright.md)
 
 
 ---

@@ -1,6 +1,6 @@
 # 03. iOS Native — Development Concepts + Complete Testing Stack
 
-**Navigation**: [← Android Native](02_Android_Native_Dev_And_Testing.md) | [📚 Index](00_INDEX.md) | [Flutter →](04_Flutter_Dev_And_Testing.md)
+**Navigation**: [← Android Native](02_Android_Native_Dev_And_Testing.md) | [📚 Folder Context](CONTEXT.md) | [Flutter →](04_Flutter_Dev_And_Testing.md)
 
 > **Reading contract**: This file teaches iOS development and iOS testing together, level by level. No iOS experience assumed. If you read the Android chapter first, you will see the same ideas expressed through Apple's design choices — a useful comparison. By the end you will understand the iOS app model, Swift essentials, UIKit and SwiftUI, and the complete testing stack: XCTest, XCUITest, and Appium.
 
@@ -1871,7 +1871,7 @@ public void faceIdFailure_showsErrorMessage() throws Exception {
 
 ---
 
-**Navigation**: [← Android Native](02_Android_Native_Dev_And_Testing.md) | [📚 Index](00_INDEX.md) | [Flutter →](04_Flutter_Dev_And_Testing.md)
+**Navigation**: [← Android Native](02_Android_Native_Dev_And_Testing.md) | [📚 Folder Context](CONTEXT.md) | [Flutter →](04_Flutter_Dev_And_Testing.md)
 
 
 ---

@@ -1,6 +1,6 @@
 # 02. Android Native — Development Concepts + Complete Testing Stack
 
-**Navigation**: [← Playwright vs Appium](01_Playwright_vs_Appium_Full_Comparison.md) | [📚 Index](00_INDEX.md) | [iOS Native →](03_iOS_Native_Dev_And_Testing.md)
+**Navigation**: [← Playwright vs Appium](01_Playwright_vs_Appium_Full_Comparison.md) | [📚 Folder Context](CONTEXT.md) | [iOS Native →](03_iOS_Native_Dev_And_Testing.md)
 
 > **Reading contract**: This file teaches Android development and Android testing together. You will understand what is being built, why it is built that way, and how to test every part of it. No Android Studio experience assumed.
 
@@ -1628,7 +1628,7 @@ public class CitationPaymentE2ETest extends BaseAppiumTest {
 
 ---
 
-**Navigation**: [← Playwright vs Appium](01_Playwright_vs_Appium_Full_Comparison.md) | [📚 Index](00_INDEX.md) | [iOS Native →](03_iOS_Native_Dev_And_Testing.md)
+**Navigation**: [← Playwright vs Appium](01_Playwright_vs_Appium_Full_Comparison.md) | [📚 Folder Context](CONTEXT.md) | [iOS Native →](03_iOS_Native_Dev_And_Testing.md)
 
 
 ---

@@ -1,6 +1,6 @@
 # 01. Playwright vs Appium — Full Comparison
 
-**Navigation**: [📚 Index](00_INDEX.md) | [Android Native →](02_Android_Native_Dev_And_Testing.md)
+**Navigation**: [📚 Folder Context](CONTEXT.md) | [Mobile Web & Hybrid Testing →](05_Mobile_Web_And_Hybrid_Playwright.md) | [Android Native →](02_Android_Native_Dev_And_Testing.md)
 
 > **Reading contract**: This file teaches you HOW each tool works at the engine level, WHEN to use each one, and WHERE they overlap. By the end you will have a mental model that lets you pick the right tool for any mobile testing scenario — and explain that decision in an interview.
 
@@ -27,32 +27,11 @@ Before you pick a testing tool, you need to understand what KIND of app you are 
 
 ### The Three Types of Mobile Apps
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                     MOBILE APP TYPES                                 │
-├──────────────────┬───────────────────────┬───────────────────────────┤
-│   NATIVE APP     │    HYBRID APP         │    MOBILE WEB APP         │
-├──────────────────┼───────────────────────┼───────────────────────────┤
-│ Written in       │ Web app wrapped in    │ Website running in        │
-│ platform-native  │ a native shell        │ mobile browser            │
-│ language         │ (WebView inside)      │ (Chrome/Safari)           │
-│                  │                       │                           │
-│ Android → Kotlin │ Capacitor, Ionic,     │ Your React/Vue/HTML       │
-│ iOS → Swift      │ React Native (partly) │ site on phone             │
-│ Flutter → Dart   │ Cordova, PhoneGap     │                           │
-├──────────────────┼───────────────────────┼───────────────────────────┤
-│ UI built with    │ UI built with HTML/   │ UI is pure HTML/CSS/JS    │
-│ native widgets   │ CSS but wrapped in    │ rendered by browser       │
-│ (View, Widget,   │ native container      │                           │
-│ UIView)          │                       │                           │
-├──────────────────┼──────────────────────-┼───────────────────────────┤
-│ Test with:       │Test with:             │ Test with:                │
-│ Espresso (And)   │Playwright (WebView)   │ Playwright ✅            │
-│ XCUITest (iOS)   │+ Appium (native shell)│ (best choice)             │
-│ Flutter test     │                       │                           │
-│ Appium (all)     │                       │                           │
-└──────────────────┴──────────────────────-┴───────────────────────────┘
-```
+| | Native App | Hybrid App | Mobile Web App |
+|---|---|---|---|
+| **Written in** | Platform-native language — Android → Kotlin, iOS → Swift, Flutter → Dart | Web app wrapped in a native shell (WebView inside) — Capacitor, Ionic, React Native (partly), Cordova/PhoneGap | Website running in a mobile browser — your React/Vue/HTML site on a phone (Chrome/Safari) |
+| **UI built with** | Native widgets (View, Widget, UIView) | HTML/CSS wrapped in a native container | Pure HTML/CSS/JS rendered by the browser |
+| **Test with** | Espresso (Android), XCUITest (iOS), Flutter test, or Appium (all) | Playwright for the WebView + Appium for the native shell | Playwright ✅ (best choice) |
 
 ### Why Does This Matter?
 
@@ -113,21 +92,11 @@ Playwright is fundamentally a **CDP client**. CDP is a debugging protocol built 
 - Console output
 - Cookie/storage management
 
-```
-YOUR TEST CODE
-     │
-     │ Playwright API (TypeScript/Python/Java/etc.)
-     ▼
-PLAYWRIGHT CORE (Node.js process)
-     │
-     │ WebSocket connection
-     │ Chrome DevTools Protocol (CDP)
-     ▼
-BROWSER (Chrome / Firefox / WebKit)
-     │
-     │ Renders your web page
-     ▼
-YOUR WEB APP (HTML / CSS / JavaScript)
+```mermaid
+flowchart TD
+    Test["Your test code"] -->|"Playwright API<br/>(TypeScript/Python/Java/etc.)"| Core["Playwright Core<br/>(Node.js process)"]
+    Core -->|"WebSocket connection —<br/>Chrome DevTools Protocol (CDP)"| Browser["Browser<br/>(Chrome / Firefox / WebKit)"]
+    Browser -->|"renders"| App["Your web app<br/>(HTML / CSS / JavaScript)"]
 ```
 
 ### Mobile Emulation — What Actually Happens
@@ -160,21 +129,11 @@ const context = await browser.newContext({
 
 There is a separate module called `playwright-android` that connects to a REAL Chrome browser running on a REAL Android device (or Android emulator) via ADB (Android Debug Bridge). This is different from emulation.
 
-```
-YOUR TEST CODE
-     │
-     │ playwright-android API
-     ▼
-PLAYWRIGHT-ANDROID (Node.js)
-     │
-     │ ADB (Android Debug Bridge)
-     ▼
-ANDROID DEVICE (real or emulated)
-     │
-     │ Chrome for Android
-     │ Chrome DevTools Protocol (CDP) over ADB
-     ▼
-YOUR WEB APP (running in Chrome on Android)
+```mermaid
+flowchart TD
+    Test["Your test code"] -->|"playwright-android API"| PWA["playwright-android<br/>(Node.js)"]
+    PWA -->|"ADB (Android Debug Bridge) —<br/>see Flutter_Bootcamp/Reference/DOC_07<br/>for the full ADB architecture"| Device["Android device<br/>(real or emulated)"]
+    Device -->|"Chrome for Android,<br/>CDP tunneled over ADB"| App["Your web app<br/>(running in Chrome on Android)"]
 ```
 
 **Still Chrome only** — playwright-android only controls Chrome (not Safari/Firefox/native apps). This is marked experimental as of 2024.
@@ -203,32 +162,22 @@ This matters: some mobile bugs only appear on real devices (GPU rendering differ
 
 Appium is an HTTP server that implements the **WebDriver W3C protocol**. Your test code sends HTTP requests to Appium; Appium translates them into platform-specific commands and passes them to a **driver** that actually controls the device.
 
-```
-YOUR TEST CODE (any language)
-     │
-     │ HTTP requests (WebDriver W3C protocol)
-     │ e.g. POST /session/{id}/element (find element)
-     │      POST /session/{id}/element/{id}/click
-     ▼
-APPIUM SERVER (Node.js HTTP server, port 4723)
-     │
-     │ Routes to the correct driver based on desired capabilities
-     ▼
-┌────────────────────────────────────────┐
-│           APPIUM DRIVERS               │
-├─────────────────┬──────────────────────┤
-│ UIAutomator2    │ XCUITest Driver      │
-│ (Android)       │ (iOS)                │
-├─────────────────┼──────────────────────┤
-│ Espresso Driver │ Flutter Driver       │
-│ (Android)       │ (Android + iOS)      │
-├─────────────────┼──────────────────────┤
-│ Gecko Driver    │ Safari Driver        │
-│ (Firefox)       │ (iOS Safari)         │
-└─────────────────┴──────────────────────┘
-     │
-     ▼
-REAL DEVICE or EMULATOR / SIMULATOR
+```mermaid
+flowchart TD
+    Test["Your test code (any language)"] -->|"HTTP requests, WebDriver W3C protocol —<br/>e.g. POST /session/{id}/element,<br/>POST /session/{id}/element/{id}/click"| Server["Appium Server<br/>(Node.js HTTP server, port 4723)"]
+    Server -->|"routes to the correct driver<br/>based on desired capabilities"| Drivers
+
+    subgraph Drivers["Appium Drivers"]
+        direction LR
+        UA2["UiAutomator2<br/>(Android)"]
+        XCUI["XCUITest Driver<br/>(iOS)"]
+        Espresso["Espresso Driver<br/>(Android)"]
+        Flutter["Flutter Driver<br/>(Android + iOS)"]
+        Gecko["Gecko Driver<br/>(Firefox)"]
+        Safari["Safari Driver<br/>(iOS Safari)"]
+    end
+
+    Drivers --> Device["Real device, or emulator/simulator"]
 ```
 
 ### The UIAutomator2 Driver (Android)
@@ -304,45 +253,18 @@ On iOS the equivalent would be `By.accessibilityId("loginButton")` — using the
 
 ## 4. Side-by-Side Architecture Comparison
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    ARCHITECTURE COMPARISON                              │
-├──────────────────────────────┬──────────────────────────────────────────┤
-│           PLAYWRIGHT         │              APPIUM                      │
-├──────────────────────────────┼──────────────────────────────────────────┤
-│ Protocol: CDP (WebSocket)    │ Protocol: HTTP (WebDriver W3C REST)      │
-│                              │                                          │
-│ No server needed — connects  │ Requires Appium server running on port   │
-│ directly to browser process  │ 4723 (or Appium Grid for parallel)       │
-├──────────────────────────────┼──────────────────────────────────────────┤
-│ Target: Browser DOM          │ Target: Native UI Accessibility Tree     │
-│ (Chrome, Firefox, WebKit)    │ (Android View, iOS UIKit, Flutter)       │
-├──────────────────────────────┼──────────────────────────────────────────┤
-│ No driver installation       │ Drivers installed separately:            │
-│                              │ appium driver install uiautomator2       │
-│                              │ appium driver install xcuitest           │
-├──────────────────────────────┼──────────────────────────────────────────┤
-│ Test language: TypeScript,   │ Test language: Java, Python, JS,         │
-│ JavaScript, Python, Java,    │ Ruby, C#, any language with HTTP         │
-│ C#, Go, .NET                 │ client                                   │
-├──────────────────────────────┼──────────────────────────────────────────┤
-│ Startup speed: ~200ms        │ Startup speed: 15-60 seconds             │
-│ (browser already running)    │ (installs app, boots device/simulator)   │
-├──────────────────────────────┼──────────────────────────────────────────┤
-│ Selectors: CSS, XPath,       │ Selectors: Resource ID, XPath,           │
-│ text, role, test-id          │ Accessibility ID, class name,            │
-│                              │ Android UiSelector, iOS Class Chain      │
-├──────────────────────────────┼──────────────────────────────────────────┤
-│ Network interception: YES    │ Network interception: Limited            │
-│ page.route(), HAR recording  │ (requires proxy setup, no native CDP)    │
-├──────────────────────────────┼──────────────────────────────────────────┤
-│ Auto-wait: YES               │ Auto-wait: Limited                       │
-│ Built into every action      │ Implicit/explicit waits, manual polling  │
-├──────────────────────────────┼──────────────────────────────────────────┤
-│ Debugging: Playwright UI     │ Debugging: Appium Inspector,             │
-│ Mode, trace viewer, codegen  │ screenshots, Appium Desktop              │
-└──────────────────────────────┴──────────────────────────────────────────┘
-```
+| | Playwright | Appium |
+|---|---|---|
+| **Protocol** | CDP (WebSocket) | HTTP (WebDriver W3C REST) |
+| **Server** | None needed — connects directly to the browser process | Requires an Appium server on port 4723 (or Appium Grid for parallel runs) |
+| **Target** | Browser DOM (Chrome, Firefox, WebKit) | Native UI accessibility tree (Android View, iOS UIKit, Flutter) |
+| **Driver installation** | None | Installed separately — `appium driver install uiautomator2`, `appium driver install xcuitest` |
+| **Test language** | TypeScript, JavaScript, Python, Java, C#, Go, .NET | Java, Python, JS, Ruby, C#, any language with an HTTP client |
+| **Startup speed** | ~200ms (browser already running) | 15-60 seconds (installs the app, boots the device/simulator) |
+| **Selectors** | CSS, XPath, text, role, test-id | Resource ID, XPath, Accessibility ID, class name, Android UiSelector, iOS Class Chain |
+| **Network interception** | Yes — `page.route()`, HAR recording | Limited — requires proxy setup, no native CDP |
+| **Auto-wait** | Yes, built into every action | Limited — implicit/explicit waits, manual polling |
+| **Debugging** | Playwright UI Mode, trace viewer, codegen | Appium Inspector, screenshots, Appium Desktop |
 
 ### Performance Reality
 
@@ -565,8 +487,16 @@ test("mobile checkout flow on Pixel 7", async ({ browser }) => {
   // Touch tap (not mouse click)
   await page.getByRole("button", { name: "Add to Cart" }).tap();
 
-  // Swipe gesture (using touchscreen API)
-  await page.touchscreen.swipe(200, 400, 200, 100, { steps: 10 });
+  // Swipe gesture — Playwright's Touchscreen class ONLY has .tap(x, y);
+  // there is no built-in .swipe(). Real swipe/drag gestures need manual
+  // touch event dispatch (touchstart → touchmove → touchend):
+  await page.dispatchEvent('body', 'touchstart', {
+    touches: [{ identifier: 0, clientX: 200, clientY: 400 }],
+  });
+  await page.dispatchEvent('body', 'touchmove', {
+    touches: [{ identifier: 0, clientX: 200, clientY: 100 }],
+  });
+  await page.dispatchEvent('body', 'touchend', { touches: [] });
 
   // Check mobile-specific layout
   const hamburgerMenu = page.locator('[data-testid="mobile-nav"]');
@@ -971,19 +901,19 @@ Use these when an interviewer asks about mobile testing:
 
 ---
 
-**Navigation**: [📚 Index](00_INDEX.md) | [Android Native →](02_Android_Native_Dev_And_Testing.md)
+**Navigation**: [📚 Folder Context](CONTEXT.md) | [Mobile Web & Hybrid Testing →](05_Mobile_Web_And_Hybrid_Playwright.md) | [Android Native →](02_Android_Native_Dev_And_Testing.md)
 
 
 ---
 
 ## Reality Check
 
-**"Playwright and Appium are competing tools, pick the better one"** ? They test DIFFERENT things: Playwright drives BROWSERS (web apps, including mobile-web via device emulation [21_SDET Ch61]), Appium drives NATIVE mobile apps (the actual iOS/Android app through the OS accessibility layer) � so the choice is dictated by what you are testing, not which is "better." The web app tested on a mobile viewport is Playwright; the native app installed on a device is Appium (or the platform-native tools � Espresso, XCUITest). "Which is better" is the wrong question � they occupy different layers, and a mobile testing strategy often needs BOTH (Playwright for the mobile web, native tooling for the native app), plus the honest recognition that Appium's cross-platform promise carries real reliability and speed costs versus the platform-native frameworks.
+**"Playwright and Appium are competing tools, pick the better one"** ? They test DIFFERENT things: Playwright drives BROWSERS (web apps, including mobile-web via device emulation [21_SDET Ch61]), Appium drives NATIVE mobile apps (the actual iOS/Android app through the OS accessibility layer) — so the choice is dictated by what you are testing, not which is "better." The web app tested on a mobile viewport is Playwright; the native app installed on a device is Appium (or the platform-native tools — Espresso, XCUITest). "Which is better" is the wrong question — they occupy different layers, and a mobile testing strategy often needs BOTH (Playwright for the mobile web, native tooling for the native app), plus the honest recognition that Appium's cross-platform promise carries real reliability and speed costs versus the platform-native frameworks.
 
-**"Cross-platform test tools test once, run everywhere"** ? Appium's write-once-run-on-both-platforms promise carries costs the pitch omits: the platform DIFFERENCES leak through (the iOS and Android UIs differ enough that "one test" often needs platform branches � the [21_SDET Ch61] isMobile branching, worse across OSes), the reliability and speed penalty versus native frameworks (Appium's WebDriver-over-the-accessibility-layer indirection is slower and flakier than Espresso/XCUITest talking directly to the app), and the lowest-common-denominator API (the cross-platform abstraction cannot express platform-specific behaviors). "Run everywhere" is real for the shared happy path and leaks at every platform-specific edge � the mature strategy weighs Appium's cross-platform convenience against native frameworks' speed and reliability, often choosing native for the critical suites and Appium for the broad cross-platform smoke.
+**"Cross-platform test tools test once, run everywhere"** ? Appium's write-once-run-on-both-platforms promise carries costs the pitch omits: the platform DIFFERENCES leak through (the iOS and Android UIs differ enough that "one test" often needs platform branches — the [21_SDET Ch61] isMobile branching, worse across OSes), the reliability and speed penalty versus native frameworks (Appium's WebDriver-over-the-accessibility-layer indirection is slower and flakier than Espresso/XCUITest talking directly to the app), and the lowest-common-denominator API (the cross-platform abstraction cannot express platform-specific behaviors). "Run everywhere" is real for the shared happy path and leaks at every platform-specific edge — the mature strategy weighs Appium's cross-platform convenience against native frameworks' speed and reliability, often choosing native for the critical suites and Appium for the broad cross-platform smoke.
 
 **"Emulators and simulators are good enough for testing"** ? Emulators/simulators cover layout and logic and MISS the device-specific reality ([21_SDET Ch61]'s emulation-versus-real-device table, mobile flavor): the real touch behavior, the actual OS keyboard covering the viewport, biometrics, push notifications, the camera and sensors, the real performance on a mid-range device (the app smooth on the emulator and janky on a real budget phone), the network conditions, and the platform fragmentation (the Android device-and-OS-version matrix that no emulator set fully represents). The standard split mirrors [Ch61]: emulators/simulators for the fast broad coverage in CI, a thin real-device suite (device cloud or physical) for the critical flows and the device-specific behaviors emulators cannot reproduce. "Good enough" holds for layout and logic and fails exactly at the mobile-specific hardware and performance realities that are often where mobile bugs live.
 
-**"Mobile test automation is like web test automation"** ? Mobile adds problems web testing does not have: the APP LIFECYCLE (backgrounding, being killed and restored, the interrupted-by-a-call state � the [Android lifecycle] complexity that has no web equivalent), the INSTALLATION and permissions (the app that must be installed, the permission dialogs, the [Ch61] permission handling but OS-native), the platform FRAGMENTATION (the device and OS matrix, far worse than browser matrix), the gestures (the swipes, pinches, long-presses that are richer than web clicks), and the build-and-deploy loop (the app that must be compiled and installed to test � slower than a web deploy). "Like web automation" transfers the locator-and-assertion concepts and misses the lifecycle, installation, fragmentation, gesture, and build-loop realities that make mobile automation its own discipline with its own flakiness sources and slower feedback.
+**"Mobile test automation is like web test automation"** ? Mobile adds problems web testing does not have: the APP LIFECYCLE (backgrounding, being killed and restored, the interrupted-by-a-call state — the [Android lifecycle] complexity that has no web equivalent), the INSTALLATION and permissions (the app that must be installed, the permission dialogs, the [Ch61] permission handling but OS-native), the platform FRAGMENTATION (the device and OS matrix, far worse than browser matrix), the gestures (the swipes, pinches, long-presses that are richer than web clicks), and the build-and-deploy loop (the app that must be compiled and installed to test — slower than a web deploy). "Like web automation" transfers the locator-and-assertion concepts and misses the lifecycle, installation, fragmentation, gesture, and build-loop realities that make mobile automation its own discipline with its own flakiness sources and slower feedback.
 
-**"The comparison is settled once you know the feature matrix"** ? Feature matrices are the START of the decision, and the lived TRADE-OFFS are what matter ([21_SDET Ch60]'s tool-comparison lesson, mobile flavor): the actual flakiness rate in your app, the team's existing platform knowledge (the iOS team that knows XCUITest versus the QA team that knows Appium), the CI infrastructure (the device cloud cost, the emulator farm), the maintenance burden (the cross-platform tests that break on every OS update versus the native tests maintained per platform), and the specific app's characteristics (the heavily-native app versus the web-view-heavy hybrid). "Settled by the feature matrix" is the checkbox-comparison illusion � the real decision weighs your app's nature, your team's skills, your reliability requirements, and your infrastructure, and the honest comparison includes the costs (Appium's flakiness, native's per-platform duplication, the real-device expense) that a feature matrix's checkmarks hide.
+**"The comparison is settled once you know the feature matrix"** ? Feature matrices are the START of the decision, and the lived TRADE-OFFS are what matter ([21_SDET Ch60]'s tool-comparison lesson, mobile flavor): the actual flakiness rate in your app, the team's existing platform knowledge (the iOS team that knows XCUITest versus the QA team that knows Appium), the CI infrastructure (the device cloud cost, the emulator farm), the maintenance burden (the cross-platform tests that break on every OS update versus the native tests maintained per platform), and the specific app's characteristics (the heavily-native app versus the web-view-heavy hybrid). "Settled by the feature matrix" is the checkbox-comparison illusion — the real decision weighs your app's nature, your team's skills, your reliability requirements, and your infrastructure, and the honest comparison includes the costs (Appium's flakiness, native's per-platform duplication, the real-device expense) that a feature matrix's checkmarks hide.

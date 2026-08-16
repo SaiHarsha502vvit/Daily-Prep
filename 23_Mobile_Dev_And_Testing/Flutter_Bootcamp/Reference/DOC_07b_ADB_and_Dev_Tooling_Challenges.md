@@ -73,6 +73,22 @@ No code, no `adb devices` output shown yet — just the report. For each scenari
 
 ---
 
+### 🔬 Diff Detective — Appium Inspector Won't Connect, Two Different Platforms
+
+Same Appium Inspector, same "connection failed" error message, on two different projects. The actual cause is different for each, and the fix for one does nothing for the other.
+
+**Project A — Android:** Appium Inspector shows a connection timeout the instant you hit "Start Session." `adb devices` shows nothing connected.
+
+**Project B — iOS:** Appium Inspector shows a connection timeout too. `adb devices` isn't relevant here at all. The Appium server log mentions `WebDriverAgent` failing to launch.
+
+<details><summary>Why the identical symptom has two unrelated causes</summary>
+
+🔴 **Explanation:** this is [this doc's own Appium Inspector section](DOC_07_ADB_and_Dev_Tooling.md#appium-inspector--the-same-device-connection-a-different-job) made concrete — the **same error message** in Inspector's UI can originate from two completely different drivers with nothing in common underneath. Project A's failure is a genuine ADB problem: the `UiAutomator2` driver couldn't reach `adbd` because there's no authorized device connection at all — `adb devices` showing nothing confirms it immediately, and the fix is identical to every other ADB connection problem in this doc (`adb kill-server && adb start-server`, check the device for an authorization prompt). Project B's failure has **nothing to do with ADB** — the `XCUITest` driver failed to install and launch WebDriverAgent on the device, which is Apple's own toolchain (Xcode provisioning profiles, code-signing, `usbmuxd`), a completely separate failure domain that `adb devices` can't diagnose because it isn't involved in iOS automation at all. Someone who only knows "Appium connection problems mean check `adb`" will spend a long time confused by Project B, because the assumption that ADB is universally the culprit is only true on Android.
+
+</details>
+
+---
+
 ### 👹 Boss Battle — Reproduce and Fix the Emulator-Localhost Bug, For Real
 
 **The spec:** if you have Flutter set up with an Android emulator available, do this for real, not on paper. (1) Start any simple local HTTP server on your machine — even `python3 -m http.server 8000` works fine for this. (2) Confirm it works with `curl http://localhost:8000` from your terminal. (3) Write a tiny Flutter app with a button that calls `http.get(Uri.parse('http://localhost:8000'))` and displays the result or the error. Run it on an Android emulator and confirm it fails exactly as this file's Bug Hunt predicted. (4) Fix it using `adb reverse`, confirm it now works — then undo the fix (`adb reverse --remove tcp:8000`) and confirm it breaks again, so you've genuinely proven cause and effect, not just applied a remembered incantation.

@@ -23,10 +23,13 @@ This folder teaches mobile development concepts and mobile testing together, so 
 
 | File                                         | Description                                                                         |
 | -------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `00_INDEX.md`                                | Section navigation and reading order                                                |
+| `00_Testing_Fundamentals_MOVED_TO_SDET.md`   | Redirect stub — testing-types content lives in `21_SDET_Playwright_Automation/`     |
 | `01_Playwright_vs_Appium_Full_Comparison.md` | Architecture, capabilities, trade-offs, decision tree                               |
 | `02_Android_Native_Dev_And_Testing.md`       | Android dev concepts + Espresso + UIAutomator2 + Appium + Playwright API layer      |
 | `03_iOS_Native_Dev_And_Testing.md`           | iOS dev concepts + XCUITest + Appium + Playwright API layer                         |
 | `04_Flutter_Dev_And_Testing.md`              | Flutter dev concepts + integration_test + Appium Flutter + Playwright API layer     |
-| `05_Mobile_Web_And_Hybrid_Playwright.md`     | Device emulation, touch, network interception, Capacitor/Ionic/React Native WebView |
-| `06_Mobile_CI_CD_Strategy.md`                | Firebase Test Lab, BrowserStack, Fastlane, GitHub Actions for mobile                |
+| `05_Mobile_Web_And_Hybrid_Playwright.md`     | Touch gesture simulation (what `Touchscreen` actually supports), geolocation/permissions, honest Capacitor/Ionic/React Native WebView testing boundaries via Playwright's Android API |
+| `23_PROBLEM_SETS.md`                         | Problem sets for this module — native/cross-platform theory + Flutter challenges    |
+| `Flutter_Bootcamp/`                          | 27-week structured Flutter curriculum (Dart → production), each week paired with a hands-on `*b_*_Challenges.md` file; plus a `Reference/` deep-dive library (rendering pipeline, widget catalog, theming, BuildContext, keys, async patterns, ADB & dev tooling) — see `Flutter_Bootcamp/00_MASTER_ROADMAP.md` |
+
+**Note on scope:** `06_Mobile_CI_CD_Strategy.md` was previously listed here but does not exist as a file — treat it as an open content gap for this folder, not a broken link to chase down.

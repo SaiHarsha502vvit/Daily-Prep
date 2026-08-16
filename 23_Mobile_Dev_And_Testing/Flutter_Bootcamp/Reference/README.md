@@ -21,7 +21,7 @@ These files are NOT tutorials. They are comprehensive references — the kind of
 | [DOC_05b_InheritedWidget_Keys_Challenges.md](DOC_05b_InheritedWidget_Keys_Challenges.md) | Challenges: an ObjectKey that doesn't key anything, GlobalKey/PageStorageKey quiz, a correctly-keyed reorderable list |
 | [DOC_06_Async_Patterns_Complete.md](DOC_06_Async_Patterns_Complete.md) | Dart event loop, Future/async/await, Stream/StreamController/StreamBuilder, FutureBuilder pitfalls, Isolates, Timer, debounce, error handling |
 | [DOC_06b_Async_Patterns_Challenges.md](DOC_06b_Async_Patterns_Challenges.md) | Challenges: a shared-static-Map debounce bug, microtask-vs-event-queue quiz, reassemble the loading-state pattern |
-| [DOC_07_ADB_and_Dev_Tooling.md](DOC_07_ADB_and_Dev_Tooling.md) | ADB's client/server/daemon architecture, core commands, how `flutter run` and hot reload use it underneath, iOS-equivalent tooling |
+| [DOC_07_ADB_and_Dev_Tooling.md](DOC_07_ADB_and_Dev_Tooling.md) | ADB's client/server/daemon architecture, core commands, how `flutter run` and hot reload use it underneath, iOS-equivalent tooling, Appium Inspector's connection to the same layer |
 | [DOC_07b_ADB_and_Dev_Tooling_Challenges.md](DOC_07b_ADB_and_Dev_Tooling_Challenges.md) | Challenges: the emulator-localhost bug reproduced for real, adb piece-identification quiz, diagnose-from-symptom scenarios |
 
 ---
