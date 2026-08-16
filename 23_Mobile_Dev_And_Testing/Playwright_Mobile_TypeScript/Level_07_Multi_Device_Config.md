@@ -121,7 +121,7 @@ npx playwright test --shard=2/4
 # ...and so on
 ```
 
-Each shard runs a disjoint subset of the total tests — four machines running `--shard=1/4` through `--shard=4/4` in parallel finish in roughly a quarter of the time one machine running the full suite would take. The [track's capstone level](00_ROADMAP.md) wires this into a real GitHub Actions matrix.
+Each shard runs a disjoint subset of the total tests — four machines running `--shard=1/4` through `--shard=4/4` in parallel finish in roughly a quarter of the time one machine running the full suite would take. [Level 13's capstone](Level_13_Capstone_CICD_Pipeline.md) wires this into a real GitHub Actions matrix.
 
 ---
 
