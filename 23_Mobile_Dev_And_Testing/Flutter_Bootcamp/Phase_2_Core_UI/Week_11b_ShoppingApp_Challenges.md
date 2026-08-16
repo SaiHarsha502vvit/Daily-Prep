@@ -130,7 +130,7 @@ GestureDetector(
 Hero(tag: 'product-${product.id}', child: Image.network(product.imageUrl, height: 300)),
 ```
 
-🔴 **Explanation:** the structural constraint pinning this order down — same lesson as [Week 9's Hero tag-mismatch Bug Hunt](../Phase_2_Core_UI/Week_09b_Animation_Challenges.md#-bug-hunt--reproduce-and-fix-the-hero-tag-mismatch) — is that both `Hero` widgets need the **identical** `tag` string, `'product-${product.id}'`, and the `GestureDetector` wrapping the source `Hero` must live on the *grid card* screen, not the detail screen (you navigate *from* the tapped card *to* the detail screen — the causality only flows one direction). Notice the two `Hero`s don't need identical `child` sizing — the grid version is small, the detail version is `height: 300` — Flutter's Hero flight animates the transform between the two automatically, which is the entire point of using `Hero` over manually coding a custom transition for this exact case.
+🔴 **Explanation:** the structural constraint pinning this order down — same lesson as [Week 9's Hero tag-mismatch Bug Hunt](../Phase_2_Core_UI/Week_09b_Animation_Challenges.md#w9-3-medium--reproduce-and-fix-the-hero-tag-mismatch) — is that both `Hero` widgets need the **identical** `tag` string, `'product-${product.id}'`, and the `GestureDetector` wrapping the source `Hero` must live on the *grid card* screen, not the detail screen (you navigate *from* the tapped card *to* the detail screen — the causality only flows one direction). Notice the two `Hero`s don't need identical `child` sizing — the grid version is small, the detail version is `height: 300` — Flutter's Hero flight animates the transform between the two automatically, which is the entire point of using `Hero` over manually coding a custom transition for this exact case.
 
 </details>
 
@@ -140,7 +140,7 @@ Hero(tag: 'product-${product.id}', child: Image.network(product.imageUrl, height
 
 No starter code. Spec only:
 
-> Add swipe-to-remove on the Cart tab's list items — swiping a cart item left reveals a red "delete" background and removes it from `_cartItems` on full swipe, with an undo `SnackBar` (matching the pattern from this project's own `_addToCart` success snackbar). Decide: does this need a custom `GestureDetector` (like [Week 10's swipe-to-dismiss Boss Battle](../Phase_2_Core_UI/Week_10b_Gesture_Challenges.md#-boss-battle--build-dismissibles-core-mechanic-from-raw-gestures)), or is there a built-in Flutter widget that already does exactly this?
+> Add swipe-to-remove on the Cart tab's list items — swiping a cart item left reveals a red "delete" background and removes it from `_cartItems` on full swipe, with an undo `SnackBar` (matching the pattern from this project's own `_addToCart` success snackbar). Decide: does this need a custom `GestureDetector` (like [Week 10's swipe-to-dismiss Boss Battle](../Phase_2_Core_UI/Week_10b_Gesture_Challenges.md#w10-2-hard--build-dismissibles-core-mechanic-from-raw-gestures)), or is there a built-in Flutter widget that already does exactly this?
 
 <details><summary>One reasonable solution</summary>
 
@@ -172,7 +172,7 @@ Dismissible(
 )
 ```
 
-🔴 **Explanation:** the design question in the spec — build it yourself or reach for `Dismissible` — has a clear answer once you've actually built the raw version in [Week 10's Boss Battle](../Phase_2_Core_UI/Week_10b_Gesture_Challenges.md#-boss-battle--build-dismissibles-core-mechanic-from-raw-gestures): `Dismissible` **is** that mechanism, already built, tested, and handling edge cases (partial swipes, both-direction dismissal, animation) you'd otherwise have to reimplement. The `key: ValueKey(...)` is not optional here — this is [Week 2's reordering-bug lesson](../Phase_1_Dart_and_Foundations/Week_02b_Widget_Rebuild_Challenges.md#w2-2-medium--keys-and-the-reordering-bug) showing up for real: without a stable per-item key, removing an item from the middle of the list can cause Flutter to reuse the *wrong* element for the item that slides up into that position, potentially replaying the dismiss animation on the wrong tile.
+🔴 **Explanation:** the design question in the spec — build it yourself or reach for `Dismissible` — has a clear answer once you've actually built the raw version in [Week 10's Boss Battle](../Phase_2_Core_UI/Week_10b_Gesture_Challenges.md#w10-2-hard--build-dismissibles-core-mechanic-from-raw-gestures): `Dismissible` **is** that mechanism, already built, tested, and handling edge cases (partial swipes, both-direction dismissal, animation) you'd otherwise have to reimplement. The `key: ValueKey(...)` is not optional here — this is [Week 2's reordering-bug lesson](../Phase_1_Dart_and_Foundations/Week_02b_Widget_Rebuild_Challenges.md#w2-2-medium--keys-and-the-reordering-bug) showing up for real: without a stable per-item key, removing an item from the middle of the list can cause Flutter to reuse the *wrong* element for the item that slides up into that position, potentially replaying the dismiss animation on the wrong tile.
 
 </details>
 

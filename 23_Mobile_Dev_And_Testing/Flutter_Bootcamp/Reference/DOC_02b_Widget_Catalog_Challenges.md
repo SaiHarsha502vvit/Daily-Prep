@@ -116,7 +116,7 @@ For each, name the single most appropriate widget or combination from this catal
 2. **`ElevatedButton`** with `onPressed: isLoading ? null : _submit` and the child conditionally swapped for a `CircularProgressIndicator` — `onPressed: null` is what makes a Material button widget visually and functionally disabled.
 3. **`TextFormField`** with a `validator:` and `autovalidateMode: AutovalidateMode.onUserInteraction` — live validation feedback as the user types, from the input-widgets category, matching [Week 8's core content](../Phase_2_Core_UI/Week_08_Forms_and_Input.md).
 4. **`AnimatedOpacity`** (or `AnimatedSwitcher`) wrapping a `FloatingActionButton`, toggled by a `ScrollController` listener — the exact shape of [Week 7's scroll-to-top Bug Hunt](../Phase_2_Core_UI/Week_07b_Scrolling_Challenges.md#-bug-hunt--the-scroll-to-top-button-that-never-appears).
-5. **`Hero`** — the shared-element-transition widget from the animation category, matching [Week 9's core content](../Phase_2_Core_UI/Week_09_Animations.md) and [its Hero tag-mismatch Bug Hunt](../Phase_2_Core_UI/Week_09b_Animation_Challenges.md#-bug-hunt--reproduce-and-fix-the-hero-tag-mismatch).
+5. **`Hero`** — the shared-element-transition widget from the animation category, matching [Week 9's core content](../Phase_2_Core_UI/Week_09_Animations.md) and [its Hero tag-mismatch Bug Hunt](../Phase_2_Core_UI/Week_09b_Animation_Challenges.md#w9-3-medium--reproduce-and-fix-the-hero-tag-mismatch).
 
 </details>
 

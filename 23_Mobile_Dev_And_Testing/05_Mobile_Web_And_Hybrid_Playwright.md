@@ -175,7 +175,7 @@ async function swipeLeft(page: Page) {
 }
 ```
 
-This is called on a dismissible card component (the same shape as [Week 10's swipe-to-dismiss content](Flutter_Bootcamp/Phase_2_Core_UI/Week_10b_Gesture_Challenges.md#-boss-battle--build-dismissibles-core-mechanic-from-raw-gestures) elsewhere in this repo, just tested from the outside instead of built from the inside). The card never dismisses. Two separate mistakes are hiding in this snippet — find both.
+This is called on a dismissible card component (the same shape as [Week 10's swipe-to-dismiss content](Flutter_Bootcamp/Phase_2_Core_UI/Week_10b_Gesture_Challenges.md#w10-2-hard--build-dismissibles-core-mechanic-from-raw-gestures) elsewhere in this repo, just tested from the outside instead of built from the inside). The card never dismisses. Two separate mistakes are hiding in this snippet — find both.
 
 <details><summary>Diagnosis</summary>
 

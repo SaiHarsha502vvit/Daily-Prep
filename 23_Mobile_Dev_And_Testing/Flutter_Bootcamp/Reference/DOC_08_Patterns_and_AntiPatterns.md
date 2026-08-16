@@ -24,7 +24,7 @@ Widget tapScale({required Widget child, required VoidCallback onTap}) {
 }
 ```
 
-This is [Week 10's `tapScale` Boss Battle](../Phase_2_Core_UI/Week_10b_Gesture_Challenges.md#-boss-battle--composable-widget-wrapping-effects) — write the effect once as something that wraps an arbitrary `child`, instead of writing a parallel subclass hierarchy for every widget you want the effect applied to.
+This is [Week 10's `tapScale` Boss Battle](../Phase_2_Core_UI/Week_10b_Gesture_Challenges.md#w10-4-hard-bonus--composable-widget-wrapping-effects) — write the effect once as something that wraps an arbitrary `child`, instead of writing a parallel subclass hierarchy for every widget you want the effect applied to.
 
 ### Single Source of Truth, Derived On Demand
 
@@ -60,7 +60,7 @@ The [Shopping App's `_ShopAppState`](../Phase_2_Core_UI/Week_11_Project_Shopping
 // builder: — called fresh each time, sees anything YOUR widget injected into the tree
 ```
 
-Covered in full in [Week 10's `child` vs `builder` challenge](../Phase_2_Core_UI/Week_10b_Gesture_Challenges.md#-code-review--child-vs-builder-an-api-design-decision-not-a-style-choice) — the rule that decides which one a widget's API should offer: does the content need to see something the wrapping widget itself introduces into the tree (a new `Theme`, a new `MediaQuery`)? If yes, `builder:`. If the content is genuinely independent, `child:` is cheaper and simpler.
+Covered in full in [Week 10's `child` vs `builder` challenge](../Phase_2_Core_UI/Week_10b_Gesture_Challenges.md#w10-3-easy--child-vs-builder-an-api-design-decision-not-a-style-choice) — the rule that decides which one a widget's API should offer: does the content need to see something the wrapping widget itself introduces into the tree (a new `Theme`, a new `MediaQuery`)? If yes, `builder:`. If the content is genuinely independent, `child:` is cheaper and simpler.
 
 ### Sealed Classes for Exhaustive State Modeling
 
