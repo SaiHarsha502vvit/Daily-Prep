@@ -188,6 +188,10 @@ Rules:
 - Built-in fixtures (page, request, browser, context) are always available
 ```
 
+**This chapter shows the successful half of the DAG; [Ch33 Section 5](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md#5-graph-algorithms--test-dependency-graphs) shows the failure-detection half.** `request → page → account → masterSearchPage` above IS a topological sort — the exact algorithm Ch33 §5 derives abstractly (its own example: `testC, testB, testA, testD`) and confirms is what Playwright's `test.extend()` actually runs: a DFS over the declared fixture dependencies, in real Playwright source. That other section also covers what THIS chapter's "Rules" box doesn't: what happens if `fixtureA` and `fixtureB` depend on each other — no valid topological order exists for a cycle, and Playwright's own DFS detects the back edge and throws `"circular fixture dependency"` rather than hanging or silently picking a wrong order.
+
+**"Teardown runs in REVERSE setup order" is the Stack (LIFO) discipline again** — the same one [Ch01](../01_Foundations/01_Playwright_TS_Basics.md) named in the JS call stack and [Ch33 §3](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md) named in `TestDataManager.cleanup()`. The topological sort only guarantees *a* valid linear order for setup (dependencies before dependents); reversing that exact sequence for teardown is what guarantees `account`'s cleanup (revoking its token) doesn't run before `masterSearchPage`'s cleanup, which might still need that token. Push on setup, pop on teardown — same rule, third context this curriculum has hit it in.
+
 ```typescript
 // You can inspect the order at runtime:
 myFixture: async ({ page, account, request }, use, testInfo) => {
