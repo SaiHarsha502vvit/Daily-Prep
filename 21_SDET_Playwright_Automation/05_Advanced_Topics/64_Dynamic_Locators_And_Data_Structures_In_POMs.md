@@ -1,6 +1,6 @@
 # 64. Dynamic Locators & Data Structures Inside POM Methods
 
-**Navigation**: [← Chapter 63: Static Analysis — ESLint](./63_Static_Analysis_ESLint_TypeScript_Playwright.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 63: Static Analysis — ESLint](./63_Static_Analysis_ESLint_TypeScript_Playwright.md) | [Index](../00_INDEX.md) | [→ Chapter 65: Heaps & Union-Find](../06_SDET_to_SDE_Bridge/65_Heaps_And_Union_Find_Scheduling_And_Clustering.md)
 
 **Cross-links:**
 
@@ -371,4 +371,4 @@ This chapter is the connective layer between two chapters that already exist: [C
 
 ---
 
-**Navigation**: [← Chapter 63: Static Analysis — ESLint](./63_Static_Analysis_ESLint_TypeScript_Playwright.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 63: Static Analysis — ESLint](./63_Static_Analysis_ESLint_TypeScript_Playwright.md) | [Index](../00_INDEX.md) | [→ Chapter 65: Heaps & Union-Find](../06_SDET_to_SDE_Bridge/65_Heaps_And_Union_Find_Scheduling_And_Clustering.md)
