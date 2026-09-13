@@ -581,92 +581,6 @@ Since your environment spans three different app types, here is a quick comparis
 
 ---
 
-## 🏋️ Practice Challenges
-
-**Challenge 1 (IFrame Context):** You are testing a D365 form that has a text field for "Account Name". `page.locator('.ms-TextField-field')` finds 0 elements. How do you diagnose and fix this?
-
-<details><summary>Answer</summary>
-
-1. Run the IFrame detection script in the console to find all IFrames and their names.
-2. The field is likely inside `contentIFrame0` (or similar).
-3. Fix:
-
-```typescript
-const frame = page.frameLocator('iframe[name="contentIFrame0"]');
-await frame
-  .locator(".ms-TextField-field")
-  .filter({ hasText: "" })
-  .first()
-  .fill("Acme Corp");
-// OR be more specific:
-await frame
-  .locator('[data-automation-key="name.fieldControl-text-box-text"]')
-  .fill("Acme Corp");
-```
-
-</details>
-
-**Challenge 2 (menuitem trap):** Write the correct Playwright locator for each of these D365 CommandBar buttons. Assume they are in the CommandBar (not inside an IFrame):
-
-1. "New" (create a new record)
-2. "Save & Close"
-3. "Delete"
-<details><summary>Answer</summary>
-
-```typescript
-// Method 1: getByRole('menuitem')
-await page.getByRole("menuitem", { name: "New" }).click();
-await page.getByRole("menuitem", { name: "Save & Close" }).click();
-await page.getByRole("menuitem", { name: "Delete" }).click();
-
-// Method 2: CSS fallback (more reliable if name matching is tricky)
-await page.locator(".ms-CommandBar-item").filter({ hasText: "New" }).click();
-await page.locator('[data-id="saveAndCloseBtn"]').click(); // if data-id is available
-await page.locator('[aria-label="Delete"]').click(); // if aria-label is set
-```
-
-</details>
-
-**Challenge 3 (Tab + Content Wait):** Write a reusable function `navigateToTab(page, tabName, contentReadySelector)` that:
-
-1. Clicks a D365 tab by role name
-2. Verifies `aria-selected="true"` on the clicked tab
-3. Waits for the content under the tab to be visible
-<details><summary>Answer</summary>
-
-```typescript
-async function navigateToTab(
-  page: Page,
-  tabName: string,
-  contentReadySelector: string,
-  timeout = 20000,
-): Promise<void> {
-  // 1. Click the tab
-  await page.getByRole("tab", { name: tabName }).click();
-
-  // 2. Verify it's active
-  await expect(page.getByRole("tab", { name: tabName })).toHaveAttribute(
-    "aria-selected",
-    "true",
-    { timeout: 5000 },
-  );
-
-  // 3. Wait for spinner (if any) to go away
-  await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 10000 });
-
-  // 4. Wait for content
-  await expect(page.locator(contentReadySelector)).toBeVisible({ timeout });
-}
-
-// Usage:
-await navigateToTab(page, "Phones", ".phone-list-container");
-await navigateToTab(page, "Addresses", ".address-list-container");
-```
-
-</details>
-
----
-
 ## 9. The "Unsaved Changes" Dialog Trap — #1 D365 Flakiness Source
 
 This dialog appears when a test navigates away from a form that D365 thinks has unsaved changes. It blocks ALL subsequent interactions silently.
@@ -855,6 +769,8 @@ account: [async ({ request }, use) => {
 // This token lasts 1 hour and can be refreshed programmatically.
 ```
 
+**Verified — "Option C" solves a narrower problem than Options A and B do, not a third way to solve the same one.** A `client_credentials` token is an *application* token, not a user session. Microsoft's own OAuth guidance for Dataverse is explicit about the split: `client_credentials` is for "background services, scheduled jobs, ... server-to-server processes with no direct user interaction," while anything where "a user logs in to perform actions on their own behalf" needs the Authorization Code grant instead — the interactive login `globalSetup` above already performs ([Microsoft Learn: OAuth with Dataverse](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/authenticate-oauth)). That split matters concretely here: D365's *browser* session lives in cookies set during that interactive login — the same cookies `storageState` captures above. A client_credentials bearer token has no way to become those cookies; it's a header you attach to `request.get()`/`.post()` calls against the Web API, not something `page.goto()` can use to look logged in. So Option C keeps **API-only tests** (data setup/teardown, anything using only the `request` fixture) working past the 1-hour mark — it does nothing for a `page`-driven UI test whose session cookies expired at the same mark. A nightly suite that both clicks through D365 screens *and* calls the API past an hour needs A or B for the UI half regardless of whether it also adopts C for the API half.
+
 Same `{ scope: 'worker' }` pattern as [Ch09 §8](../02_Core_Architecture/09_Parallel_Execution_Workers.md#8-worker-scoped-fixtures--the-performance-pattern) / [Ch33 §10](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md#10-concurrency--test-race-conditions-and-parallel-execution)'s Thread-Local Storage — but it shows the pattern's actual boundary. TLS isolation solves *contention* (workers don't fight over one shared token); it does nothing about *expiry* (an isolated token still goes stale at 1 hour). That's a genuinely different failure mode with a genuinely different fix (Option A/B/C above), and conflating "isolated" with "always valid" is how a suite that works fine for 45 minutes starts failing exactly at the 1-hour mark for no code reason anyone changed.
 
 ---
@@ -952,15 +868,26 @@ async function navigateToTab(
   contentReadySelector: string,
   timeout = 20000,
 ): Promise<void> {
+  // 1. Click the tab
   await page.getByRole("tab", { name: tabName }).click();
+
+  // 2. Verify it's active
   await expect(page.getByRole("tab", { name: tabName })).toHaveAttribute(
     "aria-selected",
     "true",
     { timeout: 5000 },
   );
+
+  // 3. Wait for spinner (if any) to go away
   await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 10000 });
+
+  // 4. Wait for content
   await expect(page.locator(contentReadySelector)).toBeVisible({ timeout });
 }
+
+// Usage:
+await navigateToTab(page, "Phones", ".phone-list-container");
+await navigateToTab(page, "Addresses", ".address-list-container");
 ```
 
 </details>
