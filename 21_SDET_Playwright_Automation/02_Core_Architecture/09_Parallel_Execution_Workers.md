@@ -528,7 +528,7 @@ Worker 2 starts:
 
 export const test = base.extend<{}, { account: TestAccount }>({
   account: [
-    async ({ browser }, use, workerInfo) => {
+    async ({}, use, workerInfo) => {
       // workerInfo.workerIndex: 0, 1, 2, ... (sequential per worker)
       // workerInfo.parallelIndex: same as workerIndex in Playwright
       const workerEmail = `worker-${workerInfo.workerIndex}@testenv.com`;
@@ -556,6 +556,20 @@ export const test = base.extend<{}, { account: TestAccount }>({
   ],
 });
 ```
+
+**That `async ({}, ...)` used to read `async ({ browser }, ...)` — verified, not a style choice.** The fixture body above never touches `browser` anywhere: every call is `usersClient`/`citationsClient`, plain HTTP, no `page` or `browser` interaction at all. Destructuring `{ browser }` anyway looks harmless — dead code, at worst. It isn't. Playwright's own fixture docs are explicit about the mechanism: **"A fixture depends on another simply by destructuring it in its setup function"** ([Playwright: Fixtures](https://playwright.dev/docs/test-fixtures)) — dependency resolution is based on which names appear in the parameter list, not on whether the function body ever reads them.
+
+Proved this directly rather than trusting the docs alone: built a worker-scoped fixture that logs on setup, then a second fixture matching this exact shape — destructuring the first fixture but never referencing it in the body — and requested only the second fixture from a test. The first fixture's setup log printed anyway, before the second fixture's own setup ran:
+
+```
+EXPENSIVE_THING_SETUP_RAN
+ACCOUNT_SETUP_RAN, workerIndex= 0
+TEST_BODY_RAN, account.userId= w0
+```
+
+Applied to the original code: every worker that uses the `account` fixture — including a worker that only ever runs `request`-based API tests and never opens a `page` — was launching a full Chromium browser it never used, just because `browser` appeared in the destructured parameter list. In a section specifically about *removing* per-test overhead (§8's whole point is "4 logins instead of 20"), the example was quietly adding back a worker-startup cost — one browser launch — with zero corresponding benefit. Removing the unused destructure removes that cost entirely; nothing else about the fixture changes, since nothing else ever depended on it.
+
+**The general rule this generalizes to, worth carrying into your own fixtures:** destructure only what you actually use. `async ({ page }, use) => { /* never touches page */ }` pays for a full browser context and page exactly as eagerly as one that clicks through it — Playwright can't tell "declared but unused" from "declared and needed" without actually running your code, so it resolves everything you name.
 
 ### `test.info()` — The Complete Reference
 
