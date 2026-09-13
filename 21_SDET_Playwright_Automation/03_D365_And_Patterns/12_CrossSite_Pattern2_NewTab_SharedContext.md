@@ -108,6 +108,8 @@ sequenceDiagram
 
 The event loop processes microtasks before the next I/O callback. When you `await page.click()`, control returns to the event loop while Playwright handles the CDP click command. The browser may process the click and emit the `page` event in the same I/O cycle — before your next `await page.context().waitForEvent()` line even runs. This is a genuine race condition, not a "usually works" issue.
 
+[Ch33 §10](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md#10-concurrency--test-race-conditions-and-parallel-execution) already cites this exact snippet as "the classic race condition (from Ch12)" — but it's worth being precise about *which* race, since "race condition" covers more than one failure shape. Ch33 §10's main example (and [Ch09 §3–§4](../02_Core_Architecture/09_Parallel_Execution_Workers.md#3-the-data-collision-problem)) is a **shared-mutable-state race**: two concurrent workers touch the same data, and whichever runs first wins or corrupts the other. This bug has no second worker at all — it's single-threaded, sequential code. What's racing is a *signal* against a *listener*: the browser's `page` event fires (the notification), but nothing is listening yet, so the notification is simply lost. That's a distinct, textbook failure mode called the **lost wakeup problem** — a wakeup sent to a process that isn't yet waiting is lost, classically solved by registering the wait *before* the action that can trigger the signal (exactly what `Promise.all` does here). Same general category (race condition), two different mechanisms, two different fixes: shared-state races (Ch33 §10's Knight Capital example, and [Ch09 §3–§4](../02_Core_Architecture/09_Parallel_Execution_Workers.md#3-the-data-collision-problem)) are fixed by removing the sharing; lost wakeups are fixed by reordering registration before triggering.
+
 ---
 
 ## 3. The Correct Pattern — Always Use `Promise.all`
@@ -888,6 +890,8 @@ test("Real-time sync: agent adds note → customer sees it within 3s", async ({
   await data.customerTab?.close();
 });
 ```
+
+The `intervals: [200, 500, 1_000]` is a fourth real shape in this module's retry/backoff taxonomy — constant (Ch07), linear (Ch04), exponential+jitter ([Ch34 §8](../06_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md#8-dynamic-programming--optimal-retry-backoff)), and now a hand-tuned, non-formulaic ramp: 200→500→1000 isn't a clean arithmetic or geometric progression, it's values someone picked empirically. That's a legitimate real-world choice, not a lesser one — it front-loads fast checks (real-time sync usually resolves in under a second) while still backing off if it doesn't, with no formula to justify beyond "this worked when we tuned it."
 
 ```typescript
 // context.newPage() vs waiting for 'page' event:
