@@ -445,6 +445,8 @@ override func didReceiveMemoryWarning() {
 }
 ```
 
+**Going deeper:** this section and the Reality Check's ARC/retain-cycle point are the concepts — [08_iOS_Performance_Memory_And_Instruments.md](08_iOS_Performance_Memory_And_Instruments.md) is the companion file teaching the actual tooling (Instruments' Time Profiler/Allocations/Leaks, the Memory Graph Debugger, watchdog-termination timeouts, Jetsam) that turns "ARC doesn't catch cycles" into "here's the specific two objects holding each other."
+
 ---
 
 ### 🎯 Practice — Level 1
