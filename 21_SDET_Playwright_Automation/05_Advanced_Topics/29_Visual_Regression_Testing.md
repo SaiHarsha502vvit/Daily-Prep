@@ -711,6 +711,73 @@ USE FUNCTIONAL TESTS FOR:                USE VISUAL TESTS FOR:
 
 ---
 
+## 13. Canvas and WebGL — When There's No DOM to Screenshot
+
+Every technique so far assumes a `data-automation-key`, a CSS class, or *some* DOM node to build a locator from. A `<canvas>` element (charts, drawing tools, generated thumbnails, WebGL visualizations) breaks that assumption completely: everything inside it is pixels the browser painted from JavaScript draw calls — there is no accessibility tree, no child elements, nothing for `page.locator()` to find. `page.getByRole('button', { name: 'Pending' })` cannot locate a pie-chart slice, because as far as the DOM is concerned, the slice doesn't exist — only the single `<canvas>` element does.
+
+### 13.1 The Two Real Techniques — Verified Against How Canvas Actually Works
+
+**Spatial clicking** — since there's no element to target, you target a *coordinate* within the canvas element's own bounding box instead:
+
+```typescript
+test('clicking a pie chart slice by computed coordinate selects it', async ({ page }) => {
+  await page.goto('/dashboard/citation-status-chart');
+  const chart = page.locator('canvas#status-pie-chart');
+  await expect(chart).toBeVisible();
+
+  // No DOM node exists for "the PENDING slice" — click at a coordinate
+  // computed relative to the canvas's own bounding box instead.
+  await chart.click({ position: { x: 120, y: 80 } });
+
+  await expect(page.locator('[data-testid="selected-slice-label"]')).toHaveText('PENDING');
+});
+```
+
+`{ position: { x, y } }` is a real `locator.click()` option — coordinates are measured from the element's own top-left corner, not the page's, so the click stays correct even if the chart moves due to a layout change elsewhere on the page. The coordinates themselves have to come from somewhere real: read them off the charting library's own data (most chart libraries expose the computed slice angles/coordinates in JS, which you can pull via `page.evaluate()`), or compute them from the chart's known dimensions and data proportions — never eyeball pixel numbers from a screenshot, because they'll silently drift the next time the data changes.
+
+**Pixel-level assertion** — reading the canvas's actual backing-store pixels, verified against the real Canvas 2D API:
+
+```typescript
+test('selected pie slice renders with the highlight color', async ({ page }) => {
+  await page.goto('/dashboard/citation-status-chart');
+  const chart = page.locator('canvas#status-pie-chart');
+  await chart.click({ position: { x: 120, y: 80 } });
+
+  const pixel = await page.evaluate(({ x, y }) => {
+    const canvas = document.querySelector<HTMLCanvasElement>('#status-pie-chart')!;
+    const ctx = canvas.getContext('2d')!;
+    const data = ctx.getImageData(x, y, 1, 1).data; // [r, g, b, a] for that one pixel
+    return { r: data[0], g: data[1], b: data[2], a: data[3] };
+  }, { x: 120, y: 80 });
+
+  expect(pixel.r, 'Selected slice should render in the highlight orange, not the default blue').toBeGreaterThan(200);
+  expect(pixel.b).toBeLessThan(100);
+});
+```
+
+`getImageData(x, y, 1, 1)` reads a single pixel directly from the canvas's memory — no screenshot file, no pixelmatch, just the literal RGBA bytes the GPU/software renderer produced. This is the right tool for *"is this one known point the color I expect"* — a targeted assertion, not a full-image comparison.
+
+**The real gotcha, worth knowing before it surprises you in CI**: if the canvas ever draws an image loaded from a different origin without that origin's CORS headers permitting it, the canvas becomes **tainted**, and `getImageData()` throws a `SecurityError` — Playwright does not and cannot bypass this, because it's a browser security boundary, not a Playwright limitation. A pixel-assertion test that works fine against a canvas drawing only same-origin, JS-generated shapes can start throwing the moment someone adds a cross-origin avatar image or map tile to the same canvas. If you hit this, the fix is on the application side (serve the image with proper CORS headers, or set `crossOrigin="anonymous"` on the source `<img>`), not the test.
+
+### 13.2 `toHaveScreenshot()` Already Works on Canvas — No New API Needed
+
+The one thing that *doesn't* need a new technique: this chapter's own §1 pixelmatch machinery applies to a canvas locator exactly as-is, because `toHaveScreenshot()` captures whatever pixels are rendered in an element's bounding box — it has no idea, and no need to know, whether those pixels came from DOM+CSS or from canvas draw calls:
+
+```typescript
+test('overall chart layout matches the approved baseline', async ({ page }) => {
+  await page.goto('/dashboard/citation-status-chart');
+  const chart = page.locator('canvas#status-pie-chart');
+  await expect(chart).toBeVisible();
+  await expect(chart).toHaveScreenshot('citation-status-pie-chart.png', {
+    maxDiffPixelRatio: 0.002, // same threshold reasoning as §5 — nothing canvas-specific here
+  });
+});
+```
+
+**Choosing between the three**: `toHaveScreenshot()` on the canvas answers *"did the overall rendering change at all"* — the right default for catching an unintended visual regression in a chart nobody touched on purpose. `getImageData()` on a specific coordinate answers a narrower, more targeted *"is this one known data point the right color"* — useful when you want a fast, file-free assertion tied to actual application state (a slice being selected) rather than a full pixel-diff. Spatial `click({ position })` is how you interact with canvas content at all, full stop — there's no alternative, because there's nothing else to click.
+
+---
+
 ## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — Why Separate OS Baselines?
