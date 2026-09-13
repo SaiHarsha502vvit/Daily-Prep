@@ -728,6 +728,74 @@ export default defineConfig({
 
 ---
 
+## 12. The Context-Pooling Trap — Why You Can't Just Share a `page` Fixture
+
+§6 made `account` worker-scoped and it was completely safe. The natural next question: if login is the expensive part, why not go further and make the **`page` itself** worker-scoped too — one browser context, shared by every test in the worker, saving the ~50-100ms context-creation cost on top of the login cost?
+
+```typescript
+// ❌ THE TEMPTING BUT BROKEN VERSION
+export const test = base.extend<{}, { sharedPage: Page }>({
+  sharedPage: [
+    async ({ browser }, use) => {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      await page.goto('/login');
+      // ...perform login...
+      await use(page); // ← every test in this worker gets the SAME page object
+      await context.close();
+    },
+    { scope: 'worker' },
+  ],
+});
+```
+
+**This is the exact same shared-mutable-state mistake [Ch09 §3–§4](./09_Parallel_Execution_Workers.md#3-the-data-collision-problem) and [Ch33 §10](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md#10-concurrency--test-race-conditions-and-parallel-execution) already established — the fourth context this curriculum has hit it in ([§3](#3-testextendt--creating-your-own-fixtures) named the third, the Stack/LIFO teardown rule).** There, the shared resource was a JS variable or a database row; here it's a *browser context's own cookies, localStorage, and DOM*. Test A adds an item to a cart — that mutates the shared page's real browser state. Test B, reusing the identical `page` object, now starts with Test A's cart already populated, sees Test A's leftover toast notification mid-fade, or fails outright because Test A left a modal open. The bug shape is identical to Ch09's module-level `authToken`: correctness now depends on execution order, which Playwright's own worker scheduling does not guarantee.
+
+**Why `account` was safe but `sharedPage` isn't: read-only vs. mutable.** `account` is credentials — every test *reads* `account.accessToken`, none of them *write* to it. A shared browser context is mutable *by construction* — every `click`, every `fill`, every navigation changes its state, and that's the entire point of using a browser. Worker-scoping is safe exactly when nothing a test does can change what the next test observes; a live page fails that test by design.
+
+**The real resolution — pool the *expensive result*, not the *stateful object*.** Do the login once per worker (worker-scoped, expensive), but capture the outcome as data — `context.storageState()`, called with no `path`, returns the session as an in-memory object (cookies + a localStorage snapshot per origin; IndexedDB is opt-in via `{ indexedDB: true }`, not captured by default) rather than only writing to disk. That data is exactly as safe to share as `account.accessToken` was, because it's a snapshot, not a live, mutable object. Then give every test a **fresh** context seeded from that snapshot:
+
+```typescript
+// ✅ Worker pays for login ONCE; every test still gets an ISOLATED, fresh context
+type CapturedStorageState = Awaited<ReturnType<BrowserContext['storageState']>>;
+
+export const test = base.extend<{}, { workerStorageState: CapturedStorageState }>({
+  workerStorageState: [
+    async ({ browser }, use) => {
+      // Expensive part — runs once per worker, exactly like `account` in §6
+      const setupContext = await browser.newContext();
+      const setupPage = await setupContext.newPage();
+      await setupPage.goto(process.env.APP_URL + '/login');
+      await setupPage.fill('#username', process.env.TEST_USER!);
+      await setupPage.fill('#password', process.env.TEST_PASSWORD!);
+      await setupPage.click('#loginButton');
+      await setupPage.waitForURL('**/dashboard');
+
+      const state = await setupContext.storageState(); // in-memory object, no file I/O
+      await setupContext.close(); // this throwaway context is done — never reused
+
+      await use(state);
+    },
+    { scope: 'worker' },
+  ],
+});
+
+// Override the built-in `page` to be seeded from that state — but stay TEST-scoped,
+// so every single test still gets its own fresh, isolated context underneath.
+export const testWithFreshAuthedPage = test.extend<{ page: Page }>({
+  page: async ({ browser, workerStorageState }, use) => {
+    const context = await browser.newContext({ storageState: workerStorageState });
+    const page = await context.newPage();
+    await use(page);
+    await context.close(); // closed after EVERY test — nothing survives to leak into the next one
+  },
+});
+```
+
+This is a genuinely different pattern from both extremes already in this chapter: §6's `account` fixture shares raw *credentials* and leaves each test to manually inject them (via headers or cookies) into its own page; §11's `globalSetup` shares a *file* written once for the whole run, before any worker starts. This pattern shares an in-memory *snapshot*, captured per worker, with a fresh context built from it before every test — one login per worker (the speed of worker-scoping) and zero shared mutable browser state (the correctness of test-scoping). It costs one extra `browser.newContext()` per test over the raw-shared-page version — call it 50-100ms — which is the price of not needing to reason about test execution order at all.
+
+---
+
 ## 🏋️ Practice Challenges
 
 **Challenge 1 (Scope Selection):** You have 50 test files. Each test needs a valid auth token. The token expires after 8 hours. Your test suite runs in 45 minutes. Should the auth fixture be `scope: 'test'` or `scope: 'worker'`? What changes if tokens expire after 5 minutes?
