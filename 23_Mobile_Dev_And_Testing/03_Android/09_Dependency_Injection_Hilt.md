@@ -1,6 +1,6 @@
 # Android — Dependency Injection with Hilt
 
-**Folder**: [03_Android](./) | **Previous**: [08_Instrumented_And_UI_Tests.md](./08_Instrumented_And_UI_Tests.md) | This is the final chapter in this folder.
+**Folder**: [03_Android](./) | **Previous**: [08_Instrumented_And_UI_Tests.md](./08_Instrumented_And_UI_Tests.md) | **Next**: [10_Performance_Memory_And_ANR_Profiling.md](./10_Performance_Memory_And_ANR_Profiling.md)
 
 > **Reading contract**: Dependency Injection (DI) is the practice of providing a class's dependencies from the outside rather than letting the class create them itself. Hilt is Google's official DI framework for Android, built on top of Dagger. This file teaches: why DI exists, how Hilt works at the annotation-processor level, every Hilt scope, how modules provide dependencies, how to inject into every Android component, and the critical patterns for testing with Hilt. Understanding this file will let you read any Hilt codebase and understand every binding decision.
 
@@ -610,7 +610,7 @@ FIX:  @HiltViewModel class CitationListViewModel @Inject constructor(...) : View
 
 ---
 
-**This is the final chapter in this folder.** For E2E/Appium testing, see [../02_Android_Native_Dev_And_Testing.md](../02_Android_Native_Dev_And_Testing.md). A dedicated performance/memory/ANR-profiling chapter was originally planned as a Chapter 10 but was never written — treat that as an open content gap, not a broken link to chase down.
+**Next in this folder**: [10_Performance_Memory_And_ANR_Profiling.md](./10_Performance_Memory_And_ANR_Profiling.md) — ANR mechanics, memory leaks, LeakCanary, the Android Studio Profiler, and Compose-specific recomposition performance. For E2E/Appium testing, see [../02_Android_Native_Dev_And_Testing.md](../02_Android_Native_Dev_And_Testing.md).
 
 **Back to**: [Android folder index](./) | [Series index](../)
 

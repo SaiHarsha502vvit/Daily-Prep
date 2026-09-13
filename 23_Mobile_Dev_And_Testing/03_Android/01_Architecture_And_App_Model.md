@@ -13,6 +13,7 @@
 7. [07_Unit_Tests_JUnit_Mockito.md](./07_Unit_Tests_JUnit_Mockito.md)
 8. [08_Instrumented_And_UI_Tests.md](./08_Instrumented_And_UI_Tests.md)
 9. [09_Dependency_Injection_Hilt.md](./09_Dependency_Injection_Hilt.md)
+10. [10_Performance_Memory_And_ANR_Profiling.md](./10_Performance_Memory_And_ANR_Profiling.md)
 
 **Note on E2E/Appium coverage:** this folder's own testing chapters stop at instrumented/on-device tests (Chapter 8) and DI (Chapter 9) — Appium and UIAutomator2-based E2E automation for Android is covered at the series level instead, in [../02_Android_Native_Dev_And_Testing.md](../02_Android_Native_Dev_And_Testing.md), so it isn't duplicated here.
 
