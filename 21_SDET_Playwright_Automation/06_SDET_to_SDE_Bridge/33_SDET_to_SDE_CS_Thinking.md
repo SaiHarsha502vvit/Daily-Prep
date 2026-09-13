@@ -629,6 +629,8 @@ await citationsClient.create(customer.id, { amount: 100 });
 // They run concurrently, but their state is completely isolated.
 ```
 
+[`02_Core_Architecture/09_Parallel_Execution_Workers.md`](../02_Core_Architecture/09_Parallel_Execution_Workers.md) is where the illustrations above stop being illustrations: its own data-collision scenario (§3) and module-level `authToken` example (§4) are this exact failure shape in real, runnable Playwright code, and its worker-scoped `account` fixture (§8) is the real `{ scope: 'worker' }` implementation this section names by analogy.
+
 **Event Loop Race Conditions**
 
 ```typescript

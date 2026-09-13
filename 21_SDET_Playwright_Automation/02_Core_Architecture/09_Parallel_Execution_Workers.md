@@ -6,6 +6,7 @@
 
 - [`13_Developer_Essentials/19_Concurrency_Models_Coroutines.md`](../../13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) — Concurrency mental models
 - [`21_SDET/06_Custom_Fixtures_Architecture.md`](./06_Custom_Fixtures_Architecture.md) — Worker-scoped fixtures (the `account` fixture)
+- [`06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md`](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md) §10 — names §3/§4's failures as race conditions on shared mutable state (with the real Knight Capital $440M precedent) and §8's worker scoping as Thread-Local Storage; this chapter is where those names get an actual mechanism
 
 ---
 
@@ -189,6 +190,8 @@ Worker 2's test fails.
 
 The failure is random — sometimes Worker 1 finishes first (test passes), sometimes they collide. **This is the definition of a flaky test.**
 
+This is a **race condition**, in the precise CS sense: the outcome depends on which worker's request the server happens to process first, not on anything either test got wrong on its own. [Ch33 §10](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md#10-concurrency--test-race-conditions-and-parallel-execution) names this same shape abstractly (two workers hitting one shared resource) and traces it to Knight Capital's real $440M loss — different servers acting on inconsistent shared state, at a scale where "collision" meant 4 million unintended trades instead of a `409 Conflict`. The fix category is identical too: this section's unique-data-per-test is the same move as giving every node consistent, non-shared state.
+
 ### The Fix — Unique Data Per Test
 
 ```typescript
@@ -283,6 +286,8 @@ test("test B", async ({ request, account }) => {
   });
 });
 ```
+
+`let authToken` at module scope is exactly [Ch33 §10](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md#10-concurrency--test-race-conditions-and-parallel-execution)'s "two threads modifying the same global variable without a lock" — except this isn't the generic illustration, it's the real Playwright-specific version: the module is loaded once per worker process, so every test file that worker runs shares that one `authToken` binding, and `fullyParallel: true` (§2 above) makes the interleaving order genuinely unpredictable. The fixture fix isn't just "cleaner code" — it removes the shared mutable state entirely, which is the only real fix for a data race (a lock would work too, but nothing in this scenario needs mutual exclusion if nothing is shared to begin with).
 
 ### Reading Shared Files (Safe Patterns)
 
@@ -511,6 +516,8 @@ Worker 2 starts:
 ```
 
 **The math:** 20 tests across 4 workers = 4 logins total (not 20 logins). If each login takes 3 seconds: 60 seconds saved for every test run.
+
+`{ scope: 'worker' }` is the actual mechanism behind what [Ch33 §10](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md#10-concurrency--test-race-conditions-and-parallel-execution) calls Thread-Local Storage by analogy: each worker gets its own `account` instance, so nothing is shared and there's nothing left to race over — the same resolution §3 and §4 both reached by removing shared state, now built into the fixture system itself instead of hand-rolled per test.
 
 ### `workerIndex` in Worker-Scoped Fixtures
 
