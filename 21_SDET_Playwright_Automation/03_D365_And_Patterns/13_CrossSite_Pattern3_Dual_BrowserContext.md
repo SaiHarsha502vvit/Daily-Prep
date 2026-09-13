@@ -212,6 +212,8 @@ When Admin does something, it doesn't appear on Customer's side instantly. The d
 2. The customer's next request must read fresh data (some apps cache the session)
 3. The customer's UI must re-render
 
+**This is eventual consistency, tested in miniature.** Werner Vogels (Amazon CTO) gave the formal definition in his 2008 ACM Queue paper *Eventually Consistent*: "if no new updates are made to the object, eventually all accesses will return the last updated value" — the guarantee is convergence *given time*, not immediacy. Admin's write and Customer's read are two different vantage points into the same underlying system, exactly like two replicas in a distributed store; the gap between them isn't a bug to eliminate, it's the consistency model itself. A test that reloads once and asserts immediately is testing for *strong* consistency the system was never designed to provide — which is why polling (below) isn't a workaround, it's the only test strategy that matches what the system actually promises.
+
 **Polling strategy for eventual consistency:**
 
 ```typescript
@@ -746,6 +748,8 @@ await customerTab.reload();
 ```
 
 The key insight: **separate the propagation wait from the UI assertion**. First confirm the data is in the system (via API or job status), then verify the UI renders it correctly.
+
+That ordering — confirm the write has propagated to a ground-truth source, *then* assert on a downstream view — is the standard testing strategy for any eventually-consistent system (§4), and it generalizes past this one D365/JSP pair: any test spanning a cache, a CDN, a queue, or a replica is making the same bet that "eventually" has already happened by the time you look.
 
 </details>
 
