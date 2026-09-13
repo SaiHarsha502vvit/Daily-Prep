@@ -1077,17 +1077,43 @@ expect(
 
 ### CDP Command Reference for SDETs
 
-| CDP Domain                         | Command                    | SDET Use Case                                   |
-| ---------------------------------- | -------------------------- | ----------------------------------------------- |
-| `Network.emulateNetworkConditions` | Throttle bandwidth/latency | Test loading states on slow connections         |
-| `HeapProfiler.collectGarbage`      | Force garbage collection   | Memory leak testing — clean up before measuring |
-| `Emulation.setCPUThrottlingRate`   | Slow down the CPU (e.g. `4` = 4x slower) | Test on hardware-equivalent-to-low-end-mobile — see the real GPU-process limitation in [Ch08 §12.2](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md#122-cpu-throttling--the-emulation-domains-other-half) before trusting this on canvas/WebGL-heavy pages |
-| `Profiler.startPreciseCoverage`    | Track JS code coverage     | Identify dead code, measure test coverage       |
-| `CSS.startRuleUsageTracking`       | Track CSS rule usage       | Find unused CSS, optimize bundle size           |
-| `Emulation.setGeolocationOverride` | Fake GPS coordinates       | Test location-based features                    |
-| `Emulation.setTimezoneOverride`    | Fake timezone              | Test timezone-dependent formatting              |
-| `Input.dispatchMouseEvent`         | Raw mouse events           | Test drag-and-drop, canvas interactions         |
-| `Page.captureScreenshot`           | Screenshot with options    | Visual regression with specific parameters      |
+| CDP Domain                         | Command                    | SDET Use Case                                   | Cross-Browser Native Alternative |
+| ----------------------------------- | --------------------------- | ------------------------------------------------- | ----------------------------------- |
+| `Network.emulateNetworkConditions` | Throttle bandwidth/latency | Test loading states on slow connections         | None — Chromium-only |
+| `HeapProfiler.collectGarbage`      | Force garbage collection   | Memory leak testing — clean up before measuring | None — Chromium-only |
+| `Emulation.setCPUThrottlingRate`   | Slow down the CPU (e.g. `4` = 4x slower) | Test on hardware-equivalent-to-low-end-mobile — see the real GPU-process limitation in [Ch08 §12.2](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md#122-cpu-throttling--the-emulation-domains-other-half) before trusting this on canvas/WebGL-heavy pages | None — Chromium-only |
+| `Profiler.startPreciseCoverage`    | Track JS code coverage     | Identify dead code, measure test coverage       | `page.coverage.startJSCoverage()` — simpler, but also Chromium-only |
+| `CSS.startRuleUsageTracking`       | Track CSS rule usage       | Find unused CSS, optimize bundle size           | `page.coverage.startCSSCoverage()` — simpler, but also Chromium-only |
+| `Emulation.setGeolocationOverride` | Fake GPS coordinates       | Test location-based features                    | `context.setGeolocation()` — works on all 3 engines |
+| `Emulation.setTimezoneOverride`    | Fake timezone              | Test timezone-dependent formatting              | `timezoneId` context option — works on all 3 engines |
+| `Input.dispatchMouseEvent`         | Raw mouse events           | Test drag-and-drop, canvas interactions         | `page.mouse.*` — works on all 3 engines |
+| `Page.captureScreenshot`           | Screenshot with options    | Visual regression with specific parameters      | `page.screenshot()` — works on all 3 engines |
+
+### CDP Is Chromium-Only — What Breaks on Firefox and WebKit
+
+Every technique in this section — network throttling, coverage, CPU throttling, heap GC — depends on `page.context().newCDPSession()`. Playwright's own type declaration for that method doesn't hedge:
+
+```typescript
+// playwright-core/types/types.d.ts
+/**
+ * **NOTE** CDP sessions are only supported on Chromium-based browsers.
+ */
+newCDPSession(page: Page|Frame): Promise<CDPSession>;
+```
+
+**Verified directly, not assumed:** call it against a Firefox or WebKit context and Playwright doesn't silently no-op or degrade — it throws immediately, before any CDP domain call runs. The exact message baked into the installed package (`playwright-core/lib/coreBundle.js`) is:
+
+```text
+CDP session is only available in Chromium
+```
+
+**Why this is a vocabulary mismatch, not a Playwright gap:** "CDP" stands for *Chrome* DevTools Protocol — Chromium's own native remote-debugging protocol, not a browser standard. Firefox and WebKit each expose their own, separate, mutually incompatible remote-control protocols internally. Playwright's driver process speaks whichever protocol the target engine actually has, then normalizes the *results* into one consistent `page`/`context` API — that normalization is the framework's entire value proposition. But `newCDPSession()` is a deliberate escape hatch *out of* that normalization layer, straight through to the raw protocol underneath. For Chromium, that raw protocol is CDP. For Firefox and WebKit, Playwright exposes no equivalent raw pass-through at all — the normalized API is all you get.
+
+This exact restriction also applies, verbatim, to a technique that *looks* like it avoids raw CDP: `page.coverage.startJSCoverage()` / `startCSSCoverage()` is Playwright's own native wrapper — simpler than hand-rolling `Profiler.startPreciseCoverage` + `CSS.startRuleUsageTracking` the way the example earlier in this section does. Its own doc comment carries the identical note: **"Coverage APIs are only supported on Chromium-based browsers."** Wrapping a capability in a native Playwright method doesn't make it cross-browser — it only *is* cross-browser when the underlying capability exists on all three engines to begin with.
+
+That's the actual dividing line, and it's what the table's new column encodes. Geolocation, timezone, mouse input, and screenshots all have real, tested, cross-browser Playwright methods — none of them need CDP, on any engine, and reaching for the CDP row instead just adds a Chromium-only failure mode for zero benefit. Network-bandwidth throttling, CPU throttling, heap GC, and code coverage have **no cross-browser equivalent, wrapped or raw** — CDP is the only way to get them, and "the only way" here means "Chromium only."
+
+**Concretely, in this repository:** [`framework/playwright.config.ts`](../framework/playwright.config.ts) defines a real `firefox-ci` project (`devices['Desktop Firefox']`) that picks up any test tagged `@cross-browser`. Tag a memory-leak test built on this chapter's §9 pattern, or a coverage test built on this section's pattern, with `@cross-browser` intending it to also validate Firefox parity, and it fails on the `newCDPSession()` line before the test's own logic ever runs — not a flaky failure or a wrong assertion, a hard startup exception, on that one specific project. The fix isn't a Playwright workaround; it's recognizing *before* tagging the test that this whole category of instrumentation is Chromium-only by design, and scoping it to a chromium-only project explicitly instead of `@cross-browser`.
 
 ---
 
