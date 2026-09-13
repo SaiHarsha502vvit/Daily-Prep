@@ -1,6 +1,6 @@
 # 65. Chaos Engineering for Playwright — Fault Injection, Not Fixed Scenarios
 
-**Navigation**: [← Chapter 64: Dynamic Locators & Data Structures](./64_Dynamic_Locators_And_Data_Structures_In_POMs.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 64: Dynamic Locators & Data Structures](./64_Dynamic_Locators_And_Data_Structures_In_POMs.md) | [Index](../00_INDEX.md) | [→ Chapter 66: Senior SDET Decision-Making](../06_SDET_to_SDE_Bridge/66_Senior_SDET_Decision_Making.md)
 
 **Cross-links:**
 
@@ -17,7 +17,7 @@
 
 - **WHAT**: Deliberately injecting unpredictable failures — network partitions, degraded APIs, simulated browser crashes — into a running test, then checking whether the application's behavior stays within bounds. Not "does this one scenario I picked work," but "does the system survive failures I didn't specifically write a test for."
 - **WHY**: [Ch61](./61_Emulation_Clock_Network_And_Devices.md) answers *"does the app handle this exact slow-network case I already thought of?"* Chaos engineering answers *"does the app survive failures I never thought to enumerate?"* Both are needed. Skipping the second is why production incidents are so often *not* one of the scenarios anyone tested — nobody wrote the test because nobody imagined that exact failure, and exhaustively imagining every failure doesn't scale. You inject randomness instead of enumerating it.
-- **WHO**: SDETs and SREs jointly, on systems mature enough that "does it work at all" is already answered by Ch01–Ch64 and the open question is "does it survive its own dependencies failing." Running experiments against a shared environment safely is staff-level judgment — the risk-based reasoning behind *when* this is worth doing belongs to the senior decision-making chapter planned in [the INDEX roadmap](../00_INDEX.md).
+- **WHO**: SDETs and SREs jointly, on systems mature enough that "does it work at all" is already answered by Ch01–Ch64 and the open question is "does it survive its own dependencies failing." Running experiments against a shared environment safely is staff-level judgment — see [Ch66](../06_SDET_to_SDE_Bridge/66_Senior_SDET_Decision_Making.md) for the risk-based reasoning behind *when* this is worth doing.
 - **WHEN**: Never in the PR gate — chaos tests are deliberately non-deterministic, which is the exact property [Ch26](./26_Flakiness_Diagnosis_and_Fixing.md) teaches you to eliminate from a regression suite. Scheduled, on a cadence, against a dedicated environment (same environment-tier reasoning as [Ch62](../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md)'s nightly runs).
 - **WHERE**: A separate, explicitly tagged suite (`@chaos`), reported as an experiment log, never mixed into the deterministic suite or counted against the flake SLA.
 - **HOW**: The exact APIs [Ch61](./61_Emulation_Clock_Network_And_Devices.md) already taught (`context.setOffline`, CDP `Network.emulateNetworkConditions`, `route.abort()`) plus a crash technique grounded in [Ch08](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md)'s CDP model — triggered probabilistically and concurrently instead of at one hand-picked point, and checked against a defined *steady state* across many runs instead of one fixed expected outcome.
@@ -239,7 +239,7 @@ Most forms without an explicit autosave feature lose everything — the recovery
 
 ---
 
-**Navigation**: [← Chapter 64: Dynamic Locators & Data Structures](./64_Dynamic_Locators_And_Data_Structures_In_POMs.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 64: Dynamic Locators & Data Structures](./64_Dynamic_Locators_And_Data_Structures_In_POMs.md) | [Index](../00_INDEX.md) | [→ Chapter 66: Senior SDET Decision-Making](../06_SDET_to_SDE_Bridge/66_Senior_SDET_Decision_Making.md)
 
 ---
 
