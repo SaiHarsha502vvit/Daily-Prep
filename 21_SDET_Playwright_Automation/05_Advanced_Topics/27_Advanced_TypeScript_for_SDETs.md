@@ -575,10 +575,15 @@ type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
 type BodyOf<T extends (...args: any[]) => Promise<ApiResponse<any>>> =
   T extends (...args: any[]) => Promise<ApiResponse<infer B>> ? B : never;
 
-// Practical: extract the body type from a client method
-type CitationBody = BodyOf<typeof citationsClient.getById>;
+// Practical: extract the body type from a RAW APIUtils method —
+// one that still returns the ApiResponse<T> wrapper (status/body/headers/ok),
+// not from citationsClient.getById (see the note below on why those differ).
+type RawGetCitation = (url: string) => Promise<ApiResponse<CitationApiResponse>>;
+type CitationBody = BodyOf<RawGetCitation>;
 // = CitationApiResponse
 ```
+
+**Verified, not assumed — `BodyOf<typeof citationsClient.getById>` doesn't compile, and the reason is architectural, not a typo.** Confirmed via `tsc`: `error TS2344: Type '(citationId: string) => Promise<CitationApiResponse>' does not satisfy the constraint '(...args: any[]) => Promise<ApiResponse<any>>'` — `citationsClient.getById` doesn't return `Promise<ApiResponse<CitationApiResponse>>` at all, it returns `Promise<CitationApiResponse>` directly. That's not a bug in `citationsClient` — it's [Ch23](../04_Enterprise_Architecture/23_APIUtils_HTTP_Library.md#4-building-a-service-client-on-top-of-apiutils)'s own composition pattern working as designed: `CitationsApiClient.getById` calls `this.api.get<T>(...)` internally and returns `result.body`, already unwrapped from the `{status, body, headers, ok}` envelope. `BodyOf` is built for the *raw* `APIUtils` method shape, which still carries that envelope — it was never going to match a client method that already peeled it off. This is exactly why `CitationGetResult` above (`Awaited<ReturnType<typeof citationsClient.getById>>`) is the right tool for `citationsClient`'s own methods, and `BodyOf` is the right tool one layer down, on `APIUtils` itself — two different generic-extraction techniques for two different layers of the same codebase, not one technique that works everywhere.
 
 ---
 
