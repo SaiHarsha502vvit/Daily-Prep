@@ -493,7 +493,7 @@ test.describe("User Onboarding — Cross-Website E2E @cross-site @regression", (
 
 ---
 
-## 6. Mixed Wait Strategies Reference
+## 7. Mixed Wait Strategies Reference
 
 ```typescript
 // ─── D365 (React SPA) ─────────────────────────────────────────────────────
@@ -520,7 +520,7 @@ await Promise.all([
 
 ---
 
-## 7. Error Recovery Patterns in Sequential Flows
+## 8. Error Recovery Patterns in Sequential Flows
 
 In a long cross-website sequential flow, if Step 2 (Admin CRM) fails, Step 3 (Customer Portal) will also fail because the data (e.g., `data.userId`) was never created. Without proper error recovery, the test runner will still attempt Step 3, leading to confusing timeout errors.
 
@@ -670,7 +670,7 @@ async completeOnboarding(): Promise<{ displayName: string; setupComplete: boolea
 
 ---
 
-## 7. Cross-Domain Cookie Scoping — The Silent Failure
+## 9. Cross-Domain Cookie Scoping — The Silent Failure
 
 The most common surprise in sequential cross-site tests: **Site A's auth cookies don't carry over to Site B when they're on different domains.**
 
