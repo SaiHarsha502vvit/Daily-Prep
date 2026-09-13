@@ -262,11 +262,20 @@ test("verify all elements on master search page", async ({ page }) => {
   await expect.soft(page.getByRole("button", { name: "Reset" })).toBeVisible();
   await expect.soft(page.locator("#serialNumberLabel")).toBeVisible();
 
-  // Hard assertion at the end — fails the test if ANY soft assertion above failed
-  // The error message lists ALL failed assertions, not just the first one
+  // See below: what this line actually does is more specific than "fails the test."
   expect(test.info().errors).toHaveLength(0);
 });
 ```
+
+**Verified, not assumed — what that last line actually does.** Ran this exact shape (a failing `expect.soft`, then this check, inside a `test.step`) through a real Playwright run with the JSON reporter and compared it against the same test *without* the check:
+
+| | Without the check | With `expect(test.info().errors).toHaveLength(0)` |
+|---|---|---|
+| Does the test fail overall? | Yes | Yes |
+| Errors in the report | 1 — the original soft-assertion failure, with its own clear expected/received message | 2 — the same original failure, **plus** a second, less specific `Expected length: 0, Received length: 1` |
+| Steps *after* this point | Still run, each individually recorded pass/fail | **Skipped entirely** — they never start, and never appear in the report |
+
+The test already fails without the extra line — Playwright collects every `expect.soft` failure and marks the test failed at the end automatically, no manual check required ([Playwright docs: assertions](https://playwright.dev/docs/test-assertions#soft-assertions)). So the check isn't what causes failure, and its own error message doesn't "list all failed assertions" either — that list is what Playwright was already going to print regardless; this line just adds one more, vaguer entry on top of it. What the check actually does is throw *synchronously, right there* — which only matters if something would otherwise run afterward that you want to prevent. In this exact example there's nothing after it, so it's inert. It stops being inert the moment it gates something real — which is exactly what it's doing back in Challenge 3 below.
 
 **When to use soft assertions:**
 
@@ -741,10 +750,12 @@ async verifyMasterSearchPageElementsAreVisible(): Promise<void> {
   const searchCount = await this.page.getByRole('button', { name: 'Search' }).count();
   expect.soft(searchCount).toBeGreaterThan(0);
 
-  // Final hard check — fails the test once with all failures listed:
+  // This does real work here, unlike in Section 4's example — see below.
   expect(test.info().errors).toHaveLength(0);
 }
 ```
+
+**Why this line earns its place here, unlike in Section 4's standalone example:** Section 4 already established that this check doesn't cause the *overall test* to fail — Playwright does that automatically — and that its own error message just adds a vaguer duplicate on top of the real one. What it actually does is throw immediately, synchronously, at this exact point. In Section 4's example that was inert, because nothing followed it. Here it isn't: Section 5's 15-step skeleton calls this exact method as **Step 3**, with Steps 4–15 following. If the page's own elements aren't visible, filling in a citation ID (Step 4) and clicking search (Step 5) against a broken page produces confusing, unrelated failures that bury the real problem. Throwing here — inside Step 3 — stops the flow before that happens, which is precisely the "When NOT to use soft assertions" guidance above: Step 4 depends on Step 3 having actually succeeded, so Step 3 needs a hard failure boundary even though it's built entirely out of soft checks internally. The soft assertions get you a complete picture of *which* elements are missing; the hard check at the end decides whether it's safe to keep going.
 
 </details>
 
