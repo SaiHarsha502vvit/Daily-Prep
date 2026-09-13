@@ -752,7 +752,7 @@ function testXSSOnInput(inputCSSSelector) {
 
 ---
 
-### Script 15: Console Error Aggregator (Playwright Fixture)
+### Script 13: Console Error Aggregator (Playwright Fixture)
 
 In enterprise CI pipelines, a test might pass while the browser console throws silent JavaScript errors (e.g., React hydration failures or failed background API calls). To catch these, inject a console listener via a fixture that automatically fails the test or logs warnings if errors occur.
 
@@ -922,7 +922,7 @@ test.describe("Login security", () => {
 
 ## SECTION D — CDP-Based Security Verification (CI-Grade)
 
-### Script 13: HttpOnly Cookie Audit via CDP
+### Script 14: HttpOnly Cookie Audit via CDP
 
 `document.cookie` only shows cookies WITHOUT the `HttpOnly` flag. To verify that auth cookies DO have `HttpOnly` set (the correct security posture), you need Chrome DevTools Protocol (CDP). This is the ONLY way to programmatically assert `HttpOnly` in CI:
 
@@ -1035,7 +1035,7 @@ test("Auth cookies have HttpOnly and Secure flags set", async ({}) => {
 
 ---
 
-### Script 14: Rate Limit / Brute-Force Protection Test
+### Script 15: Rate Limit / Brute-Force Protection Test
 
 ```typescript
 // tests/security/rate-limiting.spec.ts
@@ -1160,7 +1160,7 @@ D) Use `page.evaluate(() => navigator.cookieEnabled)` — checks if cookies are 
 
 ## Reality Check
 
-**"If `document.cookie` doesn't show the auth cookie, it's secure"** → The absence of a cookie from `document.cookie` proves only that it *might* have `HttpOnly` set — the same absence happens if the cookie was never issued, was issued for a different domain/path, or expired. `document.cookie` is a *negative* signal at best. To *positively* assert `HttpOnly=true`, `Secure=true`, and a strict `SameSite`, you have to ask the browser directly via CDP `Network.getAllCookies` (Script 13). Any CI security assertion built on `document.cookie` alone is a rubber stamp.
+**"If `document.cookie` doesn't show the auth cookie, it's secure"** → The absence of a cookie from `document.cookie` proves only that it *might* have `HttpOnly` set — the same absence happens if the cookie was never issued, was issued for a different domain/path, or expired. `document.cookie` is a *negative* signal at best. To *positively* assert `HttpOnly=true`, `Secure=true`, and a strict `SameSite`, you have to ask the browser directly via CDP `Network.getAllCookies` (Script 14). Any CI security assertion built on `document.cookie` alone is a rubber stamp.
 
 **"`window.fetch` monkey-patching in the console captures every API call the page makes"** → It captures every `fetch()` call made by page-authored JavaScript, after your patch runs. It misses: requests made by `XMLHttpRequest` (legacy libraries still use it), by service workers (which live in a separate execution context and have their own `fetch`), by `<img>`/`<script>`/`<iframe>` element loads, by navigation (`page.goto`), and by any fetch that fired between page load and your patch executing. For a complete picture, use DevTools Network tab or Playwright's `page.on('request')` — those hook at the browser layer, below all of these gaps.
 
@@ -1168,4 +1168,4 @@ D) Use `page.evaluate(() => navigator.cookieEnabled)` — checks if cookies are 
 
 **"MutationObserver (Script 5) fires for every DOM change"** → It fires only for the mutation *types you subscribed to* in the `observe()` options (`attributes`, `childList`, `subtree`, `characterData`). Miss `subtree: true` and mutations inside child elements are invisible. Miss `characterData: true` and the D365 two-phase-render text fill you're trying to debug fires zero events. It also does not observe: property changes that skip attribute reflection (setting `input.value` from JS updates the property but not the attribute), style changes that resolve via CSS (a class toggle, then a computed background-color change), or reflows. When the observer is silent but the screen is clearly changing, the answer is almost always missing options — not "the code isn't running."
 
-**"Rate limiting is enforced globally by the WAF, so a per-endpoint test is unnecessary"** → WAFs typically rate-limit by IP or by a coarse route pattern; application-level lockouts (per-account, per-email) live in the app code and are the ones users actually notice. Script 14 tests the app-level rule specifically — that `POST /login` with `{email:X, password:wrong}` starts refusing after N attempts *for that email*, and that a subsequent correct-password submission is not permanently locked out. The WAF cannot tell you either of those things because it does not know what "correct" means. Test both layers or you catch neither.
+**"Rate limiting is enforced globally by the WAF, so a per-endpoint test is unnecessary"** → WAFs typically rate-limit by IP or by a coarse route pattern; application-level lockouts (per-account, per-email) live in the app code and are the ones users actually notice. Script 15 tests the app-level rule specifically — that `POST /login` with `{email:X, password:wrong}` starts refusing after N attempts *for that email*, and that a subsequent correct-password submission is not permanently locked out. The WAF cannot tell you either of those things because it does not know what "correct" means. Test both layers or you catch neither.
