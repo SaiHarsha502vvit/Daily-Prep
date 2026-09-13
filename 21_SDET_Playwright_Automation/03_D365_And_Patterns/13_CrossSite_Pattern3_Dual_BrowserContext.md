@@ -443,7 +443,7 @@ test("admin price change → customer cart updates", async ({
 
 ---
 
-## 9. The Three-Context Pattern — Admin + Agent + Customer
+## 8. The Three-Context Pattern — Admin + Agent + Customer
 
 When you need to test a 3-role workflow simultaneously (e.g., admin creates policy, agent assigns it, customer sees it):
 
@@ -545,7 +545,7 @@ await test.info().attach("propagation-delay", {
 
 ---
 
-## 10. CRM → JSP Cross-App Dual Context
+## 9. CRM → JSP Cross-App Dual Context
 
 Your specific environment: Admin in D365 CRM → Customer in JSP portal:
 
@@ -816,7 +816,7 @@ test("3-role workflow", async ({
 
 ---
 
-## 11. Where `auth-states/*.json` Come From — globalSetup
+## 10. Where `auth-states/*.json` Come From — globalSetup
 
 The dual-context pattern relies on pre-saved auth state files. Here is the complete `globalSetup` that creates all three:
 
