@@ -831,6 +831,16 @@ Tests should verify this behavior explicitly if the app uses sessionStorage for 
 The hardest new-tab pattern: you need to interact with Tab 1 and Tab 2 in an interleaved sequence. A real example: the agent creates a note in the CRM tab, and the customer sees it immediately in the portal tab (testing real-time sync).
 
 ```typescript
+// A stable, pre-existing test customer — this scenario searches for CUST-001,
+// it doesn't create a new user, so there's no earlier step to carry an
+// email/password forward from. See the note after this block for why that
+// distinction matters.
+const testCustomer = {
+  id: "CUST-001",
+  email: process.env.TEST_CUSTOMER_EMAIL!,
+  password: process.env.TEST_CUSTOMER_PASSWORD!,
+};
+
 test("Real-time sync: agent adds note → customer sees it within 3s", async ({
   page, // Tab 1: Agent CRM tab
   context,
@@ -844,7 +854,7 @@ test("Real-time sync: agent adds note → customer sees it within 3s", async ({
   // ── Tab 1: Agent logs into CRM and opens customer record ──────────────────
   const agentCRM = new AgentCRMPage(page);
   await agentCRM.goto();
-  await agentCRM.searchCustomer("CUST-001");
+  await agentCRM.searchCustomer(testCustomer.id);
   await agentCRM.openCustomerRecord();
 
   // ── Tab 2: Open customer portal in a second tab ────────────────────────────
@@ -854,7 +864,7 @@ test("Real-time sync: agent adds note → customer sees it within 3s", async ({
   data.customerTab = customerTab;
   const customerPortal = new CustomerPortalPage(customerTab);
   await customerPortal.goto();
-  await customerPortal.loginWith(data.email!, data.tempPassword!);
+  await customerPortal.loginWith(testCustomer.email, testCustomer.password);
 
   // ── Tab 1 (Agent): Add a note to the customer record ──────────────────────
   await test.step("Agent adds note in CRM (Tab 1)", async () => {
@@ -890,6 +900,8 @@ test("Real-time sync: agent adds note → customer sees it within 3s", async ({
   await data.customerTab?.close();
 });
 ```
+
+**Verified, not assumed — this example didn't compile as originally written.** The `customerPortal.loginWith()` call used to read `data.email!` and `data.tempPassword!`, but `data`'s only fields are `noteId`, `noteText`, and `customerTab` — confirmed by actually running this through `tsc` against the framework's real strict config: `error TS2339: Property 'email' does not exist on type '{ noteId: string | null; noteText: string; customerTab: Page | null; }'` (and the same for `tempPassword`). This wasn't a typo to patch in place; it was copied from a different scenario shape. [Ch11](./11_CrossSite_Pattern1_Sequential_Flow.md)'s onboarding flow legitimately has `data.email`/`data.tempPassword`, because that test *creates* a user in Step 1 and the portal login in a later step needs the credentials Step 1 just generated. This test never creates anyone — `agentCRM.searchCustomer("CUST-001")` looks up an *existing* customer. There's no earlier step to have written those fields, so there was nothing correct to reference even before the property-name mismatch. The fix isn't a data-flow bug, it's a premise mismatch: a pre-existing test customer needs pre-existing, known credentials (env vars, same pattern [Ch13](./13_CrossSite_Pattern3_Dual_BrowserContext.md) uses for its own stable `testCustomer`), not a value manufactured by a creation step that doesn't exist in this scenario.
 
 The `intervals: [200, 500, 1_000]` is a fourth real shape in this module's retry/backoff taxonomy — constant (Ch07), linear (Ch04), exponential+jitter ([Ch34 §8](../06_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md#8-dynamic-programming--optimal-retry-backoff)), and now a hand-tuned, non-formulaic ramp: 200→500→1000 isn't a clean arithmetic or geometric progression, it's values someone picked empirically. That's a legitimate real-world choice, not a lesser one — it front-loads fast checks (real-time sync usually resolves in under a second) while still backing off if it doesn't, with no formula to justify beyond "this worked when we tuned it."
 
