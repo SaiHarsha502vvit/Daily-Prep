@@ -997,6 +997,45 @@ With ElementHandle, every re-render risks a "detached from DOM" error. With Loca
 
 ---
 
+## 13. `page.evaluate()` — Sending Code Across the Same Boundary, Not Just Commands
+
+Every action this chapter has traced so far — `click()`, `fill()`, `goto()` — sends one fixed CDP command across the WebSocket boundary between your Node.js process and the browser (§3, §10). `page.evaluate()` crosses that exact same boundary, but instead of a canned command, it sends **your own function, as source code**, to be compiled and run inside the browser's own JavaScript engine.
+
+**The mechanism, precisely:** when you write `await page.evaluate(fn, arg)`, Playwright takes `fn`, converts it to its source-text representation, and ships that string across CDP to the browser. The browser compiles and executes it *there* — in the page's own V8 context, with real access to `window` and `document` — not in Node's. Whatever `fn` returns is serialized and shipped back across the same boundary, and `await` resumes your test with that value, using the exact suspend/resume mechanism §2.3 already derived.
+
+```typescript
+// Runs in Node.js — has access to your test's variables, no DOM.
+const testUserId = "USR-042";
+
+// This function's SOURCE TEXT is what actually crosses the boundary.
+const heading = await page.evaluate(() => {
+  // Runs in the BROWSER — has `document`, has no idea what `testUserId` is.
+  return document.querySelector("h1")?.textContent ?? null;
+});
+```
+
+**Why closures over your test's variables silently fail.** The temptation is to reference `testUserId` directly inside the callback, since it's right there in scope:
+
+```typescript
+// ❌ Looks like it should work — testUserId is "in scope"
+await page.evaluate(() => {
+  console.log(testUserId); // ReferenceError, INSIDE the browser
+});
+```
+
+It fails because only the function's *source text* crosses the boundary, not its closure bindings — `testUserId` is a name that exists in Node's memory, and the browser executing that string has never heard of it. The fix, verified against Playwright's own evaluate contract, is the one this chapter's earlier sections already model for crossing any process boundary: pass the value explicitly, as data, through the second argument:
+
+```typescript
+// ✅ testUserId is serialized and handed to the function as a real parameter
+const result = await page.evaluate((userId) => {
+  return document.querySelector(`[data-user-id="${userId}"]`)?.textContent ?? null;
+}, testUserId);
+```
+
+**What actually survives the crossing — verified precisely, not "JSON-serializable" hand-waved.** Arguments and return values both travel as a serialized copy, a superset of JSON: plain objects, arrays, strings, numbers, booleans, and `null` cross cleanly, and Playwright additionally preserves several values plain `JSON.stringify` would silently drop or corrupt — `undefined`, `NaN`, `Infinity`, `-Infinity`, `-0`, `BigInt`, and `Date`. What does **not** survive: functions, `Map`, `Set`, `RegExp`, and circular references (all throw or are dropped); `Error` objects and class instances arrive as plain data — stripped of their prototype, so `instanceof` and any methods are gone. **DOM nodes are the one every SDET hits eventually**: `return document.querySelector('#btn')` from `evaluate()` does not give you back a clickable element — structured serialization can't ship a live DOM node out of the browser process, so what you get is, at best, a plain data snapshot. If you need a real, actionable reference to that node back in Node, that's what `evaluateHandle()` returns instead — a handle *to* the browser-side object, not a serialized copy of it.
+
+---
+
 ## 📚 References & Further Reading
 
 ### Official Documentation — Playwright
