@@ -883,6 +883,50 @@ await grid
 
 ---
 
+## 11. How `getByRole`'s `name` Is Actually Computed
+
+§2's Priority 1 recommends `getByRole('button', { name: 'Submit' })` as the single most stable locator this chapter teaches. That recommendation rests on one specific, W3C-specified algorithm — the **Accessible Name Computation** — that decides what string `name` is actually matched against. It is not "whatever text looks closest to the element," and not knowing the real order is exactly how a `getByRole` locator ends up matching the wrong element, or nothing at all, for reasons that look like a Playwright bug but aren't.
+
+**The real priority chain**, verified against the W3C's own accname specification — each step runs only if the previous one produced nothing:
+
+```
+1. aria-labelledby   — references OTHER elements by id; their own computed
+                        names are concatenated with spaces. Wins over everything,
+                        even a same-element aria-label.
+2. aria-label         — a literal string on the element itself.
+3. Native host-language label — <label for="..."> / wrapping <label>,
+                        an image's alt, an SVG <title>.
+4. Name from content — for roles that permit it (button, link, heading —
+                        not every role does): the concatenated text of every
+                        descendant node.
+5. title attribute    — last resort, tooltip-only. Used ONLY if every step
+                        above produced an empty string.
+```
+
+**The part that surprises people: step 4 includes CSS-generated content.** "Name from content" walks the rendered subtree, and that subtree includes `::before`/`::after` pseudo-elements with a `content` property — text that exists in the CSSOM, not the DOM, and that `page.locator('button').textContent()` (a real DOM API) will never show you:
+
+```css
+/* Real Fluent-UI-style icon button pattern */
+.icon-btn::before {
+  content: "Approve"; /* screen-reader-only via clip/visually-hidden CSS elsewhere */
+}
+```
+
+```typescript
+// This button has ZERO text nodes as direct DOM children — only an icon <span>.
+// textContent() on it would return '' or just icon glyph text.
+const approveBtn = page.getByRole('button', { name: 'Approve' });
+// This STILL matches, because accessible-name computation reads the
+// ::before content the same DOM inspection tools do — getByRole and
+// textContent() are reading two genuinely different things.
+```
+
+**Why `title` almost never works the way people expect.** Because step 5 only runs when steps 1–4 all produced an empty string, setting `title="Save"` on a `<button>Save</button>` does *nothing* for its accessible name — step 4 (name from content) already returned `"Save"` from the visible text, so the `title` is never reached. `title` only becomes the accessible name for elements with genuinely no other content: an icon-only `<button title="Save"></button>` with nothing inside it. This is precisely why relying on `title` as your primary naming strategy is fragile — it silently loses to almost anything else on the element, including inherited defaults you didn't set on purpose.
+
+**This closes a loop [Ch08](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md#tree-4-the-accessibility-tree) left open.** Ch08 established that the Accessibility Tree is built by "a *separate* mapping (DOM structure + ARIA attributes + implicit HTML semantics → accessibility nodes)" without detailing what that mapping actually computes. This is it, specifically for the `name` field of every accessibility node — the exact function `getByRole`'s second argument queries against.
+
+---
+
 ## 📚 References & Further Reading
 
 ### Official Documentation
