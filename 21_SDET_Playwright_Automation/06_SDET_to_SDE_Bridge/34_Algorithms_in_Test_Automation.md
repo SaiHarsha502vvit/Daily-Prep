@@ -33,6 +33,7 @@ This is wrong. Here is where algorithms appear every single day:
 10. Optimising a slow test suite → greedy / DP thinking
 11. Triaging failures as they stream in during a CI run → priority queue (heap)
 12. Grouping 10 failures into the real number of root causes → Union-Find
+13. Finding the smallest input that breaks a function → property-based testing's shrink search
 
 Every algorithm has a test automation equivalent.
 This chapter makes those connections explicit.
@@ -719,6 +720,101 @@ Step 5 — Verify correctness:
   Auth-specific tests (login page, logout, token expiry) are EXCLUDED
   from storageState — they need real login (brute force for those).
 ```
+
+---
+
+## 11. Property-Based Testing → The Shrinking Search Algorithm
+
+**Real precedent:** property-based testing was introduced by Koen Claessen and John Hughes as **QuickCheck**, a Haskell library first released in 1999 and formally published at ICFP 2000 — a paper that went on to win ICFP's "most influential paper" retrospective award in 2010. `fast-check`, the library used below, is a direct TypeScript-native descendant of that same idea. The core move QuickCheck introduced hasn't changed since: stop hand-picking example inputs, generate hundreds of them, and when one fails, don't just report it — **search for the smallest input that still fails.**
+
+**Where Section 2 stops being enough:** Section 2's pagination test is an *example*-based test — one real citations-API response, fetched once, asserted to reassemble correctly. It proves pagination works for the one page count and item shuffle that API happened to return that day. It says nothing about a page size that doesn't evenly divide the total, or a page size larger than the whole array, or an empty array — because nobody wrote an example for those. Property-based testing flips the question from *"does this one input work?"* to *"here's a rule the function must always satisfy — find me an input that breaks it, across hundreds of generated shapes, not just the one I thought of."*
+
+**The property**, expressed the same way Section 2's assertion was, generalized: *reassembling every page of any paginated result must reproduce the original data, for any array and any page size.*
+
+```typescript
+import fc from 'fast-check';
+
+// A hand-rolled pagination chunker with a real, common off-by-one bug —
+// it silently drops the final partial page when the array doesn't divide evenly.
+function chunk<T>(arr: T[], size: number): T[][] {
+  const result: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) {
+    if (i + size <= arr.length) {
+      result.push(arr.slice(i, i + size));
+    }
+  }
+  return result;
+}
+
+// The property: for ANY array and ANY page size, reassembling every
+// page must reproduce the original — not just the one shape Section 2 tried.
+fc.assert(
+  fc.property(fc.array(fc.integer()), fc.integer({ min: 1, max: 10 }), (arr, size) => {
+    const reassembled = chunk(arr, size).flat();
+    return JSON.stringify(reassembled) === JSON.stringify(arr);
+  }),
+);
+```
+
+**Run for real** (not a predicted transcript — this is the actual output from executing the snippet above):
+
+```
+Property failed after 1 tests
+{ seed: 1005370185, path: "0:1:2:1:1:1", endOnFailure: true }
+Counterexample: [[0],2]
+Shrunk 5 time(s)
+```
+
+`fast-check` didn't just report the *first* failing case it found — it found one, then spent 5 more rounds searching for a smaller one, before settling on `arr = [0]`, `size = 2` as the minimal reproduction. Re-running the same seed with verbose output shows exactly what that search did:
+
+```
+× [[19],10]              ← first random failure found
+. √ [[],10]               shrink the array to empty → passes, abandon this branch
+. × [[0],10]              shrink 19 toward 0 → STILL fails → adopt, recurse from here
+. . √ [[],10]              (array→empty: passes, abandon)
+. . √ [[0],1]              shrink size 10→1 → passes, abandon
+. . × [[0],6]              shrink size 10→6 → STILL fails → adopt, recurse
+. . . × [[0],4]            shrink size 6→4 → fails → adopt, recurse
+. . . . × [[0],3]          shrink size 4→3 → fails → adopt, recurse
+. . . . . × [[0],2]        shrink size 3→2 → fails → adopt, recurse
+. . . . . . √ [[0],1]      shrink size 2→1 → passes — no smaller failing child left
+```
+
+That trace **is** the algorithm, not a metaphor for it: at the current smallest-known failing input, generate a handful of "simpler" candidates along each arbitrary's own shrink strategy (integers move toward zero, roughly halving the remaining distance each step; arrays get shorter, or their elements get shrunk in place). Test each candidate. If any candidate still fails, it becomes the new current-smallest and the search recurses from there. Stop when every candidate at the current node passes. It is a greedy local search over a shrink tree — structurally the same "converge toward a boundary" shape as Section 4's binary search, just searching for the smallest *counterexample* instead of the position of a *target value*. `19 → 0` and `10 → 6 → 4 → 3 → 2` are both shrink strategies converging by roughly halving the remaining distance each round, exactly like binary search's midpoint halving.
+
+**Fix the bug** — drop the length guard so `slice()` naturally returns a shorter final chunk instead of nothing:
+
+```typescript
+function chunk<T>(arr: T[], size: number): T[][] {
+  const result: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) {
+    result.push(arr.slice(i, i + size));
+  }
+  return result;
+}
+```
+
+Re-running the identical property against the fix: **held across 100 runs** (fast-check's default), verified by actually running it, not assumed from reading the diff.
+
+**Extending this to Playwright** — the predicate becomes async, so `fc.property` becomes `fc.asyncProperty`, and because each run now does real I/O (a page load, not a pure function call), `numRuns` drops from the default 100 to something CI can afford:
+
+```typescript
+import { test } from '@playwright/test';
+import fc from 'fast-check';
+
+test('search results always contain only the queried term, for any query', async ({ page }) => {
+  await fc.assert(
+    fc.asyncProperty(fc.string({ minLength: 1, maxLength: 20 }), async (query) => {
+      await page.goto(`/search?q=${encodeURIComponent(query)}`);
+      const results = await page.getByTestId('result-title').allTextContents();
+      return results.every((title) => title.toLowerCase().includes(query.toLowerCase()));
+    }),
+    { numRuns: 20 }, // integration-level properties: 10–20 runs, not fast-check's default 100 — each run is a real page load
+  );
+});
+```
+
+**Where this earns its cost, and where it doesn't.** This is deliberately Section 11, not Section 2.5 — it is genuinely narrow-audience, which is exactly why the module's own roadmap deferred it rather than pretending it belongs in every test file. Reach for it when a function has a **checkable invariant** independent of any specific input — reassembly (this example), idempotency (`parse(serialize(x)) === x`), commutativity, or "never throws for any input in this domain." Do not reach for it to replace ordinary UI assertions — "the checkout button is visible" has no interesting property to generalize over; it is already maximally specific, and forcing generative inputs onto it just adds shrink-search overhead with nothing to find.
 
 ---
 

@@ -201,16 +201,20 @@ test("flow", async ({ page, account, citationsClient }) => {
 
 ## Roadmap — not yet covered
 
-Documented gaps so readers know what's deliberate:
+Documented gaps so readers know what's deliberate. This table previously listed OpenTelemetry, chaos engineering, and test impact analysis as gaps — all three are real and already written; see [`00_INDEX.md`](./00_INDEX.md) for the fuller, actively-maintained version of this roadmap (this file's copy had drifted out of sync with it — the same verify-against-the-filesystem lesson documented there, found again).
 
-| Topic                                         | Why deferred                                              |
-| --------------------------------------------- | --------------------------------------------------------- |
-| OpenTelemetry + Datadog / New Relic           | Separate observability module — different domain          |
-| Chaos engineering                             | Specialty discipline; needs its own treatment             |
-| Cloud device farms (BrowserStack, Sauce Labs) | Vendor-specific; rotates faster than docs can keep up     |
-| Property-based testing (fast-check)           | Specialty; small audience                                 |
-| Test impact analysis                          | Requires repo-specific tooling                            |
-| Screen-reader (NVDA / JAWS) automation        | Manual + assistive-tech specific; not Playwright's domain |
+**Already covered:**
+- **OpenTelemetry / APM** — [`framework/utilities/api/TELEMETRY_README.md`](./framework/utilities/api/TELEMETRY_README.md)
+- **Chaos engineering** — [Ch65 Chaos Engineering for Playwright](./05_Advanced_Topics/65_Chaos_Engineering_For_Playwright.md)
+- **Test impact analysis** — Ch48 §11, "Test Impact Analysis with madge"
+- **Property-based testing** — [Ch34](./06_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md) §11, `fast-check`'s shrink-search algorithm
+
+**Genuinely not yet covered:**
+
+| Topic                                          | Why deferred                                              |
+| ----------------------------------------------- | --------------------------------------------------------- |
+| Cloud device farms (BrowserStack, Sauce Labs)  | Vendor-specific; rotates faster than docs can keep up     |
+| Screen-reader (NVDA / JAWS) automation         | Manual + assistive-tech specific; not Playwright's domain |
 
 ---
 
