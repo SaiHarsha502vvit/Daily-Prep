@@ -109,13 +109,13 @@
 **Ch52–54** = Depth testing: component isolation, mutation score, synthetic monitoring — the upper tier of SDET competency.
 **Ch55** = Debugging surfaces: Inspector, Trace Viewer, UI Mode — hands-on only, no shortcuts.
 **Ch56–60** = Reader-requested fills: config deep-dive (with companion theory catalog at Ch57), auth taxonomy beyond storageState, file I/O, Docker, and an honest tool comparison for interview prep.
-**P1–P10** (Module II — files named 60–69 inside `05_Advanced_Topics/`) = Principal SDET extension: analytics, leadership, FinOps, SLOs, self-healing locators, ADRs, data privacy, test impact analysis, chaos engineering, and observability. These cover the competencies expected at staff+ and principal SDET levels.
+**Staff/Principal extension (planned, not yet fully built):** the competencies below are real and already assessed in [`career/READINESS_RUBRIC.md`](./career/READINESS_RUBRIC.md) (12 competency areas, Junior→Principal bands), but not every one has a matching teaching chapter yet. Confirmed already covered: observability/OpenTelemetry ([`framework/utilities/api/TELEMETRY_README.md`](./framework/utilities/api/TELEMETRY_README.md) — real OTel spans + W3C traceparent propagation on `ApiCore`) and test impact analysis (Ch48 §11, "Test Impact Analysis with madge"). ADRs are covered too, as real worked examples: [`framework/docs/adrs/`](./framework/docs/adrs/README.md) (6 real Playwright-specific ADRs). Genuinely not yet written: chaos engineering, self-healing locators (mechanism-level), SLO/error-budget-driven testing as a derived topic, and a chapter that teaches senior *decision-making* rather than just labeling it — see the Roadmap table below for the honest list.
 
 > **Total estimated study time: ~175–210 hours** (60 core chapters + 10 Module II chapters x 60–90 min + quizzes)
 
 ---
 
-> **Principal-level note:** Chapters 60–69 represent competencies expected at staff and principal SDET levels — platform ownership, cross-team leadership, and infrastructure resilience. They assume mastery of Chapters 01–48.
+> **Principal-level note:** Chapter 62 (Enterprise Test Operations) and the `career/` folder (READINESS_RUBRIC, RFC_TEMPLATE, TEST_STRATEGY_TEMPLATE, mock interviews) represent competencies expected at staff and principal SDET levels — platform ownership, cross-team leadership, and infrastructure resilience. They assume mastery of Chapters 01–48. A dedicated chapter numbered in the 65+ range for chaos engineering, self-healing locators, and senior decision-making is planned but not yet written — see the Roadmap below.
 
 ## Dependency Map
 
@@ -335,16 +335,23 @@ try {
 
 ## Roadmap — Not Yet Covered (Deliberately Deferred)
 
-These are real gaps. They have NOT been written yet — by design, not by oversight. Each is large enough to deserve its own session and is captured here so readers know what's deliberate vs. what's missing.
+These are real gaps, verified empty by grepping the whole module before listing them here (this table previously listed two items — OpenTelemetry/APM and Test Impact Analysis — that were actually already written; that's now fixed below, and the lesson is: verify against the filesystem before trusting this table, including this update). Each remaining item is large enough to deserve its own session and is captured here so readers know what's deliberate vs. what's missing.
+
+**Already covered, previously miscategorized as missing:**
+- **OpenTelemetry / APM integration** — real, working: [`framework/utilities/api/TELEMETRY_README.md`](./framework/utilities/api/TELEMETRY_README.md) (OTel spans on `ApiCore`, W3C traceparent propagation, OTLP exporter config for Grafana Tempo/Jaeger)
+- **Test impact analysis** — real, working: Ch48 §11, "Test Impact Analysis with madge"
+
+**Genuinely not yet written:**
 
 | Topic                                                                                 | Why deferred                                                                                            | When to revisit                                                          |
 | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| **OpenTelemetry / APM integration** (Datadog, New Relic, Jaeger)                      | Each vendor needs its own walk-through; the patterns differ enough that one chapter would be misleading | When the team picks a primary APM                                        |
-| **Chaos engineering** (network partitions, API degradation, browser crash simulation) | Toolchain (Gremlin, Toxiproxy, Chaos Mesh) is still in flux for browser testing                         | Once a stable Playwright-friendly chaos tool emerges                     |
+| **Chaos engineering** (network partitions, API degradation, browser crash simulation) | Toolchain (Gremlin, Toxiproxy, Chaos Mesh) is still in flux for browser testing                         | Planned: `05_Advanced_Topics/65_Chaos_Engineering_For_Playwright.md`     |
 | **Cloud device farms** (BrowserStack, Sauce Labs, AWS Device Farm)                    | Vendor-specific config; quickly stale                                                                   | On demand — when CI capacity becomes a bottleneck                        |
-| **Property-based testing** (`fast-check` + Playwright)                                | Niche pattern, hard to motivate for UI tests                                                            | Add as a `08_Practice_And_Quizzes/` extension challenge                  |
+| **Property-based testing** (`fast-check` + Playwright)                                | Niche pattern, hard to motivate for UI tests                                                            | Planned: new section inside Ch34 (the shrinking/minimization search is itself an algorithm) |
 | **Mobile / Appium hands-on**                                                          | Cross-module concern; lives in `23_Mobile_Dev_And_Testing/`                                             | Expand that module instead                                               |
 | **Screen-reader automation** (NVDA / JAWS)                                            | Beyond axe-core; requires OS-level tooling                                                              | Pair with Ch39 a11y when the team has a screen-reader user-research need |
-| **Test impact analysis** (changed-files → affected-tests)                             | Real win for monorepos, but requires bespoke dependency-graph tooling                                   | Once the suite exceeds ~500 tests                                        |
+| **Self-healing locators** (mechanism, not just the concept) | Requires a worked example against a real fallback-strategy + similarity-scoring approach, not an invented one | Planned: new section inside Ch45 (AI Agents, MCP & Playwright) |
+| **SLO / error-budget-driven testing** (deriving the real math, not just naming the concept) | Ch62 already covers the funding/metrics angle informally; this formalizes it | Planned: new section inside Ch62 (Enterprise Test Operations) |
+| **Senior decision-making, derived rather than labeled** (risk-based prioritization, when not to automate, cost/benefit reasoning for infra investment) | `career/READINESS_RUBRIC.md` labels the bands and `career/mock_interviews/` models the dialogue, but nothing derives the reasoning the way this module derives technical mechanisms | Planned: new chapter, `06_SDET_to_SDE_Bridge/66_Senior_SDET_Decision_Making.md` |
 
 If you need any of these urgently, open an issue or ping the maintainer — the absence is intentional but not permanent.

@@ -170,24 +170,25 @@
 
 ## Portfolio Mapping
 
-Each challenge in this curriculum maps to specific competency areas. Use this table to prove a given competency:
+Each real challenge/artifact in this curriculum maps to specific competency areas. Fixed to reference actual filenames in [`../challenges/`](../challenges/README.md) and this folder — the previous version of this table used placeholder IDs (`L1`–`L8`) that didn't correspond to any real file. Where no real challenge exists yet for a row, that's said plainly rather than implied:
 
-| Challenge / Artifact                      | Proven Competencies |
-| ----------------------------------------- | ------------------- |
-| Browser Context & State Isolation (L1)    | 1, 3                |
-| Page Object Model Design (L2)             | 1, 2                |
-| Custom Fixtures & Auth Patterns (L3)      | 3, 5                |
-| API Testing with `APIRequestContext` (L4) | 4, 5                |
-| Flaky Test Diagnosis & Fix (L5)           | 1, 3, 7             |
-| Accessibility Testing with axe-core (L6)  | 6, 9                |
-| CI/CD Pipeline Optimization (L7)          | 5, 8, 11            |
-| Test Analytics Dashboard (L8)             | 8, 9                |
-| Mentorship Program Design                 | 10                  |
-| Cost Optimization Initiative              | 8, 11               |
-| AI-Assisted Test Generation               | 12                  |
-| RFC: Migrate Frameworks                   | 2, 5, 10            |
-| Mock Interview: System Design             | 2, 5, 7, 8          |
-| Mock Interview: Coding                    | 1, 2, 3, 4          |
+| Challenge / Artifact                                                                     | Proven Competencies | Status                                                                                     |
+| ----------------------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------ |
+| [`CH01_Core_Infrastructure.md`](../challenges/CH01_Core_Infrastructure.md)                | 1, 3                 | Real                                                                                        |
+| [`CH02_Single_Website_POM.md`](../challenges/CH02_Single_Website_POM.md)                  | 1, 2                 | Real                                                                                        |
+| [`CH06_Understand_Auth_Fixture.md`](../challenges/CH06_Understand_Auth_Fixture.md)        | 3, 5                 | Real                                                                                        |
+| [`CH03_API_UI_Cross_Validation.md`](../challenges/CH03_API_UI_Cross_Validation.md)        | 4, 5                 | Real                                                                                        |
+| [`CAP_C1_Flaky_Test_Detector.md`](../challenges/CAP_C1_Flaky_Test_Detector.md)             | 1, 3, 7              | Real                                                                                        |
+| [`CAP_C2_Custom_Reporter.md`](../challenges/CAP_C2_Custom_Reporter.md)                     | 8, 9                 | Real                                                                                        |
+| [`CAP_C3_Test_Analytics_Dashboard.md`](../challenges/CAP_C3_Test_Analytics_Dashboard.md)   | 8, 9                 | Real                                                                                        |
+| [`RFC_TEMPLATE.md`](./RFC_TEMPLATE.md)'s filled example (Puppeteer→Playwright)             | 2, 5, 10             | Real                                                                                        |
+| [`mock_interviews/ladder_system.md`](./mock_interviews/ladder_system.md)                  | 2, 5, 7, 8           | Real                                                                                        |
+| [`mock_interviews/ladder_coding.md`](./mock_interviews/ladder_coding.md)                  | 1, 2, 3, 4           | Real                                                                                        |
+| Accessibility testing with axe-core                                                       | 6, 9                 | **No dedicated challenge yet** — practice via Ch39's own exercises instead                  |
+| CI/CD pipeline optimization                                                               | 5, 8, 11             | **No dedicated challenge yet** — practice via Ch25/Ch48's own exercises instead             |
+| Mentorship program design                                                                 | 10                   | **No artifact yet** — write your own using the RFC template as a structural guide           |
+| Cost optimization initiative                                                              | 8, 11                | **No artifact yet** — Ch62's SLO/error-budget section (planned) gives you the math for one  |
+| AI-assisted test generation / self-healing locators                                       | 12                   | **No artifact yet** — Ch45's self-healing-locator section (planned) gives you the mechanism |
 
 ---
 
