@@ -764,7 +764,7 @@ test("Payment updates citations + payments + audit_log atomically", async ({
   const beforePayment = new Date();
 
   await citationsClient.processPayment(citation.citationId, {
-    cardNumber: "4111111111111111", // test success card
+    cardNumber: "4242424242424242", // Stripe's real "always succeeds" test card
     amount: citation.amount,
   });
 
@@ -789,6 +789,8 @@ test("Payment updates citations + payments + audit_log atomically", async ({
   expect(auditRow!.action, "audit_log table").toBe("UPDATE");
 });
 ```
+
+**Verified, not assumed — the card number above was wrong for the scenario it claims to test.** `4111111111111111` isn't a card Stripe documents at all; it's a generic Luhn-valid dummy number that circulates widely across older payment-gateway tutorials, not specific to Stripe. Checked Stripe's own real published test cards: the "always succeeds" card is `4242424242424242`, and — usefully for cross-checking this chapter's *other* payment example — `4000000000000002` (used earlier in this section for the declined-payment test) really is Stripe's documented "always declines" card. One example in this chapter had the right card for the wrong platform's convention; the other already had it right. Fixed to the real success card.
 
 </details>
 
