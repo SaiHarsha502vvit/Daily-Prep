@@ -567,8 +567,8 @@ async function selectLookupValue(
   await lookupInput.click();
   await lookupInput.clear();
 
-  // Step 2: Type the search text
-  await lookupInput.type(searchText, { delay: 100 }); // slight delay to avoid OData debounce
+  // Step 2: Type the search text — pressSequentially, NOT type() (deprecated, see note below)
+  await lookupInput.pressSequentially(searchText, { delay: 100 }); // slight delay to avoid OData debounce
 
   // Step 3: Wait for the suggestion panel to appear
   // D365 renders suggestions in a listbox that overlays the form
@@ -594,10 +594,13 @@ await selectLookupValue(page, "Customer", "John", "John Smith");
 await selectLookupValue(page, "Owner", "Service", "Service Team Alpha");
 
 // COMMON FAILURE: typing too fast
-// If you use .fill() instead of .type() with delay, OData may not fire a search
-// because .fill() doesn't dispatch keyboard events that trigger the lookup.
-// Always use .type() with a small delay for D365 lookup fields.
+// If you use .fill() instead of .pressSequentially() with delay, OData may not fire a search
+// because .fill() sets the value directly and dispatches one `input` event — not the
+// per-character keydown/keypress/keyup sequence OData's debounced search listens for.
+// Always use .pressSequentially() with a small delay for D365 lookup fields.
 ```
+
+**Verified, not assumed — `Locator.type()` is deprecated.** Confirmed directly against `playwright-core`'s own type declarations, which carry the annotation on `type()` itself: `@deprecated In most cases, you should use locator.fill(value) instead. You only need to press keys one by one if there is special keyboard handling on the page - in this case use locator.pressSequentially(text, options)`. A D365 lookup field's OData-debounced search is exactly the "special keyboard handling" case Playwright's own docs name — which is also why `.fill()` (the deprecation notice's own general-case recommendation) is the wrong choice *here* specifically, as the comment above already correctly explains. `pressSequentially()` is a drop-in replacement with the same signature (`text`, `{ delay }`).
 
 ---
 
