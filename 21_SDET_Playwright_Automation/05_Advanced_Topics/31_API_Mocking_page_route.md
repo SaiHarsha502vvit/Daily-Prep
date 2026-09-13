@@ -596,6 +596,75 @@ The Rule:
 
 ---
 
+## 8. Stateful Mocking — When One Fixed Response Isn't Enough
+
+Every scenario so far returns the *same* response every time a URL matches. Two real frontend bug classes are invisible to a static mock, because they only exist in the relationship *between* multiple requests to the same endpoint.
+
+### 8.1 Sequential Responses — Testing the Client's Own Retry Logic
+
+A route handler is just a function — nothing stops it from closing over a counter and returning a *different* response on each invocation. That's exactly what's needed to test whether your frontend retries on a transient failure, since a static mock can only ever prove "the UI handles one 503" (§2 Scenario B), never "the UI recovers after a 503 clears up":
+
+```typescript
+test('UI retries after a transient 503 and succeeds on the second attempt', async ({ page }) => {
+  let callCount = 0;
+  await page.route('**/api/v2/citations/CIT-001', async (route) => {
+    callCount++;
+    if (callCount === 1) {
+      await route.fulfill({ status: 503, body: JSON.stringify({ error: 'Service temporarily unavailable' }) });
+    } else {
+      await route.fulfill({ status: 200, body: JSON.stringify({ citationId: 'CIT-001', status: 'PAID' }) });
+    }
+  });
+
+  await page.goto('/citations/CIT-001');
+  // If the UI has no retry logic at all, this hangs until timeout — a real, useful failure.
+  await expect(page.locator('[data-testid="citation-status"]')).toHaveText('PAID', { timeout: 10_000 });
+  expect(callCount, 'UI must have retried at least once after the 503').toBeGreaterThanOrEqual(2);
+});
+```
+
+The `callCount` assertion is doing real work here, not just decoration: without it, a UI that shows a *permanent* error banner instead of retrying would still pass the `toHaveText('PAID')` check if you'd (incorrectly) made the mock always return 200 — asserting the call count is what actually proves retry behavior happened, not just that success is reachable somehow.
+
+### 8.2 Deliberately Reordering Concurrent Responses — Testing Stale-Result Races
+
+A type-ahead search box fires one request per keystroke. Real networks don't guarantee requests arrive back in the order they were sent — a request for `"ci"` can, in principle, resolve *after* the request for `"citation"` that was sent later, and if the UI naively renders whatever response arrives last, the user sees results for a query they already changed. This bug is invisible to every mock so far, because it requires two *different*, *concurrently in-flight* requests to resolve out of send-order — something a static, single-response mock can't produce, but a route handler that inspects the request and delays based on it can:
+
+```typescript
+test('type-ahead search does not show stale results when responses arrive out of order', async ({ page }) => {
+  await page.route('**/api/v2/search**', async (route) => {
+    const url = new URL(route.request().url());
+    const query = url.searchParams.get('q') ?? '';
+    // Deliberately invert timing: the SHORTER, earlier-typed query resolves SLOWER,
+    // so its response can arrive AFTER the longer, later-typed query's response.
+    const delayMs = query.length <= 2 ? 300 : 50;
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+    await route.fulfill({
+      status: 200,
+      body: JSON.stringify({ query, results: [`Result for "${query}"`] }),
+    });
+  });
+
+  await page.goto('/search');
+  const searchInput = page.getByRole('searchbox');
+  await searchInput.pressSequentially('ci', { delay: 50 });      // fires the SLOW request first
+  await searchInput.pressSequentially('tation', { delay: 50 });  // fires the FAST request second
+
+  // The fast "citation" response should arrive first and be shown...
+  await expect(page.locator('[data-testid="search-results"]')).toContainText('Result for "citation"', {
+    timeout: 2_000,
+  });
+  // ...and must NOT be overwritten once the slow, now-stale "ci" response finally arrives.
+  await page.waitForTimeout(400);
+  await expect(page.locator('[data-testid="search-results"]')).not.toContainText('Result for "ci"');
+});
+```
+
+If this test fails, the fix belongs in the application, not the test: either cancel the previous request when a new one fires (`AbortController`), or have the UI discard any response whose query no longer matches the current input value. Either fix makes this exact test pass — the test proves the *symptom* is gone, it doesn't prescribe which of the two standard fixes the application should use.
+
+**Why these two patterns don't fit the earlier "four scenarios" (§2)**: A, B, C, and D each map one request to one response. §8.1 and §8.2 both require the mock to behave *differently across multiple requests to the same pattern* — that's a strictly more expressive use of `page.route()` than anything a single `route.fulfill()` call can express, and it's the only way to put the client's own request-sequencing logic (not just its single-response rendering) under test.
+
+---
+
 ## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — Mock or Not?
