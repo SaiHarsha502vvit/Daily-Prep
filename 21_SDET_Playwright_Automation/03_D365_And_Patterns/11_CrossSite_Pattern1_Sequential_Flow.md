@@ -589,6 +589,8 @@ D) URL query parameter passed to Site B
 
 Module-level variables (A) are shared across parallel workers — Worker 2's test can overwrite Worker 1's `userId`. `localStorage` (C) is browser-storage, not available after navigating to a different domain or after context destruction. URL parameters (D) expose IDs in URLs and are fragile. The `data` object is just a JavaScript variable in Node.js memory — it's isolated per test, typed, and survives any page navigation.
 
+Option A is, precisely, the race condition [Ch09 §3–§4](../02_Core_Architecture/09_Parallel_Execution_Workers.md#3-the-data-collision-problem) and [Ch33 §10](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md#10-concurrency--test-race-conditions-and-parallel-execution) already named — this is the same shared-mutable-state mistake showing up a third time in this module, now as a wrong multiple-choice answer instead of a bug in shipped code. That it keeps reappearing in genuinely different contexts (a generic fixture, a D365 module scope, a cross-site data-transport question) is itself the point: "don't share mutable state across workers" isn't a D365 quirk or a fixture-design opinion, it's the one concurrency rule this entire module keeps testing you on from a different angle each time.
+
 </details>
 
 ---
