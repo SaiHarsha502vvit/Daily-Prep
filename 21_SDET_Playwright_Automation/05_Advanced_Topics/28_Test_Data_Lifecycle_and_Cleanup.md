@@ -238,25 +238,27 @@ export const test = base.extend<{
   citationsClient: async ({ request, account, testDataManager }, use) => {
     const client = new CitationsApiClient(request, account.accessToken);
 
-    // Wrap the client's create method to auto-register with the manager
-    const managedClient = {
-      ...client,
-      create: async (
-        payload: CreateCitationPayload,
-      ): Promise<CitationApiResponse> => {
-        const citation = await client.create(payload);
-        // Auto-register for cleanup
-        testDataManager.trackCitation(citation, () =>
-          client.delete(citation.citationId),
-        );
-        return citation;
-      },
+    // Wrap the client's create method to auto-register with the manager.
+    // Reassign the ONE method directly on the instance — do NOT spread the
+    // instance into a new object (see the note below for why that breaks).
+    const originalCreate = client.create.bind(client);
+    client.create = async (
+      payload: CreateCitationPayload,
+    ): Promise<CitationApiResponse> => {
+      const citation = await originalCreate(payload);
+      // Auto-register for cleanup
+      testDataManager.trackCitation(citation, () =>
+        client.delete(citation.citationId),
+      );
+      return citation;
     };
 
-    await use(managedClient as CitationsApiClient);
+    await use(client);
   },
 });
 ```
+
+**Verified, not assumed — the original `{ ...client, create: ... }` pattern silently breaks every OTHER method on the client.** Object spread only copies an instance's OWN enumerable properties; `CitationsApiClient`'s methods (`getById`, `updateStatus`, `delete`, `waitForStatus`) live on `CitationsApiClient.prototype`, not on the instance itself, so spreading strips all of them. Confirmed by running this exact pattern: `managedClient.getById` and `managedClient.delete` both come back `undefined`, and calling either throws `TypeError: managedClient.getById is not a function` — a failure that wouldn't surface until some OTHER test in the suite happened to call `citationsClient.getById(...)`, far from where the real mistake was made. The fix reassigns `create` directly on the instance instead of building a new object — the same pattern [Ch23 §3c](../04_Enterprise_Architecture/23_APIUtils_HTTP_Library.md#3c-error-taxonomy--normalisation) already uses for its token-refresh fixture, verified there to preserve every other prototype method untouched.
 
 ### Using It in a Test
 
