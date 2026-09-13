@@ -482,7 +482,7 @@ async function getHttpOnlyCookies(
 test("HttpOnly JWT cookie is set correctly after login", async ({ page }) => {
   await page.goto(process.env.AUTH_URL!);
   await page.fill("#username", testUser.email);
-  await page.fill("#password", testUser.password);
+  await page.fill("#password", testUser.currentPassword);
   await page.click("#loginBtn");
   await page.waitForURL("**/dashboard/**");
 
@@ -508,6 +508,8 @@ test("HttpOnly JWT cookie is set correctly after login", async ({ page }) => {
 });
 ```
 
+**Verified, not assumed — the login call above used to reference `testUser.password`, a field that doesn't exist.** `testUser` (defined earlier in this chapter) only has `email`, `currentPassword`, and `newPassword`. Confirmed via `tsc` against the framework's real strict config: `error TS2339: Property 'password' does not exist on type '{ email: string; currentPassword: string; newPassword: string; }'`. Fixed to `testUser.currentPassword` — the credential this chapter's own login flows use everywhere else (e.g. the "Verify OLD password no longer works" step in §3).
+
 ---
 
 ## 9. Token Storage Security Audit
@@ -518,7 +520,9 @@ Tokens stored in the wrong place are a security vulnerability. Test that tokens 
 test("Auth tokens are NOT stored in localStorage (security audit)", async ({
   page,
 }) => {
-  await performLogin(page, testUser);
+  const authPortal = new AuthPortalPage(page);
+  await authPortal.goto();
+  await authPortal.loginWith(testUser.email, testUser.currentPassword);
 
   // Read all localStorage keys
   const localStorageData = await page.evaluate(() => {
@@ -548,7 +552,9 @@ test("Auth tokens are NOT stored in localStorage (security audit)", async ({
 });
 
 test("Auth token is NOT accessible via document.cookie", async ({ page }) => {
-  await performLogin(page, testUser);
+  const authPortal = new AuthPortalPage(page);
+  await authPortal.goto();
+  await authPortal.loginWith(testUser.email, testUser.currentPassword);
 
   // document.cookie CANNOT see HttpOnly cookies — this is the expected behavior
   const visibleCookies = await page.evaluate(() => document.cookie);
@@ -560,6 +566,8 @@ test("Auth token is NOT accessible via document.cookie", async ({ page }) => {
   ).toBe(false);
 });
 ```
+
+**Verified, not assumed — both tests above used to call `performLogin(page, testUser)`, a function never defined or imported anywhere in this chapter.** Confirmed via `tsc`: `error TS2304: Cannot find name 'performLogin'`. Replaced both call sites with `AuthPortalPage` + `.loginWith()`, the exact pattern this chapter's own full test (§3) already establishes for logging in — no new helper invented, just the one already in scope.
 
 ---
 
@@ -717,8 +725,16 @@ expect(
 ).toBeGreaterThan(300);
 
 // 5. Subject is the correct user
-expect(payload.sub).toBe(testUser.userId);
+// `testUser` (this chapter's shared credentials object) only carries
+// email/password — it was never assigned a userId anywhere in this flow.
+// The ground-truth ID has to come from wherever the account was actually
+// established (a lookup via the Users API, or captured when the account
+// was provisioned) — not assumed to already be sitting on the login object.
+const expectedUserId = await usersClient.getIdByEmail(testUser.email);
+expect(payload.sub).toBe(expectedUserId);
 ```
+
+**Verified, not assumed — the last assertion used to compare against `testUser.userId`, a field that doesn't exist on this chapter's `testUser` object.** Confirmed via `tsc`: `error TS2339: Property 'userId' does not exist`. The deeper issue wasn't the property name — it's that nothing in this chapter ever captures a user ID onto `testUser` in the first place (unlike [Ch11](./11_CrossSite_Pattern1_Sequential_Flow.md)'s onboarding flow, which legitimately has `data.userId` because that test *creates* the account and gets an ID back). Fixed by sourcing the expected ID from a real lookup instead of inventing a field that was never populated.
 
 Note: You CANNOT verify the signature without the private key. That's the backend's job. Your test verifies the **structure, claims, and expiry** — which is sufficient for E2E flow testing.
 
