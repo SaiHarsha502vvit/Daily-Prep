@@ -495,6 +495,8 @@ Playwright does **not** just delegate CSS selectors to `document.querySelectorAl
 
 **In formal terms, a page with shadow roots is a forest, not a single tree — and piercing is plain depth-first search across it.** Section 1 established the main document as one rooted tree; each shadow root is a *second, independent* rooted tree, connected to the main one only by the non-containment `shadowRoot` pointer (not a real parent-child edge). Standard tree traversal (`querySelectorAll`, XPath) only follows real containment edges, so it never crosses into the second tree. Playwright's walker is a DFS that treats `shadowRoot` as one more edge to follow: visit a node, check its children, and — the one extra rule — check `shadowRoot` too, recursing into that tree exactly as if it were a child subtree. Same algorithm as searching a normal tree; one additional edge type in the traversal rule.
 
+An IFrame's document is the same forest structure — a second independent tree joined by one non-containment pointer — but with the opposite crossing policy. [`Ch10 §1`](../03_D365_And_Patterns/10_Dynamics365_CRM_Testing.md#1-d365-dom-anatomy--the-unified-client-interface-uci) walks through why: Playwright never auto-pierces an `<iframe>` boundary the way it does `shadowRoot` — `frameLocator()` is a deliberate, manual tree switch, not a DFS extension. Same shape of boundary, two different design decisions about who's responsible for crossing it.
+
 That is why:
 
 ```typescript

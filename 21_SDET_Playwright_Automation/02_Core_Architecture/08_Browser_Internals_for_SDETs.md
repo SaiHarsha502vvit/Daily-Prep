@@ -112,7 +112,7 @@ Accessibility Tree:
 </li>
 ```
 
-**This is exactly your `menuitem` vs `button` issue.** The `<li>` has `role="menuitem"` in the accessibility tree. The visual `<button>` inside it is a child of the `menuitem`. When you call:
+**This is exactly your `menuitem` vs `button` issue** — see [`Ch10 §3`](../03_D365_And_Patterns/10_Dynamics365_CRM_Testing.md#3-the-menuitem-vs-button-aria-role-trap) for the full D365 CommandBar case this diagram is drawn from. The `<li>` has `role="menuitem"` in the accessibility tree. The visual `<button>` inside it is a child of the `menuitem`. When you call:
 
 ```typescript
 page.getByRole("button", { name: "Edit" });

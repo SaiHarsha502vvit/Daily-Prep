@@ -7,7 +7,8 @@
 - [`18_CSS_Complete/01_CSS_Foundations.md`](../../18_CSS_Complete/01_CSS_Foundations.md) — CSS selector specificity
 - [`15_React_Frontend/01_React_Fundamentals.md`](../../15_React_Frontend/01_React_Fundamentals.md) — React rendering that powers D365 components
 - [`16_JavaScript/05_JS_DOM_BrowserAPIs.md`](../../16_JavaScript/05_JS_DOM_BrowserAPIs.md) — DOM traversal for console scripts
-- [`21_SDET/08_Browser_Internals_for_SDETs.md`](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md) — The 4 browser trees (prerequisite)
+- [`21_SDET/08_Browser_Internals_for_SDETs.md`](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md) — The 4 browser trees (prerequisite); §"Tree 4" already uses this chapter's own menuitem/button trap as its example
+- [`01_Foundations/02_Enterprise_Locators_XPath.md`](../01_Foundations/02_Enterprise_Locators_XPath.md) §1, §6 — the anchor→navigate→scope tree-search pattern §11 below applies, and the Shadow-DOM-as-forest framing §1 below extends to IFrames
 
 ---
 
@@ -48,6 +49,8 @@ Browser Tab
 ```
 
 **Practical impact:** If your locator works in the browser console on the main page but Playwright can't find it, the element is probably INSIDE the IFrame or blocked by a Shadow DOM boundary.
+
+**In the same formal terms [`Ch02 §6`](../01_Foundations/02_Enterprise_Locators_XPath.md#6-shadow-dom--why-some-elements-are-invisible-to-xpath-and-what-playwright-does-about-it) already used for Shadow DOM: this UCI layout is a forest, not one tree.** The Main Content IFrame's document is a *second, independent* root, connected to the main page only by the non-containment `<iframe>` reference — never a real parent-child edge. But the crossing behavior is the opposite of Shadow DOM's: Ch02 §6 showed Playwright's locator engine *automatically* pierces shadow boundaries (one DFS, one extra edge type, no code change needed). IFrame boundaries get no such automatic piercing — `page.locator(...)` simply stops at the document's own root and never even attempts the second tree, which is exactly why `frameLocator()` exists as an explicit, mandatory context switch rather than an implementation detail Playwright papers over. Two structurally identical boundaries (both: two trees, one non-containment pointer between them); two different crossing policies, and knowing which one you're facing is the actual skill.
 
 ### The Frame Context Problem
 
@@ -169,6 +172,8 @@ D365's CommandBar is built as:
 ```
 
 The accessibility tree (which `getByRole` queries) sees the `<li>` as the interactive element, not the `<button>` inside it.
+
+[`Ch08 "Tree 4: The Accessibility Tree"`](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md#tree-4-the-accessibility-tree) already uses this exact trap as its own worked example, and derives the mechanical reason: the Accessibility Tree isn't a filtered *view* of the DOM tree (the way the Render Tree is) — it's built by a wholly separate mapping (DOM structure + ARIA attributes + implicit HTML semantics). `getByRole('button')` and `page.locator('button')` aren't two ways of asking the same question; they're walking two genuinely different trees that happen to usually agree. D365's CommandBar is the concrete case where they don't.
 
 ### The Fix
 
@@ -850,6 +855,8 @@ account: [async ({ request }, use) => {
 // This token lasts 1 hour and can be refreshed programmatically.
 ```
 
+Same `{ scope: 'worker' }` pattern as [Ch09 §8](../02_Core_Architecture/09_Parallel_Execution_Workers.md#8-worker-scoped-fixtures--the-performance-pattern) / [Ch33 §10](../06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md#10-concurrency--test-race-conditions-and-parallel-execution)'s Thread-Local Storage — but it shows the pattern's actual boundary. TLS isolation solves *contention* (workers don't fight over one shared token); it does nothing about *expiry* (an isolated token still goes stale at 1 hour). That's a genuinely different failure mode with a genuinely different fix (Option A/B/C above), and conflating "isolated" with "always valid" is how a suite that works fine for 45 minutes starts failing exactly at the 1-hour mark for no code reason anyone changed.
+
 ---
 
 ## 11. War Story: The Multiple Modal Close Button Trap
@@ -869,7 +876,7 @@ A week later, you reuse the POM for a similar flow, but this time, the _first_ m
 **The Solution:**
 Never use `.nth()` to target UI elements that dynamically fluctuate in count across the DOM. `.nth()` depends on global DOM ordering, which is highly brittle in D365.
 
-Instead, **scope locators to their parent container (the specific modal)**.
+Instead, **scope locators to their parent container (the specific modal)** — this is [`Ch02 §1`](../01_Foundations/02_Enterprise_Locators_XPath.md#1-the-dom-is-a-tree--think-in-relationships-not-absolute-paths)'s anchor→navigate→scope pattern, just applied to a case Ch02 doesn't cover. `.nth(1)` treats "every Close button on the page, in DOM order" as a stable, addressable array — but that ordering is an accident of which modals happen to be mounted right now, not a real invariant. The fix isn't a better index; it's the same move Ch02 names generally: find an anchor with a *known, stable property* (here, the modal containing "successfully completed" text), then scope the search to that subtree instead of the whole document. A `.nth()` bug and a global-variable race condition (Ch09 §3–§4) are the same root mistake at different scales: trusting an implicit, unguaranteed ordering instead of an explicit, scoped identity.
 
 ```typescript
 // ✅ CORRECT: Find the specific modal first, then find the close button INSIDE it
