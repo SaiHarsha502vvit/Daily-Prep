@@ -401,8 +401,9 @@ test('admin accesses CRM portal without re-login', async ({ page }) => {
   await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30_000 });
   await expect(page.locator('.ms-Nav')).toBeVisible();
 });
-});
 ```
+
+**Verified, not assumed — this block had a real syntax error.** The original had a stray extra `});` after the test's own closing brace, with nothing left open to close. Confirmed by actually compiling it: `error TS1128: Declaration or statement expected` at the orphaned brace. A copy-paste artifact, not a typo worth guessing at — removed the extra line.
 
 ---
 
