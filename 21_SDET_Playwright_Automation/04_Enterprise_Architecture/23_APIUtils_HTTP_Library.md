@@ -126,6 +126,7 @@ export interface RequestOptions {
   params?: Record<string, string>;
   timeoutMs?: number;
   ignoreStatuses?: number[]; // statuses NOT to throw on (e.g. 404 in a "not found" test)
+  maxAttempts?: number; // caller-controlled retry ceiling — see §3b's executeWithRetry
 }
 
 export interface ApiResponse<T = unknown> {
@@ -377,6 +378,8 @@ async get<T = unknown>(url: string, options: RequestOptions = {}): Promise<ApiRe
 ```
 
 Notice `POST`/`PATCH`/`PUT` are deliberately not shown here. Retrying them safely requires either an idempotency-key header (the server dedupes on it) or the caller opting in explicitly. Default the retry count for mutating methods to `1` (no retry) and let callers pass a higher `maxAttempts` when they know the endpoint is safe to replay.
+
+**Verified, not assumed — `options.maxAttempts` above didn't compile as originally written.** `RequestOptions` (§3) never declared a `maxAttempts` field, so `options.maxAttempts` was reading a property that didn't exist on its own type. Confirmed via `tsc` against the framework's real strict config: `error TS2339: Property 'maxAttempts' does not exist on type 'RequestOptions'`. Added `maxAttempts?: number` to the interface — the field this whole retry section already assumed was there.
 
 ---
 
