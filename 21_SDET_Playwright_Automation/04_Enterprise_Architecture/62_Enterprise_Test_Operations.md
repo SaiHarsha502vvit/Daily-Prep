@@ -129,6 +129,45 @@ The two properties that make this work in practice:
 
 Suppose 1,000 tests each pass 99.5% of the time independently. Full-suite pass probability: 0.995^1000 ≈ **0.7%**. Practically every run is red for a non-reason, so every red is presumed a non-reason — including the one that's a real customer-facing bug. That is the precise mechanism by which suites become decoration. Per-test reliability must be treated as a hard budget (99.95%+ gives 0.9995^1000 ≈ 61%; add one retry tier and you reach usable territory), and the SLA is the enforcement arm of that budget.
 
+### 3.3 Making "hard budget" literal — SLOs, error budgets, and burn rate
+
+§3.2 already treats reliability as a budget informally. Google's SRE discipline has a precise vocabulary and math for exactly this, and it turns §6's "Flake rate < 0.5%" from a round number on a dashboard into an operational trigger — the same way §3.2 turned "flaky tests are bad" into a specific compounding-probability argument.
+
+**The three terms, applied to the suite itself instead of to a production service:**
+
+- **SLI** (Service Level *Indicator*) — the thing you actually measure: *the percentage of test runs, in a rolling window, that are non-flaky.*
+- **SLO** (Service Level *Objective*) — the target for that SLI. §6 already picked one: **99.5%** (i.e., flake rate < 0.5%).
+- **Error budget** — exactly `1 − SLO`. A 99.5% SLO means a **0.5% error budget**: the suite is *allowed* to have that fraction of its runs be flaky before the SLO is breached. The budget isn't a penalty for flakiness — it's explicit permission to have some, because zero-flake is not a real target for any suite this module has described (Ch26 already established flakiness has multiple root causes, several outside the suite's own control).
+
+**Burn rate is what makes the budget actionable in real time**, instead of only discoverable in a monthly retro:
+
+```
+burn rate = (flaky runs / total runs, over a short window)
+            ──────────────────────────────────────────────
+                        error budget (0.5%)
+```
+
+A burn rate of **1.0** means: spending the budget at exactly the rate that exhausts it right at the end of the measurement window — sustainable, but with zero margin. Above 1.0, the budget runs out *before* the window ends.
+
+**Worked example, using numbers this size of team actually sees:** 200 PR-triggered runs/day, 30-day rolling window → budget = 0.5% × (200 × 30) = **30 flaky runs allowed per month**. Suppose one team's specs produce 15 flaky runs in the first 3 days:
+
+```
+burn rate = (15 flaky / 600 runs so far)  =  2.5%
+            ─────────────────────────────    ────  =  5.0
+                  0.5% budget                0.5%
+```
+
+A burn rate of 5.0 means: at the current rate, that team exhausts its **entire month's** error budget by day 6 — 24 days early. §3.1's flat "10 working days" SLA clock would let this run for 7 more days past the point the budget is already gone. The fix isn't discarding §3.1 — it's adding a second trigger alongside it: **the day-11 escalation is the floor, not the only alarm; a burn rate this high escalates immediately, on day 3, before day 11 ever arrives.**
+
+**The real two-tier alerting split**, from Google's own SRE workbook, adapted to test infrastructure instead of production traffic:
+
+| Tier | Real SRE threshold | Applied to the flake budget |
+| --- | --- | --- |
+| **Page now** | burn rate > 14.4 over a 1-hour window (2% of a 30-day budget burned in 1 hour) | A single CI run itself is failing at a rate that would exhaust the *entire month's* flake budget in about a day — page the platform team, don't wait for the weekly report in §7 |
+| **Ticket / warn** | burn rate > 6 over a 6-hour window (5% of a 30-day budget in 6 hours) | A team's specs are trending toward exhausting the month's budget inside a week — file it now, ahead of the day-11 SLA escalation, not instead of it |
+
+This is the same instrument §6 already gestures at ("metrics that keep suites funded") made precise: a platform team defending suite investment to a director doesn't say "flakiness feels higher this month" — they say "team X burned 40% of its monthly error budget in the first four days, at a burn rate of 6.2x, which is why they're in this week's escalation and not next month's." That is a defensible, pre-computed number, not a vibe — exactly the discipline [`career/TEST_STRATEGY_TEMPLATE.md`](../career/TEST_STRATEGY_TEMPLATE.md) and a real RFC ([`career/RFC_TEMPLATE.md`](../career/RFC_TEMPLATE.md)) expect a senior SDET to bring to the room.
+
 ---
 
 ## 4. Ownership — The Org Chart Question Every Scaling Team Hits
