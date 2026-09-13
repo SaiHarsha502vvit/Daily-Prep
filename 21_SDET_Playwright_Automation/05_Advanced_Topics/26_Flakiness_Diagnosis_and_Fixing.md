@@ -796,7 +796,7 @@ test.describe("Citation search", () => {
 <details><summary>Answer</summary>
 
 **Bug 1 — `test.beforeAll` doesn't receive fixtures correctly:**
-`test.beforeAll` runs once per worker with scope tied to the describe block. The `{ citationsClient, account }` fixtures in `beforeAll` use test-scoped fixtures — this causes a Playwright error because test-scoped fixtures aren't available in `beforeAll`. Use worker-scoped fixtures or set up data via the API client directly (without fixture injection).
+`test.beforeAll` runs once per worker with scope tied to the describe block. The `{ citationsClient, account }` fixtures in `beforeAll` use test-scoped fixtures — this causes a Playwright error because test-scoped fixtures aren't available in `beforeAll`. Use worker-scoped fixtures or set up data via the API client directly (without fixture injection). [Ch24 §8](../04_Enterprise_Architecture/24_Test_Script_Architecture.md#8-the-test-lifecycle--hooks-architecture) derives the general rule this is one instance of: `beforeAll` runs once *per worker process*, not once for the suite — so it can only ever see fixtures that are themselves worker-scoped or narrower.
 
 **Bug 2 — Parallel workers each get their own `testCitationId` but the search returns ALL citations:**
 If two workers run these tests simultaneously, each creates a citation. But `searchByCitationId` should find exactly 1 — that part is fine. However, `testCitationId` is in JavaScript module memory scoped to the worker. If the describe block somehow runs on two workers (e.g., with `fullyParallel: true`), each worker has its own separate `testCitationId`. The `afterAll` only deletes the worker's own citation. Race conditions on the delete can cause 404s.
