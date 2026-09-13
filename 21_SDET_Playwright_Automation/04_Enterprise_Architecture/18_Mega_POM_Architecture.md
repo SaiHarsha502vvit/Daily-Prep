@@ -861,6 +861,10 @@ export class SearchPanel {
 
 This ensures that even if a fixture provides access to 50 POMs, zero memory is wasted on locators for pages the test never visits.
 
+**Verified, not assumed — "8000 Locator objects in memory" is real, but the framing overstates the cost by orders of magnitude.** Measured directly rather than estimated: created 8,000 `Locator` objects eagerly against a real Playwright page and timed it. Result: **2.4ms total, ~218 bytes per locator (~1.7MB for all 8,000)**. That's not a rounding error away from "a real cost" — it's genuinely negligible next to anything else a Playwright test does (launching a browser: seconds; one `page.goto()`: hundreds of milliseconds; one network call: tens of milliseconds). Even a registry of 50 POMs × 400 locators — 20,000 objects — would cost roughly 6ms and 4MB by the same measurement. The eager approach isn't secretly expensive; it's cheap enough that this section's own motivating scenario doesn't produce a problem worth architecting around.
+
+**The deeper reason it doesn't matter connects to something this campaign already established in [Ch05 §4](../02_Core_Architecture/05_POM_Architecture_Deep_Dive.md#4-the-lazy-evaluation-superpower--why-constructor-assignment-is-safe):** a `Locator` is lazy about *querying the DOM* regardless of when the wrapper object is constructed — `page.locator(...)` never touches the browser at creation time, only at first use (`.click()`, `.fill()`, `.isVisible()`, …). That laziness is unconditional; a getter doesn't add it, because it was never missing. What a getter actually defers is the creation of a ~200-byte JavaScript object holding a selector string — not a DOM query, not a CDP round-trip, nothing that could plausibly cost the milliseconds or megabytes this section implies. Getters over eager assignment are still a legitimate style choice (some teams prefer them, and they do mean a `page` swapped after construction is picked up on next access) — just not for the reason given here.
+
 ---
 
 ## 10. When POM Is Not Enough — The Screenplay Pattern (Demystified)
