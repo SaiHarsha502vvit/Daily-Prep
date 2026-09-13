@@ -900,12 +900,27 @@ test("Creating a citation produces a compliant audit log entry", async ({
 
 ```typescript
 // ── Immutability test — audit entries must not be modifiable ─────────────────
+// A separate test() callback has its own scope — it cannot see the `data`
+// object the previous test declared inside ITS callback. This test creates
+// its own citation, the same way the previous test does, rather than
+// reaching for a variable that was never in scope here.
 test("Audit log entries cannot be deleted or modified", async ({
+  page,
   request,
   account,
 }) => {
+  const adminPortal = new AdminPortalPage(page);
   const auditClient = new AuditLogClient(request, account.accessToken);
-  const logs = await auditClient.getForEntity("CITATION", data.citationId!);
+
+  await adminPortal.goto();
+  await adminPortal.citations.createNewCitation({
+    customerId: process.env.TEST_CUSTOMER_ID!,
+    amount: 200.0,
+    type: "PARKING_VIOLATION",
+  });
+  const citationId = await adminPortal.citations.getCreatedCitationId();
+
+  const logs = await auditClient.getForEntity("CITATION", citationId!);
   const entryId = logs[0].id;
 
   // Attempt DELETE (must be rejected)
@@ -929,11 +944,35 @@ test("Audit log entries cannot be deleted or modified", async ({
 });
 ```
 
+**Verified, not assumed — this test used to reference `data.citationId`, a variable that was never in its scope.** Confirmed via `tsc`: `error TS2304: Cannot find name 'data'`. It looked plausible on the page because the *previous* test in this file declares a `data` object with exactly that shape — but each `test(...)` callback is its own closure, and this test never received or created one. Fixed by giving this test its own citation, using the identical creation steps the previous test already establishes, rather than borrowing a name that only happened to exist nearby on the page.
+
 ---
 
 ## 10. Event Sourcing Assertion Strategy
 
 In an Event Sourced architecture, the state of an entity (like an Order or Citation) is derived by replaying a sequence of immutable events, rather than updating a single database row. Testing event-sourced systems requires asserting on the _entire event stream_ to guarantee the sequence and payload of events are correct.
+
+```typescript
+// clients/EventStoreClient.ts — same shape as NotificationsClient/AuditLogClient above
+
+export class EventStoreClient {
+  constructor(
+    private readonly request: import("@playwright/test").APIRequestContext,
+    private readonly authToken: string,
+  ) {}
+
+  /** Returns the full ordered event stream for a given stream ID (e.g. "Order-123") */
+  async getStream(streamId: string): Promise<Record<string, any>[]> {
+    const response = await this.request.get(
+      `${process.env.EVENT_STORE_URL}/streams/${streamId}`,
+      { headers: { Authorization: `Bearer ${this.authToken}` } },
+    );
+    if (!response.ok())
+      throw new Error(`EventStoreClient.getStream failed: ${response.status()} for ${streamId}`);
+    return response.json();
+  }
+}
+```
 
 ```typescript
 // tests/specs/architecture/event-sourcing.spec.ts
@@ -974,6 +1013,8 @@ test("UI action produces the exact expected event sequence in the event store", 
   expect(cancelEvent!.payload.reason).toBe("CUSTOMER_INITIATED");
 });
 ```
+
+**Verified, not assumed — `EventStoreClient` didn't exist anywhere in this chapter before this section.** Confirmed via `tsc`: `error TS2552: Cannot find name 'EventStoreClient'`. Added the class above, matching the exact constructor/method shape `NotificationsClient` and `AuditLogClient` already establish earlier in this chapter, rather than leaving the test referencing a client that was never defined.
 
 This strategy ensures you aren't just checking the final state ("Order is Cancelled"), but verifying the exact business rules that led to that state.
 
