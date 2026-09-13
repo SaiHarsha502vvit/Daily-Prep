@@ -627,6 +627,45 @@ Rule 5: Least privilege.
 
 ---
 
+## 8. The Branch Protection Trap — A Real Bug in This Chapter's Own Pipeline
+
+[`Ch48`](./48_Sharding_And_Test_Selection.md) covers sharding in depth — the dynamic bin-packing allocation, test selection, cost modeling. What neither chapter has covered yet is a GitHub-specific gotcha that only appears once you try to make a *sharded* pipeline a *required* check on a PR, and it's real enough that it's sitting in this chapter's own §3 workflow right now.
+
+**The problem, verified against real GitHub community reports of teams hitting this in production:** a matrix job doesn't produce one check — it produces one check *per matrix value* (`regression (1)`, `regression (2)`, and so on). Branch protection's "required status checks" list references those exact names. Change the shard count from 4 to 6 and the check names change with it; branch protection silently stops requiring the new ones, and PRs can merge on the strength of checks that no longer represent the current pipeline.
+
+**The trap this chapter's own §3 pipeline sets, if you reached for the obvious fix:** the natural instinct is to require the `merge-reports` job instead, since it's the one stable job that runs after all shards, regardless of count. Look at what it actually does:
+
+```yaml
+merge-reports:
+  needs: regression
+  runs-on: ubuntu-latest
+  if: always()          # ← runs no matter what `regression` did
+  steps:
+    - uses: actions/checkout@v4
+    # ...merges whatever blob reports exist, uploads the HTML report...
+```
+
+`if: always()` is there for a good reason — you want the merged report even when tests fail, so you can see *what* failed. But that same `if: always()` means `merge-reports`' own pass/fail status depends only on whether *its own steps* (checkout, download, merge, upload) succeeded — not on whether the shards it just merged actually passed. Require `merge-reports` as your branch-protection check, and a PR with every regression test failing merges cleanly, because the report-merging job itself never failed at anything.
+
+**The fix — an explicit gate job that checks the result instead of assuming it:**
+
+```yaml
+regression-gate:
+  needs: regression         # still depends on the whole matrix completing
+  if: always()              # still runs even when shards failed — we WANT to see that
+  runs-on: ubuntu-latest
+  steps:
+    - name: Fail if any regression shard failed
+      if: needs.regression.result != 'success'
+      run: |
+        echo "::error::Regression suite failed (matrix result: ${{ needs.regression.result }})"
+        exit 1
+```
+
+Point branch protection at `regression-gate`, not at `merge-reports` and not at the individual shard names. This job's name never changes when the shard count does, and unlike `merge-reports`, it explicitly fails when the matrix it depends on didn't fully succeed — which is what "required status check" is actually supposed to mean. This is the same pattern GitHub's own community repeatedly documents as the fix for this exact class of bug: an aggregator/gate job with a stable name, sitting between the matrix and branch protection, whose only purpose is to translate "did the matrix actually pass" into a single check a PR can depend on.
+
+---
+
 ## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — `if: always()` in GitHub Actions

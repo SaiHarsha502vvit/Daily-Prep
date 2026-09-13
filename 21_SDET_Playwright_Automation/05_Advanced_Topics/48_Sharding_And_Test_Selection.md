@@ -2,6 +2,10 @@
 
 **Navigation**: [← 47. Allure & ReportPortal](./47_Allure_ReportPortal.md) | [Index](../00_INDEX.md) | [→ 49. Feature Flag Testing](./49_Feature_Flag_Testing.md)
 
+**Cross-links:**
+
+- [`25_CICD_Integration_GitHub_Azure.md`](./25_CICD_Integration_GitHub_Azure.md) — the actual GitHub Actions/Azure DevOps YAML that wires the sharding this chapter derives; §8 there covers a branch-protection gotcha specific to sharded matrix jobs that applies directly to every sharded workflow in this chapter
+
 ---
 
 ## 5W1H
@@ -910,6 +914,10 @@ done
 ```
 
 If one shard consistently has 2× the failures of others, the distribution is non-random (likely caused by a large test file on that shard). Split it.
+
+### 9. Requiring the wrong job as a branch-protection check
+
+Every matrix workflow in this chapter (§2, §13) produces one GitHub check *per shard*, not one check for the whole job — change the shard count and those check names change with it, silently breaking any branch-protection rule that named the old ones. See [Ch25 §8](./25_CICD_Integration_GitHub_Azure.md#8-the-branch-protection-trap--a-real-bug-in-this-chapters-own-pipeline) for the full mechanism, including the specific trap of requiring a `merge-reports`-style job instead — it runs on `if: always()` and reports success regardless of whether the shards it merged actually passed. The fix is a dedicated gate job with a stable name that explicitly checks the matrix result and fails accordingly.
 
 ---
 
