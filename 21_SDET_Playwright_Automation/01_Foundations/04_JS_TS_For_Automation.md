@@ -1106,6 +1106,7 @@ async function fetchWithTimeout(
 }
 
 // Pattern 2: Cancel parallel requests when one fails
+// ❌ WRONG — one shared controller means "cancel the losers" also cancels the WINNER
 async function fetchFirstAvailable(urls: string[]): Promise<Response> {
   const controller = new AbortController();
 
@@ -1114,8 +1115,43 @@ async function fetchFirstAvailable(urls: string[]): Promise<Response> {
     const response = await Promise.any(
       urls.map((url) => fetch(url, { signal: controller.signal })),
     );
-    controller.abort(); // cancel remaining requests
+    controller.abort(); // cancel remaining requests — but this is the SAME signal the winner used!
     return response;
+  } catch {
+    throw new Error("All endpoints failed");
+  }
+}
+```
+
+**Verified, not assumed — the bug doesn't throw inside this function, it throws on the caller.** `fetchFirstAvailable()` above returns successfully and `response.status` reads fine. The failure shows up one line further down, wherever the result gets used:
+
+```typescript
+const response = await fetchFirstAvailable([fastUrl, slowUrl]);
+console.log(response.status); // 200 — looks completely fine
+const body = await response.json(); // AbortError: The operation was aborted.
+```
+
+Reproduced against two real local HTTP endpoints (one responding in 20ms, one in 500ms): the fast one wins `Promise.any`, `controller.abort()` runs immediately after, and reading the winning response's body throws every time — not intermittently, every single run.
+
+**Why:** every racing `fetch()` call was given the *same* `AbortController`'s signal. `Promise.any` resolves the instant one `fetch()` promise fulfills — which happens once response *headers* arrive, before the body is necessarily read. Calling `controller.abort()` right after doesn't just cancel the other, still-pending requests; it aborts the one signal every request was watching, including the winner's. Per the Fetch API's abort behavior, aborting a signal after the `fetch()` promise has already settled but before its body has been fully read causes that body read to reject with `AbortError` ([MDN: `AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)) — the `Response` object exists and its status/headers are readable, but its body is not. That makes this bug invisible to any test that only checks `response.ok` or `response.status`, and it only surfaces the moment something tries to read the payload — a "works in code review, fails three call sites later" trap in the same family as the `forEach` + `async` trap from Section 1.4.
+
+```typescript
+// ✅ CORRECT — one controller PER request; abort only the losers
+async function fetchFirstAvailable(urls: string[]): Promise<Response> {
+  const controllers = urls.map(() => new AbortController());
+
+  // Promise.any only returns the winning VALUE, not which array entry produced it —
+  // tag each result with its index so we know which controllers to abort afterward.
+  const tagged = urls.map((url, i) =>
+    fetch(url, { signal: controllers[i]!.signal }).then((res) => ({ res, i })),
+  );
+
+  try {
+    const { res, i: winnerIndex } = await Promise.any(tagged);
+    controllers.forEach((c, i) => {
+      if (i !== winnerIndex) c.abort(); // only cancel the requests that DIDN'T win
+    });
+    return res;
   } catch {
     throw new Error("All endpoints failed");
   }
@@ -1147,6 +1183,8 @@ async function pollUntilStatus(
   );
 }
 ```
+
+**Why Pattern 3 doesn't actually use `AbortController`, despite sitting in this section:** there's nothing here *to* abort. `AbortController` cancels one in-flight operation (a single `fetch`, a single `request.get`) that's currently awaiting a response. `pollUntilStatus` isn't stuck inside one long-running call — between polls, it's sitting at `await new Promise(resolve => setTimeout(resolve, 1000))` with no request in flight at all. The `deadline` check *is* this pattern's cancellation mechanism: it stops the *loop* from starting another round, which is a different problem from cancelling a call that's already running. If a single `request.get()` call itself could hang indefinitely, that call would need its own timeout (Playwright's `request` context already has one, configurable via `timeout` in its options) — `AbortController` and a polling deadline solve two different failure modes, not the same one twice.
 
 ---
 
