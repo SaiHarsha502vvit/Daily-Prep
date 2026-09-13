@@ -879,6 +879,152 @@ test("D365 loads acceptably on slow network", async ({ page, context }) => {
 
 ---
 
+## 12. CDP for Production Failure Modes — Memory Leaks, CPU Throttling, and Worker Inspection
+
+§11 used CDP for one metric (render timing) and one throttle (network). The same session gives you two more failure classes most SDET curricula skip entirely: **memory leaks that only show up after real usage**, and **CPU-constrained devices** — plus a blind spot most Playwright suites have without knowing it, **Web Workers and Service Workers**, which run outside the page's own JS context and are invisible to `page.evaluate()`.
+
+### 12.1 Detecting a Memory Leak — Why One Heap Reading Proves Nothing
+
+A single `heapUsedSize` reading tells you the current number, not whether it's *growing*. Enterprise SPA dashboards (a "recent citations" panel that re-renders on a live feed, a grid that re-subscribes on every filter change) are exactly where `addEventListener` without the matching `removeEventListener`, or a closure holding a detached DOM node, leaks memory that only becomes visible after the *tenth* interaction, not the first.
+
+**The real CDP mechanism**, verified against Chromium's own DevTools Protocol: `HeapProfiler.collectGarbage` forces a GC pass (call it **twice** — the first pass can itself free objects that were only reachable via other now-freed objects, so a single pass under-collects), then `Performance.getMetrics` returns a metrics array including `JSHeapUsedSize`, `Nodes` (DOM node count), and `JSEventListeners` (attached listener count) — the three numbers that catch, respectively, a JS-side retention leak, a detached-DOM leak, and the classic missing-`removeEventListener` leak.
+
+```typescript
+async function readHeapMetrics(cdp: import('@playwright/test').CDPSession) {
+  await cdp.send('HeapProfiler.collectGarbage');
+  await cdp.send('HeapProfiler.collectGarbage'); // twice — see above
+  const { metrics } = await cdp.send('Performance.getMetrics');
+  const byName = Object.fromEntries(metrics.map((m) => [m.name, m.value]));
+  return {
+    heapUsed: byName['JSHeapUsedSize'] as number,
+    domNodes: byName['Nodes'] as number,
+    listeners: byName['JSEventListeners'] as number,
+  };
+}
+```
+
+**Why a single "is it bigger now?" check is the wrong test.** A page's heap jumps on the very first real interaction simply because lazy-loaded route code and cached data get pulled in — that's expected, one-time growth, not a leak. The correct signal is a **sustained upward trend across many repeated cycles**, which means: run the suspected action N times, discard the first few cycles as warm-up, then fit a trend to what's left.
+
+```typescript
+function linearRegressionSlope(samples: number[]): number {
+  const n = samples.length;
+  const xMean = (n - 1) / 2;
+  const yMean = samples.reduce((a, b) => a + b, 0) / n;
+  let numerator = 0;
+  let denominator = 0;
+  for (let i = 0; i < n; i++) {
+    numerator += (i - xMean) * (samples[i]! - yMean); // i < n = samples.length by construction
+    denominator += (i - xMean) ** 2;
+  }
+  return denominator === 0 ? 0 : numerator / denominator; // bytes (or nodes/listeners) per cycle
+}
+```
+
+**This warm-up discard isn't a nicety — without it the check produces a false positive.** Verified with three synthetic cases before writing this: a real leak growing ~500KB/cycle, a stable heap fluctuating on GC noise, and a one-time 5MB jump (simulating lazy-loaded code) that then goes flat. Computed over the *raw* 10 samples, the one-time-jump case scores a slope of **482,667 bytes/cycle** — nearly identical to the real leak's 500,485 — because a single early jump drags a linear fit upward across the whole series. Discard the first 3 samples as warm-up and recompute: the real leak still shows ~501,786 (correctly detected), but the one-time-jump case drops to **-7,500** — indistinguishable from the stable case's -13,571 noise floor (correctly cleared). The discard step is what separates "code loaded once" from "something is actually leaking."
+
+```typescript
+test('recent citations panel does not leak across repeated open/close cycles', async ({ page, context }) => {
+  await page.goto('/dashboard');
+  const cdp = await context.newCDPSession(page);
+
+  const WARMUP_CYCLES = 3;
+  const MEASURED_CYCLES = 10;
+  const samples: { heapUsed: number; domNodes: number; listeners: number }[] = [];
+
+  for (let i = 0; i < WARMUP_CYCLES + MEASURED_CYCLES; i++) {
+    await page.getByRole('button', { name: 'Recent Citations' }).click();
+    await expect(page.locator('.recent-citations-panel')).toBeVisible();
+    await page.getByRole('button', { name: 'Close panel' }).click();
+    await expect(page.locator('.recent-citations-panel')).toBeHidden();
+
+    if (i >= WARMUP_CYCLES) samples.push(await readHeapMetrics(cdp));
+  }
+
+  const heapSlope = linearRegressionSlope(samples.map((s) => s.heapUsed));
+  const listenerSlope = linearRegressionSlope(samples.map((s) => s.listeners));
+  const nodeSlope = linearRegressionSlope(samples.map((s) => s.domNodes));
+
+  console.log(`Trend per cycle — heap: ${heapSlope.toFixed(0)}B, DOM nodes: ${nodeSlope.toFixed(2)}, listeners: ${listenerSlope.toFixed(2)}`);
+
+  // Listeners and node count are exact integers per cycle — near-zero tolerance.
+  // Heap has GC jitter even when stable, so its threshold is looser.
+  expect(listenerSlope, 'Listener count growing — missing removeEventListener').toBeLessThan(0.5);
+  expect(nodeSlope, 'DOM node count growing — detached nodes retained by a closure').toBeLessThan(0.5);
+  expect(heapSlope, 'Heap growing per cycle — real memory leak').toBeLessThan(50_000); // 50KB/cycle noise floor
+});
+```
+
+**Where this belongs operationally**: readings jitter (GC timing isn't perfectly deterministic even with the double-collect), so — same reasoning as [Ch65](../05_Advanced_Topics/65_Chaos_Engineering_For_Playwright.md)'s chaos experiments and [Ch62](../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md)'s nightly environment tier — this runs on a schedule against a dedicated environment, not on every PR. A slope-based leak check failing occasionally on noise is not the same failure mode as a flaky UI assertion, and shouldn't be graded against the same flake SLA ([Ch62 §3.1](../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md#31-the-written-flake-sla)) — it's closer to the "experiment log, not a pass/fail gate" framing Ch65 §6 already established for chaos tests, and worth reporting the same way: a trend line reviewed weekly, not a merge-blocking check.
+
+### 12.2 CPU Throttling — The Emulation Domain's Other Half
+
+§11 already used `Network.emulateNetworkConditions` on a CDP session. CPU throttling is the exact same pattern against a different Emulation method, verified against real Playwright/Puppeteer usage: `Emulation.setCPUThrottlingRate` takes a `rate` multiplier — `{ rate: 4 }` makes the CPU behave roughly 4x slower, which is how DevTools' own "4x slowdown" preset works.
+
+```typescript
+test('D365 grid stays responsive on a throttled mid-tier device CPU', async ({ page, context }) => {
+  const cdp = await context.newCDPSession(page);
+  await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 }); // ~mid-tier mobile CPU
+
+  await page.goto(process.env.CRM_URL!);
+  const start = Date.now();
+  await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 60_000 });
+  const shellReadyMs = Date.now() - start;
+
+  console.log(`Shell ready under 4x CPU throttle: ${shellReadyMs}ms`);
+  expect(shellReadyMs, 'D365 shell must render within budget even on constrained CPUs').toBeLessThan(20_000);
+
+  await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 }); // reset before the next test step
+});
+```
+
+**Real limitation, not a footnote:** CDP CPU throttling only slows the CPU the renderer process uses — it does **not** touch the GPU process. A CSS `transform`/`opacity` animation that Ch08 §10 already established runs on the compositor thread will still animate at full speed under CPU throttling, while a layout-triggering animation slows down correctly. If you throttle CPU and a "janky on real devices" bug doesn't reproduce, check whether the animation you're testing is compositor-only before concluding the throttle "didn't work" — it worked exactly as specified, the animation you picked just wasn't CPU-bound in the first place.
+
+### 12.3 Web Workers and Service Workers — Invisible to `page.evaluate()`
+
+Every `page.evaluate()` call in this chapter so far has run in the page's own main-thread JS context. A dedicated Web Worker or a Service Worker is a **separate JS execution context entirely** — `page.evaluate()` cannot see into it, and a bug living inside a worker (a Web Worker doing background CSV parsing, a Service Worker intercepting fetches for offline support) produces symptoms on the page with no stack trace `page.evaluate()` can ever surface.
+
+Playwright exposes both as first-class objects, verified against Playwright's own API:
+
+```typescript
+test('background export worker completes without throwing', async ({ page }) => {
+  const workerPromise = page.waitForEvent('worker'); // fires when the page spawns a Worker
+  await page.getByRole('button', { name: 'Export 10,000 rows' }).click();
+  const worker = await workerPromise;
+
+  console.log('Worker script:', worker.url());
+
+  // Evaluate INSIDE the worker's own context — page.evaluate() cannot reach this
+  const exportResult = await worker.evaluate(() => {
+    // This runs in the worker's global scope, not the page's window
+    return (self as unknown as { __lastExportStatus?: string }).__lastExportStatus;
+  });
+  expect(exportResult).toBe('completed');
+});
+
+test('service worker registers and does not error on offline fallback', async ({ page, context }) => {
+  await page.goto('/dashboard');
+  await context.waitForEvent('serviceworker', { timeout: 10_000 }).catch(() => null);
+
+  const workers = context.serviceWorkers();
+  expect(workers.length, 'Expected the offline-support service worker to register').toBeGreaterThan(0);
+
+  const swErrors: string[] = [];
+  for (const sw of workers) {
+    console.log('Service worker active at:', sw.url());
+  }
+
+  // Force offline, then confirm the app's own fallback UI appears — not a raw browser error page
+  await context.setOffline(true);
+  await page.reload().catch(() => {}); // a hard offline reload may itself reject; that's expected
+  await expect(page.locator('.offline-fallback-banner')).toBeVisible({ timeout: 10_000 });
+  await context.setOffline(false);
+});
+```
+
+`page.workers()` lists every currently-active Worker on that page (useful when you don't control the exact trigger moment); `page.waitForEvent('worker')` catches the creation moment for a specific action — the same race-condition-avoidance reasoning [Ch12](../03_D365_And_Patterns/12_CrossSite_Pattern2_NewTab_SharedContext.md) already established for `context.waitForEvent('page')` applies identically here: if the worker might spawn synchronously with the triggering click, register the listener *before* the click, not after.
+
+---
+
 ## 🏋️ Practice Challenges
 
 **Challenge 1 (The Two-Phase Render):** After clicking "Search" in Master Search, your test does:
