@@ -103,6 +103,7 @@
 | &nbsp; | ↳ Ship it publicly: [`career/PORTFOLIO_PLAN.md`](./career/PORTFOLIO_PLAN.md) (4-tier plan: framework repo, capstone tool, OSS PR, writing) | 30 min | **Turning what you've learned into evidence a hiring manager can click on** | Ch62 |
 | 63     | [Static Analysis — ESLint for TypeScript & Playwright](./05_Advanced_Topics/63_Static_Analysis_ESLint_TypeScript_Playwright.md)                                                          | 60 min | **Type-aware linting mechanism, error/warn/off rule tiers, overrides per file glob, editor→pre-commit→CI enforcement layers** | Ch26, Ch36                            |
 | 64     | [Dynamic Locators & Data Structures in POMs](./05_Advanced_Topics/64_Dynamic_Locators_And_Data_Structures_In_POMs.md)                                                                     | 60 min | **hasText substring trap, XPath-injection-by-apostrophe, parse-then-compare pattern, Set for dedup, Map for O(1) UI-vs-API cross-reference** | Ch02, Ch34                            |
+| 65     | [Chaos Engineering for Playwright — Fault Injection, Not Fixed Scenarios](./05_Advanced_Topics/65_Chaos_Engineering_For_Playwright.md)                                                    | 90 min | **Steady-state hypothesis harness, mid-flight network partition, chaos-proxy API degradation, simulated browser crash via CDP** | Ch08, Ch61, Ch26                      |
 
 **Bolded chapters** = Advanced content built on your real codebase.
 **Ch33–36** = Read alongside the corresponding guide folder (DSA, OOP, TypeScript) for maximum cross-pollination.
@@ -113,13 +114,13 @@
 **Ch52–54** = Depth testing: component isolation, mutation score, synthetic monitoring — the upper tier of SDET competency.
 **Ch55** = Debugging surfaces: Inspector, Trace Viewer, UI Mode — hands-on only, no shortcuts.
 **Ch56–60** = Reader-requested fills: config deep-dive (with companion theory catalog at Ch57), auth taxonomy beyond storageState, file I/O, Docker, and an honest tool comparison for interview prep.
-**Staff/Principal extension (planned, not yet fully built):** the competencies below are real and already assessed in [`career/READINESS_RUBRIC.md`](./career/READINESS_RUBRIC.md) (12 competency areas, Junior→Principal bands), but not every one has a matching teaching chapter yet. Confirmed already covered: observability/OpenTelemetry ([`framework/utilities/api/TELEMETRY_README.md`](./framework/utilities/api/TELEMETRY_README.md) — real OTel spans + W3C traceparent propagation on `ApiCore`) and test impact analysis (Ch48 §11, "Test Impact Analysis with madge"). ADRs are covered too, as real worked examples: [`framework/docs/adrs/`](./framework/docs/adrs/README.md) (6 real Playwright-specific ADRs). Genuinely not yet written: chaos engineering, self-healing locators (mechanism-level), SLO/error-budget-driven testing as a derived topic, and a chapter that teaches senior *decision-making* rather than just labeling it — see the Roadmap table below for the honest list.
+**Staff/Principal extension:** the competencies below are real and already assessed in [`career/READINESS_RUBRIC.md`](./career/READINESS_RUBRIC.md) (12 competency areas, Junior→Principal bands), but not every one has a matching teaching chapter yet. Confirmed already covered: observability/OpenTelemetry ([`framework/utilities/api/TELEMETRY_README.md`](./framework/utilities/api/TELEMETRY_README.md) — real OTel spans + W3C traceparent propagation on `ApiCore`), test impact analysis (Ch48 §11, "Test Impact Analysis with madge"), and **chaos engineering** ([Ch65](./05_Advanced_Topics/65_Chaos_Engineering_For_Playwright.md) — fault injection built on Ch08's CDP model and Ch61's network APIs, verified against Netflix's real Chaos Monkey origin and the 2017 Principles of Chaos Engineering). ADRs are covered too, as real worked examples: [`framework/docs/adrs/`](./framework/docs/adrs/README.md) (6 real Playwright-specific ADRs). Genuinely not yet written: self-healing locators (mechanism-level), SLO/error-budget-driven testing as a derived topic, and a chapter that teaches senior *decision-making* rather than just labeling it — see the Roadmap table below for the honest list.
 
 > **Total estimated study time: ~175–210 hours** (60 core chapters + 10 Module II chapters x 60–90 min + quizzes)
 
 ---
 
-> **Principal-level note:** Chapter 62 (Enterprise Test Operations) and the `career/` folder (READINESS_RUBRIC, RFC_TEMPLATE, TEST_STRATEGY_TEMPLATE, mock interviews) represent competencies expected at staff and principal SDET levels — platform ownership, cross-team leadership, and infrastructure resilience. They assume mastery of Chapters 01–48. A dedicated chapter numbered in the 65+ range for chaos engineering, self-healing locators, and senior decision-making is planned but not yet written — see the Roadmap below.
+> **Principal-level note:** Chapter 62 (Enterprise Test Operations), [Chapter 65](./05_Advanced_Topics/65_Chaos_Engineering_For_Playwright.md) (Chaos Engineering), and the `career/` folder (READINESS_RUBRIC, RFC_TEMPLATE, TEST_STRATEGY_TEMPLATE, mock interviews) represent competencies expected at staff and principal SDET levels — platform ownership, cross-team leadership, and infrastructure resilience. They assume mastery of Chapters 01–48. Chapters for self-healing locators and senior decision-making are planned but not yet written — see the Roadmap below.
 
 ## Dependency Map
 
@@ -199,6 +200,7 @@ Ch57 (Login Taxonomy)      → after Ch06+Ch16+Ch28 (fixtures + storageState + d
 Ch58 (Uploads/Downloads)   → after Ch07 (E2E steps)
 Ch59 (Docker)              → after Ch25+Ch48 (CI + sharding)
 Ch60 (Tool Comparison)     → after Ch32 (interview prep)
+Ch65 (Chaos Engineering)   → after Ch08+Ch61 (CDP crash signature + network APIs to inject non-deterministically)
 ```
 
 ---
@@ -358,12 +360,12 @@ These are real gaps, verified empty by grepping the whole module before listing 
 **Already covered, previously miscategorized as missing:**
 - **OpenTelemetry / APM integration** — real, working: [`framework/utilities/api/TELEMETRY_README.md`](./framework/utilities/api/TELEMETRY_README.md) (OTel spans on `ApiCore`, W3C traceparent propagation, OTLP exporter config for Grafana Tempo/Jaeger)
 - **Test impact analysis** — real, working: Ch48 §11, "Test Impact Analysis with madge"
+- **Chaos engineering** — real, working: [Ch65](./05_Advanced_Topics/65_Chaos_Engineering_For_Playwright.md), "Chaos Engineering for Playwright" (mid-flight network partitions, chaos-proxy API degradation, and simulated browser crashes, all built on Ch08's CDP model and Ch61's network APIs; the browser/application layer only — Gremlin/Toxiproxy/Chaos Mesh remain the honest answer for infrastructure-level chaos, named as such in the chapter)
 
 **Genuinely not yet written:**
 
 | Topic                                                                                 | Why deferred                                                                                            | When to revisit                                                          |
 | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| **Chaos engineering** (network partitions, API degradation, browser crash simulation) | Toolchain (Gremlin, Toxiproxy, Chaos Mesh) is still in flux for browser testing                         | Planned: `05_Advanced_Topics/65_Chaos_Engineering_For_Playwright.md`     |
 | **Cloud device farms** (BrowserStack, Sauce Labs, AWS Device Farm)                    | Vendor-specific config; quickly stale                                                                   | On demand — when CI capacity becomes a bottleneck                        |
 | **Property-based testing** (`fast-check` + Playwright)                                | Niche pattern, hard to motivate for UI tests                                                            | Planned: new section inside Ch34 (the shrinking/minimization search is itself an algorithm) |
 | **Mobile / Appium hands-on**                                                          | Cross-module concern; lives in `23_Mobile_Dev_And_Testing/`                                             | Expand that module instead                                               |
