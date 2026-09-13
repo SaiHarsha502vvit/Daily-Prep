@@ -417,6 +417,105 @@ ANTHROPIC_API_KEY=... BASE_URL=http://localhost:4200 \
 
 **Critical limitation:** the script heals what it can see in the accessibility tree. If your test uses visual selectors (`.oxd-table-row:nth-child(2)`) that don't appear in the tree, the AI cannot heal them. Another reason to write accessible selectors first.
 
+### 6.1 The other kind of "self-healing" — runtime fallback, no LLM required
+
+The script above heals your **test source file**, offline, in a batch you run and review as a diff — every "healing" is an LLM call with real latency and real cost, and a human looks at the result before it merges. That is one legitimate meaning of "self-healing locators." It is not the meaning most job postings and the [`career/READINESS_RUBRIC.md`](../career/READINESS_RUBRIC.md) AI-Assisted Testing competency have in mind, and it is not what dedicated tools like [Healenium](https://healenium.io/docs/how_healenium_works) do. That version heals **at runtime, inline, deterministically, with no LLM call at all** — and it's the mechanism this section derives.
+
+**The real mechanism** (per Healenium's own documentation): when a locator throws a not-found error, the tool doesn't fail the test immediately. It takes the current page's DOM, retrieves the element's **previously successful state** saved from an earlier passing run, runs a tree-comparison algorithm (Healenium's docs name an LCS — Longest Common Subsequence — comparison over the element's ancestor path) against every candidate element still on the page, and picks whichever candidate scores highest. It reports what it healed to — with a screenshot and a feedback control — rather than silently succeeding. Healenium doesn't publish the exact weighting formula, so the implementation below is a from-scratch illustration of the same *shape* of algorithm, not a reproduction of any tool's source.
+
+**Step 1 — capture a fingerprint the last time the locator worked**, not just the selector string itself:
+
+```typescript
+interface LocatorFingerprint {
+  tag: string;
+  id: string | null;
+  classes: string[];
+  attrs: Record<string, string | null>;
+  text: string;
+  path: string[]; // ancestor tag chain, e.g. ['html', 'body', 'div.app', 'form.login-form', 'button']
+}
+```
+
+**Step 2 — score every current candidate against the stored fingerprint**, combining independent signals instead of trusting any single one (this is the part a naive implementation gets wrong — matching on text alone, for example, would just as happily "heal" a login *button* into a same-labeled nav *link*):
+
+```typescript
+function jaccard(a: string[], b: string[]): number {
+  const setA = new Set(a), setB = new Set(b);
+  if (setA.size === 0 && setB.size === 0) return 1;
+  const intersection = [...setA].filter((x) => setB.has(x)).length;
+  return intersection / new Set([...setA, ...setB]).size;
+}
+
+// Same primitive Healenium's docs name for the ancestor-path comparison —
+// a 2D DP table, the general-purpose diff algorithm, not string-specific.
+function lcsLength<T>(a: T[], b: T[]): number {
+  const dp: number[][] = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      // Non-null: i, j stay within the (a.length+1) x (b.length+1) table by construction.
+      dp[i]![j] = a[i - 1] === b[j - 1] ? dp[i - 1]![j - 1]! + 1 : Math.max(dp[i - 1]![j]!, dp[i]![j - 1]!);
+    }
+  }
+  return dp[a.length]![b.length]!;
+}
+
+function scoreCandidate(stored: LocatorFingerprint, candidate: LocatorFingerprint): number {
+  const tagScore = stored.tag === candidate.tag ? 1 : 0;
+  const classScore = jaccard(stored.classes, candidate.classes);
+  const attrEntries = (f: LocatorFingerprint) =>
+    Object.entries(f.attrs).filter(([, v]) => v !== null).map(([k, v]) => `${k}=${v}`);
+  const attrScore = jaccard(attrEntries(stored), attrEntries(candidate));
+  const textScore = stored.text.trim().toLowerCase() === candidate.text.trim().toLowerCase() ? 1 : 0;
+  const pathScore = lcsLength(stored.path, candidate.path) / Math.max(stored.path.length, candidate.path.length);
+
+  return tagScore * 0.25 + classScore * 0.15 + attrScore * 0.15 + textScore * 0.2 + pathScore * 0.25;
+}
+```
+
+**Verified against a real scenario** — a refactor renames `id="login-btn"` to `id="btn-login"` (kept everything else), against a DOM that also has a same-page "Cancel" button and an unrelated nav link that happens to share the exact text "Log in":
+
+```
+score=1.000  <button id="btn-login"> "Log in"     ← correct match: id doesn't matter, everything else is identical
+score=0.550  <button id="btn-cancel"> "Cancel"     ← same tag & position, wrong text/attrs — correctly ranked far below
+score=0.350  <a id="null"> "Log in"                ← same text, WRONG tag & path — proves text-only matching would have failed here
+```
+
+`id` is deliberately absent from the scoring — matching on the one attribute that's *known* to have changed would defeat the purpose. Re-running with the real login button removed from the DOM entirely (simulating an actual deletion, not a rename) produces a top score of 0.550 — below a 0.7 threshold — and the healer correctly **refuses to guess**, exactly the "auto-unquarantine still needs human confirmation" boundary [`career/mock_interviews/ladder_system.md`](../career/mock_interviews/ladder_system.md) already flags as the thing to check for in a senior candidate: a healer that always returns *something* is more dangerous than a locator that fails loudly.
+
+**Wiring it into Playwright** — try the recorded locator first; only fall back to scoring when it resolves to nothing, and always log the heal:
+
+```typescript
+async function healingLocator(page: Page, selector: string, fingerprint: LocatorFingerprint) {
+  const primary = page.locator(selector);
+  if (await primary.count() > 0) return primary;
+
+  const candidates = await page.locator(fingerprint.tag).evaluateAll((els) =>
+    els.map((el, index) => ({
+      tag: el.tagName.toLowerCase(),
+      id: el.id || null,
+      classes: Array.from(el.classList),
+      attrs: { type: el.getAttribute('type'), 'data-testid': el.getAttribute('data-testid') },
+      text: el.textContent ?? '',
+      path: [] as string[], // walk el.parentElement chain the same way the fingerprint was captured
+      index,
+    })),
+  );
+
+  const scored = candidates
+    .map((c) => ({ index: c.index, score: scoreCandidate(fingerprint, c) }))
+    .sort((a, b) => b.score - a.score);
+  const top = scored[0];
+
+  if (top === undefined || top.score < 0.7) {
+    throw new Error(`No confident match for healed locator "${selector}" (best score: ${top?.score ?? 0})`);
+  }
+  console.warn(`HEALED: "${selector}" -> ${fingerprint.tag}[${top.index}] (score ${top.score.toFixed(3)})`);
+  return page.locator(fingerprint.tag).nth(top.index);
+}
+```
+
+**When to reach for which:** the LLM script in §6 is the right tool when selectors drift broadly across a whole page redesign and you want one AI pass to propose new selectors for a human to review before merging. This section's fallback-and-score approach is the right tool when you want tests to survive *small*, *individual* attribute renames automatically, in CI, with zero API cost and zero non-determinism — at the price of maintaining fingerprints and accepting that a bad threshold either heals too eagerly (masking real bugs, per [`00_Pathways/PATHWAY_02_PROFESSIONAL.md`](../00_Pathways/PATHWAY_02_PROFESSIONAL.md)'s own interview question) or not eagerly enough (defeating the point). Neither replaces fixing the underlying flakiness in [Ch26](./26_Flakiness_Diagnosis_and_Fixing.md) — both exist to buy time while a real fix lands, not to avoid writing one.
+
 ---
 
 ## 7. The Seven Failure Modes (War Stories)
