@@ -46,9 +46,11 @@
 | 19     | [Console Scripts & Security Testing](./05_Advanced_Topics/19_Advanced_Console_Scripts_Security.md)                                                                                        | 45 min | **12 runnable scripts, cookie audit, headers, auth enforcement, IDOR, XSS**                                                   | Ch03                                  |
 | 20     | [Practice Resources & Learning Path](./00_Pathways/PATHWAY_01_LEARNING.md)                                                                                    | 30 min | **D365 trial, OrangeHRM, JSONPlaceholder, 10-week challenges**                                                                | All                                   |
 | 21     | [Enterprise Project Structure — The Why](./04_Enterprise_Architecture/21_Enterprise_Project_Structure.md)                                                                                 | 60 min | **Folder justification, enums, endpoints, headers, payload factories, clients**                                               | Ch05, Ch06                            |
+| &nbsp; | ↳ Worked examples: [`framework/docs/adrs/`](./framework/docs/adrs/README.md) (6 real ADRs) then write your own with [`career/RFC_TEMPLATE.md`](./career/RFC_TEMPLATE.md) | 45 min | **Real documented tradeoffs for this exact framework, then practice documenting one of your own** | Ch21 |
 | 22     | [Headers, Payloads & Endpoints — Factory Pattern](./04_Enterprise_Architecture/22_Headers_Payloads_Endpoints_Factory.md)                                                                  | 60 min | **Static factories, override pattern, call chain traced end-to-end**                                                          | Ch21                                  |
 | 23     | [APIUtils — Your HTTP Library](./04_Enterprise_Architecture/23_APIUtils_HTTP_Library.md)                                                                                                  | 60 min | **Generic wrapper, composition vs inheritance, fixture injection chain**                                                      | Ch06, Ch22                            |
 | 24     | [Test Script Architecture — POMs Before Steps](./04_Enterprise_Architecture/24_Test_Script_Architecture.md)                                                                               | 60 min | **Why POMs at top, data accumulator vs let, step naming, no data in specs**                                                   | Ch05, Ch07, Ch23                      |
+| &nbsp; | ↳ Plan at this scale: [`career/TEST_STRATEGY_TEMPLATE.md`](./career/TEST_STRATEGY_TEMPLATE.md) | 45 min | **Every layer you've now seen (pyramid, tools, environments, CI, data, flakiness, cost) as one planning document** | Ch01-24 |
 | 25     | [CI/CD — Playwright in GitHub Actions & Azure DevOps](./05_Advanced_Topics/25_CICD_Integration_GitHub_Azure.md)                                                                           | 60 min | **Workflow YAML, sharding, secrets, HTML reports, env check script**                                                          | Ch09, Ch16                            |
 | 26     | [Flakiness — Diagnose & Fix Unstable Tests](./05_Advanced_Topics/26_Flakiness_Diagnosis_and_Fixing.md)                                                                                    | 60 min | **9 flakiness types, trace viewer guide, quarantine pattern, flakiness metrics**                                              | Ch08, Ch17                            |
 | 27     | [Advanced TypeScript Patterns for SDETs](./05_Advanced_Topics/27_Advanced_TypeScript_for_SDETs.md)                                                                                        | 60 min | **Generics, discriminated unions, template literal types, mapped types, satisfies**                                           | Ch04, Ch22                            |
@@ -57,6 +59,7 @@
 | 30     | [Database Verification — Direct SQL Assertions](./05_Advanced_Topics/30_Database_Verification_Direct_SQL.md)                                                                              | 60 min | **PostgreSQL/SQL Server client, 3-layer verify, audit log assertions, DB fixture**                                            | Ch07, Ch15, Ch28                      |
 | 31     | [API Mocking with `page.route()`](./05_Advanced_Topics/31_API_Mocking_page_route.md)                                                                                                      | 60 min | **Error states, empty states, timeout simulation, HAR replay, when NOT to mock**                                              | Ch08, Ch15                            |
 | 32     | [SDET Interview Prep — System Design, Technical & Behavioral](./06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md)                                                                          | 90 min | **LADDER framework, deep-dives, STAR answers, live coding challenges, ask-backs**                                             | All                                   |
+| &nbsp; | ↳ Self-assess now: [`career/READINESS_RUBRIC.md`](./career/READINESS_RUBRIC.md) (12 competencies, Junior→Principal) + [`career/mock_interviews/`](./career/mock_interviews/ladder_system.md) (5 transcripts — start with the system-design one) | 90 min | **Where you actually are vs. where you think you are; senior reasoning modeled, not just described** | Ch32 |
 | &nbsp; | **——— SDET → SDE BRIDGE ——— Cross-referenced with DSA / OOP / TypeScript guides**                                                                                                         |        |                                                                                                                               |                                       |
 | 33     | [SDET→SDE CS Thinking — Data Structures, Graphs, Patterns](./06_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md)                                                                         | 90 min | **HashMap in TestDataManager, Stack cleanup order, DOM as tree, GoF patterns map**                                            | `02_DS`, `03_Algo`, `06_OOP`, `14_MM` |
 | 34     | [Algorithms in Test Automation — Search, Sort, Pattern Recognition](./06_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md)                                                          | 120 min | **Sliding window pagination, two-pointer dual context, binary search, greedy scheduling, heap-based CI triage (benchmarked), Union-Find failure clustering** | `03_Algo`, `14_MM`, `20_IM`           |
@@ -97,6 +100,7 @@
 | 60     | [Tool Comparison — Cypress / Selenium / WebdriverIO](./06_SDET_to_SDE_Bridge/60_Tool_Comparison_Cypress_Selenium_WDIO.md)                                                                 | 60 min | **Honest trade-offs, architecture, locator model, cross-domain, parallel, API testing, when to pick what — interview prep**   | Ch32, `23_Mobile_Dev_And_Testing/01`  |
 | 61     | [Emulation & Environment Simulation — Devices, Clock, Network, Locale](./05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md)                                                    | 75 min | **devices[] matrix, page.clock time travel, CDP throttling, offline, geolocation/permissions, locale/timezone, aria snapshots** | Ch26, Ch29, Ch49, Ch56                |
 | 62     | [Enterprise Test Operations — Running Automation at Scale](./04_Enterprise_Architecture/62_Enterprise_Test_Operations.md)                                                                 | 90 min | **Environment tiers, ephemeral PR envs, test data as a service, flake SLA, CODEOWNERS federation, gate tiers, metrics that keep suites funded** | Ch25, Ch26, Ch28, Ch48                |
+| &nbsp; | ↳ Ship it publicly: [`career/PORTFOLIO_PLAN.md`](./career/PORTFOLIO_PLAN.md) (4-tier plan: framework repo, capstone tool, OSS PR, writing) | 30 min | **Turning what you've learned into evidence a hiring manager can click on** | Ch62 |
 | 63     | [Static Analysis — ESLint for TypeScript & Playwright](./05_Advanced_Topics/63_Static_Analysis_ESLint_TypeScript_Playwright.md)                                                          | 60 min | **Type-aware linting mechanism, error/warn/off rule tiers, overrides per file glob, editor→pre-commit→CI enforcement layers** | Ch26, Ch36                            |
 | 64     | [Dynamic Locators & Data Structures in POMs](./05_Advanced_Topics/64_Dynamic_Locators_And_Data_Structures_In_POMs.md)                                                                     | 60 min | **hasText substring trap, XPath-injection-by-apostrophe, parse-then-compare pattern, Set for dedup, Map for O(1) UI-vs-API cross-reference** | Ch02, Ch34                            |
 
@@ -159,10 +163,24 @@ Ch21 (Project Structure)       Ch22 (Headers/Payloads/Endpoints)
                   Ch23 (APIUtils)
                        ↓
               Ch24 (Test Script Architecture)
+                       ↓
+         career/TEST_STRATEGY_TEMPLATE.md ← you've now seen every layer
+                                             this template asks you to plan for
 
 Quiz 01 → after Chapters 01–16
 Quiz 02 → after Chapters 01–18
 Quiz 02 Solutions → after attempting Quiz 02 (self-check)
+
+career/RFC_TEMPLATE.md + framework/docs/adrs/ → after Ch21 (Project Structure) — the ADRs are
+  6 real, worked examples of exactly the kind of tradeoff Ch21 discusses; read them as case
+  studies, then use RFC_TEMPLATE.md to write your own for a decision in your own codebase
+
+career/READINESS_RUBRIC.md + career/mock_interviews/ → after Ch32 (interview prep) — self-assess
+  where you actually are across 12 competencies (don't skip straight to Principal), then read
+  the mock interviews to see senior-level thinking modeled in real dialogue, not just described
+
+career/PORTFOLIO_PLAN.md → after Ch62 (Enterprise Test Operations) — turn what you've learned
+  into public proof; the plan's own 6-month milestone table assumes you've reached about here
 
 Ch45 (AI/MCP)              → after Ch05+Ch06+Ch21 (needs POM, fixtures, project structure)
 Ch46 (BDD with Cucumber)   → after Ch06+Ch07 (steps wrap fixtures + POMs)
