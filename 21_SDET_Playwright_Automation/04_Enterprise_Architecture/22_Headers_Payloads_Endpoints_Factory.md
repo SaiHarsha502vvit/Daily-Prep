@@ -46,7 +46,7 @@ const CITATIONS_URL = `${process.env.API_BASE_URL}/api/v2/citations`;
 const CITATION_BY_ID = `${process.env.API_BASE_URL}/api/v2/citations/${id}`; // ← ERROR: `id` is not defined at this module-top scope
 ```
 
-`i` is not in scope when the constant is defined — it would need to be `undefined` or use a function:
+`id` is not in scope when the constant is defined — it would need to be `undefined` or use a function:
 
 ```typescript
 // ❌ Template literal works but creates a CONSTANT with the current URL
@@ -794,6 +794,8 @@ export const Endpoints = {
 ```
 
 **The key insight**: the convenience aliases (`Endpoints.citations.create`) let existing tests continue without modification. The explicit `v1`/`v2` namespaces let you target specific versions when needed. This is the strangler-fig migration pattern applied to test infrastructure.
+
+**Verified, not assumed — the alias referencing `Endpoints` from inside `Endpoints`'s own definition looks like it shouldn't work, but does.** `create: () => Endpoints.citations.v2.create()` reads the `Endpoints` binding from within the object literal that is still being constructed to produce `Endpoints` itself. Compiled and ran this exact shape rather than trusting it by inspection: it typechecks clean and, at runtime, `Endpoints.citations.create()` correctly returns the v2 URL. The reason it works: the arrow function's body isn't evaluated when the object literal is built — only when something later *calls* `.create()`. By the time any caller does that, the `const Endpoints = {...}` assignment has already completed, so the closure's lookup of `Endpoints` resolves fine. This is safe specifically because it's a function wrapping the reference, not a direct value copy — `create: Endpoints.citations.v2.create` (no arrow, no parens) would fail, since that tries to read `Endpoints` immediately, before the assignment finishes.
 
 </details>
 
