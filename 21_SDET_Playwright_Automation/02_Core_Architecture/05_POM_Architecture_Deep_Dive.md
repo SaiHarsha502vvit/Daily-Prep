@@ -833,6 +833,53 @@ export { expect } from "@playwright/test";
 
 ---
 
+## 14. The Missing Dimension: Which Document Is `this.page` Actually Rooted In?
+
+Every locator built so far in this chapter comes off `this.page` — `this.page.getByText(...)`, `this.page.locator(...)`. That is only correct if every element the class cares about lives in the same document `this.page` represents. [Ch10 §1](../03_D365_And_Patterns/10_Dynamics365_CRM_Testing.md#1-d365-dom-anatomy--the-unified-client-interface-uci) already established that D365's UCI does **not** guarantee this: the CommandBar and top navigation sit on the main page, but the entire Entity Form — every field, every sub-grid, every Quick View — renders inside `contentIFrame0`, a second, independent document tree that `page.locator()` cannot see into at all. [Ch02 §6](../01_Foundations/02_Enterprise_Locators_XPath.md#6-shadow-dom--why-some-elements-are-invisible-to-xpath-and-what-playwright-does-about-it) already derived why this boundary behaves differently from Shadow DOM: there's no automatic piercing for IFrames the way there is for shadow roots — crossing one is an explicit, mandatory context switch, not an implementation detail Playwright papers over.
+
+That means a real D365 page object has a design decision to make that a plain-web page object never does: **which locators belong to `this.page`'s own document, and which belong to a `FrameLocator`'s document instead?** Get it wrong and the symptom isn't a compile error — it's `this.someLocator.click()` throwing "element not found" against a page where you can see the element sitting right there in DevTools, because the locator was never looking at the right document to begin with.
+
+**The fix is structural, not per-locator.** Playwright's `FrameLocator` exposes the same locator-creation methods as `Page` — `.locator()`, `.getByRole()`, `.getByText()`, `.getByTestId()`, and so on all exist on both (verified directly against `playwright-core`'s own type declarations, not assumed from the name). That means a page object doesn't need a different *shape* depending on where its elements live — it needs a different *root* passed into the same constructor pattern already established in Section 2:
+
+```typescript
+import { type Page, type FrameLocator, type Locator } from "@playwright/test";
+
+// A page that lives ENTIRELY inside the content IFrame — the common case per Ch10 §1:
+export class EntityFormPage {
+  private readonly root: FrameLocator;
+  readonly saveConfirmationBanner: Locator;
+
+  constructor(page: Page) {
+    // The ONE place this class admits it's inside an IFrame:
+    this.root = page.frameLocator('iframe[name="contentIFrame0"]');
+    this.saveConfirmationBanner = this.root.locator(".success-banner");
+  }
+  // Every other locator in this class is built off `this.root`, never `page` directly.
+}
+
+// A page that STRADDLES the boundary — CommandBar (outside) + Entity Form (inside),
+// exactly the D365 UCI layout Ch10 §1 diagrams:
+export class RecordPage {
+  private readonly frame: FrameLocator;
+  readonly saveButton: Locator; // outside the IFrame — CommandBar
+  readonly accountNameField: Locator; // inside the IFrame — Entity Form
+
+  constructor(page: Page) {
+    // `page` is only needed transiently here, to build `frame` and `saveButton` —
+    // it isn't stored as a field, because nothing else in this class reads it again.
+    this.frame = page.frameLocator('iframe[name="contentIFrame0"]');
+    this.saveButton = page.getByRole("button", { name: "Save" }); // ← from `page`
+    this.accountNameField = this.frame.locator('[data-id="name.fieldControl"]'); // ← from `frame`
+  }
+}
+```
+
+`RecordPage` is the honest version of what a real D365 page object looks like: two different locator-construction roots living side by side in the same class, because the DOM itself has two roots. Style 1 vs. Style 2 (Section 3) was about *how* you store a reference to an element. This is about *where that element's document even is* — a question that has to be answered before Style 1 vs. Style 2 becomes relevant at all, and one the `MasterSearchPage` walkthrough earlier in this chapter left implicit by only ever showing `this.page.locator(...)`.
+
+**One consequence worth naming:** if `EntityFormPage` above gets composed into a larger page (Section 10's composition approach) alongside a `WaitHelper`, that `WaitHelper` also needs to know which root to wait against — a `WaitHelper` built to take a `Page` in its constructor silently can't see anything inside `contentIFrame0`. The same "does this need `page` or `frame`?" question that shapes a page object's own locators shapes every collaborator it hands work off to as well.
+
+---
+
 ## 🏋️ Practice Challenges
 
 **Challenge 1 (Lazy Evaluation):** In your `MasterSearchPage` constructor, you have:
