@@ -1,6 +1,6 @@
 # 35. OOP Design Patterns Deep-Dive for SDETs
 
-**Navigation**: [← Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md) | [Index](../00_INDEX.md) | [→ Chapter 36: TypeScript Type System Mastery](./36_TypeScript_Type_System_Mastery.md)
+**Navigation**: [← Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md) | [Index](../00_INDEX.md) | [→ Chapter 36: TypeScript Type System Mastery](./36_TypeScript_Type_System_Mastery.md)
 
 **Cross-references (read these alongside):**
 
@@ -88,10 +88,10 @@ VIOLATION in test code:
     async getFirstResult() { ... }
 
     // API calls
-    async createCitationViaAPI(payload) { ... }  // ← WRONG: this belongs in a client class
+    async createCitationViaAPI(payload) { ... }  // ← WRONG: this belongs in a client class
 
     // Assertions
-    expect(await this.getStatus()).toBe('PENDING');  // ← WRONG: assertions in POM
+    expect(await this.getStatus()).toBe('PENDING');  // ← WRONG: assertions in POM
   }
 
 WHY IT'S WRONG:
@@ -633,11 +633,11 @@ private async processResponse<T>(response, method, url, options): Promise<ApiRes
   const contentType = response.headers()['content-type'] ?? '';
   let body: T;
   if (contentType.includes('application/json')) {
-    body = await response.json() as T;           // ← JSON subcase
+    body = await response.json() as T;           // ← JSON subcase
   } else if (status === 204) {
-    body = undefined as T;                        // ← No Content subcase
+    body = undefined as T;                        // ← No Content subcase
   } else {
-    body = await response.text() as T;            // ← Plain text subcase
+    body = await response.text() as T;            // ← Plain text subcase
   }
 
   // Step 4: Return (fixed)
@@ -704,6 +704,7 @@ await page.route("**/api/v2/citations/**", async (route) => {
 **Managed client as a proxy:**
 
 ```typescript
+// ❌ BROKEN — the spread silently discards every method except `create`.
 // In the fixture, we wrapped CitationsApiClient with a proxy
 // that auto-registers for cleanup:
 citationsClient: async ({ request, account, testDataManager }, use) => {
@@ -711,7 +712,7 @@ citationsClient: async ({ request, account, testDataManager }, use) => {
 
   // This IS a proxy — same interface, adds cleanup registration
   const proxiedClient = {
-    ...realClient,
+    ...realClient, // ← the bug lives here
     create: async (
       payload: CreateCitationPayload,
     ): Promise<CitationApiResponse> => {
@@ -725,10 +726,93 @@ citationsClient: async ({ request, account, testDataManager }, use) => {
 
   await use(proxiedClient as CitationsApiClient);
 };
-// Tests call proxiedClient.create() thinking it's the real client.
-// The proxy adds cleanup tracking transparently.
-// Same result from the test's perspective. Extra behaviour added without changing CitationsApiClient.
 ```
+
+**Why that proxy is broken — object spread does not copy prototype methods.**
+`{ ...instance }` copies only the instance's **own enumerable** properties. Class
+methods live on `CitationsApiClient.prototype`, not on the instance, so they are not
+own properties and the spread drops all of them. The `as CitationsApiClient` cast is
+what makes this dangerous: it tells TypeScript to stop checking precisely where the
+object stopped satisfying the interface, so nothing fails at compile time. Verified
+against the shape above:
+
+```js
+class CitationsApiClient {
+  constructor(token) { this.token = token; }
+  async create(p) { /* … */ }
+  async delete(id) { /* … */ }
+  async getById(id) { /* … */ }
+}
+const real = new CitationsApiClient("tok");
+const proxied = { ...real, create: async (p) => real.create(p) };
+
+Object.keys(real);      // → [ 'token' ]              ← methods are NOT own properties
+Object.keys(proxied);   // → [ 'token', 'create' ]
+typeof proxied.create;  // → 'function'   (we defined it explicitly)
+typeof proxied.delete;  // → 'undefined'  ← LOST
+typeof proxied.getById; // → 'undefined'  ← LOST
+
+proxied.delete("CIT-001");
+// → TypeError: proxied.delete is not a function
+```
+
+So `create()` works, and the first test that calls `citationsClient.getById()` or
+`.delete()` dies with `is not a function` — a failure that looks like a fixture-wiring
+problem and has nothing obviously to do with the Proxy pattern.
+
+**The fix — wrap the instance, don't copy it.** Keep the real object (prototype chain
+intact) and replace just the one method:
+
+```typescript
+// ✅ CORRECT — prototype chain preserved; only `create` is decorated.
+citationsClient: async ({ request, account, testDataManager }, use) => {
+  const client = new CitationsApiClient(request, account.accessToken);
+
+  const originalCreate = client.create.bind(client);
+  client.create = async (
+    payload: CreateCitationPayload,
+  ): Promise<CitationApiResponse> => {
+    const citation = await originalCreate(payload);
+    testDataManager.track("citation", citation, () =>
+      client.delete(citation.citationId),
+    );
+    return citation;
+  };
+
+  await use(client); // no cast needed — it IS a CitationsApiClient
+};
+```
+
+Note that the cast disappears. Needing `as SomeClass` to make a "proxy" typecheck is
+itself the smell: a real proxy satisfies the interface structurally, so it shouldn't
+need to be forced. [Ch28 §Managed client](../05_Advanced_Topics/28_Test_Data_Lifecycle_and_Cleanup.md)
+builds the same decorated client for test-data cleanup and hit this identical trap —
+if you are implementing auto-tracking, read both.
+
+If you genuinely need to leave the original object untouched, use the language's own
+`Proxy`, which forwards everything it doesn't intercept:
+
+```typescript
+const proxiedClient = new Proxy(realClient, {
+  get(target, prop, receiver) {
+    if (prop === "create") {
+      return async (payload: CreateCitationPayload) => {
+        const citation = await target.create(payload);
+        testDataManager.track("citation", citation, () =>
+          target.delete(citation.citationId),
+        );
+        return citation;
+      };
+    }
+    return Reflect.get(target, prop, receiver); // everything else passes through
+  },
+});
+```
+
+That is the GoF Proxy pattern implemented with the runtime's actual proxy primitive —
+`delete`, `getById`, and any method added later keep working without the wrapper being
+updated. Tests call `citationsClient.create()` thinking it's the real client; the
+cleanup tracking is added transparently, and no method is silently lost.
 
 ---
 
@@ -848,7 +932,7 @@ export const test = base.extend<{ consoleErrorGuard: void }>({
       const jsErrors: string[] = [];
       page.on("pageerror", (err) => jsErrors.push(err.message));
 
-      await use(); // ← test runs here (the "variable" step — different per test)
+      await use(); // ← test runs here (the "variable" step — different per test)
 
       // Template step: assert no JS errors (fixed — same for ALL tests)
       if (jsErrors.length > 0) {
@@ -859,7 +943,7 @@ export const test = base.extend<{ consoleErrorGuard: void }>({
       }
     },
     { auto: true },
-  ], // ← auto: true means this fixture runs for EVERY test automatically
+  ], // ← auto: true means this fixture runs for EVERY test automatically
   // No test needs to declare it. It's always active.
 });
 ```
