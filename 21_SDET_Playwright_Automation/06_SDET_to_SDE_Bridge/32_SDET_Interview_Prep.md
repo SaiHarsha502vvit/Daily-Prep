@@ -1,6 +1,6 @@
 ﻿# 32. SDET Interview Preparation — Framework Design, Technical Questions & Behavioral
 
-**Navigation**: [← Chapter 31: API Mocking](../05_Advanced_Topics/31_API_Mocking_page_route.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 31: API Mocking](../05_Advanced_Topics/31_API_Mocking_page_route.md) | [Index](../00_INDEX.md)
 
 **Cross-links:**
 
@@ -143,8 +143,8 @@ The race:
   Time 0ms:  await page.click('#openInNewTab')
   Time 5ms:  browser fires the 'page' event (new tab opened)
   Time 10ms: await context.waitForEvent('page')
-             ← the event already fired 5ms ago — listener missed it
-             ← waitForEvent hangs until timeout
+             ← the event already fired 5ms ago — listener missed it
+             ← waitForEvent hangs until timeout
 
 Why it's a race:
   page.click() is async but the new tab can open before
@@ -347,7 +347,7 @@ export const test = base.extend({
       data: { customerId: "USR-001", amount: 150, status: "PENDING" },
     });
     const citation = await response.json();
-    use(citation); // ← bug
+    use(citation); // ← bug
     await request.delete(`/api/v2/citations/${citation.citationId}`);
   },
 });
@@ -378,7 +378,7 @@ Fixed version:
       data: { customerId: account.userId, amount: 150, status: 'PENDING' }
     });
     const citation = await response.json();
-    await use(citation);   // ← awaited
+    await use(citation);   // ← awaited
     try {
       await request.delete(`/api/v2/citations/${citation.citationId}`,
         { headers: { 'Authorization': `Bearer ${account.accessToken}` } }
@@ -621,7 +621,9 @@ expect(maxAvgRt, "Worst 10-request average must be under 2000ms").toBeLessThan(
 // ❌ Duplicated in every test:
 const citation = await response.json();
 expect(citation.citationId).toMatch(/^CIT-/);
-expect(citation.status).toBeOneOf(["PENDING", "PAID", "OVERDUE", "DISPUTED"]);
+// NOTE: there is no `expect(x).toBeOneOf([...])` in Playwright — see the callout
+// below. The real idiom inverts the call: assert the ALLOWED LIST contains the value.
+expect(["PENDING", "PAID", "OVERDUE", "DISPUTED"]).toContain(citation.status);
 expect(citation.amount).toBeGreaterThan(0);
 expect(citation.customerId).toBeTruthy();
 
@@ -692,6 +694,34 @@ test("Citation API returns valid citation shape", async ({
 2. Collects ALL errors (not just the first one) — better failure messages
 3. `message` formats errors clearly — instantly debuggable
 4. Exportable and reusable across the entire test suite
+
+#### The follow-up you should be ready for: "why not just use `toBeOneOf`?"
+
+Because **Playwright has no `toBeOneOf` matcher.** This trips up candidates who have
+worked in Vitest (which added `toBeOneOf` in 2.1) or who half-remember it from Jest
+community matcher packages. Verified against Playwright 1.60.0:
+
+```js
+const { expect } = require("@playwright/test");
+typeof expect(1).toBeOneOf; // → 'undefined'
+expect("PENDING").toBeOneOf(["PENDING", "PAID"]);
+// → TypeError: expect(...).toBeOneOf is not a function
+```
+
+There are two correct ways to express "this value is one of N allowed values", and
+knowing which to reach for is the actual signal the interviewer is looking for:
+
+| Approach                                      | When to use it                                                                                                            |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `expect(allowedList).toContain(actual)`       | One-off check. Inverts the call so the array is the subject — the built-in `toContain` does the work. No setup.            |
+| `expect.extend({ toBeOneOf })` (custom matcher) | You need it in 20+ tests, or you want a domain-specific failure message (`"status must be one of …, got 'ARCHVIED'"`). |
+
+The inverted-`toContain` form is what the corrected snippet above uses. Note its one
+real downside, which is worth naming out loud in an interview: the failure message
+reads `Expected array to contain: "ARCHVIED"` — it names the array as the subject, not
+the field. That asymmetry between "what reads naturally" and "what fails readably" is
+precisely the gap a custom matcher closes, and it's why `expect.extend` earns its
+keep rather than being over-engineering.
 
 ---
 
@@ -772,6 +802,59 @@ const notif = await withRetry(
   },
 );
 ```
+
+---
+
+### Challenge: "Diagnose this CI failure without running the suite locally"
+
+The interviewer pastes a failing CI log:
+
+```
+FAIL tests/citations/create-citation.spec.ts
+  ✗ Create citation and verify notification
+    Error: Timeout 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for locator('.notification-badge').toHaveText('1')
+    ============================================================
+
+Worker process exited with code 1
+```
+
+Walk through exactly how you would diagnose this from the log alone.
+
+<details><summary>Answer</summary>
+
+**Step 1 — What the error means precisely:**  
+`Timeout 30000ms exceeded` on `locator('.notification-badge').toHaveText('1')` means Playwright polled the element for 30 seconds and the text never became `'1'`. The test stepped past the API call, but the UI state didn't update.
+
+**Step 2 — Four root-cause hypotheses, ordered by likelihood:**
+
+| #   | Hypothesis                                                                                                        | Signal                                                                                 |
+| --- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| 1   | Notification is async; the badge updates via WebSocket/polling but the service was slow or dead in CI             | Check: was the notifications service healthy in CI? Was the WS connection established? |
+| 2   | Race condition — assertion fires before the badge re-renders (React batching)                                     | Check: does the badge animate? Is there a loading spinner that hides it during update? |
+| 3   | Test data isolation failure — another test left stale badge count of `0` and this test's notification didn't fire | Check: does the test create its own isolated user with a fresh account?                |
+| 4   | The `.notification-badge` selector changed in a recent PR                                                         | Check: last 24h commits to the frontend                                                |
+
+**Step 3 — What I'd ask the interviewer next:**  
+"Is there a Playwright trace zip attached to this CI run? With the trace I can see the DOM state at every step including the exact millisecond the timeout occurred."
+
+**Step 4 — What the fix looks like:**
+
+```typescript
+// Before: fragile — no guard that badge exists before checking text
+await expect(page.locator(".notification-badge")).toHaveText("1");
+
+// After: ensure badge is visible first, THEN check text
+await expect(page.locator(".notification-badge")).toBeVisible();
+await expect(page.locator(".notification-badge")).toHaveText("1");
+// Or, if WebSocket driven, wait for the WS frame first, then assert UI
+```
+
+**The SDE insight the interviewer is looking for:**  
+You read logs systematically, isolate hypotheses by likelihood, know where to find more evidence (trace files), and can propose a targeted fix — rather than saying "I'll re-run it and see."
+
+</details>
 
 ---
 
@@ -896,61 +979,6 @@ QUESTIONS TO ASK:
   □ "Are SDETs involved in sprint planning?"
   □ "What's the ratio of automated to manual tests?"
 ```
-
----
-
-**Navigation**: [← Chapter 31: API Mocking](../05_Advanced_Topics/31_API_Mocking_page_route.md) | [Index](../00_INDEX.md)
-
-### Challenge: "Diagnose this CI failure without running the suite locally"
-
-The interviewer pastes a failing CI log:
-
-```
-FAIL tests/citations/create-citation.spec.ts
-  ✗ Create citation and verify notification
-    Error: Timeout 30000ms exceeded.
-    =========================== logs ===========================
-    waiting for locator('.notification-badge').toHaveText('1')
-    ============================================================
-
-Worker process exited with code 1
-```
-
-Walk through exactly how you would diagnose this from the log alone.
-
-<details><summary>Answer</summary>
-
-**Step 1 — What the error means precisely:**  
-`Timeout 30000ms exceeded` on `locator('.notification-badge').toHaveText('1')` means Playwright polled the element for 30 seconds and the text never became `'1'`. The test stepped past the API call, but the UI state didn't update.
-
-**Step 2 — Four root-cause hypotheses, ordered by likelihood:**
-
-| #   | Hypothesis                                                                                                        | Signal                                                                                 |
-| --- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| 1   | Notification is async; the badge updates via WebSocket/polling but the service was slow or dead in CI             | Check: was the notifications service healthy in CI? Was the WS connection established? |
-| 2   | Race condition — assertion fires before the badge re-renders (React batching)                                     | Check: does the badge animate? Is there a loading spinner that hides it during update? |
-| 3   | Test data isolation failure — another test left stale badge count of `0` and this test's notification didn't fire | Check: does the test create its own isolated user with a fresh account?                |
-| 4   | The `.notification-badge` selector changed in a recent PR                                                         | Check: last 24h commits to the frontend                                                |
-
-**Step 3 — What I'd ask the interviewer next:**  
-"Is there a Playwright trace zip attached to this CI run? With the trace I can see the DOM state at every step including the exact millisecond the timeout occurred."
-
-**Step 4 — What the fix looks like:**
-
-```typescript
-// Before: fragile — no guard that badge exists before checking text
-await expect(page.locator(".notification-badge")).toHaveText("1");
-
-// After: ensure badge is visible first, THEN check text
-await expect(page.locator(".notification-badge")).toBeVisible();
-await expect(page.locator(".notification-badge")).toHaveText("1");
-// Or, if WebSocket driven, wait for the WS frame first, then assert UI
-```
-
-**The SDE insight the interviewer is looking for:**  
-You read logs systematically, isolate hypotheses by likelihood, know where to find more evidence (trace files), and can propose a targeted fix — rather than saying "I'll re-run it and see."
-
-</details>
 
 ---
 
