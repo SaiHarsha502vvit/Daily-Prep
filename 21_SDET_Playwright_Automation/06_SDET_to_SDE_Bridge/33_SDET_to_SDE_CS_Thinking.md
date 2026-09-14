@@ -1,6 +1,6 @@
 # 33. SDET → SDE Thinking — CS Fundamentals That Make You a Better Test Engineer
 
-**Navigation**: [← Chapter 32: Interview Prep](./32_SDET_Interview_Prep.md) | [Index](../00_INDEX.md) | [→ Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md)
+**Navigation**: [← Chapter 32: Interview Prep](./32_SDET_Interview_Prep.md) | [Index](../00_INDEX.md) | [→ Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md)
 
 **Cross-references (read these alongside this chapter):**
 
@@ -230,7 +230,7 @@ const createIndex = notifications.findIndex(
   (n) => n.type === "CITATION_CREATED",
 );
 const payIndex = notifications.findIndex((n) => n.type === "PAYMENT_RECEIVED");
-expect(createIndex).toBeLessThan(payIndex); // ← queue ordering assertion
+expect(createIndex).toBeLessThan(payIndex); // ← queue ordering assertion
 ```
 
 ---
@@ -339,7 +339,7 @@ Topological sort of the dependency graph gives you the correct creation order.
 // Bad:
 const test = base.extend({
   fixtureA: async ({ fixtureB }, use) => { ... },  // A needs B
-  fixtureB: async ({ fixtureA }, use) => { ... },  // B needs A  ← cycle!
+  fixtureB: async ({ fixtureA }, use) => { ... },  // B needs A  ← cycle!
 });
 // Playwright error: "circular fixture dependency"
 
@@ -488,7 +488,7 @@ async function pollUntil<T>(
 
   // RECURSIVE CASE: wait and try again
   await sleep(1000);
-  return pollUntil(fn, expected, timeoutMs, startTime); // ← recursive call
+  return pollUntil(fn, expected, timeoutMs, startTime); // ← recursive call
 }
 
 // Playwright's expect.poll() does this with exponential backoff intervals:
@@ -500,18 +500,53 @@ await expect
   .toBe("DISPUTED");
 ```
 
-**The tail recursion optimisation — why intervals grow:**
+**Why the intervals grow — the actual trade-off:**
 
 ```
 Interval 1: 500ms   → early check (notification might arrive quickly)
 Interval 2: 1000ms  → wait a bit more
 Interval 3: 2000ms  → backing off (if still not done, give it more time)
 Interval 4: 5000ms  → worst case (something slow is happening)
-
-Why exponential back-off? Same reason as binary search — halving the search space
-each time is more efficient than linear scanning. You spend less time polling
-when results are fast, and don't hammers the API when they're slow.
 ```
+
+Back-off is **not** the same mechanism as binary search, and it's worth being precise
+about this because the wrong analogy gives you the wrong instinct when tuning it.
+Binary search halves a *search space* — each probe eliminates half the remaining
+candidates, which is what buys you O(log n). Polling eliminates nothing: every probe
+asks the same question ("is it `DISPUTED` yet?") about a *single* unknown, and the
+answer flips exactly once, at a time you don't control. There is no space being
+halved, and no logarithmic factor anywhere.
+
+What back-off actually trades off is **detection latency against probe count**:
+
+| Schedule over a 30s timeout        | Probes spent | Latency if the answer lands at 120ms |
+| ---------------------------------- | ------------ | ------------------------------------ |
+| Fixed 100ms                        | 300          | ≤100ms — excellent                   |
+| Fixed 1000ms                       | 30           | up to 1000ms — 8× worse              |
+| Growing `[100, 250, 500, 1000]`    | 33           | ≤100ms — excellent                   |
+
+The growing schedule gets the fast path's low latency at roughly the slow path's probe
+cost. That works because of an assumption about the *distribution*, not about search:
+most waits resolve early, so cheap probes are worth spending early, and the long tail
+is rare enough that probing it slowly costs you little.
+
+**Playwright's real defaults — and how the schedule is applied.** The chapter's
+`[500, 1000, 2000, 5000]` above is an explicit override, not Playwright's behaviour.
+The built-in default is `[100, 250, 500, 1000]`, and the **last interval repeats** for
+the remainder of the timeout. From Playwright's own `types/test.d.ts` (v1.60.0), the
+doc comment on `toPass` spells the schedule out:
+
+```typescript
+//   Probe, wait 1s, probe, wait 2s, probe, wait 10s, probe, wait 10s, probe
+//   intervals: [1_000, 2_000, 10_000], // Defaults to [100, 250, 500, 1000].
+```
+
+Two things to read off that comment: the **first probe fires immediately** (before any
+wait), and once the list is exhausted the final value is reused forever rather than the
+poll giving up. So `[100, 250, 500, 1000]` over a 30s timeout probes at
+t = 0, 100, 350, 850, then every second to 29,850 — the 33 probes in the table above.
+You spend less time polling when results are fast, and don't hammer the API when
+they're slow.
 
 **Cross-reference:** [`../../03_Algorithms/03b_Recursion_Fundamentals.md`](../../03_Algorithms/03b_Recursion_Fundamentals.md) — Base case / recursive case structure. [`../../14_Mental_Models/01_Recursion_Tree_Thinking.md`](../../14_Mental_Models/01_Recursion_Tree_Thinking.md) — Visualising recursive calls as trees.
 
@@ -923,17 +958,70 @@ test("API returns citations sorted by date descending", async ({
 
   // i goes to length - 2 so i+1 is always length - 1 (last valid index)
   for (let i = 0; i < citations.length - 1; i++) {
-    const current = new Date(citations[i].issuedAt).getTime();
-    const next = new Date(citations[i + 1].issuedAt).getTime();
+    const current = citations[i];
+    const next = citations[i + 1];
+    if (!current || !next) continue; // narrows both from `Citation | undefined`
     expect(
-      current,
+      new Date(current.issuedAt).getTime(),
       `Citation[${i}] should be >= Citation[${i + 1}]`,
-    ).toBeGreaterThanOrEqual(next);
+    ).toBeGreaterThanOrEqual(new Date(next.issuedAt).getTime());
   }
 });
 ```
 
 **CS principle**: whenever you access `arr[i]` and `arr[i+1]` inside the same loop iteration, the loop bound must be `i < arr.length - 1`. This is the adjacent-pair pattern — fundamental to sorting verification, sliding window problems, and difference arrays.
+
+**But the loop bound is the weaker half of the answer.** Note the two extra lines
+above: `const current = citations[i]` followed by a `if (!current || !next)` guard.
+They aren't defensive padding — without them this code **does not compile** in this
+curriculum's own framework, because `framework/tsconfig.json` sets
+`"noUncheckedIndexedAccess": true`. Under that flag `citations[i]` is typed
+`Citation | undefined`, not `Citation`, so reading `.issuedAt` off it directly is an
+error. Compiled with TypeScript 5.9.3 against exactly those settings, the
+"just fix the bound" version fails:
+
+```
+ch33_challenge4.ts(15,30): error TS2532: Object is possibly 'undefined'.
+ch33_challenge4.ts(16,27): error TS2532: Object is possibly 'undefined'.
+```
+
+Now run the *original* buggy loop through the same compiler, and the real lesson
+appears — it fails too, at the same rule:
+
+```
+ch33_variants.ts(14,21): error TS2532: Object is possibly 'undefined'.
+ch33_variants.ts(15,16): error TS2532: Object is possibly 'undefined'.
+```
+
+With the flag off (`--strict` alone), both versions compile silently and the off-by-one
+survives to runtime, where it surfaces as `TypeError: Cannot read properties of
+undefined` in the middle of an assertion — the 2-hour debugging session.
+
+So there are two different kinds of answer to this challenge, and knowing which one you
+just gave is the actual senior signal:
+
+| Answer                                | What it relies on                                            | Strength                            |
+| ------------------------------------- | ------------------------------------------------------------ | ----------------------------------- |
+| "Use `i < arr.length - 1`"            | The author remembering the adjacent-pair rule, every time    | A **discipline** — forgettable      |
+| `noUncheckedIndexedAccess` in tsconfig | The compiler refusing to build unguarded indexed reads       | A **guarantee** — not forgettable   |
+
+This is the same distinction §7 draws between a convention and a constraint: one config
+line converts an entire *class* of off-by-one indexing bug from a runtime discovery into
+a compile error, across every file in the repo, forever. That's the reasoning shift this
+chapter is about — an SDE reaches for the flag, not just the fix.
+
+If you find the `continue` guard noisy, the pairwise form avoids manual indexing
+altogether and compiles clean under the same flag:
+
+```typescript
+const times = citations.map((c) => new Date(c.issuedAt).getTime());
+times.slice(1).forEach((next, idx) => {
+  expect(
+    times[idx],
+    `Citation[${idx}] should be >= Citation[${idx + 1}]`,
+  ).toBeGreaterThanOrEqual(next);
+});
+```
 
 </details>
 
