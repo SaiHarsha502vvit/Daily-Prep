@@ -1,6 +1,6 @@
 # 24. Test Script Architecture — POMs Before Steps, Data Never Exposed
 
-**Navigation**: [← Chapter 23: APIUtils — Your HTTP Library](./23_APIUtils_HTTP_Library.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 23: APIUtils — Your HTTP Library](./23_APIUtils_HTTP_Library.md) | [Index](../00_INDEX.md)
 
 **Cross-links:**
 
@@ -61,7 +61,7 @@ This chapter explains every structural decision in an enterprise test.
 test("example", async ({ page }) => {
   // If you declare inside step 1:
   await test.step("Step 1: Navigate", async () => {
-    const masterPage = new MasterSearchPage(page); // ← inside step 1's closure
+    const masterPage = new MasterSearchPage(page); // ← inside step 1's closure
     await masterPage.goto();
   });
 
@@ -148,7 +148,7 @@ test('create citation and verify', async ({ page, citationsClient, account }) =>
     const citation = await citationsClient.create(
       PayloadsCitation.pending({ customerId: account.userId })
     );
-    data.citationId = citation.citationId;  // ← step 1 fills it in
+    data.citationId = citation.citationId;  // ← step 1 fills it in
   });
 
   await test.step('Find citation in UI', async () => {
@@ -483,7 +483,7 @@ test.describe("Create citation and verify notification @citations @smoke", () =>
     notificationsClient,
   }) => {
     //        ↑ page   ↑ auth    ↑ HTTP client   ↑ notifications client
-    //        Playwright built-in  ←── your custom fixtures ──────────────────────►
+    //        Playwright built-in  ←── your custom fixtures ──────────────────────►
 
     // ── POMs: ALL declared here, BEFORE any step ──────────────────────────
     const masterSearch = new MasterSearchPage(page);
@@ -607,7 +607,7 @@ test("example", async ({ page }) => {
   });
 
   await test.step("Step 2", async () => {
-    await form.fillCitationId("CIT-001"); // ← what happens?
+    await form.fillCitationId("CIT-001"); // ← what happens?
   });
 });
 ```
@@ -640,7 +640,7 @@ test("lookup customer", async ({ page, account }) => {
     await masterSearch.searchPanel.searchByEmail(account.email);
     await masterSearch.resultsGrid.waitForResults();
     data.customerId = await masterSearch.resultsGrid.getFirstRowId();
-    // ← No assertion that data.customerId is not null
+    // ← No assertion that data.customerId is not null
   });
 
   await test.step("Open customer record", async () => {
@@ -762,7 +762,7 @@ test.describe("New supervisor onboarding @users @smoke", () => {
 
 ---
 
-**Navigation**: [← Chapter 23: APIUtils — Your HTTP Library](./23_APIUtils_HTTP_Library.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 23: APIUtils — Your HTTP Library](./23_APIUtils_HTTP_Library.md) | [Index](../00_INDEX.md)
 
 ---
 

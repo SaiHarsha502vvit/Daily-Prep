@@ -1,6 +1,6 @@
 # 30. Database Verification — Direct SQL Assertions in Tests
 
-**Navigation**: [← Chapter 29: Visual Regression](./29_Visual_Regression_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 31: API Mocking with page.route()](./31_API_Mocking_page_route.md)
+**Navigation**: [← Chapter 29: Visual Regression](./29_Visual_Regression_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 31: API Mocking with page.route()](./31_API_Mocking_page_route.md)
 
 **Cross-links:**
 

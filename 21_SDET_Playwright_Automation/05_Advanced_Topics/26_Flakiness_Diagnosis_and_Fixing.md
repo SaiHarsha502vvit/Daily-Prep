@@ -1,6 +1,6 @@
 # 26. Flakiness — Diagnosing, Classifying & Systematically Fixing Unstable Tests
 
-**Navigation**: [← Chapter 25: CI/CD Integration](./25_CICD_Integration_GitHub_Azure.md) | [Index](../00_INDEX.md) | [→ Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md)
+**Navigation**: [← Chapter 25: CI/CD Integration](./25_CICD_Integration_GitHub_Azure.md) | [Index](../00_INDEX.md) | [→ Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md)
 
 **Cross-links:**
 
@@ -215,7 +215,7 @@ await masterSearch.searchPanel.searchByCitationId(data.citationId!);
 
 ```typescript
 // ❌ Root cause: module-level state
-let createdUserId: string; // ← shared across tests in module
+let createdUserId: string; // ← shared across tests in module
 
 // ✅ Fix: use test.describe.serial() with a SCOPED object
 test.describe.serial("User lifecycle", () => {
@@ -601,8 +601,8 @@ DOM snapshots:
 ```
 Timeline shows:
   00:12.450 → Page click: Save & Close
-  00:12.680 → Assertion: expect(statusField).toHaveText('Active')  ← assertion fires HERE
-  00:13.200 → Network: PATCH /api/citations/CIT-001 → 200           ← API call completes HERE
+  00:12.680 → Assertion: expect(statusField).toHaveText('Active')  ← assertion fires HERE
+  00:13.200 → Network: PATCH /api/citations/CIT-001 → 200           ← API call completes HERE
 
 Discovery: The assertion fires 0.52 seconds BEFORE the API returns.
 The UI is showing the OLD status while the save is still in-flight.
@@ -770,7 +770,7 @@ test.describe("Citation search", () => {
     const citation = await citationsClient.create(
       PayloadsCitation.pending({ customerId: account.userId }),
     );
-    testCitationId = citation.citationId; // ← module-scoped
+    testCitationId = citation.citationId; // ← module-scoped
   });
 
   test("Search by ID returns exactly 1 result", async ({ masterSearch }) => {
@@ -860,7 +860,7 @@ You have 3 tests in quarantine. Your manager asks: "Why are these tests quaranti
 
 ---
 
-**Navigation**: [← Chapter 25: CI/CD Integration](./25_CICD_Integration_GitHub_Azure.md) | [Index](../00_INDEX.md) | [→ Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md)
+**Navigation**: [← Chapter 25: CI/CD Integration](./25_CICD_Integration_GitHub_Azure.md) | [Index](../00_INDEX.md) | [→ Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md)
 
 ### Challenge 5 [MCQ] — Statistical Confidence in Flakiness Testing
 

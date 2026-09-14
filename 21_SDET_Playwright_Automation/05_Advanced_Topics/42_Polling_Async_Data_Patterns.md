@@ -1,6 +1,6 @@
 # 42. Polling & Async Data Patterns — The Right Way to Wait for Slow APIs
 
-**Navigation**: [← Chapter 41: GraphQL & WebSocket](../07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md)
+**Navigation**: [← Chapter 41: GraphQL & WebSocket](../07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md)
 
 **Cross-links:**
 
@@ -1147,7 +1147,7 @@ PRIORITY 8 — page.waitForLoadState (navigation lifecycle)
   → WARNING: 'networkidle' unreliable for SPAs with background polling
 
 NEVER — page.waitForTimeout
-  await page.waitForTimeout(ms)  ← BANNED except in last-resort debugging
+  await page.waitForTimeout(ms)  ← BANNED except in last-resort debugging
 ```
 
 ### Complete API Reference Table
@@ -1558,7 +1558,7 @@ await expect
 
 ---
 
-**Navigation**: [← Chapter 41: GraphQL & WebSocket](../07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md)
+**Navigation**: [← Chapter 41: GraphQL & WebSocket](../07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md)
 
 ## 🏋️ Practice Challenges
 

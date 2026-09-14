@@ -1,6 +1,6 @@
 # 27. Advanced TypeScript Patterns for SDETs
 
-**Navigation**: [← Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md) | [Index](../00_INDEX.md) | [→ Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md)
+**Navigation**: [← Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md) | [Index](../00_INDEX.md) | [→ Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md)
 
 **Cross-links:**
 
@@ -381,7 +381,7 @@ const testPayload = {
   status: "PENDING",
   citationType: "PARKING",
   // Imagine a typo here: citationType: 'PRKING'
-  // satisfies catches it at definition time ← not at runtime
+  // satisfies catches it at definition time ← not at runtime
 } satisfies CreateCitationPayload;
 //  ↑ TypeScript error if 'PRKING' is not in the union — instant feedback in VS Code
 ```
@@ -726,7 +726,7 @@ type SearchMode =
 function buildSearchQuery(search: SearchMode): string {
   if (search.mode === "byId") return `?citationId=${search.citationId}`;
   if (search.mode === "byUser") return `?userId=${search.userId}`;
-  // ← What happens if someone adds a new variant to SearchMode?
+  // ← What happens if someone adds a new variant to SearchMode?
 }
 ```
 
@@ -808,7 +808,7 @@ citationTest("verify citation details", async ({ resource: citation }) => {
 
 ---
 
-**Navigation**: [← Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md) | [Index](../00_INDEX.md) | [→ Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md)
+**Navigation**: [← Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md) | [Index](../00_INDEX.md) | [→ Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md)
 
 ### Challenge 4 [MCQ] — `satisfies` vs Type Annotation
 

@@ -1,6 +1,6 @@
 # 31. API Mocking with `page.route()` — Isolating Frontend Behaviour
 
-**Navigation**: [← Chapter 30: Database Verification](./30_Database_Verification_Direct_SQL.md) | [Index](../00_INDEX.md) | [→ Chapter 32: SDET Interview Prep](../06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md)
+**Navigation**: [← Chapter 30: Database Verification](./30_Database_Verification_Direct_SQL.md) | [Index](../00_INDEX.md) | [→ Chapter 32: SDET Interview Prep](../06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md)
 
 **Cross-links:**
 

@@ -1,6 +1,6 @@
 # 25. CI/CD Integration — Playwright in GitHub Actions & Azure DevOps
 
-**Navigation**: [← Chapter 24: Test Script Architecture](../04_Enterprise_Architecture/24_Test_Script_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md)
+**Navigation**: [← Chapter 24: Test Script Architecture](../04_Enterprise_Architecture/24_Test_Script_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md)
 
 **Cross-links:**
 
@@ -247,7 +247,7 @@ jobs:
       # This is where you get the HTML report, screenshots, videos, traces
       - name: Upload test results
         uses: actions/upload-artifact@v4
-        if: always() # ← CRITICAL: always upload, even on failure
+        if: always() # ← CRITICAL: always upload, even on failure
         with:
           name: playwright-smoke-report
           path: |
@@ -602,7 +602,7 @@ Rule 1: NEVER commit credentials to Git.
     .env
     .env.local
     .env.staging
-    auth-states/         ← storageState files contain tokens!
+    auth-states/         ← storageState files contain tokens!
     test-results/
 
 Rule 2: Rotate secrets regularly.
@@ -729,7 +729,7 @@ Fix:
 
 - name: Upload report
   uses: actions/upload-artifact@v4
-  if: always() # ← required
+  if: always() # ← required
   with:
     name: report
     path: playwright-report/
@@ -774,7 +774,7 @@ Write the `package.json` scripts section for a team that needs:
 
 ---
 
-**Navigation**: [← Chapter 24: Test Script Architecture](../04_Enterprise_Architecture/24_Test_Script_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md)
+**Navigation**: [← Chapter 24: Test Script Architecture](../04_Enterprise_Architecture/24_Test_Script_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md)
 
 ### Challenge 4 [MCQ] — Sharding: `fail-fast: false`
 

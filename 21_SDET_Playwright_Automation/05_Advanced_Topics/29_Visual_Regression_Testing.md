@@ -1,6 +1,6 @@
 # 29. Visual Regression Testing — `toHaveScreenshot()` in Enterprise Apps
 
-**Navigation**: [← Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md) | [Index](../00_INDEX.md) | [→ Chapter 30: Database Verification](./30_Database_Verification_Direct_SQL.md)
+**Navigation**: [← Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md) | [Index](../00_INDEX.md) | [→ Chapter 30: Database Verification](./30_Database_Verification_Direct_SQL.md)
 
 **Cross-links:**
 
@@ -141,9 +141,9 @@ Playwright creates a `__screenshots__` directory next to your spec file:
 tests/specs/visual/
 ├── citation-form.visual.spec.ts
 └── citation-form.visual.spec.ts-snapshots/
-    ├── citation-detail-form-chromium-linux.png   ← CI baseline (Linux + Chromium)
-    ├── citation-detail-form-chromium-darwin.png  ← macOS baseline
-    └── citation-detail-form-chromium-win32.png   ← Windows baseline
+    ├── citation-detail-form-chromium-linux.png   ← CI baseline (Linux + Chromium)
+    ├── citation-detail-form-chromium-darwin.png  ← macOS baseline
+    └── citation-detail-form-chromium-win32.png   ← Windows baseline
 ```
 
 **Why separate baselines per OS?** Font rendering differs between Linux, macOS, and Windows. A snapshot taken on Windows will always fail on Linux if you use the same file.
@@ -588,9 +588,9 @@ git commit -m "Visual baselines: update citation form layout (TICKET-1234)"
 ❌ Bad: ALL *.png files committed (test artifacts too)
 
 # .gitignore — include snapshots, exclude test artifacts
-test-results/**/*.png    ← IGNORE (generated diff images)
-playwright-report/**     ← IGNORE (HTML report)
-# DO NOT IGNORE tests/**/*-snapshots/*.png ← these are the baselines
+test-results/**/*.png    ← IGNORE (generated diff images)
+playwright-report/**     ← IGNORE (HTML report)
+# DO NOT IGNORE tests/**/*-snapshots/*.png ← these are the baselines
 ```
 
 ---
@@ -601,7 +601,7 @@ playwright-report/**     ← IGNORE (HTML report)
 # .github/workflows/playwright.yml (visual tests section)
 
 visual-tests:
-  runs-on: ubuntu-latest # ← MUST match the OS used to generate baselines
+  runs-on: ubuntu-latest # ← MUST match the OS used to generate baselines
   steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -623,7 +623,7 @@ visual-tests:
         name: visual-regression-report
         path: |
           playwright-report/
-          test-results/          # ← contains the diff .png files
+          test-results/          # ← contains the diff .png files
         retention-days: 30
 ```
 

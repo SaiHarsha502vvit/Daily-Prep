@@ -1,6 +1,6 @@
 # 40. Security Test Automation — OWASP Top 10, ZAP & Auth Testing
 
-**Navigation**: [← Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](./41_GraphQL_WebSocket_Testing.md)
+**Navigation**: [← Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](./41_GraphQL_WebSocket_Testing.md)
 
 **Open-Source Tools Referenced:**
 
@@ -798,7 +798,7 @@ test("IDOR: customer cannot read another customer citation via sequential ID", a
 
 ---
 
-**Navigation**: [← Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](./41_GraphQL_WebSocket_Testing.md)
+**Navigation**: [← Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](./41_GraphQL_WebSocket_Testing.md)
 
 ### Challenge 2 [Write It Yourself — XSS Payload Injection]
 
