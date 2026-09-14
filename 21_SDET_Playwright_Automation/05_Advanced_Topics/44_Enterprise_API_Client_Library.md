@@ -1,6 +1,6 @@
 # 44. Building an Enterprise API Client Library from Scratch
 
-**Navigation**: [← Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md) | [Index](../00_INDEX.md) | [→ Chapter 45: Complete Playwright API Reference](./45_AI_Agents_MCP_And_Playwright.md)
+**Navigation**: [← Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md) | [Index](../00_INDEX.md) | [→ Chapter 45: AI Agents, MCP & Playwright](./45_AI_Agents_MCP_And_Playwright.md)
 
 **Cross-links:**
 
@@ -1496,8 +1496,6 @@ The 20/80 rule: 20% of fields carry 80% of the validation value. Start with IDs,
 
 ---
 
-**Navigation**: [← Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md) | [Index](../00_INDEX.md) | [→ Chapter 45: Complete Playwright API Reference](./45_AI_Agents_MCP_And_Playwright.md)
-
 ## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — Why hide raw Playwright `request` behind a facade?
@@ -1691,7 +1689,7 @@ const user = await client.get("/api/users/1", UserSchema);
 
 ---
 
-**Navigation**: [← Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md) | [Index](../00_INDEX.md) | [→ Chapter 45: Complete Playwright API Reference](./45_AI_Agents_MCP_And_Playwright.md)
+**Navigation**: [← Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md) | [Index](../00_INDEX.md) | [→ Chapter 45: AI Agents, MCP & Playwright](./45_AI_Agents_MCP_And_Playwright.md)
 
 
 ---

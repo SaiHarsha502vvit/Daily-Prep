@@ -1475,8 +1475,6 @@ await expect(page.locator('[data-testid="status"]')).toHaveText("PAID", {
 
 ---
 
-**Navigation**: [← Chapter 42: Polling Patterns](./42_Polling_Async_Data_Patterns.md) | [Index](../00_INDEX.md) | [→ Chapter 44: Enterprise API Client Library](./44_Enterprise_API_Client_Library.md)
-
 ## 🏋️ Practice Challenges
 
 ### Challenge 1 [Spot the Bug — The "Randomly Passing" ElementHandle]

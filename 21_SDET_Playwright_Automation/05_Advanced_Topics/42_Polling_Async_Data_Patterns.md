@@ -1558,8 +1558,6 @@ await expect
 
 ---
 
-**Navigation**: [← Chapter 41: GraphQL & WebSocket](../07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md)
-
 ## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — `expect.poll` vs Custom `while` Loop
