@@ -149,15 +149,29 @@ Once connected, the AI can call:
 | Tool | What it does |
 |------|-------------|
 | `browser_navigate` | Navigate to a URL |
-| `browser_snapshot` | Get the accessibility tree of the current page |
+| `browser_snapshot` | Capture the accessibility snapshot of the current page |
 | `browser_click` | Click an element by accessibility role/name |
-| `browser_fill` | Fill an input by label |
-| `browser_screenshot` | Take a screenshot |
-| `browser_evaluate` | Run JavaScript in the page |
-| `browser_wait_for` | Wait for an element/condition |
-| `browser_select_option` | Select from a dropdown |
+| `browser_type` | Type text into an editable element |
+| `browser_fill_form` | Fill multiple form fields in one call |
+| `browser_take_screenshot` | Take a screenshot |
+| `browser_evaluate` | Evaluate a JavaScript expression on the page or an element |
+| `browser_wait_for` | Wait for text to appear/disappear, or for a set time |
+| `browser_select_option` | Select an option in a dropdown |
 | `browser_hover` | Hover over an element |
 | `browser_press_key` | Press a keyboard key |
+
+> **Get these names exactly right — a wrong name is not a graceful failure.** An MCP
+> tool call naming a tool the server doesn't expose is rejected as an unknown tool; the
+> model then improvises, often falling back to guessing from a screenshot, which is the
+> exact failure mode this chapter exists to eliminate. Two names that circulate widely
+> and are **wrong** for `@playwright/mcp`: there is no `browser_fill` (it's
+> `browser_type` for one element, `browser_fill_form` for several) and no
+> `browser_screenshot` (it's `browser_take_screenshot`). Both were in this table's
+> earlier version. The server's own tool list is the authority —
+> [microsoft/playwright-mcp](https://github.com/microsoft/playwright-mcp) documents the
+> current set, and your client can enumerate it live (`claude mcp list`, or the
+> `tools/list` JSON-RPC method), which is worth doing after any version bump rather than
+> trusting a table in any document, this one included.
 
 ---
 
@@ -371,17 +385,19 @@ async function healSelectors(testFile: string): Promise<string> {
   await page.fill('[name="password"]', process.env.ADMIN_PASS!);
   await page.click('button[type="submit"]');
 
-  const snapshot = await page.accessibility.snapshot();
+  // NOTE: `page.accessibility.snapshot()` no longer exists — see the callout below.
+  // `ariaSnapshot()` is the current API and returns a compact YAML-style tree.
+  const snapshot = await page.locator('body').ariaSnapshot();
   const testContent = fs.readFileSync(testFile, 'utf-8');
 
   await browser.close();
 
   const response = await client.messages.create({
-    model: 'claude-opus-4-7',
+    model: 'claude-opus-5',
     max_tokens: 4096,
     messages: [{
       role: 'user',
-      content: `Here is the current accessibility tree of the app:\n${JSON.stringify(snapshot, null, 2)}
+      content: `Here is the current accessibility tree of the app:\n${snapshot}
       
 Here is a test file with potentially broken selectors:\n${testContent}
 
@@ -415,7 +431,57 @@ ANTHROPIC_API_KEY=... BASE_URL=http://localhost:4200 \
   tsx scripts/heal-selectors.ts framework/tests/orangehrm/employee.crud.spec.ts
 ```
 
+**On the `model` string:** it is a hard-coded identifier that the API either recognises
+or rejects outright — a wrong one fails the whole script with an invalid-model error, not
+a degraded result, and no amount of prompt engineering recovers it. This example pins
+`claude-opus-5`; an earlier draft of this chapter carried `claude-opus-4-7`, which is not
+a real model ID and would have failed on first run. Check the current identifiers in
+[Anthropic's model docs](https://docs.anthropic.com/en/docs/about-claude/models) rather
+than copying one out of a tutorial, and prefer pinning an explicit version in a script
+that runs in CI so a model deprecation surfaces as one obvious failure instead of a
+silent behaviour change across every healed file.
+
 **Critical limitation:** the script heals what it can see in the accessibility tree. If your test uses visual selectors (`.oxd-table-row:nth-child(2)`) that don't appear in the tree, the AI cannot heal them. Another reason to write accessible selectors first.
+
+> ### ⚠️ `page.accessibility.snapshot()` has been removed — use `ariaSnapshot()`
+>
+> Most AI-and-Playwright material you will find online (this chapter's own earlier
+> draft included) reaches for `page.accessibility.snapshot()` to get the tree. That API
+> is **gone**, not merely deprecated. Verified against the framework's installed
+> Playwright 1.60.0:
+>
+> ```js
+> typeof page.accessibility; // → 'undefined'
+> await page.accessibility.snapshot();
+> // → TypeError: Cannot read properties of undefined (reading 'snapshot')
+> ```
+>
+> There is also no `Accessibility` interface anywhere in `playwright-core`'s
+> `types.d.ts` any more, so TypeScript won't catch the call either — `page.accessibility`
+> simply isn't a property, and the failure arrives at runtime.
+>
+> The replacement is [`locator.ariaSnapshot()`](https://playwright.dev/docs/aria-snapshots),
+> which is a genuine improvement for this use case rather than a rename. The old API
+> returned a deeply nested JSON object that had to be `JSON.stringify`-ed into the
+> prompt, burning tokens on braces. `ariaSnapshot()` returns a compact YAML-style tree —
+> the same format the MCP server's `browser_snapshot` returns in §1, which is why the
+> two halves of this chapter now speak the same language. Real output:
+>
+> ```yaml
+> - heading "Sign in" [level=1]
+> - button "Log in"
+> - button "Cancel"
+> - navigation:
+>   - link "Log in":
+>     - /url: /x
+> ```
+>
+> Note what that tree makes visible at a glance, and why it matters for §6.1's scoring:
+> two different elements both expose the accessible name `"Log in"` — one a `button`,
+> one a `link`. Any healing strategy that matches on name alone will pick the wrong one.
+> Playwright also ships `expect(locator).toMatchAriaSnapshot()` if you want the tree as
+> a committed assertion rather than as prompt input — that's the non-AI way to catch the
+> same UI drift this script heals, and it needs no API key.
 
 ### 6.1 The other kind of "self-healing" — runtime fallback, no LLM required
 
@@ -547,7 +613,7 @@ This masked real failures. The test passed despite the app being broken because 
 
 Asked to write a test for the "Add Employee" button without MCP access, the AI used `getByRole('button', { name: 'Add' })`. The real button is `getByRole('button', { name: 'Add Employee' })`. The test failed in CI silently on a locator match that returned 0 elements because there was a `<button>Add</button>` elsewhere on the page and `getByRole` matched the wrong one.
 
-**Fix:** Always use MCP to verify accessibility names before writing locators. `page.accessibility.snapshot()` is your source of truth, not guesswork.
+**Fix:** Always use MCP to verify accessibility names before writing locators. The MCP server's `browser_snapshot`, or `locator.ariaSnapshot()` in a scratch test, is your source of truth — not guesswork. (Not `page.accessibility.snapshot()`, which no longer exists; see the callout in §6.)
 
 ### Failure 4: AI generates data-driven tests with hardcoded IDs
 
