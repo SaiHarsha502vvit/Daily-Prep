@@ -1,6 +1,6 @@
 # 39. Accessibility Testing — axe-core, WCAG 2.1, and Automated A11y
 
-**Navigation**: [← Chapter 38: Contract Testing](./38_Contract_Testing_Pact.md) | [Index](../00_INDEX.md) | [→ Chapter 40: Security Test Automation](./40_Security_Testing_OWASP.md)
+**Navigation**: [← Chapter 38: Contract Testing](./38_Contract_Testing_Pact.md) | [Index](../00_INDEX.md) | [→ Chapter 40: Security Test Automation](./40_Security_Testing_OWASP.md)
 
 **Open-Source Tools Referenced:**
 
@@ -64,14 +64,66 @@ Key WCAG 2.1 AA rules you'll encounter:
 
 ### Axe Violation Severity Matrix
 
-Axe classifies violations into four impact levels. Understanding these is critical for triage:
+Axe classifies violations into four impact levels. Understanding these is critical for triage — but impact alone is **not** enough to set a CI policy, for a reason the last column makes obvious:
 
-| Impact Level | Description                                                         | CI Strategy                 | Example Rules                                       |
-| ------------ | ------------------------------------------------------------------- | --------------------------- | --------------------------------------------------- |
-| **Critical** | Prevents users from accessing or operating the content entirely.    | **BLOCK CI**                | `aria-required-children`, `button-name`, `label`    |
-| **Serious**  | Causes significant frustration or forces users to find workarounds. | **BLOCK CI**                | `color-contrast`, `duplicate-id-active`, `tabindex` |
-| **Moderate** | Annoying, but users can still accomplish their goals.               | **WARN** / Add to backlog   | `landmark-one-main`, `region`                       |
-| **Minor**    | Small nitpicks or edge cases that don't severely impact usability.  | **IGNORE** / Add to backlog | `css-orientation-lock`, `html-has-lang`             |
+| Impact Level | Description                                                         | Example Rules (impact verified in axe-core 4.11.4)                | Conformance tag of those rules       |
+| ------------ | ------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------ |
+| **Critical** | Prevents users from accessing or operating the content entirely.    | `aria-required-children`, `button-name`, `label`                  | all `wcag2a` (Level A)               |
+| **Serious**  | Causes significant frustration or forces users to find workarounds. | `color-contrast`, `html-has-lang`, `css-orientation-lock`, `tabindex` | `wcag2aa`, `wcag2a`, `wcag21aa`, best-practice |
+| **Moderate** | Annoying, but users can still accomplish their goals.               | `landmark-one-main`, `region`, `heading-order`                    | all best-practice (not WCAG at all)  |
+| **Minor**    | Small nitpicks or edge cases that don't severely impact usability.  | `aria-allowed-role`, `hidden-content`, `meta-viewport-large`      | best-practice; or `wcag2aaa` (AAA)   |
+
+#### Impact is not conformance — and conformance is what the law cares about
+
+These are two **orthogonal** axes, and conflating them is the most common way an
+accessibility CI gate ends up enforcing the wrong thing:
+
+- **impact** answers "how badly does this hurt a user who hits it?" — axe's own
+  severity judgement.
+- **tags** answer "is this a WCAG success criterion, and at what level?" — `wcag2a`,
+  `wcag2aa`, `wcag21aa`, `wcag2aaa`, or `best-practice` for rules that are good hygiene
+  but not part of any conformance standard.
+
+A rule can be low-impact and still a conformance failure, or high-impact and not a WCAG
+criterion at all. Read the table again with that in mind: every **Moderate** example is
+`best-practice` — failing all three of them leaves you fully WCAG 2.1 AA conformant —
+while `html-has-lang` is `serious` **and** WCAG 2.0 Level **A**, the strictest tier.
+
+This distinction has a sharp practical edge, because it inverts naive advice. Two rules
+that are frequently filed as "minor nitpicks" are in fact serious WCAG conformance
+failures, measured directly from axe-core 4.11.4:
+
+```
+html-has-lang            impact=serious    tags=["wcag2a","wcag311"]
+css-orientation-lock     impact=serious    tags=["wcag134","wcag21aa"]
+```
+
+`html-has-lang` (a missing `lang` attribute on `<html>`) is one line of markup, which is
+why it reads as trivial — but without it a screen reader picks the wrong pronunciation
+engine and reads the entire page in the wrong language. That is WCAG **3.1.1, Level A**.
+Given this chapter's own premise — that Level AA is legally required under the Equality
+Act 2010, EN 301 549 and Section 508 — telling a team to *ignore* it would be advice to
+ship a conformance failure.
+
+So the CI strategy column belongs on the conformance axis, not the impact axis:
+
+| Gate                                             | What it should key off                                    | Rationale                                                       |
+| ------------------------------------------------ | --------------------------------------------------------- | --------------------------------------------------------------- |
+| **BLOCK** the build                              | Any violation tagged `wcag2a` / `wcag2aa` / `wcag21aa`    | These are the legal AA baseline — impact level is irrelevant     |
+| **WARN** / backlog                               | `best-practice` rules at any impact                       | Real UX value, no conformance exposure                          |
+| **Track only**                                   | `wcag2aaa` rules                                          | Above the AA target most organisations commit to                |
+| **Triage order** *within* the blocking set       | impact: critical → serious → moderate → minor             | Impact's proper job: sequencing the work, not deciding the gate |
+
+That's what §4's `withTags(["wcag2a", "wcag2aa", "wcag21aa"])` is doing — selecting the
+conformance scope first — and why `failOnImpact` is applied *after* it as a triage knob
+rather than as the primary filter.
+
+> **One rule to drop from any example list: `duplicate-id-active`.** It is tagged
+> `deprecated` and `wcag2a-obsolete` in current axe-core (4.11.4), alongside
+> `duplicate-id`; WCAG 2.1's 4.1.1 "Parsing" criterion was itself removed in WCAG 2.2,
+> so the rules were retired. Only `duplicate-id-aria` remains as a live `wcag2a` rule.
+> If your `KnownViolations` list or CI config still names the deprecated ones, they will
+> never fire again and the entries are dead weight.
 
 ---
 
@@ -135,9 +187,14 @@ export const test = base.extend<AccessibilityFixtures>({
 
       const results = await builder.analyze();
 
-      // Attach results to test report for visibility
+      // Attach results to test report for visibility.
+      // NOTE: TestInfo.attach() is ASYNC — `attach(...): Promise<void>` in
+      // playwright/types/test.d.ts. Without the await it's a floating promise:
+      // the attachment can lose the race against the test ending, so the JSON
+      // silently fails to appear in the HTML report exactly when you need it
+      // (on a failing run). Always await it.
       const { test } = await import("@playwright/test");
-      test.info().attach("axe-results", {
+      await test.info().attach("axe-results", {
         body: JSON.stringify(results, null, 2),
         contentType: "application/json",
       });
@@ -281,35 +338,80 @@ function formatViolations(violations: import("axe-core").Result[]): string {
 test("Citation form is fully keyboard navigable", async ({ page }) => {
   await page.goto("/citations/new");
 
-  // Tab through all form fields — verify focus moves correctly
-  const focusableElements = page.locator(":focus-visible");
-
   await page.keyboard.press("Tab");
-  // First focusable element should be the first form field
-  await expect(focusableElements).toBeFocused();
-  const firstLabel = await page.evaluate(() =>
-    document.activeElement?.getAttribute("aria-label"),
-  );
+
+  // First focusable element should be the first form field, and must be labelled.
+  // Read role + accessible name from the element that actually has focus.
+  const firstLabel = await page.evaluate(() => {
+    const el = document.activeElement as HTMLElement | null;
+    return el?.getAttribute("aria-label") ?? el?.textContent?.trim() ?? null;
+  });
   expect(
     firstLabel,
-    "First focusable element must have aria-label",
+    "First focusable element must have an accessible name",
   ).toBeTruthy();
 
   // Tab through all 5 fields and the submit button
   for (let i = 0; i < 5; i++) {
     await page.keyboard.press("Tab");
   }
-  // Last focused should be Submit button
-  const activeTag = await page.evaluate(() =>
-    document.activeElement?.tagName.toLowerCase(),
-  );
-  expect(["button", 'input[type="submit"]']).toContain(activeTag);
+
+  // Last focused should be the Submit button. Compare against a SHAPE, not a
+  // selector string — see the two notes below.
+  const active = await page.evaluate(() => {
+    const el = document.activeElement as HTMLElement | null;
+    return {
+      tag: el?.tagName.toLowerCase() ?? null,
+      type: el?.getAttribute("type"),
+    };
+  });
+  const isSubmitControl =
+    active.tag === "button" ||
+    (active.tag === "input" && active.type === "submit");
+  expect(
+    isSubmitControl,
+    `Expected focus on a submit control, got <${active.tag} type="${active.type}">`,
+  ).toBe(true);
 
   // Tab once more — focus should NOT get trapped
   await page.keyboard.press("Tab");
   // If focus is now outside the form → no keyboard trap ✅
 });
+```
 
+**Two assertion bugs this rewrite fixes**, both of which produce a test that *looks*
+like it checks keyboard accessibility and doesn't:
+
+1. **Comparing a tag name against a CSS selector.** The original asserted
+   `expect(["button", 'input[type="submit"]']).toContain(activeTag)` where `activeTag`
+   came from `tagName.toLowerCase()`. `tagName` yields `"input"` — never the string
+   `'input[type="submit"]'`, because a tag name is not a selector. So the
+   `input[type=submit]` branch could **never** match, and a form whose submit control is
+   `<input type="submit">` fails the test no matter how accessible it is. Mixing the
+   two vocabularies — DOM property values and CSS selector syntax — is easy to do and
+   invisible on any form that happens to use `<button>`.
+
+2. **Asserting that the focused element is focused.** The original built
+   `page.locator(":focus-visible")` and then asserted `.toBeFocused()` on it. That is a
+   tautology: the locator is *defined* as "whatever currently has visible focus", so the
+   assertion restates its own premise and can only fail if nothing is focused at all. It
+   never verifies that the *right* element received focus, which is the thing the test
+   claims to check. The rewrite instead reads the accessible name off
+   `document.activeElement` and asserts on that.
+
+The deeper habit worth taking from this: a keyboard-navigation assertion has to name
+the element it *expects*, independently of where focus actually landed. Any assertion
+phrased in terms of "the focused element" is self-confirming. Playwright's
+`getByRole` is the cleaner tool here, for the reason §5d gives — it queries the same
+accessibility tree a screen reader uses:
+
+```typescript
+await expect(
+  page.getByRole("button", { name: "Submit Citation" }),
+).toBeFocused(); // names the expected target, so it can genuinely fail
+```
+
+```typescript
 test("Modal closes on Escape key", async ({ page }) => {
   await page.goto("/citations/new");
   await page.locator('[data-testid="help-modal-trigger"]').click();
@@ -520,6 +622,14 @@ test("Citation creation form is perceivable by screen readers", async ({
 
 ---
 
+## 5e. Shareable HTML Reports — Compliance Evidence for Stakeholders
+
+Raw axe JSON is for the CI gate; a rendered HTML report is what you hand to a product
+owner, an accessibility auditor, or a legal team asking for conformance evidence.
+[`axe-html-reporter`](https://github.com/lpelypenko/axe-html-reporter) (MIT) turns
+accumulated `AxeResults` into a single self-contained page — which is why §6's CI job
+retains it for 60 days rather than the usual 30.
+
 ```typescript
 // After your test suite runs, generate a shareable HTML report:
 // axe-html-reporter: https://github.com/lpelypenko/axe-html-reporter
@@ -668,17 +778,6 @@ Fix options:
 ```
 
 </details>
-
----
-
-**Key References:**
-
-- [github.com/dequelabs/axe-core](https://github.com/dequelabs/axe-core) — axe-core engine (MPL 2.0)
-- [dequeuniversity.com/rules/axe](https://dequeuniversity.com/rules/axe/) — every rule explained
-- [w3.org/WAI/WCAG21/quickref](https://www.w3.org/WAI/WCAG21/quickref/) — WCAG 2.1 quick reference
-- [web.dev/accessibility](https://web.dev/accessibility/) — Google accessibility guide
-
----
 
 ### Challenge 2 [Spot the A11y Bug]
 
@@ -855,6 +954,17 @@ test("Citation detail modal is accessible", async ({ page }) => {
 **SDE Insight**: The DOM is highly mutable. Accessibility scanning, like visual regression testing, requires orchestrating the test runner to wait for exact application states before asserting.
 
 </details>
+
+---
+
+**Key References:**
+
+- [github.com/dequelabs/axe-core](https://github.com/dequelabs/axe-core) — axe-core engine (MPL 2.0)
+- [dequeuniversity.com/rules/axe](https://dequeuniversity.com/rules/axe/) — every rule explained
+- [w3.org/WAI/WCAG21/quickref](https://www.w3.org/WAI/WCAG21/quickref/) — WCAG 2.1 quick reference
+- [web.dev/accessibility](https://web.dev/accessibility/) — Google accessibility guide
+
+---
 
 ---
 
