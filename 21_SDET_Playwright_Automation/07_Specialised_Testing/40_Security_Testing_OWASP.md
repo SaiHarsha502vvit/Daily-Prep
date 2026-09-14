@@ -205,11 +205,11 @@ test.describe("Authentication Enforcement @security @auth", () => {
     await page.click('[data-testid="logout-btn"]');
     await page.waitForURL("**/login", { timeout: 10_000 });
 
-    // Step 3: Try using the old token — must fail
-    const { request } = await import("@playwright/test");
-    const apiContext = await (
-      await import("@playwright/test")
-    ).request.newContext();
+    // Step 3: Try using the old token — must fail.
+    // Import once and reuse; `request` here is the APIRequest FACTORY from the
+    // module (not the per-test `request` fixture), so it needs .newContext().
+    const { request: apiRequest } = await import("@playwright/test");
+    const apiContext = await apiRequest.newContext();
     const response = await apiContext.get(
       `${process.env.API_BASE_URL}/api/v2/citations`,
       {
@@ -786,20 +786,6 @@ test("IDOR: customer cannot read another customer citation via sequential ID", a
 
 </details>
 
----
-
-**Key References:**
-
-- [owasp.org/Top10](https://owasp.org/Top10/) — OWASP Top 10 2021
-- [zaproxy.org](https://www.zaproxy.org/) — ZAP official site
-- [github.com/zaproxy/zaproxy](https://github.com/zaproxy/zaproxy) — ZAP source (Apache 2.0)
-- [portswigger.net/web-security](https://portswigger.net/web-security) — Free interactive security labs
-- [securityheaders.com](https://securityheaders.com/) — Free security header scanner
-
----
-
-**Navigation**: [← Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](./41_GraphQL_WebSocket_Testing.md)
-
 ### Challenge 2 [Write It Yourself — XSS Payload Injection]
 
 Write a Playwright test that verifies a text input field is immune to Stored XSS. The test should submit `<script>alert('xss')</script>` as a note on a citation, then view the citation and assert that the script is rendered safely as text, not executed as HTML.
@@ -892,18 +878,82 @@ const deleteRes = await request.delete(`/api/citations/${id}`, {
 
 You send `customerId: "USR-001' OR '1'='1"` to the API search endpoint. The API returns a `200 OK` and exactly ONE record belonging to USR-001. What does this mean?
 
-A) The API is vulnerable to SQL injection because it returned a 200 OK.
-B) The API is vulnerable because `' OR '1'='1` bypassed the authentication.
-C) The API is secure because it treated the payload as a literal string and found the exact matching user ID, rather than executing the boolean logic to return all users.
+A) The API is vulnerable to SQL injection — `' OR '1'='1` succeeded and bypassed the filter.
+B) The API is using parameterized queries correctly — it treated the payload as a literal string.
+C) The API is not vulnerable to *this* payload, but the row count rules out parameterized queries: something stripped or truncated the input before it reached the database, which is blocklist filtering — a weaker defence worth raising.
 D) The test is inconclusive because SQL injection can only be tested on login forms.
 
 <details><summary>Answer</summary>
 
-**C** — The API is secure (likely using parameterized queries/Prepared Statements).
+**C** — and the reason B is wrong is the whole point of the question.
 
-If the API were vulnerable, injecting `' OR '1'='1` into `SELECT * FROM citations WHERE customer_id = '[INPUT]'` would result in `WHERE customer_id = 'USR-001' OR '1'='1'`, which is always true. This would return **all records** in the database.
+The instinct is that "one record, not all records" means safe parameterization. It doesn't,
+and the row count is the tell. A parameterized query **binds the payload as a single
+literal value**, so the database looks for a customer whose `customer_id` is *exactly*
+the 18-character string `USR-001' OR '1'='1`. No such customer exists. It returns
+**zero** rows — not one.
 
-Because it returned only ONE record (the exact literal match, if it happened to exist, or likely zero records in a real scenario because no user ID actually contains those SQL characters), it proves the database driver safely escaped the quote marks: `WHERE customer_id = 'USR-001\' OR \'1\'=\'1'`.
+Run against a real SQLite database (Node's `node:sqlite`), three citations seeded for
+`USR-001`, `USR-002`, `USR-003`:
+
+```
+=== 1. PARAMETERIZED (safe / prepared statement) ===
+   SELECT * FROM citations WHERE customer_id = ?     [bound: "USR-001' OR '1'='1"]
+   rows returned: 0
+
+=== 2. STRING-CONCATENATED (vulnerable) ===
+   SELECT * FROM citations WHERE customer_id = 'USR-001' OR '1'='1'
+   rows returned: 3        ← every row in the table; injection succeeded
+
+=== 3. TRUNCATED-AT-QUOTE (blocklist "sanitization") ===
+   sanitized value: "USR-001"
+   rows returned: 1        ← matches the question's premise
+
+=== 4. Baseline: the clean value "USR-001" ===
+   rows returned: 1
+```
+
+So the three outcomes are diagnostic, and each means something different:
+
+| Rows returned | What the backend actually did                            | Verdict                                |
+| ------------- | -------------------------------------------------------- | -------------------------------------- |
+| **3** (all)   | Concatenated the payload into the SQL string             | ❌ Vulnerable — injection succeeded     |
+| **0**         | Bound the payload as one literal value (parameterized)   | ✅ Correct defence                      |
+| **1**         | Stripped/truncated the payload, *then* queried           | ⚠️ Not exploited here, but fragile      |
+
+**Why the "1 row" case deserves a ticket rather than a green tick.** It proves the input
+never reached the database intact, which means some layer is *rewriting user input* —
+truncating at the quote, stripping characters, or matching against a blocklist.
+Blocklist filtering is a defence that has to be right about every possible payload,
+forever, across every encoding; parameterization is right by construction because the
+value is never parsed as SQL at all. Filters get bypassed routinely by payloads that
+avoid the filtered characters, and there is a second-order hazard: silently truncating
+`customerId` means a *legitimate* ID containing an apostrophe is also silently mangled,
+turning a security control into a correctness bug.
+
+**What this means for how you write the assertion.** §4's SQL-injection test asserts
+`not.toBe(500)` and `toHaveLength(0)` on the returned data — both correct, and the
+`toHaveLength(0)` is exactly right precisely *because* parameterized queries return zero
+rows for this payload. But a test that only checked "didn't return everything" would pass
+on all three rows above, including the fragile case. When an injection probe comes back
+with a *plausible-looking* result instead of nothing, that is the signal to go read the
+query, not to move on:
+
+```typescript
+// A probe that distinguishes the three outcomes rather than just ruling out the worst:
+const rows = (await response.json()).data ?? [];
+expect(response.status(), "injection must not cause a server error").not.toBe(500);
+expect(
+  rows,
+  `Injection payload returned ${rows.length} row(s). Expected 0 — a parameterized ` +
+    `query cannot match this literal. A non-zero count means input is being rewritten ` +
+    `before it reaches the DB (blocklist filtering), which is worth investigating.`,
+).toHaveLength(0);
+```
+
+A is wrong because the payload demonstrably did not return all rows. D is wrong because
+any endpoint that puts user input into a query is testable — §4 probes a query parameter,
+not a login form.
 
 </details>
 
@@ -940,7 +990,7 @@ By running as a blocking gate in Staging, you catch vulnerabilities _before_ the
 
 ---
 
-**Navigation**: [← Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSockets](./41_GraphQL_WebSocket_Testing.md)
+**Navigation**: [← Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](./41_GraphQL_WebSocket_Testing.md)
 
 
 ---
