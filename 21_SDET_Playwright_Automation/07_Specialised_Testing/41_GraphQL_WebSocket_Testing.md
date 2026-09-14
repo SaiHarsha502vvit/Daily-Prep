@@ -1,6 +1,6 @@
 # 41. GraphQL & WebSocket Testing with Playwright
 
-**Navigation**: [← Chapter 40: Security Testing](./40_Security_Testing_OWASP.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 40: Security Test Automation](./40_Security_Testing_OWASP.md) | [Index](../00_INDEX.md) | [→ Chapter 42: Polling & Async Data](../05_Advanced_Topics/42_Polling_Async_Data_Patterns.md)
 
 **Open-Source Tools Referenced:**
 
@@ -70,9 +70,44 @@ We still missed messages occasionally because the WebSocket connected before the
 
 Our chat feature auto-reconnects on network interruption. We wrote a test that dropped the WebSocket mid-test using `page.route('**', route => route.abort())` to simulate network loss, then waited for reconnect. The test timed out every time.
 
-Root cause: `page.route` aborts HTTP requests but doesn't affect WebSocket connections (which use a different protocol stack). We needed `context.route('ws://**', ...)` — which in older Playwright versions didn't exist.
+Root cause: `page.route` aborts HTTP requests but doesn't affect WebSocket connections (which use a different protocol stack). `context.route('ws://**', ...)` is not the answer either — `route()` matches HTTP(S) requests, and there has never been a `ws://` variant of it.
 
-The actual fix: use `context.setOffline(true)` to simulate network drop, which does affect WebSockets. Then `context.setOffline(false)` to restore, then wait for the reconnect message.
+The fix we used at the time: `context.setOffline(true)` to simulate network drop, which does affect WebSockets, then `context.setOffline(false)` to restore, then wait for the reconnect message. That still works and is what §5 below uses.
+
+> **Playwright now has a first-class WebSocket routing API, and this chapter predates it.**
+> `page.routeWebSocket()` and `context.routeWebSocket()` are both present in the
+> framework's installed 1.60.0 (verified — `typeof page.routeWebSocket` is `'function'`,
+> with a full `WebSocketRoute` interface in `types.d.ts`). Where `setOffline()` can only
+> simulate *total* network loss, `routeWebSocket()` lets you intercept the connection
+> itself and control individual messages:
+>
+> ```typescript
+> // Mock the server side entirely — no real backend involved:
+> await page.routeWebSocket("/ws", (ws) => {
+>   ws.onMessage((message) => {
+>     if (message === "subscribe") ws.send(JSON.stringify({ status: "connected" }));
+>   });
+> });
+>
+> // Or sit in the middle of a REAL connection, to drop/alter specific frames:
+> await page.routeWebSocket("/ws", (ws) => {
+>   const server = ws.connectToServer(); // pass through to the real server
+>   ws.onMessage((m) => server.send(m));
+>   server.onMessage((m) => {
+>     const msg = JSON.parse(String(m));
+>     if (msg.type === "HEARTBEAT") return; // swallow heartbeats to force a timeout
+>     ws.send(m);
+>   });
+> });
+> ```
+>
+> The `WebSocketRoute` surface is small and worth knowing: `onMessage()`, `onClose()`,
+> `send()`, `close()`, `connectToServer()`, and `protocols()`. The `connectToServer()`
+> form is the one that unlocks tests that were previously impossible — deterministically
+> dropping a single frame type, corrupting one message, or delaying a specific server
+> push, none of which `setOffline()` can express because it is all-or-nothing. Prefer
+> `routeWebSocket()` for new mocking work; keep `setOffline()` for the specific case this
+> war story is actually about, which is genuine connection loss and reconnect behaviour.
 
 ---
 
@@ -213,18 +248,126 @@ export class GraphQLClient {
     return result.data!;
   }
 
-  // Use Playwright's request object instead of fetch (better for fixture integration)
+  // Use Playwright's APIRequestContext instead of global fetch.
+  // Real benefits: it inherits the context's baseURL, proxy, TLS settings,
+  // extraHTTPHeaders and cookie jar, and its calls appear in the trace viewer.
+  // It does NOT make the client mockable via page.route() — see the callout below.
   static fromRequest(
     request: APIRequestContext,
     baseUrl: string,
     token: string,
   ): GraphQLClient {
-    // Returns a client that uses Playwright's request interceptor
-    // This means page.route() can mock GraphQL responses in UI tests
-    return new GraphQLClient(baseUrl, token); // simplified — full impl uses request
+    const client = new GraphQLClient(baseUrl, token);
+    client.request = request; // actually used — see the overridden query() below
+    return client;
+  }
+
+  private request?: APIRequestContext;
+
+  private async post(body: unknown): Promise<unknown> {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${this.token}`,
+      Accept: "application/json",
+    };
+    if (this.request) {
+      const res = await this.request.post(this.endpoint, { headers, data: body });
+      if (!res.ok()) {
+        throw new Error(`GraphQL HTTP error: ${res.status()} ${await res.text()}`);
+      }
+      return res.json();
+    }
+    const res = await fetch(this.endpoint, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      throw new Error(`GraphQL HTTP error: ${res.status} ${await res.text()}`);
+    }
+    return res.json();
   }
 }
 ```
+
+> ### ⚠️ `page.route()` does not intercept this client — or any API-level client
+>
+> The original version of `fromRequest()` above carried the comment *"This means
+> `page.route()` can mock GraphQL responses in UI tests."* That is wrong twice over, and
+> it's worth being precise because it's a mistake that fails **silently**: your mock
+> never fires, the request goes to the real server, and the test passes or fails for
+> reasons unrelated to what you thought you were testing.
+>
+> First, the old implementation ignored its `request` parameter entirely and returned a
+> plain client using Node's global `fetch` — so there was no Playwright involvement at
+> all. (Under this framework's `noUnusedParameters: true`, that unused parameter is also
+> a compile error.) Second, and more fundamentally: **`page.route()` only intercepts
+> requests that originate inside the browser page.** Measured — one `page.route('**/graphql')`
+> handler registered, then the same URL requested five different ways against a real
+> local server:
+>
+> ```
+>   page fetch (in-browser) .... INTERCEPTED (MOCKED)
+>   page.request.post .......... NOT intercepted -> FROM_REAL_SERVER
+>   context.request.post ....... NOT intercepted -> FROM_REAL_SERVER
+>   standalone request.post .... NOT intercepted -> FROM_REAL_SERVER
+>   Node global fetch .......... NOT intercepted -> FROM_REAL_SERVER
+>
+>   page.route handler invocations: 1
+>   real server hits            : 4
+> ```
+>
+> One interception, four requests straight through — including `page.request`, which is
+> the one most people assume is covered because it hangs off the `page` object. It isn't:
+> `APIRequestContext` shares the browser context's cookies and settings, but its requests
+> are issued by Playwright's own HTTP stack, not by the page, so no page-level route
+> handler sees them.
+>
+> **So how do you mock GraphQL for a UI test?** You don't mock *your test's* client —
+> you mock the requests **the application under test** makes, which do originate in the
+> page and therefore are interceptable. That's [Ch31](../05_Advanced_Topics/31_API_Mocking_page_route.md)'s
+> subject, and for GraphQL it needs one extra step over REST: every operation shares the
+> single `/graphql` URL, so the URL cannot tell you which operation is being called.
+> Route on the **request body's `operationName`** instead:
+>
+> ```typescript
+> await page.route("**/graphql", async (route) => {
+>   const { operationName } = route.request().postDataJSON() ?? {};
+>   if (operationName !== "GetCitation") return route.fallback(); // let others through
+>   await route.fulfill({
+>     status: 200, // GraphQL errors are 200 — see §2
+>     contentType: "application/json",
+>     body: JSON.stringify({ data: { citation: { citationId: "CIT-001", status: "PAID" } } }),
+>   });
+> });
+> ```
+>
+> Note `route.fallback()` rather than `route.continue()` for the non-matching case: it
+> hands the request to the *next* matching handler, which is what lets you stack one
+> route per operation instead of writing a single handler that switches over every
+> operation in the app. Verified with two stacked handlers (one for `GetCitation`, one
+> for `SearchCitations`) in front of a real local server:
+>
+> ```
+>   GetCitation      -> MOCK_GetCitation
+>   SearchCitations  -> MOCK_SearchCitations
+>   CreateCitation   -> REAL_SERVER        (no handler matches)
+>
+>   requests that reached the real server: [ 'CreateCitation' ]
+> ```
+>
+> Two things that transcript pins down. **Handlers run in reverse registration order** —
+> the last one registered is tried first — so the `SearchCitations` handler ran before the
+> `GetCitation` one, declined, and `fallback()` deferred to it. And **an unmatched
+> operation reaches the network**: exactly one request hit the real server, so stacking
+> per-operation mocks does not accidentally block the operations you didn't mock. If you
+> want the opposite — everything mocked, unmocked operations failing loudly — add a final
+> catch-all handler that calls `route.abort()` instead of relying on fallthrough.
+>
+> The two clients are for two different jobs, and conflating them is the root of the
+> original error: `fromRequest()` is for **API-level tests** (no page involved, real
+> server, fixture-integrated, trace-visible), while `page.route()` is for **UI tests**
+> where you're controlling what the *app* receives.
 
 ### 4. Writing GraphQL Tests
 
@@ -854,20 +997,6 @@ test("Citation update arrives via WebSocket", async ({
 ```
 
 </details>
-
----
-
-**Key References:**
-
-- [graphql.org/learn](https://graphql.org/learn/) — Official GraphQL tutorial
-- [github.com/jasonkuhrt/graphql-request](https://github.com/jasonkuhrt/graphql-request) — graphql-request (MIT)
-- [github.com/faker-js/faker](https://github.com/faker-js/faker) — Faker.js (MIT)
-- [playwright.dev/docs/network](https://playwright.dev/docs/network) — Playwright network + WebSocket docs
-- [MDN WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
-
----
-
-**Navigation**: [← Chapter 40: Security Testing](./40_Security_Testing_OWASP.md) | [Index](../00_INDEX.md)
 
 ### Challenge 3 [Spot the Bug — GraphQL Aliases]
 
