@@ -423,7 +423,9 @@ test("complete example", async ({ page, request }) => {
   // ─── USER ACTIONS ────────────────────────────────────────────
   await page.click("#loginButton"); // await ✅
   await page.fill("#username", "admin@company.com"); // await ✅
-  await page.type("#password", "Password123"); // await ✅
+  await page.type("#password", "Password123"); // await ✅ — but @deprecated:
+  //   prefer page.fill() above, or locator.pressSequentially() when you genuinely
+  //   need per-keystroke events (see Ch17 §on D365 lookup debounce).
   await page.press("#search", "Enter"); // await ✅
   await page.selectOption("#dropdown", "Option1"); // await ✅
   await page.check("#checkbox"); // await ✅
