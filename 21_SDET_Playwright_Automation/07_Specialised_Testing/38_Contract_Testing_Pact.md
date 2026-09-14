@@ -1,6 +1,6 @@
 # 38. Contract Testing with Pact — Preventing API Breaking Changes
 
-**Navigation**: [← Chapter 37: Performance Testing](./37_Performance_Testing_Lighthouse_k6.md) | [Index](../00_INDEX.md) | [→ Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md)
+**Navigation**: [← Chapter 37: Performance Testing](./37_Performance_Testing_Lighthouse_k6.md) | [Index](../00_INDEX.md) | [→ Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md)
 
 **Open-Source Tools Referenced:**
 
@@ -673,7 +673,7 @@ await new Verifier({
     { deployedOrReleased: true }, // contracts from currently-deployed consumer versions
   ],
 
-  // ← KEY: Pending pacts won't fail provider CI
+  // ← KEY: Pending pacts won't fail provider CI
   // They're reported as warnings until the provider verifies them for the first time
   enablePending: true,
 
@@ -770,17 +770,6 @@ test("GET /api/v1/notifications → returns notifications for user", async () =>
 
 </details>
 
----
-
-**Key References:**
-
-- [docs.pact.io](https://docs.pact.io/) — Complete Pact documentation
-- [github.com/pact-foundation/pact-js](https://github.com/pact-foundation/pact-js) — Pact JS (MIT)
-- [Martin Fowler — Consumer-Driven Contracts](https://martinfowler.com/bliki/ConsumerDrivenContracts.html)
-- [PactFlow — managed broker](https://pactflow.io) — free tier available
-
----
-
 ### Challenge 2 [Breaking Change Classification]
 
 Your provider team is making these API changes to `GET /api/v2/citations/:id`. Classify each as BREAKING or NON-BREAKING and explain why:
@@ -834,19 +823,6 @@ If the team is resistant to adopting Pact tooling on the provider side, use BDCT
 
 </details>
 
----
-
-**Key References:**
-
-- [docs.pact.io](https://docs.pact.io/) — Complete Pact documentation
-- [github.com/pact-foundation/pact-js](https://github.com/pact-foundation/pact-js) — Pact JS (MIT)
-- [Martin Fowler — Consumer-Driven Contracts](https://martinfowler.com/bliki/ConsumerDrivenContracts.html)
-- [PactFlow — managed broker](https://pactflow.io) — free tier available
-
----
-
-**Navigation**: [← Chapter 37: Performance Testing](./37_Performance_Testing_Lighthouse_k6.md) | [Index](../00_INDEX.md) | [→ Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md)
-
 ### Challenge 4 [Spot the Bug — Over-specification in Consumer Contract]
 
 ```typescript
@@ -877,7 +853,48 @@ What are two major anti-patterns in this consumer contract?
 <details><summary>Answer</summary>
 
 **1. Exact Value Matching for Dynamic Data (Timestamp)**: The provider likely generates a dynamic timestamp. If the contract demands exactly `2023-10-15T08:30:00Z`, the provider verification will fail unless the provider mocks its clock perfectly.
-_Fix_: Use Pact matchers: `timestamp: Matchers.iso8601DateTime()`
+_Fix_: Use a Pact matcher instead of a literal — but **use the one that belongs to the API version this chapter is written against**:
+
+```typescript
+// ❌ V2-only — `iso8601DateTime` does NOT exist on MatchersV3.
+//    `Matchers.iso8601DateTime()` comes from the legacy V2 matcher namespace.
+timestamp: Matchers.iso8601DateTime();
+
+// ✅ V3/V4 equivalent — MatchersV3.timestamp(format, example).
+//    The format string is Java SimpleDateFormat syntax, not strftime.
+timestamp: timestamp("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "2023-10-15T08:30:00.000Z");
+```
+
+This matters beyond a name lookup: §3 of this chapter builds its contracts with
+`PactV3` and destructures `MatchersV3`, so a `Matchers.iso8601DateTime()` fix would not
+resolve at all in the surrounding code. The V3 matcher set is
+`like`, `eachLike`, `atLeastOneLike`, `atLeastLike`, `atMostLike`,
+`constrainedArrayLike`, `boolean`, `integer`, `decimal`, `number`, `string`, `regex`,
+`equal`, `timestamp`, `time`, `date`, `includes`, `nullValue`, `arrayContaining`,
+`eachKeyMatches`, `eachValueMatches`, and `fromProviderState` — note the absence of any
+`iso8601*` helper ([Pact JS matching docs](https://docs.pact.io/implementation_guides/javascript/docs/matching)).
+
+**1b. The snippet also mixes V2 and V3 interaction syntax** — a second version
+mismatch, easy to miss because it's in the scaffolding rather than the body. The
+challenge code opens with the V2 key:
+
+```typescript
+provider.addInteraction({
+  state: "a citation CIT-001 exists",        // ❌ V2 — a single string
+```
+
+whereas `PactV3` (what §3 uses throughout) takes an **array of state objects**:
+
+```typescript
+provider.addInteraction({
+  states: [{ description: "a citation CIT-001 exists" }],   // ✅ V3
+```
+
+Getting this wrong is quiet rather than loud: the provider-side `stateHandlers` map in
+§5 is keyed by state *description*, so a mis-shaped state silently matches no handler,
+the database setup never runs, and verification fails with a confusing
+"citation not found" rather than "your state key is wrong." When you copy a Pact snippet
+off the internet, checking which major version it targets is step one.
 
 **2. Including Unused Fields (`internalDbId`)**: Contract testing is about the _Consumer-Driven_ contract. If the consumer (frontend) doesn't use `internalDbId`, it shouldn't be in the contract. Including it means the provider team cannot remove or rename `internalDbId` without breaking the contract, unnecessarily tightly coupling the two systems.
 _Fix_: Remove fields the consumer doesn't actively parse.
