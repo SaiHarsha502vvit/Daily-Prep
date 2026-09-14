@@ -1,6 +1,6 @@
 # 37. Performance Testing — Core Web Vitals, Lighthouse & Response Time Assertions
 
-**Navigation**: [← Chapter 36: TypeScript Type System](../06_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | [Index](../00_INDEX.md) | [→ Chapter 38: Contract Testing with Pact](./38_Contract_Testing_Pact.md)
+**Navigation**: [← Chapter 36: TypeScript Type System](../06_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | [Index](../00_INDEX.md) | [→ Chapter 38: Contract Testing with Pact](./38_Contract_Testing_Pact.md)
 
 **Open-Source Tools Referenced:**
 
@@ -8,6 +8,7 @@
 - **@playwright/test** — built-in performance timing APIs
 - **k6** — https://github.com/grafana/k6 (AGPL 3.0) — load testing
 - **web-vitals** — https://github.com/GoogleChrome/web-vitals (Apache 2.0)
+- **playwright-lighthouse** — https://github.com/abhinaba-ghosh/playwright-lighthouse — provides the `playAudit()` helper used in Challenge 5; it drives Lighthouse against an already-open Playwright page over the browser's remote-debugging port
 
 **Online References:**
 
@@ -25,7 +26,8 @@
 ## 5W1H
 
 - **WHAT**: Measuring and asserting on how fast your application loads and responds — not just whether it works, but whether it works _fast enough_ for users.
-- **WHY**: A page that takes 8 seconds to load in D365 after a form save might pass all functional tests but fail all users. Google's 2021 Core Web Vitals update made performance a search ranking factor — enterprise portals need to meet LCP < 2.5s, FID < 100ms, CLS < 0.1. Without automation, regressions sneak in silently.
+- **WHY**: A page that takes 8 seconds to load in D365 after a form save might pass all functional tests but fail all users. Google's 2021 Core Web Vitals update made performance a search ranking factor — enterprise portals need to meet **LCP < 2.5s, INP < 200ms, CLS < 0.1**. Without automation, regressions sneak in silently.
+  - ⚠️ **The responsiveness metric changed.** Much of the material you'll find online still names **FID (First Input Delay) < 100ms** as the third Core Web Vital. That is out of date: **on 12 March 2024, INP (Interaction to Next Paint) officially replaced FID as a Core Web Vital, and FID was deprecated in the same transition** ([web.dev announcement](https://web.dev/blog/inp-cwv-march-12)). FID lingered in some Google tooling for a six-month grace period before removal. Use INP for any new budget; the distinction matters because they measure different things — FID timed only the *delay before* processing the first interaction, whereas INP measures the *full* duration from interaction to the next rendered frame, across all interactions on the page. A page could score well on FID and badly on INP, which is precisely why the swap happened. §2's `CoreWebVitals` interface below is already correct on this.
 - **WHO**: SDETs on teams where performance is part of the Definition of Done. Also: any SDET wanting to work on frontend-heavy apps.
 - **WHEN**: After functional coverage is solid (same rule as visual regression). Don't measure performance on an unstable page.
 - **HOW**: Three layers — (1) Playwright response time assertions, (2) Navigation Timing API via `page.evaluate()`, (3) Lighthouse CI for full audit.
@@ -155,6 +157,8 @@ export async function captureCoreWebVitals(page: Page): Promise<CoreWebVitals> {
     // path: 'node_modules/web-vitals/dist/web-vitals.iife.js',
   });
 
+  // ❌ BROKEN — see "Why this hangs then crashes" below. Kept because this is the
+  // shape almost every blog post shows, and you need to recognise it.
   return page.evaluate(async (): Promise<CoreWebVitals> => {
     return new Promise((resolve) => {
       const vitals: Partial<CoreWebVitals> = {};
@@ -187,6 +191,129 @@ export async function captureCoreWebVitals(page: Page): Promise<CoreWebVitals> {
   });
 }
 ```
+
+### Why that collector hangs for 30 seconds and then crashes
+
+The `collected >= 3` gate is never satisfied in a normal Playwright run, because of how
+web-vitals decides a metric is final. From the library's own documentation, the default
+(without `reportAllChanges`) is that the callback fires **when the metric is ready to be
+reported** — and for CLS and INP that means the callback is *"always called when the
+page's visibility state changes to hidden"*. A Playwright test navigates, asserts, and
+ends; it never backgrounds or unloads the page, so nothing ever reports.
+
+Measured, running the collector above verbatim against a real loaded page in Chromium
+with `web-vitals@3` and default options — no interaction, no page hide:
+
+```
+--- defaults, no page hide (the collector above) ---
+vitals:          {}
+callbacks fired: []
+=> collected count would be: 0   (gate needs 3)
+```
+
+Zero callbacks. So `collected` stays at 0, the promise sits for the full 30 seconds, and
+the `setTimeout` fallback resolves an **empty object** — which the `as CoreWebVitals`
+cast launders into a type that promises three numbers. The test then does
+`vitals.lcp.toFixed(0)` and dies:
+
+```
+TypeError: Cannot read properties of undefined (reading 'toFixed')
+```
+
+Every performance test in the suite pays 30 seconds to produce that. Worse, the
+**assertions fail open** if you drop the `.toFixed()` formatting:
+
+```js
+undefined < 0.1; // → false
+// so expect(vitals.cls).toBeLessThan(0.1) FAILS LOUDLY (good) …
+// but a hand-rolled `if (vitals.cls < 0.1) pass()` silently reports "not good"
+// and an `if (vitals.cls > 0.1) fail()` silently reports SUCCESS on missing data.
+```
+
+A metric collector that can't distinguish "0.05 CLS" from "never measured" is worse than
+no collector, because it produces green builds from absent data.
+
+### The fixed collector
+
+One change does the real work: **ask for values as soon as they're known**, via
+`reportAllChanges: true`. Then wait for them to actually arrive instead of sleeping, and
+validate rather than cast. Measured with the same page and the flag turned on:
+
+```
+--- reportAllChanges: true, after one click, no page hide ---
+vitals:          { lcp: 1768, cls: 0, inp: 144 }
+callbacks fired: [ 'lcp', 'cls', 'inp' ]
+```
+
+All three report, with no page-hide needed. (It's worth stating what this rules out:
+manually dispatching a `visibilitychange` with `document.visibilityState` overridden to
+`"hidden"` is a popular workaround for this problem, but it is **not** what fixes it —
+adding that step after the flag changed nothing, because the values had already been
+reported. `reportAllChanges` is the fix; the visibility dance is cargo cult.)
+
+```typescript
+export async function captureCoreWebVitals(
+  page: Page,
+  timeoutMs = 10_000,
+): Promise<CoreWebVitals> {
+  await page.addScriptTag({
+    // Pin the version — the global name and metric set differ across majors.
+    url: "https://unpkg.com/web-vitals@3/dist/web-vitals.iife.js",
+    // path: 'node_modules/web-vitals/dist/web-vitals.iife.js',  // preferred in CI
+  });
+
+  // 1. Register collectors that report on every change, into a page-level bucket.
+  await page.evaluate(() => {
+    (window as any).__vitals = {} as Record<string, number>;
+    const opts = { reportAllChanges: true };
+    const wv = (window as any).webVitals;
+    wv.onLCP((m: { value: number }) => ((window as any).__vitals.lcp = m.value), opts);
+    wv.onCLS((m: { value: number }) => ((window as any).__vitals.cls = m.value), opts);
+    wv.onINP((m: { value: number }) => ((window as any).__vitals.inp = m.value), opts);
+  });
+
+  // 2. Wait for the values to actually arrive — don't sleep a fixed 30s.
+  //    With reportAllChanges they land within a few hundred ms of being known.
+  const raw = await page
+    .waitForFunction(
+      () => {
+        const v = (window as any).__vitals;
+        return typeof v?.lcp === "number" && typeof v?.cls === "number" ? v : null;
+      },
+      undefined,
+      { timeout: timeoutMs },
+    )
+    .then((handle) => handle.jsonValue() as Promise<Partial<CoreWebVitals>>);
+
+  // 3. Validate instead of casting — a missing metric must be loud, not `undefined`.
+  const missing = (["lcp", "cls"] as const).filter(
+    (k) => typeof raw[k] !== "number",
+  );
+  if (missing.length > 0) {
+    throw new Error(
+      `Core Web Vitals not collected: [${missing.join(", ")}]. ` +
+        `Check that web-vitals actually loaded (window.webVitals) and that ` +
+        `reportAllChanges: true was passed — without it these never report.`,
+    );
+  }
+
+  return {
+    lcp: raw.lcp!,
+    cls: raw.cls!,
+    // INP requires a real interaction to exist at all; absent is legitimate, so
+    // report it as NaN rather than silently as 0 (which would pass any budget).
+    inp: typeof raw.inp === "number" ? raw.inp : NaN,
+  };
+}
+```
+
+Note the deliberate asymmetry on INP: LCP and CLS are always measurable on a loaded
+page, so their absence is a **collector bug** and throws. INP has nothing to measure
+until the user interacts, so on a pure page-load test its absence is **expected** — and
+returning `NaN` is the honest encoding, because `expect(NaN).toBeLessThan(200)` fails
+(`NaN < 200` is `false`), whereas returning `0` would sail through the budget and report
+perfect responsiveness for a page nobody touched. If you want an INP number, you must
+interact first — which is exactly what the test in the next block does before measuring.
 
 **Using the utilities in a test:**
 
@@ -723,17 +850,6 @@ Match the tool to the use case:
 
 </details>
 
----
-
-**Key References:**
-
-- [web.dev/vitals](https://web.dev/vitals/) — Google's Core Web Vitals guide
-- [github.com/GoogleChrome/lighthouse-ci](https://github.com/GoogleChrome/lighthouse-ci) — LHCI source + docs
-- [k6.io/docs](https://k6.io/docs/) — k6 documentation
-- [MDN Navigation Timing](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_timing_API) — browser timing spec
-
----
-
 ### Challenge 3 [Interpret the k6 Output]
 
 Your k6 run produces this output:
@@ -763,8 +879,8 @@ Date:         2026-05-28
 Load:         [as configured]
 
 Violations:
-  â— citation_search_duration p(95): 2340ms (SLA: <1000ms) — 2.3× over threshold
-  â— http_req_failed: 3.2% (SLA: <1%) — 3× over threshold
+  ● citation_search_duration p(95): 2340ms (SLA: <1000ms) — 2.3× over threshold
+  ● http_req_failed: 3.2% (SLA: <1%) — 3× over threshold
 
 Observations:
   - Median (p50) = 1089ms: average users see ~1s response — borderline acceptable
@@ -810,19 +926,6 @@ assertions:
 This way: LCP or CLS regressions block the PR (they're real user experience regressions). The composite score is a warning only. Add `numberOfRuns: 3` and use the median to reduce flakiness.
 
 </details>
-
----
-
-**Key References:**
-
-- [web.dev/vitals](https://web.dev/vitals/) — Google's Core Web Vitals guide
-- [github.com/GoogleChrome/lighthouse-ci](https://github.com/GoogleChrome/lighthouse-ci) — LHCI source + docs
-- [k6.io/docs](https://k6.io/docs/) — k6 documentation
-- [MDN Navigation Timing](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_timing_API) — browser timing spec
-
----
-
-**Navigation**: [← Chapter 36: TypeScript Type System](../06_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | [Index](../00_INDEX.md) | [→ Chapter 38: Contract Testing with Pact](./38_Contract_Testing_Pact.md)
 
 ### Challenge 5 [Spot the Bug — Lighthouse Test Flow]
 
@@ -890,7 +993,7 @@ await playAudit({
 
 ## Reality Check
 
-**"Performance testing and load testing are the same"** → Different focuses: Performance testing: measures response time, throughput, and resource usage under a specific load. Load testing: gradually increases users to find the breaking point. Stress testing: pushes beyond normal load to see failure behavior. Soak/endurance testing: runs at normal load for hours/days to find memory leaks or degradation over time. Spike testing: sudden large increase in load. Lighthouse: client-side performance metrics (LCP, FID, CLS, TTI) — browser rendering performance. k6: server-side performance under concurrent users — API throughput and latency. Both are needed; neither covers the other's domain.
+**"Performance testing and load testing are the same"** → Different focuses: Performance testing: measures response time, throughput, and resource usage under a specific load. Load testing: gradually increases users to find the breaking point. Stress testing: pushes beyond normal load to see failure behavior. Soak/endurance testing: runs at normal load for hours/days to find memory leaks or degradation over time. Spike testing: sudden large increase in load. Lighthouse: client-side **lab** metrics (FCP, LCP, TBT, CLS, Speed Index) — browser rendering performance. k6: server-side performance under concurrent users — API throughput and latency. Both are needed; neither covers the other's domain. Note what Lighthouse structurally *cannot* give you: neither FID nor INP, because both require a real user interaction to exist, and a lab run has no user — Lighthouse reports **Total Blocking Time** as its lab proxy for responsiveness instead. If your performance budget names an INP threshold, that number can only be verified from field data (CrUX / RUM) or from an interaction-driven Playwright test like §2's, never from a Lighthouse score.
 
 **"Lighthouse score of 90+ means the site performs well for users"** → Lighthouse lab score measures performance under ideal conditions: a simulated mid-tier mobile device, throttled network, no other browser tabs, cached DNS. Real users have: different devices (old phones, slow connections), browser extensions, cached/uncached states, geographic distance to servers, concurrent network requests. Field data (Core Web Vitals from Chrome User Experience Report, aka CrUX) reflects actual user experiences. The gap between lab score (90) and field data (poor) is common and reveals what Lighthouse misses. Both lab and field data are needed.
 
