@@ -1,6 +1,6 @@
 # 36. TypeScript Type System Mastery for SDETs
 
-**Navigation**: [← Chapter 35: OOP Design Patterns](./35_OOP_Design_Patterns_for_SDETs.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 35: OOP Design Patterns](./35_OOP_Design_Patterns_for_SDETs.md) | [Index](../00_INDEX.md) | [→ Chapter 37: Performance Testing](../07_Specialised_Testing/37_Performance_Testing_Lighthouse_k6.md)
 
 **Cross-references (read these alongside):**
 
@@ -341,7 +341,7 @@ type ImmutableFixture<T> = {
 };
 // This recursively makes every field readonly — deep immutability.
 // If a test accidentally tries to mutate a fixture:
-// fixture.amount = 999;  ← TypeScript error: cannot assign to read-only property
+// fixture.amount = 999;  ← TypeScript error: cannot assign to read-only property
 ```
 
 ---
@@ -544,14 +544,15 @@ flowchart TD
 ```typescript
 // TypeScript tracks variables through your logic (Control Flow Analysis)
 
-let element: Locator | null = await page.locator(".btn").first();
-// Type is: Locator | null
+// A generic nullable value — narrowing in its simplest form:
+let maybeToken: string | null = readTokenFromStorage();
+// Type is: string | null
 
-element.click(); // â Œ TypeScript error: Object is possibly 'null'
+maybeToken.toUpperCase(); // ❌ TypeScript error: Object is possibly 'null'
 
-if (element) {
+if (maybeToken) {
   // TypeScript NARROWS the type based on the truthiness check
-  element.click(); // ✅ Type is strictly: Locator
+  maybeToken.toUpperCase(); // ✅ Type is strictly: string
 }
 
 // Applying this to test code assertions:
@@ -563,14 +564,52 @@ if (citation.status === "PAID") {
   expect(citation.paymentDate).toBeDefined(); // ✅ Safe to access
 } else {
   // Type is narrowed to 'PENDING' | 'DISPUTED'
-  // expect(citation.paymentDate).toBeDefined(); // â Œ Compile error
+  // expect(citation.paymentDate).toBeDefined(); // ❌ Compile error
 }
 
 // expect() does NOT narrow types automatically!
 expect(citation.status).toBe("PAID");
-// citation.paymentDate // â Œ Still a compile error, expect() doesn't narrow
+// citation.paymentDate // ❌ Still a compile error, expect() doesn't narrow
 // To fix this, use a type guard or an invariant assertion function.
 ```
+
+**Why the narrowing example above does not use a `Locator`.** It's tempting to
+illustrate `T | null` with `let element: Locator | null = await page.locator(".btn").first()`,
+but that line is wrong in two independent ways, and both matter because they're common
+misconceptions carried over from Selenium:
+
+```typescript
+// playwright-core/types/types.d.ts
+locator(selector: string, options?: { ... }): Locator;   // NOT a Promise
+first(): Locator;                                        // NOT Locator | null
+```
+
+1. **`page.locator()` is synchronous.** It returns a `Locator`, not a
+   `Promise<Locator>`, so there is nothing to `await`. Awaiting a non-promise is legal
+   JavaScript — `await` wraps any non-thenable and resolves it on the next microtask —
+   so this compiles and "works", which is exactly why the mistake survives code review.
+   It just costs you a needless tick and signals a wrong mental model.
+2. **A `Locator` is never `null`.** This is the whole point of §2's lazy-descriptor
+   model: `locator()` builds a *description* of where to look without querying the DOM,
+   so it cannot fail to find anything at creation time and has nothing to report as
+   `null`. The "element is missing" case surfaces later, when an action or assertion
+   resolves the locator — as a timeout, not a null. Annotating it `Locator | null`
+   invents a state the type system says cannot exist, and the `if (element)` guard that
+   follows is then dead code that always passes.
+
+So `Locator` is the wrong vehicle for teaching null-narrowing. The genuinely nullable
+values in Playwright test code are the ones that read *out* of the page — and those are
+worth knowing by name:
+
+| Nullable Playwright API                     | Returns                | Why it can be `null`                          |
+| ------------------------------------------- | ---------------------- | --------------------------------------------- |
+| `locator.textContent()`                     | `Promise<string \| null>` | The node exists but has no text content    |
+| `locator.getAttribute(name)`                | `Promise<string \| null>` | The attribute is absent                    |
+| `page.$(selector)` *(discouraged)*          | `Promise<ElementHandle \| null>` | Query-now semantics — genuinely finds nothing |
+| `frame.parentFrame()`                       | `Frame \| null`        | The main frame has no parent                  |
+
+That table is why `(await el.textContent()) ?? ""` appears throughout this
+curriculum — it's narrowing a real `null`, not a hypothetical one.
 
 ---
 
@@ -967,6 +1006,7 @@ type SendEmailPayload = Brand<
   "SendEmailPayload"
 >;
 
+// One factory per brand — the ONLY place each branded type can be minted:
 function createUserPayload(data: {
   name: string;
   email: string;
@@ -974,12 +1014,36 @@ function createUserPayload(data: {
   return data as CreateUserPayload; // only this factory creates the branded type
 }
 
+function createEmailPayload(data: {
+  name: string;
+  email: string;
+}): SendEmailPayload {
+  return data as SendEmailPayload;
+}
+
+declare function createUser(payload: CreateUserPayload): Promise<void>;
+
 const emailPayload = createEmailPayload({
   name: "Test",
   email: "test@example.com",
 });
-await createUser(emailPayload); // ❌ TypeScript error: brands don't match
+await createUser(emailPayload);
+// ❌ error TS2345: Argument of type 'SendEmailPayload' is not assignable to
+//    parameter of type 'CreateUserPayload'.
+//      Type 'SendEmailPayload' is not assignable to type
+//      '{ readonly __brand: "CreateUserPayload"; }'.
+//        Types of property '__brand' are incompatible.
+//          Type '"SendEmailPayload"' is not assignable to type '"CreateUserPayload"'.
+
+await createUser(createUserPayload({ name: "Test", email: "test@example.com" })); // ✅
 ```
+
+Note that the cast inside each factory is doing real work, and it's the one place a
+cast is correct here: `__brand` is a **phantom property** — it exists only in the type,
+never at runtime, so there is nothing to actually construct and `as` is how you attach
+the tag. Keeping the casts confined to two factory functions is what makes the pattern
+sound; the moment a caller writes `data as CreateUserPayload` inline, the brand stops
+proving anything.
 
 Branded types enforce **nominal typing** in TypeScript's structural system — preventing "accidentally compatible" payloads from being mixed.
 
@@ -1073,7 +1137,7 @@ flattenCitationIds(root);
 
 ---
 
-**Navigation**: [← Chapter 35: OOP Design Patterns](./35_OOP_Design_Patterns_for_SDETs.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 35: OOP Design Patterns](./35_OOP_Design_Patterns_for_SDETs.md) | [Index](../00_INDEX.md) | [→ Chapter 37: Performance Testing](../07_Specialised_Testing/37_Performance_Testing_Lighthouse_k6.md)
 
 
 ---
