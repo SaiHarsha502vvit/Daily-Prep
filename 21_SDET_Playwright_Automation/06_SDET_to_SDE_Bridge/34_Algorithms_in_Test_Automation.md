@@ -172,11 +172,13 @@ interface PaginatedResponse<T> {
 // BRUTE FORCE: fetch all pages, concatenate, scan for duplicates — O(n²)
 const all: CitationApiResponse[] = [];
 let page = 1;
+let totalPages = 1; // must live OUTSIDE the loop body — see the note below
 do {
   const resp = await citationsClient.search({ userId: account.userId, page });
   all.push(...resp.data);
+  totalPages = resp.pagination.totalPages;
   page++;
-} while (page <= resp.pagination.totalPages);
+} while (page <= totalPages);
 
 // O(n²) duplicate check:
 for (let i = 0; i < all.length; i++) {
@@ -223,6 +225,33 @@ async function fetchAllPagesWithDuplicateCheck(
 - The window slides forward: only the current page is in active memory, previous pages released
 - Duplicate detection is O(1) per item (HashSet) instead of O(n) per item (array scan)
 - Fails fast: stops at the first duplicate rather than collecting all data first
+
+> **Note the `totalPages` variable in the brute-force version above** — it isn't
+> incidental style. The obvious way to write that loop is to read the page count
+> straight off the response in the loop condition:
+>
+> ```typescript
+> do {
+>   const resp = await citationsClient.search({ userId: account.userId, page });
+>   all.push(...resp.data);
+>   page++;
+> } while (page <= resp.pagination.totalPages); // ❌
+> ```
+>
+> That does not work. `const resp` is **block-scoped to the do-block's body**, and a
+> `do…while` condition is evaluated *outside* that block — so `resp` is not in scope
+> there. This is a compile error, not a subtle runtime surprise:
+>
+> ```
+> error TS2304: Cannot find name 'resp'.
+> ```
+>
+> and in plain JavaScript, `ReferenceError: resp is not defined` on the very first
+> iteration. It reads as though it should work because the body has demonstrably just
+> run and assigned `resp`, which is exactly the intuition block scoping breaks: the
+> `while (…)` clause is not part of the body. Either hoist the value (as above) or use
+> the `while (true)` + `break` shape the optimised version below already uses — which
+> sidesteps the problem entirely by keeping the termination check *inside* the block.
 
 **Real-world precedent:** this is not a toy pattern. Cloudflare's engineering blog documents building exactly this — a sliding-window counter — as the core of their edge rate limiter, publicly measured against **400 million real requests** for counting accuracy versus a naive fixed-window approach (["Counting things, a lot of different things"](https://blog.cloudflare.com/counting-things-a-lot-of-different-things/), Cloudflare Blog, April 2017). Their problem was structurally the same shape as this section's: track a rolling count per key (IP address, there; citation ID, in the test-automation version) without re-scanning history on every check. Sliding window vs. fixed window is also a genuine design fork in production rate limiters — Stripe's own writeup on their API rate limiter (["Scaling your API with rate limiters"](https://stripe.com/blog/rate-limiters), Stripe Blog, March 2017) documents choosing a **token bucket** instead, for a different reason (allowing controlled bursts rather than strict per-second smoothing) — a useful reminder that "the sliding-window pattern" and "the right rate-limiting algorithm" aren't the same choice: the pattern is general, which specific variant fits depends on what's being optimized for.
 
@@ -324,7 +353,8 @@ async function findCitationPage(
     if (ids.includes(citationId)) return mid; // FOUND
 
     // Since sorted: if first ID on this page > target → target is on earlier page
-    if (ids[0] > citationId) {
+    // ⚠️ `>` on raw ID strings is a BUG for IDs like "CIT-500" — see below.
+    if (compareCitationIds(ids[0]!, citationId) > 0) {
       high = mid - 1;
     } else {
       low = mid + 1;
@@ -335,11 +365,68 @@ async function findCitationPage(
 // O(log n) pages fetched instead of O(n) pages
 ```
 
+**The comparison is where this goes wrong — and this chapter's own Reality Check
+already warns about it.** The original form of that branch was
+`if (ids[0] > citationId)`, comparing the ID strings directly with `>`. JavaScript
+compares strings **lexicographically, character by character**, which is not the same
+order as the numeric order those IDs imply. Measured:
+
+```js
+"CIT-10"   > "CIT-9";    // → false   (but numerically 10 > 9)
+"CIT-1000" > "CIT-500";  // → false   (but numerically 1000 > 500)
+
+["CIT-9", "CIT-10", "CIT-100", "CIT-500", "CIT-1000"].sort();
+// → [ 'CIT-10', 'CIT-100', 'CIT-1000', 'CIT-500', 'CIT-9' ]
+```
+
+`'1' < '5' < '9'` decides it at the first differing character, so `CIT-1000` sorts
+before `CIT-500` and `CIT-9` sorts last. This is exactly the trap the Reality Check at
+the end of this chapter names — *"Array.sort without a comparator sorts
+lexicographically (10 comes before 9)"* — and §4 walked straight into it.
+
+**Why it's worse than a wrong answer: it's a wrong answer that looks right.** Binary
+search's precondition is that the comparison used to discard half the space agrees with
+the order the data is actually in. Break that and the search doesn't error — it
+confidently discards the half containing the target and reports "not found in any page"
+for a citation that exists. Note also that `ids.includes(citationId)` on the mid page
+still works, so the function returns correct answers whenever it happens to land on the
+right page early, and lies the rest of the time. That's the worst possible failure
+signature for a helper used in tests.
+
+Both halves of the precondition have to hold, and the second is easy to forget:
+
+1. The **API** must return citations in a defined order (`sort=citationId:asc`).
+2. Your **comparator** must reproduce *that same* order — not a different plausible one.
+
+So compare on the numeric part, not the string:
+
+```typescript
+/** Orders "CIT-<n>" by the numeric suffix, matching the API's numeric sort. */
+function compareCitationIds(a: string, b: string): number {
+  const na = Number(a.split("-")[1]);
+  const nb = Number(b.split("-")[1]);
+  if (Number.isNaN(na) || Number.isNaN(nb)) {
+    throw new Error(`Non-numeric citation ID in comparison: ${a} vs ${b}`);
+  }
+  return na - nb;
+}
+```
+
+**Or make the problem disappear at the source.** If IDs are zero-padded to a fixed
+width — `CIT-0009`, `CIT-0010`, `CIT-0500`, `CIT-1000` — then lexicographic and numeric
+order *coincide*, and plain `>` becomes correct. That's not a trick; it's the reason
+production systems pad identifiers and why ISO 8601 dates (`2026-09-14`) are designed to
+sort correctly as plain strings. When you control the ID format, choosing one whose
+string order matches its semantic order removes an entire category of comparator bug
+instead of asking every call site to remember a custom comparator.
+
 **The deeper insight:**
 
 > Any time you have a SORTED, MONOTONIC problem space in tests,
 > ask: "Can I binary search instead of linear scan?"
 > Tests that navigate to "page N" to find an item are doing binary search implicitly.
+> Then ask the follow-up that §4 got wrong: **"sorted by which comparison?"** —
+> binary search is only correct when your comparator matches the data's real order.
 
 ---
 
