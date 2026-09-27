@@ -1,6 +1,6 @@
 # 66. Senior SDET Decision-Making — Deriving the Reasoning, Not Just the Labels
 
-**Navigation**: [← Chapter 65: Chaos Engineering](../05_Advanced_Topics/65_Chaos_Engineering_For_Playwright.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 65: Chaos Engineering](../05_Advanced_Topics/65_Chaos_Engineering_For_Playwright.md) | [Index](../00_INDEX.md) | [→ Chapter 67: Payment Gateway Testing](../05_Advanced_Topics/67_Payment_Gateway_Testing.md)
 
 **Cross-links:**
 
@@ -130,7 +130,7 @@ A strong candidate: **Risks & Mitigations**' first row — "Migration takes long
 
 ---
 
-**Navigation**: [← Chapter 65: Chaos Engineering](../05_Advanced_Topics/65_Chaos_Engineering_For_Playwright.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 65: Chaos Engineering](../05_Advanced_Topics/65_Chaos_Engineering_For_Playwright.md) | [Index](../00_INDEX.md) | [→ Chapter 67: Payment Gateway Testing](../05_Advanced_Topics/67_Payment_Gateway_Testing.md)
 
 ---
 
