@@ -294,7 +294,99 @@ Two real-world notes:
 1. **The denied path is the valuable test.** Roughly half of real users deny the prompt. Teams test the happy path with granted permission and ship a broken denied path for years.
 2. Mid-test moves: `context.setGeolocation({ latitude: 48.85, longitude: 2.35 })` — for delivery-tracking UIs that re-render as the courier moves.
 
-The same `permissions` array handles `'camera'`, `'microphone'`, `'clipboard-read'`, `'notifications'` — the pattern is identical: one project/fixture with the grant, one test with the denial.
+The same `permissions` array accepts `'camera'`, `'microphone'`, `'clipboard-read'` and `'notifications'`, and the grant-one/deny-one pattern is the right shape — **but for camera, microphone and notifications the grant alone is not enough in Playwright's default Chromium**, and in one configuration it is actively dangerous. An earlier version of this paragraph said the pattern was "identical"; measured, it isn't. See §5b.
+
+---
+
+## 5b. Camera, Microphone & Push Notifications — What the Grant Doesn't Cover
+
+Video KYC, "scan your ID", QR-code login, voice notes and push notifications all need more than a permission flag. Everything below was measured in Playwright 1.60 on Chromium, including the difference between Playwright's two headless modes: the default **headless shell**, and **new headless** (`channel: "chromium"`, the full browser without a window).
+
+### Camera and microphone
+
+`navigator.mediaDevices.getUserMedia({ video: true, audio: true })` under each configuration:
+
+| Configuration | Result |
+| --- | --- |
+| Default headless, `permissions: ['camera']` | ❌ `NotSupportedError` |
+| Default headless, `--use-fake-device-for-media-stream` + permission | ❌ `NotSupportedError` |
+| Default headless, `--use-fake-device-for-media-stream --use-fake-ui-for-media-stream` | ✅ fake camera + mic |
+| New headless, `permissions: ['camera']` only | ⚠️ **opened this machine's real webcam** ("Integrated Camera") |
+| New headless, `--use-fake-device-for-media-stream` + permission | ✅ `fake_device_0` |
+| New headless, `--use-fake-device-for-media-stream`, **no** permission | ✅ `NotAllowedError` — the denied path |
+
+Two things to take from that table. In the default headless shell the permission grant does nothing for media, and only `--use-fake-ui-for-media-stream` (which auto-accepts every prompt) makes capture work — which also means you can't test denial that way. And in new headless a bare permission grant reaches for **real hardware**: on a developer laptop that's the webcam, on a CI runner it's typically "no device" — the same test behaves differently per machine, and on a laptop it is a privacy problem. The deterministic, testable configuration is new headless plus the fake device, with the permission deciding grant vs deny:
+
+```ts
+// playwright.config.ts
+{
+  name: 'media',
+  use: {
+    channel: 'chromium',                                  // new headless: permissions apply to media
+    launchOptions: { args: ['--use-fake-device-for-media-stream'] },
+    permissions: ['camera', 'microphone'],                // grant; a test can clearPermissions() for the deny path
+  },
+}
+```
+
+**Feeding the camera a specific picture.** The default fake device shows a synthetic moving pattern — fine for "the preview appears", useless for "the app read the QR code" or "the ID was detected". `--use-file-for-fake-video-capture=<file>` replaces it with a video you supply (`.y4m` or `.mjpeg`). Verified with a generated 64×48 solid-red `.y4m`: the page's video track reported the file as its label, the stream was 64×48, and the centre pixel drawn from the live `<video>` was `RGB(254, 0, 0)`. So a test can put a known QR code or document image in front of the camera and assert what the app extracted from it:
+
+```ts
+launchOptions: { args: [
+  '--use-fake-device-for-media-stream',
+  '--use-file-for-fake-video-capture=' + path.resolve('fixtures/media/qr-login-token.y4m'),
+  '--use-file-for-fake-audio-capture=' + path.resolve('fixtures/media/hello.wav'),
+] },
+```
+
+Convert an image with `ffmpeg -loop 1 -i qr.png -t 2 -pix_fmt yuv420p qr.y4m` — verified end to end: a solid-blue PNG converted with exactly that command appeared in the camera stream as `RGB(0, 0, 251)`. The audio flag works the same way: with a generated 440 Hz WAV, the microphone stream's dominant frequency measured **439 Hz** (the default fake audio input peaks at 59 Hz), so a speech-to-text or voice-note feature can be fed a known recording. Firefox has equivalents as prefs rather than flags — `firefoxUserPrefs: { 'media.navigator.streams.fake': true, 'media.navigator.permission.disabled': true }` produced a working fake stream in the same run — but no file injection; WebKit has neither.
+
+### Push notifications
+
+A push notification has two halves, and they need different tools:
+
+1. **Delivery** — the push service wakes your service worker's `push` handler.
+2. **Display** — the handler calls `registration.showNotification()`.
+
+You can't route a real push service in a test, but Chromium's CDP `ServiceWorker` domain can deliver a push payload straight to the registered worker — no push subscription, VAPID keys or FCM involved:
+
+```ts
+test('payment push shows a notification', async ({ page, context }) => {
+  const cdp = await context.newCDPSession(page);
+  const regs: { registrationId: string; scopeURL: string }[] = [];
+  cdp.on('ServiceWorker.workerRegistrationUpdated', (e) => regs.push(...e.registrations));
+  await cdp.send('ServiceWorker.enable');
+
+  await page.goto('/inbox');
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  const origin = new URL(page.url()).origin;
+  const reg = regs.find((r) => r.scopeURL.startsWith(origin))!;
+
+  await cdp.send('ServiceWorker.deliverPushMessage', {
+    origin,
+    registrationId: reg.registrationId,
+    data: JSON.stringify({ title: 'Citation CIT-00042 paid', body: '£50.00 received', tag: 'payment' }),
+  });
+
+  // Assert what the service worker actually displayed
+  await expect.poll(() => page.evaluate(async () =>
+    (await (await navigator.serviceWorker.ready).getNotifications()).map((n) => n.title),
+  )).toEqual(['Citation CIT-00042 paid']);
+});
+```
+
+Measured in both headless modes with `permissions: ['notifications']`:
+
+```
+[default headless] Notification.permission: denied
+                   push delivered to the worker: yes
+                   showNotification -> TypeError: No notification permission has been granted for this origin.
+[new headless]     Notification.permission: granted
+                   push delivered to the worker: yes
+                   getNotifications() -> [{"title":"Citation CIT-00042 paid","body":"£50.00 received","tag":"payment"}]
+```
+
+So delivery works everywhere, but **display only in new headless** — the default headless shell ignores the notifications grant, the same limitation as the camera. Two scope notes: this is CDP, so Chromium-only (see Ch03's cross-browser table); and it tests *your* worker's handling of a payload, not your server's integration with the push service — cover that with an API-level test against the push provider's sandbox.
 
 ---
 
