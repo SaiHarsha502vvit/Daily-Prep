@@ -1,6 +1,6 @@
 # 67. Payment Gateway Testing — Hosted Fields, 3-D Secure, Idempotency, Webhooks & Money
 
-**Navigation**: [← Chapter 66: Senior SDET Decision-Making](../08_SDET_to_SDE_Bridge/66_Senior_SDET_Decision_Making.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 66: Senior SDET Decision-Making](../08_SDET_to_SDE_Bridge/66_Senior_SDET_Decision_Making.md) | [Index](../00_INDEX.md) | [→ Chapter 68: Consent Banners, Overlays & CAPTCHA](./68_Consent_Overlays_And_CAPTCHA.md)
 
 **Cross-links:**
 
@@ -399,6 +399,80 @@ The illegal-transition rows are where the bugs live: "refund an already-refunded
 
 ---
 
+## 11. Popup, Redirect & Wallet Payments (PayPal, Apple Pay, Google Pay)
+
+Cards are only one shape of payment. The other common shapes hand the customer to *someone else's* UI, and each needs a different testing tactic.
+
+### 11.1 Popup wallets (PayPal-style)
+
+The provider's login and approval page opens in a **new window**; when the customer approves, it messages the merchant page and closes. That is the new-tab pattern from [Ch12](../04_Cross_Site_Patterns_And_D365/12_CrossSite_Pattern2_NewTab_SharedContext.md), with one extra rule: register the listener *before* the click that opens the window.
+
+```ts
+const [popup] = await Promise.all([
+  page.waitForEvent('popup'),
+  page.getByRole('button', { name: 'Pay with Wallet' }).click(),
+]);
+await popup.waitForLoadState();
+const closed = popup.waitForEvent('close');
+await popup.getByRole('button', { name: 'Approve' }).click();
+await closed;                                          // the provider closes its own window
+await expect(page.getByText('Wallet approved')).toBeVisible();
+```
+
+Verified against a two-origin harness, all three outcomes a customer can produce:
+
+```
+popup "Wallet login" -> Approve -> popup closed: true | merchant shows: "Wallet approved WAL-123"
+popup "Wallet login" -> Cancel  -> popup closed: true | merchant shows: "Wallet cancelled WAL-123"
+popup closed by user          ->                       merchant shows: ""
+```
+
+**The third row is the bug.** When the customer simply closes the wallet window, the provider sends no message, so a merchant page that only listens for messages never finds out — the Pay button stays in "processing" forever. It's the most common real outcome (people change their minds) and the one nobody tests. The fix belongs in the app (poll `popupWindow.closed`, or time out and re-enable the button); the test is `await popup.close()` followed by an assertion that checkout is usable again.
+
+### 11.2 Redirect-based methods
+
+Bank transfers, iDEAL, Klarna-style flows and hosted checkout pages **navigate the whole tab** to the provider and redirect back with a result in the URL. Test both returns — success and cancel — and treat the returned query string as untrusted: assert that tampering with it (e.g. changing `status=failed` to `status=succeeded`) does **not** mark the order paid, because the authoritative answer is the webhook and the server-side payment status (§6–§7), never the URL the browser came back with.
+
+### 11.3 Apple Pay and Google Pay — what a test browser cannot do
+
+Measured in all three Playwright browsers:
+
+```
+chromium  PaymentRequest: function   ApplePaySession: undefined   canMakePayment(): throws UnknownError
+webkit    PaymentRequest: undefined  ApplePaySession: undefined
+firefox   PaymentRequest: undefined  ApplePaySession: undefined
+```
+
+No Playwright browser can complete a real wallet payment: WebKit and Firefox don't expose the wallet APIs at all (so Playwright's WebKit is **not** a way to test Apple Pay), and Chromium's `PaymentRequest` exists but has no wallet behind it. That splits the job:
+
+1. **The fallback path is testable — and is what every Playwright browser shows by default.** Verified: with no wallet available, the harness correctly hid the Google Pay button and kept "Pay by card" visible. A wallet button that appears with no working wallet behind it is a real defect this catches.
+2. **Your handling of a wallet result is testable by stubbing at the browser boundary.** Replace `PaymentRequest` with `page.addInitScript()` before the page loads, return a token from `show()`, and assert what the merchant does with it:
+
+```ts
+await page.addInitScript(() => {
+  class FakePaymentRequest {
+    constructor(public methods: PaymentMethodData[], public details: PaymentDetailsInit) {}
+    async canMakePayment() { return true; }
+    async show() {
+      return {
+        methodName: this.methods[0]!.supportedMethods,
+        details: { paymentMethodData: { tokenizationData: { token: 'tok_test_from_stub' } } },
+        complete: async (result: string) => { (window as any).__walletComplete = result; },
+      };
+    }
+  }
+  (window as any).PaymentRequest = FakePaymentRequest;
+});
+```
+
+Verified: with the stub approving, the merchant posted the stub's token to its server, called `complete('success')` and showed "Paid"; with the stub throwing `AbortError` (customer closed the sheet), it showed the cancellation and sent nothing to the server.
+
+3. **The real wallet sheet needs real devices.** Apple Pay requires Safari on Apple hardware with a sandbox tester account; Google Pay has a `TEST` environment that returns test tokens. Those runs belong on a device farm or a manual release checklist, not in the Playwright suite.
+
+Be clear in reviews about what the stub proves: that *your* code handles a token, a cancellation and a server failure correctly. It proves nothing about the provider's sheet, the merchant validation handshake, or domain verification — those are exactly the parts only step 3 can cover.
+
+---
+
 ## 🏋️ Practice Challenges
 
 ### Challenge 1 [Spot the Bug]
@@ -457,7 +531,7 @@ List the webhook tests that would catch a consumer that (a) fulfils twice, (b) m
 
 ---
 
-**Navigation**: [← Chapter 66: Senior SDET Decision-Making](../08_SDET_to_SDE_Bridge/66_Senior_SDET_Decision_Making.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 66: Senior SDET Decision-Making](../08_SDET_to_SDE_Bridge/66_Senior_SDET_Decision_Making.md) | [Index](../00_INDEX.md) | [→ Chapter 68: Consent Banners, Overlays & CAPTCHA](./68_Consent_Overlays_And_CAPTCHA.md)
 
 ---
 
