@@ -289,6 +289,83 @@ Every demo above used a small, fixed set of `String`/`Number` operations. What e
 
 The `parseFloat` vs `Number` distinction is worth being deliberate about: `parseFloat("5.066 (pass)")` returns `5.066` — it reads until it hits `" "`, then stops, silently discarding the rest. `Number("5.066 (pass)")` returns `NaN` — the whole string must be numeric. Section 2's parser used a regex capture group (`\$([\d.]+)`) specifically to avoid relying on either's truncation behavior — the regex says exactly which characters count as the amount, rather than hoping the parser stops in the right place.
 
+## 6. Virtualised Grids & Infinite Scroll — When Most Rows Aren't in the DOM
+
+Every technique above assumes the rows you want **exist in the DOM**. Large data grids break that assumption on purpose. Libraries such as react-window, AG Grid and MUI DataGrid *virtualise*: for a 10,000-row table they render only the rows in view plus a small overscan, and re-render as you scroll. Infinite-scroll feeds do the opposite trick — rows exist, but only after you scroll far enough to trigger the next fetch.
+
+Measured against a 10,000-row virtualised grid (32 px rows, 400 px viewport):
+
+```
+rows.count()                            = 17        <- not 10,000
+aria-rowcount                           = 10000
+getByText('CIT-05000').count()          = 0
+scrollIntoViewIfNeeded on that row      -> Timeout 1500ms exceeded
+allTextContents() on rows               -> 20 rows: CIT-04997 .. CIT-05016
+```
+
+Three consequences follow directly:
+
+1. **`count()` counts the DOM, not the data.** An assertion like `expect(rows).toHaveCount(10000)` fails, and `toHaveCount(17)` passes today and breaks when someone resizes the viewport. Assert the *logical* total from `aria-rowcount` (ARIA grids expose it precisely so assistive tech knows the real size), from a "Showing 1–50 of 10,000" label, or from the API.
+2. **You can't scroll to an element that doesn't exist yet.** `scrollIntoViewIfNeeded()`, `click()` and every other locator action wait for the element to *appear*; a virtualised row outside the window never does, so they time out. You must move the scroll position yourself until the grid renders the row.
+3. **`allTextContents()` returns a slice.** Any "verify every row" loop over `rows.all()` silently checks only the visible window — see §4 for building data structures from rows, and never build one from a virtualised grid without scrolling through it.
+
+### Finding a row — three strategies, measured
+
+Finding `CIT-05000`, each strategy repeated 8 times on a fresh page:
+
+| Strategy | Misses | Avg time per lookup |
+| --- | --- | --- |
+| Naive loop: scroll, check `count()`, repeat | **3 / 8** (11 / 26 across all runs) | ~4.2 s |
+| Scroll, then wait for the grid to re-render, then check | 0 / 8 | ~7.5 s |
+| Jump straight to `rowIndex × rowHeight` | 0 / 8 | **~0.1 s** |
+
+The naive loop is the dangerous one because it *usually* works. A virtualiser renders on the `scroll` event, which the browser delivers once per animation frame, while the test's scroll commands arrive faster than that. Several scroll steps can land between two renders, and the window the grid renders can already be past the target row — so the loop scrolls straight over it and hits its step limit. That is a textbook intermittent failure, and it failed in about 40% of runs.
+
+```ts
+// ✅ Fixed row height known: jump. Deterministic and ~70x faster than scrolling.
+async function scrollGridToRow(grid: Locator, index: number, rowHeight: number) {
+  await grid.evaluate((el, top) => { el.scrollTop = top; }, index * rowHeight);
+}
+await scrollGridToRow(grid, 4999, 32);
+await expect(grid.getByText('CIT-05000')).toBeVisible();   // auto-waits for the re-render
+
+// ✅ Variable row heights: scroll a page at a time, but WAIT FOR THE RENDER before checking.
+async function scrollUntilRendered(grid: Locator, target: Locator, maxSteps = 2000) {
+  for (let step = 0; step < maxSteps; step++) {
+    if (await target.count()) return;
+    const before = await grid.getByRole('row').first().getAttribute('aria-rowindex');
+    await grid.evaluate((el) => { el.scrollTop += el.clientHeight * 0.9; });
+    await grid.page().waitForFunction(
+      ([g, b]) => document.querySelector(`${g} [role=row]`)?.getAttribute('aria-rowindex') !== b,
+      ['[role=grid]', before] as const,
+    );
+  }
+  throw new Error(`Row not rendered after ${maxSteps} scroll steps`);
+}
+```
+
+Better still, don't scroll at all when the app offers another route: most grids have a search/filter box, and filtering to the one row you need is how a real user would find row 5,000. Keep scroll-based lookups for tests *about* scrolling.
+
+### Infinite scroll — drive it by the network, stop on a real signal
+
+An infinite feed loads the next page when a sentinel element scrolls into view. The reliable loop scrolls to the sentinel, **waits for the page request to finish**, and stops on an explicit end-of-results signal — never on "the count stopped growing after a sleep":
+
+```ts
+const items = page.locator('#feed .item');
+let fetches = 0;
+while (await page.getByText('No more results').isHidden()) {
+  const pageLoaded = page.waitForResponse((r) => r.url().includes('/api/items'));
+  await page.locator('#sentinel').scrollIntoViewIfNeeded();
+  await pageLoaded;
+  if (++fetches > 50) throw new Error('Infinite scroll never reached the end marker');
+}
+await expect(items).toHaveCount(100);
+```
+
+Verified against a 5-page feed: 20 items on load, 5 further fetches, 100 items, end marker visible. Note the guard: a feed whose end marker never appears (a real bug) must fail the test, not loop until the global timeout. The same shape tests the edge cases users hit — the last page being partial, a failed page fetch (route it to 500 per [Ch31](../03_Real_World_Scenarios/31_API_Mocking_page_route.md) and assert a retry control), and duplicate items across page boundaries (the §4 `Set` check, applied to the collected texts).
+
+---
+
 ## Section Challenge
 
 <details>
