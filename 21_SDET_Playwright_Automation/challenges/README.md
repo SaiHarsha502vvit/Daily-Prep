@@ -2,6 +2,8 @@
 
 Graded assignments that turn the chapters into shipped code. Work them in order. Each one must be **runnable** inside [`../framework/`](../framework/).
 
+> **New to writing tests from scratch?** Do the [`../labs/`](../labs/README.md) first. They're smaller, and the grader tells you exactly which bugs your tests would miss. The challenges assume you can already plan and write a suite unaided.
+
 ## How to work a challenge
 
 1. Read the problem and acceptance criteria.

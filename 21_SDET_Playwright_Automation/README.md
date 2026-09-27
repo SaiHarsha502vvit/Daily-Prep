@@ -17,6 +17,7 @@ which file comes next.
 | **Already writing Playwright tests, want senior depth** | Skim Stage 1, then start at **Stage 2**. Stages 3, 5 and 6 are where most working engineers have gaps. |
 | **Stuck on a problem at work right now** | Use the **"I need to…" lookup** at the bottom of this page. |
 | **Reading the `framework/` code and want the *why*** | Open [`appendix/navigation/MAP_CODE_TO_CHAPTER.md`](./appendix/navigation/MAP_CODE_TO_CHAPTER.md) — every framework file → the chapter that explains it. |
+| **Want to write code, not just read it** | Start the [`labs/`](./labs/README.md): real apps with planted bugs; you write the tests, the grader tells you which bugs they'd miss. Lab 01 needs only Stage 1. |
 | **Interviewing soon** | [Ch32 Interview Prep](./08_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md) → [`career/mock_interviews/`](./career/mock_interviews/) → [`career/INTERVIEW_BANK.md`](./career/INTERVIEW_BANK.md). With >2 weeks, add Stage 8. |
 
 **Before you start:** comfortable with JavaScript async/await ([`16_JavaScript/`](../16_JavaScript/)) and basic TypeScript ([`17_TypeScript/`](../17_TypeScript/)). Stage 1 reviews both in a testing context.
@@ -48,6 +49,8 @@ Install, first test, how Playwright finds elements, and the two tools you'll use
 | 7 | [Ch03 Browser Console Scripting](./01_Foundations/03_Browser_Console_Scripting.md) | Inspecting pages from DevTools |
 | 8 | [Ch56 `playwright.config.ts` Deep Dive](./01_Foundations/56_Playwright_Config_Deep_Dive.md) | Timeouts, projects, retries, traces |
 
+**Then build:** [Lab 01 — First Contact](./labs/01-first-contact/README.md). You write the tests for a slow page, and the grader checks whether they'd catch 4 real bugs.
+
 ### Stage 2 — Test Architecture · [`02_Test_Architecture/`](./02_Test_Architecture/README.md)
 How professional suites are structured, so that tests stay maintainable at 500 tests, not just 5.
 
@@ -70,6 +73,8 @@ The flows that real products have and toy tutorials skip.
 | 10 | [Ch49 Feature Flags](./03_Real_World_Scenarios/49_Feature_Flag_Testing.md) | Testing both sides of a flag |
 | 11 | [Ch67 Payment Gateways](./03_Real_World_Scenarios/67_Payment_Gateway_Testing.md) | Card iframes, 3-D Secure, idempotency, webhooks, money, PayPal-style popups, Apple/Google Pay |
 | 12 | [Ch68 Consent Banners, Overlays & CAPTCHA](./03_Real_World_Scenarios/68_Consent_Overlays_And_CAPTCHA.md) | `addLocatorHandler`, GDPR consent tests, CAPTCHA test keys |
+
+**Then build:** [Lab 02 Cookie Consent](./labs/02-cookie-consent/README.md) (after Ch68) · [Lab 03 Checkout](./labs/03-checkout/README.md) and [Lab 04 Webhooks](./labs/04-webhook-receiver/README.md) (after Ch67) · [Lab 05 OTP Login](./labs/05-otp-login/README.md) (after Ch57 + Ch61) · [Lab 06 Virtual Grid](./labs/06-virtual-grid/README.md) (after Ch64).
 
 ### Stage 4 — Cross-Site Patterns & a Dynamics 365 Case Study · [`04_Cross_Site_Patterns_And_D365/`](./04_Cross_Site_Patterns_And_D365/README.md)
 Six patterns for flows that span apps, tabs, users and domains, then applying everything to a hard enterprise UI.
@@ -105,6 +110,7 @@ Quizzes and a 10-week practice plan. Pair with the graded [`challenges/`](./chal
 
 | Folder | What it is | When |
 | --- | --- | --- |
+| [`labs/`](./labs/README.md) | **Start here for hands-on work.** 6 labs: a real app, written requirements, and a grader that plants bugs to test your tests. Plus [how to build your own harness](./labs/HARNESS_GUIDE.md) | Lab 01 after Stage 1; Labs 02–06 during Stage 3 |
 | [`projects/starter-playwright-ts/`](./projects/starter-playwright-ts/) | Deliberately incomplete scaffold — grow it chapter by chapter | From Stage 1 |
 | [`framework/`](./framework/README.md) | The complete reference framework every chapter's code is drawn from | Compare against it from Stage 2 |
 | [`challenges/`](./challenges/README.md) | Graded exercises with reference solutions | After each stage |

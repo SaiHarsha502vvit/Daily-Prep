@@ -22,7 +22,7 @@
 > | [`appendix/`](./appendix/README.md) | quick reference, topic summaries, short course, learning paths, maps (secondary; each names its canonical chapter) |
 >
 > Also: [`framework/`](./framework/README.md) (runnable scaffold, incl. [6 ADRs](./framework/docs/adrs/README.md)) ·
-> [`challenges/`](./challenges/README.md) (7 challenges + 3 capstones) · [`career/`](./career/README.md) (rubric, interviews, portfolio).
+> [`labs/`](./labs/README.md) (6 graded labs: you write the tests, planted bugs grade them) · [`challenges/`](./challenges/README.md) (7 challenges + 3 capstones) · [`career/`](./career/README.md) (rubric, interviews, portfolio).
 > Gaps in numbering are deliberate: Ch20 (a practice-resources link list) and a Ch57 config companion were removed in an earlier audit (commit `fb51502b`) — the latter merged into Ch56; Ch57 is now Login Taxonomy.
 
 > **Version stamp:** curriculum verified against **Playwright 1.60 / Node 20** (2026-07-25). The Clock API (Ch61) needs ≥ 1.45; aria snapshots need ≥ 1.49. When bumping `@playwright/test`, re-verify Ch56 (config), Ch61 (emulation), and the framework's `npm run verify` gate, then update this stamp.
