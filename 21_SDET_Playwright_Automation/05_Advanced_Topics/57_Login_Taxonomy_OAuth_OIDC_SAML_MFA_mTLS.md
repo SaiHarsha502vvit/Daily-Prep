@@ -218,28 +218,159 @@ await page.click("#verify");
 **Critical timing window**: TOTP codes change every 30 seconds. If your test grabs the code at second 29 and types it at second 31, the IdP rejects it. The `otplib` library exposes `authenticator.timeRemaining()` — if it's < 5 seconds, wait for the next window:
 
 ```typescript
+// framework/utilities/auth/totp.helper.ts — the real, shipped version
 import { authenticator } from "otplib";
 
-function generateFreshTotp(secret: string): string {
+export async function generateFreshTotp(secret: string): Promise<string> {
   if (authenticator.timeRemaining() < 5) {
-    // Wait for the next 30-second window
-    return new Promise<string>((resolve) => {
-      setTimeout(
-        () => resolve(authenticator.generate(secret)),
-        (authenticator.timeRemaining() + 1) * 1000,
-      );
-    }) as unknown as string;
+    // Wait for the next 30-second window, THEN generate
+    const waitMs = (authenticator.timeRemaining() + 1) * 1000;
+    await new Promise((resolve) => setTimeout(resolve, waitMs));
   }
   return authenticator.generate(secret);
 }
+
+// Caller must await it:
+await page.fill("#mfaCode", await generateFreshTotp(envConfig.mfa.totpSecret));
 ```
 
-(The helper in `framework/utilities/auth/totp.helper.ts` ships both: the simple version and the window-aware version.)
+> **An earlier version of this snippet was itself a flaky test.** It declared the
+> helper as synchronous (`: string`) and, near a window boundary, returned a `Promise`
+> forced through `as unknown as string`. The double cast silenced the type checker, so
+> `page.fill()` received a Promise object at runtime. Reproduced against the framework's
+> `otplib` 12.0.1 and Playwright 1.60.0:
+>
+> ```
+> typeof code (near window edge): object (a Promise!)
+> page.fill -> page.fill: value: expected string, got object
+> ```
+>
+> The branch only fires when fewer than 5 of the window's 30 seconds remain, so the test
+> failed about **1 run in 6** — a textbook intermittent failure, written to *prevent* an
+> intermittent failure. The lesson generalises: `as unknown as T` is not a conversion, it
+> is an instruction to stop checking, and here it hid a `Promise<string>`/`string`
+> mismatch the compiler would otherwise have reported immediately. The framework file
+> (`framework/utilities/auth/totp.helper.ts`) was always correct — the chapter's copy had
+> drifted from it.
 
 ### When NOT to automate MFA
 
 - **Push notifications** (Duo, Microsoft Authenticator push). You can't fake those — they require a real device decision. Either disable push for the test user, or use a real test device with the IdP's mock-push feature.
-- **WebAuthn / Passkeys**. Playwright's `addInitScript` can stub `navigator.credentials`, but it's fragile. Provision a test user with WebAuthn disabled instead.
+- **WebAuthn / Passkeys** — *do* automate these, but not by stubbing `navigator.credentials` with `addInitScript` (fragile, and it tests your stub rather than the ceremony). Chromium ships a **virtual authenticator**; see §6.1.
+
+### 6.1 WebAuthn / passkeys — Chromium's virtual authenticator
+
+Passkeys are routinely described as untestable. They aren't: Chromium exposes a
+`WebAuthn` domain over CDP that installs a software authenticator the page cannot tell
+apart from a platform one. The page runs the real `navigator.credentials.create()` /
+`.get()` ceremonies, and the test can inspect what the authenticator stored.
+
+```typescript
+test("register and sign in with a passkey", async ({ page, context }) => {
+  const cdp = await context.newCDPSession(page);
+  await cdp.send("WebAuthn.enable");
+  const { authenticatorId } = await cdp.send("WebAuthn.addVirtualAuthenticator", {
+    options: {
+      protocol: "ctap2",
+      transport: "internal",          // a platform authenticator (Touch ID / Windows Hello)
+      hasResidentKey: true,           // discoverable credentials = passkeys
+      hasUserVerification: true,
+      isUserVerified: true,           // the "biometric" succeeds
+      automaticPresenceSimulation: true,
+    },
+  });
+
+  await page.goto("/account/security");
+  await page.getByRole("button", { name: "Create a passkey" }).click();
+  await expect(page.getByText("Passkey created")).toBeVisible();
+
+  const { credentials } = await cdp.send("WebAuthn.getCredentials", { authenticatorId });
+  expect(credentials).toHaveLength(1);
+  expect(credentials[0]!.rpId).toBe(new URL(page.url()).hostname);
+});
+```
+
+Verified end to end in Chromium (Playwright 1.60.0), driving the real browser APIs
+rather than a stub:
+
+```
+isSecureContext on http://localhost: true
+REGISTER  -> { id: 'YTArhwf1f5VFq-GKX7msMAu1RqdO6x9lPUkuWaD_M5I', type: 'public-key' }
+authenticator now holds 1 credential(s); rpId = localhost signCount = 1
+LOGIN     -> { id: 'YTArhwf1f5VFq-...', hasSignature: true } | same credential: true
+signCount after login = 2
+UV FAIL   -> NotAllowedError: The operation either timed out or was not allowed.
+NO virtual authenticator -> NotSupportedError
+```
+
+What that transcript gives you as test cases:
+
+- **Sign-in uses the credential that was registered** (same `id`) and the authenticator's
+  **signature counter increments** (1 → 2). Relying parties use the counter to detect
+  cloned authenticators, so "server rejects a counter that went backwards" is a real
+  security test you can now write.
+- **Failed biometric**: `cdp.send("WebAuthn.setUserVerified", { authenticatorId, isUserVerified: false })`
+  makes the next ceremony reject with `NotAllowedError` — assert your UI offers a fallback
+  instead of hanging.
+- **No authenticator at all** yields `NotSupportedError` — the "device has no passkey
+  support" path, which your sign-in page must also handle.
+
+Two constraints, both verified above. WebAuthn requires a **secure context**:
+`http://localhost` qualifies, a plain-HTTP staging hostname does not. And the `WebAuthn`
+domain is **CDP, so Chromium-only** — the same limit [Ch03](../01_Foundations/03_Browser_Console_Scripting.md)
+documents for every CDP technique. Run passkey tests in a Chromium project only.
+
+### 6.2 Email / SMS OTP — retrieval, and the negative paths that matter
+
+Unlike TOTP, an emailed or texted code is generated server-side and delivered out of
+band, so the test must *fetch* it. In order of preference:
+
+| Strategy | How | Trade-off |
+| --- | --- | --- |
+| Test-only lookup endpoint | Backend exposes `GET /test-support/otp?user=…`, compiled out of production | Fast, deterministic; needs dev team buy-in and a guard that it never ships |
+| Test inbox / test number | Mail catcher (see [Ch50](./50_Email_Service_Testing.md)) or an SMS-receiving test number, read via its API | Exercises real delivery; slower, adds a dependency |
+| Fixed code for test accounts | e.g. `000000` accepted only for `@test.example` users in non-prod | Simplest; tests nothing about generation or delivery |
+
+Retrieving the code is the easy half. The OTP bugs that reach production live in the
+**negative paths**, and each is a short test:
+
+| Scenario | Expected |
+| --- | --- |
+| Code used twice | Second use rejected (single-use) |
+| Code after expiry | Rejected, with a "request a new code" path |
+| Resend, then submit the **old** code | Old code rejected — resend must invalidate it |
+| N wrong attempts | Lockout or step-up after the configured limit, not unlimited guessing |
+| Resend during cooldown | Rejected (e.g. 429) by the **server**, not merely hidden by the UI |
+| Code for user A submitted in user B's session | Rejected — codes are bound to the account/session |
+
+**The `page.clock` trap on cooldown and expiry tests.** Faking time in the browser is the
+obvious way to test a "Resend code in 30s" button without waiting 30 seconds. Two things
+go wrong, both measured:
+
+```
+fastForward(31s): countdown shows 29, button disabled = true   [wall time 27ms]
+runFor     (31s): countdown shows 0,  button disabled = false  [wall time 155ms]
+```
+
+`clock.fastForward()` "only fires due timers at most once" — Playwright's own docs liken it
+to closing the laptop lid — so a countdown driven by a 1-second `setInterval` ticks once
+(30 → 29) and the button stays disabled. `clock.runFor()` fires every timer in between,
+which is what a countdown needs.
+
+The second trap is the important one. With `runFor(31_000)` the button enables — and the
+click still fails:
+
+```
+after clock.runFor(31s)  : disabled = false | real ms elapsed: 122
+server response to resend: 429 cooldown | codes actually sent: 1
+```
+
+`page.clock` changes time **in the browser only**. The server's cooldown and the OTP's
+expiry are enforced with the server's clock, which moved 122 ms. So a clock-faked test
+proves the *UI* countdown works, and nothing about expiry or rate limiting. Test the
+server's rules at the API level with a server-side time control (a test hook, or a short
+expiry configured for the test environment), and keep `page.clock` for what it can actually
+reach.
 
 ---
 
