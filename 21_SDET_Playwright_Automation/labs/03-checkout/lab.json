@@ -1,0 +1,32 @@
+{
+  "title": "Lab 03 — Checkout: Card Iframes, Double Clicks, Declines & Pennies",
+  "chapters": ["Ch67"],
+  "goodRepeat": 3,
+  "variants": [
+    { "id": "good" },
+    {
+      "id": "bug-double-charge",
+      "requirement": "R2",
+      "hint": "What does a real, impatient customer do to a slow Pay button? And are you counting what the SERVER did, or what the page says?",
+      "debrief": "The Pay button wasn't disabled and sent no idempotency key, so a double-click produced two charges while the page cheerfully said 'Payment successful'. Only an assertion on the order's charges -- not on the UI -- can see a double charge."
+    },
+    {
+      "id": "bug-truncated-amount",
+      "requirement": "R1",
+      "hint": "The page said 'Payment successful'. Did you check HOW MUCH was charged?",
+      "debrief": "The amount was computed with Math.trunc(19.99 * 100) = 1998 -- a one-penny undercharge on every order, because 19.99 * 100 is 1998.9999999999998 in floating point (Ch67 §8). Assert the exact charged amount in minor units."
+    },
+    {
+      "id": "bug-button-stuck-after-decline",
+      "requirement": "R3",
+      "hint": "After a decline, can the customer actually do anything? Try doing it.",
+      "debrief": "After a decline the Pay button stayed disabled, so the customer couldn't try another card. 'Shows an error' and 'lets the user recover' are different requirements -- test the recovery by recovering."
+    },
+    {
+      "id": "bug-paid-before-confirm",
+      "requirement": "R3",
+      "hint": "The page shows the decline correctly. What does the ORDER say about it?",
+      "debrief": "The server marked the order PAID before the gateway answered and never rolled it back on a decline -- a free parking fine. The UI was perfect; only the backend state revealed it."
+    }
+  ]
+}

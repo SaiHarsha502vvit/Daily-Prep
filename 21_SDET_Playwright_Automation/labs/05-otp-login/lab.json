@@ -1,0 +1,38 @@
+{
+  "title": "Lab 05 — OTP Login: Single-Use Codes, Lockouts & Whose Clock Is It?",
+  "chapters": ["Ch57", "Ch61"],
+  "goodRepeat": 2,
+  "variants": [
+    { "id": "good" },
+    {
+      "id": "bug-code-reusable",
+      "requirement": "R2",
+      "hint": "You logged in with the code. What if someone who saw it over your shoulder uses it again?",
+      "debrief": "A used code kept working -- anyone who ever saw a code could log in with it. Single-use means testing the SECOND use."
+    },
+    {
+      "id": "bug-old-code-still-valid",
+      "requirement": "R3",
+      "hint": "Get a code, get a newer one, then try the OLD one. (You'll need the resend cooldown to be over -- whose clock decides that?)",
+      "debrief": "Requesting a new code didn't retire the previous one, so every code ever sent stayed valid. Testing it needs the cooldown to pass first -- which only the server's clock can make happen."
+    },
+    {
+      "id": "bug-no-lockout",
+      "requirement": "R4",
+      "hint": "What stops someone trying all 1,000,000 codes? Try being that someone -- five times.",
+      "debrief": "There was no attempt limit, so a 6-digit code could be brute-forced. The test that proves the lockout also has to prove the CORRECT code is refused afterwards."
+    },
+    {
+      "id": "bug-cooldown-ui-only",
+      "requirement": "R5",
+      "hint": "The Resend button is disabled for 30 s. Is that the rule, or just the button? Ask the server directly.",
+      "debrief": "The cooldown only existed in the page's countdown; the server accepted a new code request at any time, so a script could spam codes (and SMS costs). A disabled button is a UI hint, not a rule -- test the API."
+    },
+    {
+      "id": "bug-no-expiry",
+      "requirement": "R6",
+      "hint": "Codes should die after 60 s. page.clock can't help here -- think about which clock the SERVER uses, and what test-support offers.",
+      "debrief": "Codes never expired. Faking the browser's clock can't reveal that: expiry is checked with the server's clock. The /test-support/clock endpoint moves the right one."
+    }
+  ]
+}

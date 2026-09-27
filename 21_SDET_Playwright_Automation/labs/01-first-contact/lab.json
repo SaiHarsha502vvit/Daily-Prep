@@ -1,0 +1,32 @@
+{
+  "title": "Lab 01 — First Contact: Locators, Auto-Waiting & Precise Assertions",
+  "chapters": ["Ch01", "Ch02", "Ch55"],
+  "goodRepeat": 3,
+  "variants": [
+    { "id": "good" },
+    {
+      "id": "bug-amount-format",
+      "requirement": "R1",
+      "hint": "Something about how money is displayed is wrong for some citations. How exact is your amount assertion?",
+      "debrief": "Amounts lost their trailing zero (£125.5 instead of £125.50). A toContainText('£125') assertion can't see that; toHaveText('£125.50') can. Assert the exact user-visible value."
+    },
+    {
+      "id": "bug-case-sensitive",
+      "requirement": "R2",
+      "hint": "Real users don't type the way the data is stored. Re-read R2.",
+      "debrief": "The server stopped normalising case, so 'cit-002' returned 'No citation found'. Requirements like 'case-insensitive' only get tested if you turn them into a test case."
+    },
+    {
+      "id": "bug-no-validation",
+      "requirement": "R3",
+      "hint": "What should happen when the user submits nothing at all?",
+      "debrief": "Empty input was sent to the backend and came back as 'No citation found' instead of 'Enter a citation ID'. Edge-case inputs (empty, whitespace) are where validation bugs live."
+    },
+    {
+      "id": "bug-error-persists",
+      "requirement": "R5",
+      "hint": "Each of your tests probably starts from a clean page. Users don't -- what happens to an old message after the NEXT search?",
+      "debrief": "After an unknown-ID error, a successful search showed the result but left the red error on screen. Single-action tests miss state that leaks between actions; test sequences, and assert what should be GONE."
+    }
+  ]
+}

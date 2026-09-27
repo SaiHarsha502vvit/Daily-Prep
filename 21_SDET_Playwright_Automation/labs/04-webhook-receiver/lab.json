@@ -1,0 +1,38 @@
+{
+  "title": "Lab 04 — Webhook Receiver: Signatures, Replays, Duplicates & Disorder",
+  "chapters": ["Ch67"],
+  "goodRepeat": 2,
+  "variants": [
+    { "id": "good" },
+    {
+      "id": "bug-no-signature-check",
+      "requirement": "R2",
+      "hint": "Every test you wrote sends a CORRECT signature. What should happen when someone who doesn't know the secret calls this endpoint?",
+      "debrief": "The receiver accepted any request, signed or not -- anyone on the internet could mark orders paid. Negative tests (wrong secret, tampered body) are the only way to see a missing security check, because the happy path looks identical."
+    },
+    {
+      "id": "bug-no-tolerance",
+      "requirement": "R3",
+      "hint": "A valid signature on an old message is still an old message. Can you sign something with a timestamp from ten minutes ago?",
+      "debrief": "The timestamp was signed but never checked for age, so a captured request could be replayed forever. Your signer taking the timestamp as a parameter is what made this testable."
+    },
+    {
+      "id": "bug-no-dedupe",
+      "requirement": "R4",
+      "hint": "Payment providers deliver the same event more than once. What should the SECOND delivery change?",
+      "debrief": "Each delivery of the same event fulfilled the order again. Deliver the same event id twice and assert fulfilments is still 1."
+    },
+    {
+      "id": "bug-duplicate-409",
+      "requirement": "R4",
+      "hint": "Read R4 again, word by word: what status must a duplicate delivery get?",
+      "debrief": "Duplicates were rejected with 409. That sounds safe, but any non-2xx tells the provider delivery FAILED, so it keeps retrying the event you already processed. A duplicate must be acknowledged with 2xx."
+    },
+    {
+      "id": "bug-last-event-wins",
+      "requirement": "R5",
+      "hint": "Events don't always arrive in the order they happened. Send the refund first.",
+      "debrief": "A late 'payment.succeeded' overwrote an earlier 'payment.refunded', flipping a refunded order back to PAID and fulfilling it. State transitions must not simply follow arrival order."
+    }
+  ]
+}

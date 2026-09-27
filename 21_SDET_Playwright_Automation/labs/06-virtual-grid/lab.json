@@ -1,0 +1,32 @@
+{
+  "title": "Lab 06 — Virtual Grid: Testing 10,000 Rows That Mostly Don't Exist",
+  "chapters": ["Ch64"],
+  "goodRepeat": 3,
+  "variants": [
+    { "id": "good" },
+    {
+      "id": "bug-rowindex-relative",
+      "requirement": "R1",
+      "hint": "On the first screen every row's position looks right. Does it still, 5,000 rows down?",
+      "debrief": "aria-rowindex counted from the top of the rendered window, not the data -- so a screen reader said 'row 4 of 10,000' at row 5,000. It only shows once you leave the first screen."
+    },
+    {
+      "id": "bug-last-row-unreachable",
+      "requirement": "R2",
+      "hint": "Go all the way to the bottom. Is the last citation actually there?",
+      "debrief": "An off-by-one in the virtualiser's range (end index trimmed by 1) meant the last row was never rendered: the scrollbar reached the bottom and showed a blank gap. Boundary rows are where virtualisers break."
+    },
+    {
+      "id": "bug-data-shift",
+      "requirement": "R3",
+      "hint": "The first screen is correct. Check a row the back office told you about -- it's a long way down.",
+      "debrief": "Past row 5,000 the details were joined off by one: CIT-07342 showed CIT-07343's status and amount. Every row looked plausible; only checking a KNOWN row deep in the data could tell."
+    },
+    {
+      "id": "bug-filter-loaded-only",
+      "requirement": "R4",
+      "hint": "How many disputed citations are there, according to someone other than the page?",
+      "debrief": "The filter only searched the chunks the page had already downloaded (62 matches out of 1,250) -- and its count label agreed with it. The page can't be its own oracle: the API summary is."
+    }
+  ]
+}

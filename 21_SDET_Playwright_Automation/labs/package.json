@@ -1,0 +1,17 @@
+{
+  "name": "playwright-labs",
+  "private": true,
+  "type": "module",
+  "description": "Hands-on Playwright labs graded by planted bugs: your tests must pass on the correct app and fail on every buggy version.",
+  "scripts": {
+    "grade": "node grader/grade.mjs",
+    "app": "node grader/serve.mjs",
+    "test": "playwright test",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.60.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}

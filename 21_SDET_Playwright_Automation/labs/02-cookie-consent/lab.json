@@ -1,0 +1,32 @@
+{
+  "title": "Lab 02 — Cookie Consent: Tracking, Choices & a Banner That Won't Sit Still",
+  "chapters": ["Ch68"],
+  "goodRepeat": 5,
+  "variants": [
+    { "id": "good" },
+    {
+      "id": "bug-tracks-before-choice",
+      "requirement": "R2",
+      "hint": "Were you listening to the network BEFORE the visitor chose anything? Start recording requests before page.goto().",
+      "debrief": "Analytics loaded on page load, before any choice -- the classic GDPR defect. Only a test that records requests from the very first navigation, and asserts 'none yet' before clicking, can see it."
+    },
+    {
+      "id": "bug-reject-forgotten",
+      "requirement": "R3",
+      "hint": "Reject looked fine... on that page. What does R3 say about reloading?",
+      "debrief": "Reject never saved the choice, so the banner returned on the next page view. Choices that must persist need a reload (or a new page in the same context) in the test."
+    },
+    {
+      "id": "bug-reject-still-pings",
+      "requirement": "R3",
+      "hint": "After Reject, is the network really silent? Count every tracking request, not just the analytics script.",
+      "debrief": "Rejecting sent one '/collect?e=consent_rejected' ping -- tracking the rejection itself. Assert that the list of tracking requests after Reject is exactly empty."
+    },
+    {
+      "id": "bug-dismiss-breaks-cart",
+      "requirement": "R5",
+      "hint": "Did your cart test ever actually meet the banner? If you pre-seeded consent, the banner never appeared -- R5 is about shopping WITH the banner in play.",
+      "debrief": "Dismissing the banner re-rendered the page and silently unhooked the Add-to-cart button. Pre-seeding consent is great for tests that aren't about the banner -- and it also hides every bug that only happens when the banner is there. page.addLocatorHandler() lets the banner appear and deals with it."
+    }
+  ]
+}
