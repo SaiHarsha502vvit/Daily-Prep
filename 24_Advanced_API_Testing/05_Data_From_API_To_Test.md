@@ -4,7 +4,7 @@
 
 **Cross-links:**
 
-- [`21_SDET/07_test_step_E2E_Architecture.md`](../21_SDET_Playwright_Automation/02_Core_Architecture/07_test_step_E2E_Architecture.md) — Data Accumulator pattern in E2E tests
+- [`21_SDET/07_test_step_E2E_Architecture.md`](../21_SDET_Playwright_Automation/02_Test_Architecture/07_test_step_E2E_Architecture.md) — Data Accumulator pattern in E2E tests
 - [`17_TypeScript/02_TS_Advanced_Types.md`](../17_TypeScript/02_TS_Advanced_Types.md) — Typed interfaces for response bodies
 
 ---

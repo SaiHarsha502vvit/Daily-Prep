@@ -7,7 +7,7 @@
 Read these two files:
 
 - [`framework/fixtures/auth.fixture.ts`](../framework/fixtures/auth.fixture.ts)
-- [`02_Core_Architecture/09_Parallel_Execution_Workers.md`](../02_Core_Architecture/09_Parallel_Execution_Workers.md)
+- [`02_Test_Architecture/09_Parallel_Execution_Workers.md`](../02_Test_Architecture/09_Parallel_Execution_Workers.md)
 
 ## Part 2 — Draw the diagram
 

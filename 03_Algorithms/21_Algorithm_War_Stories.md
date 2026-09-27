@@ -134,7 +134,7 @@ This is a *concurrency* insight, not an algorithmic one — which is exactly why
 
 **THE COST.** Single-flight adds a lock (and a failure mode: if the computing request hangs, the waiters hang). Probabilistic refresh does slightly more work than necessary. SWR serves stale data — a correctness decision, not a performance one.
 
-**TRANSFER.** Any expiry-driven system: cache TTLs, token refresh (the [Ch61](../21_SDET_Playwright_Automation/05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md) parallel-refresh test is this exact bug), cron jobs that all fire at `00:00`, and clients that all reconnect after a deploy. **Whenever many independent actors share a deadline, they will synchronize** — the fix is always to *desynchronize* (jitter, coalesce, or refresh early). See also Story 9.
+**TRANSFER.** Any expiry-driven system: cache TTLs, token refresh (the [Ch61](../21_SDET_Playwright_Automation/03_Real_World_Scenarios/61_Emulation_Clock_Network_And_Devices.md) parallel-refresh test is this exact bug), cron jobs that all fire at `00:00`, and clients that all reconnect after a deploy. **Whenever many independent actors share a deadline, they will synchronize** — the fix is always to *desynchronize* (jitter, coalesce, or refresh early). See also Story 9.
 
 ---
 
@@ -209,7 +209,7 @@ Two integers per key, no boundary burst, error bounded by the assumption that th
 
 **THE COST.** A small approximation error (it assumes uniformity within the previous window). In exchange: O(1) memory per key instead of O(limit).
 
-**TRANSFER.** Every API gateway, login-attempt throttling, and the [SDET flakiness quarantine](../21_SDET_Playwright_Automation/05_Advanced_Topics/26_Flakiness_Diagnosis_and_Fixing.md) ("2 flakes in 7 days" is a sliding-window count). **Whenever a rule says "N per time period," ask whether the period is fixed or sliding** — the difference is a real exploit.
+**TRANSFER.** Every API gateway, login-attempt throttling, and the [SDET flakiness quarantine](../21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md) ("2 flakes in 7 days" is a sliding-window count). **Whenever a rule says "N per time period," ask whether the period is fixed or sliding** — the difference is a real exploit.
 
 ---
 
@@ -398,7 +398,7 @@ Notice the pattern in that right-hand column: **new algorithms are forced by new
 - [A4: Randomized Algorithms](A4_Randomized_Algorithms.md) — the machinery behind jitter and sketches
 - [00_ALGORITHM_TIMELINE](00_ALGORITHM_TIMELINE.md) — when each was invented and why
 - [10_Enterprise/08 Real-World Incidents](../10_Enterprise_Systems/08_RealWorld_Incidents_DSA.md) — enterprise incident classes
-- [21_SDET Ch43: SDET War Stories](../21_SDET_Playwright_Automation/05_Advanced_Topics/43_Real_World_SDET_War_Stories.md) — the testing-side equivalent
+- [21_SDET Ch43: SDET War Stories](../21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/43_Real_World_SDET_War_Stories.md) — the testing-side equivalent
 
 ---
 

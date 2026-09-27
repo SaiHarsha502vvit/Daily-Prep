@@ -7,7 +7,7 @@
 - [`08_SQL/07_JOINs_Complete.md`](../08_SQL/07_JOINs_Complete.md) — JOIN patterns for verification queries
 - [`08_SQL/08_Subqueries_CTEs.md`](../08_SQL/08_Subqueries_CTEs.md) — CTEs for multi-table verifications
 - [`08_SQL/13_Transactions_ACID.md`](../08_SQL/13_Transactions_ACID.md) — Transactions for DB teardown
-- [`21_SDET/06_Custom_Fixtures_Architecture.md`](../21_SDET_Playwright_Automation/02_Core_Architecture/06_Custom_Fixtures_Architecture.md) — The `yield` fixture teardown pattern
+- [`21_SDET/06_Custom_Fixtures_Architecture.md`](../21_SDET_Playwright_Automation/02_Test_Architecture/06_Custom_Fixtures_Architecture.md) — The `yield` fixture teardown pattern
 
 ---
 

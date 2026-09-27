@@ -108,7 +108,7 @@ Every week runs three lanes simultaneously. They are sized deliberately.
 
 | Lane | What |
 | --- | --- |
-| **A — Depth** | [Ch26 Flakiness Diagnosis](../21_SDET_Playwright_Automation/05_Advanced_Topics/26_Flakiness_Diagnosis_and_Fixing.md) (the calibration-anchor chapter) + [Ch09 Parallel Execution](../21_SDET_Playwright_Automation/02_Core_Architecture/09_Parallel_Execution_Workers.md) + [Ch28 Test Data Lifecycle](../21_SDET_Playwright_Automation/05_Advanced_Topics/28_Test_Data_Lifecycle_and_Cleanup.md). |
+| **A — Depth** | [Ch26 Flakiness Diagnosis](../21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md) (the calibration-anchor chapter) + [Ch09 Parallel Execution](../21_SDET_Playwright_Automation/02_Test_Architecture/09_Parallel_Execution_Workers.md) + [Ch28 Test Data Lifecycle](../21_SDET_Playwright_Automation/03_Real_World_Scenarios/28_Test_Data_Lifecycle_and_Cleanup.md). |
 | **B — Build** | Build a **flake detector** from scratch — parse your suite's result JSON over N runs, compute per-test flake rate, output the ranked list. (This is [CAP_C1](../21_SDET_Playwright_Automation/challenges/CAP_C1_Flaky_Test_Detector.md).) |
 | **C — Work** | Run the detector on your team's actual suite. **Bring the top-5 flaky tests to your lead with the diagnosis, not just the list.** This single action has converted trainees. |
 | **Checkpoint** | Can you name all 9 flakiness types and the diagnostic that distinguishes them? |
@@ -117,7 +117,7 @@ Every week runs three lanes simultaneously. They are sized deliberately.
 
 | Lane | What |
 | --- | --- |
-| **A — Depth** | [Ch62 Enterprise Test Operations](../21_SDET_Playwright_Automation/04_Enterprise_Architecture/62_Enterprise_Test_Operations.md) + [Ch25 CI/CD](../21_SDET_Playwright_Automation/05_Advanced_Topics/25_CICD_Integration_GitHub_Azure.md) + [Ch48 Sharding](../21_SDET_Playwright_Automation/05_Advanced_Topics/48_Sharding_And_Test_Selection.md). |
+| **A — Depth** | [Ch62 Enterprise Test Operations](../21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/62_Enterprise_Test_Operations.md) + [Ch25 CI/CD](../21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/25_CICD_Integration_GitHub_Azure.md) + [Ch48 Sharding](../21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/48_Sharding_And_Test_Selection.md). |
 | **B — Build** | Extend last week's detector into the **quarantine workflow**: auto-label, track age, emit the weekly report (Ch62 §3). |
 | **C — Work** | Write your team's **flake SLA** (Ch62 Challenge 1) as a one-page doc with real names in the escalation path. Circulate it. Even if rejected, you authored the org's first version. |
 | **Checkpoint** | Do you know your team's actual pipeline duration, flake rate, and gate tiers? If not — measure them this week. That measurement *is* the deliverable. |
@@ -126,7 +126,7 @@ Every week runs three lanes simultaneously. They are sized deliberately.
 
 | Lane | What |
 | --- | --- |
-| **A — Depth** | [Ch61 Emulation & Environment Simulation](../21_SDET_Playwright_Automation/05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md) + [Ch56 Config Deep Dive](../21_SDET_Playwright_Automation/02_Core_Architecture/56_Playwright_Config_Deep_Dive.md). |
+| **A — Depth** | [Ch61 Emulation & Environment Simulation](../21_SDET_Playwright_Automation/03_Real_World_Scenarios/61_Emulation_Clock_Network_And_Devices.md) + [Ch56 Config Deep Dive](../21_SDET_Playwright_Automation/01_Foundations/56_Playwright_Config_Deep_Dive.md). |
 | **B — Build** | Add to a real suite: one `page.clock` test that collapses a slow time-dependent test, and one CDP-throttled test that catches a double-submit. |
 | **C — Work** | Demo the clock test to your team. "This 30-minute session-timeout test now runs in 2 seconds and is deterministic" is a **memorable** contribution. |
 | **🚩 CHECKPOINT 2 (Sep 6)** | **Has your team's suite measurably improved because of you — flake rate, runtime, or coverage of a class of bug? Name the number.** |

@@ -13,7 +13,7 @@
 - React developers who want to add testing depth
 - Anyone who can build UIs but doesn't understand what's happening under the hood (closures, the event loop, reconciliation)
 
-**Not for:** backend-only developers — see [PATH_JAVA_BACKEND.md](PATH_JAVA_BACKEND.md). For test automation as a career, see [21_SDET_Playwright_Automation/WHERE_TO_START.md](21_SDET_Playwright_Automation/WHERE_TO_START.md).
+**Not for:** backend-only developers — see [PATH_JAVA_BACKEND.md](PATH_JAVA_BACKEND.md). For test automation as a career, see [21_SDET_Playwright_Automation/README.md](./21_SDET_Playwright_Automation/README.md).
 
 ---
 
@@ -103,12 +103,12 @@ Frontend developers who can test their own code are rare and valuable. This is a
 
 | # | File | Why now | Est |
 |---|------|---------|-----|
-| 22 | [TS Type System for SDETs](21_SDET_Playwright_Automation/06_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | How TS types protect test code — the SDET perspective on the TS you already know | 2h |
+| 22 | [TS Type System for SDETs](./21_SDET_Playwright_Automation/08_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | How TS types protect test code — the SDET perspective on the TS you already know | 2h |
 | 23 | [Playwright Basics](21_SDET_Playwright_Automation/01_Foundations/01_Playwright_TS_Basics.md) | Write your first Playwright test in 30 minutes | 2h |
-| 24 | [Component Testing with Playwright CT](21_SDET_Playwright_Automation/05_Advanced_Topics/52_Component_Testing_With_Playwright_CT.md) | Test React components in isolation, without a browser | 3h |
-| 25 | [Polling & Async Patterns](21_SDET_Playwright_Automation/05_Advanced_Topics/42_Polling_Async_Data_Patterns.md) | Test async behavior without arbitrary `sleep` calls | 2h |
+| 24 | [Component Testing with Playwright CT](./21_SDET_Playwright_Automation/07_Specialised_Testing/52_Component_Testing_With_Playwright_CT.md) | Test React components in isolation, without a browser | 3h |
+| 25 | [Polling & Async Patterns](./21_SDET_Playwright_Automation/03_Real_World_Scenarios/42_Polling_Async_Data_Patterns.md) | Test async behavior without arbitrary `sleep` calls | 2h |
 
-**For more testing depth:** Continue into [21_SDET_Playwright_Automation/WHERE_TO_START.md](21_SDET_Playwright_Automation/WHERE_TO_START.md) with Path A (brand new to test automation) — you already have TypeScript, so skip the TS prerequisites.
+**For more testing depth:** Continue into [21_SDET_Playwright_Automation/README.md](./21_SDET_Playwright_Automation/README.md) following its learning path from Stage 1 — you already have TypeScript, so skip the TS prerequisites.
 
 ---
 
@@ -118,7 +118,7 @@ Frontend developers who can test their own code are rare and valuable. This is a
 
 **TypeScript ↔ React:** After Stage 2, every Stage 3 file will make more sense — React generic component types (`React.FC<Props>`), typed event handlers (`React.ChangeEvent<HTMLInputElement>`), and typed context all use the Stage 2 skills directly.
 
-**React reconciliation ↔ Component Testing:** The [Component Testing chapter](21_SDET_Playwright_Automation/05_Advanced_Topics/52_Component_Testing_With_Playwright_CT.md) makes more sense after [React Deep Reasoning](15_React_Frontend/09_React_Deep_Reasoning.md) — knowing how React updates the DOM tells you why some component tests need `await` and some don't.
+**React reconciliation ↔ Component Testing:** The [Component Testing chapter](./21_SDET_Playwright_Automation/07_Specialised_Testing/52_Component_Testing_With_Playwright_CT.md) makes more sense after [React Deep Reasoning](15_React_Frontend/09_React_Deep_Reasoning.md) — knowing how React updates the DOM tells you why some component tests need `await` and some don't.
 
 ---
 

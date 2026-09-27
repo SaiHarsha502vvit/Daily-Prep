@@ -156,7 +156,7 @@ JavaScript / TypeScript
 ### Semester 4
 
 - 📝 [Python & ML Problem Sets](../25_Python_ML_DL_NLP/25_PROBLEM_SETS.md) — Python core, NumPy, ML pipeline, NLP
-- 📝 [SDET Problem Sets](../21_SDET_Playwright_Automation/08_Practice_And_Quizzes/SDET_PROBLEM_SETS.md) — JUnit5, Mockito, Playwright
+- 📝 [SDET Problem Sets](../21_SDET_Playwright_Automation/09_Practice_And_Quizzes/SDET_PROBLEM_SETS.md) — JUnit5, Mockito, Playwright
 - 📝 [Kafka & Event Streaming Problem Sets](../10_Enterprise_Systems/10_KAFKA_PROBLEM_SETS.md) — Kafka Topics, Partitions, Consumer Lag
 - 📝 [Mobile Dev Problem Sets](../23_Mobile_Dev_And_Testing/23_PROBLEM_SETS.md) — iOS/Android Lifecycle, Local-First, Flutter
 

@@ -188,7 +188,7 @@ Each real challenge/artifact in this curriculum maps to specific competency area
 | CI/CD pipeline optimization                                                               | 5, 8, 11             | **No dedicated challenge yet** — practice via Ch25/Ch48's own exercises instead             |
 | Mentorship program design                                                                 | 10                   | **No artifact yet** — write your own using the RFC template as a structural guide           |
 | Cost optimization initiative                                                              | 8, 11                | **No artifact yet** — Ch62's SLO/error-budget section (planned) gives you the math for one  |
-| [`45_AI_Agents_MCP_And_Playwright.md`](../05_Advanced_Topics/45_AI_Agents_MCP_And_Playwright.md) §6/§6.1 (self-healing locators) | 12 | Real — both the LLM-based offline approach and a from-scratch runtime similarity-scoring mechanism, verified against Healenium's real documented approach |
+| [`45_AI_Agents_MCP_And_Playwright.md`](../07_Specialised_Testing/45_AI_Agents_MCP_And_Playwright.md) §6/§6.1 (self-healing locators) | 12 | Real — both the LLM-based offline approach and a from-scratch runtime similarity-scoring mechanism, verified against Healenium's real documented approach |
 
 ---
 

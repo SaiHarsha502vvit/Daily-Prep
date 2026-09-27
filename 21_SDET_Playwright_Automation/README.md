@@ -1,228 +1,157 @@
-# SDET & Playwright Automation
+# Playwright & SDET Automation — Start Here
 
-Enterprise reference for Playwright + TypeScript test automation on Dynamics 365 CRM, JSP, and ASP.NET applications. Two layers:
+Learn Playwright + TypeScript the way working automation engineers use it: from your first
+test, through framework design, to the real-world flows that break in production —
+logins with OTP and passkeys, payment gateways, file uploads, async backends, CI at scale.
 
-- **[`reference/`](./reference/)** — flat, topical lookup. Open one file, find one answer.
-- **[`learn/`](./learn/)** — curriculum path if you're working through the material in order.
-
-Backed by a runnable framework in [`framework/`](./framework/) and graded exercises in [`challenges/`](./challenges/) + [`08_Practice_And_Quizzes/`](./08_Practice_And_Quizzes/).
-
-> If this is your first time here: open [`reference/01_quickstart.md`](./reference/01_quickstart.md). Five minutes, then you have a passing test.
+**This page is the only front door.** Everything below is ordered; you never need to guess
+which file comes next.
 
 ---
 
-## Reference — daily lookup
+## Pick your route (30 seconds)
 
-| #   | Topic                                                | Use when                                                                           |
-| --- | ---------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| 01  | [Quickstart](./reference/01_quickstart.md)           | Day one. Install, first test, project layout.                                      |
-| 02  | [Config](./reference/02_config.md)                   | Every `playwright.config.ts` field. Timeouts, reporters, projects, trace, devices. |
-| 03  | [Locators](./reference/03_locators.md)               | `getByRole` vs CSS vs XPath. Filtering, chaining, strict mode.                     |
-| 04  | [Fixtures](./reference/04_fixtures.md)               | `test.extend`, test vs worker scope, options pattern, account pool.                |
-| 05  | [Auth](./reference/05_auth.md)                       | `storageState`, OAuth2 + PKCE, OIDC, SAML, MFA TOTP, mTLS — decision tree.         |
-| 06  | [API testing](./reference/06_api_testing.md)         | `APIRequestContext`, factories, typed clients, schema validation.                  |
-| 07  | [Parallelism](./reference/07_parallelism.md)         | Workers, `fullyParallel`, sharding, data collision avoidance.                      |
-| 08  | [Reliability](./reference/08_reliability.md)         | Flakiness diagnosis, timing patterns, war stories, `expect.poll`.                  |
-| 09  | [File I/O](./reference/09_file_io.md)                | `setInputFiles`, `waitForEvent('download')`, CSV/PDF assertions.                   |
-| 10  | [CI + Docker](./reference/10_ci_docker.md)           | GitHub Actions, Azure DevOps, `mcr.microsoft.com/playwright`, sharding.            |
-| 11  | [Reporting](./reference/11_reporting.md)             | HTML / JUnit / Allure / Trace Viewer / UI Mode.                                    |
-| 12  | [Test data](./reference/12_data.md)                  | Seeding strategies, lifecycle, DB verification, cleanup.                           |
-| 13  | [Mocking](./reference/13_mocking.md)                 | `page.route`, `waitForResponse`, GraphQL, WebSocket.                               |
-| 14  | [Tool comparison](./reference/14_tool_comparison.md) | Cypress / Selenium / WebdriverIO — when to pick what.                              |
+| You are… | Do this |
+| --- | --- |
+| **New to test automation** (you can code, but haven't built a real suite) | Follow **The learning path** below, Stage 1 → Stage 9, in order. ~80–110 hours. |
+| **Already writing Playwright tests, want senior depth** | Skim Stage 1, then start at **Stage 2**. Stages 3, 5 and 6 are where most working engineers have gaps. |
+| **Stuck on a problem at work right now** | Use the **"I need to…" lookup** at the bottom of this page. |
+| **Reading the `framework/` code and want the *why*** | Open [`appendix/navigation/MAP_CODE_TO_CHAPTER.md`](./appendix/navigation/MAP_CODE_TO_CHAPTER.md) — every framework file → the chapter that explains it. |
+| **Interviewing soon** | [Ch32 Interview Prep](./08_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md) → [`career/mock_interviews/`](./career/mock_interviews/) → [`career/INTERVIEW_BANK.md`](./career/INTERVIEW_BANK.md). With >2 weeks, add Stage 8. |
 
-## Learn — study in order
-
-| #   | Chapter                                                                                                            | Hrs |
-| --- | ------------------------------------------------------------------------------------------------------------------ | --- |
-| 01  | [SDET mindset & testing pyramid](./learn/01_mindset.md)                                                            | 0.5 |
-| 02  | [TypeScript for tests (basic → advanced)](./learn/02_typescript_for_tests.md)                                      | 3   |
-| 03  | [Page Object Model — POM + Mega POM](./learn/03_pom.md)                                                            | 2   |
-| 04  | [E2E architecture walkthrough — 15-step skeleton](./learn/04_architecture_walkthrough.md)                          | 1   |
-| 05  | [Browser internals for SDETs](./learn/05_browser_internals.md)                                                     | 1   |
-| 06  | [Enterprise project structure](./learn/06_enterprise_structure.md)                                                 | 1.5 |
-| 07  | [Interview prep — LADDER, system design, STAR (canonical Ch32)](./06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md) | 2   |
-
-## Deep dives — optional reads
-
-| Topic                                                                                                                | When to read                                              |
-| -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| [D365 / Fluent UI](./deep_dives/d365.md)                                                                             | Working on Dynamics 365 CRM tests                         |
-| [Cross-site patterns catalog](./deep_dives/cross_site_patterns.md)                                                   | Multi-domain flows, OAuth redirects, dual contexts        |
-| [Visual regression](./deep_dives/visual_regression.md)                                                               | UI screenshot testing                                     |
-| [Component testing (Playwright CT)](./deep_dives/component_testing.md)                                               | Isolating React/Vue components for tests                  |
-| [Performance](./deep_dives/performance.md)                                                                           | Lighthouse CI, k6, Core Web Vitals                        |
-| [Accessibility](./deep_dives/accessibility.md)                                                                       | axe-core, WCAG, keyboard nav                              |
-| [Security](./deep_dives/security.md)                                                                                 | OWASP Top 10, IDOR, injection, ZAP scans                  |
-| [Contract testing](./deep_dives/contract_testing.md)                                                                 | Pact, consumer-driven contracts                           |
-| [Mutation testing](./deep_dives/mutation_testing.md)                                                                 | Stryker, assertion quality                                |
-| [Feature flags](./deep_dives/feature_flags.md)                                                                       | LaunchDarkly, fixture-driven flag injection               |
-| [Email testing](./deep_dives/email_testing.md)                                                                       | Mailosaur, MailHog, OTP flows                             |
-| [Synthetic monitoring](./deep_dives/synthetic_monitoring.md)                                                         | Checkly, cron-based monitors                              |
-| [BDD with Cucumber](./deep_dives/bdd_cucumber.md)                                                                    | Stakeholder-readable Gherkin scenarios                    |
-| [AI agents / MCP](./deep_dives/ai_mcp.md)                                                                            | Playwright MCP server, agentic test scaffolding           |
-| [Ch57 Login Taxonomy — OAuth/OIDC/SAML/MFA/mTLS](./05_Advanced_Topics/57_Login_Taxonomy_OAuth_OIDC_SAML_MFA_mTLS.md) | Beyond `reference/05_auth.md` — full SAML, MFA edge cases |
+**Before you start:** comfortable with JavaScript async/await ([`16_JavaScript/`](../16_JavaScript/)) and basic TypeScript ([`17_TypeScript/`](../17_TypeScript/)). Stage 1 reviews both in a testing context.
 
 ---
 
-## Runnable assets
+## How to read this module
 
-| Folder                                                                 | What it is                                                                                |
-| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| [`framework/`](./framework/README.md)                                  | Production-grade Playwright + TS scaffold. The canonical example for every reference doc. |
-| [`projects/starter-playwright-ts/`](./projects/starter-playwright-ts/) | Learning scaffold — intentionally incomplete, grow it chapter by chapter                  |
-| [`challenges/`](./challenges/README.md)                                | 7 graded challenges (CH01–CH07) + 3 portfolio capstones (CAP_C1–C3)                       |
-| [`08_Practice_And_Quizzes/`](./08_Practice_And_Quizzes/)               | Quizzes + 10-week practice plan + 20 reference solutions to Quiz 02                       |
-| [`career/`](./career/README.md)                                        | Progress tracker, interview bank, portfolio plan, résumé bullets, DevSecOps thread        |
+- **Folders are stages, and stages are in learning order.** `01_` comes before `02_`, and so on.
+- **Chapter numbers are permanent IDs, not reading order.** Chapters were written over time, so Stage 1 contains Ch00–04 *and* Ch55–56. Other chapters say "see Ch42"; the number always finds the file. Inside each stage, follow the order in that stage's `README.md` (shown below each folder on GitHub) or in the table here.
+- **One canonical copy per topic.** The numbered chapters are the curriculum. [`appendix/`](./appendix/README.md) holds shorter quick-reference and summary versions; each one says which chapter is canonical.
+- **Every chapter ends with Practice Challenges** (answers hidden in collapsible blocks) and a **Reality Check** of common misconceptions.
 
 ---
 
-## How this module is organized
+## The learning path
 
-Four entry points live at the root; everything else is foldered by purpose:
+### Stage 1 — Foundations · [`01_Foundations/`](./01_Foundations/README.md)
+Install, first test, how Playwright finds elements, and the two tools you'll use every day for debugging and configuration.
 
-| Path                                             | Purpose                                                                                     |
-| ------------------------------------------------ | -------------------------------------------------------------------------------------------- |
-| `README.md` / [`00_Start_Here.md`](./00_Start_Here.md) / [`00_INDEX.md`](./00_INDEX.md) / [`WHERE_TO_START.md`](./WHERE_TO_START.md) | Entry points — pick by how you like to navigate |
-| [`00_Navigation/`](./00_Navigation/)             | Maps: [SITEMAP](./00_Navigation/SITEMAP.md), [lens index](./00_Navigation/LENS_INDEX.md), [code→chapter map](./00_Navigation/MAP_CODE_TO_CHAPTER.md) |
-| [`00_Pathways/`](./00_Pathways/)                 | Guided routes: [learning](./00_Pathways/PATHWAY_01_LEARNING.md), [professional](./00_Pathways/PATHWAY_02_PROFESSIONAL.md), [office/D365](./00_Pathways/PATHWAY_03_OFFICE.md) |
-| `01_Foundations/` … `08_Practice_And_Quizzes/`   | The numbered curriculum clusters (chapters Ch00–Ch62)                                        |
-| `reference/`, `learn/`, `deep_dives/`            | Lookup cards, ordered mini-curriculum, optional deep reads                                   |
-| `framework/`, `projects/`, `challenges/`         | Runnable code — scaffold, playground, graded exercises                                       |
-| [`career/`](./career/README.md)                  | Career system incl. the [Principal readiness rubric](./career/READINESS_RUBRIC.md)          |
-| [`_meta/`](./_meta/)                             | Module governance: [audit results](./_meta/AUDIT_RESULTS.md), [link-repair history](./_meta/KNOWN_BROKEN_LINKS.md), [context](./_meta/CONTEXT.md) |
+| Order | Chapter | Why now |
+| --- | --- | --- |
+| 1 | [Ch01 Environment Setup & First Test](./01_Foundations/01_Environment_Setup_and_First_Test.md) | A passing test on your machine before any theory |
+| 2 | [Ch00 SDET Foundations & Mindset](./01_Foundations/00_SDET_Foundations_Mindset.md) · [Testing fundamentals](./01_Foundations/00_Testing_Fundamentals/) | What to test and why, the test pyramid |
+| 3 | [Ch01 Playwright + TypeScript Basics](./01_Foundations/01_Playwright_TS_Basics.md) | Auto-waiting, lazy locators, the event loop |
+| 4 | [Ch02 Locators (roles, CSS, XPath)](./01_Foundations/02_Enterprise_Locators_XPath.md) | Finding elements reliably |
+| 5 | [Ch55 Inspector, Trace Viewer & UI Mode](./01_Foundations/55_Inspector_TraceViewer_UIMode_Walkthrough.md) | **Your debugger — learn it before you need it** |
+| 6 | [Ch04 JS/TS for Automation](./01_Foundations/04_JS_TS_For_Automation.md) | The async mistakes that cause most flaky tests |
+| 7 | [Ch03 Browser Console Scripting](./01_Foundations/03_Browser_Console_Scripting.md) | Inspecting pages from DevTools |
+| 8 | [Ch56 `playwright.config.ts` Deep Dive](./01_Foundations/56_Playwright_Config_Deep_Dive.md) | Timeouts, projects, retries, traces |
 
----
+### Stage 2 — Test Architecture · [`02_Test_Architecture/`](./02_Test_Architecture/README.md)
+How professional suites are structured, so that tests stay maintainable at 500 tests, not just 5.
 
-## Quick reference — patterns you'll use weekly
+[Ch05 Page Object Model](./02_Test_Architecture/05_POM_Architecture_Deep_Dive.md) → [Ch06 Custom Fixtures](./02_Test_Architecture/06_Custom_Fixtures_Architecture.md) → [Ch07 `test.step` & E2E structure](./02_Test_Architecture/07_test_step_E2E_Architecture.md) → [Ch08 Browser Internals](./02_Test_Architecture/08_Browser_Internals_for_SDETs.md) → [Ch09 Parallel Workers](./02_Test_Architecture/09_Parallel_Execution_Workers.md) → [Ch64 Dynamic Locators in POMs](./02_Test_Architecture/64_Dynamic_Locators_And_Data_Structures_In_POMs.md)
 
-### The `await` rule
+### Stage 3 — Real-World Scenarios · [`03_Real_World_Scenarios/`](./03_Real_World_Scenarios/README.md)
+The flows that real products have and toy tutorials skip.
 
-```typescript
-// Needs await: navigate, click, fill, type, check, hover, waitFor,
-//              isVisible(), count(), textContent(), response.json()
-// No await: page.locator(), getByRole(), getByText(), .nth(), .filter()
-```
+| Order | Chapter | Covers |
+| --- | --- | --- |
+| 1 | [Ch31 API Mocking with `page.route()`](./03_Real_World_Scenarios/31_API_Mocking_page_route.md) | Controlling what the app receives |
+| 2 | [Ch42 Polling & Async Data](./03_Real_World_Scenarios/42_Polling_Async_Data_Patterns.md) | Waiting for slow backends without `sleep` |
+| 3 | [Ch28 Test Data Lifecycle](./03_Real_World_Scenarios/28_Test_Data_Lifecycle_and_Cleanup.md) | Creating and cleaning up data safely in parallel |
+| 4 | [Ch30 Database Verification](./03_Real_World_Scenarios/30_Database_Verification_Direct_SQL.md) | Asserting what was stored, not just what was shown |
+| 5 | [Ch57 Login: OAuth, SAML, MFA/TOTP, OTP, passkeys](./03_Real_World_Scenarios/57_Login_Taxonomy_OAuth_OIDC_SAML_MFA_mTLS.md) | Every login you'll meet, including OTP and WebAuthn |
+| 6 | [Ch50 Email Testing](./03_Real_World_Scenarios/50_Email_Service_Testing.md) | Verification emails, magic links, OTP by email |
+| 7 | [Ch58 File Uploads & Downloads](./03_Real_World_Scenarios/58_File_Uploads_Downloads.md) | Uploads, downloads, CSV/PDF assertions |
+| 8 | [Ch61 Emulation: Clock, Network & Devices](./03_Real_World_Scenarios/61_Emulation_Clock_Network_And_Devices.md) | Fake time, offline, geolocation, mobile |
+| 9 | [Ch41 GraphQL & WebSockets](./03_Real_World_Scenarios/41_GraphQL_WebSocket_Testing.md) | Real-time and single-endpoint APIs |
+| 10 | [Ch49 Feature Flags](./03_Real_World_Scenarios/49_Feature_Flag_Testing.md) | Testing both sides of a flag |
+| 11 | [Ch67 Payment Gateways](./03_Real_World_Scenarios/67_Payment_Gateway_Testing.md) | Card iframes, 3-D Secure, idempotency, webhooks, money |
 
-### New tab — listener before trigger
+### Stage 4 — Cross-Site Patterns & a Dynamics 365 Case Study · [`04_Cross_Site_Patterns_And_D365/`](./04_Cross_Site_Patterns_And_D365/README.md)
+Six patterns for flows that span apps, tabs, users and domains, then applying everything to a hard enterprise UI.
 
-```typescript
-const [newTab] = await Promise.all([
-  page.context().waitForEvent("page"),
-  page.click("#openButton"),
-]);
-```
+[Ch11 Sequential Flow](./04_Cross_Site_Patterns_And_D365/11_CrossSite_Pattern1_Sequential_Flow.md) → [Ch12 New Tab](./04_Cross_Site_Patterns_And_D365/12_CrossSite_Pattern2_NewTab_SharedContext.md) → [Ch13 Two Users at Once](./04_Cross_Site_Patterns_And_D365/13_CrossSite_Pattern3_Dual_BrowserContext.md) → [Ch14 Tokens & Magic Links](./04_Cross_Site_Patterns_And_D365/14_CrossSite_Pattern4_Token_Magic_Link.md) → [Ch15 UI → API Side Effects](./04_Cross_Site_Patterns_And_D365/15_CrossSite_Pattern5_UI_API_Side_Effects.md) → [Ch16 storageState Chaining](./04_Cross_Site_Patterns_And_D365/16_CrossSite_Pattern6_StorageState_Chaining.md) → [Ch10 Dynamics 365](./04_Cross_Site_Patterns_And_D365/10_Dynamics365_CRM_Testing.md) → [Ch17 D365 Timing Traps](./04_Cross_Site_Patterns_And_D365/17_D365_Advanced_Timing_Patterns.md)
 
-### Download — same pattern, different event
+### Stage 5 — Enterprise Framework · [`05_Enterprise_Framework/`](./05_Enterprise_Framework/README.md)
+Designing the framework a whole team builds on: project layout, typed API clients, lint rules.
 
-```typescript
-const [download] = await Promise.all([
-  page.waitForEvent("download"),
-  page.click("#exportBtn"),
-]);
-```
+[Ch21 Project Structure](./05_Enterprise_Framework/21_Enterprise_Project_Structure.md) → [Ch22 Headers/Payloads/Endpoints](./05_Enterprise_Framework/22_Headers_Payloads_Endpoints_Factory.md) → [Ch23 HTTP Library](./05_Enterprise_Framework/23_APIUtils_HTTP_Library.md) → [Ch24 Test Script Architecture](./05_Enterprise_Framework/24_Test_Script_Architecture.md) → [Ch44 API Client Library](./05_Enterprise_Framework/44_Enterprise_API_Client_Library.md) → [Ch18 Mega POM](./05_Enterprise_Framework/18_Mega_POM_Architecture.md) → [Ch27 Advanced TypeScript](./05_Enterprise_Framework/27_Advanced_TypeScript_for_SDETs.md) → [Ch63 Static Analysis](./05_Enterprise_Framework/63_Static_Analysis_ESLint_TypeScript_Playwright.md)
 
-### D365 wait pattern
+### Stage 6 — CI/CD & Reliability · [`06_CI_CD_And_Reliability/`](./06_CI_CD_And_Reliability/README.md)
+Running suites in pipelines, keeping them trustworthy, and operating them at scale.
 
-```typescript
-await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30_000 });
-await expect(fieldLocator).toHaveText("Expected Value", { timeout: 30_000 });
-```
+[Ch25 CI/CD](./06_CI_CD_And_Reliability/25_CICD_Integration_GitHub_Azure.md) → [Ch59 Docker](./06_CI_CD_And_Reliability/59_Docker_For_Playwright.md) → [Ch26 Flakiness Diagnosis](./06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md) → [Ch43 War Stories](./06_CI_CD_And_Reliability/43_Real_World_SDET_War_Stories.md) → [Ch48 Sharding & Test Selection](./06_CI_CD_And_Reliability/48_Sharding_And_Test_Selection.md) → [Ch47 Allure & ReportPortal](./06_CI_CD_And_Reliability/47_Allure_ReportPortal.md) → [Ch51 Secrets](./06_CI_CD_And_Reliability/51_Secrets_Management_For_SDETs.md) → [Ch54 Synthetic Monitoring](./06_CI_CD_And_Reliability/54_Synthetic_Monitoring.md) → [Ch62 Test Operations](./06_CI_CD_And_Reliability/62_Enterprise_Test_Operations.md) → [Ch65 Chaos Engineering](./06_CI_CD_And_Reliability/65_Chaos_Engineering_For_Playwright.md)
 
-### `menuitem` over `button` in D365
+### Stage 7 — Specialised Testing · [`07_Specialised_Testing/`](./07_Specialised_Testing/README.md)
+Test types beyond functional E2E. Pick the ones your product needs; order doesn't matter much here.
 
-```typescript
-// ❌ page.getByRole('button',  { name: 'Edit' })
-// ✅ page.getByRole('menuitem', { name: 'Edit' })
-```
+[Ch29 Visual Regression](./07_Specialised_Testing/29_Visual_Regression_Testing.md) · [Ch39 Accessibility](./07_Specialised_Testing/39_Accessibility_Testing_axe_core.md) · [Ch40 Security](./07_Specialised_Testing/40_Security_Testing_OWASP.md) · [Ch19 Console Security Scripts](./07_Specialised_Testing/19_Advanced_Console_Scripts_Security.md) · [Ch37 Performance](./07_Specialised_Testing/37_Performance_Testing_Lighthouse_k6.md) · [Ch38 Contract Testing](./07_Specialised_Testing/38_Contract_Testing_Pact.md) · [Ch52 Component Testing](./07_Specialised_Testing/52_Component_Testing_With_Playwright_CT.md) · [Ch53 Mutation Testing](./07_Specialised_Testing/53_Mutation_Testing_With_Stryker.md) · [Ch46 BDD](./07_Specialised_Testing/46_BDD_With_Cucumber.md) · [Ch45 AI Agents & MCP](./07_Specialised_Testing/45_AI_Agents_MCP_And_Playwright.md)
 
-### Data Accumulator across `test.step()`
+### Stage 8 — SDET → SDE Bridge · [`08_SDET_to_SDE_Bridge/`](./08_SDET_to_SDE_Bridge/README.md)
+The CS depth, design judgement and interview skills that separate senior engineers.
 
-```typescript
-interface TestData {
-  citationId: string | null;
-}
-const data: TestData = { citationId: null };
-await test.step("create", async () => {
-  data.citationId = await client.create();
-});
-await test.step("verify", async () => {
-  await client.assertPaid(data.citationId!);
-});
-```
+[Ch33 CS Thinking](./08_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md) → [Ch34 Algorithms in Test Automation](./08_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md) → [Ch35 OOP Design Patterns](./08_SDET_to_SDE_Bridge/35_OOP_Design_Patterns_for_SDETs.md) → [Ch36 TypeScript Type System](./08_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) → [Ch60 Tool Comparison](./08_SDET_to_SDE_Bridge/60_Tool_Comparison_Cypress_Selenium_WDIO.md) → [Ch66 Senior Decision-Making](./08_SDET_to_SDE_Bridge/66_Senior_SDET_Decision_Making.md) → [Ch32 Interview Prep](./08_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md)
 
-### Polling — never `for + waitForTimeout`
-
-```typescript
-await expect
-  .poll(async () => (await citationsClient.getById(id)).status, {
-    timeout: 120_000,
-    intervals: [1_000, 2_000, 5_000, 10_000],
-  })
-  .toBe("PAID");
-```
-
-### Enterprise composition
-
-```typescript
-// import test from your fixtures barrel — NEVER from @playwright/test directly
-import { test, expect } from "../../fixtures";
-
-test("flow", async ({ page, account, citationsClient }) => {
-  const dashboard = new DashboardPage(page); // POMs at top of test
-  const data = { citationId: null as string | null };
-
-  await test.step("API: create pending citation", async () => {
-    const citation = await citationsClient.create(
-      PayloadsCitation.pending({ customerId: account.userId }),
-    );
-    data.citationId = citation.id;
-  });
-  // ...
-});
-```
+### Stage 9 — Practice · [`09_Practice_And_Quizzes/`](./09_Practice_And_Quizzes/)
+Quizzes and a 10-week practice plan. Pair with the graded [`challenges/`](./challenges/README.md) (7 challenges + 3 capstones).
 
 ---
 
-## Cross-module links
+## Build as you learn
 
-| Topic                                          | Where                                                                                             |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| API testing depth (REST, SOAP, contract)       | [`24_Advanced_API_Testing/`](../24_Advanced_API_Testing/)                                         |
-| TypeScript foundations and advanced types      | [`17_TypeScript/`](../17_TypeScript/)                                                             |
-| JavaScript fundamentals (async, DOM, closures) | [`16_JavaScript/`](../16_JavaScript/)                                                             |
-| CSS selectors in depth                         | [`18_CSS_Complete/`](../18_CSS_Complete/)                                                         |
-| DSA / Algorithms (interview bridge)            | [`03_Algorithms/`](../03_Algorithms/)                                                             |
-| OOP design patterns                            | [Ch35 OOP Design Patterns for SDETs](./06_SDET_to_SDE_Bridge/35_OOP_Design_Patterns_for_SDETs.md) |
-| SQL for DB verification                        | [`08_SQL/`](../08_SQL/)                                                                           |
-| CI/CD beyond Playwright                        | [`22_DevOps/`](../22_DevOps/)                                                                     |
-| Mobile / Appium                                | [`23_Mobile_Dev_And_Testing/`](../23_Mobile_Dev_And_Testing/)                                     |
+| Folder | What it is | When |
+| --- | --- | --- |
+| [`projects/starter-playwright-ts/`](./projects/starter-playwright-ts/) | Deliberately incomplete scaffold — grow it chapter by chapter | From Stage 1 |
+| [`framework/`](./framework/README.md) | The complete reference framework every chapter's code is drawn from | Compare against it from Stage 2 |
+| [`challenges/`](./challenges/README.md) | Graded exercises with reference solutions | After each stage |
+| [`career/`](./career/README.md) | Readiness rubric, portfolio plan, mock interviews | Stage 8 onwards |
 
 ---
 
-## Roadmap — not yet covered
+## "I need to…" — quick lookup
 
-Documented gaps so readers know what's deliberate. This table previously listed OpenTelemetry, chaos engineering, and test impact analysis as gaps — all three are real and already written; see [`00_INDEX.md`](./00_INDEX.md) for the fuller, actively-maintained version of this roadmap (this file's copy had drifted out of sync with it — the same verify-against-the-filesystem lesson documented there, found again).
-
-**Already covered:**
-- **OpenTelemetry / APM** — [`framework/utilities/api/TELEMETRY_README.md`](./framework/utilities/api/TELEMETRY_README.md)
-- **Chaos engineering** — [Ch65 Chaos Engineering for Playwright](./05_Advanced_Topics/65_Chaos_Engineering_For_Playwright.md)
-- **Test impact analysis** — Ch48 §11, "Test Impact Analysis with madge"
-- **Property-based testing** — [Ch34](./06_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md) §11, `fast-check`'s shrink-search algorithm
-
-**Genuinely not yet covered:**
-
-| Topic                                          | Why deferred                                              |
-| ----------------------------------------------- | --------------------------------------------------------- |
-| Cloud device farms (BrowserStack, Sauce Labs)  | Vendor-specific; rotates faster than docs can keep up     |
-| Screen-reader (NVDA / JAWS) automation         | Manual + assistive-tech specific; not Playwright's domain |
+| I need to… | Go to |
+| --- | --- |
+| Fix a flaky test | [Ch26](./06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md), then [Ch55 Trace Viewer](./01_Foundations/55_Inspector_TraceViewer_UIMode_Walkthrough.md) |
+| Test a login with MFA, OTP or a passkey | [Ch57](./03_Real_World_Scenarios/57_Login_Taxonomy_OAuth_OIDC_SAML_MFA_mTLS.md) |
+| Test a checkout / payment | [Ch67](./03_Real_World_Scenarios/67_Payment_Gateway_Testing.md) |
+| Wait for a slow backend job | [Ch42](./03_Real_World_Scenarios/42_Polling_Async_Data_Patterns.md) |
+| Upload or download a file | [Ch58](./03_Real_World_Scenarios/58_File_Uploads_Downloads.md) |
+| Mock an API or force an error state | [Ch31](./03_Real_World_Scenarios/31_API_Mocking_page_route.md) |
+| Handle a new tab, popup, or second user | [Ch12](./04_Cross_Site_Patterns_And_D365/12_CrossSite_Pattern2_NewTab_SharedContext.md), [Ch13](./04_Cross_Site_Patterns_And_D365/13_CrossSite_Pattern3_Dual_BrowserContext.md) |
+| Stop logging in before every test | [Ch16](./04_Cross_Site_Patterns_And_D365/16_CrossSite_Pattern6_StorageState_Chaining.md) |
+| Run tests in CI / Docker / shards | [Ch25](./06_CI_CD_And_Reliability/25_CICD_Integration_GitHub_Azure.md), [Ch59](./06_CI_CD_And_Reliability/59_Docker_For_Playwright.md), [Ch48](./06_CI_CD_And_Reliability/48_Sharding_And_Test_Selection.md) |
+| Look up a one-screen snippet | [Weekly patterns](./appendix/quick_reference/00_Weekly_Patterns.md) · [Quick reference](./appendix/README.md) |
+| See every chapter with times and prerequisites | [`00_INDEX.md`](./00_INDEX.md) — the full catalogue |
 
 ---
 
 ## House conventions
 
 - **No `await` on locator creation** — only on actions and assertions.
-- **POMs instantiated BEFORE `test.step()`** — so step names describe behaviour, not setup.
-- **Object accumulator, not `let` primitive** — reference stability across steps.
+- **POMs instantiated before `test.step()`** — so step names describe behaviour, not setup.
+- **Object accumulator, not a `let` primitive** — reference stability across steps.
 - **Named factory calls** — `HeadersCrm.auth(token)`, not `{ Authorization: ... }` inline.
-- **Tests import from fixtures barrel** — never from `@playwright/test` directly.
+- **Tests import from the fixtures barrel** — never from `@playwright/test` directly.
 - **Real names in examples** — `MasterSearchPage`, `CitationsClient`, OrangeHRM. No `FooBar`.
+
+---
+
+## Related modules
+
+| Topic | Where |
+| --- | --- |
+| API testing depth (REST, SOAP, contract) | [`24_Advanced_API_Testing/`](../24_Advanced_API_Testing/) |
+| TypeScript / JavaScript foundations | [`17_TypeScript/`](../17_TypeScript/) · [`16_JavaScript/`](../16_JavaScript/) |
+| CSS selectors in depth | [`18_CSS_Complete/`](../18_CSS_Complete/) |
+| DSA / algorithms | [`03_Algorithms/`](../03_Algorithms/) |
+| SQL for DB verification | [`08_SQL/`](../08_SQL/) |
+| CI/CD beyond Playwright | [`22_DevOps/`](../22_DevOps/) |
+| Mobile / Appium | [`23_Mobile_Dev_And_Testing/`](../23_Mobile_Dev_And_Testing/) |
+
+**Not yet covered (known gaps):** CAPTCHA strategy, camera/microphone *content* via fake media streams (permission grant/deny itself is in [Ch61 §5](./03_Real_World_Scenarios/61_Emulation_Clock_Network_And_Devices.md)), push-notification delivery, cookie-consent banners, virtualised/infinite-scroll lists, wallet and redirect payments (PayPal, Apple/Google Pay), cloud device farms, and screen-reader (NVDA/JAWS) automation. Also covered elsewhere: OpenTelemetry in [`framework/utilities/api/TELEMETRY_README.md`](./framework/utilities/api/TELEMETRY_README.md), test impact analysis in Ch48 §11, property-based testing in Ch34 §11.
+
+Module governance (audits, link-repair history) lives in [`_meta/`](./_meta/).

@@ -9,14 +9,14 @@ A scan of every `.md` file in `21_SDET_Playwright_Automation/` (excluding `node_
 
 **66 broken links repaired** in the sweep. Source files touched:
 
-- [`08_Practice_And_Quizzes/quiz_01_solutions/README.md`](../08_Practice_And_Quizzes/quiz_01_solutions/README.md) — rewrote chapter mapping table + dropped the per-question file index (the 9 `Q01_*.md`–`Q09_*.md` files were never built; solutions live in [`solutions.md`](../08_Practice_And_Quizzes/quiz_01_solutions/solutions.md))
-- [`08_Practice_And_Quizzes/quiz_01_solutions/solutions.md`](../08_Practice_And_Quizzes/quiz_01_solutions/solutions.md) — fixed nav links (both occurrences)
-- [`08_Practice_And_Quizzes/quiz_02_solutions/README.md`](../08_Practice_And_Quizzes/quiz_02_solutions/README.md) — updated 10 chapter references
-- [`reference/02_config.md`](../reference/02_config.md), [`03_locators.md`](../reference/03_locators.md), [`04_fixtures.md`](../reference/04_fixtures.md), [`05_auth.md`](../reference/05_auth.md), [`06_api_testing.md`](../reference/06_api_testing.md), [`07_parallelism.md`](../reference/07_parallelism.md), [`08_reliability.md`](../reference/08_reliability.md), [`12_data.md`](../reference/12_data.md), [`13_mocking.md`](../reference/13_mocking.md), [`14_tool_comparison.md`](../reference/14_tool_comparison.md) — repointed `../practice/quiz_02_solutions/` to `../08_Practice_And_Quizzes/quiz_02_solutions/`, and rerouted missing deep-dives + learn references to canonical chapters
-- [`learn/06_enterprise_structure.md`](../learn/06_enterprise_structure.md), [`learn/README.md`](../learn/README.md) — rerouted `learn/07_interview_prep.md` (never written) to canonical `06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md`
+- [`08_Practice_And_Quizzes/quiz_01_solutions/README.md`](../09_Practice_And_Quizzes/quiz_01_solutions/README.md) — rewrote chapter mapping table + dropped the per-question file index (the 9 `Q01_*.md`–`Q09_*.md` files were never built; solutions live in [`solutions.md`](../09_Practice_And_Quizzes/quiz_01_solutions/solutions.md))
+- [`08_Practice_And_Quizzes/quiz_01_solutions/solutions.md`](../09_Practice_And_Quizzes/quiz_01_solutions/solutions.md) — fixed nav links (both occurrences)
+- [`08_Practice_And_Quizzes/quiz_02_solutions/README.md`](../09_Practice_And_Quizzes/quiz_02_solutions/README.md) — updated 10 chapter references
+- [`reference/02_config.md`](../appendix/quick_reference/02_config.md), [`03_locators.md`](../appendix/quick_reference/03_locators.md), [`04_fixtures.md`](../appendix/quick_reference/04_fixtures.md), [`05_auth.md`](../appendix/quick_reference/05_auth.md), [`06_api_testing.md`](../appendix/quick_reference/06_api_testing.md), [`07_parallelism.md`](../appendix/quick_reference/07_parallelism.md), [`08_reliability.md`](../appendix/quick_reference/08_reliability.md), [`12_data.md`](../appendix/quick_reference/12_data.md), [`13_mocking.md`](../appendix/quick_reference/13_mocking.md), [`14_tool_comparison.md`](../appendix/quick_reference/14_tool_comparison.md) — repointed `../practice/quiz_02_solutions/` to `../08_Practice_And_Quizzes/quiz_02_solutions/`, and rerouted missing deep-dives + learn references to canonical chapters
+- [`learn/06_enterprise_structure.md`](../appendix/short_course/06_enterprise_structure.md), [`learn/README.md`](../appendix/short_course/README.md) — rerouted `learn/07_interview_prep.md` (never written) to canonical `06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md`
 - [`README.md`](../README.md) — 4 broken links rerouted (`practice/` × 2, `learn/07_interview_prep.md`, `deep_dives/login_taxonomy_advanced.md`, `06_OOP/`)
-- [`00_Start_Here.md`](../00_Start_Here.md), [`01_Foundations/00_Testing_Fundamentals/01_All_Testing_Types_Complete_Guide.md`](../01_Foundations/00_Testing_Fundamentals/01_All_Testing_Types_Complete_Guide.md), [`01_Foundations/00_Testing_Fundamentals/02_Smoke_Sanity_Regression_Deep_Dive.md`](../01_Foundations/00_Testing_Fundamentals/02_Smoke_Sanity_Regression_Deep_Dive.md) — corrected `00_Testing_Fundamentals` folder paths
-- [`06_SDET_to_SDE_Bridge/60_Tool_Comparison_Cypress_Selenium_WDIO.md`](../06_SDET_to_SDE_Bridge/60_Tool_Comparison_Cypress_Selenium_WDIO.md) — `32_Framework_Design_Interview_Prep.md` → `32_SDET_Interview_Prep.md` (single-char typo)
+- [`00_Start_Here.md`](../README.md), [`01_Foundations/00_Testing_Fundamentals/01_All_Testing_Types_Complete_Guide.md`](../01_Foundations/00_Testing_Fundamentals/01_All_Testing_Types_Complete_Guide.md), [`01_Foundations/00_Testing_Fundamentals/02_Smoke_Sanity_Regression_Deep_Dive.md`](../01_Foundations/00_Testing_Fundamentals/02_Smoke_Sanity_Regression_Deep_Dive.md) — corrected `00_Testing_Fundamentals` folder paths
+- [`06_SDET_to_SDE_Bridge/60_Tool_Comparison_Cypress_Selenium_WDIO.md`](../08_SDET_to_SDE_Bridge/60_Tool_Comparison_Cypress_Selenium_WDIO.md) — `32_Framework_Design_Interview_Prep.md` → `32_SDET_Interview_Prep.md` (single-char typo)
 - [`challenges/solutions/CH01/README.md`](../challenges/solutions/CH01/README.md) — fixed `../CH01.md` → `../../CH01_Core_Infrastructure.md`
 
 ---
@@ -27,8 +27,8 @@ A scan of every `.md` file in `21_SDET_Playwright_Automation/` (excluding `node_
 
 These are matched by the grep because they look like markdown links but are placeholders inside code examples:
 
-- [`05_Advanced_Topics/27_Advanced_TypeScript_for_SDETs.md`](../05_Advanced_Topics/27_Advanced_TypeScript_for_SDETs.md) → `../path` — the literal string `../path` appears in a code example.
-- [`05_Advanced_Topics/43_Real_World_SDET_War_Stories.md`](../05_Advanced_Topics/43_Real_World_SDET_War_Stories.md) → `../../../../../.[a-zA-Z][a-zA-Z0-9_-]+` — a regex pattern shown in a chapter example.
+- [`05_Advanced_Topics/27_Advanced_TypeScript_for_SDETs.md`](../05_Enterprise_Framework/27_Advanced_TypeScript_for_SDETs.md) → `../path` — the literal string `../path` appears in a code example.
+- [`05_Advanced_Topics/43_Real_World_SDET_War_Stories.md`](../06_CI_CD_And_Reliability/43_Real_World_SDET_War_Stories.md) → `../../../../../.[a-zA-Z][a-zA-Z0-9_-]+` — a regex pattern shown in a chapter example.
 
 **No action needed.** These are documentation artifacts, not real links.
 

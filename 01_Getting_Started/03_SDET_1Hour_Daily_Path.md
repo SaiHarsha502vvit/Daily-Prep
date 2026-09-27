@@ -36,10 +36,10 @@ This schedule uses **Spaced Repetition** across 5 domains. Each week you visit e
 | ---- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | 1    | JS essentials — async/await, `forEach` trap, ES6            | [04_JS_TS_For_Automation](../21_SDET_Playwright_Automation/01_Foundations/04_JS_TS_For_Automation.md) Part 1          |
 | 2    | async/await deep dive — `Promise.all`, typed returns        | [04_JS_TS_For_Automation](../21_SDET_Playwright_Automation/01_Foundations/04_JS_TS_For_Automation.md) Part 2-3        |
-| 3    | POM patterns — lazy eval, `as const`, typed dicts           | [05_POM_Architecture_Deep_Dive](../21_SDET_Playwright_Automation/02_Core_Architecture/05_POM_Architecture_Deep_Dive.md)     |
-| 4    | Custom Fixtures — `test.extend`, `scope:worker`, `yield`    | [06_Custom_Fixtures_Architecture](../21_SDET_Playwright_Automation/02_Core_Architecture/06_Custom_Fixtures_Architecture.md) |
-| 5    | E2E Architecture — 15-step skeleton, Data Accumulator       | [07_test_step_E2E_Architecture](../21_SDET_Playwright_Automation/02_Core_Architecture/07_test_step_E2E_Architecture.md)     |
-| 6    | Parallel Execution — Workers, data collision, `test.serial` | [09_Parallel_Execution_Workers](../21_SDET_Playwright_Automation/02_Core_Architecture/09_Parallel_Execution_Workers.md)     |
+| 3    | POM patterns — lazy eval, `as const`, typed dicts           | [05_POM_Architecture_Deep_Dive](../21_SDET_Playwright_Automation/02_Test_Architecture/05_POM_Architecture_Deep_Dive.md)     |
+| 4    | Custom Fixtures — `test.extend`, `scope:worker`, `yield`    | [06_Custom_Fixtures_Architecture](../21_SDET_Playwright_Automation/02_Test_Architecture/06_Custom_Fixtures_Architecture.md) |
+| 5    | E2E Architecture — 15-step skeleton, Data Accumulator       | [07_test_step_E2E_Architecture](../21_SDET_Playwright_Automation/02_Test_Architecture/07_test_step_E2E_Architecture.md)     |
+| 6    | Parallel Execution — Workers, data collision, `test.serial` | [09_Parallel_Execution_Workers](../21_SDET_Playwright_Automation/02_Test_Architecture/09_Parallel_Execution_Workers.md)     |
 | 7    | TypeScript Advanced — generics, `Record`, enums             | [17_TypeScript/02_TS_Advanced_Types](../17_TypeScript/02_TS_Advanced_Types.md)                         |
 | 8    | TypeScript Patterns — class design, access modifiers        | [17_TypeScript/03_TS_Patterns_BestPractices](../17_TypeScript/03_TS_Patterns_BestPractices.md)         |
 | 9    | Playwright Basics review + config deep dive                 | [01_Playwright_TS_Basics](../21_SDET_Playwright_Automation/01_Foundations/01_Playwright_TS_Basics.md)                 |
@@ -54,11 +54,11 @@ This schedule uses **Spaced Repetition** across 5 domains. Each week you visit e
 | Week | 60-Min Focus                                                 | Chapter Link                                                                                                    |
 | ---- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
 | 1    | Browser rendering pipeline — 4 trees overview                | [16_JavaScript/09_Browser_Internals_Rendering](../16_JavaScript/09_Browser_Internals_Rendering.md) Sections 1-3 |
-| 2    | Browser Internals for SDETs — D365 two-phase render          | [08_Browser_Internals_for_SDETs](../21_SDET_Playwright_Automation/02_Core_Architecture/08_Browser_Internals_for_SDETs.md)            |
+| 2    | Browser Internals for SDETs — D365 two-phase render          | [08_Browser_Internals_for_SDETs](../21_SDET_Playwright_Automation/02_Test_Architecture/08_Browser_Internals_for_SDETs.md)            |
 | 3    | Enterprise Locators — XPath axes, chaining, filtering        | [02_Enterprise_Locators_XPath](../21_SDET_Playwright_Automation/01_Foundations/02_Enterprise_Locators_XPath.md)                |
 | 4    | Browser Console Scripting — DOM scripts, XPath finder        | [03_Browser_Console_Scripting](../21_SDET_Playwright_Automation/01_Foundations/03_Browser_Console_Scripting.md)                |
-| 5    | Dynamics 365 — IFrames, `.ms-*` classes, menuitem trap       | [10_Dynamics365_CRM_Testing](../21_SDET_Playwright_Automation/03_D365_And_Patterns/10_Dynamics365_CRM_Testing.md) Sections 1-4       |
-| 6    | Dynamics 365 — data-automation-key, console scripts, tab nav | [10_Dynamics365_CRM_Testing](../21_SDET_Playwright_Automation/03_D365_And_Patterns/10_Dynamics365_CRM_Testing.md) Sections 5-8       |
+| 5    | Dynamics 365 — IFrames, `.ms-*` classes, menuitem trap       | [10_Dynamics365_CRM_Testing](../21_SDET_Playwright_Automation/04_Cross_Site_Patterns_And_D365/10_Dynamics365_CRM_Testing.md) Sections 1-4       |
+| 6    | Dynamics 365 — data-automation-key, console scripts, tab nav | [10_Dynamics365_CRM_Testing](../21_SDET_Playwright_Automation/04_Cross_Site_Patterns_And_D365/10_Dynamics365_CRM_Testing.md) Sections 5-8       |
 | 7    | React rendering — how SPA components re-render               | [15_React_Frontend/01_React_Fundamentals](../15_React_Frontend/01_React_Fundamentals.md)                        |
 | 8    | CSS selectors — specificity, pseudo-classes                  | [18_CSS_Complete/01_CSS_Foundations](../18_CSS_Complete/01_CSS_Foundations.md)                                  |
 | 9    | JS DOM APIs — `querySelector`, events, MutationObserver      | [16_JavaScript/05_JS_DOM_BrowserAPIs](../16_JavaScript/05_JS_DOM_BrowserAPIs.md)                                |

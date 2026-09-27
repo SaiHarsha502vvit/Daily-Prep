@@ -1,6 +1,6 @@
 # 37. Performance Testing — Core Web Vitals, Lighthouse & Response Time Assertions
 
-**Navigation**: [← Chapter 36: TypeScript Type System](../06_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | [Index](../00_INDEX.md) | [→ Chapter 38: Contract Testing with Pact](./38_Contract_Testing_Pact.md)
+**Navigation**: [← Chapter 36: TypeScript Type System](../08_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | [Index](../00_INDEX.md) | [→ Chapter 38: Contract Testing with Pact](./38_Contract_Testing_Pact.md)
 
 **Open-Source Tools Referenced:**
 
@@ -19,7 +19,7 @@
 **Cross-references (this repo):**
 
 - [`../../14_Mental_Models/09_Complexity_Intuition.md`](../../14_Mental_Models/09_Complexity_Intuition.md) — O(n) thinking applies to load test design
-- [`25_CICD_Integration_GitHub_Azure.md`](../05_Advanced_Topics/25_CICD_Integration_GitHub_Azure.md) — Where to run LHCI in CI pipeline
+- [`25_CICD_Integration_GitHub_Azure.md`](../06_CI_CD_And_Reliability/25_CICD_Integration_GitHub_Azure.md) — Where to run LHCI in CI pipeline
 
 ---
 
@@ -986,7 +986,7 @@ await playAudit({
 
 ---
 
-**Navigation**: [← Chapter 36: TypeScript Type System](../06_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | [Index](../00_INDEX.md) | [→ Chapter 38: Contract Testing with Pact](./38_Contract_Testing_Pact.md)
+**Navigation**: [← Chapter 36: TypeScript Type System](../08_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | [Index](../00_INDEX.md) | [→ Chapter 38: Contract Testing with Pact](./38_Contract_Testing_Pact.md)
 
 
 ---

@@ -17,7 +17,7 @@
 
 **Cross-references (this repo):**
 
-- [`Ch52 Component Testing`](../05_Advanced_Topics/52_Component_Testing_With_Playwright_CT.md) — testing components in isolation, including ARIA assertions
+- [`Ch52 Component Testing`](./52_Component_Testing_With_Playwright_CT.md) — testing components in isolation, including ARIA assertions
 - [`Ch02 Enterprise Locators (XPath, getByRole)`](../01_Foundations/02_Enterprise_Locators_XPath.md) — role/label/text selectors that drive accessible markup discipline
 
 ---

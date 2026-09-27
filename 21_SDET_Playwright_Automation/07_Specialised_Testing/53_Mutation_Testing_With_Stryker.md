@@ -1,6 +1,6 @@
 # 53. Mutation Testing with Stryker — Are Your Tests Actually Testing Anything?
 
-**Navigation**: [← 52. Component Testing](../05_Advanced_Topics/52_Component_Testing_With_Playwright_CT.md) | [Index](../00_INDEX.md) | [→ 54. Synthetic Monitoring](../05_Advanced_Topics/54_Synthetic_Monitoring.md)
+**Navigation**: [← 52. Component Testing](./52_Component_Testing_With_Playwright_CT.md) | [Index](../00_INDEX.md) | [→ 54. Synthetic Monitoring](../06_CI_CD_And_Reliability/54_Synthetic_Monitoring.md)
 
 ---
 

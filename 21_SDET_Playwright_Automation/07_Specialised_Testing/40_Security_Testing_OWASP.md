@@ -1,6 +1,6 @@
 # 40. Security Test Automation — OWASP Top 10, ZAP & Auth Testing
 
-**Navigation**: [← Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](./41_GraphQL_WebSocket_Testing.md)
+**Navigation**: [← Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](../03_Real_World_Scenarios/41_GraphQL_WebSocket_Testing.md)
 
 **Open-Source Tools Referenced:**
 
@@ -18,8 +18,8 @@
 
 **Cross-references (this repo):**
 
-- [`19_Console_Scripts_Security.md`](../05_Advanced_Topics/19_Advanced_Console_Scripts_Security.md) — Ch19 console-based security scripts
-- [`31_API_Mocking_page_route.md`](../05_Advanced_Topics/31_API_Mocking_page_route.md) — page.route() for testing auth rejection
+- [`19_Console_Scripts_Security.md`](./19_Advanced_Console_Scripts_Security.md) — Ch19 console-based security scripts
+- [`31_API_Mocking_page_route.md`](../03_Real_World_Scenarios/31_API_Mocking_page_route.md) — page.route() for testing auth rejection
 
 ---
 
@@ -990,7 +990,7 @@ By running as a blocking gate in Staging, you catch vulnerabilities _before_ the
 
 ---
 
-**Navigation**: [← Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](./41_GraphQL_WebSocket_Testing.md)
+**Navigation**: [← Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](../03_Real_World_Scenarios/41_GraphQL_WebSocket_Testing.md)
 
 
 ---

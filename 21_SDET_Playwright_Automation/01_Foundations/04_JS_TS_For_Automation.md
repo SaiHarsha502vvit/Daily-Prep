@@ -1,6 +1,6 @@
 # 04. JavaScript & TypeScript for Test Automation — Zero to Production
 
-**Navigation**: [← Previous: Browser Console Scripting](./03_Browser_Console_Scripting.md) | [Index](../../00_MASTER_INDEX.md) | [Next: POM Architecture →](../02_Core_Architecture/05_POM_Architecture_Deep_Dive.md)
+**Navigation**: [← Previous: Browser Console Scripting](./03_Browser_Console_Scripting.md) | [Index](../../00_MASTER_INDEX.md) | [Next: POM Architecture →](../02_Test_Architecture/05_POM_Architecture_Deep_Dive.md)
 
 **Cross-links (read these alongside this chapter):**
 
@@ -924,7 +924,7 @@ async function fetchWithRetry(
 }
 ```
 
-**Notice the growth rate here specifically: `2000 * attempt` is LINEAR backoff** — attempt 1 waits 2s, attempt 2 waits 4s, attempt 3 waits 6s (each step adds a constant). That is a different, deliberate choice from the EXPONENTIAL backoff (`base * 2^attempt` — 2s, 4s, 8s, doubling each time) [Ch34 Section 8](../06_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md#8-dynamic-programming--optimal-retry-backoff) derives, which is itself grounded in AWS's real "Exponential Backoff and Jitter" post. Neither is universally correct: linear backoff gives up more slowly (more total attempts in a fixed time budget) but is gentler on a struggling service; exponential backs off faster and is the standard choice when the failure might be sustained (an outage, not a transient blip). This function's `maxRetries = 3` with linear steps is a reasonable choice for a single flaky call — it would be the wrong choice for hundreds of parallel workers all retrying the same recovering service at once, which is exactly the scenario Ch34 Section 8's jitter discussion covers.
+**Notice the growth rate here specifically: `2000 * attempt` is LINEAR backoff** — attempt 1 waits 2s, attempt 2 waits 4s, attempt 3 waits 6s (each step adds a constant). That is a different, deliberate choice from the EXPONENTIAL backoff (`base * 2^attempt` — 2s, 4s, 8s, doubling each time) [Ch34 Section 8](../08_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md#8-dynamic-programming--optimal-retry-backoff) derives, which is itself grounded in AWS's real "Exponential Backoff and Jitter" post. Neither is universally correct: linear backoff gives up more slowly (more total attempts in a fixed time budget) but is gentler on a struggling service; exponential backs off faster and is the standard choice when the failure might be sustained (an outage, not a transient blip). This function's `maxRetries = 3` with linear steps is a reasonable choice for a single flaky call — it would be the wrong choice for hundreds of parallel workers all retrying the same recovering service at once, which is exactly the scenario Ch34 Section 8's jitter discussion covers.
 
 ---
 
@@ -1281,7 +1281,7 @@ Every async bug in Playwright traces back to one of these patterns. Use this tab
 
 ---
 
-**Navigation**: [← Previous: Browser Console Scripting](./03_Browser_Console_Scripting.md) | [Index](../../00_MASTER_INDEX.md) | [Next: POM Architecture →](../02_Core_Architecture/05_POM_Architecture_Deep_Dive.md)
+**Navigation**: [← Previous: Browser Console Scripting](./03_Browser_Console_Scripting.md) | [Index](../../00_MASTER_INDEX.md) | [Next: POM Architecture →](../02_Test_Architecture/05_POM_Architecture_Deep_Dive.md)
 
 
 ---

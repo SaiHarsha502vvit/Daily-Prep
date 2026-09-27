@@ -389,7 +389,7 @@ Item pop() {
 
 | Technique | Deferred work | Where you have met it |
 | --- | --- | --- |
-| Lazy deletion | Removal | Priority queues, [Ch26 flake quarantine](../21_SDET_Playwright_Automation/05_Advanced_Topics/26_Flakiness_Diagnosis_and_Fixing.md) |
+| Lazy deletion | Removal | Priority queues, [Ch26 flake quarantine](../21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md) |
 | Lazy propagation | Range updates pushed to children | Segment trees with range assign |
 | Copy-on-write | Copying | Persistent structures, git objects, `CopyOnWriteArrayList` |
 | Rebuild-on-threshold | Reorganization | Scapegoat trees, LSM compaction |

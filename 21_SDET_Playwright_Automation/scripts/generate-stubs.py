@@ -105,6 +105,13 @@ To navigate the new structure: start at [`../README.md`](../README.md) (or [`REA
 
 
 def main():
+    # OBSOLETE AND DESTRUCTIVE -- DO NOT RUN.
+    # This belonged to an abandoned plan to make learn/ and reference/ canonical and stub out
+    # the numbered chapters. The 2026-09 restructure went the other way: the chapters are
+    # canonical and those folders now live in appendix/. Several paths below still match real
+    # chapters (e.g. 01_Foundations/00-04), so running this would OVERWRITE fully written
+    # chapters with one-line redirect stubs. Kept only as history.
+    raise SystemExit("generate-stubs.py is obsolete and would overwrite real chapters. Refusing to run.")
     root = Path(__file__).resolve().parent.parent
     written = 0
     skipped = 0

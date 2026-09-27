@@ -1,6 +1,6 @@
 # 01. Environment Setup and Your First Playwright Test
 
-**Navigation**: [← Start Here](../00_Start_Here.md) | [Index](../00_INDEX.md) | [→ Foundations](./00_SDET_Foundations_Mindset.md)
+**Navigation**: [← Start Here](../README.md) | [Index](../00_INDEX.md) | [→ Foundations](./00_SDET_Foundations_Mindset.md)
 
 ---
 
@@ -20,7 +20,7 @@ After setup, continue here in order:
 
 - [`01_Playwright_TS_Basics.md`](./01_Playwright_TS_Basics.md) — reads this after setup; explains async/await and the Browser→Context→Page→Locator hierarchy in depth.
 - [`00_SDET_Foundations_Mindset.md`](./00_SDET_Foundations_Mindset.md) — read after setup for the mindset shift from script-runner to SDET.
-- [`09_Parallel_Execution_Workers.md`](../02_Core_Architecture/09_Parallel_Execution_Workers.md) — the full `playwright.config.ts` deep-dive (workers, retries, projects, trace, reporter).
+- [`09_Parallel_Execution_Workers.md`](../02_Test_Architecture/09_Parallel_Execution_Workers.md) — the full `playwright.config.ts` deep-dive (workers, retries, projects, trace, reporter).
 
 ---
 
@@ -424,7 +424,7 @@ Use strategy 1 first. Only descend the list when the element genuinely has no ac
 - Read [`00_SDET_Foundations_Mindset.md`](./00_SDET_Foundations_Mindset.md) — the mindset before writing real tests: the testing pyramid, three pillars of reliability, professional vocabulary.
 - Read [`01_Playwright_TS_Basics.md`](./01_Playwright_TS_Basics.md) — why `async/await` works, the full Browser→Context→Page→Locator hierarchy, how CDP round trips work.
 - The setup you just did is a **practice sandbox** — your real work uses the enterprise structure described in Chapter 21 (`21_Enterprise_Project_Structure.md`), with separate `fixtures/`, `pages/`, `utils/`, and `specs/` folders.
-- When you're ready for deeper config, read [`09_Parallel_Execution_Workers.md`](../02_Core_Architecture/09_Parallel_Execution_Workers.md) — every option in `playwright.config.ts` explained with production reasoning.
+- When you're ready for deeper config, read [`09_Parallel_Execution_Workers.md`](../02_Test_Architecture/09_Parallel_Execution_Workers.md) — every option in `playwright.config.ts` explained with production reasoning.
 
 ---
 
@@ -557,7 +557,7 @@ test("Login with valid credentials navigates to secure area", async ({
 
 ---
 
-**Navigation**: [← Start Here](../00_Start_Here.md) | [Index](../00_INDEX.md) | [→ Foundations](./00_SDET_Foundations_Mindset.md)
+**Navigation**: [← Start Here](../README.md) | [Index](../00_INDEX.md) | [→ Foundations](./00_SDET_Foundations_Mindset.md)
 
 
 ---

@@ -42,7 +42,7 @@
 |---|---|---|
 | **1. JavaScript** | [`16_JavaScript/`](../16_JavaScript/00_INDEX.md) | 14 chapters + [problem sets](../16_JavaScript/16_PROBLEM_SETS.md) |
 | **2. TypeScript** | [`17_TypeScript/`](../17_TypeScript/00_INDEX.md) | 6 chapters + [problem sets](../17_TypeScript/17_PROBLEM_SETS.md) |
-| **3. Playwright** | [`21_SDET_Playwright_Automation/`](../21_SDET_Playwright_Automation/00_Start_Here.md) | Full module + [challenges](../21_SDET_Playwright_Automation/challenges/README.md) |
+| **3. Playwright** | [`21_SDET_Playwright_Automation/`](../21_SDET_Playwright_Automation/README.md) | Full module + [challenges](../21_SDET_Playwright_Automation/challenges/README.md) |
 
 **Block 1 chapters specifically:**
 1. [`01_JS_Foundations.md`](../16_JavaScript/01_JS_Foundations.md) — 1,187 lines

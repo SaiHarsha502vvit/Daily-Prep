@@ -12,7 +12,7 @@
 - Java developers who know the language but haven't built production Spring Boot apps
 - Backend developers who want to stop relying entirely on an ORM and understand what it's doing
 
-**Not for:** frontend or mobile devs — see [PATH_FRONTEND.md](PATH_FRONTEND.md). For SDET/test automation, see [21_SDET_Playwright_Automation/WHERE_TO_START.md](21_SDET_Playwright_Automation/WHERE_TO_START.md).
+**Not for:** frontend or mobile devs — see [PATH_FRONTEND.md](PATH_FRONTEND.md). For SDET/test automation, see [21_SDET_Playwright_Automation/README.md](./21_SDET_Playwright_Automation/README.md).
 
 ---
 
@@ -103,7 +103,7 @@ When you've finished Stage 2 (SQL), you're ready to understand how JPA translate
 - SQL Ch11 (Indexes) + [Ch32 SB Data Part 2](07_Modern_Java/Ch32_SB_Data_Part2.md) — JPA entity annotations affect how indexes are created
 
 When you've finished Stage 3, the test automation chapter connects:
-- [SDET: Database Verification](21_SDET_Playwright_Automation/05_Advanced_Topics/30_Database_Verification_Direct_SQL.md) — how to write SQL assertions to verify what your Spring Boot API persisted
+- [SDET: Database Verification](./21_SDET_Playwright_Automation/03_Real_World_Scenarios/30_Database_Verification_Direct_SQL.md) — how to write SQL assertions to verify what your Spring Boot API persisted
 
 ---
 

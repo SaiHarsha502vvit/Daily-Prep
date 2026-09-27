@@ -13,14 +13,14 @@
 
 **Your entry point:**
 ```
-21_SDET_Playwright_Automation/WHERE_TO_START.md
+21_SDET_Playwright_Automation/README.md
 ```
 That folder has its own complete decision tree, 3 curated learning pathways (junior → mid → senior → principal), and a problem-indexed reference ("My test is flaky → go here"). Start there.
 
 **Quick path if you just want to begin:**
 1. [SDET Mindset](21_SDET_Playwright_Automation/01_Foundations/00_SDET_Foundations_Mindset.md) — what makes an SDET different from a developer
 2. [Playwright Basics](21_SDET_Playwright_Automation/01_Foundations/01_Playwright_TS_Basics.md) — first working test in 30 minutes
-3. [POM Architecture](21_SDET_Playwright_Automation/02_Core_Architecture/05_POM_Architecture_Deep_Dive.md) — how professional test suites are structured
+3. [POM Architecture](./21_SDET_Playwright_Automation/02_Test_Architecture/05_POM_Architecture_Deep_Dive.md) — how professional test suites are structured
 
 **Prerequisites:** Basic JavaScript or TypeScript. If you need TypeScript first → [Path C](#c-i-want-to-learn-typescript--javascript).
 
@@ -69,7 +69,7 @@ That folder has its own complete decision tree, 3 curated learning pathways (jun
 - [React Deep Reasoning](15_React_Frontend/09_React_Deep_Reasoning.md) — reconciliation, fiber, rendering
 
 **Frontend → SDET bridge:**
-If you're a frontend dev wanting to add testing skills → [TypeScript Type System for SDETs](21_SDET_Playwright_Automation/06_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md).
+If you're a frontend dev wanting to add testing skills → [TypeScript Type System for SDETs](./21_SDET_Playwright_Automation/08_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md).
 
 ---
 
@@ -117,7 +117,7 @@ If you're a frontend dev wanting to add testing skills → [TypeScript Type Syst
 8. [SQL Deep Reasoning](08_SQL/23_SQL_Deep_Reasoning.md) — 10 freeze moments
 
 **SQL → Testing bridge:**
-[Database Verification in Tests](21_SDET_Playwright_Automation/05_Advanced_Topics/30_Database_Verification_Direct_SQL.md) — how to write SQL assertions in your Playwright test suite.
+[Database Verification in Tests](./21_SDET_Playwright_Automation/03_Real_World_Scenarios/30_Database_Verification_Direct_SQL.md) — how to write SQL assertions in your Playwright test suite.
 
 ---
 
@@ -134,7 +134,7 @@ If you're a frontend dev wanting to add testing skills → [TypeScript Type Syst
 ```
 WHERE_TO_START.md  ← you are here
 │
-├── A. SDET / Automation  →  21_SDET_Playwright_Automation/WHERE_TO_START.md
+├── A. SDET / Automation  →  21_SDET_Playwright_Automation/README.md
 ├── B. Interview / DSA    →  20_Interview_Mastery/  +  02_Data_Structures/  +  03_Algorithms/
 ├── C. TypeScript / React →  16_JavaScript/  →  17_TypeScript/  →  15_React_Frontend/
 ├── D. Java / Spring Boot →  07_Modern_Java/  +  08_SQL/

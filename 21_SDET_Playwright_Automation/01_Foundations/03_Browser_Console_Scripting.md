@@ -541,7 +541,7 @@ The standard "Copy XPath" in Chrome produces useless absolute paths. This script
 })();
 ```
 
-**A small complexity note, worth knowing even though it doesn't matter here:** `parts.unshift(anchor)` inserts at the *front* of the array on every step of the climb. `Array.unshift` is O(n) — it has to shift every existing element over by one — so building an n-step path this way costs O(n²) total, not O(n). The fix, if it ever mattered, would be `parts.push(anchor)` while climbing and `parts.reverse()` once at the end — O(n) total. It doesn't matter here because `n` is DOM depth, which almost never exceeds a few dozen — the same "is this actually the bottleneck at this scale" question [Ch34's own Story 1](../06_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md) asks about a real O(n²) bug that DID matter, at n=40,000. Complexity is worth noticing on every loop; it's only worth *fixing* once you've checked what n actually is.
+**A small complexity note, worth knowing even though it doesn't matter here:** `parts.unshift(anchor)` inserts at the *front* of the array on every step of the climb. `Array.unshift` is O(n) — it has to shift every existing element over by one — so building an n-step path this way costs O(n²) total, not O(n). The fix, if it ever mattered, would be `parts.push(anchor)` while climbing and `parts.reverse()` once at the end — O(n) total. It doesn't matter here because `n` is DOM depth, which almost never exceeds a few dozen — the same "is this actually the bottleneck at this scale" question [Ch34's own Story 1](../08_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md) asks about a real O(n²) bug that DID matter, at n=40,000. Complexity is worth noticing on every loop; it's only worth *fixing* once you've checked what n actually is.
 
 **What makes this generator better than Chrome's built-in:**
 
@@ -957,7 +957,7 @@ test("Citation form does not leak memory after repeated open/close", async ({
 });
 ```
 
-**A real limitation of this exact test, worth knowing before trusting it:** a single before/after delta cannot tell a genuine per-iteration leak apart from a one-time cost that only happens on the *first* iteration — a lazy-loaded code chunk, a cache warming up, a font loading. [Ch08 §12.1](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md#121-detecting-a-memory-leak--why-one-heap-reading-proves-nothing) verified this concretely: computing a naive before/after delta over a run that included one such one-time jump produced a growth number statistically indistinguishable from a real, sustained per-iteration leak — a genuine false positive, not a hypothetical one. The fix there was to sample the heap *after every iteration* (not just first/last), discard the first few as warm-up, and fit a trend across what's left — a real leak shows a sustained slope; a one-time cost shows one jump then flat. Use the simpler two-point version above for a quick smoke check; reach for the multi-sample version when a failure here needs to distinguish "real leak" from "one-time cost" before you file a bug.
+**A real limitation of this exact test, worth knowing before trusting it:** a single before/after delta cannot tell a genuine per-iteration leak apart from a one-time cost that only happens on the *first* iteration — a lazy-loaded code chunk, a cache warming up, a font loading. [Ch08 §12.1](../02_Test_Architecture/08_Browser_Internals_for_SDETs.md#121-detecting-a-memory-leak--why-one-heap-reading-proves-nothing) verified this concretely: computing a naive before/after delta over a run that included one such one-time jump produced a growth number statistically indistinguishable from a real, sustained per-iteration leak — a genuine false positive, not a hypothetical one. The fix there was to sample the heap *after every iteration* (not just first/last), discard the first few as warm-up, and fit a trend across what's left — a real leak shows a sustained slope; a one-time cost shows one jump then flat. Use the simpler two-point version above for a quick smoke check; reach for the multi-sample version when a failure here needs to distinguish "real leak" from "one-time cost" before you file a bug.
 
 ---
 
@@ -1081,7 +1081,7 @@ expect(
 | ----------------------------------- | --------------------------- | ------------------------------------------------- | ----------------------------------- |
 | `Network.emulateNetworkConditions` | Throttle bandwidth/latency | Test loading states on slow connections         | None — Chromium-only |
 | `HeapProfiler.collectGarbage`      | Force garbage collection   | Memory leak testing — clean up before measuring | None — Chromium-only |
-| `Emulation.setCPUThrottlingRate`   | Slow down the CPU (e.g. `4` = 4x slower) | Test on hardware-equivalent-to-low-end-mobile — see the real GPU-process limitation in [Ch08 §12.2](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md#122-cpu-throttling--the-emulation-domains-other-half) before trusting this on canvas/WebGL-heavy pages | None — Chromium-only |
+| `Emulation.setCPUThrottlingRate`   | Slow down the CPU (e.g. `4` = 4x slower) | Test on hardware-equivalent-to-low-end-mobile — see the real GPU-process limitation in [Ch08 §12.2](../02_Test_Architecture/08_Browser_Internals_for_SDETs.md#122-cpu-throttling--the-emulation-domains-other-half) before trusting this on canvas/WebGL-heavy pages | None — Chromium-only |
 | `Profiler.startPreciseCoverage`    | Track JS code coverage     | Identify dead code, measure test coverage       | `page.coverage.startJSCoverage()` — simpler, but also Chromium-only |
 | `CSS.startRuleUsageTracking`       | Track CSS rule usage       | Find unused CSS, optimize bundle size           | `page.coverage.startCSSCoverage()` — simpler, but also Chromium-only |
 | `Emulation.setGeolocationOverride` | Fake GPS coordinates       | Test location-based features                    | `context.setGeolocation()` — works on all 3 engines |
@@ -1278,7 +1278,7 @@ Section 5's XPath generator script is long enough that re-pasting it into a fres
 
 ### Hand-Rolling the Retry Loop — Understanding Playwright's Own Mechanism by Rebuilding It
 
-Ch01 and [Ch08 Section 9](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md#9-actionability-checks--what-playwright-does-before-every-action) describe Playwright's built-in polling/actionability retry loop from the outside. Writing the same shape of loop yourself, directly in the console, against a real element, is the fastest way to actually understand what it's doing rather than trusting the description:
+Ch01 and [Ch08 Section 9](../02_Test_Architecture/08_Browser_Internals_for_SDETs.md#9-actionability-checks--what-playwright-does-before-every-action) describe Playwright's built-in polling/actionability retry loop from the outside. Writing the same shape of loop yourself, directly in the console, against a real element, is the fastest way to actually understand what it's doing rather than trusting the description:
 
 ```javascript
 // A hand-rolled version of what expect(locator).toHaveText() does internally:
