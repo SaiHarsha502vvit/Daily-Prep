@@ -12,7 +12,7 @@
 > |---|---|
 > | [`01_Foundations/`](./01_Foundations/README.md) | 00–04, 55, 56 |
 > | [`02_Test_Architecture/`](./02_Test_Architecture/README.md) | 05–09, 64 |
-> | [`03_Real_World_Scenarios/`](./03_Real_World_Scenarios/README.md) | 28, 30, 31, 41, 42, 49, 50, 57, 58, 61, 67 |
+> | [`03_Real_World_Scenarios/`](./03_Real_World_Scenarios/README.md) | 28, 30, 31, 41, 42, 49, 50, 57, 58, 61, 67, 68 |
 > | [`04_Cross_Site_Patterns_And_D365/`](./04_Cross_Site_Patterns_And_D365/README.md) | 10–17 |
 > | [`05_Enterprise_Framework/`](./05_Enterprise_Framework/README.md) | 18, 21–24, 27, 44, 63 |
 > | [`06_CI_CD_And_Reliability/`](./06_CI_CD_And_Reliability/README.md) | 25, 26, 43, 47, 48, 51, 54, 59, 62, 65 |
@@ -116,6 +116,7 @@
 | 65     | [Chaos Engineering for Playwright — Fault Injection, Not Fixed Scenarios](./06_CI_CD_And_Reliability/65_Chaos_Engineering_For_Playwright.md)                                                    | 90 min | **Steady-state hypothesis harness, mid-flight network partition, chaos-proxy API degradation, simulated browser crash via CDP** | Ch08, Ch61, Ch26                      |
 | 66     | [Senior SDET Decision-Making — Deriving the Reasoning, Not Just the Labels](./08_SDET_to_SDE_Bridge/66_Senior_SDET_Decision_Making.md)                                                    | 90 min | **Risk-based prioritization quadrant, automate/don't-automate inequality, a real ADR walked as a cost/benefit case study, the RFC template derived section-by-section** | Ch00, Ch62, career/                   |
 | 67     | [Payment Gateway Testing — Hosted Fields, 3-D Secure, Idempotency, Webhooks & Money](./03_Real_World_Scenarios/67_Payment_Gateway_Testing.md) | 90 min | **Cross-origin card iframes via frameLocator, nested 3DS challenge, idempotency (assert charges not requests), webhook signature matrix verified against Stripe's SDK, minor-unit rounding** | Ch42, Ch57, Ch30 |
+| 68     | [Consent Banners, Overlays & CAPTCHA](./03_Real_World_Scenarios/68_Consent_Overlays_And_CAPTCHA.md) | 60 min | **`page.addLocatorHandler` and its non-dismissing-handler trap, pre-seeded consent, GDPR no-tracking-before-consent tests, CAPTCHA test keys verified against live siteverify endpoints** | Ch26, Ch57, Ch16 |
 
 **Bolded chapters** = Advanced content built on your real codebase.
 **Ch33–36** = Read alongside the corresponding guide folder (DSA, OOP, TypeScript) for maximum cross-pollination.

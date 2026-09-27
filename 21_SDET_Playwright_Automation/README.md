@@ -65,10 +65,11 @@ The flows that real products have and toy tutorials skip.
 | 5 | [Ch57 Login: OAuth, SAML, MFA/TOTP, OTP, passkeys](./03_Real_World_Scenarios/57_Login_Taxonomy_OAuth_OIDC_SAML_MFA_mTLS.md) | Every login you'll meet, including OTP and WebAuthn |
 | 6 | [Ch50 Email Testing](./03_Real_World_Scenarios/50_Email_Service_Testing.md) | Verification emails, magic links, OTP by email |
 | 7 | [Ch58 File Uploads & Downloads](./03_Real_World_Scenarios/58_File_Uploads_Downloads.md) | Uploads, downloads, CSV/PDF assertions |
-| 8 | [Ch61 Emulation: Clock, Network & Devices](./03_Real_World_Scenarios/61_Emulation_Clock_Network_And_Devices.md) | Fake time, offline, geolocation, mobile |
+| 8 | [Ch61 Emulation: Clock, Network & Devices](./03_Real_World_Scenarios/61_Emulation_Clock_Network_And_Devices.md) | Fake time, offline, geolocation, mobile, fake camera/mic, push notifications |
 | 9 | [Ch41 GraphQL & WebSockets](./03_Real_World_Scenarios/41_GraphQL_WebSocket_Testing.md) | Real-time and single-endpoint APIs |
 | 10 | [Ch49 Feature Flags](./03_Real_World_Scenarios/49_Feature_Flag_Testing.md) | Testing both sides of a flag |
-| 11 | [Ch67 Payment Gateways](./03_Real_World_Scenarios/67_Payment_Gateway_Testing.md) | Card iframes, 3-D Secure, idempotency, webhooks, money |
+| 11 | [Ch67 Payment Gateways](./03_Real_World_Scenarios/67_Payment_Gateway_Testing.md) | Card iframes, 3-D Secure, idempotency, webhooks, money, PayPal-style popups, Apple/Google Pay |
+| 12 | [Ch68 Consent Banners, Overlays & CAPTCHA](./03_Real_World_Scenarios/68_Consent_Overlays_And_CAPTCHA.md) | `addLocatorHandler`, GDPR consent tests, CAPTCHA test keys |
 
 ### Stage 4 — Cross-Site Patterns & a Dynamics 365 Case Study · [`04_Cross_Site_Patterns_And_D365/`](./04_Cross_Site_Patterns_And_D365/README.md)
 Six patterns for flows that span apps, tabs, users and domains, then applying everything to a hard enterprise UI.
@@ -117,7 +118,11 @@ Quizzes and a 10-week practice plan. Pair with the graded [`challenges/`](./chal
 | --- | --- |
 | Fix a flaky test | [Ch26](./06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md), then [Ch55 Trace Viewer](./01_Foundations/55_Inspector_TraceViewer_UIMode_Walkthrough.md) |
 | Test a login with MFA, OTP or a passkey | [Ch57](./03_Real_World_Scenarios/57_Login_Taxonomy_OAuth_OIDC_SAML_MFA_mTLS.md) |
-| Test a checkout / payment | [Ch67](./03_Real_World_Scenarios/67_Payment_Gateway_Testing.md) |
+| Test a checkout / payment (cards, PayPal, Apple/Google Pay) | [Ch67](./03_Real_World_Scenarios/67_Payment_Gateway_Testing.md) |
+| Get past a cookie banner or surprise pop-up | [Ch68](./03_Real_World_Scenarios/68_Consent_Overlays_And_CAPTCHA.md) §2–3 |
+| Test a form protected by CAPTCHA | [Ch68](./03_Real_World_Scenarios/68_Consent_Overlays_And_CAPTCHA.md) §5 |
+| Test camera, microphone or push notifications | [Ch61](./03_Real_World_Scenarios/61_Emulation_Clock_Network_And_Devices.md) §5b |
+| Find a row in a huge / virtualised grid, or an infinite feed | [Ch64](./02_Test_Architecture/64_Dynamic_Locators_And_Data_Structures_In_POMs.md) §6 |
 | Wait for a slow backend job | [Ch42](./03_Real_World_Scenarios/42_Polling_Async_Data_Patterns.md) |
 | Upload or download a file | [Ch58](./03_Real_World_Scenarios/58_File_Uploads_Downloads.md) |
 | Mock an API or force an error state | [Ch31](./03_Real_World_Scenarios/31_API_Mocking_page_route.md) |
@@ -152,6 +157,6 @@ Quizzes and a 10-week practice plan. Pair with the graded [`challenges/`](./chal
 | CI/CD beyond Playwright | [`22_DevOps/`](../22_DevOps/) |
 | Mobile / Appium | [`23_Mobile_Dev_And_Testing/`](../23_Mobile_Dev_And_Testing/) |
 
-**Not yet covered (known gaps):** CAPTCHA strategy, camera/microphone *content* via fake media streams (permission grant/deny itself is in [Ch61 §5](./03_Real_World_Scenarios/61_Emulation_Clock_Network_And_Devices.md)), push-notification delivery, cookie-consent banners, virtualised/infinite-scroll lists, wallet and redirect payments (PayPal, Apple/Google Pay), cloud device farms, and screen-reader (NVDA/JAWS) automation. Also covered elsewhere: OpenTelemetry in [`framework/utilities/api/TELEMETRY_README.md`](./framework/utilities/api/TELEMETRY_README.md), test impact analysis in Ch48 §11, property-based testing in Ch34 §11.
+**Not yet covered (known gaps):** cloud device farms (BrowserStack, Sauce Labs) and screen-reader (NVDA/JAWS) automation — both deliberately out of scope. Also covered elsewhere: OpenTelemetry in [`framework/utilities/api/TELEMETRY_README.md`](./framework/utilities/api/TELEMETRY_README.md), test impact analysis in Ch48 §11, property-based testing in Ch34 §11.
 
 Module governance (audits, link-repair history) lives in [`_meta/`](./_meta/).

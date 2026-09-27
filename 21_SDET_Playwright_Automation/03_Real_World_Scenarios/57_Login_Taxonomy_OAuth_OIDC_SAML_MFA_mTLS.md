@@ -258,6 +258,8 @@ await page.fill("#mfaCode", await generateFreshTotp(envConfig.mfa.totpSecret));
 - **Push notifications** (Duo, Microsoft Authenticator push). You can't fake those — they require a real device decision. Either disable push for the test user, or use a real test device with the IdP's mock-push feature.
 - **WebAuthn / Passkeys** — *do* automate these, but not by stubbing `navigator.credentials` with `addInitScript` (fragile, and it tests your stub rather than the ceremony). Chromium ships a **virtual authenticator**; see §6.1.
 
+- **CAPTCHA on the login or sign-up form** — don't try to solve it; configure the vendor's published test keys in the test environment, and test that the *server* rejects a missing token. See [Ch68 §5](./68_Consent_Overlays_And_CAPTCHA.md).
+
 ### 6.1 WebAuthn / passkeys — Chromium's virtual authenticator
 
 Passkeys are routinely described as untestable. They aren't: Chromium exposes a

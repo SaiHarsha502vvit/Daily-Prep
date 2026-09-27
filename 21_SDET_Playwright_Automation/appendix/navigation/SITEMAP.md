@@ -33,7 +33,7 @@ Chapter numbers are permanent IDs, not reading order; each stage's `README.md` g
 | --- | --- | --- |
 | [`01_Foundations/`](../../01_Foundations/README.md) | Ch00–04, 55, 56 | SDET mindset, first test, Playwright basics, locators, JS/TS, browser console, Trace Viewer, config |
 | [`02_Test_Architecture/`](../../02_Test_Architecture/README.md) | Ch05–09, 64 | POM, fixtures, `test.step` structure, browser internals, parallel workers, dynamic locators |
-| [`03_Real_World_Scenarios/`](../../03_Real_World_Scenarios/README.md) | Ch28, 30, 31, 41, 42, 49, 50, 57, 58, 61, 67 | Mocking, async polling, test data, DB checks, logins (OAuth/SAML/MFA/OTP/passkeys), email, files, emulation, GraphQL/WebSocket, feature flags, payments |
+| [`03_Real_World_Scenarios/`](../../03_Real_World_Scenarios/README.md) | Ch28, 30, 31, 41, 42, 49, 50, 57, 58, 61, 67, 68 | Mocking, async polling, test data, DB checks, logins (OAuth/SAML/MFA/OTP/passkeys), email, files, emulation (incl. camera/mic, push), GraphQL/WebSocket, feature flags, payments & wallets, consent banners & CAPTCHA |
 | [`04_Cross_Site_Patterns_And_D365/`](../../04_Cross_Site_Patterns_And_D365/README.md) | Ch10–17 | Six cross-site patterns + a Dynamics 365 case study |
 | [`05_Enterprise_Framework/`](../../05_Enterprise_Framework/README.md) | Ch18, 21–24, 27, 44, 63 | Project structure, factories, HTTP layer, API client library, Mega POM, advanced TS, static analysis |
 | [`06_CI_CD_And_Reliability/`](../../06_CI_CD_And_Reliability/README.md) | Ch25, 26, 43, 47, 48, 51, 54, 59, 62, 65 | CI/CD, Docker, flakiness, war stories, sharding, reporting, secrets, synthetics, test operations, chaos |

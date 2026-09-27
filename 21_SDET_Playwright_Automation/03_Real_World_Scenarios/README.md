@@ -2,7 +2,7 @@
 
 **Navigation**: [← Stage 2 — Test Architecture](../02_Test_Architecture/README.md) | [Module front door](../README.md) | [Stage 4 — Cross-Site Patterns & a Dynamics 365 Case Study →](../04_Cross_Site_Patterns_And_D365/README.md)
 
-The flows real products have and tutorials skip: mocked and slow APIs, test data, database checks, every kind of login (OAuth, SAML, MFA/TOTP, email/SMS OTP, passkeys), email, files, fake time and networks, WebSockets, feature flags, and payment gateways.
+The flows real products have and tutorials skip: mocked and slow APIs, test data, database checks, every kind of login (OAuth, SAML, MFA/TOTP, email/SMS OTP, passkeys), email, files, fake time and networks, camera/mic and push, WebSockets, feature flags, payment gateways and wallets, cookie consent, overlays and CAPTCHA.
 
 **After this stage you can:** Test the hard 20% of a real application — the parts that actually break in production.
 
@@ -21,5 +21,6 @@ The flows real products have and tutorials skip: mocked and slow APIs, test data
 | 9 | Ch41 | [41. GraphQL & WebSocket Testing with Playwright](./41_GraphQL_WebSocket_Testing.md) |
 | 10 | Ch49 | [49. Feature Flag Testing — When the App Has Two Behaviours and the Flag Decides](./49_Feature_Flag_Testing.md) |
 | 11 | Ch67 | [67. Payment Gateway Testing — Hosted Fields, 3-D Secure, Idempotency, Webhooks & Money](./67_Payment_Gateway_Testing.md) |
+| 12 | Ch68 | [68. Consent Banners, Overlays & CAPTCHA — The Things Standing Between Your Test and the App](./68_Consent_Overlays_And_CAPTCHA.md) |
 
 > Chapter numbers are permanent IDs used in cross-references ("see Ch42"), not reading order — follow the **Order** column. The full catalogue with reading times is in [`00_INDEX.md`](../00_INDEX.md).
