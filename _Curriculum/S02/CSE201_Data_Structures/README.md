@@ -12,7 +12,7 @@
 
 | Course                                                                       | Description |
 | ---------------------------------------------------------------------------- | ----------- |
-| **[CSE201 — Data Structures](CSE201_Data_Structures/README.md)**             | This course |
+| **[CSE201 — Data Structures](README.md)**                                   | This course |
 | **[CSE202 — Algorithms & Complexity](../CSE202_Algorithms_And_Complexity/README.md)** | S02 sibling — pairs week-by-week with this course |
 | **[CSE203 — Probability & Statistics](../CSE203_Probability_And_Statistics/README.md)** | S02 sibling |
 | **[CSE204 — Computer Architecture](../CSE204_Computer_Architecture/README.md)** | S02 sibling — explains the memory model DS depends on |
@@ -341,7 +341,7 @@ All problem sets live in [`02_Data_Structures/02_PROBLEM_SETS.md`](../../../02_D
 ## Exam Prep
 
 - [`00_CURRICULUM/EXAM_BANK.md`](../../../00_CURRICULUM/EXAM_BANK.md) — S02 section
-- [`02_Data_Structures/03_DSA_Deep_Reasoning.md`](../../../02_Data_Structures/03_DSA_Deep_Reasoning.md) — interview freeze moments
+- [`03_Algorithms/16_DSA_Deep_Reasoning.md`](../../../03_Algorithms/16_DSA_Deep_Reasoning.md) — interview freeze moments
 
 ## University Methodology Layer
 

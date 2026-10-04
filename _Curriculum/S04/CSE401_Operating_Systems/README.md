@@ -12,10 +12,10 @@
 
 | Course                                                                             | Description |
 | ---------------------------------------------------------------------------------- | ----------- |
-| **[CSE401 — Operating Systems](CSE401_Operating_Systems/README.md)**               | This course |
-| **[CSE402 — Computer Networks](CSE402_Computer_Networks/README.md)**               | S04 sibling |
-| **[CSE403 — Cryptography & Security](CSE403_Cryptography_And_Security/README.md)** | S04 sibling |
-| **[CSE404 — Information Retrieval](CSE404_Information_Retrieval/README.md)**       | S04 sibling |
+| **[CSE401 — Operating Systems](README.md)**                                      | This course |
+| **[CSE402 — Computer Networks](../CSE402_Computer_Networks/README.md)**               | S04 sibling |
+| **[CSE403 — Cryptography & Security](../CSE403_Cryptography_And_Security/README.md)** | S04 sibling |
+| **[CSE404 — Information Retrieval](../CSE404_Information_Retrieval/README.md)**       | S04 sibling |
 
 | Related Modules                                               | Cross-Reference                         |
 | ------------------------------------------------------------- | --------------------------------------- |
@@ -741,7 +741,7 @@ if (events[i].events & EPOLLIN) {
 
 | Day | Topic                                                             | Read                                                 | Do                                                                      |
 | --- | ----------------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------- |
-| 1   | cgroups v2 hierarchy — memory, CPU, I/O controllers               | `22_DevOps/03_Docker_Containers.md` §1-2             | List your current cgroups: `cat /sys/fs/cgroup/cgroup.controllers`      |
+| 1   | cgroups v2 hierarchy — memory, CPU, I/O controllers               | `13_Developer_Essentials/03_Docker_Containers.md` §1-2             | List your current cgroups: `cat /sys/fs/cgroup/cgroup.controllers`      |
 | 2   | Namespace types — PID, network, mount, user, UTS, IPC             | `13_Developer_Essentials/03_Docker_Containers.md` §3 | Run `unshare -p -f --mount-proc` and observe isolated PID namespace     |
 | 3   | Container memory limits — `memory.max`, `memory.high`, OOM events | `22_DevOps/01_DevOps_Advanced.md` §5                 | Trigger OOM in a container: `stress --vm 1 --vm-bytes 90%`              |
 | 4   | CPU cgroup — CPUacct, CFS bandwidth control, CPU throttle         | `13_Developer_Essentials/03_Docker_Containers.md` §2 | Measure: `docker run --cpus=0.5` actual CPU usage with `top`            |
@@ -802,7 +802,7 @@ The container runs a Node.js process with `--max-old-space-size=400m`. Under wha
 | --- | --------------------------------------------------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------- |
 | 1   | Privileged vs unprivileged — capability sets (CAP_SYS_ADMIN, etc.)    | `13_Developer_Essentials/08_Security_Fundamentals.md` | List your capabilities: `capsh --print`                               |
 | 2   | seccomp — whitelist syscalls, `SECCOMP_RET_ERRNO`                     | Linux `seccomp(2)` man page                           | Write: seccomp filter that allows only `read,write,exit,_exit`        |
-| 3   | Container vs VM security — side-channel attacks, hypervisor isolation | `22_DevOps/03_Docker_Containers.md` §4-5              | Draw: attack surface comparison table                                 |
+| 3   | Container vs VM security — side-channel attacks, hypervisor isolation | `13_Developer_Essentials/03_Docker_Containers.md` §4-5              | Draw: attack surface comparison table                                 |
 | 4   | Rootless containers — user namespaces, `newuidmap`                    | `13_Developer_Essentials/03_Docker_Containers.md` §6  | Run `docker --userns=host` and verify no CAP_SYS_ADMIN in container   |
 | 5   | Lab                                                                   | —                                                     | **Lab:** Build a minimal seccomp profile for nginx using `libseccomp` |
 | 6–7 | Review + Problem Set OS-PS14                                          | —                                                     | PS-14 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md`                |
@@ -1076,7 +1076,7 @@ User space
 | `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` | Goroutine scheduler model; compare with OS thread scheduler                 |
 | `07_Modern_Java/Ch18_JMM_GC_Deep.md`                          | JMM happens-before, volatile, synchronized — OS memory model applied to JVM |
 | `07_Modern_Java/07_CONCURRENCY_PROBLEM_SETS.md`               | Java concurrency problems — map to OS primitives                            |
-| `22_DevOps/03_Docker_Containers.md`                           | Container runtime; cgroup/namespace implementation                          |
+| `13_Developer_Essentials/03_Docker_Containers.md`                           | Container runtime; cgroup/namespace implementation                          |
 | `22_DevOps/01_DevOps_Advanced.md`                             | Memory limits, OOM, resource isolation in production                        |
 | `02_Data_Structures/01a_Memory_Foundations.md`                | Memory layout — prerequisite for paging                                     |
 | `02_Data_Structures/01d_Stack_Queue.md`                       | Queue — used in MLFQ, work queues, I/O scheduling                           |

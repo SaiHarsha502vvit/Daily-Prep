@@ -32,6 +32,21 @@ Study of the principles, architectures, and patterns that underpin modern distri
 | 11   | Distributed transactions: two-phase commit, three-phase commit, Sagas                       |
 | 12   | Capstone: design and implement a distributed e-commerce system with event sourcing and saga |
 
+## Chapters
+
+| # | Chapter |
+|---|---------|
+| [01](01_Fundamentals_Partial_Failure_Timing_Models.md) | Fundamentals: Partial Failure & Timing Models |
+| [02](02_CAP_Theorem_PACELC.md) | The CAP Theorem: Proof and Practical Trade-offs |
+| [03](03_Logical_Clocks_Lamport_Vector.md) | Logical Clocks: Lamport Timestamps & Vector Clocks |
+| [04](04_Consensus_Paxos.md) | Consensus I: The Paxos Algorithm |
+| [05](05_Consensus_Raft.md) | Consensus II: Raft |
+| [06](06_Replication_Strategies.md) | Replication Strategies |
+| [07](07_Partitioning_Consistent_Hashing.md) | Partitioning & Consistent Hashing |
+| [08](08_Distributed_Transactions_2PC_3PC.md) | Distributed Transactions: Two-Phase & Three-Phase Commit |
+
+Syllabus weeks 7–10 (event-driven architecture, DDD, event sourcing, sagas) have no chapter here — read [`10_Enterprise_Systems/09_Distributed_Patterns.md`](../../../10_Enterprise_Systems/09_Distributed_Patterns.md) and [`01b_DDD_Tactical_Patterns.md`](../../../10_Enterprise_Systems/01b_DDD_Tactical_Patterns.md).
+
 ## Linked Existing Content
 
 - [Enterprise Systems — Kafka, DDD, Saga, Event Sourcing](../../../10_Enterprise_Systems/)

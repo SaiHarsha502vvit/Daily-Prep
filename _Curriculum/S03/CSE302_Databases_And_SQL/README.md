@@ -56,7 +56,7 @@
 | 3   | GROUP BY + aggregates              | `08_SQL/06_Aggregations_GroupBy.md` §1-2              | Implement: count distinct users per day                  |
 | 4   | HAVING vs WHERE                    | `08_SQL/06_Aggregations_GroupBy.md` §3                | When can the same filter live in either?                 |
 | 5   | Lab + Review                       | —                                                     | **Lab:** Sales report by month + category                |
-| 6–7 | Problem Set SQL-PS1                | —                                                     | `08_SQL/00_PROBLEM_SETS.md` PS-1                         |
+| 6–7 | Problem Set SQL-PS1                | —                                                     | `08_SQL/08b_PROBLEM_SETS.md` PS-1                         |
 
 **Section Challenge (NULL trap):**
 
@@ -113,11 +113,11 @@ PRODUCTION REALITY:
 
 | Day | Topic                                  | Read                                              | Do                                                       |
 | --- | -------------------------------------- | ------------------------------------------------- | -------------------------------------------------------- |
-| 1   | INNER JOIN — the relational algebra basis | `08_SQL/07_Joins_Complete.md` §1-2          | Trace JOIN result manually for 2 small tables            |
-| 2   | LEFT/RIGHT OUTER JOIN                  | `08_SQL/07_Joins_Complete.md` §3                  | Find users with no orders using LEFT JOIN + IS NULL      |
-| 3   | FULL OUTER JOIN + SELF JOIN            | `08_SQL/07_Joins_Complete.md` §4-5                | Build org chart hierarchy via SELF JOIN                  |
-| 4   | Multi-table joins; join order matters? | `08_SQL/07_Joins_Complete.md` §6                  | Use EXPLAIN to verify optimizer pick                     |
-| 5–7 | Lab + Problem Set SQL-PS2              | —                                                 | `08_SQL/00_PROBLEM_SETS.md` PS-2                         |
+| 1   | INNER JOIN — the relational algebra basis | `08_SQL/07_JOINs_Complete.md` §1-2          | Trace JOIN result manually for 2 small tables            |
+| 2   | LEFT/RIGHT OUTER JOIN                  | `08_SQL/07_JOINs_Complete.md` §3                  | Find users with no orders using LEFT JOIN + IS NULL      |
+| 3   | FULL OUTER JOIN + SELF JOIN            | `08_SQL/07_JOINs_Complete.md` §4-5                | Build org chart hierarchy via SELF JOIN                  |
+| 4   | Multi-table joins; join order matters? | `08_SQL/07_JOINs_Complete.md` §6                  | Use EXPLAIN to verify optimizer pick                     |
+| 5–7 | Lab + Problem Set SQL-PS2              | —                                                 | `08_SQL/08b_PROBLEM_SETS.md` PS-2                         |
 
 #### Week 4 — Subqueries & EXISTS
 
@@ -141,7 +141,7 @@ PRODUCTION REALITY:
 | 2   | 1NF (atomic) → 2NF (full dependency) | `08_SQL/03_DataModeling_Schema.md` §3              | Find a 1NF violation in real data                        |
 | 3   | 3NF + BCNF                            | `08_SQL/03_DataModeling_Schema.md` §4              | Decompose a non-3NF table; verify no info loss           |
 | 4   | When to denormalize                   | `08_SQL/03_DataModeling_Schema.md` §5              | Identify 3 cases where denorm is correct                 |
-| 5–7 | Lab + Problem Set SQL-PS3             | —                                                 | `08_SQL/00_PROBLEM_SETS.md` PS-3                         |
+| 5–7 | Lab + Problem Set SQL-PS3             | —                                                 | `08_SQL/08b_PROBLEM_SETS.md` PS-3                         |
 
 #### Week 6 — Primary Keys, Foreign Keys, Constraints
 
@@ -165,7 +165,7 @@ PRODUCTION REALITY:
 | 2   | EXPLAIN — reading the plan            | `08_SQL/11_QueryOptimization.md` §1-2              | Run EXPLAIN on 5 queries; predict the plan first         |
 | 3   | Composite index column order         | `08_SQL/11_QueryOptimization.md` §3                | Why does `(a, b)` index NOT serve `WHERE b = ?`?         |
 | 4   | Covering indexes (include columns)   | `08_SQL/11_QueryOptimization.md` §4                | Convert an Index Scan + Heap Fetch to Index-Only Scan    |
-| 5–7 | Lab + Problem Set SQL-PS4            | —                                                 | `08_SQL/00_PROBLEM_SETS.md` PS-4                         |
+| 5–7 | Lab + Problem Set SQL-PS4            | —                                                 | `08_SQL/08b_PROBLEM_SETS.md` PS-4                         |
 
 #### Week 8 — Non-B-Tree Indexes
 
@@ -193,7 +193,7 @@ PRODUCTION REALITY:
 | 2   | Read Uncommitted → Serializable       | `08_SQL/14_TransactionsACID_Complete.md` §3      | Demo each anomaly: dirty, non-repeatable, phantom        |
 | 3   | MVCC and snapshot isolation          | `08_SQL/14_TransactionsACID_Complete.md` §4      | Why PostgreSQL uses MVCC; tradeoffs                      |
 | 4   | Lost update — the most common bug    | `08_SQL/14_TransactionsACID_Complete.md` §5      | Reproduce + fix with SELECT FOR UPDATE                   |
-| 5–7 | Lab + Problem Set SQL-PS5            | —                                                 | `08_SQL/00_PROBLEM_SETS.md` PS-5                         |
+| 5–7 | Lab + Problem Set SQL-PS5            | —                                                 | `08_SQL/08b_PROBLEM_SETS.md` PS-5                         |
 
 #### Week 11 — Locks, Deadlocks, Connection Pools
 
@@ -239,7 +239,7 @@ PRODUCTION REALITY:
 
 ## Problem Sets
 
-[`08_SQL/00_PROBLEM_SETS.md`](../../../08_SQL/00_PROBLEM_SETS.md) — comprehensive practice across all units.
+[`08_SQL/08b_PROBLEM_SETS.md`](../../../08_SQL/08b_PROBLEM_SETS.md) — comprehensive practice across all units.
 
 ## Exam Prep
 

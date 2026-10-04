@@ -1,8 +1,8 @@
 # CSE402 — Computer Networks
 
 > **Part of:** [Semester 4 (S04)](../README.md) — Systems & Networking  
-> **Prerequisite:** [Semester 3 (S03)](../S03/README.md) — Data Structures, Algorithms, Operating Systems  
-> **Cross-references:** [Linux CLI & Shell](../../../13_Developer_Essentials/02_Linux_CLI_Shell.md), [DevOps](../S05/CSE501_DevOps/), [Enterprise Java](../../../07_Modern_Java/), [Microservices](../S05/CSE501_DevOps/20_Enterprise_Microservices/)
+> **Prerequisite:** [Semester 3 (S03)](../../S03/README.md) — OOP, Databases, Theory of Computation, Numerical Methods  
+> **Cross-references:** [Linux CLI & Shell](../../../13_Developer_Essentials/02_Linux_CLI_Shell.md), [DevOps](../../S06/CSE603_DevOps_And_CICD/README.md), [Enterprise Java](../../../07_Modern_Java/), [Microservices](../../S06/CSE601_Spring_Boot_And_Microservices/README.md)
 
 ---
 
@@ -985,7 +985,7 @@ server {
 
 | Prev                           | Course                       | Next                                                                            |
 | ------------------------------ | ---------------------------- | ------------------------------------------------------------------------------- |
-| [S03 README](../S03/README.md) | Semester 3 — DSA, OS, Java   | [CSE401 Operating Systems](../CSE401_Operating_Systems/README.md)               |
+| [S03 README](../../S03/README.md) | Semester 3 — OOP, DB, Theory, Numerics | [CSE401 Operating Systems](../CSE401_Operating_Systems/README.md)               |
 | —                              | [S04 Overview](../README.md) | [CSE403 Cryptography & Security](../CSE403_Cryptography_And_Security/README.md) |
 | —                              | [S04 Overview](../README.md) | [CSE404 Information Retrieval](../CSE404_Information_Retrieval/README.md)       |
 

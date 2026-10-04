@@ -21,14 +21,19 @@ Numerical Methods provides the mathematical and algorithmic tools to solve real-
 - **Unit 5:** Numerical Differentiation & Integration — Taylor series, Simpson's rule, Gaussian quadrature
 - **Unit 6:** ODEs/PDEs — Euler's method, Runge-Kutta, finite difference methods
 
-## Existing Content
+## Chapters
 
-> **TBD — Phase 3** — No existing content linked yet. This shell is scaffolded for Phase 3 content development.
-
-## Subdirectories
-
-- `lectures/` — Topic-by-topic lecture notes
-- `labs/` — Implementation exercises in Python/NumPy
-- `assignments/` — Problem sets with mathematical and coding components
-- `projects/` — Capstone: numerical simulation or optimization project
-- `rubrics/` — Grading criteria for all deliverables
+| # | Chapter |
+|---|---------|
+| [01](01_Floating_Point_Error_Analysis.md) | Floating Point Arithmetic and Error Analysis |
+| [02](02_Root_Finding.md) | Root Finding |
+| [03](03_Linear_Systems_Direct.md) | Linear Systems: Direct Methods |
+| [04](04_Linear_Systems_Iterative.md) | Linear Systems: Iterative Methods |
+| [05](05_Polynomial_Interpolation.md) | Polynomial Interpolation |
+| [06](06_Least_Squares.md) | Least Squares and Curve Fitting |
+| [07](07_Numerical_Differentiation.md) | Numerical Differentiation |
+| [08](08_Numerical_Integration.md) | Numerical Integration (Quadrature) |
+| [09](09_ODE_Initial_Value.md) | ODEs: Initial Value Problems |
+| [10](10_ODE_Boundary_Value.md) | ODEs: Boundary Value Problems |
+| [11](11_Eigenvalue_Problems.md) | Eigenvalue Problems |
+| [12](12_FFT_Applications.md) | FFT and Applications |

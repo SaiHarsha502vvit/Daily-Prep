@@ -31,6 +31,17 @@ Study of the principles and practices of human-computer interaction (HCI). Cover
 | 10   | Usability testing: test plans, think-aloud protocol, SUS questionnaire, severity scoring     |
 | 11   | Capstone: conduct a full usability study and accessibility audit on an existing application  |
 
+## Chapters
+
+| # | Chapter |
+|---|---------|
+| [01](01_HCI_Foundations_Fitts_Hick_Cognitive_Load.md) | HCI Foundations: Fitts's Law, Hick's Law & the Limits of Pure Decision Models |
+| [02](02_User_Centered_Design_Process.md) | The User-Centered Design Process |
+| [03](03_Usability_Heuristics_And_Evaluation.md) | Usability Heuristics & Evaluation |
+| [04](04_Accessibility_POUR_Framework.md) | Accessibility: The POUR Framework |
+| [05](05_Prototyping_Methods.md) | Prototyping Methods |
+| [06](06_Usability_Testing_And_Measurement.md) | Usability Testing & Measurement |
+
 ## Linked Existing Content
 
 - [React & Frontend Architecture](../../../15_React_Frontend/)

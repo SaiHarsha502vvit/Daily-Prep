@@ -23,14 +23,15 @@ Information Retrieval is the science of finding relevant information in large do
 - **Unit 6:** Text Processing — Tokenization, stemming (Porter, Snowball), lemmatization, POS tagging
 - **Unit 7:** Modern IR — Dense retrieval, sentence transformers, cross-encoders, RAG introduction
 
-## Existing Content
+## Chapters
 
-> **TBD — Phase 3** — No existing content linked yet. This shell is scaffolded for Phase 3 content development.
-
-## Subdirectories
-
-- `lectures/` — Topic-by-topic lecture notes
-- `labs/` — Hands-on IR labs: build a search engine from scratch
-- `assignments/` — Graded retrieval model implementation and evaluation tasks
-- `projects/` — Capstone: implement a search engine or recommendation system
-- `rubrics/` — Grading criteria for all deliverables
+| # | Chapter |
+|---|---------|
+| [01](01_Boolean_Retrieval_Inverted_Index.md) | Boolean Retrieval & the Inverted Index |
+| [02](02_Dictionaries_Wildcards_Spelling_Correction.md) | Dictionaries, Wildcard Queries & Spelling Correction |
+| [03](03_Vector_Space_Model_TFIDF.md) | The Vector Space Model & TF-IDF |
+| [04](04_BM25_Language_Models.md) | Probabilistic Retrieval: BM25 & Language Models |
+| [05](05_Link_Analysis_PageRank.md) | Link Analysis & PageRank |
+| [06](06_Evaluating_IR_Systems.md) | Evaluating IR Systems |
+| [07](07_Text_Preprocessing.md) | Text Preprocessing for IR |
+| [08](08_Dense_Retrieval_RAG.md) | Modern Dense Retrieval & RAG |

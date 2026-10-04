@@ -32,6 +32,19 @@ An advanced algorithms course covering topics typically reserved for graduate st
 | 11   | Parameterized complexity: kernelization, fixed-parameter algorithms, treewidth applications             |
 | 12   | Capstone: competitive programming problem set + algorithm portfolio documentation                       |
 
+## Chapters
+
+| # | Chapter |
+|---|---------|
+| [01](01_SCC_Tarjan_Johnsons_Shortest_Paths.md) | Strongly Connected Components & Johnson's All-Pairs Shortest Paths |
+| [02](02_Maximum_Flow_Ford_Fulkerson_Dinic.md) | Maximum Flow: Ford-Fulkerson, Edmonds-Karp, Dinic's Algorithm |
+| [03](03_Matchings_Bipartite_Hungarian.md) | Matchings: Bipartite Matching, Hall's Theorem, and the Hungarian Algorithm |
+| [04](04_Linear_Programming_Simplex_Duality.md) | Linear Programming: Simplex and Duality |
+| [05](05_ILP_Branch_And_Bound_Cutting_Planes.md) | Integer Linear Programming: Branch and Bound, Cutting Planes |
+| [06](06_PTAS_FPTAS.md) | Approximation Schemes: PTAS and FPTAS |
+| [07](07_Kargers_MinCut_Chernoff_Bounds.md) | Karger's Min-Cut & Concentration Inequalities: Chernoff Bounds |
+| [08](08_Parameterized_Complexity_FPT_Kernelization.md) | Parameterized Complexity: Fixed-Parameter Tractability, Kernelization, and W[1]-Hardness |
+
 ## Linked Existing Content
 
 - [Algorithms — Advanced sections](../../../03_Algorithms/)

@@ -44,11 +44,24 @@ The student who skips this course CAN write code, but every claim they make abou
 
 ---
 
-## Content Status
+## Chapter Index
 
-🟡 **Tier B — Wrapper + Partial Existing Content**
+| # | Chapter | Weeks |
+|---|---------|-------|
+| [01](01_Propositional_Logic.md) | Propositional Logic | 1 |
+| [02](02_Predicate_Logic_Quantifiers.md) | Predicate Logic & Quantifiers | 2 |
+| [03](03_Proof_Techniques.md) | Proof Techniques | 3 |
+| [04](04_Induction_Variants.md) | Mathematical Induction | 4 |
+| [05](05_Sets_Operations.md) | Sets & Operations | 5 |
+| [06](06_Relations_Properties.md) | Relations & Properties | 6 |
+| [07](07_Functions_Properties.md) | Functions & Properties | 7 |
+| [08](08_Counting_Combinatorics.md) | Counting & Combinatorics | 8 |
+| [09](09_Pigeonhole_Principle.md) | Pigeonhole Principle | 9 |
+| [10](10_Recurrence_Relations.md) | Recurrence Relations | 10 |
+| [11](11_Graph_Theory_Foundations.md) | Graph Theory Foundations | 11–14 |
+| [12](12_Boolean_Algebra_Circuits.md) | Boolean Algebra & Circuits | 15 |
 
-This course has NO standalone chapter files yet. Graph theory exists scattered in `03_Algorithms/05c_Graphs_Fundamentals.md`. Combinatorics primer exists in `03_Algorithms/A2_Complexity_FirstPrinciples.md`. The week plan below references those EXISTING chapters where applicable AND marks topics needing future bridging chapters with **🚧 (chapter to be authored)** so future sessions can populate them.
+Every chapter includes a Section Challenge; Ch01–Ch04 also have Practice Problems.
 
 ---
 
@@ -74,12 +87,12 @@ With 3 boolean variables there are 2³ = 8 rows. The table is the GROUND TRUTH o
 
 | Day | Topic                                | Read                                              | Do                                                                  |
 | --- | ------------------------------------ | ------------------------------------------------- | ------------------------------------------------------------------- |
-| 1   | Propositions, connectives (¬ ∧ ∨ → ↔) | 🚧 Discrete Math Ch01 — to be authored          | Translate 20 English statements; mark which connective                |
-| 2   | Truth tables, tautologies, contradictions | 🚧 Discrete Math Ch01 §2                       | Verify De Morgan's laws by truth table                              |
-| 3   | Logical equivalences                  | 🚧 Discrete Math Ch01 §3                          | Simplify (P → Q) ∧ (¬P → Q) to "Q"                                |
-| 4   | Implications: converse, inverse, contrapositive | 🚧 Discrete Math Ch01 §4                  | For "if it rains then ground is wet": state the contrapositive       |
+| 1   | Propositions, connectives (¬ ∧ ∨ → ↔) | [Ch01](01_Propositional_Logic.md) §1–3                                      | Translate 20 English statements; mark which connective                |
+| 2   | Truth tables, tautologies, contradictions | [Ch01](01_Propositional_Logic.md) §4–5                                  | Verify De Morgan's laws by truth table                              |
+| 3   | Logical equivalences                  | [Ch01](01_Propositional_Logic.md) §6                                     | Simplify (P → Q) ∧ (¬P → Q) to "Q"                                |
+| 4   | Implications: converse, inverse, contrapositive | [Ch01](01_Propositional_Logic.md) §7                             | For "if it rains then ground is wet": state the contrapositive       |
 | 5   | Lab — code conditional simplification  | —                                                 | **Lab:** Refactor 5 messy if-statements using De Morgan + simplification |
-| 6–7 | Review + Problem Set DM-PS1            | —                                                 | 🚧 to be authored — provisional: 20 logic puzzles                    |
+| 6–7 | Review + Problem Set DM-PS1            | —                                                 | [Ch01](01_Propositional_Logic.md) Section Challenge + Practice Problems                          |
 
 **Section Challenge (Contrapositive vs Inverse):**
 
@@ -148,7 +161,7 @@ REAL-WORLD ECHO:
 
 The quantifiers ∀ ("for all") and ∃ ("there exists") aren't abstract — they're literally the operators every database, every test framework, every type checker uses.
 
-**Topic:** Universal vs existential quantifiers, scope, nested quantifiers, negation of quantifiers (`¬∀x.P(x) ≡ ∃x.¬P(x)`), free vs bound variables. 🚧 chapter to be authored.
+**Topic:** Universal vs existential quantifiers, scope, nested quantifiers, negation of quantifiers (`¬∀x.P(x) ≡ ∃x.¬P(x)`), free vs bound variables. Read [Ch02](02_Predicate_Logic_Quantifiers.md).
 
 **Aha moment to chase:** "Every student has a favorite subject" vs "There is one favorite subject every student loves" — same English template, very different logic. ∀x.∃y. vs ∃y.∀x.
 
@@ -164,7 +177,7 @@ The quantifiers ∀ ("for all") and ∃ ("there exists") aren't abstract — the
 
 Mathematical proofs ARE structured arguments. You're already used to following them on TV; now you formalize the structure.
 
-🚧 Chapter to be authored. Topics: direct proof, proof by cases, contradiction, contrapositive, counterexample.
+Read [Ch03](03_Proof_Techniques.md): direct proof, proof by cases, contradiction, contrapositive, counterexample.
 
 ---
 
@@ -179,11 +192,11 @@ If either part fails (no first push, or some gap between dominoes), the chain br
 
 | Day | Topic                                | Read                                              | Do                                                                  |
 | --- | ------------------------------------ | ------------------------------------------------- | ------------------------------------------------------------------- |
-| 1   | Weak induction                        | 🚧 Discrete Math Ch04 §1                          | Prove: 1+2+...+n = n(n+1)/2                                          |
-| 2   | Strong induction                      | 🚧 Discrete Math Ch04 §2                          | Prove: every n ≥ 12 cents can be made from 4¢ and 5¢ stamps          |
-| 3   | Structural induction (preview)        | 🚧 Discrete Math Ch04 §3                          | Prove: a binary tree of height h has ≤ 2^(h+1) - 1 nodes             |
-| 4   | When induction fails (off-by-one trap) | 🚧 Discrete Math Ch04 §4                          | Find the bug in a "proof" that all horses are the same color         |
-| 5–7 | Review + Problem Set DM-PS4           | —                                                 | 🚧 to be authored                                                    |
+| 1   | Weak induction                        | [Ch04](04_Induction_Variants.md) §2                                     | Prove: 1+2+...+n = n(n+1)/2                                          |
+| 2   | Strong induction                      | [Ch04](04_Induction_Variants.md) §3                                     | Prove: every n ≥ 12 cents can be made from 4¢ and 5¢ stamps          |
+| 3   | Structural induction (preview)        | [Ch04](04_Induction_Variants.md) §4                                     | Prove: a binary tree of height h has ≤ 2^(h+1) - 1 nodes             |
+| 4   | When induction fails (off-by-one trap) | [Ch04](04_Induction_Variants.md) §5                                     | Find the bug in a "proof" that all horses are the same color         |
+| 5–7 | Review + Problem Set DM-PS4           | —                                                 | [Ch04](04_Induction_Variants.md) Section Challenge + Practice Problems                          |
 
 **Section Challenge (the classic horses-fallacy):**
 
@@ -250,9 +263,9 @@ Sets aren't abstract — they're how your brain already organizes the world.
 
 | Week | Topic                                                                                            |
 | ---- | ------------------------------------------------------------------------------------------------ |
-| 5    | Set operations (∪ ∩ \ ×), Venn diagrams, power sets — 🚧 chapter to be authored                    |
-| 6    | Relations: properties (reflexive, symmetric, transitive), equivalence relations — 🚧 to be authored |
-| 7    | Functions: injective/surjective/bijective, inverse, composition — 🚧 to be authored                |
+| 5    | Set operations (∪ ∩ \ ×), Venn diagrams, power sets — [Ch05](05_Sets_Operations.md)                    |
+| 6    | Relations: properties (reflexive, symmetric, transitive), equivalence relations — [Ch06](06_Relations_Properties.md) |
+| 7    | Functions: injective/surjective/bijective, inverse, composition — [Ch07](07_Functions_Properties.md)                |
 
 **Aha link:** Equivalence relations literally define equality in your codebase. Java's `equals()` MUST be reflexive, symmetric, and transitive — that's the contract. When you override it incorrectly (forget transitivity), `HashMap` breaks. This is the mathematical reason for the contract.
 
@@ -266,9 +279,9 @@ Sets aren't abstract — they're how your brain already organizes the world.
 
 | Week | Topic                                                                                              |
 | ---- | -------------------------------------------------------------------------------------------------- |
-| 8    | Permutations + combinations, multinomial, Pascal's triangle — 🚧 chapter to be authored             |
-| 9    | Pigeonhole principle (simple + generalized) — 🚧 chapter; also see `03_Algorithms/A3_Lower_Bounds_And_NP.md` §1 for hashing application |
-| 10   | Recurrence relations, generating functions intro — also see `03_Algorithms/A2_Complexity_FirstPrinciples.md` §2 (Master Theorem) |
+| 8    | Permutations + combinations, multinomial, Pascal's triangle — [Ch08](08_Counting_Combinatorics.md)             |
+| 9    | Pigeonhole principle (simple + generalized) — [Ch09](09_Pigeonhole_Principle.md); also see `03_Algorithms/A3_Lower_Bounds_And_NP.md` §1 for hashing application |
+| 10   | Recurrence relations — [Ch10](10_Recurrence_Relations.md) (generating functions not covered); also see `03_Algorithms/A2_Complexity_FirstPrinciples.md` §2 (Master Theorem) |
 
 **Section Challenge (Pigeonhole power):**
 
@@ -327,8 +340,8 @@ THE PIGEONHOLE TRICK IN ALGORITHMS:
 | ---- | -------------------------------------------------- | --------------------------------------------------- |
 | 11   | Graph terminology, representations                  | `03_Algorithms/05c_Graphs_Fundamentals.md` §1       |
 | 12   | Paths, cycles, connectivity, trees as special graphs | `03_Algorithms/05c_Graphs_Fundamentals.md` §2-3   |
-| 13   | Euler + Hamiltonian paths, bipartite graphs         | 🚧 chapter to be authored                            |
-| 14   | Planarity, graph coloring, applications             | 🚧 chapter to be authored                            |
+| 13   | Euler + Hamiltonian paths, bipartite graphs         | [Ch11](11_Graph_Theory_Foundations.md) (Euler, bipartite; Hamiltonian not covered) |
+| 14   | Planarity, graph coloring, applications             | [Ch11](11_Graph_Theory_Foundations.md) §Graph Coloring                         |
 
 ---
 
@@ -340,7 +353,7 @@ THE PIGEONHOLE TRICK IN ALGORITHMS:
 - NOT gate: a switch that INVERTS its input
 - Every digital circuit, every CPU, every memory cell is built from these primitives.
 
-🚧 chapter to be authored. Topics: minimization, Karnaugh maps, CNF/DNF, SAT problem preview.
+Read [Ch12](12_Boolean_Algebra_Circuits.md): minimization, Karnaugh maps, CNF/DNF, SAT problem preview.
 
 ---
 
@@ -366,34 +379,15 @@ At least 3 must be from computer science:
 
 ## Problem Sets
 
-🚧 To be authored (provisionally `00_CURRICULUM/EXAM_BANK.md` S01 Discrete Math section).
+Each chapter's Section Challenge (Ch01–Ch04 also have Practice Problems) — see the Chapter Index above.
 
 ## Where The Math Lives
 
-Even though the standalone Discrete Math chapters aren't authored yet, real working examples of these principles are scattered across the existing curriculum. Cross-references for self-study:
+Real working examples of these principles elsewhere in the repo:
 
 - **Induction** in algorithm correctness — `03_Algorithms/A1_Correctness_Proofs.md`
 - **Master Theorem** for recurrences — `03_Algorithms/A2_Complexity_FirstPrinciples.md` §2
-- **Set operations** in SQL — `08_SQL/07_Joins_Complete.md` (joins are relational algebra)
+- **Set operations** in SQL — `08_SQL/07_JOINs_Complete.md` (joins are relational algebra)
 - **Functions** in TypeScript — `17_TypeScript/01_TS_Foundations.md` (functions formalize input → output mapping)
 - **Graphs** — `03_Algorithms/05_*.md` series
 - **Boolean algebra** — every if/else in your code
-
-## Future Authoring Plan
-
-When this course is fleshed out (Phase 3), the following chapter files should be created under a new `02_5_Discrete_Math/` folder (between Data Structures and Algorithms), or in `00_CURRICULUM/`:
-
-```
-01_Propositional_Logic.md           ← Unit 1 Weeks 1-2
-02_Predicate_Logic_Quantifiers.md    ← Unit 1 Week 2
-03_Proof_Techniques.md               ← Unit 1 Weeks 3-4
-04_Induction_Variants.md             ← Unit 1 Week 4
-05_Sets_Operations.md                ← Unit 2 Week 5
-06_Relations_Properties.md           ← Unit 2 Week 6
-07_Functions_Properties.md           ← Unit 2 Week 7
-08_Counting_Combinatorics.md         ← Unit 3 Week 8
-09_Pigeonhole_Power.md               ← Unit 3 Week 9
-10_Recurrences.md                    ← Unit 3 Week 10
-11_Graph_Theory_Foundations.md       ← Unit 4 Weeks 11-14 (links into 03_Algorithms)
-12_Boolean_Algebra_Circuits.md       ← Unit 5 Week 15
-```

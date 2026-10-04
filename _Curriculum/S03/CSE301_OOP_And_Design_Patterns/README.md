@@ -58,7 +58,7 @@
 | 3   | Polymorphism — runtime vs compile-time | `06_OOP_Design/01_OOPS_Principles.md` §4          | Write Java code where method overriding goes wrong       |
 | 4   | Composition over inheritance           | `06_OOP_Design/01_OOPS_Principles.md` §5          | Refactor a Vehicle inheritance tree to composition       |
 | 5   | Lab + Review                           | —                                                 | Lab: refactor `Bird → FlyingBird, NonFlyingBird` problem |
-| 6–7 | Review + Problem Set OOP-PS1           | —                                                 | `06_OOP_Design/02_PROBLEM_SETS.md` PS-1                  |
+| 6–7 | Review + Problem Set OOP-PS1           | —                                                 | `06_OOP_Design/06b_PROBLEM_SETS.md` PS-1                  |
 
 **Section Challenge (Liskov Substitution failure):**
 
@@ -112,7 +112,7 @@ REAL-WORLD ECHO:
 | 2   | Coupling — afferent and efferent     | `06_OOP_Design/01_OOPS_Principles.md` §7          | Measure coupling in a sample with ASM or JDepend         |
 | 3   | Cohesion — what belongs together     | `06_OOP_Design/01_OOPS_Principles.md` §8          | Split a God Class into cohesive units                    |
 | 4–5 | Lab + Review                         | —                                                 | Lab: refactor a 500-line God Class                       |
-| 6–7 | Problem Set OOP-PS2                  | —                                                 | `06_OOP_Design/02_PROBLEM_SETS.md` PS-2                  |
+| 6–7 | Problem Set OOP-PS2                  | —                                                 | `06_OOP_Design/06b_PROBLEM_SETS.md` PS-2                  |
 
 ---
 
@@ -147,7 +147,7 @@ REAL-WORLD ECHO:
 | 2   | Factory Method + Abstract Factory    | `06_OOP_Design/02_Design_Patterns.md` §3.2-3.3    | Refactor `new Logger(type)` switch to Factory            |
 | 3   | Builder — when constructor explodes  | `06_OOP_Design/02_Design_Patterns.md` §3.4        | Build an immutable Email with 20 optional fields         |
 | 4   | Prototype + Object Pool              | `06_OOP_Design/02_Design_Patterns.md` §3.5        | When is shallow vs deep clone correct? Demonstrate       |
-| 5–7 | Review + Problem Set OOP-PS3         | —                                                 | `06_OOP_Design/02_PROBLEM_SETS.md` PS-3                  |
+| 5–7 | Review + Problem Set OOP-PS3         | —                                                 | `06_OOP_Design/06b_PROBLEM_SETS.md` PS-3                  |
 
 ---
 
@@ -212,7 +212,7 @@ Refactor a real-world module of your choice. Justify every pattern choice in wri
 
 ## Problem Sets
 
-[`06_OOP_Design/02_PROBLEM_SETS.md`](../../../06_OOP_Design/02_PROBLEM_SETS.md) — 162 challenges (Reasoning, Debug, Design).
+[`06_OOP_Design/06b_PROBLEM_SETS.md`](../../../06_OOP_Design/06b_PROBLEM_SETS.md) — 3 problem sets (SOLID, GoF patterns, LLD), each with theory + implementation parts.
 
 ## Exam Prep
 

@@ -21,7 +21,7 @@
 - Model probabilistic systems and perform statistical inference on data
 - Understand CPU datapaths, pipelining, caching, and instruction set architectures
 
-## Syllabus Overview
+## Companion Schedule (`00_CURRICULUM` Semester 2 Guide — module reading, not these four courses)
 
 - **Weeks 1–4:** OOP & SOLID, Design Patterns (GoF 23), LLD methodology
 - **Weeks 5–8:** Spring Boot core, REST APIs, JPA & persistence

@@ -21,14 +21,18 @@ Theory of Computation explores the fundamental limits of what computers can and 
 - **Unit 5:** Computability — Turing machines, Church-Turing thesis, decidability, the Halting Problem
 - **Unit 6:** Complexity Theory — Time complexity, P vs NP, NP-completeness, reduction techniques
 
-## Existing Content
+## Chapters
 
-> **TBD — Phase 3** — No existing content linked yet. This shell is scaffolded for Phase 3 content development.
-
-## Subdirectories
-
-- `lectures/` — Topic-by-topic lecture notes
-- `labs/` — Automaton construction and proof exercises
-- `assignments/` — Problem sets on formal languages and complexity
-- `projects/` — Capstone projects applying automata/complexity theory
-- `rubrics/` — Grading criteria for all deliverables
+| # | Chapter |
+|---|---------|
+| [01](01_DFA_Finite_Automata.md) | Deterministic Finite Automata (DFA) |
+| [02](02_NFA_Epsilon_Closure.md) | NFA and ε-Closure: Nondeterminism |
+| [03](03_Regular_Expressions.md) | Regular Expressions and Kleene's Theorem |
+| [04](04_Pumping_Lemma.md) | The Pumping Lemma for Regular Languages |
+| [05](05_Context_Free_Grammars.md) | Context-Free Grammars |
+| [06](06_Pushdown_Automata.md) | Pushdown Automata |
+| [07](07_Pumping_Lemma_CFLs.md) | Pumping Lemma for Context-Free Languages |
+| [08](08_Turing_Machines.md) | Turing Machines |
+| [09](09_Decidability_Halting_Problem.md) | Decidability and the Halting Problem |
+| [10](10_Complexity_P_vs_NP.md) | Complexity Theory: P vs NP |
+| [11](11_NP_Completeness.md) | NP-Completeness and Reduction Chains |

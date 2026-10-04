@@ -23,14 +23,20 @@ Security is not an afterthought — it is a first-class engineering concern. Thi
 - **Unit 6:** Web Security — XSS, SQLi, CSRF, SSRF, IDOR, race conditions, HTTPS/TLS
 - **Unit 7:** Secure Development — Threat modeling, security code review, penetration testing basics
 
-## Existing Content
+## Chapters
 
-> **TBD — Phase 3** — No existing content linked yet. This shell is scaffolded for Phase 3 content development.
-
-## Subdirectories
-
-- `lectures/` — Topic-by-topic lecture notes
-- `labs/` — Hands-on cryptography implementations and security testing labs
-- `assignments/` — Graded cryptographic protocol and security analysis tasks
-- `projects/` — Capstone: build a secure communication system or conduct a penetration test
-- `rubrics/` — Grading criteria for all deliverables
+| # | Chapter |
+|---|---------|
+| [01](01_Classical_Ciphers_Cryptanalysis.md) | Classical Ciphers & Cryptanalysis |
+| [02](02_Perfect_Secrecy_One_Time_Pad.md) | Perfect Secrecy & the One-Time Pad |
+| [03](03_Block_Ciphers_AES.md) | Block Ciphers & AES |
+| [04](04_Modes_Of_Operation.md) | Modes of Operation |
+| [05](05_Number_Theory_Foundations.md) | Number Theory Foundations for Crypto |
+| [06](06_RSA.md) | RSA |
+| [07](07_Diffie_Hellman_ECC.md) | Diffie-Hellman & Elliptic Curve Cryptography |
+| [08](08_Cryptographic_Hash_Functions.md) | Cryptographic Hash Functions |
+| [09](09_MACs_Digital_Signatures.md) | MACs & Digital Signatures |
+| [10](10_Password_Storage_Key_Derivation.md) | Password Storage & Key Derivation |
+| [11](11_TLS_SSL_PKI.md) | TLS/SSL & PKI |
+| [12](12_Web_Vulnerabilities_OWASP.md) | Web Vulnerabilities (OWASP Top 10) |
+| [13](13_Threat_Modeling_Secure_SDLC.md) | Threat Modeling & Secure SDLC |

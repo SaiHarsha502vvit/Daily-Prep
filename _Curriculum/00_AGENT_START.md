@@ -3,7 +3,7 @@
 This repo is the source of truth. Treat it as a living technical curriculum.
 
 > **Two curriculum systems, two jobs (resolved 2026-07-25):**
-> - **`_Curriculum/` (this folder)** — original university-style course *content*: S01–S06, CSE101–CSE604, each course a directory of authored chapters. This is the canonical home for course material.
+> - **`_Curriculum/` (this folder)** — original university-style course *content*: S01–S08, CSE101–CSE804 (32 courses, all complete as of 2026-10-04 — see `03_BUILDOUT_PLAN.md`). Chapter courses hold authored chapters; Wrapper courses are README-only guides over existing repo modules. This is the canonical home for course material.
 > - **`00_CURRICULUM/`** — a week-by-week *study scheduler* that sequences the existing repo modules (02_DS, 03_Algo, 07_Java, …) into a 4-semester reading plan, plus EXAM_BANK and PROJECTS.
 >
 > They are complementary lenses, not duplicates: one authors courses, the other schedules module reading. When a CSE course covers ground a repo module also covers, the CSE chapter teaches from first principles and links out to the module for drills/reference.
@@ -40,6 +40,8 @@ This repo is the source of truth. Treat it as a living technical curriculum.
 `20_Interview_Mastery` — Interview synthesis, problems, scripts
 `25_Python_ML_DL_NLP` — Python, ML, DL, NLP, LLM/RAG, MLOps
 `22_DevOps` — Linux, Docker, Kubernetes, CI/CD, SRE
+`21_SDET_Playwright_Automation` — Playwright + SDET: stage folders, `labs/` (graded hands-on), `framework/`, `challenges/`, `career/`; start at its `README.md`
+`23_Mobile_Dev_And_Testing`, `24_Advanced_API_Testing`, `26_Weekend_SDET_Track` — see each folder's README
 Full file map: `_Curriculum/01_FILE_MAP.md`.
 
 ## Editing Rules
@@ -53,7 +55,7 @@ Full file map: `_Curriculum/01_FILE_MAP.md`.
 
 After edits: (1) Update folder `CONTEXT.md` if boundaries changed. (2) Update `00_CONTEXT/DECISIONS.md` if a permanent rule was added. (3) Log in `00_CONTEXT/CHANGE_JOURNAL.md`. Then run:
 
-````powershell
+```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode update
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check```
-````
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check
+```

@@ -24,6 +24,17 @@ Students select one track from the project bank:
 - [CAP03 — Full-Stack](https://github.com/SaiHarsha502vvit/my-prep/blob/main/00_CURRICULUM/PROJECTS/CAP03_FullStack.md) — Feature-rich web application with React frontend, Spring Boot backend, and PostgreSQL
 - [CAP04 — Distributed System](https://github.com/SaiHarsha502vvit/my-prep/blob/main/00_CURRICULUM/PROJECTS/CAP04_DistributedSystem.md) — Distributed key-value store with consensus, replication, and partition tolerance
 
+## Chapters
+
+| # | Chapter |
+|---|---------|
+| [01](01_Scoping_A_Capstone.md) | Scoping a Capstone |
+| [02](02_Architecture_And_Design_Documents.md) | Architecture & Design Documents |
+| [03](03_Milestones_And_Execution.md) | Milestones & Execution |
+| [04](04_Testing_And_Quality_Strategy.md) | Testing & Quality Strategy |
+| [05](05_Shipping_And_Reproducibility.md) | Shipping & Reproducibility |
+| [06](06_Documentation_And_Presentation.md) | Documentation & Presentation |
+
 ## Linked Existing Content
 
 - [Capstone Project Bank — CAP01 DSA Toolkit](../../../00_CURRICULUM/PROJECTS/CAP01_DSA_Toolkit.md)

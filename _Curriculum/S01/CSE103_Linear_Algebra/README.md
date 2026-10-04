@@ -35,7 +35,7 @@ The students who succeed in S07 ML are the ones who took THIS course seriously i
 | `25_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md` | Gradient descent geometry, eigenvector derivation             |
 | `25_Python_ML_DL_NLP/07_Deep_Learning_Fundamentals.md` | Backprop is just chain rule on matrix calculus           |
 | `25_Python_ML_DL_NLP/11_Computer_Vision_CNNs.md`  | Convolutions are sliding matrix multiplications               |
-| `CSE304 Numerical Methods` (future)               | LU decomposition, condition number, iterative solvers         |
+| [CSE304 Numerical Methods](../../S03/CSE304_Numerical_Methods/README.md) | LU decomposition, condition number, iterative solvers         |
 
 ---
 
@@ -50,11 +50,26 @@ The students who succeed in S07 ML are the ones who took THIS course seriously i
 
 ---
 
-## Content Status
+## Chapter Index
 
-🟡 **Tier B — Wrapper + Partial Existing Content**
+| # | Chapter | Week |
+|---|---------|------|
+| [01](01_Vectors.md) | Vectors: Two Views of the Same Arrow | 1 |
+| [02](02_Linear_Independence_Basis.md) | Linear Independence & Basis | 2 |
+| [03](03_Subspaces_Rank_Null_Space.md) | Subspaces, Rank & Null Space | 3 |
+| [04](04_Matrices_as_Transformations.md) | Matrices as Linear Transformations | 4 |
+| [05](05_Linear_Systems_Gaussian_Elimination.md) | Linear Systems & Gaussian Elimination | 5 |
+| [06](06_Determinants.md) | Determinants | 6 |
+| [07](07_Inverse_Rank_Full_Picture.md) | Matrix Inverse, Rank & The Full Picture | 7 |
+| [08](08_Orthogonality_Gram_Schmidt.md) | Orthogonality & Gram-Schmidt | 8 |
+| [09](09_Projections_Least_Squares.md) | Projections & Least Squares | 9 |
+| [10](10_Eigenvalues_Eigenvectors.md) | Eigenvalues & Eigenvectors | 10 |
+| [11](11_Diagonalization.md) | Diagonalization | 11 |
+| [12](12_Spectral_Theorem_PCA.md) | Spectral Theorem & PCA | 12 |
+| [13](13_SVD_Definition.md) | SVD: Definition | 13 |
+| [14](14_SVD_Applications.md) | SVD Applications | 14 |
 
-Some content lives in `25_Python_ML_DL_NLP/04_Math_For_ML.md` and `04b_Math_Behind_The_Code.md`. Many topics still need standalone chapter files. Topics marked **🚧 (chapter to be authored)** below are gaps to fill in Phase 3.
+Each chapter ends with a Section Challenge. Where a weekly `Read` cell below points at `25_Python_ML_DL_NLP/`, that file is supplementary — the week's chapter is the primary reading.
 
 ---
 
@@ -86,7 +101,7 @@ Some content lives in `25_Python_ML_DL_NLP/04_Math_For_ML.md` and `04b_Math_Behi
 | 3   | Magnitude (norm) and unit vectors      | `25_Python_ML_DL_NLP/04_Math_For_ML.md` §3             | Normalize 5 sample vectors; verify magnitude = 1                     |
 | 4   | Dot product — algebraic + geometric    | `25_Python_ML_DL_NLP/04_Math_For_ML.md` §4             | Compute angle between (1,0) and (1,1) using dot product              |
 | 5   | Lab — visualize 100 random 2D vectors  | —                                                       | **Lab:** Plot 100 random unit vectors; observe uniform distribution  |
-| 6–7 | Review + Problem Set LA-PS1            | —                                                       | 🚧 to be authored                                                    |
+| 6–7 | Review + Section Challenge             | [Ch01](01_Vectors.md)                                       | [Ch01](01_Vectors.md) Section Challenge                                             |
 
 **Section Challenge (Dot product geometry):**
 
@@ -156,7 +171,7 @@ WHY IT MATTERS IN PRACTICE:
 - Red, blue, purple (where purple is red+blue mixed): NOT linearly independent. Purple is REDUNDANT — anything you could make with all three you could already make with red and blue.
 - "Spanning a color space" = which colors you can reach by mixing your primaries.
 
-**Topic:** Linear combinations, span, linear independence, basis, dimension. 🚧 chapter to be authored (uses light material from `04_Math_For_ML.md`).
+**Topic:** Linear combinations, span, linear independence, basis, dimension. Read [Ch02](02_Linear_Independence_Basis.md).
 
 **Aha moment:** A "basis" is the minimal set of vectors that can construct any vector in the space. The COMPONENTS you've been using since Week 1 are coordinates in a specific basis (the standard basis e₁, e₂, e₃). Changing basis is just choosing a different set of "primary colors" to express your arrow.
 
@@ -164,7 +179,7 @@ WHY IT MATTERS IN PRACTICE:
 
 #### Week 3 — Subspaces
 
-🚧 chapter to be authored. Topics: subspaces, null space, column space, rank, dimension theorems.
+Read [Ch03](03_Subspaces_Rank_Null_Space.md): subspaces, null space, column space, rank, dimension theorems.
 
 ---
 
@@ -186,10 +201,10 @@ WHY IT MATTERS IN PRACTICE:
 | Day | Topic                                | Read                                                     | Do                                                                  |
 | --- | ------------------------------------ | -------------------------------------------------------- | ------------------------------------------------------------------- |
 | 1   | Matrices as functions: ℝⁿ → ℝᵐ        | `25_Python_ML_DL_NLP/04_Math_For_ML.md` §5             | Compute Av for 5 sample matrices A and vectors v                     |
-| 2   | Matrix multiplication = composition  | 🚧 chapter to be authored                                | Compose rotation × scale; verify rotate-then-scale ≠ scale-then-rotate |
-| 3   | Identity, inverse, transpose         | 🚧 chapter to be authored                                | Find inverse of 2×2 matrix; verify A·A⁻¹ = I                          |
-| 4   | When inverses don't exist            | 🚧 chapter to be authored                                | Show: rank-deficient matrices have no inverse                         |
-| 5–7 | Lab + Problem Set LA-PS2             | —                                                       | 🚧 to be authored                                                    |
+| 2   | Matrix multiplication = composition  | [Ch04](04_Matrices_as_Transformations.md) §Matrix Multiplication as Composition | Compose rotation × scale; verify rotate-then-scale ≠ scale-then-rotate |
+| 3   | Identity, inverse, transpose         | [Ch04](04_Matrices_as_Transformations.md) §Special Matrices; [Ch07](07_Inverse_Rank_Full_Picture.md)             | Find inverse of 2×2 matrix; verify A·A⁻¹ = I                          |
+| 4   | When inverses don't exist            | [Ch07](07_Inverse_Rank_Full_Picture.md) §Why Inverses Fail                    | Show: rank-deficient matrices have no inverse                         |
+| 5–7 | Lab + Section Challenge              | [Ch04](04_Matrices_as_Transformations.md)                                       | [Ch04](04_Matrices_as_Transformations.md) Section Challenge                                             |
 
 **Section Challenge (Why matmul order matters):**
 
@@ -257,7 +272,7 @@ THE KEY INSIGHT:
 - Question: how much of each can you make from 30 cups flour, 20 cups water, 10 eggs?
 - Set up Ax = b where A is the recipe matrix, x is "how many pancakes + cakes," b is your ingredient supply.
 
-Topics: matrix form of linear systems, Gaussian elimination, LU decomposition. 🚧 chapter to be authored.
+Topics: matrix form of linear systems, Gaussian elimination, LU decomposition. Read [Ch05](05_Linear_Systems_Gaussian_Elimination.md).
 
 **Aha moment:** Gaussian elimination is just systematic substitution — exactly what you've been doing since 8th grade algebra. The matrix form makes it scalable.
 
@@ -270,7 +285,7 @@ Topics: matrix form of linear systems, Gaussian elimination, LU decomposition. �
 - A 3×3 matrix transforms a unit cube to a parallelepiped. The DETERMINANT is the VOLUME.
 - If determinant = 0: the matrix collapses the space (e.g., 3D → 2D plane). No inverse exists because you can't un-collapse.
 
-🚧 chapter to be authored.
+Read [Ch06](06_Determinants.md).
 
 ---
 
@@ -280,7 +295,7 @@ Topics: matrix form of linear systems, Gaussian elimination, LU decomposition. �
 - A matrix with null space (vectors that map to zero) "loses information." Multiple inputs → same output. Like an echo chamber that swallows certain frequencies — once they're gone, you can't recover them.
 - The DIMENSION of the null space tells you HOW MUCH information is lost.
 
-🚧 chapter to be authored.
+Read [Ch07](07_Inverse_Rank_Full_Picture.md).
 
 ---
 
@@ -293,8 +308,8 @@ Topics: matrix form of linear systems, Gaussian elimination, LU decomposition. �
 
 | Week | Topic                                                                                              |
 | ---- | -------------------------------------------------------------------------------------------------- |
-| 8    | Orthogonality, orthonormal basis, Gram-Schmidt — 🚧 chapter                                          |
-| 9    | Projection, least squares, regression geometrically — 🚧 chapter; light coverage in `04b_Math_Behind_The_Code.md` |
+| 8    | Orthogonality, orthonormal basis, Gram-Schmidt — [Ch08](08_Orthogonality_Gram_Schmidt.md)                  |
+| 9    | Projection, least squares, regression geometrically — [Ch09](09_Projections_Least_Squares.md); light coverage in `04b_Math_Behind_The_Code.md` |
 
 **Aha moment:** Linear regression IS projection. You're projecting the data vector onto the span of the feature columns. The "error" is what's left over — the orthogonal complement.
 
@@ -314,9 +329,9 @@ Topics: matrix form of linear systems, Gaussian elimination, LU decomposition. �
 
 | Week | Topic                                                                                              |
 | ---- | -------------------------------------------------------------------------------------------------- |
-| 10   | Eigenvalue definition, characteristic polynomial — 🚧 chapter                                       |
-| 11   | Diagonalization, when it exists, applications — 🚧 chapter                                          |
-| 12   | Spectral theorem, symmetric matrices, applications (PCA preview) — 🚧 chapter                       |
+| 10   | Eigenvalue definition, characteristic polynomial — [Ch10](10_Eigenvalues_Eigenvectors.md)                   |
+| 11   | Diagonalization, when it exists, applications — [Ch11](11_Diagonalization.md)                       |
+| 12   | Spectral theorem, symmetric matrices, applications (PCA preview) — [Ch12](12_Spectral_Theorem_PCA.md)                       |
 
 **Section Challenge (Eigenvalue intuition):**
 
@@ -379,7 +394,7 @@ THE TAKEAWAY:
 - Keep only the top 50 singular values → ~99% of image quality at 1/20 the storage.
 - This is roughly how JPEG works (with discrete cosine transform doing the role of SVD).
 
-🚧 chapters to be authored. Topics: SVD definition, computation, image compression, PCA, low-rank approximation.
+Read [Ch13](13_SVD_Definition.md) and [Ch14](14_SVD_Applications.md): SVD definition, computation, image compression, PCA, low-rank approximation.
 
 ---
 
@@ -405,28 +420,12 @@ Every operation links back to a specific week's concept. The capstone makes the 
 
 ## Problem Sets
 
-🚧 Provisional location: `00_CURRICULUM/EXAM_BANK.md` S01 Linear Algebra section.
+Each chapter's Section Challenge (see the Chapter Index above).
 
-## Where The Math Lives Today
+## Where The Math Is Used Elsewhere
 
-Linear algebra concepts are scattered across existing chapters. Cross-references for self-study while standalone chapters await Phase 3:
+Applied linear algebra in other repo modules:
 
 - `25_Python_ML_DL_NLP/04_Math_For_ML.md` — vectors, matrices, dot product
 - `25_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md` — gradient descent geometry, eigenvectors
 - `25_Python_ML_DL_NLP/06_ML_Algorithms.md` §5 — PCA application
-
-## Future Authoring Plan
-
-Phase 3 should create a `02_Linear_Algebra/` folder (between Data Structures and Algorithms, or under `00_CURRICULUM/`) with:
-
-```
-01_Vectors_Foundations.md            ← Unit 1 Weeks 1-2
-02_Linear_Independence_Basis.md      ← Unit 1 Weeks 2-3
-03_Matrices_As_Transformations.md    ← Unit 2 Weeks 4
-04_Linear_Systems_Gauss_LU.md        ← Unit 2 Week 5
-05_Determinants_Inverses.md          ← Unit 2 Weeks 6-7
-06_Orthogonality_Projections.md      ← Unit 3 Weeks 8-9
-07_Eigenvalues_Diagonalization.md    ← Unit 4 Weeks 10-12
-08_SVD_Applications.md               ← Unit 5 Weeks 13-14
-09_Applications_PCA_Graphics_PageRank.md ← Week 15
-```

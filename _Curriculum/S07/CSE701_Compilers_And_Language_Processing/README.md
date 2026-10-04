@@ -32,9 +32,20 @@ A hands-on compiler construction course covering the full pipeline from source t
 | 11   | Advanced topics: SSA form, dataflow analysis, Just-In-Time compilation basics         |
 | 12   | Capstone: complete compiler with code generation targeting a real virtual machine     |
 
-## Linked Existing Content
+## Chapters
 
-- **TBD Shell (Phase 5)** — Compilers from scratch, Praktikum format
+| # | Chapter |
+|---|---------|
+| [01](01_Lexical_Analysis_Tokens_And_Scanning.md) | Lexical Analysis: Tokens & Scanning |
+| [02](02_Recursive_Descent_LL_Parsing.md) | Recursive Descent & LL Parsing |
+| [03](03_Bottom_Up_LR_Parsing.md) | Bottom-Up LR Parsing |
+| [04](04_AST_And_Visitor_Pattern.md) | The AST & the Visitor Pattern |
+| [05](05_Semantic_Analysis_Symbol_Tables.md) | Semantic Analysis & Symbol Tables |
+| [06](06_Type_Checking_And_Inference.md) | Type Checking & Inference |
+| [07](07_Intermediate_Representation_CFG.md) | Intermediate Representation: Three-Address Code & the CFG |
+| [08](08_Code_Generation_Register_Allocation.md) | Code Generation & Register Allocation |
+| [09](09_Optimization_Dataflow_Passes.md) | Optimization & Dataflow Passes |
+| [10](10_SSA_Form_And_JIT_Compilation.md) | SSA Form & JIT Compilation |
 
 ## Assessment
 

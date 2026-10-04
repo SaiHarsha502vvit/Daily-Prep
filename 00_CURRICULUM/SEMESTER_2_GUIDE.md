@@ -29,7 +29,7 @@
 | 3   | Liskov Substitution Principle                         | `06_OOP_Design/01_OOPS_Principles.md` §SOLID §3   | Find the LSP violation in the classic `Square extends Rectangle` example        |
 | 4   | Interface Segregation + Dependency Inversion          | `06_OOP_Design/01_OOPS_Principles.md` §SOLID §4-5 | Refactor a service that creates its own dependencies into DI-compliant code     |
 | 5   | Lab                                                   | —                                                 | **Lab:** Refactor a bloated `OrderProcessor` class using all 5 SOLID principles |
-| 6–7 | Problem Set OOP-PS1                                   | —                                                 | `06_OOP_Design/06_PROBLEM_SETS.md` PS-1 (SOLID)                                 |
+| 6–7 | Problem Set OOP-PS1                                   | —                                                 | `06_OOP_Design/06b_PROBLEM_SETS.md` PS-1 (SOLID)                                 |
 
 **Week 2 — Creational & Structural Patterns**
 
@@ -40,7 +40,7 @@
 | 3   | Adapter + Facade + Decorator             | `06_OOP_Design/02_Design_Patterns.md` §Structural   | Implement Decorator for logging/timing around any service              |
 | 4   | Proxy + Bridge + Composite               | `06_OOP_Design/02_Design_Patterns.md` §Structural   | Implement a dynamic Proxy that logs all method calls                   |
 | 5   | Lab                                      | —                                                   | Build a file export system: CSV, PDF, Excel — using Factory + Strategy |
-| 6–7 | Problem Set OOP-PS2                      | —                                                   | `06_OOP_Design/06_PROBLEM_SETS.md` PS-2 (GoF Patterns)                 |
+| 6–7 | Problem Set OOP-PS2                      | —                                                   | `06_OOP_Design/06b_PROBLEM_SETS.md` PS-2 (GoF Patterns)                 |
 
 **Week 3 — Behavioral Patterns**
 
@@ -62,7 +62,7 @@
 | 3   | LLD: Splitwise (debt simplification)                                | `06_OOP_Design/07_LLD_Solved_Problems.md` §Splitwise  | Implement the greedy debt simplification algorithm                    |
 | 4   | LLD: Elevator System                                                | `06_OOP_Design/07_LLD_Solved_Problems.md` §Elevator   | Implement LOOK scheduling algorithm                                   |
 | 5   | Lab                                                                 | —                                                     | **Mini-Project:** Design a Rate Limiter (token bucket + leaky bucket) |
-| 6–7 | Problem Set OOP-PS3                                                 | —                                                     | `06_OOP_Design/06_PROBLEM_SETS.md` PS-3 (LLD)                         |
+| 6–7 | Problem Set OOP-PS3                                                 | —                                                     | `06_OOP_Design/06b_PROBLEM_SETS.md` PS-3 (LLD)                         |
 
 ---
 
@@ -138,7 +138,7 @@
 | 3   | Correlated subqueries, EXISTS, IN              | `08_SQL` §Subqueries  | Oracle: `ROWNUM` vs `FETCH FIRST`   | Find employees earning above their dept avg    |
 | 4   | Set operations: UNION, INTERSECT, EXCEPT/MINUS | `08_SQL` §Sets        | Oracle: `MINUS` instead of `EXCEPT` | Find employees on no project (EXCEPT)          |
 | 5   | Lab                                            | —                     | —                                   | **Project P03:** Dashboard queries 1-3         |
-| 6–7 | SQL-PS1                                        | —                     | —                                   | `08_SQL/08_PROBLEM_SETS.md` PS-1               |
+| 6–7 | SQL-PS1                                        | —                     | —                                   | `08_SQL/08b_PROBLEM_SETS.md` PS-1               |
 
 **Week 10 — Window Functions & CTEs**
 
@@ -149,7 +149,7 @@
 | 3   | Running totals, partitioned sums        | `08_SQL` §Windows | Same syntax           | Cumulative revenue by day              |
 | 4   | CTEs: WITH clause, multi-step pipelines | `08_SQL` §CTEs    | Oracle: `WITH` clause | Rewrite 3-level subquery as CTE        |
 | 5   | Lab                                     | —                 | —                     | **Project P03:** Dashboard queries 4-7 |
-| 6–7 | SQL-PS2                                 | —                 | —                     | `08_SQL/08_PROBLEM_SETS.md` PS-2       |
+| 6–7 | SQL-PS2                                 | —                 | —                     | `08_SQL/08b_PROBLEM_SETS.md` PS-2       |
 
 **Week 11 — Recursive CTEs, Indexes & Optimization**
 
@@ -160,7 +160,7 @@
 | 3   | B-Tree indexes, composite indexes, index selectivity      | `08_SQL` §Indexes         | Oracle: index hints               | Design covering index for MoM query          |
 | 4   | Index pitfalls: function on indexed column, implicit cast | `08_SQL` §Pitfalls        | Oracle: function-based indexes    | Fix: `WHERE YEAR(hire_date) = 2024`          |
 | 5   | Lab                                                       | —                         | —                                 | Optimize 3 slow queries from Project P03     |
-| 6–7 | SQL-PS3 + SQL-PS4                                         | —                         | —                                 | `08_SQL/08_PROBLEM_SETS.md` PS-3 + PS-4      |
+| 6–7 | SQL-PS3 + SQL-PS4                                         | —                         | —                                 | `08_SQL/08b_PROBLEM_SETS.md` PS-3 + PS-4      |
 
 ---
 

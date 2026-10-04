@@ -19,7 +19,7 @@
 - Operate confidently in Linux/CLI environments with Git version control
 - Reason about memory layout, time complexity, and data representation
 
-## Syllabus Overview
+## Companion Schedule (`00_CURRICULUM` Semester 1 Guide — module reading, not these four courses)
 
 - **Weeks 1–4:** Memory model, arrays, Big-O, hash tables
 - **Weeks 5–8:** Linked lists, stacks, queues, trees, heaps
