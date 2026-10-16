@@ -12,7 +12,7 @@
 
 ## 5W1H
 
-- **WHAT**: A layered, typed, production-grade HTTP client library for test automation — from raw `APIRequestContext` to domain-specific, fully typed client methods with error handling, schema validation, retry logic, request logging, and interceptors.
+- **WHAT**: A layered, typed, production-grade HTTP client library for test automation — from raw `APIRequestContext` to domain-specific, fully typed client methods with error handling, schema validation, retry logic, and request logging with header masking.
 - **WHY**: Every time an SDET writes `await request.post('/api/...')` directly in a test file, they are: (a) duplicating auth header logic, (b) creating untypable response handling, (c) making the test brittle to URL changes, (d) hiding what the test is actually verifying. A proper library separates concerns and makes tests read like requirements.
 - **WHO**: SDETs who have seen `request.get(...)` scattered across 50 test files and understand that it's technical debt, but haven't built the alternative yet.
 - **WHEN**: The moment you write the same `Authorization: Bearer ${token}` header in a second test file.
@@ -45,8 +45,9 @@ Layer 4: Endpoint Registry
 
 Layer 3: Header Builder
   HeadersBuilder.new().withBearer(token).withCorrelationId(testId).build()
-  → Composable, immutable
-  → Sensitive values masked in logs
+  → Fluent and composable; build() returns a fresh copy
+  → Header names normalised to lower case (HTTP header names are case-insensitive),
+    which is what lets ApiCore mask them reliably in logs
 
 Layer 2: HTTP Core (ApiCore)
   apiCore.post<Citation>(url, body, headers)
@@ -78,7 +79,7 @@ With Layer 2:       Add retry middleware to ApiCore → all calls retry automati
 
 Problem: You need to trace every API call in CI for debugging
 With no library:    Wrap every test.step manually
-With interceptors:  Add a logging interceptor in one place → all calls logged
+With ApiCore:       Turn on logRequests in one place → every call is logged (secrets masked)
 ```
 
 ---
@@ -103,7 +104,7 @@ async ({ request }, use) => {
   const headers: Record<string, string> = response.headers();
   const body: Buffer = await response.body();
   const text: string = await response.text();
-  const json: unknown = await response.json(); // typed as unknown!
+  const json: unknown = await response.json(); // json() is Promise<any>; `unknown` is YOUR annotation
   const ok: boolean = response.ok(); // status 200-299
 
   // URL and request info:
@@ -111,12 +112,22 @@ async ({ request }, use) => {
 };
 
 // Key differences from fetch():
-// 1. response.json() returns `unknown`, not `any` — forces you to type it
+// 1. response.json() is declared `Promise<Serializable>` and `Serializable` is an
+//    alias for `any` (playwright-core/types/structs.d.ts) — NOTHING forces you to
+//    type it. Annotating `unknown` yourself, or validating (§7), is the discipline.
 // 2. response.headers() returns all headers as a plain object (lowercase keys)
 // 3. Playwright handles cookie jar automatically (within the same context)
 // 4. Supports: get, post, put, patch, delete, head, fetch
 // 5. Global request: doesn't share cookies with page (use page.request for that)
 ```
+
+Three behaviours of `APIRequestContext` the rest of this chapter depends on (each measured against a local `node:http` server on Playwright 1.60):
+
+| You pass | What goes over the wire | Consequence |
+| --- | --- | --- |
+| `data: { a: 1 }` (an object) | the **JSON string** `{"a":1}` — even if you also set `Content-Type: application/x-www-form-urlencoded` (the server saw the form content-type on a JSON body) | For an OAuth token call use the `form: { grant_type: "password", ... }` option, which produces `grant_type=password&...`. Object `data` is always JSON |
+| `data: "<string>"` or a `Buffer` | exactly those bytes | The way to sign or hash a body: serialise once, sign that string, send that string. [Lab 04 — Webhook Receiver](../labs/04-webhook-receiver/README.md) is a pure API-testing lab built on this (an object `data` re-serialises and breaks the HMAC) |
+| a `204`, a `HEAD`, or an empty `200` that still says `Content-Type: application/json` | zero body bytes | `response.json()` throws `SyntaxError: Unexpected end of JSON input` — the status is lost behind a parse error. `ApiCore` (§3) reads the bytes first and only parses non-empty bodies |
 
 ---
 
@@ -203,14 +214,29 @@ export class ApiCore {
     const durationMs = Date.now() - start;
     const responseHeaders = raw.headers();
 
-    let body: T;
+    // Read the bytes ONCE, then decide how to interpret them. Calling raw.json()
+    // directly throws "Unexpected end of JSON input" on a 204 / empty body and
+    // hides the status code behind a SyntaxError.
+    const bytes = await raw.body();
     const contentType = responseHeaders["content-type"] ?? "";
-    if (contentType.includes("application/json")) {
-      body = (await raw.json()) as T;
+
+    let body: T;
+    if (bytes.length === 0) {
+      body = undefined as T; // 204, HEAD, empty 200
+    } else if (contentType.includes("json")) {
+      // "json" (not "application/json") also matches application/problem+json (RFC 9457)
+      const text = bytes.toString("utf8");
+      try {
+        body = JSON.parse(text) as T;
+      } catch {
+        // A gateway that labels an HTML error page as JSON: keep the text so the
+        // caller still sees the status code, not a SyntaxError.
+        body = text as unknown as T;
+      }
     } else if (contentType.includes("text/")) {
-      body = (await raw.text()) as unknown as T;
+      body = bytes.toString("utf8") as unknown as T;
     } else {
-      body = (await raw.body()) as unknown as T;
+      body = bytes as unknown as T;
     }
 
     if (this.config.logRequests) {
@@ -313,17 +339,19 @@ export class ApiCore {
     );
   }
 
+  // Header names are case-insensitive (RFC 9110 §5.1), so compare lower-cased.
+  // Looking up result["authorization"] on an object that holds "Authorization"
+  // (what a naive builder produces) masks NOTHING and leaks the bearer token.
   private maskSensitiveHeaders(
     headers: Record<string, string>,
   ): Record<string, string> {
-    const result = { ...headers };
-    for (const key of this.config.maskHeaders) {
-      const lowerKey = key.toLowerCase();
-      if (result[lowerKey]) {
-        result[lowerKey] = "***MASKED***";
-      }
-    }
-    return result;
+    const masked = new Set(this.config.maskHeaders.map((h) => h.toLowerCase()));
+    return Object.fromEntries(
+      Object.entries(headers).map(([name, value]) => [
+        name,
+        masked.has(name.toLowerCase()) ? "***MASKED***" : value,
+      ]),
+    );
   }
 }
 ```
@@ -345,68 +373,68 @@ export class HeadersBuilder {
     return new HeadersBuilder();
   }
 
-  /** Add Bearer token authorization */
-  withBearer(token: string): this {
-    this._headers["Authorization"] = `Bearer ${token}`;
-    return this;
-  }
-
-  /** Add API key authentication */
-  withApiKey(key: string, headerName = "x-api-key"): this {
-    this._headers[headerName] = key;
-    return this;
-  }
-
-  /** Add content-type header */
-  withContentType(
-    type:
-      | "application/json"
-      | "multipart/form-data"
-      | string = "application/json",
-  ): this {
-    this._headers["Content-Type"] = type;
-    return this;
-  }
-
-  /** Add accept header */
-  withAccept(type = "application/json"): this {
-    this._headers["Accept"] = type;
-    return this;
-  }
-
-  /** Add correlation ID for request tracing */
-  withCorrelationId(id: string): this {
-    this._headers["x-correlation-id"] = id;
-    return this;
-  }
-
-  /** Mark request as coming from the test suite */
-  withTestMetadata(testId: string, workerIndex: number): this {
-    this._headers["x-test-id"] = testId;
-    this._headers["x-test-worker"] = String(workerIndex);
-    this._headers["x-test-client"] = "playwright-automation";
-    return this;
-  }
-
-  /** Add tenant ID for multi-tenant systems */
-  withTenantId(tenantId: string): this {
-    this._headers["x-tenant-id"] = tenantId;
-    return this;
-  }
-
-  /** Add arbitrary header */
-  with(name: string, value: string): this {
+  /**
+   * Single write path. Header names are case-insensitive (RFC 9110 §5.1), so we
+   * store them lower-cased: "Authorization" and "authorization" can never end up
+   * as two entries, and ApiCore's log masking can match by lower-cased name.
+   */
+  private set(name: string, value: string): this {
     this._headers[name.toLowerCase()] = value;
     return this;
   }
 
-  /** Merge another headers object */
+  /** Add Bearer token authorization */
+  withBearer(token: string): this {
+    return this.set("Authorization", `Bearer ${token}`);
+  }
+
+  /** Add API key authentication */
+  withApiKey(key: string, headerName = "x-api-key"): this {
+    return this.set(headerName, key);
+  }
+
+  /**
+   * Add content-type header. For multipart uploads do NOT set it by hand:
+   * pass Playwright's `multipart` option instead, which adds the boundary.
+   */
+  withContentType(type = "application/json"): this {
+    return this.set("Content-Type", type);
+  }
+
+  /** Add accept header */
+  withAccept(type = "application/json"): this {
+    return this.set("Accept", type);
+  }
+
+  /** Add correlation ID for request tracing */
+  withCorrelationId(id: string): this {
+    return this.set("x-correlation-id", id);
+  }
+
+  /** Mark request as coming from the test suite */
+  withTestMetadata(testId: string, workerIndex: number): this {
+    return this.set("x-test-id", testId)
+      .set("x-test-worker", String(workerIndex))
+      .set("x-test-client", "playwright-automation");
+  }
+
+  /** Add tenant ID for multi-tenant systems */
+  withTenantId(tenantId: string): this {
+    return this.set("x-tenant-id", tenantId);
+  }
+
+  /** Add arbitrary header */
+  with(name: string, value: string): this {
+    return this.set(name, value);
+  }
+
+  /** Merge another headers object (later values win, names normalised) */
   merge(additional: Record<string, string>): this {
-    Object.assign(this._headers, additional);
+    for (const [name, value] of Object.entries(additional)) this.set(name, value);
     return this;
   }
 
-  /** Build and return the headers object (immutable copy) */
+  /** Build and return the headers object (a copy — later builder calls don't change it) */
   build(): Record<string, string> {
     return { ...this._headers };
   }
@@ -435,7 +463,7 @@ export class HeadersCrm {
     return HeadersBuilder.new().withContentType().withAccept().build();
   }
 
-  /** File upload headers (no content-type — let browser set it with boundary) */
+  /** File upload headers (no content-type — Playwright's `multipart` option sets it, with the boundary) */
   static fileUpload(accessToken: string): Record<string, string> {
     return HeadersBuilder.new().withBearer(accessToken).withAccept().build();
   }
@@ -527,7 +555,10 @@ export const Endpoints = {
 
 // ─── URL builder utility ──────────────────────────────────────────────────────
 
-function buildUrl(base: string, params?: Record<string, unknown>): string {
+// `params?: object`, not `Record<string, unknown>`: an *interface* such as
+// CitationSearchParams has no implicit index signature, so it is not assignable
+// to Record<string, unknown> (TS2345) — a type alias would be, an interface is not.
+function buildUrl(base: string, params?: object): string {
   if (!params) return base;
 
   const validParams = Object.entries(params)
@@ -548,13 +579,17 @@ function buildUrl(base: string, params?: Record<string, unknown>): string {
 ```mermaid
 graph TD
     Error[Error] --> ApiError
+    Error --> SchemaValidationError[Zod parse failure: SchemaValidationError]
 
-    ApiError --> CitationNotFoundError[404: CitationNotFoundError]
-    ApiError --> CitationAlreadyPaidError[409: CitationAlreadyPaidError]
-    ApiError --> PaymentValidationError[422: PaymentValidationError]
+    ApiError --> NotFoundError[404: NotFoundError]
+    ApiError --> ConflictError[409: ConflictError]
+    ApiError --> RequestValidationError[422: RequestValidationError]
     ApiError --> RateLimitError[429: RateLimitError]
-    ApiError --> ServerError[500/502/503: ServerError]
-    ApiError --> SchemaValidationError[Zod Parse Failure: SchemaValidationError]
+    ApiError --> ServerError[5xx: ServerError keeps the real status]
+
+    NotFoundError --> CitationNotFoundError
+    ConflictError --> CitationAlreadyPaidError
+    RequestValidationError --> PaymentValidationError
 ```
 
 ```typescript
@@ -585,103 +620,124 @@ export class ApiError extends Error {
   }
 }
 
-// Domain-specific error classes — each maps to a specific HTTP error scenario
-export class CitationNotFoundError extends ApiError {
-  constructor(id: string, url: string) {
-    super("citations.getById", 404, url, null, `Citation '${id}' not found`);
-    this.name = "CitationNotFoundError";
+// ─── Generic, status-keyed errors: reusable by EVERY domain client ───────────
+// (A 404 from /users must not become a "CitationNotFoundError".)
+
+export class NotFoundError extends ApiError {
+  constructor(operation: string, url: string, body: unknown = null, message = "Resource not found") {
+    super(operation, 404, url, body, message);
+    this.name = "NotFoundError";
   }
 }
 
-export class CitationAlreadyPaidError extends ApiError {
-  constructor(id: string, url: string, body: unknown) {
-    super(
-      "citations.pay",
-      409,
-      url,
-      body,
-      `Citation '${id}' has already been paid`,
-    );
-    this.name = "CitationAlreadyPaidError";
+export class ConflictError extends ApiError {
+  constructor(operation: string, url: string, body: unknown = null, message = "Conflict") {
+    super(operation, 409, url, body, message);
+    this.name = "ConflictError";
   }
 }
 
-export class PaymentValidationError extends ApiError {
+export class RequestValidationError extends ApiError {
   constructor(
+    operation: string,
     url: string,
     public readonly validationErrors: string[],
   ) {
     super(
-      "citations.pay",
+      operation,
       422,
       url,
       validationErrors,
-      `Payment validation failed: ${validationErrors.join(", ")}`,
+      `Validation failed: ${validationErrors.join(", ")}`,
     );
-    this.name = "PaymentValidationError";
+    this.name = "RequestValidationError";
   }
 }
 
 export class RateLimitError extends ApiError {
   constructor(
+    operation: string,
     url: string,
     public readonly retryAfterSeconds: number,
   ) {
-    super(
-      "api",
-      429,
-      url,
-      null,
-      `Rate limited. Retry after ${retryAfterSeconds}s`,
-    );
+    super(operation, 429, url, null, `Rate limited. Retry after ${retryAfterSeconds}s`);
     this.name = "RateLimitError";
   }
 }
 
 export class ServerError extends ApiError {
-  constructor(operation: string, url: string, body: unknown) {
-    super(operation, 500, url, body, "Internal server error");
+  // status is a parameter: a 502 or 503 must stay a 502 or 503 — retry policy,
+  // dashboards and bug reports all key off the real code.
+  constructor(operation: string, status: number, url: string, body: unknown) {
+    super(operation, status, url, body, `Server error (${status})`);
     this.name = "ServerError";
+  }
+}
+
+// ─── Domain-specific errors: subclasses that carry business meaning ──────────
+
+export class CitationNotFoundError extends NotFoundError {
+  constructor(id: string, url: string, operation = "citations.getById") {
+    super(operation, url, null, `Citation '${id}' not found`);
+    this.name = "CitationNotFoundError";
+  }
+}
+
+export class CitationAlreadyPaidError extends ConflictError {
+  constructor(id: string, url: string, body: unknown) {
+    super("citations.pay", url, body, `Citation '${id}' has already been paid`);
+    this.name = "CitationAlreadyPaidError";
+  }
+}
+
+export class PaymentValidationError extends RequestValidationError {
+  constructor(url: string, validationErrors: string[]) {
+    super("citations.pay", url, validationErrors);
+    this.name = "PaymentValidationError";
   }
 }
 
 // ─── Error factory ────────────────────────────────────────────────────────────
 
-/** Maps HTTP status codes to specific error classes */
+/** Pulls `errors: string[]` out of a 422 body; falls back to the body itself. */
+export function extractValidationErrors(body: unknown): string[] {
+  if (typeof body === "object" && body !== null && "errors" in body) {
+    const errors = (body as { errors: unknown }).errors;
+    if (Array.isArray(errors)) return errors.map(String);
+  }
+  // String(body) would print "[object Object]" for a JSON body
+  return [typeof body === "string" ? body : JSON.stringify(body)];
+}
+
+/**
+ * Maps an HTTP status to the generic error class. Domain clients upgrade the
+ * ones they care about (404 → CitationNotFoundError, 409 → CitationAlreadyPaidError)
+ * BEFORE falling through to this factory.
+ */
 export function createApiError(
   operation: string,
   status: number,
   url: string,
   body: unknown,
-  context?: { id?: string },
 ): ApiError {
-  const bodyObj = body as Record<string, unknown> | null;
-
   switch (status) {
     case 404:
-      return new CitationNotFoundError(context?.id ?? "unknown", url);
+      return new NotFoundError(operation, url, body);
     case 409:
-      return new CitationAlreadyPaidError(context?.id ?? "unknown", url, body);
-    case 422: {
-      const errors = (bodyObj?.errors as string[]) ?? [String(body)];
-      return new PaymentValidationError(url, errors);
-    }
+      return new ConflictError(operation, url, body);
+    case 422:
+      return new RequestValidationError(operation, url, extractValidationErrors(body));
     case 429: {
-      const retryAfter = parseInt(String(bodyObj?.retryAfter ?? 60), 10);
-      return new RateLimitError(url, retryAfter);
+      // Real servers send the delay in the `Retry-After` header (seconds or an
+      // HTTP-date, RFC 9110 §10.2.3). Reading body.retryAfter is this chapter's
+      // simplification — pass response.headers in if your API uses the header.
+      const raw = (body as { retryAfter?: unknown } | null)?.retryAfter;
+      const retryAfter = Number(raw ?? 60);
+      return new RateLimitError(operation, url, Number.isFinite(retryAfter) ? retryAfter : 60);
     }
-    case 500:
-    case 502:
-    case 503:
-      return new ServerError(operation, url, body);
     default:
-      return new ApiError(
-        operation,
-        status,
-        url,
-        body,
-        `Unexpected status ${status}`,
-      );
+      if (status >= 500) return new ServerError(operation, status, url, body);
+      return new ApiError(operation, status, url, body, `Unexpected status ${status}`);
   }
 }
 ```
@@ -691,9 +747,17 @@ export function createApiError(
 ```typescript
 // lib/clients/CitationsClient.ts
 
-import type { ApiCore } from "../core/ApiCore";
+import { ApiHttpError, type ApiCore } from "../core/ApiCore";
 import { Endpoints } from "../endpoints/Endpoints";
-import { createApiError, CitationNotFoundError } from "../errors/ApiErrors";
+import {
+  createApiError,
+  extractValidationErrors,
+  CitationAlreadyPaidError,
+  CitationNotFoundError,
+  PaymentValidationError,
+  RateLimitError,
+  ServerError,
+} from "../errors/ApiErrors";
 import type {
   Citation,
   CreateCitationPayload,
@@ -787,7 +851,8 @@ export class CitationsClient {
       headers: this.getHeaders(),
     });
 
-    if (response.status === 404) throw new CitationNotFoundError(id, url);
+    if (response.status === 404)
+      throw new CitationNotFoundError(id, url, "citations.updateStatus");
     if (!response.ok)
       throw createApiError(
         "citations.updateStatus",
@@ -824,15 +889,13 @@ export class CitationsClient {
       headers: this.getHeaders(),
     });
 
-    if (!response.ok) {
-      throw createApiError(
-        "citations.pay",
-        response.status,
-        url,
-        response.body,
-        { id: citationId },
-      );
-    }
+    // Upgrade the statuses with business meaning, then fall through to the generic factory
+    if (response.status === 409)
+      throw new CitationAlreadyPaidError(citationId, url, response.body);
+    if (response.status === 422)
+      throw new PaymentValidationError(url, extractValidationErrors(response.body));
+    if (!response.ok)
+      throw createApiError("citations.pay", response.status, url, response.body);
 
     return response.body;
   }
@@ -909,6 +972,12 @@ export class CitationsClient {
   /**
    * Waits for a citation to reach the expected status via polling.
    * This is the correct alternative to for-loops with waitForTimeout.
+   *
+   * expect.poll semantics (measured on Playwright 1.60): a callback that RETURNS
+   * keeps polling until the matcher passes; a callback that THROWS aborts the
+   * poll at once with the thrown error. So: throw for permanent failures (404,
+   * 401, schema drift, terminal status), RETURN for transient ones — otherwise a
+   * single 503 in a two-minute wait fails the test.
    */
   async waitForStatus(
     id: string,
@@ -921,13 +990,22 @@ export class CitationsClient {
     await expect
       .poll(
         async () => {
-          lastCitation = await this.getById(id);
+          try {
+            lastCitation = await this.getById(id);
+          } catch (error) {
+            const transient =
+              error instanceof ServerError ||
+              error instanceof RateLimitError ||
+              (error instanceof ApiHttpError && error.status === 0); // network
+            if (transient) return `unavailable: ${(error as Error).message}`;
+            throw error; // permanent: fail now with the real error
+          }
           if (
-            ["FAILED", "CANCELLED"].includes(lastCitation.status) &&
-            lastCitation.status !== expectedStatus
+            lastCitation.status === "CANCELLED" &&
+            expectedStatus !== "CANCELLED"
           ) {
             throw new Error(
-              `Citation ${id} reached terminal status '${lastCitation.status}', expected '${expectedStatus}'`,
+              `Citation ${id} reached terminal status 'CANCELLED', expected '${expectedStatus}'`,
             );
           }
           return lastCitation.status;
@@ -978,36 +1056,40 @@ sequenceDiagram
 ```
 
 ```typescript
-// npm install zod
+// lib/types/domain.ts — the module CitationsClient imports its types from.
+// npm install zod   (written and run against Zod 4.x)
 import { z } from 'zod';
 
 // ─── Define schemas ───────────────────────────────────────────────────────────
 
 export const CitationStatusEnum = z.enum(['PENDING', 'PAID', 'OVERDUE', 'DISPUTED', 'CANCELLED']);
 
-export const CitationSchema = z.object({
+// Zod 4 idioms: z.iso.datetime() and z.strictObject()/z.looseObject() replace the
+// Zod 3 forms z.string().datetime() and .strict()/.passthrough(), which still run
+// but are marked @deprecated in 4.x.
+export const CitationSchema = z.strictObject({
   citationId:   z.string().regex(/^CIT-[A-Z0-9]+$/, 'citationId must start with CIT-'),
   customerId:   z.string().min(1),
   status:       CitationStatusEnum,
   amount:       z.number().positive('amount must be positive'),
   type:         z.string(),
-  issueDate:    z.string().datetime({ offset: true }),  // ISO 8601 with timezone
-  dueDate:      z.string().datetime({ offset: true }).nullable(),
+  issueDate:    z.iso.datetime({ offset: true }),  // ISO 8601 with timezone
+  dueDate:      z.iso.datetime({ offset: true }).nullable(),
   officerId:    z.string().nullable().optional(),
   notes:        z.string().nullable().optional(),
-  createdAt:    z.string().datetime({ offset: true }),
-  updatedAt:    z.string().datetime({ offset: true }),
-}).strict();  // .strict() = fail on unknown fields (catches extra fields)
+  createdAt:    z.iso.datetime({ offset: true }),
+  updatedAt:    z.iso.datetime({ offset: true }),
+});  // strictObject = fail on unknown fields (see the warning below)
 
 export type Citation = z.infer<typeof CitationSchema>;
 
-export const CreateCitationPayloadSchema = z.object({
+export const CreateCitationPayloadSchema = z.looseObject({
   customerId: z.string(),
   amount:     z.number().positive(),
   type:       z.string(),
   issueDate:  z.string().optional(),
   notes:      z.string().optional(),
-}).passthrough();  // allow extra fields (payloads can be extended)
+});  // looseObject = allow extra fields (payloads can be extended)
 
 export type CreateCitationPayload = z.infer<typeof CreateCitationPayloadSchema>;
 
@@ -1016,7 +1098,7 @@ export type CreateCitationPayload = z.infer<typeof CreateCitationPayloadSchema>;
 export class SchemaValidationError extends Error {
   constructor(
     public readonly operation: string,
-    public readonly issues:    z.ZodIssue[],
+    public readonly issues:    z.core.$ZodIssue[],
     public readonly rawBody:   unknown
   ) {
     const formatted = issues.map(i => `  ${i.path.join('.')}: ${i.message}`).join('\n');
@@ -1026,7 +1108,7 @@ export class SchemaValidationError extends Error {
 }
 
 export function parseResponse<T>(
-  schema:    z.ZodSchema<T>,
+  schema:    z.ZodType<T>,
   body:      unknown,
   operation: string
 ): T {
@@ -1053,26 +1135,42 @@ async create(payload: CreateCitationPayload): Promise<Citation> {
 }
 ```
 
+**Two cautions about the schemas above:**
+
+- **`z.strictObject` on a *response* is a policy choice with a cost.** An unknown key makes `safeParse` fail with `Unrecognized key` (verified), so every backwards-compatible *additive* change by the API team — a new optional field — turns into a red test. Default to the plain `z.object` (unknown keys stripped) and reserve `strictObject` for endpoints whose exact shape is a pinned contract. For drift detection that doesn't break unrelated tests, use [Chapter 38 — Contract Testing with Pact](../07_Specialised_Testing/38_Contract_Testing_Pact.md).
+- **The framework hand-rolls its validators instead.** [`framework/clients/UsersClient.ts`](../framework/clients/UsersClient.ts) checks shapes with small `assertNumber` / `assertString` helpers and throws its own `ValidationError`; `framework/package.json` has no `zod` dependency, and [`utilities/matchers/to-match-schema-zod.ts`](../framework/utilities/matchers/to-match-schema-zod.ts) accepts any object with a `safeParse` method, so it works with Zod without importing it. Zod is the better default once you have more than a handful of endpoints.
+
 ---
 
 ## 8. Retry Middleware
 
+Retry is the one layer where a plausible-looking implementation silently does nothing. Three rules decide whether it works:
+
+1. **Retry must look at what the layer below actually throws.** `ApiCore` returns every HTTP response (it throws `ApiHttpError` only for a network failure, status `0`), and the domain client throws `ApiError` subclasses. A retry wrapper that checks `error instanceof ApiHttpError && retryableStatuses.includes(error.status)` around a *domain-client* call never fires — the thing thrown is a `ServerError`, not an `ApiHttpError`. (That version, run against a server answering `503, 503, 201`, made 1 attempt and threw a `ServerError`.)
+2. **Never retry a non-idempotent request blindly.** A `POST` that timed out may have been processed. Retrying it can create the citation twice. Retry `POST` only on responses that mean "not processed" (`429`, and `503` from a server that documents it), never on a network error, unless the API takes an idempotency key — see [Chapter 23 §3b](./23_APIUtils_HTTP_Library.md#3b-advanced-apiutils-retry-with-exponential-backoff) and [Chapter 67 §5](../03_Real_World_Scenarios/67_Payment_Gateway_Testing.md#5-double-submit-and-idempotency--assert-effects-not-requests).
+3. **Backoff needs jitter and a cap**, or every client that failed together retries together.
+
 ```typescript
 // lib/core/retry.ts
 
+import { ApiError } from "../errors/ApiErrors";
+import { ApiHttpError } from "./ApiCore";
+
 export interface RetryConfig {
-  maxAttempts:      number;
+  maxAttempts:       number;
   retryableStatuses: number[];  // HTTP status codes to retry on
-  baseDelayMs:      number;     // Initial delay
-  maxDelayMs:       number;     // Maximum delay (for exponential backoff)
-  onRetry?:         (attempt: number, error: unknown, delayMs: number) => void;
+  retryNetworkErrors: boolean;  // ApiHttpError status 0 — only safe for idempotent calls
+  baseDelayMs:       number;    // Initial delay
+  maxDelayMs:        number;    // Maximum delay (for exponential backoff)
+  onRetry?:          (attempt: number, reason: unknown, delayMs: number) => void;
 }
 
 export const DEFAULT_RETRY_CONFIG: RetryConfig = {
-  maxAttempts:      3,
-  retryableStatuses: [429, 503, 502, 504],
-  baseDelayMs:      500,
-  maxDelayMs:       30_000,
+  maxAttempts:        3,
+  retryableStatuses:  [429, 502, 503, 504],
+  retryNetworkErrors: true,
+  baseDelayMs:        500,
+  maxDelayMs:         30_000,
 };
 
 export async function withRetry<T>(
@@ -1080,58 +1178,60 @@ export async function withRetry<T>(
   fn:        () => Promise<T>,
   config:    RetryConfig = DEFAULT_RETRY_CONFIG
 ): Promise<T> {
-  let lastError: unknown;
+  for (let attempt = 1; ; attempt++) {
+    const outOfAttempts = attempt >= config.maxAttempts;
+    let reason: unknown;
 
-  for (let attempt = 1; attempt <= config.maxAttempts; attempt++) {
     try {
       const result = await fn();
 
-      // Check if result is an ApiResponse with a retryable status
-      if (
-        result !== null &&
-        typeof result === 'object' &&
-        'status' in result &&
-        typeof (result as { status: number }).status === 'number' &&
-        config.retryableStatuses.includes((result as { status: number }).status)
-      ) {
-        const status = (result as { status: number }).status;
-        const delay  = calculateDelay(attempt, config);
-
-        config.onRetry?.(attempt, `HTTP ${status}`, delay);
-
-        if (attempt < config.maxAttempts) {
-          await sleep(delay);
-          continue;
-        }
+      // Works for both layers: an ApiResponse-shaped result (calling ApiCore
+      // directly) is retried on a retryable status; anything else is returned.
+      const status = statusOf(result);
+      if (status === undefined || !config.retryableStatuses.includes(status) || outOfAttempts) {
+        return result; // success, non-retryable, or out of attempts: hand it back as-is
       }
-
-      return result;
-
+      reason = `HTTP ${status}`;
     } catch (error) {
-      lastError = error;
-
-      // Only retry on retryable errors
-      const isRetryable = error instanceof ApiHttpError &&
-        config.retryableStatuses.includes(error.status);
-
-      if (!isRetryable || attempt >= config.maxAttempts) {
-        throw error;
-      }
-
-      const delay = calculateDelay(attempt, config);
-      config.onRetry?.(attempt, error, delay);
-      await sleep(delay);
+      if (outOfAttempts || !isRetryable(error, config)) throw error;
+      reason = error;
     }
-  }
 
-  throw lastError;
+    const delay = calculateDelay(attempt, config);
+    (config.onRetry ?? defaultOnRetry(operation))(attempt, reason, delay);
+    await sleep(delay);
+  }
+}
+
+function statusOf(result: unknown): number | undefined {
+  if (typeof result === "object" && result !== null && "status" in result) {
+    const status = (result as { status: unknown }).status;
+    if (typeof status === "number") return status;
+  }
+  return undefined;
+}
+
+function isRetryable(error: unknown, config: RetryConfig): boolean {
+  if (error instanceof ApiError) return config.retryableStatuses.includes(error.status);
+  if (error instanceof ApiHttpError) {
+    return error.status === 0
+      ? config.retryNetworkErrors
+      : config.retryableStatuses.includes(error.status);
+  }
+  return false; // SchemaValidationError, TypeError, assertion failures: never retry
 }
 
 function calculateDelay(attempt: number, config: RetryConfig): number {
-  // Exponential backoff with jitter
+  // Exponential backoff plus 0-10% jitter (jitter is only ever added), capped
   const exponential = config.baseDelayMs * Math.pow(2, attempt - 1);
-  const jitter      = Math.random() * 0.1 * exponential;  // ±10% jitter
+  const jitter      = Math.random() * 0.1 * exponential;
   return Math.min(exponential + jitter, config.maxDelayMs);
+}
+
+function defaultOnRetry(operation: string) {
+  return (attempt: number, reason: unknown, delayMs: number): void => {
+    console.warn(`[retry] ${operation} attempt ${attempt} failed (${String(reason)}); waiting ${Math.round(delayMs)}ms`);
+  };
 }
 
 function sleep(ms: number): Promise<void> {
@@ -1140,23 +1240,23 @@ function sleep(ms: number): Promise<void> {
 
 // ─── Usage in domain client ───────────────────────────────────────────────────
 
-// In CitationsClient:
+// In CitationsClient (needs: import { withRetry } from "../core/retry"):
 async createWithRetry(payload: CreateCitationPayload): Promise<Citation> {
   return withRetry(
     'citations.create',
     () => this.create(payload),
     {
-      maxAttempts:      3,
-      retryableStatuses: [503, 429],
-      baseDelayMs:      1000,
-      maxDelayMs:       10_000,
-      onRetry: (attempt, error, delay) => {
-        console.warn(`[CitationsClient] create retry ${attempt}: ${error}. Waiting ${delay}ms`);
-      },
+      maxAttempts:        3,
+      retryableStatuses:  [503, 429],
+      retryNetworkErrors: false,   // a timed-out POST may have been processed: never replay it blindly
+      baseDelayMs:        1000,
+      maxDelayMs:         10_000,
     }
   );
 }
 ```
+
+Verified against a local server that answers `503, 503, 201`: `createWithRetry` makes exactly 3 POSTs and returns the citation; a `500` is thrown after 1 attempt; a `400` is thrown after 1 attempt. The framework's own `ApiCore` ([`framework/utilities/api/ApiCore.ts`](../framework/utilities/api/ApiCore.ts)) retries *inside the core* instead (§11) — which is why it can also see network errors, and also why it replays `POST`/`PATCH` without asking (see §11).
 
 ---
 
@@ -1165,7 +1265,7 @@ async createWithRetry(payload: CreateCitationPayload): Promise<Citation> {
 ```typescript
 // fixtures/index.ts — Complete fixture wiring
 
-import { test as base, type TestInfo } from "@playwright/test";
+import { test as base } from "@playwright/test";
 import { ApiCore } from "../lib/core/ApiCore";
 import { CitationsClient } from "../lib/clients/CitationsClient";
 import { UsersClient } from "../lib/clients/UsersClient";
@@ -1190,28 +1290,30 @@ interface WorkerFixtures {
 export const test = base.extend<TestFixtures, WorkerFixtures>({
   // Worker-scoped: login once per worker
   account: [
-    async ({ browser }, use) => {
-      const context = await browser.newContext();
-      const page = await context.newPage();
-      const request = context.request;
+    async ({ playwright }, use) => {
+      // A token call needs an HTTP client, not a browser: a standalone request
+      // context is cheaper than browser.newContext() + a page we never use.
+      const request = await playwright.request.newContext();
 
       const loginResponse = await request.post(
         `${process.env.AUTH_URL}/token`,
         {
-          data: {
+          // `form`, NOT `data`: an object passed as `data` is always sent as JSON,
+          // even with a form Content-Type header set (see the table in §2).
+          // `form` sends grant_type=password&... with the right Content-Type.
+          form: {
             grant_type: "password",
             username: process.env.TEST_USER_EMAIL!,
             password: process.env.TEST_USER_PASSWORD!,
             client_id: process.env.OAUTH_CLIENT_ID!,
           },
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
         },
       );
 
       if (!loginResponse.ok()) {
-        throw new Error(
-          `Login failed: ${loginResponse.status()} — ${await loginResponse.text()}`,
-        );
+        const detail = await loginResponse.text();
+        await request.dispose();
+        throw new Error(`Login failed: ${loginResponse.status()} — ${detail}`);
       }
 
       const tokens = (await loginResponse.json()) as {
@@ -1220,7 +1322,7 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
         user_id: string;
       };
 
-      await context.close();
+      await request.dispose();
 
       await use({
         userId: tokens.user_id,
@@ -1232,7 +1334,7 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
   ],
 
   // Test-scoped: ApiCore (wraps Playwright's request context)
-  apiCore: async ({ request }, use, testInfo) => {
+  apiCore: async ({ request }, use) => {
     const core = new ApiCore(request, {
       baseUrl: process.env.CRM_API_URL!,
       defaultTimeoutMs: 30_000,
@@ -1244,7 +1346,12 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
 
   // Test-scoped: CitationsClient
   citationsClient: async ({ apiCore, account }, use, testInfo) => {
-    // getHeaders is lazy: called per request, ensuring token is always current
+    // getHeaders is a function so it is evaluated per request. Be clear about what
+    // that buys: `account` above is a snapshot from the worker's one login, so the
+    // token only changes if something mutates `account` (e.g. a refresh helper
+    // that updates account.accessToken). Without that, a token that expires
+    // mid-run still 401s. Passing a plain token string to the constructor
+    // (Challenge 4) is equivalent until you add refresh.
     const getHeaders = () =>
       HeadersCrm.auth(account.accessToken, testInfo.testId);
     await use(new CitationsClient(apiCore, getHeaders));
@@ -1275,9 +1382,16 @@ export { expect } from "@playwright/test";
 ```typescript
 // tests/specs/citations/payment.spec.ts
 // Import from YOUR fixtures, not from @playwright/test
+//
+// Project-specific pieces this snippet assumes (they are not defined in this chapter):
+//   PayloadsCitation   — payload factory, Chapter 22
+//   CitationDetailPage — a page object, Chapter 18
+//   dbClient           — a DB fixture added to the fixture list from §9, Chapter 30
 import { test, expect } from "../../fixtures";
 import { PayloadsCitation } from "../../data/payloads/PayloadsCitation";
+import { CitationDetailPage } from "../../pages/CitationDetailPage";
 import { CitationAlreadyPaidError } from "../../lib/errors/ApiErrors";
+import type { Citation } from "../../lib/types/domain";
 
 test.describe("Citation Payment", () => {
   test("Full payment flow — API + UI + DB verified", async ({
