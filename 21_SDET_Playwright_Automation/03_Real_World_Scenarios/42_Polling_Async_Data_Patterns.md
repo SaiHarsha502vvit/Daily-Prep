@@ -7,43 +7,48 @@
 - [`15_CrossSite_Pattern5_UI_API_Side_Effects.md`](../04_Cross_Site_Patterns_And_D365/15_CrossSite_Pattern5_UI_API_Side_Effects.md) — expect.poll in side-effect verification
 - [`26_Flakiness_Diagnosis_and_Fixing.md`](../06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md) — waitForTimeout as flakiness root cause
 - [`23_APIUtils_HTTP_Library.md`](../05_Enterprise_Framework/23_APIUtils_HTTP_Library.md) — API client patterns
+- [`labs/01-first-contact/`](../labs/01-first-contact/README.md) — hands-on: a deliberately slow page where `textContent()` right after a click returns the wrong thing and web-first assertions don't (the auto-wait half of this chapter, graded by planted bugs)
+- [`41_GraphQL_WebSocket_Testing.md`](./41_GraphQL_WebSocket_Testing.md) — WebSocket frame handling (Scenario D builds on it)
+
+> **Version note:** every Playwright behaviour in this chapter marked "measured" was checked against `@playwright/test` **1.60.0** (the version pinned in `labs/`) by running it, and cross-checked in the shipped source/typings. The names `citationsClient`, `reportsClient`, `PayloadsCitation` and friends are this module's fictional enterprise framework; the Playwright and Node calls are real.
 
 ---
 
 ## 0. War Stories — Async Bugs With Consequences
 
-### Story 1: The payment poller that masked a fraud vector
+### Story 1: The payment poller that was green before the payment finished (illustrative composite)
 
-A payment processing flow submitted a charge and then polled `GET /api/v1/payments/{id}` until `status === 'settled'`. The test used `expect.poll()` with a 90-second timeout. Tests passed consistently.
+A payment flow submitted a charge and then waited for "a settled payment" by polling the customer's payment *list*. The shared test customer already owned settled payments from earlier runs:
 
-Six months later, a penetration test found that the payment service accepted duplicate request IDs — you could replay a payment request and it would settle twice. The test never caught it because it polled for ANY settled payment, not for THE specific payment with the submitted request ID.
-
-The polling condition:
 ```typescript
-// ❌ Masks duplicate-payment bug
+// ❌ Passes on attempt 1 — ANY settled payment for this customer satisfies it
 await expect.poll(async () => {
-  const r = await apiClient.get(`/payments/${paymentId}`);
-  return r.body.status;
-}).toBe('settled');
+  const r = await apiClient.get(`/payments?customerId=${customerId}&status=settled`);
+  return r.body.items.length;
+}).toBeGreaterThan(0);
 ```
 
-The correct assertion checks the actual idempotency key in the response:
+The test was green in under a second, before the charge had even been processed. Months later a penetration test found the payment service accepted replayed request IDs and settled the same charge twice. The test could never have caught it: it was not looking at the payment it had just created.
+
 ```typescript
-// ✅ Verifies the correct payment, not just any payment
+// ✅ Poll THE record, and assert its identity, not just its terminal state
 await expect.poll(async () => {
   const r = await apiClient.get(`/payments/${paymentId}`);
   return r.body;
-}).toMatchObject({ status: 'settled', idempotencyKey: expectedKey });
+}, { timeout: 90_000 }).toMatchObject({ status: 'settled', idempotencyKey: expectedKey });
+// (a 90 s poll also needs test.setTimeout(...) — see "What the engine actually does" in section 2)
 ```
 
-**Lesson:** Polling on existence or simple status fields masks attribution bugs. Assert on the specific record's full identity, not just its terminal state.
+`toMatchObject` works under `expect.poll` (measured). The replay itself needs its own test: send the same idempotency key twice and assert exactly one settled payment exists for that key.
 
-### Story 2: `Promise.race` timeout that swallowed the real error
+**Lesson:** a polling condition that can be satisfied by data other than the record you created (existence checks, list queries, "any row with status X") is a green light that was never connected to your action. Poll by the ID your action returned and assert the record's identity.
 
-A test was written to "race" between a polling function and a timeout. The intent was: if the operation doesn't complete in 30 seconds, fail fast. The actual code:
+### Story 2: `Promise.race` timeout that hid the real error
+
+A test raced a polling helper against a 30-second timer so it would "fail fast":
 
 ```typescript
-// ❌ Promise.race with unhandled rejection
+// ❌ Promise.race as a timeout
 const result = await Promise.race([
   pollForPaymentStatus(paymentId),
   new Promise((_, reject) =>
@@ -52,14 +57,12 @@ const result = await Promise.race([
 ]);
 ```
 
-When `pollForPaymentStatus` threw an uncaught network error (`ECONNREFUSED`), the `Promise.race` ignored it — the timeout fired first (the network error caused a retry loop that outlasted the 30s). The test always reported "Timeout" regardless of the actual failure.
+The test always failed with "Timeout", whatever the real cause. The culprit was not `Promise.race` itself (it rejects with whichever promise settles first, so a throw from the poller would have surfaced): `pollForPaymentStatus` had its own catch-all retry loop that logged `ECONNREFUSED`, slept and retried. The real error never left the helper, and 30 s later the timer won with a message that says nothing about the last observed state. `Promise.race` made it worse in two further ways: nothing cancels the loser, so the poller keeps hitting the API after the test has failed (into teardown), and the timer is never cleared when the poller wins.
 
-**The trap:** `Promise.race` resolves or rejects with the FIRST to settle. If your polling function has internal retries, a transient failure causes it to retry, and the timeout settles first. You lose the real error message.
-
-The right pattern: **don't use `Promise.race` as a timeout mechanism.** Use `expect.poll` with a `timeout` option instead — it preserves the original error on failure:
+Use `expect.poll` and let it own both the deadline and the reporting:
 
 ```typescript
-// ✅ expect.poll propagates the real failure message
+// ✅ the deadline, the last observed value and real errors are all handled by the engine
 await expect.poll(
   async () => {
     const r = await apiClient.get(`/payments/${paymentId}`);
@@ -67,11 +70,13 @@ await expect.poll(
   },
   { timeout: 30_000, intervals: [1_000, 2_000, 5_000] }
 ).toBe('settled');
-// On failure: "Expected 'pending' to equal 'settled'" — the real state is visible
-// On network error: the error propagates directly
+// Timeout:  Expected: "settled"  Received: "pending"  ... Timeout 30000ms exceeded while waiting on the predicate
+// Throw:    an error thrown inside the callback stops the poll at once and surfaces unchanged (measured: 2nd attempt, 110 ms)
 ```
 
-**Lesson:** `Promise.race` as a timeout swallows real errors. `expect.poll` with `timeout` is safer because failure messages are preserved and meaningful.
+The catch-all-and-retry shape that caused the story is still available to you inside the callback, so decide on purpose which errors are transient (see "Transient errors vs permanent failures" in section 2).
+
+**Lesson:** a helper that swallows exceptions plus a timer that rejects with a generic message is how a diagnosable failure becomes "Timeout". Keep the last observed value and the original error on the failure path.
 
 ---
 
