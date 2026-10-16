@@ -55,12 +55,12 @@ The fix: set up the WebSocket listener BEFORE triggering the action, not after:
 
 ```typescript
 // WRONG — race condition
-await adminPage.click('button[name="createRecord"]');
+await adminPage.locator('button[name="createRecord"]').click();
 page.on('websocket', ws => { /* already missed the connection */ });
 
 // CORRECT — listener first
 const wsPromise = page.waitForEvent('websocket');
-await adminPage.click('button[name="createRecord"]');
+await adminPage.locator('button[name="createRecord"]').click();
 const ws = await wsPromise;
 ```
 
@@ -72,7 +72,7 @@ Our chat feature auto-reconnects on network interruption. We wrote a test that d
 
 Root cause: `page.route` aborts HTTP requests but doesn't affect WebSocket connections (which use a different protocol stack). `context.route('ws://**', ...)` is not the answer either — `route()` matches HTTP(S) requests, and there has never been a `ws://` variant of it.
 
-The fix we used at the time: `context.setOffline(true)` to simulate network drop, which does affect WebSockets, then `context.setOffline(false)` to restore, then wait for the reconnect message. That still works and is what §5 below uses.
+The fix we used at the time: `context.setOffline(true)` to simulate network drop, which does affect WebSockets (measured on 1.64.1: it blocks new connections and silences traffic on open ones, but it does not close an already-open socket, so the app only notices through its own heartbeat or timeout), then `context.setOffline(false)` to restore, then wait for the reconnect message. That still works if your app has a heartbeat; the reconnect test in §7 below uses `routeWebSocket()` to drop the socket deterministically instead.
 
 > **Playwright now has a first-class WebSocket routing API, and this chapter predates it.**
 > `page.routeWebSocket()` and `context.routeWebSocket()` are both present in the
@@ -535,12 +535,19 @@ test("GraphQL Subscription: Citation updates are received live", async ({
   citationsClient,
 }) => {
   const receivedData: any[] = [];
+  let subscribed = false;
 
   // Intercept the WebSocket connection to the GraphQL endpoint
   page.on("websocket", (ws) => {
+    // The frame event hands you { payload } — a string for text frames, a Buffer for binary ones
+    ws.on("framesent", (frame) => {
+      // In graphql-ws, the client starts a subscription by sending type: 'subscribe'
+      if (frame.payload.toString().includes('"type":"subscribe"')) subscribed = true;
+    });
     ws.on("framereceived", (frame) => {
-      if (frame.text) {
-        const msg = JSON.parse(frame.text);
+      const text = frame.payload.toString();
+      if (text) {
+        const msg = JSON.parse(text);
         // In graphql-ws, data payloads have type: 'next'
         if (msg.type === "next" && msg.payload?.data?.citationUpdated) {
           receivedData.push(msg.payload.data.citationUpdated);
@@ -551,8 +558,8 @@ test("GraphQL Subscription: Citation updates are received live", async ({
 
   await page.goto("/dashboard");
 
-  // Wait for the GQL subscription to be initialized by the client
-  await page.waitForTimeout(1000);
+  // Wait for the GQL subscription to be initialized by the client — a signal, not a sleep
+  await expect.poll(() => subscribed).toBe(true);
 
   // Trigger the mutation via API
   await citationsClient.updateStatus("CIT-001", { status: "PAID" });
@@ -657,22 +664,26 @@ test("Live citation status update received via WebSocket", async ({
   account,
 }) => {
   const receivedMessages: unknown[] = [];
+  let socketOpened = false;
 
   // Register WebSocket listener BEFORE navigating (race condition!)
   page.on("websocket", (ws) => {
     console.log(`[WS] Connection opened: ${ws.url()}`);
+    socketOpened = true;
 
     ws.on("framesent", (frame) => {
-      console.log(`[WS] Sent: ${frame.text ?? "[binary]"}`);
+      // frame.payload is a string for text frames and a Buffer for binary ones
+      console.log(`[WS] Sent: ${typeof frame.payload === "string" ? frame.payload : "[binary]"}`);
     });
 
     ws.on("framereceived", (frame) => {
-      console.log(`[WS] Received: ${frame.text}`);
-      if (frame.text) {
+      const text = frame.payload.toString();
+      console.log(`[WS] Received: ${text}`);
+      if (text) {
         try {
-          receivedMessages.push(JSON.parse(frame.text));
+          receivedMessages.push(JSON.parse(text));
         } catch {
-          receivedMessages.push(frame.text);
+          receivedMessages.push(text);
         }
       }
     });
@@ -684,7 +695,9 @@ test("Live citation status update received via WebSocket", async ({
 
   // Navigate — WebSocket connection is established by the app
   await page.goto("/citations/CIT-001");
-  await page.waitForLoadState("networkidle");
+  // The signal we need is "the socket is open", not "the network is quiet"
+  // (networkidle is DISCOURAGED in the typings, and an open socket's traffic keeps it from firing reliably)
+  await expect.poll(() => socketOpened).toBe(true);
 
   // Trigger an action that should generate a WebSocket notification
   await citationsClient.updateStatus("CIT-001", { status: "PAID" });
@@ -733,8 +746,9 @@ test("WebSocket messages arrive in chronological order", async ({
 
   page.on("websocket", (ws) => {
     ws.on("framereceived", (frame) => {
-      if (frame.text) {
-        const msg = JSON.parse(frame.text);
+      const text = frame.payload.toString();
+      if (text) {
+        const msg = JSON.parse(text);
         if (msg.type?.startsWith("CITATION_")) {
           messages.push(msg);
         }
@@ -773,36 +787,41 @@ test("WebSocket messages arrive in chronological order", async ({
 });
 
 // Test WebSocket reconnection (resilience)
-test("Application reconnects WebSocket after network interruption", async ({
+test("Application reconnects WebSocket after the connection drops", async ({
   page,
-  context,
 }) => {
   const connectionEvents: string[] = [];
+  const sockets: WebSocketRoute[] = []; // import type { WebSocketRoute } from "@playwright/test"
+
+  // Route the socket through Playwright so the test can drop it on demand.
+  // (context.setOffline(true) silences an open socket but does not close it — measured on Playwright
+  // 1.64.1 — so a "disconnected" event only appears if the app's own heartbeat times out. Dropping
+  // the socket through the route makes the disconnect deterministic.)
+  await page.routeWebSocket(/\/ws$/, (ws) => {
+    // /\/ws$/ stands for your app's WebSocket URL
+    ws.connectToServer(); // pass everything through to the real server
+    sockets.push(ws);
+  });
 
   page.on("websocket", (ws) => {
     connectionEvents.push("connected");
     ws.on("close", () => connectionEvents.push("disconnected"));
-    ws.on("framereceived", (frame) => {
-      if (frame.text?.includes("connected"))
-        connectionEvents.push("reconnected");
-    });
   });
 
   await page.goto("/dashboard");
-  expect(connectionEvents).toContain("connected");
+  await expect.poll(() => connectionEvents).toContain("connected");
 
-  // Simulate network interruption using Playwright's network conditions
-  await context.setOffline(true); // ← go offline
-  await page.waitForTimeout(2000); // wait for disconnect to be detected
-  await context.setOffline(false); // ← come back online
+  // Simulate the connection dropping
+  await sockets[0]!.close();
+  await expect.poll(() => connectionEvents).toContain("disconnected");
 
   // App should automatically reconnect within 10 seconds
   await expect
-    .poll(() => connectionEvents.filter((e) => e === "connected").length >= 2, {
-      message: "Waiting for WebSocket reconnection after network restore",
+    .poll(() => connectionEvents.filter((e) => e === "connected").length, {
+      message: "Waiting for WebSocket reconnection after the drop",
       timeout: 15_000,
     })
-    .toBeTruthy();
+    .toBeGreaterThanOrEqual(2);
 });
 ```
 
@@ -928,6 +947,8 @@ Design a `webSocketMessages` fixture that:
 ```typescript
 // fixtures/websocket.fixture.ts
 
+import { test as base, expect } from "@playwright/test";
+
 interface WsMessage {
   type: string;
   [key: string]: unknown;
@@ -947,10 +968,11 @@ export const test = base.extend<{ webSocketMessages: WebSocketFixture }>({
     const handlers: Array<() => void> = [];
 
     page.on("websocket", (ws) => {
-      const handler = (frame: { text?: string }) => {
-        if (frame.text) {
+      const handler = (frame: { payload: string | Buffer }) => {
+        const text = frame.payload.toString();
+        if (text) {
           try {
-            received.push(JSON.parse(frame.text));
+            received.push(JSON.parse(text));
           } catch {}
         }
       };
@@ -1070,7 +1092,7 @@ test("WebSocket subscription flow", async ({ page }) => {
   // 2. Wait for the specific response frame from the server
   const frameReceivedPromise = ws.waitForEvent("framereceived", {
     predicate: (frame) => {
-      const payload = frame.payload().toString();
+      const payload = frame.payload.toString();
       return payload.includes('"status": "connected"');
     },
   });
@@ -1081,7 +1103,7 @@ test("WebSocket subscription flow", async ({ page }) => {
 
   // 3. Await the specific frame
   const frame = await frameReceivedPromise;
-  expect(frame.payload().toString()).toContain("connected");
+  expect(frame.payload.toString()).toContain("connected");
 });
 ```
 

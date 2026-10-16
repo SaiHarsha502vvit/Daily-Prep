@@ -379,11 +379,8 @@ async function clickTabAndWait(
     { timeout: 5000 },
   );
 
-  // Step 2: Wait for spinner inside tab content (if any)
-  // Small delay to allow D365 to START loading tab content
-  await page.waitForTimeout(500); // only here because D365 tab triggers are async
-
-  // Step 3: Wait for actual content
+  // Step 2: Wait for actual content. No "give D365 a moment to start loading" sleep is needed:
+  // toBeVisible() re-queries until the content exists, so the async tab trigger is already covered.
   await expect(page.locator(contentSelector)).toBeVisible({ timeout: 20000 });
 }
 ```
@@ -572,7 +569,7 @@ Since your environment spans three different app types, here is a quick comparis
 |                    | D365 (React SPA)                                        | JSP / Servlet                        | ASPX (WebForms)                             |
 | ------------------ | ------------------------------------------------------- | ------------------------------------ | ------------------------------------------- |
 | **Navigation**     | Hash-based, no full reload                              | Full page reload                     | Mostly full reload, UpdatePanel partial     |
-| **Wait strategy**  | Content-based (`toHaveText`)                            | `waitForNavigation`                  | `waitForResponse` to UpdatePanel endpoint   |
+| **Wait strategy**  | Content-based (`toHaveText`)                            | `waitForURL`                         | `waitForResponse` to UpdatePanel endpoint   |
 | **Best locators**  | `data-automation-key`, `.ms-*`, `getByRole('menuitem')` | IDs (`#field1`), standard HTML roles | ASP.NET control IDs (`#ctl00_Main_btnSave`) |
 | **Loading signal** | `.ms-Spinner` disappears                                | New page HTML loaded                 | `#UpdateProgress1` disappears               |
 | **Tab switching**  | `aria-selected` changes, no navigation                  | New page loads                       | UpdatePanel partial refresh                 |
@@ -685,14 +682,18 @@ export default async function globalSetup() {
   await page.goto(process.env.CRM_URL!);
 
   // Azure AD login page
-  await page.fill('input[type="email"]', process.env.ADMIN_EMAIL!);
-  await page.click('input[type="submit"]'); // "Next"
-  await page.fill('input[type="password"]', process.env.ADMIN_PASSWORD!);
-  await page.click('input[type="submit"]'); // "Sign in"
+  await page.locator('input[type="email"]').fill(process.env.ADMIN_EMAIL!);
+  await page.locator('input[type="submit"]').click(); // "Next"
+  await page.locator('input[type="password"]').fill(process.env.ADMIN_PASSWORD!);
+  await page.locator('input[type="submit"]').click(); // "Sign in"
 
   // Handle "Stay signed in?" prompt (common with Azure AD)
+  // (isVisible() returns immediately — its `timeout` option is ignored — so wait on the button explicitly.)
   const staySignedIn = page.getByRole("button", { name: "Yes" });
-  if (await staySignedIn.isVisible({ timeout: 5000 }).catch(() => false)) {
+  const prompted = await staySignedIn
+    .waitFor({ state: "visible", timeout: 5000 })
+    .then(() => true, () => false);
+  if (prompted) {
     await staySignedIn.click();
   }
 
@@ -968,7 +969,7 @@ With 4 workers and `scope: 'worker'`: only 4 logins needed instead of 80. So 76 
 
 **"Dynamics 365 is just another web app for automation purposes"** → D365 has idiosyncrasies that make Playwright automation harder: forms use dynamically generated control IDs that change with form customization, the grid component uses virtual scrolling (rows not in viewport don't exist in DOM), loading indicators appear/disappear asynchronously in non-standard ways, and certain controls (lookup fields, date pickers, multi-select) are custom components that don't behave like native HTML inputs. Selector strategy must account for these: use `data-id` attributes and control-specific interaction patterns over CSS/XPath targeting inner elements.
 
-**"Waiting for page load is sufficient before interacting with D365 forms"** → D365 forms have multiple async loading phases: page navigation completes, then JavaScript initializes the form, then fields bind to data, then business rules run, then conditional field visibility resolves. `page.waitForLoadState('networkidle')` covers initial load but not all of these. For D365: wait for specific elements to appear (form title, a key field to be enabled/visible, the save button to be interactable). Always use locator-based waits tied to the actual state you need, not generic load state.
+**"Waiting for page load is sufficient before interacting with D365 forms"** → D365 forms have multiple async loading phases: page navigation completes, then JavaScript initializes the form, then fields bind to data, then business rules run, then conditional field visibility resolves. Network quiet is not a readiness signal for any of them: `page.waitForLoadState('networkidle')` is marked **DISCOURAGED** in Playwright's typings ("rely on web assertions to assess readiness instead"), and a D365 shell with background polling may never go quiet at all. For D365: wait for specific elements to appear (form title, a key field to be enabled/visible, the save button to be interactable). Always use locator-based waits tied to the actual state you need, not generic load state.
 
 **"Power Platform automation is the same as web automation"** → Power Apps (canvas apps, model-driven apps) run in an iframe within the D365 shell in some configurations. Playwright must switch to the correct frame context before interacting. `page.frameLocator('iframe[name="modelAppIframe"]')` and then target elements within that frame. Missing the iframe context is the #1 cause of "element not found" failures in D365 automation — the element exists, just in a different frame than the default.
 

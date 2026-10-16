@@ -368,7 +368,7 @@ await expect(page).toHaveScreenshot("d365-form.png", {
 // Challenge 2: Fluent UI Tooltips appear on hover
 // Solution: move mouse away from interactive elements before screenshotting
 await page.mouse.move(0, 0); // move to top-left corner
-await page.waitForTimeout(300); // wait for tooltip to hide
+await expect(page.getByRole("tooltip")).toHaveCount(0); // wait for the tooltip to hide — a state, not a sleep
 await expect(page).toHaveScreenshot("d365-grid.png");
 
 // Challenge 3: Focus rings (accessibility outlines) show when keyboard-navigating
@@ -473,7 +473,7 @@ interface VisualFixtures {
     options?: {
       mask?: Locator[];
       maxDiffPixelRatio?: number;
-      waitForSelector?: string; // wait for this to be visible before screenshotting
+      readySelector?: string; // wait for this to be visible before screenshotting
     },
   ) => Promise<void>;
 }
@@ -486,7 +486,7 @@ export const test = base.extend<VisualFixtures>({
       options: {
         mask?: Locator[];
         maxDiffPixelRatio?: number;
-        waitForSelector?: string;
+        readySelector?: string;
       } = {},
     ): Promise<void> => {
       // 1. Wait for D365 spinners to disappear
@@ -498,15 +498,15 @@ export const test = base.extend<VisualFixtures>({
       });
 
       // 2. Wait for custom content selector if specified
-      if (options.waitForSelector) {
-        await expect(page.locator(options.waitForSelector)).toBeVisible({
+      if (options.readySelector) {
+        await expect(page.locator(options.readySelector)).toBeVisible({
           timeout: 20_000,
         });
       }
 
       // 3. Move mouse to safe position (avoid hover states and tooltips)
       await page.mouse.move(5, 5); // top-left, out of the way
-      await page.waitForTimeout(150); // let tooltip fade out
+      await expect(page.getByRole("tooltip")).toHaveCount(0); // wait until the tooltip is gone
 
       // 4. Inject stability CSS
       await page.addStyleTag({
@@ -546,7 +546,7 @@ test("Citation form stable screenshot", async ({
         page.locator('[data-automation-key="createdon"]'),
         page.locator('[data-automation-key="modifiedon"]'),
       ],
-      waitForSelector: '[data-testid="citation-status"]',
+      readySelector: '[data-testid="citation-status"]',
     },
   );
 });
@@ -815,7 +815,7 @@ E) Increase `maxDiffPixelRatio` to 0.05
 
 **C** — Injecting `animation-duration: 0s` via CSS is a belt-and-suspenders approach that works for animations Playwright's built-in freezing might miss (e.g., animations triggered by JavaScript, not CSS transitions).
 
-**A** is the anti-pattern (waitForTimeout is never the answer). **D** helps with scope but doesn't fix the animation problem. **E** loosens the threshold but masks the real problem.
+**A** is the anti-pattern (waitForTimeout is never the answer — the typings say it "should only be used for debugging"). **D** helps with scope but doesn't fix the animation problem. **E** loosens the threshold but masks the real problem.
 
 </details>
 
@@ -840,7 +840,6 @@ interface ScreenshotOptions {
   name: string;
   maskLocators?: Locator[];
   maxDiffPixelRatio?: number;
-  stabilizeWaitMs?: number; // extra wait after mouse move (default: 150ms)
 }
 
 export async function screenshotComponent(
@@ -856,7 +855,7 @@ export async function screenshotComponent(
 
   // 3. Move mouse away to avoid hover states and tooltips
   await page.mouse.move(0, 0);
-  await page.waitForTimeout(options.stabilizeWaitMs ?? 150);
+  await expect(page.getByRole("tooltip")).toHaveCount(0); // wait until the tooltip is gone (no fixed sleep)
 
   // 4. Inject animation-killer CSS
   await page.addStyleTag({

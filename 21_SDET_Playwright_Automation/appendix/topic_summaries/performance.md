@@ -10,8 +10,8 @@
 
 1. [What performance testing in Playwright is for](#1-what-its-for)
 2. [Core Web Vitals — LCP, INP, CLS](#2-core-web-vitals)
-3. [Navigation Timing API](#3-navigation-timing)
-4. [The `web-vitals` library](#4-web-vitals-library)
+3. [Navigation Timing API](#3-navigation-timing-api)
+4. [The `web-vitals` library](#4-the-web-vitals-library)
 5. [Lighthouse CI integration](#5-lighthouse-ci)
 6. [k6 for load](#6-k6)
 7. [Performance budgets in CI](#7-budgets)
@@ -171,7 +171,7 @@ await page.addInitScript(() => {
 await page.goto("/");
 
 // Interact with the page to trigger INP
-await page.click("button");
+await page.locator("button").first().click();
 
 // Collect
 const vitals = await page.evaluate(() => (window as any).__vitals);
@@ -452,8 +452,7 @@ test("cold vs warm load", async ({ browser }) => {
   const cold = await browser.newContext();
   const coldPage = await cold.newPage();
   const coldStart = Date.now();
-  await coldPage.goto("/");
-  await coldPage.waitForLoadState("networkidle");
+  await coldPage.goto("/"); // resolves at the 'load' event — that is what we are timing
   const coldDuration = Date.now() - coldStart;
   await cold.close();
 
@@ -464,8 +463,7 @@ test("cold vs warm load", async ({ browser }) => {
   await warmPage.goto("/"); // warmup
 
   const warmStart = Date.now();
-  await warmPage.goto("/"); // measured
-  await warmPage.waitForLoadState("networkidle");
+  await warmPage.goto("/"); // measured, also to the 'load' event
   const warmDuration = Date.now() - warmStart;
   await warm.close();
 
@@ -475,6 +473,8 @@ test("cold vs warm load", async ({ browser }) => {
 ```
 
 For production perf budgets: cold load matters most (first impression).
+
+The timer stops at `load` on purpose: `waitUntil: 'networkidle'` is marked DISCOURAGED in Playwright's typings, and it would fold any background-polling tail into the number. If you need a user-centric end point, wait for the element the user is waiting for (`await expect(heroImage).toBeVisible()`) before stopping the timer.
 
 ---
 

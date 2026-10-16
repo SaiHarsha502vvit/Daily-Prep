@@ -222,7 +222,7 @@ The test-data isolation (unique per-test data) is YOUR responsibility as SDET �
 
 ```typescript
 // ❌ Hard sleep — the silent killer of test reliability
-await page.click("#saveBtn");
+await page.locator("#saveBtn").click();
 await page.waitForTimeout(3000); // "the page usually loads in 2s, so 3s should work"
 await expect(page.locator(".success")).toBeVisible();
 
@@ -237,7 +237,7 @@ await expect(page.locator(".success")).toBeVisible();
 
 ```typescript
 // ✅ Wait for what the user would observe
-await page.click("#saveBtn");
+await page.locator("#saveBtn").click();
 
 // Wait for: loading spinner to disappear (D365 pattern)
 await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30_000 });
@@ -256,7 +256,7 @@ const [saveResponse] = await Promise.all([
     (res) =>
       res.url().includes("/api/citations") && res.request().method() === "POST",
   ),
-  page.click("#saveBtn"),
+  page.locator("#saveBtn").click(),
 ]);
 expect(saveResponse.status()).toBe(201);
 ```
@@ -267,9 +267,10 @@ expect(saveResponse.status()).toBe(201);
 1. expect(locator).toBeVisible()        — auto-retrying, reads state, BEST
 2. page.waitForURL()                    — navigation-specific, very reliable
 3. page.waitForResponse()               — network-level, perfect for API-driven apps
-4. page.waitForLoadState('networkidle') — waits for network quiet, fragile for SPAs
-5. page.waitForSelector()              — lower-level, avoid if possible
-6. page.waitForTimeout(n)              — NEVER USE unless debugging
+4. locator.waitFor()                   — one-off state wait when no assertion fits (the typings point
+                                         page.waitForSelector() users here)
+5. page.waitForLoadState('networkidle') — ❌ typings: DISCOURAGED; network quiet is not UI readiness
+6. page.waitForTimeout(n)              — ❌ NEVER USE unless debugging
 ```
 
 ---

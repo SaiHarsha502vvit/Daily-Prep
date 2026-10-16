@@ -707,8 +707,8 @@ test("@security:kill-switch disables payment processing", async ({
 }) => {
   await pinFlags({ payment_processing_enabled: false });
   await page.goto("/checkout");
-  await page.fill("input[name=card]", "4111111111111111");
-  await page.click("button[type=submit]");
+  await page.locator("input[name=card]").fill("4111111111111111");
+  await page.locator("button[type=submit]").click();
   // Payment endpoint should return an error or redirect to safe state
   const response = await page.evaluate(async () => {
     const r = await fetch("/api/payment", {

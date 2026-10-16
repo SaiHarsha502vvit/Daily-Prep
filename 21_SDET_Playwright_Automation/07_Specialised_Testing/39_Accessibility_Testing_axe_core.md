@@ -256,7 +256,8 @@ test.describe("Accessibility @a11y @wcag", () => {
     assertA11y,
   }) => {
     await page.goto("/citations");
-    await page.waitForLoadState("networkidle"); // wait for dynamic content to load
+    // Wait for the dynamic content itself (networkidle is DISCOURAGED in Playwright's typings)
+    await expect(page.locator(".citation-row").first()).toBeVisible();
 
     // Assert: zero critical or serious violations
     await assertA11y({
@@ -487,8 +488,8 @@ test("Search results count is announced to screen readers via aria-live", async 
   );
 
   // Trigger a search
-  await page.fill("#searchInput", "CIT-001");
-  await page.click("#searchBtn");
+  await page.locator("#searchInput").fill("CIT-001");
+  await page.locator("#searchBtn").click();
 
   // Wait for the live region to be updated with the result count
   await expect(liveRegion.first()).toContainText(/results found|no results/i, {
@@ -502,7 +503,7 @@ test("Error messages are announced immediately via aria-live assertive", async (
   await page.goto("/citations/new");
 
   // Submit empty form to trigger validation errors
-  await page.click("#submitBtn");
+  await page.locator("#submitBtn").click();
 
   const errorRegion = page.locator('[aria-live="assertive"]');
   await expect(errorRegion).toBeVisible({ timeout: 5000 });
@@ -513,7 +514,7 @@ test("Error messages are announced immediately via aria-live assertive", async (
 
 test("Loading spinner has aria-label for screen readers", async ({ page }) => {
   await page.goto("/citations");
-  await page.click("#searchBtn");
+  await page.locator("#searchBtn").click();
 
   const spinner = page.locator('.ms-Spinner, [role="progressbar"]').first();
   if (await spinner.isVisible()) {
@@ -909,7 +910,7 @@ test("Citation detail modal is accessible", async ({ page }) => {
   await page.goto("/citations");
 
   // Click the row to open the modal
-  await page.click('.citation-row:has-text("CIT-001")');
+  await page.locator('.citation-row:has-text("CIT-001")').click();
 
   // Run axe immediately
   const results = await new AxeBuilder({ page }).analyze();
@@ -924,7 +925,7 @@ The test consistently passes locally but randomly fails in CI, or it passes in C
 
 **Bug**: Axe analyzes the DOM _at the exact millisecond_ it is invoked.
 
-When you `page.click()`, Playwright fires the click event. But the React/Vue modal might take 100ms to animate in, fetch data, and render its content. If you run `AxeBuilder` instantly, axe scans the page _before the modal is fully visible in the DOM_.
+When you `locator.click()`, Playwright fires the click event. But the React/Vue modal might take 100ms to animate in, fetch data, and render its content. If you run `AxeBuilder` instantly, axe scans the page _before the modal is fully visible in the DOM_.
 
 It passes because it's scanning the background page, completely missing the modal.
 
@@ -934,10 +935,10 @@ It passes because it's scanning the background page, completely missing the moda
 test("Citation detail modal is accessible", async ({ page }) => {
   await page.goto("/citations");
 
-  await page.click('.citation-row:has-text("CIT-001")');
+  await page.locator('.citation-row:has-text("CIT-001")').click();
 
   // Wait for the modal animation to finish and content to render
-  await page.waitForSelector(".modal-content", { state: "visible" });
+  await expect(page.locator(".modal-content")).toBeVisible();
 
   // Optional: if the modal loads data, wait for the data
   await expect(page.locator(".modal-amount")).toContainText("£");

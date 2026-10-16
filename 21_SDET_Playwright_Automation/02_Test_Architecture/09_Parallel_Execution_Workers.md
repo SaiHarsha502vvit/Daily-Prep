@@ -364,8 +364,8 @@ test.describe.serial('Citation lifecycle — must run in order', () => {
 
   test('Verify citation appears in UI', async ({ page }) => {
     // Uses createdCitationId from previous test
-    await page.fill('#citationSearch', createdCitationId);
-    await page.click('#searchButton');
+    await page.locator('#citationSearch').fill(createdCitationId);
+    await page.locator('#searchButton').click();
     await expect(page.locator('.result-row')).toBeVisible();
   });
 
@@ -715,8 +715,8 @@ Signs you have too few workers:
 
 ```typescript
 test("search for test customer", async ({ page }) => {
-  await page.fill("#emailSearch", "automation-test@company.com");
-  await page.click("#searchButton");
+  await page.locator("#emailSearch").fill("automation-test@company.com");
+  await page.locator("#searchButton").click();
   await expect(page.locator(".customer-row")).toHaveCount(1);
 });
 ```
@@ -748,12 +748,12 @@ citationRecord: (async ({ request }, use) => {
     // citationRecord is the citationId, pre-created
 
     await test.step("Verify citation appears in UI", async () => {
-      await page.fill("#citationSearch", citationRecord);
+      await page.locator("#citationSearch").fill(citationRecord);
       await expect(page.locator(".result-row")).toBeVisible();
     });
 
     await test.step("Delete citation via UI", async () => {
-      await page.click("#deleteButton");
+      await page.locator("#deleteButton").click();
       await expect(page.locator(".result-row")).toHaveCount(0);
     });
     // Fixture teardown: delete via API (safety net if UI delete failed)

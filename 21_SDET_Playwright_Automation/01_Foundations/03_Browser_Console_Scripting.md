@@ -697,7 +697,13 @@ test("Citations page makes the citations API call on load", async ({
 
   // Navigate — the injected script is already active
   await page.goto("/citations");
-  await page.waitForLoadState("networkidle");
+  // Wait for the thing we are about to assert on — the captured call — not for "network quiet"
+  // (waitForLoadState('networkidle') is marked DISCOURAGED in Playwright's typings)
+  await page.waitForFunction(() =>
+    ((window as any).__capturedApiCalls ?? []).some((c: { url: string }) =>
+      c.url.includes("/api/v2/citations"),
+    ),
+  );
 
   // Read the captured calls from the browser's memory
   const calls = await page.evaluate<Array<{ method: string; url: string }>>(
@@ -1012,7 +1018,7 @@ await client.send("Profiler.startPreciseCoverage", {
 await client.send("CSS.startRuleUsageTracking");
 
 await page.goto("/citations");
-await page.waitForLoadState("networkidle");
+await page.locator("#app-shell").waitFor(); // your page's "rendered" marker — not networkidle (DISCOURAGED)
 
 // Get JS coverage:
 const { result: jsCoverage } = await client.send(
@@ -1354,4 +1360,4 @@ await waitForText("#statusCell", "PAID");
 
 **"Playwright test files must be named *.spec.ts"** → By default, Playwright finds tests in files matching `**/*.{spec,test}.{js,ts,mjs}`. This is configurable via `testMatch` or `testDir` in `playwright.config.ts`. Teams commonly name files `*.e2e.ts` or `*.pw.ts` — just update `testMatch`. The `spec` convention comes from Jest and Jasmine; Playwright inherited it but does not require it.
 
-**"page.waitForSelector() and page.locator().waitFor() are equivalent"** → Both wait for a selector, but `waitForSelector` returns an `ElementHandle` (snapshot in time), while `locator().waitFor()` returns the locator itself (live, auto-retrying). `ElementHandle` is considered legacy in modern Playwright — it can go stale. The locator API is preferred for all interactions. Use `waitForSelector` only when you need a one-time check on existence and don't plan to interact with the element further.
+**"page.waitForSelector() and page.locator().waitFor() are equivalent"** → Both wait for a selector, but `waitForSelector` returns an `ElementHandle` (snapshot in time), while `locator().waitFor()` returns `void` — you keep using the same live, auto-retrying locator you already hold. `ElementHandle` is considered legacy in modern Playwright — it can go stale. The locator API is preferred for all interactions, and the typings for `page.waitForSelector()` say that using Locators and web-first assertions "makes the code wait-for-selector-free." Reach for `locator.waitFor({ state })` when you need a one-time state wait (`attached`, `detached`, `visible`, `hidden`) that no assertion expresses.

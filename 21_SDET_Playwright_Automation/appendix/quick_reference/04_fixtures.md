@@ -68,9 +68,9 @@ Without fixtures, every test duplicates setup:
 ```typescript
 test.beforeEach(async ({ page }) => {
   await page.goto("/login");
-  await page.fill("#username", process.env.TEST_USER!);
-  await page.fill("#password", process.env.TEST_PASSWORD!);
-  await page.click("#loginButton");
+  await page.locator("#username").fill(process.env.TEST_USER!);
+  await page.locator("#password").fill(process.env.TEST_PASSWORD!);
+  await page.locator("#loginButton").click();
   await page.waitForURL("**/dashboard");
 });
 ```
@@ -1127,9 +1127,9 @@ const test = base.extend({
   page: async ({ page }, use) => {
     // Pre-navigation
     await page.goto("/login");
-    await page.fill("#user", "admin");
-    await page.fill("#pass", "admin");
-    await page.click("#submit");
+    await page.locator("#user").fill("admin");
+    await page.locator("#pass").fill("admin");
+    await page.locator("#submit").click();
     await page.waitForURL(/dashboard/);
 
     // Inject the now-authenticated page

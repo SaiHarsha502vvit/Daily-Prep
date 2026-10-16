@@ -556,7 +556,9 @@ class D365WaitStrategy implements WaitStrategy {
 
 class JspWaitStrategy implements WaitStrategy {
   async waitForPageReady(page: Page): Promise<void> {
-    await page.waitForLoadState("networkidle", { timeout: 15_000 });
+    // Server-rendered: the document IS the content, so 'load' is the right gate
+    // ('networkidle' is DISCOURAGED in the typings — the assertion below is the real readiness check)
+    await page.waitForLoadState("load", { timeout: 15_000 });
     await expect(page.locator("#mainContent")).toBeVisible({ timeout: 10_000 });
   }
 }
@@ -972,7 +974,7 @@ class CitationTestHelper {
 
     // Verify in UI
     await page.goto(`/citations/${citation.citationId}`);
-    await page.waitForSelector(".citation-status");
+    await page.locator(".citation-status").waitFor();
     const status = await page.locator(".citation-status").textContent();
     if (status !== "PENDING") throw new Error("Wrong status");
 

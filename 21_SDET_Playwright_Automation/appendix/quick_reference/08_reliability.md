@@ -179,11 +179,11 @@ The complete list of "wait for X" primitives, with their semantics.
 3. expect.poll(callback) — polling on custom predicate
 4. page.waitForResponse / waitForRequest — network-bound
 5. page.waitForURL — navigation-bound
-6. page.waitForLoadState — page lifecycle
+6. page.waitForLoadState — page lifecycle ('load' / 'domcontentloaded'; 'networkidle' is DISCOURAGED)
 7. page.waitForFunction — JS predicate in page
 8. locator.waitFor — element state
 9. page.waitForEvent — generic event
-10. page.waitForTimeout — DON'T (only for triaging)
+10. page.waitForTimeout — DON'T (typings: debugging only)
 ```
 
 ### 4.2 What each waits for
@@ -196,7 +196,7 @@ The complete list of "wait for X" primitives, with their semantics.
 | `waitForResponse`  | An HTTP response matching predicate                               | `navigationTimeout` (30s)    |
 | `waitForRequest`   | An outbound HTTP request matching predicate                       | `navigationTimeout`          |
 | `waitForURL`       | URL to match pattern                                              | `navigationTimeout`          |
-| `waitForLoadState` | `'load'` / `'domcontentloaded'` / `'networkidle'`                 | `navigationTimeout`          |
+| `waitForLoadState` | `'load'` / `'domcontentloaded'` / `'networkidle'` (discouraged)   | `navigationTimeout`          |
 | `waitForFunction`  | JS function in page to return truthy                              | `actionTimeout`              |
 | `locator.waitFor`  | Element to reach state (`visible`/`hidden`/`attached`/`detached`) | `actionTimeout`              |
 | `waitForEvent`     | Event to fire on context/page                                     | `navigationTimeout`          |
@@ -365,7 +365,7 @@ Resolves when the page's URL matches. The match runs on every navigation event.
 ```typescript
 await page.waitForLoadState("domcontentloaded"); // HTML parsed
 await page.waitForLoadState("load"); // all resources loaded
-await page.waitForLoadState("networkidle"); // no network for 500ms
+await page.waitForLoadState("networkidle"); // ❌ DISCOURAGED (see warning below): no network for 500ms
 ```
 
 | State                | When it fires                                   |
@@ -374,7 +374,7 @@ await page.waitForLoadState("networkidle"); // no network for 500ms
 | `'load'`             | After all subresources (images, CSS, JS) loaded |
 | `'networkidle'`      | After 500ms of no network activity              |
 
-> **Warning:** `'networkidle'` is FRAGILE in real SPAs. Many apps maintain persistent connections (WebSockets, long-polling, analytics beacons) that never go idle. Tests waiting for `'networkidle'` hang forever.
+> **Warning:** Playwright's typings mark `'networkidle'` **DISCOURAGED**: "Don't use this method for testing, rely on web assertions to assess readiness instead." It is also FRAGILE in real SPAs. Many apps maintain persistent connections (long-polling, analytics beacons) that never go idle, so tests waiting for `'networkidle'` hang until the timeout.
 >
 > Prefer content-based waits (`expect(loc).toBeVisible()`) over `'networkidle'`.
 
@@ -383,9 +383,10 @@ await page.waitForLoadState("networkidle"); // no network for 500ms
 ```typescript
 const [response] = await Promise.all([
   page.waitForResponse(
-    (r) => r.url().includes("/api/citations") && r.method() === "POST",
+    (r) =>
+      r.url().includes("/api/citations") && r.request().method() === "POST",
   ),
-  page.click("#save"),
+  page.locator("#save").click(),
 ]);
 expect(response.ok()).toBeTruthy();
 const body = await response.json();
@@ -404,7 +405,7 @@ The `Promise.all` is essential — `waitForResponse` must be registered BEFORE t
 ```typescript
 const [request] = await Promise.all([
   page.waitForRequest((r) => r.url().includes("/track")),
-  page.click("#submit"),
+  page.locator("#submit").click(),
 ]);
 expect(request.postDataJSON()).toMatchObject({ event: "click-submit" });
 ```
@@ -729,7 +730,7 @@ Force-finishes all running CSS animations. Useful when you don't control the sty
 
 ```typescript
 // ❌ Race
-await page.click("#save");
+await page.locator("#save").click();
 const status = await api.get(`/citations/${id}`);
 expect(status.status).toBe("PAID");
 ```
@@ -743,9 +744,10 @@ The `api.get` may fire before the DB write completes.
 ```typescript
 const [saveResponse] = await Promise.all([
   page.waitForResponse(
-    (r) => r.url().includes("/api/citations") && r.method() === "POST",
+    (r) =>
+      r.url().includes("/api/citations") && r.request().method() === "POST",
   ),
-  page.click("#save"),
+  page.locator("#save").click(),
 ]);
 expect(saveResponse.ok()).toBeTruthy();
 
@@ -771,7 +773,7 @@ Use `expect.poll`:
 ```typescript
 const [saveResponse] = await Promise.all([
   page.waitForResponse((r) => r.url().includes("/api/citations")),
-  page.click("#save"),
+  page.locator("#save").click(),
 ]);
 expect(saveResponse.status()).toBe(202);
 
@@ -788,7 +790,7 @@ await expect
 UI confirms success via a notification, but the actual data isn't ready:
 
 ```typescript
-await page.click("#save");
+await page.locator("#save").click();
 await expect(page.getByRole("alert")).toContainText("Saved");
 // Notification is up — but the API may not have responded yet
 
@@ -809,7 +811,7 @@ Cross-validate UI and API/DB state.
 
 ```typescript
 // ❌ waitForEvent AFTER click
-await page.click("#open-in-new-tab");
+await page.locator("#open-in-new-tab").click();
 const newPage = await context.waitForEvent("page");
 // New tab might have opened before waitForEvent registered. Test hangs.
 ```
@@ -818,7 +820,7 @@ const newPage = await context.waitForEvent("page");
 // ✅ Promise.all
 const [newPage] = await Promise.all([
   context.waitForEvent("page"),
-  page.click("#open-in-new-tab"),
+  page.locator("#open-in-new-tab").click(),
 ]);
 ```
 
@@ -834,7 +836,7 @@ The pattern:
 // ✅
 const [download] = await Promise.all([
   page.waitForEvent("download"),
-  page.click("#export-csv"),
+  page.locator("#export-csv").click(),
 ]);
 const path = await download.path();
 ```
@@ -845,7 +847,7 @@ const path = await download.path();
 // ✅
 const [fileChooser] = await Promise.all([
   page.waitForEvent("filechooser"),
-  page.click("#upload-button"),
+  page.locator("#upload-button").click(),
 ]);
 await fileChooser.setFiles("/path/to/file.csv");
 ```
@@ -855,7 +857,7 @@ await fileChooser.setFiles("/path/to/file.csv");
 ```typescript
 // ✅ Register dialog handler BEFORE the action
 page.once("dialog", (dialog) => dialog.accept("input value"));
-await page.click("#prompt-button");
+await page.locator("#prompt-button").click();
 ```
 
 For dialogs use `page.once` (or `on`) — the handler MUST be registered first.
@@ -1182,7 +1184,7 @@ Real production bugs and their resolution.
 
 ## Reality Check
 
-**"Reliable tests are achieved by adding more waits"** → Reliability comes from correct waiting — waiting for the right condition, not just sleeping or increasing timeouts. `await page.waitForTimeout(2000)` is a sleep (bad); `await page.waitForSelector('.success-message')` waits for a specific condition (good). The right condition to wait for: the exact DOM/network state your next assertion depends on. Incorrect waits: waiting for a button to be visible when you need the API response it triggers to complete. Map your wait conditions to the actual state your test requires, not to an arbitrary time.
+**"Reliable tests are achieved by adding more waits"** → Reliability comes from correct waiting — waiting for the right condition, not just sleeping or increasing timeouts. `await page.waitForTimeout(2000)` is a sleep (bad); `await expect(page.locator('.success-message')).toBeVisible()` waits for a specific condition (good). The right condition to wait for: the exact DOM/network state your next assertion depends on. Incorrect waits: waiting for a button to be visible when you need the API response it triggers to complete. Map your wait conditions to the actual state your test requires, not to an arbitrary time.
 
 **"flaky: true in test config hides the problem"** → `test('name', { retries: 3 }, ...)` adds retries. This makes CI green while masking a real problem. Each retry: reruns the full test, consumes browser resources, extends pipeline duration. Track retry usage: if a test consistently needs 2 retries, the test is broken. Add to your CI reporting: tests with any retries on the last N runs are flagged for investigation. The goal: retries as a temporary buffer while you diagnose, not a permanent state.
 

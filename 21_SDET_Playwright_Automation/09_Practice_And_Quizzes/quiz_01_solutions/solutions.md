@@ -84,7 +84,7 @@ D) When you need to retry a failing operation
 
 **Explanation:** `Promise.all` runs multiple independent async operations SIMULTANEOUSLY and waits for all of them to complete. Use it when the operations don't depend on each other.
 
-Example: `Promise.all([context.waitForEvent('page'), page.click('#openNewTab')])` — both start at the same instant.
+Example: `Promise.all([context.waitForEvent('page'), page.locator('#openNewTab').click()])` — both start at the same instant.
 
 **Why others are wrong:**
 
@@ -141,10 +141,10 @@ const [first, second, third] = await Promise.all([
 
 **Question:** Which CORRECTLY handles the "new tab" race condition?
 
-A) `await page.click('#link'); const tab = await context.waitForEvent('page');`  
-B) `const [tab] = await Promise.all([context.waitForEvent('page'), page.click('#link')]);`  
+A) `await page.locator('#link').click(); const tab = await context.waitForEvent('page');`  
+B) `const [tab] = await Promise.all([context.waitForEvent('page'), page.locator('#link').click()]);`  
 C) `const tab = await page.waitForEvent('page');`  
-D) `await page.click('#link'); const tab = page.context().pages()[1];`
+D) `await page.locator('#link').click(); const tab = page.context().pages()[1];`
 
 **Correct Answer:** B
 
@@ -394,7 +394,7 @@ D) It's equivalent to `waitForLoadState('domcontentloaded')`
 
 **Correct Answer:** B
 
-**Explanation:** `networkidle` waits for 500ms with NO network activity. D365 (and most SPAs) have continuous background activity: telemetry, keep-alive pings, OData queries for caching. The `networkidle` condition never fires, and the test hangs until timeout.
+**Explanation:** `networkidle` waits for 500ms with NO network activity. D365 (and most SPAs) have continuous background activity: telemetry, keep-alive pings, OData queries for caching. The `networkidle` condition never fires, and the test hangs until timeout. Playwright's own typings go further and mark it **DISCOURAGED** for testing ("rely on web assertions to assess readiness instead"), so avoid it even on apps that do go quiet.
 
 Use instead:
 

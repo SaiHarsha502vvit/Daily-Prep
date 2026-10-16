@@ -435,18 +435,18 @@ const page = await context.newPage();
 
 // 1. Core Auth
 await page.goto("https://auth.company.com");
-await page.fill("#user", "admin");
-await page.fill("#pass", "secret");
-await page.click("#login");
+await page.locator("#user").fill("admin");
+await page.locator("#pass").fill("secret");
+await page.locator("#login").click();
 
 // 2. Tenant 1 Init
 await page.goto("https://tenant1.crm.com/dashboard");
-await page.waitForLoadState("networkidle");
+await page.locator("#app-shell").waitFor(); // your tenant's signed-in marker — not networkidle (DISCOURAGED)
 await context.storageState({ path: "auth-states/tenant1.json" });
 
 // 3. Tenant 2 Init (Re-using the same context!)
 await page.goto("https://tenant2.crm.com/dashboard");
-await page.waitForLoadState("networkidle");
+await page.locator("#app-shell").waitFor(); // your tenant's signed-in marker — not networkidle (DISCOURAGED)
 await context.storageState({ path: "auth-states/tenant2.json" });
 ```
 

@@ -190,9 +190,9 @@ test.describe("Authentication Enforcement @security @auth", () => {
     const page = await context.newPage();
 
     await page.goto("/login");
-    await page.fill("#email", process.env.TEST_CUSTOMER_EMAIL!);
-    await page.fill("#password", process.env.TEST_CUSTOMER_PASSWORD!);
-    await page.click("#loginBtn");
+    await page.locator("#email").fill(process.env.TEST_CUSTOMER_EMAIL!);
+    await page.locator("#password").fill(process.env.TEST_CUSTOMER_PASSWORD!);
+    await page.locator("#loginBtn").click();
     await page.waitForURL("**/dashboard", { timeout: 15_000 });
 
     // Capture the token from localStorage
@@ -202,7 +202,7 @@ test.describe("Authentication Enforcement @security @auth", () => {
     expect(token).toBeTruthy();
 
     // Step 2: Logout
-    await page.click('[data-testid="logout-btn"]');
+    await page.getByTestId('logout-btn').click();
     await page.waitForURL("**/login", { timeout: 10_000 });
 
     // Step 3: Try using the old token — must fail.
@@ -401,9 +401,17 @@ test.describe("Input Validation — Injection Prevention @security @a03", () => 
 
       await page.goto("/citations/new");
       await page.locator("#notes").fill(payload); // try injecting in a text field
-      await page.locator("#submitBtn").click();
 
-      await page.waitForLoadState("networkidle", { timeout: 5_000 });
+      // Wait for the app to process the submit (the signal), instead of guessing at network quiet:
+      // 'networkidle' is DISCOURAGED in the typings, and it would fail this test if the app polls.
+      await Promise.all([
+        page.waitForResponse(
+          (res) =>
+            res.url().includes("/api/citations") &&
+            res.request().method() === "POST",
+        ),
+        page.locator("#submitBtn").click(),
+      ]);
 
       // If an alert dialog appeared → XSS succeeded → test fails
       expect(
@@ -798,8 +806,8 @@ test("Citation notes sanitize XSS payloads", async ({ page }) => {
 
   // 1. Submit the payload
   await page.goto("/citations/new");
-  await page.fill("#notes", xssPayload);
-  await page.click("#saveBtn");
+  await page.locator("#notes").fill(xssPayload);
+  await page.locator("#saveBtn").click();
 
   // 2. Verify no unexpected dialog opens during navigation/rendering
   page.on("dialog", (dialog) => {

@@ -481,9 +481,9 @@ async function getHttpOnlyCookies(
 
 test("HttpOnly JWT cookie is set correctly after login", async ({ page }) => {
   await page.goto(process.env.AUTH_URL!);
-  await page.fill("#username", testUser.email);
-  await page.fill("#password", testUser.currentPassword);
-  await page.click("#loginBtn");
+  await page.locator("#username").fill(testUser.email);
+  await page.locator("#password").fill(testUser.currentPassword);
+  await page.locator("#loginBtn").click();
   await page.waitForURL("**/dashboard/**");
 
   const cookies = await getHttpOnlyCookies(page, process.env.AUTH_URL!);
@@ -814,9 +814,9 @@ test("OAuth PKCE flow uses S256 challenge method", async ({ page }) => {
   expect(params.get("state")).toBeTruthy(); // CSRF protection token
 
   // Complete login at the auth provider
-  await page.fill("#username", testUser.email);
-  await page.fill("#password", testUser.password);
-  await page.click("#loginBtn");
+  await page.locator("#username").fill(testUser.email);
+  await page.locator("#password").fill(testUser.password);
+  await page.locator("#loginBtn").click();
 
   // Wait for redirect back to the app
   await page.waitForURL(`${process.env.APP_URL}/**`, { timeout: 30_000 });
@@ -907,17 +907,19 @@ test("App successfully rotates expired access token using refresh token", async 
 
   // 3. Wait for the mocked access token to expire
   // (We mocked it to 5 seconds, so we wait 6 seconds)
-  await page.waitForTimeout(6000); // ⚠️ Rare valid use of waitForTimeout for clock testing
+  // ⚠️ A deliberate real-time sleep: the only thing we are waiting for is the wall clock. Playwright's typings
+  // say waitForTimeout "should only be used for debugging", so treat this as a last resort — see the clock note below.
+  await page.waitForTimeout(6000);
 
   // 4. Intercept the subsequent rotation request to verify it happens
   const [rotationRequest] = await Promise.all([
     page.waitForRequest(
       (req) =>
         req.url().includes("/oauth2/token") &&
-        req.postData()?.includes("grant_type=refresh_token"),
+        (req.postData()?.includes("grant_type=refresh_token") ?? false),
     ),
     // Trigger an API call in the UI by clicking a tab
-    page.click("text=Profile Settings"),
+    page.locator("text=Profile Settings").click(),
   ]);
 
   // 5. Verify the app sent the correct refresh token
@@ -930,6 +932,8 @@ test("App successfully rotates expired access token using refresh token", async 
 ```
 
 Testing this edge case manually is notoriously difficult (requiring testers to sit idle for hours). With Playwright's `page.route()`, you can compress hours of token TTLs into a 10-second test by modifying the `expires_in` response payload on the fly.
+
+> **Replacing the real sleep.** If the app decides a token is expired by reading the browser clock (`Date.now()`), you can drop the 6-second wait entirely: call `await page.clock.install()` before `page.goto(...)`, then `await page.clock.fastForward(6000)` where the sleep was. That controls the browser's clock only — it does not move the server's — so it is no use when the *server* rejects the token on its own clock. See [Ch61 — Emulation, Clock, Network and Devices](../03_Real_World_Scenarios/61_Emulation_Clock_Network_And_Devices.md).
 
 ---
 

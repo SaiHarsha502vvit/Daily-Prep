@@ -120,10 +120,10 @@ const button: Locator = page.getByRole("button", { name: "Save" });
 ### 2.2 ElementHandle — the eager reference (legacy)
 
 ```typescript
-const buttonHandle: ElementHandle = await page.$('button[data-id="save"]');
+const buttonHandle: ElementHandle | null = await page.$('button[data-id="save"]'); // null when nothing matches
 ```
 
-- `$` and `$$` are LEGACY APIs.
+- `$` and `$$` are LEGACY APIs: the typings say "Use locator-based `page.locator(selector)` instead".
 - Created with an immediate browser query.
 - Holds a JS handle to a SPECIFIC DOM element in the browser process.
 - If the element is removed from the DOM (React unmount, etc.), the handle becomes detached — every action throws.
@@ -779,6 +779,8 @@ await page.locator(".btn").click();
 ```
 
 The error message even suggests better locators based on what each element actually is.
+
+> **Migrating old `page.click(selector)` calls.** The string-selector form (`page.click(".btn")`, `page.fill(...)`, etc.) does not enforce strict mode by default: with two matches it silently acts on the first (verified on 1.64.1 — `page.click(".b")` clicked the first of two buttons). `page.locator(".btn").click()` is strict and throws the error above. So converting an old call to the locator form can surface a latent ambiguity — that is a gain, not a regression; make the selector unique instead of adding `.first()`.
 
 ### 11.2 How to disambiguate
 
@@ -1546,14 +1548,14 @@ const text = (await loc.textContent())?.replace(/\s+/g, " ").trim();
 
 ### Failure 11 — Click resolves before navigation
 
-**Symptom:** `await page.click('.submit')` then `expect(page).toHaveURL(/dashboard/)` — sometimes the URL check fires before navigation completes.
+**Symptom:** `await page.locator('.submit').click()` then `expect(page).toHaveURL(/dashboard/)` — sometimes the URL check fires before navigation completes.
 
 **Cause:** Click doesn't auto-wait for navigation. The page may still be on the old URL when the next line runs.
 
-**Fix:** Either use `Promise.all` with `waitForNavigation` (older API), or wait explicitly:
+**Fix:** Wait explicitly for the destination. (The older `Promise.all([page.waitForNavigation(), click])` form is deprecated — the typings call `waitForNavigation` "inherently racy" and point to `waitForURL`.)
 
 ```typescript
-await page.click(".submit");
+await page.locator(".submit").click();
 await page.waitForURL(/dashboard/);
 ```
 

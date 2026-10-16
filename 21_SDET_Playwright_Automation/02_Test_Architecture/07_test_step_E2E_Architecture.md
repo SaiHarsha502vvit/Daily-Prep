@@ -125,7 +125,7 @@ test("Full citation E2E flow", async ({ page, request, account, dbPool }) => {
 
   // Step 5 uses data.citationId from Step 1
   await test.step(`Enter citation ID ${data.citationId} into search form`, async () => {
-    await page.fill("#citationNumberInput", data.citationId!);
+    await page.locator("#citationNumberInput").fill(data.citationId!);
     // The ! (non-null assertion) is safe here because Step 1 asserted it's not null
   });
 
@@ -162,7 +162,7 @@ When clicking a button takes you to another page within the SAME browser session
 
 ```typescript
 await test.step("Click customer name to open customer details", async () => {
-  await page.click(".customer-name-link");
+  await page.locator(".customer-name-link").click();
   // Page navigates within the same tab
   await page.waitForURL("**/customer-details/**");
   // OR wait for a specific element on the new page:
@@ -177,13 +177,13 @@ When a button opens a new browser tab. **This requires `Promise.all`.**
 ```typescript
 await test.step("Click Edit opens Order details in new tab", async () => {
   // ❌ WRONG — race condition: tab might open and "close" before listener starts
-  await page.click("#editButton");
+  await page.locator("#editButton").click();
   const newPage = await page.context().waitForEvent("page"); // might miss it!
 
   // ✅ CORRECT — listener starts BEFORE the click fires
   const [newTabPage] = await Promise.all([
     page.context().waitForEvent("page"), // start listening
-    page.click("#editButton"), // trigger the open
+    page.locator("#editButton").click(), // trigger the open
   ]);
 
   // Store the new tab's Page object for later steps
@@ -226,14 +226,14 @@ test("Admin approves what Agent submitted", async ({ browser }) => {
 
   await test.step("Agent submits citation request", async () => {
     await agentPage.goto(process.env.AGENT_APP_URL!);
-    await agentPage.click("#submitCitation");
+    await agentPage.locator("#submitCitation").click();
     // ...
   });
 
   await test.step("Admin reviews and approves the submission", async () => {
     await adminPage.goto(process.env.ADMIN_APP_URL!);
     await adminPage.locator("#pendingApprovals").waitFor({ state: "visible" });
-    await adminPage.click("#approveButton");
+    await adminPage.locator("#approveButton").click();
     // ...
   });
 
@@ -367,7 +367,7 @@ test.describe("Citation — Full E2E Flow @crm @regression", () => {
 
     // ── STEP 4 ── Enter citation ID in form ───────────────────────────────
     await test.step(`Enter citation ID: ${data.citationId}`, async () => {
-      await page.fill("#citationNumberInput", data.citationId!);
+      await page.locator("#citationNumberInput").fill(data.citationId!);
     });
 
     // ── STEP 5 ── Click search ────────────────────────────────────────────
@@ -584,7 +584,7 @@ test("Long multi-step flow", async ({ page }) => {
   await expect(page.locator(".results")).toBeVisible({ timeout: 45_000 }); // 6.
 
   // Per-action override:
-  await page.click("#slowButton", { timeout: 20_000 }); // 7.
+  await page.locator("#slowButton").click({ timeout: 20_000 }); // 7.
 });
 
 // How the cascade works:
@@ -717,7 +717,7 @@ The Data Accumulator pattern (a typed `data` object) avoids this entire class of
 **Challenge 2 (New Tab Race Condition):** This code occasionally fails with "Event 'page' was not received." Why?
 
 ```typescript
-await page.click("#openDetailsButton");
+await page.locator("#openDetailsButton").click();
 const [newTab] = await page.context().waitForEvent("page");
 ```
 
@@ -728,7 +728,7 @@ The click fires and the new tab opens before `waitForEvent('page')` starts liste
 ```typescript
 const [newTab] = await Promise.all([
   page.context().waitForEvent("page"),
-  page.click("#openDetailsButton"),
+  page.locator("#openDetailsButton").click(),
 ]);
 ```
 

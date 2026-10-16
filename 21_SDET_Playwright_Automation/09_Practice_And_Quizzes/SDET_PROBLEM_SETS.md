@@ -200,11 +200,11 @@ test("user can add item to cart", async ({ page }) => {
 
 **Three problems:**
 
-1. **No navigation wait** — `.goto()` resolves when the initial HTML loads, but React components may not have mounted yet. `#add-to-cart` might not exist yet.
+1. **No readiness signal** — `.goto()` resolves at the `load` event, which can come before the framework has attached its handlers. The click itself auto-waits for `#add-to-cart` to exist and be actionable, but it cannot know the button is not yet wired up: click too early and nothing happens. If your app has a "hydrated/ready" marker, assert on it first. Do not reach for `waitForLoadState("networkidle")` — Playwright's typings mark it **DISCOURAGED** ("rely on web assertions to assess readiness instead").
 
-2. **`page.click()` without actionability check** — should use `page.locator('#add-to-cart').click()` which has auto-wait. `page.click()` (direct) has less retry logic.
+2. **Legacy string-selector calls** — `page.click("#add-to-cart")` and `page.textContent("#cart-count")` are the old API shape; the typings steer you to `page.locator("#add-to-cart").click()` and `.textContent()`. This is a style problem, not the cause of the flake: `page.click()` runs the same actionability checks and auto-wait as `locator.click()` (the string form is also not strict-mode: it silently acts on the first match).
 
-3. **`page.textContent()` is one-shot** — doesn't wait for the count to update. If the cart update is async (API call + state update), the count might still be `0` when read.
+3. **`textContent()` is one-shot** — it doesn't wait for the count to update. If the cart update is async (API call + state update), the count might still be `0` when read. This is the real flake.
 
 **Fixed version:**
 
@@ -212,14 +212,10 @@ test("user can add item to cart", async ({ page }) => {
 test("user can add item to cart", async ({ page }) => {
   await page.goto("http://localhost:3000");
 
-  // Wait for page to be ready
-  await page.waitForLoadState("networkidle");
+  // Locator API: lazy, auto-waiting, strict
+  await page.locator("#add-to-cart").click();
 
-  // Use locator API (auto-wait)
-  const addButton = page.locator("#add-to-cart");
-  await addButton.click();
-
-  // waitFor auto-retries until assertion passes or timeout
+  // A web-first assertion retries until it passes or times out
   await expect(page.locator("#cart-count")).toHaveText("1");
 });
 ```

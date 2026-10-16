@@ -41,9 +41,9 @@ test("example", async ({ page, request, browser, context }) => {
 // ❌ Without fixtures — repeated in every test file
 test.beforeEach(async ({ page }) => {
   await page.goto("/login");
-  await page.fill("#username", process.env.TEST_USER!);
-  await page.fill("#password", process.env.TEST_PASSWORD!);
-  await page.click("#loginButton");
+  await page.locator("#username").fill(process.env.TEST_USER!);
+  await page.locator("#password").fill(process.env.TEST_PASSWORD!);
+  await page.locator("#loginButton").click();
   await page.waitForURL("**/dashboard");
 });
 
@@ -708,9 +708,9 @@ export default async function globalSetup() {
   const page = await browser.newPage();
 
   await page.goto(process.env.APP_URL + "/login");
-  await page.fill("#username", process.env.TEST_USER!);
-  await page.fill("#password", process.env.TEST_PASSWORD!);
-  await page.click("#loginButton");
+  await page.locator("#username").fill(process.env.TEST_USER!);
+  await page.locator("#password").fill(process.env.TEST_PASSWORD!);
+  await page.locator("#loginButton").click();
   await page.waitForURL("**/dashboard");
 
   // Save auth state (cookies + localStorage) to a file
@@ -766,9 +766,9 @@ export const test = base.extend<{}, { workerStorageState: CapturedStorageState }
       const setupContext = await browser.newContext();
       const setupPage = await setupContext.newPage();
       await setupPage.goto(process.env.APP_URL + '/login');
-      await setupPage.fill('#username', process.env.TEST_USER!);
-      await setupPage.fill('#password', process.env.TEST_PASSWORD!);
-      await setupPage.click('#loginButton');
+      await setupPage.locator('#username').fill(process.env.TEST_USER!);
+      await setupPage.locator('#password').fill(process.env.TEST_PASSWORD!);
+      await setupPage.locator('#loginButton').click();
       await setupPage.waitForURL('**/dashboard');
 
       const state = await setupContext.storageState(); // in-memory object, no file I/O
@@ -891,9 +891,9 @@ account: [async ({ browser }, use) => {
   const context = await browser.newContext();
   const page    = await context.newPage();
   await page.goto('/login');
-  await page.fill('#user', 'test@test.com');
-  await page.fill('#pass', 'password');
-  await page.click('#submit');
+  await page.locator('#user').fill('test@test.com');
+  await page.locator('#pass').fill('password');
+  await page.locator('#submit').click();
   await page.waitForURL('/dashboard');
 
   const token = await page.evaluate(() => localStorage.getItem('token'));
@@ -919,9 +919,9 @@ account: [async ({ browser }, use) => {
   try {
     const page = await context.newPage();
     await page.goto('/login');
-    await page.fill('#user', 'test@test.com');
-    await page.fill('#pass', 'password');
-    await page.click('#submit');
+    await page.locator('#user').fill('test@test.com');
+    await page.locator('#pass').fill('password');
+    await page.locator('#submit').click();
     await page.waitForURL('/dashboard');
     await expect(page.locator('.user-menu')).toBeVisible({ timeout: 15_000 });
 

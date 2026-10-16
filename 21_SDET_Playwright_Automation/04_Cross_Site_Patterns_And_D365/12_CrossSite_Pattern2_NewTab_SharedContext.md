@@ -72,7 +72,7 @@ This is the most common mistake when handling new tabs:
 
 ```typescript
 // ❌ WRONG — race condition
-await page.click("#openOrderInNewTab");
+await page.locator("#openOrderInNewTab").click();
 // What if the new tab opens and the 'page' event fires BETWEEN these two lines?
 // Then waitForEvent never catches it and hangs until timeout!
 const newTab = await page.context().waitForEvent("page");
@@ -118,7 +118,7 @@ The event loop processes microtasks before the next I/O callback. When you `awai
 // ✅ CORRECT — Promise.all guarantees listener starts before click
 const [newTab] = await Promise.all([
   page.context().waitForEvent("page"), // start listening FIRST
-  page.click("#openOrderInNewTab"), // then trigger the click
+  page.locator("#openOrderInNewTab").click(), // then trigger the click
 ]);
 
 // newTab is a Page object — same API as page
@@ -141,7 +141,7 @@ context.on("page", (newPage) => {
 });
 
 // Now click — the listener is already registered
-await page.click("#openOrderInNewTab");
+await page.locator("#openOrderInNewTab").click();
 
 // Wait for at least one tab to open
 await expect.poll(() => openedTabs.length).toBeGreaterThan(0);
@@ -158,7 +158,7 @@ context.removeAllListeners("page");
 // With timeout:
 const [newTab] = await Promise.all([
   page.context().waitForEvent("page", { timeout: 30_000 }),
-  page.click("#openInNewTab"),
+  page.locator("#openInNewTab").click(),
 ]);
 
 // With predicate — wait for a SPECIFIC new tab (when multiple might open):
@@ -167,7 +167,7 @@ const [invoiceTab] = await Promise.all([
     predicate: (page) => page.url().includes("billing.company.com"),
     timeout: 30_000,
   }),
-  page.click("#viewInvoice"),
+  page.locator("#viewInvoice").click(),
 ]);
 // This resolves only when a new tab matching the URL predicate opens
 // Other new tabs opened simultaneously are ignored
@@ -308,7 +308,7 @@ test("user manages 3 open tabs simultaneously", async ({ page, context }) => {
   await test.step("Open order detail in tab 2", async () => {
     const [tab2] = await Promise.all([
       context.waitForEvent("page"),
-      page.click("#viewOrderDetail"),
+      page.locator("#viewOrderDetail").click(),
     ]);
     data.orderDetailTab = tab2;
     await tab2.waitForLoadState("domcontentloaded");
@@ -372,13 +372,13 @@ if (popupViewport && popupViewport.width < 800) {
 // page.waitForEvent('popup') — fires on the PAGE that triggers the popup:
 const [popup] = await Promise.all([
   page.waitForEvent("popup"), // listens on the triggering PAGE
-  page.click("#openTermsAndConditions"),
+  page.locator("#openTermsAndConditions").click(),
 ]);
 
 // context.waitForEvent('page') — fires on the CONTEXT for ANY new page:
 const [newPage] = await Promise.all([
   context.waitForEvent("page"), // catches tabs opened by ANY page in the context
-  page.click("#openTermsAndConditions"),
+  page.locator("#openTermsAndConditions").click(),
 ]);
 
 // Which to use?
@@ -494,7 +494,7 @@ test.describe("New Tab Tests", () => {
   test("track order in new tab", async ({ page, context }) => {
     const [orderTab] = await Promise.all([
       context.waitForEvent("page"),
-      page.click("#trackOrder"),
+      page.locator("#trackOrder").click(),
     ]);
     newTabPages.push(orderTab); // register for cleanup
     // ... rest of test
@@ -659,7 +659,7 @@ const newTabErrors: string[] = [];
 
 const [newTab] = await Promise.all([
   context.waitForEvent("page"),
-  page.click("#openReport"),
+  page.locator("#openReport").click(),
 ]);
 
 // Start listening immediately after we have the tab reference
@@ -692,14 +692,14 @@ Which code correctly handles a new tab opening?
 
 ```
 A) const newTab = await context.waitForEvent('page');
-   await page.click('#openNewTab');
+   await page.locator('#openNewTab').click();
 
-B) await page.click('#openNewTab');
+B) await page.locator('#openNewTab').click();
    const [newTab] = await Promise.all([context.waitForEvent('page')]);
 
 C) const [newTab] = await Promise.all([
      context.waitForEvent('page'),
-     page.click('#openNewTab'),
+     page.locator('#openNewTab').click(),
    ]);
 
 D) const newTab = await page.waitForEvent('page');
@@ -721,7 +721,7 @@ const [newTab] = await Promise.all([
   page.locator("#openDetails").click(),
 ]);
 
-await newTab.waitForLoadState("networkidle"); // waiting for network idle
+await newTab.waitForLoadState("networkidle"); // ❌ the bug: DISCOURAGED, and never fires on a polling SPA
 
 const details = new OrderDetailsPage(newTab);
 await expect(details.titleLocator).toBeVisible();
@@ -729,7 +729,7 @@ await expect(details.titleLocator).toBeVisible();
 
 <details><summary>Answer</summary>
 
-`waitForLoadState('networkidle')` waits for no network activity for 500ms. On D365 or any SPA with background polling (session keep-alive, telemetry, real-time updates), `networkidle` NEVER fires because there's always some background request. The test will hang until timeout.
+`waitForLoadState('networkidle')` waits for no network activity for 500ms — and Playwright's own typings mark it **DISCOURAGED**: "rely on web assertions to assess readiness instead." On D365 or any SPA with background polling (session keep-alive, telemetry, real-time updates), `networkidle` NEVER fires because there's always some background request. The test will hang until timeout.
 
 Fix:
 
@@ -1029,7 +1029,7 @@ Never rely purely on `waitForLoadState` when SSO redirects are involved in a new
 
 ## Reality Check
 
-**"page.waitForEvent('popup') catches all new tabs"**→ waitForEvent('popup') only catches tabs opened by window.open or target=_blank links. Tabs opened by browser extensions, JavaScript that modifies window.location, or server-side redirects with new windows may not trigger the popup event. Always race the popup event listener with a click action: const [popup] = await Promise.all([page.waitForEvent('popup'), page.click(link)]).
+**"page.waitForEvent('popup') catches all new tabs"**→ waitForEvent('popup') only catches tabs opened by window.open or target=_blank links. Tabs opened by browser extensions, JavaScript that modifies window.location, or server-side redirects with new windows may not trigger the popup event. Always race the popup event listener with a click action: const [popup] = await Promise.all([page.waitForEvent('popup'), page.locator(link).click()]).
 
 **"New tabs in the same context share all state"**→ Tabs in the same BrowserContext share cookies, localStorage origin-scoped storage, and service workers. But they do NOT share: in-memory JavaScript state, Web Worker instances, or IndexedDB locks. A web application that uses in-memory state management (React context, Vuex store) has independent state per tab even in the same browser context.
 

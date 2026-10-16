@@ -760,7 +760,7 @@ export class BadPage {
 export class SlowPage {
   async clickSaveAndWait(): Promise<void> {
     await this.saveButton.click();
-    await this.page.waitForTimeout(5000); // ❌ NEVER do this in POM
+    await this.page.waitForTimeout(5000); // ❌ NEVER do this in POM — a guess, not a signal (typings: debugging only)
   }
 }
 // Fix: wait for a specific observable condition
@@ -968,9 +968,9 @@ searchButton(index = 0): Locator {
 ```typescript
 async submitCitationForm(amount: string): Promise<boolean> {
   await this.page.locator('#amount').fill(amount);
-  await this.page.waitForTimeout(2000);
+  await this.page.waitForTimeout(2000); // ❌ anti-pattern 1: fixed sleep
   await this.page.locator('[aria-label="Submit"]').click();
-  await this.page.waitForTimeout(3000);
+  await this.page.waitForTimeout(3000); // ❌ anti-pattern 1 again
   const banner = this.page.locator('.success-banner');
   const visible = await banner.isVisible();
   expect(visible).toBe(true);   // assertion inside POM method

@@ -242,7 +242,7 @@ D365 Dataverse queries (OData calls to Microsoft's cloud DB) can take 8–12 sec
 
 ```typescript
 // ❌ NEVER do this — hard sleep is always wrong
-await page.waitForTimeout(10000); // fails in fast envs, too slow in slow envs
+await page.waitForTimeout(10000); // fails in fast envs, too slow in slow envs (typings: "only be used for debugging")
 
 // ✅ Content-based wait with generous timeout
 await expect(page.locator(".ms-DetailsList-row").first()).not.toHaveText("", {
@@ -633,7 +633,7 @@ test("Citation form shows validation errors when required fields are empty", asy
   });
 
   // Test the UI validation behaviour:
-  await page.click('[aria-label="Save"]');
+  await page.locator('[aria-label="Save"]').click();
   await expect(page.locator(".ms-MessageBar--error")).toBeVisible({
     timeout: 5000,
   });
@@ -1011,9 +1011,9 @@ test("Citations grid loads within acceptable OData thresholds", async ({
 
 ## Reality Check
 
-**"waitForLoadState('networkidle') means the page is ready"**→ networkidle fires when no network requests have been made for 500ms. But: single-page applications may have lazy-loaded components that fire requests after user interaction, WebSocket connections are not counted as network activity, and long-polling requests may keep the network permanently non-idle. Wait for specific DOM elements that indicate readiness rather than relying on network silence.
+**"waitForLoadState('networkidle') means the page is ready"**→ networkidle fires when no network requests have been made for 500ms. But: single-page applications may have lazy-loaded components that fire requests after user interaction, WebSocket connections are not counted as network activity, and long-polling requests may keep the network permanently non-idle. Playwright's own typings mark `networkidle` **DISCOURAGED** ("rely on web assertions to assess readiness instead"), so wait for specific DOM elements that indicate readiness rather than relying on network silence.
 
-**"Fixed timeouts (await page.waitForTimeout) are acceptable"**→ Fixed timeouts are the primary source of test flakiness: too short causes failures on slow CI runners, too long wastes execution time. Replace every waitForTimeout with a condition-based wait: waitForSelector, waitForResponse, or expect with polling. The only acceptable use of fixed timeout is as a last-resort debounce after a known animation that has no programmatic completion signal.
+**"Fixed timeouts (await page.waitForTimeout) are acceptable"**→ Fixed timeouts are the primary source of test flakiness: too short causes failures on slow CI runners, too long wastes execution time. Replace every waitForTimeout with a condition-based wait: a web-first `expect(locator)` assertion, `locator.waitFor()`, `waitForResponse`, or `expect.poll`. The typings say `waitForTimeout` "should only be used for debugging"; treat a fixed sleep in a committed test as a last resort for a known animation that has no programmatic completion signal, and leave a comment saying why.
 
 **"Slow applications need longer test timeouts"**→ Increasing timeouts masks performance problems. If a page takes 15 seconds to load in test, it takes 15 seconds in production too — that is a bug, not a test configuration issue. Set timeouts to the ACCEPTABLE performance threshold (page loads in 3 seconds) and let tests fail when the application is too slow. This turns your test suite into a performance monitoring tool.
 

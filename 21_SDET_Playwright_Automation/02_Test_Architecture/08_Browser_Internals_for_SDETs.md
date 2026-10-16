@@ -212,7 +212,7 @@ await page
 // This passes after Phase 1 (0.5–2s)
 // But the dropdown has no options yet!
 
-await page.selectOption("#MasterSearchDropdown-option", "Card");
+await page.locator("#MasterSearchDropdown-option").selectOption("Card");
 // Fails: option "Card" doesn't exist yet
 ```
 
@@ -247,7 +247,7 @@ const [response] = await Promise.all([
       response.url().includes("/api/master-search") &&
       response.status() === 200,
   ),
-  page.click("#searchButton"),
+  page.locator("#searchButton").click(),
 ]);
 // Now the response is available AND the UI will shortly update
 // Wait for at least one row — Playwright's toHaveCount takes a number, not a { minimum } object,
@@ -264,39 +264,41 @@ await page.waitForLoadState("domcontentloaded");
 // 'load' — fires when all resources (images, scripts) are loaded
 await page.waitForLoadState("load");
 
-// 'networkidle' — fires when no network requests for 500ms
-// ⚠️ FRAGILE on SPAs — they often have background polling requests
-// that prevent 'networkidle' from ever firing
-await page.waitForLoadState("networkidle"); // Use with caution
+// ❌ 'networkidle' — fires when there are no network connections for 500ms.
+// Playwright's typings mark it DISCOURAGED: "rely on web assertions to assess
+// readiness instead." On SPAs, background polling can keep it from ever firing,
+// and a fast app can look idle before it has rendered anything.
+await page.waitForLoadState("networkidle"); // ❌ don't — wait for the UI signal instead
+await expect(page.locator(".ms-DetailsList-row").first()).toBeVisible(); // ✅
 ```
 
 **Strategy 4 (NEVER USE): Hard timeout**
 
 ```typescript
-// ❌ NEVER do this in production tests
+// ❌ NEVER do this in production tests — the typings say it "should only be used for debugging"
 await page.waitForTimeout(10000); // "Wait 10 seconds and hope it loads"
 // Slow in fast environments. Fails in slow environments. Unacceptable.
 ```
 
 ---
 
-## 4. SPA Tab Navigation — Why `waitForNavigation` Fails
+## 4. SPA Tab Navigation — Why `waitForNavigation` Is the Wrong Tool
 
-In traditional multi-page apps (JSP, `.aspx`), clicking a tab causes a FULL PAGE RELOAD. Playwright's `page.waitForNavigation()` waits for this reload and works correctly.
+In traditional multi-page apps (JSP, `.aspx`), clicking a tab causes a FULL PAGE RELOAD. `page.waitForNavigation()` was the old way to wait for that reload. Playwright has since deprecated it: the typings say "This method is inherently racy" and point to `page.waitForURL()`.
 
 **In React SPAs (D365, your CRM app):** Clicking a tab does NOT reload the page. It:
 
-1. Updates the URL hash (e.g., `/customer/123#phones`)
+1. Optionally updates the URL (e.g., `/customer/123#phones`, through the History API or a hash change)
 2. Updates the React component state
 3. Re-renders the tab content in the same DOM
 
-**No browser navigation event fires.** If you do:
+**There is no document load — and whether `waitForNavigation` notices anything depends only on whether the URL changed.** Playwright's docs count History API URL changes as navigations, so (measured on 1.64.1) a tab that does `history.pushState(...)` makes `waitForNavigation()` resolve with `null`, while a tab that only swaps component state and leaves the URL alone makes it time out. Either way, it is the wrong signal: it tells you the URL moved, not that the tab content rendered. So this pattern is unreliable for SPAs:
 
 ```typescript
-// ❌ WRONG for SPAs
+// ❌ Deprecated and wrong signal for SPAs: times out when the tab switch leaves the URL unchanged
 await Promise.all([
-  page.waitForNavigation(), // Times out! No navigation happens.
-  page.click('[role="tab"][name="Phones"]'),
+  page.waitForNavigation(), // the signal is "URL changed", not "tab content rendered"
+  page.locator('[role="tab"][name="Phones"]').click(),
 ]);
 ```
 
@@ -304,7 +306,7 @@ await Promise.all([
 
 ```typescript
 // ✅ Wait for the tab to become active (aria-selected changes)
-await page.click('[role="tab"][name="Phones"]');
+await page.locator('[role="tab"][name="Phones"]').click();
 
 // Wait for the tab's aria-selected to update
 await expect(page.locator('[role="tab"][name="Phones"]')).toHaveAttribute(
@@ -339,9 +341,9 @@ These are traditional server-rendered apps. The server generates the full HTML o
 **Playwright approach:**
 
 ```typescript
-await page.click("#submitButton");
-// For JSP: the page fully reloads — waitForNavigation works
-await page.waitForNavigation({ waitUntil: "domcontentloaded" });
+await page.locator("#submitButton").click();
+// For JSP: the page fully reloads — wait for the destination URL (page.waitForNavigation is deprecated)
+await page.waitForURL(/\/results/, { waitUntil: "domcontentloaded" }); // your results URL
 // Now all server-rendered content is in the DOM
 ```
 
@@ -359,7 +361,7 @@ These use server-side rendering with **UpdatePanel** (partial page refresh via A
 
 ```typescript
 // For ASPX with UpdatePanel:
-await page.click("#ctl00_MainContent_btnSearch"); // ASP.NET server control ID
+await page.locator("#ctl00_MainContent_btnSearch").click(); // ASP.NET server control ID
 
 // Wait for UpdateProgress (loading indicator) to disappear
 await expect(page.locator("#UpdateProgress1")).toBeHidden({ timeout: 30000 });
@@ -451,7 +453,7 @@ expect(capturedCitationId).toMatch(/^CIT-\d+$/);
 
 ## 7. Chrome DevTools Protocol (CDP) — How Playwright Actually Talks to the Browser
 
-This is the missing layer most SDETs don't know about. When you call `await page.click('#btn')`, Playwright doesn't call a browser API. It sends a **JSON message over a WebSocket** to the browser's DevTools interface.
+This is the missing layer most SDETs don't know about. When you call `await page.locator('#btn').click()`, Playwright doesn't call a browser API. It sends a **JSON message over a WebSocket** to the browser's DevTools interface.
 
 ```
 The CDP Communication Stack:
@@ -507,14 +509,18 @@ Tracing.*         → start/stop trace recording (trace: 'on')
 **Viewing CDP traffic in action (debugging Playwright internals):**
 
 ```bash
-# Run Playwright with verbose CDP logging:
+# Run Playwright with API-call logging (each Playwright call, with its duration):
 DEBUG=pw:api npx playwright test mytest.spec.ts 2>&1 | head -100
 
-# You'll see raw CDP messages:
-# pw:api page.goto https://myapp.com +0ms
-# pw:api page._waitForLoadState(networkidle) +523ms
-# pw:api page.locator -> Locator@#submitBtn +0ms
-# pw:api locator.click +12ms
+# You'll see one started/succeeded pair per call, with the time since the previous line:
+#   pw:api => page.goto started +2ms
+#   pw:api navigating to "https://myapp.com/", waiting until "load" +1ms
+#   pw:api => locator.fill started +120ms
+#   pw:api <= locator.fill succeeded +45ms
+
+# For the raw CDP JSON messages themselves, use the protocol scope instead:
+DEBUG=pw:protocol npx playwright test mytest.spec.ts 2>&1 | head -100
+#   pw:protocol SEND ► {"id":1,"method":"Browser.getVersion"} +0ms
 ```
 
 ---
@@ -550,7 +556,7 @@ Execution order:
 
 ```javascript
 // The race without Promise.all:
-//   Time 0ms: await page.click('#openTab')  → click is sent to browser
+//   Time 0ms: await page.locator('#openTab').click()  → click is sent to browser
 //   Time 1ms: browser opens new tab → fires 'page' event
 //   Time 2ms: await context.waitForEvent('page')  → listener registered
 //             BUT the 'page' event already fired at 1ms → listener missed it
@@ -559,13 +565,13 @@ Execution order:
 // Promise.all prevents this:
 const [newTab] = await Promise.all([
   context.waitForEvent("page"), // listener registered FIRST (line 1 starts synchronously)
-  page.click("#openTab"), // click fires AFTER listener is registered
+  page.locator("#openTab").click(), // click fires AFTER listener is registered
 ]);
 
 // Why this works:
 // Promise.all STARTS both promises SIMULTANEOUSLY in the same microtask.
 // context.waitForEvent('page') registers its listener synchronously.
-// page.click('#openTab') is async — the actual click only happens on the next
+// page.locator('#openTab').click() is async — the actual click only happens on the next
 // CDP round-trip (which takes ≥2ms, by which time the listener is already registered).
 // No race condition possible.
 ```
@@ -579,7 +585,7 @@ const [newTab] = await Promise.all([
 
 async function exampleFlow() {
   console.log("1: before await"); // runs immediately
-  await page.click("#btn"); // SUSPENDS this function
+  await page.locator("#btn").click(); // SUSPENDS this function
   // --- event loop runs: processes CDP response, handles other events ---
   console.log("2: after await"); // resumes when CDP response arrives
 }
@@ -748,7 +754,7 @@ test("Measure Master Search render time", async ({ page }) => {
     performance.mark("search-button-clicked");
   });
 
-  await page.click("#searchButton");
+  await page.locator("#searchButton").click();
 
   // Wait for results to appear
   await expect(page.locator(".ms-DetailsList-row").first()).toBeVisible({
@@ -1000,7 +1006,7 @@ Alternative: inspect the DOM directly — look for a parent element with `role="
 **D365 (React SPA):**
 
 ```typescript
-await page.click("#searchButton");
+await page.locator("#searchButton").click();
 // No navigation fires — wait for content
 await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30000 });
 // Wait for at least one row — Playwright's toHaveCount takes a number, not a { minimum } object,
@@ -1011,10 +1017,9 @@ await expect(page.locator(".ms-DetailsList-row").first()).toBeVisible();
 **JSP (server-rendered):**
 
 ```typescript
-await Promise.all([
-  page.waitForNavigation({ waitUntil: "domcontentloaded" }),
-  page.click("#searchButton"),
-]);
+await page.locator("#searchButton").click();
+// Full reload: wait for the results URL (page.waitForNavigation is deprecated — "inherently racy")
+await page.waitForURL(/\/results/, { waitUntil: "domcontentloaded" }); // your results URL
 // All content is now in the DOM immediately
 await expect(page.locator("#resultTable tr").first()).toBeVisible();
 ```
@@ -1076,7 +1081,7 @@ await page.evaluate(() => {
 
 ---
 
-**Challenge 5 [CDP Communication]:** `await page.click('#btn')` takes 150ms in your test. Is this fast or slow? What are the two main components of this 150ms, and what would you do if you needed to speed it up?
+**Challenge 5 [CDP Communication]:** `await page.locator('#btn').click()` takes 150ms in your test. Is this fast or slow? What are the two main components of this 150ms, and what would you do if you needed to speed it up?
 
 <details><summary>Answer</summary>
 
@@ -1099,10 +1104,10 @@ await page.locator("#btn").click({ force: true });
 
 // 3. Real speedup: use Promise.all for INDEPENDENT actions:
 // Sequential: 150ms + 150ms = 300ms
-await page.click("#btn1");
-await page.click("#btn2");
+await page.locator("#btn1").click();
+await page.locator("#btn2").click();
 // Parallel (if btn2 doesn't depend on btn1's side effect):
-await Promise.all([page.click("#btn1"), page.click("#btn2")]);
+await Promise.all([page.locator("#btn1").click(), page.locator("#btn2").click()]);
 // = ~150ms total
 ```
 
