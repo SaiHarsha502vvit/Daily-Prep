@@ -16,7 +16,7 @@ We had given the AI a prompt and a screenshot. The AI had no access to the real 
 
 MCP (Model Context Protocol) is the fix. It gives AI models structured, real-time access to a running browser — so instead of guessing locators from a screenshot, the AI can click, read the accessibility tree, and generate tests from what's actually there.
 
-This chapter covers: what MCP is under the hood, how to run the Playwright MCP server, how to wire it into a real workflow, and — critically — the seven failure modes we hit before we learned where AI helps and where it hurts.
+This chapter covers: what MCP is under the hood, how to run the Playwright MCP server, how to wire it into a real workflow, the planner/generator/healer **Test Agents** that Playwright itself ships since 1.56 (derived from the files `init-agents` writes — §6.2), and — critically — the seven failure modes we hit before we learned where AI helps and where it hurts.
 
 ---
 
@@ -28,6 +28,8 @@ This chapter covers: what MCP is under the hood, how to run the Playwright MCP s
 4. [Workflow 2 — AI-Assisted Test Scaffolding](#4-workflow-2--ai-assisted-test-scaffolding)
 5. [Workflow 3 — AI-Assisted Flakiness Debugging](#5-workflow-3--ai-assisted-flakiness-debugging)
 6. [Workflow 4 — Selector Healing After UI Changes](#6-workflow-4--selector-healing-after-ui-changes)
+   - 6.1 [The other kind of self-healing — runtime fallback, no LLM](#61-the-other-kind-of-self-healing--runtime-fallback-no-llm-required)
+   - 6.2 [Playwright Test Agents — planner, generator, healer](#62-playwright-test-agents--planner-generator-healer-built-in-since-156)
 7. [The Seven Failure Modes (War Stories)](#7-the-seven-failure-modes-war-stories)
 8. [Decision Framework — When to Use AI, When Not To](#8-decision-framework--when-to-use-ai-when-not-to)
 9. [Integrating MCP Into Your CI Pipeline](#9-integrating-mcp-into-your-ci-pipeline)
@@ -582,6 +584,174 @@ async function healingLocator(page: Page, selector: string, fingerprint: Locator
 
 **When to reach for which:** the LLM script in §6 is the right tool when selectors drift broadly across a whole page redesign and you want one AI pass to propose new selectors for a human to review before merging. This section's fallback-and-score approach is the right tool when you want tests to survive *small*, *individual* attribute renames automatically, in CI, with zero API cost and zero non-determinism — at the price of maintaining fingerprints and accepting that a bad threshold either heals too eagerly (masking real bugs, per [`appendix/learning_paths/PATHWAY_02_PROFESSIONAL.md`](../appendix/learning_paths/PATHWAY_02_PROFESSIONAL.md)'s own interview question) or not eagerly enough (defeating the point). Neither replaces fixing the underlying flakiness in [Ch26](../06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md) — both exist to buy time while a real fix lands, not to avoid writing one.
 
+### 6.2 Playwright Test Agents — planner, generator, healer (built in since 1.56)
+
+Everything above was something you assemble yourself: an MCP server, a prompt, a script. Since **Playwright 1.56.0** (published 2025-10-06 per the npm registry; the [1.56 release notes](https://playwright.dev/docs/release-notes) introduce "Playwright Test Agents") the test runner itself ships a packaged version of the same idea, documented at [playwright.dev/docs/test-agents](https://playwright.dev/docs/test-agents). Three agents:
+
+| Agent | Job (per the docs) | Output |
+|---|---|---|
+| **Planner** | Explore the app, write a human-readable test plan | Markdown under `specs/` |
+| **Generator** | Turn the plan into executable tests, verifying selectors and assertions against the live app while it goes | `*.spec.ts` under your `testDir` |
+| **Healer** | Replay a failing test, inspect the UI, patch the test, re-run until it passes or the loop is stopped | Edited test, or a `test.fixme()` |
+
+The docs say they can be used independently, in sequence, or as chained calls in one agentic loop. That's the *what*. The rest of this section derives the *how* from what `init-agents` actually writes and what the server behind it actually does, because that's what tells you what to trust. Everything below was run against `@playwright/test@1.64.1` (current as of 2026-10-16) in a scratch project.
+
+#### Step 1 — what `npx playwright init-agents` puts on disk
+
+```bash
+npx playwright init-agents --loop=claude      # --prompts adds prompt templates
+```
+
+`init-agents --help` on 1.64.1 lists six loops: `claude`, `codex`, `copilot`, `opencode`, `vscode`, `vscode-legacy`. (The docs page and release notes name fewer — `vscode`, `claude`, `opencode`, plus `codex` in the docs — so treat the CLI's own `--help` as authoritative for your installed version.) Measured output, with a `playwright.config.ts` whose `testDir` is `./tests`:
+
+| Loop | Agent definitions | MCP wiring | Also written |
+|---|---|---|---|
+| `claude` | `.claude/agents/playwright-test-{planner,generator,healer}.md` | `.mcp.json` | `specs/README.md`, `tests/seed.spec.ts`; with `--prompts`: `.claude/prompts/playwright-test-{plan,generate,heal,coverage}.md` |
+| `vscode` / `copilot` | `.github/agents/playwright-test-*.agent.md` | `.vscode/mcp.json` | same specs/seed, `.github/workflows/copilot-setup-steps.yml`, `.github/prompts/*.prompt.md` with `--prompts` |
+| `vscode-legacy` | `.github/chatmodes/*.chatmode.md` | `.vscode/mcp.json` | specs/seed |
+| `codex` | `.codex/agents/playwright_test_*.toml` | none written | specs/seed, `.codex/prompts/*.md` with `--prompts` |
+| `opencode` | `.opencode/prompts/playwright-test-*.md` | `opencode.json` | specs/seed, prompts with `--prompts` |
+
+Now open the three Claude files — this is the whole "AI feature". Each is a YAML header plus a system prompt:
+
+```yaml
+---
+name: playwright-test-healer
+description: Use this agent when you need to debug and fix failing Playwright tests
+tools: Glob, Grep, Read, LS, Edit, MultiEdit, Write, mcp__playwright-test__browser_console_messages, mcp__playwright-test__browser_evaluate, mcp__playwright-test__browser_generate_locator, mcp__playwright-test__browser_network_request, mcp__playwright-test__browser_network_requests, mcp__playwright-test__browser_snapshot, mcp__playwright-test__test_debug, mcp__playwright-test__test_list, mcp__playwright-test__test_run
+model: sonnet
+---
+```
+
+and `.mcp.json`:
+
+```json
+{ "mcpServers": { "playwright-test": { "command": "npx", "args": ["playwright", "run-test-mcp-server"] } } }
+```
+
+From those files, three facts follow, and none of them is a guess:
+
+1. **Playwright ships prompts and a tool allowlist, not a model.** There is no inference call anywhere in `init-agents`' output. The "agent" is *your* AI client (here Claude Code's sub-agent mechanism: `name`/`description`/`tools`/`model` is that client's format) running Playwright's system prompt against Playwright's tool server. The `model:` line is a client-side choice you can edit — the generated files pin `sonnet` for the Claude loop.
+2. **The tool allowlist is the permission boundary.** The healer gets `Edit`/`MultiEdit`/`Write` (it must rewrite your test files) plus 9 MCP tools (6 `browser_*` inspection tools and `test_list`/`test_run`/`test_debug`); the planner and generator get no file-edit tools and write only through `planner_save_plan` / `generator_write_test`. The planner also gets `browser_run_code_unsafe` — arbitrary code in the page. Read the allowlist before you grant it to a client that has your credentials.
+3. **The healer's stop conditions live in prose.** Its prompt says to loop "until the test runs successfully," and, if it is confident the test is correct, to mark it `test.fixme()` with a comment. Nothing in the prompt is a hard bound. The docs mention "guardrails" that stop the loop; the generated files don't show where those live, so treat the bound as your client's turn and cost limits.
+
+`playwright run-test-mcp-server` is **not** the `@playwright/mcp` server from §2. I started it over stdio with an MCP client and listed its tools: **92**, of which 9 are test-runner/agent tools (`planner_setup_page`, `planner_save_plan`, `planner_submit_plan`, `generator_setup_page`, `generator_read_log`, `generator_write_test`, `test_list`, `test_run`, `test_debug`) and the rest are `browser_*` tools that reuse §2's names but operate on a browser *owned by a running test*. One visible difference: on this server the element argument of `browser_click`/`browser_type` is named `target`; passing `ref` was rejected with a validation error (`path: ["target"]`). It's started with `-c <config>` and so picks up *your* `playwright.config.ts`.
+
+Two cautions straight from the CLI behaviour, both reproduced:
+
+- **`init-agents` overwrites.** With the `claude` loop, a pre-existing `.mcp.json` containing another server came back containing only `playwright-test`, and a line I'd appended to a generated agent file was gone after a second run. (An existing seed file and `specs/` are left alone; the `vscode` loop merges into `.vscode/mcp.json` instead.) Merge by hand, and keep your prompt edits in a file you control. The docs also say to re-run `init-agents` after upgrading Playwright to pick up new tools — so keep customisations as a diff you can re-apply.
+- **The `.mcp.json` is OS-specific.** The generator has a `process.platform === "win32"` branch that emits `"command": "cmd", "args": ["/c", "npx", ...]`. Generate it on Windows, commit it, and a teammate on macOS/Linux has a server config calling a `cmd` that doesn't exist. Regenerate per OS or hand-write the `npx` form.
+
+#### Step 2 — the seed test is how the agent gets a *logged-in, fixture-ready* page
+
+The most important file is the boring one. `tests/seed.spec.ts` as generated:
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('Test group', () => {
+  test('seed', async ({ page }) => {
+    // generate code here.
+  });
+});
+```
+
+Why does a test file with an empty body matter? Read what `planner_setup_page` and `generator_setup_page` do with it (from the installed `playwright/lib/mcp/test/`): they run the seed test through the *normal test runner* — global setup first, then the test, with `workers: 1`, `timeout: 0` and a `pauseAtEnd: true` option — and when the body finishes they **don't close the page**; the test stays paused with its `page` alive and the server hands that page to the agent. Everything your seed did before pausing is therefore already true when the agent starts: your fixtures ran, your `beforeEach` ran, your `storageState` is loaded. Put the login in a fixture or project dependency ([Ch06](../02_Test_Architecture/06_Custom_Fixtures_Architecture.md)'s pattern) and the agent starts authenticated, in your base URL, with your custom `test` — which answers the exact complaint in §7 Failure 5 (AI bypassing the auth fixture) structurally rather than by prompt.
+
+Seed discovery is looser than the docs suggest: the server picks the first test file whose **basename contains "seed"** (`findSeedFile`), and creates `<testDir>/seed.spec.ts` only if none exists. A file called `seed-database.spec.ts` would be adopted as the browser seed. Name data-seeding scripts something else, or pass the seed path explicitly.
+
+#### Step 3 — the generator loop, traced with a real tool server
+
+I can't run your LLM in a lesson, but the half Playwright owns is deterministic, so I played the model's part with a plain MCP client against a 12-line todo page — calling the tools in the order the generator's prompt prescribes. (The page is a local `node:http` server; the model's reasoning is the only thing missing.)
+
+```mermaid
+sequenceDiagram
+    participant L as LLM (your AI client)
+    participant S as run-test-mcp-server
+    participant T as Seed test (paused)
+    participant B as Browser page
+    L->>S: generator_setup_page(plan, seedFile)
+    S->>T: run seed with pauseAtEnd
+    T->>B: fixtures, goto, then pause
+    S-->>L: paused snapshot (ariaSnapshot, refs e1, e2 ...)
+    L->>S: browser_type(target, text, intent)
+    S->>B: perform on the live page
+    S-->>L: "Ran Playwright code" + new state
+    Note over S: records intent + code into a journal
+    L->>S: generator_read_log
+    S-->>L: plan + seed + every step as title + code + best practices
+    L->>S: generator_write_test(fileName, code)
+    S-->>L: written (only inside a project testDir)
+```
+
+Real responses, trimmed. After `browser_type` with `intent: "Type milk in the input"`:
+
+```
+### Ran Playwright code
+await page.getByRole('textbox', { name: 'New todo' }).fill('milk');
+```
+
+and `generator_read_log` returns the plan, the seed source, then one block per step — the model's `intent` as the title, the code Playwright reported as the body — and ends with a fixed "Best practices" list (`NEVER! use page.waitForTimeout()`, `NEVER! use page.evaluate()`, ...). The derivation that matters: **the locators in a generated test are not typed out by the model from memory.** They come from Playwright's own report of what it executed (`getByRole('textbox', { name: 'New todo' })` — the §3 role-first style), and `browser_generate_locator` returns the same kind of answer for a ref. That is why the Failure 1 / Failure 3 hallucination classes (invented POM methods, invented accessible names) mostly disappear for *locators*. The model still decides *which steps to take*, *what to assert*, and *how to assemble the final file* — `generator_write_test` accepts any string (I wrote `// ok` and it was accepted) and doesn't run it. It refuses paths outside a project's `testDir` (`../escape.spec.ts` → `Test file did not match any of the test dirs: tests`).
+
+The seed's page snapshot in these tool results is `page.ariaSnapshot({ mode: "ai" })` — the `mode` option exists in 1.64.1's `types.d.ts` — the same YAML-with-`[ref=eN]` format as `browser_snapshot` in §1 and the §6 callout.
+
+#### Step 4 — the healer, and what is actually deterministic about it
+
+`test_list` returns each test with an id. `test_run` runs the suite normally and returns the list-reporter output with the failure and its call log. `test_debug` is the interesting one: it re-runs one test with `pauseOnError: true`, `timeout: 0`, `workers: 1` and `actionTimeout: 5000`. I broke a todo test (`getByRole('button', { name: 'Add item' })` where the real button is "Add") and called `test_debug` with its id:
+
+```
+### Paused on error:
+TimeoutError: locator.click: Timeout 5000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Add item' })
+
+### Page Snapshot:
+- textbox "New todo" [active] [ref=e3]: milk
+- button "Add" [ref=e4]
+### Task
+Try recovering from the error prior to continuing
+```
+
+The test is frozen **at the failing line, with its state intact** — the textbox still contains `milk`. The model reads the snapshot, can call `browser_generate_locator` on `e4` (answer: `getByRole('button', { name: 'Add' })`), edits the file, and calls `test_debug` again. Note what this loop is: *the same scan-the-current-DOM idea as §6.1*, but the candidate generator and the scorer are an LLM instead of an LCS-plus-weights function, and the output is a **source edit you can diff**, not a runtime substitution.
+
+Be precise about the difference, because "self-healing" is used for three different things in this chapter:
+
+| | §6.1 runtime fallback (Healenium-style) | §6 offline LLM script | §6.2 Healer agent |
+|---|---|---|---|
+| When it acts | During the test run, on a not-found | Offline, before merge | Offline, after a red run, in a dev or CI-bot session |
+| Who picks the replacement | Fixed scoring function over a stored fingerprint | LLM, from one snapshot | LLM, with the live paused page, console, network and the failure's call log |
+| Same input, same answer? | Yes — deterministic | No | No |
+| Cost per heal | Zero, runtime overhead only | One API call | A multi-turn tool loop (each `test_debug` round re-runs the test and returns a snapshot) |
+| Can it change the *assertion*? | No — locators only | Yes (whatever it rewrites) | **Yes** — its prompt says to fix "assertions and expected values" |
+| Where the change lives | Nowhere in source (a log line) | In the diff | In the diff |
+| Failure it is bad at | Heals the wrong element under a loose threshold | Rewrites tests it can't see in the tree | Makes the test green rather than correct |
+
+The last two rows are the whole risk. A locator healer can at worst click the wrong thing. The agent healer is explicitly licensed to change *what the test expects* until it passes — which is exactly Failure 6's "fix flakiness by waiting longer" in a more capable form. And the `test.fixme()` clause is a double-edged tool: it correctly parks a test whose feature is genuinely broken, and it *also* silently converts a real regression into a skipped test, with a comment the model wrote about what it thinks happened. Treat every healer PR like a PR from a junior who is rewarded for green: diff each assertion, and add a CI check that fails a PR that adds `test.fixme`/`test.skip` without a linked ticket.
+
+#### Step 5 — an agent-written test still needs a human, and here is how to judge it by measuring
+
+What the generator produced for "type milk, click Add, expect milk listed" is structurally what step 3's log contains. I wrote that exact shape to disk — the comment header the generator's prompt specifies (`// spec:`, `// seed:`), a describe named after the plan suite, the log's two actions and its assertion `expect(page.getByText('milk')).toBeVisible()` (that assertion code came straight from `browser_verify_text_visible`'s output) — and then ran it against the correct page plus four planted bugs, exactly the grading method of [`labs/HARNESS_GUIDE.md`](../labs/HARNESS_GUIDE.md) (a hand-rolled version of [Ch53](./53_Mutation_Testing_With_Stryker.md)'s mutation testing):
+
+| Planted bug in the todo app | `getByText('milk')` + `toBeVisible()` (as recorded) | `getByRole('listitem')` + `toHaveText(['milk'])` |
+|---|---|---|
+| none (correct app) | pass | pass |
+| Add button does nothing | caught | caught |
+| item text becomes `milkshake` | **missed — passes** | caught |
+| item text becomes `milk (undefined)` | **missed — passes** | caught |
+| item is added twice | caught (strict-mode violation: 2 elements) | caught |
+
+The generated assertion is *valid, live-verified and weak*: `getByText` matches substrings case-insensitively by default, so any item that merely *contains* "milk" passes. The tool did exactly what it was asked — it checked "text visible" — and a mutation-style grade caught what a green first run could not. This is the review burden in one example: the first run proves nothing about assertion strength. Make "could this test fail for the bugs I'd actually ship?" a required step for any agent-written test — plant three plausible bugs (as the labs do) and confirm each turns the test red — before it joins the suite.
+
+#### What this costs you, honestly
+
+- **Determinism.** Once merged, a generated or healed test is ordinary Playwright code — the LLM is *not* in your CI run, which is the big advantage over "AI at runtime" tools. But *producing* it is non-deterministic: two planner runs on the same app give different plans. Commit the plans in `specs/` (the generated test header `// spec: specs/...` links them) so intent is reviewable.
+- **Cost and latency.** Every step is an LLM turn that carries page state back to the model (`browser_click` returned a snapshot reference; the setup and `test_debug` calls returned the full aria snapshot inline); the healer re-runs tests inside the loop. Budget it per feature, not per test, and cap turns in your client.
+- **Review burden.** You exchange typing time for reading time. Review the plan (is this the right behaviour?), then each assertion (step 5), then the healer's diff (did it change an expected value?). A plan that reflects the *app's current behaviour* rather than the *requirement* will happily encode a bug as the expectation — the planner has no access to your acceptance criteria unless you give them (the docs list an optional PRD input).
+- **Fixture and POM fit.** The generator writes to the seed's idiom. If your suite uses [Ch05](../02_Test_Architecture/05_POM_Architecture_Deep_Dive.md) page objects, the first generated tests will use raw `page.getByRole(...)` unless your seed and prompt show the POM; do not assume it learns your framework.
+- **Security.** `browser_run_code_unsafe` (planner), `browser_evaluate` (all three) and `test_run` (which executes your repo's test code) mean this is code execution driven by a model that reads untrusted page content. Run it against non-production data and a scoped test account.
+
+**What I could not confirm, and left out:** the docs' "generation hints and assertion catalog" wording (nothing in the generated files or the tool server I inspected corresponds to it), what exactly the docs' "guardrails" are, and any measured success rate for the generator or healer — those depend on your model and app, and I made no LLM run to measure them.
+
 ---
 
 ## 7. The Seven Failure Modes (War Stories)
@@ -668,8 +838,13 @@ Is the task locator discovery?
             ├── Yes → AI drafts, you review every assertion. Never ship AI tests without review.
             └── No
                 Is the task selector healing after a UI refactor?
-                ├── Yes → Use healing script with accessibility snapshot. Check results.
-                └── No → Write it yourself. AI adds noise for unfamiliar frameworks.
+                ├── Yes → Small attribute renames: runtime scoring (§6.1). Broad redesign: healing
+                │         script (§6) or the Healer agent (§6.2). Diff every change, assertions included.
+                └── No
+                    Is the task "cover a whole flow from nothing, fast"?
+                    ├── Yes → Test Agents (§6.2): commit the plan, then grade each generated
+                    │         test with planted bugs before it joins the suite.
+                    └── No → Write it yourself. AI adds noise for unfamiliar frameworks.
 ```
 
 ### The things AI consistently gets wrong in SDET work
@@ -777,12 +952,20 @@ git add -p                  # commit intentionally
 
 Implement the `heal-selectors.ts` script from Section 6. Run it against one of your test files after deliberately breaking 3 locators. How accurate is the healing? Where does it fail?
 
+### Challenge 5 — Read the agents before you trust them (1 hr)
+
+1. In a scratch project with a `testDir`, run `npx playwright init-agents --loop=claude --prompts` and list every file it created.
+2. Open the three agent files. For each, write down: which tools it can call, and which of them can edit files or run code.
+3. Start `npx playwright run-test-mcp-server --headless -c .` from an MCP client (the official `@modelcontextprotocol/sdk` stdio client is 10 lines), call `generator_setup_page` against a tiny local page, perform two actions with `browser_*` tools, and read back `generator_read_log`. Where does each line of generated code come from?
+4. Write the generated test to disk, then plant three plausible bugs in the page (wrong text, duplicated item, silent no-op). Which does the test miss? Strengthen the weakest assertion until all three turn it red ([`labs/HARNESS_GUIDE.md`](../labs/HARNESS_GUIDE.md) has the method).
+
 ---
 
 **What's next:**
 
 - **Ch 26** — Flakiness Diagnosis. The systematic framework that AI diagnosis is best paired with.
 - **Ch 43** — War Stories. The lived failures that inform every AI interaction boundary.
+- **Ch 53** — Mutation Testing With Stryker. The automated version of the "plant bugs, does the test fail?" grading §6.2 uses on agent-written tests.
 - **Ch 44** — Enterprise API Client. How to hand typed client code to the AI so it generates correct API test scaffolding.
 
 
