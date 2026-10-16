@@ -35,7 +35,12 @@ A structured exploration of ethical issues in computing and software engineering
 
 ## Chapters
 
-1. [Professional Ethics Frameworks & Safety-Critical Systems](01_Professional_Ethics_Frameworks_And_Safety_Critical_Systems.md) — Weeks 1–2. ACM Code (7 principles) + IEEE/ACM SE Code (8 principles), enforcement (COPE, the Tao Li case), Therac-25 mapped to specific principle violations, the 3 consequence tracks (professional/civil/criminal)
+1. [Professional Ethics Frameworks & Safety-Critical Systems](01_Professional_Ethics_Frameworks_And_Safety_Critical_Systems.md) — Weeks 1–2. ACM Code + IEEE/ACM SE Code, enforcement (COPE), Therac-25 mapped to specific principles, the three consequence tracks
+2. [Data Privacy, GDPR/CCPA & Surveillance](02_Data_Privacy_GDPR_CCPA_And_Surveillance.md) — Weeks 3 and 6. Lawful bases, consent, erasure as an engineering problem, CCPA/CPRA, ad-tech tracking and fingerprinting entropy, k-anonymity
+3. [AI Ethics: Bias, Fairness & Explainability](03_AI_Ethics_Bias_Fairness_And_Explainability.md) — Week 4. Fairness metrics from the confusion matrix, the impossibility result, COMPAS recomputed from ProPublica's data, Shapley/SHAP, GDPR Art. 22, EU AI Act, NIST AI RMF
+4. [Intellectual Property & Open-Source Licensing](04_Intellectual_Property_And_Open_Source_Licensing.md) — Week 5. IP regimes, copyleft triggers, compatibility, licence-change era, a real `node_modules` licence audit, AI and IP
+5. [Case Studies & Ethical Decision-Making](05_Case_Studies_And_Ethical_Decision_Making.md) — Weeks 7–8. Frameworks as procedures, Boeing 737 MAX, Cambridge Analytica, whistleblowing, a repeatable decision procedure
+6. [Capstone: Ethical Risk Assessment](06_Capstone_Ethical_Risk_Assessment.md) — Week 9. A complete worked assessment, risk-matrix pitfalls, template and grading rubric
 
 ## Assessment
 

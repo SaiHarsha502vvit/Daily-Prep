@@ -1,142 +1,55 @@
-# Curriculum Buildout Plan — Populating S01-S08 CSE Course Shells
+# Curriculum Buildout — Completion Record
 
-> **Status:** Phase 1 + Phase 2 COMPLETE (June 2026). All 15 Tier-A wrappers shipped. Phase 3 (Tier-B bridging) and Phase 4 (Tier-C ground-up) remain.
+> **Status (2026-10-04):** all 32 CSE courses in `S01/`–`S08/` are complete. The phase-by-phase plan that produced them is in git history.
+> Lines = total lines of all `.md` files in the course folder (README + chapters), measured 2026-10-04.
 
-## Progress Snapshot (after Phase 2)
+## Course Types
 
-| Tier | Total | Done | Remaining |
-|------|-------|------|-----------|
-| Built before this work (CSE401 OS, CSE402 Networks) | 2 | 2 | 0 |
-| **Tier A — Wrapper courses** | 15 | **15 ✅** | 0 |
-| **Tier B — Partial content + bridging chapters** | 10 | 0 | 10 |
-| **Tier C — Ground-up content** | 4 | 0 | 4 |
-| **TOTAL** | 32 | **17 (53%)** | 14 |
+- **Wrapper** — README-only 16-week guide that orchestrates existing repo modules (week plans, section challenges, capstone links). README-only is the finished form, not a stub.
+- **Standalone README** — one large self-contained README course (CSE401, CSE402).
+- **Chapter course** — README with a chapter index + authored chapter files (`NN_Title.md`) in the course folder, teaching from first principles.
 
-Tier-A wrappers completed: CSE102, CSE201, CSE202, CSE301, CSE302, CSE501, CSE502, CSE503, CSE504, CSE601, CSE602, CSE603, CSE604, CSE703, CSE804.
+## Status
 
-## Reality Check
+| Course | Type | Chapters | Lines | Status |
+| ------ | ---- | -------- | ----- | ------ |
+| CSE101 Discrete Mathematics | Chapter | 12 | 6,012 | Complete |
+| CSE102 Programming Fundamentals | Wrapper | — | 198 | Complete |
+| CSE103 Linear Algebra | Chapter | 14 | 7,025 | Complete |
+| CSE104 Computer Systems | Chapter | 12 | 5,754 | Complete |
+| CSE201 Data Structures | Wrapper | — | 355 | Complete |
+| CSE202 Algorithms & Complexity | Wrapper | — | 303 | Complete |
+| CSE203 Probability & Statistics | Chapter | 12 | 4,570 | Complete |
+| CSE204 Computer Architecture | Chapter | 10 | 4,319 | Complete |
+| CSE301 OOP & Design Patterns | Wrapper | — | 220 | Complete |
+| CSE302 Databases & SQL | Wrapper | — | 247 | Complete |
+| CSE303 Theory of Computation | Chapter | 11 | 5,178 | Complete |
+| CSE304 Numerical Methods | Chapter | 12 | 5,766 | Complete |
+| CSE401 Operating Systems | Standalone README | — | 1,095 | Complete |
+| CSE402 Computer Networks | Standalone README | — | 994 | Complete |
+| CSE403 Cryptography & Security | Chapter | 13 | 2,898 | Complete |
+| CSE404 Information Retrieval | Chapter | 8 | 2,324 | Complete |
+| CSE501 JavaScript & TypeScript Deep Dive | Wrapper | — | 191 | Complete |
+| CSE502 React & Frontend Architecture | Wrapper | — | 191 | Complete |
+| CSE503 CSS & Design Systems | Wrapper | — | 184 | Complete |
+| CSE504 Frontend Integration & Performance | Wrapper | — | 180 | Complete |
+| CSE601 Spring Boot & Microservices | Wrapper | — | 189 | Complete |
+| CSE602 API Design & Testing | Wrapper | — | 201 | Complete |
+| CSE603 DevOps & CI/CD | Wrapper | — | 151 | Complete |
+| CSE604 Java Concurrency & JVM Internals | Wrapper | — | 182 | Complete |
+| CSE701 Compilers & Language Processing | Chapter | 10 | 2,578 | Complete |
+| CSE702 Distributed Systems | Chapter | 8 | 1,310 | Complete |
+| CSE703 Machine Learning | Wrapper | — | 194 | Complete |
+| CSE704 Advanced Algorithms | Chapter | 8 | 1,195 | Complete |
+| CSE801 Capstone Project | Chapter | 6 | 1,272 | Complete |
+| CSE802 Human-Computer Interaction | Chapter | 6 | 1,027 | Complete |
+| CSE803 Ethics & Professional Practice | Chapter | 6 | 1,423 | Complete |
+| CSE804 Career Mastery & Interview Readiness | Wrapper | — | 194 | Complete |
 
-`_Curriculum/` is an 8-semester academic structure (S01-S08) with 4 CSE courses per semester = **32 courses total**. Current state:
+**Totals:** 15 wrappers, 2 standalone READMEs, 15 chapter courses (148 chapters).
 
-- **2 fully built** (~1000 lines each, CSE401 standard): CSE401 Operating Systems, CSE402 Computer Networks
-- **15 wrapper courses** (180-360 lines each, ~3,500 lines total) added in Phase 1 + 2
-- **14 stubs** remaining: have title + description + learning outcomes + syllabus outline. Missing: week-by-week plan, section challenges, problem-set references, capstone connection
+## Quality Standard
 
-## Three-Tier Effort Classification
-
-### Tier A — Wrapper Courses (existing content can be referenced)
-
-These courses map to comprehensive existing folders. Each becomes a **300-500 line semester guide** that orchestrates existing chapter files into a 16-week reading + lab + problem-set plan. No new ground-up content needed.
-
-| Course | Maps to existing folder(s) | Status |
-|--------|-----------------------------|--------|
-| CSE102 Programming Fundamentals | 07_Modern_Java + 17_TypeScript | Stub |
-| **CSE201 Data Structures** | 02_Data_Structures | Stub |
-| **CSE202 Algorithms & Complexity** | 03_Algorithms + 04_Patterns | Stub |
-| **CSE301 OOP & Design Patterns** | 06_OOP_Design | Stub |
-| **CSE302 Databases & SQL** | 08_SQL | Stub |
-| CSE501 JavaScript & TypeScript Deep Dive | 16_JavaScript + 17_TypeScript | Stub |
-| CSE502 React & Frontend Architecture | 15_React_Frontend | Stub |
-| CSE503 CSS & Design Systems | 18_CSS_Complete | Stub |
-| CSE504 Frontend Integration & Performance | 19_Frontend_Integration | Stub |
-| CSE601 Spring Boot & Microservices | 07_Modern_Java (Ch24-69) | Stub |
-| CSE602 API Design & Testing | 21_SDET + 24_Advanced_API_Testing | Stub |
-| CSE603 DevOps & CI/CD | 22_DevOps | Stub |
-| CSE604 Java Concurrency & JVM Internals | 07_Modern_Java + 13_Developer_Essentials | Stub |
-| CSE703 Machine Learning | 25_Python_ML_DL_NLP | Stub |
-| CSE804 Career Mastery & Interview Readiness | 09_Career_Reference + 20_Interview_Mastery | Stub |
-
-**Total: 15 Tier A courses × ~350 lines = ~5,250 new lines.**
-
-### Tier B — Partial Content + Need Bridging Chapters
-
-Existing content covers part of the syllabus but key topics are missing. Each course needs a wrapper PLUS 2-4 new bridging chapters in the relevant numbered folder.
-
-| Course | What exists | What's missing |
-|--------|-------------|----------------|
-| CSE101 Discrete Mathematics | Graph theory in 03_Algorithms | Logic + proofs + combinatorics + recurrence |
-| CSE103 Linear Algebra | Vectors/matrices in 21_Python_ML/04b_Math | Eigenvalues, SVD, linear systems standalone |
-| CSE203 Probability & Statistics | Distributions in ML chapters | Bayes formal, hypothesis testing, MLE/MAP |
-| CSE204 Computer Architecture | Memory foundations in 02_DS | CPU pipeline, cache hierarchy, MMU, branch prediction |
-| CSE403 Cryptography & Security | TLS in 22_DevOps | Symmetric/asymmetric primitives, hash families, attacks |
-| CSE404 Information Retrieval | RAG in 21_Python_ML | TF-IDF, BM25, inverted index, query optimization |
-| CSE702 Distributed Systems | Partial in 10_Enterprise + 22_DevOps | Consensus (Paxos/Raft), CAP proof, vector clocks |
-| CSE704 Advanced Algorithms | Fenwick/segment trees in 03_Algorithms | Network flow, FFT, randomized algos, online algos |
-| CSE801 Capstone Project | Project specs in 00_CURRICULUM/PROJECTS | Project methodology, rubrics, integration plan |
-| CSE802 Human-Computer Interaction | Partial in 18_CSS + 15_React | Heuristic eval, user research methods, accessibility theory |
-
-**Total: 10 Tier B courses × ~350 lines wrapper + 2-4 bridging chapters each (~600 lines/chapter) = ~3,500 + 18,000 = ~21,500 new lines.**
-
-### Tier C — Ground-Up Content Required
-
-No existing curriculum content. Each course needs a full multi-chapter buildout in addition to the semester wrapper.
-
-| Course | Why no existing content | New chapters needed |
-|--------|--------------------------|---------------------|
-| CSE303 Theory of Computation | DFA/NFA, regular languages, CFG, TM, decidability, P/NP not in repo | Finite automata, Turing machines, complexity classes, undecidability — 4 chapters |
-| CSE304 Numerical Methods | Floating-point pitfalls, iterative solvers absent | IEEE 754, root finding, integration, linear systems — 4 chapters |
-| CSE701 Compilers & Language Processing | Lexing/parsing/AST/IR absent | Lexer + parser, AST + semantic, IR + optimization, codegen — 4 chapters |
-| CSE803 Ethics & Professional Practice | Responsible AI / privacy / ethics absent | Privacy + GDPR, AI ethics, professional responsibility, social impact — 4 chapters |
-
-**Total: 4 Tier C courses × ~400 lines wrapper + 4 chapters × ~700 lines each = ~1,600 + 11,200 = ~12,800 new lines.**
-
-## Quality Standard (Same as CSE401 OS)
-
-Each completed CSE course README must have:
-
-1. **5W1H header** — Total hours, outcome, capstone connection
-2. **Navigation table** — links to sibling courses in the semester + related folders
-3. **Prerequisites** — explicit chapter file references
-4. **Week-by-week plan** — 16 weeks broken into 4-5 units, each with:
-   - Learning outcomes
-   - Daily table (Day, Topic, Read, Do)
-   - Section Challenge per unit (problem + answer with derivation)
-5. **Problem set references** — link to `*_PROBLEM_SETS.md` files
-6. **Capstone connection** — link to `00_CURRICULUM/PROJECTS/CAP0N_*.md`
-7. **Exam prep section** — reference to `00_CURRICULUM/EXAM_BANK.md`
-
-## Phased Execution
-
-### Phase 1 (this session) — S02 + S03 Tier A Wrappers (4 courses)
-
-Build out the 4 highest-leverage courses where existing content is strongest:
-- **CSE201 Data Structures** → 02_Data_Structures (21 files, deep teaching)
-- **CSE202 Algorithms & Complexity** → 03_Algorithms (51 files, deep teaching)
-- **CSE301 OOP & Design Patterns** → 06_OOP_Design (12 files, 162 challenges)
-- **CSE302 Databases & SQL** → 08_SQL (53 files, comprehensive)
-
-Estimated effort: ~1,400 new lines. These give the learner a complete S02 + S03 path matching CSE401 quality.
-
-### Phase 2 — Remaining S01 + S05 + S06 Tier A Wrappers (10 courses)
-
-- S01: CSE102 Programming Fundamentals
-- S05: CSE501, CSE502, CSE503, CSE504 (frontend stack)
-- S06: CSE601, CSE602, CSE603, CSE604 (backend + DevOps)
-- S07: CSE703 ML
-- S08: CSE804 Career
-
-### Phase 3 — Tier B Bridging Chapters
-
-Build the missing chapters in numbered folders FIRST, then wrap. Order by foundation-first:
-- CSE101 Discrete Math (logic + proofs)
-- CSE204 Computer Architecture
-- CSE203 Probability & Statistics
-- CSE103 Linear Algebra
-- CSE403 Cryptography
-- CSE404 IR
-- CSE702 Distributed Systems
-- CSE704 Advanced Algos
-- CSE801 Capstone
-- CSE802 HCI
-
-### Phase 4 — Tier C Ground-Up Buildouts
-
-Each is a multi-session effort:
-- CSE303 Theory of Computation
-- CSE304 Numerical Methods
-- CSE701 Compilers
-- CSE803 Ethics
-
-## Decision: Phase 1 Starts Now
-
-Phase 1 produces 4 ~350-line semester wrappers that follow the CSE401 OS pattern. Each wrapper orchestrates **existing** chapter files into a structured 16-week academic course. No new chapter content is written — only the course-level meta-structure (week plans, section challenges referencing existing material, capstone links).
+- **Course README:** 5W1H header (hours, outcome, capstone), navigation to sibling courses, prerequisites, syllabus or week-by-week plan, problem-set / exam / capstone links (`00_CURRICULUM/PROJECTS/`, `00_CURRICULUM/EXAM_BANK.md`).
+- **Chapter courses:** the README lists every chapter file. Each chapter derives its mechanics rather than stating them, works concrete examples, and includes a Section Challenge with a worked answer.
+- **Wrappers:** cite real files in existing modules. Check every cited path against the filesystem (`python tools/check_links.py`).
