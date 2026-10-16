@@ -20,5 +20,6 @@ Test types beyond functional end-to-end checks. Pick what your product needs —
 | 8 | Ch53 | [53. Mutation Testing with Stryker — Are Your Tests Actually Testing Anything?](./53_Mutation_Testing_With_Stryker.md) |
 | 9 | Ch46 | [46. BDD with Cucumber — When and How to Use It With Playwright](./46_BDD_With_Cucumber.md) |
 | 10 | Ch45 | [Chapter 45 — AI Agents, MCP, and Playwright](./45_AI_Agents_MCP_And_Playwright.md) |
+| 11 | Ch69 | [69. What's New in Playwright 1.57 → 1.64 — Verified Changes, Breaking Changes & Upgrade Checklist](./69_Whats_New_Playwright_1_57_to_1_64.md) |
 
 > Chapter numbers are permanent IDs used in cross-references ("see Ch42"), not reading order — follow the **Order** column. The full catalogue with reading times is in [`00_INDEX.md`](../00_INDEX.md).
