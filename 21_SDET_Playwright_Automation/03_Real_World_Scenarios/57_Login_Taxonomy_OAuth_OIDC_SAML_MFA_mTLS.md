@@ -84,8 +84,19 @@ test("login via Okta", async ({ page }) => {
 
 **Gotchas**:
 
-- ❌ Don't use `page.waitForURL('https://acme.okta.com/**')` — Playwright already waits for navigation on `.click()`. The explicit wait causes flake on fast IdPs.
-- ✅ Use `await expect(page).toHaveURL(/dashboard/)` at the end as the **synchronization point** — the cookie is set when the redirect lands on your app.
+- ⚠️ **`waitForURL` on the IdP page is usually redundant, and sometimes harmful.** Measured on Playwright 1.64.1 against a local app + IdP on two origins (302 chain, JS redirect, silent-SSO, slow-asset cases):
+
+  | Situation | `click()` alone | Adding `page.waitForURL('<idp>/**')` |
+  | --- | --- | --- |
+  | Plain 302 redirect chain (app → IdP, or IdP → callback → dashboard) | Returns only after the **final** document commits (`page.url()` was already `/dashboard` after a 1.7 s chain) | Passes instantly — adds nothing |
+  | Next step is `getByLabel(...).fill()` | Auto-waits for the field | Not needed |
+  | **Silent SSO** (IdP already has a session, so it 302s straight back and the IdP page never renders) | Fine — lands on the dashboard | **Times out**: the IdP URL is never the committed URL |
+  | IdP page with a slow sub-resource (3 s image) | `fill()` ran after 84 ms | **3.1 s** — `waitForURL` defaults to `waitUntil: 'load'`; `{ waitUntil: 'commit' }` takes 96 ms |
+  | **Redirect started by page JavaScript** (`setTimeout(() => location.href = …)`, or after a `fetch`) | Returns *before* the navigation starts (`page.url()` still the app) | **This is where you need a wait** |
+  | Same-URL round trip (POST → 303 → same URL) | Waits for the new document to commit | `waitForURL(/form$/)` passes immediately — it can't tell old from new document |
+
+  So: never wait for an intermediate IdP URL you don't strictly need; wait for the **state you actually need** (`toHaveURL` on the landing page, or a landing-page element). Use `waitForURL` only for a JS-initiated redirect where the next step is *not* itself an auto-waiting locator action, and then prefer `{ waitUntil: 'commit' }` for third-party pages you don't control. Intermediate URLs that exist only inside a 302 chain (`/callback?code=…`) are never observable as a committed URL at all.
+- ✅ Use `await expect(page).toHaveURL(/dashboard/)` at the end as the **synchronization point** — the cookie is set when the redirect lands on your app. To assert *what the app sent to the IdP* (state, nonce, PKCE), observe the request instead: see "Asserting the authorize request" below.
 - ❌ Don't `storageState` before the redirect lands. Same trap as Quiz 02 Q6.
 - ✅ After a successful run, capture state for all subsequent tests via `setup` project.
 
@@ -113,9 +124,51 @@ await context.addCookies([
 
 This is the basis of `framework/fixtures/auth.oauth.fixture.ts` — a **worker-scoped** fixture that fetches one token per worker process, caches it, and shares it across all tests in that worker. See Section 10 for the implementation walkthrough.
 
-### PKCE in one paragraph
+> **Which grant to choose.** Client Credentials is the supported machine-to-machine grant. The Resource Owner Password grant is a legacy shortcut that the current security BCP forbids: *"The resource owner password credentials grant MUST NOT be used"* ([RFC 9700](https://www.rfc-editor.org/rfc/rfc9700.html) §2.4, Jan 2025, BCP 240). Many test tenants still allow it, but treat it as a convenience that can disappear when the tenant is hardened. Also note the cookie in the snippet above is **app-specific** — it only works if your app reads a session cookie holding the raw access token. For most apps you'd instead put the token in an `Authorization` header (API tests) or seed whatever storage the SPA's auth library reads.
 
-PKCE (RFC 7636) adds a `code_challenge` + `code_verifier` to the Authorization Code flow so that mobile / SPA clients can use OAuth2 without a client secret. **For test automation it changes nothing about the UI flow** — the IdP screen looks identical. PKCE matters when you're calling the token endpoint directly (Client Credentials, Resource Owner Password) — you generate a random verifier, hash it, send the hash with the auth request, then send the verifier with the token request. If you're using Client Credentials (server-to-server), you skip PKCE entirely.
+### PKCE — what it is, and what a test can say about it
+
+PKCE ([RFC 7636](https://www.rfc-editor.org/rfc/rfc7636.html)) protects the **Authorization Code** grant against a stolen authorization code. The client invents a random `code_verifier`, sends only its hash (`code_challenge = BASE64URL(SHA256(verifier))`, `code_challenge_method=S256`) on the browser redirect to `/authorize`, then proves it knows the verifier when it redeems the code at `/token`. RFC 9700 §2.1.1: public clients **MUST** use PKCE; for confidential clients it is RECOMMENDED. It does **not** apply to Client Credentials or Resource Owner Password (no authorization code exists), so an API-only token fixture never needs it. And for a UI test it changes nothing about what you type into the IdP screen — your test *drives* the flow but the app generates and holds the verifier.
+
+What a test **can** do is verify the app/IdP honour the contract. This helper reproduces S256 and is checked against the **RFC 7636 Appendix B test vector** (verifier `dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk` → challenge `E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM`; the Node one-liner `createHash("sha256").update(v).digest("base64url")` reproduces it exactly):
+
+```typescript
+import { createHash, randomBytes } from "node:crypto";
+
+export function challengeFor(verifier: string): string {
+  return createHash("sha256").update(verifier).digest("base64url");
+}
+
+export function createPkcePair(): { verifier: string; challenge: string } {
+  const verifier = randomBytes(32).toString("base64url"); // 43 chars; RFC 7636 §4.1 allows 43-128
+  return { verifier, challenge: challengeFor(verifier) };
+}
+```
+
+### Asserting the authorize request
+
+You can't read the verifier (it lives in the app), but you can see exactly what the browser sends to the IdP. Register the wait **before** the click that triggers it:
+
+```typescript
+test("app sends a PKCE + state + nonce authorize request", async ({ page }) => {
+  await page.goto("/");
+  const authorize = page.waitForRequest((r) => r.url().startsWith(`${idpOrigin}/authorize`));
+  await page.getByRole("link", { name: "Sign in" }).click();
+
+  const q = new URL((await authorize).url()).searchParams;
+  expect(q.get("code_challenge_method")).toBe("S256");           // not "plain"
+  expect(q.get("code_challenge")).toMatch(/^[A-Za-z0-9_-]{43}$/); // SHA-256 -> 43 base64url chars
+  expect(q.get("state")).toBeTruthy();                            // CSRF protection on the redirect
+  expect(q.get("nonce")).toBeTruthy();                            // replay protection for the id_token (OIDC)
+
+  await page.getByLabel("Username").fill(user);
+  await page.getByLabel("Password").fill(password);
+  await page.getByRole("button", { name: "Sign in" }).click();
+  await expect(page).toHaveURL(/\/dashboard/);
+});
+```
+
+And two server-side negatives you can run through `request` against a test IdP (verified against a local IdP that implements the check): redeeming a code with a **wrong `code_verifier`** returns `400 {"error":"invalid_grant"}`, and a **second redemption of the same code is rejected even with the right verifier** (codes are single-use). Run on 1.64.1 with a local IdP + relying party that does the real S256 comparison, RS256 `id_token` signing and nonce check; the four tests (vector, UI flow, wrong verifier, missing PKCE) all pass.
 
 ---
 
@@ -123,25 +176,35 @@ PKCE (RFC 7636) adds a `code_challenge` + `code_verifier` to the Authorization C
 
 **When you see it**: OAuth2 but the response includes an `id_token` (a signed JWT containing `sub`, `email`, `name`, etc.). Every modern enterprise IdP supports OIDC.
 
-**Why it matters for tests**: Some apps validate the `id_token` signature against the IdP's JWKS endpoint. If you mock the token, you must also mock the JWKS (or use a real IdP — usually simpler).
+**Why it matters for tests**: The app (the *relying party*) validates the `id_token`: signature against the IdP's JWKS, plus `iss`, `aud`, `exp`, and the `nonce` it sent in the authorize request. Two consequences:
 
-**Pattern**: Identical to OAuth2 Section 3, but the token-endpoint response has an extra field:
+- A forged or hand-edited token fails the signature check, so "mock the token" means standing up an IdP that signs with a key the app trusts — not editing a JWT.
+- That JWKS fetch is normally **server-to-server**, so `page.route()` can never see or mock it (route handlers only intercept requests made by the browser context, not by your backend). To control it, point the app's issuer/JWKS URL at a stub IdP in the test environment. Otherwise use a real test tenant — usually simpler.
+
+**Pattern**: Identical to OAuth2 Section 3 for the code flow; the token-endpoint response has an extra field. (A Client Credentials response has **no** `id_token` — there is no end user to identify.)
 
 ```typescript
 const { access_token, id_token } = await res.json();
 // Pass id_token to the app via cookie or Authorization header, depending on your app
 ```
 
-**Gotcha**: `id_token` is a JWT with a short expiry (often 1 hour). For long test runs, refresh before expiry:
+**Gotcha**: a JWT has a short expiry (often 1 hour) and is **base64url**, not base64. Keep the helper **synchronous** — an earlier draft declared it `async` with no `await`, so `if (tokenIsExpired(jwt))` (no `await`) tested a Promise, which is always truthy:
 
 ```typescript
-async function tokenIsExpired(jwt: string): Promise<boolean> {
-  const [, payload] = jwt.split(".");
-  if (!payload) return true;
-  const { exp } = JSON.parse(Buffer.from(payload, "base64").toString("utf8"));
-  return Date.now() / 1000 >= exp - 30; // refresh 30s before expiry
+export function jwtExpiry(jwt: string): number {
+  const payload = jwt.split(".")[1];
+  if (!payload) throw new Error("not a JWT");
+  const { exp } = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as { exp?: number };
+  if (typeof exp !== "number") throw new Error("JWT has no numeric exp claim"); // missing exp must not read as "never expires"
+  return exp;
+}
+
+export function isExpiringSoon(jwt: string, skewSeconds = 30): boolean {
+  return Date.now() / 1000 >= jwtExpiry(jwt) - skewSeconds;
 }
 ```
+
+(Compiled under `strict` + `noUncheckedIndexedAccess`; run against an RS256 token from the local IdP and against a payload containing `-`/`_` characters. Decoding does **not** verify the signature — fine for reading `exp` in a test, never for trusting the token.)
 
 ---
 
@@ -151,7 +214,7 @@ async function tokenIsExpired(jwt: string): Promise<boolean> {
 
 **Why automation is hard**:
 
-1. The form is auto-submitted via JavaScript on body load; you can't intercept the POST in the browser.
+1. The form is auto-submitted via JavaScript on body load, so `click()` on the IdP's login button returns while you're still on the IdP's interstitial page (measured: `page.url()` was still the IdP and the session cookie not yet set; both flipped a moment later). Synchronise on the landing page, not on the click.
 2. The `SAMLResponse` is signed; you can't fake it.
 3. Some IdPs have **HOK (Holder-of-Key)** SAML, which adds a client cert layer on top.
 
@@ -173,6 +236,37 @@ test("SAML SSO login", async ({ page }) => {
   await expect(page).toHaveURL(/\/dashboard/);
 });
 ```
+
+### Observing both legs (you *can* see the POST)
+
+The auto-submitted form is an ordinary browser request, so Playwright sees it. Useful when the SSO is misbehaving ("lands on the wrong page", "ACS returns 400"): decode the `SAMLRequest` the SP sent (HTTP-Redirect binding = raw DEFLATE + base64, in the URL) and read the form fields the IdP posted to the ACS (HTTP-POST binding):
+
+```typescript
+import { inflateRawSync } from "node:zlib";
+
+test("SP-initiated SAML: inspect both legs, land on RelayState", async ({ page }) => {
+  await page.goto("/");
+  const idpLeg = page.waitForRequest((r) => r.url().startsWith(`${idpOrigin}/sso`) && r.method() === "GET");
+  const acsLeg = page.waitForRequest((r) => r.url() === `${spOrigin}/acs` && r.method() === "POST");
+
+  await page.getByRole("link", { name: "Sign in with SSO" }).click();
+
+  const q = new URL((await idpLeg).url()).searchParams;
+  const authnRequest = inflateRawSync(Buffer.from(q.get("SAMLRequest")!, "base64")).toString("utf8");
+  expect(authnRequest).toContain(`AssertionConsumerServiceURL="${spOrigin}/acs"`);
+
+  await page.locator("#userNameInput").fill(username);
+  await page.locator("#submitButton").click();
+
+  const post = new URLSearchParams((await acsLeg).postData() ?? "");
+  expect(post.get("SAMLResponse")).toBeTruthy();              // base64 XML; the signature is the SP's job to verify
+  expect(post.get("RelayState")).toBe(q.get("RelayState"));   // IdP must echo it back unchanged
+
+  await expect(page).toHaveURL(`${spOrigin}/reports/42`);     // SP honoured RelayState
+});
+```
+
+Run against a local SAML-shaped SP + IdP (redirect-binding request, auto-submitting POST form, 302 to `RelayState`) on 1.64.1; strict-TS clean. It checks the **plumbing** (what was sent, echoed and where you landed). It does not validate XML signatures — the SP does that, and you can't usefully reimplement it in a test.
 
 ### Gotcha: IdP-initiated vs SP-initiated SAML
 
@@ -236,6 +330,8 @@ await page
   .fill(await generateFreshTotp(envConfig.mfa.totpSecret));
 ```
 
+> **otplib version trap (checked Oct 2026).** The snippets above use the **v12** API (`authenticator`), and the framework pins `otplib@^12.0.1`. A bare `npm i otplib` now installs **v13.5.0**, a rewrite that has no `authenticator` export (`typeof authenticator === "undefined"`) and no `timeRemaining()`. The v13 equivalent is `import { generateSync } from "otplib"; generateSync({ secret })` (default strategy is TOTP; there is also an async `generate`). Verified both versions against the RFC 6238 SHA-1 vector (secret `GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ`, T=59, 8 digits → `94287082`). v13 also enforces a **minimum secret length of 16 bytes** (`SecretTooShortError`), so the 10-byte demo seed `JBSWY3DPEHPK3PXP` used in the anti-pattern below works on v12 but throws on v13. Pin the major you coded against, and compute the window yourself on v13: `30 - (Math.floor(Date.now() / 1000) % 30)` seconds remain.
+
 > **An earlier version of this snippet was itself a flaky test.** It declared the
 > helper as synchronous (`: string`) and, near a window boundary, returned a `Promise`
 > forced through `as unknown as string`. The double cast silenced the type checker, so
@@ -259,16 +355,57 @@ await page
 ### When NOT to automate MFA
 
 - **Push notifications** (Duo, Microsoft Authenticator push). You can't fake those — they require a real device decision. Either disable push for the test user, or use a real test device with the IdP's mock-push feature.
-- **WebAuthn / Passkeys** — *do* automate these, but not by stubbing `navigator.credentials` with `addInitScript` (fragile, and it tests your stub rather than the ceremony). Chromium ships a **virtual authenticator**; see §6.1.
+- **WebAuthn / Passkeys** — *do* automate these, but not by stubbing `navigator.credentials` with `addInitScript` (fragile, and it tests your stub rather than the ceremony). Playwright 1.61+ has a first-class virtual authenticator, `context.credentials`; Chromium additionally exposes one over CDP. See §6.1.
 
 - **CAPTCHA on the login or sign-up form** — don't try to solve it; configure the vendor's published test keys in the test environment, and test that the *server* rejects a missing token. See [Ch68 §5](./68_Consent_Overlays_And_CAPTCHA.md).
 
-### 6.1 WebAuthn / passkeys — Chromium's virtual authenticator
+### 6.1 WebAuthn / passkeys — virtual authenticators
 
-Passkeys are routinely described as untestable. They aren't: Chromium exposes a
-`WebAuthn` domain over CDP that installs a software authenticator the page cannot tell
-apart from a platform one. The page runs the real `navigator.credentials.create()` /
-`.get()` ceremonies, and the test can inspect what the authenticator stored.
+Passkeys are routinely described as untestable. They aren't. There are two ways in, and
+since Playwright 1.61 the first is the default choice.
+
+**A. `context.credentials` (Playwright 1.61+, no CDP).** A virtual authenticator scoped to
+a `BrowserContext`; the page runs the real `navigator.credentials.create()` / `.get()`
+ceremonies. The 1.61 release notes say it works in all browsers; I could only run it on
+Chromium here, so treat Firefox/WebKit as cited, not verified.
+
+```typescript
+test("register a passkey, capture it, sign in with it", async ({ browser, baseURL }) => {
+  const context = await browser.newContext();
+  await context.credentials.install();             // REQUIRED, before the page first touches navigator.credentials
+  const page = await context.newPage();
+
+  await page.goto(`${baseURL}/account/security`);
+  await page.getByRole("button", { name: "Create a passkey" }).click();
+  await expect(page.getByText("Passkey created")).toBeVisible();
+
+  const [passkey] = await context.credentials.get({ rpId: new URL(baseURL!).hostname });
+  expect(passkey?.signCount).toBeGreaterThanOrEqual(0);
+
+  // Persist cookies + localStorage + IndexedDB + the passkey (private key included!) for later tests:
+  await context.storageState({ path: "playwright/.auth/user.json", credentials: true });
+});
+```
+
+Verified on 1.64.1 (Chromium, localhost): `install()` then page-driven register → `credentials.get()`
+returned 1 credential whose `id` matched the one the page saw; two sign-ins reported
+`signCount` 1 then 2; `storageState({ credentials: true })` produced a `credentials` key, and a
+fresh context built from it signed in with the same credential (counter 3). Seeding with
+`credentials.create("localhost", { signCount: 41 })` made the first assertion report 42
+(`signCount` option is 1.64+). Without `install()` the page sees no authenticator
+(`NotSupportedError`), and credentials seeded but not installed are invisible to the page.
+The returned credential carries its **private key**: keep that JSON out of git exactly like a
+`storageState` file ([Playwright auth guide](https://playwright.dev/docs/auth) says the same
+about `playwright/.auth`).
+
+**B. Chromium's CDP `WebAuthn` domain.** Still works on 1.64.1 (re-verified) and gives
+knobs `context.credentials` doesn't — toggling user verification, transports, resident-key
+mode — at the price of being Chromium-only. The rest of this section uses it.
+
+Chromium exposes a `WebAuthn` domain over CDP that installs a software authenticator the
+page cannot tell apart from a platform one. The page runs the real
+`navigator.credentials.create()` / `.get()` ceremonies, and the test can inspect what the
+authenticator stored.
 
 ```typescript
 test("register and sign in with a passkey", async ({ page, context }) => {
@@ -401,6 +538,21 @@ use: {
 }
 ```
 
+Each entry takes `origin` (scheme + host + optional port, exact match) plus **either** PEM (`certPath`+`keyPath`, or in-memory `cert`+`key` Buffers) **or** PKCS#12 (`pfxPath` or `pfx` Buffer), with an optional `passphrase`. Shape checked against `playwright-core@1.64.1` `types.d.ts`. It works in `use` (config), in `browser.newContext({ clientCertificates })`, and in `request.newContext(...)`; the `request` fixture presents the cert too.
+
+**Measured against a local HTTPS server with `requestCert: true` and a private test CA (Chromium, 1.64.1):**
+
+| Setup | Result |
+| --- | --- |
+| No `clientCertificates` | `page.goto` throws `net::ERR_BAD_SSL_CLIENT_AUTH_CERT`; `request.get` fails with TLS alert 116 `certificate required` |
+| PEM cert + key, `ignoreHTTPSErrors: true` | Page renders; server sees the client cert's CN |
+| `pfxPath` + correct `passphrase` / in-memory Buffers / `origin` with trailing `/` | Same success |
+| `pfxPath` + **wrong** `passphrase` | `browser.newContext` throws `Failed to load client certificate: mac verify failure` |
+| `origin` doesn't match the URL (`127.0.0.1` vs `localhost`) | No cert presented: `net::ERR_EMPTY_RESPONSE` — a confusing symptom, check `origin` first |
+| Valid client cert, but the **server** cert is signed by a private CA and `ignoreHTTPSErrors` is **not** set | `goto` returns **HTTP 503** with an empty page — not a certificate error. With `clientCertificates`, Playwright's own TLS layer fails the server-trust check and the browser only sees a 503 |
+
+The last row is the trap: "I configured the cert and now get 503" usually means *server* trust, not your client cert. Set `ignoreHTTPSErrors: true` for a private-CA server in test environments, or install the CA where Node/Chromium will trust it. These two settings are independent; an mTLS test against a private CA typically needs both.
+
 **Gotchas**:
 
 - ❌ Don't commit `.p12`/`.pfx` files to git. Even test certs.
@@ -410,7 +562,7 @@ use: {
 
 ### What about `forceHTTPS / ignoreHTTPSErrors`?
 
-That's a separate setting (Section 11 of Ch 56). It lets you accept **self-signed** server certs in dev environments. Orthogonal to mTLS — you can need both.
+That's a separate setting (`ignoreHTTPSErrors`, in the [Ch 56 §12 field reference](../01_Foundations/56_Playwright_Config_Deep_Dive.md#12-the-full-field-reference-cheat-sheet)). It lets you accept **self-signed / private-CA** server certs in dev environments. Orthogonal to mTLS — you can need both (see the 503 row above).
 
 ---
 
@@ -418,7 +570,20 @@ That's a separate setting (Section 11 of Ch 56). It lets you accept **self-signe
 
 The five flows above all end with the **same state**: a browser context with the cookies / localStorage entries needed for an authenticated session. The most expensive part is _getting there_. Don't repeat it per test.
 
-Reuse pattern (also covered in Ch 16, expanded here):
+**What `storageState` does and does not capture** (measured on 1.64.1: write to `localStorage`, `sessionStorage` and an IndexedDB store, snapshot, restore into a new context):
+
+| Store | In the snapshot? |
+| --- | --- |
+| Cookies (incl. `HttpOnly`) | Yes |
+| `localStorage` | Yes |
+| IndexedDB | **Only with `context.storageState({ indexedDB: true })`** — restored correctly when present |
+| `sessionStorage` | **No** — came back `null`. Auth libraries that default to it (MSAL.js's default cache location is `sessionStorage`) need the save/restore-by-hand snippet in the [Playwright auth guide](https://playwright.dev/docs/auth), or configure the library to use `localStorage` in the test environment |
+| Virtual passkeys | Only with `storageState({ credentials: true })` (1.61+, §6.1) |
+| HTTP Basic/NTLM, client certs, in-memory tokens | No — configure `httpCredentials` / `clientCertificates` instead, or re-acquire the token |
+
+(Ch 16's 5W1H lists `sessionStorage` among the captured stores; its own later note at ~line 93 says the opposite. The table above is the measured behaviour.) Treat the saved file like a password: it holds live session cookies, so keep `playwright/.auth/` (or your `auth/`) in `.gitignore`.
+
+Reuse pattern (also covered in [Ch 16](../04_Cross_Site_Patterns_And_D365/16_CrossSite_Pattern6_StorageState_Chaining.md), expanded here):
 
 1. A `setup` project runs once: drives the auth flow, calls `context.storageState({ path: 'auth/admin.json' })`.
 2. The main project loads that state via `use.storageState: 'auth/admin.json'`.
@@ -476,13 +641,50 @@ export const test = base.extend<{}, OAuthFixtures>({
 export { expect } from "@playwright/test";
 ```
 
-With `scope: 'worker'`, the token endpoint is hit **once per worker**, regardless of how many tests share that worker. If you have 4 workers and 100 tests, you fetch 4 tokens instead of 100. (Same savings calculation as Quiz 02 Q8.)
+With `scope: 'worker'`, the token endpoint is hit **once per worker**, regardless of how many tests share that worker. If you have 4 workers and 100 tests, you fetch 4 tokens instead of 100 — **at best**. Playwright discards a worker after a failed test and starts a fresh one, which re-runs the worker fixture. Measured: 4 tests in one worker where the third fails → the IdP served **2** token grants, and the fourth test ran in a different PID. A suite with many failures or retries fetches many more tokens than workers. (Same savings calculation as Quiz 02 Q8.)
 
 ### When the token expires mid-run
 
 `scope: 'worker'` runs once when the worker starts. If your test run takes longer than the token's lifetime, **the token expires and every test starts failing 401**. Two fixes:
 
-1. **Refresh on use** — wrap the token in a function that re-fetches if `exp - now < 30s`. Trade simplicity for resilience.
+1. **Refresh on use** — expose a *getter* from the worker fixture rather than the string, and re-fetch when `exp - now < 30s`. De-duplicate concurrent refreshes with a shared in-flight promise:
+
+   ```typescript
+   type TokenResponse = { access_token: string; expires_in: number };
+
+   export const test = base.extend<{}, { getToken: () => Promise<string> }>({
+     getToken: [
+       async ({}, use) => {
+         let cached: { token: string; expiresAt: number } | undefined;
+         let inflight: Promise<string> | undefined;
+
+         async function fetchToken(): Promise<string> {
+           const ctx = await playwrightRequest.newContext();
+           try {
+             const res = await ctx.post(process.env.OAUTH_TOKEN_URL!, {
+               form: { grant_type: "client_credentials", client_id: process.env.OAUTH_CLIENT_ID!, client_secret: process.env.OAUTH_CLIENT_SECRET! },
+             });
+             if (!res.ok()) throw new Error(`token endpoint returned ${res.status()}`);
+             const body = (await res.json()) as TokenResponse;
+             cached = { token: body.access_token, expiresAt: Date.now() + body.expires_in * 1000 };
+             return body.access_token;
+           } finally {
+             await ctx.dispose();
+           }
+         }
+
+         await use(async () => {
+           if (cached && Date.now() < cached.expiresAt - 30_000) return cached.token;
+           inflight ??= fetchToken().finally(() => { inflight = undefined; });
+           return inflight;
+         });
+       },
+       { scope: "worker" },
+     ],
+   });
+   ```
+
+   Verified with a local IdP issuing 32-second tokens: the second call reused the cache, then after 2.5 s (inside the 30 s skew) two concurrent `getToken()` calls produced exactly one new grant and returned the same new token. Compiles under `strict` + `noUncheckedIndexedAccess` + `noUnusedLocals`.
 2. **Short test runs** — if your full suite finishes in < 30 min and tokens last 1 h, you're fine. This is the framework's default assumption.
 
 ---
@@ -519,7 +721,7 @@ test.beforeEach(async ({ page }) => {
 // Worker 1's next request: 401
 ```
 
-Some IdPs (Okta, Azure AD) enforce single-session-per-user. **Fix**: account pool with file locking — see `framework/fixtures/auth.fixture.ts` for the existing OrangeHRM-style implementation.
+Some apps and IdP policies enforce a single concurrent session per user (it is a configurable policy, not a universal default). **Fix**: account pool with file locking — see `framework/fixtures/auth.fixture.ts` for the existing OrangeHRM-style implementation.
 
 ❌ **TOTP secret in plain text in `.env`**
 
@@ -604,7 +806,7 @@ Match the description to the flow:
 
 The OAuth fixture is `scope: 'worker'`. What goes wrong if you change it to test scope?
 
-**Answer**: Every test fetches a new token. With 4 workers and 100 tests, that's 100 token endpoint calls instead of 4 — 25× the IdP load and the latency. Worse, most IdPs rate-limit (Okta: 100 token requests/minute by default), so you start hitting 429s and the suite goes red intermittently.
+**Answer**: Every test fetches a new token. With 4 workers and 100 tests, that's 100 token endpoint calls instead of 4 — 25× the IdP load and the latency. Worse, IdPs rate-limit token endpoints (Okta documents per-org, per-endpoint buckets whose values vary by plan — check Reports > Rate Limits in your org — plus a separate 4-requests-per-second cap per user on `/oauth2/v1/token`), so you start hitting 429s and the suite goes red intermittently. A failed test also restarts the worker, so the real count is workers + failures.
 
 </details>
 
@@ -676,7 +878,9 @@ Run all: `npx playwright test`. Run admin only: `--project=admin`.
 - **Ch 25** — CI/CD integration (where the IdP secrets actually live).
 - **Ch 28** — Test data lifecycle (the data-side counterpart to auth).
 - **Ch 51** — Secrets management (Doppler, Vault, GitHub Actions — where TOTP seeds and OAuth secrets belong).
-- **Ch 56** — Playwright config (the `use.clientCertificates`, `use.storageState`, and project-dependency fields).
+- **Ch 56** — Playwright config (`use.storageState`, `ignoreHTTPSErrors` and project-dependency fields; `clientCertificates` is covered here in §7, not there).
+- **Ch 69** — what changed in Playwright 1.57-1.64 ([`context.credentials`, `storageState` options](../07_Specialised_Testing/69_Whats_New_Playwright_1_57_to_1_64.md)).
+- **[Lab 05 — OTP login](../labs/05-otp-login/README.md)** — practise §6.2 against a graded app.
 - **Ch 58** — File uploads & downloads (the next sharp-edge feature).
 
 **Navigation**: [← 56. Playwright Config Deep-Dive](../01_Foundations/56_Playwright_Config_Deep_Dive.md) | [Index](../00_INDEX.md) | [→ 58. File Uploads & Downloads](./58_File_Uploads_Downloads.md)
@@ -692,6 +896,6 @@ Run all: `npx playwright test`. Run admin only: `--project=admin`.
 
 **"SAML is legacy and everyone has moved to OIDC"** → Enterprise software, especially Microsoft products and large corporations, still heavily uses SAML. Salesforce, Okta, Azure AD, and most enterprise SSO systems support both. You'll encounter SAML when: testing enterprise line-of-business apps (D365, SharePoint, SAP), integrating with government or banking systems, working with older authentication infrastructure. In test automation: SAML SSO flows often redirect through a corporate IdP, which requires handling the SAML redirect, form-posting to the IdP, and receiving the SAML assertion callback. Different Playwright approach than OIDC flows.
 
-**"storageState captures authentication for all types of login"** → `page.context().storageState()` saves cookies and localStorage. This works for: cookie-based sessions, OAuth tokens stored in localStorage. It does NOT work for: browser Basic Auth (HTTP Authorization header — must be passed per request), certificate-based auth (mTLS — requires browser client certificate configuration), windows-based auth (NTLM/Kerberos — integrated with the OS), or in-memory tokens that aren't persisted to storage. For each auth type, Playwright has a different configuration approach.
+**"storageState captures authentication for all types of login"** → `page.context().storageState()` saves cookies and localStorage. This works for: cookie-based sessions, OAuth tokens stored in localStorage. It does NOT work for: browser Basic Auth (not stored state — set `httpCredentials` on the context/config, which also answers NTLM challenges), certificate-based auth (mTLS — requires browser client certificate configuration), windows-based auth (NTLM/Kerberos — integrated with the OS), or in-memory tokens that aren't persisted to storage. For each auth type, Playwright has a different configuration approach.
 
-**"MFA (multi-factor auth) makes automation impossible"** → MFA can be handled in tests: TOTP (time-based one-time passwords like Google Authenticator): generate the code programmatically using the TOTP secret (`otpauth://...` URI). Libraries like `speakeasy` or `@otplib/preset-node` generate valid TOTP codes. Email/SMS OTP: intercept the OTP from a test email service (Mailosaur, Mailhog) or test phone number, then enter it. Hardware security keys: bypass with a test user that has a known TOTP seed or with an API that generates bypass tokens. Most enterprise apps have a test/automation bypass for MFA configured for service accounts.
+**"MFA (multi-factor auth) makes automation impossible"** → MFA can be handled in tests: TOTP (time-based one-time passwords like Google Authenticator): generate the code programmatically using the TOTP secret (`otpauth://...` URI). Libraries like `otplib` (mind the v12/v13 API break in §6) generate valid TOTP codes; `speakeasy` still works but is unmaintained. Email/SMS OTP: intercept the OTP from a test email service (Mailosaur, Mailpit — see [Ch 50](./50_Email_Service_Testing.md); MailHog is unmaintained) or test phone number, then enter it. Hardware security keys: bypass with a test user that has a known TOTP seed or with an API that generates bypass tokens. Most enterprise apps have a test/automation bypass for MFA configured for service accounts.
