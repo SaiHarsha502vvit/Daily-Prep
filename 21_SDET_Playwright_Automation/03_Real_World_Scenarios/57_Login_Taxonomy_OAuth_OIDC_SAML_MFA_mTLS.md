@@ -28,7 +28,7 @@ A real enterprise app rarely has username + password posted to `/login`. What yo
 - A magic link sent by email
 - A 24-hour SSO token that expires mid-test-run
 
-`page.fill('#username', ...).fill('#password', ...).click('#login')` covers about 5% of production apps. The rest need one of the patterns below.
+Filling a username field, filling a password field and clicking one login button (`locator.fill()`, `locator.fill()`, `locator.click()`) covers about 5% of production apps. The rest need one of the patterns below.
 
 ---
 
@@ -50,7 +50,7 @@ A real enterprise app rarely has username + password posted to `/login`. What yo
    cookie     TOTP/MFA       OIDC                          client cert
        │        │              │            │                 │
    Ch 16:    §6:              §3, §4:      §5:               §7:
-   storage   TOTP+storage     fixture +    page.fill         use.clientCertificates
+   storage   TOTP+storage     fixture +    inline UI         use.clientCertificates
    State     State            storage
                               State
 ```
@@ -73,8 +73,8 @@ test("login via Okta", async ({ page }) => {
   await page.getByRole("button", { name: "Sign in" }).click();
   // → browser is now on https://acme.okta.com/oauth2/...
 
-  await page.fill('input[name="username"]', envConfig.okta.username);
-  await page.fill('input[name="password"]', envConfig.okta.password);
+  await page.locator('input[name="username"]').fill(envConfig.okta.username);
+  await page.locator('input[name="password"]').fill(envConfig.okta.password);
   await page.getByRole("button", { name: "Sign in" }).click();
 
   // → browser returns to /, with the session cookie set
@@ -165,9 +165,9 @@ test("SAML SSO login", async ({ page }) => {
   await page.getByRole("button", { name: "Sign in with SSO" }).click();
   // → browser is on https://idp.corp.com/login (or ADFS, or Ping)
 
-  await page.fill("#userNameInput", envConfig.saml.username);
-  await page.fill("#passwordInput", envConfig.saml.password);
-  await page.click("#submitButton");
+  await page.locator("#userNameInput").fill(envConfig.saml.username);
+  await page.locator("#passwordInput").fill(envConfig.saml.password);
+  await page.locator("#submitButton").click();
 
   // SAML POST happens automatically via JS; we just wait for the landing page
   await expect(page).toHaveURL(/\/dashboard/);
@@ -206,13 +206,13 @@ export function generateTotp(secret: string): string {
 // In your test
 import { generateTotp } from "../../utilities/auth/totp.helper";
 
-await page.fill("#username", envConfig.mfa.username);
-await page.fill("#password", envConfig.mfa.password);
-await page.click("#login");
+await page.locator("#username").fill(envConfig.mfa.username);
+await page.locator("#password").fill(envConfig.mfa.password);
+await page.locator("#login").click();
 
 const code = generateTotp(envConfig.mfa.totpSecret); // 6-digit string
-await page.fill("#mfaCode", code);
-await page.click("#verify");
+await page.locator("#mfaCode").fill(code);
+await page.locator("#verify").click();
 ```
 
 **Critical timing window**: TOTP codes change every 30 seconds. If your test grabs the code at second 29 and types it at second 31, the IdP rejects it. The `otplib` library exposes `authenticator.timeRemaining()` — if it's < 5 seconds, wait for the next window:
@@ -231,18 +231,21 @@ export async function generateFreshTotp(secret: string): Promise<string> {
 }
 
 // Caller must await it:
-await page.fill("#mfaCode", await generateFreshTotp(envConfig.mfa.totpSecret));
+await page
+  .locator("#mfaCode")
+  .fill(await generateFreshTotp(envConfig.mfa.totpSecret));
 ```
 
 > **An earlier version of this snippet was itself a flaky test.** It declared the
 > helper as synchronous (`: string`) and, near a window boundary, returned a `Promise`
 > forced through `as unknown as string`. The double cast silenced the type checker, so
-> `page.fill()` received a Promise object at runtime. Reproduced against the framework's
-> `otplib` 12.0.1 and Playwright 1.60.0:
+> `locator.fill()` received a Promise object at runtime. Reproduced against the framework's
+> `otplib` 12.0.1 and Playwright 1.60.0; re-checked on 1.64.1 with the locator form, which
+> prints:
 >
 > ```
 > typeof code (near window edge): object (a Promise!)
-> page.fill -> page.fill: value: expected string, got object
+> locator.fill: value: expected string, got object
 > ```
 >
 > The branch only fires when fewer than 5 of the window's 30 seconds remain, so the test
@@ -489,8 +492,8 @@ With `scope: 'worker'`, the token endpoint is hit **once per worker**, regardles
 ❌ **Hardcoded credentials in spec files**
 
 ```typescript
-await page.fill("#username", "admin@acme.com");
-await page.fill("#password", "Admin123!");
+await page.locator("#username").fill("admin@acme.com");
+await page.locator("#password").fill("Admin123!");
 ```
 
 Anyone with read access to the repo has prod creds. **Fix**: env vars + secrets manager (Ch 51).
@@ -500,9 +503,9 @@ Anyone with read access to the repo has prod creds. **Fix**: env vars + secrets 
 ```typescript
 test.beforeEach(async ({ page }) => {
   await page.goto("/login");
-  await page.fill("#username", envConfig.username);
-  await page.fill("#password", envConfig.password);
-  await page.click("#login");
+  await page.locator("#username").fill(envConfig.username);
+  await page.locator("#password").fill(envConfig.password);
+  await page.locator("#login").click();
 });
 ```
 
@@ -610,13 +613,13 @@ The OAuth fixture is `scope: 'worker'`. What goes wrong if you change it to test
 
 ```typescript
 test("TOTP login", async ({ page }) => {
-  await page.fill("#username", user);
-  await page.fill("#password", pass);
-  await page.click("#login");
+  await page.locator("#username").fill(user);
+  await page.locator("#password").fill(pass);
+  await page.locator("#login").click();
 
   const code = generateTotp(secret);
-  await page.fill("#mfaCode", code); // 28 seconds later
-  await page.click("#verify");
+  await page.locator("#mfaCode").fill(code); // 28 seconds later
+  await page.locator("#verify").click();
 });
 ```
 
@@ -626,11 +629,11 @@ test("TOTP login", async ({ page }) => {
 
 ```typescript
 // Type other fields first, then generate at the last moment
-await page.click("#login");
-await page.waitForSelector("#mfaCode");
+await page.locator("#login").click();
+await expect(page.locator("#mfaCode")).toBeVisible(); // web-first wait, not page.waitForSelector()
 const code = generateTotp(secret);
-await page.fill("#mfaCode", code);
-await page.click("#verify");
+await page.locator("#mfaCode").fill(code);
+await page.locator("#verify").click();
 ```
 
 …or use the window-aware version that waits if `timeRemaining() < 5s`.

@@ -50,7 +50,7 @@ You write code that LOOKS synchronous but IS asynchronous underneath.
 
 **Why this matters for Playwright:**
 
-Every time you write `await page.click('#button')`, Playwright:
+Every time you write `await page.locator('#button').click()`, Playwright:
 
 1. Sends a CDP (Chrome DevTools Protocol) message over a WebSocket to the browser
 2. Returns a Promise (execution is suspended here — `await` suspends your code)
@@ -64,12 +64,12 @@ If you forget `await`:
 
 ```typescript
 // ❌ Without await:
-page.click("#button"); // sends CDP message, returns Promise, immediately proceeds
+page.locator("#button").click(); // sends CDP message, returns Promise, immediately proceeds
 expect(page.locator(".success")).toBeVisible(); // checks NOW, before click response arrived
 // Result: success message not visible yet → assertion fails
 
 // ✅ With await:
-await page.click("#button"); // waits for CDP round-trip to complete
+await page.locator("#button").click(); // waits for CDP round-trip to complete
 await expect(page.locator(".success")).toBeVisible(); // now checks AFTER click completed
 ```
 
@@ -201,8 +201,8 @@ The distinction below is the single most useful thing in this chapter, because *
 
 ```typescript
 // ── Kind 1: ACTION — await for the SIDE EFFECT, the value is void ──────
-await page.click("#btn"); // Promise<void>  — effect: the button got clicked
-await page.fill("#input", "text"); // Promise<void>  — effect: the field now holds text
+await page.locator("#btn").click(); // Promise<void>  — effect: the button got clicked
+await page.locator("#input").fill("text"); // Promise<void>  — effect: the field now holds text
 await page.goto("/dashboard"); // Promise<void>  — effect: navigation happened
 
 // ── Kind 2: QUERY — await for the DATA it returns ─────────────────────
@@ -216,6 +216,8 @@ const btn = page.locator("#btn"); // Locator — synchronous
 const heading = page.getByRole("heading"); // Locator — synchronous
 const submit = page.getByText("Submit"); // Locator — synchronous
 ```
+
+> **On the selectors in this chapter.** The `#id` selectors in the examples (`#btn`, `#email`, `#loginBtn`) are placeholders that keep the *mechanism* visible — they are not a locator recommendation. In a real suite you reach for `getByRole`, `getByLabel` or `getByTestId` first and fall back to CSS only when those cannot express the element ([Ch02 locator priority](./02_Enterprise_Locators_XPath.md#2-the-locator-priority-hierarchy--best-to-worst)). Every action here is written in the locator form `page.locator(sel).click()`, not the string-selector form `page.click(sel)`: the installed typings (`@playwright/test` 1.60 and 1.64.1, checked in `types.d.ts`) mark the string-selector `page.click()` / `page.fill()` family with a "Use locator-based `locator.click()` instead" note, and `page.type()` as `@deprecated`.
 
 > **On the `| null`:** `textContent()` and `getAttribute()` return `string | null` because the element may exist while the thing you asked for does not. TypeScript forces you to handle that — either `?? ""` for a default, or `!` if you can justify that it cannot be null. Writing `const t: string = await ...textContent()` **does not compile**, and that is the type system doing its job ([Ch08 §8](#8-typescript-types-you-must-know)).
 
@@ -236,9 +238,9 @@ await btn.click(); // t=3000ms — NOW it searches, and finds the CURRENT #btn
 **Why this is the right design — the counterfactual.** Suppose locators were *eager* and grabbed the element immediately (this is what Selenium's `WebElement` does). Then:
 
 ```typescript
-const btn = page.$("#btn"); // eager: grabs THIS element object now
-await page.click("#refresh"); // React re-renders — the old DOM node is discarded
-await btn.click(); // 💥 the node we grabbed is no longer in the document
+const btn = await page.$("#btn"); // ❌ ElementHandle API (§12): grabs THIS node now — the typings steer you to locators
+await page.locator("#refresh").click(); // React re-renders — the old DOM node is discarded
+await btn?.click(); // 💥 the node we grabbed is no longer in the document
 ```
 
 That failure has a name — **stale element reference** — and it is the single most common source of flaky tests in eager frameworks. Every Selenium user has written a retry wrapper for it.
@@ -254,13 +256,13 @@ Laziness eliminates the entire bug class *by construction*: there is nothing to 
 This is the number-one Playwright bug, and it is worth understanding mechanically rather than as "you forgot a keyword."
 
 ```typescript
-page.click("#submit"); // ❌ no await
+page.locator("#submit").click(); // ❌ no await
 await expect(page.locator(".success")).toBeVisible();
 ```
 
 Step by step, using §2.3:
 
-1. `page.click()` starts the CDP round-trip and **returns a pending Promise immediately**.
+1. `locator.click()` starts the CDP round-trip and **returns a pending Promise immediately**.
 2. Nobody awaits it, so execution **does not pause** — the next line runs while the click is still in flight.
 3. The assertion begins checking for `.success` *before the click has been processed by the browser*.
 4. The orphaned Promise settles later, with nobody listening.
@@ -330,9 +332,9 @@ Locator (a DESCRIPTION of where to find an element — lazy evaluation)
 test("Test A", async ({ page }) => {
   // page is in its own context
   await page.goto("/login");
-  await page.fill("#user", "admin");
-  await page.fill("#pass", "password");
-  await page.click("#login");
+  await page.locator("#user").fill("admin");
+  await page.locator("#pass").fill("password");
+  await page.locator("#login").click();
   // admin cookie is set in THIS context's cookie store
 });
 
@@ -352,7 +354,7 @@ The context isolation is why Playwright tests are independent by default. You do
 ```
 Your test code                 Playwright Node.js            Chromium browser
      │                               │                              │
-     │ await page.click('#btn')       │                              │
+     │ await btn.click()              │                              │
      │ ─────────────────────────────►│                              │
      │                               │  CDP: {method: 'Input.        │
      │                               │  dispatchMouseEvent',         │
@@ -461,9 +463,9 @@ import { test, expect } from "@playwright/test";
 
 test("User can log in", async ({ page }) => {
   await page.goto("/login");
-  await page.fill("#email", "test@example.com");
-  await page.fill("#password", "password123");
-  await page.click("#loginBtn");
+  await page.locator("#email").fill("test@example.com");
+  await page.locator("#password").fill("password123");
+  await page.locator("#loginBtn").click();
   await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
 });
 ```
@@ -481,9 +483,9 @@ What happens when Playwright runs this:
 
 4. Playwright runs your test function:
    a. goto('/login') → CDP: navigate to URL → Promise resolves when navigated
-   b. fill('#email') → CDP: find input, set value → Promise resolves
-   c. fill('#password') → CDP: find input, set value → Promise resolves
-   d. click('#loginBtn') → CDP: click → Promise resolves
+   b. locator('#email').fill() → CDP: find input, set value → Promise resolves
+   c. locator('#password').fill() → CDP: find input, set value → Promise resolves
+   d. locator('#loginBtn').click() → CDP: click → Promise resolves
    e. expect(...).toBeVisible() → polling: find element, check visibility, retry
 
 5. If all assertions pass → test marked PASSED
@@ -513,8 +515,8 @@ test.describe("Citation creation", () => {
 
   test("Can submit with valid data", async ({ page }) => {
     // page has already navigated to /citations/new
-    await page.fill("#amount", "150");
-    await page.click("#submit");
+    await page.locator("#amount").fill("150");
+    await page.locator("#submit").click();
     await expect(page).toHaveURL(/\/citations\/CIT-/);
   });
 });
@@ -588,9 +590,9 @@ test("Error propagation", async ({ page }) => {
 // How to handle EXPECTED errors (negative testing):
 test("Login with wrong password shows error", async ({ page }) => {
   await page.goto("/login");
-  await page.fill("#email", "test@example.com");
-  await page.fill("#password", "wrongpassword");
-  await page.click("#loginBtn");
+  await page.locator("#email").fill("test@example.com");
+  await page.locator("#password").fill("wrongpassword");
+  await page.locator("#loginBtn").click();
 
   // We EXPECT the login to fail — assert the error state
   await expect(page.locator(".error-message")).toHaveText(
@@ -758,7 +760,7 @@ await expect(page.locator("h1")).toHaveText("Dashboard");
 ```typescript
 // Scenario: you click a button, and the heading changes to 'Dashboard' after 2 seconds
 
-await page.click("#goToDashboard");
+await page.locator("#goToDashboard").click();
 
 const text1 = await page.locator("h1").textContent();
 expect(text1).toBe("Dashboard"); // FAILS — reads '' immediately after click
@@ -834,7 +836,7 @@ sequenceDiagram
     participant Browser as Chromium Browser Process
     participant DOM as Page DOM
 
-    Test->>PW: await page.click('#submit')
+    Test->>PW: await page.locator('#submit').click()
     PW->>PW: Build CDP message<br/>{method: 'Input.dispatchMouseEvent'}
     PW->>WS: Send CDP JSON over WebSocket
     WS->>Browser: Forward message
@@ -854,7 +856,7 @@ sequenceDiagram
 
 3. **The latency varies.** On your machine, the round-trip is <1ms. On a CI server with shared CPU, it might be 10-50ms. On a remote browser grid, it might be 100-500ms. This is why timeouts that work locally can fail in CI.
 
-4. **`fill()` does not type character by character — and that is a deliberate trade-off, not an implementation detail.** `await page.fill('#input', 'hello')` sends a small, fixed sequence of CDP commands: focus the element, clear it, set its value directly, then dispatch one synthetic `input` event (and `change`) so frameworks like React see the update. No `keydown`/`keypress`/`keyup` ever fires.
+4. **`fill()` does not type character by character — and that is a deliberate trade-off, not an implementation detail.** `await page.locator('#input').fill('hello')` sends a small, fixed sequence of CDP commands: focus the element, clear it, set its value directly, then dispatch one synthetic `input` event (and `change`) so frameworks like React see the update. No `keydown`/`keypress`/`keyup` ever fires.
 
    That is *fast* — one round-trip regardless of string length — but it is invisible to any code listening for real keystrokes: input masks, autocomplete-on-keyup, a "field is dirty" indicator wired to `keydown`. For those, Playwright has a second method, `locator.pressSequentially(text)`, which dispatches a genuine key event per character — proportionally slower (N round-trips for N characters), but indistinguishable from a user typing.
 
@@ -963,7 +965,7 @@ const handle = await page.$("#submit-btn"); // finds the node RIGHT NOW
 // → The OLD <button> is destroyed (memory address 0x7f3a is freed)
 // → A NEW <button> is created (memory address 0x8b2c)
 // → handle STILL points to the destroyed node (0x7f3a)
-// → handle.click() → ERROR: "Element is detached from the DOM"
+// → handle.click() → ERROR: "elementHandle.click: Element is not attached to the DOM"
 ```
 
 ### Locator (Modern — Always Use)
@@ -991,7 +993,7 @@ D365 uses React (or a React-like framework) internally. Components re-render fre
 - Expanding a grid row triggers re-render
 - Two-phase render means the component renders twice in quick succession
 
-With ElementHandle, every re-render risks a "detached from DOM" error. With Locator, the query re-runs on every action and always finds the current element.
+With ElementHandle, every re-render risks an "Element is not attached to the DOM" error. With Locator, the query re-runs on every action and always finds the current element.
 
 **The only time you need ElementHandle:** When you're doing advanced CDP operations that require a direct node reference (e.g., `elementHandle.evaluateHandle()`). This is rare — most SDETs will never need it.
 
@@ -1071,8 +1073,8 @@ const result = await page.evaluate((userId) => {
 
 **"Each test file gets a fresh browser context automatically"** → Playwright gives each *test* a fresh browser context by default (isolated cookies, storage, permissions). The *browser process* is shared across tests within a worker for efficiency. This distinction matters: browser-level state (installed extensions, GPU settings) is shared; page/session-level state is isolated. Most tests only need page isolation, which the default provides.
 
-**"page.goto() waits for the page to be fully loaded before continuing"** → `goto()` waits until the `load` event fires (default `waitUntil: 'load'`). But SPAs often fire `load` before the JavaScript framework has initialised and rendered the content. Use `waitUntil: 'networkidle'` for apps with AJAX on load, or wait for a specific element that signals app readiness: `await page.waitForSelector('[data-ready]')`.
+**"page.goto() waits for the page to be fully loaded before continuing"** → `goto()` waits until the `load` event fires (default `waitUntil: 'load'`). But SPAs often fire `load` before the JavaScript framework has initialised and rendered the content. Do not "fix" that with `waitUntil: 'networkidle'` — ❌ Playwright's own typings mark it **DISCOURAGED** and say to rely on web assertions to assess readiness instead. The reason is mechanical: "no network connections for at least 500 ms" is a guess about a quiet network, not a statement about your UI (a long-poll, analytics beacon or websocket keeps it from ever firing; a fast app can look idle before it has rendered). Wait for the specific thing that signals readiness: `await expect(page.locator("[data-ready]")).toBeVisible()`.
 
-**"Playwright's auto-waiting means I never need explicit waits"** → Playwright's built-in auto-wait covers: element visible, enabled, stable, attached to DOM, actionable. It does NOT cover: API response arrival, data appearing after an async operation, animation completing before screenshot, third-party iframe loading, WebSocket message arrival. For these, use `waitForResponse()`, `waitForSelector()`, `waitForFunction()`, or `expect().toBeVisible()` with a condition.
+**"Playwright's auto-waiting means I never need explicit waits"** → Playwright's built-in auto-wait covers: element visible, enabled, stable, attached to DOM, actionable. It does NOT cover: API response arrival, data appearing after an async operation, animation completing before screenshot, third-party iframe loading, WebSocket message arrival. For these, use `waitForResponse()`, `waitForFunction()`, `locator.waitFor()`, or a web-first `expect(locator)` assertion (the typings steer `page.waitForSelector()` users the same way: web assertions or `locator.waitFor()` instead).
 
 **"Test IDs in HTML are only needed for Playwright tests"** → `data-testid` attributes benefit more than just testing. They are used in analytics (tracking user interactions), feature flag targeting (LaunchDarkly targets elements), A/B testing frameworks, monitoring tools (Datadog RUM), and accessibility audits. They are low-cost additions to the DOM that provide high value across tooling. Add them during feature development, not as an afterthought.

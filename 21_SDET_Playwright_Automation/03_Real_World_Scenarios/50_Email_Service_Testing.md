@@ -163,8 +163,8 @@ test("@e2e magic link signs the user in", async ({ page, emailInbox }) => {
   const beforeTime = new Date();
 
   await page.goto("/signup");
-  await page.fill("input[name=email]", address);
-  await page.click("button[type=submit]");
+  await page.locator("input[name=email]").fill(address);
+  await page.locator("button[type=submit]").click();
 
   const message = await emailInbox.waitForMessage({
     to: address,
@@ -189,11 +189,13 @@ Three principles to notice:
 2. `receivedAfter: beforeTime` — never collide with prior runs.
 3. `deleteMessage` on success — cleanup keeps the inbox sane for parallel runs.
 
+> **On the form selectors.** `input[name=email]` and `button[type=submit]` stand in for your app's real form, whose structure this chapter cannot know. They are written as `page.locator(...)` because the string-selector form `page.click(sel)` / `page.fill(sel)` carries a "use locator-based `locator.click()` instead" note in Playwright's typings. On a form with proper labels, prefer `page.getByLabel("Email")` and `page.getByRole("button", { name: "Sign up" })` ([Ch02 locator priority](../01_Foundations/02_Enterprise_Locators_XPath.md#2-the-locator-priority-hierarchy--best-to-worst)); `data-testid` buttons below use `getByTestId`.
+
 ---
 
 ## 5. Common mistakes
 
-1. **`waitForTimeout(60000)` then "check Gmail."** Slow, flaky, depends on a human Gmail account that gets rate-limited and locked.
+1. ❌ **`waitForTimeout(60000)` then "check Gmail."** Slow, flaky, depends on a human Gmail account that gets rate-limited and locked. Playwright's own API docs (and the installed typings) say `page.waitForTimeout()` is for debugging only and that tests relying on the timer in production become flaky; wait on a signal (here: the inbox API) instead.
 2. **Reusing the same email address across tests.** Two parallel tests pull the same message → one of them grabs the wrong one.
 3. **Asserting `textBody` only.** Many flows render via HTML only — the text part may be empty. Assert one or the other deliberately.
 4. **Not deleting on success.** After 500 runs your inbox has 5,000 messages and `waitForMessage` slows to a crawl.
@@ -569,13 +571,13 @@ test("@e2e order confirmation email with PDF attachment", async ({
   const beforeTime = new Date();
 
   await page.goto("/shop");
-  await page.click("button[data-testid=buy-now]");
-  await page.fill("input[name=email]", address);
-  await page.click("button[type=submit]");
+  await page.getByTestId("buy-now").click();
+  await page.locator("input[name=email]").fill(address);
+  await page.locator("button[type=submit]").click();
   // Complete payment (mock or test card)
-  await page.fill("input[name=card]", "4242424242424242");
-  await page.fill("input[name=expiry]", "12/26");
-  await page.click("button[data-testid=pay]");
+  await page.locator("input[name=card]").fill("4242424242424242");
+  await page.locator("input[name=expiry]").fill("12/26");
+  await page.getByTestId("pay").click();
   await expect(page.getByText("Order confirmed")).toBeVisible();
 
   const message = await emailInbox.waitForMessage({
@@ -637,10 +639,10 @@ test("@e2e approval workflow sends notify email after approval", async ({
 
   // Step 1: Requester submits a request
   await page.goto("/requests/new");
-  await page.fill("input[name=email]", requester);
-  await page.fill("textarea[name=reason]", "Q4 budget approval");
-  await page.fill("input[name=approver_email]", approver);
-  await page.click("button[type=submit]");
+  await page.locator("input[name=email]").fill(requester);
+  await page.locator("textarea[name=reason]").fill("Q4 budget approval");
+  await page.locator("input[name=approver_email]").fill(approver);
+  await page.locator("button[type=submit]").click();
   await expect(page.getByText("Request submitted")).toBeVisible();
 
   // Step 2: Approval email arrives for approver
@@ -657,7 +659,7 @@ test("@e2e approval workflow sends notify email after approval", async ({
   // Step 3: Approver approves the request
   const notifyTime = new Date();
   await page.goto(approvalLink!);
-  await page.click("button[data-testid=approve-request]");
+  await page.getByTestId("approve-request").click();
   await expect(page.getByText("Approved")).toBeVisible();
 
   // Step 4: Requester gets notify email
@@ -687,11 +689,11 @@ test("@e2e weekly digest email reflects correct period", async ({
 
   // Set the user to receive weekly digests and perform some activity
   await page.goto("/settings/emails");
-  await page.selectOption("select[name=digest-frequency]", "weekly");
-  await page.click("button[type=submit]");
+  await page.locator("select[name=digest-frequency]").selectOption("weekly");
+  await page.locator("button[type=submit]").click();
   await page.goto("/dashboard");
   // Create some activity that should appear in the digest
-  await page.click("button[data-testid=log-activity]");
+  await page.getByTestId("log-activity").click();
   // ... more activity ...
 
   // Manually trigger digest send (if your app exposes a /api/digest/send endpoint)
@@ -722,12 +724,12 @@ test("@e2e password reset email respects user locale (French)", async ({
   const beforeTime = new Date();
 
   await page.goto("/settings");
-  await page.selectOption("select[name=locale]", "fr");
-  await page.fill("input[name=email]", address);
-  await page.click("button[type=submit]");
+  await page.locator("select[name=locale]").selectOption("fr");
+  await page.locator("input[name=email]").fill(address);
+  await page.locator("button[type=submit]").click();
   await page.goto("/forgot-password");
-  await page.fill("input[name=email]", address);
-  await page.click("button[type=submit]");
+  await page.locator("input[name=email]").fill(address);
+  await page.locator("button[type=submit]").click();
 
   const message = await emailInbox.waitForMessage({
     to: address,
@@ -750,13 +752,13 @@ Email clients (Gmail, Outlook, Apple Mail, mobile) each render HTML email differ
 ### Screenshot emails in the inbox with Playwright
 
 ```typescript
-test("@render gmail: password reset email", async ({ page, emailInbox }) => {
+test("@render gmail: password reset email", async ({ page, emailInbox }, testInfo) => {
   const address = emailInbox.uniqueAddress("render");
   const beforeTime = new Date();
 
   await page.goto("/forgot-password");
-  await page.fill("input[name=email]", address);
-  await page.click("button[type=submit]");
+  await page.locator("input[name=email]").fill(address);
+  await page.locator("button[type=submit]").click();
 
   const message = await emailInbox.waitForMessage({
     to: address,
@@ -771,17 +773,13 @@ test("@render gmail: password reset email", async ({ page, emailInbox }) => {
   await emailPage.setContent(message.htmlBody || message.textBody);
   const gmailScreenshot = await emailPage.screenshot();
 
-  // Save screenshot to test artifacts for manual review
-  await page.evaluate(
-    (buf, name) => {
-      require("fs").writeFileSync(
-        `./test-results/emails/${name}.png`,
-        Buffer.from(buf),
-      );
-    },
-    gmailScreenshot,
-    `reset-email-gmail-${Date.now()}`,
-  );
+  // Attach the screenshot to the test report for manual review. (The test body runs in
+  // Node, so testInfo.attach is the right tool; page.evaluate() would run in the browser,
+  // where require("fs") does not exist, and takes a single argument.)
+  await testInfo.attach("reset-email-gmail", {
+    body: gmailScreenshot,
+    contentType: "image/png",
+  });
 
   await emailPage.close();
   await emailInbox.deleteMessage(message.id);
@@ -807,9 +805,9 @@ for (const vp of viewports) {
     const beforeTime = new Date();
 
     await page.goto("/shop");
-    await page.click("button[data-testid=buy-now]");
-    await page.fill("input[name=email]", address);
-    await page.click("button[type=submit]");
+    await page.getByTestId("buy-now").click();
+    await page.locator("input[name=email]").fill(address);
+    await page.locator("button[type=submit]").click();
     // ... complete order ...
 
     const message = await emailInbox.waitForMessage({
@@ -960,8 +958,8 @@ test("@security: reset token cannot be used twice", async ({
   const beforeTime = new Date();
 
   await page.goto("/forgot-password");
-  await page.fill("input[name=email]", address);
-  await page.click("button[type=submit]");
+  await page.locator("input[name=email]").fill(address);
+  await page.locator("button[type=submit]").click();
 
   const email = await emailInbox.waitForMessage({
     to: address,
@@ -975,8 +973,8 @@ test("@security: reset token cannot be used twice", async ({
 
   // First use — should succeed
   await page.goto(resetLink!);
-  await page.fill("input[name=newPassword]", "ValidPassword123!");
-  await page.click("button[type=submit]");
+  await page.locator("input[name=newPassword]").fill("ValidPassword123!");
+  await page.locator("button[type=submit]").click();
   await expect(page.getByText("Password changed")).toBeVisible();
 
   // Second use — must be rejected
@@ -1005,8 +1003,8 @@ test("@security: expired reset token is rejected", async ({
   const address = emailInbox.uniqueAddress("reset-exp");
   const beforeTime = new Date();
   await page.goto("/forgot-password");
-  await page.fill("input[name=email]", address);
-  await page.click("button[type=submit]");
+  await page.locator("input[name=email]").fill(address);
+  await page.locator("button[type=submit]").click();
   const email = await emailInbox.waitForMessage({
     to: address,
     subjectContains: "password",
@@ -1048,8 +1046,8 @@ test("@security: reset tokens are cryptographically random", async ({
   const address = emailInbox.uniqueAddress("reset-rng");
   const beforeTime = new Date();
   await page.goto("/forgot-password");
-  await page.fill("input[name=email]", address);
-  await page.click("button[type=submit]");
+  await page.locator("input[name=email]").fill(address);
+  await page.locator("button[type=submit]").click();
   const email1 = await emailInbox.waitForMessage({
     to: address,
     subjectContains: "password",
@@ -1060,8 +1058,8 @@ test("@security: reset tokens are cryptographically random", async ({
 
   // Request a second reset token for the same user
   await page.goto("/forgot-password");
-  await page.fill("input[name=email]", address);
-  await page.click("button[type=submit]");
+  await page.locator("input[name=email]").fill(address);
+  await page.locator("button[type=submit]").click();
   const email2 = await emailInbox.waitForMessage({
     to: address,
     subjectContains: "password",
@@ -1128,8 +1126,8 @@ test("@security: many wrong tokens triggers account lockout", async ({
   // Get a valid reset link first
   const beforeTime = new Date();
   await page.goto("/forgot-password");
-  await page.fill("input[name=email]", address);
-  await page.click("button[type=submit]");
+  await page.locator("input[name=email]").fill(address);
+  await page.locator("button[type=submit]").click();
   const email = await emailInbox.waitForMessage({
     to: address,
     subjectContains: "password",
@@ -1210,9 +1208,9 @@ test("@e2e signup with email verification", async ({ page, emailInbox }) => {
   const beforeTime = new Date();
 
   await page.goto("/signup");
-  await page.fill("input[name=email]", address);
-  await page.fill("input[name=password]", "TestPassword123!");
-  await page.click("button[type=submit]");
+  await page.locator("input[name=email]").fill(address);
+  await page.locator("input[name=password]").fill("TestPassword123!");
+  await page.locator("button[type=submit]").click();
 
   // Should show "check your email" state, not error
   await expect(

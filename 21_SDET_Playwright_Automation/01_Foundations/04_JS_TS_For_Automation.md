@@ -109,20 +109,20 @@ const status = responseBody?.citations?.[0]?.status;
 const citationIds = ["CIT-001", "CIT-002", "CIT-003"];
 
 for (const id of citationIds) {
-  await page.fill("#citationInput", id);
-  await page.click("#searchButton");
+  await page.locator("#citationInput").fill(id);
+  await page.locator("#searchButton").click();
   await expect(page.locator(".result-row")).toBeVisible();
 }
 
 // forEach — works, but CANNOT use await inside it properly
 // ❌ WRONG — await inside forEach does NOT work as expected
 citationIds.forEach(async (id) => {
-  await page.fill("#citationInput", id); // This fires all at once, not in sequence!
+  await page.locator("#citationInput").fill(id); // This fires all at once, not in sequence!
 });
 
 // ✅ RIGHT — use for...of when you need sequential async operations
 for (const id of citationIds) {
-  await page.fill("#citationInput", id); // Each iteration waits for the previous
+  await page.locator("#citationInput").fill(id); // Each iteration waits for the previous
 }
 
 // map — transforming API response arrays into test data
@@ -165,8 +165,8 @@ test("verify citation search", async ({ page, request }) => {
 
 // Arrow function in test.step
 await test.step("Fill search form", async () => {
-  await page.fill("#citationInput", citationId);
-  await page.click("#searchButton");
+  await page.locator("#citationInput").fill(citationId);
+  await page.locator("#searchButton").click();
 });
 ```
 
@@ -294,7 +294,7 @@ The single thread never actually waited. It stayed busy running other code, and 
 
 Two consequences fall out of this model, and both matter constantly in test code:
 
-- **A missing `await` is not a syntax error.** `page.click(...)` without `await` still hands the work to the host — the click still starts. Your code just does not pause, so the next line runs before the click resolves. That is the source of nearly every "sometimes passes, sometimes fails" bug in Sections 1.4 and 2.4.
+- **A missing `await` is not a syntax error.** `page.locator(...).click()` without `await` still hands the work to the host — the click still starts. Your code just does not pause, so the next line runs before the click resolves. That is the source of nearly every "sometimes passes, sometimes fails" bug in Sections 1.4 and 2.4.
 - **A CPU-heavy loop *does* freeze everything.** The single-thread rule only forgives you when you actually hand off to the host. `for (let i = 0; i < 1e9; i++) {}` blocks the event loop for seconds — Promises cannot resolve, timers cannot fire, Playwright's own internal messaging stalls. Test code almost never does this by accident, but a synchronous `while (Date.now() < deadline)` polling loop absolutely will.
 
 ---
@@ -309,7 +309,7 @@ const b = a * 3; // done instantly, b = 6
 // ASYNCHRONOUS — some operations take time
 // Without async/await, JavaScript doesn't wait:
 page.goto("https://crm.dynamics.com"); // started, but NOT waited for
-page.click("#submitButton"); // ❌ this fires BEFORE the page loads!
+page.locator("#submitButton").click(); // ❌ this fires BEFORE the page loads!
 ```
 
 ---
@@ -394,16 +394,16 @@ async function test() {
 // ❌ THE MOST COMMON MISTAKE — Missing await
 async function badTest({ page }) {
   page.goto("https://crm.dynamics.com"); // starts navigating, doesn't wait
-  page.click("#loginButton"); // tries to click BEFORE page loads
-  page.fill("#username", "admin"); // tries to fill BEFORE login button existed
+  page.locator("#loginButton").click(); // tries to click BEFORE page loads
+  page.locator("#username").fill("admin"); // tries to fill BEFORE login button existed
   // Tests sometimes pass anyway (race condition), making this very hard to debug
 }
 
 // ✅ CORRECT
 async function goodTest({ page }) {
   await page.goto("https://crm.dynamics.com"); // wait for page to load
-  await page.click("#loginButton"); // then click
-  await page.fill("#username", "admin"); // then fill
+  await page.locator("#loginButton").click(); // then click
+  await page.locator("#username").fill("admin"); // then fill
 }
 ```
 
@@ -421,15 +421,15 @@ test("complete example", async ({ page, request }) => {
   await page.reload(); // await ✅
 
   // ─── USER ACTIONS ────────────────────────────────────────────
-  await page.click("#loginButton"); // await ✅
-  await page.fill("#username", "admin@company.com"); // await ✅
-  await page.type("#password", "Password123"); // await ✅ — but @deprecated:
-  //   prefer page.fill() above, or locator.pressSequentially() when you genuinely
-  //   need per-keystroke events (see Ch17 §on D365 lookup debounce).
-  await page.press("#search", "Enter"); // await ✅
-  await page.selectOption("#dropdown", "Option1"); // await ✅
-  await page.check("#checkbox"); // await ✅
-  await page.hover(".ms-Button"); // await ✅
+  await page.locator("#loginButton").click(); // await ✅
+  await page.locator("#username").fill("admin@company.com"); // await ✅
+  await page.locator("#password").pressSequentially("Password123"); // await ✅ — per-keystroke events;
+  //   the old page.type() is @deprecated. Prefer fill() (line above) unless the page reacts to
+  //   individual keystrokes (see Ch17 §on D365 lookup debounce).
+  await page.locator("#search").press("Enter"); // await ✅
+  await page.locator("#dropdown").selectOption("Option1"); // await ✅
+  await page.locator("#checkbox").check(); // await ✅
+  await page.locator(".ms-Button").first().hover(); // await ✅ (.first(): strict mode rejects multi-match)
 
   // ─── LOCATOR ACTIONS ─────────────────────────────────────────
   const button = page.getByRole("button", { name: "Save" }); // NO await ✅
@@ -442,10 +442,11 @@ test("complete example", async ({ page, request }) => {
   const count = await page.locator("tr").count(); // await ✅ (reading count)
 
   // ─── WAITING ─────────────────────────────────────────────────
-  await page.waitForSelector(".ms-DetailsList-row"); // await ✅
-  await page.waitForLoadState("networkidle"); // await ✅
+  await page.locator(".ms-DetailsList-row").first().waitFor(); // await ✅ (replaces page.waitForSelector)
+  await page.waitForLoadState("domcontentloaded"); // await ✅ — not "networkidle": the typings mark it
+  //   DISCOURAGED and say to rely on web assertions for readiness instead
   await page.waitForResponse("**/api/citations*"); // await ✅
-  await locator.waitFor({ state: "visible", timeout: 60000 }); // await ✅
+  await button.waitFor({ state: "visible", timeout: 60000 }); // await ✅
 
   // ─── ASSERTIONS (expect) ─────────────────────────────────────
   await expect(page.locator(".result")).toBeVisible(); // await ✅
@@ -463,7 +464,7 @@ test("complete example", async ({ page, request }) => {
   // ─── test.step ───────────────────────────────────────────────
   await test.step("Step name here", async () => {
     // await ✅ outer
-    await page.click("#something"); // await ✅ inner
+    await page.locator("#something").click(); // await ✅ inner
   });
 
   // ─── What does NOT need await ─────────────────────────────────
@@ -494,19 +495,29 @@ When your test clicks a button that opens a NEW TAB, you face a race condition:
 
 ```typescript
 // ❌ WRONG — race condition
-await page.click("#openInNewTab"); // tab opens...
+await page.locator("#openInNewTab").click(); // tab opens...
 const newTab = await context.waitForEvent("page"); // ...but might already be gone!
 
 // ✅ CORRECT — Promise.all fires both simultaneously
 const [newTabPage] = await Promise.all([
   page.context().waitForEvent("page"), // start listening BEFORE the click
-  page.click("#openInNewTab"), // trigger the click
+  page.locator("#openInNewTab").click(), // trigger the click
 ]);
 
 // Now newTabPage is the second tab's Page object
 await newTabPage.waitForLoadState("domcontentloaded");
-await newTabPage.fill("#username", "admin");
+await newTabPage.locator("#username").fill("admin");
 ```
+
+`Promise.all` is not the only way to get the listener registered first. The same guarantee comes from creating the Promise *before* the click and awaiting it *after* — the form Playwright's own docs show, and the one that reads top to bottom:
+
+```typescript
+const newTabPromise = page.context().waitForEvent("page"); // listener registered NOW, not awaited yet
+await page.locator("#openInNewTab").click(); // trigger
+const newTabPage = await newTabPromise; // collect the result
+```
+
+What matters is the *order of registration*, not which syntax you choose — `Promise.all` just makes that order impossible to get wrong in one expression.
 
 **Understanding `Promise.all`:**
 
@@ -614,7 +625,7 @@ test.describe("Citation Search E2E", () => {
     // ── STEP 3: Search for the citation ───────────────────────
     await test.step(`Search for citation ${data.citationId}`, async () => {
       // data.citationId from Step 1 is available here
-      await page.fill("#citationNumberInput", data.citationId!);
+      await page.locator("#citationNumberInput").fill(data.citationId!);
       await page.getByRole("button", { name: "Search" }).nth(2).click();
     });
 
@@ -859,8 +870,8 @@ await fetchCitationDetails(request, "invalid", "CIT-001"); // ❌ compile error!
 ```typescript
 // ❌ Callback hell — hard to read, hard to debug
 page.goto("/login").then(() => {
-  page.fill("#user").then(() => {
-    page.click("#submit").then(() => {
+  page.locator("#user").fill("admin").then(() => {
+    page.locator("#submit").click().then(() => {
       expect(page.locator(".dashboard"))
         .toBeVisible()
         .then(() => {
@@ -872,8 +883,8 @@ page.goto("/login").then(() => {
 
 // ✅ Clean await chain — readable top to bottom
 await page.goto("/login");
-await page.fill("#user", "admin");
-await page.click("#submit");
+await page.locator("#user").fill("admin");
+await page.locator("#submit").click();
 await expect(page.locator(".dashboard")).toBeVisible();
 ```
 
@@ -935,7 +946,7 @@ async function fetchWithRetry(
 ```typescript
 test("search for citation", async ({ page }) => {
   page.goto("https://crm.dynamics.com/master-search");
-  page.fill("#citationInput", "CIT-001");
+  page.locator("#citationInput").fill("CIT-001");
   const count = await page.locator(".result-row").count();
   expect(count).toBeGreaterThan(0);
 });
@@ -943,7 +954,7 @@ test("search for citation", async ({ page }) => {
 
 <details><summary>Answer</summary>
 
-Two missing `await` statements. `page.goto()` starts navigation but doesn't wait — so `page.fill()` fires before the page is ready (probably throws "element not found"). Even if fill somehow worked, the `count()` check would run before any search was executed. The test might accidentally pass because of race conditions, making it an extremely hard-to-debug flaky test. Fix: add `await` before both `page.goto()` and `page.fill()`.
+Two missing `await` statements. `page.goto()` starts navigation but doesn't wait — so the `fill()` fires before the page is ready (probably throws "element not found"). Even if fill somehow worked, the `count()` check would run before any search was executed. The test might accidentally pass because of race conditions, making it an extremely hard-to-debug flaky test. Fix: add `await` before both `page.goto()` and the `fill()`.
 
 </details>
 
@@ -952,8 +963,8 @@ Two missing `await` statements. `page.goto()` starts navigation but doesn't wait
 ```typescript
 const ids = ["CIT-001", "CIT-002", "CIT-003", "CIT-004", "CIT-005"];
 ids.forEach(async (id) => {
-  await page.fill("#input", id);
-  await page.click("#search");
+  await page.locator("#input").fill(id);
+  await page.locator("#search").click();
   await expect(page.locator(".result")).toBeVisible();
 });
 ```
@@ -971,10 +982,10 @@ ids.forEach(async (id) => {
 ```typescript
 const [newPage] = await Promise.all([
   page.context().waitForEvent("page"),
-  page.click("#openAppBButton"),
+  page.locator("#openAppBButton").click(),
 ]);
 await newPage.waitForLoadState("domcontentloaded");
-await newPage.fill("#username", "admin@company.com");
+await newPage.locator("#username").fill("admin@company.com");
 ```
 
 The key: `waitForEvent('page')` and the click must be started together via `Promise.all`. If you await the click first, the new tab might open and close before the event listener is registered.
@@ -1256,7 +1267,7 @@ Every async bug in Playwright traces back to one of these patterns. Use this tab
 | `expect(text).toBe('PAID')` fails with `''`             | One-shot read on a loading element                | `textContent()` returns the text at THIS INSTANT. If the element is still in Phase 1 (empty container, data loading), you get `''`.                                    | Use `await expect(locator).toHaveText('PAID')` — this retries until the text matches.                 |
 | `Promise.all` errors out and you lose the other results | One Promise rejects, `Promise.all` short-circuits | `Promise.all` rejects as soon as ANY Promise rejects. The other Promises keep running but their results are lost.                                                      | Use `Promise.allSettled()` if you need results from all, even failures.                               |
 | New tab not captured after button click                 | `waitForEvent` registered AFTER the click         | The new tab opened before the event listener was ready. The event was emitted and nobody was listening.                                                                | Use `Promise.all([context.waitForEvent('page'), button.click()])` — listener starts BEFORE the click. |
-| Test hangs forever, never completes                     | `await` on a Promise that never resolves          | A `waitForResponse()` waiting for an API call that the app never makes. A `waitForSelector()` waiting for an element that doesn't exist.                               | Always set explicit timeouts: `{ timeout: 15_000 }`. Never `await` without a timeout safety net.      |
+| Test hangs forever, never completes                     | `await` on a Promise that never resolves          | A `waitForResponse()` waiting for an API call that the app never makes. A `locator.waitFor()` (or the older `page.waitForSelector()`) waiting for an element that doesn't exist.                               | Always set explicit timeouts: `{ timeout: 15_000 }`. Never `await` without a timeout safety net.      |
 
 ---
 
