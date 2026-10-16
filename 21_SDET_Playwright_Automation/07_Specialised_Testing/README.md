@@ -16,7 +16,7 @@ Test types beyond functional end-to-end checks. Pick what your product needs —
 | 4 | Ch19 | [19. Advanced Browser Console Scripts — DevTools, Network & Security Diagnostics](./19_Advanced_Console_Scripts_Security.md) |
 | 5 | Ch37 | [37. Performance Testing — Core Web Vitals, Lighthouse & Response Time Assertions](./37_Performance_Testing_Lighthouse_k6.md) |
 | 6 | Ch38 | [38. Contract Testing with Pact — Preventing API Breaking Changes](./38_Contract_Testing_Pact.md) |
-| 7 | Ch52 | [52. Component Testing with `@playwright/experimental-ct-*` — The Bridge to Dev](./52_Component_Testing_With_Playwright_CT.md) |
+| 7 | Ch52 | [52. Component Testing — stories & galleries (1.62+) and the legacy `experimental-ct-*` flow](./52_Component_Testing_With_Playwright_CT.md) |
 | 8 | Ch53 | [53. Mutation Testing with Stryker — Are Your Tests Actually Testing Anything?](./53_Mutation_Testing_With_Stryker.md) |
 | 9 | Ch46 | [46. BDD with Cucumber — When and How to Use It With Playwright](./46_BDD_With_Cucumber.md) |
 | 10 | Ch45 | [Chapter 45 — AI Agents, MCP, and Playwright](./45_AI_Agents_MCP_And_Playwright.md) |
