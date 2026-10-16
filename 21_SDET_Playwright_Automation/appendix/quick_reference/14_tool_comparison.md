@@ -428,7 +428,7 @@ No native interception. Workarounds:
 
 | Tool        | Component support               | Frameworks                  |
 | ----------- | ------------------------------- | --------------------------- |
-| Playwright  | `@playwright/experimental-ct-*` | React, Vue, Svelte, Solid   |
+| Playwright  | stories + gallery model (1.62+); legacy `experimental-ct-*` frozen at 1.62.1 | React, Vue (see Ch52) |
 | Cypress     | First-class, mature             | React, Vue, Svelte, Angular |
 | Selenium    | None (E2E only)                 | —                           |
 | WebdriverIO | Via Stencil/Vue extension       | Limited                     |

@@ -1,5 +1,7 @@
 # Component Testing — Playwright CT
 
+> **⚠ Out of date on the API:** since 1.62 Playwright's component testing uses a stories + gallery model (`mount('id')`), and the `experimental-ct-*` packages below stop at 1.62.1. This page still describes the legacy flow — read [Ch52](../../07_Specialised_Testing/52_Component_Testing_With_Playwright_CT.md) for the current one.
+>
 > **Canonical lesson:** [52 Component Testing With Playwright CT](../../07_Specialised_Testing/52_Component_Testing_With_Playwright_CT.md). This page is a shorter summary kept for quick lookup; the chapter is the maintained version — if the two disagree, trust the chapter.
 
 > Specialised reference for testing individual UI components in isolation, in real browsers, via `@playwright/experimental-ct-*`. The reference layer covers E2E primitives — this layer is about the COMPONENT model, what CT is good for, what it isn't, the trade-offs vs Jest+RTL, vs Storybook+Chromatic, vs Cypress CT.
@@ -86,10 +88,10 @@ CT has been "experimental" since 2022. It's production-ready for React/Vue/Svelt
 
 | Framework  | Package                              | Status                               |
 | ---------- | ------------------------------------ | ------------------------------------ |
-| React      | `@playwright/experimental-ct-react`  | Stable                               |
-| Vue        | `@playwright/experimental-ct-vue`    | Stable                               |
-| Svelte     | `@playwright/experimental-ct-svelte` | Stable                               |
-| Solid      | `@playwright/experimental-ct-solid`  | Stable                               |
+| React      | `@playwright/experimental-ct-react`  | Legacy — frozen at 1.62.1            |
+| Vue        | `@playwright/experimental-ct-vue`    | Legacy — frozen at 1.62.1            |
+| Svelte     | `@playwright/experimental-ct-svelte` | Removed — last build 1.58.2          |
+| Solid      | `@playwright/experimental-ct-solid`  | Removed — last build 1.48.2          |
 | Angular    | Not officially supported             | Use TestBed + Karma OR Cypress CT    |
 | Vanilla JS | Not directly                         | Mount via React with vanilla wrapper |
 

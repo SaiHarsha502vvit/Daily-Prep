@@ -489,7 +489,7 @@ Playwright's `APIRequestContext` is a first-class HTTP client baked into the fra
 - CI cost-sensitive teams — free sharding, no paid cloud required for parallelism.
 - WebKit / Safari coverage without a Mac runner.
 - Shadow DOM / web components testing.
-- Component testing (`@playwright/experimental-ct-*`).
+- Component testing (stories + gallery model since 1.62; the legacy `@playwright/experimental-ct-*` packages stop at 1.62.1 — see Ch52).
 
 ❌ **Poor fit:**
 

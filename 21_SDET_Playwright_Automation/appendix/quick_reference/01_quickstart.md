@@ -7,7 +7,7 @@
 ## Install
 
 ```bash
-# Node 18+ required (check: node --version)
+# Node 20+ required by @playwright/test 1.64 (engines: >=20; check: node --version)
 npm init -y
 npm i -D @playwright/test typescript @types/node
 npx playwright install              # downloads Chromium, Firefox, WebKit binaries

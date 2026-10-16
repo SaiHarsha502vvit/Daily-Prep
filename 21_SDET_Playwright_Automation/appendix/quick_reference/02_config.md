@@ -194,7 +194,7 @@ Every field of `PlaywrightTestConfig`, alphabetised, with type, default, and not
 | `testMatch`            | `string \| string[]`                                                   | `**/*.@(spec\|test).?(c\|m)[jt]s?(x)` | Glob/regex for what counts as a test file.                                                       |
 | `timeout`              | `number`                                                               | `30_000`                              | Per-test wall-clock limit (ms).                                                                  |
 | `tsconfig`             | `string`                                                               | nearest `tsconfig.json`               | Resolves `paths` aliases for test files.                                                         |
-| `updateSnapshots`      | `'all' \| 'none' \| 'missing' \| 'changed'`                            | `'missing'`                           | What `--update-snapshots` does.                                                                  |
+| `updateSnapshots`      | `'all' \| 'changed' \| 'missing' \| 'none' \| 'default'`                | `'default'`                           | What `--update-snapshots` does. `'default'` creates missing snapshots but FAILS those tests (so CI can't pass silently); `'missing'` creates them and passes. Verified on 1.64.1.                                                                  |
 | `use`                  | `Use`                                                                  | `{}`                                  | Default fixture options. See [§5](#5-the-use-block).                                             |
 | `webServer`            | `WebServer \| WebServer[]`                                             | `undefined`                           | Spin up an app server before tests, kill it after.                                               |
 | `workers`              | `number \| string`                                                     | `os.cpus().length / 2`, capped at 50% | Parallel worker process count. Accepts `'50%'`.                                                  |
@@ -819,7 +819,7 @@ use: {
   launchOptions: {
     args: ['--disable-web-security', '--disable-features=BlockInsecurePrivateNetworkRequests'],
     slowMo: 100,                          // throttle every action by 100ms — debug only
-    devtools: true,                       // auto-open DevTools — debug only
+    // devtools: true  — REMOVED from launch options (no longer compiles); use `npx playwright test --debug` or `PWDEBUG=1`
     handleSIGINT: false,                  // let your own SIGINT handler run
   },
   contextOptions: {
@@ -1736,7 +1736,7 @@ Native mTLS support landed. Before, you needed a proxy with cert injection (e.g.
 
 ### v1.39 (Oct 2023) — Component testing GA
 
-`@playwright/experimental-ct-react/vue/svelte/solid` graduated to GA-ish. Still labelled experimental but stable.
+`@playwright/experimental-ct-react/vue/svelte/solid` were usable but always labelled experimental. **Update (1.62–1.63):** Playwright replaced this with a stories + gallery model, and the `experimental-ct-*` packages are no longer published after 1.62.1 — see [Ch52](../../07_Specialised_Testing/52_Component_Testing_With_Playwright_CT.md) and [Ch69](../../07_Specialised_Testing/69_Whats_New_Playwright_1_57_to_1_64.md).
 
 ### v1.41 (Jan 2024) — Test annotations
 
