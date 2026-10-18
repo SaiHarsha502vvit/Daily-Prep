@@ -179,4 +179,6 @@ Someone added `max-parallel: 2` to "avoid overwhelming the runner." The suite no
 
 Thirteen levels, from an empty folder to a real CI pipeline. If you've actually typed out and run the code in each level — not just read it — you have a genuinely different relationship with mobile Playwright testing than someone who only read documentation cover to cover. That was always the actual goal: not information, fluency.
 
+**Going further — the senior track:** this pipeline stops at the boundary of real-device testing; [Cross-Platform Mobile Testing Infrastructure at Scale](../09_Cross_Platform_Mobile_Testing_Infra_At_Scale.md) picks up exactly there (device matrix from data, sharding mechanics, cost model, tiered pipeline), the [release & rollout playbook](../career/RELEASE_AND_ROLLOUT_PLAYBOOK.md) covers what happens after the tests pass, and the [mobile SDET readiness rubric](../career/READINESS_RUBRIC_SDET.md) maps where you stand.
+
 **→ Related:** [00_ROADMAP.md](00_ROADMAP.md) · [Flutter_Bootcamp/Reference/DOC_09_Mobile_Debugging_Toolkit.md](../Flutter_Bootcamp/Reference/DOC_09_Mobile_Debugging_Toolkit.md) · [06_Mobilewright_Native_Testing.md](../06_Mobilewright_Native_Testing.md)

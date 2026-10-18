@@ -86,7 +86,7 @@ Now turn the four consequences into questions you can answer *about your product
 | Is pixel-identical UI across platforms a product requirement? | Flutter | 2 (own renderer) |
 | Is a large existing native codebase involved? | Incremental (add-to-app / native modules), not a rewrite | 4 plus the rewrite risk |
 
-**The senior move is not choosing — it's naming which question *actually* decides it for this product and refusing to let the other five be argued as if they did.** Most framework debates are really one question wearing six costumes. (Phase 9 of the career folder works one decision of this shape end-to-end as a full written proposal; here the goal is the derivation.)
+**The senior move is not choosing — it's naming which question *actually* decides it for this product and refusing to let the other five be argued as if they did.** Most framework debates are really one question wearing six costumes. (For a decision of this shape written up end to end as a proposal, see the [worked RFC example](career/RFC_TEMPLATE.md#filled-example--pilot-mobilewright-alongside-appium) — it is a *tooling* decision, not a native-vs-Flutter one; a worked native-vs-Flutter proposal has not been written yet. Here the goal is the derivation.)
 
 ---
 
@@ -205,7 +205,7 @@ A go/no-go is a decision under uncertainty with an irreversible-ish downside —
 2. **Reversibility of what's shipping.** [Section 1](#1-the-root-fact--asymmetric-reversibility): which rung is your fastest undo for *this specific release's riskiest change*? A release whose riskiest change is flagged is a different risk than one containing an unflagged migration.
 3. **Blast radius if wrong** — the generic axis from [Ch66 §1](../21_SDET_Playwright_Automation/08_SDET_to_SDE_Bridge/66_Senior_SDET_Decision_Making.md), with the mobile twist that it's multiplied by *how many users update quickly* (a payment path in a frequently-updated app reaches everyone fast).
 
-**The structural insight — a staged rollout converts "go/no-go" from a bet into an experiment.** Instead of one decision at 100%, you decide *go to 5%, with these pre-agreed halt criteria, then decide again*. The decision you actually make is smaller and its downside is capped. The skill is writing the halt criteria **before** the rollout — a specific crash-free-rate floor, a specific ANR/hang threshold — because thresholds invented mid-incident drift toward whatever justifies continuing. (The release playbook in `career/` — Phase 6 of this module's upgrade plan — works this out with the store-specific mechanics verified; this section is the reasoning it will rest on.)
+**The structural insight — a staged rollout converts "go/no-go" from a bet into an experiment.** Instead of one decision at 100%, you decide *go to 5%, with these pre-agreed halt criteria, then decide again*. The decision you actually make is smaller and its downside is capped. The skill is writing the halt criteria **before** the rollout — a specific crash-free-rate floor, a specific ANR/hang threshold — because thresholds invented mid-incident drift toward whatever justifies continuing. (The [release playbook](career/RELEASE_AND_ROLLOUT_PLAYBOOK.md) works this out with the store mechanics verified against official docs: [§4](career/RELEASE_AND_ROLLOUT_PLAYBOOK.md#4-how-long-must-a-stage-run-deriving-soak-time) derives how long a stage must run before a halt rule can mean anything, and [§6](career/RELEASE_AND_ROLLOUT_PLAYBOOK.md#6-the-rollout-plan-and-halt-criteria-template) is the halt-criteria template.)
 
 For the SDET specifically, the no-go call is the part of the role that's easy to avoid: it's uncomfortable, it delays a release, and "tests passed" is always available as cover. The method above is the defense — a no-go justified by *named evidence and a named irreversible risk* is a defensible position; a no-go justified by unease is not, and a go justified by "the dashboard was green" (when the dashboard hid per-device retries) is the failure the whole module has been building tools against.
 
@@ -243,6 +243,17 @@ Two properties make this table work. First, **it explains itself** — an author
 | God Widget | A "god pipeline" or "god test suite" nobody can reason about or shard | [09 §4](09_Cross_Platform_Mobile_Testing_Infra_At_Scale.md#4-sharding-mechanics-platform-by-platform) |
 
 The progression a senior engineer makes is exactly this: stop seeing the anti-pattern only in a widget and start seeing it in the release process, the pipeline, and the plan.
+
+### The Same Reasoning, Written Down as a Proposal
+
+Judgment that lives only in your head can't be reviewed, challenged or inherited. The [worked RFC example](career/RFC_TEMPLATE.md#filled-example--pilot-mobilewright-alongside-appium) in `career/` applies this file's reasoning to a real-shaped decision — whether to try a second automation framework — and is worth reading as a demonstration of the habits above rather than as a tool recommendation:
+
+- **It starts from a cause breakdown** (which share of the pain each cause accounts for), so the tool's addressable share is an honest upper bound — the same "scope along the axes before diagnosing" move as [Section 5](#5-incident-command-for-a-crash-spike-across-a-fragmented-matrix).
+- **It treats "fix what we have" as the control group,** not a strawman — the build/wait/work-around reasoning of [Section 4](#4-build-wait-or-work-around--two-worked-cases-from-the-mobilewright-track).
+- **It is a bounded, removable pilot with written stop conditions,** the reversibility lens of [Section 1](#1-the-root-fact--asymmetric-reversibility) applied to a tooling decision.
+- **It places the new tests in the cheapest tier that still fails when the bug is present,** per [Section 3](#3-automation-roi-when-every-test-is-multiplied-by-a-matrix).
+
+The structural reasoning for why each RFC section exists is derived in the web-side [Ch66 §4](../21_SDET_Playwright_Automation/08_SDET_to_SDE_Bridge/66_Senior_SDET_Decision_Making.md); the template adds mobile's two extra sections (reversibility & exit criteria, test-strategy impact).
 
 ---
 

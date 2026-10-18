@@ -1956,3 +1956,5 @@ You've covered 27 weeks of Flutter — from `void main()` to a production-grade 
 - Write federated plugins that work on all platforms (Android, iOS, Web, Desktop)
 - Practice system design interviews with mobile architecture questions
 - Ship an app to real users and learn from production metrics
+
+**Going further — the senior track:** the bootcamp teaches you to build; what separates senior is judgment and planning around what you build. The module-level [senior judgment doc](../../10_Senior_Mobile_Engineering_Judgment.md) (reversibility, native-vs-cross-platform, incident command), the [release & rollout playbook](../../career/RELEASE_AND_ROLLOUT_PLAYBOOK.md) (the pre-launch checklist above, extended into a staged rollout with halt criteria), and the [mobile SWE readiness rubric](../../career/READINESS_RUBRIC_SWE.md) are the next steps. Platform depth for the other half of the world is in [iOS performance](../../08_iOS_Performance_Memory_And_Instruments.md) and the [Android deep dive](../../03_Android/01_Architecture_And_App_Model.md).

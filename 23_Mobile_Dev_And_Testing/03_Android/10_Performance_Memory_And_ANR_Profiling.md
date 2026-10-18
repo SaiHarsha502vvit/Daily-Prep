@@ -410,6 +410,8 @@ FIX:     For numbers you intend to compare against a target or report
 
 **This is the final chapter in this folder.** For E2E/Appium testing, see [../02_Android_Native_Dev_And_Testing.md](../02_Android_Native_Dev_And_Testing.md).
 
+**Beyond this folder (senior track):** the iOS counterpart is [08_iOS_Performance_Memory_And_Instruments.md](../08_iOS_Performance_Memory_And_Instruments.md); how to turn a finding like these into a decision, an incident response or a review comment is in [10_Senior_Mobile_Engineering_Judgment.md](../10_Senior_Mobile_Engineering_Judgment.md); and the [app-code review rubric](../career/CODE_REVIEW_RUBRIC.md) shows which of this chapter's findings are Blockers.
+
 **Back to**: [Android folder index](./) | [Series index](../)
 
 ---
