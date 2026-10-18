@@ -1315,16 +1315,17 @@ test("Search by citation ID returns EXACTLY ONE specific result", async ({
 
 ### Situation
 
-A new "Share" feature allows users to click a "Copy Link" button, which copies a URL to the system clipboard. The test clicks the button, reads the clipboard, and asserts the URL is correct. It works 100% of the time locally on the developer's machine. In CI, it fails every time.
+(Illustrative composite.) A new "Share" feature has a "Copy Link" button that copies a URL to the system clipboard. The test clicks the button, reads the clipboard, and asserts the URL. The developer runs it headed, watches the copy happen, and answers the browser's clipboard prompt by hand. In CI, nobody can answer it.
 
 ### Symptoms
 
 ```
-Local (headed): PASSES
-CI (headless): FAILS
-  Error: page.evaluate: DOMException: Write permission denied.
-  OR: Cannot read properties of undefined (reading 'writeText')
+Local (headed): the click copies fine; the readText() call sits on a permission prompt until a human clicks Allow
+CI (headless):  fails immediately
+  page.evaluate: NotAllowedError: Failed to execute 'readText' on 'Clipboard': Read permission denied.
 ```
+
+A second, unrelated failure has a different message: on a **non-secure origin** (plain `http://` on anything other than `localhost`/`127.0.0.1`), `navigator.clipboard` is `undefined`, so you get `TypeError: Cannot read properties of undefined (reading 'writeText')`. No permission grant can fix that one; serve the app over HTTPS.
 
 ### Root Cause Diagnosis
 
@@ -1341,20 +1342,31 @@ test("Copy link to clipboard", async ({ page }) => {
 });
 ```
 
-**Root Cause**: The modern Async Clipboard API (`navigator.clipboard`) is strictly gated by browser security policies. It requires a Secure Context (HTTPS or localhost) AND explicit user permission.
-When you run locally in "headed" mode, Playwright often bypasses the prompt or the developer has previously allowed it. In "headless" mode in CI, there is no user to click "Allow," so the permission defaults to **Denied**. The API call throws `DOMException: Write permission denied`.
+**Root Cause**: The Async Clipboard API (`navigator.clipboard`) needs a Secure Context (HTTPS, `localhost`, `127.0.0.1`) AND a permission. Playwright does not grant it for you. **Measured** on `@playwright/test` 1.64.1 / Chromium against a local `127.0.0.1` page, `writeText` called from a click handler and `readText` called from `page.evaluate`:
+
+| Mode | Permissions granted | `writeText` (after a click) | `readText` |
+| --- | --- | --- | --- |
+| headless | none | `NotAllowedError: Write permission denied` | `NotAllowedError: Read permission denied` |
+| headless | `clipboard-read`, `clipboard-write` | works | works |
+| headed | none | works (user gesture) | **never settles** (waits on a permission prompt) |
+| headed | `clipboard-read`, `clipboard-write` | works | works |
+
+So "passes locally" is not Playwright bypassing anything: headed Chromium lets a click-triggered write through and holds `readText` on a prompt that a human can answer. Headless has no prompt, so it denies. The same `isSecureContext === false` / `navigator.clipboard === undefined` result was measured for a page served from `http://insecure.test/` even with both permissions granted.
+
+**Other browsers: not run here.** The `grantPermissions` docs list `clipboard-read` and `clipboard-write` only among "permissions that may be supported by some browsers" and warn that supported permissions differ between browsers and between versions of the same browser ([BrowserContext.grantPermissions](https://playwright.dev/docs/api/class-browsercontext#browser-context-grant-permissions)). If the project runs Firefox or WebKit, check the grant on each rather than assuming the Chromium result carries over.
 
 ### Fix
 
 ```typescript
 // ✅ Fix: Explicitly grant clipboard permissions to the BrowserContext
 test("Copy link to clipboard", async ({ page, context }) => {
-  // Grant permission for this specific origin
+  // Grant for every origin in this context; pass { origin } to scope it to one
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
 
+  await page.goto("/citations/CIT-001"); // needs baseURL; a secure origin is still required
   await page.getByRole("button", { name: "Copy Link" }).click();
 
-  // Now the evaluate block will succeed in headless CI
+  // Now the evaluate block succeeds in headless CI
   const clipboardText = await page.evaluate(() =>
     navigator.clipboard.readText(),
   );
@@ -1364,7 +1376,7 @@ test("Copy link to clipboard", async ({ page, context }) => {
 
 ### Prevention Rule
 
-> **Rule**: Any feature that interacts with restricted browser APIs (Clipboard, Geolocation, Notifications, Camera/Microphone) MUST explicitly use `context.grantPermissions()`. Do not rely on local headed-mode implicit permissions, as they will always fail in headless CI environments.
+> **Rule**: Any feature that interacts with permission-gated browser APIs (Clipboard, Geolocation, Notifications, Camera/Microphone) MUST explicitly use `context.grantPermissions()`. A headed run where you click "Allow" by hand proves nothing about CI, and the grant does not fix a non-secure origin.
 
 ---
 
@@ -1405,15 +1417,15 @@ Two workers are both creating citations for the same hardcoded customer. The sea
 
 Diagnosis: Log `account.userId` in every test. If multiple tests log the same userId, you have shared data.
 
-**Root Cause 2: Orphaned data from previous test run (War Story 10 / cleanup issue)**
+**Root Cause 2: Orphaned data from previous test run (cleanup issue — see [Chapter 28](../03_Real_World_Scenarios/28_Test_Data_Lifecycle_and_Cleanup.md))**
 A previous CI run failed mid-test and didn't clean up its test data. A new run creates a citation, searches, and finds the current one PLUS the orphaned one.
 
 Diagnosis: Check the creation timestamps of the 2 results. If one is from a previous test run session, you have orphaned data.
 
 **Root Cause 3: Race condition in search indexing**
-The citation is created via API and immediately searched. In CI (slower DB), the search index hasn't caught up yet. Two results because a previous test's citation is still in the search window.
+An index that updates asynchronously can briefly serve a stale entry: a previous test's citation that was deleted, or re-assigned to another customer, is still in the index while the new one is already visible. Lag on a plain *insert* would give 0 results, not 2, so this cause only explains "2" when something was removed or changed just before.
 
-Diagnosis: Add `await page.waitForTimeout(500)` (diagnostic only) — if this fixes it, the search index has a lag. Fix properly using `expect.poll()` to wait for exactly 1 result.
+Diagnosis: do not add a sleep. Poll the search API for the result count and log each sample with a timestamp: `expect.poll(() => citationsClient.search({ citationId }).then((r) => r.length), { timeout: 15_000 }).toBe(1)`. If the count goes 2 → 1 within seconds, it is index lag, and that poll is also the proper fix. If it stays at 2, the cause is shared data or orphans (causes 1 and 2).
 
 </details>
 
@@ -1421,29 +1433,39 @@ Diagnosis: Add `await page.waitForTimeout(500)` (diagnostic only) — if this fi
 
 ### Q2. [Write It]
 
-Write a test that verifies an API endpoint is idempotent: calling `POST /api/citations/{id}/pay` twice with the same data returns `409 Conflict` on the second call. The test must handle the payment processing time (30 second async job) between the two calls.
+Write a test for the double-payment guard: once `POST /api/citations/{id}/pay` has succeeded, a second payment attempt for the same citation returns `409 Conflict`. The test must handle the payment processing time (30 second async job) between the two calls.
 
 <details><summary>Answer</summary>
 
+Be precise about what is being tested. Re-sending the **same** idempotency key is a *replay* and should return the original response, not 409. A **new** key for an already-paid citation is a second payment attempt, and the business rule rejects it with 409. The test below covers the second case.
+
 ```typescript
-test("Payment endpoint is idempotent — second call returns 409", async ({
+test("Second payment for a paid citation returns 409", async ({
   citationsClient,
   paymentsClient,
+  dbClient,
+  account,
 }) => {
-  // Create a test citation
+  // The 120 s poll below is longer than the 30 s default test timeout, which
+  // would end the test first (measured: "Test timeout of 30000ms exceeded").
+  test.setTimeout(150_000);
+
   const citation = await citationsClient.create(
     PayloadsCitation.pending({ customerId: account.userId }),
   );
 
-  // First payment — should succeed
-  const firstPayment = await paymentsClient.pay(citation.citationId, {
+  // First payment — should be accepted. rawPay returns the APIResponse.
+  const first = await paymentsClient.rawPay(citation.citationId, {
     amount: citation.amount,
-    idempotencyKey: "test-payment-key-001", // idempotency key for deduplication
+    idempotencyKey: "test-payment-key-001",
   });
-  expect(firstPayment.status).toBe(202);
-  const { jobId } = firstPayment;
+  expect(first.status()).toBe(202); // APIResponse.status is a METHOD
+  const { jobId, paymentId } = (await first.json()) as {
+    jobId: string;
+    paymentId: string;
+  };
 
-  // Wait for payment to be processed
+  // Wait for the async payment job to finish
   await expect
     .poll(async () => (await paymentsClient.getJobStatus(jobId)).status, {
       timeout: 120_000,
@@ -1452,29 +1474,31 @@ test("Payment endpoint is idempotent — second call returns 409", async ({
     })
     .toBe("COMPLETED");
 
-  // Second payment — must return 409 Conflict
-  const secondPaymentResponse = await paymentsClient.rawPay(
-    citation.citationId,
-    {
-      amount: citation.amount,
-      idempotencyKey: "test-payment-key-002", // different key, same citation
-    },
-  );
+  // Second attempt: NEW key, same citation — must be rejected
+  const second = await paymentsClient.rawPay(citation.citationId, {
+    amount: citation.amount,
+    idempotencyKey: "test-payment-key-002",
+  });
+  expect(second.status()).toBe(409);
 
-  expect(secondPaymentResponse.status).toBe(409);
-
-  const errorBody = await secondPaymentResponse.json();
+  const errorBody = (await second.json()) as {
+    code: string;
+    existingPaymentId: string;
+  };
   expect(errorBody.code).toBe("PAYMENT_ALREADY_PROCESSED");
-  expect(errorBody.existingPaymentId).toBe(firstPayment.paymentId);
+  expect(errorBody.existingPaymentId).toBe(paymentId);
 
-  // DB verification: only ONE payment record exists
-  const dbPayments = await dbClient.query(
-    "SELECT COUNT(*) as count FROM payments WHERE citation_id = $1",
+  // DB verification: only ONE payment record exists. COUNT(*) comes back as a
+  // string from most drivers, and queryOne returns undefined for no row.
+  const row = await dbClient.queryOne<{ count: string }>(
+    "SELECT COUNT(*) AS count FROM payments WHERE citation_id = $1",
     [citation.citationId],
   );
-  expect(Number(dbPayments[0].count)).toBe(1); // must be exactly 1, not 2
+  expect(Number(row?.count)).toBe(1); // exactly 1, not 2
 });
 ```
+
+`expect.poll`'s `timeout` and the test timeout are independent clocks: the poll gives up at its own `timeout` or when the test times out, whichever comes first (see [Chapter 42](../03_Real_World_Scenarios/42_Polling_Async_Data_Patterns.md#2-the-right-tool--expectpoll) for the engine details).
 
 </details>
 
@@ -1485,7 +1509,7 @@ test("Payment endpoint is idempotent — second call returns 409", async ({
 This test passes locally but fails in CI with "Expected 'PAID', received ''" (empty string). Identify the root cause.
 
 ```typescript
-test('Citation shows PAID after payment', async ({ page, citationsClient }) => {
+test('Citation shows PAID after payment', async ({ page, citationsClient, paymentsClient }) => {
   const citation = await citationsClient.create(PayloadsCitation.pending({ ... }));
   await paymentsClient.pay(citation.citationId, { amount: citation.amount });
 
@@ -1513,6 +1537,8 @@ Reading `textContent()` synchronously is a one-shot read, not a retry. Even if t
 
 ```typescript
 // Step 1: Wait for payment to process
+// (a 120 s poll needs test.setTimeout(150_000) at the top of the test,
+//  otherwise the 30 s default test timeout ends it first)
 await expect
   .poll(
     () => citationsClient.getById(citation.citationId).then((c) => c.status),
@@ -1554,13 +1580,27 @@ test("Click dynamic loading button", async ({ page }) => {
 });
 ```
 
-Why is `ElementHandle` (`page.$`) considered an anti-pattern in modern Playwright, and what exact failure does this code cause if the React app re-renders the button during the 2-second wait?
+Why is `ElementHandle` (`page.$`) discouraged in modern Playwright, and what exactly goes wrong in this code? There are two separate failures, and the second is the one that makes the test "randomly pass".
 
 <details><summary>Answer</summary>
 
-**Bug**: `page.$` captures a point-in-time reference to a specific DOM node. If React/Vue re-renders the component, the old DOM node is destroyed and a new one replaces it. When `button.click()` fires, Playwright throws an error: `Element is detached from DOM`.
+**Bug 1 — `page.$` does not wait, so the comment "Wait for the button to appear" is false.** `page.$` queries the DOM once and resolves to `null` straight away when nothing matches (measured: `null` after ~40 ms, no retry). Then `button?.click()` on `null` is a silent no-op: no error, the test goes on, and it can finish green without ever clicking. Whether the button was in the DOM at that instant decides whether the click happens, which is the "randomly passing" behaviour.
 
-**Fix**: Use `Locator` (`page.locator('.dynamic-btn')`). Locators are strict and lazily evaluated. When you call `locator.click()`, Playwright queries the DOM _at that exact moment_, automatically handling re-renders.
+**Bug 2 — a stale handle.** If the button was found and the app then re-rendered it (measured with a script that replaces the container's `innerHTML` 500 ms after load), the handle points at the removed node and the click throws:
+
+```
+elementHandle.click: Element is not attached to the DOM
+```
+
+(The wording `Element is detached from DOM` that circulates is not the message on 1.64.1.)
+
+**Fix**: use a `Locator`. It re-queries on every action, auto-waits for the element to exist, be visible, stable and enabled, and fails loudly on timeout instead of no-op'ing. The Playwright typings mark `page.$` itself as "Use locator-based page.locator() instead".
+
+```typescript
+await page.goto("/dashboard");
+// ... other work ...
+await page.locator(".dynamic-btn").click(); // or getByRole("button", { name: ... })
+```
 
 </details>
 
@@ -1609,6 +1649,14 @@ export default defineConfig({
 });
 ```
 
+**It affects the browser only.** `timezoneId` changes `Date`/`Intl` inside the page and nothing else. Measured with the host set to `TZ=UTC`: the browser reported `Asia/Calcutta` (`getTimezoneOffset()` = -330) while the Node test process still reported `UTC` (offset 0). With the clock fixed at 2026-10-17 19:30 UTC, `new Date().toLocaleDateString("en-CA")` in the page returned `2026-10-17` for a `UTC` context and `2026-10-18` for an `Asia/Kolkata` context. So any date your **test code** computes in Node (seeding via API, an expected value in an assertion) must use the same zone explicitly; `new Date().toISOString().slice(0, 10)` gives the UTC date and reintroduces the bug:
+
+```typescript
+const todayInIst = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Asia/Kolkata",
+}).format(new Date()); // "2026-10-18" at 19:30 UTC on 2026-10-17
+```
+
 **War Story**: Unset timezones cause "Timezone Boundary Flakiness." A test passes all day, then consistently fails during a 5-hour window every night depending on the delta between the CI server's UTC clock and the developer's local timezone assumption. Force `timezoneId` to neutralize this.
 
 </details>
@@ -1638,16 +1686,18 @@ If a test needs a user named 'John Doe', the test (or its fixture) must _create_
 ### Challenge 5 [Spot the Bug — The Shared Browser Context War Story]
 
 ```typescript
-import { test, chromium, Browser } from "@playwright/test";
+import { test, chromium, Browser, BrowserContext } from "@playwright/test";
 
 let browser: Browser;
+let context: BrowserContext;
 
 test.beforeAll(async () => {
   browser = await chromium.launch();
+  context = await browser.newContext({ baseURL: "http://localhost:3000" });
 });
 
 test("Test A", async () => {
-  const page = await browser.newPage();
+  const page = await context.newPage();
   await page.goto("/admin"); // redirects to login
   await page.fill("#user", "admin");
   await page.fill("#pass", "secret");
@@ -1656,41 +1706,46 @@ test("Test A", async () => {
 });
 
 test("Test B", async () => {
-  const page = await browser.newPage();
+  const page = await context.newPage();
   await page.goto("/customer");
   // Fails! The page expects to be logged out, but the session is active!
 });
 ```
 
-Why does Test B inherit Test A's logged-in state, and how do you fix it?
+Why does Test B inherit Test A's logged-in state, and how do you fix it? (There are also defects in the setup that have nothing to do with the cookie.)
 
 <details><summary>Answer</summary>
 
-**Bug**: `browser.newPage()` creates pages within the _same default browser context_. Cookies and LocalStorage are scoped to the Context, not the Page. Test A set the auth cookie, so Test B (running sequentially or in parallel in the same worker) gets the cookie.
+**Bug**: both pages come from the **same `BrowserContext`**. Cookies and localStorage are scoped to the context, not the page, so the auth cookie Test A earned is sent by Test B. (Measured: two pages from one `browser.newContext()`: the second page's request carried `sid=abc`.)
 
-**Fix**: Always use Playwright's built-in `page` fixture, which automatically creates an isolated `BrowserContext` for every single test.
+A common wrong diagnosis worth ruling out: `browser.newPage()` does **not** share a context. Each call creates a *new* one (measured: `a.context() === b.context()` is `false` and `browser.contexts().length` is 2), and a cookie set in the first page was not sent by the second. The bug above only exists because the code shares one context deliberately.
+
+**Fix**: use the built-in `page` fixture, which creates a fresh context per test.
 
 ```typescript
 test("Test A", async ({ page }) => {
-  // page is already isolated in its own context
   await page.goto("/admin");
-  // ...
+  await page.getByLabel("User").fill("admin");
+  await page.getByLabel("Password").fill("secret");
+  await page.getByRole("button", { name: "Log in" }).click();
 });
 
 test("Test B", async ({ page }) => {
-  // This page has zero cookies. Completely fresh.
+  // zero cookies, fresh storage
   await page.goto("/customer");
 });
 ```
 
-**War Story**: Manually managing `chromium.launch()` in `beforeAll` is a hangover from Puppeteer/Selenium. Playwright's greatest strength is sub-millisecond Context isolation via fixtures. Use them!
+**Other defects in hand-rolled setup like this** (true of the original `browser.newPage()` version too):
+
+- **Leaked browser**: nothing calls `browser.close()`, so every worker leaves a Chromium process running. Add `test.afterAll(() => browser.close())`, or use the `browser` fixture.
+- **Relative `goto` without a `baseURL`**: `browser.newPage()` and `chromium.launch()` do not read the config's `use` block. Measured: `page.goto("/admin")` fails with `Protocol error (Page.navigate): Cannot navigate to invalid URL`. The `page` fixture applies `baseURL`; here it has to be passed to `newContext({ baseURL })` by hand.
+- **Bypassed config `use` options**: the same goes for `timezoneId`, `locale`, `storageState`, `trace`, `video`, `screenshot` and `ignoreHTTPSErrors`. Hand-made contexts silently drop them, and no trace is recorded on failure.
+- **String-selector `page.fill(...)` / `page.click(...)`**: discouraged in favour of locators (`getByLabel`, `getByRole`), which auto-wait and are strict. See [Chapter 02 — Enterprise Locators](../01_Foundations/02_Enterprise_Locators_XPath.md).
+
+**War Story**: Manually managing `chromium.launch()` in `beforeAll` is a hangover from Puppeteer/Selenium. Playwright's fixtures give each test its own context cheaply, and that isolation is the default you should keep.
 
 </details>
-
----
-
-**Navigation**: [← Chapter 42: Polling Patterns](../03_Real_World_Scenarios/42_Polling_Async_Data_Patterns.md) | [Index](../00_INDEX.md) | [→ Chapter 44: Enterprise API Client Library](../05_Enterprise_Framework/44_Enterprise_API_Client_Library.md)
-
 
 ---
 
@@ -1705,3 +1760,7 @@ test("Test B", async ({ page }) => {
 **"Environment differences do not cause test failures"**→ Environment differences cause the most confusing test failures: tests pass locally but fail in CI because of different timezone settings, different locale formats (date as MM/DD vs DD/MM), different screen resolutions (element hidden below fold), different network latency (timeout thresholds too tight), or different file system case sensitivity (Linux vs macOS paths).
 
 **"Test automation reduces testing effort"**→ Test automation SHIFTS effort from execution to maintenance. Writing, debugging, and maintaining automated tests requires engineering effort. The ROI is positive when: tests run frequently (daily CI), cover regression-prone areas, and are maintained by engineers who understand both the tests and the application. Unmaintained automation becomes a cost center that produces unreliable results.
+
+---
+
+**Navigation**: [← Chapter 42: Polling Patterns](../03_Real_World_Scenarios/42_Polling_Async_Data_Patterns.md) | [Index](../00_INDEX.md) | [→ Chapter 44: Enterprise API Client Library](../05_Enterprise_Framework/44_Enterprise_API_Client_Library.md)
