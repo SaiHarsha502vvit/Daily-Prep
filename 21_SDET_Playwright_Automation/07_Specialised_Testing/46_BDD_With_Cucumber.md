@@ -14,6 +14,8 @@
 
 ---
 
+> **Provenance and version note.** The two stories in section 0 are illustrative composites (the years, counts and team are invented to make the cost concrete). Every code and config block below was run against a local login app with `@cucumber/cucumber` **13.3.0** (Node `22 || 24 || >=26`), `@playwright/test` **1.64.1**, `tsx` 4.23 and Chromium, then type-checked under `strict` + `noUncheckedIndexedAccess` + `noUnusedLocals`. Where the first draft's code did not run (a config helper that does not exist, a TypeScript loader that was never configured, a hook that crashed API-only scenarios), the code now shown is the version that does.
+
 ## 0. War Stories — What BDD Actually Costs in Practice
 
 ### Story 1: The 200-step definition orphan problem
@@ -77,7 +79,8 @@ step-definitions/
 support/
 ├── world.ts                            ← per-scenario state (page, context)
 └── hooks.ts                            ← Before/After: browser lifecycle
-cucumber.config.ts
+tsx-register.mjs                        ← lets Node load the .ts files (section 6.1)
+cucumber.mjs                            ← cucumber-js config (section 6.1)
 ```
 
 ```
@@ -168,8 +171,9 @@ import { Browser, BrowserContext, Page, chromium } from "@playwright/test";
 import { LoginPage } from "../../websites/orangehrm/pages/LoginPage";
 import { DashboardPage } from "../../websites/orangehrm/pages/DashboardPage";
 
-export class World extends CucumberWorld {
-  browser!: Browser;
+// Cucumber's World is generic over the `worldParameters` object from the config
+export class World extends CucumberWorld<{ baseUrl: string }> {
+  browser?: Browser; // optional: API-only scenarios never launch one (section 13.2)
   context!: BrowserContext;
   page!: Page;
   loginPage!: LoginPage;
@@ -177,26 +181,35 @@ export class World extends CucumberWorld {
 
   async init(): Promise<void> {
     this.browser = await chromium.launch();
-    this.context = await this.browser.newContext();
+    // Library code does not read playwright.config.ts: without baseURL here,
+    // page.goto("/") fails with "Cannot navigate to invalid URL" (measured).
+    this.context = await this.browser.newContext({
+      baseURL: this.parameters.baseUrl,
+    });
     this.page = await this.context.newPage();
     this.loginPage = new LoginPage(this.page);
     this.dashboardPage = new DashboardPage(this.page);
   }
 
   async dispose(): Promise<void> {
-    await this.context.close();
-    await this.browser.close();
+    await this.context?.close(); // undefined if init() never ran
+    await this.browser?.close();
   }
 }
 
 setWorldConstructor(World);
 ```
 
+Three things the World cannot inherit from `@playwright/test`, because `cucumber-js` is the runner and Playwright is only a library here: the config's `use` options (`baseURL`, `timezoneId`, `storageState`, `trace`, `screenshot`...), the `page`/`context` fixtures, and the retry/timeout machinery. Every one has to be wired by hand, as above.
+
 ## 6. Hooks — browser per scenario
 
 ```typescript
-import { Before, After } from "@cucumber/cucumber";
+import { Before, After, setDefaultTimeout } from "@cucumber/cucumber";
 import { World } from "./world";
+
+// Cucumber has its OWN timeout on every step and hook: 5000 ms by default.
+setDefaultTimeout(30_000);
 
 Before(async function (this: World) {
   await this.init();
@@ -206,6 +219,38 @@ After(async function (this: World) {
   await this.dispose();
 });
 ```
+
+**Why `setDefaultTimeout` is not optional.** Measured with the default left alone: a `toBeVisible()` that cannot find its element fails after exactly 5 s with `Error: function timed out, ensure the promise resolves within 5000 milliseconds`, which hides Playwright's useful message (locator, expected state, call log). `expect` outside the Playwright test runner also defaults to 5 s (the config's `expect.timeout` does not exist here), so the two clocks tie and Cucumber's wins. With `setDefaultTimeout(30_000)` the same failure reads `expect(locator).toBeVisible() failed ... Timeout: 5000ms ... element(s) not found`. The same 5 s limit applies to `Before` hooks, and a cold Chromium launch can exceed it.
+
+### 6.1 Config and the TypeScript loader
+
+`cucumber-js` runs plain Node. Pointing it at `.ts` files without a loader fails (measured): `TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".ts"`. The Cucumber docs ([transpiling](https://github.com/cucumber/cucumber-js/blob/main/docs/transpiling.md)) recommend `tsx`: register it in a tiny file, then list that file **first** in `import`.
+
+```bash
+npm install --save-dev @cucumber/cucumber tsx
+```
+
+```javascript
+// tsx-register.mjs
+import { register } from "tsx/esm/api";
+register();
+```
+
+```javascript
+// cucumber.mjs  (auto-discovered; also cucumber.js / .cjs / .json / .yaml)
+export default {
+  paths: ["features/**/*.feature"],
+  import: ["./tsx-register.mjs", "support/**/*.ts", "step-definitions/**/*.ts"],
+  format: ["progress", "html:out/cucumber-report.html", "json:out/cucumber.json"],
+  parallel: 2, // 2 workers (worker_threads in 13.x); each loads all support code
+  worldParameters: { baseUrl: "http://127.0.0.1:4173" },
+};
+```
+
+That is the `"type": "module"` form. For a CommonJS project the docs use `requireModule: ["tsx/cjs"]` plus `require: [...]`. Two traps:
+
+- **`support/world.ts` must be in `import`.** A step file that only uses `World` as a type annotation (`this: World`) has that import erased by the transpiler, so `setWorldConstructor(World)` never runs. Measured symptom: `TypeError: this.init is not a function`. The `support/**/*.ts` glob above is what guarantees the file loads.
+- **There is no `defineConfig`** in `@cucumber/cucumber` (its exports include `Before`, `After`, `Status`, `World`, `setDefaultTimeout`, `Formatter`..., not `defineConfig`). Settings live under a `default` key in JSON/YAML/CommonJS, or as the default export in ESM. A `cucumber.config.ts` is not auto-discovered, and loading a TS config needs a Node with built-in TypeScript support (the docs say the `tsconfig.json` is then not applied); on Node 22.13 use `cucumber.mjs`.
 
 ---
 
@@ -289,19 +334,19 @@ Feature: Employee Onboarding
 
 ### 12.2 Step Definition with DataTable
 
-When the Gherkin step uses a `|` table, Playwright receives it as a `DataTable` object. You can transform it to a row object for cleaner POM calls:
+When the Gherkin step is followed by a `|` table, Cucumber passes it to the step function as a `DataTable` (the last argument, after any `{string}` parameters). You can transform it to a row object for cleaner POM calls:
 
 ```typescript
-import { Given, When, Then, DataTable } from "@cucumber/cucumber";
+import { When, DataTable } from "@cucumber/cucumber";
 import { World } from "../support/world";
 
 When(
   "the admin submits a new employee with:",
   async function (this: World, dataTable: DataTable) {
-    // Convert DataTable to array of plain objects
-    // The first row is treated as headers by hashes()
-    const rows = dataTable.hashes();
-    const employee = rows[0]; // only one row per scenario run
+    // hashes() treats the first row as headers: Record<string, string>[]
+    const [employee] = dataTable.hashes();
+    // noUncheckedIndexedAccess: the array may be empty, so guard once
+    if (!employee) throw new Error("expected one data row in the table");
 
     await this.employeePage.create({
       name: employee.name,
@@ -312,7 +357,7 @@ When(
 );
 ```
 
-Each `Examples` row runs as a separate test iteration. Cucumber handles the looping — your step definition runs once per row.
+Each `Examples` row becomes its own scenario, so the step runs once per row (measured: an outline with 2 rows ran 2 scenarios, and `hashes()` returned a single row each time). A cell left empty, as in the `@negative` outline above, arrives as the empty string `""`, not `undefined`; and the trailing `# department missing` after a table row is accepted by the Gherkin parser.
 
 ### 12.3 Named Parameters as an Alternative
 
@@ -337,6 +382,8 @@ The World object is the per-scenario state container. In a real SDET framework, 
 
 ### 13.1 World with API Client Integration
 
+> `EmployeePage`, `AuthTokens` and the `APIUtils(baseUrl)` constructor below are illustrative names, not files in this repo. The repo's real [`framework/utilities/api/APIUtils.ts`](../framework/utilities/api/APIUtils.ts) is constructed from a Playwright `APIRequestContext` (`constructor(request, testInfo?)`), and its `LoginPage`/`DashboardPage` live in `framework/websites/orangehrm/pages/`. Adapt the imports to your own project; the World structure is the point.
+
 ```typescript
 import {
   setWorldConstructor,
@@ -349,8 +396,8 @@ import { EmployeePage } from "../../websites/orangehrm/pages/EmployeePage";
 import { APIUtils } from "../../framework/api/APIUtils";
 import { AuthTokens } from "../../framework/api/AuthTokens";
 
-export class World extends CucumberWorld {
-  browser!: Browser;
+export class World extends CucumberWorld<{ baseUrl: string }> {
+  browser?: Browser;
   context!: BrowserContext;
   page!: Page;
 
@@ -375,6 +422,7 @@ export class World extends CucumberWorld {
       args: ["--no-sandbox", "--disable-dev-shm-usage"],
     });
     this.context = await this.browser.newContext({
+      baseURL: this.parameters.baseUrl,
       viewport: { width: 1280, height: 720 },
       recordVideo: { dir: "test-results/videos" },
     });
@@ -426,8 +474,8 @@ export class World extends CucumberWorld {
       }
     }
 
-    await this.context.close();
-    await this.browser.close();
+    await this.context?.close(); // undefined for @api scenarios
+    await this.browser?.close();
   }
 }
 
@@ -436,11 +484,13 @@ setWorldConstructor(World);
 
 ### 13.2 Tagged Hooks
 
-Use tag-based hooks to control which scenarios trigger which setup:
+Use tag-based hooks to control which scenarios trigger which setup. Select the **exception** (`not @api`), not the browser tags: a scenario carrying only `@negative` (like the second outline in section 12.1) matches none of `@ui or @smoke or @regression`, gets no browser, and fails on its first `this.page` access.
 
 ```typescript
-// Browser-only scenarios (@ui, @smoke, @regression)
-Before({ tags: "@ui or @smoke or @regression" }, async function (this: World) {
+import { Before, After, AfterStep, Status } from "@cucumber/cucumber";
+
+// Every scenario except API-only ones gets a browser
+Before({ tags: "not @api" }, async function (this: World) {
   await this.init();
 });
 
@@ -453,8 +503,8 @@ Before({ tags: "@api" }, async function (this: World) {
   this.authTokens = new AuthTokens(token);
 });
 
-AfterStep({ tags: "@ui" }, async function (this: World, { result }) {
-  if (result?.status === "FAILED") {
+AfterStep({ tags: "not @api" }, async function (this: World, { result }) {
+  if (result.status === Status.FAILED) {
     await this.attach(await this.page.screenshot(), "image/png");
   }
 });
@@ -464,139 +514,109 @@ After(async function (this: World) {
 });
 ```
 
+Measured: with a guard-less `dispose()` (`await this.context.close()`), an `@api` scenario passed its steps and then failed in `After` with `TypeError: Cannot read properties of undefined (reading 'close')`, which is why `dispose()` above uses `?.`. The `AfterStep` screenshot is attached to the failing step: the JSON report showed the step as `failed` with an `image/png` embedding.
+
 ---
 
-## 14. Cucumber + Playwright Reporter Integration
+## 14. Reports and Traces When Cucumber Is the Runner
 
-Cucumber emits JSON events for every test lifecycle. You can bridge this to Playwright's reporter interface to get unified HTML reports with screenshots, traces, and Cucumber's BDD data in one place.
+Playwright's reporters (`html`, `list`, `json`, blob/merge-reports) plug into `@playwright/test`; `cucumber-js` never goes through them. Under Cucumber you get **Cucumber's formatters** and whatever you wire up yourself with the Playwright library. Do not try to "bridge" the two event streams; use each tool's own output.
 
-### 14.1 Cucumber JSON Reporter
+### 14.1 Built-in formatters
 
-First, configure Cucumber to emit the `json` formatter:
+The formatters are listed in `format`, each optionally with an output path (`name:path`). Section 6.1's `cucumber.mjs` already requests `html:` and `json:`; both files were produced in the run (`out/cucumber-report.html`, `out/cucumber.json`). `--format summary` or `progress` write to the terminal. The `json` formatter embeds attachments such as the failure screenshot from section 13.2.
+
+### 14.2 A custom formatter (the supported extension point)
+
+In current Cucumber a formatter is a plugin object that listens to Cucumber Messages envelopes ([custom formatters](https://github.com/cucumber/cucumber-js/blob/main/docs/custom_formatters.md)). This one writes a flat `[{ name, tags, status, durationMs }]` file you can feed to any script or dashboard. It type-checks under `strict` and ran against the login feature:
 
 ```typescript
-// cucumber.config.ts
-import { defineConfig } from "@cucumber/ cucumber";
+// support/results-formatter.ts
+import type { FormatterPlugin } from "@cucumber/cucumber/api";
 
-export default defineConfig({
-  parallel: 2,
-  format: [
-    "html:test-results/cucumber-report.html",
-    "json:test-results/cucumber.json",
-  ],
-  paths: ["features/**/*.feature"],
-  require: ["step-definitions/**/*.ts", "support/**/*.ts"],
-  worldParameters: {
-    baseUrl:
-      process.env.BASE_URL ?? "https://opensource-demo.orangehrmlive.com",
+interface ScenarioResult {
+  name: string;
+  tags: string[];
+  status: string;
+  durationMs: number;
+}
+
+const toMs = (t: { seconds: number | string; nanos: number }): number =>
+  Number(t.seconds) * 1000 + t.nanos / 1e6;
+
+const resultsFormatter: FormatterPlugin = {
+  type: "formatter",
+  formatter: ({ on, write }) => {
+    const pickles = new Map<string, { name: string; tags: string[] }>();
+    const testCases = new Map<string, string>(); // testCaseId -> pickleId
+    const started = new Map<string, { testCaseId: string; at: number }>();
+    const worst = new Map<string, string>(); // testCaseStartedId -> status
+    const results: ScenarioResult[] = [];
+
+    on("message", (envelope) => {
+      if (envelope.pickle) {
+        pickles.set(envelope.pickle.id, {
+          name: envelope.pickle.name,
+          tags: envelope.pickle.tags.map((t) => t.name),
+        });
+      } else if (envelope.testCase) {
+        testCases.set(envelope.testCase.id, envelope.testCase.pickleId);
+      } else if (envelope.testCaseStarted) {
+        const s = envelope.testCaseStarted;
+        started.set(s.id, { testCaseId: s.testCaseId, at: toMs(s.timestamp) });
+      } else if (envelope.testStepFinished) {
+        const f = envelope.testStepFinished;
+        const status = f.testStepResult.status;
+        if (status === "FAILED" || status === "UNDEFINED" || status === "AMBIGUOUS") {
+          worst.set(f.testCaseStartedId, status);
+        }
+      } else if (envelope.testCaseFinished) {
+        const f = envelope.testCaseFinished;
+        const s = started.get(f.testCaseStartedId);
+        const pickle = s && pickles.get(testCases.get(s.testCaseId) ?? "");
+        if (s && pickle) {
+          results.push({
+            ...pickle,
+            status: worst.get(f.testCaseStartedId) ?? "PASSED",
+            durationMs: Math.round(toMs(f.timestamp) - s.at),
+          });
+        }
+      } else if (envelope.testRunFinished) {
+        write(JSON.stringify(results, null, 2));
+      }
+    });
   },
+};
+
+export default resultsFormatter;
+```
+
+Register it by path with an output file: `format: ["summary", "./support/results-formatter.ts:out/results.json"]`. Measured output for the 3-scenario login feature: three objects such as `{ "name": "valid credentials land on dashboard", "tags": ["@smoke"], "status": "PASSED", "durationMs": 3292 }`. Because `tsx` is registered through `import`, the `.ts` formatter loads without a build step.
+
+### 14.3 Traces on failure: build the Playwright-runner behaviour yourself
+
+The native runner's `trace: "retain-on-failure"` does not exist here. Start tracing per scenario and keep the zip only when the scenario failed (measured: a failed scenario produced a 54 KB `out/traces/<pickle-id>.zip`, openable with `npx playwright show-trace`):
+
+```typescript
+import { Before, After, Status } from "@cucumber/cucumber";
+import type { World } from "../support/world";
+
+Before(async function (this: World) {
+  await this.init();
+  await this.context.tracing.start({ screenshots: true, snapshots: true, sources: true });
+});
+
+After(async function (this: World, { result, pickle }) {
+  if (result?.status === Status.FAILED) {
+    await this.context.tracing.stop({ path: `out/traces/${pickle.id}.zip` });
+  } else {
+    await this.context.tracing.stop(); // discard
+  }
+  await this.dispose();
 });
 ```
 
-### 14.2 Custom Cucumber Event Listener
-
-Cucumber's `IWorld` and `Pickle` objects carry full test context. A custom listener can emit Playwright-compatible events:
-
-```typescript
-import { EventEmitter } from "events";
-import {
-  Pickle,
-  ITestCase,
-  ITestStep,
-  ITestCaseStarted,
-  ITestCaseFinished,
-  ITestStepStarted,
-  ITestStepFinished,
-} from "@cucumber/messages";
-import { writeFileSync } from "fs";
-
-class CucumberPlaywrightBridge extends EventEmitter {
-  private results: TestResult[] = [];
-  private currentScenario = "";
-  private currentStep = "";
-  private stepStartTime = 0;
-
-  constructor() {
-    super();
-  }
-
-  // Called before a pickle (scenario) starts
-  pickleStarted(pickle: Pickle, testCase: ITestCase): void {
-    this.currentScenario = pickle.name;
-    this.results.push({
-      name: this.currentScenario,
-      tags: pickle.tags.map((t) => t.name),
-      steps: [],
-      status: "passed",
-      duration: 0,
-    });
-    console.log(
-      `[Cucumber→Playwright] Scenario started: ${this.currentScenario}`,
-    );
-  }
-
-  // Called before each test step runs
-  stepStarted(testStep: ITestStep): void {
-    this.currentStep = testStep.text;
-    this.stepStartTime = Date.now();
-    this.emit("step:started", {
-      step: this.currentStep,
-      scenario: this.currentScenario,
-    });
-  }
-
-  // Called after each test step completes
-  stepFinished(
-    testStep: ITestStep,
-    result: "passed" | "failed" | "skipped",
-  ): void {
-    const duration = Date.now() - this.stepStartTime;
-    const lastResult = this.results[this.results.length - 1];
-    if (lastResult) {
-      lastResult.steps.push({
-        name: this.currentStep,
-        duration,
-        status: result,
-      });
-      if (result === "failed") {
-        lastResult.status = "failed";
-      }
-    }
-    this.emit("step:finished", {
-      step: this.currentStep,
-      status: result,
-      duration,
-    });
-  }
-
-  // Called after the entire scenario finishes
-  scenarioFinished(pickle: Pickle, passed: boolean): void {
-    const status = passed ? "passed" : "failed";
-    console.log(
-      `[Cucumber→Playwright] Scenario finished: ${pickle.name} → ${status}`,
-    );
-    this.emit("scenario:finished", { name: pickle.name, status });
-  }
-
-  // Flush results to disk for Playwright reporter to consume
-  flush(outputPath = "test-results/bridge-results.json"): void {
-    writeFileSync(outputPath, JSON.stringify(this.results, null, 2));
-    console.log(`[Cucumber→Playwright] Results written to ${outputPath}`);
-  }
-}
-
-interface TestResult {
-  name: string;
-  tags: string[];
-  steps: { name: string; duration: number; status: string }[];
-  status: "passed" | "failed";
-  duration: number;
-}
-
-export const bridge = new CucumberPlaywrightBridge();
-```
-
-Wire the bridge to Cucumber via the hooks file — call `bridge.flush()` in `After` to write results to disk. Then consume `test-results/bridge-results.json` in any Node.js script or Playwright custom reporter to build unified HTML output.
+(If you also keep the section 6 hooks, merge these into them rather than registering two `Before`/`After` pairs.) This is the cost the exercise in section 11 asks you to compare: with `@playwright/test` the traces, retries, sharding, `baseURL`, fixtures and reporters come with the runner; under Cucumber each is code you own. Section 20 shows the option that keeps the runner.
 
 ---
 
@@ -710,6 +730,8 @@ This creates two test runners with different reporting formats, different retry 
 
 If you need BDD for stakeholder communication, run Cucumber in a pre-merge quality gate. If you need maximum execution speed and Playwright's full feature set, stay on `@playwright/test`. Don't run both in the same pipeline unless you have dedicated engineering time to maintain the integration.
 
+There is a third option that removes most of the two-runner cost: keep the Gherkin but run it **on the Playwright runner** with `playwright-bdd` (section 20).
+
 ### 16.5 Scenario Descriptions as Code Comments
 
 **Root cause:** Gherkin's free-text doesn't need inline comments explaining what the code does.
@@ -721,7 +743,7 @@ If you need BDD for stakeholder communication, run Cucumber in a pre-merge quali
 
 **Root cause:** Tags feel like overhead. Without them you can't selectively run smoke vs. regression.
 
-Minimum tag set: `@smoke` (per commit), `@regression` (nightly), `@slow` (weekly), `@api` (no browser), `@ui` (browser required). Run with: `cucumber --tags "@smoke and not @slow"`.
+Minimum tag set: `@smoke` (per commit), `@regression` (nightly), `@slow` (weekly), `@api` (no browser), `@ui` (browser required). Run with: `npx cucumber-js --tags "@smoke and not @slow"` (the binary is `cucumber-js`; tag expressions use `and`/`or`/`not` and parentheses; measured: `@smoke and not @slow` selected the one `@smoke` scenario).
 
 ### 16.7 Steps That Are Too Generic
 
@@ -790,7 +812,7 @@ Build a Cucumber implementation for OrangeHRM Employee Creation covering: valid 
 | `step-definitions/pim/employee-creation.steps.ts` | `Given/When/Then` glue calling POMs; receives `DataTable` for employee data          |
 | `support/world.ts`                                | Per-scenario state: browser + context + page + API client + `testData` for cleanup   |
 | `support/hooks.ts`                                | `Before` → `init()`, `After` → `dispose()`, `AfterStep` screenshot on failure        |
-| `cucumber.config.ts`                              | Paths, `require`, format (HTML + JSON), parallel=2, `worldParameters`                |
+| `cucumber.mjs` + `tsx-register.mjs`               | Paths, `import` (tsx first), format (HTML + JSON), parallel=2, `worldParameters`     |
 
 ### 19.2 Feature File Skeleton
 
@@ -834,7 +856,7 @@ import { World } from "../support/world";
 Given("the admin is logged in to the PIM module", async function (this: World) {
   await this.loginPage.goto();
   await this.loginPage.loginWith({ username: "Admin", password: "admin123" });
-  await this.pimPage.goto();
+  await this.employeePage.goto();
 });
 
 Given(
@@ -851,42 +873,44 @@ Given(
 When(
   "the admin creates an employee with:",
   async function (this: World, table: DataTable) {
-    const emp = table.hashes()[0];
-    await this.pimPage.addEmployee(emp);
+    const [emp] = table.hashes();
+    if (!emp) throw new Error("expected one data row in the table");
+    await this.employeePage.addEmployee(emp);
   },
 );
 
 Then(
   "the employee {string} appears in the employee list",
   async function (this: World, name: string) {
-    await this.pimPage.searchEmployee(name);
-    expect(await this.pimPage.employeeVisibleInList(name)).toBeTruthy();
+    await this.employeePage.searchEmployee(name);
+    // web-first assertion inside the POM: it retries; expect(await x).toBeTruthy() reads once
+    await this.employeePage.expectEmployeeInList(name);
   },
 );
 
 Then(
   "the system shows the success message {string}",
   async function (this: World, msg: string) {
-    await this.pimPage.expectSuccessMessage(msg);
+    await this.employeePage.expectSuccessMessage(msg);
   },
 );
 
 Then(
   "the system shows the error message {string}",
   async function (this: World, msg: string) {
-    await this.pimPage.expectErrorMessage(msg);
+    await this.employeePage.expectErrorMessage(msg);
   },
 );
 
 Then(
   "the system shows a validation error for {string}",
   async function (this: World, field: string) {
-    await this.pimPage.expectValidationError(field);
+    await this.employeePage.expectValidationError(field);
   },
 );
 
 Then("the employee is NOT saved", async function (this: World) {
-  expect(await this.pimPage.isOnAddPage()).toBeTruthy();
+  await this.employeePage.expectOnAddPage();
 });
 ```
 
@@ -895,10 +919,12 @@ Then("the employee is NOT saved", async function (this: World) {
 ```json
 {
   "scripts": {
-    "test:bdd": "cucumber-js --config=cucumber.config.ts"
+    "test:bdd": "cucumber-js"
   }
 }
 ```
+
+`cucumber-js` auto-discovers `cucumber.mjs` (section 6.1). Add `--config <file>` only for a non-default name, and note that a `.ts` config is not in the auto-discovery list.
 
 ### 19.5 Self-Grading Rubric
 
@@ -913,6 +939,65 @@ Then("the employee is NOT saved", async function (this: World) {
 
 **Total: 18 points** — 0–6: incomplete · 7–12: functional · 13–18: production-ready
 
+---
+
+## 20. Option: Gherkin on the Playwright runner (`playwright-bdd`)
+
+Sections 5, 6, 13 and 14 are the price of using `cucumber-js` as the runner: you re-create `baseURL`, the browser lifecycle, timeouts, traces and reports by hand. [`playwright-bdd`](https://github.com/vitalets/playwright-bdd) (a third-party package, not part of Playwright or Cucumber) takes the other route: it parses the same `.feature` files and **generates ordinary Playwright specs**, so `@playwright/test` stays the runner and keeps its fixtures, config `use` options, retries, sharding, trace/video/screenshot options and reporters.
+
+Verified with `playwright-bdd` 9.2.1 and `@playwright/test` 1.64.1, running the exact `login.feature` from section 3 against the same app (3 scenarios passed; `--grep @smoke` ran only the `@smoke` one):
+
+```bash
+npm install --save-dev playwright-bdd @playwright/test
+npx bddgen            # reads features + steps, writes .features-gen/*.spec.js
+npx playwright test   # the normal runner executes the generated specs
+```
+
+```typescript
+// playwright.config.ts
+import { defineConfig } from "@playwright/test";
+import { defineBddConfig } from "playwright-bdd";
+
+const testDir = defineBddConfig({
+  features: "features/*.feature",
+  steps: "steps/*.ts",
+});
+
+export default defineConfig({
+  testDir, // points at the generated .features-gen directory
+  use: { baseURL: "http://127.0.0.1:4173", trace: "retain-on-failure" },
+});
+```
+
+```typescript
+// steps/fixtures.ts — POMs as ordinary Playwright fixtures, no World class
+import { test as base, createBdd } from "playwright-bdd";
+import { LoginPage } from "../pages/LoginPage";
+
+export const test = base.extend<{ loginPage: LoginPage }>({
+  loginPage: async ({ page }, use) => {
+    await use(new LoginPage(page));
+  },
+});
+export const { Given, When, Then } = createBdd(test);
+```
+
+```typescript
+// steps/login.steps.ts — the first argument is the fixtures object, then {string} params
+import { Given, When } from "./fixtures";
+
+Given("the user is on the login page", async ({ loginPage }) => {
+  await loginPage.goto();
+});
+When(
+  "the user logs in with username {string} and password {string}",
+  async ({ loginPage }, username: string, password: string) => {
+    await loginPage.loginWith({ username, password });
+  },
+);
+```
+
+Trade-offs to weigh against section 8: you add a generation step (`bddgen`) and a generated `.features-gen` directory to keep out of git; the step-definition API is `playwright-bdd`'s `createBdd`, not Cucumber's `Given` from `@cucumber/cucumber`, so existing Cucumber step files do not run unchanged; and the specs that run are generated ones (the Gherkin scenario and example appear in the test title, e.g. `invalid credentials show an alert › Example #1 @regression`). In exchange, the "two runners, two reports, two flake profiles" objection (section 7 item 4 and section 16.4) mostly disappears, and everything in [Chapter 56](../01_Foundations/56_Playwright_Config_Deep_Dive.md) applies as written. Check the package's own docs for the Cucumber features it does not cover before committing to it.
 
 ---
 
