@@ -1,0 +1,8 @@
+{
+  "name": "mermaid-check",
+  "private": true,
+  "type": "module",
+  "description": "Validates every ```mermaid block in Markdown files by rendering it in real Chromium with the real mermaid library.",
+  "scripts": { "check": "node check.mjs" },
+  "dependencies": { "mermaid": "^11.0.0", "playwright-core": "1.64.1" }
+}
