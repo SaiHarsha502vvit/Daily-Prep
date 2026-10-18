@@ -46,10 +46,10 @@ The rubrics tell you where you are; this is a suggested order for the material t
 | [READINESS_RUBRIC_SDET.md](READINESS_RUBRIC_SDET.md) | Same structure for the mobile SDET | Done |
 | [TEST_STRATEGY_TEMPLATE.md](TEST_STRATEGY_TEMPLATE.md) | Fill-in mobile test-strategy template (reversibility profile, risk register over the mobile dimensions, device matrix, tier placement, gating policy, cost model) plus a worked example | Done |
 | [RELEASE_AND_ROLLOUT_PLAYBOOK.md](RELEASE_AND_ROLLOUT_PLAYBOOK.md) | Store mechanics side by side (verified against official docs 2026-10-18, with an explicit list of what was *not* verified), derived soak-time arithmetic, release train, halt-criteria template, flags, hotfix procedure | Done |
-| `RFC_TEMPLATE.md` | Blank RFC plus a worked mobile example | **Planned** |
-| `CODE_REVIEW_RUBRIC.md` | App-code review rubric (test-code dimensions stay in the web-side rubric) | **Planned** |
+| [RFC_TEMPLATE.md](RFC_TEMPLATE.md) | Mobile RFC template (adds reversibility/exit-criteria and test-strategy sections) plus a fully worked, explicitly fictional Appium→Mobilewright *pilot* RFC with a cause breakdown, documented tool gaps, stop conditions and decision gates | Done |
+| [CODE_REVIEW_RUBRIC.md](CODE_REVIEW_RUBRIC.md) | Mobile app-code review rubric: 7 dimensions × 4 severities calibrated on "invisible in dev, certain at scale, no cheap undo," with workflow and worked review comments; test-code review stays in the web-side rubric | Done |
 
-Files marked *Planned* are listed without links on purpose: a link to a file that does not exist yet is a broken link. They will be linked here when they land, and the rubrics' "Where This Module Teaches Each Competency" tables mark which competencies are waiting on them.
+All planned career files have landed. The rubrics' "Where This Module Teaches Each Competency" tables still mark the rows where material is thin or missing (for example battery profiling, offline-sync conflicts, mentoring, and a worked native-vs-Flutter architecture RFC) — those are the honest gaps.
 
 ---
 
