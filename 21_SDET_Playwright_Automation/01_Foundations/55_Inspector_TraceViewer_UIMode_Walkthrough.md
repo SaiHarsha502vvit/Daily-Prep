@@ -1,6 +1,6 @@
 # 55. Inspector, Trace Viewer & UI Mode — A Hands-On Walk-Through
 
-**Navigation**: [← 54. Synthetic Monitoring](../06_CI_CD_And_Reliability/54_Synthetic_Monitoring.md) | [Index](../00_INDEX.md) | [→ ](#)
+**Navigation**: [← 54. Synthetic Monitoring](../06_CI_CD_And_Reliability/54_Synthetic_Monitoring.md) | [Index](../00_INDEX.md) | [→ 56. Playwright Config Deep-Dive](./56_Playwright_Config_Deep_Dive.md)
 
 > This chapter is meant to be done at a terminal, with the [`framework/`](../framework/) project installed. It's 30 minutes of clicking around. Don't just read it.
 
@@ -28,50 +28,52 @@ You should have:
 └── tests/orangehrm/login.spec.ts
 ```
 
-Run the suite once to make sure something works:
+`npm run test` runs **every** project in the framework config (UI, API, Firefox, mobile …) — far more than this chapter needs, and the UI projects hit a live demo site. Scope every command in this chapter to the login spec; arguments after `--` are passed through to `playwright test`:
 
 ```
-npm run test
+npm run test -- --project=orangehrm login.spec.ts
 ```
 
-You will see something like:
+You will see something like (shape from the 1.64.1 `list` reporter; timings and worker count vary):
 
 ```
 Running 5 tests using 4 workers
-  ✓  orangehrm > @smoke valid credentials land on dashboard
-  ✓  orangehrm > @regression wrong password shows invalid credentials alert
+  ok 1 [orangehrm] › tests\orangehrm\login.spec.ts:21:7 › OrangeHRM Login › @smoke valid credentials land on dashboard (3.2s)
+  ok 2 [orangehrm] › tests\orangehrm\login.spec.ts:35:7 › OrangeHRM Login › @regression wrong password shows invalid credentials alert (1.9s)
   ...
   5 passed (12.3s)
 ```
 
-If everything green, deliberately break it for the rest of this chapter. Edit `tests/orangehrm/login.spec.ts`:
+If everything is green, deliberately break it for the rest of this chapter. Edit `tests/orangehrm/login.spec.ts`:
 
 ```typescript
 await dashboardPage.expectLoaded(); // ← change to .expectTotallyWrongMethod()
 ```
 
-Save. Now the test will fail. Good.
+Save. Now the test will fail with `TypeError: dashboardPage.expectTotallyWrongMethod is not a function` — Playwright transpiles TypeScript without type-checking (verified: a call to a non-existent method on a typed class only fails when that line executes), so run `npm run verify` / `tsc --noEmit` separately if you want the compiler to catch this class of typo. Good.
 
 ---
 
 ## Surface 1 — Inspector (step-through, while it runs)
 
 ```
-npm run test:debug
+npm run test:debug -- --project=orangehrm login.spec.ts:21
 ```
 
-This launches Playwright Inspector. It:
+`test:debug` is `playwright test --debug`. Per `npx playwright test --help` on 1.64.1 that is a shortcut for `PWDEBUG=1` plus `--timeout=0 --max-failures=1 --headed --workers=1` — so it runs **one test at a time with no timeout and stops after the first failure**, and the `file:line` suffix (the line of a `test(` call) picks the single test to debug instead of walking the whole suite. It:
 
-- Opens a Chromium window
-- Pauses **before each action**
-- Lets you Step Over / Resume / Pick Locator
+- Opens a headed Chromium window **and** the Inspector window
+- Starts **paused at the first action** (measured: the process prints `The test is currently paused at the start`); from there you advance with Step over (`F10`) / Resume (`F8`) — both labels are in the 1.64.1 Inspector bundle
+- Offers **Pick locator** and **Record** in the toolbar
+
+Two variants worth knowing: `await page.pause();` inside a test pauses there when run with `--debug` (Resume runs up to it), and `--debug=cli` (listed in the 1.64.1 `--help`: `--debug [mode]`, choices `inspector` / `cli`) skips the GUI — it pauses at the start and prints `Run "playwright-cli attach <session>" to attach to this test`, which is the entry point for terminal- or agent-driven debugging ([Ch45](../07_Specialised_Testing/45_AI_Agents_MCP_And_Playwright.md)).
 
 ### What to try
 
-1. Click "Step Over" once. Notice the test paused before `loginPage.goto()`.
-2. Click "Step Over" again. The browser navigates. The next action highlights.
-3. Click **"Pick Locator"** at the top of the Inspector. Hover over a UI element in the page. Click it. Playwright tells you the **best locator** for it.
-4. Open Inspector's right panel. It shows the call stack at this moment.
+1. Click "Step over" once. The test advances one action; the line that is *about to run* is highlighted.
+2. Click "Step over" again. The browser navigates. The next action highlights.
+3. Click **"Pick locator"** at the top of the Inspector. Hover over a UI element in the page. Click it. Playwright proposes a locator for it (it prefers role/text/test-id locators — treat it as a starting point, not gospel).
+4. Open the Inspector's side panel. Its tabs are **Locator** (edit a locator and see matches highlighted), **Log** (the actionability log — which checks passed or are blocking the current action) and **Aria** (an aria snapshot you can turn into an assertion).
 
 ### When to reach for Inspector
 
@@ -90,61 +92,77 @@ This launches Playwright Inspector. It:
 
 This is the killer feature. Even most working SDETs underuse it.
 
-`playwright.config.ts` in your framework has:
+The framework's `playwright.config.ts` has:
 
 ```typescript
 use: {
-  trace: "retain-on-failure";
+  trace: "on-first-retry",
 }
 ```
 
-That means: every failed test produces a `trace.zip` you can replay.
-
-Trigger it — run the (still broken) test:
+That records a trace **only on the first retry** — and the framework's retries are `isCI ? 2 : 0`. So on your laptop (retries `0`) a failing test produces **no trace at all** (measured: `trace: 'on-first-retry'`, `retries: 0`, failing test → `test-results/` held only `error-context.md`). For this walk-through, override the mode on the command line (CLI `--trace` accepts all seven modes, [Ch56 §7](./56_Playwright_Config_Deep_Dive.md#trace)):
 
 ```
-npm run test
+npm run test -- --project=orangehrm login.spec.ts --trace retain-on-failure
 ```
 
-It fails. You see:
+It fails. The summary now includes (1.64.1 output, path will differ):
 
 ```
-   1 failed
-    orangehrm > @smoke valid credentials land on dashboard
-   Error: ...
-   ► attachment: trace
-        trace.zip
-        ↳ npx playwright show-trace test-results/.../trace.zip
+    attachment #2: trace (application/zip) ───────────────────────────
+    test-results\...\trace.zip
+    Usage:
+        npx playwright show-trace test-results\...\trace.zip
 ```
 
-Now run that suggested command. A web page opens.
+(`attachment #1` is the `error-context.md` file: a ready-made prompt — failure text, aria snapshot of the page, and the test source — you can paste into an LLM.)
+
+Now run that suggested command. A web page opens. You can also open a trace you downloaded from CI at <https://trace.playwright.dev> (processed in the browser, nothing is uploaded — per the [Trace Viewer docs](https://playwright.dev/docs/trace-viewer), which also describe passing a remote trace URL).
 
 ### What you see in Trace Viewer
 
+Layout as rendered by 1.64.1 (checked by loading a real trace in the viewer):
+
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│  Timeline                                                    │
-│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ │
-│  goto  fill  fill  click  waitFor  ❌                         │
-├──────────────────────────────────────────────────────────────┤
-│ Actions   │ Source        │ Network                          │
-│   each    │ the .ts line  │ HTTP calls during the action     │
-│   action  │ that ran      │                                  │
-│ Snapshot  │ Console       │                                  │
-│  ↑ pixel  │ logs from     │                                  │
-│  perfect  │ the page      │                                  │
-│  DOM at   │               │                                  │
-│  each step│               │                                  │
+│ Timeline filmstrip  (action markers; red = error)            │
+├─────────────┬────────────────────────────────────────────────┤
+│ Actions     │ [Action | Before | After]   ◎ Pick locator  ◀ ▶ │
+│ Metadata    │                                                │
+│  Before     │      DOM snapshot of the page (live DOM,       │
+│  Hooks      │      inspectable) at the selected action       │
+│  Navigate   │                                                │
+│  Click      │                                                │
+│  Expect ✗   │                                                │
+├─────────────┴────────────────────────────────────────────────┤
+│ Locator | Call | Log | Errors | Console | Network | Source |  │
+│ Attachments | Annotations                                    │
 └──────────────────────────────────────────────────────────────┘
 ```
 
 ### What to try
 
-1. Click an action in the timeline. The screenshot panel shows the **DOM state at that moment** — clickable, inspectable, exactly as the browser saw it.
-2. Click "Network" tab. Every HTTP call made during the action, with headers and response bodies.
-3. Click "Console" tab. Anything the page logged (including your own `console.log` from POMs).
-4. Click "Source" tab. The exact TS line that ran for this action.
-5. **The "Before" vs "After" snapshot toggle** — see the page state immediately before and after each action.
+1. Click an action in the Actions list. The centre panel shows the **DOM snapshot at that moment** — a real DOM you can inspect, not a screenshot.
+2. Flip between the **Action / Before / After** tabs above the snapshot — the page immediately before the action, at the instant it ran (with the hit point highlighted), and immediately after.
+3. Click the **Network** tab. Every HTTP call with headers, request/response bodies and timing.
+4. Click the **Console** tab. Page `console.*` output is marked `[browser]`, and your Node-side `console.log` from specs/POMs appears as `[stdout]` (both seen with `npx playwright trace console` on a real trace).
+5. Click the **Source** tab for the TS line that ran, **Errors** for the failure with its call log, **Call** for the action's parameters and timing, and **Log** for Playwright's internal steps (actionability checks, retries).
+6. **Pick locator** (the ◎ icon beside Action/Before/After) works on the snapshot — the same locator suggestion as in the Inspector, but against a past run.
+
+### Reading a trace without a GUI
+
+On a server, in an SSH session, or from an AI agent there is no window to open. `npx playwright trace` (listed in 1.64.1's `npx playwright --help`) inspects a trace from the terminal — it is stateful: `open` extracts the trace, the other subcommands read it, `close` cleans up:
+
+```bash
+npx playwright trace open test-results/.../trace.zip
+npx playwright trace actions     # numbered action list with durations; failed action marked ✗
+npx playwright trace errors      # failures with stack traces
+npx playwright trace requests    # network requests (method, status, duration)
+npx playwright trace console     # [stdout] / [browser] messages with timestamps
+npx playwright trace close
+```
+
+(Also `action <id>`, `request <id>`, `snapshot <id>`, `screenshot <id>`, `attachments`; `--help` lists them. Output of all four above was checked on a 1.64.1 trace of the failing example.)
 
 ### The mental shift
 
