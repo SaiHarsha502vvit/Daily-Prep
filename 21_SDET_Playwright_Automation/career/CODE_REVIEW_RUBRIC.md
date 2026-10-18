@@ -160,8 +160,8 @@ Evaluates whether the test introduces or ignores security concerns.
 >
 > ```ts
 > // In page-objects/CheckoutPage.ts
-> readonly creditCardNumber = this.page.getByTestId('cc-number');
-> readonly expiryDate = this.page.getByTestId('cc-expiry');
+> get creditCardNumber() { return this.page.getByTestId('cc-number'); }
+> get expiryDate() { return this.page.getByTestId('cc-expiry'); }
 > ```
 
 ---

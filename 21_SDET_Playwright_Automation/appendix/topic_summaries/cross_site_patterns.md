@@ -287,10 +287,11 @@ So if the original tab is logged in, the new tab is logged in too. No re-auth ne
 
 ```typescript
 class OrderTrackingPage {
-  constructor(private readonly page: Page) {}
-  readonly trackingNumber = this.page.locator(
-    '[data-testid="tracking-number"]',
-  );
+  readonly trackingNumber: Locator;
+  constructor(private readonly page: Page) {
+    // assign in the constructor body — a field initializer reading this.page fails tsc (TS2729), see Ch05 §4.1
+    this.trackingNumber = this.page.locator('[data-testid="tracking-number"]');
+  }
   // ...
 }
 

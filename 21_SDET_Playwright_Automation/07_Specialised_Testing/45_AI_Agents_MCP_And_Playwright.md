@@ -227,15 +227,21 @@ Before MCP, discovering that the Employee ID input had label-via-wrapper ambigui
 ```typescript
 // framework/components/pim/EmployeeSearchForm.ts
 export class EmployeeSearchForm {
-  private readonly employeeNameInput = this.page.getByRole('textbox', { name: 'Employee Name' });
+  private readonly employeeNameInput: Locator;
+  private readonly employeeIdInput: Locator;
+  private readonly searchButton: Locator;
 
-  // The label-wrapper pattern the AI flagged — confirmed necessary
-  private readonly employeeIdInput = this.page
-    .locator('.oxd-input-group')
-    .filter({ hasText: 'Employee Id' })
-    .getByRole('textbox');
+  constructor(private readonly page: Page) {
+    this.employeeNameInput = this.page.getByRole('textbox', { name: 'Employee Name' });
 
-  private readonly searchButton = this.page.getByRole('button', { name: 'Search' });
+    // The label-wrapper pattern the AI flagged — confirmed necessary
+    this.employeeIdInput = this.page
+      .locator('.oxd-input-group')
+      .filter({ hasText: 'Employee Id' })
+      .getByRole('textbox');
+
+    this.searchButton = this.page.getByRole('button', { name: 'Search' });
+  }
 ```
 
 ---

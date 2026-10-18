@@ -263,6 +263,46 @@ await expect(this.cardTextLocator).toBeVisible(); // NOW it queries the DOM
 
 **The practical implication:** You can create your `MasterSearchPage` object before the page has even navigated. The locators are just descriptions. They evaluate lazily, exactly when you use them.
 
+### 4.1 A trap: field initializers that read `this.page`
+
+"Locators are lazy" does not mean *where* you create them is free. A class-field initializer runs **before** the constructor body, so it cannot see anything the constructor assigns. Measured on Playwright 1.64.1 / TypeScript 5.9.3 with `target: ES2022` and the framework's strict flags, running the same three Page Objects under `tsc` and under `playwright test`:
+
+```typescript
+// ❌ A. page declared, assigned in the body — the initializer runs first, so this.page is undefined
+class DeclaredField {
+  readonly page: Page;
+  readonly heading = this.page.getByRole('heading');
+  constructor(page: Page) { this.page = page; }
+}
+
+// ❌ B. parameter property + field initializer — looks right, reads right
+class ParamProperty {
+  readonly heading = this.page.getByRole('heading');
+  constructor(private readonly page: Page) {}
+}
+
+// ✅ C. assign in the constructor body (this is what §2 and the framework do)
+class CtorAssign {
+  readonly heading: Locator;
+  constructor(private readonly page: Page) { this.heading = this.page.getByRole('heading'); }
+}
+
+// ✅ D. a getter — also gives you a fresh Locator on every access
+class Getter {
+  constructor(private readonly page: Page) {}
+  get heading() { return this.page.getByRole('heading'); }
+}
+```
+
+| Form | `tsc --noEmit` | `playwright test` |
+| --- | --- | --- |
+| A — declared field + initializer | `TS2729: Property 'page' is used before its initialization` | **fails at runtime** — `TypeError`, `this.page` is `undefined` |
+| B — parameter property + initializer | `TS2729` (same error) | passes — Playwright's own transform assigns the parameter property first |
+| C — constructor-body assignment | clean | passes |
+| D — getter | clean | passes |
+
+B is the dangerous one: it *runs*, so nobody notices — until the project adds a `typecheck` gate (the framework has one: `npm run typecheck`), or the class is compiled by anything other than Playwright's loader. Use C or D. If a snippet elsewhere in the course shows `readonly x = this.page…` as a field initializer, read it as pseudocode for C.
+
 ---
 
 ## 5. The `.nth(2)` Problem — And How to Fix It

@@ -782,7 +782,8 @@ Same `{ scope: 'worker' }` pattern as [Ch09 §8](../02_Test_Architecture/09_Para
 You are automating a D365 React component flow. A modal pops up to enter details. After submitting, a _second_ "Success" modal appears over the first one. Your POM has this locator:
 
 ```typescript
-readonly closeButton = this.page.getByRole('button', { name: 'Close' });
+// inside the page object (a getter — see Ch05 §4.1 for why not a field initializer)
+get closeButton() { return this.page.getByRole('button', { name: 'Close' }); }
 ```
 
 When you call `this.closeButton.nth(1).click()`, it works because the first modal has a Close button (index 0) and the second modal has a Close button (index 1).
