@@ -44,12 +44,12 @@ The rubrics tell you where you are; this is a suggested order for the material t
 | [README.md](README.md) | This index | Done |
 | [READINESS_RUBRIC_SWE.md](READINESS_RUBRIC_SWE.md) | 12 competencies × 5 bands (Junior → Principal) for the mobile software engineer, with a map to the module content that teaches each | Done |
 | [READINESS_RUBRIC_SDET.md](READINESS_RUBRIC_SDET.md) | Same structure for the mobile SDET | Done |
-| `TEST_STRATEGY_TEMPLATE.md` | Mobile test-strategy template: device-matrix scoping, test tiers, cost lines | **Planned** |
-| `RELEASE_AND_ROLLOUT_PLAYBOOK.md` | Release trains, staged rollout, halt criteria, store-review realities — with store mechanics verified against current official docs | **Planned** |
+| [TEST_STRATEGY_TEMPLATE.md](TEST_STRATEGY_TEMPLATE.md) | Fill-in mobile test-strategy template (reversibility profile, risk register over the mobile dimensions, device matrix, tier placement, gating policy, cost model) plus a worked example | Done |
+| [RELEASE_AND_ROLLOUT_PLAYBOOK.md](RELEASE_AND_ROLLOUT_PLAYBOOK.md) | Store mechanics side by side (verified against official docs 2026-10-18, with an explicit list of what was *not* verified), derived soak-time arithmetic, release train, halt-criteria template, flags, hotfix procedure | Done |
 | `RFC_TEMPLATE.md` | Blank RFC plus a worked mobile example | **Planned** |
 | `CODE_REVIEW_RUBRIC.md` | App-code review rubric (test-code dimensions stay in the web-side rubric) | **Planned** |
 
-Planned files are listed without links on purpose: a link to a file that does not exist yet is a broken link. They will be linked here when they land, and the rubrics' "Where This Module Teaches Each Competency" tables already mark which competencies are waiting on them.
+Files marked *Planned* are listed without links on purpose: a link to a file that does not exist yet is a broken link. They will be linked here when they land, and the rubrics' "Where This Module Teaches Each Competency" tables mark which competencies are waiting on them.
 
 ---
 
