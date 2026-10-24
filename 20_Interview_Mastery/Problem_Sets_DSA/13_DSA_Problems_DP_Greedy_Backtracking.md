@@ -432,16 +432,6 @@ Return totalSurplus ≥ 0 ? start : -1
 
 ---
 
-🔬 **Section Challenge — GREEDY**
-
-**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-
-<details><summary>Answer</summary>
-
-Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-
-</details>
-
 ## BACKTRACKING
 
 ---
@@ -611,16 +601,6 @@ isValid(row, col, digit):
 | 19  | Sudoku Solver              | try 1-9, validate, recurse           | Backtrack Constrain | Bitmask for fast constraint check      |
 
 ---
-
-🔬 **Section Challenge — MASTER PROBLEM MAP — DP, Greedy, Backtracking**
-
-**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-
-<details><summary>Answer</summary>
-
-Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-
-</details>
 
 ## The DP Decision Flowchart — Interview Logic
 

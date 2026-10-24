@@ -363,16 +363,6 @@ Step 3: Process remaining bars in stack (right boundary = n)
 
 ---
 
-🔬 **Section Challenge — STACK**
-
-**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-
-<details><summary>Answer</summary>
-
-In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-
-</details>
-
 ## QUEUE
 
 ---

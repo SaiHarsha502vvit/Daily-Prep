@@ -127,3 +127,24 @@
 16_JavaScript/08_JS_Deep_Reasoning.md :: 🔬 **Section Challenge — 2. Closures: The Stale Variable Trap**
 16_JavaScript/08_JS_Deep_Reasoning.md :: 🔬 **Section Challenge — 6. Prototypes: Why `typeof null === 'object'`**
 16_JavaScript/10_Web_Workers_ServiceWorkers.md :: 🔬 **Section Challenge — 10. Caching Strategies — Offline-First Patterns**
+20_Interview_Mastery/03_DSA_Pattern_Recognition_Engine.md :: 🔬 **Section Challenge — 11. Pattern 10: Union-Find — Dynamic Connectivity**
+20_Interview_Mastery/03_DSA_Pattern_Recognition_Engine.md :: 🔬 **Section Challenge — 12. Pattern 11: Prefix Sum — Range Query Magic**
+20_Interview_Mastery/03_DSA_Pattern_Recognition_Engine.md :: 🔬 **Section Challenge — 2. Pattern 1: Two Pointers**
+20_Interview_Mastery/03_DSA_Pattern_Recognition_Engine.md :: 🔬 **Section Challenge — 3. Pattern 2: Sliding Window**
+20_Interview_Mastery/03_DSA_Pattern_Recognition_Engine.md :: 🔬 **Section Challenge — 4. Pattern 3: Binary Search — Beyond Sorted Arrays**
+20_Interview_Mastery/03_DSA_Pattern_Recognition_Engine.md :: 🔬 **Section Challenge — 5. Pattern 4: BFS/DFS — Graph and Tree Traversal**
+20_Interview_Mastery/03_DSA_Pattern_Recognition_Engine.md :: 🔬 **Section Challenge — 6. Pattern 5: Dynamic Programming**
+20_Interview_Mastery/03_DSA_Pattern_Recognition_Engine.md :: 🔬 **Section Challenge — 7. Pattern 6: Greedy — When Local Optimum = Global Optimum**
+20_Interview_Mastery/04_Complexity_Analysis_Masterclass.md :: 🔬 **Section Challenge — 3. Recurrence Relations — When Recursion Gets Mathematical**
+20_Interview_Mastery/04_Complexity_Analysis_Masterclass.md :: 🔬 **Section Challenge — Summary Complexity Cheat Sheet**
+20_Interview_Mastery/09_Mock_Interview_Simulations.md :: 🔬 **Section Challenge — 3. Mock 2: DSA — Tree/Graph (45 min)**
+20_Interview_Mastery/Problem_Sets_DSA/11_DSA_Problems_LinkedList_Stack_Queue_Heap.md :: 🔬 **Section Challenge — STACK**
+20_Interview_Mastery/Problem_Sets_DSA/12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md :: 🔬 **Section Challenge — MASTER PROBLEM MAP — Trees, Graphs, Trie, Union-Find**
+20_Interview_Mastery/Problem_Sets_DSA/13_DSA_Problems_DP_Greedy_Backtracking.md :: 🔬 **Section Challenge — GREEDY**
+20_Interview_Mastery/Problem_Sets_DSA/13_DSA_Problems_DP_Greedy_Backtracking.md :: 🔬 **Section Challenge — MASTER PROBLEM MAP — DP, Greedy, Backtracking**
+20_Interview_Mastery/Problem_Sets_DSA/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md :: 🔬 **Section Challenge — MASTER PROBLEM MAP — Binary Search, Two Pointers, Sliding Window**
+20_Interview_Mastery/Problem_Sets_DSA/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md :: 🔬 **Section Challenge — The Binary Search Template Zoo**
+20_Interview_Mastery/Problem_Sets_DSA/19_DSA_Permutations_Combinations_Interview_Math.md :: 🔬 **Section Challenge — 3) Product Rule, Sum Rule, Complement — The Hidden Backbone**
+20_Interview_Mastery/Problem_Sets_DSA/19_DSA_Permutations_Combinations_Interview_Math.md :: 🔬 **Section Challenge — 3.2 Sum rule**
+20_Interview_Mastery/Problem_Sets_DSA/19_DSA_Permutations_Combinations_Interview_Math.md :: 🔬 **Section Challenge — 6.1 Security / OTP / brute-force risk**
+20_Interview_Mastery/Problem_Sets_SQL/16_SQL_Problems_Window_Functions_Advanced.md :: 🔬 **Section Challenge — MASTER PROBLEM MAP — Window Functions & Advanced**

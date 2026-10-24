@@ -387,15 +387,7 @@ Step 4: Return max(dist[]) if all reachable, else -1
 
 🔬 **Section Challenge — GRAPHS**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-
-<details><summary>Answer</summary>
-
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-
-</details>
-
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+**Challenge 1 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
 
 <details><summary>Answer</summary>
 
@@ -529,7 +521,7 @@ Step 4: Sort emails within each group, attach the name
 
 🔬 **Section Challenge — UNION-FIND**
 
-**Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+**Challenge 2 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
 
 <details><summary>Answer</summary>
 
@@ -560,24 +552,6 @@ Without path compression + union by rank: O(N) height possible (linear chain). W
 | 17  | Accounts Merge       | union shared emails       | Union-Find           | Group by root after all unions        |
 
 ---
-
-🔬 **Section Challenge — MASTER PROBLEM MAP — Trees, Graphs, Trie, Union-Find**
-
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-
-<details><summary>Answer</summary>
-
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-
-</details>
-
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-
-</details>
 
 ## Interview Quick-Fire: Trees / Graphs / Trie / Union-Find
 

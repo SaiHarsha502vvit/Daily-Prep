@@ -177,16 +177,6 @@ ADVANCED:
 
 ---
 
-🔬 **Section Challenge — 2. Pattern 1: Two Pointers**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
-
 ## 3. Pattern 2: Sliding Window
 
 ### 5W+H Analysis
@@ -296,24 +286,6 @@ VARIABLE WINDOW:
 ```
 
 ---
-
-🔬 **Section Challenge — 3. Pattern 2: Sliding Window**
-
-**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-
-<details><summary>Answer</summary>
-
-Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-
-<details><summary>Answer</summary>
-
-Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-
-</details>
 
 ## 4. Pattern 3: Binary Search — Beyond Sorted Arrays
 
@@ -454,24 +426,6 @@ boolean canSplit(int[] nums, int k, int maxSum) {
 
 ---
 
-🔬 **Section Challenge — 4. Pattern 3: Binary Search — Beyond Sorted Arrays**
-
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-
-<details><summary>Answer</summary>
-
-lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-
-</details>
-
-**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-
-<details><summary>Answer</summary>
-
-Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-
-</details>
-
 ## 5. Pattern 4: BFS/DFS — Graph and Tree Traversal
 
 ### When to Use BFS vs DFS
@@ -565,24 +519,6 @@ int numIslands(char[][] grid) {
 ```
 
 ---
-
-🔬 **Section Challenge — 5. Pattern 4: BFS/DFS — Graph and Tree Traversal**
-
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-
-<details><summary>Answer</summary>
-
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-
-</details>
-
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-
-</details>
 
 ## 6. Pattern 5: Dynamic Programming
 
@@ -694,24 +630,6 @@ FAMILY 8: BITMASK DP
 
 ---
 
-🔬 **Section Challenge — 6. Pattern 5: Dynamic Programming**
-
-**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-
-<details><summary>Answer</summary>
-
-Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-
-</details>
-
-**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-
-<details><summary>Answer</summary>
-
-State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-
-</details>
-
 ## 7. Pattern 6: Greedy — When Local Optimum = Global Optimum
 
 ### When Greedy Works (and When It Doesn't)
@@ -769,16 +687,6 @@ int jump(int[] nums) {
 ```
 
 ---
-
-🔬 **Section Challenge — 7. Pattern 6: Greedy — When Local Optimum = Global Optimum**
-
-**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-
-<details><summary>Answer</summary>
-
-Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-
-</details>
 
 ## 8. Pattern 7: Backtracking — Systematic Exploration
 
@@ -1025,16 +933,6 @@ class UnionFind {
 
 ---
 
-🔬 **Section Challenge — 11. Pattern 10: Union-Find — Dynamic Connectivity**
-
-**Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
-
-<details><summary>Answer</summary>
-
-Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
-
-</details>
-
 ## 12. Pattern 11: Prefix Sum — Range Query Magic
 
 ```java
@@ -1063,16 +961,6 @@ int subarraySum(int[] nums, int k) {
 ```
 
 ---
-
-🔬 **Section Challenge — 12. Pattern 11: Prefix Sum — Range Query Magic**
-
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
 
 ## 13. Pattern 12: Trie — String Prefix Operations
 

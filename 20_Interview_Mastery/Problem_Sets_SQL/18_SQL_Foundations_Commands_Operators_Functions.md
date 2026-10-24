@@ -297,7 +297,7 @@ SELECT * FROM t1 WHERE name LIKE '_h%';
 
 🔬 **Section Challenge — 5.5 `LIKE` with wildcards**
 
-**Challenge 1 (LIKE Pattern Matching Performance):** `SELECT * FROM users WHERE name LIKE '%john%'`. **Who** can't use an index? **When** does `LIKE 'john%'` perform better? **What** is the production alternative for full-text search?
+**Challenge 2 (LIKE Pattern Matching Performance):** `SELECT * FROM users WHERE name LIKE '%john%'`. **Who** can't use an index? **When** does `LIKE 'john%'` perform better? **What** is the production alternative for full-text search?
 
 <details><summary>Answer</summary>
 
@@ -307,20 +307,6 @@ SELECT * FROM t1 WHERE name LIKE '_h%';
 <details><summary>Answer</summary>
 
 No. The compiler doesn't know the actual type — it could be `List<Integer>`, `List<Float>`, or `List<Double>`. Adding a `Double` to a `List<Integer>` would violate type safety. `? extends T` is read-only: you can `get()` as `Number`, but `add()` is forbidden (except null).
-
-</details>
-
-**Challenge 2 (Design):** Write a method that copies elements from any `List<? extends T>` into any `List<? super T>`. Why is this the correct signature?
-
-<details><summary>Answer</summary>
-
-```java
-<T> void copy(List<? extends T> src, List<? super T> dst) {
-    for (T item : src) dst.add(item);
-}
-```
-
-PECS: `src` is a Producer (we read from it) → `extends`. `dst` is a Consumer (we write to it) → `super`. This is exactly how `Collections.copy()` is implemented in the JDK.
 
 </details>
 
@@ -518,7 +504,7 @@ SELECT * FROM t1, t2 WHERE t1.no = t2.no;
 
 🔬 **Section Challenge — 9.1 `INNER JOIN`**
 
-**Challenge 1 (Debug — Who/When/What):** `SELECT orders.id, items.name FROM orders, order_items items WHERE orders.id = items.order_id AND orders.status = 'PENDING'` — **who** executes the join? **What** implicit join type is this? **What** catastrophic query results if you delete the WHERE clause?
+**Challenge 3 (Debug — Who/When/What):** `SELECT orders.id, items.name FROM orders, order_items items WHERE orders.id = items.order_id AND orders.status = 'PENDING'` — **who** executes the join? **What** implicit join type is this? **What** catastrophic query results if you delete the WHERE clause?
 
 <details><summary>Answer</summary>
 
@@ -538,15 +524,7 @@ Use when: keep all left rows even if right missing.
 
 🔬 **Section Challenge — 9.2 `LEFT JOIN`**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
-
-<details><summary>Answer</summary>
-
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+**Challenge 4 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
 
 <details><summary>Answer</summary>
 
@@ -566,7 +544,7 @@ Equivalent by swapping table order with LEFT JOIN.
 
 🔬 **Section Challenge — 9.3 `RIGHT JOIN`**
 
-**Challenge 1 (Reasoning — Who/When/What):** `departments RIGHT JOIN employees` returns all employees including those without a department. **Who** is null? **When** would you prefer this over `employees LEFT JOIN departments`? **What** does the convention say?
+**Challenge 5 (Reasoning — Who/When/What):** `departments RIGHT JOIN employees` returns all employees including those without a department. **Who** is null? **When** would you prefer this over `employees LEFT JOIN departments`? **What** does the convention say?
 
 <details><summary>Answer</summary>
 
@@ -584,7 +562,7 @@ Pure Cartesian product (every row with every row).
 
 🔬 **Section Challenge — 9.4 `CROSS JOIN`**
 
-**Challenge 1 (Design — Who/When/What):** CROSS JOIN is considered dangerous but has legitimate use cases. **Who** should use it? **When** is it the correct tool? **What** is a real-world example?
+**Challenge 6 (Design — Who/When/What):** CROSS JOIN is considered dangerous but has legitimate use cases. **Who** should use it? **When** is it the correct tool? **What** is a real-world example?
 
 <details><summary>Answer</summary>
 
@@ -604,7 +582,7 @@ Interview line:
 
 🔬 **Section Challenge — 9.5 `NATURAL JOIN` (usually avoid in production)**
 
-**Challenge 1 (Bug Hunt — Who/When/What):** `orders NATURAL JOIN customers` worked for a year. A new developer adds a `status` column to both `orders` AND `customers`. The query still runs but now returns wrong results with no error. **Who** caused the break? **When** did results silently corrupt? **What** happened?
+**Challenge 7 (Bug Hunt — Who/When/What):** `orders NATURAL JOIN customers` worked for a year. A new developer adds a `status` column to both `orders` AND `customers`. The query still runs but now returns wrong results with no error. **Who** caused the break? **When** did results silently corrupt? **What** happened?
 
 <details><summary>Answer</summary>
 
@@ -624,7 +602,7 @@ LEFT JOIN employee m ON e.manager_id = m.emp_id;
 
 🔬 **Section Challenge — 9.6 `SELF JOIN`**
 
-**Challenge 1 (Design — Who/When/What):** The org chart SELF JOIN works for a flat manager hierarchy. Your company now has 8 levels of management. **Who** should you call to get the full reporting chain for an employee? **When** does SELF JOIN break down? **What** replaces it?
+**Challenge 8 (Design — Who/When/What):** The org chart SELF JOIN works for a flat manager hierarchy. Your company now has 8 levels of management. **Who** should you call to get the full reporting chain for an employee? **When** does SELF JOIN break down? **What** replaces it?
 
 <details><summary>Answer</summary>
 
@@ -702,7 +680,7 @@ SELECT ROUND(25.678, 2);
 
 🔬 **Section Challenge — 11.2 Math functions**
 
-**Challenge 1 (FLOOR vs ROUND vs CEIL):** `SELECT ROUND(2.5), ROUND(2.45, 1), FLOOR(-2.1), CEIL(-2.1)`. **Who** rounds toward zero? **When** does `ROUND(2.5)` return different results in different databases? **What** is the banker's rounding rule?
+**Challenge 9 (FLOOR vs ROUND vs CEIL):** `SELECT ROUND(2.5), ROUND(2.45, 1), FLOOR(-2.1), CEIL(-2.1)`. **Who** rounds toward zero? **When** does `ROUND(2.5)` return different results in different databases? **What** is the banker's rounding rule?
 
 <details><summary>Answer</summary>
 
@@ -712,14 +690,6 @@ SELECT ROUND(25.678, 2);
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-
-</details>
-
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-
-<details><summary>Answer</summary>
-
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
 
 </details>
 
@@ -736,7 +706,7 @@ SELECT DATEDIFF('2026-03-13', '2026-03-01');
 
 🔬 **Section Challenge — 11.3 Date functions**
 
-**Challenge 1 (DATEDIFF vs Interval Arithmetic):** `DATEDIFF('2025-03-01', '2025-02-01')` in MySQL returns 28. But `'2025-03-01'::date - '2025-02-01'::date` in PostgreSQL also returns 28. **Who** handles DST transitions? **When** is DATEDIFF unsafe for time-sensitive calculations? **What** is the interval arithmetic alternative?
+**Challenge 10 (DATEDIFF vs Interval Arithmetic):** `DATEDIFF('2025-03-01', '2025-02-01')` in MySQL returns 28. But `'2025-03-01'::date - '2025-02-01'::date` in PostgreSQL also returns 28. **Who** handles DST transitions? **When** is DATEDIFF unsafe for time-sensitive calculations? **What** is the interval arithmetic alternative?
 
 <details><summary>Answer</summary>
 
@@ -746,14 +716,6 @@ SELECT DATEDIFF('2026-03-13', '2026-03-01');
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-
-</details>
-
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-
-<details><summary>Answer</summary>
-
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
 
 </details>
 
@@ -778,7 +740,7 @@ Interview line:
 
 🔬 **Section Challenge — 12.1 Datatypes**
 
-**Challenge 1 (Debug — Who/When/What):** You store a price as `DECIMAL(10,2)`. A user inputs `12345678901.99`. **Who** rejects it? **When?** **What** is the maximum value `DECIMAL(10,2)` can store?\n\n<details><summary>Answer</summary>\n\n**Who rejects?** The database engine, not the application. MySQL raises `ERROR 1264: Out of range value`. **When?** At INSERT/UPDATE time — after the application sends the value, before it's committed. **Max value:** `DECIMAL(10,2)` = 10 total digits, 2 after decimal point = 8 digits before decimal. Max: `99999999.99` (~$100M). **Common mistake:** DECIMAL(10,2) on an e-commerce price column seems large, but if you need to store values above $99,999,999.99 (international orders, B2B), you'll hit this. **Fix:** Use `DECIMAL(15,2)` for financial data by default (handles up to $9.9 trillion). For cryptocurrency: `DECIMAL(18,8)` (8 decimal places for satoshi-level precision). Never use FLOAT/DOUBLE for money — floating point representation causes cents-level rounding errors.\n\n</details>
+**Challenge 11 (Debug — Who/When/What):** You store a price as `DECIMAL(10,2)`. A user inputs `12345678901.99`. **Who** rejects it? **When?** **What** is the maximum value `DECIMAL(10,2)` can store?\n\n<details><summary>Answer</summary>\n\n**Who rejects?** The database engine, not the application. MySQL raises `ERROR 1264: Out of range value`. **When?** At INSERT/UPDATE time — after the application sends the value, before it's committed. **Max value:** `DECIMAL(10,2)` = 10 total digits, 2 after decimal point = 8 digits before decimal. Max: `99999999.99` (~$100M). **Common mistake:** DECIMAL(10,2) on an e-commerce price column seems large, but if you need to store values above $99,999,999.99 (international orders, B2B), you'll hit this. **Fix:** Use `DECIMAL(15,2)` for financial data by default (handles up to $9.9 trillion). For cryptocurrency: `DECIMAL(18,8)` (8 decimal places for satoshi-level precision). Never use FLOAT/DOUBLE for money — floating point representation causes cents-level rounding errors.\n\n</details>
 
 ## 12.2 Constraints
 
@@ -876,7 +838,7 @@ Avoid when:
 
 🔬 **Section Challenge — 14) CTE and Window Functions as Readability + Power Tools**
 
-**Challenge 1 (CTE vs Subquery Performance):** `WITH cte AS (SELECT ...) SELECT * FROM cte WHERE ...` vs `SELECT * FROM (SELECT ...) sq WHERE ...`. **Who** materializes the result? **When** does a CTE hurt performance? **What** is the PostgreSQL CTE materialization flag?
+**Challenge 12 (CTE vs Subquery Performance):** `WITH cte AS (SELECT ...) SELECT * FROM cte WHERE ...` vs `SELECT * FROM (SELECT ...) sq WHERE ...`. **Who** materializes the result? **When** does a CTE hurt performance? **What** is the PostgreSQL CTE materialization flag?
 
 <details><summary>Answer</summary>
 
@@ -886,14 +848,6 @@ Avoid when:
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-
-</details>
-
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-
-<details><summary>Answer</summary>
-
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
 
 </details>
 
@@ -935,7 +889,7 @@ FROM t1;
 
 🔬 **Section Challenge — 14.2 Ranking window functions**
 
-**Challenge 1 (RANK vs DENSE_RANK vs ROW_NUMBER):** Three employees have salaries: Alice=90k, Bob=90k, Carol=70k. **Who** gets rank 2 with `RANK()`, `DENSE_RANK()`, and `ROW_NUMBER()`?
+**Challenge 13 (RANK vs DENSE_RANK vs ROW_NUMBER):** Three employees have salaries: Alice=90k, Bob=90k, Carol=70k. **Who** gets rank 2 with `RANK()`, `DENSE_RANK()`, and `ROW_NUMBER()`?
 
 <details><summary>Answer</summary>
 
@@ -945,14 +899,6 @@ FROM t1;
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-
-</details>
-
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-
-<details><summary>Answer</summary>
-
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
 
 </details>
 
@@ -978,7 +924,7 @@ FROM t1;
 
 🔬 **Section Challenge — 14.3 Value window functions**
 
-**Challenge 1 (LAG and LEAD for Period Comparisons):** `LAG(revenue, 1) OVER (PARTITION BY product ORDER BY month)` returns the previous month's revenue. **Who** computes the value? **When** does `LAG` return NULL? **What** is the default value syntax and the common MoM growth calculation?
+**Challenge 14 (LAG and LEAD for Period Comparisons):** `LAG(revenue, 1) OVER (PARTITION BY product ORDER BY month)` returns the previous month's revenue. **Who** computes the value? **When** does `LAG` return NULL? **What** is the default value syntax and the common MoM growth calculation?
 
 <details><summary>Answer</summary>
 
@@ -988,14 +934,6 @@ FROM t1;
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-
-</details>
-
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-
-<details><summary>Answer</summary>
-
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
 
 </details>
 

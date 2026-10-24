@@ -358,7 +358,7 @@ While mid ≤ hi:
 
 🔬 **Section Challenge — TWO POINTERS**
 
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+**Challenge 3 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
 
 <details><summary>Answer</summary>
 
@@ -486,19 +486,11 @@ Return atMost(K) - atMost(K-1)
 
 🔬 **Section Challenge — SLIDING WINDOW**
 
-**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+**Challenge 4 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
 
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-
-<details><summary>Answer</summary>
-
-Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
 
 </details>
 
@@ -580,24 +572,6 @@ Phase 3: Add remaining intervals
 
 ---
 
-🔬 **Section Challenge — MASTER PROBLEM MAP — Binary Search, Two Pointers, Sliding Window**
-
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-
-<details><summary>Answer</summary>
-
-lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-
-</details>
-
-**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-
-<details><summary>Answer</summary>
-
-Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-
-</details>
-
 ## The Binary Search Template Zoo
 
 **Template 1 — Standard (find exact)**:
@@ -635,25 +609,6 @@ return lo
 ---
 
 ---
-
-🔬 **Section Challenge — The Binary Search Template Zoo**
-
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-
-<details><summary>Answer</summary>
-
-lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-
-</details>
-
-**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-
-<details><summary>Answer</summary>
-
-Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-
-</details>
-
 
 ---
 
