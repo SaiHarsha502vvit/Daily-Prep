@@ -17,6 +17,13 @@ _Start here. Master the language before frameworks._
 | 4   | [Generics & Exceptions](Ch04_Generics_Exceptions.md)     | Type erasure, wildcards, covariance/contravariance, exception design     |
 | 5   | [DateTime & Regex](Ch05_DateTime_Regex.md)               | java.time API, temporal adjusters, regex engine internals                |
 | 6   | [Functional Programming](Ch06_Functional_Programming.md) | Lambdas, streams, functional interfaces, Optional patterns               |
+| 6a  | [FP Learning Path & Book Map](Ch06a_FP_Learning_Path_And_Book_Map.md) 🆕 | Reading order, Java-vs-Scala translation, coverage of a classic FP text |
+| 6b  | [Purity & Effects](Ch06b_FP_Purity_Substitution_And_Effects.md) 🆕 | Referential transparency, functional core / imperative shell |
+| 6c  | [ADTs & Immutable Lists](Ch06c_FP_Algebraic_Data_Types_And_Immutable_Lists.md) 🆕 | Sealed types, records, exhaustive `switch`, folds |
+| 6d  | [Option & Either](Ch06d_FP_Error_Handling_Option_Either.md) 🆕 | Errors as values, `flatMap` pipelines, `sequence` |
+| 6e  | [Laziness & Lazy Streams](Ch06e_FP_Laziness_And_Lazy_Streams.md) 🆕 | Thunks, memoisation, infinite streams |
+| 6f  | [Pure State & Property Testing](Ch06f_FP_Pure_State_And_Property_Testing.md) 🆕 | Deterministic RNG, `State`, `forAll` |
+| 6g  | [Monoids, Functors & Monads](Ch06g_FP_Monoids_Functors_Monads.md) 🆕 | Laws, `foldMap`, parallel-safe reduction |
 | 7   | [Modern Java 9-21](Ch07_Modern_Java_9to21.md)            | Modules, records, sealed classes, pattern matching, virtual threads      |
 
 ## Part II — Java Intermediate (Ch 8-14)
