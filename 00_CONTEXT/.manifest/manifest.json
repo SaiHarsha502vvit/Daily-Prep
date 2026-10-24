@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-24T17:43:09.634049+00:00",
+  "generatedAt": "2026-10-24T17:45:16.334220+00:00",
   "repoRoot": "/home/user/Daily-Prep",
-  "activeFileCount": 1495,
+  "activeFileCount": 1496,
   "files": [
     {
       "path": ".github/agents/diagram-audit.agent.md",
@@ -27053,6 +27053,22 @@
         "react",
         "css",
         "devops"
+      ]
+    },
+    {
+      "path": "_Curriculum/NEXT_SESSION_PROMPT.md",
+      "folder": "_Curriculum",
+      "title": "Next Session Prompt",
+      "role": "Active repository Markdown content",
+      "sha256": "1d486e298c8d6dc9e8f83df2c1f74c91896f33269c0e41ce92dcdcf4ba093328",
+      "shortHash": "1d486e298c8d",
+      "bytes": 2574,
+      "headings": 1,
+      "codeFences": 2,
+      "codeFencesBalanced": true,
+      "challengeCount": 0,
+      "styleSignals": [
+        "details"
       ]
     },
     {
