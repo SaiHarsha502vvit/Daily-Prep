@@ -4,6 +4,17 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - Resolve Pass: Fences, Broken Mermaid, 07_Modern_Java Diagrams and Tables
+
+Scope: repo-wide fence and Mermaid fixes, and the full `07_Modern_Java` conversion that the 02-06 entry below left out.
+
+- **Fences.** Fixed unbalanced code fences in `10_Enterprise_Systems/02_ERP_Advanced.md`, `15_React_Frontend/01_React_Fundamentals.md`, `25_Python_ML_DL_NLP/12_Recommender_Systems.md`, `07_Modern_Java/Ch18_JMM_GC_Deep.md`; swallowed fences (headings, `<details>` or Java inside ```text) repaired in several 07 chapters. `tools/update_context.py` now skips `node_modules/`, so `check --strict-fences` passes.
+- **Broken Mermaid.** 21 diagrams outside 02-06 parsed but did not render (subgraph without `end`, unquoted parentheses, `Loop` as a reserved word, `;` in sequence messages). Fixed in 07, 10, 14, 15, 16, 21, 22. All 164 blocks in `07_Modern_Java` now render in Chromium.
+- **07_Modern_Java.** ASCII diagrams became Mermaid (each with a "How to read this diagram" note where added), ASCII or pseudo tables became GitHub Markdown tables, step guides became numbered lists, and `<br>`-packed garbled tables were rewritten row by row (Ch13, 15, 16, 19, 26, 27, 32, 33, 42, 61-64, 68). No Java/XML/YAML/SQL code block was lost (counts compared with the previous commit). Facts fixed on the way: Sleuth replaced by Micrometer Tracing in the Spring Cloud table (Boot 3), `invokedynamic` string concat is Java 9+, Ch42 protocol and HTTP anatomy tables rebuilt.
+- **Still open (do next).** (1) Run-on plain-text lines in older `03_Algorithms` pages (for example `07a_Advanced_DS_Core/01_deep_internals_...`, `06a_Greedy_BitManip`): consecutive plain lines render as one paragraph and need list or table form. (2) About 140 Mermaid diagrams outside 02-06 (23 of them in 07) lack a "How to read this diagram" note. (3) Tree-style ASCII (folder trees, small diagrams in code comments) is intentionally left as text.
+
+Verification: `python3 tools/update_context.py update` then `check --strict-fences` pass; every fence is balanced in 07; 164/164 Mermaid blocks render (`tools/mermaid-check`, run with Chromium at `/opt/pw-browsers/chromium`).
+
 ## 2026-10-24 - Diagrams to Mermaid and Tables to Markdown in 02-06
 
 Scope: `02_Data_Structures`, `03_Algorithms`, `04_Patterns_Templates`, `05_Problem_Solving`, `06_OOP_Design` (267 files). `07_Modern_Java` is out of scope here (its functional-programming pages were already clean; its other ASCII blocks remain).

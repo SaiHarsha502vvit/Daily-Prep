@@ -87,36 +87,25 @@ This is usually caused by a failure in acknowledging the message. The Email Work
 
 **Step 1 — Producers publish messages to a Topic:**
 
+```mermaid
+flowchart TD
+  PA["Producer A (app 1)"] -->|"publish('orders')"| K["KAFKA CLUSTER<br/>(broker servers)"]
+  PB["Producer B (app 2)"] -->|"publish('orders')"| K
+  K --> T["Topic: 'orders'"]
 ```
-    ┌───────────┐                  ┌───────────┐
-    │ Producer A │                  │ Producer B │
-    │  (app 1)  │                  │  (app 2)  │
-    └─────┬─────┘                  └─────┬─────┘
-          │       publish("orders")      │
-          └──────────────┬───────────────┘
-                         │
-                         ▼
-               ┌───────────────────┐
-               │   KAFKA CLUSTER    │
-               │  (Broker Servers)  │
-               └────────┬──────────┘
-                        │
-                  Topic: "orders"
-```
+
+**How to read this diagram.** Several producers publish to the same topic on the Kafka cluster.
 
 **Topic** = A named feed of messages — think of it like a **database table** you write records into.
 
 **Step 2 — Topic is split into Partitions for parallelism:**
 
-```
-    Topic: "orders"
-    ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-    │  Partition 0  │  │  Partition 1  │  │  Partition 2  │
-    │               │  │               │  │               │
-    │  [0] [1] [2]  │  │[0][1][2][3]  │  │   [0] [1]    │
-    │   ← offset →  │  │  ← offset →  │  │  ← offset →  │
-    └──────────────┘  └──────────────┘  └──────────────┘
-```
+Topic: "orders"
+
+| Partition 0 | Partition 1 | Partition 2 |
+| --- | --- | --- |
+| `[0] [1] [2]` | `[0] [1] [2] [3]` | `[0] [1]` |
+| offsets increase → | offsets increase → | offsets increase → |
 
 **Partition** = An ordered, immutable log. Messages append to the end.
 Each message gets an **offset** (like an array index).
@@ -124,17 +113,19 @@ Kafka achieves massive throughput because partitions process **in parallel**.
 
 **Step 3 — Consumer Group reads partitions (1:1 mapping):**
 
+```mermaid
+flowchart TD
+  subgraph G["Consumer group: 'payment'"]
+    CA["Consumer A"]
+    CB["Consumer B"]
+    CC["Consumer C"]
+  end
+  P0["Partition 0"] --> CA
+  P1["Partition 1"] --> CB
+  P2["Partition 2"] --> CC
 ```
-    Partition 0           Partition 1           Partition 2
-        │                     │                     │
-        ▼                     ▼                     ▼
-    ┌──────────┐         ┌──────────┐         ┌──────────┐
-    │Consumer A │         │Consumer B │         │Consumer C │
-    └──────────┘         └──────────┘         └──────────┘
 
-              Consumer Group: "payment"
-              Each partition → exactly ONE consumer
-```
+**How to read this diagram.** Within one consumer group, each partition is read by exactly ONE consumer.
 
 **Consumer Group** = Consumers that share the work. Add more consumers = more parallelism!
 
@@ -292,19 +283,17 @@ Don't store current state — **store all events as the source of truth**.
 
 **Problem**: How to atomically update the DB AND publish an event?
 
-```
-  ┌─────────────────────────────────────────────────────────┐
-  │  OUTBOX PATTERN — 3 Steps                                │
-  ├─────────────────────────────────────────────────────────┤
-  │  1. In SAME DB transaction:                              │
-  │     UPDATE orders SET status = 'paid'                    │
-  │     INSERT INTO outbox (event_type, payload, ...)        │
-  │                                                         │
-  │  2. Separate process polls the outbox table              │
-  │     → publishes pending events to Kafka                  │
-  │                                                         │
-  │  3. Mark outbox row as published                         │
-  └─────────────────────────────────────────────────────────┘
+**OUTBOX PATTERN — 3 Steps**
+
+```text
+1. In SAME DB transaction:
+   UPDATE orders SET status = 'paid'
+   INSERT INTO outbox (event_type, payload, ...)
+
+2. Separate process polls the outbox table
+   → publishes pending events to Kafka
+
+3. Mark outbox row as published
 ```
 
 → **Guarantee**: If the DB is updated, the event **WILL** be published (eventually).

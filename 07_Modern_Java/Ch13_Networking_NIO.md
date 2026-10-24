@@ -23,6 +23,7 @@
 - **Netty — Trustin Lee 2004**: Event-driven network framework. Apache 2013. Used by Cassandra, Spark, gRPC.
 - **Java NIO.2 async — Java 7 (2011)**: `AsynchronousServerSocketChannel`. True async callbacks on JVM.
 - **Java 11 HttpClient — 2018**: HTTP/1.1, HTTP/2, WebSocket. Built on NIO. Non-blocking by default.
+
 ## Table of Contents
 
 1. [Networking Fundamentals for Java Devs](#1-networking-fundamentals-for-java-devs)
@@ -41,29 +42,28 @@
 
 ## 1. Networking Fundamentals for Java Devs
 
+**TCP/IP STACK — What happens when you call an API**
+
+```text
+Your Java App
+     ↓
+Application Layer  (HTTP, WebSocket, gRPC)
+     ↓
+Transport Layer    (TCP — reliable, ordered delivery)
+     ↓
+Network Layer      (IP — routing packets across networks)
+     ↓
+Link Layer         (Ethernet, WiFi — physical transmission)
 ```
-  TCP/IP STACK — What happens when you call an API:
-  ══════════════════════════════════════════════════
 
-  Your Java App
-       ↓
-  Application Layer  (HTTP, WebSocket, gRPC)
-       ↓
-  Transport Layer    (TCP — reliable, ordered delivery)
-       ↓
-  Network Layer      (IP — routing packets across networks)
-       ↓
-  Link Layer         (Ethernet, WiFi — physical transmission)
+**Key concepts**
 
-
-  KEY CONCEPTS:
-  ═════════════
-
-  IP Address:  Identifies a machine (192.168.1.100)
-  Port:        Identifies a service (8080 = your Spring Boot app)
-  Socket:      IP + Port = endpoint (192.168.1.100:8080)
-  TCP:         Reliable, ordered, connection-oriented (HTTP, DB)
-  UDP:         Unreliable, fast, connectionless (DNS, video streaming)
+```text
+IP Address:  Identifies a machine (192.168.1.100)
+Port:        Identifies a service (8080 = your Spring Boot app)
+Socket:      IP + Port = endpoint (192.168.1.100:8080)
+TCP:         Reliable, ordered, connection-oriented (HTTP, DB)
+UDP:         Unreliable, fast, connectionless (DNS, video streaming)
 ```
 
 ---
@@ -108,23 +108,22 @@ try (Socket socket = new Socket("api.example.com", 80)) {
 } // Auto-closes socket
 ```
 
-```
-  BLOCKING PROBLEM:
-  ═════════════════
+**Blocking problem**
 
-  in.readLine()  ← Thread BLOCKS here. Does nothing. Waits.
-  socket.accept() ← Thread BLOCKS here. Waits for client.
+```text
+in.readLine()  ← Thread BLOCKS here. Does nothing. Waits.
+socket.accept() ← Thread BLOCKS here. Waits for client.
 
-  Thread per connection model:
+Thread per connection model:
 
-  Client A → Thread 1 (blocked reading)
-  Client B → Thread 2 (blocked reading)
-  Client C → Thread 3 (blocked reading)
-  ...
-  Client 10000 → Thread 10000 (10K threads = ~10GB RAM!)
+Client A → Thread 1 (blocked reading)
+Client B → Thread 2 (blocked reading)
+Client C → Thread 3 (blocked reading)
+...
+Client 10000 → Thread 10000 (10K threads = ~10GB RAM!)
 
-  Each thread ≈ 1MB stack → 10K connections = 10GB just for stacks.
-  Most threads are WAITING. Massive waste.
+Each thread ≈ 1MB stack → 10K connections = 10GB just for stacks.
+Most threads are WAITING. Massive waste.
 ```
 
 ---
@@ -281,35 +280,23 @@ HttpResponse<String> postResponse = client.send(
 
 ## 5. Java I/O vs NIO vs NIO.2
 
+| | Java I/O (`java.io`) | Java NIO (`java.nio`) |
+| --- | --- | --- |
+| Model | Stream-oriented | Buffer-oriented |
+| Blocking | Always blocking | Blocking AND non-blocking |
+| Multiplexing | No (1 thread per connection) | Yes (`Selector`: 1 thread, many connections) |
+| Unit | byte or char | `Buffer` (a chunk of bytes) |
+| Direction | One-way (Input OR Output) | Bidirectional (`Channel`) |
+| When to use | Simple file I/O, small apps | Network servers, high concurrency, large files |
+
+**NIO key components**
+
+```mermaid
+flowchart TD
+  BUF["Buffer: data container (read/write bytes)"] <--> CH["Channel: bidirectional pipe to an I/O resource"] <--> SEL["Selector: monitors multiple channels (multiplexing)"]
 ```
-  ┌──────────────┬──────────────────┬──────────────────────────────┐
-  │              │ Java I/O (java.io)│ Java NIO (java.nio)         │
-  ├──────────────┼──────────────────┼──────────────────────────────┤
-  │ Model        │ Stream-oriented  │ Buffer-oriented              │
-  │ Blocking     │ Always blocking  │ Blocking AND non-blocking    │
-  │ Multiplexing │ No (1 thread per │ Yes (Selector: 1 thread,     │
-  │              │ connection)      │ many connections)            │
-  │ Unit         │ byte or char     │ Buffer (chunk of bytes)      │
-  │ Direction    │ One-way (Input   │ Bidirectional (Channel)      │
-  │              │ OR Output)       │                              │
-  │ When to use  │ Simple file I/O, │ Network servers, high        │
-  │              │ small apps       │ concurrency, large files     │
-  └──────────────┴──────────────────┴──────────────────────────────┘
 
-
-  NIO KEY COMPONENTS:
-  ═══════════════════
-
-  ┌──────────────────────────────────────────────────────────┐
-  │                                                          │
-  │   BUFFER ← data container (read/write bytes)            │
-  │     ↕                                                    │
-  │   CHANNEL ← bidirectional pipe to I/O resource           │
-  │     ↕                                                    │
-  │   SELECTOR ← monitors multiple channels (multiplexing)  │
-  │                                                          │
-  └──────────────────────────────────────────────────────────┘
-```
+**How to read this diagram.** Data moves between buffers and channels, and one selector watches many channels at once.
 
 ---
 
@@ -343,29 +330,28 @@ buffer.clear();
 // position = 0, limit = capacity
 ```
 
-```
-  BUFFER STATE DIAGRAM:
-  ═════════════════════
+**Buffer state diagram**
 
-  After allocate(10):
-  [_][_][_][_][_][_][_][_][_][_]
-   ↑ position=0                  ↑ limit=capacity=10
+```text
+After allocate(10):
+[_][_][_][_][_][_][_][_][_][_]
+ ↑ position=0                  ↑ limit=capacity=10
 
-  After put("Hi"):
-  [H][i][_][_][_][_][_][_][_][_]
-         ↑ position=2             ↑ limit=10
+After put("Hi"):
+[H][i][_][_][_][_][_][_][_][_]
+       ↑ position=2             ↑ limit=10
 
-  After flip():
-  [H][i][_][_][_][_][_][_][_][_]
-   ↑ position=0  ↑ limit=2
+After flip():
+[H][i][_][_][_][_][_][_][_][_]
+ ↑ position=0  ↑ limit=2
 
-  Now you can READ: get() returns 'H', 'i'
+Now you can READ: get() returns 'H', 'i'
 
-  After clear():
-  [_][_][_][_][_][_][_][_][_][_]
-   ↑ position=0                  ↑ limit=10
+After clear():
+[_][_][_][_][_][_][_][_][_][_]
+ ↑ position=0                  ↑ limit=10
 
-  RULE: write → flip → read → clear → write → ...
+RULE: write → flip → read → clear → write → ...
 ```
 
 ```java
@@ -448,41 +434,32 @@ try (FileChannel channel = FileChannel.open(
 
 ## 8. Selectors — Multiplexed Non-Blocking I/O
 
-```
-  THE KEY INSIGHT:
-  ════════════════
+THE KEY INSIGHT:
 
-  Without Selector:  1 thread per connection (10K threads for 10K connections)
-  With Selector:     1 thread handles ALL connections
+Without Selector:  1 thread per connection (10K threads for 10K connections)
+With Selector:     1 thread handles ALL connections
 
+HOW IT WORKS:
 
-  HOW IT WORKS:
-  ═════════════
+### Selector
 
-  ┌────────────────────────────────────────────┐
-  │              SELECTOR                       │
-  │                                            │
-  │  Monitors multiple channels:               │
-  │                                            │
-  │  Channel A ──→ Ready to READ?   → Yes ✓   │
-  │  Channel B ──→ Ready to READ?   → No       │
-  │  Channel C ──→ Ready to WRITE?  → Yes ✓   │
-  │  Channel D ──→ Ready to ACCEPT? → No       │
-  │                                            │
-  │  selector.select() returns: {A, C}        │
-  │  → Process ONLY ready channels             │
-  │  → Never blocks on unready channels        │
-  └────────────────────────────────────────────┘
+Monitors multiple channels:
 
+Channel A ──→ Ready to READ?   → Yes ✓  
+Channel B ──→ Ready to READ?   → No  
+Channel C ──→ Ready to WRITE?  → Yes ✓  
+Channel D ──→ Ready to ACCEPT? → No
 
-  SELECTABLE OPERATIONS:
-  ═════════════════════
+selector.select() returns: {A, C}  
+→ Process ONLY ready channels  
+→ Never blocks on unready channels
 
-  SelectionKey.OP_ACCEPT  → ServerSocketChannel ready to accept
-  SelectionKey.OP_CONNECT → SocketChannel finished connecting
-  SelectionKey.OP_READ    → Channel has data to read
-  SelectionKey.OP_WRITE   → Channel ready to write
-```
+SELECTABLE OPERATIONS:
+
+SelectionKey.OP_ACCEPT  → ServerSocketChannel ready to accept
+SelectionKey.OP_CONNECT → SocketChannel finished connecting
+SelectionKey.OP_READ    → Channel has data to read
+SelectionKey.OP_WRITE   → Channel ready to write
 
 ---
 
@@ -626,20 +603,19 @@ HttpClient client = HttpClient.newBuilder()
     .build();
 ```
 
-```
-  JVM TRUSTSTORE:
-  ═══════════════
+**Jvm truststore**
 
-  Location: $JAVA_HOME/lib/security/cacerts
-  Default password: "changeit"
-  Contains: Root CA certificates (DigiCert, Let's Encrypt, etc.)
+```text
+Location: $JAVA_HOME/lib/security/cacerts
+Default password: "changeit"
+Contains: Root CA certificates (DigiCert, Let's Encrypt, etc.)
 
-  Add a certificate:
-  keytool -importcert -file cert.pem -alias myservice \
-          -keystore $JAVA_HOME/lib/security/cacerts
+Add a certificate:
+keytool -importcert -file cert.pem -alias myservice \
+        -keystore $JAVA_HOME/lib/security/cacerts
 
-  List certificates:
-  keytool -list -keystore $JAVA_HOME/lib/security/cacerts
+List certificates:
+keytool -list -keystore $JAVA_HOME/lib/security/cacerts
 ```
 
 ---
@@ -661,63 +637,55 @@ Thread-per-connection vs Multiplexing. Traditional IO `InputStream.read()` block
 
 ## 11. Real-World: How Frameworks Use NIO
 
-```
-  SPRING BOOT (TOMCAT NIO):
-  ═════════════════════════
+**Spring boot (tomcat nio)**
 
-  Tomcat's NIO connector:
-  • 1 Acceptor thread → accepts connections
-  • 1 Poller thread → NIO Selector monitors all connections
-  • Worker thread pool (default 200) → processes ready requests
+```text
+Tomcat's NIO connector:
+• 1 Acceptor thread → accepts connections
+• 1 Poller thread → NIO Selector monitors all connections
+• Worker thread pool (default 200) → processes ready requests
 
-  HTTP request lifecycle:
-  1. Client connects → Acceptor accepts → registers with Poller
-  2. Client sends data → Poller detects → submits to worker pool
-  3. Worker thread runs your @RequestMapping handler
-  4. Response sent → worker returns to pool
-
-
-  NETTY (foundation of Spring WebFlux, gRPC):
-  ═════════════════════════════════════════════
-
-  • Boss Group (1 thread) → accepts connections
-  • Worker Group (N threads, usually CPU cores) → handles I/O
-  • Each worker thread has its own Selector
-  • Channel pipeline: chain of handlers (decode → business logic → encode)
-
-
-  SPRING WEBFLUX (reactive, non-blocking):
-  ════════════════════════════════════════
-
-  Built on Netty. Fully non-blocking.
-  Uses Project Reactor (Mono/Flux) for async composition.
-  Can handle 100K+ connections with very few threads.
-
-  @GetMapping("/users/{id}")
-  public Mono<User> getUser(@PathVariable String id) {
-      return userRepository.findById(id);  // Non-blocking DB call
-  }
+HTTP request lifecycle:
+1. Client connects → Acceptor accepts → registers with Poller
+2. Client sends data → Poller detects → submits to worker pool
+3. Worker thread runs your @RequestMapping handler
+4. Response sent → worker returns to pool
 ```
 
+**NETTY (foundation of Spring WebFlux, gRPC)**
+
+```text
+• Boss Group (1 thread) → accepts connections
+• Worker Group (N threads, usually CPU cores) → handles I/O
+• Each worker thread has its own Selector
+• Channel pipeline: chain of handlers (decode → business logic → encode)
 ```
-  ╔══════════════════════════════════════════════════════════════╗
-  ║  I/O MODEL COMPARISON:                                      ║
-  ║                                                              ║
-  ║  ┌────────────────┬──────────┬───────────┬────────────────┐ ║
-  ║  │ Model          │ Threads  │ Connections│ Framework      │ ║
-  ║  ├────────────────┼──────────┼───────────┼────────────────┤ ║
-  ║  │ Blocking I/O   │ 1:1      │ ~200      │ Old Tomcat BIO │ ║
-  ║  │ Thread pool    │ Pool:N   │ ~200      │ Tomcat BIO pool│ ║
-  ║  │ NIO            │ Few      │ 10K+      │ Tomcat NIO     │ ║
-  ║  │ Netty          │ Few      │ 100K+     │ WebFlux, gRPC  │ ║
-  ║  │ Virtual threads│ 1M:N     │ 1M+       │ Java 21 Loom   │ ║
-  ║  └────────────────┴──────────┴───────────┴────────────────┘ ║
-  ║                                                              ║
-  ║  Java 21 Virtual Threads (Project Loom):                     ║
-  ║  Write blocking code, JVM makes it non-blocking.             ║
-  ║  Best of both worlds — simple code + massive concurrency.    ║
-  ╚══════════════════════════════════════════════════════════════╝
+
+**SPRING WEBFLUX (reactive, non-blocking)**
+
+```text
+Built on Netty. Fully non-blocking.
+Uses Project Reactor (Mono/Flux) for async composition.
+Can handle 100K+ connections with very few threads.
+
+@GetMapping("/users/{id}")
+public Mono<User> getUser(@PathVariable String id) {
+    return userRepository.findById(id);  // Non-blocking DB call
+}
 ```
+
+**I/O MODEL COMPARISON:**
+
+| Model | Threads | Connections | Framework |
+| --- | --- | --- | --- |
+| Blocking I/O | 1:1 | ~200 | Old Tomcat BIO |
+| Thread pool | Pool:N | ~200 | Tomcat BIO pool |
+| NIO | Few | 10K+ | Tomcat NIO |
+| Netty | Few | 100K+ | WebFlux, gRPC |
+| Virtual threads | 1M:N | 1M+ | Java 21 Loom |
+
+> [!TIP]
+> **Java 21 virtual threads (Project Loom):** write blocking code and the JVM makes it non-blocking. Best of both worlds: simple code plus massive concurrency.
 
 ---
 

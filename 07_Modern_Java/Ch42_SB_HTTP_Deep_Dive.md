@@ -9,44 +9,42 @@ _"Every API call is a journey through layers of protocols"_
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
+**WHY: Why Understand HTTP Deeply?**
+
+```text
+• Debug network issues: "Why is my API slow?" - headers, connections
+• API design: Right status codes, headers make intuitive APIs
+• Security: CORS, cookies, authentication headers
+• Performance: Caching, compression, keep-alive connections
+• Interview: Network questions are common in backend interviews
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Why Understand HTTP Deeply?                                               │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Debug network issues: "Why is my API slow?" - headers, connections           │
-│  • API design: Right status codes, headers make intuitive APIs                  │
-│  • Security: CORS, cookies, authentication headers                              │
-│  • Performance: Caching, compression, keep-alive connections                    │
-│  • Interview: Network questions are common in backend interviews                │
-└─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How HTTP Request/Response Cycle Works?                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • DNS lookup: Domain → IP address resolution                                   │
-│  • TCP handshake: Establish connection (3-way handshake)                        │
-│  • TLS negotiation: HTTPS encryption setup                                      │
-│  • Request: Method + URL + Headers + Body                                       │
-│  • Response: Status + Headers + Body                                            │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**HOW: How HTTP Request/Response Cycle Works?**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN: When to Use Each HTTP Method?                                            │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • GET: Retrieve data (safe, idempotent, cacheable)                             │
-│  • POST: Create new resource (not idempotent)                                   │
-│  • PUT: Replace entire resource (idempotent)                                    │
-│  • PATCH: Partial update (not always idempotent)                                │
-│  • DELETE: Remove resource (idempotent)                                         │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+• DNS lookup: Domain → IP address resolution
+• TCP handshake: Establish connection (3-way handshake)
+• TLS negotiation: HTTPS encryption setup
+• Request: Method + URL + Headers + Body
+• Response: Status + Headers + Body
+```
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHICH: Which HTTP Concepts to Master?                                          │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Status codes, methods, headers, request/response structure      │
-│  IMPORTANT:     CORS, cookies, caching headers, content types                   │
-│  ADVANCED:      HTTP/2, WebSocket, long polling, streaming                      │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHEN: When to Use Each HTTP Method?**
+
+```text
+• GET: Retrieve data (safe, idempotent, cacheable)
+• POST: Create new resource (not idempotent)
+• PUT: Replace entire resource (idempotent)
+• PATCH: Partial update (not always idempotent)
+• DELETE: Remove resource (idempotent)
+```
+
+**WHICH: Which HTTP Concepts to Master?**
+
+```text
+ESSENTIAL:     Status codes, methods, headers, request/response structure
+IMPORTANT:     CORS, cookies, caching headers, content types
+ADVANCED:      HTTP/2, WebSocket, long polling, streaming
 ```
 
 ---
@@ -57,103 +55,77 @@ _"Every API call is a journey through layers of protocols"_
 
 ## Chapter 1: What Happens When You Hit an API?
 
+**The complete journey of an HTTP request**
+
+You type: `http://api.myapp.com/users/123?include=orders`
+
+**Step 1: DNS resolution.** The browser asks, "What's the IP of `api.myapp.com`?"
+
+1. Check the browser cache.
+2. Check the OS cache (`/etc/hosts`, DNS cache).
+3. Query the DNS resolver (the ISP's DNS).
+4. The resolver queries: root → TLD (`.com`) → authoritative DNS.
+5. It returns `52.34.198.76`.
+
+```mermaid
+flowchart LR
+  B["Browser"] --> ISP["ISP DNS (resolver)"] --> R["Root DNS"] --> T[".com TLD"] --> A["Authoritative DNS for myapp<br/>→ 52.34.198.76"]
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              THE COMPLETE JOURNEY OF AN HTTP REQUEST                            │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  YOU TYPE: http://api.myapp.com/users/123?include=orders                        │
-│                                                                                 │
-│  STEP 1: DNS RESOLUTION                                                         │
-│  ══════════════════════                                                         │
-│                                                                                 │
-│   Browser → "What's the IP of api.myapp.com?"                                   │
-│                                                                                 │
-│   1. Check browser cache                                                        │
-│   2. Check OS cache (/etc/hosts, DNS cache)                                     │
-│   3. Query DNS resolver (ISP's DNS)                                             │
-│   4. Resolver queries: Root → TLD (.com) → Authoritative DNS                    │
-│   5. Returns: 52.34.198.76                                                      │
-│                                                                                 │
-│   ┌─────────┐    ┌─────────┐    ┌──────────┐    ┌─────────────┐                 │
-│   │ Browser ├────► ISP DNS ├────► Root DNS ├────► .com TLD    │                 │
-│   └─────────┘    └─────────┘    └──────────┘    └──────┬──────┘                 │
-│                                                         │                       │
-│                                                         ▼                       │
-│                                              ┌─────────────────┐                │
-│                                              │ Authoritative   │                │
-│                                              │ DNS for myapp   │                │
-│                                              │ → 52.34.198.76  │                │
-│                                              └─────────────────┘                │
-│                                                                                 │
-│  STEP 2: TCP CONNECTION (Three-Way Handshake)                                   │
-│  ═════════════════════════════════════════════                                  │
-│                                                                                 │
-│   ┌─────────┐                              ┌─────────┐                          │
-│   │ Client  │                              │ Server  │                          │
-│   └────┬────┘                              └────┬────┘                          │
-│        │                                        │                               │
-│        │  ──── SYN (seq=100) ─────────────────► │   1. Client sends SYN         │
-│        │                                        │                               │
-│        │  ◄─── SYN-ACK (seq=300, ack=101) ──── │   2. Server responds           │
-│        │                                        │                               │
-│        │  ──── ACK (ack=301) ─────────────────► │   3. Connection established   │
-│        │                                        │                               │
-│   Connection now ESTABLISHED                                                    │
-│                                                                                 │
-│  STEP 3: TLS HANDSHAKE (for HTTPS)                                              │
-│  ══════════════════════════════════                                             │
-│                                                                                 │
-│   Client                                   Server                               │
-│     │                                        │                                  │
-│     │─── ClientHello (TLS versions, ─────────► │                                │
-│     │          cipher suites)                │                                  │
-│     │                                        │                                  │
-│     │ ◄── ServerHello + Certificate ─────────│                                  │
-│     │                                        │                                  │
-│     │─── Verify cert, Generate session ─────►│                                  │
-│     │         key, send encrypted            │                                  │
-│     │                                        │                                  │
-│     │ ◄── Acknowledge encrypted ─────────────│                                  │
-│     │           connection                   │                                  │
-│                                                                                 │
-│  STEP 4: HTTP REQUEST SENT                                                      │
-│  ══════════════════════════                                                     │
-│                                                                                 │
-│  GET /users/123?include=orders HTTP/1.1                                         │
-│  Host: api.myapp.com                                                            │
-│  User-Agent: Mozilla/5.0                                                        │
-│  Accept: application/json                                                       │
-│  Authorization: Bearer eyJhbGciOiJIUzI1...                                      │
-│  Connection: keep-alive                                                         │
-│                                                                                 │
-│  STEP 5: SERVER PROCESSES (Spring Boot)                                         │
-│  ═══════════════════════════════════════                                        │
-│                                                                                 │
-│  Tomcat → Filters → Security FilterChainProxy → DispatcherServlet              │
-│  → HandlerMapping → Interceptor.preHandle() → Controller → Service → DB        │
-│  → Interceptor.postHandle() → Interceptor.afterCompletion()                    │
-│  → Filters (reverse) → Tomcat writes response                                  │
-│                                                                                 │
-│  (Full 14-step breakdown with code examples: see Ch55 Section 12A-12H)         │
-│                                                                                 │
-│  STEP 6: HTTP RESPONSE RETURNED                                                 │
-│  ══════════════════════════════                                                 │
-│                                                                                 │
-│  HTTP/1.1 200 OK                                                                │
-│  Content-Type: application/json                                                 │
-│  Content-Length: 256                                                            │
-│                                                                                 │
-│  {"id": 123, "name": "John", "orders": [...]}                                   │
-│                                                                                 │
-│  STEP 7: TCP CONNECTION CLOSE (or kept alive)                                   │
-│  ═════════════════════════════════════════════                                  │
-│                                                                                 │
-│  With HTTP/1.1 Keep-Alive, connection stays open for reuse                      │
-│  Without it: FIN → FIN-ACK → FIN → FIN-ACK (4-way handshake)                    │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+**How to read this diagram.** The resolver walks down the DNS hierarchy until it reaches the server that knows the answer.
+
+**Step 2: TCP connection (three-way handshake)**
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant S as Server
+  C->>S: SYN (seq=100)
+  S-->>C: SYN-ACK (seq=300, ack=101)
+  C->>S: ACK (ack=301)
+  Note over C,S: Connection ESTABLISHED
 ```
+
+**How to read this diagram.** The client sends SYN, the server answers SYN-ACK, and the client confirms with ACK. Then the connection is established.
+
+**Step 3: TLS handshake (for HTTPS)**
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant S as Server
+  C->>S: ClientHello (TLS versions, cipher suites)
+  S-->>C: ServerHello + Certificate
+  C->>S: Verify the certificate, generate a session key, send it encrypted
+  S-->>C: Acknowledge: encrypted connection ready
+```
+
+**How to read this diagram.** This is a simplified view. The two sides agree on a TLS version and cipher suite, the client verifies the server's certificate, and both end up with a shared session key.
+
+**Step 4: the HTTP request is sent**
+
+```http
+GET /users/123?include=orders HTTP/1.1
+Host: api.myapp.com
+User-Agent: Mozilla/5.0
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1...
+Connection: keep-alive
+```
+
+**Step 5: the server processes it (Spring Boot).** Tomcat → filters → Security `FilterChainProxy` → `DispatcherServlet` → `HandlerMapping` → `Interceptor.preHandle()` → controller → service → DB → `Interceptor.postHandle()` → `Interceptor.afterCompletion()` → filters (in reverse) → Tomcat writes the response. (Full 14-step breakdown with code examples: see Ch55, Sections 12A-12H.)
+
+**Step 6: the HTTP response is returned**
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 256
+
+{"id": 123, "name": "John", "orders": [...]}
+```
+
+**Step 7: TCP connection close (or kept alive).** With HTTP/1.1 keep-alive, the connection stays open for reuse. Without it, the connection closes with a four-step exchange: FIN, ACK, FIN, ACK.
 
 ---
 
@@ -171,49 +143,71 @@ _"Every API call is a journey through layers of protocols"_
 
 ## Anatomy Of An Http Request
 
-REQUEST LINE
+**Request line**
+
+```http
 POST /api/v1/users/123/orders HTTP/1.1
-───┬── ─────────┬───────────── ────┬───
-| | | | |
-METHOD URL VERSION
-HEADERS
-Host: api.myapp.com │ ← Required in HTTP/1.1
-Content-Type: application/json │ ← What format body is in
-Content-Length: 89 │ ← Body size in bytes
-Accept: application/json │ ← What format you want back
-Authorization: Bearer eyJhbGc... │ ← Authentication token
-User-Agent: PostmanRuntime/7.29.0 │ ← Client info
-Cache-Control: no-cache │ ← Caching behavior
-X-Request-ID: abc-123-def │ ← Custom header
-BLANK LINE
-(separates headers from body)
-BODY (optional)
+```
+
+| Part | Value |
+| --- | --- |
+| Method | `POST` |
+| URL (path) | `/api/v1/users/123/orders` |
+| Version | `HTTP/1.1` |
+
+**Headers**
+
+```http
+Host: api.myapp.com
+Content-Type: application/json
+Content-Length: 89
+Accept: application/json
+Authorization: Bearer eyJhbGc...
+User-Agent: PostmanRuntime/7.29.0
+Cache-Control: no-cache
+X-Request-ID: abc-123-def
+```
+
+| Header | Purpose |
+| --- | --- |
+| `Host` | Required in HTTP/1.1 |
+| `Content-Type` | What format the body is in |
+| `Content-Length` | Body size in bytes |
+| `Accept` | What format you want back |
+| `Authorization` | Authentication token |
+| `User-Agent` | Client info |
+| `Cache-Control` | Caching behavior |
+| `X-Request-ID` | Custom header |
+
+A **blank line** separates the headers from the body.
+
+**Body (optional)**
+
+```json
 {
-"productId": 456,
-"quantity": 2
+  "productId": 456,
+  "quantity": 2
 }
-═══════════════════════════════════════════════════════════════════════════
+```
 
-**Headers Detailed**:
+**Headers in detail**
 
-**General Headers**:
-Cache-Control │ no-cache, no-store, max-age=3600
-Connection │ keep-alive, close
-Date │ Wed, 12 Feb 2026 10:30:00 GMT
-
-**Request Headers**:
-Accept │ application/json, text/html, _/_
-Accept-Encoding │ gzip, deflate, br
-Accept-Language │ en-US,en;q=0.9
-Authorization │ Bearer token, Basic base64creds
-Host │ api.myapp.com (required!)
-User-Agent │ Browser/App identifier
-Cookie │ session=abc123
-Referer │ Previous page URL
-ENTITY HEADERS (about the body):
-Content-Type │ application/json, multipart/form-data
-Content-Length │ Size in bytes
-Content-Encoding │ gzip
+| Group | Header | Example values |
+| --- | --- | --- |
+| General | `Cache-Control` | `no-cache`, `no-store`, `max-age=3600` |
+| General | `Connection` | `keep-alive`, `close` |
+| General | `Date` | `Wed, 12 Feb 2026 10:30:00 GMT` |
+| Request | `Accept` | `application/json`, `text/html`, `*/*` |
+| Request | `Accept-Encoding` | `gzip, deflate, br` |
+| Request | `Accept-Language` | `en-US,en;q=0.9` |
+| Request | `Authorization` | `Bearer token`, `Basic base64creds` |
+| Request | `Host` | `api.myapp.com` (required!) |
+| Request | `User-Agent` | Browser/app identifier |
+| Request | `Cookie` | `session=abc123` |
+| Request | `Referer` | Previous page URL |
+| Entity (about the body) | `Content-Type` | `application/json`, `multipart/form-data` |
+| Entity (about the body) | `Content-Length` | Size in bytes |
+| Entity (about the body) | `Content-Encoding` | `gzip` |
 
 ---
 
@@ -241,52 +235,65 @@ Content-Encoding │ gzip
 
 ## Anatomy Of An Http Response
 
-STATUS LINE
+**Status line**
+
+```http
 HTTP/1.1 201 Created
-────┬─── ─┬─ ───┬───
-| | | | |
-VERSION CODE PHRASE
-RESPONSE HEADERS
+```
+
+| Part | Value |
+| --- | --- |
+| Version | `HTTP/1.1` |
+| Code | `201` |
+| Phrase | `Created` |
+
+**Response headers**
+
+```http
 Content-Type: application/json
 Content-Length: 89
-Location: /api/v1/orders/789 │ ← For 201, where created
+Location: /api/v1/orders/789
 Cache-Control: max-age=3600
-X-RateLimit-Remaining: 99 │ ← Custom response header
+X-RateLimit-Remaining: 99
 Set-Cookie: session=xyz; HttpOnly
-RESPONSE BODY
-{
-"id": 789,
-"status": "pending"
-}
-═══════════════════════════════════════════════════════════════════════════
+```
 
-**Status Codes Reference**:
-1xx INFORMATIONAL:
-100 Continue │ Keep sending the request
-101 Switching │ Changing protocols (WebSocket upgrade)
-2xx SUCCESS:
-200 OK │ Standard success
-201 Created │ Resource created (POST)
-202 Accepted │ Request accepted, processing async
-204 No Content │ Success but no body (DELETE)
-3xx REDIRECTION:
-301 Moved Permanent │ URL changed permanently
-302 Found │ Temporary redirect
-304 Not Modified │ Cached version is still valid
-4xx CLIENT ERROR:
-400 Bad Request │ Invalid syntax/data
-401 Unauthorized │ Not authenticated
-403 Forbidden │ Authenticated but not authorized
-404 Not Found │ Resource doesn't exist
-405 Method Not │ Wrong HTTP method
-409 Conflict │ State conflict (duplicate, etc.)
-422 Unprocessable │ Valid syntax, invalid semantics
-429 Too Many Reqs │ Rate limit exceeded
-5xx SERVER ERROR:
-500 Internal Error │ Generic server error
-502 Bad Gateway │ Upstream server error
-503 Service Unavail │ Server temporarily unavailable
-504 Gateway Timeout │ Upstream server timeout
+`Location` tells the client where a 201 resource was created, and `X-RateLimit-Remaining` is a custom response header.
+
+**Response body**
+
+```json
+{
+  "id": 789,
+  "status": "pending"
+}
+```
+
+**Status codes reference**
+
+| Class | Code | Meaning |
+| --- | --- | --- |
+| 1xx informational | 100 Continue | Keep sending the request |
+| | 101 Switching Protocols | Changing protocols (WebSocket upgrade) |
+| 2xx success | 200 OK | Standard success |
+| | 201 Created | Resource created (POST) |
+| | 202 Accepted | Request accepted, processing asynchronously |
+| | 204 No Content | Success but no body (DELETE) |
+| 3xx redirection | 301 Moved Permanently | URL changed permanently |
+| | 302 Found | Temporary redirect |
+| | 304 Not Modified | The cached version is still valid |
+| 4xx client error | 400 Bad Request | Invalid syntax or data |
+| | 401 Unauthorized | Not authenticated |
+| | 403 Forbidden | Authenticated but not authorized |
+| | 404 Not Found | Resource doesn't exist |
+| | 405 Method Not Allowed | Wrong HTTP method |
+| | 409 Conflict | State conflict (duplicate, and so on) |
+| | 422 Unprocessable Content | Valid syntax, invalid semantics |
+| | 429 Too Many Requests | Rate limit exceeded |
+| 5xx server error | 500 Internal Server Error | Generic server error |
+| | 502 Bad Gateway | Upstream server error |
+| | 503 Service Unavailable | Server temporarily unavailable |
+| | 504 Gateway Timeout | Upstream server timeout |
 
 ---
 
@@ -306,52 +313,38 @@ RESPONSE BODY
 
 ## Chapter 4: Understanding URL Structure
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                         URL STRUCTURE BREAKDOWN                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  https://api.myapp.com:8080/api/v1/users/123/orders?status=pending&limit=10     │
-│  ──┬──  ───────┬──────  ─┬─ ──────────┬──────────── ───────────┬────────────    │
-│    │           │         │            │                        │                │
-│  SCHEME      HOST      PORT         PATH              QUERY STRING              │
-│                                                                                 │
-│  BREAKING DOWN THE PATH:                                                        │
-│  ══════════════════════                                                         │
-│                                                                                 │
-│  /api/v1/users/123/orders                                                       │
-│   ─┬─ ─┬─ ──┬─ ─┬─ ──┬──                                                        │
-│    │   │    │   │    │                                                          │
-│    │   │    │   │    └── Resource: orders                                       │
-│    │   │    │   │                                                               │
-│    │   │    │   └─────── PATH VARIABLE: 123 (user ID)                           │
-│    │   │    │                                                                   │
-│    │   │    └─────────── Resource: users                                        │
-│    │   │                                                                        │
-│    │   └──────────────── Version: v1                                            │
-│    │                                                                            │
-│    └──────────────────── Base path                                              │
-│                                                                                 │
-│  BREAKING DOWN QUERY STRING:                                                    │
-│  ════════════════════════════                                                   │
-│                                                                                 │
-│  ?status=pending&limit=10                                                       │
-│  ─ ────┬─ ───┬── ─ ──┬─ ─┬                                                      │
-│  │     │     │   │   │   │                                                      │
-│  │     │     │   │   │   └── Value                                              │
-│  │     │     │   │   │                                                          │
-│  │     │     │   │   └────── Key                                                │
-│  │     │     │   │                                                              │
-│  │     │     │   └────────── Parameter separator                                │
-│  │     │     │                                                                  │
-│  │     │     └────────────── Value                                              │
-│  │     │                                                                        │
-│  │     └──────────────────── Key                                                │
-│  │                                                                              │
-│  └────────────────────────── Query start marker                                 │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+**URL structure breakdown**
+
+`https://api.myapp.com:8080/api/v1/users/123/orders?status=pending&limit=10`
+
+| Part | Value |
+| --- | --- |
+| Scheme | `https` |
+| Host | `api.myapp.com` |
+| Port | `8080` |
+| Path | `/api/v1/users/123/orders` |
+| Query string | `?status=pending&limit=10` |
+
+**Breaking down the path** `/api/v1/users/123/orders`
+
+| Segment | Meaning |
+| --- | --- |
+| `/api` | Base path |
+| `/v1` | Version: v1 |
+| `/users` | Resource: users |
+| `/123` | PATH VARIABLE: 123 (the user ID) |
+| `/orders` | Resource: orders |
+
+**Breaking down the query string** `?status=pending&limit=10`
+
+| Piece | Meaning |
+| --- | --- |
+| `?` | Query start marker |
+| `status` | Key |
+| `=pending` | Value |
+| `&` | Parameter separator |
+| `limit` | Key |
+| `=10` | Value |
 
 ---
 
@@ -726,74 +719,39 @@ public class RequestParamExamplesController {
 
 ## Chapter 7: @PathVariable vs @RequestParam - When to Use
 
+**@PathVariable vs @RequestParam decision guide**
+
+| | `@PathVariable` | `@RequestParam` |
+| --- | --- | --- |
+| **Example URLs** | `/users/123`, `/orders/abc-def-123`, `/products/electronics/laptops` | `/users?name=John`, `/orders?status=pending`, `/products?page=2&size=10` |
+| **Role** | IDENTIFIES a resource | FILTERS or MODIFIES the request |
+| **Required?** | Required (part of the URL) | Usually optional |
+| **Question it answers** | "WHICH specific thing?" | "HOW do you want it?" |
+| **Use it for** | Resource IDs<br>Unique identifiers (UUID, slug)<br>Nested resources<br>Required path segments<br>Hierarchical data | Search/filter criteria<br>Pagination (page, size)<br>Sorting (sortBy, sortDir)<br>Optional filters<br>Boolean flags<br>Multiple values (arrays) |
+
+**Combined usage (common pattern):** `GET /api/v1/users/123/orders?status=pending&page=0&size=10`
+
+| Part | Annotation |
+| --- | --- |
+| `userId` (123) | `@PathVariable` |
+| `status`, `page`, `size` | `@RequestParam` |
+
+```java
+@GetMapping("/users/{userId}/orders")
+public Page<OrderResponse> getUserOrders(
+    @PathVariable Long userId,                       // REQUIRED - which user?
+    @RequestParam(required = false) OrderStatus status, // OPTIONAL - filter
+    @RequestParam(defaultValue = "0") int page,      // OPTIONAL - pagination
+    @RequestParam(defaultValue = "20") int size);    // OPTIONAL - pagination
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│               @PathVariable vs @RequestParam DECISION GUIDE                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ┌─────────────────────────────────────┬─────────────────────────────────────┐  │
-│  │         @PathVariable               │         @RequestParam               │  │
-│  ├─────────────────────────────────────┼─────────────────────────────────────┤  │
-│  │                                     │                                     │  │
-│  │  /users/123                         │  /users?name=John                   │  │
-│  │  /orders/abc-def-123                │  /orders?status=pending             │  │
-│  │  /products/electronics/laptops      │  /products?page=2&size=10           │  │
-│  │                                     │                                     │  │
-│  ├─────────────────────────────────────┼─────────────────────────────────────┤  │
-│  │  IDENTIFIES a resource              │  FILTERS or MODIFIES the request   │   │
-│  │                                     │                                     │  │
-│  │  Required (part of URL)             │  Usually optional                   │  │
-│  │                                     │                                     │  │
-│  │  "WHICH specific thing?"            │  "HOW do you want it?"              │  │
-│  │                                     │                                     │  │
-│  └─────────────────────────────────────┴─────────────────────────────────────┘  │
-│                                                                                 │
-│  ═══════════════════════════════════════════════════════════════════════════    │
-│                                                                                 │
-│  USE @PathVariable FOR:                 │  USE @RequestParam FOR:               │
-│  ───────────────────────                │  ────────────────────────             │
-│                                         │                                       │
-│  • Resource IDs                         │  • Search/filter criteria             │
-│  • Unique identifiers (UUID, slug)      │  • Pagination (page, size)            │
-│  • Nested resources                     │  • Sorting (sortBy, sortDir)          │
-│  • Required path segments               │  • Optional filters                   │
-│  • Hierarchical data                    │  • Boolean flags                      │
-│                                         │  • Multiple values (arrays)           │
-│                                                                                 │
-│  ═══════════════════════════════════════════════════════════════════════════    │
-│                                                                                 │
-│  COMBINED USAGE (Common Pattern):                                               │
-│  ════════════════════════════════                                               │
-│                                                                                 │
-│  GET /api/v1/users/123/orders?status=pending&page=0&size=10                     │
-│               ─┬─       ─┬─     ───┬───       ──┬──   ──┬──                     │
-│                │         │         │            │       │                       │
-│         @PathVariable   @PathVariable   @RequestParam @RequestParam             │
-│            userId        orderId         status       page/size                 │
-│                                                                                 │
-│  @GetMapping("/users/{userId}/orders")                                          │
-│  public Page<OrderResponse> getUserOrders(                                      │
-│      @PathVariable Long userId,                    // REQUIRED - which user?    │
-│      @RequestParam(required=false) OrderStatus status,  // OPTIONAL - filter    │
-│      @RequestParam(defaultValue="0") int page,    // OPTIONAL - pagination      │
-│      @RequestParam(defaultValue="20") int size);                                │
-│                                                                                 │
-│  ═══════════════════════════════════════════════════════════════════════════    │
-│                                                                                 │
-│  ANTI-PATTERNS (DON'T DO):                                                      │
-│  ══════════════════════════                                                     │
-│                                                                                 │
-│  ❌ /users?id=123              →  ✅ /users/123                                   │
-│     (Use path for IDs)                                                          │
-│                                                                                 │
-│  ❌ /search/John/Seattle       →  ✅ /search?name=John&city=Seattle               │
-│     (Use params for filters)                                                    │
-│                                                                                 │
-│  ❌ /users/123/active/true     →  ✅ /users/123?active=true                       │
-│     (Use param for state)                                                       │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**Anti-patterns (don't do these)**
+
+| ❌ Don't | ✅ Do | Rule |
+| --- | --- | --- |
+| `/users?id=123` | `/users/123` | Use the path for IDs |
+| `/search/John/Seattle` | `/search?name=John&city=Seattle` | Use params for filters |
+| `/users/123/active/true` | `/users/123?active=true` | Use a param for state |
 
 ---
 
@@ -803,179 +761,158 @@ public class RequestParamExamplesController {
 
 ## Chapter 8: Postman Complete Guide
 
+**Postman testing guide**
+
+#### 1. Create New Request
+
+In Postman, pick the method from the dropdown (`GET`), enter the URL, and click **Send**:
+
+`GET http://localhost:8080/api/v1/users/123?active=true`
+
+#### 2. Path Variables In Postman
+
+URL: http://localhost:8080/api/v1/users/:userId/orders/:orderId
+
+Go to "Params" tab:
+
+| Path variable | Value |
+| --- | --- |
+| `userId` | 123 |
+| `orderId` | 456 |
+
+Result: http://localhost:8080/api/v1/users/123/orders/456
+
+#### 3. Query Parameters In Postman
+
+Go to "Params" tab:
+
+| Query param | Value |
+| --- | --- |
+| `status` | PENDING |
+| `page` | 0 |
+| `size` | 20 |
+| `sort` | created,desc |
+
+Result: ?status=PENDING&page=0&size=20&sort=created,desc
+
+#### 4. Headers In Postman
+
+Go to "Headers" tab:
+
+| Key | Value |
+| --- | --- |
+| Content-Type | application/json |
+| Accept | application/json |
+| Authorization | Bearer eyJhbGciOiJIUzI1NiIsIn... |
+| X-Request-ID | abc-123-def |
+
+#### 5. Request Body (Post/Put)
+
+Go to "Body" tab → Select "raw" → Select "JSON"
+
+```json
+{
+  "email": "john@example.com",
+  "password": "SecretPass123",
+  "name": "John Doe"
+}
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    POSTMAN TESTING GUIDE                                        │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  1. CREATE NEW REQUEST                                                          │
-│  ═════════════════════                                                          │
-│                                                                                 │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │  [GET ▼] │ http://localhost:8080/api/v1/users/123?active=true      [Send] │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                 │
-│  2. PATH VARIABLES IN POSTMAN                                                   │
-│  ════════════════════════════                                                   │
-│                                                                                 │
-│  URL: http://localhost:8080/api/v1/users/:userId/orders/:orderId                │
-│                                                                                 │
-│  Go to "Params" tab:                                                            │
-│  ┌────────────────┬─────────────┐                                               │
-│  │ Path Variables │             │                                               │
-│  ├────────────────┼─────────────┤                                               │
-│  │ userId         │ 123         │                                               │
-│  │ orderId        │ 456         │                                               │
-│  └────────────────┴─────────────┘                                               │
-│                                                                                 │
-│  Result: http://localhost:8080/api/v1/users/123/orders/456                      │
-│                                                                                 │
-│  3. QUERY PARAMETERS IN POSTMAN                                                 │
-│  ═══════════════════════════════                                                │
-│                                                                                 │
-│  Go to "Params" tab:                                                            │
-│  ┌─────────────────┬─────────────┐                                              │
-│  │ Query Params    │             │                                              │
-│  ├─────────────────┼─────────────┤                                              │
-│  │ status          │ PENDING     │                                              │
-│  │ page            │ 0           │                                              │
-│  │ size            │ 20          │                                              │
-│  │ sort            │ created,desc│                                              │
-│  └─────────────────┴─────────────┘                                              │
-│                                                                                 │
-│  Result: ?status=PENDING&page=0&size=20&sort=created,desc                       │
-│                                                                                 │
-│  4. HEADERS IN POSTMAN                                                          │
-│  ═════════════════════                                                          │
-│                                                                                 │
-│  Go to "Headers" tab:                                                           │
-│  ┌─────────────────────┬────────────────────────────────────┐                   │
-│  │ Key                 │ Value                              │                   │
-│  ├─────────────────────┼────────────────────────────────────┤                   │
-│  │ Content-Type        │ application/json                   │                   │
-│  │ Accept              │ application/json                   │                   │
-│  │ Authorization       │ Bearer eyJhbGciOiJIUzI1NiIsIn...   │                   │
-│  │ X-Request-ID        │ abc-123-def                        │                   │
-│  └─────────────────────┴────────────────────────────────────┘                   │
-│                                                                                 │
-│  5. REQUEST BODY (POST/PUT)                                                     │
-│  ══════════════════════════                                                     │
-│                                                                                 │
-│  Go to "Body" tab → Select "raw" → Select "JSON"                                │
-│                                                                                 │
-│  {                                                                              │
-│    "email": "john@example.com",                                                 │
-│    "password": "SecretPass123",                                                 │
-│    "name": "John Doe"                                                           │
-│  }                                                                              │
-│                                                                                 │
-│  6. FORM DATA (File Upload)                                                     │
-│  ══════════════════════════                                                     │
-│                                                                                 │
-│  Go to "Body" tab → Select "form-data"                                          │
-│  ┌─────────────────────┬────────────┬─────────────────┐                         │
-│  │ Key                 │ Type       │ Value           │                         │
-│  ├─────────────────────┼────────────┼─────────────────┤                         │
-│  │ file                │ File       │ [Select File]   │                         │
-│  │ description         │ Text       │ My document     │                         │
-│  └─────────────────────┴────────────┴─────────────────┘                         │
-│                                                                                 │
-│  7. AUTHORIZATION TAB                                                           │
-│  ═════════════════════                                                          │
-│                                                                                 │
-│  Type: Bearer Token                                                             │
-│  Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...                                 │
-│                                                                                 │
-│  OR                                                                             │
-│                                                                                 │
-│  Type: Basic Auth                                                               │
-│  Username: admin                                                                │
-│  Password: secret123                                                            │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+#### 6. FORM DATA (File Upload)
+
+Go to "Body" tab → Select "form-data"
+
+| Key | Type | Value |
+| --- | --- | --- |
+| file | File | [Select File] |
+| description | Text | My document |
+
+#### 7. Authorization Tab
+
+Type: Bearer Token  
+Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+OR
+
+Type: Basic Auth  
+Username: admin  
+Password: secret123
 
 ---
 
 ## Chapter 9: Postman Environment Variables & Collections
 
+**Postman pro tips**
+
+#### Environment Variables
+
+Create environments: Development, Staging, Production
+
+Variables:
+
+| Variable | Value | Environment |
+| --- | --- | --- |
+| `baseUrl` | `http://localhost:8080` | Dev |
+| `baseUrl` | `https://api.staging.myapp.com` | Staging |
+| `baseUrl` | `https://api.myapp.com` | Prod |
+| `accessToken` | (set via script) | all |
+
+Usage in URL: {{baseUrl}}/api/v1/users  
+Usage in Header: Bearer {{accessToken}}
+
+#### PRE-REQUEST SCRIPT (JavaScript)
+
+```javascript
+// Set timestamp
+pm.environment.set("timestamp", Date.now());
+
+// Generate random email
+pm.environment.set("randomEmail",
+    "test" + Math.random().toString(36).substring(7) + "@example.com");
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    POSTMAN PRO TIPS                                             │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ENVIRONMENT VARIABLES                                                          │
-│  ═════════════════════                                                          │
-│                                                                                 │
-│  Create environments: Development, Staging, Production                          │
-│                                                                                 │
-│  Variables:                                                                     │
-│  ┌────────────────┬───────────────────────────────────┐                         │
-│  │ Variable       │ Value                             │                         │
-│  ├────────────────┼───────────────────────────────────┤                         │
-│  │ baseUrl        │ http://localhost:8080             │  ← Dev                  │
-│  │ baseUrl        │ https://api.staging.myapp.com     │  ← Staging              │
-│  │ baseUrl        │ https://api.myapp.com             │  ← Prod                 │
-│  │ accessToken    │ (set via script)                  │                         │
-│  └────────────────┴───────────────────────────────────┘                         │
-│                                                                                 │
-│  Usage in URL: {{baseUrl}}/api/v1/users                                         │
-│  Usage in Header: Bearer {{accessToken}}                                        │
-│                                                                                 │
-│                                                                                 │
-│  PRE-REQUEST SCRIPT (JavaScript)                                                │
-│  ════════════════════════════════                                               │
-│                                                                                 │
-│  // Set timestamp                                                               │
-│  pm.environment.set("timestamp", Date.now());                                   │
-│                                                                                 │
-│  // Generate random email                                                       │
-│  pm.environment.set("randomEmail",                                              │
-│      "test" + Math.random().toString(36).substring(7) + "@example.com");        │
-│                                                                                 │
-│                                                                                 │
-│  TEST SCRIPT (Validate Response)                                                │
-│  ═══════════════════════════════                                                │
-│                                                                                 │
-│  // Check status code                                                           │
-│  pm.test("Status is 200", function() {                                          │
-│      pm.response.to.have.status(200);                                           │
-│  });                                                                            │
-│                                                                                 │
-│  // Check response body                                                         │
-│  pm.test("Has user ID", function() {                                            │
-│      const json = pm.response.json();                                           │
-│      pm.expect(json.id).to.exist;                                               │
-│  });                                                                            │
-│                                                                                 │
-│  // Save token from login response for future requests                          │
-│  var json = pm.response.json();                                                 │
-│  pm.environment.set("accessToken", json.accessToken);                           │
-│                                                                                 │
-│                                                                                 │
-│  COLLECTION RUNNER (Automated Testing)                                          │
-│  ══════════════════════════════════════                                         │
-│                                                                                 │
-│  Organize requests in folders:                                                  │
-│                                                                                 │
-│  📁 My API Collection                                                            │
-│  ├── 📁 Auth                                                                     │
-│  │   ├── POST /auth/login                                                       │
-│  │   └── POST /auth/refresh                                                     │
-│  ├── 📁 Users                                                                    │
-│  │   ├── GET /users (list)                                                      │
-│  │   ├── GET /users/:id                                                         │
-│  │   ├── POST /users                                                            │
-│  │   ├── PUT /users/:id                                                         │
-│  │   └── DELETE /users/:id                                                      │
-│  └── 📁 Orders                                                                   │
-│      ├── GET /users/:userId/orders                                              │
-│      └── POST /users/:userId/orders                                             │
-│                                                                                 │
-│  Run entire collection → Click "Runner" → Select collection → Run!              │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+#### TEST SCRIPT (Validate Response)
+
+```javascript
+// Check status code
+pm.test("Status is 200", function() {
+    pm.response.to.have.status(200);
+});
+
+// Check response body
+pm.test("Has user ID", function() {
+    const json = pm.response.json();
+    pm.expect(json.id).to.exist;
+});
 ```
+
+```javascript
+// Save token from login response for future requests
+var json = pm.response.json();
+pm.environment.set("accessToken", json.accessToken);
+```
+
+#### COLLECTION RUNNER (Automated Testing)
+
+Organize requests in folders:
+
+```text
+📁 My API Collection
+├── 📁 Auth
+│   ├── POST /auth/login
+│   └── POST /auth/refresh
+├── 📁 Users
+│   ├── GET /users (list)
+│   ├── GET /users/:id
+│   ├── POST /users
+│   ├── PUT /users/:id
+│   └── DELETE /users/:id
+└── 📁 Orders
+    ├── GET /users/:userId/orders
+    └── POST /users/:userId/orders
+```
+
+Run entire collection → Click "Runner" → Select collection → Run!
 
 ---
 
@@ -985,64 +922,48 @@ public class RequestParamExamplesController {
 
 ## Chapter 10: Protocol Comparison
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    NETWORK PROTOCOLS OVERVIEW                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  OSI MODEL LAYERS:                                                              │
-│  ══════════════════                                                             │
-│                                                                                 │
-│  Layer 7: APPLICATION   │ HTTP, HTTPS, FTP, SMTP, POP3, IMAP, DNS               │
-│  Layer 6: PRESENTATION  │ SSL/TLS, JPEG, ASCII                                  │
-│  Layer 5: SESSION       │ NetBIOS, PPTP                                         │
-│  Layer 4: TRANSPORT     │ TCP, UDP                                              │
-│  Layer 3: NETWORK       │ IP, ICMP                                              │
-│  Layer 2: DATA LINK     │ Ethernet, WiFi                                        │
-│  Layer 1: PHYSICAL      │ Cables, Radio waves                                   │
-│                                                                                 │
-│  ═══════════════════════════════════════════════════════════════════════════    │
-│                                                                                 │
-│  PROTOCOL COMPARISON TABLE:                                                     │
-│  ══════════════════════════                                                     │
-│                                                                                 │
-│  ┌──────────┬──────────┬────────────────────────────────────────────────────┐   │
-│  │ Protocol │ Port     │ Purpose                                            │   │
-│  ├──────────┼──────────┼────────────────────────────────────────────────────┤   │
-│  │ HTTP     │ 80       │ Web pages (unencrypted)                            │   │
-│  │ HTTPS    │ 443      │ Secure web (encrypted with TLS)                    │   │
-│  │ FTP      │ 21       │ File transfer (command)                            │   │
-│  │ FTPS     │ 990      │ Secure FTP                                         │   │
-│  │ SFTP     │ 22       │ FTP over SSH                                       │   │
-│  │ SSH      │ 22       │ Secure shell (remote access)                       │   │
-│  │ SMTP     │ 25, 587  │ Sending email                                      │   │
-│  │ POP3     │ 110, 995 │ Download email (delete from server)                │   │
-│  │ IMAP     │ 143, 993 │ Sync email (keep on server)                        │   │
-│  │ DNS      │ 53       │ Domain name resolution                             │   │
-│  │ WebSocket│ 80, 443  │ Bidirectional real-time communication             │    │
-│  │ MQTT     │ 1883     │ IoT messaging                                      │   │
-│  │ gRPC     │ 443      │ High-performance RPC                               │   │
-│  └──────────┴──────────┴────────────────────────────────────────────────────┘   │
-│                                                                                 │
-│  ═══════════════════════════════════════════════════════════════════════════    │
-│                                                                                 │
-│  TCP vs UDP:                                                                    │
-│  ═══════════                                                                    │
-│                                                                                 │
-│  ┌─────────────────────────────────┬─────────────────────────────────────────┐  │
-│  │          TCP                    │           UDP                           │  │
-│  ├─────────────────────────────────┼─────────────────────────────────────────┤  │
-│  │ Connection-oriented             │ Connectionless                          │  │
-│  │ Reliable (acknowledges data)    │ Unreliable (fire and forget)           │   │
-│  │ Ordered delivery                │ No order guarantee                      │  │
-│  │ Error checking + retransmission │ Basic error checking only              │   │
-│  │ Slower but reliable             │ Faster but may lose data               │   │
-│  │                                 │                                         │  │
-│  │ HTTP, HTTPS, SSH, Email         │ DNS, Video streaming, Gaming, VoIP     │   │
-│  └─────────────────────────────────┴─────────────────────────────────────────┘  │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+**Network protocols overview**
+
+**OSI model layers**
+
+| Layer | Name | Examples |
+| --- | --- | --- |
+| 7 | Application | HTTP, HTTPS, FTP, SMTP, POP3, IMAP, DNS |
+| 6 | Presentation | SSL/TLS, JPEG, ASCII |
+| 5 | Session | NetBIOS, PPTP |
+| 4 | Transport | TCP, UDP |
+| 3 | Network | IP, ICMP |
+| 2 | Data link | Ethernet, WiFi |
+| 1 | Physical | Cables, radio waves |
+
+**Protocol comparison**
+
+| Protocol | Port | Purpose |
+| --- | --- | --- |
+| HTTP | 80 | Web pages (unencrypted) |
+| HTTPS | 443 | Secure web (encrypted with TLS) |
+| FTP | 21 | File transfer (command channel) |
+| FTPS | 990 | Secure FTP (implicit TLS) |
+| SFTP | 22 | File transfer over SSH |
+| SSH | 22 | Secure shell (remote access) |
+| SMTP | 25, 587 | Sending email |
+| POP3 | 110, 995 | Download email (delete from the server) |
+| IMAP | 143, 993 | Sync email (keep on the server) |
+| DNS | 53 | Domain name resolution |
+| WebSocket | 80, 443 | Bidirectional real-time communication |
+| MQTT | 1883 | IoT messaging |
+| gRPC | 443 | High-performance RPC |
+
+**TCP vs UDP**
+
+| | TCP | UDP |
+| --- | --- | --- |
+| Connection | Connection-oriented | Connectionless |
+| Reliability | Reliable (acknowledges data) | Unreliable (fire and forget) |
+| Ordering | Ordered delivery | No order guarantee |
+| Error handling | Error checking and retransmission | Basic error checking only |
+| Speed | Slower but reliable | Faster but may lose data |
+| Used by | HTTP, HTTPS, SSH, email | DNS, video streaming, gaming, VoIP |
 
 ---
 

@@ -6,21 +6,19 @@
 
 ## 🎯 The 5W1H Framework
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT = Enums, Records, Sealed Classes are type-safe constructs  ║
-║         that model your domain more precisely than plain classes ║
-║                                                                  ║
-║  WHY  = Replace magic strings, reduce boilerplate, make illegal  ║
-║         states unrepresentable, enable exhaustive pattern match  ║
-║                                                                  ║
-║  WHEN = Enums: fixed set of constants with behavior              ║
-║         Records: immutable data carriers (DTOs, events, keys)    ║
-║         Sealed: controlled inheritance hierarchies               ║
-║                                                                  ║
-║  WHERE = Domain modeling, API responses, state machines,         ║
-║          configuration, pattern matching, type-safe design       ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+WHAT = Enums, Records, Sealed Classes are type-safe constructs
+       that model your domain more precisely than plain classes
+
+WHY  = Replace magic strings, reduce boilerplate, make illegal
+       states unrepresentable, enable exhaustive pattern match
+
+WHEN = Enums: fixed set of constants with behavior
+       Records: immutable data carriers (DTOs, events, keys)
+       Sealed: controlled inheritance hierarchies
+
+WHERE = Domain modeling, API responses, state machines,
+        configuration, pattern matching, type-safe design
 ```
 
 ---
@@ -194,18 +192,17 @@ state = state.next();      // DELIVERED
 // state.cancel();          // throws IllegalStateException
 ```
 
+```mermaid
+stateDiagram-v2
+  [*] --> PENDING
+  PENDING --> CONFIRMED
+  CONFIRMED --> SHIPPED
+  SHIPPED --> DELIVERED
+  PENDING --> CANCELLED
+  CONFIRMED --> CANCELLED
 ```
-State Machine:
-┌─────────┐     ┌───────────┐     ┌─────────┐     ┌───────────┐
-│ PENDING │────→│ CONFIRMED │────→│ SHIPPED │────→│ DELIVERED │
-└────┬────┘     └─────┬─────┘     └─────────┘     └───────────┘
-     │                │
-     └────────┬───────┘
-              ↓
-        ┌───────────┐
-        │ CANCELLED │
-        └───────────┘
-```
+
+**How to read this diagram.** An order moves forward through PENDING, CONFIRMED, SHIPPED and DELIVERED. Before it ships, it can also move to CANCELLED.
 
 ---
 
@@ -248,20 +245,18 @@ public enum DatabaseConnection {
 Connection conn = DatabaseConnection.INSTANCE.getConnection();
 ```
 
-```
+```text
 Why enum singleton is BEST:
-┌────────────────────────────────────────────────────────┐
-│ ✅ Thread-safe — JVM guarantees single instantiation   │
-│ ✅ Reflection-safe — can't create via reflection       │
-│ ✅ Serialization-safe — JVM handles automatically      │
-│ ✅ Lazy — loaded when first accessed                   │
-│ ✅ Simple — no boilerplate code needed                 │
-│                                                        │
-│ Compare to traditional singleton:                      │
-│ ❌ Double-checked locking = complex, error-prone       │
-│ ❌ Reflection can break it                             │
-│ ❌ Serialization can break it                          │
-└────────────────────────────────────────────────────────┘
+✅ Thread-safe — JVM guarantees single instantiation
+✅ Reflection-safe — can't create via reflection
+✅ Serialization-safe — JVM handles automatically
+✅ Lazy — loaded when first accessed
+✅ Simple — no boilerplate code needed
+
+Compare to traditional singleton:
+❌ Double-checked locking = complex, error-prone
+❌ Reflection can break it
+❌ Serialization can break it
 ```
 
 ---
@@ -303,20 +298,18 @@ schedule.put(Day.TUESDAY, "Spring Boot");
 schedule.put(Day.WEDNESDAY, "System Design");
 ```
 
-```
+```text
 Performance:
-┌─────────────────────────────────────────────────┐
-│ EnumSet : uses bit vector (1 long = 64 enums)   │
-│           → contains() is O(1) bit check        │
-│           → add/remove is O(1) bit flip         │
-│           → 10x faster than HashSet<Enum>       │
-│                                                 │
-│ EnumMap : uses plain array indexed by ordinal   │
-│           → get/put is O(1) array access        │
-│           → 5x faster than HashMap<Enum, V>     │
-│                                                 |
-│ ALWAYS use EnumSet/EnumMap for enum collections!│
-└─────────────────────────────────────────────────┘
+EnumSet : uses bit vector (1 long = 64 enums)
+          → contains() is O(1) bit check
+          → add/remove is O(1) bit flip
+          → 10x faster than HashSet<Enum>
+
+EnumMap : uses plain array indexed by ordinal
+          → get/put is O(1) array access
+          → 5x faster than HashMap<Enum, V>
+                                                |
+ALWAYS use EnumSet/EnumMap for enum collections!
 ```
 
 ---
@@ -416,20 +409,18 @@ public record User(String name, String email, int age) {}
 
 ### What the Compiler Generates for a Record
 
-```
+```text
 record User(String name, String email, int age) {}
 
 GENERATES:
-┌────────────────────────────────────────────────┐
-│ ✅ private final fields: name, email, age      │
-│ ✅ Constructor with ALL fields                  │
-│ ✅ Accessor methods: name(), email(), age()     │
-│    (NOT getName() — just name()!)              │
-│ ✅ equals() using ALL fields                    │
-│ ✅ hashCode() using ALL fields                  │
-│ ✅ toString() with ALL fields                   │
-│ ✅ Implements Serializable (if needed)          │
-└────────────────────────────────────────────────┘
+✅ private final fields: name, email, age
+✅ Constructor with ALL fields
+✅ Accessor methods: name(), email(), age()
+   (NOT getName() — just name()!)
+✅ equals() using ALL fields
+✅ hashCode() using ALL fields
+✅ toString() with ALL fields
+✅ Implements Serializable (if needed)
 ```
 
 ---
@@ -501,22 +492,20 @@ grid.get(new Coordinate(0, 0));  // "Start" ← works perfectly!
 
 ## 10. Record Restrictions — What You CAN'T Do
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│ ❌ Can't extend a class (records extend Record implicitly)    │
-│ ❌ Can't be extended (records are final)                      │
-│ ❌ Can't have mutable state (fields are final)                │
-│ ❌ Can't add instance fields beyond components                │
-│                                                               │
-│ ✅ CAN implement interfaces                                   │
-│ ✅ CAN have static fields and methods                         │
-│ ✅ CAN have instance methods                                  │
-│ ✅ CAN override auto-generated methods                        │
-│ ✅ CAN have compact/custom constructors                       │
-│ ✅ CAN be generic: record Pair<A, B>(A first, B second) {}    │
-│ ✅ CAN be nested/inner classes                                │
-│ ✅ CAN be sealed class members                                │
-└──────────────────────────────────────────────────────────────┘
+```text
+❌ Can't extend a class (records extend Record implicitly)
+❌ Can't be extended (records are final)
+❌ Can't have mutable state (fields are final)
+❌ Can't add instance fields beyond components
+
+✅ CAN implement interfaces
+✅ CAN have static fields and methods
+✅ CAN have instance methods
+✅ CAN override auto-generated methods
+✅ CAN have compact/custom constructors
+✅ CAN be generic: record Pair<A, B>(A first, B second) {}
+✅ CAN be nested/inner classes
+✅ CAN be sealed class members
 ```
 
 ### When to Use Records vs Classes
@@ -561,19 +550,17 @@ public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserReq
 public record UserResponse(Long id, String name) {}
 ```
 
-```
+```text
 ⚠️ Records with JPA:
-┌────────────────────────────────────────────────────────────┐
-│ Records CANNOT be JPA @Entity (entities need mutable state)│
-│                                                            │
-│ BUT they're perfect for:                                   │
-│ ✅ @Query projections:                                     │
-│    record UserSummary(String name, Long orderCount) {}     │
-│    @Query("SELECT new ...UserSummary(u.name, COUNT(o))..") │
-│                                                            │
-│ ✅ DTOs for API responses                                  │
-│ ✅ Value objects inside entities (with @Embeddable adapter) │
-└────────────────────────────────────────────────────────────┘
+Records CANNOT be JPA @Entity (entities need mutable state)
+
+BUT they're perfect for:
+✅ @Query projections:
+   record UserSummary(String name, Long orderCount) {}
+   @Query("SELECT new ...UserSummary(u.name, COUNT(o))..")
+
+✅ DTOs for API responses
+✅ Value objects inside entities (with @Embeddable adapter)
 ```
 
 ---
@@ -614,30 +601,30 @@ Immutability and Boilerplate Elimination. A `Record` is a specialized class desi
 
 ## 12. Sealed Classes — The Problem They Solve
 
-```
-BEFORE SEALED:
-┌────────────────────────────────────────────────────────┐
-│ public abstract class Shape { }                        │
-│                                                        │
-│ Anyone, anywhere can extend Shape:                     │
-│ class Circle extends Shape { }    ← You know this      │
-│ class Square extends Shape { }    ← You know this      │
-│ class WeirdShape extends Shape {} ← Surprise!          │
-│                                                        │
-│ Your switch/if can't be exhaustive because             │
-│ you don't control who extends Shape                    │
-└────────────────────────────────────────────────────────┘
+**Before sealed**
 
-AFTER SEALED:
-┌────────────────────────────────────────────────────────┐
-│ public sealed class Shape                              │
-│     permits Circle, Rectangle, Triangle { }            │
-│                                                        │
-│ ONLY Circle, Rectangle, Triangle can extend Shape      │
-│ class WeirdShape extends Shape {} ← COMPILE ERROR!     │
-│                                                        │
-│ Compiler KNOWS all subtypes → exhaustive matching!     │
-└────────────────────────────────────────────────────────┘
+```text
+public abstract class Shape { }
+
+Anyone, anywhere can extend Shape:
+class Circle extends Shape { }    ← You know this
+class Square extends Shape { }    ← You know this
+class WeirdShape extends Shape {} ← Surprise!
+
+Your switch/if can't be exhaustive because
+you don't control who extends Shape
+```
+
+**After sealed**
+
+```text
+public sealed class Shape
+    permits Circle, Rectangle, Triangle { }
+
+ONLY Circle, Rectangle, Triangle can extend Shape
+class WeirdShape extends Shape {} ← COMPILE ERROR!
+
+Compiler KNOWS all subtypes → exhaustive matching!
 ```
 
 ### Syntax
@@ -805,25 +792,23 @@ NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure).
 
 ## 15. The Three Keywords Comparison
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│ KEYWORD     │ MEANING                │ WHAT SUBCLASS DOES      │
-│─────────────│────────────────────────│─────────────────────────│
-│ final       │ NO further subclassing │ "The chain ends here"    │
-│ sealed      │ RESTRICTED subclassing │ "Only these can extend"  │
-│ non-sealed  │ OPEN subclassing again │ "Anyone can extend me"   │
-│─────────────│────────────────────────│─────────────────────────│
-│                                                                │
-│ Example:                                                       │
-│ sealed class A permits B, C, D { }                             │
-│                                                                │
-│ final class B extends A { }          // B can't be extended    │
-│ sealed class C extends A permits E { } // C allows only E     │
-│ non-sealed class D extends A { }     // D opens hierarchy      │
-│ class E extends C { }                // E extends sealed C     │
-│ class F extends D { }                // F can extend D (open)  │
-│ class G extends A { }                // ❌ COMPILE ERROR!      │
-└────────────────────────────────────────────────────────────────┘
+```text
+KEYWORD     │ MEANING                │ WHAT SUBCLASS DOES
+─────────────│────────────────────────│─────────────────────────
+final       │ NO further subclassing │ "The chain ends here"
+sealed      │ RESTRICTED subclassing │ "Only these can extend"
+non-sealed  │ OPEN subclassing again │ "Anyone can extend me"
+─────────────│────────────────────────│─────────────────────────
+
+Example:
+sealed class A permits B, C, D { }
+
+final class B extends A { }          // B can't be extended
+sealed class C extends A permits E { } // C allows only E
+non-sealed class D extends A { }     // D opens hierarchy
+class E extends C { }                // E extends sealed C
+class F extends D { }                // F can extend D (open)
+class G extends A { }                // ❌ COMPILE ERROR!
 ```
 
 ---

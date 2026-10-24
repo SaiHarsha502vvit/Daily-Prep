@@ -10,21 +10,20 @@
 
 ## 🎯 The 5W1H
 
+```text
+ WHAT = Converting a Java object into a byte stream (and back)
+
+ WHY  = To SAVE objects (to disk, database, cache) or SEND
+        them (over network, between JVMs, in messages)
+
+ WHEN = Caching (Redis), messaging (Kafka), RMI, HTTP sessions,
+        deep cloning, file persistence
+
+ WHO  = ObjectOutputStream (serialize), ObjectInputStream
+        (deserialize), Jackson/Gson (JSON), Protobuf (binary)
+
+ HOW  = Implement Serializable marker interface
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT = Converting a Java object into a byte stream (and back)   ║
-║                                                                  ║
-║  WHY  = To SAVE objects (to disk, database, cache) or SEND       ║
-║         them (over network, between JVMs, in messages)           ║
-║                                                                  ║
-║  WHEN = Caching (Redis), messaging (Kafka), RMI, HTTP sessions,  ║
-║         deep cloning, file persistence                           ║
-║                                                                  ║
-║  WHO  = ObjectOutputStream (serialize), ObjectInputStream        ║
-║         (deserialize), Jackson/Gson (JSON), Protobuf (binary)    ║
-║                                                                  ║
-║  HOW  = Implement Serializable marker interface                  ║
-╚══════════════════════════════════════════════════════════════════╝
 
 ### Historical Evolution
 
@@ -42,7 +41,6 @@
 - **Jackson — 2007**: JSON serialization. Dominant in Spring Boot. `ObjectMapper`, tree model, data binding.
 - **Java 7 NIO.2 Files API — 2011**: `Paths.get()`, `Files.readAllLines()`, `Path` replacing `java.io.File`.
 - **Equifax breach — 2017**: Exploited Java deserialization gadgets in Apache Struts. Sparked serialization hardening.
-```
 
 ---
 
@@ -87,16 +85,14 @@ try (ObjectInputStream ois = new ObjectInputStream(
 
 ## 2. serialVersionUID — Why It Matters
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║ serialVersionUID is a VERSION NUMBER for your class.             ║
-║                                                                  ║
-║ When you deserialize, Java checks:                               ║
-║   "Does the serialVersionUID in the file match the class?"       ║
-║                                                                  ║
-║ If NO → InvalidClassException → deserialization FAILS            ║
-║ If YES → proceeds with deserialization                           ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+serialVersionUID is a VERSION NUMBER for your class.
+
+When you deserialize, Java checks:
+  "Does the serialVersionUID in the file match the class?"
+
+If NO → InvalidClassException → deserialization FAILS
+If YES → proceeds with deserialization
 ```
 
 ```java
@@ -122,17 +118,16 @@ public class User implements Serializable {
 }
 ```
 
-```
-RULES:
-┌───────────────────────────────────────────────────────────────┐
-│ Always declare serialVersionUID explicitly                    │
-│ If you DON'T, Java computes one from class structure          │
-│ → Any change (even adding a method) changes the auto-UID      │
-│ → Old serialized data becomes unreadable!                     │
-│                                                               │
-│ KEEP SAME UID: when adding optional fields                    │
-│ CHANGE UID: when making incompatible changes (removing fields)│
-└──────────────────────────────────────────────────────────────-
+**RULES:**
+
+```text
+Always declare serialVersionUID explicitly
+If you DON'T, Java computes one from class structure
+→ Any change (even adding a method) changes the auto-UID
+→ Old serialized data becomes unreadable!
+
+KEEP SAME UID: when adding optional fields
+CHANGE UID: when making incompatible changes (removing fields)
 ```
 
 ---
@@ -261,34 +256,31 @@ public class Product implements Externalizable {
 
 ```
 Serializable vs Externalizable:
-┌────────────────────────┬────────────────────────────────┐
-│ Serializable            │ Externalizable                 │
-├────────────────────────┼────────────────────────────────┤
-│ Marker interface        │ Has writeExternal/readExternal │
-│ Auto-serializes fields  │ YOU write everything           │
-│ No-arg constructor      │ MUST have public no-arg        │
-│   not required          │   constructor                  │
-│ Slower (uses reflection)│ Faster (direct control)        │
-│ Uses transient to skip  │ You just don't write the field │
-│ 99% of the time use this│ Use for performance-critical   │
-└────────────────────────┴────────────────────────────────┘
 ```
+
+| Serializable | Externalizable |
+| --- | --- |
+| Marker interface | Has writeExternal/readExternal |
+| Auto-serializes fields | YOU write everything |
+| No-arg constructor | MUST have public no-arg |
+| not required | constructor |
+| Slower (uses reflection) | Faster (direct control) |
+| Uses transient to skip | You just don't write the field |
+| 99% of the time use this | Use for performance-critical |
 
 ---
 
 ## 6. Serialization Security Risks
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║ ⚠️  SECURITY WARNING — Java deserialization is DANGEROUS!       ║
-║                                                                  ║
-║ Deserializing untrusted data = Remote Code Execution risk        ║
-║ This is HOW major breaches happened (Equifax, Jenkins, etc.)     ║
-║                                                                  ║
-║ The attack: Attacker crafts a byte stream that, when              ║
-║ deserialized, executes arbitrary code via "gadget chains"        ║
-║ (chains of objects whose constructors/methods do harmful things) ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+⚠️  SECURITY WARNING — Java deserialization is DANGEROUS!
+
+Deserializing untrusted data = Remote Code Execution risk
+This is HOW major breaches happened (Equifax, Jenkins, etc.)
+
+The attack: Attacker crafts a byte stream that, when
+deserialized, executes arbitrary code via "gadget chains"
+(chains of objects whose constructors/methods do harmful things)
 ```
 
 ```java
@@ -387,44 +379,46 @@ Fix by using `InputStream`, `BufferedInputStream`, `Files.newBufferedReader`, or
 
 ## 8. The I/O Stream Hierarchy
 
-```
-BYTE STREAMS (raw bytes — images, zip, binary):
-┌─────────────────────────────────────────────────────────────┐
-│                  InputStream (abstract)                       │
-│                 /          |           \                      │
-│   FileInputStream  ByteArrayInputStream  ObjectInputStream   │
-│                          |                                    │
-│              BufferedInputStream (decorator)                  │
-│              DataInputStream (reads int, double, etc.)        │
-│                                                               │
-│                  OutputStream (abstract)                      │
-│                 /          |           \                      │
-│  FileOutputStream ByteArrayOutputStream ObjectOutputStream   │
-│                          |                                    │
-│             BufferedOutputStream (decorator)                  │
-│             DataOutputStream                                 │
-└─────────────────────────────────────────────────────────────┘
+**BYTE STREAMS (raw bytes — images, zip, binary)**
 
-CHARACTER STREAMS (text — .txt, .csv, .json, .xml):
-┌─────────────────────────────────────────────────────────────┐
-│                    Reader (abstract)                        │
-│             /             |        \                        │
-│     FileReader   InputStreamReader   StringReader           │
-│                        |                                    │
-│              BufferedReader (decorator)                     │
-│                                                             │
-│                    Writer (abstract)                        │
-│                  /         |        \                       │
-│    FileWriter   OutputStreamWriter   StringWriter           │
-│                        |                                    │
-│              BufferedWriter (decorator)                     │
-│              PrintWriter (println, printf)                  │
-└─────────────────────────────────────────────────────────────┘
+```text
+                InputStream (abstract)
+               /          |           \
+ FileInputStream  ByteArrayInputStream  ObjectInputStream
+                        |
+            BufferedInputStream (decorator)
+            DataInputStream (reads int, double, etc.)
+
+                OutputStream (abstract)
+               /          |           \
+FileOutputStream ByteArrayOutputStream ObjectOutputStream
+                        |
+           BufferedOutputStream (decorator)
+           DataOutputStream
+```
+
+**CHARACTER STREAMS (text — .txt, .csv, .json, .xml)**
+
+```text
+                Reader (abstract)
+         /             |        \
+ FileReader   InputStreamReader   StringReader
+                    |
+          BufferedReader (decorator)
+
+                Writer (abstract)
+              /         |        \
+FileWriter   OutputStreamWriter   StringWriter
+                    |
+          BufferedWriter (decorator)
+          PrintWriter (println, printf)
+```
 
 RULE: Byte streams for binary data, Character streams for text
-      ALWAYS wrap in Buffered* for performance
-      ALWAYS use try-with-resources
-```
+
+ALWAYS wrap in Buffered* for performance
+
+ALWAYS use try-with-resources
 
 ---
 
@@ -530,21 +524,15 @@ try (var dis = new DataInputStream(
 // Closing outermost closes ALL inner streams
 ```
 
+**Decorator chain visualized**
+
+```mermaid
+flowchart TD
+  D["DataInputStream<br/>reads Java types (int, double, String)"] -->|"wraps"| B["BufferedInputStream<br/>reads in 8 KB chunks (fast)"]
+  B -->|"wraps"| F["FileInputStream<br/>reads raw bytes from disk"]
 ```
-Decorator chain visualized:
-┌─────────────────────────────────────────────┐
-│ DataInputStream                             │
-│   reads Java types (int, double, String)    │
-│   ┌─────────────────────────────────────┐   │
-│   │ BufferedInputStream                 │   │
-│   │   reads in 8KB chunks (fast!)       │   │
-│   │   ┌─────────────────────────────┐   │   │
-│   │   │ FileInputStream             │   │   │
-│   │   │   reads raw bytes from disk │   │   │
-│   │   └─────────────────────────────┘   │   │
-│   └─────────────────────────────────────┘   │
-└─────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Each stream wraps the one below it. `DataInputStream` asks `BufferedInputStream` for data, which reads from disk in 8 KB chunks through `FileInputStream`.
 
 ---
 
@@ -653,20 +641,13 @@ String text = new String(bytes, StandardCharsets.UTF_8);
 
 ```
 Common encodings:
-┌────────────────────┬──────────────────────────────────────┐
-│ UTF-8              │ Universal standard. Use this.         │
-│                    │ Variable: 1-4 bytes per character     │
-│                    │ ASCII-compatible                      │
-├────────────────────┼──────────────────────────────────────┤
-│ UTF-16             │ Java's internal String encoding       │
-│                    │ 2 or 4 bytes per character            │
-├────────────────────┼──────────────────────────────────────┤
-│ ISO-8859-1         │ Western European. 1 byte per char.   │
-│ (Latin-1)          │ Can't handle Chinese, Arabic, etc.   │
-├────────────────────┼──────────────────────────────────────┤
-│ US-ASCII           │ 7-bit. English only. Very limited.   │
-└────────────────────┴──────────────────────────────────────┘
 ```
+
+| UTF-8 | Universal standard. Use this.<br>Variable: 1-4 bytes per character<br>ASCII-compatible |
+| --- | --- |
+| UTF-16 | Java's internal String encoding<br>2 or 4 bytes per character |
+| ISO-8859-1 (Latin-1) | Western European. 1 byte per char.<br>Can't handle Chinese, Arabic, etc. |
+| US-ASCII | 7-bit. English only. Very limited. |
 
 ---
 

@@ -9,44 +9,42 @@ _"Understanding how @Transactional and auto-configuration actually work"_
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
+**WHY: Why AOP & Auto-Configuration?**
+
+```text
+• @Transactional magic: Without AOP knowledge, it's unexplainable
+• Cross-cutting concerns: Logging, security, caching - applied everywhere
+• Debug proxy issues: "Why isn't @Transactional working?" - now you'll know
+• Auto-config: Understand why adding dependency enables features
+• Custom starters: Build your own Spring Boot starters for libraries
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Why AOP & Auto-Configuration?                                             │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • @Transactional magic: Without AOP knowledge, it's unexplainable              │
-│  • Cross-cutting concerns: Logging, security, caching - applied everywhere      │
-│  • Debug proxy issues: "Why isn't @Transactional working?" - now you'll know    │
-│  • Auto-config: Understand why adding dependency enables features               │
-│  • Custom starters: Build your own Spring Boot starters for libraries           │
-└─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How AOP Creates Magic?                                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Proxy wrapping: Spring creates proxy around your bean                        │
-│  • Pointcuts: Define WHERE advice applies (method patterns)                     │
-│  • Advice types: @Before, @After, @Around - WHEN code runs                      │
-│  • Auto-config: @ConditionalOnClass, META-INF/spring.factories                  │
-│  • Starters: Pre-configured dependencies + auto-configuration                   │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**HOW: How AOP Creates Magic?**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN: When to Use AOP?                                                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Logging: Log all service method entries/exits                                │
-│  • Security: Check authorization before method execution                        │
-│  • Transactions: @Transactional uses AOP (already built-in)                     │
-│  • Caching: @Cacheable wraps methods with cache logic                           │
-│  • Performance: Measure method execution time across all services               │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+• Proxy wrapping: Spring creates proxy around your bean
+• Pointcuts: Define WHERE advice applies (method patterns)
+• Advice types: @Before, @After, @Around - WHEN code runs
+• Auto-config: @ConditionalOnClass, META-INF/spring.factories
+• Starters: Pre-configured dependencies + auto-configuration
+```
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHICH: Which AOP Concepts to Master?                                           │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Proxy limitations, @Around advice, pointcut expressions         │
-│  IMPORTANT:     Self-invocation problem, @EnableAspectJAutoProxy                │
-│  ADVANCED:      Custom auto-configuration, conditional bean creation            │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHEN: When to Use AOP?**
+
+```text
+• Logging: Log all service method entries/exits
+• Security: Check authorization before method execution
+• Transactions: @Transactional uses AOP (already built-in)
+• Caching: @Cacheable wraps methods with cache logic
+• Performance: Measure method execution time across all services
+```
+
+**WHICH: Which AOP Concepts to Master?**
+
+```text
+ESSENTIAL:     Proxy limitations, @Around advice, pointcut expressions
+IMPORTANT:     Self-invocation problem, @EnableAspectJAutoProxy
+ADVANCED:      Custom auto-configuration, conditional bean creation
 ```
 
 ---
@@ -134,35 +132,17 @@ public Object logMethod(ProceedingJoinPoint pjp) {
 
 ## Chapter 2: AOP Terminology
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    AOP VOCABULARY                                               │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ┌────────────────┬────────────────────────────────────────────────────────────┐│
-│  │ Term           │ Definition                                                 ││
-│  ├────────────────┼────────────────────────────────────────────────────────────┤│
-│  │ Aspect         │ Module containing cross-cutting logic (like LoggingAspect)│ │
-│  │ Advice         │ Action taken (before, after, around a method)             │ │
-│  │ Join Point     │ Point in execution (method call, exception thrown)        │ │
-│  │ Pointcut       │ Expression selecting join points (which methods)          │ │
-│  │ Target         │ Object being advised (original bean)                      │ │
-│  │ Proxy          │ Wrapper object created by Spring (contains advice)        │ │
-│  │ Weaving        │ Process of applying aspects to targets                    │ │
-│  └────────────────┴────────────────────────────────────────────────────────────┘│
-│                                                                                 │
-│  VISUAL METAPHOR:                                                               │
-│                                                                                 │
-│  Aspect = Security guard rules                                                  │
-│  Advice = Check ID, log entry, call police                                      │
-│  Join Point = Every door in the building                                        │
-│  Pointcut = "Front entrance and emergency exits"                                │
-│  Target = The actual rooms behind the doors                                     │
-│  Proxy = The security checkpoint                                                │
-│  Weaving = Installing the security system                                       │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+**AOP VOCABULARY**
+
+| Term | Definition | Security-building metaphor |
+| --- | --- | --- |
+| Aspect | Module containing cross-cutting logic (like `LoggingAspect`) | Security guard rules |
+| Advice | Action taken (before, after, around a method) | Check ID, log entry, call police |
+| Join point | Point in execution (method call, exception thrown) | Every door in the building |
+| Pointcut | Expression selecting join points (which methods) | "Front entrance and emergency exits" |
+| Target | Object being advised (original bean) | The actual rooms behind the doors |
+| Proxy | Wrapper object created by Spring (contains advice) | The security checkpoint |
+| Weaving | Process of applying aspects to targets | Installing the security system |
 
 ---
 
@@ -321,39 +301,20 @@ public class ComprehensiveAspect {
 
 ### Advice Execution Order
 
+**Advice execution order** for the call `userService.findById(1)`:
+
+```mermaid
+flowchart TD
+  A1["@Around (before proceed)"] --> B["@Before"]
+  B --> M["ACTUAL METHOD EXECUTION"]
+  M -->|"success"| AR["@AfterReturning"]
+  M -->|"exception"| AT["@AfterThrowing"]
+  AR --> AF["@After"]
+  AT --> AF
+  AF --> A2["@Around (after proceed)"]
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ADVICE EXECUTION ORDER                                       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  METHOD CALL: userService.findById(1)                                           │
-│                                                                                 │
-│  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                          │   │
-│  │  @Around (before proceed) ────────────────────────────┐                 │    │
-│  │      │                                                 │                 │   │
-│  │      ▼                                                 │                 │   │
-│  │  @Before ─────────────────────────────────────┐       │                 │    │
-│  │      │                                         │       │                 │   │
-│  │      ▼                                         │       │                 │   │
-│  │  ═══════════════════════════════════════════  │       │                 │    │
-│  │  ║     ACTUAL METHOD EXECUTION            ║  │       │                 │     │
-│  │  ═══════════════════════════════════════════  │       │                 │    │
-│  │      │                                         │       │                 │   │
-│  │      ▼ (if success)        ▼ (if exception)   │       │                 │    │
-│  │  @AfterReturning        @AfterThrowing ───────┘       │                 │    │
-│  │      │                      │                          │                 │   │
-│  │      └───────┬──────────────┘                          │                 │   │
-│  │              ▼                                         │                 │   │
-│  │          @After ───────────────────────────────────────┘                │    │
-│  │              │                                                           │   │
-│  │              ▼                                                           │   │
-│  │  @Around (after proceed) ────────────────────────────────────────────   │    │
-│  │                                                                          │   │
-│  └──────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The outer `@Around` wraps everything. `@Before` runs just before the method. After the method, exactly one of `@AfterReturning` or `@AfterThrowing` runs, then `@After` (which runs in both cases), and finally the part of `@Around` after `proceed()`.
 
 ---
 
@@ -524,42 +485,28 @@ Separation of Concerns. Controllers should only focus on mapping requests and de
 
 ### 🔵 WHY: Understanding the Limitations
 
+**Spring AOP = proxy-based AOP**
+
+**Original bean:** `UserService` has the methods `findById(Long id)` and `createUser(User user)`.
+
+**After AOP (what Spring actually injects):** a PROXY wraps the real bean.
+
+```mermaid
+sequenceDiagram
+  participant C as Caller
+  participant P as Proxy
+  participant R as Real UserService
+  C->>P: findById(id)
+  P->>P: @Before advice
+  P->>P: @Around advice (before)
+  P->>R: delegate to the real findById()
+  R-->>P: result
+  P->>P: @Around advice (after)
+  P->>P: @AfterReturning advice
+  P-->>C: result
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SPRING AOP = PROXY-BASED AOP                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ORIGINAL BEAN:                                                                 │
-│  ┌────────────────────────────────────────┐                                     │
-│  │          UserService                    │                                    │
-│  │  ┌──────────────────────────────────┐  │                                     │
-│  │  │ findById(Long id)                │  │                                     │
-│  │  └──────────────────────────────────┘  │                                     │
-│  │  ┌──────────────────────────────────┐  │                                     │
-│  │  │ createUser(User user)            │  │                                     │
-│  │  └──────────────────────────────────┘  │                                     │
-│  └────────────────────────────────────────┘                                     │
-│                                                                                 │
-│  AFTER AOP (What Spring actually injects):                                      │
-│  ┌────────────────────────────────────────────────────────────────────┐         │
-│  │                    PROXY                                            │        │
-│  │  ┌──────────────────────────────────────────────────────────────┐  │         │
-│  │  │ findById(Long id)                                             │  │        │
-│  │  │   → Execute @Before advice                                    │  │        │
-│  │  │   → Execute @Around advice (before)                          │  │         │
-│  │  │   → Delegate to REAL UserService.findById()                  │  │         │
-│  │  │   → Execute @Around advice (after)                           │  │         │
-│  │  │   → Execute @AfterReturning advice                           │  │         │
-│  │  └──────────────────────────────────────────────────────────────┘  │         │
-│  │                           │                                         │        │
-│  │                    ┌──────▼──────┐                                  │        │
-│  │                    │ REAL BEAN   │                                  │        │
-│  │                    │ UserService │                                  │        │
-│  │                    └─────────────┘                                  │        │
-│  └────────────────────────────────────────────────────────────────────┘         │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The caller talks to the proxy, not to the real bean. The proxy runs the advice around a delegated call to the real `UserService`.
 
 ### Proxy Types: JDK Dynamic Proxy vs CGLIB
 
@@ -1106,24 +1053,20 @@ public class EmailService {
 
 ### 🔵 WHY: Environment-Specific Configuration
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    PROFILE-BASED CONFIGURATION                                  │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  application.yml          → Default (always loaded)                             │
-│  application-dev.yml      → Development (local)                                 │
-│  application-test.yml     → Testing (CI/CD)                                     │
-│  application-staging.yml  → Staging (pre-prod)                                  │
-│  application-prod.yml     → Production                                          │
-│                                                                                 │
-│  LOADING ORDER (later overrides earlier):                                       │
-│  1. application.yml                                                             │
-│  2. application-{profile}.yml                                                   │
-│  3. Environment variables                                                       │
-│  4. Command line arguments                                                      │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**PROFILE-BASED CONFIGURATION**
+
+```text
+application.yml          → Default (always loaded)
+application-dev.yml      → Development (local)
+application-test.yml     → Testing (CI/CD)
+application-staging.yml  → Staging (pre-prod)
+application-prod.yml     → Production
+
+LOADING ORDER (later overrides earlier):
+1. application.yml
+2. application-{profile}.yml
+3. Environment variables
+4. Command line arguments
 ```
 
 ```yaml

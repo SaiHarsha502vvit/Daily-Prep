@@ -23,49 +23,56 @@
 
 ## 1. Traditional CRUD vs Event Sourcing — The Fundamental Shift
 
+**Traditional crud**
+
+User places order → UPDATE orders SET status='CONFIRMED' WHERE id=42
+
+**What you have in DB**
+
+**id │ status    │ total  │ updated_at          │ items**
+
+```text
+42 │ CONFIRMED │ 150.00 │ 2024-01-15 10:30:00 │ [item1, item2]
 ```
-  TRADITIONAL CRUD:
-  ═════════════════
 
-  User places order → UPDATE orders SET status='CONFIRMED' WHERE id=42
+**Questions you CANNOT answer**
 
-  What you have in DB:
-  ┌─────────────────────────────────────────────────────────────────┐
-  │ id │ status    │ total  │ updated_at          │ items          │
-  ├─────────────────────────────────────────────────────────────────┤
-  │ 42 │ CONFIRMED │ 150.00 │ 2024-01-15 10:30:00 │ [item1, item2] │
-  └─────────────────────────────────────────────────────────────────┘
+❌ When was this order created? (updated_at shows last change)
 
-  Questions you CANNOT answer:
-  ❌ When was this order created? (updated_at shows last change)
-  ❌ Was the total originally different? (overwritten)
-  ❌ Who changed the status and when? (no history)
-  ❌ Did the customer add items and then remove them? (no trace)
-  ❌ What was status at 10:15 AM? (only current state)
+❌ Was the total originally different? (overwritten)
 
+❌ Who changed the status and when? (no history)
 
-  EVENT SOURCING:
-  ═══════════════
+❌ Did the customer add items and then remove them? (no trace)
 
-  User places order → append OrderCreated event
+❌ What was status at 10:15 AM? (only current state)
 
-  What you have in Event Store:
-  ┌───────────────────────────────────────────────────────────────────────────┐
-  │ event_id │ aggregate_id │ event_type       │ data                 │ time │
-  ├───────────────────────────────────────────────────────────────────────────┤
-  │ 1        │ order-42     │ OrderCreated     │ {items:[A,B],total:100}│10:00│
-  │ 2        │ order-42     │ ItemAdded        │ {item:C, price:50}    │10:10│
-  │ 3        │ order-42     │ OrderConfirmed   │ {confirmedBy:"Harsha"}│10:30│
-  │ 4        │ order-42     │ PaymentReceived  │ {amount:150,method:CC}│10:35│
-  └───────────────────────────────────────────────────────────────────────────┘
+**Event sourcing**
 
-  NOW you can answer:
-  ✅ When was order created? → Event 1, 10:00 AM
-  ✅ What was original total? → $100 (event 1), then item added (event 2) → $150
-  ✅ Who confirmed? → "Harsha" at 10:30 AM
-  ✅ State at 10:15 AM? → Replay events 1-2 only → status=CREATED, total=$150
-  ✅ Complete audit trail → every change recorded, immutable
+User places order → append OrderCreated event
+
+**What you have in Event Store**
+
+**event_id │ aggregate_id │ event_type       │ data                 │ time**
+
+```text
+1        │ order-42     │ OrderCreated     │ {items:[A,B],total:100}│10:00
+2        │ order-42     │ ItemAdded        │ {item:C, price:50}    │10:10
+3        │ order-42     │ OrderConfirmed   │ {confirmedBy:"Harsha"}│10:30
+4        │ order-42     │ PaymentReceived  │ {amount:150,method:CC}│10:35
 ```
+
+**NOW you can answer**
+
+✅ When was order created? → Event 1, 10:00 AM
+
+✅ What was original total? → $100 (event 1), then item added (event 2) → $150
+
+✅ Who confirmed? → "Harsha" at 10:30 AM
+
+✅ State at 10:15 AM? → Replay events 1-2 only → status=CREATED, total=$150
+
+✅ Complete audit trail → every change recorded, immutable
 
 ---
 
@@ -81,76 +88,64 @@ Because CRUD inherently relies on **destructive mutation**. When an `UPDATE` run
 
 ## 2. Event Store — The Single Source of Truth
 
+**Core rules**
+
+```text
+1. Events are IMMUTABLE — never update, never delete
+2. Events are APPEND-ONLY — new events go at the end
+3. Events are ORDERED — sequence matters (cannot reorder)
+4. Events represent FACTS — things that HAPPENED (past tense)
 ```
-  CORE RULES:
-  ═══════════
 
-  1. Events are IMMUTABLE — never update, never delete
-  2. Events are APPEND-ONLY — new events go at the end
-  3. Events are ORDERED — sequence matters (cannot reorder)
-  4. Events represent FACTS — things that HAPPENED (past tense)
+**Event structure**
 
-
-  EVENT STRUCTURE:
-  ════════════════
-
-  {
-    "eventId": "uuid-123",           // globally unique
-    "aggregateId": "order-42",       // which entity this belongs to
-    "aggregateType": "Order",        // type of aggregate
-    "eventType": "OrderConfirmed",   // what happened
-    "version": 3,                    // position in aggregate's stream
-    "timestamp": "2024-01-15T10:30:00Z",
-    "data": {                        // event-specific payload
-      "confirmedBy": "Harsha",
-      "confirmedAt": "2024-01-15T10:30:00Z"
-    },
-    "metadata": {                    // cross-cutting concerns
-      "correlationId": "req-abc",
-      "causationId": "evt-2",
-      "userId": "user-5"
-    }
+```text
+{
+  "eventId": "uuid-123",           // globally unique
+  "aggregateId": "order-42",       // which entity this belongs to
+  "aggregateType": "Order",        // type of aggregate
+  "eventType": "OrderConfirmed",   // what happened
+  "version": 3,                    // position in aggregate's stream
+  "timestamp": "2024-01-15T10:30:00Z",
+  "data": {                        // event-specific payload
+    "confirmedBy": "Harsha",
+    "confirmedAt": "2024-01-15T10:30:00Z"
+  },
+  "metadata": {                    // cross-cutting concerns
+    "correlationId": "req-abc",
+    "causationId": "evt-2",
+    "userId": "user-5"
   }
+}
+```
 
+**Storage options**
 
-  STORAGE OPTIONS:
-  ════════════════
+| Storage | Pros | Cons |
+| --- | --- | --- |
+| EventStoreDB (eventstore.com) | Purpose-built, subscriptions<br>Projections built in | Another DB to manage<br>Smaller community |
+| PostgreSQL (as event store) | Familiar, ACID, proven<br>JSON columns for event data | You build the append mechanics yourself |
+| Apache Kafka (as event log) | Distributed, high throughput<br>Natural event streaming | Not a database<br>Compaction != snapshots |
+| DynamoDB (single table) | Serverless, scales<br>Conditional writes for OCC | Vendor lock-in<br>Query limitations |
 
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │ Storage         │ Pros                        │ Cons                     │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ EventStoreDB    │ Purpose-built, subscriptions│ Another DB to manage     │
-  │ (eventstore.com)│ Projections built-in         │ Smaller community        │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ PostgreSQL      │ Familiar, ACID, proven       │ Need to build append     │
-  │ (as event store)│ JSON columns for event data │ mechanics yourself       │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ Apache Kafka    │ Distributed, high throughput │ Not a database           │
-  │ (as event log)  │ Natural event streaming      │ Compaction != snapshots  │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ DynamoDB        │ Serverless, scales           │ Vendor lock-in           │
-  │ (single table)  │ Conditional writes for OCC   │ Query limitations        │
-  └──────────────────────────────────────────────────────────────────────────┘
+**Postgresql event store table**
 
+```text
+CREATE TABLE events (
+    event_id        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    aggregate_id    VARCHAR(255) NOT NULL,
+    aggregate_type  VARCHAR(100) NOT NULL,
+    event_type      VARCHAR(100) NOT NULL,
+    version         INT NOT NULL,
+    data            JSONB NOT NULL,
+    metadata        JSONB,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
-  POSTGRESQL EVENT STORE TABLE:
-  ════════════════════════════
+    -- Optimistic concurrency: only ONE event per aggregate per version
+    UNIQUE (aggregate_id, version)
+);
 
-  CREATE TABLE events (
-      event_id        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      aggregate_id    VARCHAR(255) NOT NULL,
-      aggregate_type  VARCHAR(100) NOT NULL,
-      event_type      VARCHAR(100) NOT NULL,
-      version         INT NOT NULL,
-      data            JSONB NOT NULL,
-      metadata        JSONB,
-      created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-
-      -- Optimistic concurrency: only ONE event per aggregate per version
-      UNIQUE (aggregate_id, version)
-  );
-
-  CREATE INDEX idx_events_aggregate ON events (aggregate_id, version);
+CREATE INDEX idx_events_aggregate ON events (aggregate_id, version);
 ```
 
 ---
@@ -167,39 +162,31 @@ Optimistic Concurrency Control (OCC) using the `version` column. You place a `UN
 
 ## 3. Rebuilding State from Events
 
-```
-  To get current state of Order-42:
+To get the current state of `Order-42`:
 
-  1. Load ALL events for aggregate_id = "order-42" (ordered by version)
-  2. Start with empty state
-  3. Apply each event to build up state
+1. Load ALL events for `aggregate_id = "order-42"` (ordered by version).
+2. Start with an empty state.
+3. Apply each event to build up the state.
 
+**Event stream for Order-42**
 
-  ┌─── Event Stream for Order-42 ──────────────────────────────────────────┐
-  │                                                                         │
-  │  Event 1: OrderCreated{items:[A,B], total:100}                         │
-  │  Event 2: ItemAdded{item:C, price:50}                                  │
-  │  Event 3: OrderConfirmed{confirmedBy:"Harsha"}                         │
-  │  Event 4: PaymentReceived{amount:150, method:"CC"}                     │
-  │                                                                         │
-  └─────────────────────────────────────────────────────────────────────────┘
+| # | Event | Data |
+| --- | --- | --- |
+| 1 | `OrderCreated` | `{items:[A,B], total:100}` |
+| 2 | `ItemAdded` | `{item:C, price:50}` |
+| 3 | `OrderConfirmed` | `{confirmedBy:"Harsha"}` |
+| 4 | `PaymentReceived` | `{amount:150, method:"CC"}` |
 
-  APPLYING EVENTS:
+**Applying the events**
 
-  State after Event 1 (OrderCreated):
-  { status: "CREATED", items: [A,B], total: 100, version: 1 }
+| After event | State |
+| --- | --- |
+| 1 (`OrderCreated`) | `{ status: "CREATED", items: [A,B], total: 100, version: 1 }` |
+| 2 (`ItemAdded`) | `{ status: "CREATED", items: [A,B,C], total: 150, version: 2 }` |
+| 3 (`OrderConfirmed`) | `{ status: "CONFIRMED", items: [A,B,C], total: 150, version: 3 }` |
+| 4 (`PaymentReceived`) | `{ status: "PAID", items: [A,B,C], total: 150, paid: 150, version: 4 }` |
 
-  State after Event 2 (ItemAdded):
-  { status: "CREATED", items: [A,B,C], total: 150, version: 2 }
-
-  State after Event 3 (OrderConfirmed):
-  { status: "CONFIRMED", items: [A,B,C], total: 150, version: 3 }
-
-  State after Event 4 (PaymentReceived):
-  { status: "PAID", items: [A,B,C], total: 150, paid: 150, version: 4 }
-
-  → Final state = state after last event
-```
+The final state is the state after the last event.
 
 ```java
 // Java implementation:
@@ -269,53 +256,34 @@ You don't load all aggregates into memory at startup. Event Sourced aggregates a
 
 ## 4. Snapshots — Because Replaying 1 Million Events is Slow
 
+**The problem.** A bank account that has been open for 10 years might have 50,000 transactions. Loading the current balance means loading 50,000 events and replaying them, for every single query.
+
+**The solution: snapshots.** Periodically save the COMPUTED STATE as a snapshot, then replay only the events AFTER the snapshot.
+
+```mermaid
+flowchart LR
+  E1["Events 1-10,000<br/>Deposited $100, Withdrew $30, Deposited $200, ... 9,997 more"] --> S["Snapshot at event 10,000<br/>{ accountId: 'acc-1', balance: $45,230.00,<br/>version: 10000, status: 'ACTIVE' }"] --> E2["Events 10,001+<br/>Deposited $50, Withdrew $20, Deposited $75, ..."]
 ```
-  PROBLEM:
-  ════════
 
-  A bank account that's been open for 10 years might have 50,000 transactions.
-  Loading current balance = loading 50,000 events and replaying them.
-  For every single query!
+**How to read this diagram.** The snapshot captures the state after the first 10,000 events, so a rebuild starts from it instead of from the beginning.
 
+**To get the current state**
 
-  SOLUTION: Snapshots
-  ═══════════════════
+1. Load the snapshot (version 10,000, state `{balance: $45,230}`).
+2. Load the events AFTER version 10,000 (only 3 events).
+3. Replay only those 3 events on top of the snapshot.
 
-  Periodically save the COMPUTED STATE as a snapshot.
-  Then only replay events AFTER the snapshot.
+Instead of replaying 10,003 events, you replay 3.
 
-  ┌─── Event Stream ──────────────────────────────────────────────────────┐
-  │                                                                        │
-  │  Events 1-10,000          Snapshot at event 10,000     Events 10,001+  │
-  │  ──────────────           ────────────────────────     ──────────────  │
-  │  Deposited $100          ┌─────────────────────────┐   Deposited $50   │
-  │  Withdrew $30            │ {                        │   Withdrew $20   │
-  │  Deposited $200          │   accountId: "acc-1",   │   Deposited $75  │
-  │  ...                     │   balance: $45,230.00,  │   ...            │
-  │  ... 9,997 more ...      │   version: 10000,       │                  │
-  │                          │   status: "ACTIVE"       │                  │
-  │                          │ }                        │                  │
-  │                          └─────────────────────────┘                   │
-  │                                                                        │
-  └────────────────────────────────────────────────────────────────────────┘
+**When to snapshot**
 
-  To get current state:
-  1. Load snapshot (version 10,000, state: {balance: $45,230})
-  2. Load events AFTER version 10,000 (only 3 events!)
-  3. Replay only those 3 events on top of snapshot
+| Strategy | Example |
+| --- | --- |
+| Every N events | Every 100 events |
+| Every N minutes | Every hour |
+| When the rebuild time exceeds a threshold | More than 100 ms |
 
-  Instead of replaying 10,003 events → replay 3 events
-
-
-  WHEN TO SNAPSHOT:
-  ═════════════════
-
-  Strategy 1: Every N events (e.g., every 100 events)
-  Strategy 2: Every N minutes (e.g., every hour)
-  Strategy 3: When rebuild time exceeds threshold (e.g., > 100ms)
-
-  Typical: snapshot every 100-500 events
-```
+Typical: snapshot every 100-500 events.
 
 ---
 
@@ -331,62 +299,50 @@ No, that would destroy command-side performance. For the Write Model (to validat
 
 ## 5. Event Versioning — What Happens When Events Change
 
+**The problem**
+
+```text
+Version 1 of your app stored events like:
+OrderCreated { customer: "Harsha", total: 100 }
+
+Version 2 needs split name:
+OrderCreated { firstName: "Harsha", lastName: "V", total: 100, currency: "USD" }
+
+Old events in the store have the V1 format.
+You can NEVER change them (immutable!).
+How do you handle this?
 ```
-  THE PROBLEM:
-  ════════════
 
-  Version 1 of your app stored events like:
-  OrderCreated { customer: "Harsha", total: 100 }
+**SOLUTION: Upcasters**
 
-  Version 2 needs split name:
-  OrderCreated { firstName: "Harsha", lastName: "V", total: 100, currency: "USD" }
+```text
+When loading events, transform old format → new format on the fly:
 
-  Old events in the store have the V1 format.
-  You can NEVER change them (immutable!).
-  How do you handle this?
+class OrderCreatedV1toV2Upcaster {
+    public OrderCreatedV2 upcast(OrderCreatedV1 oldEvent) {
+        return new OrderCreatedV2(
+            firstName: oldEvent.customer.split(" ")[0],  // "Harsha"
+            lastName: oldEvent.customer.split(" ")[1],    // "V" (or "")
+            total: oldEvent.total,
+            currency: "USD"  // default, didn't exist in V1
+        );
+    }
+}
 
-
-  SOLUTION: Upcasters
-  ═══════════════════
-
-  When loading events, transform old format → new format on the fly:
-
-  class OrderCreatedV1toV2Upcaster {
-      public OrderCreatedV2 upcast(OrderCreatedV1 oldEvent) {
-          return new OrderCreatedV2(
-              firstName: oldEvent.customer.split(" ")[0],  // "Harsha"
-              lastName: oldEvent.customer.split(" ")[1],    // "V" (or "")
-              total: oldEvent.total,
-              currency: "USD"  // default, didn't exist in V1
-          );
-      }
-  }
-
-  Event loaded from store (V1) → upcaster → V2 format → apply to aggregate
-
-
-  VERSIONING STRATEGIES:
-  ══════════════════════
-
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │ Strategy              │ How                        │ When to Use         │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ Upcasting (runtime)   │ Transform on read           │ Additive changes    │
-  │                       │ Old events stay in store    │ Rename/split fields │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ Weak schema           │ Use JSONB, ignore unknown   │ Adding new optional │
-  │                       │ fields, defaults for missing │ fields              │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ New event type        │ OrderCreatedV2 as new type  │ Breaking changes    │
-  │                       │ Both V1 and V2 coexist      │ Semantic shifts      │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ Copy-transform        │ Migrate entire stream        │ Last resort         │
-  │                       │ Transform all events         │ Expensive but clean │
-  └──────────────────────────────────────────────────────────────────────────┘
-
-  GOLDEN RULE: Events are contracts. Be backward-compatible.
-  Add fields (with defaults), never remove or rename in the same type.
+Event loaded from store (V1) → upcaster → V2 format → apply to aggregate
 ```
+
+**Versioning strategies**
+
+| Strategy | How | When to use |
+| --- | --- | --- |
+| Upcasting (runtime) | Transform on read; old events stay in the store | Additive changes, rename/split fields |
+| Weak schema | Use JSONB, ignore unknown fields, defaults for missing | Adding new optional fields |
+| New event type | `OrderCreatedV2` as a new type; V1 and V2 coexist | Breaking changes, semantic shifts |
+| Copy-transform | Migrate the entire stream, transform all events | Last resort: expensive but clean |
+
+> [!IMPORTANT]
+> **Golden rule:** events are contracts. Be backward-compatible. Add fields (with defaults), never remove or rename in the same type.
 
 ---
 
@@ -402,146 +358,102 @@ You **never** edit the past event. Instead, you issue a new **Compensating Event
 
 ## 6. CQRS — Separate Read and Write Models
 
+**Command Query Responsibility Segregation (CQRS)**
+
+**Traditional: a single model for reads AND writes**
+
+One database with an `orders` table (`id`, `customer_id`, `status`, `total`, `items_json`, ...):
+
+- **Writes:** INSERT and UPDATE (normalized, constraints, ACID).
+- **Reads:** complex JOINs, aggregations, search.
+
+> [!WARNING]
+> **Problem:** you can't optimize for BOTH patterns. A model normalized for writes is slow for complex reads, and one denormalized for reads is complex to write.
+
+**CQRS: separate models**
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant CS as Command side (domain model, validates, persists to the event store)
+  participant QS as Query side (read models, denormalized, fast queries)
+  C->>CS: 1. POST /orders
+  CS-)QS: events (asynchronous event stream, builds the projection)
+  C->>QS: 2. GET /orders
+  QS-->>C: result
 ```
-  COMMAND QUERY RESPONSIBILITY SEGREGATION — CQRS FLOW DIAGRAM
-  ══════════════════════════════════════════════════════════════
 
-  ┌─ TRADITIONAL (single model for read AND write) ──────────────────────────┐
-  │                                                                             │
-  │  ┌── One Database ─────────────────────────────────────────────────────┐  │
-  │  │                                                                      │  │
-  │  │  Orders Table                                                        │  │
-  │  │  ┌──────────────────────────────────────────────────────────────┐  │  │
-  │  │  │ id │ customer_id │ status │ total │ items_json │ ...         │  │  │
-  │  │  └──────────────────────────────────────────────────────────────┘  │  │
-  │  │                                                                      │  │
-  │  │  WRITES: INSERT, UPDATE (normalized, constraints, ACID)            │  │
-  │  │  READS: Complex JOINs, aggregations, search                        │  │
-  │  │                                                                      │  │
-  │  │  PROBLEM: Can't optimize for BOTH patterns!                        │  │
-  │  │  • Normalized for writes → slow for complex reads                  │  │
-  │  │  • Denormalized for reads → complex for writes                     │  │
-  │  │                                                                      │  │
-  │  └────────────────────────────────────────────────────────────────────┘  │
-  └────────────────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** Commands go to the command side, which publishes events. The query side builds its own read models from those events, and queries are answered only from them.
 
-  ┌─ CQRS (separate models) — SEQUENCE DIAGRAM ─────────────────────────────────┐
-  │                                                                             │
-  │  CLIENT ──────────────── COMMAND ──────────────── QUERY                     │
-  │    │                        │                         ▲                     │
-  │    │ 1. POST /orders        │                         │                     │
-  │    │ ─────────────────────► │                         │                     │
-  │    │                        ▼                         │                     │
-  │    │                 ┌────────────────┐               │                     │
-  │    │                 │ COMMAND SIDE   │   Events      │                     │
-  │    │                 │                │ ─────────────►│                     │
-  │    │                 │ • Domain Model │               │                     │
-  │    │                 │ • Validates    │               │                     │
-  │    │                 │ • Persists to  │               │                     │
-  │    │                 │   Event Store  │               │                     │
-  │    │                 └────────────────┘               │                     │
-  │    │                                                   │                     │
-  │    │                 ┌────────────────┐    Projection │                     │
-  │    │                 │ QUERY SIDE     │ ◄─────────────┘                     │
-  │    │                 │                │                                     │
-  │    │  2. GET /orders │ • Read Models  │                                     │
-  │    │ ◄────────────── │ • Denormalized │                                     │
-  │    │                 │ • Fast queries │                                     │
-  │    │                 └────────────────┘                                     │
-  │                                                                             │
-  │  ┌─── COMMAND SIDE ────┐   ASYNC    ┌─── QUERY SIDE ───────────────┐       │
-  │  │ Handles:            │   EVENT    │ Handles:                     │       │
-  │  │ CreateOrder,        │   STREAM   │ GetOrderDetails,             │       │
-  │  │ CancelOrder,        │ ──────────►│ SearchOrders,                │       │
-  │  │ AddItem,            │            │ GetDashboardSummary          │       │
-  │  │ ConfirmPayment      │            │                              │       │
-  │  ├─────────────────────┤            ├──────────────────────────────┤       │
-  │  │ Model: Domain       │            │ Model: DTOs / View models    │       │
-  │  │ objects (rich       │            │ (flat, denormalized, fast)   │       │
-  │  │ behavior)           │            │                              │       │
-  │  ├─────────────────────┤            ├──────────────────────────────┤       │
-  │  │ Storage:            │            │ Storage: Read-optimized DB   │       │
-  │  │ Event Store         │            │ (materialized views,         │       │
-  │  │ (or normalized      │            │ Redis, Elastic, denorm.      │       │
-  │  │ RDBMS)              │            │ tables)                      │       │
-  │  └─────────────────────┘            └──────────────────────────────┘       │
-  │                                                                             │
-  │  ╔═══════════════════════════════════════════════════════════════════════╗ │
-  │  ║ KEY BENEFIT: Each side optimized for its specific use case!          ║ │
-  │  ║ Write side: ACID compliance, rich domain logic                       ║ │
-  │  ║ Read side: Fast queries, denormalized for O(1) lookups              ║ │
-  │  ╚═══════════════════════════════════════════════════════════════════════╝ │
-  └────────────────────────────────────────────────────────────────────────────┘
+| | Command side | Query side |
+| --- | --- | --- |
+| **Handles** | `CreateOrder`, `CancelOrder`, `AddItem`, `ConfirmPayment` | `GetOrderDetails`, `SearchOrders`, `GetDashboardSummary` |
+| **Model** | Domain objects (rich behavior) | DTOs / view models (flat, denormalized, fast) |
+| **Storage** | Event store (or a normalized RDBMS) | Read-optimized DB (materialized views, Redis, Elasticsearch, denormalized tables) |
 
+> [!IMPORTANT]
+> **Key benefit:** each side is optimized for its specific use case. The write side gets ACID compliance and rich domain logic. The read side gets fast queries, denormalized for O(1) lookups.
 
-  THE KEY INSIGHT:
-  ════════════════
+**The key insight.** Read and write have DIFFERENT requirements:
 
-  Read and write have DIFFERENT requirements:
+| Write | Read |
+| --- | --- |
+| Consistency (ACID) | Speed (sub-millisecond) |
+| Validation (business rules) | Flexibility (many query patterns) |
+| Normalized (no redundancy) | Denormalized (no JOINs needed) |
+| Low throughput (fewer writes) | High throughput (many reads) |
 
-  WRITE:                              READ:
-  • Consistency (ACID)                • Speed (sub-millisecond)
-  • Validation (business rules)       • Flexibility (many query patterns)
-  • Normalized (no redundancy)        • Denormalized (no JOINs needed)
-  • Low throughput (fewer writes)     • High throughput (many reads)
-
-  Optimizing for both in one model = compromise on both.
-  Separating them = optimize each independently.
-```
+Optimizing for both in one model is a compromise on both. Separating them lets you optimize each independently.
 
 ---
 
 ## 7. Projections — Building Read Models from Events
 
+A PROJECTION is a function that processes events and builds a read-optimized view.
+
+**Event stream**
+
+OrderCreated{id:42, customer:"Harsha", items:[A,B], total:100}
+
+OrderConfirmed{id:42}
+
+PaymentReceived{id:42, amount:100}
+
+OrderCreated{id:43, customer:"John", items:[C], total:50}
+
+OrderShipped{id:42, tracking:"TRK-123"}
+
+PROJECTION 1: Order Details (for customer portal)
+
+**┌── order_details_view ─────────────────────────────────────────┐ — order_id │ customer │ status  │ total │ tracking │ items**
+
+```text
+42       │ Harsha   │ SHIPPED │ 100   │ TRK-123  │ [A,B]
+43       │ John     │ CREATED │ 50    │ null     │ [C]
 ```
-  A PROJECTION is a function that processes events and builds a read-optimized view.
 
+PROJECTION 2: Dashboard Summary (for admin)
 
-  EVENT STREAM:
-  ═════════════
-  OrderCreated{id:42, customer:"Harsha", items:[A,B], total:100}
-  OrderConfirmed{id:42}
-  PaymentReceived{id:42, amount:100}
-  OrderCreated{id:43, customer:"John", items:[C], total:50}
-  OrderShipped{id:42, tracking:"TRK-123"}
+**┌── dashboard_stats ────────────────────────┐ — total_orders │ total_revenue │ avg_order**
 
-
-  PROJECTION 1: Order Details (for customer portal)
-  ══════════════════════════════════════════════════
-
-  ┌── order_details_view ─────────────────────────────────────────┐
-  │ order_id │ customer │ status  │ total │ tracking │ items      │
-  ├────────────────────────────────────────────────────────────────┤
-  │ 42       │ Harsha   │ SHIPPED │ 100   │ TRK-123  │ [A,B]     │
-  │ 43       │ John     │ CREATED │ 50    │ null     │ [C]       │
-  └────────────────────────────────────────────────────────────────┘
-
-
-  PROJECTION 2: Dashboard Summary (for admin)
-  ════════════════════════════════════════════
-
-  ┌── dashboard_stats ────────────────────────┐
-  │ total_orders │ total_revenue │ avg_order   │
-  ├────────────────────────────────────────────┤
-  │ 2            │ 150           │ 75          │
-  └────────────────────────────────────────────┘
-
-
-  PROJECTION 3: Customer Order Count (for analytics)
-  ═══════════════════════════════════════════════════
-
-  ┌── customer_stats ─────────────────┐
-  │ customer │ order_count │ total_spent│
-  ├───────────────────────────────────┤
-  │ Harsha   │ 1           │ 100       │
-  │ John     │ 1           │ 50        │
-  └───────────────────────────────────┘
-
-
-  Same events → 3 completely different read models.
-  Each optimized for its specific query pattern.
-  No JOINs needed — data is pre-computed.
+```text
+2            │ 150           │ 75
 ```
+
+PROJECTION 3: Customer Order Count (for analytics)
+
+**┌── customer_stats ─────────────────┐ — customer │ order_count │ total_spent**
+
+```text
+Harsha   │ 1           │ 100
+John     │ 1           │ 50
+```
+
+Same events → 3 completely different read models.
+
+Each optimized for its specific query pattern.
+
+No JOINs needed — data is pre-computed.
 
 ```java
 // Projection implementation:
@@ -592,73 +504,61 @@ This is the classic **Eventual Consistency** problem in CQRS. The Read Model (Pr
 
 ## 8. The Saga Pattern — Distributed Transactions Without 2PC
 
+**The problem.** An e-commerce order involves 3 services:
+
+1. Order service: create the order.
+2. Payment service: charge the credit card.
+3. Inventory service: reserve stock.
+
+In a monolith: `BEGIN TRANSACTION; do all three; COMMIT;`. In microservices, each service has its own database, and traditional distributed transactions (2PC) are slow and fragile.
+
+**The saga solution.** A saga is a sequence of LOCAL transactions. Each step either succeeds (move to the next) or fails (compensate the previous steps).
+
+**Happy path**
+
+```mermaid
+sequenceDiagram
+  participant O as Order service
+  participant P as Payment service
+  participant I as Inventory service
+  O->>O: Step 1: create the order (status PENDING)
+  O->>P: Step 2: charge the card ($150)
+  P->>I: Step 3: reserve stock (2 units of product A)
+  I-->>P: success
+  P-->>O: success
+  O->>O: Step 4: confirm the order (status CONFIRMED)
 ```
-  THE PROBLEM:
-  ════════════
 
-  E-commerce order involves 3 services:
-  1. Order Service → create order
-  2. Payment Service → charge credit card
-  3. Inventory Service → reserve stock
+**Failure path** (step 3 fails: out of stock)
 
-  In monolith: BEGIN TRANSACTION; do all three; COMMIT;
-  In microservices: Each service has its own database!
-  Cannot use traditional distributed transactions (2PC is slow, fragile).
-
-
-  THE SAGA SOLUTION:
-  ═══════════════════
-
-  A saga is a sequence of LOCAL transactions.
-  Each step either succeeds (move to next) or fails (compensate previous).
-
-
-  HAPPY PATH:
-  ═══════════
-
-  ┌─── Order Service ─────┐   ┌─── Payment Service ────┐   ┌── Inventory Service ──┐
-  │                        │   │                         │   │                        │
-  │ Step 1: Create order   │──→│ Step 2: Charge card     │──→│ Step 3: Reserve stock  │
-  │ (status: PENDING)      │   │ ($150 from CC)          │   │ (2 units of product A) │
-  │                        │   │                         │   │                        │
-  │ ✅ Success             │   │ ✅ Success              │   │ ✅ Success             │
-  │                        │   │                         │   │                        │
-  │ Step 4: Confirm order  │←──│                         │←──│                        │
-  │ (status: CONFIRMED)    │   │                         │   │                        │
-  └────────────────────────┘   └─────────────────────────┘   └────────────────────────┘
-
-
-  FAILURE PATH (Step 3 fails — out of stock):
-  ════════════════════════════════════════════
-
-  ┌─── Order Service ─────┐   ┌─── Payment Service ────┐   ┌── Inventory Service ──┐
-  │                        │   │                         │   │                        │
-  │ Step 1: Create order   │──→│ Step 2: Charge card     │──→│ Step 3: Reserve stock  │
-  │ (status: PENDING)      │   │ ($150 from CC)          │   │ ❌ OUT OF STOCK!       │
-  │                        │   │                         │   │                        │
-  │ Compensate Step 1:     │←──│ Compensate Step 2:      │←──│ (nothing to undo)      │
-  │ Cancel order           │   │ REFUND $150             │   │                        │
-  │ (status: CANCELLED)    │   │                         │   │                        │
-  └────────────────────────┘   └─────────────────────────┘   └────────────────────────┘
-
-
-  EACH STEP HAS A COMPENSATING ACTION:
-  ═════════════════════════════════════
-
-  ┌──────────────────────────────────────────────────────────┐
-  │ Step                  │ Compensating Action               │
-  ├──────────────────────────────────────────────────────────┤
-  │ Create Order          │ Cancel Order                      │
-  │ Charge Credit Card    │ Refund Credit Card                │
-  │ Reserve Inventory     │ Release Inventory                 │
-  │ Send Email            │ Send Cancellation Email            │
-  │ Ship Package          │ ?? (can't unsend! → manual handle)│
-  └──────────────────────────────────────────────────────────┘
-
-  IMPORTANT: Compensations are NOT rollbacks. They're new transactions
-  that logically undo the previous effect. The charge→refund BOTH
-  appear in the payment history (audit trail preserved).
+```mermaid
+sequenceDiagram
+  participant O as Order service
+  participant P as Payment service
+  participant I as Inventory service
+  O->>O: Step 1: create the order (status PENDING)
+  O->>P: Step 2: charge the card ($150)
+  P->>I: Step 3: reserve stock
+  I-->>P: OUT OF STOCK (nothing to undo here)
+  P->>P: Compensate step 2: REFUND $150
+  P-->>O: failed
+  O->>O: Compensate step 1: cancel the order (status CANCELLED)
 ```
+
+**How to read these diagrams.** On the happy path every local transaction succeeds. On the failure path, the saga runs a compensating action for each step that already completed, in reverse order.
+
+**Each step has a compensating action**
+
+| Step | Compensating action |
+| --- | --- |
+| Create order | Cancel order |
+| Charge credit card | Refund credit card |
+| Reserve inventory | Release inventory |
+| Send email | Send cancellation email |
+| Ship package | ?? (it can't be unsent, so it needs manual handling) |
+
+> [!IMPORTANT]
+> Compensations are NOT rollbacks. They are new transactions that logically undo the previous effect. Both the charge and the refund appear in the payment history, so the audit trail is preserved.
 
 ---
 
@@ -674,68 +574,71 @@ A traditional database rollback erases history—it's as if the transaction neve
 
 ## 9. Orchestration vs Choreography — Two Saga Approaches
 
+**ORCHESTRATION (Central Coordinator)**
+
+One service (the saga orchestrator) tells the other services what to do, like a conductor leading an orchestra.
+
+```mermaid
+stateDiagram-v2
+  [*] --> PENDING
+  PENDING --> PAYMENT_STARTED: send "Charge $150"
+  PAYMENT_STARTED --> INVENTORY_RESERVED: Payment OK, send "Reserve 2 units"
+  INVENTORY_RESERVED --> CONFIRMED: Reserved OK
+  PAYMENT_STARTED --> CANCELLED: Payment Failed
+  INVENTORY_RESERVED --> CANCELLED: Out of Stock, compensate payment
+  CONFIRMED --> [*]
+  CANCELLED --> [*]
 ```
-  ORCHESTRATION (Central Coordinator):
-  ════════════════════════════════════
 
-  One service (Saga Orchestrator) tells other services what to do.
-  Like a conductor leading an orchestra.
+**How to read this diagram.** The orchestrator keeps the saga's state machine. Each success moves it one step forward; any failure moves it to `CANCELLED` after sending compensating commands to the steps already done.
 
-  ┌─── Saga Orchestrator ──────────────────────────────────────────────┐
-  │                                                                     │
-  │  State Machine:                                                     │
-  │  PENDING → PAYMENT_STARTED → INVENTORY_RESERVED → CONFIRMED       │
-  │                                                                     │
-  │  1. Create order (local)                                           │
-  │  2. Send command → Payment Service: "Charge $150"                  │
-  │  3. Wait for reply: "Payment OK" or "Payment Failed"              │
-  │  4. Send command → Inventory Service: "Reserve 2 units"           │
-  │  5. Wait for reply: "Reserved OK" or "Out of Stock"               │
-  │  6. If all OK → confirm order                                      │
-  │  7. If any fails → send compensate commands to already-done steps  │
-  │                                                                     │
-  └─────────────────────────────────────────────────────────────────────┘
+1. Create the order (local).
+2. Send a command to the Payment Service: "Charge $150".
+3. Wait for the reply: "Payment OK" or "Payment Failed".
+4. Send a command to the Inventory Service: "Reserve 2 units".
+5. Wait for the reply: "Reserved OK" or "Out of Stock".
+6. If all succeed, confirm the order.
+7. If any fails, send compensating commands to the already-completed steps.
 
-  PROS:                              CONS:
-  ✅ Easy to understand the flow     ❌ Single point of failure
-  ✅ Easy to add new steps           ❌ Orchestrator can become complex
-  ✅ Centralized error handling      ❌ Tight coupling to orchestrator
-  ✅ Easy to test and debug          ❌ Orchestrator knows all services
+| Pros | Cons |
+| --- | --- |
+| ✅ Easy to understand the flow | ❌ Single point of failure |
+| ✅ Easy to add new steps | ❌ Orchestrator can become complex |
+| ✅ Centralized error handling | ❌ Tight coupling to the orchestrator |
+| ✅ Easy to test and debug | ❌ Orchestrator knows all services |
 
+**CHOREOGRAPHY (Event-driven, no coordinator)**
 
-  CHOREOGRAPHY (Event-driven, no coordinator):
-  ═════════════════════════════════════════════
+Each service listens for events and reacts, like dancers responding to music. There is no coordinator.
 
-  Each service listens for events and reacts. Like dancers responding to music.
-
-  Order Service                Payment Service              Inventory Service
-  ─────────────                ───────────────              ─────────────────
-  Create order ──→ publishes "OrderCreated" event
-                               │
-                   Listens for "OrderCreated"
-                   Charges card
-                   ──→ publishes "PaymentCompleted" event
-                                                            │
-                                              Listens for "PaymentCompleted"
-                                              Reserves stock
-                                              ──→ publishes "StockReserved"
-  │
-  Listens for "StockReserved"
-  Confirms order
-
-  PROS:                              CONS:
-  ✅ Loose coupling                  ❌ Hard to understand full flow
-  ✅ No single point of failure      ❌ Hard to debug (trace events)
-  ✅ Each service is autonomous      ❌ Cyclic dependencies possible
-  ✅ Easy to add consumers           ❌ Compensation logic is scattered
-
-
-  WHEN TO USE WHICH:
-  ══════════════════
-
-  Orchestration: Complex flows (5+ steps), need clear visibility, critical paths
-  Choreography: Simple flows (2-3 steps), high autonomy, scalability priority
+```mermaid
+sequenceDiagram
+  participant O as Order Service
+  participant P as Payment Service
+  participant I as Inventory Service
+  O->>P: publishes OrderCreated
+  Note over P: charges the card
+  P->>I: publishes PaymentCompleted
+  Note over I: reserves stock
+  I->>O: publishes StockReserved
+  Note over O: confirms the order
 ```
+
+**How to read this diagram.** Nobody issues commands. Each service reacts to the event published by the previous one and publishes its own, so the flow emerges from the chain of events.
+
+| Pros | Cons |
+| --- | --- |
+| ✅ Loose coupling | ❌ Hard to understand the full flow |
+| ✅ No single point of failure | ❌ Hard to debug (trace events) |
+| ✅ Each service is autonomous | ❌ Cyclic dependencies possible |
+| ✅ Easy to add consumers | ❌ Compensation logic is scattered |
+
+**When to use which**
+
+| Approach | Use for |
+| --- | --- |
+| Orchestration | Complex flows (5+ steps), need clear visibility, critical paths |
+| Choreography | Simple flows (2-3 steps), high autonomy, scalability priority |
 
 ---
 
@@ -751,51 +654,50 @@ In complex workflows, Choreography leads to a **"Distributed Monolith"** or **"P
 
 ## 10. When to Use (and NOT Use) Event Sourcing
 
+**✅ use event sourcing when**
+
+```text
+• Audit trail is a REQUIREMENT (finance, healthcare, compliance)
+• You need temporal queries ("what was state at time T?")
+• Domain has distinct events (orders, payments, bookings)
+• Debugging requires replaying exact sequence of events
+• Multiple read models needed from same data
+• Event-driven architecture already in place
+
+REAL EXAMPLES:
+• Banking: Every transaction is an event (ledger is event-sourced by nature!)
+• E-commerce: Order lifecycle (created→confirmed→paid→shipped→delivered)
+• Git: Commits are events, working directory is current state (projection!)
+• Accounting: Double-entry bookkeeping IS event sourcing
 ```
-  ✅ USE EVENT SOURCING WHEN:
-  ═══════════════════════════
 
-  • Audit trail is a REQUIREMENT (finance, healthcare, compliance)
-  • You need temporal queries ("what was state at time T?")
-  • Domain has distinct events (orders, payments, bookings)
-  • Debugging requires replaying exact sequence of events
-  • Multiple read models needed from same data
-  • Event-driven architecture already in place
+**❌ do not use event sourcing when**
 
-  REAL EXAMPLES:
-  • Banking: Every transaction is an event (ledger is event-sourced by nature!)
-  • E-commerce: Order lifecycle (created→confirmed→paid→shipped→delivered)
-  • Git: Commits are events, working directory is current state (projection!)
-  • Accounting: Double-entry bookkeeping IS event sourcing
+```text
+• Simple CRUD with no audit needs
+• Entities with many frequent updates (100+ events/second per entity)
+• Complex queries on current state (easier with traditional DB)
+• Small team unfamiliar with the pattern (steep learning curve)
+• No clear domain events (if you can't name the events, don't use it)
+```
 
+**Complexity trade-offs**
 
-  ❌ DO NOT USE EVENT SOURCING WHEN:
-  ═══════════════════════════════════
-
-  • Simple CRUD with no audit needs
-  • Entities with many frequent updates (100+ events/second per entity)
-  • Complex queries on current state (easier with traditional DB)
-  • Small team unfamiliar with the pattern (steep learning curve)
-  • No clear domain events (if you can't name the events, don't use it)
+```text
+TRADITIONAL                          EVENT SOURCED
+───────────                          ─────────────
+Simple reads (just query DB)         Complex reads (build projections)
+Complex writes (ensure consistency)  Simple writes (just append event)
+No built-in audit trail              Full audit trail for free
+Schema migrations                    Event versioning / upcasting
+One model                            Multiple models (CQRS)
+SQL knowledge sufficient             Event modeling expertise needed
 
 
-  COMPLEXITY TRADE-OFFS:
-  ══════════════════════
-
-  TRADITIONAL                          EVENT SOURCED
-  ───────────                          ─────────────
-  Simple reads (just query DB)         Complex reads (build projections)
-  Complex writes (ensure consistency)  Simple writes (just append event)
-  No built-in audit trail              Full audit trail for free
-  Schema migrations                    Event versioning / upcasting
-  One model                            Multiple models (CQRS)
-  SQL knowledge sufficient             Event modeling expertise needed
-
-
-  START SIMPLE:
-  Use CQRS without event sourcing first.
-  Separate read/write models with traditional DB.
-  Add event sourcing later IF you need the audit trail.
+START SIMPLE:
+Use CQRS without event sourcing first.
+Separate read/write models with traditional DB.
+Add event sourcing later IF you need the audit trail.
 ```
 
 ---

@@ -38,132 +38,96 @@
 
 Most developers think: "It starts the app." Here's what ACTUALLY happens — 23 steps:
 
+#### Phase 1: bootstrap (before Spring even exists)
+
+1. `main()` calls `SpringApplication.run(MyApp.class, args)`.
+2. The `SpringApplication` constructor runs:
+   - Detects the `WebApplicationType` (SERVLET, REACTIVE or NONE).
+   - Loads `SpringApplicationRunListeners` from `META-INF/spring.factories`.
+   - Loads `ApplicationContextInitializer`s from `spring.factories`.
+3. Run listeners are notified of the "starting" event.
+4. The environment is created (`StandardServletEnvironment`):
+   - System properties are loaded (`java.home`, `os.name`, and so on).
+   - Environment variables are loaded.
+   - `application.properties` / `application.yml` are parsed.
+   - Command-line args (`--server.port=8081`) override everything.
+   - Profile-specific files are loaded (`application-dev.yml`).
+5. The banner is printed (the Spring ASCII art logo).
+
+#### Phase 2: context creation (building the container)
+
+6. The `ApplicationContext` is created:
+   - SERVLET → `AnnotationConfigServletWebServerApplicationContext`
+   - REACTIVE → `AnnotationConfigReactiveWebServerApplicationContext`
+   - NONE → `AnnotationConfigApplicationContext`
+7. The context is prepared:
+   - `ApplicationContextInitializer`s are called (to customize the context).
+   - The main source class (`MyApp.class`) is registered as a `BeanDefinition`.
+   - Run listeners are notified: "contextPrepared".
+
+#### Phase 3: bean discovery (finding all your beans)
+
+8. `@ComponentScan` starts from the `MyApp.class` package:
+   - Scans ALL `.class` files in that package and its sub-packages.
+   - For each class, checks for `@Component`, `@Service`, `@Repository`, `@Controller`, `@Configuration` and `@RestController`.
+   - Creates a `BeanDefinition` for each discovered component.
+9. `@Configuration` classes are processed:
+   - `@Bean` methods are discovered, and each becomes a `BeanDefinition`.
+   - `@Import` annotations are processed recursively.
+10. Auto-configuration is loaded:
+    - Reads `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` (Spring Boot 3.x), or `META-INF/spring.factories` (Spring Boot 2.x).
+    - Loads a large number of auto-configuration classes (well over 100).
+    - Each is evaluated against its `@Conditional` annotations.
+    - Only the matching ones become `BeanDefinition`s.
+
+#### Phase 4: bean creation (instantiating everything)
+
+11. `BeanDefinition`s are sorted by dependency order: the dependency graph is built, and circular dependencies are detected.
+12. Singleton beans are instantiated (in dependency order):
+    - The constructor is called (dependency injection happens here).
+    - Properties are populated (`@Value`, `@Autowired` fields).
+    - Aware interfaces are called (`BeanNameAware`, `ApplicationContextAware`).
+    - `BeanPostProcessor.postProcessBeforeInitialization()` runs.
+    - The `@PostConstruct` method is called.
+    - `InitializingBean.afterPropertiesSet()` is called.
+    - `BeanPostProcessor.postProcessAfterInitialization()` runs. **This is where proxies get created** (`@Transactional`, `@Cacheable`).
+
+#### Phase 5: web server (starting Tomcat/Netty)
+
+13. The embedded web server is created:
+    - `TomcatServletWebServerFactory` (or Jetty/Undertow).
+    - A Tomcat instance is created with the configured port.
+    - `DispatcherServlet` is registered.
+    - All `Filter` beans are registered.
+14. `DispatcherServlet` is initialized:
+    - `HandlerMapping` beans are loaded (they map URLs to controllers).
+    - `HandlerAdapter` beans are loaded (they call controller methods).
+    - `ExceptionResolver` beans are loaded.
+    - `ViewResolver` beans are loaded (if you use templates).
+15. The web server is started (Tomcat starts listening).
+
+#### Phase 6: ready
+
+16. `ApplicationRunner` and `CommandLineRunner` beans are executed.
+17. Run listeners are notified: "ready".
+18. The application is now serving requests.
+
+```mermaid
+flowchart TD
+  P1["Phase 1: Bootstrap<br/>steps 1-5"] --> P2["Phase 2: Context creation<br/>steps 6-7"] --> P3["Phase 3: Bean discovery<br/>steps 8-10"] --> P4["Phase 4: Bean creation<br/>steps 11-12"] --> P5["Phase 5: Web server<br/>steps 13-15"] --> P6["Phase 6: Ready<br/>steps 16-18"]
 ```
-  PHASE 1: BOOTSTRAP (Before Spring even exists)
-  ──────────────────────────────────────────────
 
-  Step 1:  main() calls SpringApplication.run(MyApp.class, args)
-           │
-  Step 2:  SpringApplication constructor runs:
-           │  → Detects WebApplicationType (SERVLET, REACTIVE, or NONE)
-           │  → Loads SpringApplicationRunListeners from META-INF/spring.factories
-           │  → Loads ApplicationContextInitializers from spring.factories
-           │
-  Step 3:  Run listeners notified: "starting" event
-           │
-  Step 4:  Environment created (StandardServletEnvironment)
-           │  → System properties loaded (java.home, os.name, etc.)
-           │  → Environment variables loaded
-           │  → application.properties / application.yml parsed
-           │  → Command-line args (--server.port=8081) override everything
-           │  → Profile-specific files loaded (application-dev.yml)
-           │
-  Step 5:  Banner printed (the Spring ASCII art logo)
-           │
-           ▼
-  PHASE 2: CONTEXT CREATION (Building the container)
-  ──────────────────────────────────────────────────
-
-  Step 6:  ApplicationContext created:
-           │  SERVLET  → AnnotationConfigServletWebServerApplicationContext
-           │  REACTIVE → AnnotationConfigReactiveWebServerApplicationContext
-           │  NONE     → AnnotationConfigApplicationContext
-           │
-  Step 7:  Context prepared:
-           │  → ApplicationContextInitializers called (customize context)
-           │  → Main source class (MyApp.class) registered as BeanDefinition
-           │  → Run listeners notified: "contextPrepared"
-           │
-           ▼
-  PHASE 3: BEAN DISCOVERY (Finding all your beans)
-  ─────────────────────────────────────────────────
-
-  Step 8:  @ComponentScan starts from MyApp.class package
-           │  → Scans ALL .class files in that package and sub-packages
-           │  → For each class: checks for @Component, @Service, @Repository,
-           │    @Controller, @Configuration, @RestController
-           │  → Creates BeanDefinition for each discovered component
-           │
-  Step 9:  @Configuration classes processed:
-           │  → @Bean methods discovered
-           │  → Each @Bean method becomes a BeanDefinition
-           │  → @Import annotations processed recursively
-           │
-  Step 10: Auto-configuration loaded:
-           │  → Reads META-INF/spring/org.springframework.boot.autoconfigure
-           │    .AutoConfiguration.imports  (Spring Boot 3.x)
-           │  → OR META-INF/spring.factories (Spring Boot 2.x)
-           │  → Loads 100+ auto-configuration classes
-           │  → Each evaluated against @Conditional annotations
-           │  → Only matching ones become BeanDefinitions
-           │
-           ▼
-  PHASE 4: BEAN CREATION (Instantiating everything)
-  ─────────────────────────────────────────────────
-
-  Step 11: BeanDefinitions sorted by dependency order
-           │  → Dependency graph built
-           │  → Circular dependency detection
-           │
-  Step 12: Singleton beans instantiated (in dependency order):
-           │  → Constructor called (dependency injection happens here)
-           │  → Properties populated (@Value, @Autowired fields)
-           │  → Aware interfaces called (BeanNameAware, ApplicationContextAware)
-           │  → BeanPostProcessor.postProcessBeforeInitialization()
-           │  → @PostConstruct method called
-           │  → InitializingBean.afterPropertiesSet()
-           │  → BeanPostProcessor.postProcessAfterInitialization()
-           │    ↑ THIS is where proxies get created (@Transactional, @Cacheable)
-           │
-           ▼
-  PHASE 5: WEB SERVER (Starting Tomcat/Netty)
-  ────────────────────────────────────────────
-
-  Step 13: Embedded web server created:
-           │  → TomcatServletWebServerFactory (or Jetty/Undertow)
-           │  → Tomcat instance created with configured port
-           │  → DispatcherServlet registered
-           │  → All Filter beans registered
-           │
-  Step 14: DispatcherServlet initialized:
-           │  → HandlerMapping beans loaded (maps URL → controller)
-           │  → HandlerAdapter beans loaded (calls controller methods)
-           │  → ExceptionResolver beans loaded
-           │  → ViewResolver beans loaded (if using templates)
-           │
-  Step 15: Web server started (Tomcat starts listening)
-           │
-           ▼
-  PHASE 6: READY
-  ──────────────
-
-  Step 16: ApplicationRunner and CommandLineRunner beans executed
-  Step 17: Run listeners notified: "ready"
-  Step 18: Application is now serving requests!
-```
+**How to read this diagram.** The six phases always run in this order, from top to bottom.
 
 ### Interview Deep Question: "What's the difference between BeanDefinition and Bean?"
 
-```
-  BeanDefinition                              Bean (Actual Object)
-  ═══════════════                             ═══════════════════
-  ┌─────────────────────────┐                 ┌─────────────────────────┐
-  │ METADATA about a bean   │                 │ ACTUAL Java object      │
-  │                         │    creates      │                         │
-  │ • Class name            │ ──────────────► │ • Lives in heap memory  │
-  │ • Scope (singleton?)    │                 │ • Has real state        │
-  │ • Constructor args      │                 │ • Receives requests     │
-  │ • Property values       │                 │ • Does actual work      │
-  │ • Init method name      │                 │                         │
-  │ • Destroy method name   │                 │ (May be wrapped in      │
-  │ • Lazy init?            │                 │  a CGLIB proxy!)        │
-  │ • Depends-on            │                 │                         │
-  └─────────────────────────┘                 └─────────────────────────┘
+| | BeanDefinition | Bean (actual object) |
+| --- | --- | --- |
+| **What it is** | METADATA about a bean | The ACTUAL Java object |
+| **Holds** | Class name, scope (singleton?), constructor args, property values, init method name, destroy method name, lazy init?, depends-on | State; lives in heap memory; receives requests; does the actual work (may be wrapped in a CGLIB proxy) |
+| **Analogy** | Blueprint / recipe | The actual house / dish built from that blueprint |
 
-  Think of it like:
-  BeanDefinition = Blueprint/Recipe
-  Bean           = The actual house/dish built from that blueprint
-```
+A `BeanDefinition` **creates** a bean.
 
 ### What's in a BeanDefinition?
 
@@ -227,32 +191,32 @@ public @interface Component {
 
 ### The Three Players That Make Annotations Work
 
+**HOW ANNOTATIONS COME TO LIFE**
+
+**Player 1: THE ANNOTATION ITSELF**
+
+```text
+@Component, @Service, @Autowired, @Transactional
+→ Just metadata. Just a label. Does nothing alone.
 ```
-  ┌──────────────────────────────────────────────────────────────────────┐
-  │               HOW ANNOTATIONS COME TO LIFE                          │
-  ├──────────────────────────────────────────────────────────────────────┤
-  │                                                                     │
-  │  Player 1: THE ANNOTATION ITSELF                                    │
-  │  ───────────────────────────────                                    │
-  │  @Component, @Service, @Autowired, @Transactional                   │
-  │  → Just metadata. Just a label. Does nothing alone.                 │
-  │                                                                     │
-  │  Player 2: THE PROCESSOR (reads the annotation)                     │
-  │  ──────────────────────────────────────────────                     │
-  │  ClassPathBeanDefinitionScanner    → reads @Component               │
-  │  AutowiredAnnotationBeanPostProcessor → reads @Autowired            │
-  │  CommonAnnotationBeanPostProcessor → reads @PostConstruct           │
-  │  PersistenceAnnotationBPP         → reads @PersistenceContext       │
-  │  AsyncAnnotationBeanPostProcessor → reads @Async                    │
-  │                                                                     │
-  │  Player 3: THE MECHANISM (Java Reflection API)                      │
-  │  ────────────────────────────────────────────                       │
-  │  clazz.isAnnotationPresent(Component.class)  → "Is this marked?"   │
-  │  clazz.getAnnotation(Component.class)        → "Read the marker"   │
-  │  field.isAnnotationPresent(Autowired.class)  → "Inject this?"      │
-  │  method.getAnnotation(Transactional.class)   → "Wrap in proxy?"    │
-  │                                                                     │
-  └──────────────────────────────────────────────────────────────────────┘
+
+**Player 2: THE PROCESSOR (reads the annotation)**
+
+```text
+ClassPathBeanDefinitionScanner    → reads @Component
+AutowiredAnnotationBeanPostProcessor → reads @Autowired
+CommonAnnotationBeanPostProcessor → reads @PostConstruct
+PersistenceAnnotationBPP         → reads @PersistenceContext
+AsyncAnnotationBeanPostProcessor → reads @Async
+```
+
+**Player 3: THE MECHANISM (Java Reflection API)**
+
+```text
+clazz.isAnnotationPresent(Component.class)  → "Is this marked?"
+clazz.getAnnotation(Component.class)        → "Read the marker"
+field.isAnnotationPresent(Autowired.class)  → "Inject this?"
+method.getAnnotation(Transactional.class)   → "Wrap in proxy?"
 ```
 
 ### Step-by-Step: What Happens When Spring Sees @Service
@@ -262,67 +226,64 @@ public @interface Component {
 public class PaymentService { ... }
 ```
 
+#### Step 1: classpath scanning
+
+`ClassPathBeanDefinitionScanner` scans the `com.myapp` package:
+
+1. It finds the `PaymentService.class` file on disk or in a JAR.
+2. It loads the class: `Class<?> clazz = classLoader.loadClass("com.myapp.PaymentService");`
+3. It checks `clazz.isAnnotationPresent(Component.class)`. `@Service` is meta-annotated with `@Component`, so the answer is YES (Spring checks the annotation hierarchy recursively).
+4. It creates a `BeanDefinition`:
+
+```java
+ScannedGenericBeanDefinition bd = new ScannedGenericBeanDefinition();
+bd.setBeanClassName("com.myapp.PaymentService");
+bd.setScope("singleton");
+registry.registerBeanDefinition("paymentService", bd);
 ```
-  Step 1: CLASSPATH SCANNING
-  ─────────────────────────
-  ClassPathBeanDefinitionScanner scans "com.myapp" package
-  │
-  ├── Finds PaymentService.class file on disk/JAR
-  │
-  ├── Loads class using ClassLoader:
-  │   Class<?> clazz = classLoader.loadClass("com.myapp.PaymentService");
-  │
-  ├── Checks: clazz.isAnnotationPresent(Component.class)?
-  │   @Service is meta-annotated with @Component, so YES!
-  │   (Spring checks the annotation hierarchy recursively)
-  │
-  ├── @Service → contains @Component → MATCH!
-  │
-  └── Creates BeanDefinition:
-      ScannedGenericBeanDefinition bd = new ScannedGenericBeanDefinition();
-      bd.setBeanClassName("com.myapp.PaymentService");
-      bd.setScope("singleton");
-      registry.registerBeanDefinition("paymentService", bd);
 
-  Step 2: ANNOTATION HIERARCHY (Why @Service works as @Component)
-  ──────────────────────────────────────────────────────────────
+#### Step 2: annotation hierarchy (why `@Service` works as `@Component`)
 
-  @Service source code:
-  ┌────────────────────────────────────────┐
-  │  @Target(ElementType.TYPE)             │
-  │  @Retention(RetentionPolicy.RUNTIME)   │
-  │  @Documented                           │
-  │  @Component   ← THIS IS THE KEY!      │
-  │  public @interface Service {           │
-  │      @AliasFor(annotation =            │
-  │        Component.class)                │
-  │      String value() default "";        │
-  │  }                                     │
-  └────────────────────────────────────────┘
+`@Service` source code:
 
-  The inheritance chain:
-  @Service       → meta-annotated with @Component
-  @Repository    → meta-annotated with @Component
-  @Controller    → meta-annotated with @Component
-  @RestController → meta-annotated with @Controller → @Component
-  @Configuration → meta-annotated with @Component (+ CGLIB proxying)
-
-  So ClassPathBeanDefinitionScanner only looks for @Component,
-  and automatically catches ALL stereotype annotations.
-
-  Step 3: BEAN INSTANTIATION
-  ─────────────────────────
-  When ApplicationContext needs PaymentService:
-  │
-  ├── Reads BeanDefinition
-  ├── Resolves constructor dependencies (other beans)
-  ├── Calls constructor via reflection:
-  │   Constructor<?> ctor = clazz.getDeclaredConstructor(UserRepo.class);
-  │   Object bean = ctor.newInstance(userRepoBean);
-  │
-  ├── BeanPostProcessors run (may wrap in proxy)
-  └── Bean stored in singleton cache (ConcurrentHashMap)
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Component   // <- THIS IS THE KEY!
+public @interface Service {
+    @AliasFor(annotation = Component.class)
+    String value() default "";
+}
 ```
+
+The inheritance chain:
+
+| Annotation | Meta-annotated with |
+| --- | --- |
+| `@Service` | `@Component` |
+| `@Repository` | `@Component` |
+| `@Controller` | `@Component` |
+| `@RestController` | `@Controller` → `@Component` |
+| `@Configuration` | `@Component` (plus CGLIB proxying) |
+
+So `ClassPathBeanDefinitionScanner` only looks for `@Component`, and automatically catches ALL stereotype annotations.
+
+#### Step 3: bean instantiation
+
+When the `ApplicationContext` needs `PaymentService`:
+
+1. It reads the `BeanDefinition`.
+2. It resolves the constructor dependencies (other beans).
+3. It calls the constructor via reflection:
+
+```java
+Constructor<?> ctor = clazz.getDeclaredConstructor(UserRepo.class);
+Object bean = ctor.newInstance(userRepoBean);
+```
+
+4. `BeanPostProcessor`s run (they may wrap the bean in a proxy).
+5. The bean is stored in the singleton cache (a `ConcurrentHashMap`).
 
 ### The @Retention Mystery — Why Some Annotations Disappear
 
@@ -390,7 +351,6 @@ public class OrderService {
   Step 4: OrderService now has paymentService injected!
 
   THIS is why constructor injection is preferred:
-  ┌──────────────────────────────────────────────────────────────────┐
   │ Field injection:                                                │
   │   1. Object created with empty fields (null)                    │
   │   2. Reflection hacks private access to set field               │
@@ -403,7 +363,6 @@ public class OrderService {
   │   3. Compiler validates everything                              │
   │   4. Easy to test (just pass mocks to constructor)              │
   │   5. Fails FAST if dependency missing (at startup)              │
-  └──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -412,68 +371,63 @@ public class OrderService {
 
 ### What IS the ApplicationContext?
 
+ApplicationContext is a FANCY HashMap
+
+At its core, Spring's container is:
+
+```java
+DefaultSingletonBeanRegistry
+
+/** Cache of singleton objects: bean name → bean instance */
+Map<String, Object> singletonObjects =
+    new ConcurrentHashMap<>(256);
+
+/** Cache of singleton factories: bean name → ObjectFactory */
+Map<String, ObjectFactory<?>> singletonFactories =
+    new HashMap<>(16);
+
+/** Cache of early singleton objects (for circular deps) */
+Map<String, Object> earlySingletonObjects =
+    new ConcurrentHashMap<>(16);
 ```
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │                                                                         │
-  │  ApplicationContext is a FANCY HashMap                                   │
-  │                                                                         │
-  │  At its core, Spring's container is:                                    │
-  │                                                                         │
-  │  ┌───────────────────────────────────────────────────────────────────┐  │
-  │  │  DefaultSingletonBeanRegistry                                     │  │
-  │  │                                                                   │  │
-  │  │  /** Cache of singleton objects: bean name → bean instance */     │  │
-  │  │  Map<String, Object> singletonObjects =                          │  │
-  │  │      new ConcurrentHashMap<>(256);                               │  │
-  │  │                                                                   │  │
-  │  │  /** Cache of singleton factories: bean name → ObjectFactory */  │  │
-  │  │  Map<String, ObjectFactory<?>> singletonFactories =              │  │
-  │  │      new HashMap<>(16);                                          │  │
-  │  │                                                                   │  │
-  │  │  /** Cache of early singleton objects (for circular deps) */     │  │
-  │  │  Map<String, Object> earlySingletonObjects =                     │  │
-  │  │      new ConcurrentHashMap<>(16);                                │  │
-  │  └───────────────────────────────────────────────────────────────────┘  │
-  │                                                                         │
-  │  These THREE maps = "Three-Level Cache" for resolving circular deps    │
-  └──────────────────────────────────────────────────────────────────────────┘
-```
+
+These THREE maps = "Three-Level Cache" for resolving circular deps
 
 ### The ApplicationContext Class Hierarchy
 
-```
-  BeanFactory (interface)
-  │  → Core container: getBean(), containsBean()
-  │  → Lazy initialization
-  │
-  └── ListableBeanFactory (interface)
-      │  → Can list all beans: getBeanDefinitionNames()
-      │
-      └── ApplicationContext (interface)
-          │  → Event publishing (ApplicationEvent)
-          │  → Message source (i18n)
-          │  → Resource loading (classpath:, file:)
-          │  → Environment (profiles, properties)
-          │
-          ├── AnnotationConfigApplicationContext
-          │   → For standalone Java apps
-          │   → @Configuration class-based
-          │
-          ├── AnnotationConfigServletWebServerApplicationContext
-          │   → For Spring Boot web apps
-          │   → Starts embedded Tomcat/Jetty
-          │
-          └── AnnotationConfigReactiveWebServerApplicationContext
-              → For Spring WebFlux apps
-              → Starts embedded Netty
+```text
+ BeanFactory (interface)
+→ Core container: getBean(), containsBean()
+→ Lazy initialization
 
-  INTERVIEW: "What's the difference between BeanFactory and ApplicationContext?"
+ └── ListableBeanFactory (interface)
+→ Can list all beans: getBeanDefinitionNames()
 
-  BeanFactory = Lazy. Creates beans ONLY when requested.
-  ApplicationContext = Eager. Creates ALL singletons at startup.
-  ApplicationContext adds: events, i18n, resource loading, AOP.
+     └── ApplicationContext (interface)
+→ Event publishing (ApplicationEvent)
+→ Message source (i18n)
+→ Resource loading (classpath:, file:)
+→ Environment (profiles, properties)
 
-  In practice: Always use ApplicationContext. BeanFactory is too low-level.
+         ├── AnnotationConfigApplicationContext
+ → For standalone Java apps
+ → @Configuration class-based
+
+         ├── AnnotationConfigServletWebServerApplicationContext
+ → For Spring Boot web apps
+ → Starts embedded Tomcat/Jetty
+
+         └── AnnotationConfigReactiveWebServerApplicationContext
+             → For Spring WebFlux apps
+             → Starts embedded Netty
+
+ INTERVIEW: "What's the difference between BeanFactory and ApplicationContext?"
+
+ BeanFactory = Lazy. Creates beans ONLY when requested.
+ ApplicationContext = Eager. Creates ALL singletons at startup.
+ ApplicationContext adds: events, i18n, resource loading, AOP.
+
+ In practice: Always use ApplicationContext. BeanFactory is too low-level.
 ```
 
 ### How getBean() Works Internally
@@ -532,117 +486,38 @@ protected Object doGetBean(String name) {
 
 ## 4. Bean Creation — The 11-Step Lifecycle You Must Know
 
+**The complete bean lifecycle: all 11 steps**
+
+```mermaid
+flowchart TD
+  S0["BeanDefinition loaded"] --> S1["1. INSTANTIATION<br/>constructor called; the bean exists but is EMPTY (no dependencies yet)"]
+  S1 --> S2["2. POPULATE PROPERTIES<br/>@Autowired fields injected via reflection, @Value resolved, setter injection"]
+  S2 --> S3["3. BeanNameAware<br/>setBeanName('orderService')"]
+  S3 --> S4["4. BeanFactoryAware<br/>setBeanFactory(beanFactory)"]
+  S4 --> S5["5. ApplicationContextAware<br/>setApplicationContext(ctx)"]
+  S5 --> S6["6. BeanPostProcessor: BEFORE initialization<br/>postProcessBeforeInitialization() of ALL registered BPPs"]
+  S6 --> S7["7. @PostConstruct<br/>called by CommonAnnotationBeanPostProcessor during step 6"]
+  S7 --> S8["8. InitializingBean.afterPropertiesSet()"]
+  S8 --> S9["9. Custom init-method<br/>@Bean(initMethod = 'setup')"]
+  S9 --> S10["10. BeanPostProcessor: AFTER initialization<br/>postProcessAfterInitialization(): proxies are created here"]
+  S10 --> S11["11. Bean is READY<br/>stored in singletonObjects, injected via @Autowired"]
+  S11 -->|"on shutdown"| D["DESTRUCTION<br/>@PreDestroy, DisposableBean.destroy(), custom destroyMethod"]
 ```
-  ┌────────────────────────────────────────────────────────────────────────────┐
-  │              THE COMPLETE BEAN LIFECYCLE — ALL 11 STEPS                    │
-  │                      STATE MACHINE VISUALIZATION                          │
-  ┌────────────────────────────────────────────────────────────────────────────┐
-  │  STATE: NEW ──► INSTANTIATED ──► POPULATED ──► AWARE ──► INITIALIZING ──► READY │
-  │  BeanDefinition      Constructor    @Autowired    Callbacks    @PostConstruct │
-  │  loaded              called         injected      processed    + afterPropertiesSet │
-  └────────────────────────────────────────────────────────────────────────────┘
-  │                                                                           │
-  │  BeanDefinition loaded                                                    │
-  │         │                                                                 │
-  │         ▼                                                                 │
-  │  ┌─── STEP 1: INSTANTIATION ──────────────────────────────────────────┐  │
-  │  │ Constructor called (new MyService() or constructor injection)       │  │
-  │  │ Bean exists in memory but is EMPTY — no dependencies yet           │  │
-  │  └────────────────────────────────────────────────────────────────────┘  │
-  │         │                                                                 │
-  │         ▼                                                                 │
-  │  ┌─── STEP 2: POPULATE PROPERTIES ────────────────────────────────────┐  │
-  │  │ @Autowired fields injected via reflection                          │  │
-  │  │ @Value properties resolved from environment                        │  │
-  │  │ Setter injection happens here                                      │  │
-  │  └────────────────────────────────────────────────────────────────────┘  │
-  │         │                                                                 │
-  │         ▼                                                                 │
-  │  ┌─── STEP 3: BeanNameAware ──────────────────────────────────────────┐  │
-  │  │ If bean implements BeanNameAware:                                   │  │
-  │  │   setBeanName("orderService") called                               │  │
-  │  │ Bean now knows its own name in the container                       │  │
-  │  └────────────────────────────────────────────────────────────────────┘  │
-  │         │                                                                 │
-  │         ▼                                                                 │
-  │  ┌─── STEP 4: BeanFactoryAware ──────────────────────────────────────┐  │
-  │  │ If bean implements BeanFactoryAware:                               │  │
-  │  │   setBeanFactory(beanFactory) called                               │  │
-  │  │ Bean can now look up other beans programmatically                  │  │
-  │  └────────────────────────────────────────────────────────────────────┘  │
-  │         │                                                                 │
-  │         ▼                                                                 │
-  │  ┌─── STEP 5: ApplicationContextAware ────────────────────────────────┐  │
-  │  │ If bean implements ApplicationContextAware:                        │  │
-  │  │   setApplicationContext(ctx) called                                │  │
-  │  │ Bean gets access to the full container (events, resources, etc.)   │  │
-  │  └────────────────────────────────────────────────────────────────────┘  │
-  │         │                                                                 │
-  │         ▼                                                                 │
-  │  ┌─── STEP 6: BeanPostProcessor — BEFORE Initialization ─────────────┐  │
-  │  │ ALL registered BeanPostProcessors' postProcessBeforeInit() called  │  │
-  │  │                                                                    │  │
-  │  │ Who uses this?                                                     │  │
-  │  │ • CommonAnnotationBPP → processes @PostConstruct                   │  │
-  │  │ • ApplicationContextAwareProcessor → Aware callbacks               │  │
-  │  └────────────────────────────────────────────────────────────────────┘  │
-  │         │                                                                 │
-  │         ▼                                                                 │
-  │  ┌─── STEP 7: @PostConstruct ─────────────────────────────────────────┐  │
-  │  │ Your @PostConstruct method called                                  │  │
-  │  │ Use for: Validation, loading caches, opening connections           │  │
-  │  │ NOTE: This is called BY the CommonAnnotationBeanPostProcessor      │  │
-  │  │       during step 6 — it's technically part of "before init"       │  │
-  │  └────────────────────────────────────────────────────────────────────┘  │
-  │         │                                                                 │
-  │         ▼                                                                 │
-  │  ┌─── STEP 8: InitializingBean.afterPropertiesSet() ──────────────────┐  │
-  │  │ If bean implements InitializingBean:                                │  │
-  │  │   afterPropertiesSet() called                                      │  │
-  │  │ Alternative to @PostConstruct (less preferred, couples to Spring)   │  │
-  │  └─────────────────────────────────────────────────────────────────────┘  │
-  │         │                                                                 │
-  │         ▼                                                                 │
-  │  ┌─── STEP 9: Custom init-method ─────────────────────────────────────┐  │
-  │  │ If @Bean(initMethod = "setup") specified:                          │  │
-  │  │   bean.setup() called via reflection                               │  │
-  │  └────────────────────────────────────────────────────────────────────┘  │
-  │         │                                                                 │
-  │         ▼                                                                 │
-  │  ┌─── STEP 10: BeanPostProcessor — AFTER Initialization ──────────────┐  │
-  │  │ ALL registered BeanPostProcessors' postProcessAfterInit() called   │  │
-  │  │                                                                     │  │
-  │  │ ★★★ THIS IS WHERE THE MAGIC HAPPENS ★★★                           │  │
-  │  │                                                                     │  │
-  │  │ Who uses this?                                                      │  │
-  │  │ • AbstractAutoProxyCreator:                                         │  │
-  │  │   → Checks: does this bean have @Transactional? @Cacheable?        │  │
-  │  │   → If YES: wraps bean in CGLIB/JDK proxy!                        │  │
-  │  │   → Returns PROXY instead of original bean                        │  │
-  │  │   → Container stores the PROXY, not your class!                   │  │
-  │  │                                                                     │  │
-  │  │ • AsyncAnnotationBeanPostProcessor:                                 │  │
-  │  │   → Checks: does this bean have @Async methods?                    │  │
-  │  │   → If YES: wraps in proxy that submits to thread pool            │  │
-  │  └─────────────────────────────────────────────────────────────────────┘  │
-  │         │                                                                 │
-  │         ▼                                                                 │
-  │  ┌─── STEP 11: Bean is READY ─────────────────────────────────────────┐  │
-  │  │ Stored in singletonObjects cache                                   │  │
-  │  │ Returned when other beans request it via @Autowired                │  │
-  │  │ NOTE: If proxied, the PROXY is what gets stored and injected!     │  │
-  │  └────────────────────────────────────────────────────────────────────┘  │
-  │                                                                           │
-  │        ...application runs...                                             │
-  │                                                                           │
-  │  ┌─── DESTRUCTION (on shutdown) ──────────────────────────────────────┐  │
-  │  │ @PreDestroy method called                                          │  │
-  │  │ DisposableBean.destroy() called                                    │  │
-  │  │ Custom destroyMethod called                                        │  │
-  │  │ Use for: closing connections, flushing caches, cleanup             │  │
-  │  └────────────────────────────────────────────────────────────────────┘  │
-  └────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The container takes each bean through these steps in order. Step 7 is technically part of step 6, because `@PostConstruct` is processed by a `BeanPostProcessor`.
+
+| Step | What happens | Notes |
+| --- | --- | --- |
+| 1. Instantiation | Constructor called (`new MyService()` or constructor injection) | The bean exists in memory but is EMPTY. |
+| 2. Populate properties | `@Autowired` fields, `@Value` properties, setter injection | |
+| 3-5. Aware callbacks | `setBeanName`, `setBeanFactory`, `setApplicationContext` | The bean learns its own name, can look up other beans, and gets the full container (events, resources). |
+| 6. BPP before init | All `postProcessBeforeInitialization()` methods | `CommonAnnotationBeanPostProcessor` processes `@PostConstruct`. `ApplicationContextAwareProcessor` handles the Aware callbacks. |
+| 7. `@PostConstruct` | Your method is called | Use it for validation, loading caches, opening connections. |
+| 8. `afterPropertiesSet()` | Called if the bean implements `InitializingBean` | An alternative to `@PostConstruct` (less preferred, couples you to Spring). |
+| 9. Custom init-method | `bean.setup()` called via reflection | Only if `@Bean(initMethod = "setup")` is specified. |
+| 10. BPP after init | All `postProcessAfterInitialization()` methods | **This is where the magic happens.** `AbstractAutoProxyCreator` checks for `@Transactional` or `@Cacheable` and wraps the bean in a CGLIB/JDK proxy. `AsyncAnnotationBeanPostProcessor` wraps beans with `@Async` methods in a proxy that submits to a thread pool. |
+| 11. Ready | Stored in the `singletonObjects` cache and returned for `@Autowired` | If the bean was proxied, the PROXY is what gets stored and injected. |
+| Destruction | `@PreDestroy`, `DisposableBean.destroy()`, custom `destroyMethod` | Use it for closing connections, flushing caches and cleanup. |
 
 ### Code Example: Observing All 11 Steps
 
@@ -719,51 +594,56 @@ public class LifecycleDemo implements BeanNameAware, BeanFactoryAware,
 
 ### When Multiple Beans Match the Same Type
 
+**RESOLUTION ORDER (Spring tries each step, stops at first match)**
+
+**Step 1: BY TYPE**
+
+```text
+@Autowired
+private PaymentService paymentService;
+
+Spring: "Find all beans of type PaymentService"
+→ If exactly ONE found → inject it ✅
+→ If ZERO found → throw NoSuchBeanDefinitionException ❌
+→ If MULTIPLE found → go to Step 2
 ```
-  RESOLUTION ORDER (Spring tries each step, stops at first match):
-  ═══════════════════════════════════════════════════════════════
 
-  Step 1: BY TYPE
-  ──────────────
-  @Autowired
-  private PaymentService paymentService;
+**Step 2: BY QUALIFIER**
 
-  Spring: "Find all beans of type PaymentService"
-  → If exactly ONE found → inject it ✅
-  → If ZERO found → throw NoSuchBeanDefinitionException ❌
-  → If MULTIPLE found → go to Step 2
+```text
+@Autowired
+@Qualifier("stripePayment")
+private PaymentService paymentService;
 
-  Step 2: BY QUALIFIER
-  ────────────────────
-  @Autowired
-  @Qualifier("stripePayment")
-  private PaymentService paymentService;
+Spring: "Find bean named 'stripePayment' of type PaymentService"
+→ If found → inject it ✅
+→ If not found → go to Step 3
+```
 
-  Spring: "Find bean named 'stripePayment' of type PaymentService"
-  → If found → inject it ✅
-  → If not found → go to Step 3
+**Step 3: BY PRIMARY**
 
-  Step 3: BY PRIMARY
-  ──────────────────
-  @Primary
-  @Service
-  public class StripePaymentService implements PaymentService { }
+```text
+@Primary
+@Service
+public class StripePaymentService implements PaymentService { }
 
-  @Service
-  public class PayPalPaymentService implements PaymentService { }
+@Service
+public class PayPalPaymentService implements PaymentService { }
 
-  Spring: "Multiple PaymentService beans. Is one @Primary?"
-  → If one is @Primary → inject it ✅
-  → If none is @Primary → go to Step 4
+Spring: "Multiple PaymentService beans. Is one @Primary?"
+→ If one is @Primary → inject it ✅
+→ If none is @Primary → go to Step 4
+```
 
-  Step 4: BY FIELD NAME
-  ─────────────────────
-  @Autowired
-  private PaymentService stripePaymentService;  // field name matches bean name!
+**Step 4: BY FIELD NAME**
 
-  Spring: "Field name 'stripePaymentService' matches a bean name?"
-  → If match → inject it ✅
-  → If no match → throw NoUniqueBeanDefinitionException ❌
+```text
+@Autowired
+private PaymentService stripePaymentService;  // field name matches bean name!
+
+Spring: "Field name 'stripePaymentService' matches a bean name?"
+→ If match → inject it ✅
+→ If no match → throw NoUniqueBeanDefinitionException ❌
 ```
 
 ### The @Autowired(required = false) Trap
@@ -804,19 +684,18 @@ public void processOrder(Order order) {
 
 ### Why Proxies Exist in Spring
 
-```
-  THE FUNDAMENTAL PROBLEM:
-  ════════════════════════
+**The fundamental problem**
 
-  You write:
-  @Transactional
-  public void transferMoney(Account from, Account to, BigDecimal amount) {
-      from.debit(amount);
-      to.credit(amount);
-  }
+```text
+You write:
+@Transactional
+public void transferMoney(Account from, Account to, BigDecimal amount) {
+    from.debit(amount);
+    to.credit(amount);
+}
 
-  But WHO starts the transaction? WHO commits/rolls back?
-  YOUR CODE doesn't have any transaction management!
+But WHO starts the transaction? WHO commits/rolls back?
+YOUR CODE doesn't have any transaction management!
 ```
 
 ```mermaid
@@ -837,19 +716,16 @@ sequenceDiagram
     Proxy-->>Caller: Return Result
 ```
 
-```text
-  ANSWER: A PROXY wraps your bean and adds transaction logic:
+**ANSWER: A PROXY wraps your bean and adds transaction logic:**
 
-  What you think happens:          What ACTUALLY happens:
-  ═══════════════════════          ════════════════════════
+**What you think happens:          What ACTUALLY happens:**
 
-  caller → transferMoney()         caller → PROXY.transferMoney()
-                                            │
-                                            ├── Begin transaction
-                                            ├── Call REAL transferMoney()
-                                            ├── If success → COMMIT
-                                            └── If exception → ROLLBACK
-```
+**caller → transferMoney()         caller → PROXY.transferMoney()**
+
+- Begin transaction
+- Call REAL transferMoney()
+- If success → COMMIT
+- If exception → ROLLBACK
 
 ### CGLIB Proxy — How It Works (Spring Boot Default)
 
@@ -859,7 +735,6 @@ sequenceDiagram
   → The subclass OVERRIDES your methods to add behavior
 
   YOUR CLASS                          GENERATED PROXY CLASS
-  ══════════                          ═════════════════════
 
   class OrderService {                class OrderService$$EnhancerBySpring
     @Transactional                          extends OrderService {
@@ -881,7 +756,6 @@ sequenceDiagram
                                       }
 
   AT RUNTIME:
-  ┌──────────────────────────────────────────────────────────────────────┐
   │  What you think is injected:    OrderService                        │
   │  What's actually injected:      OrderService$$EnhancerBySpring     │
   │                                                                     │
@@ -889,7 +763,6 @@ sequenceDiagram
   │  // Prints: com.myapp.OrderService$$EnhancerBySpringCGLIB$$a1b2c3  │
   │                                                                     │
   │  orderService instanceof OrderService  → true (it's a subclass!)   │
-  └──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### JDK Dynamic Proxy — How It Works
@@ -901,7 +774,6 @@ sequenceDiagram
   → Does NOT extend your class
 
   YOUR INTERFACE & CLASS                GENERATED PROXY
-  ═════════════════════                 ═════════════════
 
   interface PaymentService {            class $Proxy42
     void process(Order o);                implements PaymentService {
@@ -934,22 +806,21 @@ sequenceDiagram
 
 ### Why @Transactional Fails — The 5 Cases
 
-```
-  CASE 1: SELF-INVOCATION (Most common trap!)
-  ─────────────────────────────────────────────
+**CASE 1: SELF-INVOCATION (Most common trap!)**
 
-  @Service
-  public class OrderService {
-      @Transactional
-      public void placeOrder() { ... }
+```text
+@Service
+public class OrderService {
+    @Transactional
+    public void placeOrder() { ... }
 
-      public void batchProcess() {
-          placeOrder();  // ❌ CALLS this.placeOrder() — BYPASSES PROXY!
-      }
-  }
+    public void batchProcess() {
+        placeOrder();  // ❌ CALLS this.placeOrder() — BYPASSES PROXY!
+    }
+}
 
-  WHY: When you call this.placeOrder(), you're calling the REAL object's
-  method directly. The proxy only intercepts EXTERNAL calls.
+WHY: When you call this.placeOrder(), you're calling the REAL object's
+method directly. The proxy only intercepts EXTERNAL calls.
 ```
 
 ```mermaid
@@ -977,58 +848,48 @@ flowchart TD
 
 ```
 
+The proxy wraps the outside; a self-call (`this.placeOrder()`) happens INSIDE the real object, so it never passes through the proxy and no transaction starts.
+
+**Fix:** inject the bean into itself, or use `AopContext.currentProxy()`.
+
+**Case 2: private methods**
+
 ```text
-  The proxy wraps the outside. Self-calls go through the INSIDE:
+@Transactional
+private void helper() { }  // ❌ CGLIB can't override private methods!
 
-  ┌─── Proxy ──────────────────────────────────────────────┐
-  │                                                         │
-  │  External call → proxy.placeOrder() → TX starts ✅      │
-  │                                                         │
-  │  ┌─── Real Object ──────────────────────────────────┐  │
-  │  │                                                    │  │
-  │  │  batchProcess() → this.placeOrder()               │  │
-  │  │                    ↑ Direct call, no proxy! ❌     │  │
-  │  │                                                    │  │
-  │  └────────────────────────────────────────────────────┘  │
-  └─────────────────────────────────────────────────────────┘
+FIX: Make it public or package-private.
+```
 
-  FIX: Inject self, or use AopContext.currentProxy()
+**Case 3: wrong exception type**
 
+```text
+@Transactional  // Only rolls back on unchecked exceptions by default!
+public void process() throws IOException {
+    throw new IOException("file error");  // ❌ NOT rolled back!
+}
 
-  CASE 2: PRIVATE METHODS
-  ───────────────────────
-  @Transactional
-  private void helper() { }  // ❌ CGLIB can't override private methods!
+FIX: @Transactional(rollbackFor = Exception.class)
+```
 
-  FIX: Make it public or package-private.
+**Case 4: not a spring bean**
 
+```text
+// Forgot @Service or @Component → Spring doesn't manage it → no proxy!
+public class OrderService {
+    @Transactional
+    public void placeOrder() { }  // ❌ No proxy exists!
+}
+```
 
-  CASE 3: WRONG EXCEPTION TYPE
-  ─────────────────────────────
-  @Transactional  // Only rolls back on unchecked exceptions by default!
-  public void process() throws IOException {
-      throw new IOException("file error");  // ❌ NOT rolled back!
-  }
+**Case 5: final class or method**
 
-  FIX: @Transactional(rollbackFor = Exception.class)
-
-
-  CASE 4: NOT A SPRING BEAN
-  ──────────────────────────
-  // Forgot @Service or @Component → Spring doesn't manage it → no proxy!
-  public class OrderService {
-      @Transactional
-      public void placeOrder() { }  // ❌ No proxy exists!
-  }
-
-
-  CASE 5: FINAL CLASS OR METHOD
-  ──────────────────────────────
-  @Service
-  public final class OrderService {  // ❌ CGLIB can't subclass final!
-      @Transactional
-      public void placeOrder() { }
-  }
+```text
+@Service
+public final class OrderService {  // ❌ CGLIB can't subclass final!
+    @Transactional
+    public void placeOrder() { }
+}
 ```
 
 ---
@@ -1047,60 +908,58 @@ flowchart TD
 
 ### The Complete Flow (13 Steps)
 
-```
-  Caller calls orderService.placeOrder(order)
-  │
-  │  (But orderService is actually a CGLIB proxy!)
-  │
-  ▼
-  Step 1:  Proxy intercepts the call
-           TransactionInterceptor.invoke() called
-           │
-  Step 2:  Read @Transactional attributes:
-           │  propagation = REQUIRED (default)
-           │  isolation = DEFAULT
-           │  timeout = -1 (no timeout)
-           │  readOnly = false
-           │  rollbackFor = {RuntimeException.class}
-           │
-  Step 3:  PlatformTransactionManager.getTransaction() called
-           │  → Usually JpaTransactionManager for Spring Data JPA
-           │
-  Step 4:  Check propagation behavior:
-           │  REQUIRED: Is there an existing transaction?
-           │    YES → Join it (participate in existing)
-           │    NO  → Create a NEW transaction
-           │
-  Step 5:  If creating new transaction:
-           │  → Get Connection from DataSource (HikariCP pool)
-           │  → connection.setAutoCommit(false)
-           │  → Bind connection to current thread (ThreadLocal)
-           │
-  Step 6:  Call the REAL method: target.placeOrder(order)
-           │
-  Step 7:  Your code executes:
-           │  → userRepo.save(user)     // uses the SAME connection
-           │  → orderRepo.save(order)   // uses the SAME connection
-           │  → Both share the transaction!
-           │
-  Step 8:  Method completes:
-           │
-           ├── SUCCESS (no exception):
-           │   Step 9a: TransactionManager.commit()
-           │   Step 10a: connection.commit()
-           │   Step 11a: Connection returned to pool
-           │
-           └── EXCEPTION thrown:
-               Step 9b: Is it rollbackFor type?
-               │  YES → TransactionManager.rollback()
-               │         connection.rollback()
-               │  NO  → TransactionManager.commit() (!)
-               Step 10b: Connection returned to pool
-               Step 11b: Exception re-thrown to caller
+```text
+ Caller calls orderService.placeOrder(order)
 
+(But orderService is actually a CGLIB proxy!)
 
-  THREAD-LOCAL BINDING (how repo methods share the transaction):
-  ═══════════════════════════════════════════════════════════════
+ ▼
+ Step 1:  Proxy intercepts the call
+          TransactionInterceptor.invoke() called
+
+ Step 2:  Read @Transactional attributes:
+propagation = REQUIRED (default)
+isolation = DEFAULT
+timeout = -1 (no timeout)
+readOnly = false
+rollbackFor = {RuntimeException.class}
+
+ Step 3:  PlatformTransactionManager.getTransaction() called
+→ Usually JpaTransactionManager for Spring Data JPA
+
+ Step 4:  Check propagation behavior:
+REQUIRED: Is there an existing transaction?
+  YES → Join it (participate in existing)
+  NO  → Create a NEW transaction
+
+ Step 5:  If creating new transaction:
+→ Get Connection from DataSource (HikariCP pool)
+→ connection.setAutoCommit(false)
+→ Bind connection to current thread (ThreadLocal)
+
+ Step 6:  Call the REAL method: target.placeOrder(order)
+
+ Step 7:  Your code executes:
+→ userRepo.save(user)     // uses the SAME connection
+→ orderRepo.save(order)   // uses the SAME connection
+→ Both share the transaction!
+
+ Step 8:  Method completes:
+
+          ├── SUCCESS (no exception):
+ Step 9a: TransactionManager.commit()
+ Step 10a: connection.commit()
+ Step 11a: Connection returned to pool
+
+          └── EXCEPTION thrown:
+              Step 9b: Is it rollbackFor type?
+YES → TransactionManager.rollback()
+       connection.rollback()
+NO  → TransactionManager.commit() (!)
+              Step 10b: Connection returned to pool
+              Step 11b: Exception re-thrown to caller
+
+ THREAD-LOCAL BINDING (how repo methods share the transaction):
 ```
 
 ```mermaid
@@ -1135,22 +994,22 @@ flowchart TD
 ```
 
 ```text
-  TransactionSynchronizationManager uses ThreadLocal:
+TransactionSynchronizationManager uses ThreadLocal:
 
-  Thread-1:  [Connection-A] ← bound to this thread
-      │
-      ├── orderService.placeOrder()     → uses Connection-A
-      │   ├── userRepo.save()           → uses Connection-A ← same!
-      │   └── orderRepo.save()          → uses Connection-A ← same!
-      │
-      └── Transaction committed on Connection-A
+Thread-1:  [Connection-A] ← bound to this thread
 
-  Thread-2:  [Connection-B] ← different thread, different connection
-      │
-      └── orderService.placeOrder()     → uses Connection-B
+    ├── orderService.placeOrder()     → uses Connection-A
+├── userRepo.save()           → uses Connection-A ← same!
+└── orderRepo.save()          → uses Connection-A ← same!
 
-  THIS is why @Transactional works — the Connection is stored in ThreadLocal,
-  and all repository calls on the same thread use the SAME connection.
+    └── Transaction committed on Connection-A
+
+Thread-2:  [Connection-B] ← different thread, different connection
+
+    └── orderService.placeOrder()     → uses Connection-B
+
+THIS is why @Transactional works — the Connection is stored in ThreadLocal,
+and all repository calls on the same thread use the SAME connection.
 ```
 
 ### Propagation Behaviors — When You Actually Need Them
@@ -1181,35 +1040,40 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 
 ### The Loading Mechanism
 
+**When Spring Boot starts, it needs to know**
+
+"Which auto-configuration classes should I evaluate?"
+
+**SPRING BOOT 2.x**
+
+Location: META-INF/spring.factories (inside each JAR)
+
+**Format**
+
+```text
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.example.DataSourceAutoConfiguration,\
+  com.example.WebMvcAutoConfiguration,\
+  com.example.SecurityAutoConfiguration
 ```
-  When Spring Boot starts, it needs to know:
-  "Which auto-configuration classes should I evaluate?"
 
-  SPRING BOOT 2.x:
-  ═════════════════
-  Location: META-INF/spring.factories (inside each JAR)
-  Format:
-  ┌───────────────────────────────────────────────────────────────────────┐
-  │ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\    │
-  │   com.example.DataSourceAutoConfiguration,\                          │
-  │   com.example.WebMvcAutoConfiguration,\                              │
-  │   com.example.SecurityAutoConfiguration                              │
-  └───────────────────────────────────────────────────────────────────────┘
+**SPRING BOOT 3.x**
 
-  SPRING BOOT 3.x:
-  ═════════════════
-  Location: META-INF/spring/
-            org.springframework.boot.autoconfigure.AutoConfiguration.imports
-  Format: One class per line
-  ┌───────────────────────────────────────────────────────────────────────┐
-  │ com.example.DataSourceAutoConfiguration                              │
-  │ com.example.WebMvcAutoConfiguration                                  │
-  │ com.example.SecurityAutoConfiguration                                │
-  └───────────────────────────────────────────────────────────────────────┘
+Location: META-INF/spring/
 
-  Why the change? spring.factories loaded ALL types (not just auto-config)
-  → performance overhead. The new format is specific to auto-configuration.
+org.springframework.boot.autoconfigure.AutoConfiguration.imports
+
+Format: One class per line
+
+```text
+com.example.DataSourceAutoConfiguration
+com.example.WebMvcAutoConfiguration
+com.example.SecurityAutoConfiguration
 ```
+
+Why the change? spring.factories loaded ALL types (not just auto-config)
+
+→ performance overhead. The new format is specific to auto-configuration.
 
 ### Real Example: How DataSource Gets Auto-Configured
 
@@ -1254,25 +1118,24 @@ public class DataSourceAutoConfiguration {
 }
 ```
 
-```
-  THE DECISION TREE:
+**THE DECISION TREE:**
 
-  Is DataSource.class on classpath?
-  ├── NO  → Skip entirely (no JDBC dependency)
-  └── YES
-      │
-      └── Did you define your own DataSource @Bean?
-          ├── YES → Skip (your bean takes priority — @ConditionalOnMissingBean)
-          └── NO
-              │
-              └── Is HikariCP on classpath?
-                  ├── YES → Create HikariDataSource with spring.datasource.* props
-                  └── NO  → Is Tomcat JDBC on classpath?
-                      ├── YES → Create Tomcat DataSource
-                      └── NO  → Is Commons DBCP2 on classpath?
-                          ├── YES → Create DBCP2 DataSource
-                          └── NO  → Fail with error
-```
+**Is DataSource.class on classpath?**
+
+- NO  → Skip entirely (no JDBC dependency)
+- YES
+
+  - Did you define your own DataSource @Bean?
+    - YES → Skip (your bean takes priority — @ConditionalOnMissingBean)
+    - NO
+
+      - Is HikariCP on classpath?
+        - YES → Create HikariDataSource with spring.datasource.* props
+        - NO  → Is Tomcat JDBC on classpath?
+          - YES → Create Tomcat DataSource
+          - NO  → Is Commons DBCP2 on classpath?
+            - YES → Create DBCP2 DataSource
+            - NO  → Fail with error
 
 ### The @Conditional Family — All Members
 
@@ -1319,71 +1182,64 @@ public class DataSourceAutoConfiguration {
 
 ## 9. How @ComponentScan Works — Classpath Scanning Algorithm
 
-```
-  THE ALGORITHM (simplified):
-  ═══════════════════════════
+```text
+THE ALGORITHM (simplified):
 
-  Input: basePackage = "com.myapp" (from @SpringBootApplication location)
+Input: basePackage = "com.myapp" (from @SpringBootApplication location)
 
-  Step 1: CONVERT PACKAGE TO FILE PATH
-  ─────────────────────────────────────
-  "com.myapp" → "com/myapp"
+Step 1: CONVERT PACKAGE TO FILE PATH
+"com.myapp" → "com/myapp"
 
-  Step 2: SCAN CLASSPATH FOR ALL .class FILES
-  ────────────────────────────────────────────
-  ClassLoader scans:
-  ├── target/classes/com/myapp/**/*.class    (your compiled classes)
-  ├── dependency.jar!/com/myapp/**/*.class   (unlikely, but checked)
+Step 2: SCAN CLASSPATH FOR ALL .class FILES
+ClassLoader scans:
+├── target/classes/com/myapp/**/*.class    (your compiled classes)
+├── dependency.jar!/com/myapp/**/*.class   (unlikely, but checked)
 
-  Uses Spring's PathMatchingResourcePatternResolver:
-  Resource[] resources = resolver.getResources(
-      "classpath*:com/myapp/**/*.class"
-  );
-  // Returns: [OrderService.class, UserRepo.class, AppConfig.class, ...]
+Uses Spring's PathMatchingResourcePatternResolver:
+Resource[] resources = resolver.getResources(
+    "classpath*:com/myapp/**/*.class"
+);
+// Returns: [OrderService.class, UserRepo.class, AppConfig.class, ...]
 
-  Step 3: FOR EACH .class FILE → CHECK ANNOTATIONS
-  ─────────────────────────────────────────────────
-  Uses ASM bytecode reader (NOT Class.forName — too slow!):
-  │
-  ├── Read class bytecode WITHOUT loading the class
-  │   (ASM reads the .class file directly from disk/JAR)
-  │
-  ├── Check: does this class have @Component (or meta-annotation)?
-  │   ├── @Component? @Service? @Repository? @Controller? @Configuration?
-  │   └── Check @interface hierarchy (e.g., @Service has @Component)
-  │
-  ├── Check exclusion filters:
-  │   @ComponentScan(excludeFilters = @Filter(type = FilterType.REGEX,
-  │       pattern = ".*Test.*"))
-  │
-  └── If it passes → Create BeanDefinition and register it
+Step 3: FOR EACH .class FILE → CHECK ANNOTATIONS
+Uses ASM bytecode reader (NOT Class.forName — too slow!):
 
-  Step 4: PROCESS @Configuration CLASSES
-  ───────────────────────────────────────
-  ConfigurationClassPostProcessor handles:
-  ├── @Bean methods → BeanDefinition per method
-  ├── @Import → recursively process imported classes
-  ├── @ImportResource → load XML config
-  └── @PropertySource → load additional property files
+├── Read class bytecode WITHOUT loading the class
+(ASM reads the .class file directly from disk/JAR)
 
+├── Check: does this class have @Component (or meta-annotation)?
+├── @Component? @Service? @Repository? @Controller? @Configuration?
+└── Check @interface hierarchy (e.g., @Service has @Component)
 
-  WHY ASM AND NOT REFLECTION?
-  ═══════════════════════════
+├── Check exclusion filters:
+@ComponentScan(excludeFilters = @Filter(type = FilterType.REGEX,
+    pattern = ".*Test.*"))
 
-  Reflection (Class.forName):
-  ├── Loads class into JVM memory
-  ├── Runs static initializers
-  ├── May trigger ClassNotFoundException for optional deps
-  ├── SLOW for 1000+ classes
+└── If it passes → Create BeanDefinition and register it
 
-  ASM bytecode reading:
-  ├── Reads .class file bytes directly
-  ├── Does NOT load the class
-  ├── No static initializers
-  ├── No ClassNotFoundException risk
-  ├── FAST even for 10,000+ classes
+Step 4: PROCESS @Configuration CLASSES
+ConfigurationClassPostProcessor handles:
+├── @Bean methods → BeanDefinition per method
+├── @Import → recursively process imported classes
+├── @ImportResource → load XML config
+└── @PropertySource → load additional property files
 
-  Spring scans EVERY class file but only LOADS the ones with @Component.
+WHY ASM AND NOT REFLECTION?
+
+Reflection (Class.forName):
+├── Loads class into JVM memory
+├── Runs static initializers
+├── May trigger ClassNotFoundException for optional deps
+├── SLOW for 1000+ classes
+
+ASM bytecode reading:
+├── Reads .class file bytes directly
+├── Does NOT load the class
+├── No static initializers
+├── No ClassNotFoundException risk
+├── FAST even for 10,000+ classes
+
+Spring scans EVERY class file but only LOADS the ones with @Component.
 ```
 
 ---
@@ -1402,31 +1258,37 @@ public class DataSourceAutoConfiguration {
 
 ### Profile Resolution Order
 
+```text
+When Spring encounters @Profile("dev"):
 ```
-  When Spring encounters @Profile("dev"):
 
-  Step 1: READ ACTIVE PROFILES
-  ─────────────────────────────
-  Sources checked (highest to lowest priority):
+**Step 1: READ ACTIVE PROFILES**
 
-  1. spring.profiles.active=dev           (command-line arg: --spring.profiles.active=dev)
-  2. SPRING_PROFILES_ACTIVE=dev           (environment variable)
-  3. spring.profiles.active=dev           (application.properties)
-  4. @ActiveProfiles("dev")               (test annotation)
-  5. SpringApplication.setAdditionalProfiles("dev")  (programmatic)
+```text
+Sources checked (highest to lowest priority):
 
-  Step 2: MATCH PROFILE EXPRESSION
-  ─────────────────────────────────
-  @Profile("dev")                 → active profiles contain "dev"
-  @Profile("!prod")               → active profiles do NOT contain "prod"
-  @Profile({"dev", "staging"})    → contains "dev" OR "staging"
-  @Profile("dev & feature-x")    → contains "dev" AND "feature-x" (Spring 5.1+)
-  @Profile("dev | staging")      → contains "dev" OR "staging" (Spring 5.1+)
+1. spring.profiles.active=dev           (command-line arg: --spring.profiles.active=dev)
+2. SPRING_PROFILES_ACTIVE=dev           (environment variable)
+3. spring.profiles.active=dev           (application.properties)
+4. @ActiveProfiles("dev")               (test annotation)
+5. SpringApplication.setAdditionalProfiles("dev")  (programmatic)
+```
 
-  Step 3: INCLUDE OR EXCLUDE BEAN
-  ────────────────────────────────
-  If profile matches → BeanDefinition included
-  If not → BeanDefinition SKIPPED (never created)
+**Step 2: MATCH PROFILE EXPRESSION**
+
+```text
+@Profile("dev")                 → active profiles contain "dev"
+@Profile("!prod")               → active profiles do NOT contain "prod"
+@Profile({"dev", "staging"})    → contains "dev" OR "staging"
+@Profile("dev & feature-x")    → contains "dev" AND "feature-x" (Spring 5.1+)
+@Profile("dev | staging")      → contains "dev" OR "staging" (Spring 5.1+)
+```
+
+**Step 3: INCLUDE OR EXCLUDE BEAN**
+
+```text
+If profile matches → BeanDefinition included
+If not → BeanDefinition SKIPPED (never created)
 ```
 
 ### How @Conditional Evaluation Works Internally
@@ -1490,87 +1352,88 @@ class B {
 
 ### The Three-Level Cache Solution
 
+```text
+Spring's "Three-Level Cache" (only works for FIELD/SETTER injection):
+
+Level 1: singletonObjects        → Fully initialized beans
+Level 2: earlySingletonObjects   → Partially initialized beans
+Level 3: singletonFactories      → Bean factories (creates proxies if needed)
+
+THE RESOLUTION PROCESS:
+
+Step 1: Start creating A
+        │  A's BeanDefinition found
+        │  Constructor called: new A()
+        │  A is now a "raw" object (no dependencies yet)
+        │  Register A's ObjectFactory in Level 3 cache:
+        │    singletonFactories.put("a", () -> getEarlyBean("a"))
+        │
+Step 2: Populate A's properties
+        │  Found @Autowired B b → need to get bean "b"
+        │
+Step 3: Start creating B
+        │  B's BeanDefinition found
+        │  Constructor called: new B()
+        │  Register B's ObjectFactory in Level 3 cache
+        │
+Step 4: Populate B's properties
+        │  Found @Autowired A a → need to get bean "a"
+        │
+Step 5: Get bean "a"
+        │  Level 1: singletonObjects.get("a")     → null (not finished)
+        │  Level 2: earlySingletonObjects.get("a") → null
+        │  Level 3: singletonFactories.get("a")    → FOUND!
+        │    → Call the factory: returns early reference to A
+        │    → Move to Level 2: earlySingletonObjects.put("a", earlyA)
+        │    → Remove from Level 3
+        │    → B gets the EARLY (partially initialized) A
+        │
+Step 6: B is now fully initialized
+        │  Move B to Level 1: singletonObjects.put("b", b)
+        │
+Step 7: Back to Step 2 — A gets fully-initialized B
+        │  Move A to Level 1: singletonObjects.put("a", a)
+        │
+Step 8: Both A and B are complete  ✅
 ```
-  Spring's "Three-Level Cache" (only works for FIELD/SETTER injection):
 
-  Level 1: singletonObjects        → Fully initialized beans
-  Level 2: earlySingletonObjects   → Partially initialized beans
-  Level 3: singletonFactories      → Bean factories (creates proxies if needed)
+**WHY THREE LEVELS (why not just two)?**
 
-  THE RESOLUTION PROCESS:
+```text
+Level 3 exists because of PROXIES.
 
-  Step 1: Start creating A
-          │  A's BeanDefinition found
-          │  Constructor called: new A()
-          │  A is now a "raw" object (no dependencies yet)
-          │  Register A's ObjectFactory in Level 3 cache:
-          │    singletonFactories.put("a", () -> getEarlyBean("a"))
-          │
-  Step 2: Populate A's properties
-          │  Found @Autowired B b → need to get bean "b"
-          │
-  Step 3: Start creating B
-          │  B's BeanDefinition found
-          │  Constructor called: new B()
-          │  Register B's ObjectFactory in Level 3 cache
-          │
-  Step 4: Populate B's properties
-          │  Found @Autowired A a → need to get bean "a"
-          │
-  Step 5: Get bean "a"
-          │  Level 1: singletonObjects.get("a")     → null (not finished)
-          │  Level 2: earlySingletonObjects.get("a") → null
-          │  Level 3: singletonFactories.get("a")    → FOUND!
-          │    → Call the factory: returns early reference to A
-          │    → Move to Level 2: earlySingletonObjects.put("a", earlyA)
-          │    → Remove from Level 3
-          │    → B gets the EARLY (partially initialized) A
-          │
-  Step 6: B is now fully initialized
-          │  Move B to Level 1: singletonObjects.put("b", b)
-          │
-  Step 7: Back to Step 2 — A gets fully-initialized B
-          │  Move A to Level 1: singletonObjects.put("a", a)
-          │
-  Step 8: Both A and B are complete  ✅
+If A is @Transactional, the "early reference" needs to be
+the PROXY, not the raw object. The ObjectFactory in Level 3
+can decide: "Should I return raw A or proxy-wrapped A?"
 
+Without Level 3, we'd have to create the proxy too early
+(before BeanPostProcessors run), which breaks the lifecycle.
+```
 
-  WHY THREE LEVELS (why not just two)?
-  ═════════════════════════════════════
-  Level 3 exists because of PROXIES.
+**Constructor injection circular dependency**
 
-  If A is @Transactional, the "early reference" needs to be
-  the PROXY, not the raw object. The ObjectFactory in Level 3
-  can decide: "Should I return raw A or proxy-wrapped A?"
+```text
+@Service
+class A {
+    public A(B b) { this.b = b; }  // CONSTRUCTOR needs B
+}
 
-  Without Level 3, we'd have to create the proxy too early
-  (before BeanPostProcessors run), which breaks the lifecycle.
+@Service
+class B {
+    public B(A a) { this.a = a; }  // CONSTRUCTOR needs A
+}
 
+❌ FAILS! Spring cannot resolve this because:
+→ To create A, you need B in the constructor
+→ But to create B, you need A in the constructor
+→ Neither can be partially created
 
-  CONSTRUCTOR INJECTION CIRCULAR DEPENDENCY:
-  ═══════════════════════════════════════════
+The three-level cache only works when the bean can be
+CONSTRUCTED first (empty), then populated with dependencies later.
+Constructor injection doesn't allow that.
 
-  @Service
-  class A {
-      public A(B b) { this.b = b; }  // CONSTRUCTOR needs B
-  }
-
-  @Service
-  class B {
-      public B(A a) { this.a = a; }  // CONSTRUCTOR needs A
-  }
-
-  ❌ FAILS! Spring cannot resolve this because:
-  → To create A, you need B in the constructor
-  → But to create B, you need A in the constructor
-  → Neither can be partially created
-
-  The three-level cache only works when the bean can be
-  CONSTRUCTED first (empty), then populated with dependencies later.
-  Constructor injection doesn't allow that.
-
-  FIX: Use @Lazy on one constructor parameter:
-  public A(@Lazy B b) { this.b = b; }  // Injects a proxy that resolves later
+FIX: Use @Lazy on one constructor parameter:
+public A(@Lazy B b) { this.b = b; }  // Injects a proxy that resolves later
 ```
 
 ---
@@ -1587,75 +1450,49 @@ class B {
 
 ## 12. How Spring MVC Processes a Request — All 14 Steps
 
+**The request journey, step by step.** The client sends `GET /api/users/42 HTTP/1.1` with `Accept: application/json`.
+
+```mermaid
+flowchart TD
+  CL["CLIENT: GET /api/users/42"] --> T
+  subgraph T["TOMCAT (servlet container)"]
+    T1["Steps 1-3: receive the TCP connection, parse the HTTP request into an HttpServletRequest, dispatch to the filter chain"]
+    subgraph FC["Filter chain"]
+      F4["Step 4: CharacterEncodingFilter sets UTF-8"]
+      F5["Step 5: HiddenHttpMethodFilter supports PUT/DELETE in forms"]
+      F6["Step 6: Spring Security FilterChainProxy<br/>SecurityContextPersistenceFilter, UsernamePasswordAuthenticationFilter,<br/>ExceptionTranslationFilter, FilterSecurityInterceptor (authorization)"]
+      F4 --> F5 --> F6
+    end
+    subgraph DS["DispatcherServlet"]
+      D7["Step 7: HandlerMapping resolves the handler<br/>(UserController.getUser(Long id) as a HandlerExecutionChain)"]
+      D8["Step 8: HandlerInterceptor.preHandle()"]
+      D9["Step 9: HandlerAdapter invokes the handler method<br/>resolve parameters, call the controller, serialize the return value to JSON"]
+      D10["Step 10: HandlerInterceptor.postHandle()"]
+      D11["Step 11: ExceptionResolver handles any exception"]
+      D12["Step 12: HandlerInterceptor.afterCompletion()"]
+      D7 --> D8 --> D9 --> D10 --> D11 --> D12
+    end
+    T1 --> FC
+    F6 -->|"passes"| D7
+    F6 -.->|"authentication fails: 401/403 returned HERE"| OUT
+    D12 --> P["Steps 13-14: filters post-process in reverse order, Tomcat writes the HttpServletResponse to the TCP socket"]
+  end
+  P --> OUT["CLIENT receives: HTTP/1.1 200 OK<br/>{'id': 42, 'name': 'Harsha'}"]
 ```
-  CLIENT sends: GET /api/users/42 HTTP/1.1 Accept: application/json
-  │
-  ▼
-  ┌── TOMCAT (Servlet Container) ──────────────────────────────────────────┐
-  │                                                                        │
-  │  Step 1: Tomcat receives TCP connection                                │
-  │  Step 2: Tomcat parses HTTP request → HttpServletRequest object        │
-  │  Step 3: Tomcat dispatches to Filter chain                             │
-  │                                                                        │
-  │  ┌── FILTER CHAIN ──────────────────────────────────────────────────┐  │
-  │  │                                                                   │  │
-  │  │  Step 4: CharacterEncodingFilter — sets UTF-8                    │  │
-  │  │  Step 5: HiddenHttpMethodFilter — supports PUT/DELETE in forms   │  │
-  │  │  Step 6: Spring Security FilterChainProxy:                       │  │
-  │  │          → SecurityContextPersistenceFilter                       │  │
-  │  │          → UsernamePasswordAuthenticationFilter                   │  │
-  │  │          → ExceptionTranslationFilter                             │  │
-  │  │          → FilterSecurityInterceptor (authorization)              │  │
-  │  │                                                                   │  │
-  │  │  If authentication fails → 401/403 returned HERE                 │  │
-  │  │  If passes → continue to DispatcherServlet                       │  │
-  │  └──────────────────────────────────────────────────────────────────┘  │
-  │                                                                        │
-  │  ┌── DISPATCHER SERVLET ────────────────────────────────────────────┐  │
-  │  │                                                                   │  │
-  │  │  Step 7: HandlerMapping resolves the handler:                    │  │
-  │  │     RequestMappingHandlerMapping checks all @RequestMapping       │  │
-  │  │     → Matches: UserController.getUser(Long id)                   │  │
-  │  │     → Returns: HandlerExecutionChain                              │  │
-  │  │                (handler + interceptors)                           │  │
-  │  │                                                                   │  │
-  │  │  Step 8: HandlerInterceptor.preHandle() called                   │  │
-  │  │     → Custom interceptors (logging, timing, tenant resolution)   │  │
-  │  │     → If returns false → request short-circuited                 │  │
-  │  │                                                                   │  │
-  │  │  Step 9: HandlerAdapter invokes the handler method:              │  │
-  │  │     RequestMappingHandlerAdapter:                                 │  │
-  │  │     ├── Resolve method parameters:                                │  │
-  │  │     │   @PathVariable("id") Long id → extracted from URL: 42    │  │
-  │  │     │   @RequestBody → deserialized from JSON body              │  │
-  │  │     │   @RequestParam → extracted from query string              │  │
-  │  │     │   HttpServletRequest → passed directly                    │  │
-  │  │     │                                                            │  │
-  │  │     ├── Call controller method:                                   │  │
-  │  │     │   result = userController.getUser(42L)                     │  │
-  │  │     │                                                            │  │
-  │  │     └── Process return value:                                     │  │
-  │  │         @ResponseBody → serialize to JSON via Jackson             │  │
-  │  │         (HttpMessageConverter: MappingJackson2HttpMessageConverter)│  │
-  │  │                                                                   │  │
-  │  │  Step 10: HandlerInterceptor.postHandle() called                 │  │
-  │  │                                                                   │  │
-  │  │  Step 11: ExceptionResolver handles any exceptions:              │  │
-  │  │     @ExceptionHandler methods → custom error response             │  │
-  │  │     @ControllerAdvice → global exception handling                 │  │
-  │  │                                                                   │  │
-  │  │  Step 12: HandlerInterceptor.afterCompletion() called            │  │
-  │  │     → Cleanup, logging response time                              │  │
-  │  └──────────────────────────────────────────────────────────────────┘  │
-  │                                                                        │
-  │  Step 13: Filters run post-processing (reverse order)                  │
-  │  Step 14: Tomcat writes HttpServletResponse → TCP socket               │
-  │                                                                        │
-  └────────────────────────────────────────────────────────────────────────┘
-  │
-  ▼
-  CLIENT receives: HTTP/1.1 200 OK  {"id": 42, "name": "Harsha"}
-```
+
+**How to read this diagram.** The request is parsed by Tomcat, passes through the servlet filters (including Spring Security), and reaches `DispatcherServlet`. The response travels back out in the reverse order.
+
+**Details of the two key stages**
+
+| Step | What happens |
+| --- | --- |
+| 6 | Spring Security's `FilterChainProxy` runs its filters. If authentication fails, a 401/403 is returned here; otherwise the request continues to `DispatcherServlet`. |
+| 7 | `RequestMappingHandlerMapping` checks all `@RequestMapping` methods, matches `UserController.getUser(Long id)` and returns a `HandlerExecutionChain` (the handler plus its interceptors). |
+| 8 | `HandlerInterceptor.preHandle()` runs your custom interceptors (logging, timing, tenant resolution). If one returns `false`, the request is short-circuited. |
+| 9 | `RequestMappingHandlerAdapter` resolves the method parameters (`@PathVariable("id") Long id` from the URL, `@RequestBody` from the JSON body, `@RequestParam` from the query string, `HttpServletRequest` directly), calls `userController.getUser(42L)`, and serializes the `@ResponseBody` result to JSON with `MappingJackson2HttpMessageConverter`. |
+| 10 | `HandlerInterceptor.postHandle()` runs. |
+| 11 | `@ExceptionHandler` methods and `@ControllerAdvice` turn any exception into an error response. |
+| 12 | `HandlerInterceptor.afterCompletion()` runs for cleanup and logging the response time. |
 
 ---
 
@@ -1873,61 +1710,49 @@ A regular `Filter` runs again on internal forwards and includes. `OncePerRequest
 
 **The architecture that confuses everyone:** Spring Security doesn't register 15 separate servlet filters with Tomcat. It registers exactly ONE servlet filter — `DelegatingFilterProxy` — which delegates to a Spring bean called `FilterChainProxy`, which internally runs its own chain of Spring-managed security filters.
 
+**Tomcat's filter chain (servlet level)**
+
+```mermaid
+flowchart TD
+  A["CharacterEncodingFilter"] --> B["HiddenHttpMethodFilter"] --> C["DelegatingFilterProxy<br/>(name = springSecurityFilterChain)<br/>a SERVLET filter that looks up a SPRING BEAN by name and delegates to it"]
+  C --> FCP
+  subgraph FCP["Spring bean: FilterChainProxy"]
+    H["Holds List&lt;SecurityFilterChain&gt;. For each request it finds the FIRST chain whose RequestMatcher matches the URL, then runs THAT chain."]
+  end
+  FCP --> E["YourCustomFilter"] --> F["DispatcherServlet"]
 ```
-  Tomcat's Filter Chain (servlet-level):
-  ┌──────────────────────────────────────────────────────────────────────┐
-  │                                                                      │
-  │  CharacterEncodingFilter                                             │
-  │  ↓                                                                   │
-  │  HiddenHttpMethodFilter                                              │
-  │  ↓                                                                   │
-  │  DelegatingFilterProxy (name="springSecurityFilterChain")            │
-  │  │                                                                   │
-  │  │  This is a SERVLET filter that looks up a SPRING BEAN             │
-  │  │  by name and delegates to it.                                     │
-  │  │                                                                   │
-  │  │  ┌── Spring Bean: FilterChainProxy ───────────────────────────┐  │
-  │  │  │                                                             │  │
-  │  │  │  Holds List<SecurityFilterChain>                            │  │
-  │  │  │  For each request, finds the FIRST chain whose              │  │
-  │  │  │  RequestMatcher matches the URL, then runs THAT chain.     │  │
-  │  │  │                                                             │  │
-  │  │  │  SecurityFilterChain for /api/** (15 filters):             │  │
-  │  │  │  ┌─────────────────────────────────────────────────────┐   │  │
-  │  │  │  │ 1. DisableEncodeUrlFilter                           │   │  │
-  │  │  │  │ 2. WebAsyncManagerIntegrationFilter                 │   │  │
-  │  │  │  │ 3. SecurityContextHolderFilter                      │   │  │
-  │  │  │  │ 4. HeaderWriterFilter                               │   │  │
-  │  │  │  │ 5. CorsFilter                                       │   │  │
-  │  │  │  │ 6. CsrfFilter                                       │   │  │
-  │  │  │  │ 7. LogoutFilter                                     │   │  │
-  │  │  │  │ 8. UsernamePasswordAuthenticationFilter             │   │  │
-  │  │  │  │    (or BearerTokenAuthenticationFilter for JWT)      │   │  │
-  │  │  │  │ 9. DefaultLoginPageGeneratingFilter                 │   │  │
-  │  │  │  │ 10. BasicAuthenticationFilter                       │   │  │
-  │  │  │  │ 11. RequestCacheAwareFilter                         │   │  │
-  │  │  │  │ 12. SecurityContextHolderAwareRequestFilter         │   │  │
-  │  │  │  │ 13. AnonymousAuthenticationFilter                   │   │  │
-  │  │  │  │ 14. ExceptionTranslationFilter                      │   │  │
-  │  │  │  │ 15. AuthorizationFilter                             │   │  │
-  │  │  │  └─────────────────────────────────────────────────────┘   │  │
-  │  │  │                                                             │  │
-  │  │  │  SecurityFilterChain for /public/** (3 filters):           │  │
-  │  │  │  ┌─────────────────────────────────────────────────────┐   │  │
-  │  │  │  │ 1. SecurityContextHolderFilter                      │   │  │
-  │  │  │  │ 2. HeaderWriterFilter                               │   │  │
-  │  │  │  │ 3. AuthorizationFilter (permitAll)                  │   │  │
-  │  │  │  └─────────────────────────────────────────────────────┘   │  │
-  │  │  │                                                             │  │
-  │  │  └─────────────────────────────────────────────────────────┘  │
-  │  │                                                                   │
-  │  ↓                                                                   │
-  │  YourCustomFilter                                                    │
-  │  ↓                                                                   │
-  │  DispatcherServlet                                                   │
-  │                                                                      │
-  └──────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** A servlet filter, `DelegatingFilterProxy`, hands the request to a Spring bean, `FilterChainProxy`. That bean picks the first matching `SecurityFilterChain` and runs it.
+
+**`SecurityFilterChain` for `/api/**` (15 filters)**
+
+| # | Filter |
+| --- | --- |
+| 1 | `DisableEncodeUrlFilter` |
+| 2 | `WebAsyncManagerIntegrationFilter` |
+| 3 | `SecurityContextHolderFilter` |
+| 4 | `HeaderWriterFilter` |
+| 5 | `CorsFilter` |
+| 6 | `CsrfFilter` |
+| 7 | `LogoutFilter` |
+| 8 | `UsernamePasswordAuthenticationFilter` (or `BearerTokenAuthenticationFilter` for JWT) |
+| 9 | `DefaultLoginPageGeneratingFilter` |
+| 10 | `BasicAuthenticationFilter` |
+| 11 | `RequestCacheAwareFilter` |
+| 12 | `SecurityContextHolderAwareRequestFilter` |
+| 13 | `AnonymousAuthenticationFilter` |
+| 14 | `ExceptionTranslationFilter` |
+| 15 | `AuthorizationFilter` |
+
+**`SecurityFilterChain` for `/public/**` (3 filters)**
+
+| # | Filter |
+| --- | --- |
+| 1 | `SecurityContextHolderFilter` |
+| 2 | `HeaderWriterFilter` |
+| 3 | `AuthorizationFilter` (`permitAll`) |
+
+The exact filters and their order depend on your configuration and Spring Security version.
 
 **Why this three-layer architecture?**
 
@@ -1984,50 +1809,49 @@ public class SecurityConfig {
 
 **What DispatcherServlet actually is:** It's a regular `javax.servlet.http.HttpServlet` registered with Tomcat. Every Spring MVC application has exactly one (usually). ALL HTTP requests to your application that pass through the filter chain land here.
 
-```
-  WHY THE FRONT CONTROLLER PATTERN EXISTS:
-  ─────────────────────────────────────────
+**Why the front controller pattern exists**
 
-  WITHOUT DispatcherServlet (raw servlets — how Java web worked in 2000):
-  ┌─────────────────────────────────┐
-  │  web.xml                        │
-  │                                 │
-  │  /users  →  UserServlet         │  Each URL needs its own servlet class
-  │  /orders →  OrderServlet        │  registered in XML. No dependency injection.
-  │  /items  →  ItemServlet         │  Duplicate boilerplate in every servlet.
-  │  /auth   →  AuthServlet         │  No central exception handling.
-  └─────────────────────────────────┘
+**Without `DispatcherServlet`** (raw servlets, the way Java web apps worked around 2000), `web.xml` maps each URL to its own servlet:
 
-  WITH DispatcherServlet (Front Controller pattern):
-  ┌─────────────────────────────────┐
-  │  Auto-configured by Spring Boot │
-  │                                 │
-  │  /*  →  DispatcherServlet       │  ONE servlet handles ALL requests.
-  │         │                       │  Delegates to @Controller methods
-  │         ├→ UserController       │  via reflection. Central error
-  │         ├→ OrderController      │  handling. Full DI support.
-  │         └→ ItemController       │
-  └─────────────────────────────────┘
+| URL | Servlet |
+| --- | --- |
+| `/users` | `UserServlet` |
+| `/orders` | `OrderServlet` |
+| `/items` | `ItemServlet` |
+| `/auth` | `AuthServlet` |
+
+Each URL needs its own servlet class registered in XML. There is no dependency injection, boilerplate is duplicated in every servlet, and there is no central exception handling.
+
+**With `DispatcherServlet`** (front controller pattern, auto-configured by Spring Boot):
+
+```mermaid
+flowchart TD
+  R["/* (all requests)"] --> DS["DispatcherServlet"]
+  DS --> U["UserController"]
+  DS --> O["OrderController"]
+  DS --> I["ItemController"]
 ```
+
+**How to read this diagram.** ONE servlet handles ALL requests and delegates to `@Controller` methods via reflection. That gives central error handling and full DI support.
 
 **How Spring Boot auto-registers DispatcherServlet — the chain you never see:**
 
-```
-  1. DispatcherServletAutoConfiguration (triggered by spring-boot-starter-web on classpath)
-     │
-  2. Creates DispatcherServlet bean
-     │
-  3. Creates DispatcherServletRegistrationBean
-     │  Sets urlMappings = "/" (catches all paths not handled by other servlets)
-     │  Sets loadOnStartup = -1 (loaded when first request arrives, not at boot)
-     │  Sets name = "dispatcherServlet"
-     │
-  4. Registers it with Tomcat's ServletContext
-     │
-  5. On first request → Tomcat calls DispatcherServlet.init()
-     │  → creates its own WebApplicationContext (child of root context)
-     │  → initializes HandlerMappings, HandlerAdapters, ViewResolvers,
-     │     ExceptionResolvers, and all other MVC infrastructure
+```text
+ 1. DispatcherServletAutoConfiguration (triggered by spring-boot-starter-web on classpath)
+
+ 2. Creates DispatcherServlet bean
+
+ 3. Creates DispatcherServletRegistrationBean
+Sets urlMappings = "/" (catches all paths not handled by other servlets)
+Sets loadOnStartup = -1 (loaded when first request arrives, not at boot)
+Sets name = "dispatcherServlet"
+
+ 4. Registers it with Tomcat's ServletContext
+
+ 5. On first request → Tomcat calls DispatcherServlet.init()
+→ creates its own WebApplicationContext (child of root context)
+→ initializes HandlerMappings, HandlerAdapters, ViewResolvers,
+   ExceptionResolvers, and all other MVC infrastructure
 ```
 
 **DispatcherServlet's internal dispatch loop (what happens inside service()):**
@@ -2130,44 +1954,39 @@ public interface HandlerInterceptor {
 
 #### When Each Method Fires — The Exact Timeline
 
-```
-  Request arrives at DispatcherServlet
-  │
-  ├─ HandlerMapping finds: UserController.getUser()
-  │  Returns: HandlerExecutionChain containing:
-  │    handler = UserController.getUser()
-  │    interceptors = [LoggingInterceptor, AuthInterceptor, TimingInterceptor]
-  │
-  ├─ Interceptor A: preHandle()   → returns true (continue)
-  ├─ Interceptor B: preHandle()   → returns true (continue)
-  ├─ Interceptor C: preHandle()   → returns true (continue)
-  │
-  ├─ Controller method executes   → returns ResponseEntity
-  │
-  ├─ Interceptor C: postHandle()  → runs (REVERSE order)
-  ├─ Interceptor B: postHandle()  → runs
-  ├─ Interceptor A: postHandle()  → runs
-  │
-  ├─ Interceptor C: afterCompletion() → runs (REVERSE order)
-  ├─ Interceptor B: afterCompletion() → runs
-  ├─ Interceptor A: afterCompletion() → runs
-  │
-  ▼
-  Response sent
+**Interceptor order**
 
-  IF Interceptor B.preHandle() returns FALSE:
-  ├─ Interceptor A: preHandle()   → returns true
-  ├─ Interceptor B: preHandle()   → returns FALSE ← STOPS HERE
-  │
-  │  Controller NEVER executes
-  │  postHandle() NEVER runs for any interceptor
-  │
-  ├─ Interceptor A: afterCompletion() → runs (only for interceptors
-  │                                      whose preHandle() returned true)
-  │  Interceptor B: afterCompletion() → does NOT run
-  ▼
-  Response sent (whatever B wrote to the response)
+```mermaid
+sequenceDiagram
+  participant D as DispatcherServlet
+  participant A as Interceptor A
+  participant B as Interceptor B
+  participant C as Interceptor C
+  participant H as Controller
+  Note over D: HandlerMapping finds UserController.getUser()<br/>and returns a HandlerExecutionChain (handler + interceptors)
+  D->>A: preHandle() returns true
+  D->>B: preHandle() returns true
+  D->>C: preHandle() returns true
+  D->>H: controller method executes
+  H-->>D: ResponseEntity
+  D->>C: postHandle() (reverse order)
+  D->>B: postHandle()
+  D->>A: postHandle()
+  D->>C: afterCompletion() (reverse order)
+  D->>B: afterCompletion()
+  D->>A: afterCompletion()
+  Note over D: Response sent
 ```
+
+**How to read this diagram.** `preHandle()` runs in declaration order. `postHandle()` and `afterCompletion()` run in REVERSE order.
+
+**If Interceptor B's `preHandle()` returns `false`:**
+
+- Interceptor A: `preHandle()` returns true.
+- Interceptor B: `preHandle()` returns `false`, so the chain STOPS HERE.
+- The controller NEVER executes, and `postHandle()` NEVER runs for any interceptor.
+- Interceptor A: `afterCompletion()` still runs (only for interceptors whose `preHandle()` returned true). Interceptor B's `afterCompletion()` does NOT run.
+- The response is sent (whatever B wrote to it).
 
 #### Implementing and Registering a Custom Interceptor
 
@@ -2276,49 +2095,17 @@ public interface AsyncHandlerInterceptor extends HandlerInterceptor {
 
 ### 12E. Filter vs Interceptor — The Complete Comparison
 
-```
-  ┌────────────────────┬────────────────────────────┬────────────────────────────┐
-  │                    │       SERVLET FILTER       │    HANDLER INTERCEPTOR     │
-  ├────────────────────┼────────────────────────────┼────────────────────────────┤
-  │ Specification      │ Servlet API                │ Spring MVC                 │
-  │                    │ (javax.servlet.Filter)     │ (HandlerInterceptor)       │
-  ├────────────────────┼────────────────────────────┼────────────────────────────┤
-  │ Scope              │ ALL requests to the        │ Only requests that reach   │
-  │                    │ servlet container —         │ DispatcherServlet AND      │
-  │                    │ including static files,    │ match a handler.           │
-  │                    │ error pages, forwards      │ Static resources: NO       │
-  ├────────────────────┼────────────────────────────┼────────────────────────────┤
-  │ Spring Context     │ NOT available by default   │ Full access — interceptors │
-  │ Access             │ (unless you use            │ are Spring beans. Can      │
-  │                    │ DelegatingFilterProxy or   │ @Autowire services.        │
-  │                    │ register as @Bean)         │                            │
-  ├────────────────────┼────────────────────────────┼────────────────────────────┤
-  │ Handler Info       │ No — filters don't know    │ Yes — receives the actual  │
-  │                    │ which controller will      │ HandlerMethod object.      │
-  │                    │ handle the request         │ Can inspect annotations.   │
-  ├────────────────────┼────────────────────────────┼────────────────────────────┤
-  │ Request/Response   │ Can wrap/replace the       │ Cannot replace request     │
-  │ Wrapping           │ request and response       │ or response objects.       │
-  │                    │ objects entirely            │                            │
-  ├────────────────────┼────────────────────────────┼────────────────────────────┤
-  │ Exception Handling │ Must catch exceptions      │ afterCompletion() receives │
-  │                    │ yourself in try-catch.     │ the exception parameter.   │
-  │                    │ No integration with        │ @ControllerAdvice handles  │
-  │                    │ @ControllerAdvice          │ controller exceptions.     │
-  ├────────────────────┼────────────────────────────┼────────────────────────────┤
-  │ Short-Circuit      │ Don't call                 │ Return false from          │
-  │                    │ chain.doFilter()           │ preHandle()                │
-  ├────────────────────┼────────────────────────────┼────────────────────────────┤
-  │ Post-Processing    │ Code after                 │ postHandle() — only if no  │
-  │                    │ chain.doFilter() runs      │ exception                  │
-  │                    │ regardless of exceptions   │ afterCompletion() — always │
-  ├────────────────────┼────────────────────────────┼────────────────────────────┤
-  │ Use Cases          │ Security, CORS, encoding,  │ Logging, timing, auth      │
-  │                    │ request ID injection,      │ checks that need handler   │
-  │                    │ rate limiting, body        │ info, audit trails,        │
-  │                    │ caching/logging            │ tenant resolution          │
-  └────────────────────┴────────────────────────────┴────────────────────────────┘
-```
+|  | SERVLET FILTER | HANDLER INTERCEPTOR |
+| --- | --- | --- |
+| Specification | Servlet API (javax.servlet.Filter) | Spring MVC (HandlerInterceptor) |
+| Scope | ALL requests to the servlet container — including static files, error pages, forwards | Only requests that reach<br>DispatcherServlet AND match a handler.<br>Static resources: NO |
+| Spring Context<br>Access | NOT available by default (unless you use<br>DelegatingFilterProxy or register as @Bean) | Full access — interceptors are Spring beans. Can<br>@Autowire services. |
+| Handler Info | No — filters don't know which controller will handle the request | Yes — receives the actual<br>HandlerMethod object.<br>Can inspect annotations. |
+| Request/Response<br>Wrapping | Can wrap/replace the request and response objects entirely | Cannot replace request or response objects. |
+| Exception Handling | Must catch exceptions yourself in try-catch.<br>No integration with<br>@ControllerAdvice | afterCompletion() receives the exception parameter.<br>@ControllerAdvice handles controller exceptions. |
+| Short-Circuit | Don't call chain.doFilter() | Return false from preHandle() |
+| Post-Processing | Code after chain.doFilter() runs regardless of exceptions | postHandle() — only if no exception afterCompletion() — always |
+| Use Cases | Security, CORS, encoding, request ID injection, rate limiting, body caching/logging | Logging, timing, auth checks that need handler info, audit trails, tenant resolution |
 
 **Decision Guide:**
 
@@ -2436,42 +2223,29 @@ public class RequestBodyCachingFilter extends OncePerRequestFilter {
 
 **CORS is a browser-enforced mechanism, not a server mechanism.** The server sets headers; the browser decides whether to allow the request. Understanding where CORS headers get set in the Spring pipeline matters because getting it wrong means preflight requests fail silently.
 
+**Preflight (OPTIONS) request flow**
+
+The browser wants to POST to `https://api.example.com/users` from the origin `https://app.example.com` (a different domain).
+
+**Step 1: the browser sends an OPTIONS preflight automatically**
+
+```http
+OPTIONS /users HTTP/1.1
+Origin: https://app.example.com
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type, Authorization
 ```
-  PREFLIGHT (OPTIONS) REQUEST FLOW:
-  ─────────────────────────────────
 
-  Browser wants to POST to: https://api.example.com/users
-  Origin: https://app.example.com (different domain)
+**Step 2: this OPTIONS request enters Spring's filter chain**
 
-  Step 1: Browser sends OPTIONS preflight automatically:
-          OPTIONS /users HTTP/1.1
-          Origin: https://app.example.com
-          Access-Control-Request-Method: POST
-          Access-Control-Request-Headers: Content-Type, Authorization
-
-  Step 2: This OPTIONS request enters Spring's filter chain:
-          ┌─────────────────────────────────────────────────────┐
-          │ CharacterEncodingFilter                             │
-          │ ↓                                                   │
-          │ Spring Security FilterChainProxy                    │
-          │ │                                                   │
-          │ │ CorsFilter (security's internal)                  │
-          │ │ ↓                                                 │
-          │ │ IF CORS configured properly:                      │
-          │ │   Sets Access-Control-Allow-Origin                │
-          │ │   Sets Access-Control-Allow-Methods               │
-          │ │   Sets Access-Control-Allow-Headers               │
-          │ │   Returns 200 with these headers                  │
-          │ │   → Request SHORT-CIRCUITED here                  │
-          │ │   → DispatcherServlet never sees it               │
-          │ │                                                   │
-          │ │ IF CORS NOT configured:                           │
-          │ │   No CORS headers set                             │
-          │ │   OPTIONS continues to DispatcherServlet          │
-          │ │   → 403 Forbidden (CSRF blocks it)                │
-          │ │   → Browser blocks the actual POST                │
-          └─────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  CE["CharacterEncodingFilter"] --> FCP["Spring Security FilterChainProxy"] --> CF{"CorsFilter (Security's internal one):<br/>is CORS configured properly?"}
+  CF -->|"Yes"| OK["Sets Access-Control-Allow-Origin / -Methods / -Headers<br/>returns 200 with these headers<br/>request SHORT-CIRCUITED here: DispatcherServlet never sees it"]
+  CF -->|"No"| NO["No CORS headers set<br/>OPTIONS continues to DispatcherServlet<br/>403 Forbidden (CSRF blocks it)<br/>the browser blocks the actual POST"]
 ```
+
+**How to read this diagram.** If CORS is configured at the security filter level, the preflight is answered there. If it isn't, the request falls through, gets rejected, and the browser refuses to send the real POST.
 
 **Three ways to configure CORS (and where each lives in the pipeline):**
 
@@ -2731,71 +2505,35 @@ public class ApiKeyFilter extends OncePerRequestFilter {
 
 ## 13. The Entire Spring Ecosystem — How Pieces Fit Together
 
-```
-  ┌─────────────────────────────────────────────────────────────────────────────┐
-  │                     SPRING ECOSYSTEM ARCHITECTURE                          │
-  │                                                                            │
-  │  ┌─── Spring Boot ──────────────────────────────────────────────────────┐  │
-  │  │                                                                       │  │
-  │  │  Auto-Configuration Engine                                            │  │
-  │  │  ├── Classpath scanning                                               │  │
-  │  │  ├── @Conditional evaluation                                          │  │
-  │  │  ├── Embedded server (Tomcat/Jetty/Undertow/Netty)                   │  │
-  │  │  ├── Actuator (health, metrics, info endpoints)                      │  │
-  │  │  └── DevTools (hot reload, LiveReload)                               │  │
-  │  │                                                                       │  │
-  │  │  ┌─── Spring Framework (Core) ────────────────────────────────────┐  │  │
-  │  │  │                                                                 │  │  │
-  │  │  │  IoC Container (ApplicationContext)                             │  │  │
-  │  │  │  ├── Bean lifecycle management                                  │  │  │
-  │  │  │  ├── Dependency injection                                       │  │  │
-  │  │  │  ├── AOP (proxy-based aspects)                                  │  │  │
-  │  │  │  ├── Event system (ApplicationEvent)                            │  │  │
-  │  │  │  ├── Resource management (classpath:, file:)                   │  │  │
-  │  │  │  └── SpEL (Spring Expression Language)                          │  │  │
-  │  │  │                                                                 │  │  │
-  │  │  │  ┌── Spring MVC ──────────────────────────────────────────┐    │  │  │
-  │  │  │  │ DispatcherServlet, @Controller, @RestController,       │    │  │  │
-  │  │  │  │ HandlerMapping, ViewResolver, HttpMessageConverter     │    │  │  │
-  │  │  │  └───────────────────────────────────────────────────────┘    │  │  │
-  │  │  │                                                                 │  │  │
-  │  │  │  ┌── Spring Data ─────────────────────────────────────────┐    │  │  │
-  │  │  │  │ JpaRepository, CrudRepository                          │    │  │  │
-  │  │  │  │ Query methods, @Query, Specifications                  │    │  │  │
-  │  │  │  │ Pagination, Sorting, Auditing                          │    │  │  │
-  │  │  │  │                                                        │    │  │  │
-  │  │  │  │  ┌── Hibernate (JPA Provider) ──────────────────────┐ │    │  │  │
-  │  │  │  │  │ EntityManager, Session, Persistence Context      │ │    │  │  │
-  │  │  │  │  │ First-level cache, dirty checking, lazy loading  │ │    │  │  │
-  │  │  │  │  │ HQL/JPQL → SQL translation                       │ │    │  │  │
-  │  │  │  │  │ Connection pool (HikariCP)                       │ │    │  │  │
-  │  │  │  │  └─────────────────────────────────────────────────┘ │    │  │  │
-  │  │  │  └───────────────────────────────────────────────────────┘    │  │  │
-  │  │  │                                                                 │  │  │
-  │  │  │  ┌── Spring Security ─────────────────────────────────────┐    │  │  │
-  │  │  │  │ SecurityFilterChain, AuthenticationManager,            │    │  │  │
-  │  │  │  │ UserDetailsService, PasswordEncoder,                   │    │  │  │
-  │  │  │  │ OAuth2, JWT, CORS, CSRF, Method Security               │    │  │  │
-  │  │  │  └───────────────────────────────────────────────────────┘    │  │  │
-  │  │  │                                                                 │  │  │
-  │  │  │  ┌── Spring Cloud ────────────────────────────────────────┐    │  │  │
-  │  │  │  │ Config Server, Service Discovery (Eureka),             │    │  │  │
-  │  │  │  │ Circuit Breaker (Resilience4j), API Gateway,           │    │  │  │
-  │  │  │  │ Distributed Tracing (Micrometer), Feign Client         │    │  │  │
-  │  │  │  └───────────────────────────────────────────────────────┘    │  │  │
-  │  │  │                                                                 │  │  │
-  │  │  └─────────────────────────────────────────────────────────────┘  │  │
-  │  └───────────────────────────────────────────────────────────────────┘  │
-  └─────────────────────────────────────────────────────────────────────────┘
+**Spring ecosystem architecture**
 
-  HOW THEY CONNECT:
-  Spring Boot auto-configures Spring Framework modules.
-  Spring Framework provides DI/AOP to ALL modules.
-  Spring MVC uses DI for controllers, AOP for exception handling.
-  Spring Data uses DI for repositories, AOP for @Transactional.
-  Spring Security uses DI for config, Filters for request security.
-  Spring Cloud uses DI for configs, adds distributed features.
+```mermaid
+flowchart TD
+  subgraph SB["Spring Boot"]
+    AC["Auto-configuration engine<br/>classpath scanning, @Conditional evaluation, embedded server (Tomcat/Jetty/Undertow/Netty),<br/>Actuator (health, metrics, info), DevTools (hot reload, LiveReload)"]
+    subgraph SF["Spring Framework (core)"]
+      IOC["IoC container (ApplicationContext)<br/>bean lifecycle, dependency injection, AOP (proxy-based aspects),<br/>events (ApplicationEvent), resources (classpath:, file:), SpEL"]
+      MVC["Spring MVC<br/>DispatcherServlet, @Controller, @RestController, HandlerMapping, ViewResolver, HttpMessageConverter"]
+      DATA["Spring Data<br/>JpaRepository, CrudRepository, query methods, @Query, Specifications, pagination, sorting, auditing"]
+      HIB["Hibernate (JPA provider)<br/>EntityManager, Session, persistence context, first-level cache, dirty checking,<br/>lazy loading, HQL/JPQL to SQL, connection pool (HikariCP)"]
+      SEC["Spring Security<br/>SecurityFilterChain, AuthenticationManager, UserDetailsService, PasswordEncoder,<br/>OAuth2, JWT, CORS, CSRF, method security"]
+      CLOUD["Spring Cloud<br/>Config Server, service discovery (Eureka), circuit breaker (Resilience4j),<br/>API gateway, distributed tracing (Micrometer), Feign client"]
+      DATA --> HIB
+    end
+    AC --> SF
+  end
 ```
+
+**How to read this diagram.** Spring Boot wraps the Spring Framework core. The modules (MVC, Data, Security, Cloud) all sit on the core's IoC container, and Hibernate sits beneath Spring Data.
+
+**How they connect**
+
+- Spring Boot auto-configures the Spring Framework modules.
+- Spring Framework provides DI and AOP to ALL modules.
+- Spring MVC uses DI for controllers and AOP for exception handling.
+- Spring Data uses DI for repositories and AOP for `@Transactional`.
+- Spring Security uses DI for configuration and filters for request security.
+- Spring Cloud uses DI for configuration and adds distributed-system features.
 
 ### Quick Interview Reference: "Explain the Difference Between..."
 

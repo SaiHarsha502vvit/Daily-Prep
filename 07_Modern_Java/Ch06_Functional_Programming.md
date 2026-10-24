@@ -1250,59 +1250,28 @@ _Functional programming is about clarity and composability!_ 🎯
 
 Java 8 (2014) Streams are **lazy** — intermediate operations build a pipeline, only a terminal operation triggers traversal. Crystal-clear visualization:
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│ STREAM PIPELINE — LAZY EVALUATION (Java 8 / 2014)                  │
-└─────────────────────────────────────────────────────────────────────┘
+**Stream pipeline: lazy evaluation (Java 8, 2014)**
 
-  Caller Code
-     │
-     │  source.stream()                    ← Step 1: source (eager)
-     ▼
-  ┌──────────────┐
-  │  Stream<T>   │  ← no traversal yet
-  └──────┬───────┘
-         │
-         │  .filter(p -> p.getAge() > 18)  ← Step 2: intermediate (lazy)
-         ▼
-  ┌──────────────┐
-  │  Stream<T>   │  ← still no traversal
-  └──────┬───────┘
-         │
-         │  .map(Person::getName)          ← Step 3: intermediate (lazy)
-         ▼
-  ┌──────────────┐
-  │  Stream<R>   │  ← still no traversal
-  └──────┬───────┘
-         │
-         │  .collect(toList())             ← Step 4: terminal (EAGER trigger)
-         ▼
-  ╔══════════════╗
-  ║  List<String> ║  ← NOW pipeline runs: filter → map → collect
-  ╚══════════════╝
-
-  ▼ Failure mode: forgetting terminal op → pipeline never executes (no side effect)
-  ▼ Mitigation: always end chains with .collect() / .forEach() / .reduce()
+```mermaid
+flowchart TD
+  C["Caller code"] -->|"source.stream()  (Step 1: source, eager)"| S1["Stream&lt;T&gt;<br/>no traversal yet"]
+  S1 -->|".filter(p -> p.getAge() > 18)  (Step 2: intermediate, lazy)"| S2["Stream&lt;T&gt;<br/>still no traversal"]
+  S2 -->|".map(Person::getName)  (Step 3: intermediate, lazy)"| S3["Stream&lt;R&gt;<br/>still no traversal"]
+  S3 -->|".collect(toList())  (Step 4: terminal, EAGER trigger)"| R["List&lt;String&gt;<br/>NOW the pipeline runs: filter, map, collect"]
 ```
+
+**How to read this diagram.** Steps 1 to 3 only describe the pipeline, so nothing is traversed. The terminal operation in step 4 triggers one pass over the data.
+
+> [!WARNING]
+> **Failure mode:** forgetting the terminal operation means the pipeline never executes (no side effects happen). **Mitigation:** always end chains with `.collect()`, `.forEach()` or `.reduce()`.
 
 **Vertical-sequence step ladder** (the canonical CL template — also used in 04_Patterns_Templates):
 
-```
-┌─ Step 1: Build pipeline (no execution) ─────────────────────────────────┐
-│   stream() / .filter() / .map() / .sorted() — all return Stream<T>      │
-│   Each stage wraps the previous, defers work.                          │
-└────────────────────────────────────────────────────────────────────────┘
-        ↓
-┌─ Step 2: Attach terminal operation ─────────────────────────────────────┐
-│   .collect() / .forEach() / .count() / .reduce()                        │
-│   Terminal op splits the pipeline into "vertical" stages.               │
-└────────────────────────────────────────────────────────────────────────┘
-        ↓
-┌─ Step 3: Spliterator drives traversal ──────────────────────────────────┐
-│   Each element pulled through: filter → map → sorted-buffer → collect   │
-│   Short-circuit operators (.findFirst(), .limit()) stop early.          │
-└────────────────────────────────────────────────────────────────────────┘
-```
+| Step | What happens |
+| --- | --- |
+| 1. Build the pipeline (no execution) | `stream()`, `.filter()`, `.map()`, `.sorted()` all return `Stream<T>`. Each stage wraps the previous one and defers the work. |
+| 2. Attach a terminal operation | `.collect()`, `.forEach()`, `.count()`, `.reduce()`. The terminal operation splits the pipeline into "vertical" stages. |
+| 3. The spliterator drives traversal | Each element is pulled through filter → map → sorted-buffer → collect. Short-circuit operations (`.findFirst()`, `.limit()`) stop early. |
 
 ---
 

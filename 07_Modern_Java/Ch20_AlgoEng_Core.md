@@ -21,6 +21,7 @@
 - **Competitive programming era — 2000s**: TopCoder (2001), ACM ICPC. Algorithmic problem-solving as global sport.
 - **LeetCode — 2015**: Algorithmic interview preparation platform. 3000+ problems. FAANG prep standard.
 - **JMH (Java Microbenchmark Harness) — 2013**: Doug Lea, Oracle. Nanosecond-scale JVM benchmarking.
+
 ## How to Think Like Top Engineers and Craft Your Own Solutions
 
 ---
@@ -459,17 +460,13 @@ LESSON: Solve the ROOT problem, not the SYMPTOM.
 
 ## Decomposition Framework
 
-```
-ANY PROBLEM can be broken into:
+**ANY PROBLEM can be broken into: — THE PROBLEM**
 
-┌─────────────────────────────────────────────────────────┐
-│                    THE PROBLEM                          │
-├─────────────────────────────────────────────────────────┤
-│ INPUT  │ What data do I have? What's its structure?     │
-│ OUTPUT │ What do I need to produce? Exact format?       │
-│ CONSTRAINTS │ Size limits? Time limits? Space limits?   │
-│ EDGE CASES │ Empty? Single? Max? Negative? Duplicates?  │
-└─────────────────────────────────────────────────────────┘
+```text
+INPUT  │ What data do I have? What's its structure?
+OUTPUT │ What do I need to produce? Exact format?
+CONSTRAINTS │ Size limits? Time limits? Space limits?
+EDGE CASES │ Empty? Single? Max? Negative? Duplicates?
 
 Then ask:
 1. What's the SIMPLEST way to solve this? (Brute force)
@@ -490,20 +487,19 @@ COMBINED PATTERNS are Level 2-3.
 CREATED PATTERNS are Level 4.
 
 COMMON COMBINATIONS:
-┌───────────────────┬────────────────────┬──────────────────────────────┐
-│ Pattern 1         │ Pattern 2          │ Creates                      │
-├───────────────────┼────────────────────┼──────────────────────────────┤
-│ Binary Search     │ Greedy             │ Optimization problems        │
-│ Two Pointers      │ Sorting            │ 3Sum, Container problems     │
-│ BFS/DFS           │ Memoization        │ Graph DP                     │
-│ Sliding Window    │ HashMap            │ Substring problems           │
-│ Recursion         │ Binary Search      │ Divide & Conquer             │
-│ Union-Find        │ Sorting            │ Kruskal's MST                │
-│ Trie              │ DFS                │ Word Search problems         │
-│ Segment Tree      │ Lazy Propagation   │ Range update queries         │
-│ DP                │ Bitmask            │ TSP, Subset enumeration      │
-└───────────────────┴────────────────────┴──────────────────────────────┘
 ```
+
+| Pattern 1 | Pattern 2 | Creates |
+| --- | --- | --- |
+| Binary Search | Greedy | Optimization problems |
+| Two Pointers | Sorting | 3Sum, Container problems |
+| BFS/DFS | Memoization | Graph DP |
+| Sliding Window | HashMap | Substring problems |
+| Recursion | Binary Search | Divide & Conquer |
+| Union-Find | Sorting | Kruskal's MST |
+| Trie | DFS | Word Search problems |
+| Segment Tree | Lazy Propagation | Range update queries |
+| DP | Bitmask | TSP, Subset enumeration |
 
 🔬 **Section Challenge — The Combination Matrix**
 
@@ -684,29 +680,31 @@ ENGINEER'S JOB: Choose the RIGHT trade-off for the CONTEXT
 
 ## The Decision Tree
 
-```
-WHEN FACING A PROBLEM:
+**WHEN FACING A PROBLEM:**
 
-Is it about SEARCHING?
-├── Sorted data? → Binary Search
-├── Graph/Tree? → BFS/DFS
-└── Optimization? → Maybe DP
+**Is it about SEARCHING?**
 
-Is it about OPTIMIZATION?
-├── Can build solution greedily? → Greedy
-├── Overlapping subproblems? → DP
-└── Need to try all possibilities? → Backtracking
+- Sorted data? → Binary Search
+- Graph/Tree? → BFS/DFS
+- Optimization? → Maybe DP
 
-Is it about COUNTING/FREQUENCY?
-├── Fixed window? → Array/Map
-├── Variable window? → Sliding Window + Map
-└── Prefix sums useful? → Cumulative sum
+**Is it about OPTIMIZATION?**
 
-Is it about ORDERING?
-├── Partial order matters? → Topological Sort
-├── Need sorted output? → Sort + Process
-└── Need k-th element? → Heap / Quick Select
-```
+- Can build solution greedily? → Greedy
+- Overlapping subproblems? → DP
+- Need to try all possibilities? → Backtracking
+
+**Is it about COUNTING/FREQUENCY?**
+
+- Fixed window? → Array/Map
+- Variable window? → Sliding Window + Map
+- Prefix sums useful? → Cumulative sum
+
+**Is it about ORDERING?**
+
+- Partial order matters? → Topological Sort
+- Need sorted output? → Sort + Process
+- Need k-th element? → Heap / Quick Select
 
 ---
 

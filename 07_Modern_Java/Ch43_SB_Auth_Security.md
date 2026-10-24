@@ -9,44 +9,42 @@ _"Security is not a feature, it's a requirement"_
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
+**WHY: Why Security is Critical?**
+
+```text
+• Data breaches cost millions: Legal fees, reputation damage
+• Compliance: GDPR, HIPAA, PCI-DSS require security
+• OWASP Top 10: Broken auth consistently in top vulnerabilities
+• Interview: Security questions separate senior from junior developers
+• Career: Security expertise = higher pay, more opportunities
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Why Security is Critical?                                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Data breaches cost millions: Legal fees, reputation damage                   │
-│  • Compliance: GDPR, HIPAA, PCI-DSS require security                            │
-│  • OWASP Top 10: Broken auth consistently in top vulnerabilities                │
-│  • Interview: Security questions separate senior from junior developers         │
-│  • Career: Security expertise = higher pay, more opportunities                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How Spring Security Works?                                                │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Filter chain: Request passes through security filters                        │
-│  • Authentication: Who are you? (login, JWT validation)                         │
-│  • Authorization: What can you do? (roles, permissions)                         │
-│  • SecurityContext: Holds authenticated user info                               │
-│  • UserDetailsService: Loads user data for authentication                       │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**HOW: How Spring Security Works?**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN: When to Use Each Auth Strategy?                                          │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Session-based: Traditional web apps, server-rendered pages                   │
-│  • JWT: REST APIs, microservices, stateless authentication                      │
-│  • OAuth2: "Login with Google/GitHub", third-party integration                  │
-│  • API Keys: Service-to-service communication                                   │
-│  • Basic Auth: Simple internal APIs, development only                           │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+• Filter chain: Request passes through security filters
+• Authentication: Who are you? (login, JWT validation)
+• Authorization: What can you do? (roles, permissions)
+• SecurityContext: Holds authenticated user info
+• UserDetailsService: Loads user data for authentication
+```
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHICH: Which Security Concepts to Master?                                      │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Authentication vs Authorization, JWT, SecurityFilterChain       │
-│  IMPORTANT:     @PreAuthorize, BCrypt, CORS configuration                       │
-│  ADVANCED:      OAuth2 flows, custom filters, method security                   │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHEN: When to Use Each Auth Strategy?**
+
+```text
+• Session-based: Traditional web apps, server-rendered pages
+• JWT: REST APIs, microservices, stateless authentication
+• OAuth2: "Login with Google/GitHub", third-party integration
+• API Keys: Service-to-service communication
+• Basic Auth: Simple internal APIs, development only
+```
+
+**WHICH: Which Security Concepts to Master?**
+
+```text
+ESSENTIAL:     Authentication vs Authorization, JWT, SecurityFilterChain
+IMPORTANT:     @PreAuthorize, BCrypt, CORS configuration
+ADVANCED:      OAuth2 flows, custom filters, method security
 ```
 
 ---
@@ -67,110 +65,51 @@ Security against token interception (Authorization Code Flow). If the Authorizat
 
 </details>
 
-## Authentication Vs Authorization
+## Authentication vs Authorization
 
-┬
-AUTHENTICATION (AuthN) │ AUTHORIZATION (AuthZ)
-┼
-│
-"WHO are you?" │ "WHAT can you do?"
-│
-Verifies IDENTITY │ Verifies PERMISSIONS
-│
-Happens FIRST │ Happens AFTER authentication
-│
-Examples: │ Examples:
+| | Authentication (AuthN) | Authorization (AuthZ) |
+| --- | --- | --- |
+| Question | "WHO are you?" | "WHAT can you do?" |
+| Verifies | Identity | Permissions |
+| Order | Happens FIRST | Happens AFTER authentication |
+| Examples | Username + password<br>Fingerprint<br>Face ID<br>JWT token | User can view their own data<br>Admin can delete any user<br>Manager can approve requests<br>Guest can only read |
+| HTTP status on failure | `401 Unauthorized` | `403 Forbidden` |
 
-- Username + Password │ • User can view their own data
-- Fingerprint │ • Admin can delete any user
-- Face ID │ • Manager can approve requests
-- JWT Token │ • Guest can only read
-  │
-  HTTP Status: 401 Unauthorized │ HTTP Status: 403 Forbidden
-  │
-  ┴
+> [!TIP]
+> **Real-world analogy: airport security.**
+> 1. **Authentication:** show your ID/passport at the checkpoint. "Are you really John Smith?" ✓
+> 2. **Authorization:** check your boarding pass. "Can you enter the First Class lounge?" ✗ "Can you board Flight AA123?" ✓
 
-💡 **REAL-WORLD ANALOGY:**
-═══════════════════
+**In code:**
 
-**Airport Security**:
-
-1. AUTHENTICATION: Show your ID/Passport at checkpoint
-   "Are you really John Smith?" ✓
-2. AUTHORIZATION: Check your boarding pass
-   "Can you enter the First Class lounge?" ✗
-   "Can you board Flight AA123?" ✓
-   ═══════════════════════════════════════════════════════════════════════════
-
-**In Code**:
-User logs in with email/password → AUTHENTICATION
-System returns JWT token
-User tries to access /admin/users → AUTHORIZATION
-System checks: Does this user have ADMIN role? No → 403 Forbidden
+1. The user logs in with email/password → **authentication**.
+2. The system returns a JWT token.
+3. The user tries to access `/admin/users` → **authorization**.
+4. The system checks: does this user have the `ADMIN` role? No → `403 Forbidden`.
 
 ---
 
 ## Chapter 2: Spring Security Architecture
 
+**Spring Security filter chain**
+
+```mermaid
+flowchart TD
+  R["HTTP request"] --> F1
+  subgraph SFC["SECURITY FILTER CHAIN"]
+    F1["1. SecurityContextPersistenceFilter<br/>loads the SecurityContext from the session<br/>(SecurityContextHolderFilter in Spring Security 6)"]
+    F2["2. LogoutFilter<br/>handles the /logout URL"]
+    F3["3. UsernamePasswordAuthenticationFilter<br/>handles form login (POST /login)"]
+    F4["4. BasicAuthenticationFilter<br/>handles the HTTP Basic Auth header"]
+    F5["5. BearerTokenAuthenticationFilter (for JWT)<br/>validates the JWT from the Authorization header"]
+    F6["6. ExceptionTranslationFilter<br/>converts security exceptions to HTTP responses"]
+    F7["7. FilterSecurityInterceptor / AuthorizationFilter<br/>final authorization check: can the user access this URL?"]
+    F1 --> F2 --> F3 --> F4 --> F5 --> F6 --> F7
+  end
+  F7 --> C["Controller (if all filters pass)"]
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              SPRING SECURITY FILTER CHAIN                                       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  HTTP Request                                                                   │
-│       │                                                                         │
-│       ▼                                                                         │
-│  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │                    SECURITY FILTER CHAIN                                │    │
-│  │                                                                         │    │
-│  │  ┌────────────────────────────────────────────────────────────────┐    │     │
-│  │  │ 1. SecurityContextPersistenceFilter                           │    │      │
-│  │  │    → Loads SecurityContext from session                       │    │      │
-│  │  └────────────────────────────────────────────────────────────────┘    │     │
-│  │                            │                                           │     │
-│  │                            ▼                                           │     │
-│  │  ┌────────────────────────────────────────────────────────────────┐    │     │
-│  │  │ 2. LogoutFilter                                                │    │     │
-│  │  │    → Handles /logout URL                                       │    │     │
-│  │  └────────────────────────────────────────────────────────────────┘    │     │
-│  │                            │                                           │     │
-│  │                            ▼                                           │     │
-│  │  ┌────────────────────────────────────────────────────────────────┐    │     │
-│  │  │ 3. UsernamePasswordAuthenticationFilter                       │    │      │
-│  │  │    → Handles form login (/login POST)                         │    │      │
-│  │  └────────────────────────────────────────────────────────────────┘    │     │
-│  │                            │                                           │     │
-│  │                            ▼                                           │     │
-│  │  ┌────────────────────────────────────────────────────────────────┐    │     │
-│  │  │ 4. BasicAuthenticationFilter                                   │    │     │
-│  │  │    → Handles HTTP Basic Auth header                           │    │      │
-│  │  └────────────────────────────────────────────────────────────────┘    │     │
-│  │                            │                                           │     │
-│  │                            ▼                                           │     │
-│  │  ┌────────────────────────────────────────────────────────────────┐    │     │
-│  │  │ 5. BearerTokenAuthenticationFilter (for JWT)                  │    │      │
-│  │  │    → Validates JWT from Authorization header                   │    │     │
-│  │  └────────────────────────────────────────────────────────────────┘    │     │
-│  │                            │                                           │     │
-│  │                            ▼                                           │     │
-│  │  ┌────────────────────────────────────────────────────────────────┐    │     │
-│  │  │ 6. ExceptionTranslationFilter                                 │    │      │
-│  │  │    → Converts security exceptions to HTTP responses           │    │      │
-│  │  └────────────────────────────────────────────────────────────────┘    │     │
-│  │                            │                                           │     │
-│  │                            ▼                                           │     │
-│  │  ┌────────────────────────────────────────────────────────────────┐    │     │
-│  │  │ 7. FilterSecurityInterceptor / AuthorizationFilter            │    │      │
-│  │  │    → Final authorization check (can user access this URL?)    │    │      │
-│  │  └────────────────────────────────────────────────────────────────┘    │     │
-│  │                                                                         │    │
-│  └─────────────────────────────────────────────────────────────────────────┘    │
-│       │                                                                         │
-│       ▼                                                                         │
-│  Controller (if all filters pass)                                               │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The request passes through each filter in order. Which filters are present depends on your configuration, and a filter can stop the request (for example with a 401 or 403) before it reaches the controller.
 
 ---
 
@@ -205,130 +144,118 @@ JWT: stateless — any service can validate without a DB call (verify signature 
 **Local rewrite:** The `JwtService` above calls `Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token)` — this delegates directly to jjwt's `DefaultJwtParser`. The `verifyWith()` call sets the expected signing key; `parseSignedClaims()` validates all three checks: signature, `exp`, `nbf`.  
 **Constraint warning:** jjwt uses HMAC-SHA256 by default (symmetric — same key signs and verifies). For a **resource server** that should only verify (not sign), use asymmetric RSA/EC. With jjwt: sign with `Keys.keyPairFor(SignatureAlgorithm.RS256)`, verify with the public key only.
 
-## Jwt Structure
+## JWT structure
 
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4iLCJpYXQiOjE1MTYyMzkwMjJ9.
-SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
-┬─────────────────────────────────────────┬
-| HEADER | PAYLOAD | SIGNATURE |
-| (Base64) | (Base64) | (Base64) |
-═══════════════════════════════════════════════════════════════════════════
-HEADER (Algorithm + Type):
-══════════════════════════
-{
-"alg": "HS256", ← Algorithm used to sign
-"typ": "JWT" ← Token type
-}
-PAYLOAD (Claims - the actual data):
-════════════════════════════════════
-{
-"sub": "1234567890", ← Subject (user ID)
-"name": "John Doe", ← Custom claim
-"email": "john@test.com",
-"roles": ["USER", "ADMIN"],
-"iat": 1516239022, ← Issued At (Unix timestamp)
-"exp": 1516242622 ← Expiration (Unix timestamp)
-}
+A JWT is three Base64URL-encoded parts joined by dots:
 
-**Signature**:
-══════════
+```text
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.          <- HEADER
+eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4iLCJpYXQiOjE1MTYyMzkwMjJ9.   <- PAYLOAD
+SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c    <- SIGNATURE
+```
+
+| Part | Holds | Encoding |
+| --- | --- | --- |
+| Header | Algorithm and token type | Base64URL |
+| Payload | Claims (the actual data) | Base64URL |
+| Signature | Proof the first two parts were not altered | Base64URL |
+
+**Header (algorithm + type)**
+
+```json
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `alg` | Algorithm used to sign |
+| `typ` | Token type |
+
+**Payload (claims, the actual data)**
+
+```json
+{
+  "sub": "1234567890",
+  "name": "John Doe",
+  "email": "john@test.com",
+  "roles": ["USER", "ADMIN"],
+  "iat": 1516239022,
+  "exp": 1516242622
+}
+```
+
+| Claim | Meaning |
+| --- | --- |
+| `sub` | Subject (user ID) |
+| `name`, `email`, `roles` | Custom claims |
+| `iat` | Issued at (Unix timestamp) |
+| `exp` | Expiration (Unix timestamp) |
+
+**Signature**
+
+```text
 HMACSHA256(
-base64UrlEncode(header) + "." + base64UrlEncode(payload),
-secret_key
+  base64UrlEncode(header) + "." + base64UrlEncode(payload),
+  secret_key
 )
-═══════════════════════════════════════════════════════════════════════════
-WHY JWT?
-════════
+```
 
-- ✅ STATELESS: Server doesn't need to store sessions
-- ✅ SCALABLE: Works across multiple servers (no session sharing)
-- ✅ MOBILE-FRIENDLY: Easy to send in header
-- ✅ SELF-CONTAINED: Contains all user info needed
-- ✅ CROSS-DOMAIN: Works for APIs consumed by different clients
-  ⚠️ CAUTION:
-- Cannot invalidate individual tokens (use short expiry + refresh tokens)
-- Payload is only Base64 encoded, NOT encrypted (don't put secrets)
-- Token size can grow large with many claims
+**Why JWT?**
+
+- ✅ **Stateless:** the server doesn't need to store sessions.
+- ✅ **Scalable:** works across multiple servers (no session sharing).
+- ✅ **Mobile-friendly:** easy to send in a header.
+- ✅ **Self-contained:** carries all the user info needed.
+- ✅ **Cross-domain:** works for APIs consumed by different clients.
+
+> [!WARNING]
+> - Individual tokens cannot be invalidated (use short expiry + refresh tokens).
+> - The payload is only Base64 encoded, NOT encrypted (don't put secrets in it).
+> - Token size grows with the number of claims.
 
 ---
 
 ## Chapter 4: JWT Authentication Flow
 
+**JWT authentication flow**
+
+**Step 1: login**
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant S as Server
+  C->>S: POST /api/auth/login {"email": "john@test.com", "password": "secret123"}
+  Note over S: 1. Find user by email<br/>2. Verify password hash<br/>3. Generate JWT token
+  S-->>C: 200 OK {"accessToken": "eyJhbG...", "refreshToken": "eyJhbG...", "expiresIn": 3600}
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    JWT AUTHENTICATION FLOW                                      │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  STEP 1: LOGIN                                                                  │
-│  ═════════════                                                                  │
-│                                                                                 │
-│  Client                              Server                                     │
-│    │                                    │                                       │
-│    │  POST /api/auth/login              │                                       │
-│    │  {                                 │                                       │
-│    │    "email": "john@test.com",       │                                       │
-│    │    "password": "secret123"         │                                       │
-│    │  }                                 │                                       │
-│    │ ──────────────────────────────────►│                                       │
-│    │                                    │ 1. Find user by email                 │
-│    │                                    │ 2. Verify password hash               │
-│    │                                    │ 3. Generate JWT token                 │
-│    │                                    │                                       │
-│    │        200 OK                      │                                       │
-│    │  {                                 │                                       │
-│    │    "accessToken": "eyJhbG...",     │                                       │
-│    │    "refreshToken": "eyJhbG...",    │                                       │
-│    │    "expiresIn": 3600               │                                       │
-│    │  }                                 │                                       │
-│    │ ◄──────────────────────────────────│                                       │
-│    │                                    │                                       │
-│                                                                                 │
-│  STEP 2: ACCESS PROTECTED RESOURCE                                              │
-│  ═════════════════════════════════                                              │
-│                                                                                 │
-│  Client                              Server                                     │
-│    │                                    │                                       │
-│    │  GET /api/users/me                 │                                       │
-│    │  Authorization: Bearer eyJhbG...   │                                       │
-│    │ ──────────────────────────────────►│                                       │
-│    │                                    │ 1. Extract token from header          │
-│    │                                    │ 2. Validate signature                 │
-│    │                                    │ 3. Check expiration                   │
-│    │                                    │ 4. Extract user from token            │
-│    │                                    │ 5. Process request                    │
-│    │                                    │                                       │
-│    │        200 OK                      │                                       │
-│    │  {                                 │                                       │
-│    │    "id": 123,                      │                                       │
-│    │    "name": "John Doe"              │                                       │
-│    │  }                                 │                                       │
-│    │ ◄──────────────────────────────────│                                       │
-│    │                                    │                                       │
-│                                                                                 │
-│  STEP 3: TOKEN EXPIRED - REFRESH                                                │
-│  ════════════════════════════════                                               │
-│                                                                                 │
-│  Client                              Server                                     │
-│    │                                    │                                       │
-│    │  POST /api/auth/refresh            │                                       │
-│    │  {                                 │                                       │
-│    │    "refreshToken": "eyJhbG..."     │                                       │
-│    │  }                                 │                                       │
-│    │ ──────────────────────────────────►│                                       │
-│    │                                    │ 1. Validate refresh token             │
-│    │                                    │ 2. Generate new access token          │
-│    │                                    │                                       │
-│    │        200 OK                      │                                       │
-│    │  {                                 │                                       │
-│    │    "accessToken": "new_eyJhbG...", │                                       │
-│    │    "expiresIn": 3600               │                                       │
-│    │  }                                 │                                       │
-│    │ ◄──────────────────────────────────│                                       │
-│    │                                    │                                       │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+**Step 2: access a protected resource**
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant S as Server
+  C->>S: GET /api/users/me, Authorization: Bearer eyJhbG...
+  Note over S: 1. Extract the token from the header<br/>2. Validate the signature<br/>3. Check the expiration<br/>4. Extract the user from the token<br/>5. Process the request
+  S-->>C: 200 OK {"id": 123, "name": "John Doe"}
 ```
+
+**Step 3: token expired, so refresh**
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant S as Server
+  C->>S: POST /api/auth/refresh {"refreshToken": "eyJhbG..."}
+  Note over S: 1. Validate the refresh token<br/>2. Generate a new access token
+  S-->>C: 200 OK {"accessToken": "new_eyJhbG...", "expiresIn": 3600}
+```
+
+**How to read these diagrams.** The client logs in once and receives an access token and a refresh token. It sends the access token with every request. When the access token expires, it uses the refresh token to get a new one without asking for the password again.
 
 ---
 
@@ -1077,111 +1004,94 @@ The controller should express the rule, not implement it. Keep row-level authori
 
 ## Chapter 8: Testing in Postman
 
+**Testing auth in Postman**
+
+**Step 1: register a user**
+
+`POST http://localhost:8080/api/auth/register`
+
+```json
+{
+  "email": "john@test.com",
+  "password": "MySecret123!",
+  "firstName": "John",
+  "lastName": "Doe"
+}
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    TESTING AUTH IN POSTMAN                                      │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  STEP 1: REGISTER USER                                                          │
-│  ═════════════════════                                                          │
-│                                                                                 │
-│  POST http://localhost:8080/api/auth/register                                   │
-│                                                                                 │
-│  Body (raw JSON):                                                               │
-│  {                                                                              │
-│    "email": "john@test.com",                                                    │
-│    "password": "MySecret123!",                                                  │
-│    "firstName": "John",                                                         │
-│    "lastName": "Doe"                                                            │
-│  }                                                                              │
-│                                                                                 │
-│  Response:                                                                      │
-│  {                                                                              │
-│    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInJvbGVzIjo...",        │
-│    "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huQHRlc3Qu...",          │
-│    "tokenType": "Bearer",                                                       │
-│    "expiresIn": 3600                                                            │
-│  }                                                                              │
-│                                                                                 │
-│                                                                                 │
-│  STEP 2: LOGIN                                                                  │
-│  ═════════════                                                                  │
-│                                                                                 │
-│  POST http://localhost:8080/api/auth/login                                      │
-│                                                                                 │
-│  Body (raw JSON):                                                               │
-│  {                                                                              │
-│    "email": "john@test.com",                                                    │
-│    "password": "MySecret123!"                                                   │
-│  }                                                                              │
-│                                                                                 │
-│  → Save accessToken to environment variable!                                    │
-│                                                                                 │
-│  Tests tab (auto-save token):                                                   │
-│  ┌────────────────────────────────────────────────────────────────────────┐     │
-│  │ var json = pm.response.json();                                        │      │
-│  │ pm.environment.set("accessToken", json.accessToken);                  │      │
-│  │ pm.environment.set("refreshToken", json.refreshToken);                │      │
-│  └────────────────────────────────────────────────────────────────────────┘     │
-│                                                                                 │
-│                                                                                 │
-│  STEP 3: ACCESS PROTECTED ENDPOINT                                              │
-│  ═════════════════════════════════                                              │
-│                                                                                 │
-│  GET http://localhost:8080/api/users/me                                         │
-│                                                                                 │
-│  Headers:                                                                       │
-│  ┌───────────────────┬──────────────────────────────────────────┐               │
-│  │ Key               │ Value                                    │               │
-│  ├───────────────────┼──────────────────────────────────────────┤               │
-│  │ Authorization     │ Bearer {{accessToken}}                   │               │
-│  └───────────────────┴──────────────────────────────────────────┘               │
-│                                                                                 │
-│  OR use Authorization tab:                                                      │
-│  • Type: Bearer Token                                                           │
-│  • Token: {{accessToken}}                                                       │
-│                                                                                 │
-│                                                                                 │
-│  STEP 4: TEST 401 UNAUTHORIZED                                                  │
-│  ═════════════════════════════                                                  │
-│                                                                                 │
-│  GET http://localhost:8080/api/users/me                                         │
-│  (without Authorization header)                                                 │
-│                                                                                 │
-│  Expected Response: 401 Unauthorized                                            │
-│  {                                                                              │
-│    "error": "Unauthorized",                                                     │
-│    "message": "Full authentication is required"                                 │
-│  }                                                                              │
-│                                                                                 │
-│                                                                                 │
-│  STEP 5: TEST 403 FORBIDDEN                                                     │
-│  ══════════════════════════                                                     │
-│                                                                                 │
-│  GET http://localhost:8080/api/admin/users                                      │
-│  Authorization: Bearer {{accessToken}} (USER role, not ADMIN)                   │
-│                                                                                 │
-│  Expected Response: 403 Forbidden                                               │
-│  {                                                                              │
-│    "error": "Forbidden",                                                        │
-│    "message": "Access denied"                                                   │
-│  }                                                                              │
-│                                                                                 │
-│                                                                                 │
-│  STEP 6: REFRESH TOKEN                                                          │
-│  ═════════════════════                                                          │
-│                                                                                 │
-│  POST http://localhost:8080/api/auth/refresh                                    │
-│                                                                                 │
-│  Body:                                                                          │
-│  {                                                                              │
-│    "refreshToken": "{{refreshToken}}"                                           │
-│  }                                                                              │
-│                                                                                 │
-│  → Gets new accessToken without re-entering password                            │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+Response:
+
+```json
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInJvbGVzIjo...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huQHRlc3Qu...",
+  "tokenType": "Bearer",
+  "expiresIn": 3600
+}
 ```
+
+**Step 2: log in**
+
+`POST http://localhost:8080/api/auth/login`
+
+```json
+{
+  "email": "john@test.com",
+  "password": "MySecret123!"
+}
+```
+
+Save the `accessToken` to an environment variable. In the **Tests** tab, auto-save the tokens:
+
+```javascript
+var json = pm.response.json();
+pm.environment.set("accessToken", json.accessToken);
+pm.environment.set("refreshToken", json.refreshToken);
+```
+
+**Step 3: access a protected endpoint**
+
+`GET http://localhost:8080/api/users/me`
+
+| Header key | Value |
+| --- | --- |
+| `Authorization` | `Bearer {{accessToken}}` |
+
+Or use the **Authorization** tab: Type = Bearer Token, Token = `{{accessToken}}`.
+
+**Step 4: test 401 Unauthorized**
+
+`GET http://localhost:8080/api/users/me` (without the `Authorization` header). Expected: `401 Unauthorized`.
+
+```json
+{
+  "error": "Unauthorized",
+  "message": "Full authentication is required"
+}
+```
+
+**Step 5: test 403 Forbidden**
+
+`GET http://localhost:8080/api/admin/users` with `Authorization: Bearer {{accessToken}}` (a USER role, not ADMIN). Expected: `403 Forbidden`.
+
+```json
+{
+  "error": "Forbidden",
+  "message": "Access denied"
+}
+```
+
+**Step 6: refresh the token**
+
+`POST http://localhost:8080/api/auth/refresh`
+
+```json
+{
+  "refreshToken": "{{refreshToken}}"
+}
+```
+
+This returns a new `accessToken` without re-entering the password.
 
 ---
 
@@ -1205,77 +1115,51 @@ The controller should express the rule, not implement it. Keep row-level authori
 
 ### OAuth2 Authorization Code Flow — Visual Diagram
 
+**OAuth2 authorization code flow** (the most common and most secure flow for web apps)
+
+```mermaid
+sequenceDiagram
+  participant U as User (browser)
+  participant A as Your app (Spring Boot)
+  participant AS as Auth server (Google/GitHub)
+  participant RS as Resource server (Google API etc.)
+  U->>A: click "Login with Google"
+  Note over U,AS: Step 1: redirect to the auth server
+  A-->>U: 302 redirect to accounts.google.com/auth?client_id=YOUR_APP&redirect_uri=/callback&scope=email+profile&response_type=code&state=random_csrf_token
+  Note over U,AS: Step 2: the user logs in at the auth server
+  U->>AS: email + password
+  AS->>AS: verify credentials
+  Note over U,AS: Step 3: "Allow this app?" consent
+  AS-->>U: consent screen
+  U->>AS: "Yes, Allow"
+  Note over U,AS: Step 4: the auth server redirects back with a CODE
+  AS-->>U: 302 redirect to yourapp.com/callback?code=AUTH_CODE_abc123&state=random_csrf_token
+  U->>A: /callback
+  Note over A,AS: Step 5: exchange the code for tokens (SERVER-TO-SERVER)
+  A->>AS: POST /token (code, client_id, client_secret)
+  AS-->>A: access_token, refresh_token, id_token (OIDC)
+  Note over A,RS: Step 6: use the access token to get user info
+  A->>RS: GET /userinfo (Bearer token)
+  RS-->>A: { email, name, picture }
+  Note over U,A: Step 7: create a session, redirect to the dashboard
+  A-->>U: Set-Cookie: JSESSIONID
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│          OAUTH2 AUTHORIZATION CODE FLOW                                         │
-│          (Most common & most secure for web apps)                               │
-│                                                                                 │
-│   User              Your App           Auth Server          Resource Server     │
-│  (Browser)        (Spring Boot)     (Google/GitHub)        (Google API etc.)    │
-│     │                  │                   │                      │             │
-│     │── Click          │                   │                      │             │
-│     │  "Login with     │                   │                      │             │
-│     │   Google" ──────▶│                   │                      │             │
-│     │                  │                   │                      │             │
-│  ┌──┤ STEP 1: Redirect to Auth Server     │                      │              │
-│  │  │◀── 302 Redirect──│                   │                      │             │
-│  │  │    to:                               │                      │             │
-│  │  │    accounts.google.com/auth?         │                      │             │
-│  │  │      client_id=YOUR_APP              │                      │             │
-│  │  │      redirect_uri=/callback          │                      │             │
-│  │  │      scope=email+profile             │                      │             │
-│  │  │      response_type=code              │                      │             │
-│  │  │      state=random_csrf_token         │                      │             │
-│  │  │                  │                   │                      │             │
-│  │  │ STEP 2: User logs in at Auth Server │                      │              │
-│  │  │─── email + password ────────────────▶│                      │             │
-│  │  │                  │                   │── Verify             │             │
-│  │  │                  │                   │   credentials        │             │
-│  │  │                  │                   │                      │             │
-│  │  │ STEP 3: "Allow this app?" consent   │                      │              │
-│  │  │◀── consent screen ──────────────────│                      │              │
-│  │  │─── "Yes, Allow" ──────────────────▶ │                      │              │
-│  │  │                  │                   │                      │             │
-│  │  │ STEP 4: Auth Server redirects back with CODE               │              │
-│  │  │◀── 302 Redirect──│                   │                      │             │
-│  │  │    to: yourapp.com/callback?         │                      │             │
-│  │  │      code=AUTH_CODE_abc123           │                      │             │
-│  │  │      state=random_csrf_token         │                      │             │
-│  └──│─── /callback ───▶│                   │                      │             │
-│     │                  │                   │                      │             │
-│     │  STEP 5: Exchange code for tokens (SERVER-TO-SERVER)       │              │
-│     │                  │── POST /token ───▶│                      │             │
-│     │                  │   code=abc123     │                      │             │
-│     │                  │   client_id=...   │                      │             │
-│     │                  │   client_secret=..│                      │             │
-│     │                  │                   │                      │             │
-│     │                  │◀── access_token ──│                      │             │
-│     │                  │    refresh_token   │                      │            │
-│     │                  │    id_token (OIDC) │                      │            │
-│     │                  │                   │                      │             │
-│     │  STEP 6: Use access_token to get user info                 │              │
-│     │                  │── GET /userinfo ──│──────────────────────▶│            │
-│     │                  │   Bearer: token   │                      │             │
-│     │                  │◀── { email, name, picture } ────────────│              │
-│     │                  │                   │                      │             │
-│     │  STEP 7: Create session, redirect to dashboard             │              │
-│     │◀── Set-Cookie ──│                   │                      │              │
-│     │    JSESSIONID    │                   │                      │             │
-│     │                  │                   │                      │             │
-│  ════════════════════════════════════════════════════════════════════════════   │
-│  WHY Authorization Code (not Implicit)?                                         │
-│  • Code exchanged server-side → token NEVER exposed to browser                  │
-│  • client_secret stays on server → can't be stolen from JS                      │
-│  • Refresh tokens possible → long-lived sessions without re-login               │
-│                                                                                 │
-│  SECURITY CHECKLIST:                                                            │
-│  ✅ Validate state parameter (prevents CSRF)                                     │
-│  ✅ Use HTTPS everywhere                                                         │
-│  ✅ Store tokens server-side (not localStorage)                                  │
-│  ✅ Validate redirect_uri matches registered URI                                 │
-│  ✅ Use PKCE for public clients (mobile/SPA)                                     │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The browser only ever carries a short-lived authorization code. Your server exchanges that code for tokens directly with the auth server, so the tokens never reach the browser.
+
+**Why authorization code (not implicit)?**
+
+- The code is exchanged server-side, so the token is NEVER exposed to the browser.
+- `client_secret` stays on the server, so it can't be stolen from JavaScript.
+- Refresh tokens are possible, giving long-lived sessions without re-login.
+
+**Security checklist**
+
+- ✅ Validate the `state` parameter (prevents CSRF).
+- ✅ Use HTTPS everywhere.
+- ✅ Store tokens server-side (not in `localStorage`).
+- ✅ Validate that `redirect_uri` matches the registered URI.
+- ✅ Use PKCE for public clients (mobile and SPA).
 
 ```java
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1569,41 +1453,37 @@ public class BasicAuthSecurityConfig {
 
 # 💪 Security Best Practices Checklist
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SECURITY CHECKLIST                                           │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  AUTHENTICATION:                                                                │
-│  □ Use BCrypt for password hashing (never plain text or MD5/SHA1)               │
-│  □ Implement rate limiting on login endpoints                                   │
-│  □ Use short-lived access tokens (15-60 min)                                    │
-│  □ Use longer-lived refresh tokens (7-30 days)                                  │
-│  □ Store refresh tokens securely (database with user binding)                   │
-│  □ Implement token blacklisting for logout                                      │
-│  □ Use HTTPS everywhere in production                                           │
-│                                                                                 │
-│  AUTHORIZATION:                                                                 │
-│  □ Implement principle of least privilege                                       │
-│  □ Use role-based OR permission-based access control                            │
-│  □ Validate resource ownership (user can only access their data)                │
-│  □ Never trust client-side authorization                                        │
-│                                                                                 │
-│  JWT SPECIFIC:                                                                  │
-│  □ Use strong secret key (min 256 bits for HS256)                               │
-│  □ Set appropriate expiration times                                             │
-│  □ Don't store sensitive data in JWT payload (it's just Base64!)                │
-│  □ Validate all claims (iss, aud, exp)                                          │
-│                                                                                 │
-│  GENERAL:                                                                       │
-│  □ Disable CSRF only for stateless APIs                                         │
-│  □ Implement proper CORS configuration                                          │
-│  □ Log authentication failures (but not passwords!)                             │
-│  □ Use security headers (X-Content-Type-Options, X-Frame-Options)               │
-│  □ Keep dependencies updated                                                    │
-│  □ Conduct regular security audits                                              │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**SECURITY CHECKLIST**
+
+```text
+AUTHENTICATION:
+□ Use BCrypt for password hashing (never plain text or MD5/SHA1)
+□ Implement rate limiting on login endpoints
+□ Use short-lived access tokens (15-60 min)
+□ Use longer-lived refresh tokens (7-30 days)
+□ Store refresh tokens securely (database with user binding)
+□ Implement token blacklisting for logout
+□ Use HTTPS everywhere in production
+
+AUTHORIZATION:
+□ Implement principle of least privilege
+□ Use role-based OR permission-based access control
+□ Validate resource ownership (user can only access their data)
+□ Never trust client-side authorization
+
+JWT SPECIFIC:
+□ Use strong secret key (min 256 bits for HS256)
+□ Set appropriate expiration times
+□ Don't store sensitive data in JWT payload (it's just Base64!)
+□ Validate all claims (iss, aud, exp)
+
+GENERAL:
+□ Disable CSRF only for stateless APIs
+□ Implement proper CORS configuration
+□ Log authentication failures (but not passwords!)
+□ Use security headers (X-Content-Type-Options, X-Frame-Options)
+□ Keep dependencies updated
+□ Conduct regular security audits
 ```
 
 ---

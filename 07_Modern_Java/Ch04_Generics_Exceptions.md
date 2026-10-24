@@ -10,31 +10,27 @@
 
 ## 🎯 The 5W1H
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT = Generics let you write type-safe code that works with    ║
-║         ANY type, while the compiler catches type errors         ║
-║                                                                  ║
-║  WHY  = Without generics: List stores Object, requires casting,  ║
-║         ClassCastException at runtime. With: compile-time safety ║
-║                                                                  ║
-║  WHEN = Collections, utility methods, service layers, builders,  ║
-║         API response wrappers, repository patterns               ║
-║                                                                  ║
-║  HOW  = Type parameters <T>, bounded types, wildcards, PECS      ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+WHAT = Generics let you write type-safe code that works with
+       ANY type, while the compiler catches type errors
+
+WHY  = Without generics: List stores Object, requires casting,
+       ClassCastException at runtime. With: compile-time safety
+
+WHEN = Collections, utility methods, service layers, builders,
+       API response wrappers, repository patterns
+
+HOW  = Type parameters <T>, bounded types, wildcards, PECS
 ```
 
 ---
 
 ## 1. Type Erasure — The #1 Thing to Understand
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║ Java generics exist ONLY at compile time.                     ║
-║ At runtime, ALL generic type information is ERASED.           ║
-║ This is called TYPE ERASURE.                                  ║
-╚═══════════════════════════════════════════════════════════════╝
+```text
+Java generics exist ONLY at compile time.
+At runtime, ALL generic type information is ERASED.
+This is called TYPE ERASURE.
 ```
 
 ```java
@@ -193,14 +189,12 @@ PECS: `src` is a Producer (we read from it) → `extends`. `dst` is a Consumer (
 
 ## 4. Invariance, Covariance & Contravariance — The Big Picture
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║ These 3 words describe HOW subtyping (Dog extends Animal)        ║
-║ transfers to GENERIC types (List<Dog> vs List<Animal>).          ║
-║                                                                  ║
-║ The question: If Dog IS-A Animal, is List<Dog> a List<Animal>?   ║
-║ Answer: NO! That's INVARIANCE — Java's default for generics.     ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+These 3 words describe HOW subtyping (Dog extends Animal)
+transfers to GENERIC types (List<Dog> vs List<Animal>).
+
+The question: If Dog IS-A Animal, is List<Dog> a List<Animal>?
+Answer: NO! That's INVARIANCE — Java's default for generics.
 ```
 
 ### 4a. INVARIANCE — Java's Default (Generics)
@@ -317,20 +311,13 @@ Object o = list.get(0);  // ✅ Can only read as Object
 
 ### 4d. Summary Table — The Complete Picture
 
-```
-┌──────────────────┬────────────────────┬────────────────┬──────────────┐
-│ Variance         │ Syntax             │ Read?          │ Write?       │
-├──────────────────┼────────────────────┼────────────────┼──────────────┤
-│ INVARIANT        │ List<Animal>       │ ✅ as Animal   │ ✅ Animal    │
-│ (exact type)     │                    │                │              │
-├──────────────────┼────────────────────┼────────────────┼──────────────┤
-│ COVARIANT        │ List<? extends     │ ✅ as Animal   │ ❌ nothing   │
-│ (same direction) │      Animal>       │ (PRODUCER)     │ (read-only)  │
-├──────────────────┼────────────────────┼────────────────┼──────────────┤
-│ CONTRAVARIANT    │ List<? super Dog>  │ ❌ only Object │ ✅ Dog       │
-│ (opposite dir.)  │                    │ (write-only)   │ (CONSUMER)   │
-└──────────────────┴────────────────────┴────────────────┴──────────────┘
+| Variance | Syntax | Read? | Write? |
+| --- | --- | --- | --- |
+| INVARIANT (exact type) | List<Animal> | ✅ as Animal | ✅ Animal |
+| COVARIANT (same direction) | List<? extends<br>Animal> | ✅ as Animal (PRODUCER) | ❌ nothing (read-only) |
+| CONTRAVARIANT (opposite dir.) | List<? super Dog> | ❌ only Object (write-only) | ✅ Dog (CONSUMER) |
 
+```
 RULE OF THUMB:
   Invariant   → full access, no flexibility
   Covariant   → flexible input, read-only (PRODUCER)
@@ -384,53 +371,49 @@ Backward Compatibility. Generics were introduced in Java 5. To ensure that new c
 
 ## 5. PECS — Producer Extends, Consumer Super
 
-```
-╔══════════════════════════════════════════════════════════════╗
-║                                                              ║
-║  PECS = Producer Extends, Consumer Super                     ║
-║                                                              ║
-║  If you READ from a collection  → use ? extends T (Producer) ║
-║  If you WRITE to a collection   → use ? super T  (Consumer)  ║
-║  If you do BOTH                 → use exact type T           ║
-║                                                              ║
-╚══════════════════════════════════════════════════════════════╝
+```text
+PECS = Producer Extends, Consumer Super
+
+If you READ from a collection  → use ? extends T (Producer)
+If you WRITE to a collection   → use ? super T  (Consumer)
+If you do BOTH                 → use exact type T
 ```
 
 ### Visual Explanation
 
-```
-? extends Number (PRODUCER — you READ from it):
-┌────────────────────────────────────────────┐
-│ List<? extends Number> can be:             │
-│   List<Integer>                            │
-│   List<Double>                             │
-│   List<Number>                             │
-│                                            │
-│ SAFE to read as Number: ✅                 │
-│   Number n = list.get(0);  // Always works │
-│                                            │
-│ UNSAFE to add: ❌                          │
-│   list.add(42);  // Compile error!         │
-│   // What if it's actually List<Double>?   │
-│   // Adding Integer would corrupt it!      │
-└────────────────────────────────────────────┘
+**? extends Number (PRODUCER — you READ from it)**
 
-? super Integer (CONSUMER — you WRITE to it):
-┌────────────────────────────────────────────┐
-│ List<? super Integer> can be:              │
-│   List<Integer>                            │
-│   List<Number>                             │
-│   List<Object>                             │
-│                                            │
-│ SAFE to add Integer: ✅                    │
-│   list.add(42);  // Always works           │
-│   // Integer fits in all of these lists    │
-│                                            │
-│ UNSAFE to read as Integer: ❌              │
-│   Integer i = list.get(0);  // Error!      │
-│   // What if it's List<Object>?            │
-│   // get() returns Object, not Integer     │
-└────────────────────────────────────────────┘
+```text
+List<? extends Number> can be:
+  List<Integer>
+  List<Double>
+  List<Number>
+
+SAFE to read as Number: ✅
+  Number n = list.get(0);  // Always works
+
+UNSAFE to add: ❌
+  list.add(42);  // Compile error!
+  // What if it's actually List<Double>?
+  // Adding Integer would corrupt it!
+```
+
+**? super Integer (CONSUMER — you WRITE to it)**
+
+```text
+List<? super Integer> can be:
+  List<Integer>
+  List<Number>
+  List<Object>
+
+SAFE to add Integer: ✅
+  list.add(42);  // Always works
+  // Integer fits in all of these lists
+
+UNSAFE to read as Integer: ❌
+  Integer i = list.get(0);  // Error!
+  // What if it's List<Object>?
+  // get() returns Object, not Integer
 ```
 
 ### PECS in Action — Collections.copy()
@@ -632,7 +615,7 @@ list.stream()
 
 ## 9. Exception Hierarchy — The Family Tree
 
-```
+```text
                     Throwable
                    /          \
                Error          Exception
@@ -642,21 +625,19 @@ list.stream()
      Error                  NullPointer  ClassCast  IllegalArgument
                             IndexOutOf    Arithmetic  IllegalState
 
-┌─────────────────────────────────────────────────────────────────┐
-│ Error: JVM problems — DON'T catch (can't recover)               │
-│   OutOfMemoryError, StackOverflowError                          │
-│                                                                 │
-│ Checked Exception (Exception but NOT RuntimeException):         │
-│   MUST catch or declare in 'throws'                             │
-│   IOException, SQLException, ClassNotFoundException             │
-│                                                                 │
-│ Unchecked Exception (RuntimeException):                         │
-│   DON'T have to catch (but can)                                 │
-│   NullPointerException, IllegalArgumentException                │
-│                                                                 │
-│ RULE: Checked = recoverable situations                          │
-│       Unchecked = programming bugs                              │
-└─────────────────────────────────────────────────────────────────┘
+Error: JVM problems — DON'T catch (can't recover)
+  OutOfMemoryError, StackOverflowError
+
+Checked Exception (Exception but NOT RuntimeException):
+  MUST catch or declare in 'throws'
+  IOException, SQLException, ClassNotFoundException
+
+Unchecked Exception (RuntimeException):
+  DON'T have to catch (but can)
+  NullPointerException, IllegalArgumentException
+
+RULE: Checked = recoverable situations
+      Unchecked = programming bugs
 ```
 
 ---
@@ -1009,24 +990,23 @@ Backward Compatibility. Generics were introduced in Java 5. To ensure that new c
 
 ## 14. Checked vs Unchecked — When to Use Which
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│ USE CHECKED EXCEPTION WHEN:                                  │
-│ • Caller CAN and SHOULD handle the error                     │
-│ • Error is a NORMAL alternative outcome                      │
-│ • Examples: FileNotFoundException, InsufficientFundsException│
-│                                                              │
-│ USE UNCHECKED EXCEPTION WHEN:                                │
-│ • Error is a PROGRAMMING BUG (nothing caller can do)         │
-│ • Caller can't reasonably recover                            │
-│ • Examples: NullPointerException, IllegalArgumentException   │
-│                                                              │
-│ MODERN PRACTICE:                                             │
-│ Most modern Java (Spring, etc.) prefers UNCHECKED            │
-│ → Checked exceptions clutter API signatures                  │
-│ → Callers usually just wrap in RuntimeException anyway       │
-│ → Spring converts all checked to unchecked automatically     │
-└──────────────────────────────────────────────────────────────┘
+**USE CHECKED EXCEPTION WHEN:**
+
+```text
+• Caller CAN and SHOULD handle the error
+• Error is a NORMAL alternative outcome
+• Examples: FileNotFoundException, InsufficientFundsException
+
+USE UNCHECKED EXCEPTION WHEN:
+• Error is a PROGRAMMING BUG (nothing caller can do)
+• Caller can't reasonably recover
+• Examples: NullPointerException, IllegalArgumentException
+
+MODERN PRACTICE:
+Most modern Java (Spring, etc.) prefers UNCHECKED
+→ Checked exceptions clutter API signatures
+→ Callers usually just wrap in RuntimeException anyway
+→ Spring converts all checked to unchecked automatically
 ```
 
 ---
@@ -1064,28 +1044,22 @@ try (reader; br) {  // Can use existing variables if effectively final
 
 ## 16. The Complete Exception Strategy
 
-```
-Architecture:
-┌─────────────────────────────────────────────────────────────┐
-│ Controller Layer │ @ControllerAdvice catches & formats       │
-│──────────────────│───────────────────────────────────────────│
-│ Service Layer    │ Business exceptions (ResourceNotFound,    │
-│                  │ BusinessRuleViolation, DuplicateResource) │
-│──────────────────│───────────────────────────────────────────│
-│ Repository Layer │ Data exceptions (translated by Spring)    │
-│──────────────────│───────────────────────────────────────────│
-│ External Calls   │ Retry for transient, wrap for permanent   │
-└─────────────────────────────────────────────────────────────┘
+| Layer | Exception handling |
+| --- | --- |
+| Controller layer | `@ControllerAdvice` catches and formats |
+| Service layer | Business exceptions (`ResourceNotFound`, `BusinessRuleViolation`, `DuplicateResource`) |
+| Repository layer | Data exceptions (translated by Spring) |
+| External calls | Retry for transient errors, wrap for permanent ones |
 
-Rules:
-1. Validate at system boundaries (controller inputs)
-2. Fail-fast in business logic
-3. Translate exceptions at layer boundaries
-4. ALWAYS chain cause exceptions
-5. Log at the HANDLING point, not at throw point
-6. Use specific exception types, not generic Exception
-7. Clean up resources with try-with-resources
-```
+**Rules**
+
+1. Validate at system boundaries (controller inputs).
+2. Fail fast in business logic.
+3. Translate exceptions at layer boundaries.
+4. ALWAYS chain the cause.
+5. Log at the HANDLING point, not at the throw point.
+6. Use specific exception types, not a generic `Exception`.
+7. Clean up resources with try-with-resources.
 
 ---
 
@@ -1404,27 +1378,25 @@ public class GlobalExceptionHandler {
 }
 ```
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  EXCEPTION HANDLING — 10 ANTI-PATTERNS TO NEVER DO                              │
-│                                                                                 │
-│  1. catch (Exception e) {} ← Silent swallow — BUG GRAVEYARD                    │
-│  2. catch (Exception e) { e.printStackTrace(); } ← Logs go nowhere in prod     │
-│  3. throw new RuntimeException(e.getMessage()) ← LOSES stack trace! Use (e)    │
-│  4. throws Exception ← Forces caller to handle EVERYTHING or declare same      │
-│  5. Catching Error ← OutOfMemoryError, StackOverflow can't be recovered        │
-│  6. Catching InterruptedException {} ← Breaks thread cancellation forever      │
-│  7. Exception in finally ← SWALLOWS the original exception!                    │
-│  8. Logging AND rethrowing ← double logging — log at handler only!             │
-│  9. Generic messages: "Error occurred" ← Useless in production                 │
-│  10. Creating expensive exceptions where performance matters ← stacktrace=slow │
-│                                                                                 │
-│  GOLDEN RULES:                                                                  │
-│  • LOG at the place that HANDLES it, not where it's thrown                      │
-│  • ALWAYS chain cause: throw new MyEx("msg", originalException)                │
-│  • ALWAYS interrupt: Thread.currentThread().interrupt() after InterruptedException│
-│  • Use SPECIFIC exception types — they document intent                          │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**EXCEPTION HANDLING — 10 ANTI-PATTERNS TO NEVER DO**
+
+```text
+1. catch (Exception e) {} ← Silent swallow — BUG GRAVEYARD
+2. catch (Exception e) { e.printStackTrace(); } ← Logs go nowhere in prod
+3. throw new RuntimeException(e.getMessage()) ← LOSES stack trace! Use (e)
+4. throws Exception ← Forces caller to handle EVERYTHING or declare same
+5. Catching Error ← OutOfMemoryError, StackOverflow can't be recovered
+6. Catching InterruptedException {} ← Breaks thread cancellation forever
+7. Exception in finally ← SWALLOWS the original exception!
+8. Logging AND rethrowing ← double logging — log at handler only!
+9. Generic messages: "Error occurred" ← Useless in production
+10. Creating expensive exceptions where performance matters ← stacktrace=slow
+
+GOLDEN RULES:
+• LOG at the place that HANDLES it, not where it's thrown
+• ALWAYS chain cause: throw new MyEx("msg", originalException)
+• ALWAYS interrupt: Thread.currentThread().interrupt() after InterruptedException
+• Use SPECIFIC exception types — they document intent
 ```
 
 ---

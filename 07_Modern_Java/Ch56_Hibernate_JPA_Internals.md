@@ -46,98 +46,34 @@
 
 ## 1. The Full Stack: From repository.save() to Database Disk
 
+**What happens on `userRepo.save(user)`**
+
+```mermaid
+flowchart TD
+  A["userRepo.save(user)<br/>SimpleJpaRepository.save(entity)"] --> N{"Is the entity new?<br/>(@Id == null, or @Version == null)"}
+  N -->|"NEW"| P["em.persist(entity)<br/>EntityManager.persist() → SessionImpl.persist()"]
+  P --> P1["Generate the ID (if @GeneratedValue):<br/>IDENTITY = INSERT now (needs the DB-generated ID),<br/>SEQUENCE = SELECT nextval('seq'), TABLE = UPDATE id_table, UUID = generated in Java"]
+  P1 --> P2["Add the entity to the persistence context (first-level cache)"]
+  P2 --> P3["Take a snapshot of the entity state (for dirty checking later)"]
+  P3 --> P4["Schedule an INSERT action (ActionQueue: deferred execution)"]
+  N -->|"EXISTING"| M["em.merge(entity) → SessionImpl.merge()"]
+  M --> M1["Load the current state from the DB (SELECT) or from the first-level cache"]
+  M1 --> M2["Copy the properties from the detached entity to the managed one"]
+  M2 --> M3["Schedule an UPDATE action"]
 ```
-  YOUR CODE                    SPRING DATA JPA          HIBERNATE              JDBC              DATABASE
-  ═════════                    ═══════════════          ═════════              ════              ════════
 
-  userRepo.save(user)
-        │
-        ▼
-  SimpleJpaRepository
-  .save(entity)
-        │
-        ├── Is entity new?
-        │   (check @Id == null
-        │    or @Version == null)
-        │
-        ├── NEW → em.persist(entity)
-        │         │
-        │         ▼
-        │   EntityManager.persist()
-        │         │
-        │         ▼
-        │   SessionImpl.persist()
-        │         │
-        │         ├── Generate ID (if @GeneratedValue)
-        │         │   ├── IDENTITY → INSERT now (need DB-generated ID)
-        │         │   ├── SEQUENCE → SELECT nextval('seq')
-        │         │   ├── TABLE → UPDATE id_table
-        │         │   └── UUID → generate in Java
-        │         │
-        │         ├── Add entity to Persistence Context
-        │         │   (first-level cache)
-        │         │
-        │         ├── Take "snapshot" of entity state
-        │         │   (for dirty checking later)
-        │         │
-        │         └── Schedule INSERT action
-        │             (ActionQueue — deferred execution)
-        │
-        └── EXISTING → em.merge(entity)
-                  │
-                  ▼
-            SessionImpl.merge()
-                  │
-                  ├── Load current state from DB (SELECT)
-                  │   or from first-level cache
-                  │
-                  ├── Copy properties from detached → managed
-                  │
-                  └── Schedule UPDATE action
+**How to read this diagram.** `save()` decides between `persist()` and `merge()`. Neither writes to the database immediately (except `IDENTITY` inserts): they queue actions that run on flush.
 
+**When the flush happens** (transaction commit or explicit flush), `SessionImpl.flush()` runs:
 
-  WHEN FLUSH HAPPENS (transaction commit or explicit flush):
-  ══════════════════════════════════════════════════════════
-
-  SessionImpl.flush()
-        │
-        ├── Dirty checking:
-        │   Compare current entity state vs snapshot
-        │   If different → schedule UPDATE
-        │
-        ├── Order SQL statements:
-        │   1. INSERTs (in order of persist() calls)
-        │   2. UPDATEs
-        │   3. DELETEs (cascaded last)
-        │
-        ├── For each SQL statement:
-        │   │
-        │   ├── Create PreparedStatement
-        │   │   INSERT INTO users (name, email) VALUES (?, ?)
-        │   │
-        │   ├── Bind parameters:
-        │   │   stmt.setString(1, "Harsha")
-        │   │   stmt.setString(2, "harsha@example.com")
-        │   │
-        │   └── Execute via JDBC:
-        │       stmt.executeUpdate()
-        │            │
-        │            ▼
-        │       HikariCP connection pool
-        │       → Gets pooled connection
-        │       → Sends SQL over TCP to database
-        │            │
-        │            ▼
-        │       DATABASE ENGINE
-        │       → Parser: SQL text → AST
-        │       → Query Optimizer: chose execution plan
-        │       → Executor: B-Tree index lookup / full scan
-        │       → Storage Engine: write to WAL (Write-Ahead Log)
-        │       → Buffer Pool: modify page in memory
-        │       → (Eventually) flush dirty pages to disk
-        │
-        └── Return execution result
-```
+1. **Dirty checking:** compare the current entity state with the snapshot. If it differs, schedule an UPDATE.
+2. **Order the SQL statements:** INSERTs (in the order of the `persist()` calls), then UPDATEs, then DELETEs (cascaded last).
+3. **For each SQL statement:**
+   - Create a `PreparedStatement`: `INSERT INTO users (name, email) VALUES (?, ?)`.
+   - Bind the parameters: `stmt.setString(1, "Harsha")`, `stmt.setString(2, "harsha@example.com")`.
+   - Execute via JDBC: `stmt.executeUpdate()`. HikariCP gives a pooled connection and sends the SQL over TCP to the database.
+4. **Inside the database engine:** the parser turns SQL text into an AST, the query optimizer chooses an execution plan, the executor does a B-tree index lookup or full scan, the storage engine writes to the write-ahead log (WAL), the buffer pool modifies the page in memory, and dirty pages are eventually flushed to disk.
+5. **Return** the execution result.
 
 ---
 
@@ -157,41 +93,24 @@
 
 ### What IS a Persistence Context?
 
-```
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │                                                                         │
-  │  Persistence Context = A "bucket" that tracks your entities             │
-  │                                                                         │
-  │  It's NOT the database.                                                 │
-  │  It's NOT the connection.                                               │
-  │  It's a MAP in Java memory that holds entity references.                │
-  │                                                                         │
-  │  Implementation: org.hibernate.engine.spi.PersistenceContext             │
-  │  (field inside SessionImpl)                                             │
-  │                                                                         │
-  │  Internal structure:                                                    │
-  │  ┌───────────────────────────────────────────────────────────────────┐  │
-  │  │                                                                   │  │
-  │  │  Map<EntityKey, Object> entitiesByKey                            │  │
-  │  │  ├── EntityKey(User.class, id=1) → User{id=1, name="Harsha"}    │  │
-  │  │  ├── EntityKey(User.class, id=2) → User{id=2, name="John"}      │  │
-  │  │  ├── EntityKey(Order.class, id=5) → Order{id=5, total=100}      │  │
-  │  │  └── ...                                                          │  │
-  │  │                                                                   │  │
-  │  │  Map<EntityKey, Object[]> entitySnapshotsByKey                    │  │
-  │  │  ├── EntityKey(User.class, id=1) → ["Harsha", "h@ex.com", ...]  │  │
-  │  │  └── (used for dirty checking — original values)                 │  │
-  │  │                                                                   │  │
-  │  └───────────────────────────────────────────────────────────────────┘  │
-  │                                                                         │
-  │  SCOPE: One Persistence Context per @Transactional method              │
-  │         (by default, tied to the Hibernate Session)                     │
-  │                                                                         │
-  │  When @Transactional method starts → Session opened → PC created       │
-  │  When @Transactional method ends → flush → Session closed → PC cleared │
-  │                                                                         │
-  └──────────────────────────────────────────────────────────────────────────┘
-```
+**The persistence context** is a "bucket" that tracks your entities.
+
+- It's NOT the database.
+- It's NOT the connection.
+- It's a MAP in Java memory that holds entity references.
+- Implementation: `org.hibernate.engine.spi.PersistenceContext` (a field inside `SessionImpl`).
+
+**Internal structure**
+
+| Map | Example entries | Purpose |
+| --- | --- | --- |
+| `Map<EntityKey, Object> entitiesByKey` | `EntityKey(User.class, id=1)` → `User{id=1, name="Harsha"}`; `EntityKey(User.class, id=2)` → `User{id=2, name="John"}`; `EntityKey(Order.class, id=5)` → `Order{id=5, total=100}` | Finds a managed entity by its key |
+| `Map<EntityKey, Object[]> entitySnapshotsByKey` | `EntityKey(User.class, id=1)` → `["Harsha", "h@ex.com", ...]` | Original values, used for dirty checking |
+
+**Scope:** one persistence context per `@Transactional` method (by default it is tied to the Hibernate session).
+
+- When a `@Transactional` method starts, a session is opened and the persistence context is created.
+- When it ends, the session flushes, closes, and the persistence context is cleared.
 
 ### Identity Guarantee: Same ID = Same Object Reference
 
@@ -225,67 +144,44 @@ public void demonstrateIdentity() {
 
 ## 3. Entity States — The 4-State Machine You MUST Know
 
+```mermaid
+stateDiagram-v2
+  [*] --> TRANSIENT: new User()
+  TRANSIENT --> MANAGED: persist() (or save() via Spring Data)
+  MANAGED --> DETACHED: detach() / clear() / close()
+  DETACHED --> MANAGED: merge()
+  MANAGED --> REMOVED: remove()
+  REMOVED --> [*]: after flush, gone
 ```
-              ┌──────────────────────────────────────────────────┐
-              │                                                  │
-              │    TRANSIENT (New)                               │
-              │    ─────────────────                             │
-              │    • Created with 'new User()'                   │
-              │    • No ID (or ID not in DB)                     │
-              │    • NOT in Persistence Context                  │
-              │    • NOT tracked, NOT in any cache               │
-              │    • Garbage collected if no reference           │
-              │                                                  │
-              └──────────────┬───────────────────────────────────┘
-                             │
-                   persist() │  (or save() via Spring Data)
-                             │
-                             ▼
-              ┌──────────────────────────────────────────────────┐
-              │                                                   │
-              │    MANAGED (Persistent)                           │
-              │    ────────────────────                           │
-              │    • IN the Persistence Context                   │
-              │    • Has an ID                                    │
-              │    • Changes are AUTO-DETECTED (dirty checking)   │
-              │    • Will be synchronized with DB on flush        │
-              │    • You DON'T need to call save() after modify!  │
-              │                                                   │
-              └───────┬──────────────────────────┬───────────────┘
-                      │                          │
-           detach() / │                          │ remove()
-           clear() /  │                          │
-           close()    │                          │
-                      ▼                          ▼
-  ┌──────────────────────────────┐  ┌──────────────────────────────┐
-  │                               │  │                               │
-  │    DETACHED                   │  │    REMOVED                    │
-  │    ─────────                  │  │    ───────                    │
-  │    • Was managed, now isn't   │  │    • Scheduled for DELETE     │
-  │    • Has ID (was in DB)       │  │    • Still in PC until flush  │
-  │    • Changes NOT tracked      │  │    • DELETE sent on flush     │
-  │    • Common after TX ends     │  │    • After flush: gone        │
-  │    • merge() → back to MANAGED│  │                               │
-  │                               │  │                               │
-  └──────────────────────────────┘  └──────────────────────────────┘
 
+**How to read this diagram.** An entity moves between four states. Only a MANAGED entity is tracked by the persistence context.
 
-  CRITICAL INSIGHT — The detached trap:
+| State | What it means |
+| --- | --- |
+| **TRANSIENT (new)** | Created with `new User()`. No ID (or an ID not in the DB). NOT in the persistence context, NOT tracked, NOT in any cache. Garbage collected if there is no reference. |
+| **MANAGED (persistent)** | IN the persistence context and has an ID. Changes are AUTO-DETECTED (dirty checking) and synchronized with the DB on flush. You DON'T need to call `save()` after modifying it. |
+| **DETACHED** | Was managed, now isn't. Has an ID (was in the DB). Changes are NOT tracked. Common after the transaction ends. `merge()` returns it to MANAGED. |
+| **REMOVED** | Scheduled for DELETE. Still in the persistence context until flush, when the DELETE is sent. After the flush it is gone. |
 
-  @Transactional
-  public User getUser(Long id) {
-      return userRepo.findById(id).orElseThrow();
-  }  // Transaction ends → Session closes → User becomes DETACHED
+> [!WARNING]
+> **Critical insight: the detached trap**
 
-  // In the controller:
-  User user = userService.getUser(1L);
-  user.setName("Updated");  // Changes NOT tracked — entity is DETACHED!
-  // NO UPDATE will be sent to database!
+```java
+@Transactional
+public User getUser(Long id) {
+    return userRepo.findById(id).orElseThrow();
+}  // Transaction ends → Session closes → User becomes DETACHED
 
-  // You MUST either:
-  // 1. Modify within @Transactional (while MANAGED)
-  // 2. Call userRepo.save(user) which does em.merge() (re-attaches)
+// In the controller:
+User user = userService.getUser(1L);
+user.setName("Updated");  // Changes NOT tracked: the entity is DETACHED!
+// NO UPDATE will be sent to the database!
 ```
+
+You MUST either:
+
+1. Modify the entity within `@Transactional` (while it is MANAGED), or
+2. Call `userRepo.save(user)`, which does `em.merge()` (re-attaches it).
 
 ### The Merge Trap — merge() Returns a NEW Reference
 
@@ -322,102 +218,103 @@ public void dangerousMerge(User detachedUser) {
 
 ## 4. First-Level Cache — Why You Get the Same Object Twice
 
+```text
+How the first-level cache works:
+
+@Transactional
+public void demonstrateCache() {
+
+    // Call 1: findById(1L)
+    // PC cache: empty
+    // → SQL: SELECT * FROM users WHERE id = 1
+    // → Result mapped to User object
+    // → Stored in PC: entitiesByKey.put(EntityKey(User, 1), user)
+    // → Snapshot taken: entitySnapshotsByKey.put(EntityKey(User,1), ["Harsha","h@ex.com"])
+    User user1 = userRepo.findById(1L).get();
+
+    // Call 2: findById(1L)
+    // PC cache: EntityKey(User, 1) → FOUND!
+    // → NO SQL executed!
+    // → Returns same reference from cache
+    User user2 = userRepo.findById(1L).get();
+
+    assert user1 == user2;  // true — same object
+
+    // Call 3: JPQL query that includes id=1
+    // ⚠️ JPQL ALWAYS goes to database!
+    // → SQL: SELECT * FROM users WHERE email = 'h@ex.com'
+    // → Result comes back: id=1
+    // → PC checks: EntityKey(User, 1) already exists!
+    // → DISCARDS the DB result, returns cached entity
+    User user3 = userRepo.findByEmail("h@ex.com");
+
+    assert user1 == user3;  // true — still same object!
+}
 ```
-  How the first-level cache works:
 
-  @Transactional
-  public void demonstrateCache() {
+**Important limitation**
 
-      // Call 1: findById(1L)
-      // PC cache: empty
-      // → SQL: SELECT * FROM users WHERE id = 1
-      // → Result mapped to User object
-      // → Stored in PC: entitiesByKey.put(EntityKey(User, 1), user)
-      // → Snapshot taken: entitySnapshotsByKey.put(EntityKey(User,1), ["Harsha","h@ex.com"])
-      User user1 = userRepo.findById(1L).get();
+```text
+First-level cache is PER SESSION (per @Transactional method).
 
-      // Call 2: findById(1L)
-      // PC cache: EntityKey(User, 1) → FOUND!
-      // → NO SQL executed!
-      // → Returns same reference from cache
-      User user2 = userRepo.findById(1L).get();
+Transaction 1: findById(1) → SQL → cache it
+Transaction 2: findById(1) → SQL again! (different Session, different cache)
 
-      assert user1 == user2;  // true — same object
-
-      // Call 3: JPQL query that includes id=1
-      // ⚠️ JPQL ALWAYS goes to database!
-      // → SQL: SELECT * FROM users WHERE email = 'h@ex.com'
-      // → Result comes back: id=1
-      // → PC checks: EntityKey(User, 1) already exists!
-      // → DISCARDS the DB result, returns cached entity
-      User user3 = userRepo.findByEmail("h@ex.com");
-
-      assert user1 == user3;  // true — still same object!
-  }
-
-
-  IMPORTANT LIMITATION:
-  ═══════════════════════
-  First-level cache is PER SESSION (per @Transactional method).
-
-  Transaction 1: findById(1) → SQL → cache it
-  Transaction 2: findById(1) → SQL again! (different Session, different cache)
-
-  First-level cache does NOT help across transactions.
-  That's what second-level cache is for.
+First-level cache does NOT help across transactions.
+That's what second-level cache is for.
 ```
 
 ---
 
 ## 5. Dirty Checking — How Hibernate Knows You Changed Something
 
+**The mechanism**
+
+**When entity enters Persistence Context**
+
+```text
+Entity: User{id=1, name="Harsha", email="h@ex.com", age=25}
+
+Snapshot taken (deep copy of all field values):
+Object[] snapshot = ["Harsha", "h@ex.com", 25]
+
+Both stored in PersistenceContext:
+entitiesByKey:         EntityKey(User,1) → User object
+entitySnapshotsByKey:  EntityKey(User,1) → ["Harsha","h@ex.com",25]
 ```
-  THE MECHANISM:
-  ══════════════
 
-  When entity enters Persistence Context:
-  ┌────────────────────────────────────────────────────────────────────┐
-  │ Entity: User{id=1, name="Harsha", email="h@ex.com", age=25}      │
-  │                                                                    │
-  │ Snapshot taken (deep copy of all field values):                    │
-  │ Object[] snapshot = ["Harsha", "h@ex.com", 25]                    │
-  │                                                                    │
-  │ Both stored in PersistenceContext:                                 │
-  │ entitiesByKey:         EntityKey(User,1) → User object            │
-  │ entitySnapshotsByKey:  EntityKey(User,1) → ["Harsha","h@ex.com",25]│
-  └────────────────────────────────────────────────────────────────────┘
+**When you modify**
 
-  When you modify:
-  user.setName("Sai Harsha");  // Just changes the Java object, nothing else
+user.setName("Sai Harsha");  // Just changes the Java object, nothing else
 
-  When flush happens (end of @Transactional):
-  ┌────────────────────────────────────────────────────────────────────┐
-  │ Hibernate iterates ALL managed entities:                           │
-  │                                                                    │
-  │ for each (entityKey, entity) in entitiesByKey:                     │
-  │     Object[] currentState = getPropertyValues(entity)              │
-  │     // currentState = ["Sai Harsha", "h@ex.com", 25]              │
-  │                                                                    │
-  │     Object[] snapshot = entitySnapshotsByKey.get(entityKey)        │
-  │     // snapshot = ["Harsha", "h@ex.com", 25]                       │
-  │                                                                    │
-  │     // Compare field by field:                                     │
-  │     for (int i = 0; i < currentState.length; i++):                 │
-  │         if (!currentState[i].equals(snapshot[i])):                 │
-  │             // DIRTY! Field 0 changed: "Harsha" → "Sai Harsha"   │
-  │             schedule UPDATE                                        │
-  │                                                                    │
-  │ Generated SQL:                                                     │
-  │ UPDATE users SET name='Sai Harsha', email='h@ex.com', age=25      │
-  │ WHERE id=1                                                         │
-  │                                                                    │
-  │ ⚠️ By default: ALL columns in UPDATE, even unchanged ones!        │
-  │ Why? Prepared statement caching — same SQL for all updates.        │
-  │                                                                    │
-  │ To update ONLY dirty columns:                                      │
-  │ @DynamicUpdate on entity class                                     │
-  │ → UPDATE users SET name='Sai Harsha' WHERE id=1                   │
-  └────────────────────────────────────────────────────────────────────┘
+**When flush happens (end of @Transactional)**
+
+```text
+Hibernate iterates ALL managed entities:
+
+for each (entityKey, entity) in entitiesByKey:
+    Object[] currentState = getPropertyValues(entity)
+    // currentState = ["Sai Harsha", "h@ex.com", 25]
+
+    Object[] snapshot = entitySnapshotsByKey.get(entityKey)
+    // snapshot = ["Harsha", "h@ex.com", 25]
+
+    // Compare field by field:
+    for (int i = 0; i < currentState.length; i++):
+        if (!currentState[i].equals(snapshot[i])):
+            // DIRTY! Field 0 changed: "Harsha" → "Sai Harsha"
+            schedule UPDATE
+
+Generated SQL:
+UPDATE users SET name='Sai Harsha', email='h@ex.com', age=25
+WHERE id=1
+
+⚠️ By default: ALL columns in UPDATE, even unchanged ones!
+Why? Prepared statement caching — same SQL for all updates.
+
+To update ONLY dirty columns:
+@DynamicUpdate on entity class
+→ UPDATE users SET name='Sai Harsha' WHERE id=1
 ```
 
 ```mermaid
@@ -446,34 +343,33 @@ flowchart TD
 
 ```
 
+**Why this matters**
+
 ```text
-  WHY THIS MATTERS:
-  ═════════════════
+@Transactional
+public void updateUserName(Long id, String newName) {
+    User user = userRepo.findById(id).orElseThrow();
+    user.setName(newName);
+    // ✅ NO need to call userRepo.save(user)!
+    // Dirty checking will detect the change and UPDATE automatically
+    // when the transaction commits.
+}
 
-  @Transactional
-  public void updateUserName(Long id, String newName) {
-      User user = userRepo.findById(id).orElseThrow();
-      user.setName(newName);
-      // ✅ NO need to call userRepo.save(user)!
-      // Dirty checking will detect the change and UPDATE automatically
-      // when the transaction commits.
-  }
+Many developers write: userRepo.save(user) after modifying a managed entity.
+It works (save → merge → detects already managed → does nothing extra),
+but it's UNNECESSARY and shows you don't understand dirty checking.
+```
 
-  Many developers write: userRepo.save(user) after modifying a managed entity.
-  It works (save → merge → detects already managed → does nothing extra),
-  but it's UNNECESSARY and shows you don't understand dirty checking.
+**@Transactional(readOnly = true) OPTIMIZATION**
 
+```text
+When readOnly = true, Hibernate:
+1. Does NOT take snapshots (no Object[] allocation)
+2. Does NOT perform dirty checking at flush time
+3. Sets JDBC connection to read-only mode
+4. Database may optimize (use read replica, less locking)
 
-  @Transactional(readOnly = true) OPTIMIZATION:
-  ══════════════════════════════════════════════
-
-  When readOnly = true, Hibernate:
-  1. Does NOT take snapshots (no Object[] allocation)
-  2. Does NOT perform dirty checking at flush time
-  3. Sets JDBC connection to read-only mode
-  4. Database may optimize (use read replica, less locking)
-
-  For 10,000 entities: skipping snapshots saves ~40KB memory + CPU time
+For 10,000 entities: skipping snapshots saves ~40KB memory + CPU time
 ```
 
 ---
@@ -492,150 +388,138 @@ flowchart TD
 
 ## 6. Flush Modes — When SQL Actually Gets Sent
 
+| Flush mode | SQL sent when | Default? |
+| --- | --- | --- |
+| `AUTO` | Before every query and at commit. Ensures queries see pending changes in the Session. | ✅ Yes |
+| `COMMIT` | Only at transaction commit. Queries may return STALE data! Faster (fewer DB round-trips). | No |
+| `ALWAYS` | Before EVERY query, even native ones. Most aggressive and safest; rarely needed. | No |
+| `MANUAL` | Only when YOU call `flush()`. Full control; most dangerous. | No |
+
+**Auto flush example**
+
+```text
+@Transactional
+public void autoFlushDemo() {
+    User user = new User("Harsha");
+    entityManager.persist(user);
+    // SQL: nothing yet! Just added to PC
+
+    // Now execute a JPQL query:
+    List<User> users = entityManager
+        .createQuery("SELECT u FROM User u WHERE u.name = 'Harsha'", User.class)
+        .getResultList();
+
+    // BEFORE executing the SELECT, Hibernate AUTO-FLUSHES:
+    // → INSERT INTO users (name) VALUES ('Harsha')  ← sent to DB first
+    // → SELECT * FROM users WHERE name = 'Harsha'   ← now this finds the row!
+    //
+    // WHY: If it didn't flush, the SELECT would miss the pending INSERT!
+
+    assert users.contains(user);  // true!
+}
 ```
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │  FLUSH MODE         │  SQL SENT WHEN                     │ DEFAULT?     │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │  AUTO (default)     │  Before every query + at commit    │ ✅ YES       │
-  │                     │  Ensures queries see pending        │              │
-  │                     │  changes in the Session             │              │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │  COMMIT             │  Only at transaction commit          │ NO           │
-  │                     │  Queries may return STALE data!      │              │
-  │                     │  Faster (fewer DB round-trips)       │              │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │  ALWAYS             │  Before EVERY query, even native     │ NO           │
-  │                     │  Most aggressive. Safest.             │              │
-  │                     │  Rarely needed.                       │              │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │  MANUAL             │  Only when YOU call flush()           │ NO           │
-  │                     │  Full control. Most dangerous.        │              │
-  └──────────────────────────────────────────────────────────────────────────┘
 
+**Commit flush gotcha**
 
-  AUTO FLUSH EXAMPLE:
-  ════════════════════
+```text
+entityManager.setFlushMode(FlushModeType.COMMIT);
 
-  @Transactional
-  public void autoFlushDemo() {
-      User user = new User("Harsha");
-      entityManager.persist(user);
-      // SQL: nothing yet! Just added to PC
+@Transactional
+public void commitFlushGotcha() {
+    User user = new User("Harsha");
+    entityManager.persist(user);
+    // Still just in PC, not in DB
 
-      // Now execute a JPQL query:
-      List<User> users = entityManager
-          .createQuery("SELECT u FROM User u WHERE u.name = 'Harsha'", User.class)
-          .getResultList();
+    List<User> users = entityManager
+        .createQuery("SELECT u FROM User u WHERE u.name = 'Harsha'", User.class)
+        .getResultList();
 
-      // BEFORE executing the SELECT, Hibernate AUTO-FLUSHES:
-      // → INSERT INTO users (name) VALUES ('Harsha')  ← sent to DB first
-      // → SELECT * FROM users WHERE name = 'Harsha'   ← now this finds the row!
-      //
-      // WHY: If it didn't flush, the SELECT would miss the pending INSERT!
+    // No auto-flush before query!
+    // SELECT runs against DB → "Harsha" NOT FOUND (not flushed yet!)
+    assert users.isEmpty();  // true! The query misses the pending insert!
 
-      assert users.contains(user);  // true!
-  }
-
-
-  COMMIT FLUSH GOTCHA:
-  ════════════════════
-
-  entityManager.setFlushMode(FlushModeType.COMMIT);
-
-  @Transactional
-  public void commitFlushGotcha() {
-      User user = new User("Harsha");
-      entityManager.persist(user);
-      // Still just in PC, not in DB
-
-      List<User> users = entityManager
-          .createQuery("SELECT u FROM User u WHERE u.name = 'Harsha'", User.class)
-          .getResultList();
-
-      // No auto-flush before query!
-      // SELECT runs against DB → "Harsha" NOT FOUND (not flushed yet!)
-      assert users.isEmpty();  // true! The query misses the pending insert!
-
-      // INSERT happens only when transaction commits
-  }
+    // INSERT happens only when transaction commits
+}
 ```
 
 ---
 
 ## 7. Lazy Loading — How Proxy Objects Work
 
+```text
+@Entity
+public class User {
+    @Id
+    private Long id;
+    private String name;
+
+    @OneToMany(fetch = FetchType.LAZY)  // default for collections
+    private List<Order> orders;  // NOT loaded immediately
+}
 ```
-  @Entity
-  public class User {
-      @Id
-      private Long id;
-      private String name;
 
-      @OneToMany(fetch = FetchType.LAZY)  // default for collections
-      private List<Order> orders;  // NOT loaded immediately
-  }
+**What hibernate actually stores**
 
-  WHAT HIBERNATE ACTUALLY STORES:
-  ═══════════════════════════════
+```text
+When you load a User, the 'orders' field is NOT a real ArrayList.
+It's a PROXY — a Hibernate-generated wrapper:
 
-  When you load a User, the 'orders' field is NOT a real ArrayList.
-  It's a PROXY — a Hibernate-generated wrapper:
+User{
+    id = 1,
+    name = "Harsha",
+    orders = PersistentBag<Order> {      ← Hibernate proxy!
+        initialized = false,              ← NOT loaded yet
+        session = SessionImpl@abc123,     ← Reference to Session
+        owner = User@id=1,               ← Who owns this collection
+        role = "User.orders"             ← Which mapping
+    }
+}
+```
 
-  User{
-      id = 1,
-      name = "Harsha",
-      orders = PersistentBag<Order> {      ← Hibernate proxy!
-          initialized = false,              ← NOT loaded yet
-          session = SessionImpl@abc123,     ← Reference to Session
-          owner = User@id=1,               ← Who owns this collection
-          role = "User.orders"             ← Which mapping
-      }
-  }
+**WHEN YOU ACCESS orders**
 
-  WHEN YOU ACCESS orders:
-  ═══════════════════════
+```text
+user.getOrders().size()
+     │
+     ▼
+PersistentBag.size()
+     │
+     ├── Is initialized? NO
+     │
+     ├── Is Session still open?
+     │   ├── YES → Load from DB:
+     │   │         SQL: SELECT * FROM orders WHERE user_id = 1
+     │   │         Map results to Order objects
+     │   │         Set initialized = true
+     │   │         Return size
+     │   │
+     │   └── NO → LazyInitializationException!
+     │            "could not initialize proxy - no Session"
+     │
+     │            This happens when:
+     │            • @Transactional method already returned
+     │            • Session is closed
+     │            • You try to access lazy collection in controller/view
+     │
+     └── This is the #1 Hibernate exception beginners face
+```
 
-  user.getOrders().size()
-       │
-       ▼
-  PersistentBag.size()
-       │
-       ├── Is initialized? NO
-       │
-       ├── Is Session still open?
-       │   ├── YES → Load from DB:
-       │   │         SQL: SELECT * FROM orders WHERE user_id = 1
-       │   │         Map results to Order objects
-       │   │         Set initialized = true
-       │   │         Return size
-       │   │
-       │   └── NO → LazyInitializationException!
-       │            "could not initialize proxy - no Session"
-       │
-       │            This happens when:
-       │            • @Transactional method already returned
-       │            • Session is closed
-       │            • You try to access lazy collection in controller/view
-       │
-       └── This is the #1 Hibernate exception beginners face
+**FOR @ManyToOne / @OneToOne (single entities)**
 
+```text
+@ManyToOne(fetch = FetchType.LAZY)
+private Department department;
 
-  FOR @ManyToOne / @OneToOne (single entities):
-  ══════════════════════════════════════════════
+Hibernate creates a CGLIB PROXY of Department:
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  private Department department;
+user.getDepartment() returns Department$$EnhancerByHibernate {
+    id = 5,           ← Only the ID is set!
+    name = null,      ← NOT loaded
+    initialized = false
+}
 
-  Hibernate creates a CGLIB PROXY of Department:
-
-  user.getDepartment() returns Department$$EnhancerByHibernate {
-      id = 5,           ← Only the ID is set!
-      name = null,      ← NOT loaded
-      initialized = false
-  }
-
-  user.getDepartment().getId()    → returns 5 (no SQL — ID already known)
-  user.getDepartment().getName()  → TRIGGERS SQL: SELECT * FROM departments WHERE id=5
+user.getDepartment().getId()    → returns 5 (no SQL — ID already known)
+user.getDepartment().getName()  → TRIGGERS SQL: SELECT * FROM departments WHERE id=5
 ```
 
 ---
@@ -652,52 +536,26 @@ Hibernate Proxies. By default, `@OneToMany` collections are loaded lazily. Hiber
 
 ## 8. Second-Level Cache — The Cache You Configure
 
+**Caching levels in Hibernate**
+
+| Level | Scope | Stores | Cleared when | Notes |
+| --- | --- | --- | --- | --- |
+| **First-level cache** | ONE session (one `@Transactional` method) | Entity OBJECTS (Java references) | The session closes (the transaction ends) | Built in, always ON, cannot be disabled. The same entity loaded twice in one transaction costs only 1 SQL statement. |
+| **Second-level cache** | `SessionFactory`-wide (shared across ALL sessions and requests) | DEHYDRATED data (disassembled state, not objects) | Explicitly, or by TTL / eviction policy | Optional, must be configured explicitly. The same entity loaded across DIFFERENT requests needs no SQL. Providers: Ehcache, Hazelcast, Infinispan, Caffeine. |
+| **Query cache** | Per query and its parameters | QUERY RESULTS (a list of IDs) | ANY entity in that table is modified | Works WITH the second-level cache (IDs are looked up in L2). Often does MORE harm than good (stale data, invalidation storms). |
+
+**Lookup order** for `entityManager.find(User.class, 1L)`:
+
+```mermaid
+flowchart TD
+  F["entityManager.find(User.class, 1L)"] --> L1{"In the L1 cache<br/>(persistence context)?"}
+  L1 -->|"Yes"| R1["Return the entity object ✅"]
+  L1 -->|"No"| L2{"In the L2 cache<br/>(if enabled for this entity)?"}
+  L2 -->|"Yes"| R2["Rebuild the entity from its dehydrated state,<br/>add it to L1, return it ✅"]
+  L2 -->|"No"| DB["Database query<br/>store in L1 + L2, return the entity"]
 ```
-  ┌──────────────────────────────────────────────────────────────────────────────┐
-  │                     CACHING LEVELS IN HIBERNATE                              │
-  │                                                                              │
-  │  ┌── First-Level Cache ─────────────────────────────────────────────────┐   │
-  │  │ • Built-in, always ON, cannot disable                                │   │
-  │  │ • Scope: ONE Session (one @Transactional method)                     │   │
-  │  │ • Stores: Entity OBJECTS (Java references)                           │   │
-  │  │ • Cleared when: Session closes (transaction ends)                    │   │
-  │  │ • Benefit: Same entity loaded twice in one TX → only 1 SQL          │   │
-  │  └──────────────────────────────────────────────────────────────────────┘   │
-  │                                                                              │
-  │  ┌── Second-Level Cache ────────────────────────────────────────────────┐   │
-  │  │ • Optional, must configure explicitly                                │   │
-  │  │ • Scope: SessionFactory-wide (shared across ALL Sessions/Requests)   │   │
-  │  │ • Stores: DEHYDRATED data (disassembled state, not objects)         │   │
-  │  │ • Cleared when: explicitly or by TTL/eviction policy                 │   │
-  │  │ • Benefit: Same entity loaded across DIFFERENT requests → no SQL     │   │
-  │  │ • Providers: Ehcache, Hazelcast, Infinispan, Caffeine               │   │
-  │  └──────────────────────────────────────────────────────────────────────┘   │
-  │                                                                              │
-  │  ┌── Query Cache ──────────────────────────────────────────────────────┐   │
-  │  │ • Caches QUERY RESULTS (list of IDs)                                 │   │
-  │  │ • Works WITH second-level cache (IDs → look up entities in L2)      │   │
-  │  │ • Invalidated when: ANY entity in that table is modified            │   │
-  │  │ • Often MORE harm than good (stale data, invalidation storms)       │   │
-  │  └──────────────────────────────────────────────────────────────────────┘   │
-  └──────────────────────────────────────────────────────────────────────────────┘
 
-
-  LOOKUP ORDER:
-
-  entityManager.find(User.class, 1L)
-       │
-       ├─ Check L1 Cache (Persistence Context)
-       │  Found? → Return entity object ✅
-       │
-       ├─ Check L2 Cache (if enabled for this entity)
-       │  Found? → Reconstruct entity from dehydrated state
-       │           Add to L1 cache
-       │           Return entity ✅
-       │
-       └─ Database query
-          Store in L1 + L2
-          Return entity
-```
+**How to read this diagram.** Hibernate checks the cheapest cache first and only goes to the database when both caches miss.
 
 ### Configuring Second-Level Cache
 
@@ -741,7 +599,6 @@ public class Country {
 
 ```
   GOOD CANDIDATES:                          BAD CANDIDATES:
-  ═══════════════                           ═══════════════
   ✅ Reference data (Country, Currency)      ❌ Frequently changing data (Order)
   ✅ Configuration tables                    ❌ Large result sets
   ✅ Lookup tables (Status, Category)        ❌ Data with short TTL
@@ -855,62 +712,62 @@ public class Department {
 
 ## 10. Open Session in View — The Controversial Pattern
 
+**What it is**
+
+```text
+A Servlet Filter that keeps the Hibernate Session OPEN
+for the entire HTTP request — even AFTER @Transactional ends.
+
+Spring Boot ENABLES THIS BY DEFAULT!
+spring.jpa.open-in-view = true (default)
 ```
-  WHAT IT IS:
-  ═══════════
-  A Servlet Filter that keeps the Hibernate Session OPEN
-  for the entire HTTP request — even AFTER @Transactional ends.
 
-  Spring Boot ENABLES THIS BY DEFAULT!
-  spring.jpa.open-in-view = true (default)
+**WITHOUT OSIV (spring.jpa.open-in-view = false)**
 
+```text
+Request → Controller → @Transactional Service → Repository → DB
+                             │
+                        Session opens
+                        Session closes ← here!
+                             │
+                       Controller gets result
+                       user.getOrders()  ← LazyInitializationException! 💥
+                             │
+                       Response sent
+```
 
-  WITHOUT OSIV (spring.jpa.open-in-view = false):
-  ════════════════════════════════════════════════
+**WITH OSIV (spring.jpa.open-in-view = true, DEFAULT)**
 
-  Request → Controller → @Transactional Service → Repository → DB
-                               │
-                          Session opens
-                          Session closes ← here!
-                               │
-                         Controller gets result
-                         user.getOrders()  ← LazyInitializationException! 💥
-                               │
-                         Response sent
+```text
+Request → OpenSessionInViewFilter opens Session
+             │
+             ├── Controller → @Transactional Service → Repository → DB
+             │                     │
+             │               Transaction commits
+             │               (Session stays OPEN! but read-only now)
+             │                     │
+             ├── Controller: user.getOrders()  ← Works! Session still open ✅
+             │                                    (new SELECT in auto-commit mode)
+             │
+             └── Response sent → Filter closes Session
+```
 
+**Why it's controversial**
 
-  WITH OSIV (spring.jpa.open-in-view = true, DEFAULT):
-  ════════════════════════════════════════════════════
-
-  Request → OpenSessionInViewFilter opens Session
-               │
-               ├── Controller → @Transactional Service → Repository → DB
-               │                     │
-               │               Transaction commits
-               │               (Session stays OPEN! but read-only now)
-               │                     │
-               ├── Controller: user.getOrders()  ← Works! Session still open ✅
-               │                                    (new SELECT in auto-commit mode)
-               │
-               └── Response sent → Filter closes Session
-
-
-  WHY IT'S CONTROVERSIAL:
-  ═══════════════════════
-
-  PROS:                                    CONS:
-  • No LazyInitializationException         • DB connection held for ENTIRE request
-  • Simpler controller code                • Including slow view rendering time
-  • Lazy loading "just works"              • Connection pool exhaustion under load
-                                           • N+1 queries hidden in view layer
-                                           • Harder to reason about when SQL executes
-                                           • Defeats purpose of connection pooling
+```text
+PROS:                                    CONS:
+• No LazyInitializationException         • DB connection held for ENTIRE request
+• Simpler controller code                • Including slow view rendering time
+• Lazy loading "just works"              • Connection pool exhaustion under load
+                                         • N+1 queries hidden in view layer
+                                         • Harder to reason about when SQL executes
+                                         • Defeats purpose of connection pooling
 
 
-  RECOMMENDATION:
-  Set spring.jpa.open-in-view = false
-  Use JOIN FETCH / @EntityGraph / DTOs instead
-  Force all DB access through @Transactional service methods
+RECOMMENDATION:
+Set spring.jpa.open-in-view = false
+Use JOIN FETCH / @EntityGraph / DTOs instead
+Force all DB access through @Transactional service methods
 ```
 
 ---
@@ -929,78 +786,44 @@ public class Department {
 
 ## 11. Connection Pooling — HikariCP Internals
 
+**Why connection pooling?**
+
+A database connection is a TCP connection plus authentication plus session setup, which takes roughly 20-50 ms to create. If 1,000 requests per second each created a connection, that would be 1000 × 30 ms = 30 SECONDS of connection overhead per second of traffic.
+
+A **connection pool** holds pre-created connections and reuses them across requests. Taking one from the pool takes under 1 ms, so 1,000 requests can reuse 10-20 connections.
+
+**HikariCP architecture**
+
+| Setting | Meaning | Default |
+| --- | --- | --- |
+| `maximumPoolSize` | Max connections at any time | 10 |
+| `minimumIdle` | Idle connections kept ready even with no traffic | same as `maximumPoolSize` |
+| `connectionTimeout` | How long to wait for a connection | 30000 ms (30 s) |
+| `idleTimeout` | Close idle connections after this long | 600000 ms (10 min) |
+| `maxLifetime` | Recycle a connection after this long | 1800000 ms (30 min) |
+| `leakDetectionThreshold` | Log a warning if a connection is held longer than this | 0 (disabled) |
+
+```mermaid
+flowchart TD
+  subgraph HP["HikariPool"]
+    subgraph CB["ConcurrentBag of PoolEntry"]
+      TL["Thread-local list (fast path)<br/>Thread-1's cached Connection-A: if available, returned immediately"]
+      SH["Shared pool (slow path)<br/>Conn-A IN_USE, Conn-B IDLE, Conn-C IDLE, Conn-D IN_USE, Conn-E IDLE<br/>states: NOT_IN_USE → IN_USE → NOT_IN_USE (recycled)"]
+      TL -->|"miss"| SH
+    end
+    HK["Housekeeping thread (runs about every 30 s)<br/>closes connections past maxLifetime, closes excess idle connections,<br/>creates new connections if below minimumIdle"]
+    LD["Leak detection (if configured)<br/>tracks when a connection was borrowed; if it is not returned within<br/>leakDetectionThreshold, logs a WARNING with the stack trace of where it was acquired"]
+  end
 ```
-  WHY CONNECTION POOLING?
-  ═══════════════════════
 
-  Database connection = TCP connection + authentication + session setup
-  → Takes 20-50ms to create
-  → If 1000 requests/second, each creating a connection:
-    1000 × 30ms = 30 SECONDS of just connection overhead!
+**How to read this diagram.** A thread first tries its own cached connection (fast path), then the shared pool. A background housekeeping thread keeps the pool healthy.
 
-  Connection Pool = Pre-created connections, reused across requests
-  → Taking from pool: < 1ms
-  → 1000 requests reuse 10-20 connections
+**How to size your pool**
 
+The HikariCP wiki suggests: `connections = (core_count * 2) + effective_spindle_count`. For a 4-core server with an SSD: (4 × 2) + 1 = 9, which is about 10.
 
-  HikariCP ARCHITECTURE:
-  ══════════════════════
-
-  ┌─── HikariPool ──────────────────────────────────────────────────────┐
-  │                                                                      │
-  │  Configuration:                                                      │
-  │  ├── maximumPoolSize = 10  (max connections at any time)            │
-  │  ├── minimumIdle = 5       (keep 5 ready even if no traffic)        │
-  │  ├── connectionTimeout = 30000ms  (wait max 30s for connection)     │
-  │  ├── idleTimeout = 600000ms       (close idle after 10min)          │
-  │  ├── maxLifetime = 1800000ms      (recycle after 30min)             │
-  │  └── leakDetectionThreshold = 0   (disabled by default)             │
-  │                                                                      │
-  │  ┌── ConcurrentBag<PoolEntry> ──────────────────────────────────┐  │
-  │  │                                                                │  │
-  │  │  Thread-local list (fast path):                                │  │
-  │  │  ┌────────────────────┐                                       │  │
-  │  │  │ Thread-1's cached: │                                       │  │
-  │  │  │ Connection-A ✅     │ → If available, return immediately   │  │
-  │  │  └────────────────────┘                                       │  │
-  │  │                                                                │  │
-  │  │  Shared pool (slow path):                                      │  │
-  │  │  ┌────────┬────────┬────────┬────────┬────────┐              │  │
-  │  │  │ Conn-A │ Conn-B │ Conn-C │ Conn-D │ Conn-E │              │  │
-  │  │  │ IN_USE │ IDLE   │ IDLE   │ IN_USE │ IDLE   │              │  │
-  │  │  └────────┴────────┴────────┴────────┴────────┘              │  │
-  │  │                                                                │  │
-  │  │  States: NOT_IN_USE → IN_USE → NOT_IN_USE (recycled)          │  │
-  │  │                                                                │  │
-  │  └────────────────────────────────────────────────────────────────┘  │
-  │                                                                      │
-  │  Housekeeping thread (runs every 30s):                               │
-  │  ├── Close connections past maxLifetime                              │
-  │  ├── Close excess idle connections (> minimumIdle)                   │
-  │  └── Create new connections if below minimumIdle                     │
-  │                                                                      │
-  │  Leak detection (if configured):                                     │
-  │  ├── Track when connection was borrowed                              │
-  │  ├── If not returned within leakDetectionThreshold                   │
-  │  └── Log WARNING with stack trace of where connection was acquired   │
-  │                                                                      │
-  └──────────────────────────────────────────────────────────────────────┘
-
-
-  HOW TO SIZE YOUR POOL:
-  ═══════════════════════
-
-  Formula (from HikariCP wiki):
-  connections = (core_count * 2) + effective_spindle_count
-
-  For a 4-core server with SSD:
-  connections = (4 * 2) + 1 = 9 ≈ 10
-
-  Common mistake: Setting maximumPoolSize = 100
-  → More connections = MORE contention on DB locks
-  → Usually 10-20 is optimal for most applications
-  → PostgreSQL documentation recommends: 2 × CPU cores
-```
+> [!WARNING]
+> **Common mistake:** setting `maximumPoolSize = 100`. More connections means MORE contention on database locks, and 10-20 connections is usually enough for most applications.
 
 ---
 
@@ -1018,75 +841,74 @@ public class Department {
 
 ## 12. How Spring Data JPA Generates Repository Implementations
 
+**The mystery**
+
+```text
+You write:
+public interface UserRepository extends JpaRepository<User, Long> {
+    List<User> findByNameAndAgeGreaterThan(String name, int age);
+}
+
+There's NO implementation class! How does it work?
 ```
-  THE MYSTERY:
-  ════════════
 
-  You write:
-  public interface UserRepository extends JpaRepository<User, Long> {
-      List<User> findByNameAndAgeGreaterThan(String name, int age);
-  }
+**THE ANSWER: Dynamic Proxy Generation at Startup**
 
-  There's NO implementation class! How does it work?
+```text
+Step 1: Spring Boot scans for interfaces extending Repository
+        @EnableJpaRepositories triggers RepositoryBeanDefinitionRegistrar
 
+Step 2: For each repository interface:
+        Creates a JdkDynamicAopProxy (JDK Dynamic Proxy)
+        that implements your interface
 
-  THE ANSWER: Dynamic Proxy Generation at Startup
-  ════════════════════════════════════════════════
+Step 3: All method calls go through SimpleJpaRepository
+        (the default implementation) or are parsed from
+        the method name
 
-  Step 1: Spring Boot scans for interfaces extending Repository
-          @EnableJpaRepositories triggers RepositoryBeanDefinitionRegistrar
+Step 4: Method name parsing (query derivation):
 
-  Step 2: For each repository interface:
-          Creates a JdkDynamicAopProxy (JDK Dynamic Proxy)
-          that implements your interface
+findByNameAndAgeGreaterThan(String name, int age)
+     │
+     ├── "find" → SELECT query
+     ├── "By" → WHERE clause starts
+     ├── "Name" → property 'name' on entity
+     ├── "And" → AND operator
+     ├── "Age" → property 'age'
+     ├── "GreaterThan" → > operator
+     │
+     └── Generated JPQL:
+         SELECT u FROM User u WHERE u.name = ?1 AND u.age > ?2
 
-  Step 3: All method calls go through SimpleJpaRepository
-          (the default implementation) or are parsed from
-          the method name
+         Which Hibernate translates to:
+         SELECT * FROM users WHERE name = ? AND age > ?
+```
 
-  Step 4: Method name parsing (query derivation):
+**Supported keywords in method names**
 
-  findByNameAndAgeGreaterThan(String name, int age)
-       │
-       ├── "find" → SELECT query
-       ├── "By" → WHERE clause starts
-       ├── "Name" → property 'name' on entity
-       ├── "And" → AND operator
-       ├── "Age" → property 'age'
-       ├── "GreaterThan" → > operator
-       │
-       └── Generated JPQL:
-           SELECT u FROM User u WHERE u.name = ?1 AND u.age > ?2
-
-           Which Hibernate translates to:
-           SELECT * FROM users WHERE name = ? AND age > ?
-
-
-  SUPPORTED KEYWORDS IN METHOD NAMES:
-  ════════════════════════════════════
-
-  Keyword                Method Name Part         JPQL Snippet
-  ────────────────────  ──────────────────────── ──────────────────────
-  And                   findByNameAndAge          WHERE x.name=? AND x.age=?
-  Or                    findByNameOrAge           WHERE x.name=? OR x.age=?
-  Is, Equals            findByName                WHERE x.name=?
-  Between               findByAgeBetween          WHERE x.age BETWEEN ? AND ?
-  LessThan              findByAgeLessThan         WHERE x.age < ?
-  GreaterThan           findByAgeGreaterThan      WHERE x.age > ?
-  IsNull                findByNameIsNull          WHERE x.name IS NULL
-  IsNotNull             findByNameIsNotNull       WHERE x.name IS NOT NULL
-  Like                  findByNameLike            WHERE x.name LIKE ?
-  Containing            findByNameContaining      WHERE x.name LIKE %?%
-  StartingWith          findByNameStartingWith    WHERE x.name LIKE ?%
-  OrderBy               findByAgeOrderByNameDesc  ... ORDER BY x.name DESC
-  Not                   findByNameNot             WHERE x.name <> ?
-  In                    findByAgeIn               WHERE x.age IN (?)
-  True                  findByActiveTrue          WHERE x.active = true
-  Top/First             findTop5ByOrderByAgeDesc  ... LIMIT 5
-  Distinct              findDistinctByName        SELECT DISTINCT ...
-  Count                 countByAge                SELECT COUNT(...)
-  Exists                existsByEmail             SELECT CASE WHEN COUNT > 0
-  Delete                deleteByName              DELETE FROM ... WHERE
+```text
+Keyword                Method Name Part         JPQL Snippet
+────────────────────  ──────────────────────── ──────────────────────
+And                   findByNameAndAge          WHERE x.name=? AND x.age=?
+Or                    findByNameOrAge           WHERE x.name=? OR x.age=?
+Is, Equals            findByName                WHERE x.name=?
+Between               findByAgeBetween          WHERE x.age BETWEEN ? AND ?
+LessThan              findByAgeLessThan         WHERE x.age < ?
+GreaterThan           findByAgeGreaterThan      WHERE x.age > ?
+IsNull                findByNameIsNull          WHERE x.name IS NULL
+IsNotNull             findByNameIsNotNull       WHERE x.name IS NOT NULL
+Like                  findByNameLike            WHERE x.name LIKE ?
+Containing            findByNameContaining      WHERE x.name LIKE %?%
+StartingWith          findByNameStartingWith    WHERE x.name LIKE ?%
+OrderBy               findByAgeOrderByNameDesc  ... ORDER BY x.name DESC
+Not                   findByNameNot             WHERE x.name <> ?
+In                    findByAgeIn               WHERE x.age IN (?)
+True                  findByActiveTrue          WHERE x.active = true
+Top/First             findTop5ByOrderByAgeDesc  ... LIMIT 5
+Distinct              findDistinctByName        SELECT DISTINCT ...
+Count                 countByAge                SELECT COUNT(...)
+Exists                existsByEmail             SELECT CASE WHEN COUNT > 0
+Delete                deleteByName              DELETE FROM ... WHERE
 ```
 
 ---

@@ -20,20 +20,19 @@ The JVM strictly ignores it and uses the built-in String class. This is enforced
 
 ## 🎯 The 5W1H
 
+```text
+ WHAT = ClassLoader reads .class files (bytecode) and converts
+        them into Class<?> objects that the JVM can use
+
+ WHY  = JVM doesn't load ALL classes at startup — it loads them
+        ON DEMAND when first referenced. ClassLoader decides
+        WHERE to find each class.
+
+ WHEN = Every time you use 'new', access a static method,
+        or reference a class for the first time
+
+ HOW  = Delegation model: child asks parent first
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT = ClassLoader reads .class files (bytecode) and converts  ║
-║         them into Class<?> objects that the JVM can use          ║
-║                                                                  ║
-║  WHY  = JVM doesn't load ALL classes at startup — it loads them  ║
-║         ON DEMAND when first referenced. ClassLoader decides     ║
-║         WHERE to find each class.                                ║
-║                                                                  ║
-║  WHEN = Every time you use 'new', access a static method,       ║
-║         or reference a class for the first time                  ║
-║                                                                  ║
-║  HOW  = Delegation model: child asks parent first                ║
-╚══════════════════════════════════════════════════════════════════╝
 
 ### Historical Evolution
 
@@ -51,33 +50,20 @@ The JVM strictly ignores it and uses the built-in String class. This is enforced
 - **JDBC 4.0 — Java 6 (2006)**: `DriverManager` auto-registers. No more `Class.forName()`. ServiceLoader-based.
 - **SLF4J — QOS.ch 2005**: Ceki Gülcü. Single facade: log4j 1.x, `java.util.logging`, Logback. End of fragmentation.
 - **JPMS (Jigsaw) — Java 9 (2017)**: JSR 376. Module path alongside classpath. `requires`, `exports` directives.
-```
 
 ---
 
 ## 1. The Three ClassLoaders
 
+```mermaid
+flowchart TD
+  B["Bootstrap ClassLoader (native C++)<br/>Loads: java.lang.*, java.util.*<br/>From: the java.base module (rt.jar before Java 9)"]
+  P["Platform ClassLoader<br/>(was the Extension ClassLoader)<br/>Loads: javax.*, java.sql.*"]
+  A["Application ClassLoader<br/>(System ClassLoader)<br/>Loads: YOUR classes<br/>From: the classpath (-cp)"]
+  A -->|"delegates to parent"| P -->|"delegates to parent"| B
 ```
-┌─────────────────────────────────────────────────┐
-│         Bootstrap ClassLoader (Native C++)       │
-│         Loads: java.lang.*, java.util.*          │
-│         From: rt.jar / java.base module          │
-│                       ↑                          │
-│         ┌─────────────┴──────────────┐           │
-│         │ Platform ClassLoader        │           │
-│         │ (was Extension ClassLoader) │           │
-│         │ Loads: javax.*, java.sql.*  │           │
-│         │ From: jre/lib/ext           │           │
-│         └─────────────┬──────────────┘           │
-│                       ↑                          │
-│         ┌─────────────┴──────────────┐           │
-│         │ Application ClassLoader     │           │
-│         │ (System ClassLoader)        │           │
-│         │ Loads: YOUR classes          │           │
-│         │ From: classpath (-cp)       │           │
-│         └────────────────────────────┘           │
-└─────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Each loader first delegates to its parent. Only when the parent can't find the class does the child try to load it itself.
 
 ```java
 // See which ClassLoader loaded a class
@@ -239,27 +225,18 @@ Use prepared statements for all dynamic values. They solve injection risk, impro
 
 ## 5. JDBC Architecture
 
+```mermaid
+flowchart TD
+  APP["Your Java application"] --> API["JDBC API (java.sql.*)<br/>Connection, Statement, ResultSet"]
+  API --> DM["JDBC DriverManager"]
+  DM --> MY["MySQL driver (Type 4)"] --> MYDB[("MySQL DB")]
+  DM --> PG["PostgreSQL driver"] --> PGDB[("PostgreSQL")]
+  DM --> OR["Oracle driver"] --> ORDB[("Oracle DB")]
 ```
-┌─────────────────────────────────────────────────┐
-│              Your Java Application               │
-│                     ↓                            │
-│            JDBC API (java.sql.*)                 │
-│       Connection, Statement, ResultSet           │
-│                     ↓                            │
-│           JDBC Driver Manager                    │
-│                     ↓                            │
-│         ┌───────────┼───────────┐                │
-│    MySQL Driver  PostgreSQL   Oracle             │
-│    (Type 4)      Driver       Driver             │
-│         ↓           ↓           ↓                │
-│    MySQL DB    PostgreSQL    Oracle DB            │
-└─────────────────────────────────────────────────┘
 
-Type 4 Driver (most common):
-  Pure Java → directly converts JDBC calls to database protocol
-  No native code needed
-  Example: mysql-connector-j, postgresql driver
-```
+**How to read this diagram.** Your code talks to the JDBC API only. `DriverManager` picks the driver that matches the database URL, and the driver speaks that database's protocol.
+
+**Type 4 driver (most common):** pure Java, converts JDBC calls directly to the database protocol, needs no native code. Examples: `mysql-connector-j` and the PostgreSQL driver.
 
 ---
 
@@ -289,21 +266,11 @@ try (
 
 ### Statement vs PreparedStatement vs CallableStatement
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│ Statement           │ Plain SQL, no parameters               │
-│                     │ ❌ SQL INJECTION risk!                  │
-│                     │ Use only for DDL or admin tasks         │
-│─────────────────────│────────────────────────────────────────│
-│ PreparedStatement   │ Parameterized SQL with ?               │
-│                     │ ✅ SQL injection safe (params are data) │
-│                     │ ✅ Precompiled — faster for repeated use│
-│                     │ USE THIS 99% OF THE TIME               │
-│─────────────────────│────────────────────────────────────────│
-│ CallableStatement   │ Calls stored procedures                │
-│                     │ {call procedure_name(?, ?)}            │
-└──────────────────────────────────────────────────────────────┘
-```
+| Statement type | Use | Notes |
+| --- | --- | --- |
+| `Statement` | Plain SQL, no parameters | ❌ SQL injection risk. Use only for DDL or admin tasks. |
+| `PreparedStatement` | Parameterized SQL with `?` | ✅ SQL-injection safe (parameters are data). ✅ Precompiled, faster for repeated use. Use this almost always. |
+| `CallableStatement` | Calls stored procedures | `{call procedure_name(?, ?)}` |
 
 ### SQL Injection — Why PreparedStatement Matters
 
@@ -326,22 +293,27 @@ ps.setString(1, name);
 
 ## 7. Connection Pooling — Why and How
 
-```
-Without pool:
-Request 1 → Open connection → Query → Close connection (200ms overhead!)
-Request 2 → Open connection → Query → Close connection (200ms overhead!)
+**Without a pool**
 
-With pool:
-┌──────────────────────────────────┐
-│        Connection Pool           │
-│   ┌────┐ ┌────┐ ┌────┐ ┌────┐  │
-│   │Conn│ │Conn│ │Conn│ │Conn│  │  ←  Pre-created, reused
-│   │ 1  │ │ 2  │ │ 3  │ │ 4  │  │
-│   └────┘ └────┘ └────┘ └────┘  │
-└──────────────────────────────────┘
-Request 1 → Borrow Conn → Query → Return Conn (< 1ms overhead)
-Request 2 → Borrow Conn → Query → Return Conn (< 1ms overhead)
+- Request 1 → open connection → query → close connection (about 200 ms overhead)
+- Request 2 → open connection → query → close connection (about 200 ms overhead)
+
+**With a pool**
+
+```mermaid
+flowchart LR
+  R1["Request 1"] -->|"borrow"| POOL
+  R2["Request 2"] -->|"borrow"| POOL
+  subgraph POOL["Connection pool (pre-created, reused)"]
+    C1["Conn 1"]
+    C2["Conn 2"]
+    C3["Conn 3"]
+    C4["Conn 4"]
+  end
+  POOL -->|"query, then return the connection"| DB[("Database")]
 ```
+
+**How to read this diagram.** Requests borrow an already-open connection, run the query and return the connection to the pool, so the per-request overhead drops from hundreds of milliseconds to well under a millisecond.
 
 ```java
 // HikariCP — the fastest connection pool (Spring Boot default)
@@ -474,25 +446,18 @@ Add correlation ids, structured fields, exception stack traces, request metadata
 
 ## 10. Logging Landscape
 
+```mermaid
+flowchart TD
+  S["SLF4J<br/>(Simple Logging Facade for Java)<br/>The standard facade: use THIS API"]
+  S -->|"binds to"| L["Logback<br/>(default in Spring Boot)"]
+  S -->|"binds to"| L4["Log4j2<br/>(Apache, powerful)"]
+  S -->|"binds to"| JUL["java.util.logging<br/>(built in, basic)"]
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                   Logging APIs (Facades)                         │
-│            ┌──────────────────────────────┐                      │
-│            │        SLF4J                  │  ←  Standard facade  │
-│            │  (Simple Logging Facade       │     Use THIS API     │
-│            │   for Java)                   │                      │
-│            └──────────┬───────────────────┘                      │
-│                       │ binds to                                  │
-│            ┌──────────┴───────────────────┐                      │
-│            ↓              ↓               ↓                      │
-│        Logback        Log4j2       java.util.logging             │
-│     (Default in     (Apache,       (Built-in,                    │
-│      Spring Boot)    powerful)      basic)                        │
-│                                                                   │
-│  RULE: Code against SLF4J API                                    │
-│        Swap implementation without changing code                  │
-└─────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Your code calls the SLF4J API, and one binding connects it to the real logging implementation.
+
+> [!TIP]
+> **Rule:** code against the SLF4J API. You can swap the implementation without changing code.
 
 ---
 
@@ -561,30 +526,15 @@ public class UserService {
 
 ## 12. Log Levels — When to Use Each
 
-```
-┌───────┬──────────────────────────────────────────────────────┐
-│ Level │ When to Use                                          │
-├───────┼──────────────────────────────────────────────────────┤
-│ TRACE │ Very detailed flow info. Method entry/exit.          │
-│       │ Almost never enabled in production.                  │
-├───────┼──────────────────────────────────────────────────────┤
-│ DEBUG │ Diagnostic information for developers.               │
-│       │ Variable values, SQL queries, cache hits/misses.     │
-│       │ Enabled in dev, disabled in production.              │
-├───────┼──────────────────────────────────────────────────────┤
-│ INFO  │ Business events and milestones.                      │
-│       │ "User registered", "Order processed", App started.   │
-│       │ DEFAULT level in production.                         │
-├───────┼──────────────────────────────────────────────────────┤
-│ WARN  │ Potential issues that don't stop the app.            │
-│       │ Deprecated API used, retry succeeded after failure.  │
-│       │ "Something looks wrong but we recovered."            │
-├───────┼──────────────────────────────────────────────────────┤
-│ ERROR │ Something FAILED and needs attention.                │
-│       │ Unhandled exceptions, failed operations.             │
-│       │ Always include the exception object.                 │
-└───────┴──────────────────────────────────────────────────────┘
+| Level | When to Use |
+| --- | --- |
+| TRACE | Very detailed flow info. Method entry/exit.<br>Almost never enabled in production. |
+| DEBUG | Diagnostic information for developers.<br>Variable values, SQL queries, cache hits/misses.<br>Enabled in dev, disabled in production. |
+| INFO | Business events and milestones.<br>"User registered", "Order processed", App started.<br>DEFAULT level in production. |
+| WARN | Potential issues that don't stop the app.<br>Deprecated API used, retry succeeded after failure.<br>"Something looks wrong but we recovered." |
+| ERROR | Something FAILED and needs attention.<br>Unhandled exceptions, failed operations.<br>Always include the exception object. |
 
+```
 Level hierarchy: TRACE < DEBUG < INFO < WARN < ERROR
 Setting level to INFO means: INFO, WARN, ERROR are logged
                              TRACE, DEBUG are suppressed

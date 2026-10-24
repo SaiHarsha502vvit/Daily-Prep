@@ -10,19 +10,17 @@
 
 ## 🎯 The 5W1H: Why java.time?
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT = java.time package (Java 8+) — immutable, thread-safe     ║
-║         date/time classes that replace broken java.util.Date     ║
-║                                                                  ║
-║  WHY  = java.util.Date was MUTABLE (thread-unsafe),              ║
-║         months were 0-indexed (Jan=0), and design was terrible   ║
-║                                                                  ║
-║  WHEN = ALWAYS use java.time for new code. Never java.util.Date  ║
-║                                                                  ║
-║  HOW  = LocalDate, LocalTime, LocalDateTime, ZonedDateTime,      ║
-║         Instant, Duration, Period, DateTimeFormatter             ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+WHAT = java.time package (Java 8+) — immutable, thread-safe
+       date/time classes that replace broken java.util.Date
+
+WHY  = java.util.Date was MUTABLE (thread-unsafe),
+       months were 0-indexed (Jan=0), and design was terrible
+
+WHEN = ALWAYS use java.time for new code. Never java.util.Date
+
+HOW  = LocalDate, LocalTime, LocalDateTime, ZonedDateTime,
+       Instant, Duration, Period, DateTimeFormatter
 ```
 
 ### The Old Way Was Broken
@@ -41,29 +39,32 @@ LocalDate date = LocalDate.of(2026, 3, 8);  // March 8, 2026. Obvious.
 
 ## 1. The Core Classes — Choose the Right One
 
-```
-┌──────────────────────────────────────────────────────────────===┐
-│ CLASS              │ STORES                │ USE WHEN           │
-│────────────────────│────────────────────── │───────────────────=│
-│ LocalDate          │ 2026-03-08            │ Birthdays, dates   │
-│ LocalTime          │ 14:30:00              │ Alarm, schedule    │
-│ LocalDateTime      │ 2026-03-08T14:30:00   │ Booking timestamp  │
-│ ZonedDateTime      │ + timezone            │ Global scheduling  │
-│ Instant            │ Epoch seconds         │ Machine timestamps │
-│ OffsetDateTime     │ + UTC offset          │ API communication  │
-│ Duration           │ Hours/minutes/seconds │ Time between       │
-│ Period             │ Years/months/days     │ Date between       │
-└──────────────────────────────────────────────────────────────===┘
+| `CLASS` | STORES | USE WHEN |
+| --- | --- | --- |
+| `LocalDate` | 2026-03-08 | Birthdays, dates |
+| `LocalTime` | 14:30:00 | Alarm, schedule |
+| `LocalDateTime` | 2026-03-08T14:30:00 | Booking timestamp |
+| `ZonedDateTime` | + timezone | Global scheduling |
+| `Instant` | Epoch seconds | Machine timestamps |
+| `OffsetDateTime` | + UTC offset | API communication |
+| `Duration` | Hours/minutes/seconds | Time between |
+| `Period` | Years/months/days | Date between |
 
-Decision:
-  Need zone? → ZonedDateTime
-  Just date? → LocalDate
-  Just time? → LocalTime
-  Date + time, no zone? → LocalDateTime
-  Machine timestamp? → Instant
-  Measure elapsed time? → Duration
-  Measure calendar gap? → Period
-```
+**Decision**
+
+Need zone? → ZonedDateTime
+
+Just date? → LocalDate
+
+Just time? → LocalTime
+
+Date + time, no zone? → LocalDateTime
+
+Machine timestamp? → Instant
+
+Measure elapsed time? → Duration
+
+Measure calendar gap? → Period
 
 ---
 
@@ -166,21 +167,19 @@ ZonedDateTime meetingInNY = meetingInIndia.withZoneSameInstant(
 Set<String> zones = ZoneId.getAvailableZoneIds();  // 600+ zones
 ```
 
-```
+```text
 ⚠️ Daylight Saving Time (DST) Trap:
-┌─────────────────────────────────────────────────────────┐
-│ In the US, clocks "spring forward" in March:             │
-│ 1:59 AM → 3:00 AM (2:00 AM doesn't exist!)              │
-│                                                          │
-│ ZonedDateTime handles this automatically:                │
-│ ZonedDateTime.of(2026, 3, 8, 2, 30,                     │
-│     ZoneId.of("America/New_York"))                       │
-│ → Automatically adjusts to 3:30 AM                       │
-│                                                          │
-│ LocalDateTime does NOT handle this (no timezone info)    │
-│                                                          │
-│ RULE: Store as Instant (UTC). Display as ZonedDateTime.  │
-└─────────────────────────────────────────────────────────┘
+In the US, clocks "spring forward" in March:
+1:59 AM → 3:00 AM (2:00 AM doesn't exist!)
+
+ZonedDateTime handles this automatically:
+ZonedDateTime.of(2026, 3, 8, 2, 30,
+    ZoneId.of("America/New_York"))
+→ Automatically adjusts to 3:30 AM
+
+LocalDateTime does NOT handle this (no timezone info)
+
+RULE: Store as Instant (UTC). Display as ZonedDateTime.
 ```
 
 ---
@@ -252,26 +251,25 @@ String indianFormat = LocalDate.now().format(indian);  // "08-Mar-2026"
 
 ```
 Common Format Patterns:
-┌────────┬──────────────────────┬──────────────────┐
-│ Symbol │ Meaning              │ Example           │
-│────────│──────────────────────│──────────────────│
-│ yyyy   │ Year (4 digit)       │ 2026              │
-│ yy     │ Year (2 digit)       │ 26                │
-│ MM     │ Month (2 digit)      │ 03                │
-│ MMM    │ Month (abbrev)       │ Mar               │
-│ MMMM   │ Month (full)         │ March             │
-│ dd     │ Day of month         │ 08                │
-│ EEEE   │ Day of week (full)   │ Sunday            │
-│ EEE    │ Day of week (abbrev) │ Sun               │
-│ HH     │ Hour (24h)           │ 14                │
-│ hh     │ Hour (12h)           │ 02                │
-│ mm     │ Minutes              │ 30                │
-│ ss     │ Seconds              │ 45                │
-│ a      │ AM/PM                │ PM                │
-│ z      │ Zone name            │ IST               │
-│ Z      │ Zone offset          │ +0530             │
-└────────┴──────────────────────┴──────────────────┘
 ```
+
+| Symbol | Meaning | Example |
+| --- | --- | --- |
+| yyyy | Year (4 digit) | 2026 |
+| yy | Year (2 digit) | 26 |
+| MM | Month (2 digit) | 03 |
+| MMM | Month (abbrev) | Mar |
+| MMMM | Month (full) | March |
+| dd | Day of month | 08 |
+| EEEE | Day of week (full) | Sunday |
+| EEE | Day of week (abbrev) | Sun |
+| HH | Hour (24h) | 14 |
+| hh | Hour (12h) | 02 |
+| mm | Minutes | 30 |
+| ss | Seconds | 45 |
+| a | AM/PM | PM |
+| z | Zone name | IST |
+| Z | Zone offset | +0530 |
 
 ---
 
@@ -343,62 +341,58 @@ ZonedDateTime userLocal = storedUtc.atZone(ZoneId.of("Asia/Kolkata"));  // Displ
 
 ## 🎯 The 5W1H: Why Regex?
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT = Regular Expressions — a mini-language for text patterns  ║
-║                                                                  ║
-║  WHY  = Validate input (email, phone), extract data from text,  ║
-║         search/replace, parse log files, clean data              ║
-║                                                                  ║
-║  WHEN = Input validation, log parsing, data extraction,         ║
-║         URL routing, template engines, text processing           ║
-║                                                                  ║
-║  HOW  = java.util.regex.Pattern + Matcher                       ║
-║         String.matches(), replaceAll(), split()                  ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+WHAT = Regular Expressions — a mini-language for text patterns
+
+WHY  = Validate input (email, phone), extract data from text,
+       search/replace, parse log files, clean data
+
+WHEN = Input validation, log parsing, data extraction,
+       URL routing, template engines, text processing
+
+HOW  = java.util.regex.Pattern + Matcher
+       String.matches(), replaceAll(), split()
 ```
 
 ---
 
 ## 8. Regex Fundamentals — The Building Blocks
 
-```
 CHARACTER CLASSES:
-┌────────┬───────────────────────────────┐
-│ .      │ Any character except newline  │
-│ \d     │ Digit [0-9]                   │
-│ \D     │ Non-digit [^0-9]             │
-│ \w     │ Word char [a-zA-Z0-9_]       │
-│ \W     │ Non-word char                 │
-│ \s     │ Whitespace [\t\n\r\f ]       │
-│ \S     │ Non-whitespace               │
-│ [abc]  │ Any of a, b, or c            │
-│ [a-z]  │ Any lowercase letter         │
-│ [^abc] │ NOT a, b, or c              │
-└────────┴───────────────────────────────┘
+
+| . | Any character except newline |
+| --- | --- |
+| \d | Digit [0-9] |
+| \D | Non-digit [^0-9] |
+| \w | Word char [a-zA-Z0-9_] |
+| \W | Non-word char |
+| \s | Whitespace [\t\n\r\f ] |
+| \S | Non-whitespace |
+| [abc] | Any of a, b, or c |
+| [a-z] | Any lowercase letter |
+| [^abc] | NOT a, b, or c |
 
 QUANTIFIERS:
-┌────────┬───────────────────────────────┐
-│ *      │ 0 or more (greedy)           │
-│ +      │ 1 or more (greedy)           │
-│ ?      │ 0 or 1 (optional)            │
-│ {n}    │ Exactly n times              │
-│ {n,}   │ n or more times              │
-│ {n,m}  │ Between n and m times        │
-│ *?     │ 0 or more (lazy/reluctant)   │
-│ +?     │ 1 or more (lazy/reluctant)   │
-└────────┴───────────────────────────────┘
+
+| * | 0 or more (greedy) |
+| --- | --- |
+| + | 1 or more (greedy) |
+| ? | 0 or 1 (optional) |
+| {n} | Exactly n times |
+| {n,} | n or more times |
+| {n,m} | Between n and m times |
+| *? | 0 or more (lazy/reluctant) |
+| +? | 1 or more (lazy/reluctant) |
 
 ANCHORS & GROUPS:
-┌────────┬───────────────────────────────┐
-│ ^      │ Start of string/line         │
-│ $      │ End of string/line           │
-│ \b     │ Word boundary                │
-│ (abc)  │ Capturing group              │
-│ (?:abc)│ Non-capturing group          │
-│ a|b    │ a OR b (alternation)         │
-└────────┴───────────────────────────────┘
-```
+
+| ^ | Start of string/line |
+| --- | --- |
+| $ | End of string/line |
+| \b | Word boundary |
+| (abc) | Capturing group |
+| (?:abc) | Non-capturing group |
+| a\|b | a OR b (alternation) |
 
 ---
 
@@ -439,17 +433,15 @@ while (matcher.find()) {
 
 ### Key Matcher Methods
 
-```
-┌──────────────────────────────────────────────────────────┐
-│ matcher.matches()   → Does ENTIRE string match pattern?  │
-│ matcher.find()      → Find NEXT occurrence in string     │
-│ matcher.group()     → Return the matched text            │
-│ matcher.group(1)    → Return capturing group 1           │
-│ matcher.start()     → Start index of match               │
-│ matcher.end()       → End index of match                 │
-│ matcher.replaceAll()→ Replace all matches                │
-│ matcher.reset()     → Reset to search from beginning     │
-└──────────────────────────────────────────────────────────┘
+```text
+matcher.matches()   → Does ENTIRE string match pattern?
+matcher.find()      → Find NEXT occurrence in string
+matcher.group()     → Return the matched text
+matcher.group(1)    → Return capturing group 1
+matcher.start()     → Start index of match
+matcher.end()       → End index of match
+matcher.replaceAll()→ Replace all matches
+matcher.reset()     → Reset to search from beginning
 
 matches() vs find():
 "hello123world".matches("\\d+")  → false (entire string isn't digits)
@@ -646,20 +638,18 @@ public boolean isValidEmail(String email) {
 }
 ```
 
-```
+```text
 Performance Rules:
-┌────────────────────────────────────────────────────────────┐
-│ 1. ALWAYS compile patterns as static final constants       │
-│ 2. str.matches() compiles every call — avoid in loops      │
-│ 3. Use possessive quantifiers (++) to prevent backtracking │
-│ 4. Be specific: [a-z] is faster than .                     │
-│ 5. Watch for catastrophic backtracking: (a+)+ on "aaa...b" │
-│                                                            │
-│ ReDoS (Regex Denial of Service):                           │
-│ Evil patterns like (a+)+ can take EXPONENTIAL time         │
-│ on inputs like "aaaaaaaaaaaaaaaaaab"                       │
-│ Always test with long adversarial inputs!                  │
-└────────────────────────────────────────────────────────────┘
+1. ALWAYS compile patterns as static final constants
+2. str.matches() compiles every call — avoid in loops
+3. Use possessive quantifiers (++) to prevent backtracking
+4. Be specific: [a-z] is faster than .
+5. Watch for catastrophic backtracking: (a+)+ on "aaa...b"
+
+ReDoS (Regex Denial of Service):
+Evil patterns like (a+)+ can take EXPONENTIAL time
+on inputs like "aaaaaaaaaaaaaaaaaab"
+Always test with long adversarial inputs!
 ```
 
 ---
@@ -694,27 +684,22 @@ List<String> numbers = List.of("hello", "123", "world", "456")
 
 ## 15. Regex Cheat Sheet — Quick Reference
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│ TASK                  │ PATTERN                              │
-│───────────────────────│──────────────────────────────────────│
-│ Digits only           │ ^\d+$                                │
-│ Letters only          │ ^[a-zA-Z]+$                          │
-│ Alphanumeric          │ ^[a-zA-Z0-9]+$                       │
-│ Email (simple)        │ ^[\w.+-]+@[\w.-]+\.\w{2,}$          │
-│ URL                   │ https?://[\w.-]+(?:/[\w./?%&=]*)?    │
-│ IP address            │ (\d{1,3}\.){3}\d{1,3}               │
-│ Date (YYYY-MM-DD)     │ \d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]  │
-│                       │ |[12]\d|3[01])                       │
-│ HTML tag              │ <([a-z]+)[^>]*>.*?</\1>             │
-│ Java identifier       │ [a-zA-Z_$][\w$]*                    │
-│ Whitespace cleanup    │ \s+  → replace with single space     │
-│ Camel → snake         │ ([A-Z]) → _$1 then lowercase        │
-│ Extract quoted text   │ "([^"]*)" or '([^']*)'              │
-│ Comment removal       │ //.*$ or /\*[\s\S]*?\*/              │
-│ Palindrome check      │ (can't — regex can't do this well)  │
-└─────────────────────────────────────────────────────────────┘
-```
+| TASK | `PATTERN` |
+| --- | --- |
+| Digits only | `^\d+$` |
+| Letters only | `^[a-zA-Z]+$` |
+| Alphanumeric | `^[a-zA-Z0-9]+$` |
+| Email (simple) | `^[\w.+-]+@[\w.-]+\.\w{2,}$` |
+| URL | `https?://[\w.-]+(?:/[\w./?%&=]*)?` |
+| IP address | `(\d{1,3}\.){3}\d{1,3}` |
+| Date (YYYY-MM-DD) | `\d{4}-(?:0[1-9]\|1[0-2])-(?:0[1-9] \|[12]\d\|3[01])` |
+| HTML tag | `<([a-z]+)[^>]*>.*?</\1>` |
+| Java identifier | `[a-zA-Z_$][\w$]*` |
+| Whitespace cleanup | `\s+  → replace with single space` |
+| Camel → snake | `([A-Z]) → _$1 then lowercase` |
+| Extract quoted text | `"([^"]*)" or '([^']*)'` |
+| Comment removal | `//.*$ or /\*[\s\S]*?\*/` |
+| Palindrome check | `(can't — regex can't do this well)` |
 
 ---
 

@@ -383,32 +383,31 @@ Syntax and Feature parity. H2 emulates Postgres/MySQL but often fails to accurat
 
 ### Test Organization
 
-```
-src/
-├── main/java/
-│   └── com/example/
-│       ├── controller/
-│       ├── service/
-│       └── repository/
-└── test/
-    ├── java/
-    │   └── com/example/
-    │       ├── controller/          # Controller tests
-    │       │   └── UserControllerTest.java
-    │       ├── service/             # Service unit tests
-    │       │   └── UserServiceTest.java
-    │       ├── repository/          # Repository tests
-    │       │   └── UserRepositoryTest.java
-    │       ├── integration/         # Integration tests
-    │       │   └── UserIntegrationTest.java
-    │       └── util/                # Test utilities
-    │           ├── TestDataFactory.java
-    │           └── AbstractContainerTest.java
-    └── resources/
-        ├── application-test.yml
-        └── test-data/
-            └── users.json
-```
+**src/**
+
+- main/java/
+- com/example/
+  - controller/
+  - service/
+  - repository/
+- test/
+  - java/
+- com/example/
+  - controller/          # Controller tests
+    - UserControllerTest.java
+  - service/             # Service unit tests
+    - UserServiceTest.java
+  - repository/          # Repository tests
+    - UserRepositoryTest.java
+  - integration/         # Integration tests
+    - UserIntegrationTest.java
+  - util/                # Test utilities
+    - TestDataFactory.java
+    - AbstractContainerTest.java
+  - resources/
+    - application-test.yml
+    - test-data/
+      - users.json
 
 ### Test Data Factory
 
@@ -604,26 +603,14 @@ logging:
 
 ### TDD Cycle
 
+**TDD red-green-refactor**
+
+```mermaid
+flowchart LR
+  R["RED<br/>write a failing test"] --> G["GREEN<br/>write the minimum code to pass"] --> F["REFACTOR<br/>improve code quality"] --> R
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                       TDD Red-Green-Refactor                     │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│    ┌─────────┐         ┌─────────┐         ┌─────────┐           │
-│    │  RED    │ ──────▶ │  GREEN  │ ──────▶ │REFACTOR │           │
-│    │         │         │         │         │         │           │
-│    │ Write a │         │ Write   │         │ Improve │           │
-│    │ failing │         │ minimum │         │ code    │           │
-│    │ test    │         │ code to │         │ quality │           │
-│    │         │         │ pass    │         │         │           │
-│    └────┬────┘         └────┬────┘         └────┬────┘           │
-│         │                   │                   │                │
-│         └───────────────────┴───────────────────┘                │
-│                          │                                       │
-│                    Repeat Cycle                                  │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Repeat the cycle: each loop adds one small behavior, backed by a test that failed first.
 
 ### TDD Example: Building a Calculator
 
@@ -1260,47 +1247,42 @@ class ShoppingCartServiceTest {
 
 ## Quick Reference
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    TESTING CHEAT SHEET                              │
-├─────────────────────────────────────────────────────────────────────┤
-│ ANNOTATIONS                                                         │
-│  @Test              - Mark test method                              │
-│  @BeforeEach        - Run before each test                          │
-│  @AfterEach         - Run after each test                           │
-│  @BeforeAll         - Run once before all (static)                  │
-│  @AfterAll          - Run once after all (static)                   │
-│  @Disabled          - Skip test                                     │
-│  @DisplayName       - Custom test name                              │
-│  @ParameterizedTest - Run with multiple inputs                      │
-│  @Nested            - Group related tests                           │
-│  @Timeout           - Fail if exceeds time                          │
-├─────────────────────────────────────────────────────────────────────┤
-│ MOCKITO                                                             │
-│  @Mock              - Create mock                                   │
-│  @InjectMocks       - Inject mocks into target                      │
-│  @Spy               - Partial mock (real methods)                   │
-│  @Captor            - Capture arguments                             │
-│  when().thenReturn()- Stub method                                   │
-│  verify()           - Verify interaction                            │
-│  doThrow()          - Stub void method exception                    │
-├─────────────────────────────────────────────────────────────────────┤
-│ SPRING BOOT TEST                                                    │
-│  @SpringBootTest    - Full context                                  │
-│  @WebMvcTest        - Web layer only                                │
-│  @DataJpaTest       - JPA layer only                                │
-│  @MockBean          - Mock in Spring context                        │
-│  @SpyBean           - Spy in Spring context                         │
-│  @AutoConfigureMockMvc - Configure MockMvc                          │
-├─────────────────────────────────────────────────────────────────────┤
-│ ASSERTIONS                                                          │
-│  assertEquals(expected, actual)                                     │
-│  assertTrue/assertFalse(condition)                                  │
-│  assertNull/assertNotNull(object)                                   │
-│  assertThrows(Exception.class, () -> ...)                           │
-│  assertAll("group", () -> ..., () -> ...)                           │
-│  assertThat(actual).isEqualTo(expected)  // AssertJ                 │
-└─────────────────────────────────────────────────────────────────────┘
+**TESTING CHEAT SHEET**
+
+```text
+ANNOTATIONS
+ @Test              - Mark test method
+ @BeforeEach        - Run before each test
+ @AfterEach         - Run after each test
+ @BeforeAll         - Run once before all (static)
+ @AfterAll          - Run once after all (static)
+ @Disabled          - Skip test
+ @DisplayName       - Custom test name
+ @ParameterizedTest - Run with multiple inputs
+ @Nested            - Group related tests
+ @Timeout           - Fail if exceeds time
+MOCKITO
+ @Mock              - Create mock
+ @InjectMocks       - Inject mocks into target
+ @Spy               - Partial mock (real methods)
+ @Captor            - Capture arguments
+ when().thenReturn()- Stub method
+ verify()           - Verify interaction
+ doThrow()          - Stub void method exception
+SPRING BOOT TEST
+ @SpringBootTest    - Full context
+ @WebMvcTest        - Web layer only
+ @DataJpaTest       - JPA layer only
+ @MockBean          - Mock in Spring context
+ @SpyBean           - Spy in Spring context
+ @AutoConfigureMockMvc - Configure MockMvc
+ASSERTIONS
+ assertEquals(expected, actual)
+ assertTrue/assertFalse(condition)
+ assertNull/assertNotNull(object)
+ assertThrows(Exception.class, () -> ...)
+ assertAll("group", () -> ..., () -> ...)
+ assertThat(actual).isEqualTo(expected)  // AssertJ
 ```
 
 ---

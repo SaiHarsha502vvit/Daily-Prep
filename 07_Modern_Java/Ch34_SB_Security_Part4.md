@@ -28,44 +28,42 @@ _"JPA, REST APIs, Security, and Testing - the tools you use daily"_
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
+**WHY: Why JPA/Hibernate is Essential?**
+
+```text
+• ORM magic: Map Java objects to database tables automatically
+• Type-safe queries: No more SQL string errors at runtime
+• Database-agnostic: Switch MySQL/PostgreSQL without code changes
+• Interview essential: "Explain lazy loading" asked in every interview
+• N+1 problem: Understanding it prevents production nightmares
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Why JPA/Hibernate is Essential?                                           │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • ORM magic: Map Java objects to database tables automatically                 │
-│  • Type-safe queries: No more SQL string errors at runtime                      │
-│  • Database-agnostic: Switch MySQL/PostgreSQL without code changes              │
-│  • Interview essential: "Explain lazy loading" asked in every interview         │
-│  • N+1 problem: Understanding it prevents production nightmares                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How JPA Maps Objects to Database?                                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • @Entity: Class → Table, Fields → Columns                                     │
-│  • Relationships: @OneToMany, @ManyToOne, @ManyToMany                           │
-│  • Spring Data: findByX() methods auto-implemented                              │
-│  • @Query: Custom JPQL or native SQL when needed                                │
-│  • Transactions: @Transactional manages commit/rollback                         │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**HOW: How JPA Maps Objects to Database?**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN: When to Use Different Query Strategies?                                  │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • findByX(): Simple lookups (findByEmail, findByStatus)                        │
-│  • @Query JPQL: Complex joins, aggregations                                     │
-│  • Native SQL: Database-specific features, performance                          │
-│  • Specifications: Dynamic queries with many optional filters                   │
-│  • Projections: Return only needed columns for performance                      │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+• @Entity: Class → Table, Fields → Columns
+• Relationships: @OneToMany, @ManyToOne, @ManyToMany
+• Spring Data: findByX() methods auto-implemented
+• @Query: Custom JPQL or native SQL when needed
+• Transactions: @Transactional manages commit/rollback
+```
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHICH: Which JPA Concepts to Master?                                           │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     @Entity, relationships, JpaRepository, @Transactional           │
-│  IMPORTANT:     Lazy/Eager loading, N+1 problem, @Query, cascading              │
-│  ADVANCED:      Specifications, EntityManager, second-level cache               │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHEN: When to Use Different Query Strategies?**
+
+```text
+• findByX(): Simple lookups (findByEmail, findByStatus)
+• @Query JPQL: Complex joins, aggregations
+• Native SQL: Database-specific features, performance
+• Specifications: Dynamic queries with many optional filters
+• Projections: Return only needed columns for performance
+```
+
+**WHICH: Which JPA Concepts to Master?**
+
+```text
+ESSENTIAL:     @Entity, relationships, JpaRepository, @Transactional
+IMPORTANT:     Lazy/Eager loading, N+1 problem, @Query, cascading
+ADVANCED:      Specifications, EntityManager, second-level cache
 ```
 
 ---
@@ -119,49 +117,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 ### JPA Architecture Stack
 
+**The JPA stack**
+
+```mermaid
+flowchart TD
+  APP["YOUR APPLICATION CODE<br/>UserService → UserRepository → findById(1L)"]
+  SDJ["SPRING DATA JPA<br/>query derivation, automatic repository implementation"]
+  JPA["JPA (API / specification)<br/>EntityManager, @Entity, JPQL, Criteria API"]
+  HIB["HIBERNATE (JPA implementation)<br/>Session, 1st/2nd level cache, dirty checking, SQL generation"]
+  JDBC["JDBC / DataSource<br/>connection pooling (HikariCP), actual SQL execution"]
+  DB[("DATABASE<br/>MySQL, PostgreSQL, Oracle, etc.")]
+  APP --> SDJ --> JPA --> HIB --> JDBC --> DB
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    JPA STACK                                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │                     YOUR APPLICATION CODE                                │   │
-│  │                                                                          │   │
-│  │   UserService → UserRepository → findById(1L)                           │    │
-│  └─────────────────────────────────────────────────┬────────────────────────┘   │
-│                                                     │                           │
-│  ┌─────────────────────────────────────────────────▼────────────────────────┐   │
-│  │                     SPRING DATA JPA                                      │   │
-│  │                                                                          │   │
-│  │   Query derivation, automatic repository implementation                 │    │
-│  └─────────────────────────────────────────────────┬────────────────────────┘   │
-│                                                     │                           │
-│  ┌─────────────────────────────────────────────────▼────────────────────────┐   │
-│  │                     JPA (API/Specification)                              │   │
-│  │                                                                          │   │
-│  │   EntityManager, @Entity, JPQL, Criteria API                            │    │
-│  └─────────────────────────────────────────────────┬────────────────────────┘   │
-│                                                     │                           │
-│  ┌─────────────────────────────────────────────────▼────────────────────────┐   │
-│  │                     HIBERNATE (JPA Implementation)                       │   │
-│  │                                                                          │   │
-│  │   Session, 1st/2nd level cache, dirty checking, SQL generation         │     │
-│  └─────────────────────────────────────────────────┬────────────────────────┘   │
-│                                                     │                           │
-│  ┌─────────────────────────────────────────────────▼────────────────────────┐   │
-│  │                     JDBC / DataSource                                    │   │
-│  │                                                                          │   │
-│  │   Connection pooling (HikariCP), actual SQL execution                   │    │
-│  └─────────────────────────────────────────────────┬────────────────────────┘   │
-│                                                     │                           │
-│  ┌─────────────────────────────────────────────────▼────────────────────────┐   │
-│  │                     DATABASE                                             │   │
-│  │                                                                          │   │
-│  │   MySQL, PostgreSQL, Oracle, etc.                                       │    │
-│  └──────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** A call from your code travels down through each layer until it reaches the database. Each layer hides the one below it.
 
 ---
 
@@ -895,28 +864,26 @@ Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method tha
 
 ### 🔵 WHY: Authentication vs Authorization
 
+**AUTHENTICATION vs AUTHORIZATION**
+
+**AUTHENTICATION = "WHO are you?"**
+
+```text
+• Username/password login
+• OAuth2/Social login
+• JWT token validation
+• Certificate verification
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    AUTHENTICATION vs AUTHORIZATION                              │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  AUTHENTICATION = "WHO are you?"                                                │
-│  ─────────────────────────────────                                              │
-│  • Username/password login                                                      │
-│  • OAuth2/Social login                                                          │
-│  • JWT token validation                                                         │
-│  • Certificate verification                                                     │
-│                                                                                 │
-│  AUTHORIZATION = "WHAT can you do?"                                             │
-│  ───────────────────────────────────                                            │
-│  • Role-based: ADMIN can delete, USER can only read                             │
-│  • Resource-based: User can only edit their OWN posts                           │
-│  • Permission-based: Fine-grained access control                                │
-│                                                                                 │
-│  FLOW:                                                                          │
-│  Request → Authentication → Authorization → Controller                          │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+**AUTHORIZATION = "WHAT can you do?"**
+
+```text
+• Role-based: ADMIN can delete, USER can only read
+• Resource-based: User can only edit their OWN posts
+• Permission-based: Fine-grained access control
+
+FLOW:
+Request → Authentication → Authorization → Controller
 ```
 
 ### 🟢 HOW: Security Configuration
@@ -1028,28 +995,20 @@ JWT: stateless — any service can validate without a DB call (verify signature 
 
 ### 🔵 WHY: Testing Pyramid
 
+**Testing pyramid**
+
+| Level | Volume and cost | Typical tooling |
+| --- | --- | --- |
+| E2E tests (top) | Few, slow, expensive | Browser or API end-to-end |
+| Integration tests (middle) | Some | `@SpringBootTest` |
+| Unit tests (base) | Many, fast, cheap | `@Mock`, no Spring context |
+
+```mermaid
+flowchart BT
+  U["Unit tests: many, fast, cheap<br/>@Mock, no Spring context"] --> I["Integration tests: some<br/>@SpringBootTest"] --> E["E2E tests: few, slow, expensive"]
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    TESTING PYRAMID                                              │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│                          ┌─────────────┐                                        │
-│                          │   E2E       │  Few, slow, expensive                  │
-│                         /│   Tests     │                                        │
-│                        / └─────────────┘                                        │
-│                       /                                                         │
-│                      /  ┌───────────────────┐                                   │
-│                     /   │   Integration      │  Some tests                      │
-│                    /    │   Tests            │  @SpringBootTest                 │
-│                   /     └───────────────────┘                                   │
-│                  /                                                              │
-│                 /  ┌─────────────────────────────┐                              │
-│                /   │       Unit Tests            │  Many, fast, cheap           │
-│               /    │   @Mock, no Spring context  │                              │
-│              /     └─────────────────────────────┘                              │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Read from the bottom up. Most of your tests should sit at the base, and the cost per test rises as you move up.
 
 ### Unit Tests (No Spring Context)
 
@@ -1298,44 +1257,22 @@ TESTING:
 
 # 🎯 FINAL SUMMARY
 
-```
-┌────────────────────────────────────────────────────────────────────────────────┐
-│                    SPRING BOOT MASTERY ROADMAP                                 │
-├────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                │
-│  TIER 1: Java Foundations                                                      │
-│  └── Memory, ClassLoading, Threading, Functional Programming                   │
-│                                                                                │
-│  TIER 2: Spring Core                                                           │
-│  └── IoC, DI, Beans, Lifecycle, Events                                         │
-│                                                                                │
-│  TIER 3: AOP                                                                   │
-│  └── Aspects, Pointcuts, Proxies                                               │
-│                                                                                │
-│  TIER 4: Spring Boot                                                           │
-│  └── Auto-Configuration, Properties, Profiles                                  │
-│                                                                                │
-│  TIER 5: Data Access                                                           │
-│  └── JPA, Hibernate, Transactions                                              │
-│                                                                                │
-│  TIER 6: Web                                                                   │
-│  └── REST APIs, Validation, Exception Handling                                 │
-│                                                                                │
-│  TIER 7: Security                                                              │
-│  └── Authentication, Authorization, JWT                                        │
-│                                                                                │
-│  TIER 8: Microservices (Advanced)                                              │
-│  └── Service Discovery, API Gateway, Messaging                                 │
-│                                                                                │
-│  TIER 9: Testing                                                               │
-│  └── Unit, Integration, Web, Repository Tests                                  │
-│                                                                                │
-├────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                │
-│  KEY PRINCIPLE: Always understand WHY before learning HOW                      │
-│                                                                                │
-└────────────────────────────────────────────────────────────────────────────────┘
-```
+**SPRING BOOT MASTERY ROADMAP**
+
+| Tier | Topic | Covers |
+| --- | --- | --- |
+| 1 | Java foundations | Memory, class loading, threading, functional programming |
+| 2 | Spring Core | IoC, DI, beans, lifecycle, events |
+| 3 | AOP | Aspects, pointcuts, proxies |
+| 4 | Spring Boot | Auto-configuration, properties, profiles |
+| 5 | Data access | JPA, Hibernate, transactions |
+| 6 | Web | REST APIs, validation, exception handling |
+| 7 | Security | Authentication, authorization, JWT |
+| 8 | Microservices (advanced) | Service discovery, API gateway, messaging |
+| 9 | Testing | Unit, integration, web and repository tests |
+
+> [!TIP]
+> **Key principle:** always understand WHY before learning HOW.
 
 ---
 
