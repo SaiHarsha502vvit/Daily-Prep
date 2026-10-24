@@ -1181,35 +1181,40 @@ A single `PFCOUNT` on 1 million unique visitors uses ~12 KB of memory with ±2% 
 
 ### Decision Framework
 
+```mermaid
+flowchart TD
+    Q0{"Need exact answers?"}
+    Q0 -- YES --> A0["Deterministic DS<br/>hash table, BST, trie"]
+    Q0 -- NO --> Q1{"Adversarial inputs?"}
+    Q1 -- YES --> A1["Randomized DS<br/>skip list, treap, universal hashing"]
+    Q1 -- NO --> A1b["Either; randomized may still be simpler"]
+    A1b -.-> Q2
+    Q2{"Need worst-case guarantees<br/>(not just expected)?"}
+    Q2 -- YES --> A2["Cuckoo hashing O(1) worst-case lookup,<br/>or Red-Black tree"]
+    Q2 -- NO --> A2b["Skip list, treap, Bloom filter"]
+    A2b -.-> Q3
+    Q3{"Membership with zero<br/>false negatives?"}
+    Q3 -- YES --> A3["Bloom filter<br/>(false positives only)"]
+    Q3 -- NO --> A3b["Any approximate structure"]
+    A3b -.-> Q4
+    Q4{"Working with streams?"}
+    Q4 -- YES --> A4["Count-Min sketch (frequencies),<br/>HyperLogLog (cardinality)"]
+    Q4 -- NO --> A4b["Batch DS: treap, skip list"]
+    A4b -.-> Q5
+    Q5{"Distributed system?"}
+    Q5 -- YES --> A5["Consistent hashing (partitioning),<br/>HyperLogLog (cardinality)"]
+    Q5 -- NO --> A5b["Any"]
+    A5b -.-> Q6
+    Q6{"Need deletions?"}
+    Q6 -- YES --> A6["Cuckoo filter, Counting Bloom filter,<br/>skip list, treap"]
+    Q6 -- NO --> A6b["Standard Bloom filter<br/>(more space-efficient)"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3,Q4,Q5,Q6 ask
+    class A0,A1,A1b,A2,A2b,A3,A3b,A4,A4b,A5,A5b,A6,A6b ans
 ```
-Need exact answers?
-  YES → Deterministic DS (hash table, BST, trie)
-  NO  → Continue...
 
-Need to handle adversarial inputs?
-  YES → Randomized DS (skip list, treap, universal hashing)
-  NO  → Either, but randomized DS may still be simpler
-
-Need worst-case guarantees (not just expected)?
-  YES → Cuckoo hashing (O(1) worst-case lookup), Red-Black tree
-  NO  → Skip list, treap, Bloom filter
-
-Need membership testing with zero false negatives?
-  YES → Bloom filter (false positives only)
-  NO  → Any approximate structure
-
-Working with streams?
-  YES → Count-Min sketch (frequencies), HyperLogLog (cardinality)
-  NO  → Batch DS (treap, skip list)
-
-Distributed system?
-  YES → Consistent hashing (partitioning), HyperLogLog (cardinality)
-  NO  → Any
-
-Need deletions?
-  YES → Cuckoo filter, Counting Bloom filter, skip list, treap
-  NO  → Standard Bloom filter (more space-efficient)
-```
+**How to read this diagram.** Work down the blue questions; each green box is the suggested structure for that constraint. Dotted arrows mean "now ask the next question too".
 
 ### Complexity Comparison Table
 

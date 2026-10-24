@@ -590,21 +590,30 @@ Lower bounds apply within a specific model. Outside that model, the ceiling disa
 
 ### Model Selection in Practice
 
+```mermaid
+flowchart TD
+    S{"Is your data static?"}
+    S -- YES --> FP{"Can you accept<br/>false positives?"}
+    FP -- YES --> BF["Bloom filter<br/>(near-optimal space for a given error rate)"]
+    FP -- NO --> BV["Bit vector<br/>(optimal space for exact queries)"]
+    S -- NO --> INT{"Keys are integers<br/>in [0, U-1]?"}
+    INT -- YES --> VEB["van Emde Boas tree<br/>O(log log U), optimal"]
+    INT -- NO --> IL{"Mostly insert / lookup?"}
+    IL -- YES --> HT["Hash table<br/>O(1) expected, O(n) worst case"]
+    IL -- NO --> SO{"Need sorted order?"}
+    SO -- YES --> BST["Balanced BST<br/>O(log n), optimal for the comparison model"]
+    SO -- NO --> DC{"Need dynamic<br/>connectivity?"}
+    DC -- YES --> HD["HDLT or Euler tour tree<br/>O(log n) or O(log^2 n)"]
+    DC -- NO --> SP["Specify your operations:<br/>the bound follows"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef fb fill:#fff3b0,stroke:#b58900,color:#111
+    class S,FP,INT,IL,SO,DC ask
+    class BF,BV,VEB,HT,BST,HD ans
+    class SP fb
 ```
-Is your data static?
-  YES → Can you accept false positives?
-    YES → Bloom filter (optimal space for given ε)
-    NO  → Bit vector (optimal space for exact queries)
-  NO  → Are your keys integers in [0, U-1]?
-    YES → van Emde Boas tree (O(log log U), optimal)
-    NO  → Are operations mostly insert/lookup?
-      YES → Hash table (O(1) expected, O(n) worst case)
-      NO  → Do you need sorted order?
-        YES → Balanced BST (O(log n), optimal for comparison model)
-        NO  → Do you need dynamic connectivity?
-          YES → HDLT or Euler tour tree (O(log n) or O(log² n))
-          NO  → Specify your operations — the bound follows.
-```
+
+**How to read this diagram.** Start at the blue question and follow YES / NO. Each green leaf is the structure whose upper bound matches the lower bound in this chapter.
 
 ### The "Don't Beat the Model" Principle
 

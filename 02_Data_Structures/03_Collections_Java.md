@@ -1212,6 +1212,9 @@ flowchart TD
     Q5 -- NO --> A9["HashMap"]
     Q6 -- YES --> A10["PriorityQueue (binary heap)"]
     Q6 -- NO --> A11["List/Map"]
+    A5 -. "then decide" .-> Q4
+    A7 -. "then decide" .-> Q5
+    A9 -. "then decide" .-> Q6
     classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
     classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
     class Q0,Q1,Q2,Q3,Q4,Q5,Q6 ask

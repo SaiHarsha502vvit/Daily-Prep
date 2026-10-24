@@ -1198,6 +1198,8 @@ flowchart TD
     Q4 -- NO --> A7["in-memory BST"]
     Q5 -- YES --> A8["Red-Black (looser balance, faster inserts)"]
     Q5 -- NO --> A9["AVL (tighter balance, faster lookups)"]
+    A5 -. "then decide" .-> Q4
+    A7 -. "then decide" .-> Q5
     classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
     classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
     class Q0,Q1,Q2,Q3,Q4,Q5 ask

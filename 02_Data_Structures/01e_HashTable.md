@@ -947,6 +947,8 @@ flowchart TD
     Q3 -- NO --> A6["chained HashMap (Java default)"]
     Q4 -- YES --> A7["ConcurrentHashMap"]
     Q4 -- NO --> A8["HashMap"]
+    A4 -. "then decide" .-> Q3
+    A6 -. "then decide" .-> Q4
     classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
     classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
     class Q0,Q1,Q2,Q3,Q4 ask

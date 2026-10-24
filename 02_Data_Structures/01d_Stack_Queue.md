@@ -1238,6 +1238,8 @@ flowchart TD
     Q4 -- NO --> A7["ArrayDeque (faster, no synchronization overhead)"]
     Q5 -- YES --> A8["Deque or PriorityQueue (not Stack or Queue)"]
     Q5 -- NO --> A9["Stack or Queue"]
+    A4 -. "then decide" .-> Q3
+    A7 -. "then decide" .-> Q5
     classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
     classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
     class Q0,Q1,Q2,Q3,Q4,Q5 ask

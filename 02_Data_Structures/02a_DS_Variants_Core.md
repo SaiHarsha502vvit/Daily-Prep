@@ -2036,6 +2036,7 @@ flowchart TD
     Q1 -- NO --> A3["consider HashSet (O(1) lookup, no order)"]
     Q2 -- YES --> A4["TreeMap — O(log n) operations"]
     Q2 -- NO --> A5["HashMap"]
+    A3 -. "then decide" .-> Q2
     classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
     classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
     class Q0,Q1,Q2 ask
@@ -2070,6 +2071,7 @@ flowchart TD
     Q2 -- NO --> A4["Guava `Multimap` or Apache Commons `MultiValuedMap`"]
     Q3 -- YES --> A5["Map&lt;K, List&lt;V&gt;&gt; with shared empty-list sentinel"]
     Q3 -- NO --> A6["Guava `Multimap` (cleaner API, more features)"]
+    A4 -. "then decide" .-> Q3
     classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
     classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
     class Q0,Q1,Q2,Q3 ask

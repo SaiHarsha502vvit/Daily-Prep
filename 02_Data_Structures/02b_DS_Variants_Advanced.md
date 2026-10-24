@@ -1906,6 +1906,7 @@ flowchart TD
     Q3 -- NO --> Q4
     Q4 -- YES --> A6["Treap (just BST + heap on random priorities)"]
     Q4 -- NO --> A7["use library impl (Java TreeMap, etc.)"]
+    A3 -. "then decide" .-> Q2
     classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
     classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
     class Q0,Q1,Q2,Q3,Q4 ask
@@ -1930,6 +1931,9 @@ flowchart TD
     Q2 -- NO --> A6["HashSet"]
     Q3 -- YES --> A7["Disk-based Bloom filter (e.g., RocksDB Bloom filter)"]
     Q3 -- NO --> A8["in-memory HashSet"]
+    A2 -. "then decide" .-> Q1
+    A4 -. "then decide" .-> Q2
+    A6 -. "then decide" .-> Q3
     classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
     classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
     class Q0,Q1,Q2,Q3 ask

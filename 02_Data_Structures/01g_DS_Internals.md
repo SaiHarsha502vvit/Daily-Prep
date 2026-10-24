@@ -1928,6 +1928,9 @@ flowchart TD
     Q4 -- NO --> A8["HashMap&lt;Integer, V&gt;"]
     Q5 -- YES --> A9["LinkedHashMap (access-order = true)"]
     Q5 -- NO --> A10["HashMap"]
+    A4 -. "then decide" .-> Q3
+    A6 -. "then decide" .-> Q4
+    A8 -. "then decide" .-> Q5
     classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
     classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
     class Q0,Q1,Q2,Q3,Q4,Q5 ask
