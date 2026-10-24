@@ -147,7 +147,7 @@ flowchart TD
 
 🔬 **Section Challenge — Jdbc Vs Jpa Comparison**
 
-**Challenge 1 (Connection Pool Exhaustion):** Your service uses JDBC with HikariCP default pool size (10 connections). Under 20 concurrent requests, some requests hang indefinitely. **Who** is waiting? **When** does the connection timeout? **What** two config properties fix pool sizing?
+**Challenge 2 (Connection Pool Exhaustion):** Your service uses JDBC with HikariCP default pool size (10 connections). Under 20 concurrent requests, some requests hang indefinitely. **Who** is waiting? **When** does the connection timeout? **What** two config properties fix pool sizing?
 
 <details><summary>Answer</summary>
 
@@ -262,7 +262,7 @@ public class Address {
 
 🔬 **Section Challenge — Chapter 2: Entity Mapping**
 
-**Challenge 1 (@OneToMany Fetch Type Trap):** You have `@OneToMany(fetch = FetchType.EAGER) List<Order> orders` on `User`. You load 100 users. **Who** fires how many SQL queries? **When** does EAGER fetching cause `OutOfMemoryError`? **What** is the production-safe pattern?
+**Challenge 3 (@OneToMany Fetch Type Trap):** You have `@OneToMany(fetch = FetchType.EAGER) List<Order> orders` on `User`. You load 100 users. **Who** fires how many SQL queries? **When** does EAGER fetching cause `OutOfMemoryError`? **What** is the production-safe pattern?
 
 <details><summary>Answer</summary>
 
@@ -577,7 +577,7 @@ public class UserService {
 
 🔬 **Section Challenge — Chapter 4: Spring Data JPA Repositories**
 
-**Challenge 1 (Derived Query Ambiguity):** You add `List<User> findByFirstNameAndLastName(String first, String last)` to your repository. Spring Data JPA auto-generates the query. **Who** parses the method name? **When** does the derived query break? **What** happens with `findByFirstNameOrLastNameAndActive(boolean active)`?
+**Challenge 4 (Derived Query Ambiguity):** You add `List<User> findByFirstNameAndLastName(String first, String last)` to your repository. Spring Data JPA auto-generates the query. **Who** parses the method name? **When** does the derived query break? **What** happens with `findByFirstNameOrLastNameAndActive(boolean active)`?
 
 <details><summary>Answer</summary>
 
@@ -693,7 +693,7 @@ public class OrderService {
 
 🔬 **Section Challenge — Chapter 5: Transaction Management**
 
-**Challenge 1 (REQUIRES_NEW Gotcha):** `ServiceA.processOrder()` is `@Transactional`. It calls `ServiceB.logAudit()` which is `@Transactional(propagation = REQUIRES_NEW)`. `processOrder()` throws a `RuntimeException` after `logAudit()` returns. **Who** rolls back? **What** is the audit log state after the failure? **When** does this pattern cause data inconsistency?
+**Challenge 5 (REQUIRES_NEW Gotcha):** `ServiceA.processOrder()` is `@Transactional`. It calls `ServiceB.logAudit()` which is `@Transactional(propagation = REQUIRES_NEW)`. `processOrder()` throws a `RuntimeException` after `logAudit()` returns. **Who** rolls back? **What** is the audit log state after the failure? **When** does this pattern cause data inconsistency?
 
 <details><summary>Answer</summary>
 
@@ -854,7 +854,7 @@ public record ErrorResponse(String message, List<String> errors) {}
 
 🔬 **Section Challenge — Chapter 6: Building REST APIs**
 
-**Challenge 1 (HTTP Idempotency):** Your `POST /api/orders` creates an order. A network timeout causes the client to retry the same request. **Who** creates duplicate orders? **When** is POST non-idempotent by definition? **What** pattern prevents duplicates?
+**Challenge 6 (HTTP Idempotency):** Your `POST /api/orders` creates an order. A network timeout causes the client to retry the same request. **Who** creates duplicate orders? **When** is POST non-idempotent by definition? **What** pattern prevents duplicates?
 
 <details><summary>Answer</summary>
 
@@ -987,16 +987,6 @@ public class UserService {
 ```
 
 ---
-
-🔬 **Section Challenge — Chapter 7: Security Fundamentals**
-
-**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
-
-<details><summary>Answer</summary>
-
-JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-
-</details>
 
 # 🧪 Tier 9: Testing
 
@@ -1199,7 +1189,7 @@ class UserRepositoryTest {
 
 🔬 **Section Challenge — Chapter 8: Testing Spring Boot Applications**
 
-**Challenge 1 (@MockBean vs @SpyBean):** You use `@MockBean UserRepository userRepo` in a `@SpringBootTest`. **Who** replaces the real bean? **When** does `@SpyBean` prevent you from bypassing real logic? **What** is the precise behavioral difference in a test?
+**Challenge 7 (@MockBean vs @SpyBean):** You use `@MockBean UserRepository userRepo` in a `@SpringBootTest`. **Who** replaces the real bean? **When** does `@SpyBean` prevent you from bypassing real logic? **What** is the precise behavioral difference in a test?
 
 <details><summary>Answer</summary>
 

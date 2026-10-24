@@ -81,7 +81,7 @@ System.out.println(MyApp.class.getClassLoader());
 
 🔬 **Section Challenge — 1. The Three ClassLoaders**
 
-**Challenge 1 (ClassLoader Reasoning):** A class named `com.app.User` loads successfully, but your own `java.lang.String` class is ignored. Which class loader rule explains both outcomes?
+**Challenge 2 (ClassLoader Reasoning):** A class named `com.app.User` loads successfully, but your own `java.lang.String` class is ignored. Which class loader rule explains both outcomes?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -160,7 +160,7 @@ Object plugin = pluginClass.getDeclaredConstructor().newInstance();
 
 🔬 **Section Challenge — 3. Custom ClassLoader — Practical Use**
 
-**Challenge 1 (ClassLoader Design):** A plugin system loads jars from a `/plugins` folder and supports hot reload. Why can keeping references to old plugin objects create a memory leak?
+**Challenge 3 (ClassLoader Design):** A plugin system loads jars from a `/plugins` folder and supports hot reload. Why can keeping references to old plugin objects create a memory leak?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -193,7 +193,7 @@ Class<?> clazz = ClassLoader.getSystemClassLoader()
 
 🔬 **Section Challenge — 4. Class.forName vs ClassLoader.loadClass**
 
-**Challenge 1 (Initialization Reasoning):** `Class.forName("com.mysql.Driver")` triggers driver registration, but `loader.loadClass("com.mysql.Driver")` may not. Why?
+**Challenge 4 (Initialization Reasoning):** `Class.forName("com.mysql.Driver")` triggers driver registration, but `loader.loadClass("com.mysql.Driver")` may not. Why?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -211,7 +211,7 @@ Use the correct API for intent: load metadata when you only need a `Class` objec
 
 🔬 **Section Challenge — PART 2: JDBC — Database Access Internals**
 
-**Challenge 1 (JDBC Reasoning):** Why is `PreparedStatement` safer and often faster than building SQL strings with concatenation?
+**Challenge 5 (JDBC Reasoning):** Why is `PreparedStatement` safer and often faster than building SQL strings with concatenation?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -343,7 +343,7 @@ try (Connection conn = ds.getConnection()) {  // Borrows from pool
 
 🔬 **Section Challenge — 7. Connection Pooling — Why and How**
 
-**Challenge 1 (Production Debug):** A Spring service occasionally hangs under load. Thread dumps show many threads waiting for a JDBC connection. What pool-level questions should you ask?
+**Challenge 6 (Production Debug):** A Spring service occasionally hangs under load. Thread dumps show many threads waiting for a JDBC connection. What pool-level questions should you ask?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -416,23 +416,13 @@ public void transfer(Long from, Long to, BigDecimal amount) {
 
 ---
 
-🔬 **Section Challenge — 9. Transaction Management**
-
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-
-<details><summary>Answer</summary>
-
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-
-</details>
-
 ## PART 3: LOGGING — The Observability Foundation
 
 ---
 
 🔬 **Section Challenge — PART 3: LOGGING — The Observability Foundation**
 
-**Challenge 1 (Observability Reasoning):** A production incident has an error log but no request id, user id, or upstream call timing. Why is that log almost useless?
+**Challenge 7 (Observability Reasoning):** A production incident has an error log but no request id, user id, or upstream call timing. Why is that log almost useless?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -463,7 +453,7 @@ flowchart TD
 
 🔬 **Section Challenge — 10. Logging Landscape**
 
-**Challenge 1 (Logging Architecture):** What is the difference between SLF4J and Logback, and why should application code depend on the facade?
+**Challenge 8 (Logging Architecture):** What is the difference between SLF4J and Logback, and why should application code depend on the facade?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -631,7 +621,7 @@ public class RequestIdFilter implements Filter {
 
 🔬 **Section Challenge — 14. MDC — Mapped Diagnostic Context**
 
-**Challenge 1 (Context Propagation):** You put `requestId` into MDC in a servlet filter, but logs inside an `@Async` method lose the request id. Why?
+**Challenge 9 (Context Propagation):** You put `requestId` into MDC in a servlet filter, but logs inside an `@Async` method lose the request id. Why?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -672,7 +662,7 @@ Fix with a task decorator/context propagator, copy the MDC map into async tasks,
 
 🔬 **Section Challenge — 15. Structured JSON Logging — Production Standard**
 
-**Challenge 1 (Production Search):** Why is `log.info("user " + userId + " failed")` weaker than structured JSON logging in a distributed system?
+**Challenge 10 (Production Search):** Why is `log.info("user " + userId + " failed")` weaker than structured JSON logging in a distributed system?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -741,7 +731,7 @@ Logging Rules:
 
 🔬 **Section Challenge — 17. Quick Reference — All Three Combined**
 
-**Challenge 1 (Integrated Debug):** An API is slow only in production. How do ClassLoader, JDBC, and logging knowledge combine into a debugging path?
+**Challenge 11 (Integrated Debug):** An API is slow only in production. How do ClassLoader, JDBC, and logging knowledge combine into a debugging path?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 

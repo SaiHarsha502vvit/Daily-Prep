@@ -891,16 +891,6 @@ public class PasswordExpiryChecker {
 
 ---
 
-🔬 **Section Challenge — Chapter 3: Password Encoding & Validation**
-
-**Challenge 1 (Reasoning):** Why does indexing a boolean column (e.g., `is_active`) usually result in terrible query performance and a bloated database?
-
-<details><summary>Answer</summary>
-
-Low Cardinality. A B-Tree index is efficient when it can rapidly eliminate large chunks of data (high cardinality, like unique IDs). A boolean column only has two possible values. If 90% of your users are `is_active=true`, the database optimizer will realize the index provides almost no filtering power and will completely ignore it, performing a Full Table Scan anyway. You just wasted disk space and slowed down every `INSERT`/`UPDATE` operation for an index that is never used.
-
-</details>
-
 # 🔒 Section 4: Method — Level Security
 
 ---
@@ -1059,7 +1049,7 @@ public class SecurityService {
 
 🔬 **Section Challenge — Chapter 4: @PreAuthorize, @Secured, and Custom Expressions**
 
-**Challenge 1 (Selection):** A method needs row-level access control: admins can update any user, but normal users can update only their own profile. Should you use `@Secured`, plain `hasRole`, or a custom expression?
+**Challenge 2 (Selection):** A method needs row-level access control: admins can update any user, but normal users can update only their own profile. Should you use `@Secured`, plain `hasRole`, or a custom expression?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 

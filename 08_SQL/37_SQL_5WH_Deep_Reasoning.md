@@ -150,7 +150,7 @@ This is the D in ACID (Durability) — WAL guarantees it.
 
 🔬 **Section Challenge — 4. Transactions & ACID**
 
-**Challenge 1 (Freeze Moment, extended):** Same power-failure scenario as above, but this time the crash happens mid-COMMIT — after the WAL record has been handed to the OS via `write()`, but BEFORE `fsync()` confirms it's actually on physical disk. Is the transaction durable on restart? Why does `fsync()`, specifically, matter here?
+**Challenge 2 (Freeze Moment, extended):** Same power-failure scenario as above, but this time the crash happens mid-COMMIT — after the WAL record has been handed to the OS via `write()`, but BEFORE `fsync()` confirms it's actually on physical disk. Is the transaction durable on restart? Why does `fsync()`, specifically, matter here?
 
 <details><summary>Answer</summary>
 
@@ -210,16 +210,6 @@ When to use which:
 ```
 
 ---
-
-🔬 **Section Challenge — 6. Window Functions**
-
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-
-<details><summary>Answer</summary>
-
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-
-</details>
 
 ## 7. Subqueries vs CTEs vs Temp Tables
 

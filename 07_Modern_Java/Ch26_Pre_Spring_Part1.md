@@ -402,7 +402,7 @@ UserService instance = withRepo.newInstance(repoInstance);
 
 🔬 **Section Challenge — A.5 Constructor Reflection - How Spring Creates Beans**
 
-**Challenge 1 (Trace — Who/When/What):** Spring uses `constructor.newInstance(args)` to create beans. **What** happens if the class has NO no-arg constructor and you don't use `@Autowired`? **Who** throws the exception and when?
+**Challenge 2 (Trace — Who/When/What):** Spring uses `constructor.newInstance(args)` to create beans. **What** happens if the class has NO no-arg constructor and you don't use `@Autowired`? **Who** throws the exception and when?
 
 <details><summary>Answer</summary>
 
@@ -466,7 +466,7 @@ for (Parameter param : params) {
 
 🔬 **Section Challenge — A.6 Annotation Reflection - How Spring Reads Configuration**
 
-**Challenge 1 (Debug — Who/When/What):** You add `@Transactional` to a method. **Who** reads this annotation? **When** during startup? **What** would you see if you called `method.getAnnotation(Transactional.class)` at runtime on the PROXY vs the RAW bean?
+**Challenge 3 (Debug — Who/When/What):** You add `@Transactional` to a method. **Who** reads this annotation? **When** during startup? **What** would you see if you called `method.getAnnotation(Transactional.class)` at runtime on the PROXY vs the RAW bean?
 
 <details><summary>Answer</summary>
 
@@ -507,18 +507,12 @@ for (Type type : genericInterfaces) {
 
 🔬 **Section Challenge — A.7 Generic Type Information - The Advanced Stuff**
 
-**Challenge 1 (Trace — Who/When/What):** `method.getGenericReturnType()` returns `ParameterizedType` for `List<User>`. **What** calls would you chain to extract the actual `User.class` from it? **When** would this fail to give you `User.class`?
+**Challenge 4 (Trace — Who/When/What):** `method.getGenericReturnType()` returns `ParameterizedType` for `List<User>`. **What** calls would you chain to extract the actual `User.class` from it? **When** would this fail to give you `User.class`?
 
 <details><summary>Answer</summary>
 
 **Chain:** `ParameterizedType pt = (ParameterizedType) method.getGenericReturnType();` then `Type typeArg = pt.getActualTypeArguments()[0];` then `Class<?> userClass = (Class<?>) typeArg;` → `User.class`. **When fails?** If the return type is `List<T>` (a TypeVariable, not a concrete class) — `typeArg` is a `TypeVariable`, not a `Class`, and casting to `Class` throws `ClassCastException`. Also fails for nested generics like `List<List<User>>` — `typeArg` is another `ParameterizedType`, not a raw `Class`. Spring's `ResolvableType.forMethodReturnType(method).getGeneric(0).resolve()` handles all these edge cases safely.
 
-</details>
-
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
 </details>
 
 
@@ -660,7 +654,7 @@ public @interface RuntimeAvailable { }
 
 🔬 **Section Challenge — B.1 Creating Custom Annotations**
 
-**Challenge 1 (Design):** Build a custom annotation `@MeasureLatency` for service methods and decide how Spring will discover it. Which retention policy, target, and default attributes are required?
+**Challenge 5 (Design):** Build a custom annotation `@MeasureLatency` for service methods and decide how Spring will discover it. Which retention policy, target, and default attributes are required?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -751,7 +745,7 @@ public class AnnotationProcessor {
 
 🔬 **Section Challenge — B.2 Processing Annotations at Runtime (Spring's Way)**
 
-**Challenge 1 (Trace — Who/When/What):** Spring's `@Component` scan finds all annotated classes. **Who** triggers the scan? **When** in the startup sequence? **What** is the output — what data structure is built?
+**Challenge 6 (Trace — Who/When/What):** Spring's `@Component` scan finds all annotated classes. **Who** triggers the scan? **When** in the startup sequence? **What** is the output — what data structure is built?
 
 <details><summary>Answer</summary>
 
@@ -799,7 +793,7 @@ flowchart TD
 
 🔬 **Section Challenge — B.3 Compile-Time Annotation Processing (Lombok's Way)**
 
-**Challenge 1 (Reasoning — Who/When/What):** Lombok generates code at **compile-time** while Spring reads annotations at **runtime**. **Why** did Lombok choose compile-time? **What** would break if Lombok used runtime reflection instead?
+**Challenge 7 (Reasoning — Who/When/What):** Lombok generates code at **compile-time** while Spring reads annotations at **runtime**. **Why** did Lombok choose compile-time? **What** would break if Lombok used runtime reflection instead?
 
 <details><summary>Answer</summary>
 
@@ -860,7 +854,7 @@ public class BuilderProcessor extends AbstractProcessor {
 
 🔬 **Section Challenge — B.4 Creating a Compile-Time Annotation Processor**
 
-**Challenge 1 (Debug — Who/When/What):** Your annotation processor runs but generates no files. You have `@SupportedAnnotationTypes("com.example.MyAnnotation")`. **When** does the processor run relative to compilation? **What** common mistake causes no output?
+**Challenge 8 (Debug — Who/When/What):** Your annotation processor runs but generates no files. You have `@SupportedAnnotationTypes("com.example.MyAnnotation")`. **When** does the processor run relative to compilation? **What** common mistake causes no output?
 
 <details><summary>Answer</summary>
 
@@ -980,7 +974,7 @@ proxiedService.save(new User());  // Prints: BEGIN TRANSACTION, COMMIT
 
 🔬 **Section Challenge — C.1 JDK Dynamic Proxies - Interface-Based**
 
-**Challenge 1 (Trace — Who/When/What):** When you call a method on a Spring `@Transactional` JDK proxy, trace the exact execution path. **Who** executes first? **What** is the call stack before your real method runs?
+**Challenge 9 (Trace — Who/When/What):** When you call a method on a Spring `@Transactional` JDK proxy, trace the exact execution path. **Who** executes first? **What** is the call stack before your real method runs?
 
 <details><summary>Answer</summary>
 
@@ -1048,7 +1042,7 @@ class TransactionInterceptor implements MethodInterceptor {
 
 🔬 **Section Challenge — C.2 CGLIB Proxies - Class-Based (No Interface Needed)**
 
-**Challenge 1 (Debug — Who/When/What):** You mark your `@Service` class as `final`. Spring throws an exception at startup. **Who** throws it? **What** is the exact reason CGLIB can't proxy a `final` class?
+**Challenge 10 (Debug — Who/When/What):** You mark your `@Service` class as `final`. Spring throws an exception at startup. **Who** throws it? **What** is the exact reason CGLIB can't proxy a `final` class?
 
 <details><summary>Answer</summary>
 
@@ -1076,7 +1070,7 @@ class TransactionInterceptor implements MethodInterceptor {
 
 🔬 **Section Challenge — C.3 JDK vs CGLIB - When Spring Uses Which**
 
-**Challenge 1 (Reasoning — Who/When/What):** Spring Boot 2.x changed the default proxy strategy to **always use CGLIB** even when interfaces exist. **Why** was this change made? **What** problem did it fix?
+**Challenge 11 (Reasoning — Who/When/What):** Spring Boot 2.x changed the default proxy strategy to **always use CGLIB** even when interfaces exist. **Why** was this change made? **What** problem did it fix?
 
 <details><summary>Answer</summary>
 
@@ -1161,16 +1155,6 @@ public class UserServiceB {
 }
 ```
 
-🔬 **Section Challenge — C.4 The Famous @Transactional Self-Invocation Bug**
-
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-
-<details><summary>Answer</summary>
-
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-
-</details>
-
 ## C.5 Why @Transactional Doesn't Work on Private Methods
 
 ```java
@@ -1206,16 +1190,6 @@ class UserService$CglibProxy extends UserService {
 **Result:** private methods bypass the proxy entirely.
 
 ---
-
-🔬 **Section Challenge — C.5 Why @Transactional Doesn't Work on Private Methods**
-
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-
-<details><summary>Answer</summary>
-
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-
-</details>
 
 # 🌱 Section D: Servlet API — What Spring Boot Hides
 
@@ -1339,7 +1313,7 @@ public void debugRequest(HttpServletRequest request) {
 
 🔬 **Section Challenge — D.2 HttpServletRequest - Everything About the Request**
 
-**Challenge 1 (Debug — Who/When/What):** You store a user object via `request.setAttribute("user", user)`. **Who** can read this attribute? **When** is it garbage collected? **What** happens if you try to read it in a different thread?
+**Challenge 12 (Debug — Who/When/What):** You store a user object via `request.setAttribute("user", user)`. **Who** can read this attribute? **When** is it garbage collected? **What** happens if you try to read it in a different thread?
 
 <details><summary>Answer</summary>
 
@@ -1390,7 +1364,7 @@ public void customResponse(HttpServletResponse response) throws IOException {
 
 🔬 **Section Challenge — D.3 HttpServletResponse - Controlling the Response**
 
-**Challenge 1 (Trace — Who/When/What):** You call `response.setHeader("X-Custom", "value")` AFTER calling `response.getWriter().write("data")`. **What** happens? **When** is the response "committed"?
+**Challenge 13 (Trace — Who/When/What):** You call `response.setHeader("X-Custom", "value")` AFTER calling `response.getWriter().write("data")`. **What** happens? **When** is the response "committed"?
 
 <details><summary>Answer</summary>
 
@@ -1458,7 +1432,7 @@ public class RequestLoggingFilter implements Filter {
 
 🔬 **Section Challenge — D.4 Filters - The Pipeline Before Controllers**
 
-**Challenge 1 (Debug — Who/When/What):** You have a `LoggingFilter` and an `AuthFilter`. Logging must run BEFORE auth so every request — including rejected ones — is logged. **Who** controls the order? **What** annotation/config sets it?
+**Challenge 14 (Debug — Who/When/What):** You have a `LoggingFilter` and an `AuthFilter`. Logging must run BEFORE auth so every request — including rejected ones — is logged. **Who** controls the order? **What** annotation/config sets it?
 
 <details><summary>Answer</summary>
 
@@ -1516,7 +1490,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 🔬 **Section Challenge — D.5 Understanding DispatcherServlet**
 
-**Challenge 1 (Trace — Who/When/What):** A `POST /api/users` request arrives. Trace the path through `DispatcherServlet`. **Who** handles each step? **What** decides which controller method is called?
+**Challenge 15 (Trace — Who/When/What):** A `POST /api/users` request arrives. Trace the path through `DispatcherServlet`. **Who** handles each step? **What** decides which controller method is called?
 
 <details><summary>Answer</summary>
 
@@ -1700,7 +1674,7 @@ public class MoneySerializer extends JsonSerializer<BigDecimal> {
 
 🔬 **Section Challenge — E.3 Custom Serializers & Deserializers**
 
-**Challenge 1 (Design):** A finance API must serialize `BigDecimal amount` as `"INR 123.45"` for new clients but still deserialize numeric input from legacy clients. Where should the custom serializer/deserializer live, and what edge cases must it handle?
+**Challenge 16 (Design):** A finance API must serialize `BigDecimal amount` as `"INR 123.45"` for new clients but still deserialize numeric input from legacy clients. Where should the custom serializer/deserializer live, and what edge cases must it handle?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 

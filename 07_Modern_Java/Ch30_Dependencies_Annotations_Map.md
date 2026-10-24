@@ -147,16 +147,6 @@ Spring Boot Auto-Configuration. The starter POM pulls in the Tomcat binaries and
 
 ---
 
-🔬 **Section Challenge — 3. Quick Reference: "I Need To Do X — Which Dependency?"**
-
-**Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
-
-<details><summary>Answer</summary>
-
-Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
-
-</details>
-
 ## 4. Annotation Categories — Visual Guide
 
 CATEGORY 1: BEAN CREATION (Spring Core)

@@ -408,7 +408,7 @@ public class UserController {
 
 🔬 **Section Challenge — Chapter 4: Response Handling**
 
-**Challenge 1 (Reasoning):** Why is returning a generic `Map<String, Object>` or a plain `ResponseEntity<?>` from a `@RestController` considered an anti-pattern for REST APIs?
+**Challenge 2 (Reasoning):** Why is returning a generic `Map<String, Object>` or a plain `ResponseEntity<?>` from a `@RestController` considered an anti-pattern for REST APIs?
 
 <details><summary>Answer</summary>
 
@@ -860,16 +860,6 @@ public class GlobalExceptionHandler {
 
 ---
 
-🔬 **Section Challenge — Chapter 6: Exception Handling**
-
-**Challenge 1 (Reasoning):** Why is returning a generic `Map<String, Object>` or a plain `ResponseEntity<?>` from a `@RestController` considered an anti-pattern for REST APIs?
-
-<details><summary>Answer</summary>
-
-Loss of Type Safety and API Documentation. A generic `Map` completely destroys type safety; the compiler cannot verify what fields are being sent. Furthermore, tools like Swagger/OpenAPI rely on strongly typed DTO classes (e.g., `UserResponseDTO`) to generate API documentation. If you return a `Map`, the API documentation will just show an empty JSON object `{}`, making it impossible for frontend developers to know the contract without executing the endpoint.
-
-</details>
-
 ## Chapter 7: API Versioning
 
 ```java
@@ -1005,16 +995,6 @@ public class UserController {
 ```
 
 ---
-
-🔬 **Section Challenge — Chapter 7: API Versioning**
-
-**Challenge 1 (Reasoning):** Why is returning a generic `Map<String, Object>` or a plain `ResponseEntity<?>` from a `@RestController` considered an anti-pattern for REST APIs?
-
-<details><summary>Answer</summary>
-
-Loss of Type Safety and API Documentation. A generic `Map` completely destroys type safety; the compiler cannot verify what fields are being sent. Furthermore, tools like Swagger/OpenAPI rely on strongly typed DTO classes (e.g., `UserResponseDTO`) to generate API documentation. If you return a `Map`, the API documentation will just show an empty JSON object `{}`, making it impossible for frontend developers to know the contract without executing the endpoint.
-
-</details>
 
 ## Chapter 8: Controller Best Practices
 

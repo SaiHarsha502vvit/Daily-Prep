@@ -113,7 +113,7 @@ int total = orders.stream()
 
 🔬 **Section Challenge — What Problem Does Functional Programming Solve?**
 
-**Challenge 1 (Concurrency Safety):** The section shows an imperative `total += o.getAmount()` loop vs. a functional `mapToInt(...).sum()`. **Who** is the safety threat in the imperative version? **When** does the race condition manifest? **What** makes the stream version safe without explicit `synchronized`?
+**Challenge 2 (Concurrency Safety):** The section shows an imperative `total += o.getAmount()` loop vs. a functional `mapToInt(...).sum()`. **Who** is the safety threat in the imperative version? **When** does the race condition manifest? **What** makes the stream version safe without explicit `synchronized`?
 
 <details><summary>Answer</summary>
 
@@ -133,7 +133,7 @@ int total = orders.stream()
 
 🔬 **Section Challenge — Why Learn Functional Programming?**
 
-**Challenge 1 (Trade-off Analysis):** The section lists 5 benefits of FP. **What** is the ONE scenario where `parallelStream()` is actually SLOWER than a regular sequential stream? **Who** determines whether parallelization helps? **When** should you avoid `.parallelStream()`?
+**Challenge 3 (Trade-off Analysis):** The section lists 5 benefits of FP. **What** is the ONE scenario where `parallelStream()` is actually SLOWER than a regular sequential stream? **Who** determines whether parallelization helps? **When** should you avoid `.parallelStream()`?
 
 <details><summary>Answer</summary>
 
@@ -161,8 +161,6 @@ int total = orders.stream()
 
 ---
 
-🔬 **Section Challenge — When to Use Functional vs Imperative**
-
 > **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
 
 <details><summary>Answer</summary>
@@ -183,7 +181,7 @@ Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for tie
 
 🔬 **Section Challenge — Difficulties in Learning FP**
 
-**Challenge 1 (Debug Trace):** You're debugging a stream pipeline but `peek()` shows no output. The stream runs silently and returns nothing. **Who** is responsible for triggering execution? **When** does `peek()` actually execute? **What** is the one thing missing from the pipeline that would make it work?
+**Challenge 4 (Debug Trace):** You're debugging a stream pipeline but `peek()` shows no output. The stream runs silently and returns nothing. **Who** is responsible for triggering execution? **When** does `peek()` actually execute? **What** is the one thing missing from the pipeline that would make it work?
 
 <details><summary>Answer</summary>
 
@@ -269,7 +267,7 @@ List<Integer> result = numbers.stream()
 
 🔬 **Section Challenge — Core Principles**
 
-**Challenge 1 (Purity Test):** Label each of these 4 Java functions as PURE or IMPURE, and justify why: (A) `int add(int a, int b) { return a + b; }` (B) `void save(User u) { db.persist(u); }` (C) `String format(String name) { return "Hello, " + name; }` (D) `int nextId() { return ++counter; }` (where `counter` is a class field)
+**Challenge 5 (Purity Test):** Label each of these 4 Java functions as PURE or IMPURE, and justify why: (A) `int add(int a, int b) { return a + b; }` (B) `void save(User u) { db.persist(u); }` (C) `String format(String name) { return "Hello, " + name; }` (D) `int nextId() { return ++counter; }` (where `counter` is a class field)
 
 <details><summary>Answer</summary>
 
@@ -404,7 +402,7 @@ square.apply(5);  // 25
 
 🔬 **Section Challenge — Built-in Functional Interfaces**
 
-**Challenge 1 (Interface Selection):** You need to: (A) Check if a user is an admin. (B) Get the current timestamp without any input. (C) Transform a user ID string to a `User` object. (D) Log a user to the console without returning anything. **What** functional interface fits each case, and **what** is the exact generic signature?
+**Challenge 6 (Interface Selection):** You need to: (A) Check if a user is an admin. (B) Get the current timestamp without any input. (C) Transform a user ID string to a `User` object. (D) Log a user to the console without returning anything. **What** functional interface fits each case, and **what** is the exact generic signature?
 
 <details><summary>Answer</summary>
 
@@ -436,7 +434,7 @@ isNotPositive.test(-5);  // true
 
 🔬 **Section Challenge — Chaining Predicates**
 
-**Challenge 1 (Short-Circuit Reasoning):** `Predicate.and(other)` chains two predicates. **Who** evaluates second when first is false? **When** does `or()` skip evaluation of its second predicate? **What** is the functional equivalent of Java's `&&` short-circuit vs. `&` eager-evaluation in predicate terms?
+**Challenge 7 (Short-Circuit Reasoning):** `Predicate.and(other)` chains two predicates. **Who** evaluates second when first is false? **When** does `or()` skip evaluation of its second predicate? **What** is the functional equivalent of Java's `&&` short-circuit vs. `&` eager-evaluation in predicate terms?
 
 <details><summary>Answer</summary>
 
@@ -460,24 +458,6 @@ List   → stream() → filter, map   → collect     → List
 - Streams are **NOT** data structures (they don't store data)
 - Streams are **lazy** (operations only run when terminal op is called)
 - Streams can only be consumed **once**
-
-🔬 **Section Challenge — What is a Stream?**
-
-**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-
-<details><summary>Answer</summary>
-
-Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
-
-</details>
-
-**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-
-<details><summary>Answer</summary>
-
-`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-
-</details>
 
 ### Creating Streams
 
@@ -504,7 +484,7 @@ IntStream rangeClosed = IntStream.rangeClosed(1, 10);  // 1 to 10
 
 🔬 **Section Challenge — Creating Streams**
 
-**Challenge 1 (Stream Source Types):** `Arrays.stream(intArr)` vs `Stream.of(intArr)` for `int[]`. **Who** returns an `IntStream`? **When** does `Stream.of(intArr)` give you `Stream<int[]>` (one element)? **What** is the correct way to get a range stream `[0, n)`?
+**Challenge 8 (Stream Source Types):** `Arrays.stream(intArr)` vs `Stream.of(intArr)` for `int[]`. **Who** returns an `IntStream`? **When** does `Stream.of(intArr)` give you `Stream<int[]>` (one element)? **What** is the correct way to get a range stream `[0, n)`?
 
 <details><summary>Answer</summary>
 
@@ -563,7 +543,7 @@ numbers.stream()
 
 🔬 **Section Challenge — Intermediate Operations (Transform Stream)**
 
-**Challenge 1 (flatMap for Nested Collections):** You have `List<List<String>> nested`. **Who** flattens it? **When** is `flatMap` necessary vs `map`? **What** is the difference between `stream().flatMap(Collection::stream)` and `stream().map(List::stream)`?
+**Challenge 9 (flatMap for Nested Collections):** You have `List<List<String>> nested`. **Who** flattens it? **When** is `flatMap` necessary vs `map`? **What** is the difference between `stream().flatMap(Collection::stream)` and `stream().map(List::stream)`?
 
 <details><summary>Answer</summary>
 
@@ -623,7 +603,7 @@ Integer[] arr = numbers.stream().toArray(Integer[]::new);
 
 🔬 **Section Challenge — Terminal Operations (Produce Result)**
 
-**Challenge 1 (Reduce Deep Dive):** `numbers.stream().reduce(0, (a, b) -> a + b)` sums all numbers. **What** is the `0` called and why does it matter? **Who** gets called first? **What** breaks if you use `reduce(Integer::sum)` (no identity) on an empty stream?
+**Challenge 10 (Reduce Deep Dive):** `numbers.stream().reduce(0, (a, b) -> a + b)` sums all numbers. **What** is the `0` called and why does it matter? **Who** gets called first? **What** breaks if you use `reduce(Integer::sum)` (no identity) on an empty stream?
 
 <details><summary>Answer</summary>
 
@@ -668,7 +648,7 @@ Map<String, Long> countByCity = people.stream()
 
 🔬 **Section Challenge — Pattern 2: Grouping**
 
-**Challenge 1 (Grouping Internals):** `Collectors.groupingBy(Person::getCity)` returns a `Map<String, List<Person>>`. **Who** determines the insertion order of groups? **What** downstream collector makes it return `Map<String, Long>` (count per city)? **When** would you use `groupingBy(getCity, TreeMap::new, counting())` instead?
+**Challenge 11 (Grouping Internals):** `Collectors.groupingBy(Person::getCity)` returns a `Map<String, List<Person>>`. **Who** determines the insertion order of groups? **What** downstream collector makes it return `Map<String, Long>` (count per city)? **When** would you use `groupingBy(getCity, TreeMap::new, counting())` instead?
 
 <details><summary>Answer</summary>
 
@@ -689,7 +669,7 @@ Map<Boolean, List<Person>> adultOrNot = people.stream()
 
 🔬 **Section Challenge — Pattern 3: Partitioning**
 
-**Challenge 1 (Partitioning vs Grouping):** `partitioningBy` always returns `Map<Boolean, List<T>>`. **What** is the ONE advantage of `partitioningBy` over `groupingBy(x -> predicate)` even though both split into two groups? **When** would you choose `groupingBy` with a boolean expression over `partitioningBy`?
+**Challenge 12 (Partitioning vs Grouping):** `partitioningBy` always returns `Map<Boolean, List<T>>`. **What** is the ONE advantage of `partitioningBy` over `groupingBy(x -> predicate)` even though both split into two groups? **When** would you choose `groupingBy` with a boolean expression over `partitioningBy`?
 
 <details><summary>Answer</summary>
 
@@ -715,7 +695,7 @@ String withPrefixSuffix = names.stream()
 
 🔬 **Section Challenge — Pattern 4: Joining Strings**
 
-**Challenge 1 (Trace — Who/When/What):** `Collectors.joining(", ", "[", "]")` on an empty stream \u2014 **who** produces the result? **What** is the output? **When** does this differ from `String.join()`?
+**Challenge 13 (Trace — Who/When/What):** `Collectors.joining(", ", "[", "]")` on an empty stream \u2014 **who** produces the result? **What** is the output? **When** does this differ from `String.join()`?
 
 <details><summary>Answer</summary>
 
@@ -778,7 +758,7 @@ Function<Integer, int[]> arrayMaker = int[]::new;
 
 🔬 **Section Challenge — The Four Types**
 
-**Challenge 1 (Debug — Who/When/What):** `list.sort(String::compareToIgnoreCase)` — which of the four method reference types is this? **Who** captures the comparison target? **What** does it compile to as a lambda?
+**Challenge 14 (Debug — Who/When/What):** `list.sort(String::compareToIgnoreCase)` — which of the four method reference types is this? **Who** captures the comparison target? **What** does it compile to as a lambda?
 
 <details><summary>Answer</summary>
 
@@ -864,7 +844,7 @@ Optional<String> result = optional
 
 🔬 **Section Challenge — Optional to the Rescue**
 
-**Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
+**Challenge 15 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
 
 <details><summary>Answer</summary>
 
@@ -893,7 +873,7 @@ int max = numbers.stream()
 
 🔬 **Section Challenge — Example 1: Find Max Element**
 
-**Challenge 1 (Stream reduce vs max Terminal):** `list.stream().reduce(Integer.MIN_VALUE, Integer::max)` vs `list.stream().max(Comparator.naturalOrder()).orElse(Integer.MIN_VALUE)`. **Who** is more expressive? **When** does `reduce` return a different result than `max` for an EMPTY stream? **What** is the type difference?
+**Challenge 16 (Stream reduce vs max Terminal):** `list.stream().reduce(Integer.MIN_VALUE, Integer::max)` vs `list.stream().max(Comparator.naturalOrder()).orElse(Integer.MIN_VALUE)`. **Who** is more expressive? **When** does `reduce` return a different result than `max` for an EMPTY stream? **What** is the type difference?
 
 <details><summary>Answer</summary>
 
@@ -1068,7 +1048,7 @@ Function<Integer, Integer> lambda = x -> x * 2;  // Explicit type
 
 🔬 **Section Challenge — A. LOCAL VARIABLE TYPE INFERENCE (var) - Java 10**
 
-**Challenge 1 (Reasoning — Who/When/What):** `var list = new ArrayList<>()` — **who** infers the type? **What** type is inferred? **When** at compile time vs runtime?
+**Challenge 17 (Reasoning — Who/When/What):** `var list = new ArrayList<>()` — **who** infers the type? **What** type is inferred? **When** at compile time vs runtime?
 
 <details><summary>Answer</summary>
 

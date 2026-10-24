@@ -129,15 +129,7 @@ private void grow(int minCapacity) {
 
 🔬 **Section Challenge — 2. ArrayList Internals — Dynamic Array**
 
-**Challenge 1 (Reasoning):** `ArrayList.remove(Object o)` vs `ArrayList.remove(int index)` — you call `list.remove(1)`. Which overload is called and why?
-
-<details><summary>Answer</summary>
-
-`remove(int index)` — `1` is an `int` literal, not an `Integer`. Java resolves to the exact-match primitive overload first. To call `remove(Object)`, use `list.remove(Integer.valueOf(1))` or `list.remove((Integer)1)`. This is a classic Java gotcha that changes behavior silently.
-
-</details>
-
-**Challenge 2 (Design):** You need to frequently add/remove from both ends of a list AND access by index. Which collection?
+**Challenge 1 (Design):** You need to frequently add/remove from both ends of a list AND access by index. Which collection?
 
 <details><summary>Answer</summary>
 
@@ -184,8 +176,6 @@ Use LinkedList ONLY for: Queue operations (addFirst/removeLast)
 ```
 
 ---
-
-🔬 **Section Challenge — 3. LinkedList Internals — Doubly-Linked Nodes**
 
 **Challenge (Reasoning):** Java's `LinkedList` is almost never used in production Java code. `ArrayList` wins even for use cases that seem to favor LinkedList. Explain why, with concrete performance reasoning.
 
@@ -347,7 +337,7 @@ class Employee {
 
 🔬 **Section Challenge — 4. HashMap Internals — The Deep Dive**
 
-**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+**Challenge 2 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
 
 <details><summary>Answer</summary>
 
@@ -355,7 +345,7 @@ Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 
 
 </details>
 
-**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+**Challenge 3 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
 
 <details><summary>Answer</summary>
 
@@ -363,7 +353,7 @@ Both objects land in DIFFERENT buckets (different hashCodes → different bucket
 
 </details>
 
-**Challenge 3 (Architecture & GOOS Testing):** Java 8 introduced Red-Black treeification for HashMap buckets exceeding 8 nodes to mitigate Hash-Flooding DoS attacks. According to the principles of _Growing Object-Oriented Software_ (GOOS), testing internal thresholds like `TREEIFY_THRESHOLD = 8` breaks encapsulation. How would you design a robust test suite for a custom HashTable to verify worst-case collision mitigation without directly inspecting the internal node types?
+**Challenge 4 (Architecture & GOOS Testing):** Java 8 introduced Red-Black treeification for HashMap buckets exceeding 8 nodes to mitigate Hash-Flooding DoS attacks. According to the principles of _Growing Object-Oriented Software_ (GOOS), testing internal thresholds like `TREEIFY_THRESHOLD = 8` breaks encapsulation. How would you design a robust test suite for a custom HashTable to verify worst-case collision mitigation without directly inspecting the internal node types?
 
 <details><summary>Answer</summary>
 
@@ -431,15 +421,7 @@ map.tailMap(4);           // {4=four, 5=five, 8=eight} (keys ≥ 4)
 
 🔬 **Section Challenge — 5. TreeMap Internals — Red-Black Tree**
 
-**Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
-
-<details><summary>Answer</summary>
-
-`TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
-
-</details>
-
-**Challenge 2 (Algorithmic Diagnostics):** You insert sequentially strictly increasing elements (1, 2, 3, 4, 5, 6, 7) into a standard Unbalanced BST and a Red-Black Tree (`TreeMap`). Explain exactly how the Red-Black Tree's invariant prevents the O(N) linked-list degeneration that destroys the Unbalanced BST.
+**Challenge 5 (Algorithmic Diagnostics):** You insert sequentially strictly increasing elements (1, 2, 3, 4, 5, 6, 7) into a standard Unbalanced BST and a Red-Black Tree (`TreeMap`). Explain exactly how the Red-Black Tree's invariant prevents the O(N) linked-list degeneration that destroys the Unbalanced BST.
 
 <details><summary>Answer</summary>
 
@@ -503,7 +485,7 @@ cache.put("d", "4");   // Removes "b" (least recently used)
 
 🔬 **Section Challenge — 6. LinkedHashMap — Insertion/Access Order**
 
-**Challenge 1 (Design):** Implement a simple LRU cache using `LinkedHashMap` in 5 lines.
+**Challenge 6 (Design):** Implement a simple LRU cache using `LinkedHashMap` in 5 lines.
 
 <details><summary>Answer</summary>
 
@@ -547,8 +529,6 @@ Map<K,V> lru = new LinkedHashMap<K,V>(capacity, 0.75f, true) { // accessOrder=tr
 ```
 
 ---
-
-🔬 **Section Challenge — 7. HashSet — HashMap in Disguise**
 
 **Challenge (Reasoning):** `new HashSet<>(list)` removes duplicates. What happens if the objects in the list have a broken `hashCode()` that always returns 42?
 
@@ -607,24 +587,6 @@ map.putIfAbsent("key", value);    // Atomic check-and-put
 ```
 
 ---
-
-🔬 **Section Challenge — 8. ConcurrentHashMap — Thread-Safe Without Global Locks**
-
-**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-
-<details><summary>Answer</summary>
-
-Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-
-<details><summary>Answer</summary>
-
-Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-
-</details>
 
 ## 9. PriorityQueue — Binary Heap
 
@@ -686,8 +648,6 @@ for (int num : array) {
 ```
 
 ---
-
-🔬 **Section Challenge — 9. PriorityQueue — Binary Heap**
 
 **Challenge (Design):** PriorityQueue.contains() is O(N) while add/poll are O(log N). You need frequent `contains()` checks alongside priority ordering. How do you solve this?
 
@@ -804,8 +764,6 @@ flowchart TD
 ---
 
 **Next Chapter**: [Maven & Gradle Build Internals →](Ch14_Maven_Gradle.md)
-
-🔬 **Section Challenge — 12. Choosing the Right Collection**
 
 **Challenge (Design Decision):** You're building a leaderboard: track top-10 players by score, fast score updates, fast top-10 retrieval. Which collection(s)?
 

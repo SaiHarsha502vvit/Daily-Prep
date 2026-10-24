@@ -156,7 +156,7 @@ public class LoggingAspect {
 
 🔬 **Section Challenge — Chapter 2: AOP Terminology**
 
-**Challenge 1 (Terminology Trace — Who/When/What):** Map these 5 AOP terms to a Spring logging example that logs every public service method's execution time. **Who** is the `Aspect`, **what** is the `JoinPoint`, **what** is the `Pointcut`, **when** does the `Advice` run, and **what** is the `Weaving` step?
+**Challenge 2 (Terminology Trace — Who/When/What):** Map these 5 AOP terms to a Spring logging example that logs every public service method's execution time. **Who** is the `Aspect`, **what** is the `JoinPoint`, **what** is the `Pointcut`, **when** does the `Advice` run, and **what** is the `Weaving` step?
 
 <details><summary>Answer</summary>
 
@@ -328,15 +328,7 @@ flowchart TD
 
 🔬 **Section Challenge — Chapter 3: Advice Types**
 
-**Challenge 1 (Trace — Who/When/What):** You have `@Around` and `@Before` advice on the same method. **Who** executes first? **When** does `@Around` call `proceed()`? **What** happens if `@Around` never calls `proceed()`?\n\n<details><summary>Answer</summary>\n\n**Who executes first?** `@Around` always wraps `@Before`/`@After`. Call stack: Around (enter) → Before → Method → After → Around (exit). **When `proceed()` called?** `proceed()` is the pivot point — everything BEFORE `proceed()` is pre-processing, everything AFTER is post-processing. `@Before` advice runs when `proceed()` is called. **If `proceed()` never called?** The target method and ALL remaining advice (`@Before`, `@After`, `@AfterReturning`) are SKIPPED. The `@Around` advice effectively intercepts and replaces the method call. This is intentional for caching (`@Cacheable` checks cache, returns cached value without calling proceed if cache hit), circuit breakers (returns fallback without calling the actual method).\n\n</details>
-
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-
-</details>
+**Challenge 3 (Trace — Who/When/What):** You have `@Around` and `@Before` advice on the same method. **Who** executes first? **When** does `@Around` call `proceed()`? **What** happens if `@Around` never calls `proceed()`?\n\n<details><summary>Answer</summary>\n\n**Who executes first?** `@Around` always wraps `@Before`/`@After`. Call stack: Around (enter) → Before → Method → After → Around (exit). **When `proceed()` called?** `proceed()` is the pivot point — everything BEFORE `proceed()` is pre-processing, everything AFTER is post-processing. `@Before` advice runs when `proceed()` is called. **If `proceed()` never called?** The target method and ALL remaining advice (`@Before`, `@After`, `@AfterReturning`) are SKIPPED. The `@Around` advice effectively intercepts and replaces the method call. This is intentional for caching (`@Cacheable` checks cache, returns cached value without calling proceed if cache hit), circuit breakers (returns fallback without calling the actual method).\n\n</details>
 
 ## Chapter 4: Pointcut Expressions
 
@@ -477,7 +469,7 @@ public class PointcutExamplesAspect {
 
 🔬 **Section Challenge — Chapter 4: Pointcut Expressions**
 
-**Challenge 1 (Expression Debug):** You write pointcut `"execution(* com.app.service.*.*(..))"` to intercept all service methods. But your `OrderServiceImpl` in `com.app.service.impl` is NOT intercepted. **Who** is the scope that excludes it? **What** is the corrected expression, and **what** is the difference between `.*.` and `..*` in pointcut syntax?
+**Challenge 4 (Expression Debug):** You write pointcut `"execution(* com.app.service.*.*(..))"` to intercept all service methods. But your `OrderServiceImpl` in `com.app.service.impl` is NOT intercepted. **Who** is the scope that excludes it? **What** is the corrected expression, and **what** is the difference between `.*.` and `..*` in pointcut syntax?
 
 <details><summary>Answer</summary>
 
@@ -632,7 +624,7 @@ public class UserService {
 
 🔬 **Section Challenge — Chapter 5: How Spring AOP Works (Proxy Magic)**
 
-**Challenge 1 (Proxy Debug — Who/When/What):** You have `@Transactional UserService.save()`. Inside `save()`, you call `this.validate()`. `validate()` has a `@Cacheable` annotation. The cache is NEVER populated. **Who** is `this`? **When** is the proxy bypassed? **What** is the fix?
+**Challenge 5 (Proxy Debug — Who/When/What):** You have `@Transactional UserService.save()`. Inside `save()`, you call `this.validate()`. `validate()` has a `@Cacheable` annotation. The cache is NEVER populated. **Who** is `this`? **When** is the proxy bypassed? **What** is the fix?
 
 <details><summary>Answer</summary>
 
@@ -928,7 +920,7 @@ spring:
 
 🔬 **Section Challenge — Chapter 7: The Magic of @SpringBootApplication**
 
-**Challenge 1 (Annotation Internals):** `@SpringBootApplication` is a meta-annotation composed of 3 annotations. **What** are they, **who** triggers auto-configuration, and **when** does `@ConditionalOnMissingBean` fire to prevent double-registering a DataSource?
+**Challenge 6 (Annotation Internals):** `@SpringBootApplication` is a meta-annotation composed of 3 annotations. **What** are they, **who** triggers auto-configuration, and **when** does `@ConditionalOnMissingBean` fire to prevent double-registering a DataSource?
 
 <details><summary>Answer</summary>
 
@@ -1082,7 +1074,7 @@ LOADING ORDER (later overrides earlier):
 
 🔬 **Section Challenge — Chapter 9: Profiles in Spring Boot**
 
-**Challenge 1 (Profile Debug — Who/When/What):** You have `application-dev.yml` with `spring.datasource.url=jdbc:h2:mem:testdb` and `application-prod.yml` with the real PostgreSQL URL. You deploy to production but it's connecting to H2. **Who** determines the active profile? **When** is it resolved? **What** are the 4 ways to set the active profile in order of precedence?
+**Challenge 7 (Profile Debug — Who/When/What):** You have `application-dev.yml` with `spring.datasource.url=jdbc:h2:mem:testdb` and `application-prod.yml` with the real PostgreSQL URL. You deploy to production but it's connecting to H2. **Who** determines the active profile? **When** is it resolved? **What** are the 4 ways to set the active profile in order of precedence?
 
 <details><summary>Answer</summary>
 

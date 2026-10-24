@@ -218,7 +218,7 @@ stream.forEach(System.out::println);
 
 🔬 **Section Challenge — 2. Stream vs Collection: They Are NOT The Same Thing**
 
-**Challenge 1 (Identity Comparison):** `list.stream() == list.stream()` is always `false`. **Who** creates a new stream each call? **When** can you reuse a stream? **What** error do you get if you try to use a stream twice?
+**Challenge 3 (Identity Comparison):** `list.stream() == list.stream()` is always `false`. **Who** creates a new stream each call? **When** can you reuse a stream? **What** error do you get if you try to use a stream twice?
 
 <details><summary>Answer</summary>
 
@@ -226,7 +226,7 @@ stream.forEach(System.out::println);
 
 </details>
 
-**Challenge 2 (Bug Hunt):** A service method stores `Stream<Order>` in a field so multiple methods can read it later. Why is this a design bug, and what should be stored instead?
+**Challenge 4 (Bug Hunt):** A service method stores `Stream<Order>` in a field so multiple methods can read it later. Why is this a design bug, and what should be stored instead?
 
 <details><summary>Answer</summary>
 
@@ -297,7 +297,7 @@ list.stream().findFirst();              // No buffering needed
 
 🔬 **Section Challenge — 3. Intermediate vs Terminal: When Code Actually Runs**
 
-**Challenge 1 (Reasoning):** Why does `Stream.of(1, 2, 3).map(i -> { print(i); return i; })` print absolutely nothing when executed?
+**Challenge 5 (Reasoning):** Why does `Stream.of(1, 2, 3).map(i -> { print(i); return i; })` print absolutely nothing when executed?
 
 <details><summary>Answer</summary>
 
@@ -387,7 +387,7 @@ customers.stream()
 
 🔬 **Section Challenge — 4. map() vs flatMap(): The Box-Inside-Box Problem**
 
-**Challenge 1 (Unwrapping Depth):** `Stream<Optional<String>>` vs. `Stream<String>`. **Who** adds the outer Optional layer in `list.stream().map(repo::findById)`? **What** flatMap operation unwraps it? **When** would you use `map` vs `flatMap` for Optional in a stream pipeline?
+**Challenge 6 (Unwrapping Depth):** `Stream<Optional<String>>` vs. `Stream<String>`. **Who** adds the outer Optional layer in `list.stream().map(repo::findById)`? **What** flatMap operation unwraps it? **When** would you use `map` vs `flatMap` for Optional in a stream pipeline?
 
 <details><summary>Answer</summary>
 
@@ -480,7 +480,7 @@ int totalLength = words.stream()
 
 🔬 **Section Challenge — 5. reduce() Internals: The Accumulator Pattern**
 
-**Challenge 1 (Identity Violation):** `reduce(1, (a, b) -> a * b)` multiplies all elements. **What** is the identity element for multiplication? **When** would `reduce(0, Integer::sum)` produce wrong results for a concatenation use case? **What** is the identity element for string concatenation?
+**Challenge 7 (Identity Violation):** `reduce(1, (a, b) -> a * b)` multiplies all elements. **What** is the identity element for multiplication? **When** would `reduce(0, Integer::sum)` produce wrong results for a concatenation use case? **What** is the identity element for string concatenation?
 
 <details><summary>Answer</summary>
 
@@ -582,7 +582,7 @@ Map<String, Long> countByDept = employees.stream()
 
 🔬 **Section Challenge — 6. Collector Internals: What Collectors.toList() Actually Does**
 
-**Challenge 1 (Thread Safety of Collectors):** `Collectors.toList()` is NOT thread-safe internally. **Who** makes it safe in a parallel stream? **When** would using a non-thread-safe custom collector in `parallelStream()` cause data corruption? **What** Collector characteristic signals that it's safe for parallel use?
+**Challenge 8 (Thread Safety of Collectors):** `Collectors.toList()` is NOT thread-safe internally. **Who** makes it safe in a parallel stream? **When** would using a non-thread-safe custom collector in `parallelStream()` cause data corruption? **What** Collector characteristic signals that it's safe for parallel use?
 
 <details><summary>Answer</summary>
 
@@ -684,7 +684,7 @@ list.parallelStream()
 
 🔬 **Section Challenge — 7. parallelStream() Traps: Where It HURTS Performance**
 
-**Challenge 1 (ForkJoinPool Starvation):** Your app uses `list.parallelStream()` inside a Spring `@Service` method. **Who** runs the parallel tasks? **When** does this cause deadlocks or starvation in a web server? **What** is the fix for isolation?
+**Challenge 9 (ForkJoinPool Starvation):** Your app uses `list.parallelStream()` inside a Spring `@Service` method. **Who** runs the parallel tasks? **When** does this cause deadlocks or starvation in a web server? **What** is the fix for isolation?
 
 <details><summary>Answer</summary>
 
@@ -692,7 +692,7 @@ list.parallelStream()
 
 </details>
 
-**Challenge 2 (Bug Hunt):** `parallelStream().forEach(result::add)` writes into a shared `ArrayList`. Why can this lose data even when the stream completes without throwing?
+**Challenge 10 (Bug Hunt):** `parallelStream().forEach(result::add)` writes into a shared `ArrayList`. Why can this lose data even when the stream completes without throwing?
 
 <details><summary>Answer</summary>
 
@@ -736,7 +736,7 @@ list.parallelStream()
 
 🔬 **Section Challenge — 8. Stream Pipeline Fusion: How JVM Optimizes**
 
-**Challenge 1 (Loop Fusion Trace):** The section shows `filter + map` fuses into one loop. **Who** performs this fusion? **When** does stateful intermediate operations PREVENT fusion? **What** is the term for this optimization in compiler theory?
+**Challenge 11 (Loop Fusion Trace):** The section shows `filter + map` fuses into one loop. **Who** performs this fusion? **When** does stateful intermediate operations PREVENT fusion? **What** is the term for this optimization in compiler theory?
 
 <details><summary>Answer</summary>
 
@@ -744,7 +744,7 @@ list.parallelStream()
 
 </details>
 
-**Challenge 2 (Bug Hunt):** Compare `stream.sorted().limit(10)` vs `stream.limit(10).sorted()`. Why can moving `limit` before `sorted` make the code faster but change the answer?
+**Challenge 12 (Bug Hunt):** Compare `stream.sorted().limit(10)` vs `stream.limit(10).sorted()`. Why can moving `limit` before `sorted` make the code faster but change the answer?
 
 <details><summary>Answer</summary>
 
@@ -813,16 +813,6 @@ return optional.map(transform).orElseThrow();
 ```
 
 ---
-
-🔬 **Section Challenge — 9. Optional Deep Reasoning: Why It Exists And When NOT to Use It**
-
-**Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
-
-<details><summary>Answer</summary>
-
-`Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
-
-</details>
 
 ## 10. Method References: Not Just Syntactic Sugar
 
@@ -952,7 +942,7 @@ users.stream()
 
 🔬 **Section Challenge — 11. Real-World Stream Patterns: Production Code That Senior Engineers Write**
 
-**Challenge 1 (Production Anti-Pattern):** You review a PR: `userList.stream().filter(u -> u.getOrders().stream().anyMatch(o -> o.getStatus() == PAID)).collect(toList())`. **Who** triggers N+1 lazy loading? **When** does this cause a `LazyInitializationException`? **What** is the production fix?
+**Challenge 13 (Production Anti-Pattern):** You review a PR: `userList.stream().filter(u -> u.getOrders().stream().anyMatch(o -> o.getStatus() == PAID)).collect(toList())`. **Who** triggers N+1 lazy loading? **When** does this cause a `LazyInitializationException`? **What** is the production fix?
 
 <details><summary>Answer</summary>
 
@@ -960,7 +950,7 @@ users.stream()
 
 </details>
 
-**Challenge 2 (Bug Hunt):** A PR uses `orders.parallelStream().forEach(emailService::sendReceipt)` after checkout. Why is this risky in production, and what pattern should replace it?
+**Challenge 14 (Bug Hunt):** A PR uses `orders.parallelStream().forEach(emailService::sendReceipt)` after checkout. Why is this risky in production, and what pattern should replace it?
 
 <details><summary>Answer</summary>
 

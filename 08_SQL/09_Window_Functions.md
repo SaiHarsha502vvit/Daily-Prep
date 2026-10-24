@@ -362,14 +362,6 @@ Window functions run in a logical step AFTER WHERE filtering. The WHERE clause o
 > - **Local rewrite:** While `GROUP BY` routes tuples to an aggregator that emits a single result row per group (destroying base row visibility), the `WindowAgg` node buffers the partition, evaluates the aggregate or ranking function, and emits the result appended to _every_ original row.
 > - **Constraint warning:** Because it requires sorting and buffering (often spilling to disk if `work_mem` is exceeded), window functions are expensive on large partitions. Always define the narrowest `PARTITION BY` possible and filter with `WHERE` _before_ the window function runs.
 
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-
-<details><summary>Answer</summary>
-
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-
-</details>
-
 ### NTILE — Dividing Rows into N Buckets
 
 `NTILE(n)` splits the ordered rows in a window into `n` roughly-equal groups and labels each row with its group number — the standard way to compute quartiles, deciles, or any other N-way split.

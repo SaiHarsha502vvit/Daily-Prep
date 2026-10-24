@@ -120,7 +120,7 @@ public static <T extends Comparable<T> & Serializable> T findMax(List<T> list) {
 
 🔬 **Section Challenge — 2. Bounded Type Parameters — Restricting T**
 
-**Challenge 1 (Reasoning):** `<T extends Comparable<T>>` vs `<T extends Comparable>` — what's the difference and why does the first form matter?
+**Challenge 3 (Reasoning):** `<T extends Comparable<T>>` vs `<T extends Comparable>` — what's the difference and why does the first form matter?
 
 <details><summary>Answer</summary>
 
@@ -165,7 +165,7 @@ void addNumbers(List<? super Integer> list) {
 
 🔬 **Section Challenge — 3. Wildcards — The `?` Symbol**
 
-**Challenge 1 (Reasoning):** `void process(List<? extends Number> list)` — can you call `list.add(3.14)`? Why or why not?
+**Challenge 4 (Reasoning):** `void process(List<? extends Number> list)` — can you call `list.add(3.14)`? Why or why not?
 
 <details><summary>Answer</summary>
 
@@ -173,7 +173,7 @@ No. The compiler doesn't know the actual type — it could be `List<Integer>`, `
 
 </details>
 
-**Challenge 2 (Design):** Write a method that copies elements from any `List<? extends T>` into any `List<? super T>`. Why is this the correct signature?
+**Challenge 5 (Design):** Write a method that copies elements from any `List<? extends T>` into any `List<? super T>`. Why is this the correct signature?
 
 <details><summary>Answer</summary>
 
@@ -357,7 +357,7 @@ dogs.sort(byName);  // ✅ sort() accepts Comparator<? super Dog>
 
 🔬 **Section Challenge — 4. Invariance, Covariance & Contravariance — The Big Picture**
 
-**Challenge 1 (Array vs Generic Variance):** The code shows `Animal[] animals = new Dog[3]` COMPILES, then `animals[1] = new Cat()` throws `ArrayStoreException` at RUNTIME. **Who** detects the problem in arrays vs. generics? **When** does each catch it? **What** made Java choose invariant generics but covariant arrays?
+**Challenge 6 (Array vs Generic Variance):** The code shows `Animal[] animals = new Dog[3]` COMPILES, then `animals[1] = new Cat()` throws `ArrayStoreException` at RUNTIME. **Who** detects the problem in arrays vs. generics? **When** does each catch it? **What** made Java choose invariant generics but covariant arrays?
 
 <details><summary>Answer</summary>
 
@@ -438,7 +438,7 @@ Collections.copy(numbers, integers);  // ✅ Copy Integer list into Number list
 
 🔬 **Section Challenge — 5. PECS — Producer Extends, Consumer Super**
 
-**Challenge 1 (Reasoning):** Stack's `pushAll(Iterable<? extends E> src)` vs `popAll(Collection<? super E> dst)` — trace why each wildcard direction is needed.
+**Challenge 7 (Reasoning):** Stack's `pushAll(Iterable<? extends E> src)` vs `popAll(Collection<? super E> dst)` — trace why each wildcard direction is needed.
 
 <details><summary>Answer</summary>
 
@@ -476,7 +476,7 @@ max(10, 20);              // 20 — Integer implements Comparable
 
 🔬 **Section Challenge — 6. Generic Methods — Type Inference**
 
-**Challenge 1 (Design — Who/When/What):** `Collections.sort(list)` infers `T` automatically. **Who** performs the type inference? **When** (compile time or runtime)? **What** happens if the list contains mixed types like `List<Object>` with both `String` and `Integer`?
+**Challenge 8 (Design — Who/When/What):** `Collections.sort(list)` infers `T` automatically. **Who** performs the type inference? **When** (compile time or runtime)? **What** happens if the list contains mixed types like `List<Object>` with both `String` and `Integer`?
 
 <details><summary>Answer</summary>
 
@@ -591,7 +591,7 @@ list.stream()
 
 🔬 **Section Challenge — 8. Type Inference Evolution**
 
-**Challenge 1 (Reasoning — Who/When/What):** Java 10 introduced `var`. `var list = new ArrayList<String>()` works. But `var list = new ArrayList<>()` gives a raw type warning. **Why?** **What** type does the compiler infer?
+**Challenge 9 (Reasoning — Who/When/What):** Java 10 introduced `var`. `var list = new ArrayList<String>()` works. But `var list = new ArrayList<>()` gives a raw type warning. **Why?** **What** type does the compiler infer?
 
 <details><summary>Answer</summary>
 
@@ -605,7 +605,7 @@ list.stream()
 
 🔬 **Section Challenge — PART 2: EXCEPTION HANDLING — Beyond try-catch**
 
-**Challenge 1 (Trace — Who/When/What):** A `RuntimeException` thrown in a `@Transactional` method — **who** catches it first? **When** does the transaction roll back? **What** state is the database in if the exception is swallowed by a caller?
+**Challenge 10 (Trace — Who/When/What):** A `RuntimeException` thrown in a `@Transactional` method — **who** catches it first? **When** does the transaction roll back? **What** state is the database in if the exception is swallowed by a caller?
 
 <details><summary>Answer</summary>
 
@@ -644,7 +644,7 @@ RULE: Checked = recoverable situations
 
 🔬 **Section Challenge — 9. Exception Hierarchy — The Family Tree**
 
-**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+**Challenge 11 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
 
 <details><summary>Answer</summary>
 
@@ -652,7 +652,7 @@ RULE: Checked = recoverable situations
 
 </details>
 
-**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+**Challenge 12 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
 
 <details><summary>Answer</summary>
 
@@ -712,7 +712,7 @@ public User findById(Long id) {
 
 🔬 **Section Challenge — 10. Custom Exception Design — The Right Way**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+**Challenge 13 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
 
 <details><summary>Answer</summary>
 
@@ -791,7 +791,7 @@ record ErrorResponse(String code, String message) {}
 
 🔬 **Section Challenge — 11. Exception Translation — Layer Boundaries**
 
-**Challenge 1 (Translation Design):** A `DataAccessException` (Spring's unchecked DB exception) leaks into the Controller layer. **Who** translates it? **When** should translation happen? **What** is the anti-pattern of catching `DataAccessException` directly in the Controller?
+**Challenge 14 (Translation Design):** A `DataAccessException` (Spring's unchecked DB exception) leaks into the Controller layer. **Who** translates it? **When** should translation happen? **What** is the anti-pattern of catching `DataAccessException` directly in the Controller?
 
 <details><summary>Answer</summary>
 
@@ -801,13 +801,6 @@ record ErrorResponse(String code, String message) {}
 
 `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
 
-</details>
-
-**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-
-<details><summary>Answer</summary>
-
-1. `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
 </details>
 
 ## 12. try-with-resources — Deep Understanding
@@ -884,7 +877,7 @@ try {
 
 🔬 **Section Challenge — 12. try-with-resources — Deep Understanding**
 
-**Challenge 1 (Reasoning):** Both the `try` block and `close()` throw exceptions. Which one propagates? Where does the other go?
+**Challenge 15 (Reasoning):** Both the `try` block and `close()` throw exceptions. Which one propagates? Where does the other go?
 
 <details><summary>Answer</summary>
 
@@ -892,7 +885,7 @@ The `try` block's exception propagates (it's the 'primary' exception). The `clos
 
 </details>
 
-**Challenge 2 (Bug Hunt):**
+**Challenge 16 (Bug Hunt):**
 
 ```java
 InputStream in = new FileInputStream(f);
@@ -976,7 +969,7 @@ User user = retry(() -> userService.fetchFromExternalApi(id), 3, Duration.ofSeco
 
 🔬 **Section Challenge — 13. Exception Handling Patterns**
 
-**Challenge 1 (Pattern Selection):** You have a `sendEmail()` method that throws `SmtpException` (transient network error) and `InvalidAddressException` (permanent user error). **What** exception handling pattern fits each? **Who** decides whether to retry? **When** do you stop retrying?
+**Challenge 17 (Pattern Selection):** You have a `sendEmail()` method that throws `SmtpException` (transient network error) and `InvalidAddressException` (permanent user error). **What** exception handling pattern fits each? **Who** decides whether to retry? **When** do you stop retrying?
 
 <details><summary>Answer</summary>
 
@@ -1065,7 +1058,7 @@ try (reader; br) {  // Can use existing variables if effectively final
 
 🔬 **Section Challenge — 16. The Complete Exception Strategy**
 
-**Challenge 1 (Strategy Audit):** You review code: `catch (Exception e) { throw new ServiceException("Failed", e); }`. **Who** loses information? **When** does this pattern become dangerous in a monitoring context? **What** two fields should every wrapper exception carry?
+**Challenge 18 (Strategy Audit):** You review code: `catch (Exception e) { throw new ServiceException("Failed", e); }`. **Who** loses information? **When** does this pattern become dangerous in a monitoring context? **What** two fields should every wrapper exception carry?
 
 <details><summary>Answer</summary>
 
@@ -1075,13 +1068,6 @@ try (reader; br) {  // Can use existing variables if effectively final
 
 `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
 
-</details>
-
-**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-
-<details><summary>Answer</summary>
-
-1. `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
 </details>
 
 ## 17. Interview Questions & Answers
@@ -1184,7 +1170,7 @@ public void doWork() throws InterruptedException {
 
 🔬 **Section Challenge — 18. Exceptions in Multithreaded Code — The Hidden Traps**
 
-**Challenge 1 (Thread Propagation Trace):** You submit `() -> { throw new RuntimeException("task failed"); }` to an `ExecutorService`. **Who** catches the exception? **When** does the calling thread see it? **What** happens if you never call `future.get()`?
+**Challenge 19 (Thread Propagation Trace):** You submit `() -> { throw new RuntimeException("task failed"); }` to an `ExecutorService`. **Who** catches the exception? **When** does the calling thread see it? **What** happens if you never call `future.get()`?
 
 <details><summary>Answer</summary>
 
@@ -1256,7 +1242,7 @@ public AsyncUncaughtExceptionHandler asyncUncaughtExceptionHandler() {
 
 🔬 **Section Challenge — 19. Exceptions in CompletableFuture — Async Exception Handling**
 
-**Challenge 1 (Chain Behavior):** `CompletableFuture.supplyAsync(() -> fetchUser(id)).thenApply(user -> enrich(user)).exceptionally(e -> fallback)`. If `fetchUser()` throws, **who** handles it? **When** does `thenApply()` run? **What** value does the final `.get()` return?
+**Challenge 20 (Chain Behavior):** `CompletableFuture.supplyAsync(() -> fetchUser(id)).thenApply(user -> enrich(user)).exceptionally(e -> fallback)`. If `fetchUser()` throws, **who** handles it? **When** does `thenApply()` run? **What** value does the final `.get()` return?
 
 <details><summary>Answer</summary>
 
@@ -1410,7 +1396,7 @@ always chain the original cause, **and handle UncaughtExceptionHandler in every 
 
 🔬 **Section Challenge — 20. Spring Boot Global Exception Handling — Complete Strategy**
 
-**Challenge 1 (Resolution Order):** Your `@ControllerAdvice` has two `@ExceptionHandler` methods: one for `ResourceNotFoundException` and one for `ApplicationException` (its parent). A `ResourceNotFoundException` is thrown. **Who** decides which handler fires? **When** do both handlers run? **What** happens if you have two `@ControllerAdvice` classes both handling the same exception type?
+**Challenge 21 (Resolution Order):** Your `@ControllerAdvice` has two `@ExceptionHandler` methods: one for `ResourceNotFoundException` and one for `ApplicationException` (its parent). A `ResourceNotFoundException` is thrown. **Who** decides which handler fires? **When** do both handlers run? **What** happens if you have two `@ControllerAdvice` classes both handling the same exception type?
 
 <details><summary>Answer</summary>
 

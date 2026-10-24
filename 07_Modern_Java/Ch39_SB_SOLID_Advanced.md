@@ -990,7 +990,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 
 🔬 **Section Challenge — Chapter 6: E-Commerce System Following SOLID**
 
-**Challenge 1 (Reasoning):** Open/Closed Principle says 'closed for modification'. Does this mean code can NEVER be changed?
+**Challenge 2 (Reasoning):** Open/Closed Principle says 'closed for modification'. Does this mean code can NEVER be changed?
 
 <details><summary>Answer</summary>
 
@@ -998,7 +998,7 @@ No — it means don't modify existing, tested behavior to add new features. Add 
 
 </details>
 
-**Challenge 2 (Design):** A class has 5 public methods but clients only use 1-2. Which SOLID principle is violated and what's the fix?
+**Challenge 3 (Design):** A class has 5 public methods but clients only use 1-2. Which SOLID principle is violated and what's the fix?
 
 <details><summary>Answer</summary>
 
@@ -1043,24 +1043,6 @@ DIP VIOLATIONS:
 ```
 
 ---
-
-🔬 **Section Challenge — Quick Reference: Spotting SOLID Violations**
-
-**Challenge 1 (Reasoning):** Open/Closed Principle says 'closed for modification'. Does this mean code can NEVER be changed?
-
-<details><summary>Answer</summary>
-
-No — it means don't modify existing, tested behavior to add new features. Add new classes/methods instead. In practice: use interfaces + plugins. Adding a new payment type = new class implementing `PaymentStrategy`. Not modifying `PaymentProcessor`. The existing processor is 'closed' (don't touch tested code). The system is 'open' (easily extend by adding new implementations).
-
-</details>
-
-**Challenge 2 (Design):** A class has 5 public methods but clients only use 1-2. Which SOLID principle is violated and what's the fix?
-
-<details><summary>Answer</summary>
-
-Interface Segregation Principle (ISP): clients shouldn't depend on methods they don't use. Fix: split the class into smaller, focused interfaces. `Printable`, `Scannable`, `FaxMachine` instead of one `AllInOnePrinter`. Each client implements/uses only the interface it needs.
-
-</details>
 
 # 🎤 Interview Questions
 

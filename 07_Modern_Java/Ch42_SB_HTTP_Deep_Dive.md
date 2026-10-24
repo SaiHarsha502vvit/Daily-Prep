@@ -213,7 +213,7 @@ A **blank line** separates the headers from the body.
 
 🔬 **Section Challenge — Anatomy Of An HTTP Request**
 
-**Challenge 1 (Design — Who/When/What):** Between `Authorization: Bearer token` vs a cookie-based `session=xyz` — **who** validates each one? **When** does validation happen? **What** makes Bearer tokens stateless?
+**Challenge 2 (Design — Who/When/What):** Between `Authorization: Bearer token` vs a cookie-based `session=xyz` — **who** validates each one? **When** does validation happen? **What** makes Bearer tokens stateless?
 
 <details><summary>Answer</summary>
 
@@ -225,7 +225,7 @@ A **blank line** separates the headers from the body.
 
 🔬 **Section Challenge — Chapter 3: HTTP Response Structure**
 
-**Challenge 1 (Reasoning — Who/When/What):** A response has `Cache-Control: max-age=3600`. **Who** caches it? **When** does the cache entry expire? **What** happens to subsequent requests within that hour?
+**Challenge 3 (Reasoning — Who/When/What):** A response has `Cache-Control: max-age=3600`. **Who** caches it? **When** does the cache entry expire? **What** happens to subsequent requests within that hour?
 
 <details><summary>Answer</summary>
 
@@ -299,7 +299,7 @@ Set-Cookie: session=xyz; HttpOnly
 
 🔬 **Section Challenge — Anatomy Of An HTTP Response**
 
-**Challenge 1 (Debug — Who/When/What):** Your API returns 200 OK when creating a user instead of 201 Created. **What** is the practical impact? **Who** actually cares about the distinction?
+**Challenge 4 (Debug — Who/When/What):** Your API returns 200 OK when creating a user instead of 201 Created. **What** is the practical impact? **Who** actually cares about the distinction?
 
 <details><summary>Answer</summary>
 
@@ -350,7 +350,7 @@ Set-Cookie: session=xyz; HttpOnly
 
 🔬 **Section Challenge — Chapter 4: Understanding URL Structure**
 
-**Challenge 1 (Reasoning):** Why does making 100 sequential HTTP/1.1 requests to a microservice take significantly longer than making the exact same 100 requests over HTTP/2?
+**Challenge 5 (Reasoning):** Why does making 100 sequential HTTP/1.1 requests to a microservice take significantly longer than making the exact same 100 requests over HTTP/2?
 
 <details><summary>Answer</summary>
 
@@ -1374,16 +1374,6 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
 
 ---
 
-🔬 **Section Challenge — Chapter 11: Building Protocol Clients in Spring Boot**
-
-**Challenge 1 (Reasoning):** Why does making 100 sequential HTTP/1.1 requests to a microservice take significantly longer than making the exact same 100 requests over HTTP/2?
-
-<details><summary>Answer</summary>
-
-Head-of-Line Blocking and Connection Overhead. HTTP/1.1 requires opening a new TCP connection (and performing the expensive TCP/TLS handshakes) for every few requests, and requests on the same connection must wait for the previous response to finish (Head-of-Line blocking). HTTP/2 uses a single, persistent TCP connection and multiplexes all 100 requests concurrently as interleaved binary frames, completely eliminating TCP handshake overhead and blocking.
-
-</details>
-
 ## Chapter 12: HTTP Client Implementations
 
 ```java
@@ -1546,7 +1536,7 @@ _Continue to Part 11: Authentication & Authorization_
 
 🔬 **Section Challenge — Chapter 12: HTTP Client Implementations**
 
-**Challenge 1 (Design — Who/When/What):** `RestTemplate` vs `WebClient` — both make HTTP calls. **Who** blocks the calling thread? **When** should you pick `WebClient` even in a non-reactive app? **What** does `WebClient.block()` do internally?
+**Challenge 6 (Design — Who/When/What):** `RestTemplate` vs `WebClient` — both make HTTP calls. **Who** blocks the calling thread? **When** should you pick `WebClient` even in a non-reactive app? **What** does `WebClient.block()` do internally?
 
 <details><summary>Answer</summary>
 

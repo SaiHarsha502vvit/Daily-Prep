@@ -72,30 +72,6 @@ flowchart TD
 
 ---
 
-🔬 **Section Challenge — Chapter 1: JPA vs Hibernate vs Spring Data JPA**
-
-**Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
-
-<details><summary>Answer</summary>
-
-```java
-// N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
-List<Order> orders = orderRepo.findAll(); // 1 query
-orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
-
-// Fix 1: JOIN FETCH
-@Query("SELECT o FROM Order o JOIN FETCH o.customer")
-List<Order> findAllWithCustomer();
-
-// Fix 2: EntityGraph
-@EntityGraph(attributePaths = "customer")
-List<Order> findAll();
-```
-
-Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
-
-</details>
-
 ## Chapter 2: Entity Mapping Deep Dive
 
 ### Basic Entity
@@ -991,7 +967,7 @@ public class EntityLifecycleDemo {
 
 🔬 **Section Challenge — Chapter 5: Entity Lifecycle & Persistence Context**
 
-**Challenge 1 (Debug — Who/When/What):** You load a `User` entity, modify `user.setEmail("new@email.com")`, and DON'T call `entityManager.save()`. The email IS updated in the database. **Who** detected and persisted the change? **When** does flush happen? **What** is the mechanism?
+**Challenge 2 (Debug — Who/When/What):** You load a `User` entity, modify `user.setEmail("new@email.com")`, and DON'T call `entityManager.save()`. The email IS updated in the database. **Who** detected and persisted the change? **When** does flush happen? **What** is the mechanism?
 
 <details><summary>Answer</summary>
 
@@ -1091,15 +1067,7 @@ public class User {
 
 🔬 **Section Challenge — Chapter 6: Cascade Types**
 
-**Challenge 1 (Debug — Who/When/What):** `@OneToMany(cascade = CascadeType.ALL)` — you delete a `User` and ALL their `Orders` are deleted. **Who** issues the DELETE statements? **When** relative to the parent DELETE? **What** happens if an Order has FK references from another table?\n\n<details><summary>Answer</summary>\n\n**Who issues?** Hibernate's `DefaultDeleteEventListener`. CascadeType.REMOVE propagates `session.delete()` to each child entity. **When?** Children are deleted BEFORE the parent (to satisfy FK constraints). Hibernate traverses the cascade graph depth-first. **FK from another table?** If `order_items` table has `order_id` FK without `ON DELETE CASCADE`, Hibernate deletes `Order` but `order_items` still reference it → `ConstraintViolationException`. **Fix options:** (1) Add `orphanRemoval = true` + handle items in lifecycle. (2) Set `@OnDelete(action = OnDeleteAction.CASCADE)` on the DB constraint. (3) Remove items first in application code. **Warning:** `CascadeType.ALL` + `CascadeType.REMOVE` are often too aggressive — prefer explicit control of delete cascades.\n\n</details>
-
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-
-</details>
+**Challenge 3 (Debug — Who/When/What):** `@OneToMany(cascade = CascadeType.ALL)` — you delete a `User` and ALL their `Orders` are deleted. **Who** issues the DELETE statements? **When** relative to the parent DELETE? **What** happens if an Order has FK references from another table?\n\n<details><summary>Answer</summary>\n\n**Who issues?** Hibernate's `DefaultDeleteEventListener`. CascadeType.REMOVE propagates `session.delete()` to each child entity. **When?** Children are deleted BEFORE the parent (to satisfy FK constraints). Hibernate traverses the cascade graph depth-first. **FK from another table?** If `order_items` table has `order_id` FK without `ON DELETE CASCADE`, Hibernate deletes `Order` but `order_items` still reference it → `ConstraintViolationException`. **Fix options:** (1) Add `orphanRemoval = true` + handle items in lifecycle. (2) Set `@OnDelete(action = OnDeleteAction.CASCADE)` on the DB constraint. (3) Remove items first in application code. **Warning:** `CascadeType.ALL` + `CascadeType.REMOVE` are often too aggressive — prefer explicit control of delete cascades.\n\n</details>
 
 ## Chapter 7: Transactions
 
@@ -1286,16 +1254,6 @@ public class BrokenService {
 ```
 
 ---
-
-🔬 **Section Challenge — Chapter 7: Transactions**
-
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-
-<details><summary>Answer</summary>
-
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-
-</details>
 
 ## Chapter 8: JPA Best Practices Summary
 

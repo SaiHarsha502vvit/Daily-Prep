@@ -846,16 +846,6 @@ Part 19 (Testing Complete) → Part 22 (Testing annotations)
 
 ---
 
-🔬 **Section Challenge — Learning Paths By Goal**
-
-**Challenge 1 (Reasoning):** Why is the standard Spring MVC architecture divided strictly into Controller, Service, and Repository layers? Why not just put all logic in the Controller?
-
-<details><summary>Answer</summary>
-
-Separation of Concerns and Testability. Controllers should only handle HTTP protocol translation (JSON to Java, Status Codes). Repositories should only handle SQL/DB translation. Services contain the pure business logic. If logic is in the Controller, you cannot unit test it without mocking HTTP requests. If it's in the Service, you can instantiate the Service class using `new` and pass mock repositories, completely independent of the web layer.
-
-</details>
-
 # ✅ PHASE COMPLETION CHECKLIST
 
 ## After Each Phase, You Should Be Able To Answer These Questions

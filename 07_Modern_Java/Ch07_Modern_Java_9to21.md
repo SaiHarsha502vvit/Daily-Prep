@@ -298,7 +298,7 @@ double area(Shape shape) {
 
 🔬 **Section Challenge — Switch Expressions (Java 14) + Pattern Matching (Java 21)**
 
-**Challenge 1 (Bug Hunt - Why/What/How):** You add a new subclass `Pentagon` to a `sealed interface Shape`. Suddenly, a switch expression over `Shape` in another class fails to compile. **Why** did this happen? **What** safety feature triggered this error, and **How** do you fix it without adding a `default` case?
+**Challenge 2 (Bug Hunt - Why/What/How):** You add a new subclass `Pentagon` to a `sealed interface Shape`. Suddenly, a switch expression over `Shape` in another class fails to compile. **Why** did this happen? **What** safety feature triggered this error, and **How** do you fix it without adding a `default` case?
 
 <details><summary>Answer</summary>
 
@@ -338,7 +338,7 @@ String describe(Object obj) {
 
 🔬 **Section Challenge — Record Patterns — Destructuring (Java 21)**
 
-**Challenge 1 (Diagnostic - Who/What/How):** You have a nested record structure: `record Box(Item item)` and `record Item(String name)`. You want to extract the name directly in an `if` statement. **Who** unwraps the nested objects? **What** syntax makes this possible in Java 21, and **How** do you write the condition?
+**Challenge 3 (Diagnostic - Who/What/How):** You have a nested record structure: `record Box(Item item)` and `record Item(String name)`. You want to extract the name directly in an `if` statement. **Who** unwraps the nested objects? **What** syntax makes this possible in Java 21, and **How** do you write the condition?
 
 <details><summary>Answer</summary>
 
@@ -463,16 +463,6 @@ List<String> names = optionalList.stream()
     .toList();
 ```
 
-🔬 **Section Challenge — Optional Enhancements (Java 9-11)**
-
-**Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
-
-<details><summary>Answer</summary>
-
-`Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
-
-</details>
-
 ## HTTP Client (Java 11)
 
 ```java
@@ -500,7 +490,7 @@ CompletableFuture<HttpResponse<String>> future = client.sendAsync(request,
 
 🔬 **Section Challenge — HTTP Client (Java 11)**
 
-**Challenge 1 (Debug — Who/When/What):** Java 9 module system — your library uses `module-info.java` with `exports com.lib.api`. A user tries `module.open("com.lib.internal")` via reflection. **Who** enforces access? **When?** **What** is the difference between `exports` and `opens`?
+**Challenge 4 (Debug — Who/When/What):** Java 9 module system — your library uses `module-info.java` with `exports com.lib.api`. A user tries `module.open("com.lib.internal")` via reflection. **Who** enforces access? **When?** **What** is the difference between `exports` and `opens`?
 
 <details><summary>Answer</summary>
 
@@ -525,7 +515,7 @@ user.getAddress().getCity().toUpperCase();
 
 🔬 **Section Challenge — Helpful NullPointerExceptions (Java 14)**
 
-**Challenge 1 (Trace - What/Why/Where):** You get a `NullPointerException` on `a.b.c()`. In Java 8, the stack trace only gives the line number. In Java 14+, the message says exactly that `b` is null. **What** is this feature called? **Why** couldn't Java 8 do this, and **Where** does the JVM gather this detailed information?
+**Challenge 5 (Trace - What/Why/Where):** You get a `NullPointerException` on `a.b.c()`. In Java 8, the stack trace only gives the line number. In Java 14+, the message says exactly that `b` is null. **What** is this feature called? **Why** couldn't Java 8 do this, and **Where** does the JVM gather this detailed information?
 
 <details><summary>Answer</summary>
 

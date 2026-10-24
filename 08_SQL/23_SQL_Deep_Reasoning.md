@@ -175,24 +175,6 @@ LEFT JOIN customers c ON o.customer_id = c.id AND c.country = 'US';
 
 ---
 
-🔬 **Section Challenge — 3. JOIN Execution: What Actually Happens Under The Hood**
-
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
-
-<details><summary>Answer</summary>
-
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
-
-</details>
-
 ## 4. Indexes: When They Help AND When They Hurt
 
 ### The Freeze Question
@@ -326,7 +308,7 @@ PostgreSQL's SERIALIZABLE builds on the same snapshot-isolation machinery as REP
 
 🔬 **Section Challenge — 6. Deadlocks: Why Two Transactions Can Freeze Each Other**
 
-**Challenge 1 (Debug — Who/When/What):** Transaction A holds a lock on `accounts row id=1` and requests `accounts row id=2`. Transaction B holds `row id=2` and requests `row id=1`. **Who** breaks the deadlock? **When** does the database detect it? **What** can you do at the application level to prevent it?
+**Challenge 2 (Debug — Who/When/What):** Transaction A holds a lock on `accounts row id=1` and requests `accounts row id=2`. Transaction B holds `row id=2` and requests `row id=1`. **Who** breaks the deadlock? **When** does the database detect it? **What** can you do at the application level to prevent it?
 
 <details><summary>Answer</summary>
 
@@ -499,8 +481,6 @@ FROM employees;
 ```
 
 ---
-
-🔬 **Section Challenge — 10. Window Functions: Not Just "Fancy GROUP BY"**
 
 **Challenge (Reasoning):** The example above computes `AVG(salary) OVER (PARTITION BY department)` and `RANK() OVER (PARTITION BY department ORDER BY salary DESC)` in the *same query, on the same rows*. Why doesn't the `RANK()` column need its own separate query the way a `GROUP BY` version would need a separate query per metric?
 

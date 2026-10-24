@@ -254,7 +254,7 @@ JDK Dynamic Proxies require the target class to implement an interface. If your 
 
 🔬 **Section Challenge — Week 2: AOP + HTTP + Building APIs**
 
-**Challenge 1 (Trace — Who/When/What):** You add `@Transactional` to a private method in your `@Service`. The transaction silently doesn't work. **Who** creates the proxy? **When?** **Why** can't the proxy intercept private methods?\n\n<details><summary>Answer</summary>\n\n**Who creates proxy?** Spring's `AbstractAutoProxyCreator` BeanPostProcessor, triggered during bean initialization. **When?** At ApplicationContext startup — before any HTTP requests are served. **Why private methods not intercepted?** Spring uses either JDK proxies (interface-based) or CGLIB (subclass-based). CGLIB generates a subclass at runtime. Subclasses CANNOT override `private` methods in Java — it's a JVM rule. So the proxy subclass has no way to intercept the private method call. **The deeper issue:** Even `this.privateMethod()` bypasses the proxy — the call goes directly to the real object, not through the proxy. Fix: either make the method `public`/`protected`, or extract to a separate Spring bean (self-injection).\n\n</details>
+**Challenge 2 (Trace — Who/When/What):** You add `@Transactional` to a private method in your `@Service`. The transaction silently doesn't work. **Who** creates the proxy? **When?** **Why** can't the proxy intercept private methods?\n\n<details><summary>Answer</summary>\n\n**Who creates proxy?** Spring's `AbstractAutoProxyCreator` BeanPostProcessor, triggered during bean initialization. **When?** At ApplicationContext startup — before any HTTP requests are served. **Why private methods not intercepted?** Spring uses either JDK proxies (interface-based) or CGLIB (subclass-based). CGLIB generates a subclass at runtime. Subclasses CANNOT override `private` methods in Java — it's a JVM rule. So the proxy subclass has no way to intercept the private method call. **The deeper issue:** Even `this.privateMethod()` bypasses the proxy — the call goes directly to the real object, not through the proxy. Fix: either make the method `public`/`protected`, or extract to a separate Spring bean (self-injection).\n\n</details>
 
 ## Week 3: JPA Deep Dive + Data Access
 
@@ -349,30 +349,6 @@ JDK Dynamic Proxies require the target class to implement an interface. If your 
 
 ---
 
-🔬 **Section Challenge — Week 3: JPA Deep Dive + Data Access**
-
-**Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
-
-<details><summary>Answer</summary>
-
-```java
-// N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
-List<Order> orders = orderRepo.findAll(); // 1 query
-orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
-
-// Fix 1: JOIN FETCH
-@Query("SELECT o FROM Order o JOIN FETCH o.customer")
-List<Order> findAllWithCustomer();
-
-// Fix 2: EntityGraph
-@EntityGraph(attributePaths = "customer")
-List<Order> findAll();
-```
-
-Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
-
-</details>
-
 # PHASE 2: PRODUCTION READY (Week 4-6) 🟡
 
 **Goal:** Security, Testing, Caching, Essential production features
@@ -435,7 +411,7 @@ Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL l
 
 🔬 **Section Challenge — Week 4: Security + Auth**
 
-**Challenge 1 (Diagnostic - Who/What/Where):** A developer adds a new `/api/v1/public` endpoint but it returns 401 Unauthorized. **Who** intercepts this request before it reaches the controller? **Where** in the configuration must this be fixed, and **What** is the exact method call needed in Spring Security 6.x to allow unauthenticated access?
+**Challenge 3 (Diagnostic - Who/What/Where):** A developer adds a new `/api/v1/public` endpoint but it returns 401 Unauthorized. **Who** intercepts this request before it reaches the controller? **Where** in the configuration must this be fixed, and **What** is the exact method call needed in Spring Security 6.x to allow unauthenticated access?
 
 <details><summary>Answer</summary>
 
@@ -512,7 +488,7 @@ Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL l
 
 🔬 **Section Challenge — Week 5: Testing + Production Features**
 
-**Challenge 1 (Reasoning):** You wrote a `@SpringBootTest` that uses `@MockBean` for a repository. Why does your test suite suddenly take 5x longer to run when you add this single test class?
+**Challenge 4 (Reasoning):** You wrote a `@SpringBootTest` that uses `@MockBean` for a repository. Why does your test suite suddenly take 5x longer to run when you add this single test class?
 
 <details><summary>Answer</summary>
 
@@ -636,7 +612,7 @@ Context Caching. Spring Boot optimizes test execution by heavily caching the `Ap
 
 🔬 **Section Challenge — Week 7: Messaging + Reactive**
 
-**Challenge 1 (Reasoning):** In Spring WebFlux, if you call a blocking database operation (like standard JDBC) inside a reactive `map()` operator, the entire application freezes under load. Why does WebFlux completely collapse, whereas standard Spring MVC survives?
+**Challenge 5 (Reasoning):** In Spring WebFlux, if you call a blocking database operation (like standard JDBC) inside a reactive `map()` operator, the entire application freezes under load. Why does WebFlux completely collapse, whereas standard Spring MVC survives?
 
 <details><summary>Answer</summary>
 
@@ -697,16 +673,6 @@ Thread Starvation. Spring MVC allocates one thread per request (e.g., 200 Tomcat
 **Key concepts:** Micrometer Tracing, Zipkin, trace-id, span-id, baggage
 
 ---
-
-🔬 **Section Challenge — Week 8: Microservices**
-
-**Challenge 1 (Reasoning):** Service A calls Service B which calls Service C. C is slow. How does this cause a cascade failure?
-
-<details><summary>Answer</summary>
-
-Without circuit breakers: A has a thread pool for B calls. B is slow (waiting for C) → B responses are slow → A's thread pool fills with waiting threads → A's thread pool exhausted → A becomes slow for ALL callers, not just B-related ones. Cascade: C slow → B slow → A slow → entire system degraded. Fix: Resilience4j circuit breaker — after N failures, 'open' the circuit → fail fast with fallback response instead of waiting. Timeouts + bulkhead patterns to isolate failure.
-
-</details>
 
 ## Week 9: Cloud + Docker + GraphQL + gRPC
 

@@ -1,17 +1,92 @@
-03_Algorithms/01_Algorithm_Thinking/02_the_thinking_process_for_each_pattern.md :: 🔬 **Section Challenge — 2. Sliding Window Thinking**
-03_Algorithms/16_DSA_Deep_Reasoning/01_big_o_not_just_how_fast.md :: 🔬 **Section Challenge — 2. Why HashMap Isn't Always O(1)**
-03_Algorithms/16_DSA_Deep_Reasoning/01_big_o_not_just_how_fast.md :: 🔬 **Section Challenge — 5. Dynamic Programming vs Greedy: How To Know Which One**
-03_Algorithms/16_DSA_Deep_Reasoning/01_big_o_not_just_how_fast.md :: 🔬 **Section Challenge — 8. Two Pointers: Not Just "Left and Right"**
-03_Algorithms/02a_Sorting_Fundamentals/02_deep_internals_how_sorting_actually_works.md :: 🔬 **Section Challenge — Exact Operation Counts For Sorting Algorithms**
 02_Data_Structures/01b_Arrays/05_sorting_algorithms_all_5.md :: 🔬 **Section Challenge — 📈 Part 7: Sorting Algorithms — All 5**
 02_Data_Structures/01b_Arrays/06_frequency_duplicates.md :: 🔬 **Section Challenge — 🌀 Part 10: Recursion in Arrays**
 02_Data_Structures/01e_HashTable/02_implementation_without_collections.md :: 🔬 **Section Challenge — ⚡ Production Failure Modes**
 02_Data_Structures/01e_HashTable/02_implementation_without_collections.md :: 🔬 **Section Challenge — 🎯 Full Problem Set — HashMap / HashTable**
 02_Data_Structures/03_Collections_Java/02_section_2_map_interface.md :: 🔬 **Section Challenge — StringBuilder Methods (For String Manipulation)**
-03_Algorithms/17_DSA_Java_Implementation_Mastery.md :: 🔬 **Section Challenge — 3. TreeMap & TreeSet: Your BST in Disguise**
-03_Algorithms/17_DSA_Java_Implementation_Mastery.md :: 🔬 **Section Challenge — 8. String Manipulation for DSA: StringBuilder Reasoning**
+03_Algorithms/01_Algorithm_Thinking/02_the_thinking_process_for_each_pattern.md :: 🔬 **Section Challenge — 2. Sliding Window Thinking**
+03_Algorithms/02a_Sorting_Fundamentals/02_deep_internals_how_sorting_actually_works.md :: 🔬 **Section Challenge — Exact Operation Counts For Sorting Algorithms**
 03_Algorithms/02c_Divide_And_Conquer.md :: 🔬 **Section Challenge — Algorithm Analysis Fundamentals + D&C + Binary Search + Master The
-03_Algorithms/20_DSA_Patterns_PDF_Java_Coverage_Map.md :: 🔬 **Section Challenge — 5. Gap Closure Status from PDF**
 03_Algorithms/07a_Advanced_DS_Core/01_deep_internals_how_advanced_data_structures.md :: 🔬 **Section Challenge — 📌 Union — Find — Path Compression Visualization**
 03_Algorithms/08b_NumberTheory_Advanced/01_section.md :: 🔬 **Section Challenge — Algorithm: Kadane's Algorithm (Maximum Subarray Sum) ⭐⭐⭐**
 03_Algorithms/12_Greedy_Algorithms_Complete/07_graph_greedy_algorithms.md :: 🔬 **Section Challenge — Graph Greedy Algorithms <a name="graph-greedy"></a>**
+03_Algorithms/16_DSA_Deep_Reasoning/01_big_o_not_just_how_fast.md :: 🔬 **Section Challenge — 2. Why HashMap Isn't Always O(1)**
+03_Algorithms/16_DSA_Deep_Reasoning/01_big_o_not_just_how_fast.md :: 🔬 **Section Challenge — 5. Dynamic Programming vs Greedy: How To Know Which One**
+03_Algorithms/16_DSA_Deep_Reasoning/01_big_o_not_just_how_fast.md :: 🔬 **Section Challenge — 8. Two Pointers: Not Just "Left and Right"**
+03_Algorithms/17_DSA_Java_Implementation_Mastery.md :: 🔬 **Section Challenge — 3. TreeMap & TreeSet: Your BST in Disguise**
+03_Algorithms/17_DSA_Java_Implementation_Mastery.md :: 🔬 **Section Challenge — 8. String Manipulation for DSA: StringBuilder Reasoning**
+03_Algorithms/20_DSA_Patterns_PDF_Java_Coverage_Map.md :: 🔬 **Section Challenge — 5. Gap Closure Status from PDF**
+07_Modern_Java/Ch01_Core_Foundations.md :: 🔬 **Section Challenge — 2. Initialization Order — The Exact Sequence**
+07_Modern_Java/Ch01_Core_Foundations.md :: 🔬 **Section Challenge — 3. Wrapper Classes & Caching Trap**
+07_Modern_Java/Ch01_Core_Foundations.md :: 🔬 **Section Challenge — 5. Optional — Deep Dive**
+07_Modern_Java/Ch01_Core_Foundations.md :: 🔬 **Section Challenge — 9. All Built-in Functional Interfaces**
+07_Modern_Java/Ch01_Core_Foundations.md :: 🔬 **Section Challenge — PART 1: INNER CLASSES & INITIALIZATION**
+07_Modern_Java/Ch01_Core_Foundations.md :: 🔬 **Section Challenge — PART 2: COMPARABLE, COMPARATOR & OPTIONAL**
+07_Modern_Java/Ch01_Core_Foundations.md :: 🔬 **Section Challenge — PART 4: FUNCTIONAL INTERFACES & JPMS**
+07_Modern_Java/Ch06_Functional_Programming.md :: 🔬 **Section Challenge — What is a Stream?**
+07_Modern_Java/Ch06_Functional_Programming.md :: 🔬 **Section Challenge — When to Use Functional vs Imperative**
+07_Modern_Java/Ch07_Modern_Java_9to21.md :: 🔬 **Section Challenge — Optional Enhancements (Java 9-11)**
+07_Modern_Java/Ch08_Collections_Internals.md :: 🔬 **Section Challenge — 12. Choosing the Right Collection**
+07_Modern_Java/Ch08_Collections_Internals.md :: 🔬 **Section Challenge — 3. LinkedList Internals — Doubly-Linked Nodes**
+07_Modern_Java/Ch08_Collections_Internals.md :: 🔬 **Section Challenge — 7. HashSet — HashMap in Disguise**
+07_Modern_Java/Ch08_Collections_Internals.md :: 🔬 **Section Challenge — 8. ConcurrentHashMap — Thread-Safe Without Global Locks**
+07_Modern_Java/Ch08_Collections_Internals.md :: 🔬 **Section Challenge — 9. PriorityQueue — Binary Heap**
+07_Modern_Java/Ch11_Events_Listeners.md :: 🔬 **Section Challenge — 12. Reactive Streams — The Ultimate Event Pattern**
+07_Modern_Java/Ch11_Events_Listeners.md :: 🔬 **Section Challenge — 3. Building an Event System From Scratch**
+07_Modern_Java/Ch11_Events_Listeners.md :: 🔬 **Section Challenge — 5. Spring ApplicationEvent — The Professional Way**
+07_Modern_Java/Ch11_Events_Listeners.md :: 🔬 **Section Challenge — 6. Spring Built-in Events — What You Can Listen To**
+07_Modern_Java/Ch12_ClassLoader_JDBC_Logging.md :: 🔬 **Section Challenge — 9. Transaction Management**
+07_Modern_Java/Ch14_Maven_Gradle.md :: 🔬 **Section Challenge — 4. Maven Dependency Resolution**
+07_Modern_Java/Ch14_Maven_Gradle.md :: 🔬 **Section Challenge — 5. Dependency Scopes**
+07_Modern_Java/Ch14_Maven_Gradle.md :: 🔬 **Section Challenge — 9. Gradle Dependency Management**
+07_Modern_Java/Ch17_Concurrency_Synchronizers.md :: 🔬 **Section Challenge — 11. AQS — The Engine Under Everything**
+07_Modern_Java/Ch17_Concurrency_Synchronizers.md :: 🔬 **Section Challenge — 5. Phaser: The Flexible Multi-Phase Coordinator**
+07_Modern_Java/Ch17_Concurrency_Synchronizers.md :: 🔬 **Section Challenge — 8. Lock Deep Reasoning: ReentrantLock, ReadWriteLock, StampedLock*
+07_Modern_Java/Ch22_Java_Deep_Reasoning.md :: 🔬 **Section Challenge — 2. String Pool & Immutability: Why Strings Behave Strangely**
+07_Modern_Java/Ch22_Java_Deep_Reasoning.md :: 🔬 **Section Challenge — 6. HashMap Internals: Not Just "Key-Value Store"**
+07_Modern_Java/Ch22_Java_Deep_Reasoning.md :: 🔬 **Section Challenge — 8. Checked vs Unchecked Exceptions: The Design Philosophy**
+07_Modern_Java/Ch23_Streams_Deep_Reasoning.md :: 🔬 **Section Challenge — 9. Optional Deep Reasoning: Why It Exists And When NOT to Use It**
+07_Modern_Java/Ch24_Spring_Boot_Roadmap.md :: 🔬 **Section Challenge — Learning Paths By Goal**
+07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md :: 🔬 **Section Challenge — Week 3: JPA Deep Dive + Data Access**
+07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md :: 🔬 **Section Challenge — Week 8: Microservices**
+07_Modern_Java/Ch26_Pre_Spring_Part1.md :: 🔬 **Section Challenge — C.4 The Famous @Transactional Self-Invocation Bug**
+07_Modern_Java/Ch26_Pre_Spring_Part1.md :: 🔬 **Section Challenge — C.5 Why @Transactional Doesn't Work on Private Methods**
+07_Modern_Java/Ch27_Pre_Spring_Part2.md :: 🔬 **Section Challenge — M.3 Hibernate Bytecode Enhancement**
+07_Modern_Java/Ch28_Annotations_Core.md :: 🔬 **Section Challenge — JPA Entity Lifecycle Annotations**
+07_Modern_Java/Ch28_Annotations_Core.md :: 🔬 **Section Challenge — Spring Core Annotations**
+07_Modern_Java/Ch29_Annotations_Advanced.md :: 🔬 **Section Challenge — Caching Annotations**
+07_Modern_Java/Ch29_Annotations_Advanced.md :: 🔬 **Section Challenge — Hibernate-Specific Annotations**
+07_Modern_Java/Ch29_Annotations_Advanced.md :: 🔬 **Section Challenge — Security Annotations**
+07_Modern_Java/Ch29_Annotations_Advanced.md :: 🔬 **Section Challenge — Testing Annotations**
+07_Modern_Java/Ch29_Annotations_Advanced.md :: 🔬 **Section Challenge — Transaction Annotations**
+07_Modern_Java/Ch30_Dependencies_Annotations_Map.md :: 🔬 **Section Challenge — 3. Quick Reference: "I Need To Do X — Which Dependency?"**
+07_Modern_Java/Ch31_SB_Core_Part1.md :: 🔬 **Section Challenge — Chapter 4: Class Loading Mechanism**
+07_Modern_Java/Ch31_SB_Core_Part1.md :: 🔬 **Section Challenge — Chapter 5: Advanced Threading (Concurrency)**
+07_Modern_Java/Ch34_SB_Security_Part4.md :: 🔬 **Section Challenge — Chapter 7: Security Fundamentals**
+07_Modern_Java/Ch36_SB_Service_Repository.md :: 🔬 **Section Challenge — Chapter 5: Spring Data JPA Repository Fundamentals**
+07_Modern_Java/Ch36_SB_Service_Repository.md :: 🔬 **Section Challenge — Chapter 8: Specifications (Dynamic Queries)**
+07_Modern_Java/Ch37_SB_Controllers_REST.md :: 🔬 **Section Challenge — Chapter 6: Exception Handling**
+07_Modern_Java/Ch37_SB_Controllers_REST.md :: 🔬 **Section Challenge — Chapter 7: API Versioning**
+07_Modern_Java/Ch39_SB_SOLID_Advanced.md :: 🔬 **Section Challenge — Quick Reference: Spotting SOLID Violations**
+07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md :: 🔬 **Section Challenge — Chapter 1: JPA vs Hibernate vs Spring Data JPA**
+07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md :: 🔬 **Section Challenge — Chapter 7: Transactions**
+07_Modern_Java/Ch42_SB_HTTP_Deep_Dive.md :: 🔬 **Section Challenge — Chapter 11: Building Protocol Clients in Spring Boot**
+07_Modern_Java/Ch44_SB_Caching_Scheduling.md :: 🔬 **Section Challenge — Chapter 2: @Async Deep Dive**
+07_Modern_Java/Ch44_SB_Caching_Scheduling.md :: 🔬 **Section Challenge — Why Caching Matters**
+07_Modern_Java/Ch46_SB_Database_Design.md :: 🔬 **Section Challenge — Chapter 3: Password Encoding & Validation**
+07_Modern_Java/Ch47_SB_Security_Deep.md :: 🔬 **Section Challenge — Chapter 7: Preventing SQL Injection Attacks**
+07_Modern_Java/Ch48_SB_WebFlux_Core.md :: 🔬 **Section Challenge — Chapter 3: Operators - Transforming Reactive Streams**
+07_Modern_Java/Ch49_SB_WebFlux_Advanced.md :: 🔬 **Section Challenge — Chapter 10: Managing Backpressure**
+07_Modern_Java/Ch49_SB_WebFlux_Advanced.md :: 🔬 **Section Challenge — Chapter 11: Making the Right Choice**
+07_Modern_Java/Ch50_SB_DSA_Applications.md :: 🔬 **Section Challenge — Chapter 4: LRU Cache for API Response Caching**
+07_Modern_Java/Ch50_SB_DSA_Applications.md :: 🔬 **Section Challenge — Chapter 7: Leaderboard with TreeMap**
+07_Modern_Java/Ch55_Spring_Internals.md :: 🔬 **Section Challenge — 7. How @Transactional ACTUALLY Works — From Annotation to Commit**
+07_Modern_Java/Ch60_SB_Testing_Advanced.md :: 🔬 **Section Challenge — Performance Testing**
+07_Modern_Java/Ch60_SB_Testing_Advanced.md :: 🔬 **Section Challenge — Test Containers**
+07_Modern_Java/Ch61_SB_Microservices_Core.md :: 🔬 **Section Challenge — Load Balancing**
+07_Modern_Java/Ch69_Performance_Engineering.md :: 🔬 **Section Challenge — 11. Caching Strategies**
+07_Modern_Java/Ch69_Performance_Engineering.md :: 🔬 **Section Challenge — 3. CPU-Bound vs I/O-Bound — Know What You're Optimizing**
+08_SQL/06_Aggregations_GroupBy.md :: 🔬 **Section Challenge — Chapter 6: Aggregate Functions & GROUP BY**
+08_SQL/23_SQL_Deep_Reasoning.md :: 🔬 **Section Challenge — 10. Window Functions: Not Just "Fancy GROUP BY"**
+08_SQL/23_SQL_Deep_Reasoning.md :: 🔬 **Section Challenge — 3. JOIN Execution: What Actually Happens Under The Hood**
+08_SQL/24_SQL_Data_Analyst_RealWorld.md :: 🔬 **Section Challenge — 9. Advanced Window Functions for Analytics**
+08_SQL/37_SQL_5WH_Deep_Reasoning.md :: 🔬 **Section Challenge — 6. Window Functions**

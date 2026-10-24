@@ -258,16 +258,6 @@ flowchart LR
 
 ---
 
-🔬 **Section Challenge — 3. Building an Event System From Scratch**
-
-**Challenge 1 (Reasoning):** Why is it dangerous to perform a heavy database update synchronously inside a Spring `@EventListener` method?
-
-<details><summary>Answer</summary>
-
-Thread Blocking. By default, Spring `@EventListener` methods execute synchronously on the EXACT same thread that published the event. If the listener takes 5 seconds to run, the method that called `applicationEventPublisher.publishEvent()` is completely blocked for 5 seconds. To process events in the background without blocking the main workflow, you must explicitly annotate the listener with `@Async` to force it onto a separate thread pool.
-
-</details>
-
 ## 4. Generic Event System — Production Grade
 
 ```java
@@ -436,16 +426,6 @@ flowchart TD
 
 ---
 
-🔬 **Section Challenge — 5. Spring ApplicationEvent — The Professional Way**
-
-**Challenge 1 (Reasoning):** Why is it dangerous to perform a heavy database update synchronously inside a Spring `@EventListener` method?
-
-<details><summary>Answer</summary>
-
-Thread Blocking. By default, Spring `@EventListener` methods execute synchronously on the EXACT same thread that published the event. If the listener takes 5 seconds to run, the method that called `applicationEventPublisher.publishEvent()` is completely blocked for 5 seconds. To process events in the background without blocking the main workflow, you must explicitly annotate the listener with `@Async` to force it onto a separate thread pool.
-
-</details>
-
 ## 6. Spring Built-in Events — What You Can Listen To
 
 ```java
@@ -488,16 +468,6 @@ public class AppLifecycleListener {
 | 7 | `ApplicationReadyEvent` | READY to serve ✅ |
 
 ---
-
-🔬 **Section Challenge — 6. Spring Built-in Events — What You Can Listen To**
-
-**Challenge 1 (Reasoning):** Why is it dangerous to perform a heavy database update synchronously inside a Spring `@EventListener` method?
-
-<details><summary>Answer</summary>
-
-Thread Blocking. By default, Spring `@EventListener` methods execute synchronously on the EXACT same thread that published the event. If the listener takes 5 seconds to run, the method that called `applicationEventPublisher.publishEvent()` is completely blocked for 5 seconds. To process events in the background without blocking the main workflow, you must explicitly annotate the listener with `@Async` to force it onto a separate thread pool.
-
-</details>
 
 ## 7. Observer Pattern — The Design Pattern Behind Events
 
@@ -820,24 +790,6 @@ stockPrices
 ```
 
 ---
-
-🔬 **Section Challenge — 12. Reactive Streams — The Ultimate Event Pattern**
-
-**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-
-<details><summary>Answer</summary>
-
-Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
-
-</details>
-
-**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-
-<details><summary>Answer</summary>
-
-`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-
-</details>
 
 ## 13. How to Read/Understand ANY Event System
 

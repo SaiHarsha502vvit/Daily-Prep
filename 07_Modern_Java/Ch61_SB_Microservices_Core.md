@@ -1171,16 +1171,6 @@ public class UserServiceLoadBalancerConfig {
 
 ---
 
-🔬 **Section Challenge — Load Balancing**
-
-**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
-
-<details><summary>Answer</summary>
-
-Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
-
-</details>
-
 ## Configuration Management
 
 ### Spring Cloud Config Server

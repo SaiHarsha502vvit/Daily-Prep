@@ -95,7 +95,7 @@ public class Cat extends Animal {
 
 🔬 **Section Challenge — E.4 Polymorphic Type Handling**
 
-**Challenge 1 (Debug — Who/When/What):** Jackson deserializes `{"type":"DOG","name":"Rex"}` into an `Animal` field. **Who** reads the `"type"` discriminator? **When** must `@JsonTypeInfo` be configured? **What** happens if the discriminator is missing?
+**Challenge 2 (Debug — Who/When/What):** Jackson deserializes `{"type":"DOG","name":"Rex"}` into an `Animal` field. **Who** reads the `"type"` discriminator? **When** must `@JsonTypeInfo` be configured? **What** happens if the discriminator is missing?
 
 <details><summary>Answer</summary>
 
@@ -153,7 +153,7 @@ spring:
 
 🔬 **Section Challenge — E.5 Configuring ObjectMapper in Spring Boot**
 
-**Challenge 1 (Debug — Who/When/What):** You register a custom `ObjectMapper` bean but Jackson still uses default settings. **What** is the most likely cause? **Who** has higher priority — your bean or Spring Boot auto-configuration?
+**Challenge 3 (Debug — Who/When/What):** You register a custom `ObjectMapper` bean but Jackson still uses default settings. **What** is the most likely cause? **Who** has higher priority — your bean or Spring Boot auto-configuration?
 
 <details><summary>Answer</summary>
 
@@ -198,7 +198,7 @@ CONNECTION POOLING: Reuse connections!
 
 🔬 **Section Challenge — F.1 How Connection Pooling Works**
 
-**Challenge 1 (Trace — Who/When/What):** When your `@Repository` method calls `jdbcTemplate.query(...)`, **who** gives it a database connection? **When** is the connection returned to the pool? **What** happens if you forget to close it?
+**Challenge 4 (Trace — Who/When/What):** When your `@Repository` method calls `jdbcTemplate.query(...)`, **who** gives it a database connection? **When** is the connection returned to the pool? **What** happens if you forget to close it?
 
 <details><summary>Answer</summary>
 
@@ -259,7 +259,7 @@ RULE OF THUMB:
 
 🔬 **Section Challenge — F.3 Connection Pool Sizing**
 
-**Challenge 1 (Reasoning — Who/When/What):** The HikariCP wiki says optimal pool size ≈ `(core_count * 2) + disk_spindles`. For a 4-core server with SSD, that's ~9 connections. **Why** is BIGGER not better? **What** happens with 100 connections?
+**Challenge 5 (Reasoning — Who/When/What):** The HikariCP wiki says optimal pool size ≈ `(core_count * 2) + disk_spindles`. For a 4-core server with SSD, that's ~9 connections. **Why** is BIGGER not better? **What** happens with 100 connections?
 
 <details><summary>Answer</summary>
 
@@ -345,7 +345,7 @@ spring:
 
 🔬 **Section Challenge — F.4 Common Connection Pool Problems**
 
-**Challenge 1 (Connection Leak Trace — Who/When/What):** A Spring service method manually calls `dataSource.getConnection()` inside a loop but never calls `close()`. The app runs fine for 10 minutes, then every new request hangs for 30 seconds before throwing `SQLTransientConnectionException`. **Who** is holding the connections? **When** does HikariCP give up? **What** single config property would have caught this in logs 28 minutes earlier?
+**Challenge 6 (Connection Leak Trace — Who/When/What):** A Spring service method manually calls `dataSource.getConnection()` inside a loop but never calls `close()`. The app runs fine for 10 minutes, then every new request hangs for 30 seconds before throwing `SQLTransientConnectionException`. **Who** is holding the connections? **When** does HikariCP give up? **What** single config property would have caught this in logs 28 minutes earlier?
 
 <details><summary>Answer</summary>
 
@@ -353,7 +353,7 @@ spring:
 
 </details>
 
-**Challenge 2 (Pool Exhaustion vs Leak — Who/When/What):** Pool exhaustion and connection leak both result in `SQLTransientConnectionException`. **What** is the diagnostic difference in HikariCP metrics? **When** should you increase pool size vs fix a leak?
+**Challenge 7 (Pool Exhaustion vs Leak — Who/When/What):** Pool exhaustion and connection leak both result in `SQLTransientConnectionException`. **What** is the diagnostic difference in HikariCP metrics? **When** should you increase pool size vs fix a leak?
 
 <details><summary>Answer</summary>
 
@@ -396,7 +396,7 @@ flowchart TD
 
 🔬 **Section Challenge — G.1 Classloader Hierarchy**
 
-**Challenge 1 (Parent Delegation Trace — Who/When/What):** Your app references `org.springframework.web.bind.annotation.RestController`. **Who** loads this class? **When** in the JVM startup does the first load happen? **What** would cause `ClassNotFoundException` for this annotation even with the correct Spring JAR on the classpath?
+**Challenge 8 (Parent Delegation Trace — Who/When/What):** Your app references `org.springframework.web.bind.annotation.RestController`. **Who** loads this class? **When** in the JVM startup does the first load happen? **What** would cause `ClassNotFoundException` for this annotation even with the correct Spring JAR on the classpath?
 
 <details><summary>Answer</summary>
 
@@ -404,7 +404,7 @@ flowchart TD
 
 </details>
 
-**Challenge 2 (ClassCastException Mystery):** You load a class `UserService` from two different plugins at runtime. Casting `plugin1UserService` to the `UserService` type throws `ClassCastException` — even though both are `UserService`. **Who** is the culprit? **What** rule explains this?
+**Challenge 9 (ClassCastException Mystery):** You load a class `UserService` from two different plugins at runtime. Casting `plugin1UserService` to the `UserService` type throws `ClassCastException` — even though both are `UserService`. **Who** is the culprit? **What** rule explains this?
 
 <details><summary>Answer</summary>
 
@@ -487,7 +487,7 @@ user1 = (User) user2;  // ClassCastException!
 
 🔬 **Section Challenge — G.3 Common Classloading Problems**
 
-**Challenge 1 (Debug — Who/When/What):** `NoClassDefFoundError` vs `ClassNotFoundException` — they sound the same but have DIFFERENT causes. **When** does each occur? **Who** throws each one?
+**Challenge 10 (Debug — Who/When/What):** `NoClassDefFoundError` vs `ClassNotFoundException` — they sound the same but have DIFFERENT causes. **When** does each occur? **Who** throws each one?
 
 <details><summary>Answer</summary>
 
@@ -520,7 +520,7 @@ Result: Restart in 1-3 seconds instead of 10-30!
 
 🔬 **Section Challenge — G.4 Spring DevTools Hot Reload**
 
-**Challenge 1 (Reasoning — Who/When/What):** Spring DevTools uses TWO classloaders: a "base" classloader for libraries and a "restart" classloader for your code. **Why** two instead of one? **What** does this enable that a full JVM restart doesn't?
+**Challenge 11 (Reasoning — Who/When/What):** Spring DevTools uses TWO classloaders: a "base" classloader for libraries and a "restart" classloader for your code. **Why** two instead of one? **What** does this enable that a full JVM restart doesn't?
 
 <details><summary>Answer</summary>
 
@@ -585,7 +585,7 @@ You use Maven/Gradle daily but:
 
 🔬 **Section Challenge — H.2 Dependency Scopes**
 
-**Challenge 1 (Scope Trace — Who/When/What):** A `mysql-connector-java` JDBC driver is declared in `pom.xml` with `<scope>runtime</scope>`. **Who** is allowed to use it? **When** does it appear on the classpath? **What** breaks if you change it to `<scope>compile</scope>`?
+**Challenge 12 (Scope Trace — Who/When/What):** A `mysql-connector-java` JDBC driver is declared in `pom.xml` with `<scope>runtime</scope>`. **Who** is allowed to use it? **When** does it appear on the classpath? **What** breaks if you change it to `<scope>compile</scope>`?
 
 <details><summary>Answer</summary>
 
@@ -593,7 +593,7 @@ You use Maven/Gradle daily but:
 
 </details>
 
-**Challenge 2 (Scope Design):** Why is Lombok declared with `<scope>provided</scope>` in some projects? Why does it still need to be `<scope>compile</scope>` in others?
+**Challenge 13 (Scope Design):** Why is Lombok declared with `<scope>provided</scope>` in some projects? Why does it still need to be `<scope>compile</scope>` in others?
 
 <details><summary>Answer</summary>
 
@@ -697,7 +697,7 @@ flowchart TD
 
 🔬 **Section Challenge — H.4 Dependency Conflicts**
 
-**Challenge 1 (Conflict Trace — Who/When/What):** Your app uses `spring-boot-starter-web` and explicitly adds `jackson-databind:2.12.0`. Maven resolves to `2.15.2` (from the BOM). **Who** wins? **When** does Maven's nearest-wins rule fire? **What** command shows you the final resolved tree?
+**Challenge 14 (Conflict Trace — Who/When/What):** Your app uses `spring-boot-starter-web` and explicitly adds `jackson-databind:2.12.0`. Maven resolves to `2.15.2` (from the BOM). **Who** wins? **When** does Maven's nearest-wins rule fire? **What** command shows you the final resolved tree?
 
 <details><summary>Answer</summary>
 
@@ -705,7 +705,7 @@ flowchart TD
 
 </details>
 
-**Challenge 2 (Bug Hunt):** `mvn dependency:tree` shows two versions of the same library: `[INFO] +- com.example:lib:jar:1.0.0:compile` and `[INFO] | \- com.example:lib:jar:2.0.0:compile (omitted for conflict)`. The app crashes with `NoSuchMethodError` at runtime. **Who** caused this? **What** is the fix?
+**Challenge 15 (Bug Hunt):** `mvn dependency:tree` shows two versions of the same library: `[INFO] +- com.example:lib:jar:1.0.0:compile` and `[INFO] | \- com.example:lib:jar:2.0.0:compile (omitted for conflict)`. The app crashes with `NoSuchMethodError` at runtime. **Who** caused this? **What** is the fix?
 
 <details><summary>Answer</summary>
 
@@ -757,7 +757,7 @@ Content-Length: 67
 
 🔬 **Section Challenge — I.1 HTTP Message Format**
 
-**Challenge 1 (Trace — Who/When/What):** A Spring Boot response for a large JSON payload uses `Transfer-Encoding: chunked` instead of `Content-Length`. **Who** decides to use chunked encoding? **When?** **What** is the advantage?\n\n<details><summary>Answer</summary>\n\n**Who decides?** Tomcat's `Response` object — when the response body size is not known before writing begins (no `Content-Length` set). Jackson serializes the object to Tomcat's output buffer incrementally. **When decided?** When the first write exceeds the response buffer (default 8KB) before the response is committed — Tomcat automatically switches to `Transfer-Encoding: chunked`. **Advantage:** You can start sending data to the client BEFORE you know the total size. Each chunk has its own size header, followed by data, terminated by a zero-length chunk. **Client impact:** The client receives and processes chunks as they arrive — better latency for large payloads. **Spring control:** `ResponseEntity.ok().body(data)` with known size sets `Content-Length`. `StreamingResponseBody` or `ResponseBodyEmitter` explicitly stream chunks.\n\n</details>
+**Challenge 16 (Trace — Who/When/What):** A Spring Boot response for a large JSON payload uses `Transfer-Encoding: chunked` instead of `Content-Length`. **Who** decides to use chunked encoding? **When?** **What** is the advantage?\n\n<details><summary>Answer</summary>\n\n**Who decides?** Tomcat's `Response` object — when the response body size is not known before writing begins (no `Content-Length` set). Jackson serializes the object to Tomcat's output buffer incrementally. **When decided?** When the first write exceeds the response buffer (default 8KB) before the response is committed — Tomcat automatically switches to `Transfer-Encoding: chunked`. **Advantage:** You can start sending data to the client BEFORE you know the total size. Each chunk has its own size header, followed by data, terminated by a zero-length chunk. **Client impact:** The client receives and processes chunks as they arrive — better latency for large payloads. **Spring control:** `ResponseEntity.ok().body(data)` with known size sets `Content-Length`. `StreamingResponseBody` or `ResponseBodyEmitter` explicitly stream chunks.\n\n</details>
 
 ## I.2 HTTP Methods - Semantic Meaning
 
@@ -784,7 +784,7 @@ Content-Length: 67
 
 🔬 **Section Challenge — I.2 HTTP Methods - Semantic Meaning**
 
-**Challenge 1 (Reasoning — Who/When/What):** `DELETE /orders/1` is idempotent but `POST /orders` is not. Your client retries a failed POST request due to a timeout. **What** problem can this cause? **What** header pattern prevents duplicate creation?
+**Challenge 17 (Reasoning — Who/When/What):** `DELETE /orders/1` is idempotent but `POST /orders` is not. Your client retries a failed POST request due to a timeout. **What** problem can this cause? **What** header pattern prevents duplicate creation?
 
 <details><summary>Answer</summary>
 
@@ -838,7 +838,7 @@ SPRING BOOT MAPPINGS:
 
 🔬 **Section Challenge — I.3 HTTP Status Codes**
 
-**Challenge 1 (Debug — Who/When/What):** Your Spring Boot app returns 500 for a validation error that should be 400. **Who** decides the status code? **When** does Spring auto-map exceptions to codes? **What** annotation fixes this?
+**Challenge 18 (Debug — Who/When/What):** Your Spring Boot app returns 500 for a validation error that should be 400. **Who** decides the status code? **When** does Spring auto-map exceptions to codes? **What** annotation fixes this?
 
 <details><summary>Answer</summary>
 
@@ -946,7 +946,7 @@ public class SingletonBeanFactory {
 
 🔬 **Section Challenge — J.1 Singleton Pattern**
 
-**Challenge 1 (Debug — Who/When/What):** A `@Service` bean has a `List<String> log = new ArrayList<>()` field. Requests add to it. After 1000 requests, **what** does the list contain? **Who** is responsible for this bug? **What** is the fix?
+**Challenge 19 (Debug — Who/When/What):** A `@Service` bean has a `List<String> log = new ArrayList<>()` field. Requests add to it. After 1000 requests, **what** does the list contain? **Who** is responsible for this bug? **What** is the fix?
 
 <details><summary>Answer</summary>
 
@@ -1109,7 +1109,7 @@ public class LoggingBeanPostProcessor implements BeanPostProcessor {
 
 🔬 **Section Challenge — J.7 Decorator Pattern**
 
-**Challenge 1 (Trace — Who/When/What):** The code shows `BeanPostProcessor` wrapping beans. **When** in Spring's bean lifecycle does `postProcessAfterInitialization` run? **What** has already happened to the bean at that point? **Who** calls it?
+**Challenge 20 (Trace — Who/When/What):** The code shows `BeanPostProcessor` wrapping beans. **When** in Spring's bean lifecycle does `postProcessAfterInitialization` run? **What** has already happened to the bean at that point? **Who** calls it?
 
 <details><summary>Answer</summary>
 
@@ -1138,7 +1138,7 @@ public interface Filter {
 
 🔬 **Section Challenge — J.8 Chain of Responsibility**
 
-**Challenge 1 (Debug — Who/When/What):** In Spring Security's filter chain, a custom `AuthFilter` calls `chain.doFilter(req, res)` to pass to the next filter. **What** happens if you forget to call `chain.doFilter()`? **Who** never executes?
+**Challenge 21 (Debug — Who/When/What):** In Spring Security's filter chain, a custom `AuthFilter` calls `chain.doFilter(req, res)` to pass to the next filter. **What** happens if you forget to call `chain.doFilter()`? **Who** never executes?
 
 <details><summary>Answer</summary>
 
@@ -1181,7 +1181,7 @@ flowchart TD
 
 🔬 **Section Challenge — K.1 Tomcat Thread Pool**
 
-**Challenge 1 (Reasoning — Who/When/What):** Default Tomcat max threads = 200. Your endpoint calls an external API taking 2 seconds per request. **When** does your server stop accepting new requests? **What** is the max throughput in requests/sec?
+**Challenge 22 (Reasoning — Who/When/What):** Default Tomcat max threads = 200. Your endpoint calls an external API taking 2 seconds per request. **When** does your server stop accepting new requests? **What** is the max throughput in requests/sec?
 
 <details><summary>Answer</summary>
 
@@ -1263,7 +1263,7 @@ public class EmailService {
 
 🔬 **Section Challenge — K.3 @Async in Spring**
 
-**Challenge 1 (Debug — Who/When/What):** You annotate a method `@Async` but it still runs synchronously on the caller's thread. **What** is the most common cause? **Who** creates the proxy that enables async behavior?
+**Challenge 23 (Debug — Who/When/What):** You annotate a method `@Async` but it still runs synchronously on the caller's thread. **What** is the most common cause? **Who** creates the proxy that enables async behavior?
 
 <details><summary>Answer</summary>
 
@@ -1388,7 +1388,7 @@ if (obj instanceof List<String>) { }  // Compile error!
 
 🔬 **Section Challenge — L.1 What Is Type Erasure?**
 
-**Challenge 1 (Reasoning — Who/When/What):** Generics were erased for backward compatibility with Java 1.4. **Who** generates bridge methods? **When?** **What** is a bridge method?\n\n<details><summary>Answer</summary>\n\n**Who generates?** `javac` — the Java compiler, not the JVM. **When?** During compilation of a class that overrides a generic method. **What is a bridge method?** When you implement `Comparable<String>.compareTo(String)`, the compiler generates TWO methods in the bytecode: your actual `compareTo(String)` AND a synthetic bridge `compareTo(Object)` that casts and delegates. The bridge satisfies the erased `Comparable.compareTo(Object)` contract — required because older JVM bytecode expects `compareTo(Object)`. You can see bridge methods with `javap -verbose`. **Why it matters:** Bridge methods can cause unexpected method resolution in reflection — `getDeclaredMethods()` returns bridge methods too. Filter with `Method.isBridge()` to exclude them.\n\n</details>
+**Challenge 24 (Reasoning — Who/When/What):** Generics were erased for backward compatibility with Java 1.4. **Who** generates bridge methods? **When?** **What** is a bridge method?\n\n<details><summary>Answer</summary>\n\n**Who generates?** `javac` — the Java compiler, not the JVM. **When?** During compilation of a class that overrides a generic method. **What is a bridge method?** When you implement `Comparable<String>.compareTo(String)`, the compiler generates TWO methods in the bytecode: your actual `compareTo(String)` AND a synthetic bridge `compareTo(Object)` that casts and delegates. The bridge satisfies the erased `Comparable.compareTo(Object)` contract — required because older JVM bytecode expects `compareTo(Object)`. You can see bridge methods with `javap -verbose`. **Why it matters:** Bridge methods can cause unexpected method resolution in reflection — `getDeclaredMethods()` returns bridge methods too. Filter with `Method.isBridge()` to exclude them.\n\n</details>
 
 ## L.2 Problems Caused by Type Erasure
 
@@ -1423,7 +1423,7 @@ public <T> void process(List<T> list) {
 
 🔬 **Section Challenge — L.2 Problems Caused by Type Erasure**
 
-**Challenge 1 (Design — Who/When/What):** The code shows `new T()` fails. The solution is `Class<T> type` passed to the constructor. **Why** can't the JVM just "remember" T? **What** specifically is lost at compile time?
+**Challenge 25 (Design — Who/When/What):** The code shows `new T()` fails. The solution is `Class<T> type` passed to the constructor. **Why** can't the JVM just "remember" T? **What** specifically is lost at compile time?
 
 <details><summary>Answer</summary>
 
@@ -1457,7 +1457,7 @@ List<User> users = objectMapper.readValue(
 
 🔬 **Section Challenge — L.3 TypeReference - Jackson's Solution**
 
-**Challenge 1 (Trace — Who/When/What):** `new TypeReference<List<User>>() {}` uses an anonymous class. **Why** does this trick preserve generic type info when normal generics are erased? **What** reflection method does Jackson call to extract it?
+**Challenge 26 (Trace — Who/When/What):** `new TypeReference<List<User>>() {}` uses an anonymous class. **Why** does this trick preserve generic type info when normal generics are erased? **What** reflection method does Jackson call to extract it?
 
 <details><summary>Answer</summary>
 
@@ -1487,7 +1487,7 @@ Class<?> entityClass = listType.resolve();  // User.class
 
 🔬 **Section Challenge — L.4 ResolvableType - Spring's Solution**
 
-**Challenge 1 (Reasoning — Who/When/What):** `ResolvableType` lets Spring resolve `JpaRepository<User, Long>` to know the entity is `User`. **When** does Spring need this? **What** would fail without it?
+**Challenge 27 (Reasoning — Who/When/What):** `ResolvableType` lets Spring resolve `JpaRepository<User, Long>` to know the entity is `User`. **When** does Spring need this? **What** would fail without it?
 
 <details><summary>Answer</summary>
 
@@ -1560,7 +1560,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 🔬 **Section Challenge — M.2 How Spring Data Generates Repository Implementations**
 
-**Challenge 1 (Trace — Who/When/What):** You write `interface UserRepo extends JpaRepository<User, Long> { List<User> findByEmail(String email); }` with NO implementation. **Who** creates the implementation? **When?** **What** bytecode is generated?
+**Challenge 28 (Trace — Who/When/What):** You write `interface UserRepo extends JpaRepository<User, Long> { List<User> findByEmail(String email); }` with NO implementation. **Who** creates the implementation? **When?** **What** bytecode is generated?
 
 <details><summary>Answer</summary>
 
@@ -1595,30 +1595,6 @@ public class User$HibernateProxy extends User {
     }
 }
 ```
-
-🔬 **Section Challenge — M.3 Hibernate Bytecode Enhancement**
-
-**Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
-
-<details><summary>Answer</summary>
-
-```java
-// N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
-List<Order> orders = orderRepo.findAll(); // 1 query
-orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
-
-// Fix 1: JOIN FETCH
-@Query("SELECT o FROM Order o JOIN FETCH o.customer")
-List<Order> findAllWithCustomer();
-
-// Fix 2: EntityGraph
-@EntityGraph(attributePaths = "customer")
-List<Order> findAll();
-```
-
-Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
-
-</details>
 
 ## M.4 Java Agents
 

@@ -519,7 +519,7 @@ public class User implements Auditable {
 
 🔬 **Section Challenge — Chapter 6: Tracking Who Did What, When**
 
-**Challenge 1 (Reasoning):** Why does storing a raw, unencrypted JWT in localStorage make your application critically vulnerable to Cross-Site Scripting (XSS)?
+**Challenge 2 (Reasoning):** Why does storing a raw, unencrypted JWT in localStorage make your application critically vulnerable to Cross-Site Scripting (XSS)?
 
 <details><summary>Answer</summary>
 
@@ -684,16 +684,6 @@ public class UserSearchService {
 ```
 
 ---
-
-🔬 **Section Challenge — Chapter 7: Preventing SQL Injection Attacks**
-
-**Challenge 1 (Reasoning):** Why does storing a raw, unencrypted JWT in localStorage make your application critically vulnerable to Cross-Site Scripting (XSS)?
-
-<details><summary>Answer</summary>
-
-If an attacker manages to inject malicious JavaScript into your webpage (XSS), that script has unrestricted access to `window.localStorage`. The script can read the JWT, send it to the attacker's server, and the attacker now has full, unrestricted access to impersonate the user until the token expires. To prevent this, sensitive JWTs should be stored in `HttpOnly` cookies, which are completely invisible and inaccessible to JavaScript execution.
-
-</details>
 
 # SECTION 8: ENCRYPTING SENSITIVE DATA
 
@@ -866,7 +856,7 @@ public class EncryptionService {
 
 🔬 **Section Challenge — Chapter 9: Securing Database Connections**
 
-**Challenge 1 (Reasoning):** Why does storing a raw, unencrypted JWT in localStorage make your application critically vulnerable to Cross-Site Scripting (XSS)?
+**Challenge 3 (Reasoning):** Why does storing a raw, unencrypted JWT in localStorage make your application critically vulnerable to Cross-Site Scripting (XSS)?
 <details><summary>Answer</summary>
 
 If an attacker manages to inject malicious JavaScript into your webpage (XSS), that script has unrestricted access to `window.localStorage`. The script can read the JWT, send it to the attacker's server, and the attacker now has full, unrestricted access to impersonate the user until the token expires. To prevent this, sensitive JWTs should be stored in `HttpOnly` cookies, which are completely invisible and inaccessible to JavaScript execution.

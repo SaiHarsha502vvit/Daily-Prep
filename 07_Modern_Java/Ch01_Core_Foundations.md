@@ -139,8 +139,6 @@ Fundamentally, Inner Classes are **Compiler Syntactic Sugar**. At the runtime JV
 
 ---
 
-🔬 **Section Challenge — PART 1: INNER CLASSES & INITIALIZATION**
-
 **Challenge (Reasoning):** A non-static inner class holds a hidden reference to the outer class (`Outer.this`). Why does this cause memory leaks in Android and why does `static` inner class fix it?
 
 <details><summary>Answer</summary>
@@ -239,14 +237,6 @@ Runnable anon = new Runnable() {
 
 **Challenge 1 (Debug — Who/When/What):** A non-static inner class instance is stored in a long-lived cache. **Who** holds the implicit reference to the outer class? **What** memory leak does this cause? **When** does the outer class become eligible for GC?\n\n<details><summary>Answer</summary>\n\n**Who holds the implicit ref?** Every non-static inner class instance holds a hidden `OuterClass.this` reference — it's a synthetic field added by the compiler, invisible in your code. **Memory leak:** The cache keeps the inner class alive → inner class keeps the outer class alive → the entire outer class (and all its fields) cannot be GC'd even if nothing else references it. **When GC eligible?** Only when the cache entry is evicted AND the inner class instance is no longer reachable. **Fix:** Use a static nested class (no implicit outer reference) for cache entries: `static class CacheEntry { }`. Or extract to a top-level class. This is a classic Android/Swing memory leak: anonymous `Runnable`/`Listener` captures the enclosing Activity/Frame.\n\n</details>
 
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-
-</details>
-
 ## 2. Initialization Order — The Exact Sequence
 
 ```text
@@ -295,8 +285,6 @@ class Child extends Parent {
 ```
 
 ---
-
-🔬 **Section Challenge — 2. Initialization Order — The Exact Sequence**
 
 **Challenge (Reasoning):** Parent constructor calls an overridable method `init()`. Child overrides `init()`. When `new Child()` is called, `init()` runs while Child's fields are still 0/null. Why is this dangerous?
 
@@ -376,29 +364,9 @@ void method(int... x)  { }  // NOT called for method(5)
 
 ---
 
-🔬 **Section Challenge — 3. Wrapper Classes & Caching Trap**
-
-**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
-
-<details><summary>Answer</summary>
-
-Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-
-</details>
-
 ## PART 2: COMPARABLE, COMPARATOR & OPTIONAL
 
 ---
-
-🔬 **Section Challenge — PART 2: COMPARABLE, COMPARATOR & OPTIONAL**
-
-**Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
-
-<details><summary>Answer</summary>
-
-`Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
-
-</details>
 
 ## 4. Comparable vs Comparator — Complete Guide
 
@@ -529,16 +497,6 @@ Optional.ofNullable(null);  // ✅ Returns Optional.empty()
 ```
 
 ---
-
-🔬 **Section Challenge — 5. Optional — Deep Dive**
-
-**Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
-
-<details><summary>Answer</summary>
-
-`Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
-
-</details>
 
 ## PART 3: ITERATOR, CLONE & VARARGS
 
@@ -732,8 +690,6 @@ public boolean equals(Object o) {
 
 ---
 
-🔬 **Section Challenge — PART 4: FUNCTIONAL INTERFACES & JPMS**
-
 **Challenge (Reasoning):** `@FunctionalInterface` is an annotation, not a compiler keyword. What does it actually do?
 
 <details><summary>Answer</summary>
@@ -792,8 +748,6 @@ Converter<String, Integer> toInt = Integer::parseInt;
 ```
 
 ---
-
-🔬 **Section Challenge — 9. All Built-in Functional Interfaces**
 
 **Challenge (Reasoning):** `Function<T,R>` vs `UnaryOperator<T>` — they look identical. When would you choose one over the other?
 

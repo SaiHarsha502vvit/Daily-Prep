@@ -136,16 +136,6 @@ You can have low latency AND low throughput (one thread).
 
 ---
 
-🔬 **Section Challenge — 3. CPU-Bound vs I/O-Bound — Know What You're Optimizing**
-
-**Challenge 1 (Reasoning):** Why does optimizing CPU usage sometimes INCREASE latency in a high-throughput Java application?
-
-<details><summary>Answer</summary>
-
-Context Switching and Queueing. If you heavily batch tasks to maximize CPU cache hits and 100% CPU utilization, you create artificial queues. Little's Law dictates that as utilization approaches 100%, queue wait times grow exponentially. A system running at 70% CPU might have 10ms latency, while the same system pushed to 95% CPU (via batching/tuning) might process more requests per second but suffer 200ms latency due to thread contention and GC pauses.
-
-</details>
-
 ## 4. JVM Memory Model — Heap, Stack, and GC Roots
 
 **JVM process memory**
@@ -189,7 +179,7 @@ If an object is NOT reachable from any GC root, it is garbage and gets collected
 
 🔬 **Section Challenge — 4. JVM Memory Model — Heap, Stack, and GC Roots**
 
-**Challenge 1 (Memory Leaks):** Why does a memory leak in a `ThreadLocal` variable often cause out-of-memory errors in Tomcat/Spring Boot applications, but not in simple command-line Java scripts?
+**Challenge 2 (Memory Leaks):** Why does a memory leak in a `ThreadLocal` variable often cause out-of-memory errors in Tomcat/Spring Boot applications, but not in simple command-line Java scripts?
 
 <details><summary>Answer</summary>
 
@@ -237,7 +227,7 @@ In a simple script, the thread dies when the script finishes, taking the `Thread
 
 🔬 **Section Challenge — 5. Garbage Collection Tuning**
 
-**Challenge 1 (Log Analysis):** You see frequent "Full GC" events in your logs, but the Old Generation space is only 20% full. What could be causing this?
+**Challenge 3 (Log Analysis):** You see frequent "Full GC" events in your logs, but the Old Generation space is only 20% full. What could be causing this?
 
 <details><summary>Answer</summary>
 
@@ -286,7 +276,7 @@ In this example:
 
 🔬 **Section Challenge — 6. Profiling with async-profiler and Flamegraphs**
 
-**Challenge 1 (Reasoning):** When reading a CPU Flamegraph, you notice that a specific function forms a very wide plateau at the very top of a stack trace. What does this indicate?
+**Challenge 4 (Reasoning):** When reading a CPU Flamegraph, you notice that a specific function forms a very wide plateau at the very top of a stack trace. What does this indicate?
 
 <details><summary>Answer</summary>
 
@@ -471,7 +461,7 @@ public class CollectionBenchmark {
 
 🔬 **Section Challenge — 9. JMH — Microbenchmarking Done Right**
 
-**Challenge 1 (Pitfalls):** Why must a JMH benchmark method return a value or use a `Blackhole` object instead of just performing a calculation and returning `void`?
+**Challenge 5 (Pitfalls):** Why must a JMH benchmark method return a value or use a `Blackhole` object instead of just performing a calculation and returning `void`?
 
 <details><summary>Answer</summary>
 
@@ -531,7 +521,7 @@ Then watch: ActiveConnections, IdleConnections, PendingThreads
 
 🔬 **Section Challenge — 10. Connection Pool Tuning**
 
-**Challenge 1 (Database Tuning):** Your server has a 4-core CPU. You increase your HikariCP database connection pool size from 10 to 500 to handle more concurrent users. Performance immediately drops. Why?
+**Challenge 6 (Database Tuning):** Your server has a 4-core CPU. You increase your HikariCP database connection pool size from 10 to 500 to handle more concurrent users. Performance immediately drops. Why?
 
 <details><summary>Answer</summary>
 
@@ -612,16 +602,6 @@ public void updateUser(Long userId, UserDTO dto) {
 ```
 
 ---
-
-🔬 **Section Challenge — 11. Caching Strategies**
-
-**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
-
-<details><summary>Answer</summary>
-
-Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-
-</details>
 
 ## 12. Production Performance Checklist
 

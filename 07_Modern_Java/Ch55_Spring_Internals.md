@@ -476,7 +476,7 @@ protected Object doGetBean(String name) {
 
 🔬 **Section Challenge — 3. The Bean Container — ApplicationContext Internals**
 
-**Challenge 1 (Trace — Who/When/What):** You have two `DataSource` beans — `primaryDataSource` and `backupDataSource`. `@Autowired DataSource ds` in a service. Spring throws `NoUniqueBeanDefinitionException`. **Who** is responsible for resolution? **When** does it fail — startup or first use? **What** are the three ways to resolve?
+**Challenge 2 (Trace — Who/When/What):** You have two `DataSource` beans — `primaryDataSource` and `backupDataSource`. `@Autowired DataSource ds` in a service. Spring throws `NoUniqueBeanDefinitionException`. **Who** is responsible for resolution? **When** does it fail — startup or first use? **What** are the three ways to resolve?
 
 <details><summary>Answer</summary>
 
@@ -672,7 +672,7 @@ public void processOrder(Order order) {
 
 🔬 **Section Challenge — 5. How @Autowired Works — The Full Resolution Chain**
 
-**Challenge 1 (Ambiguity Resolution):** You have two beans implementing `PaymentService`: `StripePaymentService` and `PaypalPaymentService`. You inject `@Autowired PaymentService service`. **Who** resolves the ambiguity? **When** does it fail vs. succeed? **What** are the three resolution strategies Spring uses in order?
+**Challenge 3 (Ambiguity Resolution):** You have two beans implementing `PaymentService`: `StripePaymentService` and `PaypalPaymentService`. You inject `@Autowired PaymentService service`. **Who** resolves the ambiguity? **When** does it fail vs. succeed? **What** are the three resolution strategies Spring uses in order?
 
 <details><summary>Answer</summary>
 
@@ -900,7 +900,7 @@ public final class OrderService {  // ❌ CGLIB can't subclass final!
 
 🔬 **Section Challenge — 6. How Proxies Work — CGLIB vs JDK Dynamic Proxy Internal Mechanics**
 
-**Challenge 1 (CGLIB Final Class):** You annotate `final class OrderService` with `@Transactional`. **Who** fails at startup? **When** does the failure happen? **What** is the exact error and the two correct fixes?
+**Challenge 4 (CGLIB Final Class):** You annotate `final class OrderService` with `@Transactional`. **Who** fails at startup? **When** does the failure happen? **What** is the exact error and the two correct fixes?
 
 <details><summary>Answer</summary>
 
@@ -1031,16 +1031,6 @@ and all repository calls on the same thread use the SAME connection.
 | **NESTED**             | Yes → Create SAVEPOINT; No → Create new    | Partial rollback            | Retry individual items in a batch                         |
 
 ---
-
-🔬 **Section Challenge — 7. How @Transactional ACTUALLY Works — From Annotation to Commit**
-
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-
-<details><summary>Answer</summary>
-
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-
-</details>
 
 ## 8. How Auto-Configuration Works — spring.factories to Bean
 
@@ -1178,7 +1168,7 @@ public class DataSourceAutoConfiguration {
 
 🔬 **Section Challenge — 8. How Auto-Configuration Works — spring.factories to Bean**
 
-**Challenge 1 (Condition Ordering):** Two auto-configurations define a `DataSource` bean. `MyDataSourceAutoConfig` has `@ConditionalOnMissingBean(DataSource.class)`. Your app also defines a `DataSource` bean manually. **Who** decides which bean wins? **When** is the condition evaluated? **What** determines evaluation order?
+**Challenge 5 (Condition Ordering):** Two auto-configurations define a `DataSource` bean. `MyDataSourceAutoConfig` has `@ConditionalOnMissingBean(DataSource.class)`. Your app also defines a `DataSource` bean manually. **Who** decides which bean wins? **When** is the condition evaluated? **What** determines evaluation order?
 
 <details><summary>Answer</summary>
 
@@ -1252,7 +1242,7 @@ Spring scans EVERY class file but only LOADS the ones with @Component.
 
 🔬 **Section Challenge — 9. How @ComponentScan Works — Classpath Scanning Algorithm**
 
-**Challenge 1 (Package Boundary):** Your `@SpringBootApplication` is in `com.example`. You create a service in `com.utils.HelperService` with `@Service`. **Who** misses it? **When** does the scan boundary matter? **What** are two ways to include the out-of-package bean?
+**Challenge 6 (Package Boundary):** Your `@SpringBootApplication` is in `com.example`. You create a service in `com.utils.HelperService` with `@Service`. **Who** misses it? **When** does the scan boundary matter? **What** are two ways to include the out-of-package bean?
 
 <details><summary>Answer</summary>
 
@@ -1328,7 +1318,7 @@ public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata)
 
 🔬 **Section Challenge — 10. How Profiles & @Conditional Work — The Decision Engine**
 
-**Challenge 1 (Profile Misfire):** You have `@Profile("prod") @Service class EmailService`. In test, `spring.profiles.active=test`. A test autowires `EmailService`. **Who** throws? **When**? **What** is the standard fix for test environments needing a stub?
+**Challenge 7 (Profile Misfire):** You have `@Profile("prod") @Service class EmailService`. In test, `spring.profiles.active=test`. A test autowires `EmailService`. **Who** throws? **When**? **What** is the standard fix for test environments needing a stub?
 
 <details><summary>Answer</summary>
 
@@ -1446,7 +1436,7 @@ public A(@Lazy B b) { this.b = b; }  // Injects a proxy that resolves later
 
 🔬 **Section Challenge — 11. How Spring Resolves Circular Dependencies**
 
-**Challenge 1 (Third-Bean Fix):** `ServiceA` (constructor) depends on `ServiceB` (constructor) which depends on `ServiceA`. Spring throws `BeanCurrentlyInCreationException`. **Who** breaks the cycle? **What** is the third-bean refactor pattern? **When** is `@Lazy` appropriate vs. the refactor?
+**Challenge 8 (Third-Bean Fix):** `ServiceA` (constructor) depends on `ServiceB` (constructor) which depends on `ServiceA`. Spring throws `BeanCurrentlyInCreationException`. **Who** breaks the cycle? **What** is the third-bean refactor pattern? **When** is `@Lazy` appropriate vs. the refactor?
 
 <details><summary>Answer</summary>
 
@@ -1504,7 +1494,7 @@ flowchart TD
 
 🔬 **Section Challenge — 12. How Spring MVC Processes a Request — All 14 Steps**
 
-**Challenge 1 (Handler Not Found):** A `GET /api/users/123` request arrives. **Who** returns 404? **When** in the 14-step flow does it happen? **What** is the difference between a 404 from "no handler found" vs. 404 from a `@ResponseStatus(NOT_FOUND)` thrown inside the handler?
+**Challenge 9 (Handler Not Found):** A `GET /api/users/123` request arrives. **Who** returns 404? **When** in the 14-step flow does it happen? **What** is the difference between a 404 from "no handler found" vs. 404 from a `@ResponseStatus(NOT_FOUND)` thrown inside the handler?
 
 <details><summary>Answer</summary>
 
@@ -2483,7 +2473,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
 
 🔬 **Section Challenge — 12A-12H Request Pipeline Deep Dive**
 
-**Challenge 1 (Filter Order Debugging):** You have a `LoggingFilter` that logs the request body and a Spring Security `FilterChainProxy`. The logging filter runs AFTER security. An unauthenticated request arrives. **What** does the logging filter see? **Why** is this a problem? **How** do you fix it?
+**Challenge 10 (Filter Order Debugging):** You have a `LoggingFilter` that logs the request body and a Spring Security `FilterChainProxy`. The logging filter runs AFTER security. An unauthenticated request arrives. **What** does the logging filter see? **Why** is this a problem? **How** do you fix it?
 
 <details><summary>Answer</summary>
 
@@ -2491,7 +2481,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
 
 </details>
 
-**Challenge 2 (Interceptor vs Filter Trap):** You write a `HandlerInterceptor` to check if the user has a "Premium" role before allowing access to `/api/reports/**`. It works in tests. In production, users can still access reports without the Premium role by requesting `/api/reports/../reports/dashboard`. **Why?** **Where** in the pipeline does path normalization happen?
+**Challenge 11 (Interceptor vs Filter Trap):** You write a `HandlerInterceptor` to check if the user has a "Premium" role before allowing access to `/api/reports/**`. It works in tests. In production, users can still access reports without the Premium role by requesting `/api/reports/../reports/dashboard`. **Why?** **Where** in the pipeline does path normalization happen?
 
 <details><summary>Answer</summary>
 
@@ -2499,7 +2489,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
 
 </details>
 
-**Challenge 3 (The Disappearing Exception):** A `HandlerInterceptor.afterCompletion()` throws `NullPointerException`. The controller returned a valid 200 response. **What** does the client receive? **Where** does the NPE go?
+**Challenge 12 (The Disappearing Exception):** A `HandlerInterceptor.afterCompletion()` throws `NullPointerException`. The controller returned a valid 200 response. **What** does the client receive? **Where** does the NPE go?
 
 <details><summary>Answer</summary>
 
@@ -2568,7 +2558,7 @@ flowchart TD
 
 🔬 **Section Challenge — 13. The Entire Spring Ecosystem — How Pieces Fit Together**
 
-**Challenge 1 (Startup-to-Shutdown Trace):** Trace the lifecycle of the entire Spring ecosystem from `main()` to graceful shutdown. **Who** starts first? **When** do beans become available for injection? **What** happens to in-flight HTTP requests during shutdown?
+**Challenge 13 (Startup-to-Shutdown Trace):** Trace the lifecycle of the entire Spring ecosystem from `main()` to graceful shutdown. **Who** starts first? **When** do beans become available for injection? **What** happens to in-flight HTTP requests during shutdown?
 
 <details><summary>Answer</summary>
 

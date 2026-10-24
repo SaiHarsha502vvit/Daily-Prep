@@ -331,30 +331,6 @@ public class CustomEntityListener {
 
 ---
 
-🔬 **Section Challenge — JPA Entity Lifecycle Annotations**
-
-**Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
-
-<details><summary>Answer</summary>
-
-```java
-// N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
-List<Order> orders = orderRepo.findAll(); // 1 query
-orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
-
-// Fix 1: JOIN FETCH
-@Query("SELECT o FROM Order o JOIN FETCH o.customer")
-List<Order> findAllWithCustomer();
-
-// Fix 2: EntityGraph
-@EntityGraph(attributePaths = "customer")
-List<Order> findAll();
-```
-
-Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
-
-</details>
-
 ## JPA Mapping Annotations
 
 ### Entity & Table Annotations
@@ -764,7 +740,7 @@ Semantic Clarity and Future-Proofing. Under the hood, `@Service` is literally ju
 </details>
 
 
-**Challenge 1 (Reasoning):** JPA entities annotated with `@Entity` are picked up by `HibernateEntityManagerFactory` via classpath scanning. Why does using `@Table(name = "users")` over the implicit default (class name as table name) matter for production systems?
+**Challenge 2 (Reasoning):** JPA entities annotated with `@Entity` are picked up by `HibernateEntityManagerFactory` via classpath scanning. Why does using `@Table(name = "users")` over the implicit default (class name as table name) matter for production systems?
 
 <details><summary>Answer</summary>
 
@@ -868,7 +844,7 @@ public class Product extends Auditable {
 
 🔬 **Section Challenge — Spring Data Auditing**
 
-**Challenge 1 (Reasoning):** The `@CreatedDate` and `@LastModifiedDate` annotations automatically populate timestamp fields. What mechanism does Spring Data JPA use to set these values, and why does `@EnableJpaAuditing` require a bean implementing `AuditorAware<T>`?
+**Challenge 3 (Reasoning):** The `@CreatedDate` and `@LastModifiedDate` annotations automatically populate timestamp fields. What mechanism does Spring Data JPA use to set these values, and why does `@EnableJpaAuditing` require a bean implementing `AuditorAware<T>`?
 
 <details><summary>Answer</summary>
 
@@ -1423,17 +1399,6 @@ Annotations are compile-time promises that have runtime consequences. These are 
 - **`@PreAuthorize` does not protect data-level access** — `@PreAuthorize("hasRole('ADMIN')")` checks role at method entry but the underlying query (`SELECT * FROM users`) still executes inside the transaction. An admin can still access any user's data if the query doesn't filter. **Debug workflow:** Add data-level authorization in the query: `WHERE owner_id = :currentUserId`. Use `@Query` with explicit `WHERE` clauses rather than trusting method-level security alone.
 
 ---
-
-🔬 **Section Challenge — Spring Core Annotations**
-
-**Challenge 1 (Reasoning):** Why is `@Service` functionally identical to `@Component`, yet it is highly recommended to use `@Service` for your business logic layer?
-
-<details><summary>Answer</summary>
-
-Semantic Clarity and Future-Proofing. Under the hood, `@Service` is literally just a meta-annotation of `@Component` and behaves exactly the same in the IoC container. However, it explicitly communicates to other developers that the class holds domain business logic. Furthermore, Spring Pointcuts and AOP interceptors often target `@Service` specifically to apply transaction management or logging rules exclusively to the business layer.
-
-</details>
-
 
 ---
 

@@ -369,16 +369,6 @@ class UserServiceIntegrationTest extends AbstractContainerBaseTest {
 
 ---
 
-🔬 **Section Challenge — Test Containers**
-
-**Challenge 1 (Reasoning):** Why is using Testcontainers superior to using an In-Memory Database (like H2) for integration testing Spring Boot applications?
-
-<details><summary>Answer</summary>
-
-Syntax and Feature parity. H2 emulates Postgres/MySQL but often fails to accurately replicate native JSONB operators, advanced window functions, or specific transaction isolation anomalies. If tests pass on H2 but run on Postgres in production, you are blind to database-specific bugs. Testcontainers spins up a real Docker container of the exact Postgres version you use in production, ensuring 100% environment parity and eliminating "works on my machine" bugs.
-
-</details>
-
 ## Testing Best Practices
 
 ### Test Organization
@@ -1073,16 +1063,6 @@ class UserApiSimulation extends Simulation {
 
 ---
 
-🔬 **Section Challenge — Performance Testing**
-
-**Challenge 1 (Reasoning):** Why is using Testcontainers superior to using an In-Memory Database (like H2) for integration testing Spring Boot applications?
-
-<details><summary>Answer</summary>
-
-Syntax and Feature parity. H2 emulates Postgres/MySQL but often fails to accurately replicate native JSONB operators, advanced window functions, or specific transaction isolation anomalies. If tests pass on H2 but run on Postgres in production, you are blind to database-specific bugs. Testcontainers spins up a real Docker container of the exact Postgres version you use in production, ensuring 100% environment parity and eliminating "works on my machine" bugs.
-
-</details>
-
 ## Interview Questions
 
 ### Basic Questions
@@ -1310,7 +1290,7 @@ _Next: Part 20 - Microservices Patterns (Service Discovery, API Gateway, Circuit
 
 🔬 **Section Challenge — Summary**
 
-**Challenge 1 (Reasoning):** The Quick Reference shows both `@MockBean` and `@SpyBean`. In practice, using `@MockBean` in integration tests causes a subtle but devastating performance problem. What is it, and when should you use `@SpyBean` instead?
+**Challenge 2 (Reasoning):** The Quick Reference shows both `@MockBean` and `@SpyBean`. In practice, using `@MockBean` in integration tests causes a subtle but devastating performance problem. What is it, and when should you use `@SpyBean` instead?
 
 <details><summary>Answer</summary>
 

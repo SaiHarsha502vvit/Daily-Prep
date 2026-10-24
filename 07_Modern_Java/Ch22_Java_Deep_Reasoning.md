@@ -128,24 +128,6 @@ System.out.println(original); // "hello" — unchanged!
 
 ---
 
-🔬 **Section Challenge — 2. String Pool & Immutability: Why Strings Behave Strangely**
-
-**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
-
-<details><summary>Answer</summary>
-
-First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
-
-</details>
-
-**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
-
-<details><summary>Answer</summary>
-
-Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
-
-</details>
-
 ## 3. `==` vs `.equals()`: The Identity vs Equality Trap
 
 ### The Freeze Question
@@ -318,19 +300,11 @@ Dog dog = create(Dog.class); // Works!
 
 🔬 **Section Challenge — 5. Generics Type Erasure: Why You Can't Do `new T()`**
 
-**Challenge 1 (Trace — Who/When/What):** `@SafeVarargs` suppresses heap pollution warnings on `static <T> List<T> asList(T... elements)`. **What** is heap pollution? **Who** detects it? **When** does the actual error occur?
+**Challenge 2 (Trace — Who/When/What):** `@SafeVarargs` suppresses heap pollution warnings on `static <T> List<T> asList(T... elements)`. **What** is heap pollution? **Who** detects it? **When** does the actual error occur?
 
 <details><summary>Answer</summary>
 
 **Heap pollution:** When a variable of parameterized type refers to an object that is not of that type — caused by unchecked casts or varargs with generics. **Example:** `List<String> strings = (List) listOfIntegers` — the heap variable `strings` claims to hold strings but actually holds integers. **Who detects?** NOT the JVM (generics are erased). The COMPILER issues an `unchecked` warning at the varargs call site. **When actual error?** At runtime, when code tries to read a `String` from `strings` — gets an `Integer`, throws `ClassCastException`. `@SafeVarargs` is a promise: "I guarantee I don't write mismatched types into the varargs array." Breaking that promise means runtime CCE with no compile-time warning.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
 
 </details>
 
@@ -387,24 +361,6 @@ Map<String, Integer> map = new HashMap<>(100); // avoids resizing
 
 ---
 
-🔬 **Section Challenge — 6. HashMap Internals: Not Just "Key-Value Store"**
-
-**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-
-<details><summary>Answer</summary>
-
-Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-
-<details><summary>Answer</summary>
-
-Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-
-</details>
-
 ## 7. `final` Keyword: Three Different Meanings
 
 ### The Freeze Question
@@ -434,7 +390,7 @@ final CLASS → can't be extended
 
 🔬 **Section Challenge — 7. `final` Keyword: Three Different Meanings**
 
-**Challenge 1 (final Three Meanings):** `final` means different things on a field, method, and class. **Who** enforces each at runtime vs. compile time? **When** does `final` on a reference type NOT make the object immutable? **What** does `effectively final` mean in lambda context?
+**Challenge 3 (final Three Meanings):** `final` means different things on a field, method, and class. **Who** enforces each at runtime vs. compile time? **When** does `final` on a reference type NOT make the object immutable? **What** does `effectively final` mean in lambda context?
 
 <details><summary>Answer</summary>
 
@@ -480,23 +436,6 @@ exceptions extensively. The debate continues.
 
 ---
 
-🔬 **Section Challenge — 8. Checked vs Unchecked Exceptions: The Design Philosophy**
-
-**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-
-<details><summary>Answer</summary>
-
-`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-
-<details><summary>Answer</summary>
-
-1. `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
-</details>
-
 ## 9. Autoboxing Traps: Where Performance Silently Degrades
 
 ### The Freeze Question
@@ -535,7 +474,7 @@ System.out.println(a == b); // false! (see Section 4 — cache only -128 to 127)
 
 🔬 **Section Challenge — 9. Autoboxing Traps: Where Performance Silently Degrades**
 
-**Challenge 1 (Autoboxing Loop Penalty):** `Long sum = 0L; for (int i = 0; i < 1_000_000; i++) sum += i;` **Who** creates 1 million objects? **When** does autoboxing become a GC problem? **What** is the fix?
+**Challenge 4 (Autoboxing Loop Penalty):** `Long sum = 0L; for (int i = 0; i < 1_000_000; i++) sum += i;` **Who** creates 1 million objects? **When** does autoboxing become a GC problem? **What** is the fix?
 
 <details><summary>Answer</summary>
 
@@ -607,7 +546,7 @@ list.removeAll(toRemove);
 
 🔬 **Section Challenge — 10. ConcurrentModificationException: Why Iterating + Modifying Fails**
 
-**Challenge 1 (Fail-Fast Iterator):** You iterate a `HashMap` with `for (Map.Entry<K,V> e : map.entrySet())` and call `map.put(newKey, val)` inside the loop. **Who** throws `ConcurrentModificationException`? **When** is it detected? **What** are two safe modification patterns?
+**Challenge 5 (Fail-Fast Iterator):** You iterate a `HashMap` with `for (Map.Entry<K,V> e : map.entrySet())` and call `map.put(newKey, val)` inside the loop. **Who** throws `ConcurrentModificationException`? **When** is it detected? **What** are two safe modification patterns?
 
 <details><summary>Answer</summary>
 
@@ -699,7 +638,7 @@ need shared STATE or constructors.
 
 🔬 **Section Challenge — 12. Abstract Class vs Interface: The Post-Java-8 Reality**
 
-**Challenge 1 (Default Method Diamond):** Interface `A` has `default void greet()`. Interface `B` also has `default void greet()`. Class `C implements A, B`. **Who** resolves the conflict? **When** does this become a compile error? **What** is the resolution rule if `C` extends a class that also has `greet()`?
+**Challenge 6 (Default Method Diamond):** Interface `A` has `default void greet()`. Interface `B` also has `default void greet()`. Class `C implements A, B`. **Who** resolves the conflict? **When** does this become a compile error? **What** is the resolution rule if `C` extends a class that also has `greet()`?
 
 <details><summary>Answer</summary>
 

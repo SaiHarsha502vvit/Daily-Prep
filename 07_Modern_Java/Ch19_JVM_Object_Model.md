@@ -206,19 +206,11 @@ if (obj instanceof String s) {
 
 🔬 **Section Challenge — 3. Klass Pointer: How JVM Knows the Type**
 
-**Challenge 1 (Trace — Who/When/What):** `Animal a = new Dog(); a.speak()` — **who** resolves `speak()` to `Dog.speak()`? **When** at runtime? **What** data structure in the JVM makes this possible?
+**Challenge 2 (Trace — Who/When/What):** `Animal a = new Dog(); a.speak()` — **who** resolves `speak()` to `Dog.speak()`? **When** at runtime? **What** data structure in the JVM makes this possible?
 
 <details><summary>Answer</summary>
 
 **Who resolves?** The JVM's virtual dispatch mechanism via the Klass pointer. **When?** At the `invokevirtual` bytecode instruction — not at compile time. **What data structure?** The vtable (virtual method table) embedded in the Klass (C++ object in JVM metadata). Each class's vtable is an array of method pointers. `Dog`'s vtable entry for `speak` points to `Dog.speak()`. When `a.speak()` executes: (1) Load object ref `a`. (2) Follow Klass pointer (compressed, in object header). (3) Look up `speak()` in the vtable at a fixed index. (4) Call the resolved method pointer. This entire dispatch costs ~1 ns — significantly faster than reflection which bypasses this and does hash-map lookups.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
 
 </details>
 
@@ -304,7 +296,7 @@ class BadLayout {
 
 🔬 **Section Challenge — 4. Field Layout, Padding, and Alignment**
 
-**Challenge 1 (Reasoning):** Why does a simple `boolean` field (1 bit of data) in a Java object actually consume 16 bytes of memory in the JVM?
+**Challenge 3 (Reasoning):** Why does a simple `boolean` field (1 bit of data) in a Java object actually consume 16 bytes of memory in the JVM?
 
 <details><summary>Answer</summary>
 
@@ -379,7 +371,7 @@ Step-by-step lock escalation:
 
 🔬 **Section Challenge — 5. Lock Escalation: Biased → Thin → Fat**
 
-**Challenge 1 (Diagnostic - What/Where/Why):** Two threads repeatedly contend for a `synchronized` block on the same object. The JVM escalates the lock. **What** state does the lock enter? **Where** does the object's Mark Word now point, and **Why** does this state persist even after the threads finish?
+**Challenge 4 (Diagnostic - What/Where/Why):** Two threads repeatedly contend for a `synchronized` block on the same object. The JVM escalates the lock. **What** state does the lock enter? **Where** does the object's Mark Word now point, and **Why** does this state persist even after the threads finish?
 
 <details><summary>Answer</summary>
 
@@ -546,7 +538,7 @@ System.out.println(((Child) obj).x);  // 20 (Child's x — need cast!)
 
 🔬 **Section Challenge — 7. Method Hiding vs Overriding: The Static Method Freeze Moment**
 
-**Challenge 1 (Bug Hunt - Who/What/How):** A junior developer writes a static `getInstance()` method in a `Vehicle` parent class and a static `getInstance()` method in a `Car` child class. They call `Vehicle v = new Car(); v.getInstance();` expecting the `Car` version. **Who** actually executes? **What** bytecode instruction makes this happen, and **How** should this be fixed?
+**Challenge 5 (Bug Hunt - Who/What/How):** A junior developer writes a static `getInstance()` method in a `Vehicle` parent class and a static `getInstance()` method in a `Car` child class. They call `Vehicle v = new Car(); v.getInstance();` expecting the `Car` version. **Who** actually executes? **What** bytecode instruction makes this happen, and **How** should this be fixed?
 
 <details><summary>Answer</summary>
 
@@ -700,7 +692,7 @@ sealed interface Shape permits Circle, Rectangle, Triangle {
 
 🔬 **Section Challenge — 8. Best Java Design Strategies: Building Robust Structures**
 
-**Challenge 1 (Design - Why/How/What):** A developer wants to use a `User` object as a key in a `HashMap`. **Why** must the object be immutable? **How** should defensive copying be applied if `User` contains a `Date` field, and **What** happens if the `Date` is modified after insertion?
+**Challenge 6 (Design - Why/How/What):** A developer wants to use a `User` object as a key in a `HashMap`. **Why** must the object be immutable? **How** should defensive copying be applied if `User` contains a `Date` field, and **What** happens if the `Date` is modified after insertion?
 
 <details><summary>Answer</summary>
 

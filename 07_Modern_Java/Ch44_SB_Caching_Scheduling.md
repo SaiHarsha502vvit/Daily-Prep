@@ -388,16 +388,6 @@ public class RedisCacheConfig {
 
 ---
 
-🔬 **Section Challenge — Why Caching Matters**
-
-**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
-
-<details><summary>Answer</summary>
-
-Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-
-</details>
-
 # 📌 Section 2: Async Processing
 
 ---
@@ -626,24 +616,6 @@ public class TransactionalService {
 ```
 
 ---
-
-🔬 **Section Challenge — Chapter 2: @Async Deep Dive**
-
-**Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
-
-<details><summary>Answer</summary>
-
-`Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
-
-<details><summary>Answer</summary>
-
-Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
-
-</details>
 
 # 📌 Section 3: Scheduling
 

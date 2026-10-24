@@ -192,7 +192,7 @@ USED BY: Cassandra, DynamoDB, Redis Cluster, Memcached, CDNs
 
 🔬 **Section Challenge — 4. Consistent Hashing — How Data Is Distributed**
 
-**Challenge 1 (System Design):** You have a cache cluster with 3 servers using Consistent Hashing. You notice Server A is taking 80% of all the traffic, while Servers B and C are mostly idle. Why is this happening, and how do Virtual Nodes fix it?
+**Challenge 2 (System Design):** You have a cache cluster with 3 servers using Consistent Hashing. You notice Server A is taking 80% of all the traffic, while Servers B and C are mostly idle. Why is this happening, and how do Virtual Nodes fix it?
 
 <details><summary>Answer</summary>
 
@@ -258,7 +258,7 @@ WHERE heartbeat < NOW() - INTERVAL '30 seconds';
 
 🔬 **Section Challenge — 5. Leader Election — Who's in Charge**
 
-**Challenge 1 (Edge Cases):** Service Instance A acquires a distributed lock in Redis to process an important daily batch job. While processing, Instance A experiences a 60-second JVM Garbage Collection pause. The lock expires in Redis after 30 seconds, and Instance B takes the lock and starts processing. Instance A wakes up and continues processing. Both instances write to the database. How do you prevent this?
+**Challenge 3 (Edge Cases):** Service Instance A acquires a distributed lock in Redis to process an important daily batch job. While processing, Instance A experiences a 60-second JVM Garbage Collection pause. The lock expires in Redis after 30 seconds, and Instance B takes the lock and starts processing. Instance A wakes up and continues processing. Both instances write to the database. How do you prevent this?
 
 <details><summary>Answer</summary>
 
@@ -309,15 +309,7 @@ No conflicts! No coordination needed! Works offline!
 
 🔬 **Section Challenge — 6. CRDT — Conflict-Free Replicated Data Types**
 
-**Challenge 1 (Reasoning — Who/When/What):** A G-Counter CRDT has 3 nodes each with vector `[node1, node2, node3]`. Node1=`[5,3,2]`, Node2=`[3,7,1]`. **Who** merges them? **What** is the merged value? **When** does eventual consistency converge?\n\n<details><summary>Answer</summary>\n\n**Who merges?** Any node receiving the state from another — no coordinator needed (fully decentralized). **Merged value:** Element-wise MAX: `[max(5,3), max(3,7), max(2,1)]` = `[5,7,2]`. Total count = 5+7+2 = 14. **When convergence?** Once all nodes have exchanged their states (gossip protocol), every node will have the same vector and same total. CRDTs guarantee convergence regardless of message ordering or delivery. **Why MAX works:** Each element represents a node's OWN increment count. A node never decrements its own slot. MAX safely captures the highest observed count per node without losing any increments, even when messages arrive out of order.\n\n</details>
-
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-
-</details>
+**Challenge 4 (Reasoning — Who/When/What):** A G-Counter CRDT has 3 nodes each with vector `[node1, node2, node3]`. Node1=`[5,3,2]`, Node2=`[3,7,1]`. **Who** merges them? **What** is the merged value? **When** does eventual consistency converge?\n\n<details><summary>Answer</summary>\n\n**Who merges?** Any node receiving the state from another — no coordinator needed (fully decentralized). **Merged value:** Element-wise MAX: `[max(5,3), max(3,7), max(2,1)]` = `[5,7,2]`. Total count = 5+7+2 = 14. **When convergence?** Once all nodes have exchanged their states (gossip protocol), every node will have the same vector and same total. CRDTs guarantee convergence regardless of message ordering or delivery. **Why MAX works:** Each element represents a node's OWN increment count. A node never decrements its own slot. MAX safely captures the highest observed count per node without losing any increments, even when messages arrive out of order.\n\n</details>
 
 ## 7. Circuit Breaker — Failing Fast and Recovering
 
@@ -379,7 +371,7 @@ public PaymentResult paymentFallback(PaymentRequest request, Throwable t) {
 
 🔬 **Section Challenge — 7. Circuit Breaker — Failing Fast and Recovering**
 
-**Challenge 1 (Reasoning):** In a microservice architecture, why is a naive Retry mechanism often more dangerous than failing fast?
+**Challenge 5 (Reasoning):** In a microservice architecture, why is a naive Retry mechanism often more dangerous than failing fast?
 
 <details><summary>Answer</summary>
 
@@ -422,7 +414,7 @@ flowchart TD
 
 🔬 **Section Challenge — 8. Idempotency — Safe Retries in Distributed Systems**
 
-**Challenge 1 (Edge Cases):** A client sends a `POST /checkout` request with an `Idempotency-Key`. The server receives it, but before the database transaction finishes, the client times out and retries with the _exact same_ `Idempotency-Key`. If the server simply checks the database for an existing completed response, what race condition occurs?
+**Challenge 6 (Edge Cases):** A client sends a `POST /checkout` request with an `Idempotency-Key`. The server receives it, but before the database transaction finishes, the client times out and retries with the _exact same_ `Idempotency-Key`. If the server simply checks the database for an existing completed response, what race condition occurs?
 
 <details><summary>Answer</summary>
 
@@ -489,7 +481,7 @@ Client-1 retries with token 34 → REJECTED (34 < 35)
 
 🔬 **Section Challenge — 9. Distributed Locking — Mutual Exclusion Across Services**
 
-**Challenge 1 (System Design):** Why is implementing a distributed lock using `SET key value NX` in a single Redis node dangerous for mission-critical operations, and what is the Redlock algorithm?
+**Challenge 7 (System Design):** Why is implementing a distributed lock using `SET key value NX` in a single Redis node dangerous for mission-critical operations, and what is the Redlock algorithm?
 
 <details><summary>Answer</summary>
 
@@ -569,7 +561,7 @@ flowchart LR
 
 🔬 **Section Challenge — 10. Outbox Pattern — Reliable Event Publishing**
 
-**Challenge 1 (System Design):** In the Transactional Outbox pattern, you write the business entity (Order) and the Event (OrderCreated) to the database in the same transaction. A background publisher reads the Outbox table and publishes to Kafka. Why must the Kafka Consumer on the other end be built to be completely Idempotent?
+**Challenge 8 (System Design):** In the Transactional Outbox pattern, you write the business entity (Order) and the Event (OrderCreated) to the database in the same transaction. A background publisher reads the Outbox table and publishes to Kafka. Why must the Kafka Consumer on the other end be built to be completely Idempotent?
 
 <details><summary>Answer</summary>
 

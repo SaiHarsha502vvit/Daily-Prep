@@ -700,16 +700,6 @@ public class UserService {
 
 ---
 
-🔬 **Section Challenge — Chapter 5: Spring Data JPA Repository Fundamentals**
-
-**Challenge 1 (Reasoning):** Why should you NEVER put `@Transactional` on a private method inside a `@Service` class?
-
-<details><summary>Answer</summary>
-
-Spring AOP Proxy limitations. `@Transactional` works by wrapping the class in a proxy. When an external class calls a public method, it goes through the proxy, which starts the transaction. If a public method inside the class calls a private method in the _same_ class, it bypasses the proxy entirely (it's just a direct `this.privateMethod()` call). The `@Transactional` annotation on the private method is completely ignored, and no transaction is created.
-
-</details>
-
 ## Chapter 6: Query Methods (Derived Queries)
 
 ```java
@@ -1079,7 +1069,7 @@ public interface UserProjection {
 
 🔬 **Section Challenge — Chapter 7: Custom Queries (@Query)**
 
-**Challenge 1 (Rewrite):** You first solved "find active customers from a domain with orders above a threshold" using nested loops in Java. Rewrite it as a Spring Data custom query. Which parameters, joins, projection, and pagination choices matter?
+**Challenge 2 (Rewrite):** You first solved "find active customers from a domain with orders above a threshold" using nested loops in Java. Rewrite it as a Spring Data custom query. Which parameters, joins, projection, and pagination choices matter?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -1216,24 +1206,6 @@ public class UserSearchCriteria {
 ```
 
 ---
-
-🔬 **Section Challenge — Chapter 8: Specifications (Dynamic Queries)**
-
-**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-
-<details><summary>Answer</summary>
-
-Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-
-</details>
-
-**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-
-<details><summary>Answer</summary>
-
-State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-
-</details>
 
 ## Chapter 9: Repository Best Practices
 

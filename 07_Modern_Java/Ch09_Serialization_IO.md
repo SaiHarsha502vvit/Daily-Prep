@@ -303,7 +303,7 @@ ois.setObjectInputFilter(filter);
 
 🔬 **Section Challenge — 6. Serialization Security Risks**
 
-**Challenge 1 (Security Reasoning):** Why is Java native deserialization dangerous when the byte stream comes from a user or network boundary?
+**Challenge 2 (Security Reasoning):** Why is Java native deserialization dangerous when the byte stream comes from a user or network boundary?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -357,7 +357,7 @@ User user = gson.fromJson(json, User.class);
 
 🔬 **Section Challenge — PART 2: JAVA I/O STREAMS — The Complete Picture**
 
-**Challenge 1 (I/O Reasoning):** You read a 4GB file using `Files.readAllBytes()` and the JVM crashes. Which I/O mental model did you violate?
+**Challenge 3 (I/O Reasoning):** You read a 4GB file using `Files.readAllBytes()` and the JVM crashes. Which I/O mental model did you violate?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -366,14 +366,6 @@ User user = gson.fromJson(json, User.class);
 Java I/O streams are about data flow, buffering, and resource lifetime. The right abstraction depends on data type: bytes for binary data, readers/writers for text, and buffered wrappers to reduce system calls.
 
 Fix by using `InputStream`, `BufferedInputStream`, `Files.newBufferedReader`, or NIO channels, then process incrementally with try-with-resources.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-
-<details><summary>Answer</summary>
-
-`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
 
 </details>
 
@@ -424,7 +416,7 @@ ALWAYS use try-with-resources
 
 🔬 **Section Challenge — 8. The I/O Stream Hierarchy**
 
-**Challenge 1 (Hierarchy Reasoning):** Why does Java split I/O into `InputStream`/`OutputStream` and `Reader`/`Writer`, instead of using one universal API?
+**Challenge 4 (Hierarchy Reasoning):** Why does Java split I/O into `InputStream`/`OutputStream` and `Reader`/`Writer`, instead of using one universal API?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -433,14 +425,6 @@ ALWAYS use try-with-resources
 Using byte streams for text without charset awareness causes silent corruption when the platform default charset differs from the file encoding.
 
 Use byte streams for images, zip files, PDFs, and network protocols. Use readers/writers for text and always specify `StandardCharsets.UTF_8` unless the format demands something else.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-
-<details><summary>Answer</summary>
-
-`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
 
 </details>
 
@@ -475,7 +459,7 @@ try (BufferedReader br = new BufferedReader(
 
 🔬 **Section Challenge — 9. Byte Streams vs Character Streams**
 
-**Challenge 1 (Bug Hunt):** A CSV with names from multiple languages works on your laptop but shows broken characters in production. What likely happened?
+**Challenge 5 (Bug Hunt):** A CSV with names from multiple languages works on your laptop but shows broken characters in production. What likely happened?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -484,14 +468,6 @@ The code probably used the platform default charset, such as `new FileReader(fil
 Bytes do not become characters until decoded. If UTF-8 bytes are decoded as another charset, characters become corrupted.
 
 Fix by using `Files.newBufferedReader(path, StandardCharsets.UTF_8)` or `InputStreamReader(input, StandardCharsets.UTF_8)`. For binary files, never use character streams.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-
-<details><summary>Answer</summary>
-
-`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
 
 </details>
 
@@ -538,7 +514,7 @@ flowchart TD
 
 🔬 **Section Challenge — 10. The Decorator Pattern in I/O**
 
-**Challenge 1 (Design Pattern Reasoning):** Why is `new BufferedInputStream(new FileInputStream(path))` a Decorator pattern instead of inheritance?
+**Challenge 6 (Design Pattern Reasoning):** Why is `new BufferedInputStream(new FileInputStream(path))` a Decorator pattern instead of inheritance?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -653,7 +629,7 @@ Common encodings:
 
 🔬 **Section Challenge — 12. Character Encoding — The Silent Bug Source**
 
-**Challenge 1 (Encoding Reasoning):** Why can `string.getBytes()` and `new String(bytes)` be a production bug even when tests pass locally?
+**Challenge 7 (Encoding Reasoning):** Why can `string.getBytes()` and `new String(bytes)` be a production bug even when tests pass locally?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 

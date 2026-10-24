@@ -511,16 +511,6 @@ phaser.arriveAndAwaitAdvance();  // Waiter proceeds when all arrive
 
 ---
 
-🔬 **Section Challenge — 5. Phaser: The Flexible Multi-Phase Coordinator**
-
-**Challenge 1 (Reasoning):** Why is using `volatile` on a counter (`volatile int count = 0;`) insufficient to guarantee thread safety when calling `count++` from multiple threads?
-
-<details><summary>Answer</summary>
-
-Atomicity vs Visibility. `volatile` only guarantees Visibility (if Thread A writes to it, Thread B immediately sees the new value instead of a cached CPU register value). However, `count++` is NOT a single atomic operation; it is three distinct steps: Read, Add, Write. Two threads can read the same value, increment it, and write it back, overwriting each other (Race Condition). You must use `AtomicInteger.incrementAndGet()` to guarantee both visibility AND atomic execution.
-
-</details>
-
 ## 6. Exchanger: The Two-Person Handoff
 
 ### Deep Reasoning
@@ -808,16 +798,6 @@ public void move(double deltaX, double deltaY) {
 
 ---
 
-🔬 **Section Challenge — 8. Lock Deep Reasoning: ReentrantLock, ReadWriteLock, StampedLock**
-
-**Challenge 1 (Reasoning):** Why is using `volatile` on a counter (`volatile int count = 0;`) insufficient to guarantee thread safety when calling `count++` from multiple threads?
-
-<details><summary>Answer</summary>
-
-Atomicity vs Visibility. `volatile` only guarantees Visibility (if Thread A writes to it, Thread B immediately sees the new value instead of a cached CPU register value). However, `count++` is NOT a single atomic operation; it is three distinct steps: Read, Add, Write. Two threads can read the same value, increment it, and write it back, overwriting each other (Race Condition). You must use `AtomicInteger.incrementAndGet()` to guarantee both visibility AND atomic execution.
-
-</details>
-
 ## 9. Real-World Production Patterns
 
 ### Pattern 1: Rate Limiter with Semaphore
@@ -1021,16 +1001,6 @@ When lock is released:
 ```
 
 ---
-
-🔬 **Section Challenge — 11. AQS — The Engine Under Everything**
-
-**Challenge 1 (Reasoning):** Why is using `volatile` on a counter (`volatile int count = 0;`) insufficient to guarantee thread safety when calling `count++` from multiple threads?
-
-<details><summary>Answer</summary>
-
-Atomicity vs Visibility. `volatile` only guarantees Visibility (if Thread A writes to it, Thread B immediately sees the new value instead of a cached CPU register value). However, `count++` is NOT a single atomic operation; it is three distinct steps: Read, Add, Write. Two threads can read the same value, increment it, and write it back, overwriting each other (Race Condition). You must use `AtomicInteger.incrementAndGet()` to guarantee both visibility AND atomic execution.
-
-</details>
 
 ## 12. ThreadLocal — Per-Thread Storage Deep Dive
 

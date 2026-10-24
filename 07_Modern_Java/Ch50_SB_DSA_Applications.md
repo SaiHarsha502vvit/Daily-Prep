@@ -94,7 +94,7 @@ Algorithmic complexity. A SQL `LIKE 'prefix%'` query (even if indexed) requires 
 
 🔬 **Section Challenge — Dsa Usage In Spring Boot Applications**
 
-**Challenge 1 (HashMap LRU Eviction in Spring Cache):** Spring's `@Cacheable` with a `ConcurrentHashMap` backend doesn't evict entries. **Who** provides LRU eviction? **When** is Caffeine cache superior to a simple `HashMap`? **What** is the Caffeine `maximumSize` + `expireAfterWrite` configuration in Spring Boot?
+**Challenge 2 (HashMap LRU Eviction in Spring Cache):** Spring's `@Cacheable` with a `ConcurrentHashMap` backend doesn't evict entries. **Who** provides LRU eviction? **When** is Caffeine cache superior to a simple `HashMap`? **What** is the Caffeine `maximumSize` + `expireAfterWrite` configuration in Spring Boot?
 
 <details><summary>Answer</summary>
 
@@ -232,7 +232,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
 🔬 **Section Challenge — Chapter 2: Rate Limiting with Sliding Window**
 
-**Challenge 1 (Rate Limiter: In-Memory vs Redis for Distributed Systems):** A sliding window rate limiter using `ConcurrentHashMap` works per-JVM instance. **Who** fails when you have 3 app instances? **When** do you need Redis? **What** is the Redis Lua script pattern for atomic rate limiting?
+**Challenge 3 (Rate Limiter: In-Memory vs Redis for Distributed Systems):** A sliding window rate limiter using `ConcurrentHashMap` works per-JVM instance. **Who** fails when you have 3 app instances? **When** do you need Redis? **What** is the Redis Lua script pattern for atomic rate limiting?
 
 <details><summary>Answer</summary>
 
@@ -242,14 +242,6 @@ public class RateLimitFilter extends OncePerRequestFilter {
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-
-<details><summary>Answer</summary>
-
-Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
 
 </details>
 
@@ -497,16 +489,6 @@ public class ProductService {
 
 ---
 
-🔬 **Section Challenge — Chapter 4: LRU Cache for API Response Caching**
-
-**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
-
-<details><summary>Answer</summary>
-
-Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-
-</details>
-
 ## Chapter 5: Shortest Path for Delivery Routing
 
 ```java
@@ -687,7 +669,7 @@ public class DeliveryController {
 
 🔬 **Section Challenge — Chapter 5: Shortest Path for Delivery Routing**
 
-**Challenge 1 (Dijkstra vs BFS for Delivery Routing):** A delivery routing API must find the shortest path between two addresses. **Who** uses Dijkstra vs BFS? **When** does BFS produce a WRONG shortest path in a road network? **What** graph representation stores road weights?
+**Challenge 4 (Dijkstra vs BFS for Delivery Routing):** A delivery routing API must find the shortest path between two addresses. **Who** uses Dijkstra vs BFS? **When** does BFS produce a WRONG shortest path in a road network? **What** graph representation stores road weights?
 
 <details><summary>Answer</summary>
 
@@ -1059,16 +1041,6 @@ public class LeaderboardController {
 
 ---
 
-🔬 **Section Challenge — Chapter 7: Leaderboard with TreeMap**
-
-**Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
-
-<details><summary>Answer</summary>
-
-`TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
-
-</details>
-
 📎 **Reference Anchor:** [OpenJDK `TreeMap.java`](https://github.com/openjdk/jdk/blob/jdk-21-ga/src/java.base/share/classes/java/util/TreeMap.java#L281-L340)  
 **Invariant learned:** TreeMap is backed by a Red-Black Tree. `put`, `get`, `remove` are all O(log N) guaranteed. The key comparison uses `Comparator` (if provided) or `Comparable`. The `reverseOrder()` comparator in `LeaderboardService` flips the comparison so highest score is first when iterating.  
 **Local rewrite:** The `scoreToUsers: TreeMap<Long, Set<String>>` uses `Collections.reverseOrder()` so `.entrySet()` iterates from highest to lowest score. This is equivalent to `NavigableMap.descendingMap()`. For `getRank()`, each `entry.getValue().size()` is the count of users tied at that score level — O(K) where K is the number of distinct score levels.  
@@ -1282,7 +1254,7 @@ public class OrganizationController {
 
 🔬 **Section Challenge — Chapter 8: Organization Hierarchy with Tree Traversal**
 
-**Challenge 1 (Reasoning):** For an organization chart API, when should you choose BFS, DFS, parent pointers, or an adjacency map?
+**Challenge 5 (Reasoning):** For an organization chart API, when should you choose BFS, DFS, parent pointers, or an adjacency map?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -1290,7 +1262,7 @@ Use an adjacency map to store `managerId -> employees`. Use DFS to emit nested t
 
 </details>
 
-**Challenge 2 (Bug Hunt):** The organization traversal assumes the data is a tree, but production has a cycle caused by bad imports. What breaks, and how do you defend?
+**Challenge 6 (Bug Hunt):** The organization traversal assumes the data is a tree, but production has a cycle caused by bad imports. What breaks, and how do you defend?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 

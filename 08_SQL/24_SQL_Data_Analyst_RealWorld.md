@@ -730,16 +730,6 @@ ORDER BY ds.day;
 
 ---
 
-🔬 **Section Challenge — 9. Advanced Window Functions for Analytics**
-
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-
-<details><summary>Answer</summary>
-
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-
-</details>
-
 ## 10. Session Analysis & User Journey
 
 ### Define Sessions from Events

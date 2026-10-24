@@ -263,7 +263,7 @@ Compare to traditional singleton:
 
 🔬 **Section Challenge — 5. Enum Singleton Pattern — Thread-Safe by JVM Guarantee**
 
-**Challenge 1 (Enum Singleton Thread Safety):** An enum-based singleton `enum Config { INSTANCE; }`. **Who** guarantees thread safety? **When** is the singleton initialized? **What** happens if someone calls `Config.INSTANCE` from 10 threads simultaneously at startup?
+**Challenge 2 (Enum Singleton Thread Safety):** An enum-based singleton `enum Config { INSTANCE; }`. **Who** guarantees thread safety? **When** is the singleton initialized? **What** happens if someone calls `Config.INSTANCE` from 10 threads simultaneously at startup?
 
 <details><summary>Answer</summary>
 
@@ -359,7 +359,7 @@ private static final Color[] VALUES = Color.values(); // Cache once
 
 🔬 **Section Challenge — 7. Enum Internals — What the Compiler Creates**
 
-**Challenge 1 (Enum Compiler Output):** When you write `enum Color { RED, GREEN, BLUE }`, what does the compiler actually generate? **Who** creates the `values()` and `valueOf()` methods? **When** does enum comparison with `==` work correctly?
+**Challenge 3 (Enum Compiler Output):** When you write `enum Color { RED, GREEN, BLUE }`, what does the compiler actually generate? **Who** creates the `values()` and `valueOf()` methods? **When** does enum comparison with `==` work correctly?
 
 <details><summary>Answer</summary>
 
@@ -567,7 +567,7 @@ BUT they're perfect for:
 
 🔬 **Section Challenge — 11. Records with Jackson, JPA, and Spring**
 
-**Challenge 1 (Record + Jackson):** You have `record User(String name, int age) {}`. Jackson fails to deserialize: `Cannot construct instance of User`. **Who** causes the failure? **When** does this happen? **What** two annotations fix it?
+**Challenge 4 (Record + Jackson):** You have `record User(String name, int age) {}`. Jackson fails to deserialize: `Cannot construct instance of User`. **Who** causes the failure? **When** does this happen? **What** two annotations fix it?
 
 <details><summary>Answer</summary>
 
@@ -586,7 +586,7 @@ Immutability and Boilerplate Elimination. A `Record` is a specialized class desi
 
 🔬 **Section Challenge — PART 3: SEALED CLASSES — Controlled Inheritance (Java 17+)**
 
-**Challenge 1 (Sealed Class permits Keyword):** `sealed interface Shape permits Circle, Rectangle, Triangle {}`. **Who** enforces the `permits` clause? **When** does a class NOT need to be in `permits`? **What** happens if you try to `implements Shape` in a different package?
+**Challenge 5 (Sealed Class permits Keyword):** `sealed interface Shape permits Circle, Rectangle, Triangle {}`. **Who** enforces the `permits` clause? **When** does a class NOT need to be in `permits`? **What** happens if you try to `implements Shape` in a different package?
 
 <details><summary>Answer</summary>
 
@@ -701,7 +701,7 @@ public static String classify(Shape shape) {
 
 🔬 **Section Challenge — 13. Pattern Matching with Sealed Classes (Java 21+)**
 
-**Challenge 1 (Pattern Matching Exhaustiveness):** `sealed interface Expr permits Num, Add, Mul {}`. You write `switch (expr) { case Num n -> ...; case Add a -> ...; }` without a `Mul` case. **Who** reports the error? **When** does the switch compile without error despite missing cases?
+**Challenge 6 (Pattern Matching Exhaustiveness):** `sealed interface Expr permits Num, Add, Mul {}`. You write `switch (expr) { case Num n -> ...; case Add a -> ...; }` without a `Mul` case. **Who** reports the error? **When** does the switch compile without error despite missing cases?
 
 <details><summary>Answer</summary>
 
@@ -780,15 +780,7 @@ public sealed interface ApiResponse<T> {
 
 🔬 **Section Challenge — 14. Sealed Interfaces + Records = Algebraic Data Types**
 
-**Challenge 1 (Debug — Who/When/What):** You have a `sealed interface Shape permits Circle, Rectangle, Triangle`. A `switch(shape)` expression covers only `Circle` and `Rectangle`. **Who** detects the missing case? **When?** **What** error is thrown?\n\n<details><summary>Answer</summary>\n\n**Who detects?** The Java compiler (`javac`) at compile time. Sealed classes make the set of permitted subtypes KNOWN at compile time — the compiler can check switch exhaustiveness. **When?** During compilation, before the code ever runs. **Error:** `compile error: the switch expression does not cover all possible input values` — specifically naming `Triangle` as unhandled. **Why this matters:** Without sealed, you'd need a `default` case and could only get runtime failures. With sealed + pattern matching, you get compile-time exhaustiveness checking — the compiler FORCES you to handle every subtype. If you add `Diamond` to the sealed hierarchy later, every switch breaks at compile time — no silent bugs.\n\n</details>
-
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-
-</details>
+**Challenge 7 (Debug — Who/When/What):** You have a `sealed interface Shape permits Circle, Rectangle, Triangle`. A `switch(shape)` expression covers only `Circle` and `Rectangle`. **Who** detects the missing case? **When?** **What** error is thrown?\n\n<details><summary>Answer</summary>\n\n**Who detects?** The Java compiler (`javac`) at compile time. Sealed classes make the set of permitted subtypes KNOWN at compile time — the compiler can check switch exhaustiveness. **When?** During compilation, before the code ever runs. **Error:** `compile error: the switch expression does not cover all possible input values` — specifically naming `Triangle` as unhandled. **Why this matters:** Without sealed, you'd need a `default` case and could only get runtime failures. With sealed + pattern matching, you get compile-time exhaustiveness checking — the compiler FORCES you to handle every subtype. If you add `Diamond` to the sealed hierarchy later, every switch breaks at compile time — no silent bugs.\n\n</details>
 
 ## 15. The Three Keywords Comparison
 
@@ -871,7 +863,7 @@ public class OrderProcessor {
 
 🔬 **Section Challenge — 16. Putting It All Together — Complete Domain Model**
 
-**Challenge 1 (Complete Domain Model):** You design a payment system with `sealed interface PaymentResult permits Success, Failure, Pending`. **Who** calls the sealed API? **What** must each permitted class be (final/sealed/non-sealed)? **When** would you use `non-sealed` on a permitted class?
+**Challenge 8 (Complete Domain Model):** You design a payment system with `sealed interface PaymentResult permits Success, Failure, Pending`. **Who** calls the sealed API? **What** must each permitted class be (final/sealed/non-sealed)? **When** would you use `non-sealed` on a permitted class?
 
 <details><summary>Answer</summary>
 
