@@ -21,6 +21,39 @@
 
 ---
 
+## 💬 Explain It Like a Study Partner — Core Variants
+
+> [!TIP]
+> **Ask yourself first:** *"If a plain singly linked list already works, why are there doubly linked, circular and skip lists?"*
+
+### 1. The bottom line
+
+Each variant fixes **one specific pain** of its base structure by adding one small thing, and you pay a small price for it.
+
+### 2. The textbook core
+
+- **Doubly linked list:** adds a `prev` pointer → O(1) delete of a known node and backward traversal; costs one extra pointer per node.
+- **Circular list:** last node points back to the first → natural for round-robin; needs care to avoid infinite loops.
+- **Sentinel node:** a dummy head/tail → removes null/edge-case checks.
+- **Skip list:** extra "express lane" levels built with coin flips → expected O(log n) search in a linked structure.
+- Always describe a variant as **base structure + what you added + what it buys + what it costs**.
+
+### 3. The real-world analogy
+
+A **train line**: a local train stops at every station (level 0 of a skip list), while an express skips most of them. You ride the express to get near your stop, then switch to the local to reach it exactly.
+
+### 4. Walkthrough: search 35 in a skip list
+
+1. Start at the top level's head. The next node is 50, which overshoots 35, so drop down a level.
+2. On the next level the next node is 25 (≤ 35), so move right to 25; its next is 50 (too far), so drop down.
+3. On the level below, move 25 → 35 and **find it**.
+4. Each level skips about half of the nodes, so the expected cost is O(log n).
+
+> [!NOTE]
+> **Quick check:** why would you choose a skip list over a balanced BST for a concurrent map? *It is simpler, and updates touch only a few nodes, which makes lock-free implementations easier.*
+
+---
+
 ## ⚡ At a Glance — Core Variants
 
 > [!NOTE]

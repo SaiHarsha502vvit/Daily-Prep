@@ -6,6 +6,41 @@
 
 ---
 
+## 💬 Explain It Like a Study Partner — 2D Arrays & Matrices
+
+> [!TIP]
+> **Ask yourself first:** *"A grid has rows and columns, but memory is one long line. How does `grid[r][c]` find its cell?"*
+
+### 1. The bottom line
+
+A 2D array is a grid in your head but a **line in memory**, and every grid problem is really about walking that grid in the right order and staying inside its edges.
+
+### 2. The textbook core
+
+- In Java, `int[][]` is an array of row arrays; each row is contiguous.
+- Row-major address (for a flat layout): `base + (r × numCols + c) × elementSize`.
+- Traversing **row by row** is cache-friendly; column by column on a large grid is not.
+- Grids model images, boards, maps and DP tables. Neighbours come from direction arrays (`dx`, `dy`).
+- Always check bounds: `0 <= r < rows && 0 <= c < cols`.
+- Grid BFS/DFS is O(R·C) time and space.
+
+### 3. The real-world analogy
+
+A **parking garage**: each floor (row) is a long strip of spots. To find spot 5 on floor 3, you go to floor 3 and walk five spots. Visiting every spot floor by floor is quick; visiting "spot 5 on every floor" means constant elevator rides.
+
+### 4. Walkthrough: count the islands in a grid of `1` (land) and `0` (water)
+
+1. Scan cells row by row.
+2. On an unvisited `1`, count one island and start a BFS/DFS from there.
+3. The search visits the four neighbours (`dx = {0,0,1,-1}`, `dy = {1,-1,0,0}`), skipping out-of-bounds cells and water, and marks land as visited.
+4. When the search ends, the whole island is marked, so the scan will not count it again.
+5. Continue the scan; the final count is the number of islands.
+
+> [!NOTE]
+> **Quick check:** how do you rotate a square matrix 90° in place? *Transpose it, then reverse each row.*
+
+---
+
 ## ⚡ At a Glance — 2D Arrays & Matrices
 
 > [!NOTE]

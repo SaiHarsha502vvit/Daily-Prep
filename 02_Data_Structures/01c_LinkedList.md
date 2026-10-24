@@ -35,6 +35,42 @@
 > - Linux kernel: task_struct linked list for process management
 > - Memcached LRU: doubly-linked list per slab class for eviction ordering (Redis approximates LRU by sampling instead)
 
+## 💬 Explain It Like a Study Partner — Linked Lists
+
+> [!TIP]
+> **Ask yourself first:** *"If arrays are so fast, why does anyone use a list of scattered nodes?"*
+
+### 1. The bottom line
+
+A linked list trades fast indexing for cheap re-wiring: each item just remembers where the next one is, so you can splice items in or out without moving anything else.
+
+### 2. The textbook core
+
+- A linked list is a sequence of **nodes**; each holds **data** and a **reference** to the next node (and to the previous one in a **doubly** linked list).
+- Access by index and search are **O(n)**.
+- Insert/delete **at a known node** (or at the head) is **O(1)** because only pointers change.
+- Insert at the tail is O(1) only if you keep a **tail pointer**; deleting the tail of a singly linked list is O(n).
+- Nodes are allocated separately, so they are scattered in memory (poor cache locality).
+
+### 3. The real-world analogy
+
+A **scavenger hunt**: each clue only tells you where the next clue is. You cannot jump to clue 7; you must follow clues 1 to 6. But adding a new clue between two others is easy: you just rewrite the two notes that point to it.
+
+### 4. Walkthrough: insert `X` after `A` in `A → B → C`
+
+1. Create node `X`.
+2. Point `X.next` at `B` (what `A.next` used to be).
+3. Point `A.next` at `X`.
+4. The list is now `A → X → B → C`. No element was moved; we changed two pointers.
+
+> [!WARNING]
+> **Order matters:** if you set `A.next = X` first, you lose the only reference to `B`. Save the old `next` before you overwrite it.
+
+> [!NOTE]
+> **Quick check:** why is deleting a node O(1) in a doubly linked list but O(n) in a singly linked one when you only hold the node? *The doubly linked node knows its predecessor; the singly linked one does not, so you must search for it.*
+
+---
+
 ## ⚡ At a Glance — Linked Lists
 
 > [!NOTE]

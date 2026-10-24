@@ -4,6 +4,41 @@
 
 # 📚 Advanced Data Structure Variants: Stacks, Queues, & Trees
 
+## 💬 Explain It Like a Study Partner — Advanced Variants
+
+> [!TIP]
+> **Ask yourself first:** *"How can a stack tell you its minimum in O(1) when finding a minimum normally takes O(n)?"*
+
+### 1. The bottom line
+
+Advanced variants **remember extra information as they go** (a running min, a wrap-around index, a sorted window, a balance rule), so one tricky question becomes cheap to answer.
+
+### 2. The textbook core
+
+- **Min/Max stack:** each entry also stores the min/max so far → `getMin()` is O(1).
+- **Circular queue:** indices wrap with `% capacity` → fixed buffer with no wasted space.
+- **Deque:** add/remove at both ends in O(1).
+- **Monotonic queue:** keeps values in sorted order → sliding-window max/min in **O(n)** total.
+- **AVL / red-black trees:** add a balance rule, restored by **rotations**, to keep height O(log n).
+- Name the **invariant** first; every operation must preserve it.
+
+### 3. The real-world analogy
+
+A **cashier who keeps a sticky note with the lowest price seen so far**. Every time you scan an item, they update the note. Asking "what's the cheapest so far?" is instant because the answer is already written down.
+
+### 4. Walkthrough: Min Stack with pushes `3, 5, 2`, then a pop
+
+1. `push(3)`: store `(3, min=3)`.
+2. `push(5)`: store `(5, min=3)` (the min stays 3).
+3. `push(2)`: store `(2, min=2)`.
+4. `getMin()` → look at the top entry → **2**, in O(1).
+5. `pop()` removes `(2, min=2)`. The top is now `(5, min=3)`, so `getMin()` → **3** without any scan.
+
+> [!NOTE]
+> **Quick check:** why does a monotonic queue store indices instead of values? *To know when an element has left the window, and to know its position for the answer array.*
+
+---
+
 ## ⚡ At a Glance — Advanced Variants
 
 > [!NOTE]

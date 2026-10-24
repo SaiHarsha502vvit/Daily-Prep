@@ -31,6 +31,39 @@
 
 ---
 
+## 💬 Explain It Like a Study Partner — Amortized Analysis
+
+> [!TIP]
+> **Ask yourself first:** *"If one `append` can copy a million elements, how can we still call it O(1)?"*
+
+### 1. The bottom line
+
+Amortized cost spreads an occasional expensive operation over all the cheap ones around it, so you judge the **average cost per operation over a worst-case sequence**.
+
+### 2. The textbook core
+
+- **Amortized cost** = total cost of `n` operations ÷ `n`, for the worst-case sequence. It is *not* a probabilistic average.
+- Three standard methods: **aggregate** (sum all costs), **accounting** (charge extra to cheap operations to build credit), **potential** (an "energy" function Φ; amortized cost `â = c + ΔΦ`).
+- Dynamic array with doubling: total copy cost over `n` appends < `2n`, so appends are **amortized O(1)**.
+- Amortized O(1) does not rule out a single slow operation.
+
+### 3. The real-world analogy
+
+**Paying a yearly insurance premium monthly.** The bill is huge if you pay it all in one month, but if you set aside a little each month you never feel it. The cost per month is small and steady even though the real bill is lumpy.
+
+### 4. Walkthrough: 16 appends to a doubling array
+
+1. Appends 1 to 16 each cost 1 to write → 16 total.
+2. Resizes happen at sizes 1, 2, 4, 8 and copy 1 + 2 + 4 + 8 = 15 elements.
+3. Total cost = 16 + 15 = 31.
+4. Average = 31 ÷ 16 ≈ **1.94**, which is O(1) per append.
+5. The geometric series (1 + 2 + 4 + ... + n/2 < n) is why doubling works, while growing by +1 each time would cost O(n²).
+
+> [!NOTE]
+> **Quick check:** why is amortized O(1) not good enough for a real-time system? *One operation can still take O(n), which breaks a strict latency budget.*
+
+---
+
 ## ⚡ At a Glance — Amortized Analysis
 
 > [!NOTE]

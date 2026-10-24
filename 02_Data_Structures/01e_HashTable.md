@@ -22,6 +22,40 @@
 >
 > **HOW:** Pass the key through a hash function (e.g., `hashCode()`) to get an integer, use modulo to find the bucket index, and handle collisions via chaining (linked lists) or probing.
 
+## 💬 Explain It Like a Study Partner — Hash Tables
+
+> [!TIP]
+> **Ask yourself first:** *"How can a lookup among a million keys take about one step?"*
+
+### 1. The bottom line
+
+A hash table turns a key into a number that says **which bucket to look in**, so you go almost straight to the answer instead of searching.
+
+### 2. The textbook core
+
+- A **hash function** maps a key to an integer; the table uses it to pick a **bucket index** (in Java: `hash & (n - 1)`, with `n` a power of two).
+- A **collision** happens when two keys land in the same bucket. Java chains them in a linked list, which becomes a red-black tree at 8+ entries.
+- Average `get`/`put`/`remove` are **O(1)**; the worst case is O(n) (O(log n) with tree bins).
+- The **load factor** (default 0.75) controls when the table doubles and rehashes.
+- Contract: equal keys must have equal `hashCode`s, and keys must not change while stored.
+
+### 3. The real-world analogy
+
+A **coat check**: you hand over your coat and get ticket #37. Later, ticket #37 tells the attendant exactly which hook to check, with no need to look through every coat. If two coats share a hook, the attendant checks just those few.
+
+### 4. Walkthrough: `put("Alice", 25)` then `get("Alice")`
+
+1. Compute `h = "Alice".hashCode()`, then spread it: `h ^ (h >>> 16)`.
+2. Pick the bucket: `index = hash & (16 - 1)`.
+3. Bucket empty → store the entry there. (Bucket occupied → compare keys with `equals`; same key updates the value, different key is chained.)
+4. `get("Alice")` repeats steps 1–2, goes to that bucket and compares keys, then returns `25`.
+5. If the table passes 12 entries (16 × 0.75), it doubles to 32 buckets and re-places every entry.
+
+> [!NOTE]
+> **Quick check:** why must you override `hashCode` whenever you override `equals`? *Otherwise equal objects can hash to different buckets and `get` will never find them.*
+
+---
+
 ## ⚡ At a Glance — Hash Tables
 
 > [!NOTE]

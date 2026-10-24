@@ -45,6 +45,41 @@ flowchart TB
 **How to read this diagram.** Frames are stacked in call order: `main()` at the bottom, `multiply()` on top because it is executing. Returning pops the top frame.
 
 
+## 💬 Explain It Like a Study Partner — Stack & Queue
+
+> [!TIP]
+> **Ask yourself first:** *"What do the Undo button and a supermarket checkout line have in common, and how are they opposite?"*
+
+### 1. The bottom line
+
+A stack gives you the **newest** item first; a queue gives you the **oldest** item first. Limiting how you can touch the data is what makes every operation O(1).
+
+### 2. The textbook core
+
+- **Stack:** LIFO (last in, first out). Operations: `push`, `pop`, `peek`, all **O(1)**.
+- **Queue:** FIFO (first in, first out). Operations: `enqueue`/`offer`, `dequeue`/`poll`, `peek`, all **O(1)** with a circular array or linked list.
+- **Deque:** add/remove at both ends.
+- Stacks power **DFS**, recursion, undo, expression parsing and bracket matching. Queues power **BFS**, schedulers and buffers.
+- In Java prefer `ArrayDeque` for both, not the legacy `Stack` class.
+
+### 3. The real-world analogy
+
+A **stack of plates**: you put a plate on top and take from the top, so the last plate in is the first out. A **queue** is the checkout line: first person in line is served first.
+
+### 4. Walkthrough: are the brackets in `({[]})` balanced?
+
+1. Read `(` → push `(`. Stack: `(`
+2. Read `{` → push. Stack: `( {`
+3. Read `[` → push. Stack: `( { [`
+4. Read `]` → pop `[`, it matches. Stack: `( {`
+5. Read `}` → pop `{`, matches. Then read `)` → pop `(`, matches.
+6. End of input and the stack is empty → **balanced**. If we had popped a mismatch, or the stack were non-empty, it would be unbalanced.
+
+> [!NOTE]
+> **Quick check:** which structure would you use to find the shortest path in an unweighted maze? *A queue (BFS), because it explores level by level.*
+
+---
+
 ## ⚡ At a Glance — Stack & Queue
 
 > [!NOTE]
