@@ -520,7 +520,7 @@ Treaps are **randomized BSTs**: simpler to implement than Red-Black trees but gi
 
 ### Historical Context
 
-**Burton Bloom (1970, General Electric)** published *"Space/Time Trade-offs in Hash Coding with Allowable Errors"* in Communications of the ACM. His original application was spell-checking in editors. The insight: for membership queries, allowing a small controlled false positive rate trades memory for speed and space in a mathematically precise way. Fifty years later, Bloom filters are the backbone of database internals, CDN caching, browser security, and blockchain SPV nodes.
+**Burton Bloom (1970, Computer Usage Company)** published *"Space/Time Trade-offs in Hash Coding with Allowable Errors"* in Communications of the ACM. His original application was a hyphenation program that had to check words against a large dictionary. The insight: for membership queries, allowing a small controlled false positive rate trades memory for speed and space in a mathematically precise way. Fifty years later, Bloom filters are the backbone of database internals, CDN caching, browser security, and blockchain SPV nodes.
 
 ### Structure Definition
 
@@ -923,7 +923,7 @@ The basic Count-Min overestimates for heavy hitters (collisions from all other i
 
 ### Historical Context
 
-**Flajolet, Fusy, Gandouet, and Meunier (2007, Google)** published *"HyperLogLog: the analysis of a near-optimal cardinality estimation algorithm"* in the IEEE Transactions on Networking. It won the **Gödel Prize in 2022**. The insight: use the maximum number of leading zeros in hashed elements to estimate the number of distinct elements. Redis implemented it as `PFADD`/`PFCOUNT` in 2014, making it one of the most widely deployed probabilistic algorithms.
+**Flajolet, Fusy, Gandouet, and Meunier (2007)** published *"HyperLogLog: the analysis of a near-optimal cardinality estimation algorithm"* at the AofA 2007 conference (Google later published the HyperLogLog++ refinement). The insight: use the maximum number of leading zeros in hashed elements to estimate the number of distinct elements. Redis implemented it as `PFADD`/`PFCOUNT` in 2014, making it one of the most widely deployed probabilistic algorithms.
 
 ### The Core Insight: Coin Flipping
 

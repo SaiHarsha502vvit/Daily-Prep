@@ -85,7 +85,7 @@ flowchart TD
 | ---- | ----------------- | ----- |
 | 1962 | **AVL trees** — Adelson-Velsky and Landis | First self-balancing BST, named after the inventors' initials. |
 | 1968 | Knuth's *The Art of Computer Programming* (vol. 1) | Formalizes tree-balancing analysis and establishes O(log n) guarantees as a field standard. |
-| 1970s | **Monotonic queue** emerges in computational geometry | Preparata–Shamos (1985) formalization of convex-hull algorithms. Motivation: sliding-window maximum in O(n) vs O(nk) brute force. |
+| 1970s | **Monotonic queue** emerges in computational geometry | Motivation: sliding-window maximum in O(n) versus O(nk) brute force. (The "monotonic queue" is a standard folk technique; it has no single inventor.) |
 | 1978 | **Red-Black trees** — Guibas and Sedgewick | Refinement of Bayer's 1972 "symmetric binary B-trees". Adopted by the JDK `TreeMap`. |
 | 1980s | **Treaps** — Vuillemin 1980 (Cartesian trees), Aragon–Seidel 1989/1996 | Randomized BST; priorities give expected O(log n) without complex rotation logic. |
 | 1985 | **Splay trees** — Sleator and Tarjan | Self-adjusting BST; amortized O(log n); no explicit balance factor. |
@@ -100,9 +100,9 @@ flowchart TD
 
 **Named Predecessors and Motivations:**
 
-- **Why monotonic queue?** Needed for sliding-window maximum in O(n). Pre-1970s geometry algorithms required O(nk) for k-window problems. Preparata-Shamos (1985) formalized the O(n) deque solution for convex hull computation.
+- **Why monotonic queue?** Needed for sliding-window maximum in O(n) instead of the O(nk) brute force. It is a well-known folk technique (a deque of decreasing candidates) rather than the work of a single inventor.
 
-- **Why AVL trees?** Adelson-Velsky's research on balancing began from a bouncing-marble game problem. They proved a strictly balanced BST must have at least 1.44*log(n+1) height, providing tighter O(log n) guarantees than Red-Black's 2*log(n+1).
+- **Why AVL trees?** Adelson-Velsky and Landis proved that keeping subtree heights within 1 of each other bounds the height by about 1.44·log₂(n+2), a tighter guarantee than the red-black bound of 2·log₂(n+1).
 
 - **Why Treap?** Vuillemin asked: can randomness replace complex rotation rules? Yes — random priorities give expected O(log n) height without any explicit balancing code.
 
