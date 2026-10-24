@@ -554,24 +554,6 @@ function SearchResults({ results, query }) {
 
 ---
 
-🔬 **Section Challenge — 9. Live Regions — Dynamic Content Updates**
-
-**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-
-<details><summary>Answer</summary>
-
-Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-
-</details>
-
-**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-
-<details><summary>Answer</summary>
-
-State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-
-</details>
-
 ## 10. Testing Accessibility
 
 ```

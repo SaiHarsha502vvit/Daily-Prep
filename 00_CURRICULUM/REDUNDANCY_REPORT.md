@@ -5,60 +5,39 @@
 ## 1. Exact duplicate files (0 groups)
 
 
-## 2. File pairs sharing the same paragraphs / code (7 pairs; containment = shared words / smaller file)
+## 2. File pairs sharing the same paragraphs / code (2 pairs; containment = shared words / smaller file)
 
 | Containment | Shared words | File A | File B |
 | ---: | ---: | --- | --- |
 | 36% | 367 | `02_Data_Structures/01d_Stack_Queue/01_the_invention_of_the_stack_queue.md` | `02_Data_Structures/01d_Stack_Queue/02_queue.md` |
 | 30% | 799 | `23_Mobile_Dev_And_Testing/career/READINESS_RUBRIC_SDET.md` | `23_Mobile_Dev_And_Testing/career/READINESS_RUBRIC_SWE.md` |
-| 17% | 152 | `04_Patterns_Templates/02_Code_Templates/08_dynamic_programming.md` | `20_Interview_Mastery/Problem_Sets_DSA/13_DSA_Problems_DP_Greedy_Backtracking.md` |
-| 17% | 152 | `04_Patterns_Templates/02_Code_Templates/08_dynamic_programming.md` | `20_Interview_Mastery/03_DSA_Pattern_Recognition_Engine.md` |
-| 17% | 152 | `04_Patterns_Templates/02_Code_Templates/08_dynamic_programming.md` | `19_Frontend_Integration/07_Web_Accessibility_A11y.md` |
-| 17% | 152 | `04_Patterns_Templates/02_Code_Templates/08_dynamic_programming.md` | `07_Modern_Java/Ch36_SB_Service_Repository.md` |
-| 17% | 152 | `01_Getting_Started/02_Study_Plan_Calendar.md` | `04_Patterns_Templates/02_Code_Templates/08_dynamic_programming.md` |
 
-## 3. Paragraphs repeated INSIDE one file (47 files with >=60 repeated words)
+## 3. Paragraphs repeated INSIDE one file (24 files with >=60 repeated words)
 
-- 512 repeated words — `07_Modern_Java/Ch04_Generics_Exceptions.md`
-- 480 repeated words — `20_Interview_Mastery/Problem_Sets_SQL/18_SQL_Foundations_Commands_Operators_Functions.md`
 - 435 repeated words — `03_Algorithms/12_Greedy_Algorithms_Complete/01_what_problem_does_greedy_solve.md`
 - 414 repeated words — `07_Modern_Java/Ch13_Networking_NIO.md`
+- 402 repeated words — `07_Modern_Java/Ch04_Generics_Exceptions.md`
 - 402 repeated words — `07_Modern_Java/Ch03_Enums_Records_Sealed.md`
 - 399 repeated words — `07_Modern_Java/Ch59_SB_Testing_Fundamentals.md`
 - 378 repeated words — `07_Modern_Java/Ch05_DateTime_Regex.md`
 - 349 repeated words — `03_Algorithms/09_Pattern_Programs_Complete/01_section.md`
 - 337 repeated words — `07_Modern_Java/Ch58_SB_Deep_Reasoning.md`
-- 300 repeated words — `07_Modern_Java/Ch17_Concurrency_Synchronizers.md`
 - 296 repeated words — `07_Modern_Java/Ch22_Java_Deep_Reasoning.md`
 - 296 repeated words — `07_Modern_Java/Ch02_Strings_Immutability.md`
 - 284 repeated words — `07_Modern_Java/Ch32_SB_Data_Part2.md`
 - 261 repeated words — `03_Algorithms/12_Greedy_Algorithms_Complete/02_greedy_template_code_the_skeleton.md`
-- 208 repeated words — `20_Interview_Mastery/Problem_Sets_DSA/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md`
+- 232 repeated words — `20_Interview_Mastery/Problem_Sets_SQL/18_SQL_Foundations_Commands_Operators_Functions.md`
 - 201 repeated words — `07_Modern_Java/Ch33_SB_Web_Part3.md`
-- 192 repeated words — `07_Modern_Java/Ch11_Events_Listeners.md`
 - 189 repeated words — `07_Modern_Java/Ch34_SB_Security_Part4.md`
-- 188 repeated words — `07_Modern_Java/Ch31_SB_Core_Part1.md`
 - 174 repeated words — `05_Problem_Solving/13_Greedy/04_string_greedy.md`
 - 174 repeated words — `05_Problem_Solving/13_Greedy/01_greedy_fundamentals.md`
-- 146 repeated words — `20_Interview_Mastery/Problem_Sets_DSA/12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md`
-- 144 repeated words — `07_Modern_Java/Ch37_SB_Controllers_REST.md`
-- 138 repeated words — `07_Modern_Java/Ch60_SB_Testing_Advanced.md`
-- 136 repeated words — `07_Modern_Java/Ch49_SB_WebFlux_Advanced.md`
-- 134 repeated words — `07_Modern_Java/Ch14_Maven_Gradle.md`
-- 129 repeated words — `07_Modern_Java/Ch08_Collections_Internals.md`
 - 118 repeated words — `03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md`
-- 112 repeated words — `20_Interview_Mastery/Problem_Sets_DSA/13_DSA_Problems_DP_Greedy_Backtracking.md`
-- 109 repeated words — `15_React_Frontend/09_React_Deep_Reasoning.md`
-- 94 repeated words — `07_Modern_Java/Ch39_SB_SOLID_Advanced.md`
-- 94 repeated words — `07_Modern_Java/Ch26_Pre_Spring_Part1.md`
-- 94 repeated words — `07_Modern_Java/Ch24_Spring_Boot_Roadmap.md`
-- 91 repeated words — `07_Modern_Java/Ch42_SB_HTTP_Deep_Dive.md`
-- 90 repeated words — `07_Modern_Java/Ch09_Serialization_IO.md`
 - 84 repeated words — `05_Problem_Solving/25_Problem_Origins/03_graph_algorithms.md`
-- 82 repeated words — `07_Modern_Java/Ch46_SB_Database_Design.md`
 - 77 repeated words — `09_Career_Reference/11_Quick_Reference.md`
 - 75 repeated words — `07_Modern_Java/Ch65_OS_Fundamentals.md`
 - 73 repeated words — `05_Problem_Solving/10_Graphs/07_hackerearth_codeforces_graph_problems.md`
+- 66 repeated words — `03_Algorithms/03b_Recursion_Fundamentals/03_types_of_recursion.md`
+- 61 repeated words — `07_Modern_Java/Ch06_Functional_Programming.md`
 
 ## 4. Same topic name in different top-level folders (decide the canonical home)
 

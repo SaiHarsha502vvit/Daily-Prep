@@ -1,3 +1,9 @@
+01_Getting_Started/02_Study_Plan_Calendar.md :: 🔬 **Section Challenge — 📆 WEEK 2: Feb 26 - Mar 4 — Strings Deep + Sorting Mastery + Two Po
+01_Getting_Started/02_Study_Plan_Calendar.md :: 🔬 **Section Challenge — 📆 WEEK 3: Mar 5-11 — Linked List + Recursion Introduction**
+01_Getting_Started/02_Study_Plan_Calendar.md :: 🔬 **Section Challenge — 📆 WEEK 5: Mar 19-25 — Hashing Deep + Sliding Window**
+01_Getting_Started/02_Study_Plan_Calendar.md :: 🔬 **Section Challenge — 📆 WEEK 7: Apr 2-8 — Heaps + Graphs Introduction**
+01_Getting_Started/02_Study_Plan_Calendar.md :: 🔬 **Section Challenge — 📆 WEEK 8: Apr 9-15 — Dynamic Programming Foundations**
+01_Getting_Started/02_Study_Plan_Calendar.md :: 🔬 **Section Challenge — 📆 WEEK 9: Apr 16-22 — Greedy + Backtracking**
 02_Data_Structures/01b_Arrays/05_sorting_algorithms_all_5.md :: 🔬 **Section Challenge — 📈 Part 7: Sorting Algorithms — All 5**
 02_Data_Structures/01b_Arrays/06_frequency_duplicates.md :: 🔬 **Section Challenge — 🌀 Part 10: Recursion in Arrays**
 02_Data_Structures/01e_HashTable/02_implementation_without_collections.md :: 🔬 **Section Challenge — ⚡ Production Failure Modes**
@@ -130,6 +136,7 @@
 16_JavaScript/08_JS_Deep_Reasoning.md :: 🔬 **Section Challenge — 2. Closures: The Stale Variable Trap**
 16_JavaScript/08_JS_Deep_Reasoning.md :: 🔬 **Section Challenge — 6. Prototypes: Why `typeof null === 'object'`**
 16_JavaScript/10_Web_Workers_ServiceWorkers.md :: 🔬 **Section Challenge — 10. Caching Strategies — Offline-First Patterns**
+19_Frontend_Integration/07_Web_Accessibility_A11y.md :: 🔬 **Section Challenge — 9. Live Regions — Dynamic Content Updates**
 20_Interview_Mastery/03_DSA_Pattern_Recognition_Engine.md :: 🔬 **Section Challenge — 11. Pattern 10: Union-Find — Dynamic Connectivity**
 20_Interview_Mastery/03_DSA_Pattern_Recognition_Engine.md :: 🔬 **Section Challenge — 12. Pattern 11: Prefix Sum — Range Query Magic**
 20_Interview_Mastery/03_DSA_Pattern_Recognition_Engine.md :: 🔬 **Section Challenge — 2. Pattern 1: Two Pointers**
