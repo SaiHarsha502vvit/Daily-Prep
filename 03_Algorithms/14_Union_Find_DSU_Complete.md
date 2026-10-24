@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](13_String_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Monotonic_Stack_Queue_Complete.md)
+> **Navigation**: [← Bit Manipulation](10_Bit_Manipulation_Complete.md) | [Chapter index](00_INDEX.md) | [Chapter 18 - Bitwise Trie Java →](18_Bitwise_Trie_Java_Complete.md)
 
 # 🌲 Union-Find / Disjoint Set Union (DSU) Complete Guide
 
@@ -47,6 +47,25 @@ Union-Find answers "are these two connected?" and merges groups in nearly consta
 
 
 The Data Structure That Solves Connectivity Problems in Near-Constant Time
+
+### 5. Check yourself
+
+**Q1.** Amortised cost per operation with union by size and path compression?
+
+<details><summary>Answer</summary>
+
+`O(α(n))`, the inverse Ackermann function (at most 4 for any realistic `n`).
+
+</details>
+
+**Q2.** What does a `union` that returns `false` tell you in a graph problem?
+
+<details><summary>Answer</summary>
+
+The two endpoints were already connected, so the edge closes a cycle.
+
+</details>
+
 
 ## Table of Contents
 

@@ -1,6 +1,6 @@
 # 🔎 Searching & Binary Search — Complete Guide
 
-> **Navigation**: [← Sorting Advanced](02b_Sorting_Advanced.md) | [Back to Index](00_INDEX.md) | [Next: Divide & Conquer →](02c_Divide_And_Conquer.md) | [Learning Path](00_LEARNING_PATH.md)
+> **Navigation**: [← Sorting Advanced](02b_Sorting_Advanced.md) | [Chapter index](00_INDEX.md) | [Divide and Conquer →](02c_Divide_And_Conquer.md)
 
 ## 🔗 Bridge — Where This Chapter Fits
 

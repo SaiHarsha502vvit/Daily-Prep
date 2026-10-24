@@ -1,6 +1,6 @@
 # A4. Randomized Data Structures — Probabilistic Guarantees in Storage
 
-**Navigation**: [← A3: DS Lower Bounds](A3_DS_Lower_Bounds.md) | [📚 DS Index](00_INDEX.md) | [Sorting Fundamentals →](../03_Algorithms/02b_Sorting_Advanced.md)
+> **Navigation**: [← A3. Data Structure Lower Bounds…](A3_DS_Lower_Bounds.md) | [Chapter index](00_INDEX.md) | [A5. Designing Your Own Data… →](A5_Designing_Your_Own_Data_Structures.md)
 
 > **MIT 6.046J L9–L12 / KTH DD2352 / RWTH Aachen Randomized Algorithms foundation**
 >

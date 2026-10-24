@@ -4,6 +4,19 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - Reader-Experience Pass on 02, 03, 04 (and FP gaps in 07)
+
+Driven by a reader-perspective review of the folders.
+
+- **Long files split.** 48 chapters over 1,000 lines became chapter hubs (bridge, explainer, at-a-glance, Enterprise Lens, a topic-page table) plus 212 topic pages in same-named sub-folders (median ~290 lines). Verified: zero lost lines against the original text, zero broken links or anchors in 02/03/04, all Mermaid blocks render, fences and `<details>` balanced, exactly one H1 per page.
+- **Navigation.** Previous/next links regenerated in reading order (A-series theory tracks separate); cleaner chapter titles for hubs whose first heading was a "Part N" label.
+- **Duplicated filler removed.** 136 copy-pasted "Section Challenge"/"Challenge N" blocks (the same Fibonacci bug-hunt and similar appeared up to 14 times in one file) kept only in their best-fitting section; the five-step debug workflow that appeared in 25 pattern chapters now lives once in the Master Guide; the identical "Review checklist" row (83 copies) now appears once per folder index.
+- **Personal/unverified content.** "From your Excel sheet" sections renamed Practice Problems with a note that company tags are community-reported and unverified (13 files).
+- **Rendering.** 60 `:::` container blocks (pattern, example, memory, map, timeline, warning, danger, invariants) that only render in Docusaurus-style tools were unwrapped or converted to GitHub callouts in `02a`/`02b`. Heading levels normalised (one H1 per file, no skipped levels, chapter-level sections at H2). Flattened BFS/DFS diagrams and the Fibonacci/LCS visuals in `04/03_Visual_Diagrams.md` rebuilt as Mermaid and tables.
+- **Content.** "Check yourself" sets (2-3 questions with verified answers) added to 31 pattern chapters and 35 algorithm chapters. Further fact corrections in `02/01g` (Simula 67, C 1972, universal hashing 1977, AVL order, `@Contended` JEP 142, Optane end), `01f` (splay 1985, PostgreSQL default index), `05` and `A3`.
+- **Encoding.** 205 files repo-wide had cp1252 bytes (`0x97`, `0xb7`) or `** ?` separators; repaired. One remaining structural defect noted in `22_DevOps/06_TCP_UDP_Deep_Dive.md` (a challenge block pasted inside a diagram fence).
+- **FP series.** Added `Ch06h` Parser Combinators and `Ch06i` Validation & IO as Descriptions (Java verified by tests, including 1,000 random expressions), closing two gaps listed in `Ch06a`.
+
 ## 2026-10-24 - 07_Modern_Java: Functional Programming Foundations Series (Ch06a-Ch06g)
 
 - Added seven one-topic pages after `Ch06_Functional_Programming.md`, guided by the topic list of *Functional Programming in Scala* (Chiusano and Bjarnason, Manning 2014; the book file is not in the repo and was not reproduced): learning path and book map (Ch06a), purity and effects (Ch06b), ADTs and immutable lists (Ch06c), Option/Either (Ch06d), laziness (Ch06e), pure state and property-based testing (Ch06f), monoids/functors/monads (Ch06g).

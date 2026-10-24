@@ -1,6 +1,6 @@
 # Recursion Fundamentals
 
-**Navigation**: [< Previous Chapter](03a_Recursion_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](03c_Recursion_Advanced.md)
+> **Navigation**: [← Recursion: Complete Mental Model…](03a_Recursion_Internals.md) | [Chapter index](00_INDEX.md) | [Advanced Recursion Patterns →](03c_Recursion_Advanced.md)
 🧠 **Mental Model**: See [Recursion Tree Thinking](../14_Mental_Models/01_Recursion_Tree_Thinking.md) — base case identification and recursive leap of faith
 
 ---
@@ -86,6 +86,25 @@ Recursion as a mathematical concept predates computers by decades, grounded in *
 **Production failure — exponential blowup without memoization:** Fibonacci recurrence T(n) = T(n-1) + T(n-2) + O(1) is exponential without memoization. Computing fib(45) naïvely takes ~3 seconds in Java; fib(50) takes ~50 seconds. In production, never compute Fibonacci recursively without an memoized version (array or HashMap). The same applies to any tree recursion with repeated subproblems — always check the recursion tree before coding.
 
 **Debug workflow — trace recursion with depth counter:** When recursion produces wrong results, common causes: (1) missing base case (infinite recursion → ), (2) wrong base case (returns wrong value for leaf), (3) not returning the recursive call result (forgets to propagate), (4) shared mutable state across recursive calls causing interference. Add with depth counter to trace execution path.
+
+
+### 5. Check yourself
+
+**Q1.** How many calls does naive `fib(5)` make (counting itself)?
+
+<details><summary>Answer</summary>
+
+**15**.
+
+</details>
+
+**Q2.** Does Java optimise tail recursion?
+
+<details><summary>Answer</summary>
+
+No. Java has no tail-call elimination, so deep tail recursion still consumes stack; convert it to a loop.
+
+</details>
 
 ---
 

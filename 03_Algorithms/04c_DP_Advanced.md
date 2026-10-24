@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](04b_DP_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← DP Fundamentals](04b_DP_Fundamentals.md) | [Chapter index](00_INDEX.md) | [Backtracking →](11_Backtracking_Complete.md)
 > 🧠 **Mental Model**: See [DP State Thinking](../14_Mental_Models/02_DP_State_Thinking.md) — advanced state design and optimization
 
 ---
@@ -75,6 +75,25 @@ A **packing list as a checklist of ticked boxes**: the pattern of ticks (a bitma
 ### Historical Evolution
 
 Advanced DP variants emerged from the need to handle state spaces that simple 1D/2D tables cannot efficiently represent. **Bitmask DP** over subsets goes back to the **Held–Karp (1962)** and **Bellman (1962)** dynamic programs for the travelling salesman problem, which solve it in O(2ⁿ·n²) instead of O(n!); it became a competitive-programming staple because n ≤ 20 states fit in a 32-bit integer. **Digit DP** is a competitive-programming technique (counting numbers with digit constraints by processing digits left to right with a "tight" flag) with no single inventor. **Knuth optimization** (**Knuth 1971**, generalised by **Yao 1980**) uses the monotonicity of optimal split points, `opt[i][j-1] ≤ opt[i][j] ≤ opt[i+1][j]`, which holds when the cost satisfies the quadrangle inequality, to cut interval DPs such as optimal binary search trees from O(n³) to O(n²); it does **not** apply to matrix-chain multiplication (which has a separate O(n log n) algorithm by Hu and Shing). **Monotonic-deque optimisation** of DP transitions follows from sliding-window minimum techniques. Modern practice (post-2010) applies these techniques in competitive programming (Codeforces, AtCoder) and in production systems like network routing where TSP variants appear in logistics optimization.
+
+
+### 5. Check yourself
+
+**Q1.** How many states does bitmask DP for TSP have with `n = 20`?
+
+<details><summary>Answer</summary>
+
+About `n · 2ⁿ = 20 · 1 048 576 ≈ 2.1·10⁷`.
+
+</details>
+
+**Q2.** Typical time of interval DP?
+
+<details><summary>Answer</summary>
+
+`O(n³)` (choose a split point inside every interval).
+
+</details>
 
 ---
 

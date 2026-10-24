@@ -1,6 +1,6 @@
 # 🧩 DP Pattern Recognition — Pattern Guide
 
-**Navigation**: [< Previous](15_Heap_Plus_GreedySelection.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Backtracking_Plus_Pruning.md)
+> **Navigation**: [← Heap + Greedy Selection](15_Heap_Plus_GreedySelection.md) | [Chapter index](00_INDEX.md) | [Backtracking + Pruning →](17_Backtracking_Plus_Pruning.md)
 
 ## DP Pattern Recognition — Combined Pattern Guide
 
@@ -48,6 +48,33 @@ A **spreadsheet**: each cell is computed once from cells you already filled.
 
 > [!NOTE]
 > **Quick check:** What is the single most important sentence in a DP solution? *The definition of the state.*
+
+
+### 5. Check yourself
+
+**Q1.** House Robber on `[2,7,9,3,1]`?
+
+<details><summary>Answer</summary>
+
+**12** (rob 2, 9, 1). `dp = [2, 7, 11, 11, 12]`.
+
+</details>
+
+**Q2.** What is the single most important sentence in a DP solution?
+
+<details><summary>Answer</summary>
+
+The definition of the state, e.g. `dp[i][j]` = length of the LCS of the first `i` and `j` characters.
+
+</details>
+
+**Q3.** Memoised Fibonacci: time and space?
+
+<details><summary>Answer</summary>
+
+`O(n)` time and `O(n)` space (or `O(1)` space with two variables).
+
+</details>
 
 ---
 

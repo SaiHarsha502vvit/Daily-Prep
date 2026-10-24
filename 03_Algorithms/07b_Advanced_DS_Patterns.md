@@ -1,5 +1,7 @@
 # 🌲 Fenwick & Segment Trees — Advanced Data Structure Patterns
 
+> **Navigation**: [← Advanced Data Structures](07a_Advanced_DS_Core.md) | [Chapter index](00_INDEX.md) | [Advanced Trees: Deep Dive (System… →](07c_Advanced_Trees_Deep.md)
+
 ﻿**Navigation**: [< Previous Chapter](07a_Advanced_DS_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
@@ -52,6 +54,25 @@ Choosing **the right kitchen appliance**: a blender, an oven and a toaster all h
 
 > [!NOTE]
 > **Quick check:** Which structure supports "add to range, query range sum"? *A lazy segment tree (or two Fenwick trees).*
+
+
+### 5. Check yourself
+
+**Q1.** `lowbit(12)` in a Fenwick tree?
+
+<details><summary>Answer</summary>
+
+**4** (`12 & -12`); it is the block size covered by index 12.
+
+</details>
+
+**Q2.** When is a segment tree needed instead of a prefix-sum array?
+
+<details><summary>Answer</summary>
+
+When updates and queries are interleaved, so prefix sums cannot be kept current cheaply.
+
+</details>
 
 ---
 

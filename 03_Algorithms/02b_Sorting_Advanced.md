@@ -1,6 +1,6 @@
 # Sorting Advanced
 
-**Navigation**: [< Previous Chapter](02a_Sorting_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← Sorting Fundamentals](02a_Sorting_Fundamentals.md) | [Chapter index](00_INDEX.md) | [Searching & Binary Search →](22_Searching_And_Binary_Search_Complete.md)
 🧠 **Mental Model**: See [Complexity Intuition](../14_Mental_Models/09_Complexity_Intuition.md) — heap sort, counting sort, and non-comparison bounds
 
 ---
@@ -80,6 +80,25 @@ Sorting **mail**: if every letter has a zip code (small key range), you drop it 
 ### Historical Evolution
 
 Advanced sorting algorithms evolved through three distinct waves: non-comparison sorts for bounded domains, hybrid adaptive sorts for real-world data, and worst-case-guaranteed alternatives. **Radix Sort** traces its lineage to **Herman Hollerith's punched-card tabulating and sorting machines** (used for the 1890 US Census), which sorted cards one column at a time; **Counting Sort** was described by **Harold Seward in 1954**. Together they established the core insight: if keys are bounded or distributable, you can avoid pairwise comparisons entirely. **TimSort** was created by **Tim Peters in 2002** for Python's default `list.sort()` after analyzing that real-world data contains natural "runs" (already-sorted subsequences) — it hybridizes Insertion Sort (for small runs) with Merge Sort, achieving $O(n)$ best case on partially sorted data. **Dual-Pivot Quicksort** was developed by **Vladimir Yaroslavskiy in 2009** and adopted by Java 7's `Dual-Pivot Quicksort` for primitive arrays — it uses two pivots to partition into three segments instead of two, reducing the average number of comparisons from $2n \ln n$ to approximately $1.9n \ln n$ and improving cache behavior on modern CPUs.
+
+
+### 5. Check yourself
+
+**Q1.** Merge sort: time and extra space?
+
+<details><summary>Answer</summary>
+
+`O(n log n)` time and `O(n)` extra space.
+
+</details>
+
+**Q2.** Why is `Arrays.sort(int[])` not stable while `Arrays.sort(Object[])` is?
+
+<details><summary>Answer</summary>
+
+Primitives use a dual-pivot quicksort (stability is meaningless for equal ints); objects use TimSort, which is stable.
+
+</details>
 
 ---
 

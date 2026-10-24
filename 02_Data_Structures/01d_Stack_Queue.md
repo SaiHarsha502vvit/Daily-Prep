@@ -1,6 +1,6 @@
 # 📚 Stacks & Queues
 
-**Navigation**: [< Previous Chapter](01c_LinkedList.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01e_HashTable.md)
+> **Navigation**: [← Linked Lists](01c_LinkedList.md) | [Chapter index](00_INDEX.md) | [Hash Tables →](01e_HashTable.md)
 
 ---
 

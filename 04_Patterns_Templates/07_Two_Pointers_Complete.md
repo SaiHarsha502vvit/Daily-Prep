@@ -1,6 +1,6 @@
 # 🧩 Two Pointers — Pattern Guide
 
-**Navigation**: [< Previous](06_Binary_Search_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Array_Plus_TwoPointers.md)
+> **Navigation**: [← Binary Search Patterns](06_Binary_Search_Patterns.md) | [Chapter index](00_INDEX.md) | [Prefix Sum & Difference Array →](26_Prefix_Sum_And_Difference_Array.md)
 
 ---
 
@@ -44,6 +44,33 @@ Two people **walking toward each other along a corridor** looking for a pair tha
 
 > [!NOTE]
 > **Quick check:** Why is it safe to move `R` when the sum is too large? *Any pair using `R` with a larger-or-equal left element is even larger.*
+
+
+### 5. Check yourself
+
+**Q1.** Sorted `[2,7,11,15]`, target 9. Walk the opposite-end pointers.
+
+<details><summary>Answer</summary>
+
+`2 + 15 = 17 > 9` → move `R`; `2 + 11 = 13 > 9` → move `R`; `2 + 7 = 9` ✓ indices 0 and 1.
+
+</details>
+
+**Q2.** Why does the pair-sum two-pointer method need a sorted array?
+
+<details><summary>Answer</summary>
+
+The rule "too big → move the right pointer" is only safe because moving it discards candidates that are even larger; that reasoning relies on order.
+
+</details>
+
+**Q3.** Name the three pointer styles.
+
+<details><summary>Answer</summary>
+
+Opposite ends, same direction (reader/writer) and fast/slow.
+
+</details>
 
 ---
 

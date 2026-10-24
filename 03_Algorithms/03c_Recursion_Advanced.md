@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](03b_Recursion_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← Recursion Fundamentals](03b_Recursion_Fundamentals.md) | [Chapter index](00_INDEX.md) | [Dynamic Programming & Memoization →](04a_DP_Internals.md)
 🧠 **Mental Model**: See [Recursion Tree Thinking](../14_Mental_Models/01_Recursion_Tree_Thinking.md) — include/exclude pattern and decision trees
 
 ---
@@ -65,6 +65,25 @@ Writing **answers on a cheat sheet** the first time you solve a sub-question, so
 ### Historical Evolution
 
 Backtracking as a systematic search technique was named and described by the mathematician **D. H. Lehmer** in the 1950s, formalised by **R. J. Walker (1960)** and **Golomb and Baumert (1965)**, and popularised as a structured-programming example by **Dijkstra (1972)** — recursion in languages such as LISP (1958) and ALGOL 60 made the "choose–explore–unchoose" pattern natural to write. The N-Queens problem, which became a canonical backtracking benchmark, dates to **Max Bezzel's 1848 chess puzzle** and was later studied by **Gauss** in 1850 — the eight-queens problem on an 8x8 board has 92 solutions and was one of the first problems where exhaustive backtracking search was explicitly analyzed. **Knuth's "Dancing Links" paper (2000)** later showed how to implement backtracking for exact-cover problems very efficiently. Modern practice (post-2010) applies backtracking to constraint solvers (SAT solvers, SMT solvers), game AI (minimax with alpha-beta pruning), and combinatorial optimization — the same choose-explore-unchoose structure that LISP pioneered.
+
+
+### 5. Check yourself
+
+**Q1.** How do you convert a recursion into an iteration that mimics the call stack?
+
+<details><summary>Answer</summary>
+
+Use an explicit stack of the state (arguments and the point to resume) and loop until it is empty.
+
+</details>
+
+**Q2.** Moves needed for the Towers of Hanoi with 4 disks?
+
+<details><summary>Answer</summary>
+
+**15** (`2⁴ − 1`).
+
+</details>
 
 ---
 

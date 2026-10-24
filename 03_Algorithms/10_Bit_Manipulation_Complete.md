@@ -1,4 +1,4 @@
-﻿> **Navigation**: [< Previous](09_Pattern_Programs_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Backtracking_Complete.md)
+> **Navigation**: [← Prefix Sum Prefix XOR 2D Prefix…](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) | [Chapter index](00_INDEX.md) | [Union-Find / Disjoint Set Union… →](14_Union_Find_DSU_Complete.md)
 > 🧠 **Mental Model**: See [Space-Time Tradeoffs](../14_Mental_Models/12_Space_Time_Tradeoffs.md) — bit tricks as O(1) space optimizations
 
 # 🔢 Bit Manipulation Complete Guide
@@ -48,6 +48,25 @@ A **row of light switches**: each bit is a switch and the operators describe how
 
 
 > Master the Art of Binary Operations for Coding Interviews
+
+### 5. Check yourself
+
+**Q1.** How many set bits does 13 (`1101`) have?
+
+<details><summary>Answer</summary>
+
+**3**.
+
+</details>
+
+**Q2.** Test whether `n` is a power of two.
+
+<details><summary>Answer</summary>
+
+`n > 0 && (n & (n − 1)) == 0`.
+
+</details>
+
 
 ## Table of Contents
 

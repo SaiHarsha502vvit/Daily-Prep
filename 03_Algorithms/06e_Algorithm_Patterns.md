@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](06d_String_Algorithms.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← Advanced Algo Deep](06c_Advanced_Algo_Deep.md) | [Chapter index](00_INDEX.md) | [Online, Approximation &… →](25_Online_Approximation_And_Linear_Programming.md)
 🧠 **Mental Model**: See [Optimization Pipeline](../14_Mental_Models/14_Optimization_Pipeline.md) — systematic brute force to optimal approach
 
 ---

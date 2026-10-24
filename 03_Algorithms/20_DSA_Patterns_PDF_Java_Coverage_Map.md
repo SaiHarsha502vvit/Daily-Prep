@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) | [Back to Index](00_INDEX.md)
+> **Navigation**: [← Algorithms — Problem Sets](03_PROBLEM_SETS.md) | [Chapter index](00_INDEX.md)
 
 # Chapter 20 - DSA Patterns PDF to Java Coverage Map
 

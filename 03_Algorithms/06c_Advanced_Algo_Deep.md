@@ -1,6 +1,6 @@
 # Advanced Algo Deep
 
-> **Navigation**: [< Previous Chapter](06a_Greedy_BitManip.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← Advanced Algorithm Engineering…](07e_Advanced_Algorithm_Engineering_Deep.md) | [Chapter index](00_INDEX.md) | [PART FINAL: MODERN ALGORITHMS AND… →](06e_Algorithm_Patterns.md)
 
 ---
 

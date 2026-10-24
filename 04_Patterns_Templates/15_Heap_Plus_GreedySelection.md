@@ -1,6 +1,6 @@
 # 🧩 Heap + Greedy Selection — Pattern Guide
 
-**Navigation**: [< Previous](14_Graph_Plus_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_DP_Pattern_Recognition.md)
+> **Navigation**: [← Graph + Traversal](14_Graph_Plus_Traversal.md) | [Chapter index](00_INDEX.md) | [DP Pattern Recognition →](16_DP_Pattern_Recognition.md)
 
 ## Heap + Greedy Selection — Combined Pattern Guide
 
@@ -48,6 +48,33 @@ An **emergency-room triage desk**: whoever is most urgent is served next, no mat
 
 > [!NOTE]
 > **Quick check:** Why a min-heap for the K largest? *Its root is the weakest of the K kept, the one to evict.*
+
+
+### 5. Check yourself
+
+**Q1.** Which heap do you use to keep the K largest elements?
+
+<details><summary>Answer</summary>
+
+A min-heap of size K; its root is the smallest of the K and the one to evict.
+
+</details>
+
+**Q2.** Merge 3 sorted lists with `n` elements in total. What is the cost with a heap?
+
+<details><summary>Answer</summary>
+
+`O(n log 3) = O(n log k)` for `k` lists.
+
+</details>
+
+**Q3.** Running median of `5, 15, 1, 3`?
+
+<details><summary>Answer</summary>
+
+After each insert: 5, 10, 5, **4**.
+
+</details>
 
 ---
 

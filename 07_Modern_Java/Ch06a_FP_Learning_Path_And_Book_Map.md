@@ -10,7 +10,7 @@
 | --- | --- |
 | **Builds on** | [Functional Programming in Java](Ch06_Functional_Programming.md) (lambdas, streams, `Optional`), [Strings & Immutability](Ch02_Strings_Immutability.md), [Enums, Records, Sealed](Ch03_Enums_Records_Sealed.md), [Generics](Ch04_Generics_Exceptions.md) |
 | **You will learn** | The idea behind functional programming (purity, immutability, composition), the order in which the six foundation pages build on each other, and which topics from the Scala book are covered or deferred |
-| **Leads to** | [Purity & Effects](Ch06b_FP_Purity_Substitution_And_Effects.md) → [ADTs & Immutable Lists](Ch06c_FP_Algebraic_Data_Types_And_Immutable_Lists.md) → [Option & Either](Ch06d_FP_Error_Handling_Option_Either.md) → [Laziness](Ch06e_FP_Laziness_And_Lazy_Streams.md) → [Pure State & Property Testing](Ch06f_FP_Pure_State_And_Property_Testing.md) → [Monoids, Functors, Monads](Ch06g_FP_Monoids_Functors_Monads.md) |
+| **Leads to** | [Purity & Effects](Ch06b_FP_Purity_Substitution_And_Effects.md) → [ADTs & Immutable Lists](Ch06c_FP_Algebraic_Data_Types_And_Immutable_Lists.md) → [Option & Either](Ch06d_FP_Error_Handling_Option_Either.md) → [Laziness](Ch06e_FP_Laziness_And_Lazy_Streams.md) → [Pure State & Property Testing](Ch06f_FP_Pure_State_And_Property_Testing.md) → [Monoids, Functors, Monads](Ch06g_FP_Monoids_Functors_Monads.md) → [Parser Combinators](Ch06h_FP_Parser_Combinators.md) → [Validation & IO](Ch06i_FP_Validation_And_IO_Descriptions.md) |
 | **Abstraction level** | Language features (lambdas) → **principles** (purity, algebra) → reusable abstractions (monoid, functor, monad) |
 
 > [!NOTE]
@@ -89,11 +89,11 @@ The first edition is organised in four parts. Chapter numbers below are listed f
 | 6. Purely functional state (RNG, state actions) | [Ch06f](Ch06f_FP_Pure_State_And_Property_Testing.md) | ✅ |
 | 7. Purely functional parallelism (`Par`, combinators) | [Concurrency](Ch15_Concurrency_Core.md), `CompletableFuture` in [Ch16](Ch16_Concurrency_Advanced.md) | ◑ Java-native equivalents; a from-scratch `Par` library is not covered |
 | 8. Property-based testing (generators, shrinking, `forAll`) | [Ch06f](Ch06f_FP_Pure_State_And_Property_Testing.md) | ✅ (minimal framework; shrinking is described, not built) |
-| 9. Parser combinators | — | ⏳ Open gap |
+| 9. Parser combinators | [Ch06h](Ch06h_FP_Parser_Combinators.md) | ✅ |
 | 10. Monoids (laws, `foldMap`, product monoids) | [Ch06g](Ch06g_FP_Monoids_Functors_Monads.md) | ✅ |
 | 11. Monads (`flatMap`, laws, identity/State/reader examples) | [Ch06g](Ch06g_FP_Monoids_Functors_Monads.md) | ✅ |
-| 12. Applicative and traversable functors | [Ch06g §Beyond flatMap](Ch06g_FP_Monoids_Functors_Monads.md) (`sequence` shown) | ◑ `sequence` only; full applicative/traversable theory deferred |
-| 13–15. External effects and I/O, local mutable state, stream processing | [Ch06b §Effects](Ch06b_FP_Purity_Substitution_And_Effects.md), [Virtual threads & I/O](Ch13_Networking_NIO.md) | ◑ Principles covered; an `IO` monad library is not |
+| 12. Applicative and traversable functors | [Ch06i](Ch06i_FP_Validation_And_IO_Descriptions.md) (`map2` and error-accumulating `Validation`), [Ch06d](Ch06d_FP_Error_Handling_Option_Either.md) (`sequence`) | ◑ Applicative idea and `Validation` covered; full traversable theory deferred |
+| 13–15. External effects and I/O, local mutable state, stream processing | [Ch06i §IO as a description](Ch06i_FP_Validation_And_IO_Descriptions.md), [Ch06b §Effects](Ch06b_FP_Purity_Substitution_And_Effects.md), [Virtual threads & I/O](Ch13_Networking_NIO.md) | ◑ `IO` as a lazy description covered; resource safety and incremental stream processing are not |
 
 > [!TIP]
 > **Why Java and not Scala?** This repository teaches Java first. Java lacks tail-call elimination, higher-kinded types and implicit parameters, so some Scala idioms (a generic `Monad[F[_]]` typeclass, for example) cannot be expressed directly. Each page says where the translation loses something.
@@ -119,6 +119,8 @@ The first edition is organised in four parts. Chapter numbers below are listed f
 | 4 | Ch06e | Build the lazy prime sieve and explain why it terminates |
 | 5 | Ch06f | Write two properties for a function you own |
 | 6 | Ch06g | Verify monoid and monad laws for a type of your own |
+| 7 | Ch06h | Add a `string literal` parser and a `sepBy` combinator to the expression parser |
+| 8 | Ch06i | Validate a signup form with `Validation` and list every error at once |
 
 ---
 

@@ -1,6 +1,6 @@
 # A3. Lower Bounds and NP-Completeness
 
-**Navigation**: [← A2: Complexity First Principles](A2_Complexity_FirstPrinciples.md) | [📚 Index](00_INDEX.md) | [A4: Randomized Algorithms →](A4_Randomized_Algorithms.md)
+> **Navigation**: [← A2. Complexity Analysis from…](A2_Complexity_FirstPrinciples.md) | [Chapter index](00_INDEX.md) | [A4. Randomized Algorithms →](A4_Randomized_Algorithms.md)
 
 > **MIT 6.046J L16–L23 / KTH DD2352 / TU Munich Theoretical CS foundation**
 >
@@ -48,6 +48,25 @@ A **proof that a puzzle has no shortcut** so you stop wasting time looking for o
 
 > [!NOTE]
 > **Quick check:** What does NP-hard guarantee? *If you could solve it in polynomial time, you could solve every NP problem in polynomial time.*
+
+
+### 5. Check yourself
+
+**Q1.** Why does comparison sorting need `Ω(n log n)` comparisons?
+
+<details><summary>Answer</summary>
+
+A decision tree must have at least `n!` leaves, so its height is at least `log₂(n!) = Θ(n log n)`.
+
+</details>
+
+**Q2.** Does "NP-complete" mean impossible to solve?
+
+<details><summary>Answer</summary>
+
+No. It means no polynomial-time algorithm is known (and one would prove P = NP); you can still use exact exponential search, approximation or heuristics.
+
+</details>
 
 ---
 

@@ -1,6 +1,6 @@
 # A1. Algorithm Correctness — Proving Why It Works
 
-**Navigation**: [← Algorithm Thinking](01_Algorithm_Thinking.md) | [📚 Index](00_INDEX.md) | [A2: Complexity from First Principles →](A2_Complexity_FirstPrinciples.md)
+> **Navigation**: [Chapter index](00_INDEX.md) | [A2. Complexity Analysis from… →](A2_Complexity_FirstPrinciples.md)
 
 > **MIT 6.006 / KTH DD1352 / TU Munich IN0007 foundation**
 >
@@ -50,6 +50,25 @@ A **bank reconciliation rule** ("total in = total out + balance") checked after 
 
 > [!NOTE]
 > **Quick check:** What is the invariant of binary search? *If the target exists, it is inside `[lo, hi)`.*
+
+
+### 5. Check yourself
+
+**Q1.** What must a loop invariant satisfy?
+
+<details><summary>Answer</summary>
+
+Initialization (true before the first iteration), maintenance (preserved by each iteration) and termination (together with the exit condition it implies the goal).
+
+</details>
+
+**Q2.** Insertion sort: state the invariant at the start of iteration `i`.
+
+<details><summary>Answer</summary>
+
+`a[0..i)` contains the original first `i` elements in sorted order.
+
+</details>
 
 ---
 

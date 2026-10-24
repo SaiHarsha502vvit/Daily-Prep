@@ -2,6 +2,11 @@
 
 > Foundation of everything — understand how data is stored, accessed, and manipulated.
 
+> [!NOTE]
+> **Chapter hubs and topic pages.** Long chapters are split: the chapter file (the *hub*) keeps the bridge, study-partner explainer, at-a-glance diagram and Enterprise Lens, and lists its **topic pages** in a table (in a folder with the same name as the chapter). Read the pages in order the first time; use the hub table to jump back later. Previous/next links follow the reading order of this index.
+
+**Review checklist for every chapter:** state time **and** space complexity · state the invariant · list edge cases (empty, one element, duplicates, extremes) · say what happens at 10× data.
+
 ## 5W1H — Why This Section Matters
 
 > **WHAT:** The Data Structures section of this curriculum — every core data structure, every important variant, every production use.

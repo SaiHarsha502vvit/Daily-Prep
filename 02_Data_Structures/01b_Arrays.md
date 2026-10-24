@@ -1,6 +1,6 @@
 # 📊 Arrays
 
-**Navigation**: [< Previous Chapter](01a_Memory_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01c_LinkedList.md)
+> **Navigation**: [← Memory Foundations — Where Data…](01a_Memory_Foundations.md) | [Chapter index](00_INDEX.md) | [Linked Lists →](01c_LinkedList.md)
 
 ---
 

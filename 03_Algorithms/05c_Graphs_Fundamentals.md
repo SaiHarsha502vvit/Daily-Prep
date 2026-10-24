@@ -1,6 +1,6 @@
 # Graphs Fundamentals
 
-**Navigation**: [< Previous Chapter](05b_Graphs_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05d_Graphs_Advanced_Algos.md)
+> **Navigation**: [← GRAPHS](05b_Graphs_Internals.md) | [Chapter index](00_INDEX.md) | [Graphs Advanced Algos →](05d_Graphs_Advanced_Algos.md)
 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — BFS/DFS decision framework and cycle detection
 
 ---
@@ -112,6 +112,25 @@ Exploring a **maze**: BFS sends scouts to every corridor one step at a time; DFS
 
 > [!NOTE]
 > **Quick check:** Which traversal finds shortest paths in an unweighted graph? *BFS.*
+
+
+### 5. Check yourself
+
+**Q1.** Why can recursive DFS fail on a large graph?
+
+<details><summary>Answer</summary>
+
+The recursion depth can reach `V`, causing a stack overflow; use an explicit stack.
+
+</details>
+
+**Q2.** What must be true for a topological order to exist?
+
+<details><summary>Answer</summary>
+
+The graph must be directed and acyclic (a DAG).
+
+</details>
 
 ---
 

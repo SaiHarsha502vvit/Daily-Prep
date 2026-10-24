@@ -1,6 +1,6 @@
 # 🧩 Stack + Monotonic — Pattern Guide
 
-**Navigation**: [< Previous](10_HashMap_Plus_Counting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_LinkedList_Plus_TwoPointers.md)
+> **Navigation**: [← HashMap + Counting](10_HashMap_Plus_Counting.md) | [Chapter index](00_INDEX.md) | [Linked List + Two Pointers →](12_LinkedList_Plus_TwoPointers.md)
 
 ## Stack + Monotonic Pattern — Combined Pattern Guide
 
@@ -48,6 +48,33 @@ A **queue of people waiting to be matched with a taller person ahead**: when som
 
 > [!NOTE]
 > **Quick check:** What does the stack hold at any moment? *Indices whose answer is still unknown, in monotone order.*
+
+
+### 5. Check yourself
+
+**Q1.** Daily temperatures `[73,74,75,71,69,72,76,73]`: what are the answers?
+
+<details><summary>Answer</summary>
+
+`[1,1,4,2,1,1,0,0]`.
+
+</details>
+
+**Q2.** Largest rectangle in histogram `[2,1,5,6,2,3]`?
+
+<details><summary>Answer</summary>
+
+**10** (height 5 across the bars 5 and 6).
+
+</details>
+
+**Q3.** Why do monotonic-stack solutions store indices rather than values?
+
+<details><summary>Answer</summary>
+
+Indices give distances and widths, and the value can still be read from the array.
+
+</details>
 
 ---
 

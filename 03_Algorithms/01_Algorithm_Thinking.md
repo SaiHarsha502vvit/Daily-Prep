@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02a_Sorting_Fundamentals.md)
+> **Navigation**: [Chapter index](00_INDEX.md) | [Sorting Fundamentals →](02a_Sorting_Fundamentals.md)
 
 # 🧠 Algorithm Thinking: How to Approach Any Problem
 
@@ -46,6 +46,25 @@ A **doctor reading symptoms first**: constraints are symptoms, algorithms are tr
 
 > [!NOTE]
 > **Quick check:** What does n = 10⁵ rule out? *Anything quadratic.*
+
+
+### 5. Check yourself
+
+**Q1.** `n = 10⁵` and a one-second limit. Which complexity class is ruled out?
+
+<details><summary>Answer</summary>
+
+Quadratic, `O(n²)` — about 10¹⁰ steps. Aim for `O(n log n)` or `O(n)`.
+
+</details>
+
+**Q2.** Why write the brute force first even if you know it is too slow?
+
+<details><summary>Answer</summary>
+
+It exposes the bottleneck and gives you a correct oracle to test the optimised version against on random inputs.
+
+</details>
 
 ---
 

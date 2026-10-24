@@ -1,6 +1,6 @@
 # 🧩 Intervals — Pattern Guide
 
-**Navigation**: [< Previous](20_BitManipulation_Plus_Tricks.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Cyclic_Sort_Pattern.md)
+> **Navigation**: [← Top-K & Two Heaps](31_Top_K_And_Two_Heaps_Pattern.md) | [Chapter index](00_INDEX.md) | [Cyclic Sort →](22_Cyclic_Sort_Pattern.md)
 
 **Pattern 21** | [Prev](20_BitManipulation_Plus_Tricks.md) | [Index](../00_MASTER_INDEX.md) | [Next](22_Cyclic_Sort_Pattern.md)
 
@@ -46,6 +46,33 @@ A **calendar**: sort the meetings by start time and walk down the day.
 
 > [!NOTE]
 > **Quick check:** Why sort by end time for "max non-overlapping"? *Finishing earliest leaves the most room for the rest (exchange argument).*
+
+
+### 5. Check yourself
+
+**Q1.** Merge `[[1,3],[2,6],[8,10],[15,18]]`.
+
+<details><summary>Answer</summary>
+
+`[[1,6],[8,10],[15,18]]`.
+
+</details>
+
+**Q2.** Minimum meeting rooms for `[[0,30],[5,10],[15,20]]`?
+
+<details><summary>Answer</summary>
+
+**2**: at times 5–10 and 15–20 the first meeting overlaps one other, never two.
+
+</details>
+
+**Q3.** Why sort by end time to keep the most non-overlapping intervals?
+
+<details><summary>Answer</summary>
+
+Finishing earliest leaves the most room for the rest; an exchange argument shows no optimal solution is better.
+
+</details>
 
 ---
 

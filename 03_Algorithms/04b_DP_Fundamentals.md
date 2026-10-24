@@ -1,6 +1,6 @@
 # DP Fundamentals
 
-**Navigation**: [< Previous Chapter](04a_DP_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04c_DP_Advanced.md)
+> **Navigation**: [← Dynamic Programming & Memoization](04a_DP_Internals.md) | [Chapter index](00_INDEX.md) | [Advanced DP Patterns →](04c_DP_Advanced.md)
 🧠 **Mental Model**: See [DP State Thinking](../14_Mental_Models/02_DP_State_Thinking.md) — state definition, transitions, and tabulation strategy
 
 ---
@@ -78,6 +78,25 @@ Planning a **road trip with cheapest gas stops**: the best plan to reach city k 
 ### Historical Evolution
 
 **Dynamic Programming** was coined by **Richard Bellman in the 1950s** while working at the RAND Corporation on aerospace research — the name was deliberately chosen as a political shield ("dynamic" sounded impressive to his boss, who had been opposed to "mathematical" research), even though the core ideas of optimal substructure and overlapping subproblems had been studied independently. Bellman's landmark **1957 paper and book** formalized DP as a general method for solving optimization problems with optimal substructure: "An optimal policy has the property that whatever the initial state and initial decision are, the remaining decisions must constitute an optimal policy for the state arising from the first decision" (the Bellman optimality principle). The technique grew out of control theory and operations research, where real-world problems like inventory management, equipment replacement, and resource allocation naturally exhibited overlapping subproblems. **Knuth (1971)** and **Yao (1980)** showed that for recurrences satisfying the quadrangle inequality, monotonicity of the optimal split point reduces the cost (Knuth optimization), so even within DP, structural properties enable faster algorithms. Modern practice (post-2010) applies DP everywhere: shortest path routing (used in GPS and network protocols), natural language processing (Viterbi algorithm for hidden Markov models), and bioinformatics (sequence alignment via Needleman-Wunsch).
+
+
+### 5. Check yourself
+
+**Q1.** Length of the LCS of `"ABCBDAB"` and `"BDCABA"`?
+
+<details><summary>Answer</summary>
+
+**4** (for example `"BCBA"`).
+
+</details>
+
+**Q2.** How do you reduce 0/1 knapsack to a 1-D array and why must the loop run downwards?
+
+<details><summary>Answer</summary>
+
+Keep `dp[w]` for the best value with capacity `w` and iterate `w` from high to low so each item is used at most once.
+
+</details>
 
 ---
 

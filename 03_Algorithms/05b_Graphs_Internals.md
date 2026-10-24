@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05c_Graphs_Fundamentals.md)
+> **Navigation**: [← TREES](05_Trees.md) | [Chapter index](00_INDEX.md) | [Graphs Fundamentals →](05c_Graphs_Fundamentals.md)
 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — traversal intuition and pattern recognition
 
 ---
@@ -68,6 +68,25 @@ A **phone book of friends** (list per person) versus a **huge grid** of everyone
 > **WHEN:** Adjacency List for sparse graphs (E < V²/2). Adj Matrix for dense graphs or O(1) edge lookups. Edge List for sorting edges (Kruskal's).
 >
 > **HOW:** By comparing memory overhead of Object-based adjacency lists vs flat 2D arrays, and selecting ArrayDeque over LinkedList for cache- friendly BFS/DFS queues.
+
+
+### 5. Check yourself
+
+**Q1.** Space of an adjacency list versus an adjacency matrix?
+
+<details><summary>Answer</summary>
+
+`O(V + E)` versus `O(V²)`.
+
+</details>
+
+**Q2.** Cost of BFS on a graph stored as adjacency lists?
+
+<details><summary>Answer</summary>
+
+`O(V + E)`.
+
+</details>
 
 ---
 

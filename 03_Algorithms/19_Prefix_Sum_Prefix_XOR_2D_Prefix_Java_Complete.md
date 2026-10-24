@@ -1,6 +1,6 @@
 # Prefix Sum Prefix XOR 2D Prefix Java Complete
 
-**Navigation**: [< Previous](18_Bitwise_Trie_Java_Complete.md) | [Back to Index](00_INDEX.md) | [Next >](20_DSA_Patterns_PDF_Java_Coverage_Map.md)
+> **Navigation**: [← Monotonic Stack & Queue](15_Monotonic_Stack_Queue_Complete.md) | [Chapter index](00_INDEX.md) | [Bit Manipulation →](10_Bit_Manipulation_Complete.md)
 
 ---
 
@@ -122,6 +122,25 @@ A **running odometer**: distance between two points is the difference of two odo
 ### Historical Evolution
 
 Prefix sum as a systematic technique predates computers — the method of **differences**, developed by **Brook Taylor in 1715** in his work on finite differences, established the mathematical foundation: if you know consecutive differences, you can reconstruct the original sequence by accumulation, and compute range sums as the difference of two accumulated values. In computer science, **prefix computation** was formalized as a fundamental parallel primitive by **Kogge and Stone (1973)** in their paper on parallel prefix (scan) algorithms, proving that prefix sums across $n$ elements could be computed in $O(\log n)$ time on $n$ processors. **Blelloch's 1990 report "Prefix sums and their applications"** established the scan as a core primitive of parallel algorithms, with uses in sorting, lexical analysis and polynomial evaluation. The **2D prefix sum** technique (integral image in computer vision) was introduced as the *summed-area table* by **Crow (1984)** and popularised as the "integral image" by **Viola and Jones (2001)** in their face-detection paper — a 2D prefix sum enabling $O(1)$ rectangular sum queries, widely used in computer vision. Modern practice (post-2010): prefix sums are in every database query engine (GROUP BY optimization), image processing (integral images in OpenCV, Photoshop), competitive programming (subarray sum problems), and signal processing.
+
+
+### 5. Check yourself
+
+**Q1.** 2D prefix sums: how do you get the sum of rectangle `(r1,c1)–(r2,c2)`?
+
+<details><summary>Answer</summary>
+
+`P[r2+1][c2+1] − P[r1][c2+1] − P[r2+1][c1] + P[r1][c1]` (inclusion–exclusion).
+
+</details>
+
+**Q2.** What makes prefix XOR work like prefix sums?
+
+<details><summary>Answer</summary>
+
+XOR is its own inverse, so `xor(l..r) = P[r+1] ^ P[l]`.
+
+</details>
 
 ---
 

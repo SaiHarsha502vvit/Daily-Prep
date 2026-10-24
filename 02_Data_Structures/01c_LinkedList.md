@@ -1,6 +1,6 @@
 # 🔗 Linked Lists
 
-> **Navigation**: [< Previous Chapter](01b_Arrays.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01d_Stack_Queue.md)
+> **Navigation**: [← Arrays](01b_Arrays.md) | [Chapter index](00_INDEX.md) | [Stacks & Queues →](01d_Stack_Queue.md)
 
 ---
 

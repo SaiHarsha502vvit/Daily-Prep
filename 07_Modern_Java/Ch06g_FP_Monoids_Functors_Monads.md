@@ -1,6 +1,6 @@
 # 🧩 Monoids, Functors & Monads
 
-> **Navigation**: [← Pure State & Property Testing](Ch06f_FP_Pure_State_And_Property_Testing.md) | [Back to Index](00_INDEX.md) | [Next: Modern Java 9–21 →](Ch07_Modern_Java_9to21.md)
+> **Navigation**: [← Pure State & Property Testing](Ch06f_FP_Pure_State_And_Property_Testing.md) | [Back to Index](00_INDEX.md) | [Next: Parser Combinators →](Ch06h_FP_Parser_Combinators.md)
 
 ---
 
@@ -188,4 +188,4 @@ Checked: integer, string and list monoids satisfy both laws on sample values; su
 
 ---
 
-[← Pure State & Property Testing](Ch06f_FP_Pure_State_And_Property_Testing.md) | [Index](00_INDEX.md) | [Modern Java 9–21 →](Ch07_Modern_Java_9to21.md)
+[← Pure State & Property Testing](Ch06f_FP_Pure_State_And_Property_Testing.md) | [Index](00_INDEX.md) | [Parser Combinators →](Ch06h_FP_Parser_Combinators.md)

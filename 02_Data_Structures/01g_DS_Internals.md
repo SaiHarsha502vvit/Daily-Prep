@@ -1,6 +1,6 @@
 # 🔬 Data Structure Internals — CPU & Memory Level
 
-**Navigation**: [< Previous Chapter](01f_Trees_Heaps.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← Trees & Heaps](01f_Trees_Heaps.md) | [Chapter index](00_INDEX.md) | [Data Structures: ALL VARIANTS →](02a_DS_Variants_Core.md)
 
 ---
 

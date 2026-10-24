@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](03b_Recursion_Fundamentals.md)
+> **Navigation**: [← Divide and Conquer](02c_Divide_And_Conquer.md) | [Chapter index](00_INDEX.md) | [Recursion Fundamentals →](03b_Recursion_Fundamentals.md)
 🧠 **Mental Model**: See [Recursion Tree Thinking](../14_Mental_Models/01_Recursion_Tree_Thinking.md) — call stack visualization and trust-the-recursion framework
 
 ---
@@ -61,6 +61,25 @@ A **stack of sticky notes** where each pending task is written on a new note; yo
 > **WHEN:** Study this BEFORE writing complex recursive DP or Backtracking logic. Knowing the memory cost helps you decide when to convert to iterative.
 >
 > **HOW:** By tracing the physical call stack, visualizing frame pointers, and understanding tail-call optimization (TCO) and memoization.
+
+### 5. Check yourself
+
+**Q1.** What is the maximum call-stack depth of a naive `fib(n)`?
+
+<details><summary>Answer</summary>
+
+`n` (the left-most chain of calls), even though the total number of calls is exponential.
+
+</details>
+
+**Q2.** What happens if the base case is unreachable?
+
+<details><summary>Answer</summary>
+
+Calls never stop and the JVM throws `StackOverflowError`.
+
+</details>
+
 
 ## Understanding Recursion from Brain's Perspective
 

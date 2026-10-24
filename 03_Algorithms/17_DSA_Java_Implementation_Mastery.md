@@ -1,5 +1,7 @@
 # DSA Java Implementation Mastery
 
+> **Navigation**: [← DSA Deep Reasoning](16_DSA_Deep_Reasoning.md) | [Chapter index](00_INDEX.md) | [Complete Pattern Programs - From… →](09_Pattern_Programs_Complete.md)
+
 ﻿
 
 ---

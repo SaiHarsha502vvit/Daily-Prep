@@ -1,6 +1,6 @@
 # Graphs Advanced Algos
 
-**Navigation**: [< Previous Chapter](05c_Graphs_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05e_Graphs_Patterns.md)
+> **Navigation**: [← Graphs Fundamentals](05c_Graphs_Fundamentals.md) | [Chapter index](00_INDEX.md) | [Graph Patterns & Specialized… →](05e_Graphs_Patterns.md)
 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — shortest path and MST mental models
 
 ---
@@ -60,6 +60,25 @@ A **GPS**: always extend the currently cheapest unexplored route (Dijkstra); if 
 
 > [!NOTE]
 > **Quick check:** Why does Dijkstra fail with negative edges? *It finalises a node when popped, assuming no later path can be cheaper.*
+
+
+### 5. Check yourself
+
+**Q1.** What does Dijkstra's algorithm require of edge weights?
+
+<details><summary>Answer</summary>
+
+They must be non-negative.
+
+</details>
+
+**Q2.** Kruskal's running time?
+
+<details><summary>Answer</summary>
+
+`O(E log E)`, which equals `O(E log V)`, dominated by sorting the edges.
+
+</details>
 
 ---
 

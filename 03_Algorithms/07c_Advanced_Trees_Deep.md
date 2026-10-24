@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](00_INDEX.md) | [Previous Chapter <](07b_Advanced_DS_Patterns.md) | [Next Chapter >](07d_Probabilistic_DS_Deep.md)
+> **Navigation**: [← Fenwick & Segment Trees…](07b_Advanced_DS_Patterns.md) | [Chapter index](00_INDEX.md) | [Probabilistic & Distributed Data… →](07d_Probabilistic_DS_Deep.md)
 
 ---
 
@@ -48,6 +48,25 @@ A **library with sections, shelves and a catalog**: a B-tree is the multi-level 
 
 > [!NOTE]
 > **Quick check:** Why do databases prefer B+ trees to binary trees? *High fan-out means fewer disk page reads.*
+
+
+### 5. Check yourself
+
+**Q1.** In a Merkle tree, how many hashes change when one leaf changes?
+
+<details><summary>Answer</summary>
+
+`O(log n)`: the hashes on the path from that leaf to the root.
+
+</details>
+
+**Q2.** Why do LSM trees favour writes?
+
+<details><summary>Answer</summary>
+
+Writes are buffered in memory and flushed as sequential sorted runs, avoiding random in-place updates.
+
+</details>
 
 ---
 

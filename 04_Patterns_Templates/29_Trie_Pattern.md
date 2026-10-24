@@ -1,6 +1,6 @@
 # 🧩 Trie (Prefix Tree) — Pattern Guide
 
-**Navigation**: [< Previous](28_Topological_Sort_Pattern.md) | [Back to Index](00_INDEX.md) | [Next >](30_Shortest_Path_Pattern.md)
+> **Navigation**: [← Topological Sort](28_Topological_Sort_Pattern.md) | [Chapter index](00_INDEX.md) | [Shortest Paths (BFS, 0-1 BFS… →](30_Shortest_Path_Pattern.md)
 
 **Pattern 29** | [Prev](28_Topological_Sort_Pattern.md) | [Index](00_INDEX.md)
 
@@ -47,6 +47,33 @@ A **dictionary's thumb index**: first letter, then second letter, narrowing down
 
 > [!NOTE]
 > **Quick check:** Why can a trie answer prefix queries faster than a hash set? *It follows only `L` links; a hash set stores whole words and cannot enumerate by prefix.*
+
+
+### 5. Check yourself
+
+**Q1.** Insert `car` and `cat`. How many trie nodes exist (excluding the root)?
+
+<details><summary>Answer</summary>
+
+**4**: `c`, `a`, `r`, `t`.
+
+</details>
+
+**Q2.** What is the difference between `contains` and `startsWith`?
+
+<details><summary>Answer</summary>
+
+`contains` also requires the end-of-word flag; `startsWith` only requires that the path exists.
+
+</details>
+
+**Q3.** What dominates memory in a trie with 26-slot children?
+
+<details><summary>Answer</summary>
+
+The child arrays: each node holds 26 references even when most are empty.
+
+</details>
 
 ---
 

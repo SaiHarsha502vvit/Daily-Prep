@@ -1,6 +1,6 @@
 # A3. Data Structure Lower Bounds — Proving You Cannot Do Better
 
-**Navigation**: [← A2: DS Complexity](A2_DS_Complexity_FirstPrinciples.md) | [📚 DS Index](00_INDEX.md) | [A4: Randomized DS →](A4_Randomized_Data_Structures.md)
+> **Navigation**: [← A2. Data Structure Complexity…](A2_DS_Complexity_FirstPrinciples.md) | [Chapter index](00_INDEX.md) | [A4. Randomized Data Structures… →](A4_Randomized_Data_Structures.md)
 
 > **MIT 6.046J L16–L23 / KTH DD2352 / RWTH Aachen Algo II foundation**
 >

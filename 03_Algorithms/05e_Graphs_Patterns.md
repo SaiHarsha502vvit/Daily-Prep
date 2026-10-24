@@ -1,6 +1,6 @@
 # 🕸️ Graph Patterns & Specialized Algorithms
 
-**Navigation**: [< Previous Chapter](05d_Graphs_Advanced_Algos.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← Graphs Advanced Algos](05d_Graphs_Advanced_Algos.md) | [Chapter index](00_INDEX.md) | [String Algorithms →](13_String_Algorithms_Complete.md)
 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — graph pattern recognition
 
 ---
@@ -71,6 +71,25 @@ Finding **single points of failure** in a network: which router, if removed, spl
 ### Historical Evolution
 
 Strongly Connected Components algorithms emerged from the need to decompose directed graphs into maximal cycles. **Tarjan's algorithm** for SCC was published by **Robert Tarjan in 1972** in a landmark paper titled "Depth-first search and linear graph algorithms" — it discovered that a single DFS pass with a stack and low-link values could identify all SCCs in $O(V+E)$ time, surprising the community because the problem seemed to require multiple passes. The algorithm used a stack to track nodes in the current DFS path and `low[u]` values (minimum discovery time reachable from u) to identify when to pop SCCs. **Kosaraju's algorithm** (devised by S. Rao Kosaraju in 1978 but left unpublished; Micha Sharir published it in 1981) uses two DFS passes — first on the original graph, then on the transpose graph — to achieve the same $O(V+E)$ result with a simpler mental model but worse cache behavior. **Articulation points and bridges** (cut vertices and cut edges) are central to network reliability; **Hopcroft and Tarjan (1973)** gave the DFS-based linear-time algorithm for biconnected components, and Tarjan's 1972 paper introduced the low-link technique it builds on. The **A\* algorithm** was published by **Peter Hart, Nils Nilsson, and Bertram Raphael in 1968** at SRI International as an extension of Dijkstra's algorithm with heuristic guidance, originally for robot navigation. Modern practice (post-2010) applies SCC to compiler design (control flow analysis), social network analysis (identifying tightly-connected communities), and dependency management in build systems.
+
+
+### 5. Check yourself
+
+**Q1.** How many components does union-find report after starting with `n` nodes and `m` successful unions?
+
+<details><summary>Answer</summary>
+
+`n − m`.
+
+</details>
+
+**Q2.** How do you test whether a graph is bipartite?
+
+<details><summary>Answer</summary>
+
+Two-colour it with BFS/DFS; finding an edge whose endpoints share a colour (an odd cycle) means it is not bipartite.
+
+</details>
 
 ---
 

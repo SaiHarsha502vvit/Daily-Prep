@@ -1,5 +1,7 @@
 # TREES - Complete Guide
 
+> **Navigation**: [← Chapter 18 - Bitwise Trie Java](18_Bitwise_Trie_Java_Complete.md) | [Chapter index](00_INDEX.md) | [GRAPHS →](05b_Graphs_Internals.md)
+
 ## 🔗 Bridge — Where This Chapter Fits
 
 | Dimension | This chapter |
@@ -60,6 +62,25 @@ A **company org chart**: to find the total salary under a manager, add the total
 ### Historical Evolution
 
 Balanced binary search trees emerged from the need to guarantee $O(\log n)$ operations in the worst case. **AVL Trees** were invented by **Georgy Adelson-Velsky and Evgenii Landis in 1962** — the paper "An algorithm for the organization of information" introduced the balance factor (left subtree height minus right subtree height must be $\{-1, 0, 1\}$) and proved that AVL trees maintain $O(\log n)$ search, insertion, and deletion. AVL trees were the first balanced BST, but their strict rebalancing requirement (single or double rotation per insert) made them less common in practice until **Red-Black trees** (Guibas and Sedgewick, 1978) offered a more relaxed balance. **B-Trees** were invented by **Rudolf Bayer and Edward McCreight in 1972** at Boeing Scientific Research Labs specifically for disk-based storage systems — the key insight was that by allowing nodes to have many children (not just 2), B-Trees minimize disk I/O operations (a disk seek costs ~10ms vs ~10ns for RAM access), making them the backbone of virtually all modern database indexes (InnoDB, PostgreSQL) and file systems (NTFS, ext4). Modern practice (post-2010) combines these insights: Java's `HashMap` switches from linked-list to Red-Black tree buckets at 8 entries (Java 8) to prevent HashDoS attacks, and B+ tree variants remain the dominant index structure in relational databases such as PostgreSQL and MySQL/InnoDB, while distributed stores such as Cassandra use LSM trees.
+
+
+### 5. Check yourself
+
+**Q1.** Maximum number of nodes in a binary tree of height `h` edges?
+
+<details><summary>Answer</summary>
+
+`2^(h+1) − 1`.
+
+</details>
+
+**Q2.** What does an in-order traversal of a BST produce?
+
+<details><summary>Answer</summary>
+
+The keys in sorted order.
+
+</details>
 
 ---
 

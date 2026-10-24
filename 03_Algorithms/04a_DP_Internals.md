@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04b_DP_Fundamentals.md)
+> **Navigation**: [← Advanced Recursion Patterns](03c_Recursion_Advanced.md) | [Chapter index](00_INDEX.md) | [DP Fundamentals →](04b_DP_Fundamentals.md)
 🧠 **Mental Model**: See [DP State Thinking](../14_Mental_Models/02_DP_State_Thinking.md) — state definition, transitions, and tabulation strategy
 
 ---
@@ -61,6 +61,25 @@ Filling a **spreadsheet** row by row where each cell only looks at cells above/l
 > **WHEN:** Study this BEFORE writing complex 2D/3D DP tables. It teaches you when to use rolling arrays, bitmasks, or coordinate compression.
 >
 > **HOW:** By analyzing DP arrays in physical memory, observing branch prediction costs, and employing space optimization techniques like rolling arrays.
+
+### 5. Check yourself
+
+**Q1.** What two properties make a problem suitable for DP?
+
+<details><summary>Answer</summary>
+
+Optimal substructure and overlapping subproblems.
+
+</details>
+
+**Q2.** How does DP differ from plain divide and conquer?
+
+<details><summary>Answer</summary>
+
+Subproblems overlap in DP, so their answers are stored and reused; in divide and conquer they are independent.
+
+</details>
+
 
 ## From Recursion to Optimal Solutions
 

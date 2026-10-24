@@ -1,6 +1,6 @@
 # 🧩 Knapsack Family — Pattern Guide
 
-**Navigation**: [< Previous](22_Cyclic_Sort_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_Kadanes_Subarray_Patterns.md)
+> **Navigation**: [← Cyclic Sort](22_Cyclic_Sort_Pattern.md) | [Chapter index](00_INDEX.md) | [Kadane and Subarray Patterns →](24_Kadanes_Subarray_Patterns.md)
 
 **Pattern 23** | [Index](../00_MASTER_INDEX.md) | [Next](24_Kadanes_Subarray_Patterns.md)
 
@@ -46,6 +46,33 @@ Packing a **suitcase with a weight limit**: for every item you decide to bring i
 
 > [!NOTE]
 > **Quick check:** Why iterate capacity downwards for 0/1 knapsack? *So `dp[w − wt]` still refers to the previous item's row.*
+
+
+### 5. Check yourself
+
+**Q1.** Fewest coins from `[1,2,5]` for amount 11?
+
+<details><summary>Answer</summary>
+
+**3** (5 + 5 + 1).
+
+</details>
+
+**Q2.** Number of combinations to make 5 from `[1,2,5]` with unlimited coins?
+
+<details><summary>Answer</summary>
+
+**4**: `5`, `2+2+1`, `2+1+1+1`, `1+1+1+1+1`.
+
+</details>
+
+**Q3.** Which capacity-loop direction is used for 0/1 versus unbounded knapsack?
+
+<details><summary>Answer</summary>
+
+Downwards for 0/1 (each item once); upwards for unbounded (items can repeat).
+
+</details>
 
 ---
 

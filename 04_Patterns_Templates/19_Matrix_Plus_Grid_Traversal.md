@@ -1,6 +1,6 @@
 # 🧩 Matrix + Grid Traversal — Pattern Guide
 
-**Navigation**: [< Previous](18_String_Plus_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](20_BitManipulation_Plus_Tricks.md)
+> **Navigation**: [← String + Advanced](18_String_Plus_Advanced.md) | [Chapter index](00_INDEX.md) | [Bit Manipulation + Tricks →](20_BitManipulation_Plus_Tricks.md)
 
 ## Matrix + Grid Traversal — Combined Pattern Guide
 
@@ -48,6 +48,33 @@ A **chessboard**: from any square you know which neighbouring squares you can mo
 
 > [!NOTE]
 > **Quick check:** Why multi-source BFS rather than one BFS per source? *One pass handles all sources simultaneously in `O(rc)`.*
+
+
+### 5. Check yourself
+
+**Q1.** How do you rotate an `n×n` matrix 90° clockwise in place?
+
+<details><summary>Answer</summary>
+
+Transpose it, then reverse each row.
+
+</details>
+
+**Q2.** Write the direction arrays for 4-neighbour movement.
+
+<details><summary>Answer</summary>
+
+`dr = {-1, 1, 0, 0}` and `dc = {0, 0, -1, 1}`.
+
+</details>
+
+**Q3.** Which traversal solves "rotting oranges"?
+
+<details><summary>Answer</summary>
+
+Multi-source BFS: start with all rotten cells in the queue; each BFS layer is one minute.
+
+</details>
 
 ---
 

@@ -1,6 +1,6 @@
 # 🧩 LeetCode ↔ Real-World Map — Pattern Guide
 
-**Navigation**: [< Previous](04_Pattern_Recognition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Binary_Search_Patterns.md)
+> **Navigation**: [← Pattern Recognition](04_Pattern_Recognition.md) | [Chapter index](00_INDEX.md) | [Sliding Window →](01_Sliding_Window.md)
 
 ## 📊 LeetCode Problems → Real-World Applications Map
 
@@ -45,6 +45,33 @@ A **scale model of a bridge**: it is not the bridge, but the physics it demonstr
 
 > [!NOTE]
 > **Quick check:** What does production add that the toy version lacks? *Scale, concurrency, failure handling and memory bounds.*
+
+
+### 5. Check yourself
+
+**Q1.** Which production structure is the twin of the LRU Cache problem?
+
+<details><summary>Answer</summary>
+
+Page and buffer-pool caches (database buffer pools, browser caches): a hash map for lookup plus a recency list for eviction.
+
+</details>
+
+**Q2.** What does a production "Top K frequent" system add compared with the interview version?
+
+<details><summary>Answer</summary>
+
+Streaming input and bounded memory, so it uses approximate counters (e.g. Count-Min sketch) plus a bounded heap instead of counting everything exactly.
+
+</details>
+
+**Q3.** Name three things production adds that a toy problem ignores.
+
+<details><summary>Answer</summary>
+
+Concurrency, failure handling and memory/latency limits.
+
+</details>
 
 ---
 

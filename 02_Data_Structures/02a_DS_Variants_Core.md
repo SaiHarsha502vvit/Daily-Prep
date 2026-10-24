@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](02b_DS_Variants_Advanced.md)
+> **Navigation**: [← Data Structure Internals — CPU &…](01g_DS_Internals.md) | [Chapter index](00_INDEX.md) | [Advanced Data Structure Variants… →](02b_DS_Variants_Advanced.md)
 
 ---
 

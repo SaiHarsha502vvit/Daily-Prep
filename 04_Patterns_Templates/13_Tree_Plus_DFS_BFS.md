@@ -1,6 +1,6 @@
 # 🧩 Tree + DFS/BFS — Pattern Guide
 
-**Navigation**: [< Previous](12_LinkedList_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Graph_Plus_Traversal.md)
+> **Navigation**: [← Linked List + Two Pointers](12_LinkedList_Plus_TwoPointers.md) | [Chapter index](00_INDEX.md) | [Graph + Traversal →](14_Graph_Plus_Traversal.md)
 
 ## Tree + DFS/BFS — Combined Pattern Guide
 
@@ -48,6 +48,33 @@ An **organisation chart**: some questions are answered by asking each manager to
 
 > [!NOTE]
 > **Quick check:** Why compare against bounds instead of only the parent? *A deep node must respect every ancestor's bound.*
+
+
+### 5. Check yourself
+
+**Q1.** Which traversal visits a BST in sorted order?
+
+<details><summary>Answer</summary>
+
+In-order (left, node, right).
+
+</details>
+
+**Q2.** What are the time and extra space of recursive tree DFS?
+
+<details><summary>Answer</summary>
+
+`O(n)` time and `O(h)` stack space, where `h` is the height (up to `n` for a skewed tree).
+
+</details>
+
+**Q3.** Why validate a BST with `(lo, hi)` bounds instead of comparing only to the parent?
+
+<details><summary>Answer</summary>
+
+A node must respect every ancestor's bound, not just its parent's.
+
+</details>
 
 ---
 

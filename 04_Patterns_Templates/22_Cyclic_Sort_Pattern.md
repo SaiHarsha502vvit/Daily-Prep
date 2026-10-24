@@ -1,6 +1,6 @@
 # 🧩 Cyclic Sort — Pattern Guide
 
-**Navigation**: [< Previous](21_Intervals_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Knapsack_Family.md)
+> **Navigation**: [← Intervals](21_Intervals_Pattern.md) | [Chapter index](00_INDEX.md) | [Knapsack Family →](23_Knapsack_Family.md)
 
 **Pattern 22** | [Prev](21_Intervals_Pattern.md) | [Index](../00_MASTER_INDEX.md)
 
@@ -46,6 +46,33 @@ A **coat check**: each coat goes to the hook with its number; at the end, empty 
 
 > [!NOTE]
 > **Quick check:** Why does the duplicate check prevent an infinite loop? *Swapping two equal values changes nothing.*
+
+
+### 5. Check yourself
+
+**Q1.** `[3,1,5,4]`: what is the first missing positive?
+
+<details><summary>Answer</summary>
+
+**2**. After placing values at their homes the array is `[1,5,3,4]`; index 1 holds 5 instead of 2.
+
+</details>
+
+**Q2.** Find the duplicates in `[4,3,2,7,8,2,3,1]`.
+
+<details><summary>Answer</summary>
+
+**2 and 3**: after cycling values home, positions 1 and 2 hold the wrong values 2 and 3.
+
+</details>
+
+**Q3.** The loop has a `while` inside a `for`. Why is it `O(n)`?
+
+<details><summary>Answer</summary>
+
+Each swap places at least one value permanently at its home index, so there are at most `n` swaps in total.
+
+</details>
 
 ---
 

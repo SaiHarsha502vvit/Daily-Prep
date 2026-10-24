@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](12_Greedy_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Union_Find_DSU_Complete.md)
+> **Navigation**: [← Graph Patterns & Specialized…](05e_Graphs_Patterns.md) | [Chapter index](00_INDEX.md) | [Advanced Algorithm Patterns &… →](06d_String_Algorithms.md)
 🧠 **Mental Model**: See [Array & String Thinking](../14_Mental_Models/04_Array_String_Thinking.md) — pointer patterns and string manipulation mental models
 
 # 🔤 String Algorithms Complete Guide
@@ -48,6 +48,25 @@ Looking for a word in a book: after a partial match fails, you do not go back to
 
 
 KMP, Rabin-Karp, Z-Algorithm & Pattern Matching Mastery
+
+### 5. Check yourself
+
+**Q1.** KMP failure (prefix) function of `"ababaca"`?
+
+<details><summary>Answer</summary>
+
+`[0, 0, 1, 2, 3, 0, 1]`.
+
+</details>
+
+**Q2.** When does Rabin–Karp degrade to `O(nm)`?
+
+<details><summary>Answer</summary>
+
+When many hash collisions force character-by-character comparisons (bad hash or adversarial input).
+
+</details>
+
 
 ## Table of Contents
 

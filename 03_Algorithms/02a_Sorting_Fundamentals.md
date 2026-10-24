@@ -1,6 +1,6 @@
 # Sorting Fundamentals
 
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](02b_Sorting_Advanced.md)
+> **Navigation**: [← Algorithm Thinking: How to…](01_Algorithm_Thinking.md) | [Chapter index](00_INDEX.md) | [Sorting Advanced →](02b_Sorting_Advanced.md)
 🧠 **Mental Model**: See [Complexity Intuition](../14_Mental_Models/09_Complexity_Intuition.md) — why O(n log n) is the sorting lower bound
 
 ---
@@ -78,6 +78,25 @@ Sorting a **hand of playing cards**: insertion sort slides each new card into pl
 ### Historical Evolution
 
 Sorting algorithms have a rich history spanning over a century of computer science development. **Merge Sort** was the first practical $O(n \log n)$ sorting algorithm, invented by **John von Neumann in 1945**, who formalized the divide-and-conquer strategy and proved its stability properties for practical implementation. **Quicksort** was invented by **Tony Hoare in 1959** while working on a machine translation project at the University of Moscow — originally published as "Algorithm 64" in the Communications of the ACM — and it remains one of the most studied sorting algorithms due to its elegant in-place partitioning. **Heapsort** was introduced by **J. W. J. Williams in 1964**, providing the first practical comparison sort with guaranteed $O(n \log n)$ worst-case performance without requiring the $O(n)$ auxiliary space that Merge Sort needs. The early simple sorts (Bubble Sort, Selection Sort) were analyzed as early as 1956 but served primarily as pedagogical examples — their $O(n^2)$ behavior made them unsuitable for production use as dataset sizes grew. Modern practice (post-2010) combines these insights: Java's `Arrays.sort(Object[])` uses **Timsort (Peters 2002)**, a hybrid of Merge Sort and Insertion Sort, while primitive arrays use **Dual-Pivot Quicksort (Yaroslavskiy 2009)** for cache-friendly in-place performance.
+
+
+### 5. Check yourself
+
+**Q1.** Which of bubble, insertion and selection sort are stable?
+
+<details><summary>Answer</summary>
+
+Bubble and insertion sort are stable; the usual swap-based selection sort is not.
+
+</details>
+
+**Q2.** Best-case time of insertion sort?
+
+<details><summary>Answer</summary>
+
+`O(n)` on an already sorted array: each element needs one comparison.
+
+</details>
 
 ---
 

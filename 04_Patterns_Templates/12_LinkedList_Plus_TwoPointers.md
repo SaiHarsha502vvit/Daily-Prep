@@ -1,6 +1,6 @@
 # 🧩 Linked List + Two Pointers — Pattern Guide
 
-**Navigation**: [< Previous](11_Stack_Plus_MonotonicPattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Tree_Plus_DFS_BFS.md)
+> **Navigation**: [← Stack + Monotonic](11_Stack_Plus_MonotonicPattern.md) | [Chapter index](00_INDEX.md) | [Tree + DFS/BFS →](13_Tree_Plus_DFS_BFS.md)
 
 ## LinkedList + Two Pointers — Combined Pattern Guide
 
@@ -48,6 +48,33 @@ Two runners on a **circular track**: the faster eventually laps the slower; on a
 
 > [!NOTE]
 > **Quick check:** Why does fast catch slow in a cycle? *The gap shrinks by 1 each step, so it hits 0.*
+
+
+### 5. Check yourself
+
+**Q1.** List `1→2→3→4` with `while (fast != null && fast.next != null)`: where is `slow` at the end?
+
+<details><summary>Answer</summary>
+
+At node **3** (the second middle). Iteration 1: slow=2, fast=3; iteration 2: slow=3, fast=null.
+
+</details>
+
+**Q2.** After fast and slow meet in a cycle, how do you find the entry node?
+
+<details><summary>Answer</summary>
+
+Reset one pointer to the head and move both one step at a time; they meet at the cycle entry.
+
+</details>
+
+**Q3.** Why use a dummy head node?
+
+<details><summary>Answer</summary>
+
+It removes special cases for inserting or deleting at the head.
+
+</details>
 
 ---
 

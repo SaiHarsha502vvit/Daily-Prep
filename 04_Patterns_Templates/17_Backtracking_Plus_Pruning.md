@@ -1,6 +1,6 @@
 # 🧩 Backtracking + Pruning — Pattern Guide
 
-**Navigation**: [< Previous](16_DP_Pattern_Recognition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_String_Plus_Advanced.md)
+> **Navigation**: [← DP Pattern Recognition](16_DP_Pattern_Recognition.md) | [Chapter index](00_INDEX.md) | [String + Advanced →](18_String_Plus_Advanced.md)
 
 ## Backtracking + Pruning — Combined Pattern Guide
 
@@ -48,6 +48,33 @@ A **maze explorer with chalk**: mark a turn, explore, erase the mark if it was a
 
 > [!NOTE]
 > **Quick check:** Why sort before pruning on sums? *Once a candidate is too big, every later one is too.*
+
+
+### 5. Check yourself
+
+**Q1.** How many permutations does a list of 4 distinct elements have?
+
+<details><summary>Answer</summary>
+
+**24** (`4!`).
+
+</details>
+
+**Q2.** How many subsets does `{1,2,3}` have and why?
+
+<details><summary>Answer</summary>
+
+**8** = `2³`: each element is either included or not.
+
+</details>
+
+**Q3.** How do you avoid duplicate subsets when the input has repeated values?
+
+<details><summary>Answer</summary>
+
+Sort first and skip a value equal to its previous sibling at the same recursion depth.
+
+</details>
 
 ---
 

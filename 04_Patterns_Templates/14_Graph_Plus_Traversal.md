@@ -1,6 +1,6 @@
 # 🧩 Graph + Traversal — Pattern Guide
 
-**Navigation**: [< Previous](13_Tree_Plus_DFS_BFS.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Heap_Plus_GreedySelection.md)
+> **Navigation**: [← Tree + DFS/BFS](13_Tree_Plus_DFS_BFS.md) | [Chapter index](00_INDEX.md) | [Heap + Greedy Selection →](15_Heap_Plus_GreedySelection.md)
 
 ## Graph + Traversal Patterns — Combined Pattern Guide
 
@@ -48,6 +48,33 @@ Exploring a **city with one-way streets**: you keep a map of visited intersectio
 
 > [!NOTE]
 > **Quick check:** Why mark visited on enqueue in BFS? *Otherwise the same node can be queued many times.*
+
+
+### 5. Check yourself
+
+**Q1.** Count islands in `[[1,1,0],[0,1,0],[1,0,1]]`.
+
+<details><summary>Answer</summary>
+
+**3**: the connected group at the top-left, the single cell at (2,0) and the single cell at (2,2).
+
+</details>
+
+**Q2.** In BFS, when should a node be marked visited?
+
+<details><summary>Answer</summary>
+
+When it is enqueued, otherwise it can be queued many times.
+
+</details>
+
+**Q3.** What extra bookkeeping does cycle detection in a directed graph need compared with an undirected one?
+
+<details><summary>Answer</summary>
+
+A three-state mark (unvisited, in progress, done): reaching an in-progress node is a back edge, hence a cycle.
+
+</details>
 
 ---
 

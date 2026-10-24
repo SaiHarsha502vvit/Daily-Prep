@@ -1,5 +1,7 @@
 # 📝 Algorithms — Problem Sets
 
+> **Navigation**: [← Complete Pattern Programs - From…](09_Pattern_Programs_Complete.md) | [Chapter index](00_INDEX.md) | [Chapter 20 - DSA Patterns PDF to… →](20_DSA_Patterns_PDF_Java_Coverage_Map.md)
+
 ## `03_Algorithms` Module | MIT 6.006 / ETH Algorithms Style
 
 ### Historical Evolution

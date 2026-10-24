@@ -1,6 +1,6 @@
 # 🧩 Sliding Window — Pattern Guide
 
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Code_Templates.md)
+> **Navigation**: [← LeetCode ↔ Real-World Map](05_LeetCode_RealWorld_Map.md) | [Chapter index](00_INDEX.md) | [Binary Search Patterns →](06_Binary_Search_Patterns.md)
 
 ---
 
@@ -103,6 +103,33 @@ A **train carriage of fixed length** rolling along a platform: each step one pas
 
 > [!NOTE]
 > **Quick check:** Why can you not use a variable window for "longest subarray with sum = k" when values can be negative? *Shrinking can make the sum go up, so the monotone property fails — use prefix sums + a hash map.*
+
+
+### 5. Check yourself
+
+**Q1.** Array `[4,2,1,7,8,1,2,8,1,0]`, `k = 3`: what is the maximum window sum, and which windows reach it?
+
+<details><summary>Answer</summary>
+
+**16** — the windows `[1,7,8]` and `[7,8,1]`. Sums in order: 7, 10, 16, 16, 11, 11, 11, 9.
+
+</details>
+
+**Q2.** The variable-window template has a `while` inside a `for`. Why is it still `O(n)`?
+
+<details><summary>Answer</summary>
+
+`left` only moves forward and never exceeds `right`, so across the whole run both pointers move at most `n` steps: about `2n` operations in total.
+
+</details>
+
+**Q3.** Longest substring without repeating characters in `"abcabcbb"`?
+
+<details><summary>Answer</summary>
+
+**3** (`"abc"`). When the second `a` arrives, shrink from the left until the duplicate is gone; the best length seen stays 3.
+
+</details>
 
 ---
 

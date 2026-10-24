@@ -1,5 +1,7 @@
 # NumberTheory Advanced
 
+> **Navigation**: [← GCD, Number Theory & Pattern…](08a_NumberTheory_Core.md) | [Chapter index](00_INDEX.md) | [Matrix Exponentiation & Linear… →](23_Matrix_Exponentiation_And_Linear_Recurrences.md)
+
 ﻿**Navigation**: [< Previous Chapter](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
@@ -52,6 +54,25 @@ A **running tally**: instead of re-adding every number, keep a total and adjust 
 
 > [!NOTE]
 > **Quick check:** Why verify the Boyer–Moore candidate? *If no majority exists, the candidate is arbitrary.*
+
+
+### 5. Check yourself
+
+**Q1.** Inverse of 3 modulo 7?
+
+<details><summary>Answer</summary>
+
+**5**, because `3 · 5 = 15 ≡ 1 (mod 7)`.
+
+</details>
+
+**Q2.** State Fermat's little theorem.
+
+<details><summary>Answer</summary>
+
+If `p` is prime and `p ∤ a`, then `a^(p−1) ≡ 1 (mod p)`; hence `a^(p−2)` is the modular inverse of `a`.
+
+</details>
 
 ---
 

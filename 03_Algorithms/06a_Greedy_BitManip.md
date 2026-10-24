@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](06c_Advanced_Algo_Deep.md)
+> **Navigation**: [← Online, Approximation &…](25_Online_Approximation_And_Linear_Programming.md) | [Chapter index](00_INDEX.md) | [Algorithms in the Real World… →](13_Algorithms_In_Production.md)
 🧠 **Mental Model**: See [Greedy vs DP Decision](../14_Mental_Models/11_Greedy_vs_DP_Decision.md) — when greedy works and when you need DP
 
 ---
@@ -67,6 +67,25 @@ Looking **under the hood of a car**: you can drive without it, but it explains w
 
 
 **Navigation**: [Part A: Core Techniques] | [Part B: Advanced Patterns](06e_Algorithm_Patterns.md)
+
+
+### 5. Check yourself
+
+**Q1.** Which greedy choice maximises the number of non-overlapping intervals?
+
+<details><summary>Answer</summary>
+
+Sort by finish time and always take the interval that ends earliest.
+
+</details>
+
+**Q2.** What does `x & -x` return?
+
+<details><summary>Answer</summary>
+
+The lowest set bit of `x` (for `x = 12` it is 4).
+
+</details>
 
 ---
 

@@ -1,6 +1,6 @@
 # 🧩 Code Templates — Pattern Guide
 
-**Navigation**: [< Previous](01_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Visual_Diagrams.md)
+> **Navigation**: [Chapter index](00_INDEX.md) | [Visual Diagrams →](03_Visual_Diagrams.md)
 
 ## 🎨 COMPLETE CODE TEMPLATES WITH VISUAL EXPLANATIONS
 
@@ -65,6 +65,33 @@ A **recipe card**: the method (steps) stays the same, you swap the ingredients.
 
 > [!NOTE]
 > **Quick check:** Which two lines of a binary-search template cause most bugs? *The `mid` computation and the `lo = mid + 1` / `hi = mid` updates.*
+
+
+### 5. Check yourself
+
+**Q1.** In the lower-bound template, why is the update `hi = mid` and not `hi = mid - 1`?
+
+<details><summary>Answer</summary>
+
+Because `mid` itself may be the first index that satisfies the condition. Excluding it could skip the answer. The loop `while (lo < hi)` with `mid = lo + (hi - lo) / 2` always shrinks the range.
+
+</details>
+
+**Q2.** Which template do you use for "number of subarrays with sum `k`" when values can be negative?
+
+<details><summary>Answer</summary>
+
+Prefix sum plus a hash map of earlier prefix counts. A sliding window fails because shrinking can increase the sum.
+
+</details>
+
+**Q3.** In any template, which lines do you copy unchanged and which do you change?
+
+<details><summary>Answer</summary>
+
+Copy the loop shape, pointer updates and invariant. Change only the condition being tested and how the answer is recorded.
+
+</details>
 
 ---
 

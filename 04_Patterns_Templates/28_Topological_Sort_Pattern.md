@@ -1,6 +1,6 @@
 # 🧩 Topological Sort — Pattern Guide
 
-**Navigation**: [< Previous](27_Union_Find_Pattern.md) | [Back to Index](00_INDEX.md) | [Next >](29_Trie_Pattern.md)
+> **Navigation**: [← Union-Find (Disjoint Set Union)](27_Union_Find_Pattern.md) | [Chapter index](00_INDEX.md) | [Trie (Prefix Tree) →](29_Trie_Pattern.md)
 
 **Pattern 28** | [Prev](27_Union_Find_Pattern.md) | [Index](00_INDEX.md)
 
@@ -47,6 +47,33 @@ If tasks have prerequisites, repeatedly do any task with no unmet prerequisites;
 
 > [!NOTE]
 > **Quick check:** How do you detect a cycle with Kahn's algorithm? *The output has fewer than `n` nodes.*
+
+
+### 5. Check yourself
+
+**Q1.** Edges `0→1, 0→2, 1→3, 2→3`: list the valid orders.
+
+<details><summary>Answer</summary>
+
+`[0,1,2,3]` and `[0,2,1,3]`.
+
+</details>
+
+**Q2.** How does Kahn's algorithm detect a cycle?
+
+<details><summary>Answer</summary>
+
+If fewer than `n` nodes are output, some nodes never reached in-degree 0, which proves a cycle.
+
+</details>
+
+**Q3.** Can all courses be finished if prerequisites are `[[1,0],[0,1]]`?
+
+<details><summary>Answer</summary>
+
+No: 1 requires 0 and 0 requires 1, a cycle.
+
+</details>
 
 ---
 

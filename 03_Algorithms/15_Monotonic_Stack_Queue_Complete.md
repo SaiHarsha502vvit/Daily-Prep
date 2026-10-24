@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](14_Union_Find_DSU_Complete.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← Greedy Algorithms](12_Greedy_Algorithms_Complete.md) | [Chapter index](00_INDEX.md) | [Prefix Sum Prefix XOR 2D Prefix… →](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)
 
 # 📚 Monotonic Stack & Queue Complete Guide
 
@@ -47,6 +47,25 @@ A **queue of job candidates**: when a stronger, newer candidate arrives, the wea
 
 
 Master the Technique for Next Greater/Smaller Element Problems
+
+### 5. Check yourself
+
+**Q1.** Next greater element for `[2,1,2,4,3]`?
+
+<details><summary>Answer</summary>
+
+`[4, 2, 4, -1, -1]`.
+
+</details>
+
+**Q2.** Cost of sliding-window maximum with a monotonic deque?
+
+<details><summary>Answer</summary>
+
+`O(n)`: each index enters and leaves the deque once.
+
+</details>
+
 
 ## Table of Contents
 

@@ -1,6 +1,6 @@
 # 🧠 Memory Foundations — Where Data Structures Live
 
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01b_Arrays.md)
+> **Navigation**: [Chapter index](00_INDEX.md) | [Arrays →](01b_Arrays.md)
 
 ---
 

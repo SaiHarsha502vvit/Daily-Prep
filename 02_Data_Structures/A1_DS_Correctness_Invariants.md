@@ -1,6 +1,6 @@
 # A1. Data Structure Correctness — Proving Invariants Hold
 
-**Navigation**: [← DS Index](00_INDEX.md) | [📚 Master Index](../00_MASTER_INDEX.md) | [A2: DS Complexity from First Principles →](A2_DS_Complexity_FirstPrinciples.md)
+> **Navigation**: [Chapter index](00_INDEX.md) | [A2. Data Structure Complexity… →](A2_DS_Complexity_FirstPrinciples.md)
 
 > **MIT 6.006 / KTH DD1352 / RWTH Aachen Algo I foundation**
 >

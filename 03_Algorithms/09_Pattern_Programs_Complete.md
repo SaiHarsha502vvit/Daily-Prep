@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Bit_Manipulation_Complete.md)
+> **Navigation**: [← DSA Java Implementation Mastery](17_DSA_Java_Implementation_Mastery.md) | [Chapter index](00_INDEX.md) | [Algorithms — Problem Sets →](03_PROBLEM_SETS.md)
 
 # ⭐ Complete Pattern Programs - From Zero to Hero
 

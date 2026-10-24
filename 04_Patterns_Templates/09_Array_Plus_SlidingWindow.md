@@ -1,6 +1,6 @@
 # 🧩 Array + Sliding Window — Pattern Guide
 
-**Navigation**: [< Previous](08_Array_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_HashMap_Plus_Counting.md)
+> **Navigation**: [← Array + Two Pointers](08_Array_Plus_TwoPointers.md) | [Chapter index](00_INDEX.md) | [HashMap + Counting →](10_HashMap_Plus_Counting.md)
 
 ## Array + Sliding Window — Combined Pattern Guide
 
@@ -46,6 +46,33 @@ A **zoom lens**: wide when you need to see enough, narrow when you want the tigh
 
 > [!NOTE]
 > **Quick check:** Why does `right − left + 1` count windows ending at `right`? *Every start from `left` to `right` yields a valid window.*
+
+
+### 5. Check yourself
+
+**Q1.** Count subarrays with sum < 7 in `[2,3,1,2,4]`.
+
+<details><summary>Answer</summary>
+
+**11**. Window method: for each `right`, shrink `left` until sum < 7 and add `right − left + 1`: 1, 2, 3, 3, 2 → total 11.
+
+</details>
+
+**Q2.** Why does `right − left + 1` count the valid windows ending at `right`?
+
+<details><summary>Answer</summary>
+
+Every start from `left` to `right` gives a window inside a valid window, which is also valid.
+
+</details>
+
+**Q3.** When is a prefix sum better than a sliding window?
+
+<details><summary>Answer</summary>
+
+When values can be negative or the condition is not monotone as the window grows.
+
+</details>
 
 ---
 

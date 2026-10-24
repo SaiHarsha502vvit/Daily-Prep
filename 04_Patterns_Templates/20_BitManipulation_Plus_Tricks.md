@@ -1,6 +1,6 @@
 # 🧩 Bit Manipulation + Tricks — Pattern Guide
 
-**Navigation**: [< Previous](19_Matrix_Plus_Grid_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Intervals_Pattern.md)
+> **Navigation**: [← Matrix + Grid Traversal](19_Matrix_Plus_Grid_Traversal.md) | [Chapter index](00_INDEX.md) | [Constraint-Based Pattern Selection →](25_Constraint_Based_Pattern_Selection.md)
 
 ## Bit Manipulation + Tricks — Combined Pattern Guide
 
@@ -48,6 +48,33 @@ A **row of light switches**: each switch is a bit; masks flip or read several at
 
 > [!NOTE]
 > **Quick check:** Why does XOR find the unpaired value? *Equal values cancel and XOR is order-independent.*
+
+
+### 5. Check yourself
+
+**Q1.** What is `12 & 11` (that is, `x & (x−1)` for `x = 12`)?
+
+<details><summary>Answer</summary>
+
+`1100 & 1011 = 1000` = **8**: it clears the lowest set bit.
+
+</details>
+
+**Q2.** Single Number on `[4,1,2,1,2]`?
+
+<details><summary>Answer</summary>
+
+**4**: equal values cancel under XOR.
+
+</details>
+
+**Q3.** How many masks enumerate all subsets of 4 items?
+
+<details><summary>Answer</summary>
+
+16 (`0` to `2⁴ − 1`).
+
+</details>
 
 ---
 

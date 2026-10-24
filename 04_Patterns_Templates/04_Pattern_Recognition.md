@@ -1,6 +1,6 @@
 # 🧩 Pattern Recognition — Pattern Guide
 
-**Navigation**: [< Previous](03_Visual_Diagrams.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_LeetCode_RealWorld_Map.md)
+> **Navigation**: [← Visual Diagrams](03_Visual_Diagrams.md) | [Chapter index](00_INDEX.md) | [LeetCode ↔ Real-World Map →](05_LeetCode_RealWorld_Map.md)
 
 ---
 
@@ -43,6 +43,33 @@ A **doctor's triage**: symptoms (keywords) suggest candidates, tests (constraint
 
 > [!NOTE]
 > **Quick check:** Why is "subarray" alone not enough to choose a sliding window? *Without a monotone condition (non-negatives), windows fail.*
+
+
+### 5. Check yourself
+
+**Q1.** `n = 2·10⁵`, count subarrays with sum `k`, negatives allowed. Which pattern?
+
+<details><summary>Answer</summary>
+
+Prefix sum + hash map (`O(n)`). `O(n²)` is too slow and a window fails with negatives.
+
+</details>
+
+**Q2.** "Smallest capacity such that all packages ship within `D` days." Which pattern?
+
+<details><summary>Answer</summary>
+
+Binary search on the answer: feasibility (can we ship within `D` days with capacity `c`?) is monotone in `c`.
+
+</details>
+
+**Q3.** "For each element find the next greater element." Which pattern and cost?
+
+<details><summary>Answer</summary>
+
+Monotonic stack, `O(n)`: each index is pushed and popped at most once.
+
+</details>
 
 ---
 

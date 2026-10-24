@@ -1,4 +1,4 @@
-﻿> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](08b_NumberTheory_Advanced.md)
+> **Navigation**: [← Advanced Algorithm Patterns &…](06d_String_Algorithms.md) | [Chapter index](00_INDEX.md) | [NumberTheory Advanced →](08b_NumberTheory_Advanced.md)
 
 ---
 
@@ -70,6 +70,25 @@ A **clock**: after 12 comes 1 again; modular arithmetic is arithmetic on a clock
 ### Historical Evolution
 
 Number theory algorithms trace back to the ancient world, with **Euclid's algorithm for GCD (circa 300 BC)** appearing in Euclid's Elements (Book VII, Proposition 2) — remarkably, the Euclidean algorithm for finding the greatest common divisor using repeated division remains essentially unchanged and is still the most efficient practical method for computing GCD, over 2,300 years later. The **Sieve of Eratosthenes** (circa 240 BC) was the first systematic method for finding all prime numbers up to a given limit — Eratosthenes, the chief librarian of Alexandria, is credited with the method of crossing out the multiples of each prime (the name "sieve" refers to filtering out composites). **Fermat's Little Theorem (1640)** established that $a^p \equiv a \pmod{p}$ for prime $p$, foundational to modern primality testing and the entire field of cryptography. **Euler (1760s)** generalized this to $\phi(n)$ (Euler's totient function), proving that the number of integers less than $n$ that are coprime to $n$ follows $n \prod(1 - 1/p)$. **Miller (1976)** and **Rabin (1976/1980)** transformed Euler's and Fermat's theoretical work into a practical randomized primality test that runs in $O(k \log^3 n)$ time. Modern practice (post-2010): RSA encryption, Bitcoin address generation, and hash-based commitments all rely on the intractability of integer factorization — the same mathematical foundation Euclid discovered.
+
+
+### 5. Check yourself
+
+**Q1.** `gcd(48, 18)`?
+
+<details><summary>Answer</summary>
+
+**6** (Euclid: 48 mod 18 = 12; 18 mod 12 = 6; 12 mod 6 = 0).
+
+</details>
+
+**Q2.** Running time of the Sieve of Eratosthenes up to `n`?
+
+<details><summary>Answer</summary>
+
+`O(n log log n)`.
+
+</details>
 
 ---
 

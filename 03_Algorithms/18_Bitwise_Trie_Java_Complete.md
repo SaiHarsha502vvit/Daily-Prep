@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](17_DSA_Java_Implementation_Mastery.md) | [Back to Index](00_INDEX.md) | [Next >](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)
+> **Navigation**: [← Union-Find / Disjoint Set Union…](14_Union_Find_DSU_Complete.md) | [Chapter index](00_INDEX.md) | [TREES →](05_Trees.md)
 
 # Chapter 18 - Bitwise Trie Java Complete Guide
 
@@ -53,6 +53,25 @@ Playing **"opposites attract"** at each digit: to make the difference as big as 
 ### Historical Evolution
 
 The Bitwise Trie (binary trie for XOR problems) traces its roots to **information theory and prefix coding**. **David Huffman (1952)** invented Huffman coding at MIT as a student in a term-paper assignment for an information-theory course, introducing the idea of building an optimal binary tree based on bit-level character frequencies — the Huffman tree is itself a binary trie where each path represents a bit sequence. **Tries (retrieval trees)** were independently invented by **René de la Briandais (1959)** and **Edward Fredkin (1960)** as a more efficient alternative to binary search trees for string retrieval; Fredkin coined the "trie" name (from "retrieval"). Binary (bitwise) tries are standard in IP routing (longest-prefix match), where a lookup costs $O(W)$ for $W$-bit addresses; the maximum-XOR query uses the same $O(W)$ walk and became a well-known competitive-programming technique. **IPv6 routing** further drove bitwise trie optimization for longest prefix match. Modern practice (post-2010): bitwise tries power network router longest-prefix-match tables, and maximum-XOR pair problems in competitive programming — the same 32-bit routing logic repurposed for algorithmic interview questions.
+
+
+### 5. Check yourself
+
+**Q1.** Maximum XOR of two numbers in `[3,10,5,25,2,8]`?
+
+<details><summary>Answer</summary>
+
+**28** (`5 XOR 25`).
+
+</details>
+
+**Q2.** Why insert numbers bit by bit from the most significant bit?
+
+<details><summary>Answer</summary>
+
+A higher bit dominates all lower bits, so choosing the opposite bit at each level greedily maximises the XOR.
+
+</details>
 
 ---
 

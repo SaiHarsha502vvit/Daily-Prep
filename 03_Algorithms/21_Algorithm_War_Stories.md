@@ -1,6 +1,6 @@
 # 21. Algorithm War Stories — How Engineers Actually Solved It
 
-**Navigation**: [← 20: DSA Patterns PDF Coverage Map](20_DSA_Patterns_PDF_Java_Coverage_Map.md) | [📚 Algorithms Index](00_INDEX.md) | [A5: Designing Your Own Algorithms →](A5_Designing_Your_Own_Algorithms.md)
+> **Navigation**: [← Algorithms in the Real World…](13_Algorithms_In_Production.md) | [Chapter index](00_INDEX.md) | [DSA Deep Reasoning →](16_DSA_Deep_Reasoning.md)
 
 > **The chapter that connects the textbook to the incident channel.**
 >

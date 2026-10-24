@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](11_Backtracking_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_String_Algorithms_Complete.md)
+> **Navigation**: [← Backtracking](11_Backtracking_Complete.md) | [Chapter index](00_INDEX.md) | [Monotonic Stack & Queue →](15_Monotonic_Stack_Queue_Complete.md)
 
 # 🎯 Greedy Algorithms Complete Guide
 
@@ -47,6 +47,25 @@ Packing a **suitcase with the most valuable-per-weight items** when you may cut 
 
 
 Make the Locally Optimal Choice at Each Step
+
+### 5. Check yourself
+
+**Q1.** Show that greedy coin change fails for coins `{1, 3, 4}` and amount 6.
+
+<details><summary>Answer</summary>
+
+Greedy takes 4 + 1 + 1 = 3 coins, but 3 + 3 = 2 coins is optimal.
+
+</details>
+
+**Q2.** In Huffman coding, which two nodes are merged at each step?
+
+<details><summary>Answer</summary>
+
+The two with the lowest frequencies.
+
+</details>
+
 
 ## Table of Contents
 

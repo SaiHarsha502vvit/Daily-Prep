@@ -1,6 +1,6 @@
 # 🧩 HashMap + Counting — Pattern Guide
 
-**Navigation**: [< Previous](09_Array_Plus_SlidingWindow.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Stack_Plus_MonotonicPattern.md)
+> **Navigation**: [← Array + Sliding Window](09_Array_Plus_SlidingWindow.md) | [Chapter index](00_INDEX.md) | [Stack + Monotonic →](11_Stack_Plus_MonotonicPattern.md)
 
 ## HashMap + Frequency Counting — Combined Pattern Guide
 
@@ -48,6 +48,33 @@ A **guest list at the door**: instead of searching the whole party for a name, y
 
 > [!NOTE]
 > **Quick check:** What does the map store in "subarray sum equals k"? *How many times each prefix sum has occurred.*
+
+
+### 5. Check yourself
+
+**Q1.** Two Sum on `[2,7,11,15]`, target 9: what is in the map when you reach 7?
+
+<details><summary>Answer</summary>
+
+`{2: 0}`; looking up `9 − 7 = 2` finds index 0, so the answer is `[0, 1]`.
+
+</details>
+
+**Q2.** How many subarrays of `[1,-1,1,-1]` sum to 0?
+
+<details><summary>Answer</summary>
+
+**4**. Prefix sums `0,1,0,1,0`: prefix 0 occurs 3 times (3 pairs) and prefix 1 twice (1 pair).
+
+</details>
+
+**Q3.** Why seed the prefix map with `{0: 1}`?
+
+<details><summary>Answer</summary>
+
+So subarrays that start at index 0 are counted (their earlier prefix is the empty prefix, 0).
+
+</details>
 
 ---
 

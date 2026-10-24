@@ -1,6 +1,6 @@
 # A4. Randomized Algorithms
 
-**Navigation**: [← A3: Lower Bounds & NP](A3_Lower_Bounds_And_NP.md) | [📚 Index](00_INDEX.md) | [Sorting Fundamentals →](02a_Sorting_Fundamentals.md)
+> **Navigation**: [← A3. Lower Bounds and…](A3_Lower_Bounds_And_NP.md) | [Chapter index](00_INDEX.md) | [A5. Designing Your Own Algorithms… →](A5_Designing_Your_Own_Algorithms.md)
 
 > **MIT 6.046J L9–L12 / KTH DD2352 / RWTH Aachen Randomized Algorithms foundation**
 >
@@ -48,6 +48,25 @@ Choosing a **random pivot** is like shuffling a deck before dealing: no particul
 
 > [!NOTE]
 > **Quick check:** How do you reduce a Monte Carlo error from 1/4 to 1/16? *Run it twice independently and take the majority/OR as appropriate.*
+
+
+### 5. Check yourself
+
+**Q1.** Expected running time of randomised quicksort?
+
+<details><summary>Answer</summary>
+
+`O(n log n)` for every input, because the pivot choice is random rather than the input.
+
+</details>
+
+**Q2.** Las Vegas versus Monte Carlo?
+
+<details><summary>Answer</summary>
+
+Las Vegas always returns a correct answer but its running time is random; Monte Carlo has a fixed running time but may return a wrong answer with small probability.
+
+</details>
 
 ---
 

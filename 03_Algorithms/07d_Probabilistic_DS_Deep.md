@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](00_INDEX.md) | [Previous Chapter <](07c_Advanced_Trees_Deep.md) | [Next Chapter >](07e_Advanced_Algorithm_Engineering_Deep.md)
+> **Navigation**: [← Advanced Trees: Deep Dive (System…](07c_Advanced_Trees_Deep.md) | [Chapter index](00_INDEX.md) | [Advanced Algorithm Engineering… →](07e_Advanced_Algorithm_Engineering_Deep.md)
 
 ---
 
@@ -50,6 +50,25 @@ A **rough headcount at a stadium**: you do not scan every seat, you sample cleve
 
 > [!NOTE]
 > **Quick check:** Can a Bloom filter return a false negative? *No.*
+
+
+### 5. Check yourself
+
+**Q1.** Can a Bloom filter return a false negative?
+
+<details><summary>Answer</summary>
+
+No. It can return false positives but never false negatives (when no deletions are made).
+
+</details>
+
+**Q2.** Does a Count-Min sketch over- or under-estimate counts?
+
+<details><summary>Answer</summary>
+
+It only over-estimates (collisions add counts); the minimum across rows gives the tightest estimate.
+
+</details>
 
 ---
 

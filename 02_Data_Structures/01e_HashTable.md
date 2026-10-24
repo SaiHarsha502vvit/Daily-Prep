@@ -1,6 +1,6 @@
 # #️⃣ Hash Tables
 
-**Navigation**: [< Previous Chapter](01d_Stack_Queue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01f_Trees_Heaps.md)
+> **Navigation**: [← Stacks & Queues](01d_Stack_Queue.md) | [Chapter index](00_INDEX.md) | [Trees & Heaps →](01f_Trees_Heaps.md)
 
 ---
 

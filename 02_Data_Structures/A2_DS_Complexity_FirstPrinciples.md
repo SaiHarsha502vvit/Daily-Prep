@@ -1,6 +1,6 @@
 # A2. Data Structure Complexity — From First Principles
 
-**Navigation**: [← A1: DS Correctness](A1_DS_Correctness_Invariants.md) | [📚 DS Index](00_INDEX.md) | [A3: DS Lower Bounds →](A3_DS_Lower_Bounds.md)
+> **Navigation**: [← A1. Data Structure Correctness…](A1_DS_Correctness_Invariants.md) | [Chapter index](00_INDEX.md) | [A3. Data Structure Lower Bounds… →](A3_DS_Lower_Bounds.md)
 
 > **MIT 6.006 L10–L12 / RWTH Aachen Algo I / TU Munich IN0007 foundation**
 >

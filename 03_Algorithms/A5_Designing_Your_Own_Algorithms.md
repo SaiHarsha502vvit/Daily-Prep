@@ -1,6 +1,6 @@
 # A5. Designing Your Own Algorithms — The Invention Method
 
-**Navigation**: [← A4: Randomized Algorithms](A4_Randomized_Algorithms.md) | [📚 Algorithms Index](00_INDEX.md) | [← DS A5: Designing Your Own Data Structures](../02_Data_Structures/A5_Designing_Your_Own_Data_Structures.md)
+> **Navigation**: [← A4. Randomized Algorithms](A4_Randomized_Algorithms.md) | [Chapter index](00_INDEX.md)
 
 > **MIT 6.046 Design & Analysis / KTH DD2440 Advanced Algorithms / ETH Algorithm Design level**
 >

@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](00_INDEX.md) | [Previous Chapter <](07d_Probabilistic_DS_Deep.md) | [Next Chapter >](08a_NumberTheory_Core.md)
+> **Navigation**: [← Probabilistic & Distributed Data…](07d_Probabilistic_DS_Deep.md) | [Chapter index](00_INDEX.md) | [Advanced Algo Deep →](06c_Advanced_Algo_Deep.md)
 
 ---
 

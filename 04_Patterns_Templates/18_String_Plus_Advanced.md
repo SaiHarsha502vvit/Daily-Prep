@@ -1,6 +1,6 @@
 # 🧩 String + Advanced — Pattern Guide
 
-**Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
+> **Navigation**: [← Backtracking + Pruning](17_Backtracking_Plus_Pruning.md) | [Chapter index](00_INDEX.md) | [Matrix + Grid Traversal →](19_Matrix_Plus_Grid_Traversal.md)
 
 ## String + Advanced Tricks — Combined Pattern Guide
 
@@ -48,6 +48,33 @@ A **library catalogue**: books are filed by a canonical key so equivalent ones l
 
 > [!NOTE]
 > **Quick check:** Why is expanding around the centre `O(n²)`, not `O(n³)`? *Each expansion step is `O(1)`; there are `O(n)` centres and `O(n)` steps.*
+
+
+### 5. Check yourself
+
+**Q1.** What canonical key groups `eat`, `tea` and `ate` as anagrams?
+
+<details><summary>Answer</summary>
+
+The sorted letters `"aet"` (or a 26-count signature).
+
+</details>
+
+**Q2.** Longest palindromic substring of `"babad"`?
+
+<details><summary>Answer</summary>
+
+`"bab"` or `"aba"` (length 3).
+
+</details>
+
+**Q3.** How many centres does expand-around-centre try for length `n`?
+
+<details><summary>Answer</summary>
+
+`2n − 1` (n single-character centres and n−1 between-character centres).
+
+</details>
 
 ---
 

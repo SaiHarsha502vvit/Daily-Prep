@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](03_Collections_Java.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← Java Collections: Complete Method…](03_Collections_Java.md) | [Chapter index](00_INDEX.md) | [Data Structures in the Real World… →](05_DS_In_Production.md)
 
 # 🔲 2D Arrays & Matrix: Complete Deep Dive
 

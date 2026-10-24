@@ -1,6 +1,6 @@
 # 🌳 Trees & Heaps
 
-> **Navigation**: [< Previous Chapter](01e_HashTable.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01g_DS_Internals.md)
+> **Navigation**: [← Hash Tables](01e_HashTable.md) | [Chapter index](00_INDEX.md) | [Data Structure Internals — CPU &… →](01g_DS_Internals.md)
 
 ---
 

@@ -1,6 +1,6 @@
 # 🧩 Shortest Paths (BFS, 0-1 BFS, Dijkstra, Bellman–Ford) — Pattern Guide
 
-**Navigation**: [< Previous](29_Trie_Pattern.md) | [Back to Index](00_INDEX.md) | [Next >](31_Top_K_And_Two_Heaps_Pattern.md)
+> **Navigation**: [← Trie (Prefix Tree)](29_Trie_Pattern.md) | [Chapter index](00_INDEX.md) | [Top-K & Two Heaps →](31_Top_K_And_Two_Heaps_Pattern.md)
 
 **Pattern 30** | [Prev](29_Trie_Pattern.md) | [Index](00_INDEX.md)
 
@@ -47,6 +47,33 @@ Pick the traversal by edge weights: all equal → BFS; only 0 and 1 → deque BF
 
 > [!NOTE]
 > **Quick check:** Why does Dijkstra fail with negative edges? *A node finalised early can later be improved through a negative edge, which the algorithm never revisits.*
+
+
+### 5. Check yourself
+
+**Q1.** Edge weights are only 0 or 1. Which algorithm?
+
+<details><summary>Answer</summary>
+
+0-1 BFS with a deque, `O(V + E)`.
+
+</details>
+
+**Q2.** In the page's example graph, what is Dijkstra's distance to node 3?
+
+<details><summary>Answer</summary>
+
+**4** (0 → 2 → 1 → 3 with weights 1, 2, 1).
+
+</details>
+
+**Q3.** Which algorithm handles negative edge weights?
+
+<details><summary>Answer</summary>
+
+Bellman–Ford (`O(V·E)`), or topological order if the graph is a DAG.
+
+</details>
 
 ---
 

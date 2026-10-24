@@ -1,6 +1,6 @@
 # 🧩 Constraint-Based Pattern Selection — Pattern Guide
 
-**Navigation**: [< Previous](24_Kadanes_Subarray_Patterns.md) | [Back to Index](00_INDEX.md) | [Next: Prefix Sum >](26_Prefix_Sum_And_Difference_Array.md) | [Pattern Master Guide](00_PATTERN_MASTER_GUIDE.md) | [Competitive Coding Thinking](../14_Mental_Models/21_Competitive_Coding_Deep_Thinking.md)
+> **Navigation**: [← Bit Manipulation + Tricks](20_BitManipulation_Plus_Tricks.md) | [Chapter index](00_INDEX.md)
 
 ---
 
@@ -44,6 +44,33 @@ A **capacity plan** for a bridge: you check the load limits first, then choose t
 
 > [!NOTE]
 > **Quick check:** Why does `n = 2·10⁵` exclude `O(n²)`? *That is 4·10¹⁰ operations, far beyond ~10⁸ per second.*
+
+
+### 5. Check yourself
+
+**Q1.** `n ≤ 20`: what complexity class is acceptable?
+
+<details><summary>Answer</summary>
+
+Exponential, `O(2ⁿ)` or `O(n!)` for very small `n`: bitmask DP or backtracking.
+
+</details>
+
+**Q2.** `n = 10⁶` with a one-second limit?
+
+<details><summary>Answer</summary>
+
+`O(n log n)` or `O(n)`.
+
+</details>
+
+**Q3.** `n ≤ 5000`?
+
+<details><summary>Answer</summary>
+
+`O(n²)` is fine (about 25 million steps).
+
+</details>
 
 ---
 

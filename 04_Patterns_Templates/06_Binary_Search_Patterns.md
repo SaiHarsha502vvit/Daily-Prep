@@ -1,6 +1,6 @@
 # 🧩 Binary Search Patterns — Pattern Guide
 
-**Navigation**: [< Previous](05_LeetCode_RealWorld_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Two_Pointers_Complete.md)
+> **Navigation**: [← Sliding Window](01_Sliding_Window.md) | [Chapter index](00_INDEX.md) | [Two Pointers →](07_Two_Pointers_Complete.md)
 
 ---
 
@@ -45,6 +45,33 @@ The **"higher or lower" guessing game**: each guess halves the possibilities.
 
 > [!NOTE]
 > **Quick check:** What must be true for binary search on the answer? *Feasibility must be monotone in the answer.*
+
+
+### 5. Check yourself
+
+**Q1.** Trace standard binary search for target 6 in `[1,3,5,7,9]`.
+
+<details><summary>Answer</summary>
+
+`lo=0,hi=4`: mid=2 (5) < 6 → `lo=3`. mid=3 (7) > 6 → `hi=2`. `lo > hi` → not found; the insertion point is index 3.
+
+</details>
+
+**Q2.** How do you avoid overflow when computing the midpoint?
+
+<details><summary>Answer</summary>
+
+`mid = lo + (hi - lo) / 2` instead of `(lo + hi) / 2`.
+
+</details>
+
+**Q3.** When is binary search on the answer valid?
+
+<details><summary>Answer</summary>
+
+When a feasibility check is monotone: once an answer value is feasible, every larger (or smaller) value is too.
+
+</details>
 
 ---
 

@@ -2,6 +2,11 @@
 
 > Reusable problem-solving patterns — recognise the pattern, apply the template, prove it fits the constraints.
 
+> [!NOTE]
+> **Chapter hubs and topic pages.** Long chapters are split: the chapter file (the *hub*) keeps the bridge, study-partner explainer, at-a-glance diagram and Enterprise Lens, and lists its **topic pages** in a table (in a folder with the same name as the chapter). Read the pages in order the first time; use the hub table to jump back later. Previous/next links follow the reading order of this index.
+
+**Review checklist for every chapter:** state time **and** space complexity · state the invariant · list edge cases (empty, one element, duplicates, extremes) · say what happens at 10× data.
+
 **Start here:** [Learning Path](00_LEARNING_PATH.md) (reading order, dependency graph, question-shape → pattern table) · [Pattern Master Guide](00_PATTERN_MASTER_GUIDE.md) (keyword → pattern cheat sheet) · [Constraint-Based Selection](25_Constraint_Based_Pattern_Selection.md)
 
 ## How the Chapters Are Built
@@ -9,7 +14,7 @@
 Every chapter has the same shape so you can find things quickly:
 
 1. **Bridge** — what it builds on, what you will learn, where it leads, and its abstraction level.
-2. **Study-partner explainer** — bottom line, textbook core, real-world analogy, worked walkthrough, quick check.
+2. **Study-partner explainer** — bottom line, textbook core, real-world analogy, worked walkthrough, quick check, and a **Check yourself** set with answers.
 3. **Pattern content** — signals, templates (Java), walkthroughs, edge cases, complexity.
 4. **Enterprise Lens** — where it runs in production, failure modes, how it is tested.
 5. **Practice and reality check.**

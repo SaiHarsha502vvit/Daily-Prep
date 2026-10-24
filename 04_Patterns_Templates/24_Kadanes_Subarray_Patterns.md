@@ -1,6 +1,6 @@
 # 🧩 Kadane and Subarray Patterns — Pattern Guide
 
-**Navigation**: [< Previous](23_Knapsack_Family.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](25_Constraint_Based_Pattern_Selection.md)
+> **Navigation**: [← Knapsack Family](23_Knapsack_Family.md) | [Chapter index](00_INDEX.md) | [Array + Two Pointers →](08_Array_Plus_TwoPointers.md)
 
 ## Kadane's Algorithm & Subarray Patterns — Complete Guide
 
@@ -54,6 +54,33 @@ A **hiker deciding whether to keep following the trail** or restart from here, d
 
 > [!NOTE]
 > **Quick check:** What breaks if you initialise `best_here` to 0? *All-negative arrays wrongly return 0.*
+
+
+### 5. Check yourself
+
+**Q1.** Maximum subarray of `[-2,1,-3,4,-1,2,1,-5,4]`?
+
+<details><summary>Answer</summary>
+
+**6** (`[4,-1,2,1]`).
+
+</details>
+
+**Q2.** Result for the all-negative array `[-3,-1,-2]`?
+
+<details><summary>Answer</summary>
+
+**−1**, not 0, because the subarray must be non-empty; initialise from the first element.
+
+</details>
+
+**Q3.** Maximum product subarray of `[2,3,-2,4]`?
+
+<details><summary>Answer</summary>
+
+**6** (`[2,3]`); track both the maximum and minimum running product because a negative flips them.
+
+</details>
 
 ---
 

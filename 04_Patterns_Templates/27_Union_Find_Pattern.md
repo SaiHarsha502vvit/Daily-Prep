@@ -1,6 +1,6 @@
 # 🧩 Union-Find (Disjoint Set Union) — Pattern Guide
 
-**Navigation**: [< Previous](26_Prefix_Sum_And_Difference_Array.md) | [Back to Index](00_INDEX.md) | [Next >](28_Topological_Sort_Pattern.md)
+> **Navigation**: [← Prefix Sum & Difference Array](26_Prefix_Sum_And_Difference_Array.md) | [Chapter index](00_INDEX.md) | [Topological Sort →](28_Topological_Sort_Pattern.md)
 
 **Pattern 27** | [Prev](26_Prefix_Sum_And_Difference_Array.md) | [Index](00_INDEX.md)
 
@@ -47,6 +47,33 @@ Keep every item in a labelled group; merging two groups and asking "same group?"
 
 > [!NOTE]
 > **Quick check:** Why compress paths? *So repeated finds on the same deep chain become near-constant time.*
+
+
+### 5. Check yourself
+
+**Q1.** Five nodes: `union(0,1)`, `union(1,2)`, `union(3,4)`. How many components?
+
+<details><summary>Answer</summary>
+
+**2** (`{0,1,2}` and `{3,4}`).
+
+</details>
+
+**Q2.** What does `union(0,2)` return afterwards, and what does that mean?
+
+<details><summary>Answer</summary>
+
+`false`: they are already connected, so that edge would close a cycle.
+
+</details>
+
+**Q3.** What do path compression and union by size achieve together?
+
+<details><summary>Answer</summary>
+
+Nearly constant amortised time per operation, `O(α(n))`.
+
+</details>
 
 ---
 

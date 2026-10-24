@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](07b_Advanced_DS_Patterns.md)
+> **Navigation**: [← Chapter 06 - Math & Geometry…](06_Math_Geometry_Java_Complete.md) | [Chapter index](00_INDEX.md) | [Fenwick & Segment Trees… →](07b_Advanced_DS_Patterns.md)
 
 ---
 
@@ -62,6 +62,25 @@ A **filing system designed for the questions you ask most**, not just for storin
 ### Historical Evolution
 
 The data structures in this chapter represent decades of engineering trade-offs at the intersection of hardware constraints and algorithmic theory. **Tries** (from "retrieval" or "tree") were independently invented by **René de la Briandais (1959)** and **Edward Fredkin (1960)** as a more efficient alternative to binary search trees for string retrieval — Fredkin coined the name "trie" and demonstrated that looking up a word of length $k$ in a dictionary of size $N$ could be done in $O(k)$ time regardless of $N$. **Fenwick Trees** (also called Binary Indexed Trees) were invented by **Peter Fenwick in 1994** at the University of Canterbury, New Zealand, as a space-efficient alternative to segment trees for prefix sum queries and updates — the key insight is that each index $i$ stores the sum of a range of size $i \land (-i)$, enabling both point updates and prefix queries in $O(\log n)$ with only $n$ integers. **Segment Trees** were formalized by **Bentley (1977)** in his paper "Solutions to Klee's rectangle problems" and became standard for range query problems. Modern practice (post-2010) combines these: Tries underpin autocomplete in browsers and routers, Fenwick trees power Fenwick tree arrays in competitive programming libraries and financial data structures (BIT for prefix sums in online trading), and Segment Trees with lazy propagation are used in interval scheduling systems.
+
+
+### 5. Check yourself
+
+**Q1.** Cost of a point update and a prefix query in a Fenwick tree?
+
+<details><summary>Answer</summary>
+
+`O(log n)` each.
+
+</details>
+
+**Q2.** What does lazy propagation buy in a segment tree?
+
+<details><summary>Answer</summary>
+
+Range updates in `O(log n)` by postponing updates to children until they are needed.
+
+</details>
 
 ---
 

@@ -1,6 +1,6 @@
 # 🧩 Array + Two Pointers — Pattern Guide
 
-**Navigation**: [< Previous](07_Two_Pointers_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Array_Plus_SlidingWindow.md)
+> **Navigation**: [← Kadane and Subarray Patterns](24_Kadanes_Subarray_Patterns.md) | [Chapter index](00_INDEX.md) | [Array + Sliding Window →](09_Array_Plus_SlidingWindow.md)
 
 ## Array + Two Pointers — Combined Pattern Guide
 
@@ -46,6 +46,33 @@ Two **bookmark ribbons** in a book: one marks where you read, the other where yo
 
 > [!NOTE]
 > **Quick check:** Why sort before 3Sum? *Sorting enables pointer movement rules and duplicate skipping.*
+
+
+### 5. Check yourself
+
+**Q1.** 3Sum on `[-1,0,1,2,-1,-4]`: what are the unique triplets?
+
+<details><summary>Answer</summary>
+
+Sorted `[-4,-1,-1,0,1,2]` → `[-1,-1,2]` and `[-1,0,1]`.
+
+</details>
+
+**Q2.** Why skip equal values after finding a triplet?
+
+<details><summary>Answer</summary>
+
+To avoid reporting the same triplet more than once.
+
+</details>
+
+**Q3.** In trapping rain water with two pointers, which pointer moves?
+
+<details><summary>Answer</summary>
+
+The one with the smaller boundary height, because the water level there is limited by that smaller side.
+
+</details>
 
 ---
 

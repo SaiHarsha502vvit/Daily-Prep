@@ -1,6 +1,6 @@
 # 🎲 Game Theory — Nim, Grundy Numbers & Sprague–Grundy — Complete Guide
 
-> **Navigation**: [← Matrix Exponentiation](23_Matrix_Exponentiation_And_Linear_Recurrences.md) | [Back to Index](00_INDEX.md) | [Next: Online, Approximation & LP →](25_Online_Approximation_And_Linear_Programming.md) | [Learning Path](00_LEARNING_PATH.md)
+> **Navigation**: [← Combinatorics & Counting Toolkit…](27_Combinatorics_Counting_Toolkit.md) | [Chapter index](00_INDEX.md) | [Chapter 06 - Math & Geometry… →](06_Math_Geometry_Java_Complete.md)
 
 ## 🔗 Bridge — Where This Chapter Fits
 

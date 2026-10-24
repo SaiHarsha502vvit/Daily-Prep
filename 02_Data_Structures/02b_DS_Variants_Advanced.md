@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](02a_DS_Variants_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← Data Structures: ALL VARIANTS](02a_DS_Variants_Core.md) | [Chapter index](00_INDEX.md) | [Java Collections: Complete Method… →](03_Collections_Java.md)
 
 ---
 

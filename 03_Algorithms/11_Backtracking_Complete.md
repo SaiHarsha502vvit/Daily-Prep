@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](10_Bit_Manipulation_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Greedy_Algorithms_Complete.md)
+> **Navigation**: [← Advanced DP Patterns](04c_DP_Advanced.md) | [Chapter index](00_INDEX.md) | [Greedy Algorithms →](12_Greedy_Algorithms_Complete.md)
 
 # 🔄 Backtracking Complete Guide
 
@@ -47,6 +47,25 @@ Solving a **maze** by walking down a corridor and retreating at dead ends.
 
 
 The Art of "Try Everything, Undo, Try Next"
+
+### 5. Check yourself
+
+**Q1.** How many solutions does N-Queens have for `n = 6`?
+
+<details><summary>Answer</summary>
+
+**4** (for reference: n=4 → 2, n=5 → 10, n=8 → 92).
+
+</details>
+
+**Q2.** Time to generate all permutations of `n` items?
+
+<details><summary>Answer</summary>
+
+`O(n · n!)`: there are `n!` permutations and each costs `O(n)` to produce.
+
+</details>
+
 
 ## Table of Contents
 

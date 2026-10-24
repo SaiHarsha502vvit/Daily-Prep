@@ -1,4 +1,4 @@
-> **Navigation**: [← 2D Arrays](04_2D_Arrays_Matrix.md) | [Back to Index](00_INDEX.md)
+> **Navigation**: [← 2D Arrays & Matrix: Complete Deep…](04_2D_Arrays_Matrix.md) | [Chapter index](00_INDEX.md)
 
 # 🏗️ Data Structures in the Real World — Where DS Concepts Appear in Production Systems
 

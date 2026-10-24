@@ -24,6 +24,8 @@ _Start here. Master the language before frameworks._
 | 6e  | [Laziness & Lazy Streams](Ch06e_FP_Laziness_And_Lazy_Streams.md) 🆕 | Thunks, memoisation, infinite streams |
 | 6f  | [Pure State & Property Testing](Ch06f_FP_Pure_State_And_Property_Testing.md) 🆕 | Deterministic RNG, `State`, `forAll` |
 | 6g  | [Monoids, Functors & Monads](Ch06g_FP_Monoids_Functors_Monads.md) 🆕 | Laws, `foldMap`, parallel-safe reduction |
+| 6h  | [Parser Combinators](Ch06h_FP_Parser_Combinators.md) 🆕 | Parsers as values, precedence, `chainl1`, error positions |
+| 6i  | [Validation & IO as Descriptions](Ch06i_FP_Validation_And_IO_Descriptions.md) 🆕 | Error-accumulating validation, lazy `IO` |
 | 7   | [Modern Java 9-21](Ch07_Modern_Java_9to21.md)            | Modules, records, sealed classes, pattern matching, virtual threads      |
 
 ## Part II — Java Intermediate (Ch 8-14)

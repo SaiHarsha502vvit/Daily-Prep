@@ -1,5 +1,7 @@
 # DSA Deep Reasoning
 
+> **Navigation**: [← 21. Algorithm War Stories — How…](21_Algorithm_War_Stories.md) | [Chapter index](00_INDEX.md) | [DSA Java Implementation Mastery →](17_DSA_Java_Implementation_Mastery.md)
+
 ﻿## When It Breaks -- DSA Deep Reasoning
 
 **1. Dijkstra with negative edges** -- once a node is settled, Dijkstra never revisits it. A negative-weight edge discovered later can produce a shorter path that was missed. Symptom: wrong shortest-path distances, not an exception. Fix: Bellman-Ford or SPFA for graphs with negative (but no negative-cycle) edges.

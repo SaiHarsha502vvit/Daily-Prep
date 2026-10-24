@@ -1,6 +1,6 @@
 # 🧮 Combinatorics & Counting Toolkit — Catalan, Inclusion–Exclusion, Burnside, Cayley, Kirchhoff — Complete Guide
 
-> **Navigation**: [← FFT / NTT](26_FFT_NTT_Polynomial_Multiplication.md) | [Back to Index](00_INDEX.md) | [Book Companion →](00_BOOK_COMPANION.md)
+> **Navigation**: [← FFT, NTT & Fast Polynomial…](26_FFT_NTT_Polynomial_Multiplication.md) | [Chapter index](00_INDEX.md) | [Game Theory — Nim, Grundy Numbers… →](24_Game_Theory_Nim_Sprague_Grundy.md)
 
 ## 🔗 Bridge — Where This Chapter Fits
 

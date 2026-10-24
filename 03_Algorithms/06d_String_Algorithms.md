@@ -3,7 +3,7 @@
 # Advanced Algorithm Patterns & Competitive Programming
 
 > **Part B of Advanced Algorithms**
-> **Navigation**: [Part A: Core Techniques](06a_Greedy_BitManip.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← String Algorithms](13_String_Algorithms_Complete.md) | [Chapter index](00_INDEX.md) | [GCD, Number Theory & Pattern… →](08a_NumberTheory_Core.md)
 
 ---
 

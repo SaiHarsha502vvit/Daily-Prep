@@ -1,4 +1,4 @@
-> **Navigation**: [← Greedy/BitManip](06a_Greedy_BitManip.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← Advanced Algorithms: Complete…](06a_Greedy_BitManip.md) | [Chapter index](00_INDEX.md) | [21. Algorithm War Stories — How… →](21_Algorithm_War_Stories.md)
 
 # 🌍 Algorithms in the Real World — Where They Run Today
 

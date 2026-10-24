@@ -1,6 +1,6 @@
 # 🧩 Visual Diagrams — Pattern Guide
 
-**Navigation**: [< Previous](02_Code_Templates.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Pattern_Recognition.md)
+> **Navigation**: [← Code Templates](02_Code_Templates.md) | [Chapter index](00_INDEX.md) | [Pattern Recognition →](04_Pattern_Recognition.md)
 
 ## 🎨 VISUAL ALGORITHM DIAGRAMS - COMPLETE REFERENCE
 
@@ -63,6 +63,33 @@ A **flip-book**: each page is one step; flipping shows the algorithm moving.
 
 > [!NOTE]
 > **Quick check:** What belongs in every diagram? *The state after each step and the invariant that holds.*
+
+
+### 5. Check yourself
+
+**Q1.** Trace two pointers on sorted `[1,2,4,7]` with target 6. What moves?
+
+<details><summary>Answer</summary>
+
+`L=1, R=7`: sum 8 > 6 → move `R`. `1 + 4 = 5 < 6` → move `L`. `2 + 4 = 6` → found.
+
+</details>
+
+**Q2.** Name the two things every algorithm diagram should show.
+
+<details><summary>Answer</summary>
+
+The state after each step (pointer positions, stack contents, window bounds) and the invariant that holds at that step.
+
+</details>
+
+**Q3.** In a chained hash table, why do long chains slow lookups?
+
+<details><summary>Answer</summary>
+
+A lookup walks the chain comparing keys, so cost grows with chain length. A good hash function and resizing keep chains short, giving `O(1)` on average.
+
+</details>
 
 ---
 
@@ -598,90 +625,72 @@ Use cases: Sliding window max, BFS variations
 
 ### BFS Shortest Path
 
-BFS SHORTEST PATH
+Find the shortest path from `A` to `E` in this unweighted, undirected graph.
 
-Graph (unweighted):
+```mermaid
+flowchart LR
+    A((A<br/>dist 0)) --- B((B<br/>dist 1))
+    A --- C((C<br/>dist 1))
+    A --- D((D<br/>dist 1))
+    C --- D
+    B --- E((E<br/>dist 2))
+    D --- E
+    classDef start fill:#e6f4ea,stroke:#188038,color:#0d652d
+    classDef lvl1 fill:#e8f0fe,stroke:#1a73e8,color:#0b3d91
+    classDef lvl2 fill:#fef7e0,stroke:#f9ab00,color:#7a4f01
+    class A start
+    class B,C,D lvl1
+    class E lvl2
+```
 
-A ─────── B
-│ \ │
-│ \ │
-│ \ │
-C ─── D ─ E
+**How to read this diagram.** Colours show BFS levels: green is the start, blue nodes are one edge away, yellow is two edges away. The number under each name is its shortest distance from `A`.
 
-Find shortest path from A to E
+| Level | Queue after processing | Visited | Distances |
+| --- | --- | --- | --- |
+| 0 | `[A]` | `{A}` | `A:0` |
+| 1 | `[B, C, D]` (neighbours of A) | `{A,B,C,D}` | `B:1, C:1, D:1` |
+| 2 | `[E]` (from B or D; C and D already seen) | `{A,B,C,D,E}` | `E:2` |
 
-BFS Process:
+The shortest path `A → E` has **2 edges** (`A→B→E` or `A→D→E`).
 
-Level 0: Start at A
-Queue: [A] Visited: {A} Distance: {A:0}
-
-Level 1: Process A's neighbors
-Queue: [B, C, D] Visited: {A,B,C,D} Distance: {A:0, B:1, C:1, D:1}
-
-A(0) ──── B(1)
-│ \ │
-│ \ │
-│ \ │
-C(1)─D(1)─ E
-
-Level 2: Process B's neighbors (C,D already visited)
-Queue: [E] Visited: {A,B,C,D,E} Distance: {..., E:2}
-
-A(0) ──── B(1)
-│ \ │
-│ \ │
-│ \ │
-C(1)─D(1)─E(2)
-
-Shortest path A→E: 2 edges
-Possible paths: A→B→E or A→D→E
-
-KEY: BFS finds shortest path in UNWEIGHTED graphs
-For weighted graphs, use Dijkstra's algorithm
+> [!TIP]
+> BFS finds shortest paths in **unweighted** graphs. For weighted graphs use Dijkstra's algorithm ([Shortest Paths](30_Shortest_Path_Pattern.md)).
 
 ### DFS - Detecting Cycle
 
-DFS CYCLE DETECTION
+Directed graph with edges `A→B`, `B→C`, `C→D`, `D→A`, `D→E`. The cycle is `A → B → C → D → A`.
 
-Directed Graph:
+```mermaid
+flowchart LR
+    A((A)) --> B((B))
+    B --> C((C))
+    C --> D((D))
+    D -- "back edge to a GRAY node" --> A
+    D --> E((E))
+    classDef gray fill:#e0e0e0,stroke:#616161,color:#111
+    classDef white fill:#ffffff,stroke:#616161,color:#111
+    class A,B,C,D gray
+    class E white
+```
 
-A ──→ B
-↑ │
-│ ↓
-D ←── C
-│
-↓
-E
+**How to read this diagram.** Grey nodes are on the current DFS path (state GRAY) when `D` is reached. The edge `D → A` points back to a node that is still on the path — a **back edge** — which proves a cycle. `E` has not been visited yet (WHITE).
 
-Cycle exists: A → B → C → D → A
+DFS uses three states:
 
-DFS with 3 states:
+| State | Meaning |
+| --- | --- |
+| WHITE (0) | Not visited |
+| GRAY (1) | Currently on the DFS stack (being processed) |
+| BLACK (2) | Completely processed |
 
-- WHITE (0): Not visited
-- GRAY (1): Currently in DFS stack (being processed)
-- BLACK (2): Completely processed
+Walk-through from `A`:
 
-DFS from A:
+1. Visit `A` → GRAY.
+2. Visit `B` (child of `A`) → GRAY.
+3. Visit `C` (child of `B`) → GRAY.
+4. Visit `D` (child of `C`) → GRAY. `D` points to `A`, and `A` is GRAY (in the current path) → **cycle detected**.
 
-Step 1: Visit A (GRAY)
-A(G) ──→ B
-
-Step 2: Visit B (GRAY)
-A(G) ──→ B(G)
-│
-↓
-C
-
-Step 3: Visit C (GRAY)
-A(G) ──→ B(G)
-│
-↓
-C(G)
-
-Step 4: Visit D (GRAY), D points to A
-A is GRAY (in current DFS path) → CYCLE DETECTED!
-
-Rule: Back edge to GRAY node = CYCLE
+**Rule:** an edge to a GRAY node is a back edge, and a back edge means a cycle.
 
 ---
 
@@ -707,96 +716,72 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 
 ### Fibonacci with Memoization
 
+Without memoization, `fib(5)` recomputes the same subproblems:
+
+```mermaid
+flowchart TD
+    F5["fib(5)"] --> F4["fib(4)"]
+    F5 --> F3a["fib(3)"]
+    F4 --> F3b["fib(3)"]
+    F4 --> F2a["fib(2)"]
+    F3a --> F2b["fib(2)"]
+    F3a --> F1a["fib(1)"]
+    F3b --> F2c["fib(2)"]
+    F3b --> F1b["fib(1)"]
+    F2a --> F1c["fib(1)"]
+    F2a --> F0a["fib(0)"]
+    F2b --> F1d["fib(1)"]
+    F2b --> F0b["fib(0)"]
+    F2c --> F1e["fib(1)"]
+    F2c --> F0c["fib(0)"]
+    classDef dup fill:#fce8e6,stroke:#d93025,color:#a50e0e
+    class F3a,F3b,F2a,F2b,F2c dup
 ```
-                  FIBONACCI - DP VISUALIZATION
-──────────────────────────────────────────────────
 
-WITHOUT MEMOIZATION (Exponential time):
+**How to read this diagram.** Red nodes are repeated work: `fib(3)` is computed twice and `fib(2)` three times. This is why the naive recursion takes `O(2ⁿ)` time.
 
-                        fib(5)
-                       /      \
-                  fib(4)      fib(3)
-                  /    \      /    \
-             fib(3) fib(2) fib(2) fib(1)
-             /    \
-        fib(2) fib(1)
+**With memoization (linear time).** Store each result once:
 
-Notice: fib(3) calculated twice, fib(2) calculated 3 times!
-Time: O(2^N) 😱
+| index | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `memo` | 0 | 1 | 1 | 2 | 3 | 5 |
 
-═══════════════════════════════════════════════════════════════════════
+`fib(5) = memo[4] + memo[3] = 3 + 2 = 5` — look the values up instead of recomputing. Time `O(n)`, space `O(n)`.
 
-WITH MEMOIZATION (Linear time):
+**Bottom-up (tabulation).** Only the last two values are needed:
 
-memo[] array:
-┌───┬───┬───┬───┬───┬───┐
-│ 0 │ 1 │ 1 │ 2 │ 3 │ 5 │
-└───┴───┴───┴───┴───┴───┘
-  0   1   2   3   4   5
+| step | `a` | `b` |
+| --- | --- | --- |
+| start | 0 | 1 |
+| i = 2 | 1 | 1 |
+| i = 3 | 1 | 2 |
+| i = 4 | 2 | 3 |
+| i = 5 | 3 | 5 |
 
-fib(5) = fib(4) + fib(3)
-       = memo[4] + memo[3]  ← Look up, don't recalculate!
-       = 3 + 2
-       = 5
-
-Time: O(N) 😊
-Space: O(N) for memo array
-
-═══════════════════════════════════════════════════════════════════════
-
-BOTTOM-UP (Tabulation - even better):
-
-Only need last 2 values:
-┌───┐ ┌───┐
-│ a │ │ b │
-└───┘ └───┘
-
-a=0, b=1
-i=2: a=1, b=0+1=1 → (1, 1)
-i=3: a=1, b=1+1=2 → (1, 2)
-i=4: a=2, b=1+2=3 → (2, 3)
-i=5: a=3, b=2+3=5 → (3, 5)
-
-Answer: 5
-Time: O(N), Space: O(1) 🎉
-```
+Answer `fib(5) = 5` in `O(n)` time and `O(1)` space.
 
 ### Longest Common Subsequence (LCS)
 
-```
-                  LONGEST COMMON SUBSEQUENCE
-──────────────────────────────────────────────────
+`X = "ABCDGH"`, `Y = "AEDFHR"`. Let `dp[i][j]` be the LCS length of `X[0..i-1]` and `Y[0..j-1]`.
 
-String X = "ABCDGH"
-String Y = "AEDFHR"
+| | "" | A | E | D | F | H | R |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **""** | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **A** | 0 | **1** | 1 | 1 | 1 | 1 | 1 |
+| **B** | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
+| **C** | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
+| **D** | 0 | 1 | 1 | **2** | 2 | 2 | 2 |
+| **G** | 0 | 1 | 1 | 2 | 2 | 2 | 2 |
+| **H** | 0 | 1 | 1 | 2 | 2 | **3** | 3 |
 
-DP Table: dp[i][j] = LCS length of X[0..i-1] and Y[0..j-1]
+Bold cells are where the characters match (`A`, `D`, `H`).
 
-    │ "" │ A │ E │ D │ F │ H │ R │
-────┼────┼───┼───┼───┼───┼───┼───┤
- "" │  0 │ 0 │ 0 │ 0 │ 0 │ 0 │ 0 │
-  A │  0 │ 1 │ 1 │ 1 │ 1 │ 1 │ 1 │
-  B │  0 │ 1 │ 1 │ 1 │ 1 │ 1 │ 1 │
-  C │  0 │ 1 │ 1 │ 1 │ 1 │ 1 │ 1 │
-  D │  0 │ 1 │ 1 │ 2 │ 2 │ 2 │ 2 │  ← D matches!
-  G │  0 │ 1 │ 1 │ 2 │ 2 │ 2 │ 2 │
-  H │  0 │ 1 │ 1 │ 2 │ 2 │ 3 │ 3 │  ← H matches!
+**Recurrence**
 
-Recurrence:
-┌─────────────────────────────────────────────────────────────────────┐
-│ If X[i-1] == Y[j-1]:                                                │
-│     dp[i][j] = dp[i-1][j-1] + 1    (match, add 1)                   │
-│ Else:                                                               │
-│     dp[i][j] = max(dp[i-1][j], dp[i][j-1])  (take best from left/up)│
-└─────────────────────────────────────────────────────────────────────┘
+- If `X[i-1] == Y[j-1]`: `dp[i][j] = dp[i-1][j-1] + 1` (match, extend the diagonal).
+- Otherwise: `dp[i][j] = max(dp[i-1][j], dp[i][j-1])` (take the better of up and left).
 
-LCS = "ADH" (length 3)
-
-Backtrack to find actual subsequence:
-Start at dp[6][6]=3, trace back through matches
-```
-
----
+The LCS is **"ADH"** (length 3). To recover it, start at `dp[6][6]` and trace back: move diagonally on a match, otherwise move toward the larger neighbour.
 
 ## 🔢 MATH & BIT MANIPULATION
 
