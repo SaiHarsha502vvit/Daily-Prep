@@ -642,7 +642,6 @@ All three share: CHOOSE → EXPLORE → UNCHOOSE
 
 ---
 
-**Navigation**: [< Previous](../10_Bit_Manipulation_Complete.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](../12_Greedy_Algorithms_Complete.md)
 
 ---
 

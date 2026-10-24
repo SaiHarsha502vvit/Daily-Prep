@@ -464,7 +464,6 @@ COMMON MISTAKES:
 
 ---
 
-> **Navigation**: [< Previous](16_DP_Pattern_Recognition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_String_Plus_Advanced.md)
 
 
 ---

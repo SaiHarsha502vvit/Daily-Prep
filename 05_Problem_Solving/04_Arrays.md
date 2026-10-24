@@ -1,8 +1,75 @@
+# Arrays
+
+> **Navigation**: [← PRACTICE PROBLEMS WITH SOLUTIONS](01_Intro_Checklist.md) | [Chapter index](00_INDEX.md) | [Prefix Sum Problems →](28_Prefix_Sum_Problems.md)
+
 ﻿> **Navigation**: [< Previous](03_Strings.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Sliding_Window.md)
 
-> **Problems 04/14** | [Prev](03_Strings.md) | [Index](../00_MASTER_INDEX.md) | [Next](05_Sliding_Window.md)
 
 ---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Arrays](../02_Data_Structures/01b_Arrays.md), [Prefix Sum](../04_Patterns_Templates/26_Prefix_Sum_And_Difference_Array.md) |
+| **You will learn** | In-place updates, Kadane, majority vote, rotation, partitioning, and prefix/suffix tricks |
+| **Leads to** | [Sliding Window](05_Sliding_Window.md), [Two Pointers](06_Two_Pointers.md) |
+| **Abstraction level** | Indexed loops → **one pass with a running summary** |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Array Problems
+
+### 1. The bottom line
+
+Many array problems can be solved in one pass by carrying a small summary (best sum so far, a count, a pointer) instead of re-scanning.
+
+### 2. The textbook core
+
+- Kadane: `best_here = max(a[i], best_here + a[i])`.
+- Boyer–Moore vote: keep a candidate and a counter.
+- Rotate by reverse-reverse-reverse in `O(1)` space.
+- Dutch national flag: three-way partition with three indices.
+- Prefix and suffix arrays replace nested loops.
+
+### 3. The real-world analogy
+
+A **running tally on a scoreboard**: you update the tally per round instead of re-adding all rounds.
+
+### 4. Walkthrough
+
+1. Maximum subarray of `[-2,1,-3,4,-1,2,1,-5,4]`.
+2. Track `best_here`: −2, 1, −2, 4, 3, 5, 6, 1, 5.
+3. Track `best` = max over these = 6.
+4. Subarray `[4,-1,2,1]`.
+
+> [!NOTE]
+> **Quick check:** What is the answer for `[-3,-1,-2]` and why is initialisation important? *−1; starting from 0 would wrongly return 0.*
+
+
+### 5. Check yourself
+
+**Q1.** Rotate `[1,2,3,4,5,6,7]` right by 3.
+
+<details><summary>Answer</summary>
+
+`[5,6,7,1,2,3,4]` (reverse all, reverse the first 3, reverse the rest).
+
+</details>
+
+**Q2.** Majority element of `[2,2,1,1,2,2,3]`?
+
+<details><summary>Answer</summary>
+
+**2** (4 of 7 values, more than ⌊7/2⌋).
+
+</details>
+
+---
+
 
 ## 🗺️ Pattern Recognition Header
 
@@ -28,7 +95,7 @@
 
 ---
 
-# 📊 Section 3: Array Problems
+## 📊 Section 3: Array Problems
 
 ---
 
@@ -640,24 +707,37 @@ private String formatRange(int lower, int upper) {
 
 ### Historical Evolution
 
-**Array algorithms** originated with Kadane's algorithm (1984, Jay Kadane at Carnegie Mellon University) which solved the maximum subarray problem in O(N) time, replacing the O(N³) divide-and-conquer approach with a single-pass dynamic programming insight that tracks running sums. The technique was formalized and generalized by computer scientists studying dynamic programming optimization. Dijkstra's Dutch National Flag algorithm (1976, Edsger Dijkstra) solved three-way partitioning for sorting algorithms, introducing the three-pointer technique that partitions arrays around a pivot color-coded red, white, or blue—the algorithm influenced QuickSort variants and remains critical in database query planners. Boyer-Moore majority vote algorithm (1980, Robert Boyer and J Strother Moore) provided an elegant O(N) time, O(1) space solution for finding elements appearing more than N/2 times, using vote cancellation that emerged from formal verification research. Modern practice anchors these techniques in signal processing (audio codecs using Kadane's algorithm for peak detection since the 1990s), image processing (GPU-accelerated convolution filters implementing sliding window and prefix sum operations), and real-time analytics dashboards at companies like Netflix and YouTube for computing trending metrics.
+Array techniques have several roots. The maximum-subarray scan is credited to Jay Kadane (reported in Bentley's 1984 column). Dijkstra's Dutch national flag problem (*A Discipline of Programming*, 1976) gave the three-way partition. The Boyer–Moore majority-vote algorithm (technical report 1981) finds a majority element in one pass and `O(1)` space. Prefix sums are the serial form of parallel prefix computation (Ladner and Fischer, 1980).
 
----
+- **Dijkstra — 1976**: Dutch national flag three-way partition
+- **Ladner & Fischer — 1980**: Parallel prefix computation
+- **Boyer & Moore — 1981**: Majority vote in one pass
+- **Bentley — 1984**: Kadane's maximum-subarray scan
 
 ### Production Reality
 
 **Array** patterns introduce several production failure modes that learners must internalize:
 
-**Failure mode 1: Cyclic rotation with excessive memory allocation.** The naive approach to rotating arrays by k positions creates O(n) temporary buffers on each call. For a real-time trading system rotating order books 60 times per second with 10,000 orders, this allocates 600,000 order objects per second, triggering garbage collection pauses that cause latency spikes. LeetCode 189 (Rotate Array) passes in competition but times out in production with strict SLAs. Production impact: latency spikes above 99th percentile, missed trading windows, customer complaints.
+**Failure mode 1: Cyclic rotation with excessive memory allocation.** The naive approach to rotating arrays by k positions creates O(n) temporary buffers on each call. For a real-time trading system rotating order books 60 times per second with 10,000 orders, this allocates 600,000 order objects per second, triggering garbage collection pauses that cause latency spikes. LeetCode 189 (Rotate Array) passes in competition but times out in production with strict SLAs. Illustrative impact: latency spikes above 99th percentile, missed trading windows, customer complaints.
 
-**Failure mode 2: In-place rotation losing original data.** The 3-reverse algorithm for array rotation (`reverse(0,k)`, `reverse(k,n)`, `reverse(0,n)`) is elegant but destroys the original array during rotation. If code needs to preserve original order for rollback or audit, in-place rotation loses data irreversibly. Database query result sets rotated in-place cannot be re-sorted for alternative analyses. Production impact: data loss, inability to audit/replay operations, compliance violations in regulated industries.
+**Failure mode 2: In-place rotation losing original data.** The 3-reverse algorithm for array rotation (`reverse(0,k)`, `reverse(k,n)`, `reverse(0,n)`) is elegant but destroys the original array during rotation. If code needs to preserve original order for rollback or audit, in-place rotation loses data irreversibly. Database query result sets rotated in-place cannot be re-sorted for alternative analyses. Illustrative impact: data loss, inability to audit/replay operations, compliance violations in regulated industries.
 
-**Failure mode 3: Two-pointer fails on unsorted input.** Two-pointer algorithms like two-sum optimization assume the array is sorted or have predictable ordering. Applying two-pointer to find pairs in an unsorted array produces wrong answers—pointers move based on comparison, not original indices. Anomaly detection systems using two-pointer without verifying sort order miss fraud patterns. Production impact: incorrect fraud detection, missed compliance violations, financial loss.
+**Failure mode 3: Two-pointer fails on unsorted input.** Two-pointer algorithms like two-sum optimization assume the array is sorted or have predictable ordering. Applying two-pointer to find pairs in an unsorted array produces wrong answers—pointers move based on comparison, not original indices. Anomaly detection systems using two-pointer without verifying sort order miss fraud patterns. Illustrative impact: incorrect fraud detection, missed compliance violations, financial loss.
 
 **Debug workflow:** 1. Verify sort order assumption before applying two-pointer—add assertion `assert isSorted(arr)`. 2. Allocate temp buffer if memory permits: `int[] temp = new int[n]` for safety-critical rotations. 3. For O(1) space rotation, use the 3-reverse trick but document data loss risk. 4. Profile memory allocation rates in production-like load testing. 5. Test with maximum array sizes (e.g., 10^6 elements) to catch scaling issues before deployment.
 
-**Real-world anchor:** The 2012 Knight Capital trading algorithm loss ($440M in 45 minutes) was partially caused by array/queue management bugs—when order queues weren't properly rotated or reset after certain conditions, stale orders executed at wrong prices. The same failure mode as array rotation bugs in competitive programming, causing catastrophic financial impact.
+**Real-world anchor:** The 1988 Morris worm exploited a buffer overflow in the Unix `fingerd` service, which read input into a fixed-size buffer without checking its length. Array bounds are the oldest source of security bugs.
 
+
+---
+
+## 🏢 Enterprise Lens — Array Problems
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Time-series analysis, log processing, batch jobs |
+| **Failure modes** | Wrong initial value for all-negative arrays; off-by-one on rotations |
+| **Testing and verification** | Brute force `O(n²)` on random arrays |
 
 ---
 

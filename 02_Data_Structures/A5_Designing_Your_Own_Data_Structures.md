@@ -847,7 +847,6 @@ void delete(T x) {
 
 ---
 
-**Navigation**: [← A4: Randomized Data Structures](A4_Randomized_Data_Structures.md) | [📚 DS Index](00_INDEX.md) | [Algorithms A5: Designing Your Own Algorithms →](../03_Algorithms/A5_Designing_Your_Own_Algorithms.md)
 
 ---
 

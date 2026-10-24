@@ -74,7 +74,6 @@ Use induction: if holds for n iterations and is established at start, holds for 
 | Stack | `Stack<>` (synchronized) | Unnecessary locking | `ArrayDeque<>` as stack | 10-50x throughput |
 | Set membership | `ArrayList.contains()` | O(n) scan | `HashSet.contains()` | O(1) expected |
 | Range min/max | Scan range each query | O(n) per query | Sparse table (static) or SegTree | O(1) or O(log n) |
-**Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](00_INDEX.md) | [Next >](18_Bitwise_Trie_Java_Complete.md)
 
 ## Chapter 17 — DSA Java Implementation Mastery: The Language-Specific Reasoning
 
@@ -905,7 +904,6 @@ Map<String, Integer> map = new HashMap<>(capacity, 0.75f);  // Avoid rehashing
 
 ---
 
-**Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](00_INDEX.md) | [Next >](18_Bitwise_Trie_Java_Complete.md)
 
 
 ---

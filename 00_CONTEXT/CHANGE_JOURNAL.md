@@ -4,6 +4,16 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - 05_Problem_Solving Repair, Fact Check and Upgrade
+
+- Removed 70 duplicated challenge items; fixed heading structure (one H1 per page), stray navigation lines and BOMs.
+- **Fact check.** Rewrote 22 "Historical Evolution" blocks (removed invented attributions, for example a Dijkstra/ARPANET link, "Mauchly implemented binary search on EDVAC", wrong CodingBat/LeetCode credits). Replaced 18 fabricated "Real-world anchor" incidents (invented GitHub, Apple, Google, NASA, United Airlines and Netflix stories) with documented cases (Ariane 5, Mars Climate Orbiter, Morris worm, Cloudbleed, Heartbleed, Therac-25, Cloudflare 2019 regex outage, Bloch 2006 binary search) or neutral statements; corrected wrong figures (HashMap resize example, JVM stack depth, `Scanner` speed claim) and labelled generic "Production impact" lines as illustrative.
+- `25_Problem_Origins.md`: added a reliability legend; documented history (Moore, Dijkstra, Hoare, von Neumann, Bellman, Luhn) kept, dramatised company scenarios relabelled "Illustrative Scenario" and made generic; removed the invented company table and quote.
+- Added Bridge, study-partner explainer, Check-yourself sets (verified answers) and Enterprise Lens to all 25 chapters.
+- **Six new tested problem pages** (Java compared with brute force on 1,500 random cases): 26 Intervals, 27 Union-Find, 28 Prefix Sums, 29 Topological Sort, 30 Tries, 31 Shortest Paths.
+- New `00_LEARNING_PATH.md`; `00_INDEX.md` reading order rewritten (the old order did not match the files); company tags marked unverified.
+- 19 long pages split into hubs plus 82 topic pages; navigation regenerated in reading order.
+
 ## 2026-10-24 - Reader-Experience Pass on 02, 03, 04 (and FP gaps in 07)
 
 Driven by a reader-perspective review of the folders.

@@ -1,6 +1,5 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Math_Numbers.md)
+> **Navigation**: [Chapter index](00_INDEX.md) | [Arrays →](04_Arrays.md)
 
-**Problems 01/14** | | [Index](../00_MASTER_INDEX.md) | [Next](02_Math_Numbers.md)
 
 ---
 
@@ -10,14 +9,79 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Algorithm Thinking](../03_Algorithms/01_Algorithm_Thinking.md), [Pattern Recognition](../04_Patterns_Templates/04_Pattern_Recognition.md) |
+| **You will learn** | The read → brute force → bottleneck → optimise → test loop, timeboxing, and a reusable checklist of edge cases |
+| **Leads to** | [Arrays](04_Arrays.md) and every topic page after it |
+| **Abstraction level** | Reading a problem → **a repeatable method** → topic-specific patterns |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Problem-Solving Method
+
+### 1. The bottom line
+
+Before you code, say what is being asked, solve it the slow way, find the repeated work, and only then optimise.
+
+### 2. The textbook core
+
+- Read the constraints first: they set the complexity budget.
+- Write the brute force; it gives a correctness oracle.
+- Find the bottleneck (repeated work) and name the data structure or pattern that removes it.
+- State the invariant, then code.
+- Test empty, one element, duplicates, extremes.
+
+### 3. The real-world analogy
+
+A **mechanic diagnosing a car**: symptoms (constraints), a simple test (brute force), the faulty part (bottleneck), then the repair.
+
+### 4. Walkthrough
+
+1. Problem: do two numbers in an array sum to `t`?
+2. Brute force: two nested loops, `O(n²)`.
+3. Bottleneck: searching for the partner of each number.
+4. A hash set of seen numbers makes the search `O(1)` → `O(n)` total.
+5. Test: empty array, one element, duplicates like `[3,3]` with `t = 6`.
+
+> [!NOTE]
+> **Quick check:** What does the brute force give you besides a slow answer? *A correct reference to test the optimised version against.*
+
+
+### 5. Check yourself
+
+**Q1.** With `n = 2·10⁵` and a one-second limit, which complexity is acceptable?
+
+<details><summary>Answer</summary>
+
+`O(n log n)` or `O(n)`; `O(n²)` is about 4·10¹⁰ steps.
+
+</details>
+
+**Q2.** What do you write right after reading the problem?
+
+<details><summary>Answer</summary>
+
+The brute force: it exposes the bottleneck and gives you a reference to test against.
+
+</details>
+
+---
+
+
 ## 📚 TABLE OF CONTENTS
 
-1. [Two Pointers Problems](#two-pointers-problems)
-2. [Sliding Window Problems](#sliding-window-problems)
-3. [Binary Search Problems](#binary-search-problems)
-4. [Array Problems](#array-problems)
-5. [String Problems](#string-problems)
-6. [Math Problems](#math-problems)
+1. [Two Pointers Problems](#-two-pointers-problems)
+2. [Sliding Window Problems](#-sliding-window-problems)
+3. [Binary Search Problems](#-binary-search-problems)
+4. [Array Problems](#-array-problems)
+5. [String Problems](#-string-problems)
+6. [Math Problems](#-math-problems)
 
 ---
 
@@ -415,16 +479,6 @@ public int findPeakElement(int[] nums) {
 </details>
 
 ---
-
-🔬 **Section Challenge — 🔍 Binary Search Problems**
-
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-
-<details><summary>Answer</summary>
-
-lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-
-</details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
 
@@ -835,36 +889,48 @@ Here are problem names to search on LeetCode/HackerRank:
 
 ---
 
-# 🔥 COMPREHENSIVE PROBLEM BANK
+## 🔥 COMPREHENSIVE PROBLEM BANK
 
-## From Basics to Advanced - With LeetCode Links & Premium Problems
-
----
-
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Math_Numbers.md)
+### From Basics to Advanced - With LeetCode Links & Premium Problems
 
 ---
 
-### Historical Evolution
-
-**Algorithmic problem-solving practice** originated with Eratosthenes (~240 BC, Greek mathematician) who developed the Sieve of Eratosthenes for finding prime numbers, establishing the foundational idea of systematic algorithm design through methodical iteration. Euclid (~300 BC, Greek mathematician) formalized logical proof and the Euclidean algorithm for computing greatest common divisors, introducing the concept of algorithm correctness verification and finite termination arguments that remain central to algorithm analysis today. The field of algorithm design was revolutionized by Alan Turing (1936) with the Turing machine model, providing a formal framework for understanding computation limits. Kadane's algorithm (1984, Jay Kadane at Carnegie Mellon) solved the maximum subarray problem in O(N) time, replacing the O(N³) brute-force approach and demonstrating how a clever insight can transform an exponential gap into linear efficiency. Modern practice anchors this legacy in LeetCode since 2010 and similar competitive programming platforms, where developers from Google, Meta, and Amazon train on algorithmic problem sets that trace their intellectual heritage directly to these foundational techniques.
 
 ---
 
-### Production Reality
+#### Historical Evolution
+
+Systematic problem solving has long roots: Euclid's algorithm for the greatest common divisor appears in the *Elements* (about 300 BC) and the sieve attributed to Eratosthenes dates to the 3rd century BC. George Pólya's *How to Solve It* (1945) taught heuristics for attacking unfamiliar problems, and Turing's 1936 paper defined what an algorithm can compute. The maximum-subarray problem was posed by Ulf Grenander and its linear-time solution credited to Jay Kadane by Bentley's 1984 column.
+
+- **Euclid — c. 300 BC**: Gcd algorithm with a termination argument
+- **Pólya — 1945**: Heuristics: understand, plan, carry out, look back
+- **Turing — 1936**: Formal model of computation
+- **Bentley — 1984**: Popularised maximum subarray and Kadane's scan
+
+#### Production Reality
 
 **Problem Solving** patterns introduce several production failure modes that learners must internalize:
 
-**Failure mode 1: Off-by-one errors in array boundaries.** When implementing two-pointer or sliding window solutions, developers frequently miscount loop termination conditions. For example, using `i <= n` instead of `i < n` in a zero-indexed array causes an `ArrayIndexOutOfBoundsException` at n=100000 on the final iteration. In LeetCode 11 (Container With Most Water), iterating with `left <= right` instead of `left < right` reads an invalid memory location in C++ causing undefined behavior. Production impact: customer-facing 500 errors, data corruption if bounds are used for write operations, security vulnerability if out-of-bounds reads leak memory.
+**Failure mode 1: Off-by-one errors in array boundaries.** When implementing two-pointer or sliding window solutions, developers frequently miscount loop termination conditions. For example, using `i <= n` instead of `i < n` in a zero-indexed array causes an `ArrayIndexOutOfBoundsException` at n=100000 on the final iteration. In LeetCode 11 (Container With Most Water), iterating with `left <= right` instead of `left < right` reads an invalid memory location in C++ causing undefined behavior. Illustrative impact: customer-facing 500 errors, data corruption if bounds are used for write operations, security vulnerability if out-of-bounds reads leak memory.
 
-**Failure mode 2: Integer overflow on multiplication.** Computing `width * height` for area calculations in `maxArea` exceeds 32-bit bounds when width>46340 and height>46340, silently wrapping to negative values in Java. The two-sum complement check `target - nums[i]` overflows when both values are large negatives in Java's int range. Production impact: wrong business logic decisions (incorrect pricing, billing errors), algorithm silently returns wrong answer, audit failures.
+**Failure mode 2: Integer overflow on multiplication.** Computing `width * height` for area calculations in `maxArea` exceeds 32-bit bounds when width>46340 and height>46340, silently wrapping to negative values in Java. The two-sum complement check `target - nums[i]` overflows when both values are large negatives in Java's int range. Illustrative impact: wrong business logic decisions (incorrect pricing, billing errors), algorithm silently returns wrong answer, audit failures.
 
-**Failure mode 3: Stack overflow on deep recursion.** Recursive implementations of tree traversals or divide-and-conquer algorithms hit `StackOverflowError` for inputs exceeding ~10^4 depth in JVM default stack (1MB). LeetCode's recursive Fibonacci `fib(n) = fib(n-1) + fib(n-2)` crashes at n>10000. Production impact: application crash, denial of service if uncaught, cascading failure in distributed systems.
+**Failure mode 3: Stack overflow on deep recursion.** Recursive implementations of tree traversals or divide-and-conquer algorithms hit `StackOverflowError` for inputs exceeding ~10^4 depth in JVM default stack (1MB). LeetCode's recursive Fibonacci `fib(n) = fib(n-1) + fib(n-2)` crashes at n>10000. Illustrative impact: application crash, denial of service if uncaught, cascading failure in distributed systems.
 
 **Debug workflow:** 1. Trace execution with n=1, n=2, and edge cases (empty input, single element, maximum values). 2. Print loop variables at each iteration to verify pointer update rule. 3. Check for `<=` vs `<` in termination conditions. 4. Verify no overflow by testing near int/long limits (Integer.MAX_VALUE - 1). 5. Add assertion guards at boundaries. 6. For recursion, either convert to iterative or set `-Xss2m` to increase stack with caution.
 
-**Real-world anchor:** The 2019 Boeing 737 MAX crash was partially traced to software boundary condition handling—sensor data at limits triggered unexpected behavior due to inadequate edge case testing in the flight control system, same root cause as off-by-one boundary errors in competitive programming.
+**Real-world anchor:** The Mars Climate Orbiter (1999) was lost because one team's software produced thrust data in pound-force seconds while another expected newton-seconds. The boundary between the two components was never checked — the same kind of unchecked assumption that edge-case lists catch.
 
+
+---
+
+## 🏢 Enterprise Lens — Problem-Solving Method
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Code reviews, interviews, incident analysis (reproduce small, then scale) |
+| **Failure modes** | Skipping the brute force and trusting an unverified optimisation; ignoring the constraints |
+| **Testing and verification** | Compare the optimised solution with the brute force on random small inputs |
 
 ---
 

@@ -357,7 +357,6 @@ Where k = number of values for key, n = total entries.
 
 ---
 
-> **Navigation**: [< Previous](../01g_DS_Internals.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](../02b_DS_Variants_Advanced.md)
 
 ---
 

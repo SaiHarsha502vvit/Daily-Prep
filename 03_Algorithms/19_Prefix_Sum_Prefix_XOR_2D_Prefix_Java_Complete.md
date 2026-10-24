@@ -651,7 +651,6 @@ Select **prefix sum + two-pointer** when array is non-negative and you need slid
 
 ---
 
-**Navigation**: [< Previous](18_Bitwise_Trie_Java_Complete.md) | [Back to Index](00_INDEX.md) | [Next >](20_DSA_Patterns_PDF_Java_Coverage_Map.md)
 
 
 ---

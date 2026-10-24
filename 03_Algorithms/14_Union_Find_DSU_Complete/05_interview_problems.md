@@ -363,7 +363,6 @@ class UnionFind {
 
 ---
 
-**Navigation**: [< Previous](../13_String_Algorithms_Complete.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](../15_Monotonic_Stack_Queue_Complete.md)
 
 ---
 

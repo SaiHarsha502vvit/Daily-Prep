@@ -176,7 +176,6 @@ Practice: open the template, then adapt it to solve the problem.
 
 ---
 
-**Navigation**: [< Previous](01_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Visual_Diagrams.md)
 
 
 ---

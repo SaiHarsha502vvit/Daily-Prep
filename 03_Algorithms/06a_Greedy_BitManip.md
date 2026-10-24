@@ -66,7 +66,6 @@ Looking **under the hood of a car**: you can drive without it, but it explains w
 ---
 
 
-**Navigation**: [Part A: Core Techniques] | [Part B: Advanced Patterns](06e_Algorithm_Patterns.md)
 
 
 ### 5. Check yourself

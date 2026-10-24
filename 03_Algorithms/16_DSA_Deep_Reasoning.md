@@ -40,7 +40,6 @@ TreeMap<Integer, Integer> events = new TreeMap<>();
 Map.Entry<Integer, Integer> prev = events.floorEntry(queryTime);
 ```
 
-**Navigation**: [< Previous](15_Monotonic_Stack_Queue_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_DSA_Java_Implementation_Mastery.md)
 
 ## Chapter 16 — DSA Deep Reasoning: The Questions That Freeze People
 

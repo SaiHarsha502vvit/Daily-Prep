@@ -249,7 +249,6 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 
 ---
 
-> **Navigation**: [< Previous](02a_DS_Variants_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Collections_Java.md)
 
 ---
 

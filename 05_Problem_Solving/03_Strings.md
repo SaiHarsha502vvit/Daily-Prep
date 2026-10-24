@@ -1,12 +1,75 @@
-﻿> **Navigation**: [< Previous](02_Math_Numbers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Arrays.md)
+> **Navigation**: [← HashMap Hashing](17_HashMap_Hashing.md) | [Chapter index](00_INDEX.md) | [Section 1: Basic Math & Number… →](02_Math_Numbers.md)
 
-> **Problems 03/14** | [Prev](02_Math_Numbers.md) | [Index](../00_MASTER_INDEX.md) | [Next](04_Arrays.md)
 
 ---
 
 # 📝 Section 2: String Problems
 
 ---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Strings and Hashing patterns](../04_Patterns_Templates/18_String_Plus_Advanced.md), [HashMap](17_HashMap_Hashing.md) |
+| **You will learn** | Frequency counts, two-pointer scans, palindromes, anagrams, parsing, and the cost of string concatenation |
+| **Leads to** | [Arrays](04_Arrays.md), [Sliding Window](05_Sliding_Window.md) |
+| **Abstraction level** | Characters in a loop → **canonical forms and counts** → linear scans |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — String Problems
+
+### 1. The bottom line
+
+Most string problems become easy once you pick a canonical form (sorted letters, character counts, a hash) or scan with two indices.
+
+### 2. The textbook core
+
+- Use a 26/128-slot count array instead of a map for fixed alphabets.
+- Strings are immutable in Java: use `StringBuilder` in loops.
+- Palindrome: expand around the centre (`2n − 1` centres).
+- Compare with `equals`, never `==`.
+- Mind Unicode: `char` is a UTF-16 unit.
+
+### 3. The real-world analogy
+
+A **word-game rack**: you rarely care about the order of tiles, only which letters you hold.
+
+### 4. Walkthrough
+
+1. Group anagrams in `["eat","tea","tan","ate","nat","bat"]`.
+2. Key each word by its sorted letters: `aet, aet, ant, aet, ant, abt`.
+3. Put words with equal keys in the same list.
+4. Groups: `[eat, tea, ate]`, `[tan, nat]`, `[bat]`.
+
+> [!NOTE]
+> **Quick check:** Why does `s += c` in a loop take `O(n²)`? *Each concatenation copies the whole string; use `StringBuilder`.*
+
+
+### 5. Check yourself
+
+**Q1.** Is `"A man, a plan, a canal: Panama"` a palindrome when you ignore case and non-alphanumerics?
+
+<details><summary>Answer</summary>
+
+Yes: it reads `amanaplanacanalpanama` both ways. Use two pointers that skip other characters.
+
+</details>
+
+**Q2.** Cost of an anagram check with a 26-slot count array?
+
+<details><summary>Answer</summary>
+
+`O(n)` time and `O(1)` space.
+
+</details>
+
+---
+
 
 ## 🎨 2.1 Isomorphic & Pattern Matching
 
@@ -709,36 +772,43 @@ public boolean canPermutePalindromeSet(String s) {
 
 ---
 
-> **Navigation**: [< Previous](02_Math_Numbers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Arrays.md)
 
 ---
 
 ### Historical Evolution
 
-**String algorithms** originated with the Knuth-Morris-Pratt algorithm (1977, Donald Knuth, Vaughan Pratt, and James Morris) who solved the substring search problem in O(N+M) time by preprocessing a failure function that enables constant-time longest prefix-suffix matches. The technique was refined by the Rabin-Karp algorithm (1987, Richard Karp and Michael Rabin) who introduced rolling hash-based searching, enabling efficient multi-pattern matching through hash comparisons—a breakthrough for plagiarism detection systems. Gusfield's Z-algorithm (published in his 1997 book "Strings, Sequences, and Streams") provided an alternative linear-time solution by computing Z-values that measure prefix matches, while Manacher's algorithm (1975, Glenn Manacher) discovered how to find longest palindromes in O(N) time by processing palindromes centered between characters rather than at characters. Modern practice anchors this work in bioinformatics applications (DNA sequence alignment using suffix arrays and KMP variants since the Human Genome Project, 1990-2003), plagiarism detection (Turnitin and similar systems using Rabin-Karp fingerprints since 1998), and search engine indexing (inverted indices built on string processing foundations).
+Classic string-matching results: Aho–Corasick (1975), Manacher's palindrome algorithm (1975), Knuth–Morris–Pratt and Boyer–Moore (both published 1977), Karp–Rabin hashing (report 1981, paper 1987) and the Z-function popularised by Gusfield's *Algorithms on Strings, Trees, and Sequences* (1997). Suffix arrays came from Manber and Myers (1990). Most interview string problems are small applications of these ideas: two pointers, hashing, frequency counts and dynamic programming.
 
-<details><summary>Answer</summary>
-
-Both are O(N²) in time, but expand-around-center uses **O(1) space** while DP uses **O(N²) space** for the dp[i][j] table. In practice, the constant factor matters enormously: expand-around-center accesses contiguous memory (expanding outward from a center), giving excellent cache locality. DP fills a 2D table with non-sequential access patterns (diagonal fills), causing cache misses. For N=1000, DP allocates a 1M boolean table; expand uses two integer pointers. Both are O(N²) comparisons, but expand is ~2-3× faster in practice. **Manacher's algorithm** beats both at O(N) time, O(N) space — but is rarely expected in interviews due to its complexity.
-
-</details>
-
----
+- **Aho & Corasick — 1975**: Multi-pattern matching automaton
+- **Manacher — 1975**: Longest palindromic substring in linear time
+- **KMP, Boyer–Moore — 1977**: Linear and sub-linear pattern search
+- **Karp & Rabin — 1981/1987**: Rolling hash matching
+- **Manber & Myers — 1990**: Suffix arrays
 
 ### Production Reality
 
 **String** patterns introduce several production failure modes that learners must internalize:
 
-**Failure mode 1: Integer overflow in reverse operations.** LeetCode 7 (Reverse Integer) silently returns 0 for inputs like 1534236469 because reversing produces 9646324351, which exceeds Integer.MAX_VALUE (2147483647). In production, a payment system reversing transaction amounts could lose thousands of dollars if overflow is unchecked. Java's `Integer.parseInt` throws NumberFormatException; returning 0 silently is more dangerous. Production impact: incorrect financial calculations, regulatory compliance failures, potential legal liability.
+**Failure mode 1: Integer overflow in reverse operations.** LeetCode 7 (Reverse Integer) silently returns 0 for inputs like 1534236469 because reversing produces 9646324351, which exceeds Integer.MAX_VALUE (2147483647). In production, a payment system reversing transaction amounts could lose thousands of dollars if overflow is unchecked. Java's `Integer.parseInt` throws NumberFormatException; returning 0 silently is more dangerous. Illustrative impact: incorrect financial calculations, regulatory compliance failures, potential legal liability.
 
-**Failure mode 2: Quadratic time from string concatenation in loops.** Using `s += c` in a tight loop creates a new String object each iteration (Strings are immutable in Java). For n=100000 characters, this causes O(n²) memory allocations and copies, leading to 5-10 second execution times. A logging system appending characters line-by-line degrades from O(n) to O(n²), causing timeouts. Production impact: request timeouts, thread pool exhaustion, cascading failures in high-throughput systems.
+**Failure mode 2: Quadratic time from string concatenation in loops.** Using `s += c` in a tight loop creates a new String object each iteration (Strings are immutable in Java). For n=100000 characters, this causes O(n²) memory allocations and copies, leading to 5-10 second execution times. A logging system appending characters line-by-line degrades from O(n) to O(n²), causing timeouts. Illustrative impact: request timeouts, thread pool exhaustion, cascading failures in high-throughput systems.
 
-**Failure mode 3: Reference equality vs value equality.** Using `==` to compare Strings compares references, not content. After `String a = new String("test")` and `String b = new String("test")`, `a == b` is false even though `a.equals(b)` is true. This causes authentication failures, cache misses, and incorrect conditional logic in production. Production impact: login failures, data mismatches, unpredictable business logic.
+**Failure mode 3: Reference equality vs value equality.** Using `==` to compare Strings compares references, not content. After `String a = new String("test")` and `String b = new String("test")`, `a == b` is false even though `a.equals(b)` is true. This causes authentication failures, cache misses, and incorrect conditional logic in production. Illustrative impact: login failures, data mismatches, unpredictable business logic.
 
 **Debug workflow:** 1. Pre-check overflow before multiplication: `if (x > Integer.MAX_VALUE / 10) return 0`. 2. Use `StringBuilder` for string concatenation in loops—reserve capacity with `new StringBuilder(n)`. 3. Always use `.equals()` for String comparison; use `==` only for interned Strings or when reference equality is intentional. 4. Profile hot loops with `JMH` or visualvm to catch hidden O(n²) behavior. 5. Test with maximum-length inputs (e.g., 100K chars).
 
-**Real-world anchor:** The 2017 Cloudbleed security vulnerability in Cloudflare occurred partly due to string buffer handling issues—when buffers weren't properly managed, sensitive data leaked from memory. Improper string handling in parsing logic caused buffer over-reads, exposing encrypted traffic. This parallels the quadratic concatenation bug and string comparison failures in competitive programming.
+**Real-world anchor:** Cloudbleed (2017): a bug in an HTML parser (code generated with Ragel) at Cloudflare caused a buffer over-read, so some HTTP responses contained fragments of other customers' memory. Boundary handling in text parsers is a security issue, not just a correctness one.
 
+
+---
+
+## 🏢 Enterprise Lens — String Problems
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Search boxes, parsers, tokenisers, text normalisation |
+| **Failure modes** | Quadratic string building; `==` instead of `equals`; assuming ASCII |
+| **Testing and verification** | Randomised tests against brute force; include empty strings and repeated characters |
 
 ---
 

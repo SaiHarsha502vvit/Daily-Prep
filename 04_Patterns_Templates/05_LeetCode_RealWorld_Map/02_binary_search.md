@@ -86,7 +86,6 @@ _Remember: Every problem you solve is used somewhere in production!_ 🌍
 
 ---
 
-> **Navigation**: [< Previous](../04_Pattern_Recognition.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](../06_Binary_Search_Patterns.md)
 
 ---
 

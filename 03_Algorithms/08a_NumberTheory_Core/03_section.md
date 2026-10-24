@@ -396,7 +396,6 @@ long g2 = ArithmeticUtils.gcd(48L, -18L); // returns 6
 
 ---
 
-> **Navigation**: [< Previous](../07b_Advanced_DS_Patterns.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](../08b_NumberTheory_Advanced.md)
 
 ---
 

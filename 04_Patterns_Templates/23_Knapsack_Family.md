@@ -711,7 +711,6 @@ If `k` weren't exactly a sum of distinct powers of 2 (e.g., `k = 10`), we'd use 
 
 ---
 
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md)
 
 
 ---

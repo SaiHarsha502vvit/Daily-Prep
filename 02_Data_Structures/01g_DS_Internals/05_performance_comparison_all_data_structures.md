@@ -170,7 +170,6 @@ _Continue in Part 2: 02a_DS_Variants_Core.md_
 
 ---
 
-> **Navigation**: [< Previous](../01f_Trees_Heaps.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](../02a_DS_Variants_Core.md)
 
 ---
 

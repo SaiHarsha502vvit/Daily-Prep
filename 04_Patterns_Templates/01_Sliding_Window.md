@@ -247,7 +247,6 @@ _Based on your breakthrough understanding_
 
 ---
 
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Code_Templates.md)
 
 🔬 **Section Challenge — HIDDEN GEMS — Sliding Window & Two Pointers**
 

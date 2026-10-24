@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](23_Edge_Cases.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](25_Problem_Origins.md)
+> **Navigation**: [← Edge Cases Master Guide](23_Edge_Cases.md) | [Chapter index](00_INDEX.md) | [Real-World Problem Origins: Where… →](25_Problem_Origins.md)
 
 # 🚨 COMMON MISTAKES & HOW TO AVOID THEM
 
@@ -6,18 +6,82 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Edge Cases](23_Edge_Cases.md) |
+| **You will learn** | Recurring Java and algorithm mistakes: overflow, `==` vs `equals`, mutable keys, integer division, slow I/O |
+| **Leads to** | [Problem Origins](25_Problem_Origins.md) |
+| **Abstraction level** | Knowing patterns → **knowing how they fail** |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Common Mistakes
+
+### 1. The bottom line
+
+The same dozen mistakes cause most wrong answers; learn them by name.
+
+### 2. The textbook core
+
+- `==` on strings and boxed values.
+- `int` overflow in sums and products.
+- Integer division truncation.
+- Mutating a collection while iterating.
+- Slow I/O with `Scanner`.
+
+### 3. The real-world analogy
+
+A **pilot’s checklist**.
+
+### 4. Walkthrough
+
+1. Compare two `Integer` values 1000 with `==`.
+2. Values outside −128..127 are different objects.
+3. `==` returns false.
+4. Use `equals`.
+
+> [!NOTE]
+> **Quick check:** Why can `Integer a == Integer b` be false for equal values? *Boxed values outside the cache range are separate objects.*
+
+
+### 5. Check yourself
+
+**Q1.** `Integer a = 127, b = 127; a == b` and the same with 128?
+
+<details><summary>Answer</summary>
+
+`true` for 127 and `false` for 128: boxed values from −128 to 127 are cached; use `equals`.
+
+</details>
+
+**Q2.** What are `7 / 2` and `-7 / 2` in Java?
+
+<details><summary>Answer</summary>
+
+3 and **−3**: integer division truncates toward zero.
+
+</details>
+
+---
+
+
 ## 📚 TABLE OF CONTENTS
 
-1. [Off-By-One Errors](#1-off-by-one-errors)
-2. [Array Index Out of Bounds](#2-array-index-out-of-bounds)
-3. [Integer Overflow](#3-integer-overflow)
-4. [String Comparison Mistakes](#4-string-comparison-mistakes)
-5. [Scanner Input Mistakes](#5-scanner-input-mistakes)
-6. [Loop Mistakes](#6-loop-mistakes)
-7. [Edge Case Mistakes](#7-edge-case-mistakes)
-8. [Logic Mistakes](#8-logic-mistakes)
-9. [Return Statement Mistakes](#9-return-statement-mistakes)
-10. [Variable Initialization Mistakes](#10-variable-initialization-mistakes)
+1. [Off-By-One Errors](#-1-off--by--one-errors)
+2. [Array Index Out of Bounds](#-2-array-index-out-of-bounds)
+3. [Integer Overflow](#-3-integer-overflow)
+4. [String Comparison Mistakes](#-4-string-comparison-mistakes)
+5. [Scanner Input Mistakes](#-5-scanner-input-mistakes)
+6. [Loop Mistakes](#-6-loop-mistakes)
+7. [Edge Case Mistakes](#-7-edge-case-mistakes)
+8. [Logic Mistakes](#-8-logic-mistakes)
+9. [Return Statement Mistakes](#-9-return-statement-mistakes)
+10. [Variable Initialization Mistakes](#-10-variable-initialization-mistakes)
 
 ---
 
@@ -755,30 +819,41 @@ Check edges, check bounds, and you'll catch 80% of bugs before they happen.
 
 ---
 
-> **Navigation**: [< Previous](23_Edge_Cases.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](25_Problem_Origins.md)
 
 ---
 
 ### Historical Evolution
 
-**Common Programming Mistakes** trace their roots to early software development in the **1950s-60s era**, when programmer error taxonomies first appeared in computing literature documenting bugs from improper bounds checking, incorrect arithmetic overflow handling, and mishandled null references. Integer overflow bugs date to the FORTRAN era (**1957**), where the implicit integer type and lack of overflow detection led to silent data corruption in financial and scientific applications. Tony Hoare introduced the null reference in **ALGOL W (1965)** and later called it his "billion-dollar mistake" in a **2009 keynote**, acknowledging that null pointer dereferences have cost the software industry billions in crashes, security vulnerabilities, and debugging effort. Modern programming languages have taken these lessons to heart: Rust's borrow checker and ownership model (Mozilla, **2015**) prevents null dereferences and data races at compile time, while Kotlin's nullable type system (**2011**) forces explicit null handling through its type hierarchy. Static analysis tools like Coverity and linters now automatically detect these classic mistakes in codebases before deployment, representing a decades-long evolution from reactive debugging to proactive prevention in software development practice.
+Tony Hoare introduced the null reference in ALGOL W (1965) and called it his "billion-dollar mistake" in a 2009 talk. Other recurring classes of bug have well-known incidents: the Therac-25 radiation overdoses (1985–87) involved a race condition, and Heartbleed (2014) was a missing bounds check in OpenSSL. Modern languages respond with null-safety (Kotlin, Rust's `Option`) and memory safety (Rust's ownership).
 
----
+- **Hoare — 1965/2009**: Null reference and the "billion-dollar mistake"
+- **Therac-25 — 1985–87**: Race condition in safety software
+- **Heartbleed — 2014**: Missing bounds check
 
 ### Production Reality
 
 **Common Mistakes** patterns introduce several production failure modes that learners must internalize:
 
-**Failure mode 1: Integer overflow in `mid * mid` for binary search on answer.** In `long mid = (low + high) / 2`, the expression `(low + high)` can overflow before division if both are near `Integer.MAX_VALUE`. Then `mid * mid > sqrt(Integer.MAX_VALUE)` causes overflow. Production impact: A rate-limiting service using binary search to find the maximum concurrent requests per second crashes when testing upper bounds, causing a denial-of-service.
+**Failure mode 1: Integer overflow in `mid * mid` for binary search on answer.** In `long mid = (low + high) / 2`, the expression `(low + high)` can overflow before division if both are near `Integer.MAX_VALUE`. Then `mid * mid > sqrt(Integer.MAX_VALUE)` causes overflow. Illustrative impact: A rate-limiting service using binary search to find the maximum concurrent requests per second crashes when testing upper bounds, causing a denial-of-service.
 
-**Failure mode 2: `==` vs `.equals()` for String comparison in Java.** `if (s1 == s2)` compares references, not content. For `String s1 = "hello"; String s2 = new String("hello");`, `s1 == s2` is `false` even though values match. Production impact: An authentication service comparing user tokens: `if (storedToken == inputToken)` — tokens with identical content but different heap allocations always fail, locking out all users after a server restart.
+**Failure mode 2: `==` vs `.equals()` for String comparison in Java.** `if (s1 == s2)` compares references, not content. For `String s1 = "hello"; String s2 = new String("hello");`, `s1 == s2` is `false` even though values match. Illustrative impact: An authentication service comparing user tokens: `if (storedToken == inputToken)` — tokens with identical content but different heap allocations always fail, locking out all users after a server restart.
 
-**Failure mode 3: Scanner slow vs BufferedReader for high-throughput input.** `Scanner.nextInt()` is 10-50x slower than `BufferedReader.readLine()`. Reading 10^5 integers: Scanner takes 5-8 seconds, BufferedReader takes 0.3 seconds. Production impact: A data pipeline using `Scanner` to parse 1 million log entries causes backpressure, queue buildup, and eventual request timeout failures.
+**Failure mode 3: Scanner slow vs BufferedReader for high-throughput input.** `Scanner` is typically several times slower than `BufferedReader` for large inputs (it uses regular expressions per token). Illustrative impact: A data pipeline using `Scanner` to parse 1 million log entries causes backpressure, queue buildup, and eventual request timeout failures.
 
 **Debug workflow:** For overflow in binary search, replace `mid * mid` with `mid > target / mid` (no multiplication needed). For string comparison, always use `.equals()` and add a test: `assertEquals("token match", expected, actual)`. For Scanner, replace with `BufferedReader br = new BufferedReader(new InputStreamReader(System.in));` and parse with `Integer.parseInt(br.readLine().split(" ")[i])` or `StringTokenizer`.
 
-**Real-world anchor:** In 2014, Knight Capital deployed a trading algorithm with a bug where an integer overflow in order quantity calculation multiplied orders by 100 instead of 10, causing $440 million in losses in 45 minutes before the error was caught.
+**Real-world anchor:** The Therac-25 radiation overdoses (1985–87) involved race conditions in the control software, a reminder that concurrency and state bugs are as dangerous as arithmetic ones.
 
+
+---
+
+## 🏢 Enterprise Lens — Common Mistakes
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Code reviews, linters, onboarding |
+| **Failure modes** | Repeating the same mistake |
+| **Testing and verification** | Add a regression test for each mistake you meet |
 
 ---
 

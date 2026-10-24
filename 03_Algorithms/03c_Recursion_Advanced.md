@@ -179,7 +179,6 @@ Every backtracking problem is recursion + choice/undo. Master the base first.
 
 ---
 
-**Navigation**: [< Previous](03b_Recursion_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04a_DP_Internals.md)
 
 🔬 **Section Challenge — HIDDEN GEMS — Recursion & Backtracking**
 

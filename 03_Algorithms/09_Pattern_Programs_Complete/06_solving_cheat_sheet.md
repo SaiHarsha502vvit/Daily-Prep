@@ -142,7 +142,6 @@ while (!queue.isEmpty()) {
 | Subarray max/min | O(k) per window | Sliding window O(n) | Fixed-size window |
 | Shortest path | DFS finds a path | BFS O(V+E) | Unweighted graph |
 | Count subarrays with sum k | O(n^2) | Prefix sum + HashMap O(n) | Any array |
-**Navigation**: [< Previous](../08b_NumberTheory_Advanced.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](../10_Bit_Manipulation_Complete.md)
 
 ---
 
