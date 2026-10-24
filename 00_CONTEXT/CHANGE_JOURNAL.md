@@ -4,6 +4,17 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - 06_OOP_Design Repair, Fact Check, Book Audit and Upgrade
+
+- **Fact check.** Rewrote every "Historical Evolution" and "Production Reality" block in 01-08 against attributable sources. Removed invented or wrong claims: a fabricated 2014 parking-app incident, a 2019 Tokyo elevator story, "Christian 1972" LOOK attribution (Denning 1967 and Teorey and Pinkerton 1972 are the real references), a 2020 Twitter fan-out incident, Stripe "3D key", Prime Day 2018 "$99M", "Paxos tolerates Byzantine failures", CAP "1999 / Fischer", the Cloudflare 2019 regex description, the Facebook 2019/2021 outage mix-up, the Cisco IOS 2018 bug class, the Boeing MCAS SOLID mapping, and arithmetic errors (a 2-hour outage against a 99.99% budget). Knight Capital, Healthcare.gov, S3 2017, Cloudflare 2019 and Therac-25 now follow primary reports. Unsourced scenarios are labelled illustrative.
+- **Books in the repository.** Added `00_BOOK_COMPANION.md` mapping _Head First Design Patterns_, _GOOS_, Evans' _DDD_, Cohn's _User Stories Applied_ and _Software Design Decoded_ to chapters and pages (chapter titles checked against each book's table of contents).
+- **Gap pages with Java 21 code that was compiled and run:** `09_Domain_Driven_Design_Essentials.md`, `10_Stories_To_Design.md`, `11_Design_Heuristics.md`, `12_Remaining_GoF_Patterns.md` (the ten GoF patterns that had no section), `13_LLD_Reference_Implementations.md` (complete versions of the five LLD outlines with concurrency and property tests).
+- Added Bridge, study-partner explainer, Check-yourself sets and Enterprise Lens to the ten existing chapters; new `00_LEARNING_PATH.md`; `00_INDEX.md` rewritten (reading order, Mermaid roadmap); `CONTEXT.md` folder map rebuilt as Mermaid (the old ASCII map used folder names that do not exist).
+- Six chapters over 1,000 lines became hubs plus 24 topic pages; navigation regenerated in reading order.
+- Seven ASCII architecture boxes in `05_SD_Interview_Problems.md` became Mermaid diagrams; a rate-limiter Lua example that refreshed the window on every request was corrected. About 97 ASCII text boxes remain (monospace blocks, not diagrams).
+
+Verification: all Mermaid blocks render (17/17), 0 broken file links or anchors, balanced fences and `<details>`, one H1 per page.
+
 ## 2026-10-24 - 05_Problem_Solving Repair, Fact Check and Upgrade
 
 - Removed 70 duplicated challenge items; fixed heading structure (one H1 per page), stray navigation lines and BOMs.
