@@ -6,6 +6,8 @@ Teach data structures from memory model to operations, variants, Java collection
 
 ## Writing Style
 
+- Open each chapter with a **study-partner explainer** (`## 💬 Explain It Like a Study Partner`): 1) the bottom line in one plain sentence, 2) the textbook core, 3) a real-world analogy, 4) a step-by-step walkthrough with a quick-check question. Follow it with the `## ⚡ At a Glance` block (colour-styled Mermaid diagram + table).
+- Use Mermaid (with `tools/mermaid-check`) and GitHub callouts instead of ASCII box diagrams; every diagram gets a "How to read this diagram" note.
 - Start with why the structure exists.
 - Explain memory/layout and operation cost.
 - Include constraints, invariants, and when the structure breaks.

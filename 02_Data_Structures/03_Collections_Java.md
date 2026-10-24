@@ -6,6 +6,39 @@
 
 ---
 
+## 💬 Explain It Like a Study Partner — Java Collections
+
+> [!TIP]
+> **Ask yourself first:** *"When you type `new ArrayList<>()` instead of `new LinkedList<>()`, what are you really deciding?"*
+
+### 1. The bottom line
+
+Java's collections are a ready-made toolbox: you pick the **interface** for what you need to do and an **implementation** for how fast you need it.
+
+### 2. The textbook core
+
+- **Interfaces:** `List` (ordered, duplicates), `Set` (unique), `Queue`/`Deque` (FIFO/LIFO), `Map` (key → value; not a `Collection`).
+- **Implementations:** `ArrayList`, `LinkedList`, `HashSet`/`LinkedHashSet`/`TreeSet`, `HashMap`/`LinkedHashMap`/`TreeMap`, `ArrayDeque`, `PriorityQueue`.
+- **Naming rule:** `Hash*` = fastest, unordered; `Linked*` = insertion order; `Tree*` = sorted, O(log n).
+- Program to the interface (`List<Integer> xs = new ArrayList<>()`) so you can swap implementations.
+- Removing from a collection while iterating it throws `ConcurrentModificationException`; use `Iterator.remove()` or `removeIf`.
+
+### 3. The real-world analogy
+
+A **kitchen drawer organiser**: the labelled compartment (interface) says what goes in it (cutlery, spices); which organiser you buy (implementation) depends on how fast you need to grab things and how much room you have.
+
+### 4. Walkthrough: counting word frequencies
+
+1. You need key → count, so the interface is `Map<String, Integer>`.
+2. You do not care about order, so use `HashMap` (O(1) average).
+3. For each word: `map.merge(word, 1, Integer::sum)`.
+4. Need the words printed alphabetically? Switch to `TreeMap` by changing one word on the declaration line. The rest of the code stays the same.
+
+> [!NOTE]
+> **Quick check:** which collection would you use for an LRU cache? *`LinkedHashMap` in access-order mode (hash map + doubly linked list).*
+
+---
+
 ## ⚡ At a Glance — Which Java Collection?
 
 > [!NOTE]

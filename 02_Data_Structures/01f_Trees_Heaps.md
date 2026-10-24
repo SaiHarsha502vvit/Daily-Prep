@@ -23,6 +23,38 @@
 >
 > **HOW:** Pointers! A node contains data and references (left, right) to its children. Operations often use recursion (DFS) or a queue (BFS) to traverse the structure.
 
+## 💬 Explain It Like a Study Partner — Trees & Heaps
+
+> [!TIP]
+> **Ask yourself first:** *"How does a phone book let you find a name among a million in about 20 looks?"*
+
+### 1. The bottom line
+
+A tree arranges data so that every comparison throws away about **half** of what is left; a heap arranges data so the **best item is always on top**.
+
+### 2. The textbook core
+
+- A **tree** has one root; each node has children; there are no cycles. **Height** is the longest root-to-leaf path.
+- A **binary search tree (BST)** keeps left < node < right, so search/insert/delete cost O(height). Balanced trees (AVL, red-black) keep height ≈ log n, so operations are **O(log n)**.
+- A **binary heap** is a complete binary tree with the heap property (min-heap: parent ≤ children), stored in an array: parent `(i-1)/2`, children `2i+1` and `2i+2`.
+- Heap: `peek` O(1), `insert`/`poll` O(log n), build from an array O(n).
+
+### 3. The real-world analogy
+
+A BST is the **"higher or lower?" guessing game**: each guess rules out half the numbers. A heap is a **tournament bracket** where the champion is always at the top: when the champion leaves, a quick re-match chain decides the next one.
+
+### 4. Walkthrough: find 6 in the BST `8 → (3 → (1, 6), 10 → (·, 14))`
+
+1. Start at `8`. 6 < 8, so go left.
+2. At `3`. 6 > 3, so go right.
+3. At `6`. Found it, after 3 comparisons for a tree of 6 nodes.
+4. In a balanced tree of 1,000,000 nodes this takes about 20 steps. In a degenerate (sorted-insert) BST it could take 1,000,000.
+
+> [!NOTE]
+> **Quick check:** why use a heap instead of a sorted array for a priority queue? *Insert is O(log n) in a heap but O(n) in a sorted array (shifting).*
+
+---
+
 ## ⚡ At a Glance — Trees & Heaps
 
 > [!NOTE]

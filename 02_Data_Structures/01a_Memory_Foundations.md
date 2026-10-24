@@ -109,6 +109,39 @@ Java equivalent: `StringBuilder` (mutable string buffer on heap) vs `String` con
 
 ---
 
+## 💬 Explain It Like a Study Partner — Memory
+
+> [!TIP]
+> **Ask yourself first:** *"If two programs do the same number of steps, why can one be 50× faster?"* Keep that question in mind. The answer is below.
+
+### 1. The bottom line
+
+Your program is only as fast as the **memory it has to wait for**, and memory that sits close together is much cheaper to read than memory that is spread out.
+
+### 2. The textbook core
+
+- Memory is a long sequence of **bytes**, each with an **address**. Data types have fixed sizes (`int` = 4 bytes, `long` = 8, reference = 4 or 8).
+- Local variables and call frames live on the **stack**; objects and arrays live on the **heap**, and variables hold **references** to them.
+- The CPU reads memory in **cache lines** (typically 64 bytes) through a hierarchy: registers → L1 → L2 → L3 → RAM → disk. Each level is bigger and slower.
+- **Spatial locality** (nearby addresses) and **temporal locality** (reused data) make caches effective. A read that finds data in cache is a **hit**; otherwise it is a **miss**.
+
+### 3. The real-world analogy
+
+Think of a **library**. Your desk is the cache, the shelf next to you is L2, the stacks across the building is RAM, and the warehouse downtown is the disk. If every book you need is on the same shelf, you finish quickly. If each book is in a different building, you spend all your time walking, even though you are "doing the same number of steps".
+
+### 4. Walkthrough: summing an array vs a linked list
+
+1. You loop over `int[] arr` with 1,000,000 elements. The CPU asks for `arr[0]`.
+2. That is a cache miss, so it fetches the whole 64-byte line, which holds `arr[0]` to `arr[15]`.
+3. The next 15 reads are hits (about 1 ns each). Only every 16th read pays the ~100 ns miss.
+4. Now repeat with a `LinkedList<Integer>`. Each node is somewhere else on the heap, so almost every hop is a miss.
+5. Result: same Big-O (`O(n)`), but the array finishes roughly 10× faster.
+
+> [!NOTE]
+> **Quick check:** why does `arr[i]` cost the same as `arr[0]`? *Because the address is just `base + i × size`: one multiplication and one add, with no pointer chasing.*
+
+---
+
 ## ⚡ At a Glance — Memory Is the Foundation
 
 > [!NOTE]

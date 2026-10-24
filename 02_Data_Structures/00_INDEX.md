@@ -40,6 +40,19 @@ flowchart LR
 
 ---
 
+## 💬 How the Chapters Explain Things
+
+Every chapter now opens with a short **study-partner explainer** in the same four steps, so you always know where to look:
+
+| Step | What you get |
+| ---- | ------------ |
+| 1. **The bottom line** | The core idea in one plain-English sentence |
+| 2. **The textbook core** | The accurate definition, rules and terminology |
+| 3. **The real-world analogy** | The idea mapped onto something from everyday life |
+| 4. **The walkthrough** | A small step-by-step example, then a quick check question |
+
+After the explainer comes the **⚡ At a Glance** block (diagram, complexity table, pitfalls) and then the full chapter.
+
 ## How to Read This Section
 
 This section supports four distinct reading paths:

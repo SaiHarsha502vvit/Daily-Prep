@@ -27,6 +27,39 @@ This chapter applies to data structures the lower-bound proving techniques that 
 
 ---
 
+## 💬 Explain It Like a Study Partner — Lower Bounds
+
+> [!TIP]
+> **Ask yourself first:** *"How can anyone prove that no cleverer algorithm exists?"*
+
+### 1. The bottom line
+
+A lower bound is a proof that **any** solution in a given model must do at least some amount of work, so once your algorithm matches it you can stop looking for a faster one.
+
+### 2. The textbook core
+
+- A lower bound is always relative to a **model of computation** (what operations are allowed).
+- **Comparison model:** decision trees; sorting needs Ω(n log n) comparisons because there are n! outcomes and each comparison splits them at most in half.
+- **Information-theoretic:** count the possible answers; you need at least log₂(answers) bits.
+- **Cell-probe model:** count memory reads, computation is free; used for data-structure bounds such as Union-Find's Ω(α(n)).
+- When upper bound = lower bound, the problem is **solved** (tight).
+
+### 3. The real-world analogy
+
+**Twenty Questions.** With yes/no questions you cannot identify one of 1,000,000 things in fewer than about 20 questions, because each answer at most halves the possibilities and 2²⁰ ≈ 1,000,000. No clever strategy can beat that counting argument.
+
+### 4. Walkthrough: why searching a sorted array needs Ω(log n) comparisons
+
+1. There are `n + 1` possible answers (found at each index, or not found).
+2. Each comparison has two outcomes, so after `k` comparisons you can distinguish at most `2^k` answers.
+3. To tell all `n + 1` answers apart you need `2^k ≥ n + 1`, so `k ≥ log₂(n + 1)`.
+4. Binary search uses about `log₂ n` comparisons, so it is **optimal** in the comparison model.
+
+> [!NOTE]
+> **Quick check:** how does counting sort get below Ω(n log n)? *It is not a comparison sort, so the comparison-model bound does not apply.*
+
+---
+
 ## ⚡ At a Glance — Lower Bounds
 
 > [!NOTE]

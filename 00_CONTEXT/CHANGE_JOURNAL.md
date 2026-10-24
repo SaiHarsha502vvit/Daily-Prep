@@ -4,6 +4,12 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - 02_Data_Structures Study-Partner Explainers
+
+- Added a four-part `💬 Explain It Like a Study Partner` section (bottom line, textbook core, real-world analogy, walkthrough + quick check) to `01a`–`01g`, `02a`, `02b`, `03`, `04`, `05` and `A1`–`A5`, placed before each chapter's `⚡ At a Glance` block.
+- Documented the layout in `02_Data_Structures/CONTEXT.md` (Writing Style) and `00_INDEX.md` ("How the Chapters Explain Things").
+- Verification: `tools/mermaid-check` renders all 93 diagrams; fences balanced.
+
 ## 2026-10-24 - 02_Data_Structures ASCII Diagrams to Mermaid
 
 - Converted ~70 ASCII box/tree/decision-tree diagrams across `01a`–`01g`, `02`, `02a`, `02b`, `03`, `04`, `05`, `A1`–`A5` to colour-styled Mermaid diagrams (flowcharts, mindmap) plus explanatory tables; every diagram has a "How to read this diagram" note.

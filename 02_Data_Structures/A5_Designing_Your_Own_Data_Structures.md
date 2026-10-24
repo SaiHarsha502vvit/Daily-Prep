@@ -41,6 +41,40 @@
 
 ---
 
+## 💬 Explain It Like a Study Partner — Designing Your Own Structure
+
+> [!TIP]
+> **Ask yourself first:** *"When would you ever need a data structure that is not in the standard library?"*
+
+### 1. The bottom line
+
+You design a new structure by writing down exactly which operations you need and how fast, then **bending a known structure** until it fits.
+
+### 2. The textbook core
+
+- Start with an **operation-contract table**: every operation, how often it happens, required cost.
+- Find the closest existing structure and name the row where it fails.
+- Pick a tool: **augmentation** (store extra data), **amortization**, **randomization**, **laziness**, or the **time/space/exactness** trade-off.
+- State the **invariants** before writing code, then prove each operation preserves them.
+- Attack your design with adversarial input, and remember: often the right answer is **not** to invent anything.
+
+### 3. The real-world analogy
+
+**Remodelling a kitchen instead of building a house.** You list what you cook (operations), look at the closest existing layout (a known structure), and add a counter or an island (augmentation) where it does not work, rather than starting from bare ground.
+
+### 4. Walkthrough: "give me the k-th smallest in a changing set"
+
+1. **Contract:** insert O(log n), delete O(log n), `kth(k)` O(log n).
+2. **Closest structure:** a balanced BST gives insert/delete in O(log n) but `kth` is O(n) (walk in order).
+3. **Augment:** store the **subtree size** in every node.
+4. **Invariant:** `size(node) = size(left) + size(right) + 1`; rotations and inserts update it.
+5. **`kth`:** at a node, if `k ≤ size(left)` go left, if `k = size(left) + 1` return the node, else go right with `k - size(left) - 1`. That is O(log n). You have invented an *order-statistic tree*.
+
+> [!NOTE]
+> **Quick check:** when should you not design your own? *When a standard structure already meets the contract; custom structures are hard to prove and test.*
+
+---
+
 ## ⚡ At a Glance — The Design Loop
 
 > [!NOTE]

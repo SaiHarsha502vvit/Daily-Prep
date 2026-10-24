@@ -25,6 +25,40 @@
 
 ---
 
+## 💬 Explain It Like a Study Partner — Proving Invariants
+
+> [!TIP]
+> **Ask yourself first:** *"How can you be sure a data structure is correct after a million operations, when you only tested a hundred?"*
+
+### 1. The bottom line
+
+Instead of checking every operation, you prove **one rule stays true** (the invariant) after each operation, and then everything that depends on that rule is correct.
+
+### 2. The textbook core
+
+- An **invariant** is a property that holds before and after every public operation.
+- A **representation invariant** says what makes an instance valid (e.g. a BST's left < node < right).
+- Proof pattern: **initialization** (it holds when empty), **preservation** (each mutator keeps it), **correctness** (if it holds, queries return right answers).
+- It is mathematical induction applied to operations.
+- In interviews: state the invariant first, then show each operation keeps it.
+
+### 3. The real-world analogy
+
+A **bank vault's ledger rule**: "total deposits minus withdrawals always equals the cash on hand." Every transaction must keep that equation true. If you can show each type of transaction keeps it true, you do not need to audit every transaction ever made.
+
+### 4. Walkthrough: prove `ArrayList.add` preserves "elements are in `0..size-1`"
+
+1. **Initial state:** empty list, `size = 0`, so the range is empty and the invariant holds.
+2. **Assume** it holds before `add(x)`.
+3. `add` writes `x` at index `size`, then increments `size`.
+4. Now the elements occupy `0..size-1` for the new `size`, with no gap, so the invariant **still holds**.
+5. If capacity was full, the resize copies the old elements to the same indices first, so the argument still applies.
+
+> [!NOTE]
+> **Quick check:** what invariant does a min-heap rely on after `insert`? *Each parent ≤ its children, restored by bubbling the new element up.*
+
+---
+
 ## ⚡ At a Glance — Invariant Proofs
 
 > [!NOTE]
