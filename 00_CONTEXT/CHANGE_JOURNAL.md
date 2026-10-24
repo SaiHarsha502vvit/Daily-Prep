@@ -4,6 +4,13 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - 02_Data_Structures ASCII Diagrams to Mermaid
+
+- Converted ~70 ASCII box/tree/decision-tree diagrams across `01a`–`01g`, `02`, `02a`, `02b`, `03`, `04`, `05`, `A1`–`A5` to colour-styled Mermaid diagrams (flowcharts, mindmap) plus explanatory tables; every diagram has a "How to read this diagram" note.
+- 5W1H ASCII cards became `> [!NOTE]` callouts; "X - COMPLETE GUIDE" cards became headings, tables and lists; keyword/complexity boxes became tables.
+- Fact corrections made while converting: Metaspace sits outside the heap; Bloom filters are within ~1.44x of the information-theoretic bound (not exactly optimal); Collections Framework arrived in Java 1.2; B-tree 1970/72; HNSW authors; Kafka partitions are append-only logs, not ring buffers; Redis uses sampled LRU, not a linked list; splay-tree year 1985; A2 binary-counter worked table recomputed.
+- Verification: `tools/mermaid-check` renders all 93 diagrams in the folder; no unfenced box-drawing characters; all tables well-formed.
+
 ## 2026-10-24 - 02_Data_Structures Presentation Upgrade
 
 - Added an "At a Glance" block (mental model callout, colour-styled Mermaid diagram, complexity/decision table) to the index, `01a`–`01g`, `02a`, `02b`, `03`, `04`, `05` and `A1`–`A5`.
