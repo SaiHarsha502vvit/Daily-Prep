@@ -124,29 +124,62 @@ Both are O(n log n). On a benchmark, quicksort is usually 2–3× faster. Big-O 
 
 # 📦 Advanced Sorting: Non-Comparison & Hybrid Algorithms
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Sorting Fundamentals](02a_Sorting_Fundamentals.md) |
+| **You will learn** | Quick sort and pivots, heap sort, counting/radix/bucket sorts, selection (quickselect), hybrid sorts (Timsort, introsort) |
+| **Leads to** | [Searching](22_Searching_And_Binary_Search_Complete.md), [Divide & Conquer](02c_Divide_And_Conquer.md) |
+| **Abstraction level** | L2: from one algorithm to a toolbox chosen by data properties |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Advanced Sorting
+
+### 1. The bottom line
+
+Beyond merge sort, you pick the sort that matches your data: quick for average speed, counting/radix when keys are small integers, hybrids in real libraries.
+
+### 2. The textbook core
+
+- Quicksort: average O(n log n), worst O(n²), in place; random or median-of-three pivots avoid bad cases.
+- Counting sort O(n + k), radix sort O(d(n + k)): **non-comparison**, so they beat Ω(n log n) for bounded keys.
+- Heap sort: O(n log n) worst case, O(1) extra space, not stable.
+- Java uses dual-pivot quicksort for primitives and **Timsort** (stable merge/insertion hybrid) for objects.
+
+### 3. The real-world analogy
+
+Sorting **mail**: if every letter has a zip code (small key range), you drop it into the right pigeonhole (counting/radix) instead of comparing letters pairwise.
+
+### 4. Walkthrough
+
+1. Counting sort `[3, 1, 3, 0]` with values 0–3.
+2. Count occurrences: `[1, 1, 0, 2]` for 0,1,2,3.
+3. Prefix sums give positions: `[1, 2, 2, 4]`.
+4. Place items from right to left to stay stable → `[0, 1, 3, 3]`.
+
+> [!NOTE]
+> **Quick check:** Why does counting sort not violate Ω(n log n)? *It never compares keys; it indexes by key.*
+
+---
+
+
 ### 5W1H: Mastering Advanced Sorting
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: Advanced sorting algorithms that either break the O(N log N) bound    ║
-║        using non-comparison techniques (Counting, Radix, Bucket) or combine  ║
-║        algorithms to exploit real-world data patterns (TimSort, Introsort).  ║
-║                                                                              ║
-║  WHY:  Real-world systems don't just sort random arrays. They sort bounded   ║
-║        integers, partially sorted logs, or enormous datasets where a generic ║
-║        QuickSort would be inefficient or unstable.                           ║
-║                                                                              ║
-║  WHO:  Engineers optimizing latency-critical pipelines, database indexes, or ║
-║        solving hard algorithmic challenges like "Sort colors in O(N)".       ║
-║                                                                              ║
-║  WHEN: Use when data has specific constraints (e.g., ages 0-120 → Counting   ║
-║        Sort), or when the language runtime needs a stable, adaptive sort     ║
-║        for object references (Java's TimSort).                               ║
-║                                                                              ║
-║  HOW:  By distributing elements into buckets/frequencies, sorting digits     ║
-║        iteratively, or detecting existing "runs" to minimize comparisons.    ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** Advanced sorting algorithms that either break the O(N log N) bound using non-comparison techniques (Counting, Radix, Bucket) or combine algorithms to exploit real-world data patterns (TimSort, Introsort).
+>
+> **WHY:** Real-world systems don't just sort random arrays. They sort bounded integers, partially sorted logs, or enormous datasets where a generic QuickSort would be inefficient or unstable.
+>
+> **WHO:** Engineers optimizing latency-critical pipelines, database indexes, or solving hard algorithmic challenges like "Sort colors in O(N)".
+>
+> **WHEN:** Use when data has specific constraints (e.g., ages 0-120 → Counting Sort), or when the language runtime needs a stable, adaptive sort for object references (Java's TimSort).
+>
+> **HOW:** By distributing elements into buckets/frequencies, sorting digits iteratively, or detecting existing "runs" to minimize comparisons.
 
 ### Historical Evolution
 
@@ -1596,6 +1629,17 @@ During the merge step, when we take an element from the RIGHT half before the LE
 
 **Why this works**: Merge sort naturally processes pairs (left[i], right[j]) in sorted order of j. The "right element chosen first" event is exactly the inversion condition for all remaining left elements.
 
+
+---
+
+## 🏢 Enterprise Lens — Advanced Sorting
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Library sorts (Timsort in Java/Python), external merge sort in databases, radix-style sorting of IDs and timestamps, top-k selection with heaps |
+| **Failure modes** | Adversarial inputs forcing quicksort to O(n²); using counting sort when the key range is huge; stack overflow from deep quicksort recursion |
+| **Testing and verification** | Benchmark on realistic distributions; test pathological inputs (sorted, many duplicates, organ-pipe) |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -18,6 +18,50 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [A3 Hardness](A3_Lower_Bounds_And_NP.md), [Graphs](05d_Graphs_Advanced_Algos.md), [Strings](13_String_Algorithms_Complete.md) |
+| **You will learn** | P vs NP, randomized algorithms, advanced string algorithms, network flow, computational geometry basics, a summary of design paradigms |
+| **Leads to** | [Approximation, Online & LP](25_Online_Approximation_And_Linear_Programming.md), [Production](13_Algorithms_In_Production.md) |
+| **Abstraction level** | L5→L7: breadth survey of advanced topics |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Modern Algorithms & Advanced Topics
+
+### 1. The bottom line
+
+A tour of topics that sit beyond the core paradigms: hardness, randomness, flows and geometry.
+
+### 2. The textbook core
+
+- **Max-flow = min-cut:** the largest flow equals the capacity of the smallest cut.
+- Flow algorithms: Ford–Fulkerson/Edmonds–Karp/Dinic; bipartite matching reduces to flow.
+- Randomized algorithms trade certainty for speed or simplicity.
+- Convex hull and sweep line are the workhorses of computational geometry.
+
+### 3. The real-world analogy
+
+**Water pipes**: the most water you can push through a network equals the bottleneck formed by its narrowest set of pipes.
+
+### 4. Walkthrough
+
+1. Network s→a (3), s→b (2), a→t (2), b→t (3).
+2. Augment path s→a→t with 2; s→b→t with 2.
+3. Remaining: s→a (1) cannot continue (a→t saturated); s→b (0).
+4. Max flow = 4; min cut {a→t, s→b} = 4.
+
+> [!NOTE]
+> **Quick check:** How does bipartite matching reduce to flow? *Source → left nodes → right nodes → sink with unit capacities.*
+
+---
+
+
 ### Historical Evolution
 
 Advanced offline query algorithms emerged from the intersection of competitive programming and database query optimization. **Mo's Algorithm** (offline range query answering) was introduced by **Mo, Q. I. in 1993** as a technique for answering offline queries on static arrays by reordering them to minimize the movement of the query window — the key insight is that sorting queries by block size ($n/\sqrt{q}$) reduces the total movement to $O(n\sqrt{q})$. **Heavy-Light Decomposition (HLD)** was developed by **Harold Djidjev and Robert Tarjan in the 1980s** for network flow applications, with the classic "Maintaining trees in a linear ordering" paper by **Sleator and Tarjan (1983)** formalizing heavy-path concepts for link-cut trees. **Wavelet Trees** were introduced by **Grossi, Gupta, and Vitter in 2003** for high-dimensional rank/select queries on static strings — they generalize binary indexed trees to multiple dimensions and enable $O(\log \sigma)$ queries on sequences over alphabets of size $\sigma$, critical for bioinformatics (FM-index, BWT-based searching). **Dinic's algorithm** for maximum flow was published by **Yefim Dinic in 1970** with the capacity scaling optimization (Goldberg 1985), and remains the go-to algorithm for network flow problems. Modern practice (post-2010) applies these patterns in competitive programming (CF, AtCoder), database index structures, and network analysis tools.
@@ -791,14 +835,25 @@ int query(int node, int l, int r, int ql, int qr) {
 
 ---
 
+## 🏢 Enterprise Lens — Modern Algorithms & Advanced Topics
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Traffic and logistics flows, assignment/matching systems, image segmentation (min-cut), geospatial queries |
+| **Failure modes** | Not recognising a flow model; wrong capacities for undirected edges; precision errors in geometry |
+| **Testing and verification** | Check flow conservation and min-cut equality on random networks |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
+
+---
+
 ## Reality Check
 
-**"Learning more algorithms is better than mastering patterns"** ? Knowing 50 algorithms at surface level is less useful than deeply understanding 10 patterns that each apply to dozens of problems. Sliding window, two pointers, binary search on answer, BFS/DFS, dynamic programming, and greedy cover 80 percent of algorithmic problems. Recognizing WHICH pattern applies to a new problem is the skill that transfers.
+**"Learning more algorithms is better than mastering patterns"** → Knowing 50 algorithms at surface level is less useful than deeply understanding 10 patterns that each apply to dozens of problems. Sliding window, two pointers, binary search on answer, BFS/DFS, dynamic programming, and greedy cover 80 percent of algorithmic problems. Recognizing WHICH pattern applies to a new problem is the skill that transfers.
 
-**"Pattern recognition is about memorizing problem-solution mappings"** ? Pattern recognition is about identifying the STRUCTURAL similarity between a new problem and known patterns. A problem asking for the longest substring with at most k distinct characters maps to sliding window, not because you memorized that specific problem, but because you recognize the constraint of maintaining a window property while maximizing window size.
+**"Pattern recognition is about memorizing problem-solution mappings"** → Pattern recognition is about identifying the STRUCTURAL similarity between a new problem and known patterns. A problem asking for the longest substring with at most k distinct characters maps to sliding window, not because you memorized that specific problem, but because you recognize the constraint of maintaining a window property while maximizing window size.
 
-**"Each problem has exactly one correct pattern"** ? Many problems can be solved with multiple patterns: finding the kth largest element can use sorting (O(n log n)), a max-heap of size k (O(n log k)), or quickselect (O(n) average). The optimal choice depends on constraints: quickselect for one-time queries, a heap for streaming data where new elements arrive continuously.
+**"Each problem has exactly one correct pattern"** → Many problems can be solved with multiple patterns: finding the kth largest element can use sorting (O(n log n)), a max-heap of size k (O(n log k)), or quickselect (O(n) average). The optimal choice depends on constraints: quickselect for one-time queries, a heap for streaming data where new elements arrive continuously.
 
-**"Dynamic programming is the hardest pattern"** ? DP difficulty comes from two separate skills: identifying that a problem has overlapping subproblems (pattern recognition) and defining the recurrence relation (mathematical modeling). Many developers who struggle with DP can solve the same problems with memoized recursion (top-down DP), which requires only recognizing the recursive structure and adding a cache. Bottom-up DP is an optimization of top-down, not a prerequisite.
+**"Dynamic programming is the hardest pattern"** → DP difficulty comes from two separate skills: identifying that a problem has overlapping subproblems (pattern recognition) and defining the recurrence relation (mathematical modeling). Many developers who struggle with DP can solve the same problems with memoized recursion (top-down DP), which requires only recognizing the recursive structure and adding a cache. Bottom-up DP is an optimization of top-down, not a prerequisite.
 
-**"Two pointers is a simple pattern"** ? Two pointers has multiple variants: converging pointers (sorted array sum pairs), slow-fast pointers (cycle detection, middle of linked list), sliding window (variable-size subarray), and partition pointers (Dutch national flag problem). Each variant has different invariants and termination conditions. Treating all two-pointer problems as the same pattern leads to incorrect solutions.
+**"Two pointers is a simple pattern"** → Two pointers has multiple variants: converging pointers (sorted array sum pairs), slow-fast pointers (cycle detection, middle of linked list), sliding window (variable-size subarray), and partition pointers (Dutch national flag problem). Each variant has different invariants and termination conditions. Treating all two-pointer problems as the same pattern leads to incorrect solutions.

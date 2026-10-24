@@ -128,6 +128,50 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 
 # PART 12: Advanced Graph Algorithms
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Graph Fundamentals](05c_Graphs_Fundamentals.md), [Heaps](../02_Data_Structures/01f_Trees_Heaps.md), [Union-Find](14_Union_Find_DSU_Complete.md) |
+| **You will learn** | Dijkstra, Bellman–Ford, Floyd–Warshall, MST (Prim, Kruskal), topological sort, shortest-path variants |
+| **Leads to** | [Graph Patterns](05e_Graphs_Patterns.md), [Network flow](06e_Algorithm_Patterns.md) |
+| **Abstraction level** | L4: weights change everything |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Advanced Graph Algorithms
+
+### 1. The bottom line
+
+When edges have weights, plain BFS is no longer enough, and the choice of shortest-path algorithm depends on whether weights can be negative.
+
+### 2. The textbook core
+
+- **Dijkstra:** non-negative weights, O((V + E) log V) with a heap.
+- **Bellman–Ford:** negative weights, O(VE), detects negative cycles.
+- **Floyd–Warshall:** all pairs, O(V³).
+- **MST:** Kruskal O(E log E) with DSU; Prim O(E log V) with a heap.
+
+### 3. The real-world analogy
+
+A **GPS**: always extend the currently cheapest unexplored route (Dijkstra); if a toll could be a refund (negative), you must re-check routes repeatedly (Bellman–Ford).
+
+### 4. Walkthrough
+
+1. Graph: A→B (4), A→C (1), C→B (2).
+2. Dijkstra from A: dist A=0, C=1, B=4 initially.
+3. Pop C (1): relax C→B → 3 < 4, update B=3.
+4. Pop B (3): done; shortest A→B = 3.
+
+> [!NOTE]
+> **Quick check:** Why does Dijkstra fail with negative edges? *It finalises a node when popped, assuming no later path can be cheaper.*
+
+---
+
+
 ## Bellman-Ford Algorithm (Negative Weights)
 
 ```
@@ -1571,6 +1615,17 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 | All-pairs, small V | Floyd-Warshall | O(V³) |
 | DAG (any weights) | Topo-order relaxation | O(V+E) |
 
+
+---
+
+## 🏢 Enterprise Lens — Advanced Graph Algorithms
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Maps and routing, network protocols (OSPF), build and task scheduling, clustering via MST, currency arbitrage detection (negative cycles) |
+| **Failure modes** | Using Dijkstra with negative edges; `int` overflow when adding to infinity; stale heap entries not skipped; forgetting undirected edges |
+| **Testing and verification** | Compare against Bellman–Ford on random graphs; test disconnected targets and zero-weight edges |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

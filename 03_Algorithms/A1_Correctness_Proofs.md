@@ -10,6 +10,50 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Algorithm Thinking](01_Algorithm_Thinking.md) (loops and recursion) |
+| **You will learn** | Loop invariants, induction, exchange arguments, optimal substructure |
+| **Leads to** | Every proof corner in later chapters; [Greedy](12_Greedy_Algorithms_Complete.md), [DP](04b_DP_Fundamentals.md) |
+| **Abstraction level** | L1: from "it passed my tests" to "it is correct for every input" |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Algorithm Correctness
+
+### 1. The bottom line
+
+Prove an algorithm correct by naming one fact that stays true throughout and showing it is true at the start, preserved by each step, and strong enough at the end.
+
+### 2. The textbook core
+
+- **Loop invariant:** initialization, maintenance, termination.
+- **Induction** for recursion: base case + inductive step.
+- **Exchange argument** for greedy: transform any optimal solution into the greedy one without making it worse.
+- **Optimal substructure** is what makes DP and greedy valid.
+
+### 3. The real-world analogy
+
+A **bank reconciliation rule** ("total in = total out + balance") checked after every transaction: if each transaction type preserves it, the books are right without auditing everything.
+
+### 4. Walkthrough
+
+1. Insertion sort invariant: `a[0..i)` is sorted.
+2. Initialization: a single element is sorted (`i = 1`).
+3. Maintenance: inserting `a[i]` into its place keeps `a[0..i+1)` sorted.
+4. Termination: at `i = n` the whole array is sorted.
+
+> [!NOTE]
+> **Quick check:** What is the invariant of binary search? *If the target exists, it is inside `[lo, hi)`.*
+
+---
+
+
 ## Table of Contents
 
 1. [Loop Invariants — The Core Proof Tool](#1-loop-invariants--the-core-proof-tool)
@@ -505,6 +549,17 @@ assert java.util.Arrays.binarySearch(arr, target) < 0;
 Rule: assertions document the invariant AND catch violations during development; formal proofs prevent the invariant from being wrong in the first place.
 
 
+
+---
+
+## 🏢 Enterprise Lens — Algorithm Correctness
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Code reviews for core libraries, safety-critical logic (payments, schedulers), design reviews that require stated invariants |
+| **Failure modes** | Invariant stated but not actually preserved on one branch; proof assumes sorted/distinct input that production data violates |
+| **Testing and verification** | Turn invariants into assertions and property-based tests; fuzz against a reference implementation |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

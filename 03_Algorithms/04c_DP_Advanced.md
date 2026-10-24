@@ -5,6 +5,50 @@
 
 # 🚀 Advanced DP Patterns
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [DP Fundamentals](04b_DP_Fundamentals.md) |
+| **You will learn** | Bitmask DP, digit DP, interval DP, tree DP, profile DP, and DP optimisations |
+| **Leads to** | [Greedy](12_Greedy_Algorithms_Complete.md), [NP-hardness](A3_Lower_Bounds_And_NP.md) |
+| **Abstraction level** | L2→L7: exponential and structured state spaces |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Advanced DP
+
+### 1. The bottom line
+
+Advanced DP encodes complicated states (subsets, digits, tree positions) compactly so exponential problems become feasible for small sizes.
+
+### 2. The textbook core
+
+- **Bitmask DP:** state is a subset; 2ⁿ states, n ≤ ~20.
+- **Digit DP:** count numbers ≤ N with a property by processing digits with a tight flag.
+- **Interval DP:** `dp[l][r]` over ranges, O(n³) typical.
+- **Tree DP:** compute child results then combine at the parent.
+
+### 3. The real-world analogy
+
+A **packing list as a checklist of ticked boxes**: the pattern of ticks (a bitmask) is the state.
+
+### 4. Walkthrough
+
+1. TSP with 4 cities, mask `0101` = cities 0 and 2 visited.
+2. `dp[mask][last]` = cheapest cost having visited `mask` and ended at `last`.
+3. Add city `k` not in mask: `dp[mask | 1<<k][k]`.
+4. Answer: min over `dp[full][last] + dist[last][0]`.
+
+> [!NOTE]
+> **Quick check:** Why does bitmask DP stop around n = 20? *2ⁿ·n states exceed memory/time.*
+
+---
+
+
 ### 5W1H: Mastering Advanced DP
 
 ```
@@ -115,11 +159,13 @@ public class DigitDP {
 // How many numbers in [1, 100] have digit sum = 5?
 // Answer: 10 (5, 14, 23, 32, 41, 50, 104... wait, cap at 100)
 // Actually: 5, 14, 23, 32, 41, 50 = 6 numbers
+```
 
 
 
 ## Pattern 2: Bitmask DP
 
+```text
 CONCEPT:
 Use bitmask to represent which elements are "used" or "visited".
 Each bit represents one element's state.
@@ -216,6 +262,7 @@ public class AssignmentProblem {
         return result;
     }
 }
+```
 
 
 
@@ -278,7 +325,7 @@ Note the state-space optimization: if (0,0) is the only "start" and we always en
 
 <details><summary>Answer</summary>
 
-```
+```text
 mask = 0b10110 = 22
 
 sub = 22 = 0b10110
@@ -299,10 +346,11 @@ That's 7 subsets (= 2^popcount(22) - 1 = 2^3 - 1 = 7 non-empty subsets of a 3-bi
 The pattern: each iteration visits the next-smaller subset, in decreasing order, never revisiting. Total O(2^popcount(mask)) iterations regardless of n — that's why this is efficient for sparse masks.
 
 </details>
-
+```
 
 ## Pattern 3: Interval DP
 
+```text
 CONCEPT:
 Solve problems on intervals/subarrays by considering all ways
 to split the interval and combining results.
@@ -311,6 +359,7 @@ RECURRENCE:
 dp[i][j] = optimal value for interval [i, j]
          = combine(dp[i][k], dp[k+1][j]) for all k in [i, j)
 ```
+
 
 ```java
 // Matrix Chain Multiplication
@@ -453,6 +502,7 @@ So the heuristic for "is this interval DP or linear DP?": if the optimal substru
 
 ## Pattern 4: Tree DP
 
+```text
 CONCEPT:
 DP on tree structures. Usually compute answers for subtrees
 and combine at each node.
@@ -610,6 +660,7 @@ This is why the reroot trick is O(n) total: O(n) for pass 1 (sizes + `dp_down`),
 
 ## Pattern 5: DP with Monotonic Optimization
 
+```text
 CONCEPT:
 Use monotonic data structures to optimize DP transitions.
 Reduces O(n²) to O(n) or O(n log n).
@@ -1079,39 +1130,26 @@ MISTAKE 6: Redundant states
 > - **Divide & Conquer DP Optimization** (when opt[i] is monotone)
 > - **Broken Profile DP** (tiling/grid problems with bitmask rows)
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║          ADVANCED DYNAMIC PROGRAMMING - COMPETITIVE PROGRAMMING LEVEL            ║
-╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                  ║
-║  This section covers advanced DP patterns used in:                               ║
-║  • Competitive programming (Codeforces, ICPC, IOI)                               ║
-║  • Technical interviews at top companies                                         ║
-║  • Real-world optimization problems                                              ║
-║                                                                                  ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+### ADVANCED DYNAMIC PROGRAMMING - COMPETITIVE PROGRAMMING LEVEL ╠══════════════════════════════════════════════════════════════════════════════════╣  This section covers advanced DP patterns used in: • Competitive programming (Codeforces, ICPC, IOI) • Technical interviews at top companies • Real-world optimization problems
 
 ## DIGIT DP - COUNTING NUMBERS WITH PROPERTIES
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DIGIT DP - THE PATTERN                                       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  PROBLEM TYPE: Count numbers in range [L, R] with some digit property           │
-│  Examples:                                                                      │
-│  • Count numbers with digit sum = K                                             │
-│  • Count numbers without repeated digits                                        │
-│  • Count numbers divisible by D                                                 │
-│                                                                                 │
-│  KEY IDEA: Build number digit by digit, tracking:                               │
-│  • Position (which digit we're placing)                                         │
-│  • Tight bound (are we still bounded by limit?)                                 │
-│  • Problem-specific state (sum, remainder, etc.)                                │
-│                                                                                 │
-│                                                                                 │
-│  TEMPLATE:                                                                      │
-│  ───────────                                                                    │
-```
+#### Digit dp - the pattern
+
+**Problem type:** Count numbers in range [L, R] with some digit property Examples:
+
+- Count numbers with digit sum = K
+- Count numbers without repeated digits
+- Count numbers divisible by D
+
+**Key idea:** Build number digit by digit, tracking:
+
+- Position (which digit we're placing)
+- Tight bound (are we still bounded by limit?)
+- Problem-specific state (sum, remainder, etc.)
+
+**Template:** ───────────
+
 
 ```java
 // Count numbers from 0 to N with digit sum = targetSum
@@ -1914,12 +1952,13 @@ long dominoTiling(int n, int m) {
 
 DP PATTERNS QUICK REFERENCE
 
-```
+```text
 ──────────────────────────────────────────────────
-
+```
 
 ## Pattern │ Signal │ Time │ Space
 
+```text
 | Linear DP | One sequence | O(n) | O(1) to O(n) |
 | Two-sequence DP | Compare two strings | O(nm) | O(m) with rolling |
 | Interval DP | Range [i,j] optimal | O(n³) | O(n²) |
@@ -1935,6 +1974,7 @@ DP PATTERNS QUICK REFERENCE
 
 _DP is not about memorizing solutions - it's about SEEING the substructure!_
 ```
+
 
 ---
 
@@ -2075,6 +2115,17 @@ for (int[] row : dp) Arrays.fill(row, -1);
 
 **The structural insight**: brute force fails when sub-problems *overlap* (same (i,j) computed many times). DP trades time for space by storing sub-problem answers. When sub-problems don't overlap, divide-and-conquer without memoization is sufficient.
 
+
+---
+
+## 🏢 Enterprise Lens — Advanced DP
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Scheduling and routing for small instances, combinatorial counting in analytics, parsers (interval DP) |
+| **Failure modes** | State explosion; off-by-one in interval bounds; wrong tight-flag handling in digit DP |
+| **Testing and verification** | Brute-force enumeration on tiny inputs to verify; test boundary values like 0 and powers of 10 |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

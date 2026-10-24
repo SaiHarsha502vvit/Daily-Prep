@@ -78,6 +78,50 @@ Use induction: if holds for n iterations and is established at start, holds for 
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Java collections (DS)](../02_Data_Structures/03_Collections_Java.md), earlier algorithm chapters |
+| **You will learn** | Java-specific pitfalls: boxing, `equals/hashCode`, comparator contracts, integer overflow, recursion limits, performance idioms |
+| **Leads to** | [Modern Java](../07_Modern_Java/00_INDEX.md), [Production](13_Algorithms_In_Production.md) |
+| **Abstraction level** | L8: from algorithm to idiomatic, safe Java |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — DSA in Java
+
+### 1. The bottom line
+
+Correct algorithms can still fail in Java because of language details like integer overflow and boxing.
+
+### 2. The textbook core
+
+- Use `long` for sums/products; `Math.floorMod` for negative remainders.
+- `Integer` comparison with `==` is unsafe outside −128..127; use `equals`.
+- Comparators must be consistent and transitive; avoid `a - b` for overflow.
+- Prefer `ArrayDeque`, primitive arrays and `StringBuilder` in hot loops.
+
+### 3. The real-world analogy
+
+Knowing the **quirks of a tool** so you do not cut yourself while using it correctly.
+
+### 4. Walkthrough
+
+1. `(lo + hi) / 2` with `lo = hi = 2·10⁹` overflows.
+2. Use `lo + (hi - lo) / 2`.
+3. The result stays in range.
+4. The same pattern applies to midpoint computations everywhere.
+
+> [!NOTE]
+> **Quick check:** Why is `Integer.compare(a, b)` better than `a - b`? *Subtraction can overflow.*
+
+---
+
+
 ## Table of Contents
 
 1. [Java Collections for DSA: Which Structure for Which Problem](#1-collections-for-dsa)
@@ -166,9 +210,13 @@ Need fast insert/delete at ends? → LinkedList (rare!)
 PriorityQueue = MIN-HEAP by default (smallest first)
 
 GOTCHA #1: Natural order is MIN, not MAX!
+
+```java
 PriorityQueue<Integer> pq = new PriorityQueue<>();
 pq.addAll(List.of(5, 1, 3));
 pq.poll(); // Returns 1 (smallest!), not 5
+```
+
 
 For MAX-HEAP:
 PriorityQueue<Integer> maxPQ = new PriorityQueue<>(
@@ -883,6 +931,17 @@ Map<String, Integer> map = new HashMap<>(capacity, 0.75f);  // Avoid rehashing
 
 **Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](00_INDEX.md) | [Next >](18_Bitwise_Trie_Java_Complete.md)
 
+
+---
+
+## 🏢 Enterprise Lens — DSA in Java
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Any JVM codebase: services, data pipelines, Android |
+| **Failure modes** | Overflow, autoboxing in hot loops, mutable keys in hash maps, comparator contract violations |
+| **Testing and verification** | Test extreme values (`Integer.MIN_VALUE`, `MAX_VALUE`) and run with assertions enabled |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

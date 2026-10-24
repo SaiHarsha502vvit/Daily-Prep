@@ -6,6 +6,50 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | Almost every previous chapter |
+| **You will learn** | Where classic algorithms run in real systems: routing, search, ranking, databases, networking, UI diffing, security |
+| **Leads to** | [War Stories](21_Algorithm_War_Stories.md), [DS in Production](../02_Data_Structures/05_DS_In_Production.md) |
+| **Abstraction level** | L8: from textbook to deployed system |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Algorithms in Production
+
+### 1. The bottom line
+
+The algorithms in this course are not exercises: they are running inside the products you use every day.
+
+### 2. The textbook core
+
+- Binary search → index lookups; Dijkstra/A\* → maps; PageRank → web ranking; Bloom filters → database read paths.
+- Each production use adds **constraints** the textbook ignores: scale, latency, consistency, failure.
+- Choose the algorithm by its **worst case under your SLO**, not its average.
+- Observe, measure and alert on algorithmic regressions.
+
+### 3. The real-world analogy
+
+Reading the **engine specs after learning how engines work**: now you can see why each part is shaped the way it is.
+
+### 4. Walkthrough
+
+1. Search request arrives at a database.
+2. The planner picks an index (B+ tree), which uses binary search within pages.
+3. A Bloom filter avoids reading SSTables that cannot contain the key.
+4. Results are merged with a k-way heap merge.
+
+> [!NOTE]
+> **Quick check:** Which classic algorithm decides the order of results when merging k sorted runs? *A heap-based k-way merge.*
+
+---
+
+
 ## The Algorithm → Production System Map
 
 ```
@@ -306,14 +350,25 @@ public class AlgorithmBenchmark {
 
 ---
 
+## 🏢 Enterprise Lens — Algorithms in Production
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Everywhere: maps, feeds, payments, messaging, search, storage |
+| **Failure modes** | Choosing an average-case algorithm for a p99 requirement; no fallback for pathological input |
+| **Testing and verification** | Load tests with adversarial data; regression benchmarks in CI |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
+
+---
+
 ## Reality Check
 
-**"Production code does not need algorithmic thinking"** ? Every database query involves algorithm choices: B-tree vs hash index, nested loop vs hash join vs merge join, full table scan vs index scan. The query optimizer makes these decisions, but understanding them lets you write queries the optimizer can handle efficiently and diagnose performance problems when it makes poor choices.
+**"Production code does not need algorithmic thinking"** → Every database query involves algorithm choices: B-tree vs hash index, nested loop vs hash join vs merge join, full table scan vs index scan. The query optimizer makes these decisions, but understanding them lets you write queries the optimizer can handle efficiently and diagnose performance problems when it makes poor choices.
 
-**"Big-O is all that matters in production"** ? An O(n log n) algorithm with poor cache locality can be slower than an O(n squared) algorithm with sequential memory access for n under 10000. Production performance depends on: constant factors, cache behavior, branch prediction, memory allocation patterns, and I/O costs. Profile before optimizing � the bottleneck is often not where you expect.
+**"Big-O is all that matters in production"** → An O(n log n) algorithm with poor cache locality can be slower than an O(n squared) algorithm with sequential memory access for n under 10000. Production performance depends on: constant factors, cache behavior, branch prediction, memory allocation patterns, and I/O costs. Profile before optimizing — the bottleneck is often not where you expect.
 
-**"Algorithms textbook implementations are production-ready"** ? Textbook implementations optimize for clarity, not robustness. Production implementations must handle: integer overflow in index calculations, concurrent access (ConcurrentHashMap vs HashMap), graceful degradation under memory pressure, and monitoring/observability (execution time histograms, cache hit rates). Java standard library implementations include these concerns; custom implementations often miss them.
+**"Algorithms textbook implementations are production-ready"** → Textbook implementations optimize for clarity, not robustness. Production implementations must handle: integer overflow in index calculations, concurrent access (ConcurrentHashMap vs HashMap), graceful degradation under memory pressure, and monitoring/observability (execution time histograms, cache hit rates). Java standard library implementations include these concerns; custom implementations often miss them.
 
-**"Distributed algorithms are just parallel algorithms"** ? Distributed systems face challenges absent in parallel computing: network partitions (CAP theorem), clock skew (no global time ordering), partial failures (one node crashes mid-operation), and message ordering (messages arrive out of send order). Consensus algorithms (Raft, Paxos) exist specifically because distributed agreement is fundamentally harder than local coordination.
+**"Distributed algorithms are just parallel algorithms"** → Distributed systems face challenges absent in parallel computing: network partitions (CAP theorem), clock skew (no global time ordering), partial failures (one node crashes mid-operation), and message ordering (messages arrive out of send order). Consensus algorithms (Raft, Paxos) exist specifically because distributed agreement is fundamentally harder than local coordination.
 
-**"Choosing the right algorithm is a one-time decision"** ? Data characteristics change: a dataset that started small grows large, access patterns shift from read-heavy to write-heavy, and new query types emerge. An ArrayList chosen for sequential access becomes a bottleneck when random insertions increase. Production systems need monitoring to detect when algorithmic assumptions no longer hold and the implementation should be reconsidered.
+**"Choosing the right algorithm is a one-time decision"** → Data characteristics change: a dataset that started small grows large, access patterns shift from read-heavy to write-heavy, and new query types emerge. An ArrayList chosen for sequential access becomes a bottleneck when random insertions increase. Production systems need monitoring to detect when algorithmic assumptions no longer hold and the implementation should be reconsidered.

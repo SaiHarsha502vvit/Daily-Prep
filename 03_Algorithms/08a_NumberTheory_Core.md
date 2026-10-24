@@ -8,6 +8,50 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Bit Manipulation](10_Bit_Manipulation_Complete.md), [Recursion](03b_Recursion_Fundamentals.md) |
+| **You will learn** | GCD/LCM (Euclid, Stein), primes (trial division, sieve, factorisation), modular arithmetic |
+| **Leads to** | [Essential patterns](08b_NumberTheory_Advanced.md), [Matrix exponentiation](23_Matrix_Exponentiation_And_Linear_Recurrences.md) |
+| **Abstraction level** | L5: arithmetic as an algorithmic tool |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Number Theory Core
+
+### 1. The bottom line
+
+Number theory gives you fast tools for divisibility, primes and working with huge numbers using remainders.
+
+### 2. The textbook core
+
+- Euclid: `gcd(a, b) = gcd(b, a mod b)` in O(log min(a, b)).
+- Sieve of Eratosthenes: all primes ≤ n in O(n log log n).
+- Modular arithmetic: `(a + b) mod m`, `(a · b) mod m`; inverse via Fermat for prime `m`.
+- Always reduce modulo after each multiplication to avoid overflow.
+
+### 3. The real-world analogy
+
+A **clock**: after 12 comes 1 again; modular arithmetic is arithmetic on a clock of size m.
+
+### 4. Walkthrough
+
+1. gcd(48, 18).
+2. 48 mod 18 = 12 → gcd(18, 12).
+3. 18 mod 12 = 6 → gcd(12, 6).
+4. 12 mod 6 = 0 → gcd = 6.
+
+> [!NOTE]
+> **Quick check:** What is lcm(4, 6)? *4·6 / gcd = 24 / 2 = 12.*
+
+---
+
+
 > WHY THIS FILE EXISTS
 >
 > GCD, LCM, Primes, Modular Arithmetic → appear in:
@@ -1191,6 +1235,17 @@ long g2 = ArithmeticUtils.gcd(48L, -18L); // returns 6
 
 > **Navigation**: [< Previous](07b_Advanced_DS_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08b_NumberTheory_Advanced.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Number Theory Core
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Cryptography, hashing, scheduling periodic jobs, random number generation, checksums |
+| **Failure modes** | Integer overflow in `a * b`; negative remainders; non-prime modulus when using Fermat inverses |
+| **Testing and verification** | Test against `BigInteger` and brute force for small ranges |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

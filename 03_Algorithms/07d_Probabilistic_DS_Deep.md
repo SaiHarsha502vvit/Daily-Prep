@@ -10,6 +10,50 @@ Probabilistic data structures emerged as a pragmatic solution when exact answers
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Randomized Algorithms (A4)](A4_Randomized_Algorithms.md), hashing basics |
+| **You will learn** | Bloom filters, counting Bloom filters, Count-Min sketch, HyperLogLog, consistent hashing |
+| **Leads to** | [Production](13_Algorithms_In_Production.md), [Approximation](25_Online_Approximation_And_Linear_Programming.md) |
+| **Abstraction level** | L6: sacrificing exactness for scale |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Probabilistic & Distributed Data Structures
+
+### 1. The bottom line
+
+When data is huge or distributed, small probabilistic summaries answer "is it there?", "how often?" and "how many distinct?" cheaply.
+
+### 2. The textbook core
+
+- Bloom filter: no false negatives; false-positive rate tunable by size and hash count.
+- Count-Min sketch: frequency estimates that only overestimate.
+- HyperLogLog: distinct counts with ~1–2% error in KBs.
+- Consistent hashing remaps only ~1/N of keys when servers change.
+
+### 3. The real-world analogy
+
+A **rough headcount at a stadium**: you do not scan every seat, you sample cleverly and accept a small error.
+
+### 4. Walkthrough
+
+1. Add "cat" to a Bloom filter with 3 hashes: bits 3, 9, 17 set.
+2. Query "dog": bits 2, 9, 30; bit 2 is 0 → definitely absent.
+3. Query a word whose three bits happen to be set → "maybe".
+4. The "maybe" is verified against the real store.
+
+> [!NOTE]
+> **Quick check:** Can a Bloom filter return a false negative? *No.*
+
+---
+
+
 ## Trading Accuracy for Infinite Scale in Big Data & System Design
 
 ---
@@ -566,6 +610,17 @@ String result = skipMap.get(3); // O(log n) expected
 
 **Rule**: Use probabilistic structures when space is the bottleneck and a bounded error is acceptable. Use exact structures when correctness is mandatory.
 
+
+---
+
+## 🏢 Enterprise Lens — Probabilistic & Distributed Data Structures
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Databases (Cassandra, HBase), CDNs, analytics (Redis HLL), distributed caches and load balancers |
+| **Failure modes** | Undersized filters saturating; not accounting for growth; using non-independent hash functions |
+| **Testing and verification** | Measure the empirical false-positive rate against the target on random data |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

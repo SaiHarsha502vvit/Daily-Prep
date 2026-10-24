@@ -10,6 +10,50 @@ _Extracted from 06a for discoverability — this is a core technique, not an app
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Sorting](02b_Sorting_Advanced.md), [Searching](22_Searching_And_Binary_Search_Complete.md), [A2 Recurrences](A2_Complexity_FirstPrinciples.md) |
+| **You will learn** | Split–solve–combine, the Master theorem in practice, Karatsuba, Strassen, closest pair, binary search as D&C |
+| **Leads to** | [Recursion](03a_Recursion_Internals.md), [FFT/NTT](26_FFT_NTT_Polynomial_Multiplication.md) |
+| **Abstraction level** | L2: halving as a general paradigm |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Divide & Conquer
+
+### 1. The bottom line
+
+Break a big problem into smaller copies of itself, solve each, and combine the answers.
+
+### 2. The textbook core
+
+- Three steps: **divide, conquer, combine**; cost is captured by `T(n) = aT(n/b) + f(n)`.
+- Gains come when the combine step is cheap or when you can reduce the number of subproblems (Karatsuba: 4 → 3 multiplications).
+- Recursion depth is typically `log n`; watch stack space.
+- Not every split helps: overlapping subproblems need DP instead.
+
+### 3. The real-world analogy
+
+**Counting votes in a big election**: each district counts its own ballots (conquer), then totals are added up (combine).
+
+### 4. Walkthrough
+
+1. Maximum subarray by D&C on `[−2, 1, −3, 4]`.
+2. Split into two halves; best sum is either fully left, fully right, or crossing the middle.
+3. Compute the crossing sum in O(n).
+4. `T(n) = 2T(n/2) + n` → O(n log n).
+
+> [!NOTE]
+> **Quick check:** When should you prefer DP over D&C? *When subproblems overlap.*
+
+---
+
+
 ## 🎓 University Proof Corner
 
 > **MIT 6.046J / KTH DD2352 / ETH Zurich Algorithms layer** — Why divide-and-conquer is provably correct and how to derive its Θ(n log n) complexity from first principles.
@@ -868,6 +912,17 @@ T(n) = Θ(n¹ · (1 + ∫₁ⁿ u / u² du))
 
 **Navigation**: [← Sorting Advanced](02b_Sorting_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Recursion Internals →](03a_Recursion_Internals.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Divide & Conquer
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | MapReduce-style processing, parallel merge sort, FFT-based signal processing, divide-and-conquer in image and geometry pipelines |
+| **Failure modes** | Unbalanced splits degrading to O(n²); copying subarrays at every level; recursion depth overflow |
+| **Testing and verification** | Test base cases (n = 0, 1, 2) and compare against the brute-force result on random inputs |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

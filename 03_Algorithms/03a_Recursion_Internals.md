@@ -5,27 +5,62 @@
 
 # 🔄 Recursion: Complete Mental Model Guide
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Algorithm Thinking](01_Algorithm_Thinking.md), call-stack basics |
+| **You will learn** | What really happens on each call: stack frames, return addresses, stack depth limits, tail recursion |
+| **Leads to** | [Recursion Fundamentals](03b_Recursion_Fundamentals.md) |
+| **Abstraction level** | L0–L2: the machine view of recursion |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Recursion Internals
+
+### 1. The bottom line
+
+Every recursive call is a new stack frame, so recursion is powerful but limited by memory and call overhead.
+
+### 2. The textbook core
+
+- A frame holds parameters, locals and a return address; frames pile up until the base case returns.
+- JVM default stack ≈ 512 KB–1 MB, so depth ~10⁴–10⁵ can overflow.
+- Tail-call optimization does **not** exist in Java; convert to loops or use explicit stacks.
+- Every recursion can be rewritten iteratively with an explicit stack.
+
+### 3. The real-world analogy
+
+A **stack of sticky notes** where each pending task is written on a new note; you cannot finish the bottom note until every note above it is done.
+
+### 4. Walkthrough
+
+1. `factorial(3)` pushes `factorial(3)`, `factorial(2)`, `factorial(1)`.
+2. `factorial(1)` returns 1 (base case).
+3. `factorial(2)` returns 2 × 1, then `factorial(3)` returns 3 × 2.
+4. Frames pop in reverse order of creation.
+
+> [!NOTE]
+> **Quick check:** How do you avoid StackOverflowError on a deep DFS? *Use an explicit stack or iterative traversal.*
+
+---
+
+
 ### 5W1H: Mastering Recursion Internals
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: The physical mechanics of recursion: stack frames, base cases, CPU    ║
-║        register operations, and memory layout during deep function calls.    ║
-║                                                                              ║
-║  WHY:  Writing "fib(n-1) + fib(n-2)" is easy, but understanding WHY it takes ║
-║        forever (exponential time) or throws StackOverflowError is essential  ║
-║        for system stability and optimization.                                ║
-║                                                                              ║
-║  WHO:  Engineers debugging stack overflows, optimizing recursive traversal   ║
-║        (trees/graphs), or transitioning from iterative loops to recursion.   ║
-║                                                                              ║
-║  WHEN: Study this BEFORE writing complex recursive DP or Backtracking logic. ║
-║        Knowing the memory cost helps you decide when to convert to iterative.║
-║                                                                              ║
-║  HOW:  By tracing the physical call stack, visualizing frame pointers, and   ║
-║        understanding tail-call optimization (TCO) and memoization.           ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** The physical mechanics of recursion: stack frames, base cases, CPU register operations, and memory layout during deep function calls.
+>
+> **WHY:** Writing "fib(n-1) + fib(n-2)" is easy, but understanding WHY it takes forever (exponential time) or throws StackOverflowError is essential for system stability and optimization.
+>
+> **WHO:** Engineers debugging stack overflows, optimizing recursive traversal (trees/graphs), or transitioning from iterative loops to recursion.
+>
+> **WHEN:** Study this BEFORE writing complex recursive DP or Backtracking logic. Knowing the memory cost helps you decide when to convert to iterative.
+>
+> **HOW:** By tracing the physical call stack, visualizing frame pointers, and understanding tail-call optimization (TCO) and memoization.
 
 ## Understanding Recursion from Brain's Perspective
 
@@ -675,6 +710,17 @@ long fib(int n) {
 
 **Navigation**: [< Back to Index](../00_MASTER_INDEX.md) | [Next: Recursion Fundamentals >](03b_Recursion_Fundamentals.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Recursion Internals
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Parsers, tree/file-system walkers, expression evaluators; production incidents from deep recursion on adversarial input |
+| **Failure modes** | Unbounded recursion depth on user-controlled data; hidden recursion in serializers; no depth guard |
+| **Testing and verification** | Test with depth 10⁵ inputs; set explicit depth limits; run with a small `-Xss` in tests |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

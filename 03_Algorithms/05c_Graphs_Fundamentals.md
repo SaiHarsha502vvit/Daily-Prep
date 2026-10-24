@@ -70,6 +70,50 @@ DFS = "Exists? / Cycles / Components"   → Stack/Recursion → O(V+E)
 
 # 🕸️ Part 5: Graph Fundamentals
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Graph Internals](05b_Graphs_Internals.md), [Stack/Queue ⇄ DFS/BFS](../02_Data_Structures/01d_Stack_Queue.md) |
+| **You will learn** | BFS, DFS, visited sets, connected components, cycle detection, bipartite check, grids as graphs |
+| **Leads to** | [Advanced Graph Algorithms](05d_Graphs_Advanced_Algos.md), [Union-Find](14_Union_Find_DSU_Complete.md) |
+| **Abstraction level** | L4: traversal as the base of every graph algorithm |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Graph Fundamentals
+
+### 1. The bottom line
+
+BFS and DFS are the two ways to visit every node once; almost every graph algorithm is one of them with extra bookkeeping.
+
+### 2. The textbook core
+
+- BFS (queue) gives fewest-edge distances; DFS (stack/recursion) gives discovery/finish times.
+- Both are **O(V + E)** with a visited set.
+- Components = number of traversal starts; cycle detection differs for directed vs undirected graphs.
+- Bipartite check = BFS/DFS 2-colouring.
+
+### 3. The real-world analogy
+
+Exploring a **maze**: BFS sends scouts to every corridor one step at a time; DFS follows one corridor to its end before backing up.
+
+### 4. Walkthrough
+
+1. Graph: 1–2, 1–3, 2–4.
+2. BFS from 1: queue `[1]` → visit 1, enqueue 2, 3 → visit 2, enqueue 4 → visit 3 → visit 4.
+3. Distances: 1→0, 2→1, 3→1, 4→2.
+4. Visited set prevents revisiting.
+
+> [!NOTE]
+> **Quick check:** Which traversal finds shortest paths in an unweighted graph? *BFS.*
+
+---
+
+
 ## Complete Understanding of Graphs
 
 ```
@@ -896,6 +940,17 @@ For each pair (u,v), check if there's a path — O(V) DFS per pair = O(V²) per 
 Process each edge once: `union(u, v)`. Count distinct roots at the end. For the Java example, see [UnionFind.java](../JavaSolutions/AlgorithmExamples/UnionFind.java).
 **Why it's better**: One pass over edges, no repeated DFS. Union-Find's amortized cost per operation is essentially O(1) (inverse Ackermann).
 
+
+---
+
+## 🏢 Enterprise Lens — Graph Fundamentals
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Web crawlers, dependency resolution, network reachability, flood-fill, social-network analysis |
+| **Failure modes** | Forgetting the visited set (infinite loops); DFS recursion overflow; marking visited too late in BFS (duplicate queue entries) |
+| **Testing and verification** | Test cycles, disconnected graphs, self-loops, and deep chains (10⁵ nodes) |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

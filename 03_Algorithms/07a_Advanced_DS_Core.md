@@ -4,6 +4,50 @@
 
 # 🏗️ Advanced Data Structures: Complete Guide
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Trees](05_Trees.md), [Hash tables (DS)](../02_Data_Structures/01e_HashTable.md) |
+| **You will learn** | Memory layouts of tries, segment trees, Fenwick trees, union-find and skip lists; why some structures are fast in practice |
+| **Leads to** | [Advanced DS Patterns](07b_Advanced_DS_Patterns.md) |
+| **Abstraction level** | L3→L6: structures and their machine-level behaviour |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Advanced Data Structures Core
+
+### 1. The bottom line
+
+Advanced structures win by organising data for the queries you ask, and their memory layout decides how fast they are.
+
+### 2. The textbook core
+
+- Trie: O(L) per key; memory heavy with 26-way arrays.
+- Segment tree: O(log n) range query/update, 4n array size; Fenwick: O(log n) prefix sums with `i & -i`.
+- Union-find: near O(1) with rank + path compression.
+- Skip list: probabilistic balanced ordering used by Redis sorted sets.
+
+### 3. The real-world analogy
+
+A **filing system designed for the questions you ask most**, not just for storing papers.
+
+### 4. Walkthrough
+
+1. Fenwick tree over `[1, 2, 3, 4]`.
+2. `bit[1]=1, bit[2]=3, bit[3]=3, bit[4]=10`.
+3. `prefix(3)` = `bit[3] + bit[2]` = 6.
+4. `update(2, +5)` touches indices 2 then 4.
+
+> [!NOTE]
+> **Quick check:** Why use `i & -i` in a Fenwick tree? *It isolates the lowest set bit, i.e. the size of the block `bit[i]` covers.*
+
+---
+
+
 <details>
 <summary><b>🧠 5W1H: Advanced Data Structures</b></summary>
 
@@ -41,28 +85,32 @@ Understanding the PHYSICAL implementation of these powerful structures:
 ## Trie Memory Representation - Deep Dive
 
 BASIC TRIE NODE (Array-based):
+
+```java
 class TrieNode {
-TrieNode[] children = new TrieNode[26]; // 26 letters
-boolean isEndOfWord;
+    TrieNode[] children = new TrieNode[26]; // 26 letters
+    boolean isEndOfWord;
 }
+```
+
 MEMORY LAYOUT (64-bit JVM, compressed oops):
+
 | OFFSET | SIZE | FIELD | VALUE |
-┼───────┼──────────────────────┼
+|---|---|---|---|
 | 0 | 8 | Mark Word | Object header |
 | 8 | 4 | Class Pointer | → TrieNode.class |
 | 12 | 4 | children (ref) | → Object[] array |
 | 16 | 1 | isEndOfWord | true/false |
 | 17 | 7 | padding | alignment to 8 bytes |
-┴───────┴──────────────────────┴
 TrieNode object: 24 bytes
 PLUS the children array:
+
 | OFFSET | SIZE | CONTENT |
-┼───────┼
+|---|---|---|
 | 0 | 8 | Mark Word (array header) |
 | 8 | 4 | Class Pointer |
 | 12 | 4 | Array length = 26 |
 | 16 | 104 | 26 × 4 bytes (references to child TrieNode) |
-┴───────┴
 children[] array: 120 bytes
 
 **Total Per Node**: 24 + 120 = 144 bytes!
@@ -70,10 +118,14 @@ For 100,000 words average 8 chars, assuming 30% node sharing:
 Nodes ≈ 100,000 × 8 × 0.7 = 560,000 nodes
 Memory ≈ 560,000 × 144 = 80 MB!
 MEMORY-OPTIMIZED TRIE (HashMap children):
+
+```java
 class TrieNode {
-Map<Character, TrieNode> children = new HashMap<>();
-boolean isEndOfWord;
+    Map<Character, TrieNode> children = new HashMap<>();
+    boolean isEndOfWord;
 }
+```
+
 For sparse nodes (few children): Much smaller!
 Average children ≈ 3-4, so ~160 bytes vs 144 bytes but more flexible
 COMPRESSED TRIE (Patricia/Radix Tree):
@@ -117,11 +169,10 @@ Parent: i / 2
 / \ / \
 [1] [3] [5] [7] [9] [11] (index 8-13, leaves)
 ARRAY STORAGE (1-indexed):
-┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬
+
 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |11 |12 |13 |
-┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | -- | 36 | 9 | 27 | 4 | 5 | 16 | 11 | 1 | 3 | 5 | 7 | 9 | 11 |
-┴────┴────┴────┴────┴────┴────┴────┴────┴────┴────┴────┴────┴
 
 **Memory**: 4n × 4 bytes (int) = 16n bytes
 For n = 1,000,000: 16 MB
@@ -155,9 +206,9 @@ i = 12 = 1100 (binary)
 i & -i = 1100 & 0100 = 0100 = 4 = LSB
 
 **Examples**:
-┬──────────┬──────────┬───────────┬
+
 | i | Binary | -i | i & (-i) | Meaning |
-┼──────────┼──────────┼───────────┼
+|---|---|---|---|---|
 | 1 | 0001 | 1111 | 0001 = 1 | Covers index 1 only |
 | 2 | 0010 | 1110 | 0010 = 2 | Covers indices 1-2 |
 | 3 | 0011 | 1101 | 0001 = 1 | Covers index 3 only |
@@ -166,7 +217,6 @@ i & -i = 1100 & 0100 = 0100 = 4 = LSB
 | 6 | 0110 | 1010 | 0010 = 2 | Covers indices 5-6 |
 | 7 | 0111 | 1001 | 0001 = 1 | Covers index 7 only |
 | 8 | 1000 | 1000 | 1000 = 8 | Covers indices 1-8 |
-┴──────────┴──────────┴───────────┴
 BIT[i] stores sum of elements from (i - LSB(i) + 1) to i
 
 **Visual**:
@@ -210,48 +260,61 @@ Without path compression + union by rank: O(N) height possible (linear chain). W
 
 ## Union-Find - Path Compression Deep Dive
 
-INITIAL STATE (8 elements, each is own parent):
-parent[] = [0, 1, 2, 3, 4, 5, 6, 7]
-rank[] = [0, 0, 0, 0, 0, 0, 0, 0]
-AFTER union(0,1), union(2,3), union(4,5), union(6,7):
-parent[] = [0, 0, 2, 2, 4, 4, 6, 6]
-rank[] = [1, 0, 1, 0, 1, 0, 1, 0]
-Trees: 0 2 4 6
-| | | |
-1 3 5 7
-AFTER union(0,2), union(4,6):
-parent[] = [0, 0, 0, 2, 4, 4, 4, 6]
-rank[] = [2, 0, 1, 0, 2, 0, 1, 0]
-Trees: 0 4
-/│ /
-1 2 5 6
-3 7
-AFTER union(0,4):
-parent[] = [0, 0, 0, 2, 0, 4, 4, 6]
-rank[] = [3, 0, 1, 0, 2, 0, 1, 0]
-Tree: 0
-/ | \
-1 2 4
-/
-3 5 6
-7
+**Worked example with 8 elements** (union by rank):
 
-**Now**: find(7) WITH PATH COMPRESSION:
-Call stack:
+| Step | `parent[]` | `rank[]` | Roots |
+| ---- | ---------- | -------- | ----- |
+| Initial (each element is its own parent) | `[0, 1, 2, 3, 4, 5, 6, 7]` | `[0, 0, 0, 0, 0, 0, 0, 0]` | 0 1 2 3 4 5 6 7 |
+| After `union(0,1)`, `union(2,3)`, `union(4,5)`, `union(6,7)` | `[0, 0, 2, 2, 4, 4, 6, 6]` | `[1, 0, 1, 0, 1, 0, 1, 0]` | 0 2 4 6 |
+| After `union(0,2)`, `union(4,6)` | `[0, 0, 0, 2, 4, 4, 4, 6]` | `[2, 0, 1, 0, 2, 0, 1, 0]` | 0 4 |
+| After `union(0,4)` | `[0, 0, 0, 2, 0, 4, 4, 6]` | `[3, 0, 1, 0, 2, 0, 1, 0]` | 0 |
+
+The final tree (before any path compression):
+
+```mermaid
+flowchart TD
+    r0((0)) --> n1((1))
+    r0 --> n2((2))
+    r0 --> n4((4))
+    n2 --> n3((3))
+    n4 --> n5((5))
+    n4 --> n6((6))
+    n6 --> n7((7))
+    classDef root fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class r0 root
+    class n1,n2,n3,n4,n5,n6,n7 node
+```
+
+**How to read this diagram.** Node `0` (orange) is the root of the only set. Element `7` is three hops away (7 → 6 → 4 → 0).
+
+**`find(7)` with path compression:**
+
+```text
 find(7) → parent[7] = 6, recurse
 find(6) → parent[6] = 4, recurse
 find(4) → parent[4] = 0, recurse
 find(0) → parent[0] = 0, return 0 (root!)
-return 0, set parent[4] = 0
-return 0, set parent[6] = 0
-return 0, set parent[7] = 0
-AFTER path compression:
-parent[] = [0, 0, 0, 2, 0, 4, 0, 0]
-Tree: 0
-/|\ | \\ \
-1 2 4 5 6 7
-3
-Now find(7) is O(1)!
+```
+
+On the way back up, every node on the path is re-pointed straight at the root: `parent[4] = 0`, `parent[6] = 0`, `parent[7] = 0`.
+
+```mermaid
+flowchart TD
+    r0((0)) --> n1((1))
+    r0 --> n2((2))
+    r0 --> n4((4))
+    r0 --> n6((6))
+    r0 --> n7((7))
+    n2 --> n3((3))
+    n4 --> n5((5))
+    classDef root fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class r0 root
+    class n1,n2,n3,n4,n5,n6,n7 node
+```
+
+**How to read this diagram.** After compression, `4`, `6` and `7` all hang directly off the root, so `find(7)` is now O(1).
 
 **Complexity With Both Optimizations**:
 
@@ -373,8 +436,9 @@ P(false positive) = (1 - e^(-kn/m))^k
 OPTIMAL k = (m/n) × ln(2) ≈ 0.693 × (m/n)
 
 **Example Calculations**:
+
 | n (elements) | m (bits) | m/n ratio | optimal k | FP rate |
-┼──────────┼───────────┼───────────┼
+|---|---|---|---|---|
 | 1,000 | 10,000 | 10 | 7 | 0.82% |
 | 1,000 | 20,000 | 20 | 14 | 0.00061% |
 | 1,000,000 | 10M | 10 | 7 | 0.82% |
@@ -391,28 +455,43 @@ OPTIMAL k = (m/n) × ln(2) ≈ 0.693 × (m/n)
 1. HashMap<Key, Node>: O(1) lookup by key
 2. Doubly Linked List: O(1) remove/insert for recency tracking
 
-**Memory Layout**:
-HashMap:
-┌───────────────────────────────────────────┐
-| | key: "A" → Node(A) | |
-| | key: "B" → Node(B) | |
-| | key: "C" → Node(C) | |
-└───────────────────────────────────────────┘
-Doubly Linked List (most recent at head):
-┌──────────────────────────────────────────────────────────────────────┐
-| | | |
-| | HEAD ←→ Node(C) ←→ Node(B) ←→ Node(A) ←→ TAIL | |
-| | (dummy) (most (middle) (least (dummy) | |
-| | recent) recent) | |
-| | | |
-└──────────────────────────────────────────────────────────────────────┘
-Each Node:
-┌──────────────────────────────────────────────────┐
-| | key: "B" | |
-| | value: 42 | |
-| | prev: → Node(C) | |
-| | next: → Node(A) | |
-└──────────────────────────────────────────────────┘
+**Memory layout:**
+
+```mermaid
+flowchart LR
+    subgraph HM["HashMap: key to Node"]
+        direction TB
+        kA["key A"]
+        kB["key B"]
+        kC["key C"]
+    end
+    subgraph DLL["Doubly linked list (most recent at head)"]
+        direction LR
+        H(["HEAD<br/>dummy"]) <--> nC["Node C<br/>most recent"] <--> nB["Node B<br/>middle"] <--> nA["Node A<br/>least recent"] <--> T(["TAIL<br/>dummy"])
+    end
+    kA --> nA
+    kB --> nB
+    kC --> nC
+    classDef map fill:#fff3b0,stroke:#b58900,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef dummy fill:#e0e0e0,stroke:#616161,color:#111
+    classDef old fill:#ffc9c9,stroke:#c62828,color:#111
+    class kA,kB,kC map
+    class nC,nB node
+    class nA old
+    class H,T dummy
+```
+
+**How to read this diagram.** The hash map jumps straight to any node in O(1). The list keeps nodes ordered by recency, so moving a node to the head is O(1) and the node next to `TAIL` (red) is always the next to evict.
+
+**Each node stores:**
+
+| Field | Example (Node B) |
+| ----- | ---------------- |
+| `key` | `"B"` |
+| `value` | `42` |
+| `prev` | → Node C |
+| `next` | → Node A |
 
 **Operations**:
 GET(key):
@@ -1203,14 +1282,25 @@ class SegTree {
 
 ---
 
+## 🏢 Enterprise Lens — Advanced Data Structures Core
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Autocomplete (tries), analytics range queries, connectivity services, Redis sorted sets |
+| **Failure modes** | Wrong segment-tree size; off-by-one indexing in Fenwick; recursion depth; memory blow-up of tries |
+| **Testing and verification** | Differential testing against a naive array for random updates and queries |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
+
+---
+
 ## Reality Check
 
-**"Balanced BSTs are interchangeable"** ? AVL trees maintain stricter balance (height difference at most 1) than Red-Black trees (path lengths differ by at most 2x). AVL trees are faster for lookups because they are more balanced, but Red-Black trees are faster for insertions and deletions because they require fewer rotations. Java TreeMap uses Red-Black trees (optimized for mixed operations). Databases often use B-trees, which are balanced but optimized for disk access patterns rather than in-memory comparisons.
+**"Balanced BSTs are interchangeable"** → AVL trees maintain stricter balance (height difference at most 1) than Red-Black trees (path lengths differ by at most 2x). AVL trees are faster for lookups because they are more balanced, but Red-Black trees are faster for insertions and deletions because they require fewer rotations. Java TreeMap uses Red-Black trees (optimized for mixed operations). Databases often use B-trees, which are balanced but optimized for disk access patterns rather than in-memory comparisons.
 
-**"Hash tables are always O(1)"** ? O(1) is the AVERAGE case with a good hash function and low load factor. With a poor hash function, all keys can hash to the same bucket, degrading to O(n) linked list traversal. Java 8 HashMap mitigates this by converting long chains to Red-Black trees (O(log n) worst case). Also, hash table resize operations are O(n) amortized � a single insert can trigger a full rehash of all existing entries.
+**"Hash tables are always O(1)"** → O(1) is the AVERAGE case with a good hash function and low load factor. With a poor hash function, all keys can hash to the same bucket, degrading to O(n) linked list traversal. Java 8 HashMap mitigates this by converting long chains to Red-Black trees (O(log n) worst case). Also, hash table resize operations are O(n) amortized — a single insert can trigger a full rehash of all existing entries.
 
-**"Priority queue is a queue"** ? A priority queue shares no implementation with a FIFO queue. It is typically implemented as a binary heap (array-based complete binary tree). Elements are not processed in insertion order but in priority order. Java PriorityQueue is a min-heap by default � the smallest element comes out first, not the largest. For a max-heap, pass Comparator.reverseOrder to the constructor.
+**"Priority queue is a queue"** → A priority queue shares no implementation with a FIFO queue. It is typically implemented as a binary heap (array-based complete binary tree). Elements are not processed in insertion order but in priority order. Java PriorityQueue is a min-heap by default — the smallest element comes out first, not the largest. For a max-heap, pass Comparator.reverseOrder to the constructor.
 
-**"Disjoint Set Union is only for connected components"** ? Union-Find with path compression and union-by-rank achieves near-O(1) amortized operations (inverse Ackermann function). Beyond graph connectivity, it powers: Kruskal MST algorithm (cycle detection during edge addition), image segmentation (merging similar pixel regions), percolation theory (does a grid connect top to bottom), and equivalence class maintenance (compiler type inference).
+**"Disjoint Set Union is only for connected components"** → Union-Find with path compression and union-by-rank achieves near-O(1) amortized operations (inverse Ackermann function). Beyond graph connectivity, it powers: Kruskal MST algorithm (cycle detection during edge addition), image segmentation (merging similar pixel regions), percolation theory (does a grid connect top to bottom), and equivalence class maintenance (compiler type inference).
 
-**"Segment trees are overkill for range queries"** ? Prefix sums handle static range sum queries in O(1). But when elements UPDATE between queries, prefix sums require O(n) rebuild. Segment trees handle both range queries AND point updates in O(log n). Fenwick trees (BIT) are simpler for range sum + point update, but segment trees generalize to range min, max, GCD, and lazy propagation for range updates � capabilities prefix sums and Fenwick trees cannot match.
+**"Segment trees are overkill for range queries"** → Prefix sums handle static range sum queries in O(1). But when elements UPDATE between queries, prefix sums require O(n) rebuild. Segment trees handle both range queries AND point updates in O(log n). Fenwick trees (BIT) are simpler for range sum + point update, but segment trees generalize to range min, max, GCD, and lazy propagation for range updates — capabilities prefix sums and Fenwick trees cannot match.

@@ -10,6 +10,50 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | All paradigms and A1–A4 |
+| **You will learn** | The invention method: spot repeated work, choose a paradigm, state invariants, derive, validate, attack with adversarial input |
+| **Leads to** | Practice and real design work |
+| **Abstraction level** | L8: from user of algorithms to designer |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Designing Your Own Algorithms
+
+### 1. The bottom line
+
+Inventing an algorithm is a disciplined search: find the repeated work, remove it, and prove it still works.
+
+### 2. The textbook core
+
+- Find the **repeated work** in the brute force (overlap → DP, repeated search → data structure, order → greedy).
+- Write the invariant before the code.
+- Validate with a reference solution and adversarial inputs.
+- Know when not to invent: use a proven library.
+
+### 3. The real-world analogy
+
+An **engineer redesigning a factory line**: observe where work is repeated or idle, change the process, and measure.
+
+### 4. Walkthrough
+
+1. Brute force: count inversions by checking all pairs, O(n²).
+2. Repeated work: comparisons already known from sorted halves.
+3. Idea: merge sort and count cross inversions during the merge.
+4. Result O(n log n) with a proof by induction.
+
+> [!NOTE]
+> **Quick check:** What is the first thing to look for in a brute force? *Repeated work.*
+
+---
+
+
 ## Table of Contents
 
 1. [5W1H](#5w1h)
@@ -495,6 +539,17 @@ for (T item : stream) {
 ---
 
 **Navigation**: [← A4: Randomized Algorithms](A4_Randomized_Algorithms.md) | [📚 Algorithms Index](00_INDEX.md) | [← DS A5: Designing Your Own Data Structures](../02_Data_Structures/A5_Designing_Your_Own_Data_Structures.md)
+
+---
+
+## 🏢 Enterprise Lens — Designing Your Own Algorithms
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Library and system design, optimisation of hot paths, research prototypes |
+| **Failure modes** | Over-engineering; skipping the reference test; ignoring adversarial inputs |
+| **Testing and verification** | Property-based tests and fuzzing against the reference |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

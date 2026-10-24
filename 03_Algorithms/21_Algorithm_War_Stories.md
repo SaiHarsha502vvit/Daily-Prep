@@ -10,6 +10,50 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | The whole course |
+| **You will learn** | Ten real production incidents analysed through the algorithm design loop (what was assumed, what broke, what fixed it) |
+| **Leads to** | [Production](13_Algorithms_In_Production.md), [A5 Design](A5_Designing_Your_Own_Algorithms.md) |
+| **Abstraction level** | L8: failure as the best teacher |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Algorithm War Stories
+
+### 1. The bottom line
+
+Every algorithm failure in production traces back to an assumption about input, scale or order that stopped being true.
+
+### 2. The textbook core
+
+- Common root causes: worst-case input, hash collisions, unbounded recursion, wrong complexity at scale, ordering assumptions.
+- Fixes are often a **different algorithm or a guard**, not more hardware.
+- Use postmortems to extract the violated invariant.
+- Add tests and monitors that would have caught it.
+
+### 3. The real-world analogy
+
+A **flight-accident report**: the value is not the blame but the checklist item it adds for every future pilot.
+
+### 4. Walkthrough
+
+1. Incident: a regex or sort became quadratic on adversarial input.
+2. Identify the assumption ("input is random").
+3. Replace with a linear algorithm or add a limit.
+4. Add a regression test using the adversarial case.
+
+> [!NOTE]
+> **Quick check:** What is the most common root cause pattern? *An unstated assumption about input size or distribution.*
+
+---
+
+
 ## Table of Contents
 
 1. [How To Use This Chapter](#0-how-to-use-this-chapter)
@@ -403,6 +447,17 @@ Notice the pattern in that right-hand column: **new algorithms are forced by new
 ---
 
 **Navigation**: [← 20: DSA Patterns PDF Coverage Map](20_DSA_Patterns_PDF_Java_Coverage_Map.md) | [📚 Algorithms Index](00_INDEX.md) | [A5: Designing Your Own Algorithms →](A5_Designing_Your_Own_Algorithms.md)
+
+---
+
+## 🏢 Enterprise Lens — Algorithm War Stories
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Incident reviews, SRE playbooks, design reviews |
+| **Failure modes** | Treating incidents as one-off bugs instead of classes of bug |
+| **Testing and verification** | Turn each story into a test case and a dashboard alert |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

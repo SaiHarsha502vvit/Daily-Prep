@@ -39,10 +39,10 @@ The recursion tree has exponential **nodes** but polynomial **distinct values**.
 
 | DP Pattern      | State Definition                                 | Problem Examples                   | PS Section                              |
 | --------------- | ------------------------------------------------ | ---------------------------------- | --------------------------------------- |
-| **1D Linear**   | `dp[i]` = answer for first i items               | Climbing Stairs, House Robber, LIS | [DP PS](../05_Problem_Solving/07_DP.md) |
-| **Grid (2D)**   | `dp[i][j]` = answer at cell (i,j)                | Unique Paths, Min Path Sum         | [DP PS](../05_Problem_Solving/07_DP.md) |
-| **String (2D)** | `dp[i][j]` = answer for s1[0..i-1] vs s2[0..j-1] | LCS, Edit Distance                 | [DP PS](../05_Problem_Solving/07_DP.md) |
-| **Knapsack**    | `dp[i][w]` = max value with i items, capacity w  | 0/1 Knapsack, Coin Change          | [DP PS](../05_Problem_Solving/07_DP.md) |
+| **1D Linear**   | `dp[i]` = answer for first i items               | Climbing Stairs, House Robber, LIS | [DP PS](../05_Problem_Solving/11_Dynamic_Programming.md) |
+| **Grid (2D)**   | `dp[i][j]` = answer at cell (i,j)                | Unique Paths, Min Path Sum         | [DP PS](../05_Problem_Solving/11_Dynamic_Programming.md) |
+| **String (2D)** | `dp[i][j]` = answer for s1[0..i-1] vs s2[0..j-1] | LCS, Edit Distance                 | [DP PS](../05_Problem_Solving/11_Dynamic_Programming.md) |
+| **Knapsack**    | `dp[i][w]` = max value with i items, capacity w  | 0/1 Knapsack, Coin Change          | [DP PS](../05_Problem_Solving/11_Dynamic_Programming.md) |
 
 **The 5-Step Recipe (memorize this):**
 
@@ -61,27 +61,62 @@ The recursion tree has exponential **nodes** but polynomial **distinct values**.
 
 # 📌 Dynamic Programming Fundamentals
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [DP Internals](04a_DP_Internals.md), [Recursion](03c_Recursion_Advanced.md) |
+| **You will learn** | Recognising DP, defining state, classic patterns (1D, grid, knapsack, LIS, LCS, edit distance) |
+| **Leads to** | [DP Advanced](04c_DP_Advanced.md), [Greedy](12_Greedy_Algorithms_Complete.md) |
+| **Abstraction level** | L2: pattern library for DP |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — DP Fundamentals
+
+### 1. The bottom line
+
+DP is "recursion with memory" for problems that have overlapping subproblems and optimal substructure.
+
+### 2. The textbook core
+
+- Recipe: **state → transition → base → order → answer**.
+- Typical complexities: O(n) for 1D, O(nm) for grids/strings, O(nW) for knapsack (pseudo-polynomial).
+- LIS in O(n log n) uses binary search on tails.
+- If a greedy choice is provably safe, DP may be unnecessary.
+
+### 3. The real-world analogy
+
+Planning a **road trip with cheapest gas stops**: the best plan to reach city k reuses the best plan to reach earlier cities.
+
+### 4. Walkthrough
+
+1. 0/1 knapsack, capacity 5, items (w=2,v=3), (w=3,v=4).
+2. `dp[w]` = best value with capacity `w`; process items one by one, capacity descending.
+3. After item 1: dp[2..5] = 3. After item 2: dp[5] = max(3, 3+4)=7.
+4. Answer `dp[5] = 7`.
+
+> [!NOTE]
+> **Quick check:** Why iterate capacity downward in 1D knapsack? *So each item is used at most once.*
+
+---
+
+
 ### 5W1H: Mastering DP Fundamentals
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: The core principles of Dynamic Programming: Overlapping Subproblems,  ║
-║        Optimal Substructure, State Definition, and the 5-step DP recipe.     ║
-║                                                                              ║
-║  WHY:  DP transforms exponential time O(2^N) brute-force recursive solutions ║
-║        into polynomial time O(N) or O(N^2) by trading space for time.        ║
-║                                                                              ║
-║  WHO:  Developers who need to solve optimization problems (max/min/count)    ║
-║        where decisions at each step affect future choices.                   ║
-║                                                                              ║
-║  WHEN: Use when a problem asks for the "best/max/min", requires making       ║
-║        choices at each step, AND those subproblems overlap (unlike D&C).     ║
-║                                                                              ║
-║  HOW:  By defining the state (e.g., dp[i]), identifying the recurrence       ║
-║        relation (e.g., dp[i] = dp[i-1] + dp[i-2]), and applying either       ║
-║        Memoization (Top-Down) or Tabulation (Bottom-Up).                     ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** The core principles of Dynamic Programming: Overlapping Subproblems, Optimal Substructure, State Definition, and the 5-step DP recipe.
+>
+> **WHY:** DP transforms exponential time O(2^N) brute-force recursive solutions into polynomial time O(N) or O(N^2) by trading space for time.
+>
+> **WHO:** Developers who need to solve optimization problems (max/min/count) where decisions at each step affect future choices.
+>
+> **WHEN:** Use when a problem asks for the "best/max/min", requires making choices at each step, AND those subproblems overlap (unlike D&C).
+>
+> **HOW:** By defining the state (e.g., dp[i]), identifying the recurrence relation (e.g., dp[i] = dp[i-1] + dp[i-2]), and applying either Memoization (Top-Down) or Tabulation (Bottom-Up).
 
 ### Historical Evolution
 
@@ -91,203 +126,203 @@ The recursion tree has exponential **nodes** but polynomial **distinct values**.
 
 ## What is Dynamic Programming?
 
+### Dynamic programming - complete understanding
+
+#### What is dynamic programming
+
+Dynamic Programming (DP) is a method for solving complex problems by:
+
+1. Breaking them into simpler OVERLAPPING subproblems
+2. Solving each subproblem ONLY ONCE
+3. STORING the results to avoid redundant computation
+
+DP = RECURSION + MEMOIZATION (REMEMBERING)
+
+**Inventor:** Richard Bellman (1950s) at RAND Corporation
+
+**Name origin:** "Dynamic" sounded impressive to government funders! (Bellman chose it to hide the mathematical nature of his work)
+
+#### What problem does dp solve
+
+**Core problem:** Optimization problems where:
+
+- You need the BEST solution (max/min)
+- Making decisions at each step
+- Decisions affect future choices
+
+**Real-world examples:** 
+
+- Navigation: What's the shortest route? (Same intersections = subproblems)
+- Finance: Max profit from stock trades (Each day = decision point)
+- Text: How similar are two strings? (Edit distance)
+- Packing: Most value in limited space (Knapsack problem)
+- Scheduling: Best order for tasks (Job scheduling)
+
+**The insight:** Instead of exploring ALL possible combinations (exponential), DP builds optimal solutions from optimal sub-solutions (polynomial)!
+
+BEFORE DP (Brute Force): O(2^n) or worse - trying all combinations
+
+**After dp:** O(n²) or O(n×m) - building from subproblems
+
+#### Why does dp work? (the mathematical foundation)
+
+TWO ESSENTIAL PROPERTIES (Both MUST be true):
+
+1. OPTIMAL SUBSTRUCTURE
+
+"Optimal solution to the whole = combination of optimal sub-solutions"
+
+Example: Shortest Path A→C
+If A→B→C is shortest, then:
+
+- A→B part must be the shortest A→B path
+- B→C part must be the shortest B→C path
+
+If this wasn't true, you could find a shorter A→C!
+
+2. OVERLAPPING SUBPROBLEMS
+
+"Same subproblems appear multiple times during recursion"
+
+Example: Fibonacci fib(5)
+fib(5) = fib(4) + fib(3)
+fib(4) = fib(3) + fib(2) ← fib(3) needed TWICE!
+fib(3) = fib(2) + fib(1) ← fib(2) needed THRICE!
+
+If subproblems DON'T overlap → Use Divide & Conquer instead!
+
+#### When to use dp? (interview recognition patterns)
+
+**Signal 1:** "Find maximum/minimum..." or "Count the number of ways..." → Optimization = DP likely
+
+**Signal 2:** "Given choices at each step..." → Decision making with future consequences = DP
+
+**Signal 3:** "Can you reach...?" or "Is it possible...?" → Often can be framed as DP (true/false states)
+
+**Signal 4:** Problem involves sequences/grids → String problems, matrix traversal = Classic DP
+
+**Signal 5:** Same question repeated with different parameters → Recursive structure with overlapping = DP
+
+```text
+┌────────────────────────────────┬─────────────────────────────────────────┐
+│ USE DP WHEN │ DON'T USE DP WHEN │
+├────────────────────────────────┼─────────────────────────────────────────┤
+│ Need optimal solution │ Just need any valid solution │
+│ Subproblems overlap │ Subproblems independent (use D&C) │
+│ Problem has optimal structure │ Local choices don't build global optimal│
+│ Can define clear state │ State space is too large │
+└────────────────────────────────┴─────────────────────────────────────────┘
 ```
 
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ DYNAMIC PROGRAMMING - COMPLETE UNDERSTANDING                                 ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+#### How does dp work? (two approaches)
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS DYNAMIC PROGRAMMING?                                                 │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ Dynamic Programming (DP) is a method for solving complex problems by:        │
-│ 1. Breaking them into simpler OVERLAPPING subproblems                        │
-│ 2. Solving each subproblem ONLY ONCE                                         │
-│ 3. STORING the results to avoid redundant computation                        │
-│                                                                              │
-│ DP = RECURSION + MEMOIZATION (REMEMBERING)                                   │
-│                                                                              │
-│ INVENTOR: Richard Bellman (1950s) at RAND Corporation                        │
-│ NAME ORIGIN: "Dynamic" sounded impressive to government funders!             │
-│ (Bellman chose it to hide the mathematical nature of his work)               │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Approach 1:** TOP-DOWN (MEMOIZATION)
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES DP SOLVE?                                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ CORE PROBLEM: Optimization problems where:                                   │
-│ • You need the BEST solution (max/min)                                       │
-│ • Making decisions at each step                                              │
-│ • Decisions affect future choices                                            │
-│                                                                              │
-│ REAL-WORLD EXAMPLES:                                                         │
-│ • Navigation: What's the shortest route? (Same intersections = subproblems)  │
-│ • Finance: Max profit from stock trades (Each day = decision point)          │
-│ • Text: How similar are two strings? (Edit distance)                         │
-│ • Packing: Most value in limited space (Knapsack problem)                    │
-│ • Scheduling: Best order for tasks (Job scheduling)                          │
-│                                                                              │
-│ THE INSIGHT:                                                                 │
-│ Instead of exploring ALL possible combinations (exponential), DP builds      │
-│ optimal solutions from optimal sub-solutions (polynomial)!                   │
-│                                                                              │
-│ BEFORE DP (Brute Force): O(2^n) or worse - trying all combinations           │
-│ AFTER DP: O(n²) or O(n×m) - building from subproblems                        │
-└──────────────────────────────────────────────────────────────────────────────┘
+```text
+┌─────────────────────────────────────────────────────────────┐
+│ 1. Start with original problem │
+│ 2. Recursively break into subproblems │
+│ 3. Before computing, check if answer already cached │
+│ 4. If cached: return it | If not: compute and cache │
+│ │
+│ ANALOGY: You're asked a hard question. You think recursively │
+│ but write down answers you've figured out on a notepad. │
+└─────────────────────────────────────────────────────────────┘
+```
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY DOES DP WORK? (THE MATHEMATICAL FOUNDATION)                              │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ TWO ESSENTIAL PROPERTIES (Both MUST be true):                                │
-│                                                                              │
-│ 1. OPTIMAL SUBSTRUCTURE                                                      │
-│ "Optimal solution to the whole = combination of optimal sub-solutions"       │
-│                                                                              │
-│ Example: Shortest Path A→C                                                   │
-│ If A→B→C is shortest, then:                                                  │
-│ • A→B part must be the shortest A→B path                                     │
-│ • B→C part must be the shortest B→C path                                     │
-│                                                                              │
-│ If this wasn't true, you could find a shorter A→C!                           │
-│                                                                              │
-│ 2. OVERLAPPING SUBPROBLEMS                                                   │
-│ "Same subproblems appear multiple times during recursion"                    │
-│                                                                              │
-│ Example: Fibonacci fib(5)                                                    │
-│ fib(5) = fib(4) + fib(3)                                                     │
-│ fib(4) = fib(3) + fib(2) ← fib(3) needed TWICE!                              │
-│ fib(3) = fib(2) + fib(1) ← fib(2) needed THRICE!                             │
-│                                                                              │
-│ If subproblems DON'T overlap → Use Divide & Conquer instead!                 │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Approach 2:** BOTTOM-UP (TABULATION)
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE DP? (INTERVIEW RECOGNITION PATTERNS)                             │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ SIGNAL 1: "Find maximum/minimum..." or "Count the number of ways..."         │
-│ → Optimization = DP likely                                                   │
-│                                                                              │
-│ SIGNAL 2: "Given choices at each step..."                                    │
-│ → Decision making with future consequences = DP                              │
-│                                                                              │
-│ SIGNAL 3: "Can you reach...?" or "Is it possible...?"                        │
-│ → Often can be framed as DP (true/false states)                              │
-│                                                                              │
-│ SIGNAL 4: Problem involves sequences/grids                                   │
-│ → String problems, matrix traversal = Classic DP                             │
-│                                                                              │
-│ SIGNAL 5: Same question repeated with different parameters                   │
-│ → Recursive structure with overlapping = DP                                  │
-│                                                                              │
-│ ┌────────────────────────────────┬─────────────────────────────────────────┐ │
-│ │ USE DP WHEN │ DON'T USE DP WHEN │                                          │
-│ ├────────────────────────────────┼─────────────────────────────────────────┤ │
-│ │ Need optimal solution │ Just need any valid solution │                     │
-│ │ Subproblems overlap │ Subproblems independent (use D&C) │                  │
-│ │ Problem has optimal structure │ Local choices don't build global optimal│  │
-│ │ Can define clear state │ State space is too large │                        │
-│ └────────────────────────────────┴─────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────────────┘
+```text
+┌─────────────────────────────────────────────────────────────┐
+│ 1. Identify base cases (smallest subproblems) │
+│ 2. Fill table starting from base cases │
+│ 3. Build up to the answer iteratively │
+│ 4. Final cell contains the answer │
+│ │
+│ ANALOGY: Building a pyramid brick by brick from the bottom. │
+│ Each brick relies on the ones below it. │
+└─────────────────────────────────────────────────────────────┘
+```
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ HOW DOES DP WORK? (TWO APPROACHES)                                           │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ APPROACH 1: TOP-DOWN (MEMOIZATION)                                           │
-│ ┌─────────────────────────────────────────────────────────────┐              │
-│ │ 1. Start with original problem │                                           │
-│ │ 2. Recursively break into subproblems │                                    │
-│ │ 3. Before computing, check if answer already cached │                      │
-│ │ 4. If cached: return it | If not: compute and cache │                      │
-│ │ │                                                                          │
-│ │ ANALOGY: You're asked a hard question. You think recursively │             │
-│ │ but write down answers you've figured out on a notepad. │                  │
-│ └─────────────────────────────────────────────────────────────┘              │
-│                                                                              │
-│ APPROACH 2: BOTTOM-UP (TABULATION)                                           │
-│ ┌─────────────────────────────────────────────────────────────┐              │
-│ │ 1. Identify base cases (smallest subproblems) │                            │
-│ │ 2. Fill table starting from base cases │                                   │
-│ │ 3. Build up to the answer iteratively │                                    │
-│ │ 4. Final cell contains the answer │                                        │
-│ │ │                                                                          │
-│ │ ANALOGY: Building a pyramid brick by brick from the bottom. │              │
-│ │ Each brick relies on the ones below it. │                                  │
-│ └─────────────────────────────────────────────────────────────┘              │
-│                                                                              │
-│ COMPARISON:                                                                  │
-│ ┌───────────────────────┬───────────────────────────────────────┐            │
-│ │ Top-Down (Memo) │ Bottom-Up (Tabulation) │                                 │
-│ ├───────────────────────┼───────────────────────────────────────┤            │
-│ │ Easier to write │ Usually faster (no recursion) │                          │
-│ │ Only solves needed │ Solves ALL subproblems │                              │
-│ │ Risk of stack overflow│ No stack overflow │                                │
-│ │ Lazy evaluation │ Eager evaluation │                                       │
-│ └───────────────────────┴───────────────────────────────────────┘            │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Comparison:** 
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ DIFFICULTIES & COMMON PITFALLS                                               │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. IDENTIFYING THE STATE (Hardest Part!):                                    │
-│ "What information do I need to solve a subproblem?"                          │
-│ Wrong state definition = wrong solution                                      │
-│ Tip: Ask "What changes between recursive calls?"                             │
-│                                                                              │
-│ 2. FINDING THE RECURRENCE:                                                   │
-│ "How does current state relate to previous states?"                          │
-│ Tip: Think about the LAST decision/step                                      │
-│                                                                              │
-│ 3. BASE CASE ERRORS:                                                         │
-│ Missing or wrong base cases cause wrong answers                              │
-│ Tip: What's the smallest problem you can answer directly?                    │
-│                                                                              │
-│ 4. OFF-BY-ONE ERRORS:                                                        │
-│ Array indices, loop bounds - classic source of bugs                          │
-│ Tip: Trace through small examples by hand                                    │
-│                                                                              │
-│ 5. SPACE COMPLEXITY:                                                         │
-│ 2D DP tables can be huge for large inputs                                    │
-│ Tip: Often can optimize to 1D by keeping only previous row                   │
-│                                                                              │
-│ 6. RECONSTRUCTION PATH:                                                      │
-│ DP gives optimal VALUE, but sometimes you need the actual SOLUTION           │
-│ Tip: Store "choice made" at each step, then backtrack                        │
-└──────────────────────────────────────────────────────────────────────────────┘
+```text
+┌───────────────────────┬───────────────────────────────────────┐
+│ Top-Down (Memo) │ Bottom-Up (Tabulation) │
+├───────────────────────┼───────────────────────────────────────┤
+│ Easier to write │ Usually faster (no recursion) │
+│ Only solves needed │ Solves ALL subproblems │
+│ Risk of stack overflow│ No stack overflow │
+│ Lazy evaluation │ Eager evaluation │
+└───────────────────────┴───────────────────────────────────────┘
+```
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ EXPECTED OUTPUTS & COMPLEXITY                                                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ COMPLEXITY IMPROVEMENT (Why DP is Powerful):                                 │
-│ ┌──────────────────────┬─────────────────────┬────────────────────────────┐  │
-│ │ Problem │ Brute Force │ With DP │                                          │
-│ ├──────────────────────┼─────────────────────┼────────────────────────────┤  │
-│ │ Fibonacci │ O(2^n) │ O(n) │                                                │
-│ │ Longest Common Subseq│ O(2^(m+n)) │ O(m×n) │                               │
-│ │ 0/1 Knapsack │ O(2^n) │ O(n×W) │                                           │
-│ │ Edit Distance │ O(3^n) │ O(m×n) │                                          │
-│ │ Matrix Chain │ O(n!) │ O(n³) │                                             │
-│ │ Coin Change │ O(amount^n) │ O(n×amount) │                                  │
-│ └──────────────────────┴─────────────────────┴────────────────────────────┘  │
-│                                                                              │
-│ TYPICAL DP OUTPUT:                                                           │
-│ • Single number: Max profit, min cost, number of ways                        │
-│ • Boolean: Is it possible?                                                   │
-│ • Array/Table: All subproblem solutions (for path reconstruction)            │
-│ • The actual solution: Requires backtracking through DP table                │
-│                                                                              │
-│ SPACE-TIME TRADEOFF:                                                         │
-│ • Standard 2D DP: O(n×m) time, O(n×m) space                                  │
-│ • Space-optimized: O(n×m) time, O(min(n,m)) space (keep 2 rows)              │
-│ • Ultra-optimized: Sometimes O(1) space possible (like Fibonacci)            │
-└──────────────────────────────────────────────────────────────────────────────┘
+#### Difficulties & common pitfalls
 
+1. IDENTIFYING THE STATE (Hardest Part!):
+
+"What information do I need to solve a subproblem?"
+Wrong state definition = wrong solution
+Tip: Ask "What changes between recursive calls?"
+
+2. FINDING THE RECURRENCE:
+
+"How does current state relate to previous states?"
+Tip: Think about the LAST decision/step
+
+3. BASE CASE ERRORS:
+
+Missing or wrong base cases cause wrong answers
+Tip: What's the smallest problem you can answer directly?
+
+4. OFF-BY-ONE ERRORS:
+
+Array indices, loop bounds - classic source of bugs
+Tip: Trace through small examples by hand
+
+5. SPACE COMPLEXITY:
+
+2D DP tables can be huge for large inputs
+Tip: Often can optimize to 1D by keeping only previous row
+
+6. RECONSTRUCTION PATH:
+
+DP gives optimal VALUE, but sometimes you need the actual SOLUTION
+Tip: Store "choice made" at each step, then backtrack
+
+#### Expected outputs & complexity
+
+COMPLEXITY IMPROVEMENT (Why DP is Powerful):
+
+```text
+┌──────────────────────┬─────────────────────┬────────────────────────────┐
+│ Problem │ Brute Force │ With DP │
+├──────────────────────┼─────────────────────┼────────────────────────────┤
+│ Fibonacci │ O(2^n) │ O(n) │
+│ Longest Common Subseq│ O(2^(m+n)) │ O(m×n) │
+│ 0/1 Knapsack │ O(2^n) │ O(n×W) │
+│ Edit Distance │ O(3^n) │ O(m×n) │
+│ Matrix Chain │ O(n!) │ O(n³) │
+│ Coin Change │ O(amount^n) │ O(n×amount) │
+└──────────────────────┴─────────────────────┴────────────────────────────┘
+```
+
+**Typical dp output:** 
+
+- Single number: Max profit, min cost, number of ways
+- Boolean: Is it possible?
+- Array/Table: All subproblem solutions (for path reconstruction)
+- The actual solution: Requires backtracking through DP table
+
+**Space-time tradeoff:** 
+
+- Standard 2D DP: O(n×m) time, O(n×m) space
+- Space-optimized: O(n×m) time, O(min(n,m)) space (keep 2 rows)
+- Ultra-optimized: Sometimes O(1) space possible (like Fibonacci)
 
 ### The Story Metaphor
 
-
+```text
 THE STORY:
 Imagine you're solving a maze. Every time you hit a dead end,
 you go back to the start and try again.
@@ -305,8 +340,8 @@ SMART WAY (DP):
 - Next time, skip path A directly!
 
 THIS IS MEMOIZATION: Remember what you've already calculated.
-
 ```
+
 
 ---
 
@@ -775,55 +810,54 @@ public int knapsack(int[] weights, int[] values, int capacity) {
 
 ## Pattern 1: Linear DP
 
-```
+```text
 dp[i] depends on dp[i-1], dp[i-2], etc.
 Examples: Fibonacci, House Robber, Climbing Stairs
 
 STATE: Single index
 TRANSITION: dp[i] = f(dp[i-1], dp[i-2], ...)
-
-
-
+```
 
 ## Pattern 2: Grid DP
 
+```text
 dp[i][j] depends on dp[i-1][j], dp[i][j-1], dp[i-1][j-1]
 Examples: Unique Paths, Min Path Sum, Edit Distance
 
 STATE: Two indices (row, column)
 TRANSITION: dp[i][j] = f(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])
-
-
+```
 
 ## Pattern 3: String DP
 
+```text
 dp[i][j] for two strings s1[0..i], s2[0..j]
 Examples: LCS, Edit Distance, Regex Matching
 
 STATE: Indices into both strings
 TRANSITION: Based on character match/mismatch
-
-
-
+```
 
 ## Pattern 4: Knapsack DP
 
+```text
 dp[i][w] for items 0..i with capacity w
 Examples: 0/1 Knapsack, Subset Sum, Coin Change
 
 STATE: Item index + remaining capacity
 TRANSITION: Take or don't take current item
-
-
+```
 
 ## Pattern 5: Interval DP
 
+```text
 dp[i][j] for interval [i, j]
 Examples: Matrix Chain Multiplication, Burst Balloons
 
 STATE: Start and end of interval
 TRANSITION: Try all split points k between i and j
 ```
+
 
 ---
 
@@ -991,6 +1025,17 @@ public int lcsOptimized(String s1, String s2) {
 **What breaks**: 0/1 Knapsack requires iterating the weight dimension *backwards* (to prevent reusing the same item). Iterating forwards accidentally makes it unbounded knapsack (each item usable many times). This is the single most common knapsack implementation bug.
 **Fix**: 0/1 → inner loop `for (w = capacity; w >= weight[i]; w--)`. Unbounded → inner loop `for (w = weight[i]; w <= capacity; w++)`.
 
+
+---
+
+## 🏢 Enterprise Lens — DP Fundamentals
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Resource allocation, billing and pricing optimisation, text diff, recommendation re-ranking |
+| **Failure modes** | Wrong state definition; missing base case; overflow; exponential memory for large states |
+| **Testing and verification** | Cross-check against brute force for small inputs; property tests on monotonicity |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 
