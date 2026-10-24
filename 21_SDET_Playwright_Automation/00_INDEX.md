@@ -10,7 +10,7 @@
 >
 > | Stage folder | Chapters |
 > |---|---|
-> | [`01_Foundations/`](./01_Foundations/README.md) | 00–04, 55, 56 |
+> | [`01_Foundations/`](./01_Foundations/README.md) | 70, 00–04, 55, 56 |
 > | [`02_Test_Architecture/`](./02_Test_Architecture/README.md) | 05–09, 64 |
 > | [`03_Real_World_Scenarios/`](./03_Real_World_Scenarios/README.md) | 28, 30, 31, 41, 42, 49, 50, 57, 58, 61, 67, 68 |
 > | [`04_Cross_Site_Patterns_And_D365/`](./04_Cross_Site_Patterns_And_D365/README.md) | 10–17 |
@@ -38,6 +38,7 @@
 | 00     | [SDET Foundations & Mindset](./01_Foundations/00_SDET_Foundations_Mindset.md)                                                                                                             | 30 min | What SDETs do, testing pyramid, SDET vs developer                                                                             | `13_Dev/06_Testing_Fundamentals`      |
 | 01     | [Playwright & TypeScript Basics](./01_Foundations/01_Playwright_TS_Basics.md)                                                                                                             | 45 min | Project setup, first test, config, locators intro                                                                             | `17_TS/01_TS_Foundations`             |
 | 02     | [Enterprise Locators & XPath](./01_Foundations/02_Enterprise_Locators_XPath.md)                                                                                                           | 45 min | CSS, XPath, getByRole, getByText, locator chaining                                                                            | `18_CSS/01_CSS_Foundations`           |
+| 70     | [Locators, Frames and How Playwright Finds Elements](./01_Foundations/70_Locators_Frames_And_How_Playwright_Finds_Elements.md) | 75 min | **What a Locator really is (a string, not an element), the journey from `page.locator()` to a DOM node, strict mode, handles vs locators, frames and `frameLocator`, dynamic locators** | Ch02 |
 | 03     | [Browser Console Scripting](./01_Foundations/03_Browser_Console_Scripting.md)                                                                                                             | 30 min | DevTools console, DOM scripts, XPath in console                                                                               | `16_JS/05_JS_DOM_BrowserAPIs`         |
 | 04     | [JS & TS for Automation](./01_Foundations/04_JS_TS_For_Automation.md)                                                                                                                     | 60 min | **async/await, Promise.all, TypeScript types, ES6**                                                                           | `16_JS/04`, `17_TS/01`, `17_TS/02`    |
 | 05     | [POM Architecture Deep Dive](./02_Test_Architecture/05_POM_Architecture_Deep_Dive.md)                                                                                                     | 50 min | **MasterSearchPage dissected, lazy eval, typed dicts**                                                                        | `17_TS/01`, `15_React/07`             |

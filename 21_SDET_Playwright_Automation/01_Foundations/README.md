@@ -16,8 +16,9 @@ Install Playwright, write your first test, and learn how it finds elements — p
 | 4 | Ch01 | [01. Playwright & TypeScript — How Everything Actually Works](./01_Playwright_TS_Basics.md) |
 | 5 | Ch02 | [02. Enterprise Locators — XPath, CSS, and the DOM as a Problem Space](./02_Enterprise_Locators_XPath.md) |
 | 6 | Ch55 | [55. Inspector, Trace Viewer & UI Mode — A Hands-On Walk-Through](./55_Inspector_TraceViewer_UIMode_Walkthrough.md) |
-| 7 | Ch04 | [04. JavaScript & TypeScript for Test Automation — Zero to Production](./04_JS_TS_For_Automation.md) |
-| 8 | Ch03 | [03. Browser Console Scripting — DevTools as a Test Engineering Workbench](./03_Browser_Console_Scripting.md) |
-| 9 | Ch56 | [56. Playwright Config Deep-Dive — Every Field, In Context](./56_Playwright_Config_Deep_Dive.md) |
+| 7 | Ch70 | [70. Locators, Frames and How Playwright Finds Elements — from `page.locator()` to a DOM node](./70_Locators_Frames_And_How_Playwright_Finds_Elements.md) |
+| 8 | Ch04 | [04. JavaScript & TypeScript for Test Automation — Zero to Production](./04_JS_TS_For_Automation.md) |
+| 9 | Ch03 | [03. Browser Console Scripting — DevTools as a Test Engineering Workbench](./03_Browser_Console_Scripting.md) |
+| 10 | Ch56 | [56. Playwright Config Deep-Dive — Every Field, In Context](./56_Playwright_Config_Deep_Dive.md) |
 
 > Chapter numbers are permanent IDs used in cross-references ("see Ch42"), not reading order — follow the **Order** column. The full catalogue with reading times is in [`00_INDEX.md`](../00_INDEX.md).

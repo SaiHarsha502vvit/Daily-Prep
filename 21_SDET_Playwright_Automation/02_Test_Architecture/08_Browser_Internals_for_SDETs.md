@@ -453,28 +453,31 @@ expect(capturedCitationId).toMatch(/^CIT-\d+$/);
 
 ## 7. Chrome DevTools Protocol (CDP) — How Playwright Actually Talks to the Browser
 
-This is the missing layer most SDETs don't know about. When you call `await page.locator('#btn').click()`, Playwright doesn't call a browser API. It sends a **JSON message over a WebSocket** to the browser's DevTools interface.
+This is the missing layer most SDETs don't know about. When you call `await page.locator('#btn').click()`, Playwright doesn't call a browser API. It sends a **JSON message over a local pipe** (a WebSocket only in the cases described below) to the browser's DevTools interface.
 
 ```
 The CDP Communication Stack:
 
 Your test code (Node.js)
     │
-    │  JSON messages over WebSocket
+    │  JSON messages over a pipe (default launch: --remote-debugging-pipe)
+    │  or a WebSocket (connectOverCDP / --remote-debugging-port)
     │  e.g.: {"method":"Input.dispatchMouseEvent","params":{"type":"mousePressed","x":100,"y":50}}
     ▼
 Chrome DevTools Protocol (CDP) endpoint
-    │  ws://localhost:9222/json/version
+    │  e.g. ws://localhost:9222/json/version  (only when YOU started Chromium with a debugging port)
     ▼
 Chromium browser (the actual browser engine)
     └── Performs the action (click, navigate, screenshot)
     └── Sends response: {"id":1,"result":{}}
 ```
 
+> **Verified on Playwright 1.64.1 / Windows:** the Chromium process that `chromium.launch()` starts carries `--remote-debugging-pipe` and **no** `--remote-debugging-port`, so nothing listens on `:9222` and the protocol runs over inherited file descriptors. A WebSocket endpoint exists only if you start Chromium yourself with `--remote-debugging-port=9222` and attach with `chromium.connectOverCDP('http://localhost:9222')`. The full journey from `page.locator()` to a DOM node — including the Playwright server process between your test and the browser, and the injected script — is traced in [Chapter 70](../01_Foundations/70_Locators_Frames_And_How_Playwright_Finds_Elements.md).
+
 **Why this matters for test design:**
 
 ```
-1. EVERY Playwright action is a round-trip network call.
+1. EVERY Playwright action is a round trip to the browser (a local pipe, not the network).
    click → send → browser processes → respond → Promise resolves
    The minimum round-trip time is ~2-5ms (even locally).
    100 actions = 200-500ms of pure network overhead.

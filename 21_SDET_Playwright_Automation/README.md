@@ -43,7 +43,8 @@ Install, first test, how Playwright finds elements, and the two tools you'll use
 | 1 | [Ch01 Environment Setup & First Test](./01_Foundations/01_Environment_Setup_and_First_Test.md) | A passing test on your machine before any theory |
 | 2 | [Ch00 SDET Foundations & Mindset](./01_Foundations/00_SDET_Foundations_Mindset.md) · [Testing fundamentals](./01_Foundations/00_Testing_Fundamentals/) | What to test and why, the test pyramid |
 | 3 | [Ch01 Playwright + TypeScript Basics](./01_Foundations/01_Playwright_TS_Basics.md) | Auto-waiting, lazy locators, the event loop |
-| 4 | [Ch02 Locators (roles, CSS, XPath)](./01_Foundations/02_Enterprise_Locators_XPath.md) | Finding elements reliably |
+| 4 | [Ch02 Locators (roles, CSS, XPath)](./01_Foundations/02_Enterprise_Locators_XPath.md) | Finding elements reliably — incl. which role every HTML control has |
+| 4b | [Ch70 Locators, Frames and How Playwright Finds Elements](./01_Foundations/70_Locators_Frames_And_How_Playwright_Finds_Elements.md) | What a Locator really is, strict mode, frames, dynamic locators — read after Ch55 so you can watch it happen in the Trace Viewer |
 | 5 | [Ch55 Inspector, Trace Viewer & UI Mode](./01_Foundations/55_Inspector_TraceViewer_UIMode_Walkthrough.md) | **Your debugger — learn it before you need it** |
 | 6 | [Ch04 JS/TS for Automation](./01_Foundations/04_JS_TS_For_Automation.md) | The async mistakes that cause most flaky tests |
 | 7 | [Ch03 Browser Console Scripting](./01_Foundations/03_Browser_Console_Scripting.md) | Inspecting pages from DevTools |
