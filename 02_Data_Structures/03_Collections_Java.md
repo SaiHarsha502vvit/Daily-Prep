@@ -62,151 +62,89 @@ flowchart TD
 >
 > **HOW:** By understanding the interface hierarchy (Iterable -> Collection -> List/Set/Queue) and choosing the implementation (ArrayList, HashMap, etc.) that provides optimal O(1) or O(log N) operations for your use case.
 
+### Java Collections — complete understanding
+
+> [!NOTE]
+> **What is it?** A unified architecture for representing and manipulating collections of objects.
+
+| Part | Meaning | Examples |
+| ---- | ------- | -------- |
+| **Interfaces** | Define behaviour | `List`, `Set`, `Map`, `Queue` |
+| **Implementations** | Actual classes | `ArrayList`, `HashMap`, ... |
+| **Algorithms** | Static utility methods | `sort`, `search`, `shuffle` |
+
+**Historical evolution:**
+
+| Version | Year | What arrived |
+| ------- | ---- | ------------ |
+| Java 1.0 | 1996 | Only `Vector`, `Hashtable`, `Stack` (plus arrays) |
+| Java 1.2 | 1998 | **Collections Framework introduced** |
+| Java 1.4 | 2002 | `LinkedHashMap` / `LinkedHashSet` |
+| Java 1.5 | 2004 | Generics: no more casting |
+| Java 1.6 | 2006 | `NavigableSet`, `NavigableMap` |
+| Java 1.7 | 2011 | Diamond operator `<>` |
+| Java 1.8 | 2014 | Streams, `forEach`, `removeIf` |
+| Java 9+ | 2017+ | Immutable factories (`List.of`, `Set.of`) |
+
+**What problem does it solve?**
+
+| Before Collections (Java 1.0) | Problems | The Collections solution |
+| ----------------------------- | -------- | ------------------------ |
+| Arrays: fixed size, primitive operations only | No standard way to group objects | Standard interfaces (`List`, `Set`, `Map`) that work anywhere |
+| `Vector`: thread-safe but slow, inconsistent API | Code not reusable across projects | Multiple implementations to choose from |
+| `Hashtable`: no null keys, synchronized (slow) | Algorithms rewritten for each type | Generic algorithms that work with any implementation |
+| Every company wrote its own data structures | No common interface, so generic code was hard | Type safety with generics |
+
+**The big picture — collections hierarchy:**
+
+```mermaid
+flowchart TD
+    IT["Iterable<br/>(for-each loops)"] --> CO["Collection<br/>(add, remove, size, contains)"]
+    CO --> LI["List<br/>(ordered)"]
+    CO --> SE["Set<br/>(unique)"]
+    CO --> QU["Queue<br/>(FIFO)"]
+    LI --> L1["ArrayList<br/>LinkedList<br/>Vector"]
+    SE --> S1["HashSet<br/>TreeSet<br/>LinkedHashSet"]
+    QU --> Q1["LinkedList<br/>PriorityQueue<br/>ArrayDeque"]
+    MP["Map<br/>(key-value pairs)"] --> M1["HashMap<br/>TreeMap<br/>LinkedHashMap<br/>Hashtable"]
+    classDef iface fill:#e1d5f7,stroke:#6a1b9a,color:#111
+    classDef impl fill:#cfe8ff,stroke:#1565c0,color:#111
+    class IT,CO,LI,SE,QU,MP iface
+    class L1,S1,Q1,M1 impl
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║              JAVA COLLECTIONS - COMPLETE UNDERSTANDING                       ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-├──────────────────────────────────────────────────────────────────────────────┤
-│ A unified architecture for representing and manipulating collections of      │
-│ objects. It provides:                                                        │
-│ • INTERFACES: Define behavior (List, Set, Map, Queue)                        │
-│ • IMPLEMENTATIONS: Actual classes (ArrayList, HashMap, etc.)                 │
-│ • ALGORITHMS: Static methods (sort, search, shuffle)                         │
-│                                                                              │
-│ HISTORICAL EVOLUTION:                                                        │
-│ • Java 1.0 (1996): Only Vector, Hashtable, Stack                             │
-│ • Java 1.2 (1998): Collections Framework introduced - Revolution!            │
-│ • Java 1.4 (2002): LinkedHashMap/Set added                                   │
-│ • Java 1.5 (2004): Generics! No more casting                                 │
-│ • Java 1.6 (2006): NavigableSet, NavigableMap                                │
-│ • Java 1.7 (2011): Diamond operator <>                                       │
-│ • Java 1.8 (2014): Streams, forEach, removeIf                                │
-│ • Java 9+ (2017+): Immutable factories (List.of, Set.of)                     │
-└──────────────────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** Purple boxes are interfaces, blue boxes list their main implementations. `Map` is separate from the `Collection` tree.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES IT SOLVE?                                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ BEFORE COLLECTIONS (Java 1.0):                                               │
-│ • Arrays: Fixed size, primitive operations only                              │
-│ • Vector: Thread-safe but slow, inconsistent API                             │
-│ • Hashtable: No null keys, synchronized (slow)                               │
-│ • Every company wrote their own data structures!                             │
-│                                                                              │
-│ PROBLEMS:                                                                    │
-│ • No standard way to group objects                                           │
-│ • Code not reusable across projects                                          │
-│ • Algorithms had to be rewritten for each type                               │
-│ • No common interface → Hard to write generic code                           │
-│                                                                              │
-│ COLLECTIONS SOLUTION:                                                        │
-│ • Standard interfaces (List, Set, Map) that work anywhere                    │
-│ • Multiple implementations to choose from                                    │
-│ • Generic algorithms that work with any implementation                       │
-│ • Type safety with generics                                                  │
-└──────────────────────────────────────────────────────────────────────────────┘
+> [!IMPORTANT]
+> **Key insight:** same interface, *different* implementations. `List<E> list = new ArrayList<>();` can be swapped to `LinkedList` by changing one word.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE BIG PICTURE - COLLECTIONS HIERARCHY                                      │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│                    ┌─────────────┐                                           │
-│                    │  Iterable   │ (for-each loops)                          │
-│                    └──────┬──────┘                                           │
-│                           │                                                  │
-│                    ┌──────┴──────┐                                           │
-│                    │ Collection  │ (add, remove, size, contains)             │
-│                    └──────┬──────┘                                           │
-│           ┌───────────────┼───────────────┐                                  │
-│           │               │               │                                  │
-│    ┌──────┴──────┐ ┌──────┴──────┐ ┌──────┴──────┐                           │
-│    │    List     │ │    Set      │ │   Queue     │                           │
-│    │ (ordered)   │ │ (unique)    │ │ (FIFO)      │                           │
-│    └──────┬──────┘ └──────┬──────┘ └──────┬──────┘                           │
-│           │               │               │                                  │
-│    ArrayList        HashSet          LinkedList                              │
-│    LinkedList       TreeSet          PriorityQueue                           │
-│    Vector           LinkedHashSet    ArrayDeque                              │
-│                                                                              │
-│                    ┌─────────────┐                                           │
-│                    │    Map      │ (key-value pairs)                         │
-│                    └──────┬──────┘                                           │
-│                           │                                                  │
-│              ┌────────────┼────────────┐                                     │
-│              │            │            │                                     │
-│         HashMap      TreeMap    LinkedHashMap                                │
-│         Hashtable                                                            │
-│                                                                              │
-│ KEY INSIGHT: Same interface, DIFFERENT implementations!                      │
-│ List list = new ArrayList<>();  // Can swap to LinkedList easily             │
-└──────────────────────────────────────────────────────────────────────────────┘
+**When to use which collection? (decision guide)**
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE WHICH COLLECTION? (Decision Guide)                               │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ QUESTION 1: Do you need KEY-VALUE pairs?                                     │
-│ • YES → Use MAP (HashMap, TreeMap, LinkedHashMap)                            │
-│ • NO → Continue to Question 2                                                │
-│                                                                              │
-│ QUESTION 2: Do you need UNIQUE elements only?                                │
-│ • YES → Use SET (HashSet, TreeSet, LinkedHashSet)                            │
-│ • NO → Continue to Question 3                                                │
-│                                                                              │
-│ QUESTION 3: Do you need FIFO/LIFO ordering?                                  │
-│ • FIFO → Queue (LinkedList, ArrayDeque)                                      │
-│ • LIFO → Stack (ArrayDeque preferred over Stack class)                       │
-│ • Priority → PriorityQueue                                                   │
-│ • NO → Use LIST                                                              │
-│                                                                              │
-│ QUESTION 4: (For Lists) What operations dominate?                            │
-│ • Random access (get by index) → ArrayList                                   │
-│ • Insert/Delete in middle → LinkedList                                       │
-│                                                                              │
-│ QUESTION 5: (For Sets/Maps) Do you need ordering?                            │
-│ • No ordering needed → Hash variant (fastest)                                │
-│ • Sorted order needed → Tree variant (O(log n))                              │
-│ • Insertion order → LinkedHash variant                                       │
-└──────────────────────────────────────────────────────────────────────────────┘
+| Question | If yes | If no |
+| -------- | ------ | ----- |
+| 1. Do you need **key-value** pairs? | Use a **Map** (`HashMap`, `TreeMap`, `LinkedHashMap`) | Go to question 2 |
+| 2. Do you need **unique** elements only? | Use a **Set** (`HashSet`, `TreeSet`, `LinkedHashSet`) | Go to question 3 |
+| 3. Do you need **FIFO / LIFO** ordering? | FIFO → `Queue` (`LinkedList`, `ArrayDeque`); LIFO → `ArrayDeque` (preferred over the `Stack` class); priority → `PriorityQueue` | Use a **List** |
+| 4. (Lists) Which operation dominates? | Random access by index → `ArrayList`; insert/delete in the middle → `LinkedList` | |
+| 5. (Sets/Maps) Do you need ordering? | None → hash variant (fastest); sorted → tree variant (O(log n)); insertion order → `LinkedHash` variant | |
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ DIFFICULTIES IN USING COLLECTIONS                                            │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 1. TOO MANY CHOICES:                                                         │
-│    "Should I use ArrayList or LinkedList?"                                   │
-│    Solution: ArrayList for 95% of cases (better cache locality)              │
-│                                                                              │
-│ 2. GENERICS CONFUSION:                                                       │
-│    "What's <E>, <K,V>, <?>"                                                  │
-│    Solution: E = Element type, K = Key, V = Value, ? = Unknown               │
-│                                                                              │
-│ 3. CONCURRENT MODIFICATION:                                                  │
-│    Removing while iterating throws exception                                 │
-│    Solution: Use Iterator.remove() or removeIf()                             │
-│                                                                              │
-│ 4. EQUALS/HASHCODE:                                                          │
-│    Custom objects don't work in HashSet/HashMap                              │
-│    Solution: Override both equals() AND hashCode()                           │
-│                                                                              │
-│ 5. MUTABILITY:                                                               │
-│    Arrays.asList() returns fixed-size list                                   │
-│    Solution: new ArrayList<>(Arrays.asList(...))                             │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Difficulties in using collections:**
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ EXPECTED OUTPUTS OF MASTERING COLLECTIONS                                    │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ✅ INSTANT CHOICE: See requirement → Know which collection to use             │
-│ ✅ EFFICIENT CODE: Pick implementation with best time complexity              │
-│ ✅ CLEAN CODE: Use streams and built-in methods                               │
-│ ✅ BUG-FREE: Avoid common pitfalls (concurrent modification, etc.)            │
-│ ✅ INTERVIEW READY: Explain trade-offs between implementations                │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+| # | Difficulty | Solution |
+| - | ---------- | -------- |
+| 1 | **Too many choices:** "ArrayList or LinkedList?" | `ArrayList` for ~95% of cases (better cache locality) |
+| 2 | **Generics confusion:** what are `<E>`, `<K,V>`, `<?>`? | `E` = element type, `K` = key, `V` = value, `?` = unknown |
+| 3 | **Concurrent modification:** removing while iterating throws | Use `Iterator.remove()` or `removeIf()` |
+| 4 | **equals/hashCode:** custom objects misbehave in `HashSet`/`HashMap` | Override **both** `equals()` and `hashCode()` |
+| 5 | **Mutability:** `Arrays.asList()` returns a fixed-size list | `new ArrayList<>(Arrays.asList(...))` |
+
+**Expected outcomes of mastering collections:**
+
+- ✅ **Instant choice:** see a requirement → know which collection to use
+- ✅ **Efficient code:** pick the implementation with the best time complexity
+- ✅ **Clean code:** use streams and built-in methods
+- ✅ **Bug-free:** avoid common pitfalls (concurrent modification, etc.)
+- ✅ **Interview ready:** explain trade-offs between implementations
 
 ---
 
