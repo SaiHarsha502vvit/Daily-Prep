@@ -1,6 +1,6 @@
 # 🎓 Complete Software Engineering Curriculum
 
-> **How this relates to `_Curriculum/` (resolved 2026-07-25):** this folder is the **study scheduler** — it sequences the existing repo modules into a week-by-week 4-semester reading plan (plus [EXAM_BANK](./EXAM_BANK.md) and [PROJECTS](./PROJECTS/)). The repo-root [`_Curriculum/`](../_Curriculum/00_AGENT_START.md) folder is the **course-content system** — original university-style courses (S01–S06, CSE101–CSE604) with authored chapters (CSE101, CSE103, CSE104 complete as of July 2026). Use `_Curriculum` when you want to *study a subject from first principles*; use this folder when you want a *calendar over the repo's modules*.
+> **How this relates to `_Curriculum/` (resolved 2026-07-25):** this folder is the **study scheduler** — it sequences the existing repo modules into a week-by-week 4-semester reading plan (plus [EXAM_BANK](./EXAM_BANK.md) and [PROJECTS](./PROJECTS/)). The repo-root [`_Curriculum/`](../_Curriculum/00_AGENT_START.md) folder is the **course-content system** — original university-style courses (S01–S06, CSE101–CSE604) with authored chapters (**all 32 courses complete as of 2026-10-16** — 15 chapter courses / 148 chapters, 15 wrapper guides, 2 standalone courses; status record: [`_Curriculum/03_BUILDOUT_PLAN.md`](../_Curriculum/03_BUILDOUT_PLAN.md)). Use `_Curriculum` when you want to *study a subject from first principles*; use this folder when you want a *calendar over the repo's modules*.
 
 > **Modeled after:** MIT 6.824/6.830 (Grad), ETH Zurich Computer Science MSc, TU Munich M.Sc. Informatics, KTH Software Engineering Master.
 >
@@ -85,7 +85,7 @@
 | ---------------------------------- | --------------------------------------------------- | ---------- | ----------------- |
 | Python Foundations                 | `25_Python_ML_DL_NLP`                               | 10h        | Practitioner      |
 | ML / DL / NLP                      | `25_Python_ML_DL_NLP`                               | 20h        | Practitioner      |
-| SDET & Test Automation             | `21_SDET_Playwright_Automation`                     | 20h        | Expert            |
+| SDET & Test Automation             | `21_SDET_Playwright_Automation` (start at its `README.md`; hands-on `labs/`) | 20h + labs | Expert            |
 | Enterprise Systems & ERP           | `10_Enterprise_Systems`                             | 12h        | Expert            |
 | API Testing                        | `24_Advanced_API_Testing`                           | 8h         | Expert            |
 | Mobile Dev                         | `23_Mobile_Dev_And_Testing`                         | 10h        | Novice            |
@@ -191,11 +191,12 @@ JavaScript / TypeScript
 
 ## 📋 Assessment
 
-- 🎓 [Exam Bank](EXAM_BANK.md) — Midterm & Final style exams for all 4 semesters (with answer keys)
+- 🎓 [Exam Bank](EXAM_BANK.md) — Midterm 1 (DSA), Final 1 (Systems & Design) and Midterm 2 (Full-Stack), each with answer keys. The Semester 3 final and the Semester 4 exams are being added — see the note at the top of the file.
 
 ## 🚀 Start Here
 
-- 📖 [How to Study This Curriculum](HOW_TO_STUDY.md) — Learning loop, scheduling, anti-patterns, Feynman check
+- 📖 [How to Study This Curriculum](HOW_TO_STUDY.md) — Learning loop, scheduling, hands-on graded labs, anti-patterns, Feynman check
+- 🔎 [Content Audit Report](AUDIT_REPORT.md) — per-file teaching-quality scores for the whole repo, and the remediation queue (regenerate with `python tools/audit_content.py`)
 - 📋 [Daily Log Template](../12_Daily_Practice/DAILY_LOG_TEMPLATE.md) — Fill in every study day
 
 ---

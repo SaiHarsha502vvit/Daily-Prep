@@ -1,8 +1,8 @@
-# 📋 Exam Bank — Semester 1 & 2 Midterm / Final
+# 📋 Exam Bank — Midterms & Finals (Semesters 1–3 so far)
 
 > **Format:** University-style. 90 minutes each exam. Open notes permitted (repo only). No internet.  
 > **Grading:** Each question has a point value. Full answers require explanation — just the code is not enough.  
-> **Instructions:** Write your answers in `JavaSolutions/exams/` — one file per exam.
+> **Instructions:** Create `JavaSolutions/exams/` (it does not exist yet) and write your answers there — one file per exam.
 
 ---
 

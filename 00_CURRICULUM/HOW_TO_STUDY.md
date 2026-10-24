@@ -58,6 +58,18 @@ If you skip step 6, you have not learned it. You have only recognized it.
 
 ---
 
+## 🧪 Hands-On Practice That Grades Itself
+
+Reading about tests is not the same as writing tests that actually catch bugs. The SDET module has a set of **graded labs** ([`21_SDET_Playwright_Automation/labs/`](../21_SDET_Playwright_Automation/labs/README.md)): each is a small real app with written requirements. You plan and write the tests; a grader runs them against the correct app (several times, to catch flakiness) **and** against versions with planted bugs, and tells you which bugs your tests missed. The loop is Explore → Plan → Predict → Code → Grade → Debrief.
+
+Use the same habit everywhere: before you trust a test (or a piece of knowledge), ask *what would make this fail?* — and then make it fail on purpose. [`labs/HARNESS_GUIDE.md`](../21_SDET_Playwright_Automation/labs/HARNESS_GUIDE.md) shows how to build a small harness that answers your own "is this really true?" questions by measuring.
+
+## 🔎 Check the Repo's Own Quality
+
+[`AUDIT_REPORT.md`](AUDIT_REPORT.md) scores every lesson on whether it teaches (why it exists, history, internals, alternatives, when to use it, failure modes, exercises, explained diagrams). If a lesson you are studying is flagged **Superficial**, treat it as a starting point and read the linked deeper chapters; it is in the remediation queue.
+
+---
+
 ## 🚦 How to Use Problem Sets
 
 Every problem set (PS) file has 3 parts:
@@ -164,6 +176,8 @@ If you cannot write 3 clear paragraphs, you haven't mastered it. Go back and re-
 - ✅ First time explaining DDD entity design to someone else
 - ✅ First Docker container running your own app
 - ✅ First CI/CD pipeline that passes green
+- ✅ First lab where your tests catch every planted bug
+- ✅ First time you trace a command down to its system calls and can explain each one
 - ✅ First time predicting an async output correctly (all 4 in order)
 - ✅ Completed all 4 capstone projects
 

@@ -78,10 +78,10 @@
 
 | Day | Topic                                                         | Read                                                   | Do                                                                       |
 | --- | ------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------ |
-| 1   | IoC container, BeanFactory vs ApplicationContext              | `07_Modern_Java/Ch32_SB_Data_Part2.md` §IoC            | Trace: what happens from `@SpringBootApplication` to bean ready?         |
-| 2   | `@Component`, `@Service`, `@Repository`, `@Controller`        | `07_Modern_Java/Ch28_Annotations_Core.md` §Stereotypes | When does Spring throw `NoUniqueBeanDefinitionException`?                |
+| 1   | IoC container, BeanFactory vs ApplicationContext              | `07_Modern_Java/Ch32_SB_Data_Part2.md` §Ch.1 IoC     | Trace: what happens from `@SpringBootApplication` to bean ready?         |
+| 2   | `@Component`, `@Service`, `@Repository`, `@Controller`        | `07_Modern_Java/Ch32_SB_Data_Part2.md` §Ch.2 Spring Beans | When does Spring throw `NoUniqueBeanDefinitionException`?                |
 | 3   | `@Autowired`, constructor injection, `@Qualifier`, `@Primary` | `07_Modern_Java/Ch26_Pre_Spring_Part1.md` §DI          | Refactor field injection to constructor injection                        |
-| 4   | Bean Scopes + `@PostConstruct` + `@PreDestroy`                | `07_Modern_Java/Ch32_SB_Data_Part2.md` §Scopes         | What happens when a prototype bean is injected into a singleton?         |
+| 4   | Bean Scopes + `@PostConstruct` + `@PreDestroy`                | `07_Modern_Java/Ch32_SB_Data_Part2.md` §Ch.5 Bean Scopes | What happens when a prototype bean is injected into a singleton?         |
 | 5   | Lab                                                           | —                                                      | Build a `ConfigService` that loads settings from 3 sources with priority |
 | 6–7 | Problem Set SPRING-PS1 (Part A)                               | —                                                      | `07_Modern_Java/07_PROBLEM_SETS.md` SPRING-PS1 A1-A3                     |
 
@@ -90,9 +90,9 @@
 | Day | Topic                                                              | Read                                                  | Do                                                             |
 | --- | ------------------------------------------------------------------ | ----------------------------------------------------- | -------------------------------------------------------------- |
 | 1   | AOP: Aspects, Advice, Pointcuts, Join Points                       | `07_Modern_Java/Ch33_SB_Web_Part3.md` §AOP            | How does `@Transactional` use AOP internally?                  |
-| 2   | `@RestController`, `@RequestMapping`, HTTP semantics               | `07_Modern_Java/Ch34_SB_Security_Part4.md` §REST      | Design REST API for a Blog: GET/POST/PUT/PATCH/DELETE          |
+| 2   | `@RestController`, `@RequestMapping`, HTTP semantics               | `07_Modern_Java/Ch37_SB_Controllers_REST.md` §REST Controller Fundamentals + §Ch.2 HTTP Method Mappings | Design REST API for a Blog: GET/POST/PUT/PATCH/DELETE          |
 | 3   | `@ExceptionHandler`, `@ControllerAdvice`, RFC 7807 problem details | `07_Modern_Java/Ch33_SB_Web_Part3.md` §Error          | Implement global error handler returning proper error payloads |
-| 4   | Validation: `@Valid`, `@NotNull`, `@Size`, custom validators       | `07_Modern_Java/Ch28_Annotations_Core.md` §Validation | Add Bean Validation to a DTO — write custom `@ValidEmail`      |
+| 4   | Validation: `@Valid`, `@NotNull`, `@Size`, custom validators       | `07_Modern_Java/Ch28_Annotations_Core.md` §Validation Annotations | Add Bean Validation to a DTO — write custom `@ValidEmail`      |
 | 5   | Lab                                                                | —                                                     | **Mini-Project P04 Start:** Library REST API scaffold          |
 | 6–7 | Problem Set SPRING-PS1 (Part B + C)                                | —                                                     | Implement `BookController` from skeleton                       |
 
@@ -100,10 +100,10 @@
 
 | Day | Topic                                                                | Read                                              | Do                                                                       |
 | --- | -------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------ |
-| 1   | JPA entity mapping: `@Entity`, `@Id`, `@GeneratedValue`              | `07_Modern_Java/Ch32_SB_Data_Part2.md` §JPA       | Map the `Book` entity with correct types                                 |
-| 2   | Relationships: `@OneToMany`, `@ManyToOne`, `@ManyToMany` + FetchType | `07_Modern_Java/Ch32_SB_Data_Part2.md` §Relations | Explain and fix: when does EAGER loading cause a SELECT explosion?       |
-| 3   | The N+1 Query Problem                                                | `07_Modern_Java/Ch32_SB_Data_Part2.md` §N+1       | Reproduce N+1 in a test, then fix with `JOIN FETCH` / `@EntityGraph`     |
-| 4   | `@Transactional` — propagation levels, isolation levels              | `07_Modern_Java/Ch34_SB_Security_Part4.md` §TX    | What is `REQUIRES_NEW`? When does `REQUIRED` silently swallow rollbacks? |
+| 1   | JPA entity mapping: `@Entity`, `@Id`, `@GeneratedValue`              | `07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md` §Ch.2 Entity Mapping | Map the `Book` entity with correct types                                 |
+| 2   | Relationships: `@OneToMany`, `@ManyToOne`, `@ManyToMany` + FetchType | `07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md` §Ch.3 Entity Relationships | Explain and fix: when does EAGER loading cause a SELECT explosion?       |
+| 3   | The N+1 Query Problem                                                | `07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md` §Ch.4 Fetch Strategies (N+1) | Reproduce N+1 in a test, then fix with `JOIN FETCH` / `@EntityGraph`     |
+| 4   | `@Transactional` — propagation levels, isolation levels              | `07_Modern_Java/Ch34_SB_Security_Part4.md` §Ch.5 Transaction Management | What is `REQUIRES_NEW`? When does `REQUIRED` silently swallow rollbacks? |
 | 5   | Lab                                                                  | —                                                 | Complete **Mini-Project P04** Library REST API                           |
 | 6–7 | Problem Set JAVA-PS2                                                 | —                                                 | `07_Modern_Java/07_PROBLEM_SETS.md` JAVA-PS2                             |
 
@@ -113,8 +113,8 @@
 | --- | ------------------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------- |
 | 1   | Spring Security filter chain architecture               | `07_Modern_Java/Ch34_SB_Security_Part4.md` §Security | Trace an HTTP request through the security chain   |
 | 2   | JWT authentication: stateless design                    | `07_Modern_Java/Ch34_SB_Security_Part4.md` §JWT      | Implement JWT generation + validation (use `jjwt`) |
-| 3   | Unit Testing: `@SpringBootTest`, `@WebMvcTest`, MockMvc | `07_Modern_Java/Ch34_SB_Security_Part4.md` §Testing  | Write 3 MockMvc tests for the Book API             |
-| 4   | Integration Testing: `@DataJpaTest`, Testcontainers     | —                                                    | Write an integration test using H2 in-memory DB    |
+| 3   | Unit Testing: `@SpringBootTest`, `@WebMvcTest`, MockMvc | `07_Modern_Java/Ch59_SB_Testing_Fundamentals.md` §@WebMvcTest | Write 3 MockMvc tests for the Book API             |
+| 4   | Integration Testing: `@DataJpaTest`, Testcontainers     | `07_Modern_Java/Ch59_SB_Testing_Fundamentals.md` §@DataJpaTest, `Ch60_SB_Testing_Advanced.md` (Testcontainers sections) | Write an integration test using H2 in-memory DB    |
 | 5   | Lab                                                     | —                                                    | Add JWT security to the Library REST API           |
 | 6–7 | Problem Set SPRING-PS1 (full review)                    | —                                                    | Review + self-grade all Spring problem sets        |
 
