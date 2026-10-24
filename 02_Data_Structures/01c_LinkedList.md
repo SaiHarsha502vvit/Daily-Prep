@@ -651,6 +651,30 @@ return dummy.next;  // The real head
 
 ## ⚡ Quick Problem Walkthrough: Detect Cycle Start Point
 
+### 💬 Study-Partner View — Cycle Detection (Floyd's Tortoise and Hare)
+
+**1. The bottom line:** Two pointers moving at different speeds must meet if there is a loop, and the meeting point lets you find where the loop starts.
+
+**2. The textbook core:**
+
+- **Phase 1:** `slow` moves 1 step, `fast` moves 2. If `fast` reaches `null`, there is no cycle; if they meet, there is one.
+- **Phase 2:** reset `slow` to the head; move both 1 step at a time; they meet at the **cycle entry**.
+- Time **O(n)**, space **O(1)** (a visited set would be O(n) space).
+- Math: if the tail length is μ and the cycle length is C, they meet after fast has gone around a whole number of extra loops, so the distance from head to entry equals the distance from the meeting point to entry (mod C).
+
+**3. The real-world analogy:** Two runners on a **circular track** with one running twice as fast: the faster runner laps the slower one and they must meet.
+
+**4. Walkthrough:**
+
+1. List `1 → 2 → 3 → 4 → 5 → 3` (5 points back to 3).
+2. Phase 1: `slow` = 1, 2, 3, 4; `fast` = 1, 3, 5, 4 → they meet at node 4.
+3. Phase 2: `slow` = 1, `fast` stays at 4; move both one step: (2, 5), (3, 3) → they meet.
+4. The meeting node **3** is where the cycle begins.
+
+> [!NOTE]
+> **Quick check:** Why speed 2 specifically? *Any fixed relative speed of 1 step per round works; 2 is simplest and guarantees a meeting within one lap.*
+
+
 **Problem:** Given a linked list that may have a cycle, find **WHERE** the cycle begins.
 
 **Step 1 — Detect if cycle exists** (Floyd's algorithm):

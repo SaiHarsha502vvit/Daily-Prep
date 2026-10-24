@@ -788,6 +788,30 @@ Time: **O(n²)** — too slow for real-time trading!
 
 ## 🔲 Part 4: Sub Arrays — From Brute Force to Mastery
 
+### 💬 Study-Partner View — Sub-arrays
+
+**1. The bottom line:** A sub-array is a contiguous slice of an array, and most problems about them can be solved in one pass instead of checking all slices.
+
+**2. The textbook core:**
+
+- A sub-array is non-empty and **contiguous**; an array of length `n` has `n(n+1)/2` of them.
+- Brute force enumerates all slices: **O(n²)** (or O(n³) if you re-sum each).
+- Techniques: **Kadane's algorithm** (max sum), **prefix sums** (range sums, "sum equals K" with a HashMap), **sliding window** (fixed or variable size).
+- Each technique keeps a small running state instead of recomputing slices.
+
+**3. The real-world analogy:** Reading a **book chapter**: you take a continuous run of pages. Skipping pages to build a summary would be a *subsequence* instead.
+
+**4. Walkthrough:**
+
+1. Find the maximum sub-array sum of `[-2, 1, -3, 4, -1, 2, 1]` with Kadane.
+2. Keep `cur` = best sum ending here and `best` = best overall: `cur = max(x, cur + x)`.
+3. Running: -2, 1, -2, 4, 3, 5, 6 → `best = 6` (the slice `[4, -1, 2, 1]`).
+4. One pass, O(n) time, O(1) space.
+
+> [!NOTE]
+> **Quick check:** When does a negative running sum help? *Never; Kadane drops it and starts fresh at the next element.*
+
+
 🎯 **This is where the most important array algorithms live. You'll hit walls that force you to learn Sliding Window, Two Pointers, and Prefix Sum.**
 
 ### 📖 Theory — What is a Sub Array?
@@ -1047,6 +1071,30 @@ public int maxProduct(int[] arr) {
 
 ## 🌿 Part 5: Sub Sequences — Order Without Contiguity
 
+### 💬 Study-Partner View — Sub-sequences
+
+**1. The bottom line:** A subsequence keeps the original order but may skip elements, so there are exponentially many and you need recursion or DP.
+
+**2. The textbook core:**
+
+- A subsequence preserves relative order but is **not** required to be contiguous; there are **2ⁿ** of them.
+- Each element has two choices: **include** or **exclude** (a binary decision tree).
+- Brute force with recursion/backtracking is O(2ⁿ); many "best subsequence" problems drop to O(n²) or O(n log n) with DP.
+- Every sub-array is a subsequence, but not vice versa.
+
+**3. The real-world analogy:** Choosing **toppings for a pizza** in menu order: for each topping you say yes or no, and the order on the menu stays the same.
+
+**4. Walkthrough:**
+
+1. Enumerate the subsequences of `[1, 2, 3]`.
+2. Decide for `1`: include or exclude; then for `2`; then for `3`.
+3. That gives 2×2×2 = 8: `[]`, `[1]`, `[2]`, `[3]`, `[1,2]`, `[1,3]`, `[2,3]`, `[1,2,3]`.
+4. `[1,3]` is a subsequence but not a sub-array (2 is skipped).
+
+> [!NOTE]
+> **Quick check:** Why does the Longest Increasing Subsequence need DP? *Trying all 2ⁿ subsequences is too slow; DP reuses answers for shorter prefixes.*
+
+
 ### 📖 Theory — What is a Sub Sequence?
 
 ```
@@ -1232,6 +1280,30 @@ public int lcs(String s1, String s2) {
 
 ## 🔎 Part 6: Searching in Arrays
 
+### 💬 Study-Partner View — Searching in Arrays
+
+**1. The bottom line:** If the array is unsorted you must look at everything; if it is sorted you can halve the search space each step.
+
+**2. The textbook core:**
+
+- **Linear search:** O(n), works on any array.
+- **Binary search:** O(log n) on a **sorted** array; keep `lo`, `hi`, compare with the middle `mid = lo + (hi - lo) / 2`.
+- Invariant: if the target exists, it is inside `[lo, hi]`.
+- Binary search generalises to "search on the answer" (find the smallest `x` where a monotone condition becomes true).
+
+**3. The real-world analogy:** Guessing a number from 1 to 100 with **"higher or lower?"** hints: always guess the middle and you need at most 7 guesses.
+
+**4. Walkthrough:**
+
+1. Find 23 in `[2, 5, 8, 12, 16, 23, 38, 56]`.
+2. `lo = 0`, `hi = 7`, `mid = 3` → 12 < 23 → `lo = 4`.
+3. `mid = 5` → 23 == 23 → found at index 5, after 2 comparisons.
+4. Computing `mid = lo + (hi - lo) / 2` avoids integer overflow of `(lo + hi) / 2`.
+
+> [!NOTE]
+> **Quick check:** What happens if the array is not sorted? *Binary search can return wrong answers; sort first or use linear search/hashing.*
+
+
 ### Linear Search — O(n) | No sorted requirement
 
 ```java
@@ -1281,6 +1353,31 @@ public int binarySearch(int[] arr, int target) {
 ---
 
 ## 📈 Part 7: Sorting Algorithms — All 5
+
+### 💬 Study-Partner View — Sorting Algorithms
+
+**1. The bottom line:** Sorting puts items in order; simple sorts are easy but slow (O(n²)), and good sorts split the work to reach O(n log n).
+
+**2. The textbook core:**
+
+- **Simple (O(n²)):** bubble, selection, insertion. Insertion sort is fast on nearly sorted data (O(n) best case).
+- **Divide & conquer (O(n log n)):** merge sort (stable, O(n) extra space), quicksort (in place, average O(n log n), worst O(n²)).
+- Comparison sorts cannot beat **Ω(n log n)**; counting/radix sort do by not comparing.
+- **Stable** sort = equal keys keep their original order.
+
+**3. The real-world analogy:** Sorting a **hand of playing cards**: insertion sort is picking up one card at a time and sliding it into place; merge sort is sorting two half-piles and then merging them.
+
+**4. Walkthrough:**
+
+1. Merge sort `[5, 2, 4, 1]`.
+2. Split: `[5, 2]` and `[4, 1]`; split again into single items.
+3. Merge pairs: `[2, 5]` and `[1, 4]`.
+4. Merge the halves by repeatedly taking the smaller front item: `[1, 2, 4, 5]`.
+5. Depth log n × work n per level = O(n log n).
+
+> [!NOTE]
+> **Quick check:** Why is quicksort's worst case O(n²)? *If the pivot is always the smallest or largest, one side is empty and the recursion depth is n.*
+
 
 🔗 **Deep dive (Quick+Merge internals, TimSort, Dutch Flag):**
 📖 [02a_Sorting_Fundamentals.md](../03_Algorithms/02a_Sorting_Fundamentals.md)
@@ -1504,6 +1601,30 @@ Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced par
 
 ## 📊 Part 8: Frequency & Duplicates
 
+### 💬 Study-Partner View — Frequency & Duplicates
+
+**1. The bottom line:** Counting how often things appear is the job of a hash map (or a count array), and that trick solves most "duplicates" problems in one pass.
+
+**2. The textbook core:**
+
+- Use `HashMap<item, count>` (or `int[26]` / `int[256]` for characters) → O(n) time, O(k) space for k distinct items.
+- `HashSet` answers "have I seen this?" in O(1) average.
+- Sorting is an alternative: equal items become adjacent, O(n log n) time, O(1) extra space.
+- Top-K frequent: hash map + heap, or bucket sort by frequency.
+
+**3. The real-world analogy:** A **tally sheet at an election**: for each ballot you add a mark under that candidate's name; at the end the counts are right there.
+
+**4. Walkthrough:**
+
+1. Does `[3, 1, 4, 1, 5]` contain a duplicate?
+2. Scan with a `HashSet`: add 3, 1, 4.
+3. Next is 1; `set.add(1)` returns `false` because it is already there → duplicate found.
+4. One pass: O(n) time, O(n) space.
+
+> [!NOTE]
+> **Quick check:** How could you do it with O(1) extra space? *Sort the array first and compare neighbours (O(n log n) time).*
+
+
 ### 🔵 Level 1: Brute — Nested Loops O(n²)
 
 ```java
@@ -1624,6 +1745,30 @@ for (int x : arr) if (x % 2 != 0) oddLcm = lcm((int)oddLcm, x);
 ---
 
 ## 🔄 Part 9: Circular Arrays & Rotations
+
+### 💬 Study-Partner View — Circular Arrays & Rotations
+
+**1. The bottom line:** Wrapping around an array is just the modulo operator, and rotating an array can be done in place with three reversals.
+
+**2. The textbook core:**
+
+- Next index in a circle: `(i + 1) % n`; previous: `(i - 1 + n) % n`.
+- Rotate right by `k`: use `k % n`, then **reverse all**, reverse the first `k`, reverse the rest → O(n) time, O(1) space.
+- A circular buffer keeps `head` and `size` and uses modulo for both ends.
+- Circular problems can be solved on a doubled array or with modular indexing.
+
+**3. The real-world analogy:** A **clock face**: after 12 comes 1 again, so moving "forward 5 hours from 10" lands on 3.
+
+**4. Walkthrough:**
+
+1. Rotate `[1, 2, 3, 4, 5]` right by 2.
+2. Reverse the whole array: `[5, 4, 3, 2, 1]`.
+3. Reverse the first 2: `[4, 5, 3, 2, 1]`; reverse the rest: `[4, 5, 1, 2, 3]`.
+4. Result: `[4, 5, 1, 2, 3]`, using only swaps.
+
+> [!NOTE]
+> **Quick check:** Why take `k % n` first? *Rotating by `n` returns the original array, so only the remainder matters.*
+
 
 ### Theory — What is a Circular Array?
 

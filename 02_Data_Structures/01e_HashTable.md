@@ -710,6 +710,30 @@ Map stores element → last seen index (or frequency in window). When window is 
 
 ## ⚡ Quick Problem Walkthrough: Subarray Sum Equals K
 
+### 💬 Study-Partner View — Subarray Sum Equals K (Prefix Sum + HashMap)
+
+**1. The bottom line:** Instead of checking every slice, remember the running totals you have seen: a slice sums to K exactly when two running totals differ by K.
+
+**2. The textbook core:**
+
+- Let `prefix[i]` = sum of the first `i` elements. Sum of `nums[j..i-1]` = `prefix[i] - prefix[j]`.
+- So a slice ending at `i` with sum K exists when `prefix[i] - K` has been seen before.
+- Store `prefix → count` in a HashMap (start with `{0: 1}` for the empty prefix).
+- Time **O(n)**, space O(n); brute force is O(n²).
+
+**3. The real-world analogy:** Tracking your **bank balance**: if your balance is now 150 and it was 100 some days ago, you have gained 50 since then. To ask "did I ever gain exactly K?", just look up whether balance minus K appeared before.
+
+**4. Walkthrough:**
+
+1. `nums = [1, 2, 3]`, `K = 3`. Map starts `{0: 1}`, `sum = 0`, `count = 0`.
+2. Read 1 → `sum = 1`; `1 - 3 = -2` not in map; store `{0:1, 1:1}`.
+3. Read 2 → `sum = 3`; `3 - 3 = 0` is in map (count 1) → `count = 1` (slice `[1,2]`); store 3.
+4. Read 3 → `sum = 6`; `6 - 3 = 3` is in map → `count = 2` (slice `[3]`). Answer: **2**.
+
+> [!NOTE]
+> **Quick check:** Why seed the map with `{0: 1}`? *So slices that start at index 0 (prefix equals K) are counted.*
+
+
 **Problem:** Given array `[1, 2, 3, -1, 1, 2]` and `K = 3`, count subarrays that sum to exactly 3.
 
 **Brute Force:** Check all O(n²) subarrays → too slow.

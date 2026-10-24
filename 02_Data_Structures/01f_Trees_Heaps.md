@@ -825,6 +825,29 @@ The mathematical trick: the majority of nodes (the leaves, `N/2` nodes) are alre
 
 ## 🧭 Traversal Decision Guide — Which to Use When?
 
+### 💬 Study-Partner View — Tree Traversals
+
+**1. The bottom line:** A traversal is a rule for visiting every node exactly once; which rule you pick depends on what order you need.
+
+**2. The textbook core:**
+
+- **Pre-order** (node, left, right): copy/serialize a tree. **In-order** (left, node, right): yields a BST in **sorted** order. **Post-order** (left, right, node): delete a tree, compute subtree results. **Level-order** (BFS with a queue): shortest depth, level by level.
+- DFS orders use recursion or an explicit stack; level-order uses a queue.
+- All are **O(n)** time; space is O(h) for DFS and O(width) for BFS.
+- Morris traversal gets O(1) extra space by temporarily threading the tree.
+
+**3. The real-world analogy:** Touring a **museum**: pre-order is looking at the exhibit before its sub-rooms, post-order is visiting sub-rooms first, level-order is seeing every ground-floor room before going upstairs.
+
+**4. Walkthrough:**
+
+1. Tree: root 2, left 1, right 3.
+2. Pre-order: 2, 1, 3. In-order: 1, 2, 3 (sorted!). Post-order: 1, 3, 2.
+3. Level-order: queue `[2]` → visit 2, enqueue 1, 3 → visit 1 → visit 3 → 2, 1, 3.
+
+> [!NOTE]
+> **Quick check:** Which traversal gives sorted output for a BST? *In-order.*
+
+
 ```
 INORDER   (Left → Root → Right):
   ✅ Get BST elements in SORTED order

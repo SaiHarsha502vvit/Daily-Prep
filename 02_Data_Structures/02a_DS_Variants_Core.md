@@ -227,6 +227,29 @@ mindmap
 
 ## 1.1 Singly Linked List
 
+### 💬 Study-Partner View — Singly Linked List
+
+**1. The bottom line:** A chain of nodes where each one only knows the next node, so you can only walk forward.
+
+**2. The textbook core:**
+
+- Node = `data` + `next`; the list keeps a `head` (optionally a `tail`).
+- Insert/delete at the head: **O(1)**. Insert at the tail: O(1) with a tail pointer.
+- Search and access by index: **O(n)**. Delete the tail: O(n) (you need the previous node).
+- Uses one pointer per node, the cheapest linked variant.
+
+**3. The real-world analogy:** A **one-way street**: you can drive forward to the next block, but there is no way to turn around.
+
+**4. Walkthrough:**
+
+1. List is `10 → 20 → 30`. Insert `5` at the head.
+2. Create node `5`, set `5.next = head` (10).
+3. Set `head = 5`. List is `5 → 10 → 20 → 30`; nothing was moved.
+
+> [!NOTE]
+> **Quick check:** Why is deleting the tail O(n)? *You must walk from the head to find the node before the tail.*
+
+
 ::: pattern
 
 ### Singly linked list - complete guide
@@ -572,6 +595,30 @@ public class SinglyLinkedList<T> {
 > </details>
 
 ## 1.2 Doubly Linked List
+
+### 💬 Study-Partner View — Doubly Linked List
+
+**1. The bottom line:** A linked list where every node knows both its next and previous neighbour, so you can walk and delete in either direction.
+
+**2. The textbook core:**
+
+- Node = `prev` + `data` + `next`; list keeps `head` and `tail`.
+- Delete a node you already hold: **O(1)** (`node.prev.next = node.next; node.next.prev = node.prev`).
+- Insert/delete at both ends: O(1). Access by index: O(n), but you can start from the nearer end.
+- Costs one extra pointer per node and more edge cases (head/tail).
+
+**3. The real-world analogy:** A **two-way street** or a browser's back/forward buttons: from any page you can step back or forward.
+
+**4. Walkthrough:**
+
+1. List `A ⇄ B ⇄ C`; delete `B`.
+2. Set `A.next = C` (what `B.next` was).
+3. Set `C.prev = A` (what `B.prev` was).
+4. `B` is now unreachable; the list is `A ⇄ C`. No search was needed.
+
+> [!NOTE]
+> **Quick check:** What is the classic use? *An LRU cache: hash map for lookup plus a doubly linked list to move items to the front in O(1).*
+
 
 ::: pattern
 
@@ -1042,6 +1089,30 @@ public class DoublyLinkedList<T> {
 
 ## 1.3 Circular Linked List
 
+### 💬 Study-Partner View — Circular Linked List
+
+**1. The bottom line:** A linked list whose last node points back to the first, so there is no end and you can loop forever.
+
+**2. The textbook core:**
+
+- The last node's `next` is the head (not `null`).
+- Traversal must stop by comparing against the starting node (or counting), otherwise it loops forever.
+- Rotating the list or cycling round-robin is O(1) once you hold a pointer.
+- Insert/delete follow the singly linked rules with an extra "keep the loop closed" step.
+
+**3. The real-world analogy:** A **merry-go-round** or a round-table game: after the last player, it is the first player's turn again.
+
+**4. Walkthrough:**
+
+1. Processes `P1 → P2 → P3 → (back to P1)`; each gets a CPU time slice.
+2. Run `P1`, then move `current = current.next` (P2).
+3. After `P3` the pointer wraps to `P1` with no special case.
+4. Stop condition for a full lap: `current == start`.
+
+> [!NOTE]
+> **Quick check:** What is the main bug risk? *Infinite loops: always check for returning to the start node.*
+
+
 ::: pattern
 
 ### Circular linked list - complete guide
@@ -1308,6 +1379,30 @@ public class CircularLinkedList<T> {
 
 ## 1.4 Circular Doubly Linked List
 
+### 💬 Study-Partner View — Circular Doubly Linked List
+
+**1. The bottom line:** A doubly linked list that also wraps around at both ends, so you can move in either direction forever.
+
+**2. The textbook core:**
+
+- Every node has `prev` and `next`; `head.prev` is the tail and `tail.next` is the head.
+- No `null` pointers at all, which removes most head/tail special cases.
+- Insert/delete at either end and at a known node: **O(1)**.
+- Used inside structures such as Fibonacci heaps and LRU-style lists with a sentinel node.
+
+**3. The real-world analogy:** A **Ferris wheel**: you can rotate it clockwise or counter-clockwise and every seat always has a neighbour on both sides.
+
+**4. Walkthrough:**
+
+1. Insert `X` after `A` in the ring `A ⇄ B ⇄ C ⇄ (A)`.
+2. Set `X.prev = A` and `X.next = B`.
+3. Set `B.prev = X` and `A.next = X`.
+4. The ring is `A ⇄ X ⇄ B ⇄ C`; there was no null check because every node has two neighbours.
+
+> [!NOTE]
+> **Quick check:** Why use a sentinel node here? *It makes the empty list a one-node ring, so insert and delete need no special case.*
+
+
 ::: pattern
 
 ### Circular doubly linked list - complete guide
@@ -1573,6 +1668,30 @@ public class CircularDoublyLinkedList<T> {
 > </details>
 
 ## 1.5 Skip List
+
+### 💬 Study-Partner View — Skip List
+
+**1. The bottom line:** A sorted linked list with "express lanes" built from coin flips, so searching skips most nodes.
+
+**2. The textbook core:**
+
+- Level 0 holds every element; each higher level holds a random subset (a node is promoted with probability `p`, often 1/2).
+- Expected search, insert, delete: **O(log n)**; worst case O(n) but astronomically unlikely.
+- Expected space: O(n) (about `n / (1 - p)` pointers).
+- Easier to implement and to make concurrent than balanced trees (Java `ConcurrentSkipListMap`, Redis sorted sets).
+
+**3. The real-world analogy:** A **subway with express and local trains**: ride the express to the neighbourhood, then switch to the local train to reach your exact stop.
+
+**4. Walkthrough:**
+
+1. Search 35 in lanes `L2: 25 → 50`, `L1: 10 → 25 → 35 → 50`, `L0: all elements`.
+2. At the top lane move to 25; next is 50 (too far), so drop to a lower lane.
+3. Move 25 → 35 and find it.
+4. Each lane roughly halves the work, giving O(log n) expected steps.
+
+> [!NOTE]
+> **Quick check:** Where does the randomness come in? *Only when inserting: you flip coins to decide how many lanes the new node joins.*
+
 
 ::: pattern
 
