@@ -4,10 +4,10 @@
 > Page 4 of 5 in **Dynamic Programming**
 
 
-**Pattern:** Given items with values/weights + a capacity, maximize value or check feasibility.
-**0/1 Knapsack template:** `dp[i][w] = max(dp[i-1][w], dp[i-1][w-weight[i]] + value[i])`
-**Space optimization:** Since each row only depends on previous row, use 1D array (iterate capacity BACKWARDS to avoid using updated values).
-**Key insight:** "Partition into equal subsets" = "Is there a subset summing to total/2?" = Knapsack!
+- **Pattern:** Given items with values/weights + a capacity, maximize value or check feasibility.
+- **0/1 Knapsack template:** `dp[i][w] = max(dp[i-1][w], dp[i-1][w-weight[i]] + value[i])`
+- **Space optimization:** Since each row only depends on previous row, use 1D array (iterate capacity BACKWARDS to avoid using updated values).
+- **Key insight:** "Partition into equal subsets" = "Is there a subset summing to total/2?" = Knapsack!
 
 ## Problem 169: 0/1 Knapsack
 

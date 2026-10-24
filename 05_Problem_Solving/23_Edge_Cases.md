@@ -94,15 +94,18 @@ your solution must handle correctly.
 
 ### What Problem Do Edge Cases Represent
 
-**Problem**: Humans naturally think about "TYPICAL" scenarios.
-When you think "find maximum in array", your brain imagines:
-[3, 7, 2, 9, 1] → Answer: 9 ✓
+**Problem**: Humans naturally think about "TYPICAL" scenarios. When you think "find maximum in array", your brain imagines:
+
+- `[3, 7, 2, 9, 1]` → Answer: 9 ✓
+
 But what about:
-[] → What's max of nothing? (empty)
-[5] → Max of one element? (single)
-[3, 3, 3] → All same values? (duplicates)
-[-5, -3] → All negative? (negative)
-[MAX_INT] → Near overflow? (boundary)
+
+- `[]` → What's max of nothing? (empty)
+- `[5]` → Max of one element? (single)
+- `[3, 3, 3]` → All same values? (duplicates)
+- `[-5, -3]` → All negative? (negative)
+- `[MAX_INT]` → Near overflow? (boundary)
+
 YOUR SOLUTION MUST HANDLE ALL OF THESE!
 
 **Interview Reality**:
@@ -114,42 +117,42 @@ Interviewer tests your solution with edge cases!
 ### Why Do Edge Cases Matter
 
 1. CORRECTNESS:
-   A solution that fails on edge cases is WRONG
-   It only APPEARS to work on typical inputs
+   - A solution that fails on edge cases is WRONG
+   - It only APPEARS to work on typical inputs
 2. ROBUSTNESS:
-   Production systems receive unexpected inputs constantly
-   Users do weird things, data has anomalies
+   - Production systems receive unexpected inputs constantly
+   - Users do weird things, data has anomalies
 3. SECURITY:
-   Hackers specifically look for edge cases to exploit
-   Buffer overflow = edge case not handled
-   SQL injection = special characters not handled
+   - Hackers specifically look for edge cases to exploit
+   - Buffer overflow = edge case not handled
+   - SQL injection = special characters not handled
 4. PROFESSIONALISM:
-   Edge case handling separates juniors from seniors
-   It shows you THINK before you code
+   - Edge case handling separates juniors from seniors
+   - It shows you THINK before you code
 5. INTERVIEW SUCCESS:
-   Discussing edge cases shows depth of understanding
-   Even if you don't solve optimally, handling edge cases impresses
+   - Discussing edge cases shows depth of understanding
+   - Even if you don't solve optimally, handling edge cases impresses
 
 ### How To Develop Edge Case Thinking
 
 THE 5-CATEGORY SYSTEM (Use for EVERY problem):
 
 1. EMPTY / NOTHING
-   "What if there's no input at all?"
-   [], "", null, 0 elements
+   - "What if there's no input at all?"
+   - [], "", null, 0 elements
 2. ONE / MINIMAL
-   "What if there's just one element?"
-   [5], "a", single node
+   - "What if there's just one element?"
+   - [5], "a", single node
 3. TWO / SMALL
-   "What if there are exactly two?"
-   Often catches off-by-one errors
-   [1, 2] vs [2, 1]
+   - "What if there are exactly two?"
+   - Often catches off-by-one errors
+   - [1, 2] vs [2, 1]
 4. BOUNDARY / EXTREME
-   "What about maximum/minimum possible values?"
-   Integer.MAX_VALUE, Integer.MIN_VALUE, very large n
+   - "What about maximum/minimum possible values?"
+   - Integer.MAX_VALUE, Integer.MIN_VALUE, very large n
 5. SPECIAL / WEIRD
-   "What's the weirdest valid input?"
-   All same values, all negative, sorted/reverse sorted
+   - "What's the weirdest valid input?"
+   - All same values, all negative, sorted/reverse sorted
 
 **Practice**: Before coding, LIST edge cases first!
 Spend 2 minutes identifying them = Save 20 minutes debugging

@@ -137,7 +137,9 @@ flowchart TB
 **How to read this diagram.** The three branches are the three ways an item can be used: at most once (0/1), any number of times (unbounded) or a limited number of times (bounded). Leaves are the classic problems of each kind.
 
 **Insight**: ALL these problems share ONE core recurrence:
-dp[i][w] = max/min/count of (take item, skip item)
+
+`dp[i][w] = max/min/count of (take item, skip item)`
+
 The ONLY difference: 0/1 vs unbounded vs bounded.
 
 #### ⚠️ Constraint Lens

@@ -88,9 +88,9 @@ Instead of recomputing [i..j] from scratch each time → O(n²)
 SLIDE: remove arr[left], add arr[right], update state → O(n)
 ```
 
-📖 **Theory:** [01b_Arrays.md — Sub Arrays section](../02_Data_Structures/01b_Arrays.md)
-📖 **Pattern deep dive:** [01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md)
-📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+- 📖 **Theory:** [01b_Arrays.md — Sub Arrays section](../02_Data_Structures/01b_Arrays.md)
+- 📖 **Pattern deep dive:** [01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md)
+- 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 

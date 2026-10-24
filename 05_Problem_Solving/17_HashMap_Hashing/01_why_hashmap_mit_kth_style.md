@@ -17,9 +17,10 @@ A hash function h: U → {0, 1, ..., m-1} maps a universe U of keys
 to m slots (buckets).
 
 Under Simple Uniform Hashing Assumption (SUHA):
-Expected lookup time = O(1 + α)
-where α = n/m is the load factor
-n = number of stored elements, m = number of slots
+
+- Expected lookup time = O(1 + α)
+- where α = n/m is the load factor
+- n = number of stored elements, m = number of slots
 
 Collision resolution:
 
@@ -35,28 +36,29 @@ By aggregate method: n insertions cost O(n) + O(n/2) + O(n/4) + ...
 FIVE CORE PATTERNS:
 
 1. FREQUENCY COUNT: map.merge(key, 1, Integer::sum)
-   → Count occurrences of each element. Foundation for Top-K, duplicates.
+   - Count occurrences of each element. Foundation for Top-K, duplicates.
 
 2. TWO-SUM PATTERN: Store complement, lookup in O(1)
-   → "Does target - arr[i] exist?" Check map before/after inserting.
+   - "Does target - arr[i] exist?" Check map before/after inserting.
 
 3. PREFIX SUM + HASHMAP: "How many subarrays sum to K?"
-   → Store prefix sum frequencies. If prefixSum[j] - K was seen before,
-   a valid subarray exists. THE most important medium-level pattern.
+   - Store prefix sum frequencies. If prefixSum[j] - K was seen before,
+     a valid subarray exists. THE most important medium-level pattern.
 
 4. GROUPING: Group elements by some computed property
-   → Anagrams by sorted key, numbers by remainder, points by slope.
-   → map.computeIfAbsent(key, k -> new ArrayList<>()).add(value)
+   - Anagrams by sorted key, numbers by remainder, points by slope.
+   - map.computeIfAbsent(key, k -> new ArrayList<>()).add(value)
 
 5. SEEN/VISITED: Use HashSet as O(1) membership test
-   → Cycle detection, duplicate detection, sequence problems.
+   - Cycle detection, duplicate detection, sequence problems.
 
-CRITICAL INSIGHT:
-"If brute force is O(n²) because of nested search, HashMap makes the
-inner search O(1) → total O(n)."
+**CRITICAL INSIGHT:**
 
-Brute force Two-Sum: for each i, for each j → O(n²)
-HashMap Two-Sum: for each i, lookup complement → O(n)
+> "If brute force is O(n²) because of nested search, HashMap makes the
+> inner search O(1) → total O(n)."
+
+- Brute force Two-Sum: for each i, for each j → O(n²)
+- HashMap Two-Sum: for each i, lookup complement → O(n)
 
 This is THE fundamental optimization principle for HashMap problems.
 
@@ -106,11 +108,12 @@ COMMON MISTAKES (memorize these):
 EXPECTED OUTPUTS:
 
 After this section you should be able to:
-□ Solve any "find pair/subarray" problem in O(n) using HashMap
-□ Implement prefix sum + HashMap for subarray sum problems
-□ Design O(1) data structures (LRU Cache, RandomizedSet)
-□ Recognize when HashMap is the hidden helper in a problem
-□ Handle Java HashMap edge cases in production code
+
+- [ ] Solve any "find pair/subarray" problem in O(n) using HashMap
+- [ ] Implement prefix sum + HashMap for subarray sum problems
+- [ ] Design O(1) data structures (LRU Cache, RandomizedSet)
+- [ ] Recognize when HashMap is the hidden helper in a problem
+- [ ] Handle Java HashMap edge cases in production code
 
 ---
 

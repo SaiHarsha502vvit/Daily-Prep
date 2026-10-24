@@ -6,9 +6,8 @@
 
 Design patterns are PROVEN SOLUTIONS to RECURRING PROBLEMS.
 
-Without patterns: "I'll figure out a way to do this..."
-With patterns: "This is a Strategy problem — I know exactly
-how to structure this."
+- Without patterns: "I'll figure out a way to do this..."
+- With patterns: "This is a Strategy problem — I know exactly how to structure this."
 
 Interview Reality: "Can you give me an example of [Pattern]?"
 → Expected for mid-level and above

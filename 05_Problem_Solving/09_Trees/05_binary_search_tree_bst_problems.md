@@ -167,11 +167,12 @@ public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 ## Problem 124: Lowest Common Ancestor of a Binary Tree
 
 💡 **Approach:** Classic interview question. Recursive post-order traversal.
-For each node: search left subtree and right subtree for p and q.
-If BOTH return non-null → this node is the LCA (p and q are in different subtrees).
-If only ONE returns non-null → that result IS the LCA (both p and q are in same subtree).
-**Why it works:** The FIRST node where p and q "split" into different subtrees must be their LCA.
-**Time:** O(n) | **Space:** O(h)
+
+- For each node: search left subtree and right subtree for p and q.
+- If BOTH return non-null → this node is the LCA (p and q are in different subtrees).
+- If only ONE returns non-null → that result IS the LCA (both p and q are in same subtree).
+- **Why it works:** The FIRST node where p and q "split" into different subtrees must be their LCA.
+- **Time:** O(n) | **Space:** O(h)
 
 **LeetCode 236** 🔗 https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
 

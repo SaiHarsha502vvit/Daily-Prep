@@ -165,10 +165,11 @@ public int maxSubArray(int[] nums) {
 ## Problem 163: Coin Change
 
 💡 **Approach:** Unbounded knapsack variant. `dp[amount]` = min coins to make that amount.
-For each coin, check: `dp[i] = min(dp[i], dp[i - coin] + 1)`.
-**Why BFS also works:** Think of it as shortest path where each coin is an edge.
-**Greedy FAILS here:** Coins [1, 3, 4], amount 6 → Greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins.
-**Time:** O(amount × coins) | **Space:** O(amount)
+
+- For each coin, check: `dp[i] = min(dp[i], dp[i - coin] + 1)`.
+- **Why BFS also works:** Think of it as shortest path where each coin is an edge.
+- **Greedy FAILS here:** Coins [1, 3, 4], amount 6 → Greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins.
+- **Time:** O(amount × coins) | **Space:** O(amount)
 
 **LeetCode 322** 🔗 https://leetcode.com/problems/coin-change/
 

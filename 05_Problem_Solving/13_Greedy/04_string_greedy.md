@@ -4,9 +4,9 @@
 > Page 4 of 4 in **Greedy**
 
 
-**Pattern:** Process characters with greedy rules based on frequency or position.
-**Partition Labels:** Track last occurrence of each char. Extend partition end to max last occurrence.
-**Task Scheduler:** Most frequent task determines idle slots. Fill idle slots with other tasks.
+- **Pattern:** Process characters with greedy rules based on frequency or position.
+- **Partition Labels:** Track last occurrence of each char. Extend partition end to max last occurrence.
+- **Task Scheduler:** Most frequent task determines idle slots. Fill idle slots with other tasks.
 
 ## Problem 198: Partition Labels
 

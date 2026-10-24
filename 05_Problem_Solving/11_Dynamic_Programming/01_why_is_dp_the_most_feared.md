@@ -23,22 +23,29 @@ DP appears in ~25% of coding interviews. Companies test it because:
 DP = Recursion + Memoization (avoid re-computing same thing)
 
 **Example**: Fibonacci(5) WITHOUT memoization:
-fib(5)
-╱ ╲
-fib(4) fib(3) ← fib(3) computed TWICE
-╱ ╲ ╱ ╲
-fib(3) fib(2) fib(2) fib(1) ← fib(2) computed 3 TIMES
-╱ ╲ ╱ ╲ ╱ ╲
-fib(2) fib(1) 1 0 1 0 ← fib(1) computed 5 TIMES
-╱ ╲
-1 0
-Total calls for fib(n) without memo: O(2ⁿ) → fib(40) = 1 BILLION calls!
-Total calls for fib(n) WITH memo: O(n) → fib(40) = 40 calls!
+
+```text
+                             fib(5)
+                         ╱             ╲
+               fib(4)                      fib(3)             ← fib(3) computed TWICE
+              ╱       ╲                   ╱       ╲
+       fib(3)          fib(2)      fib(2)          fib(1)     ← fib(2) computed 3 TIMES
+       ╱    ╲            ╱ ╲         ╱ ╲
+  fib(2)    fib(1)      1   0       1   0                     ← fib(1) computed 5 TIMES
+   ╱  ╲
+  1     0
+```
+
+- Total calls for fib(n) without memo: O(2ⁿ) → fib(40) = 1 BILLION calls!
+- Total calls for fib(n) WITH memo: O(n) → fib(40) = 40 calls!
 
 **With Memoization**: compute each fib(k) ONCE, store result.
-fib(5) → needs fib(4), fib(3)
-fib(4) → needs fib(3), fib(2) → fib(3) already stored! Skip!
+
+- fib(5) → needs fib(4), fib(3)
+- fib(4) → needs fib(3), fib(2) → fib(3) already stored! Skip!
+
 Result: n computations instead of 2ⁿ. That's the power of DP.
+
 EVERY DP problem has this structure:
 
 1. You have CHOICES at each step
@@ -48,21 +55,28 @@ EVERY DP problem has this structure:
 
 ## The 4-Step Framework (Use For Every Dp Problem)
 
-Step 1: DEFINE STATE → "What does dp[i] represent?"
-Step 2: RECURRENCE → "How does dp[i] relate to smaller dp[j]?"
-Step 3: BASE CASE → "What are the trivial answers? dp[0] = ?"
-Step 4: BUILD ORDER → "Bottom-up (tabulation) or top-down (memoization)?"
-WORKED EXAMPLE — Coin Change (LC 322):
+- Step 1: DEFINE STATE → "What does dp[i] represent?"
+- Step 2: RECURRENCE → "How does dp[i] relate to smaller dp[j]?"
+- Step 3: BASE CASE → "What are the trivial answers? dp[0] = ?"
+- Step 4: BUILD ORDER → "Bottom-up (tabulation) or top-down (memoization)?"
+
+**WORKED EXAMPLE — Coin Change (LC 322):**
+
 coins = [1, 3, 4], amount = 6. Find MIN coins.
-Step 1: dp[i] = minimum coins to make amount i
-Step 2: dp[i] = min(dp[i - coin] + 1) for each coin ≤ i
-Step 3: dp[0] = 0 (zero coins for amount 0)
-Step 4: Bottom-up, i from 1 to amount
+
+- Step 1: dp[i] = minimum coins to make amount i
+- Step 2: dp[i] = min(dp[i - coin] + 1) for each coin ≤ i
+- Step 3: dp[0] = 0 (zero coins for amount 0)
+- Step 4: Bottom-up, i from 1 to amount
+
+```text
 dp[0]=0 dp[1]=1(+1) dp[2]=2(+1+1) dp[3]=1(+3) dp[4]=1(+4)
 dp[5] = min(dp[5-1]+1, dp[5-3]+1, dp[5-4]+1)
 = min(dp[4]+1, dp[2]+1, dp[1]+1)
 = min(2, 3, 2) = 2 → coins: 1+4 or 3+3? Both work, answer = 2
 dp[6] = min(dp[5]+1, dp[3]+1, dp[2]+1) = min(3, 2, 3) = 2 → 3+3 ✅
+```
+
 💡 THE SECRET: Step 1 is the HARDEST. Once state is defined correctly,
 the recurrence usually follows naturally. When stuck, try:
 

@@ -4,9 +4,9 @@
 > Page 3 of 7 in **Trees**
 
 
-**Pattern:** Bottom-up recursion — ask children for their info, combine at parent.
-**Template:** `int helper(node) { left = helper(left); right = helper(right); return combine(left, right); }`
-**Key insight:** The answer at every node depends on the answer from BOTH children. Think: "What do I need from my children to answer for myself?"
+- **Pattern:** Bottom-up recursion — ask children for their info, combine at parent.
+- **Template:** `int helper(node) { left = helper(left); right = helper(right); return combine(left, right); }`
+- **Key insight:** The answer at every node depends on the answer from BOTH children. Think: "What do I need from my children to answer for myself?"
 
 ## Problem 110: Maximum Depth of Binary Tree
 

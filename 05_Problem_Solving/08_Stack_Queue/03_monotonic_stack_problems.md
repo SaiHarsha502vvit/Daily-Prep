@@ -4,9 +4,9 @@
 > Page 3 of 6 in **Stack Queue**
 
 
-**Pattern:** Maintain stack in increasing/decreasing order. Elements popped have found their NGE/NSE.
-**Template:** `while (!stack.isEmpty() && arr[i] > arr[stack.peek()]) { popped = stack.pop(); answer[popped] = arr[i]; } stack.push(i);`
-**Key insight:** Each element is pushed and popped AT MOST once → O(n) total, not O(n²).
+- **Pattern:** Maintain stack in increasing/decreasing order. Elements popped have found their NGE/NSE.
+- **Template:** `while (!stack.isEmpty() && arr[i] > arr[stack.peek()]) { popped = stack.pop(); answer[popped] = arr[i]; } stack.push(i);`
+- **Key insight:** Each element is pushed and popped AT MOST once → O(n) total, not O(n²).
 
 ### MONOTONIC STACK - Elements in sorted order
 

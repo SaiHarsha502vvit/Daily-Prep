@@ -4,10 +4,10 @@
 > Page 5 of 5 in **Dynamic Programming**
 
 
-**Pattern:** Find optimal subsequence (elements don't need to be contiguous).
-**LIS template:** `dp[i] = max length of increasing subsequence ending at i` → O(n²). Binary search optimization → O(n log n).
-**Word Break:** `dp[i] = true if s[0..i-1] can be segmented`. Try all dictionary words as suffixes.
-**Key insight:** Subsequence ≠ Substring. Subsequence can skip elements; substring must be contiguous.
+- **Pattern:** Find optimal subsequence (elements don't need to be contiguous).
+- **LIS template:** `dp[i] = max length of increasing subsequence ending at i` → O(n²). Binary search optimization → O(n log n).
+- **Word Break:** `dp[i] = true if s[0..i-1] can be segmented`. Try all dictionary words as suffixes.
+- **Key insight:** Subsequence ≠ Substring. Subsequence can skip elements; substring must be contiguous.
 
 ## Problem 172: Longest Increasing Subsequence
 
@@ -160,9 +160,9 @@ public int longestPalindromeSubseq(String s) {
 
 ## 10.5 State Machine DP
 
-**Pattern:** Multiple states at each step (e.g., holding stock, not holding, in cooldown).
-**Template:** Define one dp variable per state. Transition between states based on actions.
-**Key insight:** Draw the state machine diagram first! Then the recurrence writes itself.
+- **Pattern:** Multiple states at each step (e.g., holding stock, not holding, in cooldown).
+- **Template:** Define one dp variable per state. Transition between states based on actions.
+- **Key insight:** Draw the state machine diagram first! Then the recurrence writes itself.
 
 ### Problem 175: Best Time to Buy and Sell Stock with Cooldown
 

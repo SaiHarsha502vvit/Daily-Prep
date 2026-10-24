@@ -19,14 +19,16 @@
 ## What is Infrastructure as Code (IaC)?
 
 BEFORE IaC:
-"Hey admin, can you create a server? 2 CPU, 8 GB RAM, Ubuntu"
-→ Email/ticket → wait 3 days → manual setup → no consistency
-→ "But it works on MY server!" (configuration drift)
+
+- "Hey admin, can you create a server? 2 CPU, 8 GB RAM, Ubuntu"
+- Email/ticket → wait 3 days → manual setup → no consistency
+- "But it works on MY server!" (configuration drift)
 
 AFTER IaC:
-Write code → commit to Git → CI/CD creates infrastructure
-→ reproducible, versioned, reviewable, testable
-→ identical environments every time
+
+- Write code → commit to Git → CI/CD creates infrastructure
+- reproducible, versioned, reviewable, testable
+- identical environments every time
 
 IaC = Treat infrastructure the same way you treat application
 code: version it, test it, review it, automate it.
@@ -84,20 +86,23 @@ For interviews: Know Terraform basics + Docker + K8s concepts
 ### Declarative vs Imperative
 
 IMPERATIVE (scripting):
-"Create a VPC, then create a subnet, then create an EC2..."
-→ You describe the STEPS
-→ Bash scripts, AWS CLI commands
+
+- "Create a VPC, then create a subnet, then create an EC2..."
+- You describe the STEPS
+- Bash scripts, AWS CLI commands
 
 DECLARATIVE (Terraform):
-"I want 3 EC2 instances, a VPC, and an RDS database"
-→ You describe the DESIRED STATE
-→ Terraform figures out the steps to get there
+
+- "I want 3 EC2 instances, a VPC, and an RDS database"
+- You describe the DESIRED STATE
+- Terraform figures out the steps to get there
 
 KEY BENEFIT: Terraform knows current state vs desired state.
 It only changes what's DIFFERENT (idempotent).
 
 ### The Terraform Workflow
 
+```text
 Write (.tf files)
 │
 ▼
@@ -111,10 +116,12 @@ terraform apply ← Execute changes (creates/updates)
 │
 ▼
 terraform destroy ← Tear down everything (cleanup)
+```
 
 State file (terraform.tfstate) tracks what exists.
-NEVER edit this file manually. NEVER commit it to Git.
-Store it remotely (S3 + DynamoDB lock, Terraform Cloud).
+
+- NEVER edit this file manually. NEVER commit it to Git.
+- Store it remotely (S3 + DynamoDB lock, Terraform Cloud).
 
 ---
 

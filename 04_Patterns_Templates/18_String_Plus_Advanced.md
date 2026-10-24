@@ -375,7 +375,9 @@ class Trie {
 **Goal:** Find a pattern `P` (length M) in a text `T` (length N) in O(N) time.
 
 **How it works (The Intuition):**
+
 Instead of comparing strings `O(M)`, we compare their **hashes** `O(1)`. But computing a hash takes `O(M)`. The magic of _Rolling Hash_ is that we can update the hash in `O(1)` time when the window slides:
+
 `New Hash = (Old Hash - Value of Dropped Char) * Base + Value of Added Char`
 
 ```java
@@ -423,7 +425,9 @@ public int rabinKarp(String text, String pattern) {
 **Goal:** Find all occurrences of pattern `P` in text `T` in linear time O(N+M).
 
 **How it works:**
+
 We concatenate the pattern and text with a special separator: `S = P + "$" + T`.
+
 We then compute the **Z-Array** for `S`. `Z[i]` represents the length of the longest substring starting from `S[i]` which is also a prefix of `S`. If `Z[i] == length(P)`, we found a match starting at index `i - length(P) - 1` in the original text!
 
 ```java

@@ -93,9 +93,9 @@ WORKS:   Interval select, Jump Game, Huffman, Dijkstra, MST
 FAILS:   0/1 Knapsack, Coin Change (arbitrary), LIS, Edit Distance
 ```
 
-📖 **Mental Model:** [11_Greedy_vs_DP_Decision.md](../14_Mental_Models/11_Greedy_vs_DP_Decision.md)
-📖 **Complexity Guide:** [09_Complexity_Intuition.md](../14_Mental_Models/09_Complexity_Intuition.md)
-📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+- 📖 **Mental Model:** [11_Greedy_vs_DP_Decision.md](../14_Mental_Models/11_Greedy_vs_DP_Decision.md)
+- 📖 **Complexity Guide:** [09_Complexity_Intuition.md](../14_Mental_Models/09_Complexity_Intuition.md)
+- 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 

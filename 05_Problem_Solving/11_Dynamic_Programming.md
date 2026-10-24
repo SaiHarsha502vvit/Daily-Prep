@@ -92,9 +92,9 @@ A **spreadsheet** where each cell is computed from earlier cells.
 | Knapsack     | `dp[i][w]` = best with i items, capacity w | 0/1 knapsack, partition equal subset       |
 | Subsequence  | `dp[i]` = best ending at i                 | LIS, word break                            |
 
-📖 **Theory:** [04b_DP_Fundamentals.md](../03_Algorithms/04b_DP_Fundamentals.md)
-📖 **Patterns:** [16_DP_Pattern_Recognition.md](../04_Patterns_Templates/16_DP_Pattern_Recognition.md)
-📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+- 📖 **Theory:** [04b_DP_Fundamentals.md](../03_Algorithms/04b_DP_Fundamentals.md)
+- 📖 **Patterns:** [16_DP_Pattern_Recognition.md](../04_Patterns_Templates/16_DP_Pattern_Recognition.md)
+- 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 

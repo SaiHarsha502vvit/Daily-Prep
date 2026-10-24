@@ -369,10 +369,10 @@ VARIANTS:
 
 **Who executes?** A single loop iteration per index. **When?** Count BEFORE updating the map (so we don't use the current prefix with itself). **What already exists?** `prefixCount={0:1}` at start — this is the critical sentinel representing the empty prefix.
 
-Index 0 (num=3): prefixSum=3. Lookup 3-3=0 → map has 1 → count=1 (subarray [3]). Map={0:1, 3:1}.
-Index 1 (num=-2): prefixSum=1. Lookup 1-3=-2 → 0. Map={0:1, 3:1, 1:1}.
-Index 2 (num=1): prefixSum=2. Lookup 2-3=-1 → 0. Map={0:1, 3:1, 1:1, 2:1}.
-Index 3 (num=3): prefixSum=5. Lookup 5-3=2 → map has 1 → count=2 (subarray [-2,1,3]). Map={0:1, 3:1, 1:1, 2:1, 5:1}.
+- Index 0 (num=3): prefixSum=3. Lookup 3-3=0 → map has 1 → count=1 (subarray [3]). Map={0:1, 3:1}.
+- Index 1 (num=-2): prefixSum=1. Lookup 1-3=-2 → 0. Map={0:1, 3:1, 1:1}.
+- Index 2 (num=1): prefixSum=2. Lookup 2-3=-1 → 0. Map={0:1, 3:1, 1:1, 2:1}.
+- Index 3 (num=3): prefixSum=5. Lookup 5-3=2 → map has 1 → count=2 (subarray [-2,1,3]). Map={0:1, 3:1, 1:1, 2:1, 5:1}.
 
 **Final count=2.** Subarrays: `[3]` (index 0) and `[-2,1,3]` (indices 1-3).
 

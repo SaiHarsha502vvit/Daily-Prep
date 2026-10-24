@@ -70,78 +70,78 @@ Code reviews also:
 
 CORRECTNESS CHECKS
 
-□ Does the code do what the ticket/story asks?
-□ Are edge cases handled? (null, empty, max values)
-□ Are error conditions handled gracefully?
-□ Is the logic correct? (trace through mentally)
-□ Are boundary conditions correct? (off-by-one, ≤ vs <)
-□ Is concurrency handled correctly? (if applicable)
-□ Are database transactions used correctly?
+- [ ] Does the code do what the ticket/story asks?
+- [ ] Are edge cases handled? (null, empty, max values)
+- [ ] Are error conditions handled gracefully?
+- [ ] Is the logic correct? (trace through mentally)
+- [ ] Are boundary conditions correct? (off-by-one, ≤ vs <)
+- [ ] Is concurrency handled correctly? (if applicable)
+- [ ] Are database transactions used correctly?
 
 ### 2. Design & Architecture
 
 DESIGN CHECKS
 
-□ Does this belong in this class/module? (SRP)
-□ Is there unnecessary coupling?
-□ Can this be simplified?
-□ Are abstractions at the right level?
-□ Is the code extensible without modification? (OCP)
-□ Is there code duplication? (DRY, but don't over-DRY)
-□ Are dependencies injected, not hardcoded?
-□ Does the PR do ONE thing? (Single Purpose PRs)
+- [ ] Does this belong in this class/module? (SRP)
+- [ ] Is there unnecessary coupling?
+- [ ] Can this be simplified?
+- [ ] Are abstractions at the right level?
+- [ ] Is the code extensible without modification? (OCP)
+- [ ] Is there code duplication? (DRY, but don't over-DRY)
+- [ ] Are dependencies injected, not hardcoded?
+- [ ] Does the PR do ONE thing? (Single Purpose PRs)
 
 ### 3. Readability & Maintainability
 
 READABILITY CHECKS
 
-□ Are variable/method names descriptive?
-❌ int d; ✅ int daysSinceModification;
-□ Are comments explaining WHY, not WHAT?
-❌ // increment counter ✅ // retry after rate limit
-□ Are methods short and focused? (<20 lines ideal)
-□ Is nesting manageable? (≤3 levels deep)
-□ Can I understand the code without asking the author?
-□ Are magic numbers replaced with named constants?
-❌ if (retries > 3) ✅ if (retries > MAX_RETRIES)
+- [ ] Are variable/method names descriptive?
+  - ❌ int d; ✅ int daysSinceModification;
+- [ ] Are comments explaining WHY, not WHAT?
+  - ❌ // increment counter ✅ // retry after rate limit
+- [ ] Are methods short and focused? (<20 lines ideal)
+- [ ] Is nesting manageable? (≤3 levels deep)
+- [ ] Can I understand the code without asking the author?
+- [ ] Are magic numbers replaced with named constants?
+  - ❌ if (retries > 3) ✅ if (retries > MAX_RETRIES)
 
 ### 4. Testing
 
 TESTING CHECKS
 
-□ Are there tests? (No test = incomplete PR)
-□ Do tests cover happy path AND edge cases?
-□ Are tests readable? (test name describes the scenario)
-□ Are tests independent? (don't depend on order)
-□ Is mock usage appropriate? (not mocking everything)
-□ Do tests actually assert meaningful things?
-❌ assertTrue(true);
-✅ assertEquals("John", user.getName());
-□ Are negative tests included? (invalid input, errors)
+- [ ] Are there tests? (No test = incomplete PR)
+- [ ] Do tests cover happy path AND edge cases?
+- [ ] Are tests readable? (test name describes the scenario)
+- [ ] Are tests independent? (don't depend on order)
+- [ ] Is mock usage appropriate? (not mocking everything)
+- [ ] Do tests actually assert meaningful things?
+  - ❌ assertTrue(true);
+  - ✅ assertEquals("John", user.getName());
+- [ ] Are negative tests included? (invalid input, errors)
 
 ### 5. Security
 
 SECURITY CHECKS
 
-□ Is user input validated/sanitized?
-□ Are SQL queries parameterized? (no string concatenation)
-□ Are secrets/credentials NOT hardcoded?
-□ Is authentication/authorization checked?
-□ Is sensitive data logged? (PII, passwords, tokens)
-□ Are dependencies up-to-date? (no known CVEs)
-□ Is CORS configured correctly?
+- [ ] Is user input validated/sanitized?
+- [ ] Are SQL queries parameterized? (no string concatenation)
+- [ ] Are secrets/credentials NOT hardcoded?
+- [ ] Is authentication/authorization checked?
+- [ ] Is sensitive data logged? (PII, passwords, tokens)
+- [ ] Are dependencies up-to-date? (no known CVEs)
+- [ ] Is CORS configured correctly?
 
 ### 6. Performance
 
 PERFORMANCE CHECKS
 
-□ Any N+1 query problems?
-□ Are database queries indexed properly?
-□ Any unnecessary loops or redundant processing?
-□ Is pagination used for large result sets?
-□ Are expensive operations cached if needed?
-□ Is the time complexity acceptable for the data size?
-□ Are there memory leaks? (unclosed resources, growing lists)
+- [ ] Any N+1 query problems?
+- [ ] Are database queries indexed properly?
+- [ ] Any unnecessary loops or redundant processing?
+- [ ] Is pagination used for large result sets?
+- [ ] Are expensive operations cached if needed?
+- [ ] Is the time complexity acceptable for the data size?
+- [ ] Are there memory leaks? (unclosed resources, growing lists)
 
 ---
 
@@ -151,19 +151,19 @@ PERFORMANCE CHECKS
 
 FEEDBACK TONE GUIDE
 
-Level 1 — MUST FIX (Bugs, security, correctness):
-"This will cause a NullPointerException when user is null.
-Need to add a null check here."
+- Level 1 — MUST FIX (Bugs, security, correctness):
+  > "This will cause a NullPointerException when user is null.
+  > Need to add a null check here."
 
-Level 2 — SUGGESTION (Design, readability):
-"Consider extracting this into a separate method for clarity.
-Something like calculateTotalDiscount()?"
+- Level 2 — SUGGESTION (Design, readability):
+  > "Consider extracting this into a separate method for clarity.
+  > Something like calculateTotalDiscount()?"
 
-Level 3 — NIT (Style, preference):
-"Nit: I'd prefer using var here for readability, but up to you."
+- Level 3 — NIT (Style, preference):
+  > "Nit: I'd prefer using var here for readability, but up to you."
 
-Level 4 — PRAISE (Good stuff!):
-"Nice! This error handling is really clean."
+- Level 4 — PRAISE (Good stuff!):
+  > "Nice! This error handling is really clean."
 
 LABEL YOUR COMMENTS with the level so the author knows
 what's blocking and what's optional.

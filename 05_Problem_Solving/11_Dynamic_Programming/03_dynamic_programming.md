@@ -4,9 +4,9 @@
 > Page 3 of 5 in **Dynamic Programming**
 
 
-**Pattern:** `dp[i][j]` = answer at grid cell (i,j) or matching i elements of seq1 with j elements of seq2.
-**Grid problems:** `dp[i][j] = dp[i-1][j] + dp[i][j-1]` (paths) or `min(dp[i-1][j], dp[i][j-1]) + grid[i][j]` (cost).
-**Two-sequence:** Build a 2D table. Diagonal = match, else take best of skipping one from each sequence.
+- **Pattern:** `dp[i][j]` = answer at grid cell (i,j) or matching i elements of seq1 with j elements of seq2.
+- **Grid problems:** `dp[i][j] = dp[i-1][j] + dp[i][j-1]` (paths) or `min(dp[i-1][j], dp[i][j-1]) + grid[i][j]` (cost).
+- **Two-sequence:** Build a 2D table. Diagonal = match, else take best of skipping one from each sequence.
 
 ## Problem 164: Unique Paths
 
@@ -177,10 +177,11 @@ public int longestCommonSubsequence(String text1, String text2) {
 ## Problem 168: Edit Distance
 
 💡 **Approach:** Classic 2-sequence DP. `dp[i][j]` = min operations to convert `word1[0..i-1]` to `word2[0..j-1]`.
-Three choices at each step: Insert (`dp[i][j-1]+1`), Delete (`dp[i-1][j]+1`), Replace (`dp[i-1][j-1]+1`).
-If characters match: `dp[i][j] = dp[i-1][j-1]` (no operation needed).
-**Why this matters:** Used in spell-check, DNA sequence alignment, diff tools.
-**Time:** O(mn) | **Space:** O(mn), optimizable to O(min(m,n))
+
+- Three choices at each step: Insert (`dp[i][j-1]+1`), Delete (`dp[i-1][j]+1`), Replace (`dp[i-1][j-1]+1`).
+- If characters match: `dp[i][j] = dp[i-1][j-1]` (no operation needed).
+- **Why this matters:** Used in spell-check, DNA sequence alignment, diff tools.
+- **Time:** O(mn) | **Space:** O(mn), optimizable to O(min(m,n))
 
 **LeetCode 72** 🔗 https://leetcode.com/problems/edit-distance/
 

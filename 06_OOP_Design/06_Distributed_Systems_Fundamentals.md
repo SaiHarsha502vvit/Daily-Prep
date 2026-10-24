@@ -79,18 +79,21 @@ No. Paxos and Raft assume nodes crash or are slow but do not lie; Byzantine faul
 THE FUNDAMENTAL PROBLEM
 
 Single machine: Simple, consistent, but limited
-→ CPU/Memory/Disk have hard ceilings
-→ Single point of failure (SPOF)
+
+- CPU/Memory/Disk have hard ceilings
+- Single point of failure (SPOF)
 
 Distributed system: Multiple machines working together
-→ Scale beyond single machine limits
-→ Survive individual machine failures
-→ BUT: introduces network as unreliable component
+
+- Scale beyond single machine limits
+- Survive individual machine failures
+- BUT: introduces network as unreliable component
 
 REAL-WORLD ANALOGY: One chef vs a restaurant kitchen
-One chef: Perfect coordination, limited throughput
-Kitchen team: High throughput, but needs communication protocols
-→ Miscommunication = wrong orders, duplicate dishes, lost tickets
+
+- One chef: Perfect coordination, limited throughput
+- Kitchen team: High throughput, but needs communication protocols
+  - Miscommunication = wrong orders, duplicate dishes, lost tickets
 
 ---
 

@@ -4,9 +4,9 @@
 > Page 2 of 4 in **Greedy**
 
 
-**Pattern:** Sort by end time. Greedily pick non-overlapping intervals.
-**Key insight:** Finishing earliest leaves the most room for future activities.
-**Template:** Sort by `end`, keep `lastEnd`, skip if `start < lastEnd`.
+- **Pattern:** Sort by end time. Greedily pick non-overlapping intervals.
+- **Key insight:** Finishing earliest leaves the most room for future activities.
+- **Template:** Sort by `end`, keep `lastEnd`, skip if `start < lastEnd`.
 
 ## Problem 189: Meeting Rooms
 

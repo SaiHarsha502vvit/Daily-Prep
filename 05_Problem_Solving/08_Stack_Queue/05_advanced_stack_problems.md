@@ -4,9 +4,9 @@
 > Page 5 of 6 in **Stack Queue**
 
 
-**Pattern:** Greedy stack operations — use stack to build optimal sequence by popping suboptimal elements.
-**Remove K Digits:** Pop stack top if it's larger than current digit (greedy: smaller digits first).
-**132 Pattern:** Monotonic stack tracking the "2" (third element) while scanning backwards.
+- **Pattern:** Greedy stack operations — use stack to build optimal sequence by popping suboptimal elements.
+- **Remove K Digits:** Pop stack top if it's larger than current digit (greedy: smaller digits first).
+- **132 Pattern:** Monotonic stack tracking the "2" (third element) while scanning backwards.
 
 ## Problem 96: Remove K Digits
 

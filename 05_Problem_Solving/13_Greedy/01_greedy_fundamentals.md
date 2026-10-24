@@ -106,19 +106,29 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 ## The Mental Model: "Sort + Scan + Never Look Back"
 
 Almost EVERY greedy problem follows this 3-step recipe:
-STEP 1: SORT the input by some criterion
-STEP 2: SCAN left to right, making the best choice at each step
-STEP 3: NEVER reconsider a past choice
+
+- STEP 1: SORT the input by some criterion
+- STEP 2: SCAN left to right, making the best choice at each step
+- STEP 3: NEVER reconsider a past choice
+
 The KEY is knowing HOW to sort:
-Intervals: Sort by END TIME → finish earliest, maximize room
-Jump Game: Don't sort! Scan L→R, track farthest reachable
-Gas Station: Scan L→R, track surplus (gas - cost). Reset at deficit.
-Task Scheduler: Sort by frequency → schedule most frequent first
-Assign Cookies: Sort both arrays → match smallest cookie to child
-HOW TO VERIFY (Exchange Argument — the proof technique):
-"If I swap my greedy choice with any other choice, the solution
-gets WORSE or stays the SAME → greedy is optimal."
-WORKED EXAMPLE — Activity Selection:
+
+| Problem | Sort / scan rule |
+| --- | --- |
+| Intervals | Sort by END TIME → finish earliest, maximize room |
+| Jump Game | Don't sort! Scan L→R, track farthest reachable |
+| Gas Station | Scan L→R, track surplus (gas - cost). Reset at deficit. |
+| Task Scheduler | Sort by frequency → schedule most frequent first |
+| Assign Cookies | Sort both arrays → match smallest cookie to child |
+
+**HOW TO VERIFY (Exchange Argument — the proof technique):**
+
+> "If I swap my greedy choice with any other choice, the solution
+> gets WORSE or stays the SAME → greedy is optimal."
+
+**WORKED EXAMPLE — Activity Selection:**
+
+```text
 Activities: [(1,3), (2,5), (4,7), (6,8), (5,9)]
 Sort by end: [(1,3), (2,5), (4,7), (6,8), (5,9)]
 Pick (1,3) ✓ — ends earliest
@@ -127,6 +137,8 @@ Pick (4,7) ✓ — starts at 4 ≥ 3
 Pick (6,8) — starts at 6 < 7? YES → skip
 Skip (5,9) — starts at 5 < 7 → skip
 Result: [(1,3), (4,7)] = 2 activities
+```
+
 Proof: If we replaced (1,3) with (2,5), we'd free LESS room for
 future activities. Swapping always makes it worse → greedy is correct.
 

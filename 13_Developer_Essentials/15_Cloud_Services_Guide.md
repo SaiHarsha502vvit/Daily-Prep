@@ -266,34 +266,37 @@ SERVERLESS — No Server to Manage
 HOW IT WORKS:
 Event → Function Executes → Returns → Scales to Zero
 
+```java
 // AWS Lambda Example (Java)
-public class Handler implements RequestHandler<APIGatewayProxy,
-APIGatewayProxy> {
-public APIGatewayProxyResponseEvent handleRequest(
-APIGatewayProxyRequestEvent input, Context context) {
-String body = input.getBody();
-// process...
-return new APIGatewayProxyResponseEvent()
-.withStatusCode(200)
-.withBody("{\"message\": \"success\"}");
+public class Handler implements RequestHandler<APIGatewayProxyRequestEvent,
+        APIGatewayProxyResponseEvent> {
+    public APIGatewayProxyResponseEvent handleRequest(
+            APIGatewayProxyRequestEvent input, Context context) {
+        String body = input.getBody();
+        // process...
+        return new APIGatewayProxyResponseEvent()
+            .withStatusCode(200)
+            .withBody("{\"message\": \"success\"}");
+    }
 }
-}
+```
 
-GOOD FOR: BAD FOR:
+| GOOD FOR | BAD FOR |
+| --- | --- |
+| API endpoints | Long-running tasks (>15 min) |
+| Event processing | WebSockets |
+| Scheduled jobs (cron) | Stateful applications |
+| File processing triggers | High-throughput streaming |
+| Low/variable traffic | Cold-start-sensitive apps |
 
-- API endpoints • Long-running tasks (>15 min)
-- Event processing • WebSockets
-- Scheduled jobs (cron) • Stateful applications
-- File processing triggers • High-throughput streaming
-- Low/variable traffic • Cold-start-sensitive apps
-
-COLD START: First invocation is slow (JVM = 3-10s)
-SOLUTION: SnapStart (AWS), Provisioned Concurrency,
-or use Node.js/Python for latency-sensitive functions
+- COLD START: First invocation is slow (JVM = 3-10s)
+- SOLUTION: SnapStart (AWS), Provisioned Concurrency,
+  or use Node.js/Python for latency-sensitive functions
 
 ### Storage: S3 / Blob Storage
 
-## Class │ Use Case │ Cost
+| Class | Use Case | Cost |
+| --- | --- | --- |
 
 | Standard | Frequent access | $$$ |
 | Intelligent | Unknown access | $$ + fee |
@@ -378,24 +381,24 @@ Users
 COST MISTAKES DEVELOPERS MAKE
 
 1. Leaving resources running
-   → Use auto-shutdown for dev/test environments
-   → Tag everything: Environment=dev, Owner=your-name
+   - Use auto-shutdown for dev/test environments
+   - Tag everything: Environment=dev, Owner=your-name
 
 2. Over-provisioning
-   → Start small (t3.small), scale up when needed
-   → Use auto-scaling (scale OUT not UP)
+   - Start small (t3.small), scale up when needed
+   - Use auto-scaling (scale OUT not UP)
 
 3. Not using the right storage tier
-   → Old logs in S3 Standard? Move to Glacier
-   → Use lifecycle policies for automatic transitions
+   - Old logs in S3 Standard? Move to Glacier
+   - Use lifecycle policies for automatic transitions
 
 4. Data transfer costs
-   → Data INTO cloud = free, data OUT = expensive
-   → Keep processing close to data (same region)
-   → Use VPC endpoints for AWS service calls
+   - Data INTO cloud = free, data OUT = expensive
+   - Keep processing close to data (same region)
+   - Use VPC endpoints for AWS service calls
 
 5. Not using Reserved/Savings Plans
-   → If you know you'll run 24/7 for a year → Reserve it
+   - If you know you'll run 24/7 for a year → Reserve it
 
 ---
 
@@ -403,24 +406,26 @@ COST MISTAKES DEVELOPERS MAKE
 
 SPRING BOOT → CLOUD MAPPING
 
-LOCAL │ CLOUD EQUIVALENT
-──────────────────────────┼──────────────────────────────
-application.properties │ AWS Parameter Store / K8s ConfigMap
-Secrets in .env │ AWS Secrets Manager / Key Vault
-Local file uploads │ S3 / Blob Storage
-In-memory H2 database │ RDS PostgreSQL / Azure SQL
-@Cacheable (in-memory) │ ElastiCache Redis
-@Async with ThreadPool │ SQS + Lambda workers
-@Scheduled cron jobs │ EventBridge / CloudWatch Events
-Logback console output │ CloudWatch Logs / ELK
-Actuator /health │ ALB health checks
-localhost:8080 │ Route 53 → ALB → ECS/EC2
+| LOCAL | CLOUD EQUIVALENT |
+| --- | --- |
+| application.properties | AWS Parameter Store / K8s ConfigMap |
+| Secrets in .env | AWS Secrets Manager / Key Vault |
+| Local file uploads | S3 / Blob Storage |
+| In-memory H2 database | RDS PostgreSQL / Azure SQL |
+| @Cacheable (in-memory) | ElastiCache Redis |
+| @Async with ThreadPool | SQS + Lambda workers |
+| @Scheduled cron jobs | EventBridge / CloudWatch Events |
+| Logback console output | CloudWatch Logs / ELK |
+| Actuator /health | ALB health checks |
+| localhost:8080 | Route 53 → ALB → ECS/EC2 |
 
 SPRING CLOUD AWS:
+```xml
 <dependency>
-<groupId>io.awspring.cloud</groupId>
-<artifactId>spring-cloud-aws-starter</artifactId>
+    <groupId>io.awspring.cloud</groupId>
+    <artifactId>spring-cloud-aws-starter</artifactId>
 </dependency>
+```
 → Auto-configures S3, SQS, SNS, Parameter Store, etc.
 
 ---

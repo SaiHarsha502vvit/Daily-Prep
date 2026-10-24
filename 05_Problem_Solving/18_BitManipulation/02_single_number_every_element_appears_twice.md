@@ -16,15 +16,22 @@ Output: 4
 - Commutative + associative → order doesn't matter
 
 **Trace**:
+
+```text
 4 ^ 1 ^ 2 ^ 1 ^ 2
 = 4 ^ (1 ^ 1) ^ (2 ^ 2) ← rearrange (commutative)
 = 4 ^ 0 ^ 0
 = 4 ← answer!
+```
 
 **Proof Of Correctness**:
+
+```text
 Let S = {a₁, a₁, a₂, a₂, ..., aₖ, aₖ, x} where x is unique
 XOR(S) = a₁⊕a₁ ⊕ a₂⊕a₂ ⊕ ... ⊕ aₖ⊕aₖ ⊕ x
 = 0 ⊕ 0 ⊕ ... ⊕ 0 ⊕ x = x ∎
+```
+
 Time: O(n) Space: O(1)
 
 **Full Solution:**

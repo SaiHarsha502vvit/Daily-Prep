@@ -62,38 +62,43 @@ at every step.
 
 ## The Three Mental Models
 
-MODEL 1: "RUNNER TECHNIQUE" (slow/fast pointers)
-Two pointers traverse the list at DIFFERENT SPEEDS.
-Fast moves 2 steps, slow moves 1 step per iteration.
+**MODEL 1: "RUNNER TECHNIQUE" (slow/fast pointers)**
+
+Two pointers traverse the list at DIFFERENT SPEEDS. Fast moves 2 steps, slow moves 1 step per iteration.
+
 Applications:
 
 - Detect cycle: if fast meets slow → cycle exists
 - Find middle: when fast reaches end, slow is at middle
 - Find kth from end: start fast k steps ahead, then move both
-  WHY IT WORKS (formal):
-  Let n = list length. After t steps: slow at position t, fast at 2t.
-  When fast reaches position n: t = n/2, so slow is at n/2 (middle).
-  For cycle of length c: relative speed is 1 node/step,
-  so fast catches slow in at most c steps after both enter cycle.
-  MODEL 2: "DUMMY HEAD" (sentinel node)
-  Create a fake node before the real head:
-  dummy → [real head] → [node2] → ...
 
-**Why**: Eliminates ALL special cases where head might change.
-Without dummy: if you delete head, you need if-else logic.
-With dummy: just process uniformly, return dummy.next.
+WHY IT WORKS (formal):
+
+- Let n = list length. After t steps: slow at position t, fast at 2t.
+- When fast reaches position n: t = n/2, so slow is at n/2 (middle).
+- For cycle of length c: relative speed is 1 node/step, so fast catches slow in at most c steps after both enter cycle.
+
+**MODEL 2: "DUMMY HEAD" (sentinel node)**
+
+Create a fake node before the real head:
+
+`dummy → [real head] → [node2] → ...`
+
+**Why**: Eliminates ALL special cases where head might change. Without dummy: if you delete head, you need if-else logic. With dummy: just process uniformly, return dummy.next.
+
 Use dummy when:
 
 - Merging two lists (new head unknown until comparison)
 - Removing nodes (head itself might be removed)
 - Partitioning (building two sub-lists, heads unknown)
-  MODEL 3: "REVERSE AS YOU GO" (in-place reversal)
-  Reverse pointers one-by-one during a single traversal.
-  Uses three pointers: prev, curr, next.
-  Before: prev → null, curr → [1] → [2] → [3] → null
-  After: null ← [1] ← [2] ← [3] ← prev, curr → null
-  Loop invariant: After iteration i, the first i nodes are reversed
-  and prev points to the new head of the reversed portion.
+
+**MODEL 3: "REVERSE AS YOU GO" (in-place reversal)**
+
+Reverse pointers one-by-one during a single traversal. Uses three pointers: prev, curr, next.
+
+- Before: `prev → null, curr → [1] → [2] → [3] → null`
+- After: `null ← [1] ← [2] ← [3] ← prev, curr → null`
+- Loop invariant: After iteration i, the first i nodes are reversed and prev points to the new head of the reversed portion.
 
 ## Formal Definition (Mit / Kth Style)
 
@@ -132,15 +137,18 @@ Array merge sort needs O(n) auxiliary space because merging two sorted subarrays
 ## Decision Flowchart: Which Linked List Technique
 
 DECISION FLOWCHART
-"Find middle / cycle / kth from end?" → Runner (slow/fast)
-"Reverse the list or a sublist?" → Three-pointer reversal
-"Merge two sorted lists?" → Dummy head + compare
-"Head might change (delete/insert)?" → Dummy head sentinel
-"Copy list with random pointers?" → Interleave technique
-"Merge K sorted lists?" → Min-heap of heads
-"Sort a linked list?" → Merge sort (natural)
-"Palindrome check?" → Find mid + reverse half
-"Partition around value?" → Two dummy heads
+
+| Question | Technique |
+| --- | --- |
+| "Find middle / cycle / kth from end?" | Runner (slow/fast) |
+| "Reverse the list or a sublist?" | Three-pointer reversal |
+| "Merge two sorted lists?" | Dummy head + compare |
+| "Head might change (delete/insert)?" | Dummy head sentinel |
+| "Copy list with random pointers?" | Interleave technique |
+| "Merge K sorted lists?" | Min-heap of heads |
+| "Sort a linked list?" | Merge sort (natural) |
+| "Palindrome check?" | Find mid + reverse half |
+| "Partition around value?" | Two dummy heads |
 
 > 🔬 **Section Challenge — Decision Flowchart: Which Linked List Technique**
 

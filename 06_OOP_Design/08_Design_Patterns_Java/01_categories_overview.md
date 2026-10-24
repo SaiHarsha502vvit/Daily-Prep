@@ -41,9 +41,11 @@ Design patterns as a named discipline began with **Christopher Alexander's _A Pa
 
 ### 1. Singleton — One Instance Only
 
+```text
 PROBLEM: Need exactly ONE instance of a class globally.
 ANALOGY: There's only ONE President of a country at a time.
 USE: Database connection pool, Logger, Configuration, Cache
+```
 
 ```java
 // Thread-safe Singleton using enum (Joshua Bloch's recommended approach)

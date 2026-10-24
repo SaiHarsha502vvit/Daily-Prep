@@ -46,29 +46,33 @@
 THE RESTAURANT ANALOGY
 
 PROCESS = A separate restaurant
-→ Own building (memory space), own kitchen, own staff
-→ Can't share ingredients directly (IPC needed)
-→ One restaurant crash doesn't affect others
-→ EXPENSIVE to open (fork/exec = heavy)
+
+- Own building (memory space), own kitchen, own staff
+- Can't share ingredients directly (IPC needed)
+- One restaurant crash doesn't affect others
+- EXPENSIVE to open (fork/exec = heavy)
 
 THREAD = A chef in the same restaurant
-→ Shares kitchen (memory space) with other chefs
-→ Can grab same ingredients (shared state → race conditions!)
-→ One chef dropping a knife → whole kitchen affected
-→ MEDIUM cost to hire (create thread ~1MB stack per thread)
-→ Scheduled by the OS (preemptive — OS decides who cooks when)
+
+- Shares kitchen (memory space) with other chefs
+- Can grab same ingredients (shared state → race conditions!)
+- One chef dropping a knife → whole kitchen affected
+- MEDIUM cost to hire (create thread ~1MB stack per thread)
+- Scheduled by the OS (preemptive — OS decides who cooks when)
 
 COROUTINE = A recipe step a chef can pause and resume
-→ Chef says "pasta is boiling, I'll do the sauce meanwhile"
-→ Chef VOLUNTARILY pauses pasta, switches to sauce
-→ NO OS involvement — the program decides when to switch
-→ EXTREMELY cheap (~few KB, no OS thread needed)
-→ Runs on top of threads (many coroutines per thread)
+
+- Chef says "pasta is boiling, I'll do the sauce meanwhile"
+- Chef VOLUNTARILY pauses pasta, switches to sauce
+- NO OS involvement — the program decides when to switch
+- EXTREMELY cheap (~few KB, no OS thread needed)
+- Runs on top of threads (many coroutines per thread)
 
 NUMBERS:
-Processes: ~10-100 (expensive)
-OS Threads: ~1000-10000 (each needs ~1MB stack)
-Coroutines: ~100,000-1,000,000+ (each needs ~few KB)
+
+- Processes: ~10-100 (expensive)
+- OS Threads: ~1000-10000 (each needs ~1MB stack)
+- Coroutines: ~100,000-1,000,000+ (each needs ~few KB)
 
 ```
 Memory Layout Comparison:

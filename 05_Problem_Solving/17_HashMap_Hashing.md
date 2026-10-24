@@ -95,9 +95,9 @@ Key reason:
 ⚠️ Java PQ is MIN-HEAP. Max-heap: new PriorityQueue<>(Comparator.reverseOrder())
 ```
 
-📖 **Mental Model:** [04_Array_String_Thinking.md](../14_Mental_Models/04_Array_String_Thinking.md)
-📖 **Space-Time Tradeoff:** [12_Space_Time_Tradeoffs.md](../14_Mental_Models/12_Space_Time_Tradeoffs.md)
-📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+- 📖 **Mental Model:** [04_Array_String_Thinking.md](../14_Mental_Models/04_Array_String_Thinking.md)
+- 📖 **Space-Time Tradeoff:** [12_Space_Time_Tradeoffs.md](../14_Mental_Models/12_Space_Time_Tradeoffs.md)
+- 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 

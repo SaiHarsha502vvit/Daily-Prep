@@ -78,10 +78,11 @@ DEFINITION:
 Data Flow = How data moves through and transforms in your system
 
 KEY QUESTIONS:
-• Where does data come from? (Source)
-• What happens to it? (Transform)
-• Where does it go? (Destination)
-• What form does it take? (Format)
+
+- Where does data come from? (Source)
+- What happens to it? (Transform)
+- Where does it go? (Destination)
+- What form does it take? (Format)
 
 DATA FLOW TYPES:
 

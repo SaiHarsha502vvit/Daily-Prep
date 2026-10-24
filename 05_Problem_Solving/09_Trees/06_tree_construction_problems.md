@@ -4,9 +4,9 @@
 > Page 6 of 7 in **Trees**
 
 
-**Pattern:** Divide-and-conquer using traversal properties.
-**Key insight:** Preorder's first element = root. Find that root in inorder → everything left = left subtree, everything right = right subtree. Recurse.
-**Optimization:** Use a HashMap to store inorder indices for O(1) root lookup instead of O(n) scan.
+- **Pattern:** Divide-and-conquer using traversal properties.
+- **Key insight:** Preorder's first element = root. Find that root in inorder → everything left = left subtree, everything right = right subtree. Recurse.
+- **Optimization:** Use a HashMap to store inorder indices for O(1) root lookup instead of O(n) scan.
 
 ## Problem 127: Construct Binary Tree from Preorder and Inorder
 

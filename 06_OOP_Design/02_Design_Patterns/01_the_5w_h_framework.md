@@ -39,12 +39,14 @@ software design. They are templates, not finished code.
 "I need to make food" → Start from scratch every time
 
 **With Patterns**:
-"I need to make curry" → Use curry recipe (known solution)
-"I need to bake" → Use baking techniques (known approach)
+
+- "I need to make curry" → Use curry recipe (known solution)
+- "I need to bake" → Use baking techniques (known approach)
 
 **In Software**:
-"I need one global config" → Use Singleton pattern
-"I need to create objects flexibly" → Use Factory pattern
+
+- "I need one global config" → Use Singleton pattern
+- "I need to create objects flexibly" → Use Factory pattern
 
 **Historical Evolution**:
 

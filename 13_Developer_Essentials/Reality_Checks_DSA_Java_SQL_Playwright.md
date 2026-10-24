@@ -453,10 +453,10 @@ for (int i = 0; i < 10000; i++) {
 
 **What actually happens:**
 
-Iteration 1: creates a new String of length 1. Copies 0 + 1 chars.
-Iteration 2: creates a new String of length 2. Copies 1 + 1 chars.
-...
-Iteration n: creates a new String of length n. Copies n-1 + 1 chars.
+- Iteration 1: creates a new String of length 1. Copies 0 + 1 chars.
+- Iteration 2: creates a new String of length 2. Copies 1 + 1 chars.
+- ...
+- Iteration n: creates a new String of length n. Copies n-1 + 1 chars.
 
 Total characters copied: 0 + 1 + 2 + ... + (n-1) = n(n-1)/2 = **O(n²)**.
 

@@ -301,6 +301,7 @@ DNS RECORDS:
 TTL (Time To Live): How long to cache the record.
 Low TTL (60s) = changes propagate fast but more DNS queries.
 High TTL (86400s) = fewer queries but changes are slow.
+```
 
 ### Diagram: DNS Resolution with Timing
 
@@ -334,7 +335,6 @@ USER TYPES: example.com
    TTL: 86400s (cache for 24h)
 
 Total worst case: ~600ms (cold cache)
-```
 ```
 
 ---
@@ -505,31 +505,16 @@ Total time: 100-500ms for a typical API call.
 
 ## 10. Common Networking Errors (What They Mean)
 
-Error │ Cause → Fix
-───────────────────────────────┼────────────────────────────────
-Connection refused │ Nothing running on that port.
-│ Start the server! Check port.
-│
-Connection timed out │ Firewall blocking, wrong IP,
-│ server unreachable. Check SG.
-│
-Port already in use │ Another process has the port.
-│ Kill it or use different port.
-│
-ECONNRESET │ Other side closed connection.
-│ Server crashed mid-request.
-│
-DNS resolution failed │ Domain doesn't exist or DNS
-│ server down. Check domain name.
-│
-CORS error (browser only) │ Server doesn't allow your
-│ origin. Add CORS headers.
-│
-SSL handshake failed │ Certificate expired or invalid.
-│ Renew cert. Check date/domain.
-│
-502 Bad Gateway │ Load balancer can't reach
-│ backend. Backend is down.
+| Error | Cause → Fix |
+| --- | --- |
+| Connection refused | Nothing running on that port. Start the server! Check port. |
+| Connection timed out | Firewall blocking, wrong IP, server unreachable. Check SG. |
+| Port already in use | Another process has the port. Kill it or use different port. |
+| ECONNRESET | Other side closed connection. Server crashed mid-request. |
+| DNS resolution failed | Domain doesn't exist or DNS server down. Check domain name. |
+| CORS error (browser only) | Server doesn't allow your origin. Add CORS headers. |
+| SSL handshake failed | Certificate expired or invalid. Renew cert. Check date/domain. |
+| 502 Bad Gateway | Load balancer can't reach backend. Backend is down. |
 
 ---
 

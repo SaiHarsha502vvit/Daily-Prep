@@ -216,9 +216,11 @@ Pattern: "ABABCABAB"
 
 Step 1: Build LPS (Longest Proper Prefix which is also Suffix)
 
+```text
 Pattern: A B A B C A B A B
-Index: 0 1 2 3 4 5 6 7 8
-LPS: [0,0,1,2,0,1,2,3,4]
+Index:   0 1 2 3 4 5 6 7 8
+LPS:     [0,0,1,2,0,1,2,3,4]
+```
 
 LPS meaning:
 
@@ -227,15 +229,19 @@ LPS meaning:
 
 Step 2: Search using LPS
 
-Text: A B A B D A B A C D A B A B C A B A B
+```text
+Text:    A B A B D A B A C D A B A B C A B A B
 Pattern: A B A B C
-↑ mismatch at index 4
+                 ↑ mismatch at index 4
+```
 
 LPS[3] = 2, so pattern can shift to reuse matched "AB":
 
-Text: A B A B D A B A C D A B A B C A B A B
-Pattern: A B A B C
-↑ continue from here (saved 2 comparisons!)
+```text
+Text:    A B A B D A B A C D A B A B C A B A B
+Pattern:     A B A B C
+                 ↑ continue from here (saved 2 comparisons!)
+```
 
 Without KMP: Would start from beginning each time → O(N×M)
 With KMP: Reuse matched portion → O(N+M)

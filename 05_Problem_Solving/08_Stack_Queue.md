@@ -92,9 +92,9 @@ STACK → "What's the LAST (most recent) unresolved thing?"
 QUEUE → "What's the OLDEST (arrived first) thing that I need to process?"
 ```
 
-📖 **Mental Model:** [04_Array_String_Thinking.md](../14_Mental_Models/04_Array_String_Thinking.md)
-📖 **Complexity Analysis:** [09_Complexity_Intuition.md](../14_Mental_Models/09_Complexity_Intuition.md)
-📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+- 📖 **Mental Model:** [04_Array_String_Thinking.md](../14_Mental_Models/04_Array_String_Thinking.md)
+- 📖 **Complexity Analysis:** [09_Complexity_Intuition.md](../14_Mental_Models/09_Complexity_Intuition.md)
+- 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 

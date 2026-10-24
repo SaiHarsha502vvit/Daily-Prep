@@ -202,6 +202,8 @@ flowchart TD
     RR -.->|"git pull"| LR
 ```
 
+**How to read this diagram.** Solid arrows move your work forward: `git add` takes files from the working directory to the staging area, `git commit` records them in the local repo, and `git push` sends that history to the remote repo on GitHub. Dashed arrows go back: `git restore` pulls a file out of staging, and `git pull` brings remote changes down into the local repo. Notice that only the local repo connects to the remote — staging never reaches it directly.
+
 ## Mental Model 3: Commits are a Linked List
 
 Each commit contains: **(1)** snapshot of all files, **(2)** author + timestamp, **(3)** message, **(4)** pointer to parent commit(s).
@@ -211,6 +213,8 @@ flowchart RL
     C3["commit_3<br>abc123 · Add login"] --> C2["commit_2<br>def456 · Fix typo"]
     C2 --> C1["commit_1<br>789abc · Initial commit"]
 ```
+
+**How to read this diagram.** Each box is one commit, labelled with a short hash and its message, and each arrow points from a commit to its parent: commit_3 (Add login) points to commit_2 (Fix typo), which points to commit_1 (the initial commit). Notice that the arrows run from newer to older — a commit stores a pointer to its parent, which is what makes the history a linked list.
 
 💡 **Hash** = SHA-1 of content + parent hash + metadata. If ANY byte changes → completely different hash → tamper-proof history.
 
@@ -340,6 +344,8 @@ gitGraph
     merge feature/login id: "merge"
 ```
 
+**How to read this diagram.** Time runs left to right along the `main` line: v1.0 stable and v1.1 stable, then `feature/login` branches off and gets two commits (login WIP, login done) while `main` independently receives a hotfix. The feature is merged back into `main` at the end with a merge commit. Notice that the hotfix reaches `main` without waiting for the unfinished feature.
+
 **Bug fix?** Branch from main → fix → merge → deploy.
 **Feature ready?** Merge feature into main.
 
@@ -391,6 +397,8 @@ gitGraph
     merge hotfix id: "hotfix" tag: "v1.0.1"
 ```
 
+**How to read this diagram.** Git Flow starts from `init` on `main` and adds a long-lived `develop` branch. `feature/X` branches off `develop` (feat-1, feat-2) and merges back into it; `release/1.0` then branches off `develop` for release-prep and merges into `main` tagged v1.0; finally a `hotfix` branch merges straight into `main` tagged v1.0.1. Notice that features reach `main` only through `develop` and a release branch, while a hotfix goes directly to `main`.
+
 **GitHub Flow** _(Simple, Modern)_:
 
 ```mermaid
@@ -404,6 +412,8 @@ gitGraph
     merge feature id: "PR-merge"
     commit id: "v3"
 ```
+
+**How to read this diagram.** GitHub Flow has a single main line: v1 and v2, then a `feature` branch with two commits (work, done), merged back as PR-merge, after which `main` continues with v3. Notice how few moving parts there are compared with Git Flow — just `main` and one feature branch per change.
 
 **Recommendation**: Learning/personal → **GitHub Flow**. Enterprise/team → **Git Flow**.
 

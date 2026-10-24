@@ -28,10 +28,11 @@ They show HOW things move from start to finish.
    Example: Order → Payment → Inventory → Shipping → Delivery
 
 💡 **ANALOGY: City Roads**
-USER FLOW = The route a person takes (Home → Work → Gym → Home)
-DATA FLOW = The route packages take (Warehouse → Truck → Store → You)
-SYSTEM FLOW = The city's infrastructure (Roads, Traffic lights, Signs)
-CONTROL FLOW = Traffic rules (Stop signs, One-ways, Speed limits)
+
+- USER FLOW = The route a person takes (Home → Work → Gym → Home)
+- DATA FLOW = The route packages take (Warehouse → Truck → Store → You)
+- SYSTEM FLOW = The city's infrastructure (Roads, Traffic lights, Signs)
+- CONTROL FLOW = Traffic rules (Stop signs, One-ways, Speed limits)
 
 ## What Problem Do Flows Solve
 
@@ -137,18 +138,16 @@ In a monolith, the flow is IN-PROCESS: method calls within the same JVM. A stack
 
 ## ⭐ Growth Mindset: From Flow Reader To Flow Creator ⭐
 
-LEVEL 1 - READER:
-"I can understand flow diagrams when someone shows me"
-LEVEL 2 - TRACER:
-"I can trace through existing code and create flow diagrams"
-LEVEL 3 - PLANNER:
-"I design flows BEFORE writing code"
-LEVEL 4 - OPTIMIZER:
-"I can look at flows and identify improvements"
-LEVEL 5 - ARCHITECT:
-"I design flows for entire systems with multiple services"
-THE CREATOR'S QUESTION:
-"How would I design a flow for a feature that doesn't exist yet?"
+- LEVEL 1 - READER: "I can understand flow diagrams when someone shows me"
+- LEVEL 2 - TRACER: "I can trace through existing code and create flow diagrams"
+- LEVEL 3 - PLANNER: "I design flows BEFORE writing code"
+- LEVEL 4 - OPTIMIZER: "I can look at flows and identify improvements"
+- LEVEL 5 - ARCHITECT: "I design flows for entire systems with multiple services"
+
+**THE CREATOR'S QUESTION:**
+
+> "How would I design a flow for a feature that doesn't exist yet?"
+
 Example: "Design the flow for a new 'Split Bill' feature in a payment app"
 
 - What inputs are needed?

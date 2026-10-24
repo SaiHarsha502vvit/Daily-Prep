@@ -13,20 +13,26 @@ BINARY SEARCH - THE FOUNDATION
 
 Search for target in sorted array. Return index or -1.
 
-Input: nums = [-1, 0, 3, 5, 9, 12], target = 9
-Output: 4
+- Input: nums = [-1, 0, 3, 5, 9, 12], target = 9
+- Output: 4
 
 Visual:
+
+```text
 [-1, 0, 3, 5, 9, 12]
 L M R mid=5 < 9, search right
 L M R mid=9 = target ✓
+```
 
 Template:
+
+```text
 while (left <= right)
-mid = left + (right - left) / 2
-if target found: return mid
-if target > mid: left = mid + 1
-else: right = mid - 1
+    mid = left + (right - left) / 2
+    if target found: return mid
+    if target > mid: left = mid + 1
+    else: right = mid - 1
+```
 
 ```java
 public int search(int[] nums, int target) {

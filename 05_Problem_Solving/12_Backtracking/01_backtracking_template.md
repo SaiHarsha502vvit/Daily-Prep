@@ -4,15 +4,17 @@
 > Page 1 of 4 in **Backtracking**
 
 
+```python
 def backtrack(path, choices):
-if goal_reached:
-result.add(path.copy())
-return
-for choice in choices:
-if is_valid(choice):
-path.add(choice) # Make choice
-backtrack(path, choices) # Explore
-path.remove(choice) # Undo choice
+    if goal_reached:
+        result.add(path.copy())
+        return
+    for choice in choices:
+        if is_valid(choice):
+            path.add(choice)           # Make choice
+            backtrack(path, choices)   # Explore
+            path.remove(choice)        # Undo choice
+```
 
 **Key Patterns**:
 
@@ -49,8 +51,9 @@ You wouldn't — and here's why. DP for "enumerate all" requires storing ALL pat
 ## When Is Backtracking The Answer
 
 **Signal**: "Generate ALL valid combinations/permutations/subsets"
-If the problem says "find ALL", "list ALL", "generate ALL" → Backtracking.
-DP finds the COUNT or BEST. Backtracking finds the ACTUAL solutions.
+
+- If the problem says "find ALL", "list ALL", "generate ALL" → Backtracking.
+- DP finds the COUNT or BEST. Backtracking finds the ACTUAL solutions.
 
 | Find... | Use | Why |
 | --- | --- | --- |

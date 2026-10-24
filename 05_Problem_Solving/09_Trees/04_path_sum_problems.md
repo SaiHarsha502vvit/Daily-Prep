@@ -4,10 +4,10 @@
 > Page 4 of 7 in **Trees**
 
 
-**Pattern:** Top-down state passing — carry a running sum/path from root downward.
-**Template:** `void dfs(node, remainingSum) { if leaf and sum==0: found! dfs(left, sum-val); dfs(right, sum-val); }`
-**Key insight:** Pass the TARGET minus current value down. At a leaf, check if target reached 0.
-**Hardest problem here:** #119 Max Path Sum — uses BOTH top-down and bottom-up. Global variable tracks the best "arch" path.
+- **Pattern:** Top-down state passing — carry a running sum/path from root downward.
+- **Template:** `void dfs(node, remainingSum) { if leaf and sum==0: found! dfs(left, sum-val); dfs(right, sum-val); }`
+- **Key insight:** Pass the TARGET minus current value down. At a leaf, check if target reached 0.
+- **Hardest problem here:** #119 Max Path Sum — uses BOTH top-down and bottom-up. Global variable tracks the best "arch" path.
 
 ## Problem 116: Path Sum
 
@@ -102,10 +102,11 @@ private void backtrack(TreeNode node, int remaining,
 ## Problem 118: 🔒 Path Sum III (LeetCode 437)
 
 💡 **Approach:** Prefix sum on a tree! Same idea as "Subarray Sum Equals K" but on tree paths.
-Keep a HashMap of `prefix_sum → count` as you traverse down.
-At each node: `count += map.get(currentSum - target)`.
-**Critical:** BACKTRACK the map when returning up (unlike array version).
-**Time:** O(n) | **Space:** O(h)
+
+- Keep a HashMap of `prefix_sum → count` as you traverse down.
+- At each node: `count += map.get(currentSum - target)`.
+- **Critical:** BACKTRACK the map when returning up (unlike array version).
+- **Time:** O(n) | **Space:** O(h)
 
 **LeetCode 437** 🔗 https://leetcode.com/problems/path-sum-iii/
 
@@ -169,10 +170,11 @@ private int dfs(TreeNode node, long currentSum, int target,
 ## Problem 119: Binary Tree Maximum Path Sum
 
 💡 **Approach:** This is the HARDEST tree problem. Uses bottom-up return + global tracking.
-At each node: return the best single-arm path upward (node + max(left, right)).
-But also check if using BOTH arms (left + node + right) beats the global max.
-**Key trick:** `Math.max(gain, 0)` — ignore negative subtrees entirely.
-**Time:** O(n) | **Space:** O(h)
+
+- At each node: return the best single-arm path upward (node + max(left, right)).
+- But also check if using BOTH arms (left + node + right) beats the global max.
+- **Key trick:** `Math.max(gain, 0)` — ignore negative subtrees entirely.
+- **Time:** O(n) | **Space:** O(h)
 
 **LeetCode 124** 🔗 https://leetcode.com/problems/binary-tree-maximum-path-sum/
 

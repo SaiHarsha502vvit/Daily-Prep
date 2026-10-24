@@ -4,9 +4,9 @@
 > Page 5 of 7 in **Graphs**
 
 
-**Pattern:** Dynamic connectivity — merge groups and check membership.
-**When to use over BFS/DFS:** When edges arrive one-by-one (online), or when you need to count components after each merge.
-**Template:** Find with path compression + Union by rank → O(α(n)) ≈ O(1) per operation.
+- **Pattern:** Dynamic connectivity — merge groups and check membership.
+- **When to use over BFS/DFS:** When edges arrive one-by-one (online), or when you need to count components after each merge.
+- **Template:** Find with path compression + Union by rank → O(α(n)) ≈ O(1) per operation.
 
 **UNION-FIND DATA STRUCTURE**
 

@@ -4,9 +4,9 @@
 > Page 3 of 4 in **Greedy**
 
 
-**Pattern:** Scan the array maintaining a greedy invariant (farthest jump, surplus gas, candy needed).
-**Jump Game strategy:** Track `farthest = max(farthest, i + nums[i])`. If you can reach end → true.
-**Gas Station:** Total gas ≥ total cost → solution exists. Start from the point where deficit resets.
+- **Pattern:** Scan the array maintaining a greedy invariant (farthest jump, surplus gas, candy needed).
+- **Jump Game strategy:** Track `farthest = max(farthest, i + nums[i])`. If you can reach end → true.
+- **Gas Station:** Total gas ≥ total cost → solution exists. Start from the point where deficit resets.
 
 ## Problem 194: Jump Game
 

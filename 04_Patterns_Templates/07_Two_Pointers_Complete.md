@@ -146,9 +146,9 @@ Opposite ends, same direction (reader/writer) and fast/slow.
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-🔗 **Practice problems:** [Two Pointers PS](../05_Problem_Solving/06_Two_Pointers.md)
-🔗 **Related:** [Sliding Window template](01_Sliding_Window.md) — sliding window IS two pointers + window state
-📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](00_PATTERN_MASTER_GUIDE.md)
+- 🔗 **Practice problems:** [Two Pointers PS](../05_Problem_Solving/06_Two_Pointers.md)
+- 🔗 **Related:** [Sliding Window template](01_Sliding_Window.md) — sliding window IS two pointers + window state
+- 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](00_PATTERN_MASTER_GUIDE.md)
 
 ---
 

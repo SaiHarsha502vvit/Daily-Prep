@@ -162,36 +162,41 @@ An **interval** is `[start, end]`, a continuous range.
 
 ### The Real-World Origin
 
-📖 CALENDAR APPS: Google Calendar must detect overlapping events.
-When you schedule 2-3pm and 2:30-4pm, it highlights the conflict.
-This is literally the Overlapping Intervals check.
-📖 MEETING ROOMS: Amazon's meeting room allocator uses a min-heap
-of end times. When a new meeting starts, check if any room is free
-(earliest end time ≤ new start). If not, allocate a new room.
-📖 NETWORK BANDWIDTH: Merging bandwidth reservation intervals to
-find total allocated vs available capacity.
-📖 GENOMICS: Gene expression intervals on chromosomes — merging
-overlapping regions to find functional units.
-📖 OPERATING SYSTEMS: Memory allocation = interval management.
-malloc/free creates and merges free memory intervals.
+- 📖 CALENDAR APPS: Google Calendar must detect overlapping events.
+  When you schedule 2-3pm and 2:30-4pm, it highlights the conflict.
+  This is literally the Overlapping Intervals check.
+- 📖 MEETING ROOMS: Amazon's meeting room allocator uses a min-heap
+  of end times. When a new meeting starts, check if any room is free
+  (earliest end time ≤ new start). If not, allocate a new room.
+- 📖 NETWORK BANDWIDTH: Merging bandwidth reservation intervals to
+  find total allocated vs available capacity.
+- 📖 GENOMICS: Gene expression intervals on chromosomes — merging
+  overlapping regions to find functional units.
+- 📖 OPERATING SYSTEMS: Memory allocation = interval management.
+  malloc/free creates and merges free memory intervals.
 
 ### The Two Core Techniques
 
-TECHNIQUE 1: SORT + LINEAR SCAN
-Sort all intervals by start time.
-Iterate once, maintaining some running state (last end, merged list, etc.)
-Works for: Merge, Insert, Non-overlapping, Intersections
-Time: O(n log n) for sort + O(n) scan = O(n log n)
-TECHNIQUE 2: SWEEP LINE (Event-based)
-Convert intervals to events: +1 at start, -1 at end.
-Sort all events by time. Sweep left to right, tracking count.
-Works for: Meeting Rooms II, Max Overlap, Minimum Platforms
-Time: O(n log n)
-TECHNIQUE 2b: SORT + MIN-HEAP (variant of sweep)
-Sort by start. Min-heap of end times tracks active intervals.
-When new interval starts: pop expired (end ≤ start), push new end.
-Heap size = current overlap count.
-Works for: Meeting Rooms II, Min Platforms
+**TECHNIQUE 1: SORT + LINEAR SCAN**
+
+- Sort all intervals by start time.
+- Iterate once, maintaining some running state (last end, merged list, etc.)
+- Works for: Merge, Insert, Non-overlapping, Intersections
+- Time: O(n log n) for sort + O(n) scan = O(n log n)
+
+**TECHNIQUE 2: SWEEP LINE (Event-based)**
+
+- Convert intervals to events: +1 at start, -1 at end.
+- Sort all events by time. Sweep left to right, tracking count.
+- Works for: Meeting Rooms II, Max Overlap, Minimum Platforms
+- Time: O(n log n)
+
+**TECHNIQUE 2b: SORT + MIN-HEAP (variant of sweep)**
+
+- Sort by start. Min-heap of end times tracks active intervals.
+- When new interval starts: pop expired (end ≤ start), push new end.
+- Heap size = current overlap count.
+- Works for: Meeting Rooms II, Min Platforms
 
 **Which Technique To Use**:
 
@@ -201,10 +206,15 @@ Works for: Meeting Rooms II, Min Platforms
 ### The Overlap Check — Memorize This
 
 Two intervals [a,b] and [c,d] OVERLAP if and only if:
-a ≤ d AND c ≤ b
-Equivalently, they DON'T overlap if: b < c OR d < a
+
+- `a ≤ d AND c ≤ b`
+
+Equivalently, they DON'T overlap if: `b < c OR d < a`
+
 After sorting by start (a ≤ c), overlap simplifies to:
-c ≤ b (next start ≤ current end)
+
+- `c ≤ b` (next start ≤ current end)
+
 This ONE check drives 80% of interval problems.
 
 ### Difficulties & Common Mistakes

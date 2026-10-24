@@ -17,14 +17,15 @@
 
 ## PART 0: THEORY — Heap Internals (MIT/KTH Style)
 
-WHY HEAPS EXIST
+**WHY HEAPS EXIST**
+
 Fundamental question: How do we efficiently track the min or max of a
 dynamic collection where elements are inserted and removed?
 
-Sorted array? Insert is O(n).
-Unsorted array? Extract-min is O(n).
-BST? O(log n) but can degrade to O(n).
-Heap? O(log n) insert, O(log n) extract, O(1) peek. WINNER.
+- Sorted array? Insert is O(n).
+- Unsorted array? Extract-min is O(n).
+- BST? O(log n) but can degrade to O(n).
+- Heap? O(log n) insert, O(log n) extract, O(1) peek. WINNER.
 
 ### Why a Complete Binary Tree Stored in an Array?
 

@@ -100,28 +100,35 @@ turning it into working software.
 
 ### The Feature Creation Checklist
 
-□ UNDERSTANDING PHASE:
-□ What problem does this feature solve?
-□ Who are the users?
-□ What's the success metric?
-□ What are the constraints (time, tech, resources)?
-□ DESIGN PHASE:
-□ User flow mapped?
-□ UI/UX designs ready?
-□ API contracts defined?
-□ Database schema designed?
-□ Edge cases identified?
-□ IMPLEMENTATION PHASE:
-□ Code follows design patterns?
-□ Unit tests written?
-□ Integration tests written?
-□ Error handling complete?
-□ Logging added?
-□ DEPLOYMENT PHASE:
-□ Feature flag ready?
-□ Rollback plan exists?
-□ Monitoring dashboards set up?
-□ Alerts configured?
+**UNDERSTANDING PHASE:**
+
+- [ ] What problem does this feature solve?
+- [ ] Who are the users?
+- [ ] What's the success metric?
+- [ ] What are the constraints (time, tech, resources)?
+
+**DESIGN PHASE:**
+
+- [ ] User flow mapped?
+- [ ] UI/UX designs ready?
+- [ ] API contracts defined?
+- [ ] Database schema designed?
+- [ ] Edge cases identified?
+
+**IMPLEMENTATION PHASE:**
+
+- [ ] Code follows design patterns?
+- [ ] Unit tests written?
+- [ ] Integration tests written?
+- [ ] Error handling complete?
+- [ ] Logging added?
+
+**DEPLOYMENT PHASE:**
+
+- [ ] Feature flag ready?
+- [ ] Rollback plan exists?
+- [ ] Monitoring dashboards set up?
+- [ ] Alerts configured?
 
 ### Example: Creating a "Like" Feature
 

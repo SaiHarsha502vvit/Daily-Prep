@@ -26,19 +26,22 @@ The three pillars: Metrics, Logs, Traces — how to know what your system is doi
 ## The Three Pillars
 
 PILLAR 1: METRICS (What is happening?)
-→ Numerical time-series data: CPU 85%, latency 120ms, errors 5/min
-→ Tools: Prometheus, Datadog, CloudWatch
-→ Dashboards: Grafana
+
+- Numerical time-series data: CPU 85%, latency 120ms, errors 5/min
+- Tools: Prometheus, Datadog, CloudWatch
+- Dashboards: Grafana
 
 PILLAR 2: LOGS (Why did it happen?)
-→ Detailed event records with context
-→ Tools: ELK Stack (Elasticsearch + Logstash + Kibana), Loki, Splunk
-→ Structured JSON logs with correlation IDs
+
+- Detailed event records with context
+- Tools: ELK Stack (Elasticsearch + Logstash + Kibana), Loki, Splunk
+- Structured JSON logs with correlation IDs
 
 PILLAR 3: TRACES (Where did it happen?)
-→ Follow a request across multiple services
-→ Tools: Jaeger, Zipkin, AWS X-Ray, OpenTelemetry
-→ Trace ID propagated through headers
+
+- Follow a request across multiple services
+- Tools: Jaeger, Zipkin, AWS X-Ray, OpenTelemetry
+- Trace ID propagated through headers
 
 ---
 
@@ -518,7 +521,7 @@ A runbook is a step-by-step playbook for handling specific incidents. Without on
 
 ### Anatomy of a Runbook
 
-```markdown
+````markdown
 ## Runbook: [Service] [Symptom]
 
 **Severity**: P0 / P1 / P2
@@ -583,11 +586,11 @@ kubectl set env deployment/payments CACHE_ENABLED=false
 - Logs: [link to Datadog/Splunk]
 - Metrics: [link]
 - Recent postmortems: [link]
-```
+````
 
 ### Example: Runbook for "Payments 5xx Spike"
 
-```markdown
+````markdown
 ## Runbook: Payments API 5xx Spike
 
 **Severity**: P1 (customer-facing impact)
@@ -638,7 +641,7 @@ Based on diagnosis:
 - File ticket for root-cause analysis within 24h
 - Schedule postmortem within 5 business days
 - Update this runbook based on learnings
-```
+````
 
 ### Runbook Maintenance
 
@@ -662,7 +665,7 @@ A team writes a runbook with these steps: "1. SSH into the production server. 2.
 6. **No escalation path** — what if the on-call can't resolve? Who to page?
 
 **Fixed runbook**:
-```markdown
+````markdown
 ### Step 1: Check for recent deploys
 ```bash
 kubectl rollout history deployment/payments-api -n payments
@@ -691,7 +694,7 @@ curl -f https://payments.example.com/actuator/health
 
 ### Step 4: Communicate
 Post in #incidents and update status page.
-```
+````
 
 **Why this is better**: every step is reproducible, idempotent, and audit-logged. The bad-deploy case is caught early. Graceful shutdown prevents cascade failures.
 </details>
