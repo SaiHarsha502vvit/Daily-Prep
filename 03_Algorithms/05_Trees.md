@@ -1,5 +1,49 @@
 # TREES - Complete Guide
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Recursion](03c_Recursion_Advanced.md), [Stack & Queue](../02_Data_Structures/01d_Stack_Queue.md), [Trees & Heaps (DS)](../02_Data_Structures/01f_Trees_Heaps.md) |
+| **You will learn** | Tree traversals (DFS orders, BFS), BST operations, LCA, tree recursion patterns, memory and call-stack behaviour |
+| **Leads to** | [Graphs](05b_Graphs_Internals.md) (a tree is a connected acyclic graph), [Advanced Trees](07c_Advanced_Trees_Deep.md) |
+| **Abstraction level** | L3: from linear structures to hierarchy |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Trees
+
+### 1. The bottom line
+
+Most tree problems reduce to "solve the left, solve the right, combine at the node".
+
+### 2. The textbook core
+
+- **Traversals:** pre-, in-, post-order (DFS) and level-order (BFS); all O(n).
+- BST in-order is sorted; search/insert O(h); balanced trees keep `h = O(log n)`.
+- **Tree recursion template:** base case null → combine results of children.
+- LCA via recursion in O(n) or binary lifting in O(log n) per query after O(n log n) preprocessing.
+
+### 3. The real-world analogy
+
+A **company org chart**: to find the total salary under a manager, add the totals of each direct report plus the manager.
+
+### 4. Walkthrough
+
+1. Height of a tree with root 1, children 2 and 3, and 2 has child 4.
+2. `height(null) = 0`.
+3. `height(4) = 1`, `height(3) = 1`, `height(2) = 1 + height(4) = 2`.
+4. `height(1) = 1 + max(2, 1) = 3`.
+
+> [!NOTE]
+> **Quick check:** Which traversal returns a BST in sorted order? *In-order.*
+
+---
+
+
 ### 5W1H: Mastering Trees
 
 > [!NOTE]
@@ -1842,6 +1886,17 @@ TreeNode lca(TreeNode root, TreeNode p, TreeNode q) {
 
 **Leaves count in full binary tree**: A full binary tree (every node has 0 or 2 children) with n internal nodes has exactly n+1 leaves. *Proof by induction*: Base (n=0): 1 leaf. Step: Adding one internal node converts one leaf to an internal node and adds 2 new leaves: +1 internal, +1 leaf. Invariant: leaves = internal + 1. □
 
+
+---
+
+## 🏢 Enterprise Lens — Trees
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | File-system walkers, DOM/AST processing, database indexes, decision trees, UI component trees |
+| **Failure modes** | Stack overflow on skewed trees; null handling; confusing height (edges vs nodes); unbalanced BST degrading to O(n) |
+| **Testing and verification** | Test empty, single node, skewed left/right, complete trees; compare recursive with iterative traversal |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

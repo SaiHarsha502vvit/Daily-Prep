@@ -2,6 +2,50 @@
 
 # 🌲 Union-Find / Disjoint Set Union (DSU) Complete Guide
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Graph Fundamentals](05c_Graphs_Fundamentals.md), [Trees](05_Trees.md) |
+| **You will learn** | Disjoint sets, union by rank/size, path compression, applications (Kruskal, connectivity, grid problems, offline queries) |
+| **Leads to** | [Advanced Graphs](05d_Graphs_Advanced_Algos.md), [A1 invariants (DS)](../02_Data_Structures/A1_DS_Correctness_Invariants.md) |
+| **Abstraction level** | L3: dynamic connectivity |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Union-Find (DSU)
+
+### 1. The bottom line
+
+Union-Find answers "are these two connected?" and merges groups in nearly constant time.
+
+### 2. The textbook core
+
+- `find(x)` follows parent pointers to the root; `union(a, b)` links roots.
+- Union by rank + path compression → amortized O(α(n)).
+- Invariant: following parents always reaches a root; two elements are in the same set iff they share a root.
+- Cannot split sets (no efficient delete/undo without rollback variants).
+
+### 3. The real-world analogy
+
+**Teams with captains**: asking "who is your captain?" for two people tells you if they are on the same team; merging teams makes one captain report to the other.
+
+### 4. Walkthrough
+
+1. Union(1,2), Union(3,4), Union(2,4).
+2. After the first two: sets {1,2} and {3,4}.
+3. Union(2,4) links the two roots.
+4. Find(1) == Find(3) → connected.
+
+> [!NOTE]
+> **Quick check:** What does path compression change? *It flattens trees so later finds are faster; the sets are unchanged.*
+
+---
+
+
 The Data Structure That Solves Connectivity Problems in Near-Constant Time
 
 ## Table of Contents
@@ -1735,6 +1779,17 @@ class UnionFind {
 
 </details>
 
+
+---
+
+## 🏢 Enterprise Lens — Union-Find (DSU)
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Kruskal MST, image segmentation, network connectivity, account merging, percolation models |
+| **Failure modes** | Forgetting to union by root; recursion depth in naive `find`; mixing indexes (0- vs 1-based) |
+| **Testing and verification** | Compare against BFS connectivity on random edge sets |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

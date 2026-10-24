@@ -22,6 +22,50 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Complexity (A2)](A2_Complexity_FirstPrinciples.md), [Recursion Internals](03a_Recursion_Internals.md) |
+| **You will learn** | CPU-level cost of operations, recursion and tail calls, rigorous asymptotic definitions, amortized analysis, the greedy method and matroid view |
+| **Leads to** | [Greedy](12_Greedy_Algorithms_Complete.md), [Advanced Algo Deep](06c_Advanced_Algo_Deep.md) |
+| **Abstraction level** | L0–L2: reference deep-dive across levels |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Advanced Algorithms University Guide
+
+### 1. The bottom line
+
+This is the "how it really works" companion: what instructions run, how analysis is defined rigorously, and why greedy works.
+
+### 2. The textbook core
+
+- Operation costs differ by orders of magnitude (cache hit vs RAM, add vs divide).
+- Formal definitions: `f = O(g)` iff ∃c, n₀ such that f ≤ c·g for n ≥ n₀.
+- Amortized analysis (aggregate/accounting/potential) bounds the average cost per operation over a worst-case sequence.
+- Greedy correctness via exchange arguments or the matroid structure.
+
+### 3. The real-world analogy
+
+Looking **under the hood of a car**: you can drive without it, but it explains why some roads are slow.
+
+### 4. Walkthrough
+
+1. Compare 1,000 recursive calls to a loop.
+2. Each call costs about 30–40 cycles of overhead (frame setup and teardown).
+3. The loop has no frames.
+4. So the loop is several times faster even with the same Big-O.
+
+> [!NOTE]
+> **Quick check:** Does Java eliminate tail calls? *No; the JVM does not perform tail-call optimization.*
+
+---
+
+
 **Navigation**: [Part A: Core Techniques] | [Part B: Advanced Patterns](06e_Algorithm_Patterns.md)
 
 ---
@@ -498,6 +542,17 @@ Sort arrivals and departures separately. Use two pointers: if `arrival[i] <= dep
 - Greedy: always pick the activity with earliest finish time.
 - Exchange: Suppose OPT picks activity a (finish f_a) when greedy picks b (finish f_b ≤ f_a). Swap a for b in OPT: since f_b ≤ f_a, no later activity in OPT is blocked by b that wasn't already blocked by a. So OPT' is still valid with ≥ as many activities. The exchange never hurts. □
 
+
+---
+
+## 🏢 Enterprise Lens — Advanced Algorithms University Guide
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Performance engineering and profiling reviews; teaching material for onboarding engineers |
+| **Failure modes** | Treating Big-O as a stopwatch; ignoring cache/branch costs in hot loops |
+| **Testing and verification** | Micro-benchmark with JMH; do not guess |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

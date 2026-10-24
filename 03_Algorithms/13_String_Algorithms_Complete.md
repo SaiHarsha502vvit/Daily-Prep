@@ -3,6 +3,50 @@
 
 # 🔤 String Algorithms Complete Guide
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Arrays & hashing](08b_NumberTheory_Advanced.md), [Prefix sums](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) |
+| **You will learn** | KMP, Z-function, Rabin–Karp, Manacher, tries, suffix array/automaton, hashing, Aho–Corasick |
+| **Leads to** | [Bitwise trie](18_Bitwise_Trie_Java_Complete.md), [Advanced patterns](06d_String_Algorithms.md) |
+| **Abstraction level** | L5: text as a data structure |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — String Algorithms
+
+### 1. The bottom line
+
+String algorithms avoid re-comparing characters by remembering what has already matched.
+
+### 2. The textbook core
+
+- **KMP:** failure function lets you skip ahead; O(n + m).
+- **Z-function** and **Rabin–Karp** (rolling hash) match in linear expected time.
+- **Manacher:** longest palindromic substring in O(n).
+- Suffix arrays/automata answer many substring queries after preprocessing.
+
+### 3. The real-world analogy
+
+Looking for a word in a book: after a partial match fails, you do not go back to the start of the word if you already know what the letters you matched look like.
+
+### 4. Walkthrough
+
+1. Pattern `ABAB` has failure array `[0, 0, 1, 2]`.
+2. Text `ABABABC`, mismatch at index 4 with pattern position 4.
+3. Fall back to `fail[3] = 2` instead of 0.
+4. Continue comparing without re-reading the text.
+
+> [!NOTE]
+> **Quick check:** What does the failure function store? *The length of the longest proper prefix that is also a suffix.*
+
+---
+
+
 KMP, Rabin-Karp, Z-Algorithm & Pattern Matching Mastery
 
 ## Table of Contents
@@ -1419,6 +1463,17 @@ Result: `[0, 0, 1, 0, 1, 2, 3]`.
 
 </details>
 
+
+---
+
+## 🏢 Enterprise Lens — String Algorithms
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Search engines, DNA matching, intrusion detection (Aho–Corasick), text editors, plagiarism detection |
+| **Failure modes** | Hash collisions in Rabin–Karp; off-by-one in failure arrays; Unicode vs bytes |
+| **Testing and verification** | Compare with `String.indexOf` on random small-alphabet strings |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

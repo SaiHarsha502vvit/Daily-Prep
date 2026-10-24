@@ -14,6 +14,50 @@ The goal is not to memorize scary names. The goal is to recognize the deeper pat
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Trees](05_Trees.md), [Segment trees](07a_Advanced_DS_Core.md), [Graphs](05c_Graphs_Fundamentals.md) |
+| **You will learn** | Online vs offline thinking, heavy-light decomposition, Euler tour, Mo's algorithm, wavelet trees, engineering trade-offs |
+| **Leads to** | [Production](13_Algorithms_In_Production.md), [War stories](21_Algorithm_War_Stories.md) |
+| **Abstraction level** | L6: between competitive programming and real systems |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Advanced Algorithm Engineering
+
+### 1. The bottom line
+
+These techniques answer many queries on static or semi-static data by reorganising the data or the order of queries.
+
+### 2. The textbook core
+
+- **HLD** splits a tree into heavy chains so path queries become O(log² n) with a segment tree.
+- **Euler tour** makes subtrees contiguous ranges.
+- **Mo's algorithm** orders offline queries to reuse work: about O((n + q)√n).
+- Offline methods need all queries first; online methods answer as they arrive.
+
+### 3. The real-world analogy
+
+**Sorting your errands geographically** before leaving, so you drive far less than doing them in the order you thought of them (Mo's ordering).
+
+### 4. Walkthrough
+
+1. Subtree sum queries on a tree.
+2. Euler tour assigns each node `[tin, tout]`.
+3. A subtree becomes the range `[tin, tout]` in a Fenwick/segment tree.
+4. Update/query in O(log n).
+
+> [!NOTE]
+> **Quick check:** When can you use Mo's algorithm? *When queries can be answered offline and moving one endpoint is cheap.*
+
+---
+
+
 ### Historical Evolution
 
 The advanced techniques in this chapter represent the frontier of practical algorithm engineering, often developed to solve problems that standard algorithms couldn't handle within time/memory limits. **Mo's Algorithm** (offline range query answering) was introduced by **Mo, Q. I. in 1993** as a technique for answering offline queries on static arrays by reordering them to minimize the movement of the query window — sorting queries by block size reduces total movement to $O(n\sqrt{q})$, enabling problems that would be $O(n \cdot q)$ with naive online approaches. **Heavy-Light Decomposition** was developed by **Harold Djidjev and Robert Tarjan in the early 1980s** for network flow applications and formalized by **Sleator and Tarjan (1983)** in the context of tree decomposition — the insight that decomposing a tree into heavy paths and light edges enables $O(\log N)$ path queries, originally motivated by link-cut trees for dynamic graph connectivity. **Wavelet Trees** were introduced by **Grossi, Gupta, and Vitter in 2003** for high-dimensional rank/select queries — they generalize the binary indexed tree to support range frequency and k-th smallest queries in $O(\log \sigma)$ time over alphabets of size $\sigma$. **Dinic's maximum flow algorithm** (1970) and **Goldberg's push-relabel** (1985) represent two decades of network flow optimization. Modern practice (post-2010) combines these: HLD is used in network routing, Wavelet Trees underpin bioinformatics tools (BWA), and Mo's algorithm appears in competitive programming range frequency problems.
@@ -935,6 +979,17 @@ System.out.println("Max heap: " + heapMax / (1024*1024) + " MB");
 | Sorting stability | Extra allocation | N/A | TimSort (in-place for primitives) | 0 allocation for int[] |
 | Priority queue | LinkedList sorted | Pointer chasing | int[] binary heap | 16x cache speedup |
 
+
+---
+
+## 🏢 Enterprise Lens — Advanced Algorithm Engineering
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Analytics engines, graph databases, bioinformatics query pipelines |
+| **Failure modes** | Choosing offline techniques for online workloads; incorrect add/remove logic in Mo's; heavy-chain bugs |
+| **Testing and verification** | Differential tests with brute force on small trees and queries |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -8,6 +8,50 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [A1 Proofs](A1_Correctness_Proofs.md), [Algorithm Thinking](01_Algorithm_Thinking.md) |
+| **You will learn** | Asymptotic notation, recurrences, the Master theorem, amortized analysis (aggregate, accounting, potential) |
+| **Leads to** | [Divide & Conquer](02c_Divide_And_Conquer.md), [DP](04a_DP_Internals.md), [A3 Lower Bounds](A3_Lower_Bounds_And_NP.md) |
+| **Abstraction level** | L1: from counting steps by hand to solving recurrences |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Complexity from First Principles
+
+### 1. The bottom line
+
+Complexity analysis turns "how long will it take?" into an equation you can solve.
+
+### 2. The textbook core
+
+- `O`, `Ω`, `Θ` bound growth rates; constants and lower-order terms are dropped.
+- Recurrence `T(n) = aT(n/b) + f(n)` is solved by the **Master theorem** by comparing `f(n)` with `n^(log_b a)`.
+- **Amortized** cost averages over a worst-case *sequence* (not random inputs).
+- Space counts auxiliary memory including recursion depth.
+
+### 3. The real-world analogy
+
+A **taxi meter**: the fare grows with distance (input size), and the meter formula tells you the price of any trip before you take it.
+
+### 4. Walkthrough
+
+1. Merge sort: `T(n) = 2T(n/2) + n`.
+2. `a = 2, b = 2`, so `n^(log₂ 2) = n`; `f(n) = n` matches it.
+3. Case 2 of the Master theorem → `T(n) = Θ(n log n)`.
+4. Intuition: `log n` levels, each doing `n` work.
+
+> [!NOTE]
+> **Quick check:** Solve `T(n) = T(n/2) + 1`. *Θ(log n): binary search.*
+
+---
+
+
 ## Table of Contents
 
 1. [Formal Asymptotic Notation — The Definitions That Matter](#1-formal-asymptotic-notation--the-definitions-that-matter)
@@ -715,6 +759,17 @@ int idx = Arrays.binarySearch(sortedArr, key);
 
 *[← A1: Correctness Proofs](A1_Correctness_Proofs.md) | [A3: Lower Bounds & NP →](A3_Lower_Bounds_And_NP.md)*
 
+
+---
+
+## 🏢 Enterprise Lens — Complexity from First Principles
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Capacity planning, SLO budgeting, choosing between O(n log n) and O(n²) paths for a data pipeline |
+| **Failure modes** | Ignoring constants and cache effects; quoting amortized bounds for latency-critical paths; forgetting space (recursion depth) |
+| **Testing and verification** | Empirical complexity check: time at n, 2n, 4n, 8n and confirm the growth ratio |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

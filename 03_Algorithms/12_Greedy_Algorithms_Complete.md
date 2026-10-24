@@ -2,6 +2,50 @@
 
 # 🎯 Greedy Algorithms Complete Guide
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [DP Fundamentals](04b_DP_Fundamentals.md), [A1 exchange arguments](A1_Correctness_Proofs.md) |
+| **You will learn** | When locally optimal choices are globally optimal: interval scheduling, Huffman, fractional knapsack, MST, matroids |
+| **Leads to** | [Union-Find](14_Union_Find_DSU_Complete.md) (Kruskal), [Approximation](25_Online_Approximation_And_Linear_Programming.md) |
+| **Abstraction level** | L2: choosing the right paradigm and proving it |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Greedy Algorithms
+
+### 1. The bottom line
+
+A greedy algorithm takes the best-looking choice now, and it is correct only if you can prove that choice never hurts.
+
+### 2. The textbook core
+
+- **Greedy-choice property** + **optimal substructure** = greedy works.
+- Proof tool: **exchange argument** (swap an optimal solution toward the greedy one).
+- Matroids characterise exactly when a simple greedy is optimal for max-weight independent sets.
+- If a proof fails, switch to DP.
+
+### 3. The real-world analogy
+
+Packing a **suitcase with the most valuable-per-weight items** when you may cut items (fractional knapsack): grab the best ratio first.
+
+### 4. Walkthrough
+
+1. Interval scheduling: sort meetings by **end time**.
+2. Pick the earliest-ending meeting; discard overlaps.
+3. Repeat with the next meeting that starts after the last chosen end.
+4. Exchange argument: any optimal schedule can swap its first meeting for the earliest-ending one.
+
+> [!NOTE]
+> **Quick check:** Why does sorting by start time fail for interval scheduling? *A long early meeting can block many short ones.*
+
+---
+
+
 Make the Locally Optimal Choice at Each Step
 
 ## Table of Contents
@@ -1919,6 +1963,17 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 **What breaks**: Weighted job scheduling ("maximize total value of non-overlapping intervals"). Greedy by earliest finish no longer works because a low-value early-finishing job might displace a high-value later job. This problem requires DP + binary search (O(n log n)).
 **Signal**: As soon as intervals carry weights and you want maximum total weight — not maximum count — greedy fails; DP is required.
 
+
+---
+
+## 🏢 Enterprise Lens — Greedy Algorithms
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Schedulers, compression (Huffman), network design (MST), load balancing heuristics |
+| **Failure modes** | Using greedy where the exchange argument fails (0/1 knapsack, coin change with odd denominations) |
+| **Testing and verification** | Compare against a DP/brute-force optimum on random small cases |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

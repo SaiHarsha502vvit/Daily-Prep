@@ -5,6 +5,50 @@
 
 # 🧮 Dynamic Programming & Memoization: Complete Guide
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Recursion Advanced](03c_Recursion_Advanced.md) (memoization) |
+| **You will learn** | How DP tables are laid out in memory, cache behaviour of iteration order, rolling arrays, top-down vs bottom-up costs |
+| **Leads to** | [DP Fundamentals](04b_DP_Fundamentals.md) |
+| **Abstraction level** | L0–L2: DP at the machine level |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — DP Internals
+
+### 1. The bottom line
+
+A DP solution is a table of answers, so memory layout and iteration order decide how fast it really runs.
+
+### 2. The textbook core
+
+- Iterate in the order that reads **contiguous memory** (row-major).
+- **Rolling arrays** reduce O(nm) space to O(m) when a row depends only on the previous row.
+- Top-down has recursion overhead but computes only reachable states; bottom-up has tight loops.
+- State definition + transition + base cases + order = a complete DP.
+
+### 3. The real-world analogy
+
+Filling a **spreadsheet** row by row where each cell only looks at cells above/left, so you can throw away old rows.
+
+### 4. Walkthrough
+
+1. LCS of two strings of length m, n needs `dp[i][j]` from `dp[i-1][*]` and `dp[i][j-1]`.
+2. Keep two rows instead of the full table.
+3. Space drops from O(mn) to O(n).
+4. Row-major iteration keeps accesses sequential.
+
+> [!NOTE]
+> **Quick check:** Why can a DP be slower than its Big-O suggests? *Column-major access causes cache misses.*
+
+---
+
+
 ### 5W1H: Mastering DP Internals
 
 > [!NOTE]
@@ -772,6 +816,17 @@ Case 2: A[i-1] != B[j-1]. The optimal LCS either excludes A[i-1] (giving LCS(i-1
 
 **5. Off-by-one in string indices** -- LCS/Edit Distance tables are (n+1)x(m+1). dp[i][j] represents prefixes A[0..i-1] and B[0..j-1]. A common mistake: `dp[i][j] = dp[i-1][j-1]` when `A[i] == B[j]` (off by one -- should be `A[i-1]` and `B[j-1]`). Produces wrong answers that only show up for certain string pairs.
 
+
+---
+
+## 🏢 Enterprise Lens — DP Internals
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Sequence alignment (bioinformatics), diff tools, spell checkers, route planning |
+| **Failure modes** | Out-of-memory from full tables; incorrect rolling-array overwrite order; integer overflow in counts |
+| **Testing and verification** | Compare space-optimised and full-table versions on random inputs |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

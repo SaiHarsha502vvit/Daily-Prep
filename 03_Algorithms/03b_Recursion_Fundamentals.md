@@ -11,7 +11,7 @@
 | ------------------------------------------ | --------------------------------- | ----------------------------------------------------------- |
 | **Linear recursion**                       | Factorial, linked list operations | [LinkedList PS](../05_Problem_Solving/15_LinkedList.md)     |
 | **Binary recursion** (no overlap)          | Tree height, Merge Sort           | [Trees PS](../05_Problem_Solving/09_Trees.md)               |
-| **Binary recursion** (with overlap)        | Fibonacci → **add memo → DP!**    | [DP PS](../05_Problem_Solving/07_DP.md)                     |
+| **Binary recursion** (with overlap)        | Fibonacci → **add memo → DP!**    | [DP PS](../05_Problem_Solving/11_Dynamic_Programming.md)                     |
 | **Backtracking** (Choose-Explore-Unchoose) | Subsets, Permutations, N-Queens   | [Backtracking PS](../05_Problem_Solving/12_Backtracking.md) |
 | **DFS** on graph                           | Islands, connected components     | [Graphs PS](../05_Problem_Solving/10_Graphs.md)             |
 
@@ -67,6 +67,49 @@ Recursive function theory was formalized by **Wilhelm Ackermann (1928)** — the
 ---
 
 # 🔁 Recursion Fundamentals: The Leap of Faith
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Recursion Internals](03a_Recursion_Internals.md) |
+| **You will learn** | Base case, recursive case, the "leap of faith", recursion trees, recurrences for simple recursions |
+| **Leads to** | [Recursion Advanced](03c_Recursion_Advanced.md) |
+| **Abstraction level** | L2: thinking recursively |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Recursion Fundamentals
+
+### 1. The bottom line
+
+To think recursively, trust that the function already works for smaller inputs and only handle one step.
+
+### 2. The textbook core
+
+- A recursive function needs a **base case** and a **progress step** toward it.
+- Write the recurrence first, then the code.
+- Draw the **recursion tree** to count work (e.g. naive Fibonacci is exponential).
+- Same-subproblem repetition signals memoization (next chapters).
+
+### 3. The real-world analogy
+
+**Russian nesting dolls**: to count the dolls, open one and count the rest the same way.
+
+### 4. Walkthrough
+
+1. Sum of an array `[1, 2, 3]`: `sum(i) = a[i] + sum(i + 1)`.
+2. Base case: `i == n` → 0.
+3. `sum(0) = 1 + sum(1) = 1 + 2 + sum(2) = 1 + 2 + 3 + 0 = 6`.
+
+> [!NOTE]
+> **Quick check:** What goes wrong if the base case is missing? *Infinite recursion and StackOverflowError.*
+
+---
+
 
 ### 5W1H: Mastering Recursion Fundamentals
 
@@ -1248,6 +1291,17 @@ void backtrack(int[] nums, int start, List<Integer> cur, List<List<Integer>> res
 
 **Navigation**: [< Previous](03a_Recursion_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03c_Recursion_Advanced.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Recursion Fundamentals
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Tree and graph traversals, divide-and-conquer implementations, parsing and evaluation code |
+| **Failure modes** | Missing or unreachable base case; mutating shared state across calls; exponential recomputation |
+| **Testing and verification** | Unit-test base cases explicitly; add a call counter in tests to detect exponential blow-up |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

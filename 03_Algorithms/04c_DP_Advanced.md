@@ -5,6 +5,50 @@
 
 # 🚀 Advanced DP Patterns
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [DP Fundamentals](04b_DP_Fundamentals.md) |
+| **You will learn** | Bitmask DP, digit DP, interval DP, tree DP, profile DP, and DP optimisations |
+| **Leads to** | [Greedy](12_Greedy_Algorithms_Complete.md), [NP-hardness](A3_Lower_Bounds_And_NP.md) |
+| **Abstraction level** | L2→L7: exponential and structured state spaces |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Advanced DP
+
+### 1. The bottom line
+
+Advanced DP encodes complicated states (subsets, digits, tree positions) compactly so exponential problems become feasible for small sizes.
+
+### 2. The textbook core
+
+- **Bitmask DP:** state is a subset; 2ⁿ states, n ≤ ~20.
+- **Digit DP:** count numbers ≤ N with a property by processing digits with a tight flag.
+- **Interval DP:** `dp[l][r]` over ranges, O(n³) typical.
+- **Tree DP:** compute child results then combine at the parent.
+
+### 3. The real-world analogy
+
+A **packing list as a checklist of ticked boxes**: the pattern of ticks (a bitmask) is the state.
+
+### 4. Walkthrough
+
+1. TSP with 4 cities, mask `0101` = cities 0 and 2 visited.
+2. `dp[mask][last]` = cheapest cost having visited `mask` and ended at `last`.
+3. Add city `k` not in mask: `dp[mask | 1<<k][k]`.
+4. Answer: min over `dp[full][last] + dist[last][0]`.
+
+> [!NOTE]
+> **Quick check:** Why does bitmask DP stop around n = 20? *2ⁿ·n states exceed memory/time.*
+
+---
+
+
 ### 5W1H: Mastering Advanced DP
 
 ```
@@ -2071,6 +2115,17 @@ for (int[] row : dp) Arrays.fill(row, -1);
 
 **The structural insight**: brute force fails when sub-problems *overlap* (same (i,j) computed many times). DP trades time for space by storing sub-problem answers. When sub-problems don't overlap, divide-and-conquer without memoization is sufficient.
 
+
+---
+
+## 🏢 Enterprise Lens — Advanced DP
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Scheduling and routing for small instances, combinatorial counting in analytics, parsers (interval DP) |
+| **Failure modes** | State explosion; off-by-one in interval bounds; wrong tight-flag handling in digit DP |
+| **Testing and verification** | Brute-force enumeration on tiny inputs to verify; test boundary values like 0 and powers of 10 |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

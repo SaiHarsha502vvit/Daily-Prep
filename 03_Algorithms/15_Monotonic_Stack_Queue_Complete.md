@@ -2,6 +2,50 @@
 
 # 📚 Monotonic Stack & Queue Complete Guide
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Stack & Queue](../02_Data_Structures/01d_Stack_Queue.md), [Greedy](12_Greedy_Algorithms_Complete.md) |
+| **You will learn** | Next/previous greater-smaller elements, sliding window max/min, largest rectangle, trapping rain water |
+| **Leads to** | [Prefix sums](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md), [Advanced DS](07b_Advanced_DS_Patterns.md) |
+| **Abstraction level** | L3: O(n) amortized range techniques |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Monotonic Stack & Queue
+
+### 1. The bottom line
+
+A monotonic stack keeps only the candidates that could still be an answer, so each element is pushed and popped once.
+
+### 2. The textbook core
+
+- Keep the stack monotone (increasing or decreasing) by popping dominated elements.
+- Amortized O(n): every element is pushed once and popped once.
+- "Next greater" → decreasing stack; "next smaller" → increasing stack.
+- A monotonic deque of indices answers sliding-window max in O(n).
+
+### 3. The real-world analogy
+
+A **queue of job candidates**: when a stronger, newer candidate arrives, the weaker earlier ones can never win and are dismissed.
+
+### 4. Walkthrough
+
+1. Next greater element for `[2, 1, 5, 3]`.
+2. Scan left to right with a stack of waiting indices.
+3. `5` arrives: pops 1 and 2 (their answer is 5).
+4. End: `3` and `5` remain with no greater element → `[5, 5, -1, -1]`.
+
+> [!NOTE]
+> **Quick check:** Why O(n) despite a loop inside a loop? *Each element is popped at most once.*
+
+---
+
+
 Master the Technique for Next Greater/Smaller Element Problems
 
 ## Table of Contents
@@ -1583,6 +1627,17 @@ The `while` loop amortizes over all iterations of the `for` loop — it can run 
 
 </details>
 
+
+---
+
+## 🏢 Enterprise Lens — Monotonic Stack & Queue
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Stock span and price analytics, histogram/rectangle computations in rendering and layout, streaming window aggregates |
+| **Failure modes** | Wrong monotonic direction; storing values instead of indices; stale elements outside the window |
+| **Testing and verification** | Compare with an O(n²) brute force on random arrays; test equal values |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -6,6 +6,50 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | Almost every previous chapter |
+| **You will learn** | Where classic algorithms run in real systems: routing, search, ranking, databases, networking, UI diffing, security |
+| **Leads to** | [War Stories](21_Algorithm_War_Stories.md), [DS in Production](../02_Data_Structures/05_DS_In_Production.md) |
+| **Abstraction level** | L8: from textbook to deployed system |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Algorithms in Production
+
+### 1. The bottom line
+
+The algorithms in this course are not exercises: they are running inside the products you use every day.
+
+### 2. The textbook core
+
+- Binary search → index lookups; Dijkstra/A\* → maps; PageRank → web ranking; Bloom filters → database read paths.
+- Each production use adds **constraints** the textbook ignores: scale, latency, consistency, failure.
+- Choose the algorithm by its **worst case under your SLO**, not its average.
+- Observe, measure and alert on algorithmic regressions.
+
+### 3. The real-world analogy
+
+Reading the **engine specs after learning how engines work**: now you can see why each part is shaped the way it is.
+
+### 4. Walkthrough
+
+1. Search request arrives at a database.
+2. The planner picks an index (B+ tree), which uses binary search within pages.
+3. A Bloom filter avoids reading SSTables that cannot contain the key.
+4. Results are merged with a k-way heap merge.
+
+> [!NOTE]
+> **Quick check:** Which classic algorithm decides the order of results when merging k sorted runs? *A heap-based k-way merge.*
+
+---
+
+
 ## The Algorithm → Production System Map
 
 ```
@@ -303,6 +347,17 @@ public class AlgorithmBenchmark {
 | **Consistent hashing**                  | [Enterprise Systems](../10_Enterprise_Systems/09_Distributed_Patterns.md)         |
 | **PageRank → Graph algorithms**         | [DS in Production](../02_Data_Structures/05_DS_In_Production.md)                  |
 
+
+---
+
+## 🏢 Enterprise Lens — Algorithms in Production
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Everywhere: maps, feeds, payments, messaging, search, storage |
+| **Failure modes** | Choosing an average-case algorithm for a p99 requirement; no fallback for pathological input |
+| **Testing and verification** | Load tests with adversarial data; regression benchmarks in CI |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

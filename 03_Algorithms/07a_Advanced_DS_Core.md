@@ -4,6 +4,50 @@
 
 # 🏗️ Advanced Data Structures: Complete Guide
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Trees](05_Trees.md), [Hash tables (DS)](../02_Data_Structures/01e_HashTable.md) |
+| **You will learn** | Memory layouts of tries, segment trees, Fenwick trees, union-find and skip lists; why some structures are fast in practice |
+| **Leads to** | [Advanced DS Patterns](07b_Advanced_DS_Patterns.md) |
+| **Abstraction level** | L3→L6: structures and their machine-level behaviour |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Advanced Data Structures Core
+
+### 1. The bottom line
+
+Advanced structures win by organising data for the queries you ask, and their memory layout decides how fast they are.
+
+### 2. The textbook core
+
+- Trie: O(L) per key; memory heavy with 26-way arrays.
+- Segment tree: O(log n) range query/update, 4n array size; Fenwick: O(log n) prefix sums with `i & -i`.
+- Union-find: near O(1) with rank + path compression.
+- Skip list: probabilistic balanced ordering used by Redis sorted sets.
+
+### 3. The real-world analogy
+
+A **filing system designed for the questions you ask most**, not just for storing papers.
+
+### 4. Walkthrough
+
+1. Fenwick tree over `[1, 2, 3, 4]`.
+2. `bit[1]=1, bit[2]=3, bit[3]=3, bit[4]=10`.
+3. `prefix(3)` = `bit[3] + bit[2]` = 6.
+4. `update(2, +5)` touches indices 2 then 4.
+
+> [!NOTE]
+> **Quick check:** Why use `i & -i` in a Fenwick tree? *It isolates the lowest set bit, i.e. the size of the block `bit[i]` covers.*
+
+---
+
+
 <details>
 <summary><b>🧠 5W1H: Advanced Data Structures</b></summary>
 
@@ -1235,6 +1279,17 @@ class SegTree {
 
 **Navigation**: [< Previous](06e_Algorithm_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07b_Advanced_DS_Patterns.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Advanced Data Structures Core
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Autocomplete (tries), analytics range queries, connectivity services, Redis sorted sets |
+| **Failure modes** | Wrong segment-tree size; off-by-one indexing in Fenwick; recursion depth; memory blow-up of tries |
+| **Testing and verification** | Differential testing against a naive array for random updates and queries |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -18,6 +18,50 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [A3 Hardness](A3_Lower_Bounds_And_NP.md), [Graphs](05d_Graphs_Advanced_Algos.md), [Strings](13_String_Algorithms_Complete.md) |
+| **You will learn** | P vs NP, randomized algorithms, advanced string algorithms, network flow, computational geometry basics, a summary of design paradigms |
+| **Leads to** | [Approximation, Online & LP](25_Online_Approximation_And_Linear_Programming.md), [Production](13_Algorithms_In_Production.md) |
+| **Abstraction level** | L5→L7: breadth survey of advanced topics |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Modern Algorithms & Advanced Topics
+
+### 1. The bottom line
+
+A tour of topics that sit beyond the core paradigms: hardness, randomness, flows and geometry.
+
+### 2. The textbook core
+
+- **Max-flow = min-cut:** the largest flow equals the capacity of the smallest cut.
+- Flow algorithms: Ford–Fulkerson/Edmonds–Karp/Dinic; bipartite matching reduces to flow.
+- Randomized algorithms trade certainty for speed or simplicity.
+- Convex hull and sweep line are the workhorses of computational geometry.
+
+### 3. The real-world analogy
+
+**Water pipes**: the most water you can push through a network equals the bottleneck formed by its narrowest set of pipes.
+
+### 4. Walkthrough
+
+1. Network s→a (3), s→b (2), a→t (2), b→t (3).
+2. Augment path s→a→t with 2; s→b→t with 2.
+3. Remaining: s→a (1) cannot continue (a→t saturated); s→b (0).
+4. Max flow = 4; min cut {a→t, s→b} = 4.
+
+> [!NOTE]
+> **Quick check:** How does bipartite matching reduce to flow? *Source → left nodes → right nodes → sink with unit capacities.*
+
+---
+
+
 ### Historical Evolution
 
 Advanced offline query algorithms emerged from the intersection of competitive programming and database query optimization. **Mo's Algorithm** (offline range query answering) was introduced by **Mo, Q. I. in 1993** as a technique for answering offline queries on static arrays by reordering them to minimize the movement of the query window — the key insight is that sorting queries by block size ($n/\sqrt{q}$) reduces the total movement to $O(n\sqrt{q})$. **Heavy-Light Decomposition (HLD)** was developed by **Harold Djidjev and Robert Tarjan in the 1980s** for network flow applications, with the classic "Maintaining trees in a linear ordering" paper by **Sleator and Tarjan (1983)** formalizing heavy-path concepts for link-cut trees. **Wavelet Trees** were introduced by **Grossi, Gupta, and Vitter in 2003** for high-dimensional rank/select queries on static strings — they generalize binary indexed trees to multiple dimensions and enable $O(\log \sigma)$ queries on sequences over alphabets of size $\sigma$, critical for bioinformatics (FM-index, BWT-based searching). **Dinic's algorithm** for maximum flow was published by **Yefim Dinic in 1970** with the capacity scaling optimization (Goldberg 1985), and remains the go-to algorithm for network flow problems. Modern practice (post-2010) applies these patterns in competitive programming (CF, AtCoder), database index structures, and network analysis tools.
@@ -788,6 +832,17 @@ int query(int node, int l, int r, int ql, int qr) {
 // Key: tree[node] covers [l,r]. Children cover [l,mid] and [mid+1,r]. 4*n space for safety.
 ```
 
+
+---
+
+## 🏢 Enterprise Lens — Modern Algorithms & Advanced Topics
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Traffic and logistics flows, assignment/matching systems, image segmentation (min-cut), geospatial queries |
+| **Failure modes** | Not recognising a flow model; wrong capacities for undirected edges; precision errors in geometry |
+| **Testing and verification** | Check flow conservation and min-cut equality on random networks |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

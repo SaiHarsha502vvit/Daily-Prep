@@ -39,10 +39,10 @@ The recursion tree has exponential **nodes** but polynomial **distinct values**.
 
 | DP Pattern      | State Definition                                 | Problem Examples                   | PS Section                              |
 | --------------- | ------------------------------------------------ | ---------------------------------- | --------------------------------------- |
-| **1D Linear**   | `dp[i]` = answer for first i items               | Climbing Stairs, House Robber, LIS | [DP PS](../05_Problem_Solving/07_DP.md) |
-| **Grid (2D)**   | `dp[i][j]` = answer at cell (i,j)                | Unique Paths, Min Path Sum         | [DP PS](../05_Problem_Solving/07_DP.md) |
-| **String (2D)** | `dp[i][j]` = answer for s1[0..i-1] vs s2[0..j-1] | LCS, Edit Distance                 | [DP PS](../05_Problem_Solving/07_DP.md) |
-| **Knapsack**    | `dp[i][w]` = max value with i items, capacity w  | 0/1 Knapsack, Coin Change          | [DP PS](../05_Problem_Solving/07_DP.md) |
+| **1D Linear**   | `dp[i]` = answer for first i items               | Climbing Stairs, House Robber, LIS | [DP PS](../05_Problem_Solving/11_Dynamic_Programming.md) |
+| **Grid (2D)**   | `dp[i][j]` = answer at cell (i,j)                | Unique Paths, Min Path Sum         | [DP PS](../05_Problem_Solving/11_Dynamic_Programming.md) |
+| **String (2D)** | `dp[i][j]` = answer for s1[0..i-1] vs s2[0..j-1] | LCS, Edit Distance                 | [DP PS](../05_Problem_Solving/11_Dynamic_Programming.md) |
+| **Knapsack**    | `dp[i][w]` = max value with i items, capacity w  | 0/1 Knapsack, Coin Change          | [DP PS](../05_Problem_Solving/11_Dynamic_Programming.md) |
 
 **The 5-Step Recipe (memorize this):**
 
@@ -60,6 +60,50 @@ The recursion tree has exponential **nodes** but polynomial **distinct values**.
 ---
 
 # 📌 Dynamic Programming Fundamentals
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [DP Internals](04a_DP_Internals.md), [Recursion](03c_Recursion_Advanced.md) |
+| **You will learn** | Recognising DP, defining state, classic patterns (1D, grid, knapsack, LIS, LCS, edit distance) |
+| **Leads to** | [DP Advanced](04c_DP_Advanced.md), [Greedy](12_Greedy_Algorithms_Complete.md) |
+| **Abstraction level** | L2: pattern library for DP |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — DP Fundamentals
+
+### 1. The bottom line
+
+DP is "recursion with memory" for problems that have overlapping subproblems and optimal substructure.
+
+### 2. The textbook core
+
+- Recipe: **state → transition → base → order → answer**.
+- Typical complexities: O(n) for 1D, O(nm) for grids/strings, O(nW) for knapsack (pseudo-polynomial).
+- LIS in O(n log n) uses binary search on tails.
+- If a greedy choice is provably safe, DP may be unnecessary.
+
+### 3. The real-world analogy
+
+Planning a **road trip with cheapest gas stops**: the best plan to reach city k reuses the best plan to reach earlier cities.
+
+### 4. Walkthrough
+
+1. 0/1 knapsack, capacity 5, items (w=2,v=3), (w=3,v=4).
+2. `dp[w]` = best value with capacity `w`; process items one by one, capacity descending.
+3. After item 1: dp[2..5] = 3. After item 2: dp[5] = max(3, 3+4)=7.
+4. Answer `dp[5] = 7`.
+
+> [!NOTE]
+> **Quick check:** Why iterate capacity downward in 1D knapsack? *So each item is used at most once.*
+
+---
+
 
 ### 5W1H: Mastering DP Fundamentals
 
@@ -981,6 +1025,17 @@ public int lcsOptimized(String s1, String s2) {
 **What breaks**: 0/1 Knapsack requires iterating the weight dimension *backwards* (to prevent reusing the same item). Iterating forwards accidentally makes it unbounded knapsack (each item usable many times). This is the single most common knapsack implementation bug.
 **Fix**: 0/1 → inner loop `for (w = capacity; w >= weight[i]; w--)`. Unbounded → inner loop `for (w = weight[i]; w <= capacity; w++)`.
 
+
+---
+
+## 🏢 Enterprise Lens — DP Fundamentals
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Resource allocation, billing and pricing optimisation, text diff, recommendation re-ranking |
+| **Failure modes** | Wrong state definition; missing base case; overflow; exponential memory for large states |
+| **Testing and verification** | Cross-check against brute force for small inputs; property tests on monotonicity |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

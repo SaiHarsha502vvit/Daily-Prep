@@ -10,6 +10,50 @@ Advanced number theory algorithms bridge ancient mathematical discoveries and mo
 
 # 📌 Part 5: More Essential Algorithms
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Number Theory Core](08a_NumberTheory_Core.md), [Arrays (DS)](../02_Data_Structures/01b_Arrays.md) |
+| **You will learn** | Kadane, Dutch national flag, Boyer–Moore voting, Floyd cycle detection, monotonic stack, prefix/difference arrays, incident-to-DSA mapping, study plan |
+| **Leads to** | [Matrix exponentiation](23_Matrix_Exponentiation_And_Linear_Recurrences.md), [Practice sets](03_PROBLEM_SETS.md) |
+| **Abstraction level** | L3–L5: single-pass patterns that replace nested loops |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Essential Array Patterns & Practice
+
+### 1. The bottom line
+
+A small set of one-pass patterns solves a large share of array problems in O(n) time and O(1) extra space.
+
+### 2. The textbook core
+
+- **Kadane:** maximum subarray sum with `cur = max(x, cur + x)`.
+- **Dutch flag:** 3-way partition in one pass.
+- **Boyer–Moore:** majority element in O(1) space.
+- **Prefix/difference arrays:** O(1) range sums / O(1) range updates.
+
+### 3. The real-world analogy
+
+A **running tally**: instead of re-adding every number, keep a total and adjust it as you move.
+
+### 4. Walkthrough
+
+1. Boyer–Moore on `[2, 2, 1, 2, 3]`.
+2. Candidate 2, count 1 → count 2 → 1 (sees 1) → 2 → 1 (sees 3).
+3. Candidate remains 2 (count positive).
+4. Verify by counting: 2 appears 3 of 5 times → majority.
+
+> [!NOTE]
+> **Quick check:** Why verify the Boyer–Moore candidate? *If no majority exists, the candidate is arbitrary.*
+
+---
+
+
 # ═══════════════════════════════════════════════════════════
 
 ## Algorithm: Kadane's Algorithm (Maximum Subarray Sum) ⭐⭐⭐
@@ -1117,6 +1161,17 @@ static long modPow(long base, long exp, long mod) {
 | Factorisation | Trial division | O(sqrt(n)) | Pollard's rho | O(n^{1/4}) |
 **Navigation**: [< Previous](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Pattern_Programs_Complete.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Essential Array Patterns & Practice
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Streaming analytics, log processing, fraud detection heuristics, financial series |
+| **Failure modes** | Kadane with all-negative arrays; forgetting the verification pass; off-by-one in prefix indices |
+| **Testing and verification** | Brute-force comparison on small random arrays |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -6,6 +6,50 @@ Purpose: A complete Java reference for computational geometry and math problems,
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Number Theory Core](08a_NumberTheory_Core.md), basic algebra |
+| **You will learn** | Cross product and orientation, shoelace formula, Pick's theorem, precision pitfalls |
+| **Leads to** | [Computational geometry](06e_Algorithm_Patterns.md) |
+| **Abstraction level** | L5: geometry with integer arithmetic |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Math & Geometry
+
+### 1. The bottom line
+
+Most geometry tasks in interviews reduce to the sign of a cross product and careful integer arithmetic.
+
+### 2. The textbook core
+
+- `cross(a, b, c) > 0` means counter-clockwise turn, `< 0` clockwise, `0` collinear.
+- Shoelace: polygon area = ½ |Σ (xᵢyᵢ₊₁ − xᵢ₊₁yᵢ)|.
+- Pick: `A = I + B/2 − 1` for lattice polygons.
+- Prefer `long` integer math over `double` to avoid precision bugs.
+
+### 3. The real-world analogy
+
+Checking whether you must **turn left or right** at a corner: the cross product tells you without computing any angle.
+
+### 4. Walkthrough
+
+1. Points A(0,0), B(4,0), C(4,3).
+2. `cross = (B−A) × (C−A) = 4·3 − 0·4 = 12 > 0`.
+3. Positive → counter-clockwise turn.
+4. Triangle area = |12| / 2 = 6.
+
+> [!NOTE]
+> **Quick check:** Why avoid floating point for orientation tests? *Rounding can flip the sign for nearly collinear points.*
+
+---
+
+
 ### Historical Evolution
 
 Computational geometry's foundational algorithms trace to early cartography and surveying. The **Shoelace formula** (used for polygon area) was known to **Carl Friedrich Gauss and earlier mathematicians** but was popularized for digital computation by **M. Shamos in 1978** at Yale, who showed it could be computed in $O(n)$ for any simple polygon. The formula's name derives from the visual pattern of cross-products forming a zig-zag like a shoelace when drawn on paper. **Pick's Theorem** (area = interior + boundary/2 - 1 for lattice polygons) was published by **Georg Pick in 1899**, predating computers by nearly a century yet directly applicable to integer-coordinate polygon area problems in computational geometry. The **Cross Product / CCW test** is the geometric counterpart of determinant computation, a concept understood since **Leibniz (1687)** and formalized by **Euler (1776)** in the study of oriented areas. **Convex Hull algorithms** evolved from gift-wrapping (Jarvis 1973) and Graham scan (1972) to the **Quickhull (Barber, Dobkin, Huhdanpaa 1996)** algorithm, now implemented in virtually every GIS and game physics engine. Modern practice (post-2010) applies these theorems in autonomous vehicle path planning, computer graphics (collision detection via Separating Axis Theorem), and CAD systems.
@@ -234,6 +278,17 @@ BigInteger result = BigInteger.valueOf(3).modPow(BigInteger.valueOf(100), BigInt
 | Point in polygon | N/A (exact) | O(n) | O(n) ray casting | O(n) -- irreducible |
 | Polygon area | Shoelace formula (exact) | O(n) | O(n) -- already optimal | O(n) |
 
+
+---
+
+## 🏢 Enterprise Lens — Math & Geometry
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | GIS and mapping, collision detection, CAD, computer graphics, delivery-zone geometry |
+| **Failure modes** | Overflow in cross products; epsilon comparison mistakes; degenerate (collinear) cases |
+| **Testing and verification** | Test collinear, duplicate and very large coordinates |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

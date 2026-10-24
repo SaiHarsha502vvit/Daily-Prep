@@ -2,10 +2,12 @@
 
 ## Purpose
 
-Teach algorithmic thinking, complexity, recursion, DP, graphs, greedy, strings, number theory, bit manipulation, and advanced algorithm engineering. Also contains the **University Methodology Layer** (`A1..A4`) — the proof-based, complexity-based, lower-bound, and randomized algorithm chapters from MIT 6.006 / 6.046J, KTH DD1352 / DD2352, RWTH Aachen Algo I/II, and TU Munich IN0007.
+Teach algorithmic thinking, complexity, searching, recursion, DP, graphs, greedy, strings, number theory, bit manipulation, and advanced algorithm engineering. Also contains the **University Methodology Layer** (`A1..A4`) — the proof-based, complexity-based, lower-bound, and randomized algorithm chapters from MIT 6.006 / 6.046J, KTH DD1352 / DD2352, RWTH Aachen Algo I/II, and TU Munich IN0007.
 
 ## Writing Style
 
+- Every chapter carries the standard blocks: **Bridge** (builds on / you will learn / leads to / abstraction level), **study-partner explainer** (bottom line, textbook core, analogy, walkthrough, quick check), an **At a Glance** Mermaid diagram + table where it adds value, and an **Enterprise Lens** (production use, failure modes, testing). See `00_LEARNING_PATH.md` for the dependency graph, abstraction ladder and coverage matrix.
+- New or changed code must be compiled and cross-checked (brute force / known values) before it is documented.
 - Brute force first, then optimized rewrite.
 - State the invariant.
 - Explain constraint triggers.

@@ -8,6 +8,50 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [A2 Complexity](A2_Complexity_FirstPrinciples.md), basic probability |
+| **You will learn** | Las Vegas vs Monte Carlo, indicator random variables, expected running time, universal hashing, randomized quicksort, Bloom filters |
+| **Leads to** | [Approximation](25_Online_Approximation_And_Linear_Programming.md), [Probabilistic DS](07d_Probabilistic_DS_Deep.md) |
+| **Abstraction level** | L7: using randomness as a design tool |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Randomized Algorithms
+
+### 1. The bottom line
+
+Randomness lets an algorithm be simple and fast on average while no single bad input can reliably hurt it.
+
+### 2. The textbook core
+
+- **Las Vegas:** always correct, random running time. **Monte Carlo:** fast, may be wrong with bounded probability.
+- **Linearity of expectation** (with indicator variables) computes expected costs without independence.
+- Randomized quicksort has expected O(n log n) for every input.
+- Amplify Monte Carlo success by repeating independent runs.
+
+### 3. The real-world analogy
+
+Choosing a **random pivot** is like shuffling a deck before dealing: no particular order can consistently ruin the game.
+
+### 4. Walkthrough
+
+1. Randomized quicksort on a sorted array.
+2. A random pivot splits the array roughly evenly in expectation.
+3. Expected depth is O(log n).
+4. No fixed input triggers the quadratic worst case.
+
+> [!NOTE]
+> **Quick check:** How do you reduce a Monte Carlo error from 1/4 to 1/16? *Run it twice independently and take the majority/OR as appropriate.*
+
+---
+
+
 ## Table of Contents
 
 1. [Las Vegas vs Monte Carlo — The Fundamental Distinction](#1-las-vegas-vs-monte-carlo--the-fundamental-distinction)
@@ -630,6 +674,17 @@ Collections.shuffle(arr, ThreadLocalRandom.current());
 
 *[← A3: Lower Bounds & NP](A3_Lower_Bounds_And_NP.md) | [Back to Index](00_INDEX.md)*
 
+
+---
+
+## 🏢 Enterprise Lens — Randomized Algorithms
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Hash tables, load balancing, sampling, cryptography, probabilistic data structures |
+| **Failure modes** | Weak random sources; reusing seeds across runs in tests; relying on expectation for latency-critical tails |
+| **Testing and verification** | Seed deterministically in tests; verify distribution and error rate empirically |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

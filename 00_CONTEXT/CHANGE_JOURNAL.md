@@ -4,6 +4,14 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - 03_Algorithms Repair, Curriculum Audit and Enterprise Upgrade
+
+- Repair: cp1252 bytes fixed in 7 files (`03c`, `06`, `06c`, `06d`, `07a`, `07e`, `13_Algorithms_In_Production`); lost `→` in Reality Check lines restored; unbalanced/stray code fences fixed in `03b`, `04c`, `05e`; fenced-prose and flattened code/diagrams rebuilt in `03b`, `04a`–`04c`, `06a`, `07a`, `15`; broken tables repaired (`00_INDEX`, `02a`, `07c`, `15`, `16`); 7 stale cross-module links fixed.
+- Curriculum audit (coverage matrix in `00_LEARNING_PATH.md`): found matrix exponentiation, game theory (Sprague-Grundy), approximation/online/LP and FFT/NTT missing or thin and binary search not taught as a reusable idea. Added chapters `22`–`26` with Java that was compiled and cross-checked against brute force.
+- Flow: new `00_LEARNING_PATH.md` (abstraction ladder, dependency graph, ordered bridge table, coverage matrix, quality standard); `00_INDEX.md` rewritten in true reading order with corrected links; file-name/content mismatches (`06a`, `06d`, `06e`, `07b`, `08a`, `08b`) documented rather than renamed to keep links valid.
+- Enterprise upgrade: 45 chapters gained a Bridge box, a four-part study-partner explainer and an Enterprise Lens (production use, failure modes, testing, review checklist).
+- Not done in this pass: ~200 remaining ASCII box diagrams in `03_Algorithms` are still in `text` code fences (safe but not Mermaid); conversion continues chapter by chapter.
+
 ## 2026-10-24 - 02_Data_Structures Study-Partner Views, Batch 2
 
 - Added 44 more topic-level `💬 Study-Partner View` blocks: `A1` §2–10 (array, linked list, stack/queue, hash table, BST, heap, trie, union-find invariants; stating invariants), `A2` (accounting, potential, space, amortized vs average), `A3` (comparison, cell-probe, information-theoretic, union-find bounds), `A4` (skip list, treap, Bloom, cuckoo, Count-Min, HyperLogLog, consistent hashing, MinHash), `A5` (augmentation, randomization, laziness, Fenwick tree), `03` (List, Map, Set, Queue), `01a` (memory hierarchy, stack vs heap, bit manipulation), `01g` (ArrayList, HashMap, LinkedList, TreeMap, PriorityQueue internals), `05` (Big-O vs cache lines, B-tree vs LSM, Bloom filters).

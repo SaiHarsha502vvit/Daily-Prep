@@ -8,6 +8,50 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [A2 Complexity](A2_Complexity_FirstPrinciples.md), [Greedy/DP/Backtracking](12_Greedy_Algorithms_Complete.md) |
+| **You will learn** | Decision-tree lower bounds, reductions, P vs NP, NP-completeness proofs, approximation hooks |
+| **Leads to** | [Approximation, Online & LP](25_Online_Approximation_And_Linear_Programming.md), [A4 Randomized](A4_Randomized_Algorithms.md) |
+| **Abstraction level** | L7: knowing what cannot be done fast |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Lower Bounds & NP-Completeness
+
+### 1. The bottom line
+
+A lower bound or an NP-hardness proof tells you when to stop searching for a faster exact algorithm.
+
+### 2. The textbook core
+
+- Comparison sorting needs Ω(n log n) (decision tree with n! leaves).
+- To prove problem B is NP-hard, **reduce** a known NP-hard problem A to B in polynomial time.
+- NP-complete = in NP and NP-hard.
+- Responses to hardness: approximation, heuristics, parameterised or exponential algorithms with pruning.
+
+### 3. The real-world analogy
+
+A **proof that a puzzle has no shortcut** so you stop wasting time looking for one.
+
+### 4. Walkthrough
+
+1. Show Vertex Cover is hard via Independent Set.
+2. A set `S` is independent iff its complement is a vertex cover.
+3. So a size-k independent set exists iff a size-(n−k) vertex cover exists.
+4. The reduction is polynomial → Vertex Cover is NP-hard.
+
+> [!NOTE]
+> **Quick check:** What does NP-hard guarantee? *If you could solve it in polynomial time, you could solve every NP problem in polynomial time.*
+
+---
+
+
 ## Table of Contents
 
 1. [Lower Bounds — Proving Algorithms Are Optimal](#1-lower-bounds--proving-algorithms-are-optimal)
@@ -639,6 +683,17 @@ for (int mask = 0; mask < (1 << n); mask++) {
 ```
 
 
+
+---
+
+## 🏢 Enterprise Lens — Lower Bounds & NP-Completeness
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Choosing exact vs heuristic solvers in logistics, scheduling and verification tools |
+| **Failure modes** | Misreading NP-hard as "impossible"; reductions in the wrong direction |
+| **Testing and verification** | Test reductions on small instances in both directions |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

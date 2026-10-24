@@ -7,6 +7,50 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [String Algorithms](13_String_Algorithms_Complete.md), [Sliding window / two pointers](16_DSA_Deep_Reasoning.md) |
+| **You will learn** | Advanced interview patterns, string algorithm deep dive, competitive programming tricks, complexity analysis, templates |
+| **Leads to** | [Competitive thinking](../14_Mental_Models/21_Competitive_Coding_Deep_Thinking.md) |
+| **Abstraction level** | L5: pattern fluency under time pressure |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Advanced Patterns, Strings & Competitive Techniques
+
+### 1. The bottom line
+
+This chapter turns known algorithms into fast, reusable templates for contests and interviews.
+
+### 2. The textbook core
+
+- Pattern families: sliding window, two pointers, prefix sums, monotonic structures, binary search on answer.
+- String toolbox: KMP, Z, rolling hash, Manacher.
+- Competitive tricks: fast I/O, modular arithmetic helpers, overflow-safe maths.
+- Complexity budgeting from constraints.
+
+### 3. The real-world analogy
+
+A **mechanic's toolbox**: you do not invent a wrench each time, you recognise the bolt and reach for the right one.
+
+### 4. Walkthrough
+
+1. Longest substring without repeating characters.
+2. Sliding window with a map of last-seen indices.
+3. Expand `right`; if a repeat appears, move `left` past its last occurrence.
+4. Window length is tracked in O(n).
+
+> [!NOTE]
+> **Quick check:** Which pattern fits "longest subarray with at most k distinct"? *Variable sliding window.*
+
+---
+
+
 <details>
 <summary><b>🧠 5W1H: Advanced Algorithm Patterns & String Algorithms</b></summary>
 
@@ -1291,6 +1335,17 @@ int idx = haystack.indexOf(needle); // prefer over manual KMP for single-pattern
 // For rolling hash, implement manually: hashCode = (hashCode * BASE + c) % MOD
 ```
 
+
+---
+
+## 🏢 Enterprise Lens — Advanced Patterns, Strings & Competitive Techniques
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Log parsing, search and text-processing services, coding assessments |
+| **Failure modes** | Quadratic string concatenation in loops; collisions in hand-made hashes; off-by-one on window bounds |
+| **Testing and verification** | Randomised comparison against brute force on small alphabets |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 
