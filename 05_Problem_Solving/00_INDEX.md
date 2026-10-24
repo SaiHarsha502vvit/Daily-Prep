@@ -8,7 +8,7 @@
 
 | Question | Answer |
 |----------|--------|
-| **WHAT** | 25 topic-organized problem files containing 200+ practice problems with detailed solutions, pattern recognition headers, brute-force-to-optimized reasoning, and edge case analyses. |
+| **WHAT** | 30 topic-organized problem pages containing 200+ practice problems with detailed solutions, pattern recognition headers, brute-force-to-optimized reasoning, and edge case analyses. |
 | **WHY** | To build **durable pattern recognition** — the ability to look at a new problem and instantly know which algorithmic pattern applies (sliding window? DP? two pointers?). Without this, every new problem feels novel. With it, you see the same 15-20 patterns recycled with cosmetic variations. |
 | **WHO** | Software engineers preparing for technical interviews (FAANG, startups), competitive programmers building reflex, students in DSA courses, and practitioners who want to deepen algorithmic intuition. |
 | **WHEN** | During interview prep (typically 8-12 weeks before onsite loops), daily practice rotations (1-2 problems/day), and whenever you encounter a new problem domain and want to build familiarity. |
@@ -80,100 +80,77 @@ For each topic (e.g., "Sliding Window"):
 
 ---
 
-## Difficulty & Progression Guide
+## Reading Order
 
-### Beginner (Weeks 1-4)
+The order below builds from simple scans to the heavier algorithmic topics. The numeric prefixes in the file names are historical and do not follow this order — **follow this table**. Pages marked 🆕 were added after the folder audit.
 
-Build muscle memory with the foundational topics. Solve ALL problems in these files:
+| # | Page | Topic | Typical problems |
+| --- | --- | --- | --- |
+| 1 | [Method & Checklist](01_Intro_Checklist.md) | How to approach practice | The 4-phase loop, timeboxing |
+| 2 | [Arrays](04_Arrays.md) | One-pass array techniques | Kadane, rotation, partition |
+| 3 | [Prefix Sums](28_Prefix_Sum_Problems.md) 🆕 | Range queries and updates | Subarray sum = k, difference array |
+| 4 | [HashMap & Hashing](17_HashMap_Hashing.md) | Memory for speed | Two sum, grouping, frequency |
+| 5 | [Strings](03_Strings.md) | Text manipulation | Palindromes, anagrams |
+| 6 | [Math & Numbers](02_Math_Numbers.md) | Arithmetic with limits | Gcd, sieve, overflow |
+| 7 | [Two Pointers](06_Two_Pointers.md) | Monotone indices | Pair sums, container, merge |
+| 8 | [Sliding Window](05_Sliding_Window.md) | Moving windows | Longest substring, window maximum |
+| 9 | [Binary Search](07_Binary_Search.md) | Halving the search space | Rotated array, search on answer |
+| 10 | [Sorting](20_Sorting.md) | Order as a first step | Comparators, counting sort |
+| 11 | [Linked List](15_LinkedList.md) | Pointer rewiring | Reverse, cycle, merge |
+| 12 | [Stack & Queue](08_Stack_Queue.md) | LIFO / FIFO state | Brackets, monotonic stack |
+| 13 | [Recursion & Subsets](22_Recursion_Subsets.md) | Self-similar problems | Subsets, combinations |
+| 14 | [Backtracking](12_Backtracking.md) | Search with pruning | Permutations, N-Queens |
+| 15 | [Trees](09_Trees.md) | Hierarchies | Traversals, LCA, BST |
+| 16 | [Tries](30_Trie_Problems.md) 🆕 | Shared prefixes | Replace words, max XOR |
+| 17 | [Graphs](10_Graphs.md) | Networks | BFS/DFS, components |
+| 18 | [Union-Find](27_Union_Find_Problems.md) 🆕 | Merging groups | Provinces, Kruskal |
+| 19 | [Topological Sort](29_Topological_Sort_Problems.md) 🆕 | Dependencies | Course schedule, alien dictionary |
+| 20 | [Heap & Priority Queue](16_Heap.md) | Best remaining item | Top-K, median |
+| 21 | [Shortest Paths](31_Shortest_Path_Problems.md) 🆕 | Weighted routes | Dijkstra, 0-1 BFS |
+| 22 | [Greedy](13_Greedy.md) | Locally best choices | Scheduling, exchange arguments |
+| 23 | [Intervals](26_Interval_Problems.md) 🆕 | Ranges | Merge, rooms, arrows |
+| 24 | [Dynamic Programming](11_Dynamic_Programming.md) | Overlapping subproblems | Knapsack, subsequences |
+| 25 | [Bit Manipulation](18_BitManipulation.md) | Bits as flags | XOR, masks |
+| 26 | [Matrix & Grid](19_Matrix.md) | 2-D structures | Spiral, islands, rotation |
+| 27 | [Design](21_Design.md) | Combining structures | LRU, min-stack |
+| 28 | [Mixed & Competitive](14_Mixed_Competitive.md) | Patterns composed | Contest-style |
 
-- `01_Intro_Checklist.md` — Setup, approach, timeboxing
-- `02_Math_Numbers.md` — Sieve, GCD, modular arithmetic
-- `03_Strings.md` — Reverse, palindrome, anagram
-- `04_Arrays.md` — Subarray, rotation, partition
-- `15_LinkedList.md` — Reverse, cycle detection, merge
-- `17_HashMap_Hashing.md` — Frequency, grouping, two-sum
-- `20_Sorting.md` — Custom comparators, intervals
+### Reference pages (read alongside)
 
-### Intermediate (Weeks 5-8)
+| Page | Use |
+| --- | --- |
+| [Edge Cases](23_Edge_Cases.md) | Boundary conditions to check every time |
+| [Common Mistakes](24_Common_Mistakes.md) | Re-read weekly |
+| [Problem Origins](25_Problem_Origins.md) | History and illustrative scenarios (documented versus illustrative is marked) |
+| [Learning Path](00_LEARNING_PATH.md) | Abstraction ladder, dependency graph, coverage matrix |
 
-Add the pattern-heavy topics. Solve 70-80% of problems:
+### Suggested pacing
 
-- `05_Sliding_Window.md` — Fixed + variable window patterns
-- `06_Two_Pointers.md` — Opposite + same-direction pointers
-- `07_Binary_Search.md` — Classic + rotated + on-answer
-- `08_Stack_Queue.md` — Monotonic stack, deque patterns
-- `09_Trees.md` — DFS + BFS traversals
-- `18_BitManipulation.md` — XOR, masks, bitmask DP
-- `23_Edge_Cases.md` — Boundary testing discipline
+| Stage | Rows | Goal |
+| --- | --- | --- |
+| Foundations (weeks 1–4) | 1–11 | Muscle memory for scans, hashing and pointers |
+| Patterns (weeks 5–8) | 12–19 | Recursion, trees, graphs and their building blocks |
+| Heavyweights (weeks 9–12) | 20–27 | Heaps, shortest paths, greedy, DP, design |
+| Contest (13+) | 28 | Compose patterns under time pressure |
 
-### Advanced (Weeks 9-12)
+> [!NOTE]
+> **Chapter hubs and topic pages.** Long chapters are split: the chapter file keeps the bridge, explainer, at-a-glance material and Enterprise Lens, and lists its **topic pages** in a table. Previous/next links follow the reading order above.
+>
+> **Company tags** (`Companies:` lines and columns) are community-reported, change over time and are **not verified**; use them as hints about relevance, not facts.
 
-Master the algorithmic heavyweights:
-
-- `10_Graphs.md` — BFS, DFS, Dijkstra, Union-Find
-- `11_Dynamic_Programming.md` — 1D, 2D, knapsack, subsequence
-- `12_Backtracking.md` — Permutations, N-Queens, pruning
-- `13_Greedy.md` — Intervals, scheduling, exchange argument
-- `16_Heap.md` — Top-K, median, Dijkstra with PQ
-- `19_Matrix.md` — BFS/DFS on grids, spiral, island
-- `21_Design.md` — LRU cache, stack-from-queue, Trie
-- `22_Recursion_Subsets.md` — Generate, count, optimize
-
-### Contest Mastery (Optional, Weeks 13+)
-
-- `14_Mixed_Competitive.md` — Mixed-difficulty contest problems
-
-### Cross-Topic References (Always)
-
-- `24_Common_Mistakes.md` — Re-read weekly; add new mistakes you discover
-- `25_Problem_Origins.md` — Connect abstract problems to real-world systems
-
----
-
-## Reading Order (Quick Reference)
-
-| #   | File                                             | Topic                    | Problems                      |
-| --- | ------------------------------------------------ | ------------------------ | ----------------------------- |
-| 1   | [Intro & Checklist](01_Intro_Checklist.md)       | How to approach practice | —                             |
-| 2   | [Math & Numbers](02_Math_Numbers.md)             | Math-based problems      | LeetCode style                |
-| 3   | [Strings](03_Strings.md)                         | String manipulation      | Reverse, palindrome, anagram  |
-| 4   | [Arrays](04_Arrays.md)                           | Array problems           | Subarray, rotation, partition |
-| 5   | [Sliding Window](05_Sliding_Window.md)           | Window problems          | Max sum, longest substring    |
-| 6   | [Two Pointers](06_Two_Pointers.md)               | Pointer problems         | 2-sum, container, merge       |
-| 7   | [Binary Search](07_Binary_Search.md)             | Search problems          | Sorted array, rotated         |
-| 8   | [Stack & Queue](08_Stack_Queue.md)               | Stack/queue problems     | Valid parentheses, monotonic  |
-| 9   | [Trees](09_Trees.md)                             | Tree problems            | Traversal, height, LCA        |
-| 10  | [Graphs](10_Graphs.md)                           | Graph problems           | BFS/DFS, shortest path        |
-| 11  | [Dynamic Programming](11_Dynamic_Programming.md) | DP problems              | Classic DP collection         |
-| 12  | [Backtracking](12_Backtracking.md)               | Backtracking problems    | Permutations, N-Queens        |
-| 13  | [Greedy](13_Greedy.md)                           | Greedy problems          | Intervals, scheduling         |
-| 14  | [Mixed Competitive](14_Mixed_Competitive.md)     | Mixed difficulty         | Contest-style                 |
-| 15  | [LinkedList](15_LinkedList.md)                   | LinkedList problems      | Reverse, cycle, merge         |
-| 16  | [Heap](16_Heap.md)                               | Heap problems            | Top-K, median                 |
-| 17  | [HashMap & Hashing](17_HashMap_Hashing.md)       | Hash problems            | Frequency, grouping           |
-| 18  | [Bit Manipulation](18_BitManipulation.md)        | Bit problems             | XOR, masks, counting          |
-| 19  | [Matrix](19_Matrix.md)                           | Matrix problems          | Spiral, search, island        |
-| 20  | [Sorting](20_Sorting.md)                         | Sorting problems         | Custom sort, intervals        |
-| 21  | [Design](21_Design.md)                           | Design problems          | LRU, stack from queue         |
-| 22  | [Recursion & Subsets](22_Recursion_Subsets.md)   | Recursion problems       | Subsets, combinations         |
-
-### Reference
-
-| 23 | [Edge Cases](23_Edge_Cases.md) | Common edge cases to always check |
-| 24 | [Common Mistakes](24_Common_Mistakes.md) | Bugs and pitfalls to avoid |
-| 25 | [Problem Origins](25_Problem_Origins.md) | Where problems come from in real systems |
+**Review checklist for every problem:** state time **and** space complexity · state the invariant · list edge cases (empty, one element, duplicates, extremes) · say what happens at 10× data.
 
 ---
 
 ## Historical Evolution
 
-The practice-problem format used in this folder evolved from **competitive programming culture**, which traces its roots to the **ACM-ICPC (Association for Computing Machinery International Collegiate Programming Contest), founded in 1970**. ICPC established the "1 problem, multiple test cases, time limit" format that defines modern competitive programming. The format was adapted for industry interview prep by **William Pugh's "CodingBat" (2008)** and popularized by **LeetCode (2015)**, which added the company-tag and difficulty-tier system now standard in interview prep.
+Practice-problem culture grew out of programming contests. The ACM collegiate programming contest began in 1970 and became an international final from 1977; the International Olympiad in Informatics started in 1989; TopCoder (2001) and Codeforces (2010) added online rounds and ratings; interview-practice sites such as LeetCode appeared around 2011. The habit of "brute force first, then optimise" is old teaching practice, popularised for programmers by Jon Bentley's *Programming Pearls* columns (1983–85, book 1986) and by textbooks such as *Introduction to Algorithms* (1990).
 
-The "brute force first, then optimize" pedagogical pattern was popularized by **Jon Bentley's "Programming Pearls" (1986)** and formalized in **Cormen-Leiserson-Rivest-Stein "Introduction to Algorithms" (1990 first edition)**, which introduced the invariant-first reasoning that this folder applies throughout. The constraint-driven pattern selection framework used in `04_Patterns_Templates/` and reinforced here was developed by **Stanford's CS161 (algorithms course)** materials in the 2010s and adopted widely after **Google's engineering interviews shifted toward pattern recognition (2014–2016)** in response to widespread candidate memorization of classic problems.
-
-Modern practice ecosystems (LeetCode, HackerRank, Codeforces, Codewars) build on this foundation. LeetCode alone hosts 2,500+ problems as of 2024, with company-tagged sets used by 70%+ of FAANG candidates for interview prep. The signal-word pattern recognition headers in this folder are an explicit response to this evolution: when problems become commoditized, the only durable advantage is **pattern recognition reflex**, not memorization.
-
----
+- **ACM contest — 1970/1977**: Timed problems with judged programs
+- **IOI — 1989**: Olympiad for secondary-school students
+- **Bentley — 1986**: *Programming Pearls*: think, estimate, test
+- **Codeforces — 2010**: Large online contests with ratings
+- **LeetCode — c. 2011**: Interview-oriented problem sets with tags
 
 ## Production Reality
 
@@ -187,7 +164,7 @@ Practice problems are simplified versions of real production debugging. The skil
 
 **Failure mode 4: Performance cliff surprise.** LeetCode problems often have n ≤ 10⁴. Production data has n = 10⁷ to 10⁹. **Debug workflow:** always ask "what's the input size in production?" before committing an algorithm. Use `04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md` to verify the algorithm meets the production constraint budget.
 
-**Real-world anchor:** The 2017 Knight Capital incident ($440M loss in 45 minutes) was caused by a flag-not-set bug in a production trading system — exactly the kind of "edge case not tested" failure mode that practice problems train you to spot. The engineers had solved thousands of problems; what they missed was testing the "did you remember to initialize the flag?" case. Practice problems teach you to enumerate edges; production discipline teaches you to **always** enumerate them, not just when the prompt reminds you.
+**Real-world anchor:** The 2012 Knight Capital incident (about $440 million lost in roughly 45 minutes) came from a deployment that left old code active on one of eight servers and re-used a feature flag. It is a reminder that rollout states and untested edge cases are real failure modes — the habit these practice problems train.
 
 ---
 

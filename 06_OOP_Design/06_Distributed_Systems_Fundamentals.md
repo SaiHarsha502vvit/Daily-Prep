@@ -1,13 +1,78 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [System Design Problems](05_SD_Interview_Problems.md)
 🧠 **Mental Model**: See [Distributed Systems Thinking](../14_Mental_Models/16_Distributed_Systems_Thinking.md)
 
 ---
 
 # 🌐 Distributed Systems Fundamentals — CAP, Consistency, Partitioning
 
+> **Navigation**: [← Chapter 05 - System Design…](05b_System_Design_Fundamentals.md) | [Chapter index](00_INDEX.md) | [System Design Interview Problems… →](05_SD_Interview_Problems.md)
+
 Everything you need to reason about systems that span multiple machines
 
 ---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [System Design Fundamentals](05b_System_Design_Fundamentals.md), [Hash tables](../02_Data_Structures/01e_HashTable.md) |
+| **You will learn** | Why distribute, CAP and PACELC, consistency models, replication, partitioning, consensus and common patterns |
+| **Leads to** | [LLD Solved Problems](07_LLD_Solved_Problems.md), [Domain-Driven Design](09_Domain_Driven_Design_Essentials.md) (aggregates and eventual consistency) |
+| **Abstraction level** | One machine → **many machines that fail independently** → **protocols that give guarantees despite failure** |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Distributed Systems Fundamentals
+
+### 1. The bottom line
+
+Machines and networks fail independently, so every distributed design chooses what to give up during a partition.
+
+### 2. The textbook core
+
+- **CAP**: during a network partition you must choose between consistency and availability (Gilbert and Lynch, 2002).
+- **Consistency models** range from linearizable to eventual.
+- **Replication** copies data for durability and read scale; **partitioning** splits data for write scale.
+- **Consensus** (Paxos, Raft) lets nodes agree on a value despite crashes.
+- Patterns: retries with idempotency, circuit breakers, bulkheads, sagas.
+
+### 3. The real-world analogy
+
+A **group of friends planning a dinner by text**: messages arrive late or out of order, someone's phone dies, and they still have to agree on one restaurant.
+
+### 4. Walkthrough
+
+1. Write goes to the leader; replicas follow.
+2. The network between two data centres drops.
+3. CP choice: the minority side refuses writes.
+4. AP choice: both sides accept writes; reconcile later.
+5. State the business rule that picks the side.
+
+> [!NOTE]
+> **Quick check:** When is eventual consistency acceptable? *When stale reads or briefly divergent copies are cheaper than refusing service, such as feeds and counters, but not for balances.*
+
+### 5. Check yourself
+
+**Q1.** A system refuses writes during a partition to keep replicas identical. CP or AP?
+
+<details><summary>Answer</summary>
+
+**CP**: it keeps consistency and gives up availability on the minority side.
+
+</details>
+
+**Q2.** Does Paxos tolerate Byzantine (arbitrary) faults?
+
+<details><summary>Answer</summary>
+
+No. Paxos and Raft assume nodes crash or are slow but do not lie; Byzantine fault tolerance needs different protocols.
+
+</details>
+
+---
+
 
 ## Part 1: Why Distributed Systems?
 
@@ -86,193 +151,153 @@ You CANNOT have both during a partition. Period.
 
 ## Part 3: Consistency Models
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  SPECTRUM: Strong ←───────────────────────────────────→ Weak                    │
-│                                                                                 │
-│  1. STRONG CONSISTENCY (Linearizability)                                        │
-│     → Every read returns the most recent write                                  │
-│     → As if there's only one copy of data                                       │
-│     → Cost: High latency (must coordinate all replicas)                         │
-│     → Example: Single PostgreSQL instance, Google Spanner                       │
-│                                                                                 │
-│  2. SEQUENTIAL CONSISTENCY                                                      │
-│     → All operations appear in SOME total order                                 │
-│     → Same order observed by all nodes                                          │
-│     → But that order might not match real-time wall clock                       │
-│                                                                                 │
-│  3. CAUSAL CONSISTENCY                                                          │
-│     → Operations that are causally related are seen in order                    │
-│     → Concurrent operations may be seen in different orders                     │
-│     → Example: "I replied to your message" always appears after your message    │
-│                                                                                 │
-│  4. EVENTUAL CONSISTENCY                                                        │
-│     → Given enough time with no new writes, all replicas converge               │
-│     → Reads may return stale data temporarily                                   │
-│     → Cost: Cheapest, fastest                                                   │
-│     → Example: DNS, S3, DynamoDB (default)                                      │
-│                                                                                 │
-│  REAL-WORLD MAP:                                                                │
-│  ┌────────────────────┬──────────────────────────────────────────────────────┐  │
-│  │ Strong             │ Banking, inventory, leader election                  │  │
-│  │ Causal             │ Social media comments, collaborative editing         │  │
-│  │ Eventual           │ DNS, CDN, product catalog, analytics                │   │
-│  └────────────────────┴──────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+**Spectrum: strong ← → weak**
+
+| # | Model | What it guarantees | Cost / example |
+| --- | --- | --- | --- |
+| 1 | **Strong consistency (linearizability)** | Every read returns the most recent write, as if there were only one copy of the data | High latency, because replicas must coordinate. Examples: a single PostgreSQL instance, Google Spanner |
+| 2 | **Sequential consistency** | All operations appear in some total order that every node observes, but the order need not match the wall clock | Cheaper than linearizability |
+| 3 | **Causal consistency** | Operations that are causally related are seen in order; concurrent operations may be seen in different orders | Example: "I replied to your message" always appears after your message |
+| 4 | **Eventual consistency** | Given enough time with no new writes, all replicas converge; reads may be stale temporarily | Cheapest and fastest. Examples: DNS, DynamoDB default reads |
+
+**Real-world map**
+
+| Model | Typical use |
+| --- | --- |
+| Strong | Banking, inventory, leader election |
+| Causal | Social media comments, collaborative editing |
+| Eventual | DNS, CDN, product catalogue, analytics |
 
 ---
 
 ## Part 4: Replication Strategies
 
+**1. Single leader (master–follower)**
+
+```mermaid
+flowchart LR
+  C["Client"] -->|writes| L["Leader<br/>(one writer)"]
+  L -->|replicate| F1["Follower 1"]
+  L -->|replicate| F2["Follower 2"]
+  C -.->|"reads from any node"| F1
 ```
-1. SINGLE LEADER (Master-Slave)
 
-   ┌────────┐  writes   ┌────────┐
-   │ Client  │──────────→│ Leader  │───replicate──→ Follower 1
-   └────────┘           └────────┘───replicate──→ Follower 2
-   reads from any       (one writer)
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
 
-   ✅ Simple, strong consistency possible
-   ❌ Leader is bottleneck, failover complexity
-   Examples: PostgreSQL streaming replication, MySQL
+- ✅ Simple; strong consistency is possible
+- ❌ The leader is a bottleneck; failover is complex
+- Examples: PostgreSQL streaming replication, MySQL
 
-2. MULTI-LEADER
+**2. Multi-leader**
 
-   Leader A ◄────sync────► Leader B
-     ↓                       ↓
-   Followers              Followers
-
-   ✅ Write to nearest datacenter (low latency)
-   ❌ Conflict resolution is HARD (last-writer-wins, merge, custom logic)
-   Examples: CouchDB, multi-region DynamoDB
-
-3. LEADERLESS (Quorum-based)
-
-   Client writes to N replicas simultaneously
-   Read from R replicas, take most recent
-   Rule: W + R > N guarantees overlap → strong consistency POSSIBLE
-
-   N=3, W=2, R=2: Every read overlaps with at least one write replica
-
-   ✅ No single point of failure
-   ❌ Complex conflict resolution, repair mechanisms
-   Examples: Cassandra, DynamoDB, Riak
+```mermaid
+flowchart LR
+  A["Leader A"] <-->|sync| B["Leader B"]
+  A --> FA["Followers"]
+  B --> FB["Followers"]
 ```
+
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
+
+- ✅ Write to the nearest data centre (low latency)
+- ❌ Conflict resolution is hard (last-writer-wins, merge, custom logic)
+- Examples: CouchDB, multi-region DynamoDB global tables
+
+**3. Leaderless (quorum-based)**
+
+The client writes to N replicas at once and reads from R replicas, taking the most recent value. The rule `W + R > N` guarantees that a read quorum overlaps a write quorum, so strongly consistent reads are possible (not guaranteed in the presence of sloppy quorums or concurrent writes).
+
+With `N = 3, W = 2, R = 2`, every read overlaps at least one replica that has the write.
+
+- ✅ No single point of failure
+- ❌ Complex conflict resolution and repair mechanisms
+- Examples: Cassandra, Dynamo-style stores, Riak
 
 ---
 
 ## Part 5: Partitioning (Sharding)
 
+**Why partition?** A single machine cannot hold all the data, so split it across machines.
+
+**Strategy 1: range-based partitioning**
+
+| Shard 1 | Shard 2 | Shard 3 |
+| --- | --- | --- |
+| Users A–F | Users G–M | Users N–Z |
+
+- ✅ Range queries are efficient (all users A–C live on shard 1).
+- ❌ Hot spots: if most users' names start with "S", shard 3 is overloaded.
+
+**Strategy 2: hash-based partitioning**
+
+`shard = hash(userId) % num_shards`
+
+- ✅ Even distribution (no hot spots for a simple partition key).
+- ❌ Range queries need scatter-gather (hit every shard).
+- ❌ Adding or removing a shard moves most of the data.
+
+**Strategy 3: consistent hashing** (common in distributed systems)
+
+Nodes and keys are mapped onto a hash ring (0 to 2^32), and a key is assigned to the nearest node clockwise.
+
+```mermaid
+flowchart LR
+  K["Key at position 150"] -->|"nearest node clockwise"| B["Node B (position 200)"]
+  A["Node A (position 100)"] --- B --- C["Node C (position 300)"] --- A
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Single machine can't hold all data → split across machines                │
-│                                                                                 │
-│  STRATEGY 1: Range-Based Partitioning                                           │
-│  ─────────────────────────────────────                                          │
-│  Shard 1: Users A-F    Shard 2: Users G-M    Shard 3: Users N-Z                 │
-│                                                                                 │
-│  ✅ Range queries are efficient (get all users A-C → only shard 1)               │
-│  ❌ Hot spots! (If most users start with "S", shard 3 overloaded)                │
-│                                                                                 │
-│  STRATEGY 2: Hash-Based Partitioning                                            │
-│  ────────────────────────────────────                                           │
-│  shard = hash(userId) % num_shards                                              │
-│                                                                                 │
-│  ✅ Even distribution (no hot spots for simple partition key)                    │
-│  ❌ Range queries require scatter-gather (hit all shards)                        │
-│  ❌ Adding/removing shard requires massive data movement                         │
-│                                                                                 │
-│  STRATEGY 3: Consistent Hashing  ← BEST FOR DISTRIBUTED SYSTEMS                 │
-│  ─────────────────────────────────                                              │
-│  Nodes and keys mapped to a hash ring (0 to 2^32)                               │
-│  Key assigned to nearest node clockwise                                         │
-│                                                                                 │
-│       0                                                                         │
-│      ╱ ╲        Node A at position 100                                          │
-│    ╱     ╲      Node B at position 200                                          │
-│   ╱       ╲     Node C at position 300                                          │
-│  ╱    ●A   ╲                                                                    │
-│  │  ●B   ●C │   Key at position 150 → goes to Node B (nearest clockwise)        │
-│  ╲         ╱                                                                    │
-│   ╲       ╱     When Node B dies: only keys between A and B move to C           │
-│    ╲     ╱      Not ALL keys — just 1/N of them!                                │
-│      ╲ ╱                                                                        │
-│                                                                                 │
-│  Virtual nodes: Each physical node owns multiple positions on ring              │
-│  → Better distribution, smoother rebalancing                                    │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The three nodes sit on a ring at positions 100, 200 and 300. A key at position 150 goes clockwise to the next node, B. If B dies, only the keys between A and B move to C: roughly 1/N of all keys, not all of them.
+
+**Virtual nodes:** each physical node owns several positions on the ring, which gives better distribution and smoother rebalancing.
 
 ---
 
 ## Part 6: Consensus Algorithms
 
-PROBLEM: Multiple nodes must agree on a value (leader, transaction, order)
+**Problem:** multiple nodes must agree on a value (a leader, a transaction, an order).
 
-RAFT (Understandable Consensus)
-────────────────────────────────
-3 roles: Leader, Follower, Candidate
+**Raft (understandable consensus).** Three roles: leader, follower, candidate.
 
-1. Leader Election:
-   → Followers wait for heartbeat from leader
-   → No heartbeat → timeout → become Candidate
-   → Candidate requests votes from all nodes
-   → Majority votes → become Leader
+1. **Leader election**
+   - Followers wait for a heartbeat from the leader.
+   - No heartbeat before the timeout: become a candidate.
+   - The candidate requests votes from all nodes.
+   - A majority of votes: become leader.
+2. **Log replication**
+   - The client sends a write to the leader.
+   - The leader appends it to its log and sends it to the followers.
+   - A majority acknowledge: the leader commits.
+   - The leader tells the followers to commit.
 
-2. Log Replication:
-   → Client sends write to Leader
-   → Leader appends to log, sends to Followers
-   → Majority acknowledge → Leader commits
-   → Leader tells Followers to commit
+**Why a majority (quorum)?**
 
-WHY MAJORITY (Quorum)?
-→ 5 nodes: need 3 to agree
-→ Can tolerate 2 failures
-→ Any two majorities overlap by at least 1 node
-→ Guarantees the committed value is never lost
+- With 5 nodes you need 3 to agree, so the cluster tolerates 2 failures.
+- Any two majorities overlap in at least one node.
+- That overlap guarantees a committed value is never lost.
 
-USED BY: etcd (Kubernetes), CockroachDB, TiKV, Consul
+**Used by:** etcd (Kubernetes), CockroachDB, TiKV, Consul.
+
 
 ---
 
 ### Historical Evolution
 
-Distributed systems theory emerged from the practical necessity of making multiple machines behave as one. The field crystallized around a few landmark publications and systems. **Leslie Lamport introduced Paxos in 1989** (published 1998 after a decade of industry use internally at DEC and Microsoft) — the first consensus algorithm proven to work correctly under Byzantine failures, now used in Chubby (Google's lock service) and Azure Cosmos DB. **Eric Brewer presented the CAP conjecture as a PODC keynote in 1999**, formalizing what engineers had observed empirically: during a network partition, you must choose between consistency and availability. **Nancy Lynch and Michael Fischer proved CAP mathematically in 2002**, elevating it from conjecture to theorem — this is the origin of the formal CAP theorem cited in Part 2. **Google's MapReduce paper (Dean & Ghemawat, 2004)** established the paradigm for batch-processing massive datasets across commodity clusters; Hadoop (2006) was its open-source implementation. **BigTable (Chang et al., 2006)** introduced the wide-column store model, powering Google's crawl index and driving the design of HBase and Cassandra. **Amazon's Dynamo paper (DeCandia et al., 2007)** challenged the SQL orthodoxy by showing that an eventually-consistent key-value store could achieve five-nines availability — DynamoDB, Cassandra, and Riak all descend directly from this paper. **Google Spanner (2012)** reconciled global distribution with strong consistency using TrueTime (GPS + atomic clocks), proving that the CAP trade-off is not binary in time — you can have both AP and CP over different time windows. **Diego Ongaro's Raft paper (2014 PhD dissertation)** introduced Raft as a "understandable" alternative to Paxos, deliberately designed to be easier to teach and implement — today it powers etcd (Kubernetes), CockroachDB, and TiKV.
+The field crystallised around a few landmark papers and systems. **Leslie Lamport wrote the Paxos paper in 1989; it was published in 1998** (_The Part-Time Parliament_) and re-explained in _Paxos Made Simple_ (2001). Paxos is a consensus protocol that tolerates crash failures (not Byzantine ones) and underlies systems such as Google's Chubby lock service and Spanner. **Eric Brewer presented the CAP conjecture in his PODC 2000 keynote**; **Seth Gilbert and Nancy Lynch proved it in 2002**, which is the origin of the formal CAP theorem cited in Part 2. **MapReduce (Dean and Ghemawat, OSDI 2004)** set the model for batch processing on commodity clusters; Hadoop (2006) is its open-source counterpart. **Bigtable (Chang et al., OSDI 2006)** introduced the wide-column model that influenced HBase and Cassandra. **Amazon's Dynamo paper (DeCandia et al., SOSP 2007)** showed an eventually consistent, highly available key-value store; Cassandra and Riak borrow heavily from it (DynamoDB is a different, managed service that shares the name and some ideas). **Google Spanner (OSDI 2012)** offers externally consistent transactions across data centres using Paxos replication and TrueTime (GPS and atomic clocks): it is a CP system that makes unavailability rare through engineering. **Raft (Ongaro and Ousterhout, USENIX ATC 2014)** was designed to be easier to understand than Paxos and powers etcd (the Kubernetes datastore), CockroachDB and TiKV.
 
 ---
 
 ## Part 7: Common Distributed System Patterns
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  PATTERN              │ WHAT                          │ USED IN                 │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Circuit Breaker      │ Stop calling failing service  │ Netflix Hystrix,        │
-│                       │ to prevent cascade failures   │ Resilience4J            │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Bulkhead             │ Isolate failures to one       │ Thread pool per service │
-│                       │ component, protect others     │                         │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Saga                 │ Distributed transaction as    │ Order → Pay → Ship      │
-│                       │ sequence of local txns +      │ with compensation       │
-│                       │ compensations                 │                         │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  CQRS                 │ Separate read and write       │ Event-sourced systems   │
-│                       │ models/databases              │                         │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Event Sourcing       │ Store events, not state       │ Banking ledger, audit   │
-│                       │ Rebuild state by replaying    │ systems                 │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Sidecar              │ Attach helper process to main │ Service mesh (Istio),   │
-│                       │ service (logging, proxy)      │ Envoy proxy             │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Leader Election      │ One node coordinates work     │ ZooKeeper, etcd         │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Gossip Protocol      │ Nodes share state by random   │ Cassandra, Consul       │
-│                       │ peer-to-peer communication    │                         │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+| PATTERN | WHAT | USED IN |
+| --- | --- | --- |
+| Circuit Breaker | Stop calling failing service to prevent cascade failures | Hystrix (legacy), Resilience4J |
+| Bulkhead | Isolate failures to one component, protect others | Thread pool per service |
+| Saga | Distributed transaction as sequence of local txns + compensations | Order → Pay → Ship with compensation |
+| CQRS | Separate read and write models/databases | Event-sourced systems |
+| Event Sourcing | Store events, not state<br>Rebuild state by replaying | Banking ledger, audit systems |
+| Sidecar | Attach helper process to main service (logging, proxy) | Service mesh (Istio), Envoy proxy |
+| Leader Election | One node coordinates work | ZooKeeper, etcd |
+| Gossip Protocol | Nodes share state by random peer-to-peer communication | Cassandra, Consul |
 
 ---
 
@@ -300,8 +325,9 @@ Distributed systems theory emerged from the practical necessity of making multip
 
 ### Production Reality
 
-- **Knight Capital 2012**: Deployed untested trading software, lost **$440M in 45 minutes** due to a single conditional that was supposed to be removed but remained enabled by a legacy config flag. Cause: dead-code activation bug, classic regression-test failure. Violated "test before deploy" SDLC/SRP principles. This is the canonical failure for the CAP-consistency trade-off lesson: the distributed nature of trading systems means state can diverge rapidly and silently — without end-to-end integration tests that cover production configuration, a single config flag can activate a code path that was "known to be untested."
-- **Healthcare.gov 2013**: A **$1.7B** system crashed on launch. Cause: monolithic architecture with no load balancing, tightly-coupled components, and synchronous blocking calls between every layer — when one component saturated, it back-pressured all others synchronously. Violated SRP at the system level (one monolith with N reasons to change), DIP at the component level (no dependency injection between services — every service called every other directly with no abstraction layer), and AP principles (the system was designed as a CP monolith that couldn't degrade gracefully under load). The fix was decomposing into independent services with load balancers, circuit breakers, and async communication — exactly the distributed system patterns taught in this chapter.
+- **Knight Capital, 1 August 2012**: A deployment reached only seven of eight servers; the eighth ran old code that a reused flag re-activated, flooding the market with unintended orders. The firm lost about **$440M in roughly 45 minutes** (SEC findings). Distributed-systems lesson: a fleet running mixed versions is a partially failed system, so deployments must be verified on every node, rollouts need a kill switch, and monitoring must alert on anomalous order flow in minutes, not hours.
+- **Healthcare.gov, October 2013**: The federal marketplace failed under launch load. Government audits (GAO, HHS Inspector General) cite unclear requirements, late changes, limited end-to-end load testing and integration problems between contractors' components. Distributed-systems lesson: capacity, integration and graceful degradation have to be tested as a whole before launch.
+
 
 #### Related: Multiple Inheritance in OOP
 
@@ -338,146 +364,114 @@ A: Vertical: bigger machine (more CPU/RAM). Simple but has ceiling.
 
 ### Diagram 1: CAP Triangle with Named Systems
 
+```mermaid
+flowchart TB
+  P["Network partition<br/>(always possible)"] --> CPN["CP: keep Consistency,<br/>give up Availability"]
+  P --> APN["AP: keep Availability,<br/>give up Consistency"]
+  CPN --> CPX["Examples: ZooKeeper, etcd, HBase,<br/>MongoDB with majority writes"]
+  APN --> APX["Examples: Cassandra, Riak, CouchDB,<br/>DynamoDB default reads, DNS"]
 ```
-                         ┌──────────────┐
-                         │ Consistency  │
-                         │     (C)      │
-                         └───────┬──────┘
-                            ▲    │    ▲
-                           ╱     │     ╲
-                          ╱      │      ╲
-            CP Edge:     ╱   CP  │  AP   ╲    AP Edge:
-            ─────────   ╱  Zone  │ Zone  ╲   ──────────
-                       ╱         │        ╲
-          ┌───────────┼──────────┴─────────┼───────────┐
-          │           │                   │           │
-          │  MongoDB  │                   │  Cassandra│
-          │  HBase    │                   │  DynamoDB │
-          │  Redis    │                   │  CouchDB  │
-          │  ZooKeeper│                   │  DNS      │
-          │  etcd     │                   │  Riak     │
-          │           │                   │  S3       │
-          └───────────┼───────────────────┼───────────┘
-                         │                   │
-                         └───────┬───────────┘
-                            ▲    │    ▲
-                         ╱     │     ╲
-                        ╱      │      ╲
-                       ╱       │       ╲
-                      ▼        │        ▼
-               ┌───────────┐   │  ┌────────────┐
-               │Availability│   │  │ Partition  │
-               │    (A)     │   │  │ Tolerance  │
-               └───────────┘   │  │    (P)     │
-                              └──────────────┘
 
-  REALITY: P is NEVER optional (network partitions WILL happen)
-  → The TRUE choice: CP (favor consistency) vs AP (favor availability)
-  → CA systems exist only in theory (no partitions = no distributed system)
-```
+**How to read this diagram.** Partition tolerance (P) is not optional: networks do partition. The real choice is what to give up when it happens. Systems are tendencies, not absolutes; many can be tuned (for example Cassandra quorum levels).
+
+> [!NOTE]
+> "CA" systems exist only when there is nothing to partition, such as a single node. Once data is replicated across machines you must choose CP or AP during a partition.
 
 ### Diagram 2: Raft Consensus Sequence (Leader Election + Log Replication)
 
+**Raft in two phases**
+
+**Phase 1: leader election**
+
+```mermaid
+stateDiagram-v2
+  [*] --> Follower
+  Follower --> Candidate : election timeout, no heartbeat (term++, request votes)
+  Candidate --> Leader : majority votes
+  Candidate --> Follower : another leader found or vote lost
+  Candidate --> Candidate : split vote, new random timeout
+  Leader --> Follower : sees a higher term
+  Leader --> Follower : heartbeats (sent every heartbeat interval)
 ```
-  PHASE 1: LEADER ELECTION
-  ═══════════════════════════
 
-  ┌──────────────┐    timeout    ┌────────────────┐
-  │   Follower    │──────────────▶│   Candidate    │
-  │ (waits 100ms) │  no heartbeat │ (term++, votes)│
-  └──────────────┘               └───────┬────────┘
-        ▲                                 │
-        │    majority voted             │ vote
-        │    ─────────────             ▼
-        │                        ┌──────────────┐
-        └────────────────────────│    Leader     │
-             ┌───────────────────┤ (term N, sends│
-             │                   │  heartbeats)  │
-             ▼                   └──────────────┘
-        ┌──────────────┐
-        │   Follower    │◀─── heartbeat ─────────┘
-        │ (resets timer)│     every 50ms
-        └──────────────┘
+**How to read this diagram.** A follower that stops hearing heartbeats becomes a candidate and asks for votes in a new term. The first candidate with a majority becomes leader and sends regular heartbeats so followers reset their timers.
 
-  Random timeout [150-300ms]: prevents split-vote forever
-  Term numbers: prevent "zombie leaders" from old terms
+- **Randomised election timeouts** (the Raft paper suggests 150-300 ms) make repeated split votes unlikely.
+- **Term numbers** stop "zombie leaders" from old terms: a node that sees a higher term steps down.
 
-  PHASE 2: LOG REPLICATION
-  ══════════════════════════
+**Phase 2: log replication**
 
-  Client ──▶ write("balance=100")
-               │
-               ▼
-         ┌──────────────┐   ┌──────────────┐
-         │    Leader     │   │   Follower   │  Follower
-         │ term=N        │   │  receives    │  receives
-         │ log[N]=100    │──▶│  log entry   │──▶ entry
-         │ commits entry │   │  appends     │  appends
-         └──────────────┘   └──────────────┘
-              ▲                  │
-              │                  ▼
-              │   majority ack  ┌──────────────┐
-              └─────────────────│ Leader tells │
-                                │ all to commit│
-                                └──────────────┘
-
-  Commit rule: W + R > N ensures read-your-writes consistency
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant L as Leader (term N)
+  participant F1 as Follower 1
+  participant F2 as Follower 2
+  C->>L: write("balance=100")
+  L->>L: append entry to its log
+  L->>F1: AppendEntries(entry)
+  L->>F2: AppendEntries(entry)
+  F1-->>L: ack
+  L->>L: majority has the entry: commit
+  L-->>C: success
+  L->>F1: tell followers the entry is committed (next AppendEntries)
+  L->>F2: same
 ```
+
+**How to read this diagram.** The leader appends, replicates, and commits once a **majority** of the cluster has stored the entry; it then tells the followers to apply it.
+
+> [!NOTE]
+> The rule `W + R > N` belongs to quorum-replicated stores such as Dynamo-style systems. Raft's commit rule is simpler: an entry is committed when a majority of nodes have stored it.
 
 ### Diagram 3: Replication Topology Comparison
 
+**Topology 1: single primary**
+
+```mermaid
+flowchart LR
+  C["Client"] -->|writes| L["Leader"]
+  L -->|replicate| R2["Replica 2"]
+  L -->|replicate| R3["Replica 3"]
+  C -.->|"reads (replicas may be stale)"| R2
 ```
-  TOPOLOGY 1: SINGLE PRIMARY
-  ════════════════════════════
 
-       writes                 replicate
-  Client ───────▶ ┌────────┐ ─────────▶ ┌───────────┐
-                  │ Leader  │ ─────────▶ │ Replica 2 │
-                  └────────┘ ─────────▶ │ Replica 3 │
-                                        └───────────┘
-  reads from any node  reads from replicas (may be stale)
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
 
-  Trade-off: Simple, strong consistency. Leader = bottleneck.
+Trade-off: simple, and writes are strongly ordered through one node. The leader is the write bottleneck, and reads from replicas may lag.
 
-  TOPOLOGY 2: MULTI-PRIMARY
-  ══════════════════════════════
+**Topology 2: multi-primary**
 
-       write A          sync/bidirectional
-  Client ───────▶ ┌────────┐ ◀══════════▶ ┌────────┐
-                  │ Node A  │              │ Node B │
-                  └────────┘              └────────┘
-                       │                       │
-                       ▼                       ▼
-                  ┌────────┐             ┌────────┐
-                  │Follower│             │Follower│
-                  └────────┘             └────────┘
-
-  Trade-off: Low latency (nearby DC). CONFLICT RESOLUTION is HARD.
-
-  TOPOLOGY 3: QUORUM (R + W > N)
-  ════════════════════════════════════
-
-  N=3 replicas, W=2 write quorum, R=2 read quorum
-
-  Write: Client ────▶ writes to ┌──────┐ ┌──────┐ (2-of-3 nodes)
-                              └──────┘ └──────┘
-                               (wait for 2 acks)
-
-  Read:  Client ────▶ reads   ┌──────┐ ┌──────┐ (2-of-3 nodes)
-                              └──────┘ └──────┘
-                               (take latest)
-
-  ANY 2 nodes you read from ALWAYS overlap with at least 1 written node
-  → Guarantees strong consistency (Cassandra/DynamoDB tunable)
-
-  ┌─────────────────────────────────────────────────────────────┐
-  │  TUNABLE CONSISTENCY:                                       │
-  │  R=1, W=3 → fast reads,  slow writes, strong consistency    │
-  │  R=3, W=1 → slow reads,  fast writes, strong consistency    │
-  │  R=2, W=2 → balanced,     quorum overlap guaranteed         │
-  │  R=1, W=1 → eventual      (may read stale)                  │
-  └─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+  C["Client: write A"] --> A["Node A"]
+  A <-->|"sync / bidirectional"| B["Node B"]
+  A --> FA["Follower"]
+  B --> FB["Follower"]
 ```
+
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
+
+Trade-off: low latency (writes go to the nearest data centre), but **conflict resolution is hard**.
+
+**Topology 3: quorum (R + W > N)**
+
+`N = 3` replicas, `W = 2` write quorum, `R = 2` read quorum.
+
+| Operation | What happens |
+| --- | --- |
+| **Write** | The client writes to 2 of the 3 nodes and waits for 2 acknowledgements |
+| **Read** | The client reads from 2 of the 3 nodes and takes the latest version |
+
+Any 2 nodes you read from always overlap with at least 1 node that holds the latest acknowledged write. This is the basis of the tunable consistency in Cassandra and Dynamo-style stores. It guarantees overlap, not full linearizability: concurrent writes, sloppy quorums and clock-based conflict resolution can still produce anomalies.
+
+**Tunable consistency**
+
+| Setting | Behaviour |
+| --- | --- |
+| `R=1, W=3` (N=3) | Fast reads, slow writes; read and write quorums overlap |
+| `R=3, W=1` (N=3) | Slow reads, fast writes; read and write quorums overlap |
+| `R=2, W=2` (N=3) | Balanced; quorum overlap guaranteed |
+| `R=1, W=1` | Eventual; reads may be stale |
 
 ### Mechanism Deep-Dive: How Raft Actually Works
 
@@ -567,38 +561,18 @@ The etcd team (core of Kubernetes) evaluated Paxos before choosing Raft and conc
 
 ### Breadth Comparison 1: Consistency Model Full Comparison Table
 
-```
-┌──────────────────────┬────────────────────┬──────────────────────┬──────────────────┐
-│  CONSISTENCY MODEL   │  GUARANTEE         │  LATENCY             │  NAMED SYSTEMS   │
-├──────────────────────┼────────────────────┼──────────────────────┼──────────────────┤
-│  Linearizability     │  Read = latest     │  10-100ms+           │  Google Spanner  │
-│  (Strongest)         │  write, globally   │  (must coordinate    │  Zookeeper      │
-│                      │                    │   all replicas)      │  etcd            │
-├──────────────────────┼────────────────────┼──────────────────────┼──────────────────┤
-│  Sequential          │  All ops in        │  5-50ms              │  DynamoDB        │
-│  Consistency         │  same total order  │  (leader coordinates │  (per-object     │
-│                      │  across all nodes  │   but no wall clock  │   locks)         │
-├──────────────────────┼────────────────────┼──────────────────────┼──────────────────┤
-│  Causal              │  Causally related  │  1-20ms              │  MongoDB 4.0+    │
-│  Consistency         │  ops in order,     │  (track dependencies │  (causal reads)  │
-│                      │  concurrent may    │   in vector clocks)  │  Azure Cosmos DB │
-│                      │   differ           │                      │                  │
-├──────────────────────┼────────────────────┼──────────────────────┼──────────────────┤
-│  Eventual            │  All replicas      │  0.5-5ms             │  Amazon DynamoDB │
-│  Consistency         │  converge given    │  (local reads, no    │  Apache Cassandra│
-│  (Weakest practical) │  no new writes     │   coordination)      │  AWS S3          │
-│                      │                    │                      │  DNS             │
-├──────────────────────┼────────────────────┼──────────────────────┼──────────────────┤
-│  Read-Your-Writes    │  Session sees its  │  1-10ms              │  DynamoDB        │
-│  (PRAM)              │  own writes        │  (session affinity)  │  DAX             │
-│                      │                    │                      │  Cassandra       │
-│                      │                    │                      │  (per-DC reads)  │
-├──────────────────────┼────────────────────┼──────────────────────┼──────────────────┤
-│  Monotonic Reads     │  Never read older  │  1-10ms              │  DynamoDB        │
-│                      │  data after reads  │  (client-side        │  Azure Table     │
-│                      │                    │   tracking)          │  Storage         │
-└──────────────────────┴────────────────────┴──────────────────────┴──────────────────┘
+| Consistency model | Guarantee | Relative cost | Systems that offer it |
+| --- | --- | --- | --- |
+| Linearizability (strongest) | Every read sees the latest completed write, as if there were one copy | Highest: needs coordination (a quorum or leader) on each operation | etcd, Google Spanner (externally consistent), ZooKeeper writes |
+| Sequential consistency | All clients see operations in one total order that respects each client's own order | High | ZooKeeper (reads may lag the latest write) |
+| Causal consistency | Causally related operations are seen in order; concurrent ones may differ | Medium | MongoDB causally consistent sessions (3.6+), research systems such as COPS |
+| Session guarantees (read-your-writes, monotonic reads) | A session sees its own writes and never goes back in time | Low to medium: needs session affinity or tokens | Azure Cosmos DB session level, MongoDB sessions |
+| Eventual consistency (weakest) | Replicas converge if writes stop | Lowest: local reads, no coordination | DynamoDB default reads, Cassandra at low consistency levels, DNS |
 
+> [!NOTE]
+> The cost column is qualitative on purpose. Real latency depends on network distance, quorum size and load; measure your own system.
+
+```
   SELECTION CRITERIA:
   Banking/ledger/leader election  → Linearizability (CP)
   Shopping cart/inventory          → Read-Your-Writes (session)
@@ -609,79 +583,60 @@ The etcd team (core of Kubernetes) evaluated Paxos before choosing Raft and conc
 
 ### Breadth Comparison 2: Distributed Transaction Patterns
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  PATTERN         │  2PC (Two-Phase Commit)  │  SAGA (Choreography/Orchestration) │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  MODEL           │  All-or-nothing atomic   │  Sequence of local txns +          │
-│                  │  commit across services  │  compensating actions              │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  COORDINATION    │  Central Coordinator     │  Distributed (choreography) or     │
-│                  │  sends Prepare → Commit  │  central Orchestrator              │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  ON FAILURE      │  Coordinator decides     │  Compensate each completed step:  │
-│                  │  COMMIT or ROLLBACK      │  undo_ship → refund_payment →     │
-│                  │  (all nodes must agree)  │  cancel_order                     │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  BLOCKING        │  YES — locks held during │  NO — each step is independent,   │
-│                  │  prepare phase           │  compensation is a new forward    │
-│                  │                          │  transaction                       │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  USE WHEN        │  Tightly coupled data,   │  Loosely coupled microservices,   │
-│                  │  must not violate        │  long-running workflows,          │
-│                  │  invariants              │  eventual consistency OK          │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  EXAMPLES        │  Distributed SQL,        │  Order → Pay → Ship (e-commerce)  │
-│                  │  HBase, Spanner          │  Travel booking pipeline          │
-│                  │                          │  Financial ledger with reversals  │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  CRITICAL RISK   │  Coordinator crash       │  Compensation failure             │
-│                  │  → nodes wait forever    │  (refund fails after ship —       │
-│                  │  → need timeouts +       │  need retry/idempotency)          │
-│                  │    recovery protocols    │                                   │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  LATENCY         │  High (3 round-trips     │  Lower per step, but more steps   │
-│                  │  total coordination)     │  overall                           │
-└──────────────────┴──────────────────────────┴──────────────────────────────────  ┘
+| PATTERN | 2PC (Two-Phase Commit) | SAGA (Choreography/Orchestration) |
+| --- | --- | --- |
+| MODEL | All-or-nothing atomic commit across services | Sequence of local txns + compensating actions |
+| COORDINATION | Central Coordinator sends Prepare → Commit | Distributed (choreography) or central Orchestrator |
+| ON FAILURE | Coordinator decides<br>COMMIT or ROLLBACK (all nodes must agree) | Compensate each completed step: undo_ship → refund_payment → cancel_order |
+| BLOCKING | YES — locks held during prepare phase | NO — each step is independent, compensation is a new forward transaction |
+| USE WHEN | Tightly coupled data, must not violate invariants | Loosely coupled microservices, long-running workflows, eventual consistency OK |
+| EXAMPLES | Distributed SQL, HBase, Spanner | Order → Pay → Ship (e-commerce)<br>Travel booking pipeline<br>Financial ledger with reversals |
+| CRITICAL RISK | Coordinator crash<br>→ nodes wait forever<br>→ need timeouts + recovery protocols | Compensation failure (refund fails after ship — need retry/idempotency) |
+| LATENCY | High (3 round-trips total coordination) | Lower per step, but more steps overall |
 
-  EVENTUAL CONSISTENCY AS THIRD ALTERNATIVE:
-  ══════════════════════════════════════════════════
+**Eventual consistency as a third alternative.** Don't coordinate at all: each service updates itself.
 
-  Don't coordinate at all. Each service updates itself.
+Example: place order → write to the Orders DB → emit an `order.placed` event. The payment service consumes the event and processes the payment asynchronously. The inventory service consumes the event and reserves stock asynchronously.
 
-  Example: Place order → write to Orders DB → emit "order.placed" event
-           Payment service consumes event → processes payment asynchronously
-           Inventory service consumes event → reserves stock asynchronously
+| Trade-off | |
+| --- | --- |
+| ➕ | Highest throughput and lowest latency (no coordination overhead) |
+| ➕ | Individual services can fail and recover independently |
+| ➖ | Consistency is deferred: the user may see "order confirmed" before payment clears |
+| ➖ | Requires idempotency everywhere (a retry means duplicate processing) |
+| ➖ | Requires a saga or outbox pattern to guarantee event delivery |
 
-  Trade-offs:
-  + Highest throughput, lowest latency (no coordination overhead)
-  + Individual services can fail and recover independently
-  - Consistency is deferred — user may see "order confirmed" before payment clears
-  - Requires idempotency everywhere (retry = duplicate processing)
-  - Requires saga/outbox pattern to guarantee event delivery
+**Hybrid: the outbox pattern** (widely used in event-driven systems)
 
-  HYBRID: Outbox Pattern (used at Amazon, Stripe)
-  ════════════════════════════════════════════════
-  Service writes to local DB: order + "outbox:order.placed" atomically
-  Background process polls outbox → publishes to message broker
-  Consumers: "exactly-once" delivery via deduplication
+1. The service writes to its local DB: the order plus an `outbox:order.placed` row, atomically.
+2. A background process polls the outbox and publishes to the message broker.
+3. Consumers get effectively-once processing through deduplication (the broker itself delivers at least once).
 
-  This gives you transactional guarantees WITH eventual consistency performance.
-```
+This gives you transactional guarantees with eventual-consistency performance.
 
 > **Navigation**: [< Previous](05_SD_Interview_Problems.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_LLD_Solved_Problems.md)
 
 
 ---
 
+## 🏢 Enterprise Lens — Distributed Systems Fundamentals
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Databases (Raft in etcd and CockroachDB), message queues, service meshes |
+| **Failure modes** | Retry storms, split brain, clock assumptions |
+| **Testing and verification** | Fault-injection tests; Jepsen-style checking for consistency claims |
+
+---
+
 ## Reality Check
 
-**"Distributed systems are systems on multiple machines"** ? The defining property is PARTIAL FAILURE with ambiguity: a timeout tells you nothing about whether the operation happened � the request may have died en route, the server may have crashed after committing, the response may be lost. Single-machine intuition (a call either succeeded or threw) is exactly the intuition that must be unlearned; every distributed pattern � retries with idempotency, sagas, consensus � is machinery for acting sensibly WITHOUT knowing what happened.
+**"Distributed systems are systems on multiple machines"** — The defining property is PARTIAL FAILURE with ambiguity: a timeout tells you nothing about whether the operation happened — the request may have died en route, the server may have crashed after committing, the response may be lost. Single-machine intuition (a call either succeeded or threw) is exactly the intuition that must be unlearned; every distributed pattern — retries with idempotency, sagas, consensus — is machinery for acting sensibly WITHOUT knowing what happened.
 
-**"Exactly-once delivery is achievable with the right broker"** ? Delivery is at-least-once or at-most-once; EXACTLY-ONCE PROCESSING is achievable � and it is built at the consumer: idempotency keys, dedup tables, or transactional consume-and-write (outbox/inbox patterns). Broker marketing that says exactly-once means "we moved the dedup inside our transaction boundary for flows that stay within us." The interview and production skill is identical: place the idempotency mechanism, name its storage, and explain its retention window.
+**"Exactly-once delivery is achievable with the right broker"** — Delivery is at-least-once or at-most-once; EXACTLY-ONCE PROCESSING is achievable — and it is built at the consumer: idempotency keys, dedup tables, or transactional consume-and-write (outbox/inbox patterns). Broker marketing that says exactly-once means "we moved the dedup inside our transaction boundary for flows that stay within us." The interview and production skill is identical: place the idempotency mechanism, name its storage, and explain its retention window.
 
-**"Clocks across machines are approximately synchronized, which is close enough"** ? NTP skew of tens of milliseconds is ETERNITY at network speeds: last-write-wins with wall clocks silently drops concurrent writes, distributed locks with clock-based leases double-grant under drift, and cross-machine event ordering by timestamp fabricates causality. The fundamentals ladder: wall clocks for humans, monotonic clocks for local durations, logical clocks (Lamport/vector) for causality, and TrueTime-style bounded uncertainty only when hardware provides it. Any design sentence containing "we order events by timestamp" needs an immediate follow-up sentence.
+**"Clocks across machines are approximately synchronized, which is close enough"** — NTP skew of tens of milliseconds is ETERNITY at network speeds: last-write-wins with wall clocks silently drops concurrent writes, distributed locks with clock-based leases double-grant under drift, and cross-machine event ordering by timestamp fabricates causality. The fundamentals ladder: wall clocks for humans, monotonic clocks for local durations, logical clocks (Lamport/vector) for causality, and TrueTime-style bounded uncertainty only when hardware provides it. Any design sentence containing "we order events by timestamp" needs an immediate follow-up sentence.
 
-**"Consensus algorithms are for database internals, not application design"** ? Every "there must be exactly one" requirement IS a consensus requirement wearing product clothes: one leader processing a partition, one winner of a unique-username claim, one execution of a scheduled job across replicas. Teams that do not recognize this reinvent consensus badly with database flags and cron locks (the split-brain incidents write themselves). The application-level answer is usually to BUY consensus � a lease from etcd/ZooKeeper, a database unique constraint, a fencing token � and the fundamental skill is spotting which requirement needs it.
+**"Consensus algorithms are for database internals, not application design"** — Every "there must be exactly one" requirement IS a consensus requirement wearing product clothes: one leader processing a partition, one winner of a unique-username claim, one execution of a scheduled job across replicas. Teams that do not recognize this reinvent consensus badly with database flags and cron locks (the split-brain incidents write themselves). The application-level answer is usually to BUY consensus — a lease from etcd/ZooKeeper, a database unique constraint, a fencing token — and the fundamental skill is spotting which requirement needs it.
 
-**"Failure detection tells you which nodes are down"** ? In an asynchronous network, down and slow are INDISTINGUISHABLE � every failure detector is a timeout policy with false-positive/false-negative tuning, nothing more. This impossibility is why fencing tokens exist (the node declared dead may still be writing), why leases beat locks (time-bounded authority self-expires), and why split-brain is a permanent design consideration rather than a bug class. Designs that say "when the health check fails, we promote a replica" must immediately say "and the old primary is fenced by X" � or they contain a data-corruption scenario, not an edge case.
+**"Failure detection tells you which nodes are down"** — In an asynchronous network, down and slow are INDISTINGUISHABLE — every failure detector is a timeout policy with false-positive/false-negative tuning, nothing more. This impossibility is why fencing tokens exist (the node declared dead may still be writing), why leases beat locks (time-bounded authority self-expires), and why split-brain is a permanent design consideration rather than a bug class. Designs that say "when the health check fails, we promote a replica" must immediately say "and the old primary is fenced by X" — or they contain a data-corruption scenario, not an edge case.

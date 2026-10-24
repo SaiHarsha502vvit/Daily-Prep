@@ -1026,43 +1026,39 @@ public class CredentialRotationService {
 
 # QUICK REFERENCE
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│              DATABASE SECURITY CHECKLIST                                         │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  AUTHENTICATION & AUTHORIZATION                                                  │
-│  □ Implement RBAC (Role-Based Access Control)                                    │
-│  □ Use fine-grained permissions                                                  │
-│  □ Implement method-level security (@PreAuthorize)                               │
-│  □ Apply row-level security where needed                                         │
-│                                                                                  │
-│  PASSWORD SECURITY                                                               │
-│  □ Use BCrypt or Argon2 for hashing                                              │
-│  □ Implement password policy validation                                          │
-│  □ Check against breached password lists                                         │
-│  □ Implement password expiry                                                     │
-│  □ Track failed login attempts                                                   │
-│                                                                                  │
-│  DATA PROTECTION                                                                 │
-│  □ Encrypt sensitive data at rest                                                │
-│  □ Use SSL/TLS for database connections                                          │
-│  □ Never expose passwords in logs or responses                                   │
-│  □ Implement audit logging                                                       │
-│                                                                                  │
-│  SQL INJECTION PREVENTION                                                        │
-│  □ Use parameterized queries                                                     │
-│  □ Never concatenate user input in queries                                       │
-│  □ Validate and sanitize all input                                               │
-│  □ Use ORM properly                                                              │
-│                                                                                  │
-│  CONNECTION SECURITY                                                             │
-│  □ Use environment variables for credentials                                     │
-│  □ Enable SSL for database connections                                           │
-│  □ Use secrets manager in production                                             │
-│  □ Implement credential rotation                                                 │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**DATABASE SECURITY CHECKLIST**
+
+```text
+AUTHENTICATION & AUTHORIZATION
+□ Implement RBAC (Role-Based Access Control)
+□ Use fine-grained permissions
+□ Implement method-level security (@PreAuthorize)
+□ Apply row-level security where needed
+
+PASSWORD SECURITY
+□ Use BCrypt or Argon2 for hashing
+□ Implement password policy validation
+□ Check against breached password lists
+□ Implement password expiry
+□ Track failed login attempts
+
+DATA PROTECTION
+□ Encrypt sensitive data at rest
+□ Use SSL/TLS for database connections
+□ Never expose passwords in logs or responses
+□ Implement audit logging
+
+SQL INJECTION PREVENTION
+□ Use parameterized queries
+□ Never concatenate user input in queries
+□ Validate and sanitize all input
+□ Use ORM properly
+
+CONNECTION SECURITY
+□ Use environment variables for credentials
+□ Enable SSL for database connections
+□ Use secrets manager in production
+□ Implement credential rotation
 ```
 
 ---
@@ -1080,12 +1076,12 @@ public class CredentialRotationService {
 
 ## Reality Check
 
-**"BCrypt is the only password encoder you should use"** ? BCrypt is a safe default, but Argon2 (winner of the Password Hashing Competition) is the modern recommendation because it is resistant to both GPU and ASIC attacks via configurable memory usage. Spring Security includes Argon2PasswordEncoder. BCrypt is computationally expensive but memory-cheap � purpose-built hardware can crack BCrypt faster than Argon2.
+**"BCrypt is the only password encoder you should use"** — BCrypt is a safe default, but Argon2 (winner of the Password Hashing Competition) is the modern recommendation because it is resistant to both GPU and ASIC attacks via configurable memory usage. Spring Security includes Argon2PasswordEncoder. BCrypt is computationally expensive but memory-cheap — purpose-built hardware can crack BCrypt faster than Argon2.
 
-**"JWT tokens are secure because they are signed"** ? JWT signing prevents TAMPERING, not READING. The payload is Base64-encoded, not encrypted � anyone can decode it and read the claims. Never store sensitive data (email, phone, permissions) in JWT payload unless you use JWE (encrypted JWT). Also, JWTs cannot be invalidated before expiry without server-side token blacklisting, which defeats the statelessness argument.
+**"JWT tokens are secure because they are signed"** — JWT signing prevents TAMPERING, not READING. The payload is Base64-encoded, not encrypted — anyone can decode it and read the claims. Never store sensitive data (email, phone, permissions) in JWT payload unless you use JWE (encrypted JWT). Also, JWTs cannot be invalidated before expiry without server-side token blacklisting, which defeats the statelessness argument.
 
-**"CSRF protection is unnecessary for REST APIs"** ? CSRF protection is unnecessary for APIs that use Authorization headers with bearer tokens because browsers do not automatically attach Authorization headers to cross-origin requests. But if your API uses cookie-based authentication (session cookies, remember-me cookies), CSRF is absolutely necessary because browsers automatically send cookies on every request to the domain.
+**"CSRF protection is unnecessary for REST APIs"** — CSRF protection is unnecessary for APIs that use Authorization headers with bearer tokens because browsers do not automatically attach Authorization headers to cross-origin requests. But if your API uses cookie-based authentication (session cookies, remember-me cookies), CSRF is absolutely necessary because browsers automatically send cookies on every request to the domain.
 
-**"Spring Security method-level security is enough"** ? @PreAuthorize and @Secured protect the method, but they do not protect the URL. Without URL-level security in SecurityFilterChain, an attacker can probe endpoints that happen not to have method-level annotations. Defense in depth: configure URL patterns in SecurityFilterChain AND add @PreAuthorize on service methods. The URL level catches forgotten annotations.
+**"Spring Security method-level security is enough"** — @PreAuthorize and @Secured protect the method, but they do not protect the URL. Without URL-level security in SecurityFilterChain, an attacker can probe endpoints that happen not to have method-level annotations. Defense in depth: configure URL patterns in SecurityFilterChain AND add @PreAuthorize on service methods. The URL level catches forgotten annotations.
 
-**"OAuth2 and JWT are the same thing"** ? OAuth2 is an AUTHORIZATION framework (who can access what). JWT is a TOKEN FORMAT (how claims are encoded). OAuth2 can use JWT tokens, opaque tokens, or any other format. JWT can be used without OAuth2 (self-signed tokens for service-to-service communication). Confusing the two leads to using JWT for authentication when you need OpenID Connect, which is authentication built ON TOP of OAuth2.
+**"OAuth2 and JWT are the same thing"** — OAuth2 is an AUTHORIZATION framework (who can access what). JWT is a TOKEN FORMAT (how claims are encoded). OAuth2 can use JWT tokens, opaque tokens, or any other format. JWT can be used without OAuth2 (self-signed tokens for service-to-service communication). Confusing the two leads to using JWT for authentication when you need OpenID Connect, which is authentication built ON TOP of OAuth2.

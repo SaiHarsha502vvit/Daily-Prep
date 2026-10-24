@@ -6,19 +6,18 @@
 
 ## Reality → Systems Translation Engine
 
-```
-THE CORE SKILL OF ENGINEERING:
+**THE CORE SKILL OF ENGINEERING:**
+
+```text
 Translating messy human problems into elegant digital systems.
 
 YOU ARE NOT JUST A CODER. YOU ARE:
-┌─────────────────────────────────────────────────────────────────┐
-│ 🔬 A Computer Scientist    - Understanding computation limits    │
-│ 🏗️ A System Architect      - Designing scalable structures      │
-│ 🎨 A Product Engineer      - Building what users truly need      │
-│ 🧠 A UX Thinker            - Feeling the user's pain             │
-│ ⚙️ A DevOps Pragmatist     - Keeping systems alive              │
-│ 💭 A Philosophy Engineer   - Asking WHY before HOW               │
-└─────────────────────────────────────────────────────────────────┘
+🔬 A Computer Scientist    - Understanding computation limits
+🏗️ A System Architect      - Designing scalable structures
+🎨 A Product Engineer      - Building what users truly need
+🧠 A UX Thinker            - Feeling the user's pain
+⚙️ A DevOps Pragmatist     - Keeping systems alive
+💭 A Philosophy Engineer   - Asking WHY before HOW
 
 YOUR THINKING CHAIN:
 Data → Behavior → Scale → Failure → Human Experience → Cost → Time → Evolution
@@ -36,59 +35,63 @@ Data → Behavior → Scale → Failure → Human Experience → Cost → Time �
 
 ## The Engineer's Translation Engine
 
+**For every feature request, follow this**
+
+**Step 1 — human intent**
+
+```text
+What does the user EMOTIONALLY want?
+"I want to find my friends" ≠ "I want a search box"
+"App feels slow" ≠ "Add a loading spinner"
 ```
-FOR EVERY FEATURE REQUEST, FOLLOW THIS:
 
-STEP 1 — HUMAN INTENT
-┌─────────────────────────────────────────────────────┐
-│ What does the user EMOTIONALLY want?                │
-│ "I want to find my friends" ≠ "I want a search box" │
-│ "App feels slow" ≠ "Add a loading spinner"          │
-└─────────────────────────────────────────────────────┘
+**Step 2 — system requirements**
 
-STEP 2 — SYSTEM REQUIREMENTS
-┌─────────────────────────────────────────────────────┐
-│ What must exist DIGITALLY?                          │
-│ • Data to store                                     │
-│ • Operations to perform                             │
-│ • Responses to return                               │
-│ • Failures to handle                                │
-└─────────────────────────────────────────────────────┘
+```text
+What must exist DIGITALLY?
+• Data to store
+• Operations to perform
+• Responses to return
+• Failures to handle
+```
 
-STEP 3 — DATA MODEL
-┌─────────────────────────────────────────────────────┐
-│ What are the ENTITIES and RELATIONSHIPS?            │
-│ • Users have Friends (Many-to-Many)                 │
-│ • Messages belong to Conversations                  │
-│ • Orders contain Items                              │
-└─────────────────────────────────────────────────────┘
+**Step 3 — data model**
 
-STEP 4 — SCALE MODEL
-┌─────────────────────────────────────────────────────┐
-│ What BREAKS at scale?                               │
-│ • 10x users: Database queries slow                  │
-│ • 100x users: Single server can't handle            │
-│ • 1M users: Need distributed architecture           │
-│ • 10M users: Need sharding, caching layers          │
-└─────────────────────────────────────────────────────┘
+```text
+What are the ENTITIES and RELATIONSHIPS?
+• Users have Friends (Many-to-Many)
+• Messages belong to Conversations
+• Orders contain Items
+```
 
-STEP 5 — DSA MAPPING
-┌─────────────────────────────────────────────────────┐
-│ Which DATA STRUCTURES power each part?              │
-│ • User search → Trie / Inverted Index               │
-│ • Friend suggestions → Graph + Heap                 │
-│ • Message history → B-Tree Index                    │
-│ • Real-time updates → Queue + Pub/Sub               │
-└─────────────────────────────────────────────────────┘
+**Step 4 — scale model**
 
-STEP 6 — FAILURE DESIGN
-┌─────────────────────────────────────────────────────┐
-│ What happens when things BREAK?                     │
-│ • Server dies → Failover, Replication               │
-│ • Network drops → Retry, Circuit breaker            │
-│ • Cache corrupts → Invalidation strategy            │
-│ • Data races → Locks, Atomic operations             │
-└─────────────────────────────────────────────────────┘
+```text
+What BREAKS at scale?
+• 10x users: Database queries slow
+• 100x users: Single server can't handle
+• 1M users: Need distributed architecture
+• 10M users: Need sharding, caching layers
+```
+
+**Step 5 — dsa mapping**
+
+```text
+Which DATA STRUCTURES power each part?
+• User search → Trie / Inverted Index
+• Friend suggestions → Graph + Heap
+• Message history → B-Tree Index
+• Real-time updates → Queue + Pub/Sub
+```
+
+**Step 6 — failure design**
+
+```text
+What happens when things BREAK?
+• Server dies → Failover, Replication
+• Network drops → Retry, Circuit breaker
+• Cache corrupts → Invalidation strategy
+• Data races → Locks, Atomic operations
 ```
 
 ---
@@ -130,9 +133,9 @@ DON'T THINK:                    THINK:
 
 ## The Complete DS Reality Map
 
-```
-DATA STRUCTURE          REAL-WORLD MODEL           PRODUCTION SYSTEM
-─────────────────────────────────────────────────────────────────────
+**Data structure          real-world model           production system**
+
+```text
 Array                   Timeline, Sequence         Time-series DB
 Dynamic Array           Growing history            Event logs
 Linked List             Chain of events            Blockchain
@@ -157,32 +160,31 @@ QuadTree/KD-Tree        Spatial partitioning       Maps, Game collision
 
 ## For Each DS, Always Know:
 
-```
-┌────────────────────────────────────────────────────────────────────┐
-│ 1. MEMORY BEHAVIOR                                                 │
-│    - Contiguous or scattered?                                      │
-│    - Cache-friendly?                                               │
-│    - Memory overhead per element?                                  │
-│                                                                    │
-│ 2. TIME TRADEOFFS                                                  │
-│    - Best/Worst/Average case?                                      │
-│    - Amortized analysis?                                           │
-│                                                                    │
-│ 3. CONCURRENCY IMPLICATIONS                                        │
-│    - Thread-safe operations?                                       │
-│    - Lock granularity?                                             │
-│    - Lock-free alternatives?                                       │
-│                                                                    │
-│ 4. DISTRIBUTED SYSTEM USAGE                                        │
-│    - Partition tolerance?                                          │
-│    - Replication strategy?                                         │
-│    - Consistency guarantees?                                       │
-│                                                                    │
-│ 5. FAILURE MODES                                                   │
-│    - What happens on overflow?                                     │
-│    - Recovery strategies?                                          │
-│    - Data corruption handling?                                     │
-└────────────────────────────────────────────────────────────────────┘
+**1. MEMORY BEHAVIOR**
+
+```text
+   - Contiguous or scattered?
+   - Cache-friendly?
+   - Memory overhead per element?
+
+2. TIME TRADEOFFS
+   - Best/Worst/Average case?
+   - Amortized analysis?
+
+3. CONCURRENCY IMPLICATIONS
+   - Thread-safe operations?
+   - Lock granularity?
+   - Lock-free alternatives?
+
+4. DISTRIBUTED SYSTEM USAGE
+   - Partition tolerance?
+   - Replication strategy?
+   - Consistency guarantees?
+
+5. FAILURE MODES
+   - What happens on overflow?
+   - Recovery strategies?
+   - Data corruption handling?
 ```
 
 ---
@@ -191,9 +193,9 @@ QuadTree/KD-Tree        Spatial partitioning       Maps, Game collision
 
 ## Every Algorithm Connects To Real Systems
 
-```
-ALGORITHM               BACKEND           UI             NETWORK         COST
-────────────────────────────────────────────────────────────────────────────
+**Algorithm               backend           ui             network         cost**
+
+```text
 Binary Search           DB queries        Instant search  Reduce API      Less compute
 Sorting                 Report gen        Table display   Batch transfer  Memory usage
 BFS/DFS                 Crawlers          Navigation      Routing         Bandwidth
@@ -211,9 +213,9 @@ Probabilistic           Deduplication     Personalization Quick checks    Accura
 
 ## How Real Systems Combine Data Structures
 
-```
-SYSTEM                     DSA FUSION                 WHY IT WORKS
-─────────────────────────────────────────────────────────────────────────────
+**System                     dsa fusion                 why it works**
+
+```text
 Rate Limiter               HashMap + Queue            Track requests in window
 Recommendation Engine      Graph + Heap               Find top-k similar items
 Search Engine              Trie + Inverted Index      Fast prefix + full search
@@ -238,7 +240,7 @@ Fraud Detection            Graph + Streaming Algo     Pattern detection in flow
 
 ## Building a Rate Limiter (Complete Example)
 
-```
+```text
 PROBLEM: Limit user to 100 requests per minute
 
 HUMAN INTENT: Prevent abuse, ensure fair usage
@@ -249,19 +251,17 @@ DSA ANALYSIS:
 - Need to expire: Old requests
 
 FUSION DESIGN:
-┌─────────────────────────────────────────────────────────────────┐
-│                     RATE LIMITER                                │
-│                                                                 │
-│   HashMap<UserId, Queue<Timestamp>>                             │
-│                                                                 │
-│   User123 → [T-50s, T-30s, T-10s, T-5s, T-2s, NOW]              │
-│                                                                 │
-│   Algorithm:                                                    │
-│   1. Remove timestamps older than 60s (dequeue)                 │
-│   2. Count remaining timestamps                                 │
-│   3. If count < 100: Allow, add current timestamp               │
-│   4. If count >= 100: Reject                                    │
-└─────────────────────────────────────────────────────────────────┘
+                    RATE LIMITER
+
+  HashMap<UserId, Queue<Timestamp>>
+
+  User123 → [T-50s, T-30s, T-10s, T-5s, T-2s, NOW]
+
+  Algorithm:
+  1. Remove timestamps older than 60s (dequeue)
+  2. Count remaining timestamps
+  3. If count < 100: Allow, add current timestamp
+  4. If count >= 100: Reject
 ```
 
 ```java
@@ -369,53 +369,52 @@ MEMORIZE THESE. ASK THEM ALWAYS.
 
 ## Translating Vague Requests into System Design
 
-```
 USER SAYS: "The app feels slow"
 
-JUNIOR DEVELOPER THINKS:
+**Junior developer thinks**
+
 "Add a loading spinner"
 
-ELITE ENGINEER EXTRACTS:
+**Elite engineer extracts**
 
-┌─────────────────────────────────────────────────────────────────┐
-│ LATENCY SOURCES                                                 │
-├─────────────────────────────────────────────────────────────────┤
-│ • Frontend rendering time                                       │
-│ • API response time                                             │
-│ • Database query time                                           │
-│ • Network round-trip time                                       │
-│ • Third-party API calls                                         │
-└─────────────────────────────────────────────────────────────────┘
+**LATENCY SOURCES**
 
-┌─────────────────────────────────────────────────────────────────┐
-│ DATA FLOW ANALYSIS                                              │
-├─────────────────────────────────────────────────────────────────┤
-│ User Click → Frontend → API Gateway → Service → DB → Response   │
-│                                                                 │
-│ Where are the bottlenecks?                                      │
-│ • N+1 queries? → Batch or JOIN                                  │
-│ • Missing index? → Add B-Tree index                             │
-│ • No caching? → Add Redis layer                                 │
-│ • Sync calls? → Make async                                      │
-└─────────────────────────────────────────────────────────────────┘
+```text
+• Frontend rendering time
+• API response time
+• Database query time
+• Network round-trip time
+• Third-party API calls
+```
 
-┌─────────────────────────────────────────────────────────────────┐
-│ DSA BOTTLENECKS                                                 │
-├─────────────────────────────────────────────────────────────────┤
-│ • Linear search where binary search possible?                   │
-│ • Recomputing what could be cached?                             │
-│ • Sorting repeatedly instead of maintaining heap?               │
-│ • Full scan where index could help?                             │
-└─────────────────────────────────────────────────────────────────┘
+**DATA FLOW ANALYSIS**
 
-┌─────────────────────────────────────────────────────────────────┐
-│ UX BOTTLENECKS                                                  │
-├─────────────────────────────────────────────────────────────────┤
-│ • Blocking UI during computation?                               │
-│ • Not showing progress?                                         │
-│ • Loading too much data upfront?                                │
-│ • Not paginating results?                                       │
-└─────────────────────────────────────────────────────────────────┘
+```text
+User Click → Frontend → API Gateway → Service → DB → Response
+
+Where are the bottlenecks?
+• N+1 queries? → Batch or JOIN
+• Missing index? → Add B-Tree index
+• No caching? → Add Redis layer
+• Sync calls? → Make async
+```
+
+**DSA BOTTLENECKS**
+
+```text
+• Linear search where binary search possible?
+• Recomputing what could be cached?
+• Sorting repeatedly instead of maintaining heap?
+• Full scan where index could help?
+```
+
+**UX BOTTLENECKS**
+
+```text
+• Blocking UI during computation?
+• Not showing progress?
+• Loading too much data upfront?
+• Not paginating results?
 ```
 
 ---
@@ -434,41 +433,49 @@ ELITE ENGINEER EXTRACTS:
 
 ## Learning from Real System Failures
 
-```
-STORY 1: THE UNBOUNDED QUEUE
-─────────────────────────────────────────────────────────
+**Story 1: the unbounded queue**
+
+```text
 System: E-commerce checkout
 Problem: Queue grew unbounded during flash sale
 Root Cause: Producer faster than consumer, no backpressure
 DSA Lesson: Always bound your queues, implement backpressure
 Fix: Ring buffer with overflow handling
+```
 
-STORY 2: THE MISSING INDEX
-─────────────────────────────────────────────────────────
+**Story 2: the missing index**
+
+```text
 System: Social media feed
 Problem: Page load went from 200ms to 30 seconds
 Root Cause: Table grew, full scan instead of index lookup
 DSA Lesson: B-Tree index turns O(n) to O(log n)
 Fix: Added composite index on (user_id, created_at)
+```
 
-STORY 3: THE CACHE STAMPEDE
-─────────────────────────────────────────────────────────
+**Story 3: the cache stampede**
+
+```text
 System: Product catalog
 Problem: Cache expired, 10,000 requests hit database
 Root Cause: All caches expired simultaneously
 DSA Lesson: Probabilistic early expiration, jittered TTL
 Fix: Cache with random TTL variance + lock for refresh
+```
 
-STORY 4: THE GRAPH EXPLOSION
-─────────────────────────────────────────────────────────
+**Story 4: the graph explosion**
+
+```text
 System: Recommendation engine
 Problem: Friend-of-friend query took 30 seconds
 Root Cause: BFS explored entire graph (no depth limit)
 DSA Lesson: Always limit graph traversal depth
 Fix: BFS with max_depth=3, result limit
+```
 
-STORY 5: THE MEMORY LEAK
-─────────────────────────────────────────────────────────
+**Story 5: the memory leak**
+
+```text
 System: Real-time analytics
 Problem: Server crashed every 24 hours
 Root Cause: HashMap held references to expired sessions
@@ -492,45 +499,46 @@ Fix: TTL-based eviction policy
 
 ## Each Project Maps DSA to Production
 
+**Project 1: real-time chat system**
+
+```text
+Components:
+• Message Queue (Ring Buffer)
+• User Sessions (HashMap)
+• Message History (B-Tree indexed DB)
+• Online Status (Bloom Filter for quick check)
+• Typing Indicators (TTL HashMap)
+
+Scale Challenge: 1M concurrent users
+Failure Mode: What if message server dies?
 ```
-PROJECT 1: REAL-TIME CHAT SYSTEM
-┌─────────────────────────────────────────────────────────────────┐
-│ Components:                                                     │
-│ • Message Queue (Ring Buffer)                                   │
-│ • User Sessions (HashMap)                                       │
-│ • Message History (B-Tree indexed DB)                           │
-│ • Online Status (Bloom Filter for quick check)                  │
-│ • Typing Indicators (TTL HashMap)                               │
-│                                                                 │
-│ Scale Challenge: 1M concurrent users                            │
-│ Failure Mode: What if message server dies?                      │
-└─────────────────────────────────────────────────────────────────┘
 
-PROJECT 2: SEARCH ENGINE
-┌─────────────────────────────────────────────────────────────────┐
-│ Components:                                                     │
-│ • Inverted Index (HashMap of word → documents)                  │
-│ • Autocomplete (Trie)                                           │
-│ • Ranking (Heap for top-k)                                      │
-│ • Spell Correction (Edit Distance DP)                           │
-│ • Crawling Queue (Priority Queue)                               │
-│                                                                 │
-│ Scale Challenge: 1B documents                                   │
-│ Failure Mode: Index corruption?                                 │
-└─────────────────────────────────────────────────────────────────┘
+**Project 2: search engine**
 
-PROJECT 3: ANALYTICS PIPELINE
-┌─────────────────────────────────────────────────────────────────┐
-│ Components:                                                     │
-│ • Event Stream (Ring Buffer)                                    │
-│ • Aggregations (Segment Tree)                                   │
-│ • Unique Counts (HyperLogLog)                                   │
-│ • Time Windows (Sliding Window)                                 │
-│ • Storage (LSM Tree)                                            │
-│                                                                 │
-│ Scale Challenge: 1M events/second                               │
-│ Failure Mode: Data loss during spike?                           │
-└─────────────────────────────────────────────────────────────────┘
+```text
+Components:
+• Inverted Index (HashMap of word → documents)
+• Autocomplete (Trie)
+• Ranking (Heap for top-k)
+• Spell Correction (Edit Distance DP)
+• Crawling Queue (Priority Queue)
+
+Scale Challenge: 1B documents
+Failure Mode: Index corruption?
+```
+
+**Project 3: analytics pipeline**
+
+```text
+Components:
+• Event Stream (Ring Buffer)
+• Aggregations (Segment Tree)
+• Unique Counts (HyperLogLog)
+• Time Windows (Sliding Window)
+• Storage (LSM Tree)
+
+Scale Challenge: 1M events/second
+Failure Mode: Data loss during spike?
 ```
 
 ---
@@ -565,24 +573,21 @@ WEEKLY:
 
 # 📌 Part 22: Final Mindset Installation
 
-```
-╔═══════════════════════════════════════════════════════════════════════╗
-║                                                                       ║
-║   YOU ARE NOT PREPARING FOR INTERVIEWS.                               ║
-║   YOU ARE PREPARING FOR SYSTEMS THAT CANNOT FAIL QUIETLY.             ║
-║                                                                       ║
-║   Every algorithm is a tool for CONTROLLING CHAOS.                    ║
-║   Every data structure is a SHAPE OF THOUGHT.                         ║
-║   Every system you build is a TRANSLATION OF HUMAN NEED.              ║
-║                                                                       ║
-║   The goal is not to memorize patterns.                               ║
-║   The goal is to SEE THE INVISIBLE ALGORITHMS                         ║
-║   running inside the world itself.                                    ║
-║                                                                       ║
-║   Walk into any codebase, any startup, any infrastructure —           ║
-║   and understand what's REALLY happening beneath the surface.         ║
-║                                                                       ║
-╚═══════════════════════════════════════════════════════════════════════╝
+**YOU ARE NOT PREPARING FOR INTERVIEWS.**
+
+```text
+YOU ARE PREPARING FOR SYSTEMS THAT CANNOT FAIL QUIETLY.
+
+Every algorithm is a tool for CONTROLLING CHAOS.
+Every data structure is a SHAPE OF THOUGHT.
+Every system you build is a TRANSLATION OF HUMAN NEED.
+
+The goal is not to memorize patterns.
+The goal is to SEE THE INVISIBLE ALGORITHMS
+running inside the world itself.
+
+Walk into any codebase, any startup, any infrastructure —
+and understand what's REALLY happening beneath the surface.
 ```
 
 ---
@@ -595,93 +600,63 @@ _"Anyone can learn to code. Few learn to see systems. Become the few."_ 🌟
 
 ## Example 1: Building a URL Shortener (Like bit.ly)
 
+**User story:** "I want to convert long URLs to short ones."
+
+**Step 1: human intent.** The user wants to:
+
+- Share links easily (Twitter's character limit).
+- Track click analytics.
+- Have memorable links.
+- Have links that work forever.
+
+**Step 2: system requirements**
+
+| Functional | Non-functional |
+| --- | --- |
+| `shorten(longUrl)` → `shortUrl` | 100M URLs created per month |
+| `redirect(shortUrl)` → `longUrl` | 10B redirects per month |
+| `getStats(shortUrl)` → click count, referrers | 99.99% availability |
+| | Redirect latency under 100 ms |
+
+**Step 3: data model**
+
+URL table:
+
+| short_code (PK) | long_url | created_at | user_id | ttl |
+| --- | --- | --- | --- | --- |
+| abc123 | https://... | 2024-01-01 | u1 | null |
+
+Analytics table:
+
+| short_code | timestamp | referrer | country | device |
+| --- | --- | --- | --- | --- |
+
+**Step 4: DSA mapping**
+
+| Concern | Choice |
+| --- | --- |
+| Short code generation | Base62 encoding (a-z, A-Z, 0-9). 6 characters give 62⁶ ≈ 56 billion combinations. Algorithm: counter → base62 conversion. |
+| Storage | HashMap for O(1) lookups, B-tree index in the database, Bloom filter for a quick "does not exist" check |
+| Caching | LRU cache for hot URLs (a small share of URLs gets most of the traffic), cache the redirect destination |
+| Analytics | Ring buffer for recent events, HyperLogLog for unique visitor counts, segment tree for time-range queries |
+
+**Step 5: architecture**
+
+```mermaid
+flowchart TD
+  C["Client"] --> LB["Load balancer"]
+  LB --> A1["API server 1"]
+  LB --> A2["API server 2"]
+  LB --> AN["API server N"]
+  A1 --> R[("Redis cache")]
+  A2 --> R
+  AN --> R
+  R --> PM[("PostgreSQL master")]
+  R --> PR[("PostgreSQL replica")]
+  A1 -.->|"async"| K["Kafka"] --> AS["Analytics service"] --> CH[("ClickHouse")]
 ```
-USER STORY: "I want to convert long URLs to short ones"
 
-STEP 1 — HUMAN INTENT
-┌─────────────────────────────────────────────────────────────────┐
-│ User wants to:                                                  │
-│ • Share links easily (Twitter character limit)                  │
-│ • Track click analytics                                         │
-│ • Have memorable links                                          │
-│ • Links should work forever                                     │
-└─────────────────────────────────────────────────────────────────┘
-
-STEP 2 — SYSTEM REQUIREMENTS
-┌─────────────────────────────────────────────────────────────────┐
-│ Functional:                                                     │
-│ • shorten(longUrl) → shortUrl                                   │
-│ • redirect(shortUrl) → longUrl                                  │
-│ • getStats(shortUrl) → click count, referrers                   │
-│                                                                 │
-│ Non-Functional:                                                 │
-│ • 100M URLs created/month                                       │
-│ • 10B redirects/month                                           │
-│ • 99.99% availability                                           │
-│ • < 100ms redirect latency                                      │
-└─────────────────────────────────────────────────────────────────┘
-
-STEP 3 — DATA MODEL
-┌─────────────────────────────────────────────────────────────────┐
-│ URL Table:                                                      │
-│ ┌──────────────────────────────────────────────────────────┐    │
-│ │ short_code (PK) │ long_url │ created_at │ user_id │ ttl │     │
-│ ├──────────────────────────────────────────────────────────┤    │
-│ │ abc123          │ https://... │ 2024-01-01 │ u1 │ null  │     │
-│ └──────────────────────────────────────────────────────────┘    │
-│                                                                 │
-│ Analytics Table:                                                │
-│ ┌──────────────────────────────────────────────────────────┐    │
-│ │ short_code │ timestamp │ referrer │ country │ device    │     │
-│ └──────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────┘
-
-STEP 4 — DSA MAPPING
-┌─────────────────────────────────────────────────────────────────┐
-│ Short Code Generation:                                          │
-│ • Base62 encoding (a-z, A-Z, 0-9) = 62 chars                    │
-│ • 6 chars = 62^6 = 56 billion combinations                      │
-│ • Algorithm: Counter → Base62 conversion                        │
-│                                                                 │
-│ Storage:                                                        │
-│ • HashMap for O(1) lookups                                      │
-│ • B-Tree index for database                                     │
-│ • Bloom filter for quick "not exists" check                     │
-│                                                                 │
-│ Caching:                                                        │
-│ • LRU Cache for hot URLs (20% URLs get 80% traffic)             │
-│ • Cache redirect destination                                    │
-│                                                                 │
-│ Analytics:                                                      │
-│ • Ring Buffer for recent events                                 │
-│ • HyperLogLog for unique visitor count                          │
-│ • Segment Tree for time-range queries                           │
-└─────────────────────────────────────────────────────────────────┘
-
-STEP 5 — ARCHITECTURE
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│    Client                                                       │
-│      │                                                          │
-│      ▼                                                          │
-│  [Load Balancer]                                                │
-│      │                                                          │
-│      ├──────────────────┬──────────────────┐                    │
-│      ▼                  ▼                  ▼                    │
-│  [API Server 1]    [API Server 2]    [API Server N]             │
-│      │                  │                  │                    │
-│      └──────────────────┼──────────────────┘                    │
-│                         │                                       │
-│                    [Redis Cache]                                │
-│                         │                                       │
-│              ┌──────────┴──────────┐                            │
-│              ▼                     ▼                            │
-│      [PostgreSQL Master]    [PostgreSQL Replica]                │
-│                                                                 │
-│  Async: [Kafka] → [Analytics Service] → [ClickHouse]            │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+**How to read this diagram.** Requests go through the load balancer to any API server. The servers check Redis first and fall back to PostgreSQL. Click events are sent asynchronously through Kafka to an analytics service that stores them in ClickHouse.
 
 ```java
 // Core implementation with DSA
@@ -764,7 +739,7 @@ public class URLShortener {
 
 ## Example 2: Building a Real-Time Leaderboard
 
-```
+```text
 USER STORY: "Show top 100 players in real-time for my game"
 
 REQUIREMENTS:
@@ -775,27 +750,25 @@ REQUIREMENTS:
 • Handle ties correctly
 
 DSA ANALYSIS:
-┌─────────────────────────────────────────────────────────────────┐
-│ Option 1: Sorted Array                                          │
-│ • Get top K: O(K) ✓                                             │
-│ • Update score: O(N) ✗ - too slow for 1000/sec                  │
-│                                                                 │
-│ Option 2: Heap                                                  │
-│ • Get top K: O(K log N) - need to extract K times               │
-│ • Update score: O(N) - need to find element first ✗             │
-│                                                                 │
-│ Option 3: Skip List + HashMap                                   │
-│ • Get top K: O(K) ✓                                             │
-│ • Update score: O(log N) ✓                                      │
-│ • Get rank: O(log N) ✓                                          │
-│                                                                 │
-│ Option 4: Segment Tree (Score → Count)                          │
-│ • Get top K: O(K log M) where M = max score                     │
-│ • Update score: O(log M) ✓                                      │
-│ • Get rank: O(log M) ✓                                          │
-│                                                                 │
-│ WINNER: Skip List for flexibility + Redis Sorted Set            │
-└─────────────────────────────────────────────────────────────────┘
+Option 1: Sorted Array
+• Get top K: O(K) ✓
+• Update score: O(N) ✗ - too slow for 1000/sec
+
+Option 2: Heap
+• Get top K: O(K log N) - need to extract K times
+• Update score: O(N) - need to find element first ✗
+
+Option 3: Skip List + HashMap
+• Get top K: O(K) ✓
+• Update score: O(log N) ✓
+• Get rank: O(log N) ✓
+
+Option 4: Segment Tree (Score → Count)
+• Get top K: O(K log M) where M = max score
+• Update score: O(log M) ✓
+• Get rank: O(log M) ✓
+
+WINNER: Skip List for flexibility + Redis Sorted Set
 ```
 
 ```java
@@ -892,7 +865,7 @@ public class Leaderboard {
 
 ## Example 3: Building an Autocomplete System
 
-```
+```text
 USER STORY: "Show suggestions as user types in search box"
 
 REQUIREMENTS:
@@ -903,38 +876,35 @@ REQUIREMENTS:
 • Rank by popularity
 
 DSA MAPPING:
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   User types: "pro"                                             │
-│                                                                 │
-│   TRIE traversal to "pro":                                      │
-│                                                                 │
-│              (root)                                             │
-│                |                                                │
-│                p                                                │
-│                |                                                │
-│                r                                                │
-│                |                                                │
-│                o ← We are here                                  │
-│              / | \                                              │
-│             d  g  f                                             │
-│             |  |  |                                             │
-│             u  r  i                                             │
-│             |  |  |                                             │
-│             c  a  l                                             │
-│             |  |  |                                             │
-│             t  m  e                                             │
-│             |  |                                                │
-│             *  *                                                │
-│                                                                 │
-│   At each node, we need TOP K by popularity                     │
-│   Solution: Store top 5 at each node (precomputed)              │
-│                                                                 │
-│   "pro" node stores: [("programming", 10K), ("profile", 8K),    │
-│                       ("product", 5K), ("problem", 3K),         │
-│                       ("process", 2K)]                          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+
+  User types: "pro"
+
+  TRIE traversal to "pro":
+
+             (root)
+               |
+               p
+               |
+               r
+               |
+               o ← We are here
+             / | \
+            d  g  f
+            |  |  |
+            u  r  i
+            |  |  |
+            c  a  l
+            |  |  |
+            t  m  e
+            |  |
+            *  *
+
+  At each node, we need TOP K by popularity
+  Solution: Store top 5 at each node (precomputed)
+
+  "pro" node stores: [("programming", 10K), ("profile", 8K),
+                      ("product", 5K), ("problem", 3K),
+                      ("process", 2K)]
 ```
 
 ```java
@@ -1042,34 +1012,30 @@ class AutocompleteSystem {
 
 # 🧩 Part 24: Interview Problem → System Design Mapping
 
-```
-LEETCODE PROBLEMS AND THEIR PRODUCTION COUNTERPARTS:
+**LEETCODE PROBLEMS AND THEIR PRODUCTION COUNTERPARTS: — LC Problem                 │ Real System Application**
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ LC Problem                 │ Real System Application                        │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ Two Sum                    │ Finding matching orders in trading systems     │
-│ LRU Cache                  │ Caching layer in any web service               │
-│ Merge Intervals            │ Calendar scheduling, resource allocation       │
-│ Word Search II             │ Search engine indexing, plagiarism detection   │
-│ Design Twitter             │ Social media feed generation                   │
-│ Meeting Rooms II           │ Resource scheduling, server allocation         │
-│ Sliding Window Maximum     │ Real-time streaming analytics                  │
-│ Serialize Binary Tree      │ Database replication, data transmission        │
-│ Rate Limiter               │ API gateway, DDoS protection                   │
-│ Top K Frequent             │ Analytics dashboards, trending topics          │
-│ Find Median Stream         │ Real-time percentile monitoring                │
-│ Alien Dictionary           │ Dependency resolution, build systems           │
-│ Course Schedule            │ Task scheduling, CI/CD pipelines               │
-│ Word Ladder                │ Spell correction, recommendation systems       │
-│ Trapping Rain Water        │ Resource allocation, load balancing            │
-│ Min Stack                  │ Undo functionality, version control            │
-│ Validate BST               │ Database constraint checking                   │
-│ Clone Graph                │ Social network analysis, web crawling          │
-│ Number of Islands          │ Image processing, connected component analysis │
-│ Longest Palindrome         │ DNA sequence analysis, data compression        │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+| Problem | Where the same pattern shows up |
+| --- | --- |
+| Two Sum | Finding matching orders in trading systems |
+| LRU Cache | Caching layer in any web service |
+| Merge Intervals | Calendar scheduling, resource allocation |
+| Word Search II | Search engine indexing, plagiarism detection |
+| Design Twitter | Social media feed generation |
+| Meeting Rooms II | Resource scheduling, server allocation |
+| Sliding Window Maximum | Real-time streaming analytics |
+| Serialize Binary Tree | Database replication, data transmission |
+| Rate Limiter | API gateway, DDoS protection |
+| Top K Frequent | Analytics dashboards, trending topics |
+| Find Median Stream | Real-time percentile monitoring |
+| Alien Dictionary | Dependency resolution, build systems |
+| Course Schedule | Task scheduling, CI/CD pipelines |
+| Word Ladder | Spell correction, recommendation systems |
+| Trapping Rain Water | Resource allocation, load balancing |
+| Min Stack | Undo functionality, version control |
+| Validate BST | Database constraint checking |
+| Clone Graph | Social network analysis, web crawling |
+| Number of Islands | Image processing, connected component analysis |
+| Longest Palindrome | DNA sequence analysis, data compression |
 
 ---
 
@@ -1077,86 +1043,79 @@ LEETCODE PROBLEMS AND THEIR PRODUCTION COUNTERPARTS:
 
 ## The Systematic Debugging Framework
 
+**When the system is slow**
+
+1. **Measure first:** "Where is the time spent?"
+2. **Check data volume:** "Did the data size change?"
+3. **Check data shape:** "Did the data distribution change?"
+4. **Check code changes:** "What was deployed recently?"
+5. **Check external dependencies:** "Are third-party services slow?"
+
+**Debugging flowchart**
+
+```mermaid
+flowchart TD
+  S["System is slow"] --> P["Check latency percentiles"]
+  P --> P99["P99 high<br/>edge cases are slow"]
+  P --> P50["P50 high<br/>everything is slow"]
+  P99 --> C1["Check for: large data, bad input, a missing index"]
+  P50 --> C2["Check for: database, network, CPU/memory, resource contention"]
 ```
-WHEN SYSTEM IS SLOW:
 
-1. MEASURE FIRST
-   └── "Where is time spent?"
+**How to read this diagram.** A high P99 with a normal P50 points to specific slow inputs. A high P50 means everything is slow, so look at shared resources.
 
-2. CHECK DATA VOLUME
-   └── "Did data size change?"
+**DSA-related performance issues**
 
-3. CHECK DATA SHAPE
-   └── "Did data distribution change?"
+1. **O(n²) hidden in loops**
 
-4. CHECK CODE CHANGES
-   └── "What was deployed recently?"
-
-5. CHECK EXTERNAL DEPENDENCIES
-   └── "Are third-party services slow?"
-
-DEBUGGING FLOWCHART:
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   System is slow                                                │
-│         │                                                       │
-│         ▼                                                       │
-│   ┌─────────────────┐                                           │
-│   │ Check latency   │                                           │
-│   │ percentiles     │                                           │
-│   └────────┬────────┘                                           │
-│            │                                                    │
-│     ┌──────┴──────┐                                             │
-│     ▼             ▼                                             │
-│  P99 high     P50 high                                          │
-│     │             │                                             │
-│     ▼             ▼                                             │
-│  Edge cases    Everything                                       │
-│  are slow      is slow                                          │
-│     │             │                                             │
-│     ▼             ▼                                             │
-│  Check for:    Check for:                                       │
-│  - Large data  - Database                                       │
-│  - Bad input   - Network                                        │
-│  - Missing     - CPU/Memory                                     │
-│    index       - Resource                                       │
-│                  contention                                     │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-
-DSA-RELATED PERFORMANCE ISSUES:
-
-1. O(n²) HIDDEN IN LOOPS
+   ```java
    for (item : list) {
        if (otherList.contains(item))  // O(n) lookup!
    }
-   FIX: Convert otherList to HashSet → O(1) lookup
+   ```
 
-2. REPEATED STRING CONCATENATION
+   Fix: convert `otherList` to a `HashSet` for O(1) lookups.
+
+2. **Repeated string concatenation**
+
+   ```java
    String result = "";
    for (s : strings) {
        result += s;  // O(n²) total!
    }
-   FIX: Use StringBuilder → O(n) total
+   ```
 
-3. N+1 QUERY PROBLEM
+   Fix: use `StringBuilder` for O(n) total.
+
+3. **N+1 query problem**
+
+   ```java
    for (user : users) {
        orders = db.query("SELECT * FROM orders WHERE user_id = ?", user.id)
    }
-   FIX: JOIN or batch query → 1 query instead of N
+   ```
 
-4. MISSING CACHE
+   Fix: use a JOIN or a batch query, so it is 1 query instead of N.
+
+4. **Missing cache**
+
+   ```java
    for (request : requests) {
        result = expensiveComputation(request.param);  // Same param repeated!
    }
-   FIX: Memoization / Cache → O(1) for repeated params
+   ```
 
-5. SORTING REPEATEDLY
+   Fix: memoization or a cache gives O(1) for repeated parameters.
+
+5. **Sorting repeatedly**
+
+   ```java
    for (request : requests) {
-       sorted = Arrays.sort(data.clone());  // O(n log n) each time!
+       Arrays.sort(data.clone());  // O(n log n) each time!
    }
-   FIX: Sort once, maintain sorted structure
-```
+   ```
+
+   Fix: sort once and maintain a sorted structure.
 
 ---
 
@@ -1296,67 +1255,75 @@ FOR EACH ALGORITHM, KNOW:
 
 # 📌 Part 28: Weekly Learning Challenges
 
-```
-WEEK 1: ARRAYS & HASHING
-├── Implement HashMap from scratch
-├── Solve: Two Sum, Contains Duplicate, Group Anagrams
-├── Build: In-memory key-value store
-└── Study: Hash collision resolution strategies
+**WEEK 1: ARRAYS & HASHING**
 
-WEEK 2: TWO POINTERS & SLIDING WINDOW
-├── Implement: Sliding window template
-├── Solve: 3Sum, Container With Most Water, Minimum Window Substring
-├── Build: Real-time moving average calculator
-└── Study: When to use which pointer technique
+- Implement HashMap from scratch
+- Solve: Two Sum, Contains Duplicate, Group Anagrams
+- Build: In-memory key-value store
+- Study: Hash collision resolution strategies
 
-WEEK 3: STACKS & QUEUES
-├── Implement: Min Stack, Monotonic Stack
-├── Solve: Valid Parentheses, Daily Temperatures, Largest Rectangle
-├── Build: Expression evaluator (calculator)
-└── Study: When monotonic stack helps
+**WEEK 2: TWO POINTERS & SLIDING WINDOW**
 
-WEEK 4: BINARY SEARCH
-├── Implement: All binary search variants
-├── Solve: Search Rotated Array, Find Peak, Median of Two Sorted
-├── Build: Rate limiter with binary search
-└── Study: Binary search on answer space
+- Implement: Sliding window template
+- Solve: 3Sum, Container With Most Water, Minimum Window Substring
+- Build: Real-time moving average calculator
+- Study: When to use which pointer technique
 
-WEEK 5: TREES
-├── Implement: BST, AVL tree
-├── Solve: Validate BST, LCA, Serialize/Deserialize
-├── Build: Simple database index
-└── Study: Tree balancing techniques
+**WEEK 3: STACKS & QUEUES**
 
-WEEK 6: GRAPHS
-├── Implement: Graph representations, BFS, DFS
-├── Solve: Number of Islands, Clone Graph, Course Schedule
-├── Build: Social network friend suggestion
-└── Study: When BFS vs DFS
+- Implement: Min Stack, Monotonic Stack
+- Solve: Valid Parentheses, Daily Temperatures, Largest Rectangle
+- Build: Expression evaluator (calculator)
+- Study: When monotonic stack helps
 
-WEEK 7: HEAPS & PRIORITY QUEUES
-├── Implement: Min/Max heap from scratch
-├── Solve: Merge K Lists, Top K, Find Median
-├── Build: Task scheduler with priorities
-└── Study: Heap applications in system design
+**WEEK 4: BINARY SEARCH**
 
-WEEK 8: DYNAMIC PROGRAMMING
-├── Master: 1D DP, 2D DP patterns
-├── Solve: Climbing Stairs, Coin Change, LCS, Edit Distance
-├── Build: Spell checker with edit distance
-└── Study: DP state design
+- Implement: All binary search variants
+- Solve: Search Rotated Array, Find Peak, Median of Two Sorted
+- Build: Rate limiter with binary search
+- Study: Binary search on answer space
 
-WEEK 9: TRIES & ADVANCED DS
-├── Implement: Trie, Segment Tree
-├── Solve: Word Search II, Autocomplete, Range Sum Query
-├── Build: Search autocomplete system
-└── Study: When to use advanced DS
+**WEEK 5: TREES**
 
-WEEK 10: SYSTEM DESIGN
-├── Study: URL Shortener, Twitter, Chat System
-├── Practice: Design discussions
-├── Build: Simple distributed cache
-└── Study: Trade-offs in system design
-```
+- Implement: BST, AVL tree
+- Solve: Validate BST, LCA, Serialize/Deserialize
+- Build: Simple database index
+- Study: Tree balancing techniques
+
+**WEEK 6: GRAPHS**
+
+- Implement: Graph representations, BFS, DFS
+- Solve: Number of Islands, Clone Graph, Course Schedule
+- Build: Social network friend suggestion
+- Study: When BFS vs DFS
+
+**WEEK 7: HEAPS & PRIORITY QUEUES**
+
+- Implement: Min/Max heap from scratch
+- Solve: Merge K Lists, Top K, Find Median
+- Build: Task scheduler with priorities
+- Study: Heap applications in system design
+
+**WEEK 8: DYNAMIC PROGRAMMING**
+
+- Master: 1D DP, 2D DP patterns
+- Solve: Climbing Stairs, Coin Change, LCS, Edit Distance
+- Build: Spell checker with edit distance
+- Study: DP state design
+
+**WEEK 9: TRIES & ADVANCED DS**
+
+- Implement: Trie, Segment Tree
+- Solve: Word Search II, Autocomplete, Range Sum Query
+- Build: Search autocomplete system
+- Study: When to use advanced DS
+
+**WEEK 10: SYSTEM DESIGN**
+
+- Study: URL Shortener, Twitter, Chat System
+- Practice: Design discussions
+- Build: Simple distributed cache
+- Study: Trade-offs in system design
 
 ---
 
@@ -1371,12 +1338,12 @@ _"The journey of a thousand algorithms begins with a single data structure."_ �
 
 ## Reality Check
 
-**"Amortized O(1) means every operation is fast"** ? Amortized analysis guarantees the AVERAGE over a sequence is O(1), not that any individual operation is fast. ArrayList.add is amortized O(1), but a single add can take O(n) during resize. In real-time systems like trading or game loops, one slow operation in 1000 is unacceptable � use pre-allocated arrays instead.
+**"Amortized O(1) means every operation is fast"** — Amortized analysis guarantees the AVERAGE over a sequence is O(1), not that any individual operation is fast. ArrayList.add is amortized O(1), but a single add can take O(n) during resize. In real-time systems like trading or game loops, one slow operation in 1000 is unacceptable — use pre-allocated arrays instead.
 
-**"Graph algorithms work the same regardless of representation"** ? Adjacency matrix uses O(V squared) space and O(1) edge lookup but O(V) neighbor iteration. Adjacency list uses O(V+E) space and O(degree) edge lookup but O(degree) neighbor iteration. BFS on a sparse graph with E approximately equal to V runs O(V squared) with a matrix but O(V) with a list. Wrong representation choice can add an entire order of magnitude.
+**"Graph algorithms work the same regardless of representation"** — Adjacency matrix uses O(V squared) space and O(1) edge lookup but O(V) neighbor iteration. Adjacency list uses O(V+E) space and O(degree) edge lookup but O(degree) neighbor iteration. BFS on a sparse graph with E approximately equal to V runs O(V squared) with a matrix but O(V) with a list. Wrong representation choice can add an entire order of magnitude.
 
-**"Dynamic programming always needs a 2D table"** ? Many DP problems labeled as 2D actually only need the previous row. Fibonacci does not need an array � two variables suffice. Knapsack with O(nW) space can be reduced to O(W) by iterating backwards through the weight dimension. Space optimization is not premature � it is the difference between fitting in L1 cache or thrashing main memory.
+**"Dynamic programming always needs a 2D table"** — Many DP problems labeled as 2D actually only need the previous row. Fibonacci does not need an array — two variables suffice. Knapsack with O(nW) space can be reduced to O(W) by iterating backwards through the weight dimension. Space optimization is not premature — it is the difference between fitting in L1 cache or thrashing main memory.
 
-**"Greedy algorithms are just heuristics that might fail"** ? Greedy algorithms are provably optimal for specific problem structures � matroid intersection, submodular function maximization, and problems satisfying the greedy-choice property plus optimal substructure. Dijkstra is greedy and provably correct for non-negative weights. The discipline is proving the greedy choice is safe, not guessing.
+**"Greedy algorithms are just heuristics that might fail"** — Greedy algorithms are provably optimal for specific problem structures — matroid intersection, submodular function maximization, and problems satisfying the greedy-choice property plus optimal substructure. Dijkstra is greedy and provably correct for non-negative weights. The discipline is proving the greedy choice is safe, not guessing.
 
-**"Parallelizing an algorithm makes it faster by the number of cores"** ? Amdahl law: if 10 percent of your algorithm is sequential, maximum speedup is 10x regardless of core count. Java parallelStream uses the common ForkJoinPool shared across the entire JVM. A slow stream operation in one module starves all other parallel streams. For arrays under roughly 10000 elements, the overhead of parallelization exceeds the speedup.
+**"Parallelizing an algorithm makes it faster by the number of cores"** — Amdahl law: if 10 percent of your algorithm is sequential, maximum speedup is 10x regardless of core count. Java parallelStream uses the common ForkJoinPool shared across the entire JVM. A slow stream operation in one module starves all other parallel streams. For arrays under roughly 10000 elements, the overhead of parallelization exceeds the speedup.

@@ -16,6 +16,7 @@
 - **JUnit 4 — 2006**: Annotations replace `TestCase` inheritance. `@Test`, `@BeforeClass`. Industry standard.
 - **Java 8 Streams (JSR 335) — 2014**: Brian Goetz (spec lead). Functional pipeline. Base for reactive programming.
 - **JUnit 5 (Jupiter) — 2017**: Marc Philipp. Modular architecture. `@Nested`, `@ParameterizedTest`, `@DisplayName`.
+
 # 📝 Java & Spring Boot — Problem Sets
 
 ## `07_Modern_Java` Module | MIT / ETH Zurich Style

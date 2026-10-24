@@ -9,44 +9,42 @@ _"Controllers are thin - they delegate, not implement"_
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
+**WHY: Why REST Controllers?**
+
+```text
+• REST is the standard: Web APIs, mobile apps, microservices
+• HTTP verbs: GET, POST, PUT, DELETE map to CRUD operations
+• Status codes: 200, 201, 400, 404, 500 communicate results
+• JSON by default: @RestController auto-serializes to JSON
+• Interview must-know: API design is tested in every backend interview
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Why REST Controllers?                                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • REST is the standard: Web APIs, mobile apps, microservices                   │
-│  • HTTP verbs: GET, POST, PUT, DELETE map to CRUD operations                    │
-│  • Status codes: 200, 201, 400, 404, 500 communicate results                    │
-│  • JSON by default: @RestController auto-serializes to JSON                     │
-│  • Interview must-know: API design is tested in every backend interview         │
-└─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How Controllers Handle Requests?                                          │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • @GetMapping: Retrieve resource - GET /api/users/{id}                         │
-│  • @PostMapping: Create resource - POST /api/users                              │
-│  • @PutMapping: Update entire resource - PUT /api/users/{id}                    │
-│  • @DeleteMapping: Remove resource - DELETE /api/users/{id}                     │
-│  • @Valid: Trigger bean validation on request body                              │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**HOW: How Controllers Handle Requests?**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN: When to Use Which Parameter Type?                                        │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • @PathVariable: Resource identifier - /users/{id}                             │
-│  • @RequestParam: Filters, pagination - /users?status=active&page=1             │
-│  • @RequestBody: Create/Update data - JSON payload                              │
-│  • @RequestHeader: Auth tokens, API keys, custom headers                        │
-│  • ResponseEntity: Full control over status, headers, body                      │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+• @GetMapping: Retrieve resource - GET /api/users/{id}
+• @PostMapping: Create resource - POST /api/users
+• @PutMapping: Update entire resource - PUT /api/users/{id}
+• @DeleteMapping: Remove resource - DELETE /api/users/{id}
+• @Valid: Trigger bean validation on request body
+```
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHICH: Which Controller Patterns to Use?                                       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     @RestController, @RequestMapping, @Valid, ResponseEntity        │
-│  IMPORTANT:     @ControllerAdvice for global exceptions, API versioning         │
-│  ADVANCED:      HATEOAS, content negotiation, file uploads                      │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHEN: When to Use Which Parameter Type?**
+
+```text
+• @PathVariable: Resource identifier - /users/{id}
+• @RequestParam: Filters, pagination - /users?status=active&page=1
+• @RequestBody: Create/Update data - JSON payload
+• @RequestHeader: Auth tokens, API keys, custom headers
+• ResponseEntity: Full control over status, headers, body
+```
+
+**WHICH: Which Controller Patterns to Use?**
+
+```text
+ESSENTIAL:     @RestController, @RequestMapping, @Valid, ResponseEntity
+IMPORTANT:     @ControllerAdvice for global exceptions, API versioning
+ADVANCED:      HATEOAS, content negotiation, file uploads
 ```
 
 ---
@@ -116,46 +114,40 @@ public class UserController {
 
 ## Chapter 2: HTTP Method Mappings
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    HTTP METHODS & SPRING MAPPINGS                               │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  HTTP Method    Annotation        Purpose              Idempotent   Safe        │
-│  ──────────────────────────────────────────────────────────────────────────     │
-│  GET            @GetMapping       Read resource           ✅         ✅           │
-│  POST           @PostMapping      Create resource         ❌         ❌           │
-│  PUT            @PutMapping       Replace resource        ✅         ❌           │
-│  PATCH          @PatchMapping     Partial update          ❌*        ❌           │
-│  DELETE         @DeleteMapping    Delete resource         ✅         ❌           │
-│  HEAD           @RequestMapping   Get headers only        ✅         ✅           │
-│  OPTIONS        @RequestMapping   Get allowed methods     ✅         ✅           │
-│                                                                                 │
-│  *PATCH can be idempotent depending on implementation                           │
-│                                                                                 │
-│  Idempotent = Same request N times = Same result                                │
-│  Safe = Doesn't modify server state                                             │
-│                                                                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  RESTful URL Design:                                                            │
-│                                                                                 │
-│  ✅ GOOD (Noun-based, resource-oriented):                                        │
-│  GET    /api/v1/users                    → Get all users                        │
-│  GET    /api/v1/users/123                → Get user 123                         │
-│  POST   /api/v1/users                    → Create user                          │
-│  PUT    /api/v1/users/123                → Replace user 123                     │
-│  PATCH  /api/v1/users/123                → Update user 123                      │
-│  DELETE /api/v1/users/123                → Delete user 123                      │
-│  GET    /api/v1/users/123/orders         → Get orders of user 123               │
-│  POST   /api/v1/users/123/orders         → Create order for user 123            │
-│                                                                                 │
-│  ❌ BAD (Verb-based, RPC style):                                                 │
-│  GET    /api/v1/getUser?id=123           → Don't use verbs in URL               │
-│  POST   /api/v1/createUser               → POST already means create            │
-│  GET    /api/v1/deleteUser?id=123        → Don't use GET for deletion           │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**HTTP METHODS & SPRING MAPPINGS**
+
+**HTTP Method    Annotation        Purpose              Idempotent   Safe**
+
+```text
+GET            @GetMapping       Read resource           ✅         ✅
+POST           @PostMapping      Create resource         ❌         ❌
+PUT            @PutMapping       Replace resource        ✅         ❌
+PATCH          @PatchMapping     Partial update          ❌*        ❌
+DELETE         @DeleteMapping    Delete resource         ✅         ❌
+HEAD           @RequestMapping   Get headers only        ✅         ✅
+OPTIONS        @RequestMapping   Get allowed methods     ✅         ✅
+
+*PATCH can be idempotent depending on implementation
+
+Idempotent = Same request N times = Same result
+Safe = Doesn't modify server state
+
+RESTful URL Design:
+
+✅ GOOD (Noun-based, resource-oriented):
+GET    /api/v1/users                    → Get all users
+GET    /api/v1/users/123                → Get user 123
+POST   /api/v1/users                    → Create user
+PUT    /api/v1/users/123                → Replace user 123
+PATCH  /api/v1/users/123                → Update user 123
+DELETE /api/v1/users/123                → Delete user 123
+GET    /api/v1/users/123/orders         → Get orders of user 123
+POST   /api/v1/users/123/orders         → Create order for user 123
+
+❌ BAD (Verb-based, RPC style):
+GET    /api/v1/getUser?id=123           → Don't use verbs in URL
+POST   /api/v1/createUser               → POST already means create
+GET    /api/v1/deleteUser?id=123        → Don't use GET for deletion
 ```
 
 ---
@@ -1026,82 +1018,78 @@ Loss of Type Safety and API Documentation. A generic `Map` completely destroys t
 
 ## Chapter 8: Controller Best Practices
 
+**CONTROLLER BEST PRACTICES**
+
+**1. thin controllers**
+
+```text
+Controllers should:
+✅ Receive request
+✅ Validate (via @Valid)
+✅ Delegate to service
+✅ Return response
+
+Controllers should NOT:
+❌ Contain business logic
+❌ Access repositories directly
+❌ Have complex conditionals
+❌ Do data transformation (use mapper in service)
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    CONTROLLER BEST PRACTICES                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  1. THIN CONTROLLERS                                                            │
-│  ─────────────────────                                                          │
-│  Controllers should:                                                            │
-│  ✅ Receive request                                                              │
-│  ✅ Validate (via @Valid)                                                        │
-│  ✅ Delegate to service                                                          │
-│  ✅ Return response                                                              │
-│                                                                                 │
-│  Controllers should NOT:                                                        │
-│  ❌ Contain business logic                                                       │
-│  ❌ Access repositories directly                                                 │
-│  ❌ Have complex conditionals                                                    │
-│  ❌ Do data transformation (use mapper in service)                               │
-│                                                                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  2. USE MEANINGFUL HTTP STATUS CODES                                            │
-│  ──────────────────────────────────────                                         │
-│  200 OK          - Successful GET, PUT, PATCH                                   │
-│  201 Created     - Successful POST (with Location header)                       │
-│  204 No Content  - Successful DELETE                                            │
-│  400 Bad Request - Validation error, malformed request                          │
-│  401 Unauthorized- Missing/invalid authentication                               │
-│  403 Forbidden   - Authenticated but not authorized                             │
-│  404 Not Found   - Resource doesn't exist                                       │
-│  409 Conflict    - Duplicate resource (e.g., email exists)                      │
-│  422 Unprocessable Entity - Business rule violation                             │
-│  500 Internal Error - Unexpected server error                                   │
-│                                                                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  3. CONSISTENT RESPONSE FORMAT                                                  │
-│  ─────────────────────────────────                                              │
-│  // Success response                                                            │
-│  {                                                                              │
-│    "data": { ... },                                                             │
-│    "message": "Success"                                                         │
-│  }                                                                              │
-│                                                                                 │
-│  // Error response                                                              │
-│  {                                                                              │
-│    "timestamp": "2024-01-15T10:30:00Z",                                         │
-│    "status": 404,                                                               │
-│    "error": "Not Found",                                                        │
-│    "errorCode": "USER_NOT_FOUND",                                               │
-│    "message": "User not found with id: 123",                                    │
-│    "path": "/api/v1/users/123"                                                  │
-│  }                                                                              │
-│                                                                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  4. DOCUMENT WITH OPENAPI                                                       │
-│  ───────────────────────────                                                    │
-│  @Operation(summary = "Get user by ID")                                         │
-│  @ApiResponses({                                                                │
-│    @ApiResponse(responseCode = "200", description = "User found"),              │
-│    @ApiResponse(responseCode = "404", description = "User not found")           │
-│  })                                                                             │
-│  @GetMapping("/{id}")                                                           │
-│  public UserResponse getUser(@PathVariable Long id) { }                         │
-│                                                                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  5. PAGINATION BEST PRACTICES                                                   │
-│  ─────────────────────────────────                                              │
-│  - Default page size (e.g., 20)                                                 │
-│  - Max page size limit (e.g., 100)                                              │
-│  - Return pagination metadata                                                   │
-│  - Use cursor-based for real-time data                                          │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+**2. use meaningful http status codes**
+
+```text
+200 OK          - Successful GET, PUT, PATCH
+201 Created     - Successful POST (with Location header)
+204 No Content  - Successful DELETE
+400 Bad Request - Validation error, malformed request
+401 Unauthorized- Missing/invalid authentication
+403 Forbidden   - Authenticated but not authorized
+404 Not Found   - Resource doesn't exist
+409 Conflict    - Duplicate resource (e.g., email exists)
+422 Unprocessable Entity - Business rule violation
+500 Internal Error - Unexpected server error
+```
+
+**3. consistent response format**
+
+```text
+// Success response
+{
+  "data": { ... },
+  "message": "Success"
+}
+
+// Error response
+{
+  "timestamp": "2024-01-15T10:30:00Z",
+  "status": 404,
+  "error": "Not Found",
+  "errorCode": "USER_NOT_FOUND",
+  "message": "User not found with id: 123",
+  "path": "/api/v1/users/123"
+}
+```
+
+**4. document with openapi**
+
+```text
+@Operation(summary = "Get user by ID")
+@ApiResponses({
+  @ApiResponse(responseCode = "200", description = "User found"),
+  @ApiResponse(responseCode = "404", description = "User not found")
+})
+@GetMapping("/{id}")
+public UserResponse getUser(@PathVariable Long id) { }
+```
+
+**5. pagination best practices**
+
+```text
+- Default page size (e.g., 20)
+- Max page size limit (e.g., 100)
+- Return pagination metadata
+- Use cursor-based for real-time data
 ```
 
 ### Example: Complete CRUD Controller
@@ -1294,12 +1282,12 @@ _Continue to Part 8: JPA & Hibernate Deep Dive_
 
 ## Reality Check
 
-**"@RestController means the class handles REST calls"** ? @RestController is just @Controller plus @ResponseBody on every method. It means return values are serialized to the response body, usually JSON, instead of resolved as view names. A @Controller method returning the string users looks for a view template called users.html. A @RestController method returning users writes the literal string users as the JSON response body.
+**"@RestController means the class handles REST calls"** — @RestController is just @Controller plus @ResponseBody on every method. It means return values are serialized to the response body, usually JSON, instead of resolved as view names. A @Controller method returning the string users looks for a view template called users.html. A @RestController method returning users writes the literal string users as the JSON response body.
 
-**"ResponseEntity is always better than returning raw objects"** ? ResponseEntity gives control over status codes and headers, but for standard 200 OK responses with JSON body, returning the object directly is cleaner. Use ResponseEntity when you need 201 Created with a Location header, 204 No Content, or conditional status codes. Over-using ResponseEntity adds verbosity without value.
+**"ResponseEntity is always better than returning raw objects"** — ResponseEntity gives control over status codes and headers, but for standard 200 OK responses with JSON body, returning the object directly is cleaner. Use ResponseEntity when you need 201 Created with a Location header, 204 No Content, or conditional status codes. Over-using ResponseEntity adds verbosity without value.
 
-**"@PathVariable and @RequestParam are the same with different names"** ? @PathVariable extracts from the URL path like /users/42, @RequestParam extracts from query parameters like /users?id=42. Path variables identify a RESOURCE, query parameters modify the REQUEST. Using query parameters for resource identification breaks REST semantics and makes URLs un-bookmarkable for the specific resource.
+**"@PathVariable and @RequestParam are the same with different names"** — @PathVariable extracts from the URL path like /users/42, @RequestParam extracts from query parameters like /users?id=42. Path variables identify a RESOURCE, query parameters modify the REQUEST. Using query parameters for resource identification breaks REST semantics and makes URLs un-bookmarkable for the specific resource.
 
-**"@Valid triggers validation automatically on all parameters"** ? @Valid triggers validation ONLY if a Bean Validation implementation like Hibernate Validator is on the classpath AND the parameter is a request body or model attribute. It does NOT validate @PathVariable or @RequestParam � you need @Validated on the controller class AND constraint annotations directly on the parameters for those. Missing @Validated on the class is the most common validation bug.
+**"@Valid triggers validation automatically on all parameters"** — @Valid triggers validation ONLY if a Bean Validation implementation like Hibernate Validator is on the classpath AND the parameter is a request body or model attribute. It does NOT validate @PathVariable or @RequestParam — you need @Validated on the controller class AND constraint annotations directly on the parameters for those. Missing @Validated on the class is the most common validation bug.
 
-**"Returning null from a controller returns an empty response"** ? Returning null from a @ResponseBody method returns the literal JSON null with 200 OK � not an empty body and not a 404. To return 204 No Content, use ResponseEntity.noContent().build(). To return 404, throw a ResponseStatusException. Returning null is almost never the correct behavior for a REST API.
+**"Returning null from a controller returns an empty response"** — Returning null from a @ResponseBody method returns the literal JSON null with 200 OK — not an empty body and not a 404. To return 204 No Content, use ResponseEntity.noContent().build(). To return 404, throw a ResponseStatusException. Returning null is almost never the correct behavior for a REST API.

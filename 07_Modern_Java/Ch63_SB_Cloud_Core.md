@@ -22,44 +22,42 @@ Vendor lock-in and testability. Hardcoding AWS SDK calls (e.g., `s3Client.putObj
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
+**WHY: Why Cloud Deployment?**
+
+```text
+• Scalability: Auto-scale based on traffic (pay only for what you use)
+• Reliability: Multi-region, high availability built-in
+• Speed: Deploy in minutes, not days (CI/CD pipelines)
+• Managed services: Focus on code, not infrastructure
+• Global reach: Deploy to any region, serve users worldwide
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Why Cloud Deployment?                                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Scalability: Auto-scale based on traffic (pay only for what you use)         │
-│  • Reliability: Multi-region, high availability built-in                        │
-│  • Speed: Deploy in minutes, not days (CI/CD pipelines)                         │
-│  • Managed services: Focus on code, not infrastructure                          │
-│  • Global reach: Deploy to any region, serve users worldwide                    │
-└─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How to Deploy to Cloud?                                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Containerize: Docker multi-stage build for Spring Boot                       │
-│  • Orchestrate: Kubernetes (EKS/AKS/GKE) for container management               │
-│  • Automate: CI/CD with GitHub Actions/GitLab CI                                │
-│  • Infrastructure as Code: Terraform for reproducible deployments               │
-│  • Secrets: Cloud secret managers (AWS Secrets, Azure Key Vault)                │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**HOW: How to Deploy to Cloud?**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN: When to Use Each Cloud Service?                                          │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Docker: Every deployment (containerization is standard)                      │
-│  • Kubernetes: Multiple services, scaling needs, production                     │
-│  • Serverless (Lambda/Cloud Run): Event-driven, sporadic workloads              │
-│  • PaaS (Elastic Beanstalk): Simple apps, less control needed                   │
-│  • Multi-cloud: Vendor lock-in concerns, compliance requirements                │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+• Containerize: Docker multi-stage build for Spring Boot
+• Orchestrate: Kubernetes (EKS/AKS/GKE) for container management
+• Automate: CI/CD with GitHub Actions/GitLab CI
+• Infrastructure as Code: Terraform for reproducible deployments
+• Secrets: Cloud secret managers (AWS Secrets, Azure Key Vault)
+```
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHICH: Which Cloud Provider?                                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  AWS:   Market leader, most services, best for startups (free tier)             │
-│  Azure: Best for Microsoft shops, enterprise, hybrid cloud                      │
-│  GCP:   Best for data/ML, Kubernetes (invented there), competitive pricing      │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHEN: When to Use Each Cloud Service?**
+
+```text
+• Docker: Every deployment (containerization is standard)
+• Kubernetes: Multiple services, scaling needs, production
+• Serverless (Lambda/Cloud Run): Event-driven, sporadic workloads
+• PaaS (Elastic Beanstalk): Simple apps, less control needed
+• Multi-cloud: Vendor lock-in concerns, compliance requirements
+```
+
+**WHICH: Which Cloud Provider?**
+
+```text
+AWS:   Market leader, most services, best for startups (free tier)
+Azure: Best for Microsoft shops, enterprise, hybrid cloud
+GCP:   Best for data/ML, Kubernetes (invented there), competitive pricing
 ```
 
 ---
@@ -88,23 +86,21 @@ Vendor lock-in and testability. Hardcoding AWS SDK calls (e.g., `s3Client.putObj
 
 ### The Twelve-Factor App
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                   12-FACTOR APP PRINCIPLES                      │
-├─────────────────────────────────────────────────────────────────┤
-│  1. Codebase      │ One codebase, many deploys                  │
-│  2. Dependencies  │ Explicitly declare and isolate              │
-│  3. Config        │ Store in environment                        │
-│  4. Backing Svcs  │ Treat as attached resources                 │
-│  5. Build/Release │ Strictly separate stages                    │
-│  6. Processes     │ Execute as stateless processes              │
-│  7. Port Binding  │ Export services via port binding            │
-│  8. Concurrency   │ Scale via process model                     │
-│  9. Disposability │ Fast startup and graceful shutdown          │
-│ 10. Dev/Prod Parity│ Keep environments similar                  │
-│ 11. Logs          │ Treat as event streams                      │
-│ 12. Admin Process │ Run admin tasks as one-off processes        │
-└─────────────────────────────────────────────────────────────────┘
+**12-FACTOR APP PRINCIPLES**
+
+```text
+ 1. Codebase      │ One codebase, many deploys
+ 2. Dependencies  │ Explicitly declare and isolate
+ 3. Config        │ Store in environment
+ 4. Backing Svcs  │ Treat as attached resources
+ 5. Build/Release │ Strictly separate stages
+ 6. Processes     │ Execute as stateless processes
+ 7. Port Binding  │ Export services via port binding
+ 8. Concurrency   │ Scale via process model
+ 9. Disposability │ Fast startup and graceful shutdown
+10. Dev/Prod Parity│ Keep environments similar
+11. Logs          │ Treat as event streams
+12. Admin Process │ Run admin tasks as one-off processes
 ```
 
 ### Cloud Provider Comparison
@@ -342,29 +338,31 @@ volumes:
 
 ### Kubernetes Architecture
 
+**KUBERNETES CLUSTER**
+
+```mermaid
+flowchart TD
+  subgraph CP["CONTROL PLANE"]
+    API["API Server"]
+    CTRL["Controller"]
+    SCH["Scheduler"]
+    ETCD["etcd"]
+  end
+  subgraph W["WORKER NODES"]
+    subgraph N1["Node 1 (kubelet, proxy)"]
+      P1["Pod"]
+      P2["Pod"]
+    end
+    subgraph N2["Node 2 (kubelet, proxy)"]
+      P3["Pod"]
+      P4["Pod"]
+    end
+  end
+  API --> N1
+  API --> N2
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    KUBERNETES CLUSTER                           │
-├─────────────────────────────────────────────────────────────────┤
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │                    CONTROL PLANE                         │   │
-│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐   │     │
-│  │  │API Server│ │Controller│ │Scheduler │ │  etcd    │   │     │
-│  │  └──────────┘ └──────────┘ └──────────┘ └──────────┘   │     │
-│  └─────────────────────────────────────────────────────────┘    │
-│                              │                                  │
-│  ┌───────────────────────────┴───────────────────────────┐      │
-│  │                      WORKER NODES                      │     │
-│  │  ┌──────────────────┐    ┌──────────────────┐         │      │
-│  │  │     Node 1       │    │     Node 2       │         │      │
-│  │  │ ┌────┐ ┌────┐    │    │ ┌────┐ ┌────┐    │         │      │
-│  │  │ │Pod │ │Pod │    │    │ │Pod │ │Pod │    │         │      │
-│  │  │ └────┘ └────┘    │    │ └────┘ └────┘    │         │      │
-│  │  │ kubelet, proxy   │    │ kubelet, proxy   │         │      │
-│  │  └──────────────────┘    └──────────────────┘         │      │
-│  └───────────────────────────────────────────────────────┘      │
-└─────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The control plane (API server, controller, scheduler, and etcd as the state store) decides what should run. Each worker node runs a kubelet and proxy that start the pods the control plane assigns to it.
 
 ### Deployment Manifest
 
@@ -653,43 +651,33 @@ spec:
 
 ### AWS Architecture
 
+**AWS CLOUD**
+
+```mermaid
+flowchart TD
+  R53["Route 53 (DNS)"] --> CF["CloudFront (CDN) + WAF + Shield"]
+  CF --> ALB["Application Load Balancer (ALB)"]
+  ALB --> K
+  subgraph K["EKS / ECS cluster"]
+    subgraph AZ1["AZ-1 (us-east)"]
+      A1["Pod"]
+      A2["Pod"]
+    end
+    subgraph AZ2["AZ-2 (us-east)"]
+      B1["Pod"]
+      B2["Pod"]
+    end
+  end
+  K --> D
+  subgraph D["Data layer"]
+    RDS["RDS (Multi-AZ)"]
+    EC["ElastiCache (Redis)"]
+    S3["S3"]
+    DDB["DynamoDB"]
+  end
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         AWS CLOUD                               │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │                      Route 53 (DNS)                      │   │
-│  └───────────────────────────┬─────────────────────────────┘    │
-│                              │                                  │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │           CloudFront (CDN) + WAF + Shield               │    │
-│  └───────────────────────────┬─────────────────────────────┘    │
-│                              │                                  │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │           Application Load Balancer (ALB)                │   │
-│  └───────────────────────────┬─────────────────────────────┘    │
-│                              │                                  │
-│  ┌───────────────────────────┴───────────────────────────┐      │
-│  │                  EKS / ECS Cluster                     │     │
-│  │  ┌──────────────────┐    ┌──────────────────┐         │      │
-│  │  │  AZ-1 (us-east)  │    │  AZ-2 (us-east)  │         │      │
-│  │  │  ┌────┐ ┌────┐   │    │  ┌────┐ ┌────┐   │         │      │
-│  │  │  │Pod │ │Pod │   │    │  │Pod │ │Pod │   │         │      │
-│  │  │  └────┘ └────┘   │    │  └────┘ └────┘   │         │      │
-│  │  └──────────────────┘    └──────────────────┘         │      │
-│  └───────────────────────────────────────────────────────┘      │
-│                              │                                  │
-│  ┌───────────────────────────┴───────────────────────────┐      │
-│  │               Data Layer                               │     │
-│  │  ┌────────┐  ┌──────────┐  ┌────────┐  ┌──────────┐  │       │
-│  │  │  RDS   │  │ElastiCache│  │   S3   │  │ DynamoDB │  │      │
-│  │  │(Multi-AZ│  │ (Redis)  │  │        │  │          │  │      │
-│  │  └────────┘  └──────────┘  └────────┘  └──────────┘  │       │
-│  └───────────────────────────────────────────────────────┘      │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** A request flows top-down: DNS, then the CDN with its WAF/DDoS protection, then the load balancer, which spreads traffic over pods in two availability zones. The pods use the managed data services below.
 
 ### AWS SDK Integration
 
@@ -1061,37 +1049,26 @@ cloudWatch:
 
 ### Azure Architecture
 
+**AZURE CLOUD**
+
+```mermaid
+flowchart TD
+  FD["Azure Front Door + WAF"] --> AG["Application Gateway"]
+  AG --> K
+  subgraph K["AKS cluster"]
+    NP1["Node pool 1 (system nodes)"]
+    NP2["Node pool 2 (app nodes)"]
+  end
+  K --> M
+  subgraph M["Managed services"]
+    SQL["Azure SQL Database"]
+    RC["Redis Cache"]
+    BS["Blob Storage"]
+    KV["Key Vault"]
+  end
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        AZURE CLOUD                              │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │            Azure Front Door + WAF                        │   │
-│  └───────────────────────────┬─────────────────────────────┘    │
-│                              │                                  │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │            Application Gateway                           │   │
-│  └───────────────────────────┬─────────────────────────────┘    │
-│                              │                                  │
-│  ┌───────────────────────────┴───────────────────────────┐      │
-│  │                  AKS Cluster                           │     │
-│  │  ┌──────────────────┐    ┌──────────────────┐         │      │
-│  │  │   Node Pool 1    │    │   Node Pool 2    │         │      │
-│  │  │  (System Nodes)  │    │   (App Nodes)    │         │      │
-│  │  └──────────────────┘    └──────────────────┘         │      │
-│  └───────────────────────────────────────────────────────┘      │
-│                              │                                  │
-│  ┌───────────────────────────┴───────────────────────────┐      │
-│  │              Managed Services                          │     │
-│  │  ┌──────────┐  ┌──────────┐  ┌────────┐  ┌────────┐  │       │
-│  │  │ Azure SQL│  │  Redis   │  │ Blob   │  │Key Vault│  │      │
-│  │  │ Database │  │  Cache   │  │Storage │  │         │  │      │
-│  │  └──────────┘  └──────────┘  └────────┘  └────────┘  │       │
-│  └───────────────────────────────────────────────────────┘      │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Traffic enters through Front Door (global entry point with WAF), passes the Application Gateway, and reaches the AKS cluster, whose system and app node pools run your pods. Pods use the managed services at the bottom.
 
 ### Azure SDK Integration
 

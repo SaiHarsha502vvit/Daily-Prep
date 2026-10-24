@@ -12,47 +12,45 @@
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
+**WHY: Why Microservices?**
+
+```text
+• Scale independently: Scale only the service that needs it
+• Team autonomy: Different teams own different services
+• Technology freedom: Each service can use best-fit technology
+• Fault isolation: One service failure doesn't crash everything
+• Faster deployment: Deploy one service without touching others
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Why Microservices?                                                        │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Scale independently: Scale only the service that needs it                    │
-│  • Team autonomy: Different teams own different services                        │
-│  • Technology freedom: Each service can use best-fit technology                 │
-│  • Fault isolation: One service failure doesn't crash everything                │
-│  • Faster deployment: Deploy one service without touching others                │
-└─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How Do Microservices Communicate?                                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Service Discovery: Eureka/Consul finds service locations dynamically         │
-│  • API Gateway: Single entry, routing, auth, rate limiting (Spring Cloud)       │
-│  • Circuit Breaker: Resilience4j prevents cascade failures                      │
-│  • Event-Driven: Kafka/RabbitMQ for async communication                         │
-│  • Config Server: Centralized configuration management                          │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**HOW: How Do Microservices Communicate?**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN: When to Use Microservices?                                               │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  USE MICROSERVICES:                                                             │
-│  • Large teams (5+ developers per team)                                         │
-│  • Independent scaling needs                                                    │
-│  • Complex domain with clear boundaries                                         │
-│                                                                                 │
-│  STICK WITH MONOLITH:                                                           │
-│  • Small team, MVP, unclear domain boundaries                                   │
-│  • Simple CRUD apps, limited scaling needs                                      │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+• Service Discovery: Eureka/Consul finds service locations dynamically
+• API Gateway: Single entry, routing, auth, rate limiting (Spring Cloud)
+• Circuit Breaker: Resilience4j prevents cascade failures
+• Event-Driven: Kafka/RabbitMQ for async communication
+• Config Server: Centralized configuration management
+```
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHICH: Which Patterns to Master?                                               │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     API Gateway, Service Discovery, Circuit Breaker                 │
-│  IMPORTANT:     Config Server, Load Balancing, Saga Pattern                     │
-│  ADVANCED:      CQRS, Event Sourcing, Service Mesh                              │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHEN: When to Use Microservices?**
+
+```text
+USE MICROSERVICES:
+• Large teams (5+ developers per team)
+• Independent scaling needs
+• Complex domain with clear boundaries
+
+STICK WITH MONOLITH:
+• Small team, MVP, unclear domain boundaries
+• Simple CRUD apps, limited scaling needs
+```
+
+**WHICH: Which Patterns to Master?**
+
+```text
+ESSENTIAL:     API Gateway, Service Discovery, Circuit Breaker
+IMPORTANT:     Config Server, Load Balancing, Saga Pattern
+ADVANCED:      CQRS, Event Sourcing, Service Mesh
 ```
 
 ---
@@ -81,40 +79,37 @@
 
 ### Monolith vs Microservices
 
-```
-🏢 MONOLITHIC ARCHITECTURE
-┌─────────────────────────────────────────────────────────────────┐
-│                     Single Application                          │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐             │
-│  │  User   │  │  Order  │  │ Payment │  │Inventory│             │
-│  │ Service │  │ Service │  │ Service │  │ Service │             │
-│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘             │
-│       └────────────┴────────────┴────────────┘                  │
-│                        │                                        │
-│                 ┌──────┴──────┐                                 │
-│                 │  Database   │                                 │
-│                 └─────────────┘                                 │
-└─────────────────────────────────────────────────────────────────┘
+**🏢 Monolithic architecture**
 
-🌐 MICROSERVICES ARCHITECTURE
-┌─────────────────────────────────────────────────────────────────┐
-│                      API Gateway                                │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │        Load Balancer / Reverse Proxy                     │   │
-│  └───────────────────┬─────────────────────────────────────┘    │
-│            ┌─────────┼─────────┬───────────┐                    │
-│            ▼         ▼         ▼           ▼                    │
-│     ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐     │
-│     │   User    │ │   Order   │ │  Payment  │ │ Inventory │     │
-│     │  Service  │ │  Service  │ │  Service  │ │  Service  │     │
-│     └─────┬─────┘ └─────┬─────┘ └─────┬─────┘ └─────┬─────┘     │
-│           │             │             │             │           │
-│     ┌─────┴─────┐ ┌─────┴─────┐ ┌─────┴─────┐ ┌─────┴─────┐     │
-│     │  User DB  │ │ Order DB  │ │Payment DB │ │Inventory  │     │
-│     │ (Postgres)│ │  (Mongo)  │ │ (Postgres)│ │   DB      │     │
-│     └───────────┘ └───────────┘ └───────────┘ └───────────┘     │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  subgraph APP["Single application"]
+    US["User service"]
+    OS["Order service"]
+    PS["Payment service"]
+    IS["Inventory service"]
+  end
+  US --> DB[("Database")]
+  OS --> DB
+  PS --> DB
+  IS --> DB
 ```
+
+**🌐 Microservices architecture**
+
+```mermaid
+flowchart TD
+  GW["API gateway<br/>load balancer / reverse proxy"] --> US["User service"]
+  GW --> OS["Order service"]
+  GW --> PS["Payment service"]
+  GW --> IS["Inventory service"]
+  US --> UDB[("User DB<br/>Postgres")]
+  OS --> ODB[("Order DB<br/>Mongo")]
+  PS --> PDB[("Payment DB<br/>Postgres")]
+  IS --> IDB[("Inventory DB")]
+```
+
+**How to read these diagrams.** In the monolith, all the modules live in one application and share one database. With microservices, a gateway routes requests to independent services, and each service owns its own database.
 
 ### Key Principles
 
@@ -128,29 +123,17 @@
 
 ### Spring Cloud Ecosystem
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    SPRING CLOUD ECOSYSTEM                           │
-├─────────────────────────────────────────────────────────────────────┤
-│  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
-│  │ Service       │    │ API Gateway   │    │ Config Server │        │
-│  │ Discovery     │    │               │    │               │        │
-│  │ (Eureka)      │    │ (Gateway)     │    │ (Config)      │        │
-│  └───────────────┘    └───────────────┘    └───────────────┘        │
-│                                                                     │
-│  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
-│  │ Circuit       │    │ Distributed   │    │ Load          │        │
-│  │ Breaker       │    │ Tracing       │    │ Balancing     │        │
-│  │ (Resilience4j)│    │ (Sleuth)      │    │ (LoadBalancer)│        │
-│  └───────────────┘    └───────────────┘    └───────────────┘        │
-│                                                                     │
-│  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
-│  │ Message       │    │ Security      │    │ Monitoring    │        │
-│  │ Broker        │    │               │    │               │        │
-│  │ (Stream)      │    │ (Security)    │    │ (Actuator)    │        │
-│  └───────────────┘    └───────────────┘    └───────────────┘        │
-└─────────────────────────────────────────────────────────────────────┘
-```
+| Concern | Component | Spring project |
+| --- | --- | --- |
+| Service discovery | Eureka | Spring Cloud Netflix Eureka |
+| API gateway | Gateway | Spring Cloud Gateway |
+| Config server | Config | Spring Cloud Config |
+| Circuit breaker | Resilience4j | Spring Cloud Circuit Breaker |
+| Distributed tracing | Micrometer Tracing (replaced Sleuth in Spring Boot 3) | Micrometer Tracing |
+| Load balancing | LoadBalancer | Spring Cloud LoadBalancer |
+| Message broker | Stream | Spring Cloud Stream |
+| Security | Security | Spring Security |
+| Monitoring | Actuator | Spring Boot Actuator |
 
 ---
 
@@ -168,22 +151,22 @@ Without circuit breakers: A has a thread pool for B calls. B is slow (waiting fo
 
 ### Why Service Discovery?
 
-```
-Without Service Discovery:
-┌─────────────────────────────────────────────────────────────────┐
-│  Service A needs to call Service B                              │
-│  ❌ Hard-coded URLs: http://192.168.1.100:8080                   │
-│  ❌ What if Service B moves?                                     │
-│  ❌ What if we scale to multiple instances?                      │
-└─────────────────────────────────────────────────────────────────┘
+**Without Service Discovery**
 
-With Service Discovery:
-┌─────────────────────────────────────────────────────────────────┐
-│  Service A calls "order-service" (logical name)                 │
-│  ✅ Service Registry resolves to healthy instance                │
-│  ✅ Automatic failover to other instances                        │
-│  ✅ Dynamic scaling without config changes                       │
-└─────────────────────────────────────────────────────────────────┘
+```text
+Service A needs to call Service B
+❌ Hard-coded URLs: http://192.168.1.100:8080
+❌ What if Service B moves?
+❌ What if we scale to multiple instances?
+```
+
+**With Service Discovery**
+
+```text
+Service A calls "order-service" (logical name)
+✅ Service Registry resolves to healthy instance
+✅ Automatic failover to other instances
+✅ Dynamic scaling without config changes
 ```
 
 ### Eureka Server Setup
@@ -455,25 +438,25 @@ spring:
 
 ### Why API Gateway?
 
-```
-Without API Gateway:
-┌─────────────────────────────────────────────────────────────────┐
-│  Client → User Service (port 8081)                              │
-│  Client → Order Service (port 8082)                             │
-│  Client → Payment Service (port 8083)                           │
-│  ❌ Client needs to know all service locations                   │
-│  ❌ Cross-cutting concerns duplicated                            │
-│  ❌ Protocol translation complex                                 │
-└─────────────────────────────────────────────────────────────────┘
+**Without API Gateway**
 
-With API Gateway:
-┌─────────────────────────────────────────────────────────────────┐
-│  Client → API Gateway (port 8080)                               │
-│  Gateway → User/Order/Payment Services                          │
-│  ✅ Single entry point                                           │
-│  ✅ Centralized auth, rate limiting, logging                     │
-│  ✅ Request routing and aggregation                              │
-└─────────────────────────────────────────────────────────────────┘
+```text
+Client → User Service (port 8081)
+Client → Order Service (port 8082)
+Client → Payment Service (port 8083)
+❌ Client needs to know all service locations
+❌ Cross-cutting concerns duplicated
+❌ Protocol translation complex
+```
+
+**With API Gateway**
+
+```text
+Client → API Gateway (port 8080)
+Gateway → User/Order/Payment Services
+✅ Single entry point
+✅ Centralized auth, rate limiting, logging
+✅ Request routing and aggregation
 ```
 
 ### Spring Cloud Gateway Setup
@@ -812,58 +795,26 @@ public class FallbackController {
 
 ### Why Circuit Breaker?
 
-```
-Without Circuit Breaker:
-┌─────────────────────────────────────────────────────────────────┐
-│  Service A → Service B (failing)                                │
-│  ❌ Requests keep failing                                        │
-│  ❌ Threads blocked waiting for timeout                          │
-│  ❌ Cascading failures to other services                         │
-│  ❌ Resources exhausted                                          │
-└─────────────────────────────────────────────────────────────────┘
-
-With Circuit Breaker:
-┌─────────────────────────────────────────────────────────────────┐
-│  Service A → Circuit Breaker → Service B                        │
-│  ✅ Fast fail when service down                                  │
-│  ✅ Fallback response immediately                                │
-│  ✅ Periodic health checks                                       │
-│  ✅ Automatic recovery when service recovers                     │
-└─────────────────────────────────────────────────────────────────┘
+| | Without a circuit breaker | With a circuit breaker |
+| --- | --- | --- |
+| Flow | Service A → Service B (failing) | Service A → Circuit Breaker → Service B |
+| Outcome | ❌ Requests keep failing<br>❌ Threads blocked waiting for the timeout<br>❌ Cascading failures to other services<br>❌ Resources exhausted | ✅ Fast fail when the service is down<br>✅ Fallback response immediately<br>✅ Periodic health checks<br>✅ Automatic recovery when the service recovers |
 
 ### Circuit Breaker States
 
-┌─────────────────────────────────────────────────────────────────┐
-│                  CIRCUIT BREAKER STATES                         │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   ┌────────────────┐                                            │
-│   │     CLOSED     │ ←─── Normal operation                      │
-│   │  (Requests     │      All requests pass through             │
-│   │   pass through)│                                            │
-│   └───────┬────────┘                                            │
-│           │ Failure threshold exceeded                          │
-│           ▼                                                     │
-│   ┌────────────────┐                                            │
-│   │      OPEN      │ ←─── Circuit tripped                       │
-│   │  (Requests     │      All requests fail fast                │
-│   │   fail fast)   │      Fallback returned                     │
-│   └───────┬────────┘                                            │
-│           │ Wait duration elapsed                               │
-│           ▼                                                     │
-│   ┌────────────────┐                                            │
-│   │   HALF-OPEN    │ ←─── Testing phase                         │
-│   │  (Limited      │      Limited requests allowed              │
-│   │   requests)    │                                            │
-│   └───────┬────────┘                                            │
-│           │                                                     │
-│     Success  │  Failure                                         │
-│        │     │     │                                            │
-│        ▼     │     ▼                                            │
-│    CLOSED    │   OPEN                                           │
-│              │                                                  │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+stateDiagram-v2
+  [*] --> CLOSED
+  CLOSED --> OPEN: failure threshold exceeded
+  OPEN --> HALF_OPEN: wait duration elapsed
+  HALF_OPEN --> CLOSED: trial calls succeed
+  HALF_OPEN --> OPEN: trial calls fail
+  state "CLOSED<br/>normal operation: all requests pass through" as CLOSED
+  state "OPEN<br/>circuit tripped: all requests fail fast, fallback returned" as OPEN
+  state "HALF-OPEN<br/>testing phase: limited requests allowed" as HALF_OPEN
 ```
+
+**How to read this diagram.** The breaker starts CLOSED. When failures pass the threshold it OPENS and fails fast. After a wait it goes HALF-OPEN and lets a few trial requests through: success closes it again, and failure re-opens it.
 
 ### Resilience4j Setup
 
@@ -1203,30 +1154,18 @@ public class UserServiceLoadBalancerConfig {
         );
     }
 }
+```
 
 ### Load Balancing Strategies
 
-┌─────────────────────────────────────────────────────────────────┐
-│                  LOAD BALANCING STRATEGIES                      │
-├─────────────────────────────────────────────────────────────────┤
+| Strategy | Behavior | Notes |
+| --- | --- | --- |
+| Round robin | Equal distribution, sequential | Instance 1 → 2 → 3 → 1 → 2 → 3... |
+| Random | Random instance selection | Good for stateless services |
+| Weighted | Based on capacity or health | Instance 1 (w=3) gets 3x the traffic of Instance 2 (w=1) |
+| Zone aware | Prefer the same availability zone | Reduces latency, contains failures |
+| Health-based | Only route to healthy instances | Respects health indicators |
 │                                                                 │
-│  Round Robin          │ Equal distribution, sequential          │
-│  Instance 1 → 2 → 3 → 1 → 2 → 3...                              │
-│                                                                 │
-│  Random               │ Random instance selection               │
-│  Good for stateless services                                    │
-│                                                                 │
-│  Weighted             │ Based on capacity/health                │
-│  Instance 1 (w=3) gets 3x traffic of Instance 2 (w=1)           │
-│                                                                 │
-│  Zone Aware           │ Prefer same availability zone           │
-│  Reduces latency, contains failures                             │
-│                                                                 │
-│  Health-Based         │ Only route to healthy instances         │
-│  Respects health indicators                                     │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
 
 ---
 

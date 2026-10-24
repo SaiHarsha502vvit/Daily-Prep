@@ -1,37 +1,101 @@
-﻿**Navigation**: [< Previous](20_BitManipulation_Plus_Tricks.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Cyclic_Sort_Pattern.md)
+# 🧩 Intervals — Pattern Guide
+
+> **Navigation**: [← Top-K & Two Heaps](31_Top_K_And_Two_Heaps_Pattern.md) | [Chapter index](00_INDEX.md) | [Cyclic Sort →](22_Cyclic_Sort_Pattern.md)
 
 **Pattern 21** | [Prev](20_BitManipulation_Plus_Tricks.md) | [Index](../00_MASTER_INDEX.md) | [Next](22_Cyclic_Sort_Pattern.md)
 
 ---
 
-### Historical Evolution
+## 🔗 Bridge — Where This Chapter Fits
 
-**Inventor / Originator:** Interval scheduling was formalized by Jon Bentley (1979) in "Programming Pearls." Tarjan developed interval trees. CLRS (1990) provided canonical interval merging algorithms.
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Sorting](../03_Algorithms/02a_Sorting_Fundamentals.md), [Heap + Greedy](15_Heap_Plus_GreedySelection.md) |
+| **You will learn** | Sort-and-sweep for merge, insert, meeting rooms, minimum removals and balloon-arrow problems, plus the overlap test |
+| **Leads to** | [Prefix Sum / Difference Array](26_Prefix_Sum_And_Difference_Array.md) (sweep counts), [Two Heaps](31_Top_K_And_Two_Heaps_Pattern.md) |
+| **Abstraction level** | Pairwise overlap checks → **sort once, scan once** |
 
-**Predecessor context:** Problems involving interval overlaps required O(n²) pairwise comparison. The "sort by start, merge" approach wasn't recognized as optimal.
-
-**Evolution narrative:** Bentley's column in Communications of the ACM popularized interval problems. His greedy algorithm for maximum non-overlapping intervals (sort by end time) became a classic problem. Interval trees provided O(log n) intersection queries.
-
-**Modern practice:** Interval problems appear in calendar scheduling, resource allocation, and meeting room booking. The pattern extends to GPU kernel scheduling and CPU interrupt handling.
-
-- **Bentley 1979**: "Programming Pearls" popularized interval scheduling with greedy optimal algorithm
-- **Interval trees — Tarjan**: Data structure for O(log n) interval intersection queries
-- **CLRS — 1990**: Formalized interval merging with sort-by-start + linear scan
-- **Modern practice**: Calendar apps, meeting room booking, GPU scheduling
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
 
 ---
 
-### Production Reality
+## 💬 Explain It Like a Study Partner — Intervals
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+### 1. The bottom line
 
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+Sort intervals by start (or end) and decide each interval against the previous one.
 
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+### 2. The textbook core
+
+- Two intervals overlap iff `a.start ≤ b.end` and `b.start ≤ a.end`.
+- Merge: sort by start; extend the current interval while the next starts inside it.
+- Min removals / max compatible set: sort by **end**, take earliest finish.
+- Min rooms: sweep events or a min-heap of end times.
+
+### 3. The real-world analogy
+
+A **calendar**: sort the meetings by start time and walk down the day.
+
+### 4. Walkthrough
+
+1. Merge `[1,3],[2,6],[8,10],[15,18]`.
+2. Start with `[1,3]`; `[2,6]` overlaps → `[1,6]`.
+3. `[8,10]` does not overlap → emit.
+4. Result `[1,6],[8,10],[15,18]`.
+
+> [!NOTE]
+> **Quick check:** Why sort by end time for "max non-overlapping"? *Finishing earliest leaves the most room for the rest (exchange argument).*
+
+
+### 5. Check yourself
+
+**Q1.** Merge `[[1,3],[2,6],[8,10],[15,18]]`.
+
+<details><summary>Answer</summary>
+
+`[[1,6],[8,10],[15,18]]`.
+
+</details>
+
+**Q2.** Minimum meeting rooms for `[[0,30],[5,10],[15,20]]`?
+
+<details><summary>Answer</summary>
+
+**2**: at times 5–10 and 15–20 the first meeting overlaps one other, never two.
+
+</details>
+
+**Q3.** Why sort by end time to keep the most non-overlapping intervals?
+
+<details><summary>Answer</summary>
+
+Finishing earliest leaves the most room for the rest; an exchange argument shows no optimal solution is better.
+
+</details>
+
+---
+
+## Historical Evolution
+
+**Inventor / Originator:** Interval problems come from scheduling and computational geometry. The greedy "earliest finish first" strategy for maximum non-overlapping intervals is a textbook result; interval graphs and their colouring were studied from the 1960s; the Shamos–Hoey (1976) and Bentley–Ottmann (1979) sweep-line algorithms process interval events in sorted order. Edelsbrunner (1980) and McCreight (1981) introduced interval and priority-search trees; CLRS augments a red-black tree for interval queries.
+
+**Predecessor context:** Overlap questions were answered by comparing every pair, `O(n²)`.
+
+**Evolution narrative:** Sorting the endpoints turns most interval problems into a single sweep: merge, insert, count maximum overlap (meeting rooms) or choose a maximum compatible set.
+
+**Modern practice:** Calendar scheduling, resource allocation, genomic-range queries and range-based indexes.
+
+- **Shamos & Hoey — 1976**: Sweep-line intersection detection
+- **Bentley & Ottmann — 1979**: Sweep line for reporting intersections
+- **Edelsbrunner / McCreight — 1980–81**: Interval trees and priority search trees
+
+---
+
+## Production Reality
+
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -45,7 +109,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 ---
 
-# 📚 INTERVAL PROBLEMS — THE COMPLETE PATTERN GUIDE
+## 📚 INTERVAL PROBLEMS — THE COMPLETE PATTERN GUIDE
 
 ### ⚠️ Constraint Lens
 
@@ -60,50 +124,43 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                 INTERVALS FUNDAMENTALS                           │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  AN INTERVAL = [start, end] representing a continuous range      │
-│                                                                  │
-│  WHY A DEDICATED PATTERN?                                        │
-│  Intervals appear in scheduling, calendars, bandwidth,           │
-│  resource allocation, genomics ... ~15 LC problems form a        │
-│  tight family where ONE core technique solves them all.          │
-│                                                                  │
-│  THE 6 INTERVAL RELATIONSHIPS between [a,b] and [c,d]:           │
-│                                                                  │
-│  1. No overlap (a before c):  a──b     c──d                      │
-│  2. Overlap (partial):        a────b                             │
-│                                  c────d                          │
-│  3. a contains c:             a────────b                         │
-│                                 c──d                             │
-│  4. c contains a:               a──b                             │
-│                               c────────d                         │
-│  5. Overlap (reverse):          a────b                           │
-│                               c────d                             │
-│  6. No overlap (c before a):  c──d     a──b                      │
-│                                                                  │
-│  KEY INSIGHT: Sort by start → reduces 6 cases to 2-3 checks.     │
-│                                                                  │
-│  DECISION TREE:                                                  │
-│  ┌── Merge overlapping?     → Merge Intervals (LC 56)            │
-│  ├── Insert into sorted?    → Insert Interval (LC 57)            │
-│  ├── Max simultaneous?      → Meeting Rooms II (LC 253)          │
-│  ├── Can I attend all?      → Meeting Rooms (LC 252)             │
-│  ├── Remove min to avoid?   → Non-overlapping Intervals (LC 435) │
-│  ├── Find intersection?     → Interval List Intersections(LC 986)│
-│  └── Min platforms/rooms?   → Sweep Line / Min Heap              │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+### Intervals fundamentals
+
+An **interval** is `[start, end]`, a continuous range.
+
+**Why a dedicated pattern?** Intervals appear in scheduling, calendars, bandwidth, resource allocation and genomics. About 15 LeetCode problems form a tight family where one core technique solves them all.
+
+**The six relationships between `[a, b]` and `[c, d]`**
+
+| # | Relationship | Picture |
+| --- | --- | --- |
+| 1 | No overlap (`a` before `c`) | `a──b` then `c──d` |
+| 2 | Partial overlap | `a────b` overlapping the start of `c────d` |
+| 3 | `a` contains `c` | `a────────b` around `c──d` |
+| 4 | `c` contains `a` | `c────────d` around `a──b` |
+| 5 | Partial overlap (reverse) | `c────d` overlapping the start of `a────b` |
+| 6 | No overlap (`c` before `a`) | `c──d` then `a──b` |
+
+> [!IMPORTANT]
+> **Key insight:** sort by start. That reduces the six cases to two or three checks.
+
+**Decision guide**
+
+| Question | Problem |
+| --- | --- |
+| Merge overlapping intervals? | Merge Intervals (LC 56) |
+| Insert into a sorted list? | Insert Interval (LC 57) |
+| Maximum simultaneous? | Meeting Rooms II (LC 253) |
+| Can I attend all? | Meeting Rooms (LC 252) |
+| Remove the minimum to avoid overlap? | Non-overlapping Intervals (LC 435) |
+| Find intersections? | Interval List Intersections (LC 986) |
+| Minimum platforms or rooms? | Sweep line or min-heap |
 
 ---
 
-## PART 0: THE MENTAL MODEL — "Sort, Scan, Decide"
+### PART 0: THE MENTAL MODEL — "Sort, Scan, Decide"
 
-## The Real-World Origin
+### The Real-World Origin
 
 📖 CALENDAR APPS: Google Calendar must detect overlapping events.
 When you schedule 2-3pm and 2:30-4pm, it highlights the conflict.
@@ -118,7 +175,7 @@ overlapping regions to find functional units.
 📖 OPERATING SYSTEMS: Memory allocation = interval management.
 malloc/free creates and merges free memory intervals.
 
-## The Two Core Techniques
+### The Two Core Techniques
 
 TECHNIQUE 1: SORT + LINEAR SCAN
 Sort all intervals by start time.
@@ -141,17 +198,7 @@ Works for: Meeting Rooms II, Min Platforms
 - "Merge/modify intervals" → Sort + Scan
 - "Count/max simultaneous" → Sweep Line or Min-Heap
 
-🔬 **Section Challenge — The Two Core Techniques**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
-
-## The Overlap Check — Memorize This
+### The Overlap Check — Memorize This
 
 Two intervals [a,b] and [c,d] OVERLAP if and only if:
 a ≤ d AND c ≤ b
@@ -160,7 +207,7 @@ After sorting by start (a ≤ c), overlap simplifies to:
 c ≤ b (next start ≤ current end)
 This ONE check drives 80% of interval problems.
 
-## Difficulties & Common Mistakes
+### Difficulties & Common Mistakes
 
 1. Not sorting first — intervals aren't guaranteed sorted in input
 2. Sorting by end when you should sort by start (or vice versa)
@@ -177,7 +224,7 @@ This ONE check drives 80% of interval problems.
 
 ---
 
-## PROBLEM 1: Merge Intervals (LC 56) — THE Foundation
+### PROBLEM 1: Merge Intervals (LC 56) — THE Foundation
 
 ```
 DIFFICULTY: Medium
@@ -228,7 +275,7 @@ TEMPLATE: This is the base template for all "merge" interval problems.
 
 ---
 
-## PROBLEM 2: Insert Interval (LC 57)
+### PROBLEM 2: Insert Interval (LC 57)
 
 ```
 DIFFICULTY: Medium
@@ -279,7 +326,7 @@ COMPLEXITY: Time O(n) — input is already sorted | Space O(n)
 
 ---
 
-## PROBLEM 3: Meeting Rooms I (LC 252)
+### PROBLEM 3: Meeting Rooms I (LC 252)
 
 ```
 DIFFICULTY: Easy
@@ -309,7 +356,7 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 
 ---
 
-## PROBLEM 4: Meeting Rooms II (LC 253) — Min Rooms Needed
+### PROBLEM 4: Meeting Rooms II (LC 253) — Min Rooms Needed
 
 ```
 DIFFICULTY: Medium
@@ -384,7 +431,7 @@ SWEEP LINE IS MORE GENERAL — works for "max overlap" variants too.
 
 ---
 
-## PROBLEM 5: Non-overlapping Intervals (LC 435) — Min Removals
+### PROBLEM 5: Non-overlapping Intervals (LC 435) — Min Removals
 
 ```
 DIFFICULTY: Medium
@@ -429,7 +476,7 @@ KEY: Sort by END for greedy removal. Sort by START for merge.
 
 ---
 
-## PROBLEM 6: Interval List Intersections (LC 986)
+### PROBLEM 6: Interval List Intersections (LC 986)
 
 ```
 DIFFICULTY: Medium
@@ -473,7 +520,7 @@ ELEGANT: The Math.max/Math.min trick handles all overlap cases.
 
 ---
 
-## PROBLEM 7: Minimum Number of Arrows to Burst Balloons (LC 452)
+### PROBLEM 7: Minimum Number of Arrows to Burst Balloons (LC 452)
 
 ```
 DIFFICULTY: Medium
@@ -510,37 +557,32 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 
 ---
 
-## 📋 Summary: the Interval Pattern Cheatsheet
+### 📋 Summary: the Interval Pattern Cheatsheet
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    INTERVAL PROBLEMS CHEATSHEET                         │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  PROBLEM TYPE        │ SORT BY  │ TECHNIQUE        │ LC#                │
-│  ════════════════════╪══════════╪══════════════════╪═══════════════════ │
-│  Merge overlapping   │ START    │ Linear scan      │ 56                 │
-│  Insert + merge      │ (sorted) │ 3-phase scan     │ 57                 │
-│  Can attend all?     │ START    │ Adjacent check   │ 252                │
-│  Min rooms needed    │ START    │ Min-Heap / Sweep │ 253                │
-│  Min removals        │ END      │ Greedy keep early│ 435                │
-│  List intersections  │ (sorted) │ Two pointers     │ 986                │
-│  Min arrows          │ END      │ Greedy groups    │ 452                │
-│  Employee free time  │ START    │ Merge + gaps     │ 759                │
-│                                                                         │
-│  GOLDEN RULES:                                                          │
-│  1. Sort by START for merge/overlap problems                            │
-│  2. Sort by END for greedy selection/removal problems                   │
-│  3. Overlap check: next.start ≤ curr.end (after sorting by start)       │
-│  4. For "max simultaneous": use Sweep Line or Min-Heap                  │
-│  5. Use Integer.compare() to avoid overflow in comparators              │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+**INTERVAL PROBLEMS CHEATSHEET**
+
+| Problem type | Sort by | Technique | LC # |
+| --- | --- | --- | --- |
+| Merge overlapping | Start | Linear scan | 56 |
+| Insert and merge | (already sorted) | Three-phase scan | 57 |
+| Can attend all? | Start | Adjacent check | 252 |
+| Min rooms needed | Start | Min-heap or sweep | 253 |
+| Min removals | End | Greedy: keep the earliest end | 435 |
+| List intersections | (already sorted) | Two pointers | 986 |
+| Min arrows | End | Greedy groups | 452 |
+| Employee free time | Start | Merge, then find gaps | 759 |
+
+**Golden rules**
+
+1. Sort by **start** for merge and overlap problems.
+2. Sort by **end** for greedy selection and removal problems.
+3. Overlap check: `next.start <= curr.end` (after sorting by start).
+4. For "max simultaneous", use a sweep line or a min-heap.
+5. Use `Integer.compare()` in comparators to avoid overflow.
 
 ---
 
-## 📋 CURATED PRACTICE PROBLEMS
+### 📋 CURATED PRACTICE PROBLEMS
 
 | #   | Problem                                                                                                | LC#  | Pattern           | Company          |
 | --- | ------------------------------------------------------------------------------------------------------ | ---- | ----------------- | ---------------- |
@@ -557,6 +599,16 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 | 11  | [Car Pooling](https://leetcode.com/problems/car-pooling/)                                              | 1094 | Sweep Line        | Google           |
 | 12  | [Remove Covered Intervals](https://leetcode.com/problems/remove-covered-intervals/)                    | 1288 | Sort + Compare    | Amazon           |
 
+
+---
+
+## 🏢 Enterprise Lens — Intervals
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Calendars, booking systems, resource allocation, genomic range queries |
+| **Failure modes** | Treating touching endpoints inconsistently; sorting by the wrong key; integer overflow in endpoints |
+| **Testing and verification** | Compare to an `O(n²)` pairwise check; test touching, nested and identical intervals |
 
 ---
 

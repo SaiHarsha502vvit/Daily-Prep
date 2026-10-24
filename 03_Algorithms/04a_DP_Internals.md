@@ -1,55 +1,89 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04b_DP_Fundamentals.md)
+> **Navigation**: [← Advanced Recursion Patterns](03c_Recursion_Advanced.md) | [Chapter index](00_INDEX.md) | [DP Fundamentals →](04b_DP_Fundamentals.md)
 🧠 **Mental Model**: See [DP State Thinking](../14_Mental_Models/02_DP_State_Thinking.md) — state definition, transitions, and tabulation strategy
 
 ---
 
 # 🧮 Dynamic Programming & Memoization: Complete Guide
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Recursion Advanced](03c_Recursion_Advanced.md) (memoization) |
+| **You will learn** | How DP tables are laid out in memory, cache behaviour of iteration order, rolling arrays, top-down vs bottom-up costs |
+| **Leads to** | [DP Fundamentals](04b_DP_Fundamentals.md) |
+| **Abstraction level** | L0–L2: DP at the machine level |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — DP Internals
+
+### 1. The bottom line
+
+A DP solution is a table of answers, so memory layout and iteration order decide how fast it really runs.
+
+### 2. The textbook core
+
+- Iterate in the order that reads **contiguous memory** (row-major).
+- **Rolling arrays** reduce O(nm) space to O(m) when a row depends only on the previous row.
+- Top-down has recursion overhead but computes only reachable states; bottom-up has tight loops.
+- State definition + transition + base cases + order = a complete DP.
+
+### 3. The real-world analogy
+
+Filling a **spreadsheet** row by row where each cell only looks at cells above/left, so you can throw away old rows.
+
+### 4. Walkthrough
+
+1. LCS of two strings of length m, n needs `dp[i][j]` from `dp[i-1][*]` and `dp[i][j-1]`.
+2. Keep two rows instead of the full table.
+3. Space drops from O(mn) to O(n).
+4. Row-major iteration keeps accesses sequential.
+
+> [!NOTE]
+> **Quick check:** Why can a DP be slower than its Big-O suggests? *Column-major access causes cache misses.*
+
+---
+
+
 ### 5W1H: Mastering DP Internals
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: The physical mechanics of Dynamic Programming: DP table memory layout,║
-║        cache behavior (L1/L2 hits vs misses), state representation limits,   ║
-║        and the hardware differences between Tabulation and Memoization.      ║
-║                                                                              ║
-║  WHY:  Understanding memory architecture and CPU behavior explains why an    ║
-║        O(N²) DP might run 5x slower or hit memory limits depending purely on ║
-║        iteration order (row vs column) or object allocations.                ║
-║                                                                              ║
-║  WHO:  Engineers optimizing latency-sensitive DP algorithms, managing memory ║
-║        constraints in production, or debugging TLE/MLE in coding interviews. ║
-║                                                                              ║
-║  WHEN: Study this BEFORE writing complex 2D/3D DP tables. It teaches you     ║
-║        when to use rolling arrays, bitmasks, or coordinate compression.      ║
-║                                                                              ║
-║  HOW:  By analyzing DP arrays in physical memory, observing branch prediction║
-║        costs, and employing space optimization techniques like rolling arrays.║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** The physical mechanics of Dynamic Programming: DP table memory layout, cache behavior (L1/L2 hits vs misses), state representation limits, and the hardware differences between Tabulation and Memoization.
+>
+> **WHY:** Understanding memory architecture and CPU behavior explains why an O(N²) DP might run 5x slower or hit memory limits depending purely on iteration order (row vs column) or object allocations.
+>
+> **WHO:** Engineers optimizing latency-sensitive DP algorithms, managing memory constraints in production, or debugging TLE/MLE in coding interviews.
+>
+> **WHEN:** Study this BEFORE writing complex 2D/3D DP tables. It teaches you when to use rolling arrays, bitmasks, or coordinate compression.
+>
+> **HOW:** By analyzing DP arrays in physical memory, observing branch prediction costs, and employing space optimization techniques like rolling arrays.
+
+### 5. Check yourself
+
+**Q1.** What two properties make a problem suitable for DP?
+
+<details><summary>Answer</summary>
+
+Optimal substructure and overlapping subproblems.
+
+</details>
+
+**Q2.** How does DP differ from plain divide and conquer?
+
+<details><summary>Answer</summary>
+
+Subproblems overlap in DP, so their answers are stored and reused; in divide and conquer they are independent.
+
+</details>
+
 
 ## From Recursion to Optimal Solutions
 
 ---
-
-🔬 **Section Challenge — From Recursion to Optimal Solutions**
-
-**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-
-**Challenge 2 (Bug Hunt):**
-
-```java
-void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
-fib(50) // takes forever
-```
-
-Why and what are the 3 fixes?
-
-<details><summary>Answer</summary>
-
-Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-
-</details>
 
 ## How to Derive a DP From Scratch — The Part Nobody Teaches
 
@@ -83,10 +117,8 @@ The mistake 95% of people make is jumping to step 3 (writing transitions) before
 - **Rob i:** then I get `a[i]`, but i−1 is now forbidden, so the rest must come from `0..i-2` → `a[i] + dp[i-2]`.
 
 I want the better one:
-```
-dp[i] = max(dp[i-1],  a[i] + dp[i-2])
-        └ skip ┘       └─ rob ──┘
-```
+
+`dp[i] = max(dp[i-1], a[i] + dp[i-2])`: the first term is **skip** house `i`, the second is **rob** it.
 
 **Q5 — base cases.** The recurrence reaches back two steps, so I must seed two:
 - `dp[0] = a[0]` (one house — rob it)
@@ -120,160 +152,122 @@ In every row the win is the same move: throw away the *history of how you got he
 
 ---
 
-# 🔬 PART 0: DEEP INTERNALS - HOW DP ACTUALLY WORKS AT CPU/MEMORY LEVEL
+## 🔬 PART 0: DEEP INTERNALS - HOW DP ACTUALLY WORKS AT CPU/MEMORY LEVEL
 
+### Dynamic programming at the hardware level: the complete picture
+
+### DP table memory layout
+
+#### A DP table in physical memory
+
+**1D DP array:** `int[] dp = new int[n]`
+
+On a typical 64-bit HotSpot JVM (compressed pointers), a Java `int[]` has a 16-byte object header (which includes the length) followed by the data, 4 bytes per element, padded to a multiple of 8 bytes.
+
+| Part | Size |
+| --- | --- |
+| Object header (includes the length) | 16 bytes |
+| `dp[0]` … `dp[n-1]` | 4 bytes each |
+
+Total memory ≈ 16 + 4n bytes, rounded up to a multiple of 8. For `n = 10` that is 16 + 40 = 56 bytes.
+
+**Cache behaviour:** a cache line is 64 bytes, which holds 16 ints. Sequential access is excellent for the cache, because reading `dp[i]` pulls `dp[i+1]` … `dp[i+15]` into cache as well.
+
+**2D DP array:** `int[][] dp = new int[m][n]`
+
+Java stores a 2D array as an **array of arrays**, so the rows are *not* contiguous with each other.
+
+```mermaid
+flowchart TD
+  outer["Outer array: header + references dp[0], dp[1], dp[2]"]
+  outer -->|"reference"| r0["Row 0: header, then [0] [1] [2] [3]"]
+  outer -->|"reference"| r1["Row 1: header, then [0] [1] [2] [3]"]
+  outer -->|"reference"| r2["Row 2: header, then [0] [1] [2] [3]"]
 ```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║       DYNAMIC PROGRAMMING AT THE HARDWARE LEVEL - THE COMPLETE PICTURE           ║
-╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                  ║
-║  Understanding what PHYSICALLY happens when you run a DP algorithm:              ║
-║  • Memory layout of DP tables                                                    ║
-║  • Cache behavior differences between 1D, 2D, and rolling arrays                 ║
-║  • Why certain DP approaches are faster despite same Big-O                       ║
-║  • Memory allocation overhead                                                    ║
-║  • Branch prediction in DP transitions                                           ║
-║                                                                                  ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
 
-## DP TABLE MEMORY LAYOUT
+**How to read this diagram.** The outer array holds only references. Each reference points to a separate row array somewhere else on the heap. Each row is contiguous internally, but the rows are not guaranteed to sit next to one another.
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DP TABLE IN PHYSICAL MEMORY                                  │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  1D DP ARRAY: int[] dp = new int[n]                                             │
-│  ──────────────────────────────────                                             │
-│                                                                                 │
-│  Java int array: Header (16 bytes) + length (4 bytes) + data                    │
-│                                                                                 │
-│  Memory Layout (n=10):                                                          │
-│  ┌────────────────┬────────┬────────────────────────────────────────────────┐   │
-│  │ Object Header  │ Length │ int[0] int[1] int[2] int[3] ... int[9]       │     │
-│  │ 16 bytes       │ 4 bytes│ 4      4      4      4          4   bytes   │      │
-│  └────────────────┴────────┴────────────────────────────────────────────────┘   │
-│                                                                                 │
-│  Total Memory = 16 + 4 + (n × 4) + padding                                      │
-│  For n=10: 16 + 4 + 40 = 60 bytes (padded to 64 bytes)                          │
-│                                                                                 │
-│  CACHE BEHAVIOR:                                                                │
-│  Cache line = 64 bytes = 16 integers                                            │
-│  Sequential access → EXCELLENT cache performance!                               │
-│  dp[i] access pulls dp[i+1] to dp[i+15] into cache                              │
-│                                                                                 │
-│                                                                                 │
-│  2D DP ARRAY: int[][] dp = new int[m][n]                                        │
-│  ──────────────────────────────────────                                         │
-│                                                                                 │
-│  Java stores 2D arrays as "array of arrays" (NOT contiguous!)                   │
-│                                                                                 │
-│  Memory Layout (3×4):                                                           │
-│  ┌────────────────────────────────────────┐                                     │
-│  │ Header   dp[0]     dp[1]     dp[2]    │  ← Array of references               │
-│  │ 16 bytes ptr→      ptr→      ptr→     │     (8 bytes each on 64-bit)         │
-│  └─────────┬──────────┬─────────┬────────┘                                      │
-│            │          │         │                                               │
-│            ↓          ↓         ↓                                               │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                                │
-│  │Header Length│ │Header Length│ │Header Length│                                │
-│  │[0][1][2][3]│ │[0][1][2][3]│ │[0][1][2][3]│  ← Each row is separate array     │
-│  └─────────────┘ └─────────────┘ └─────────────┘                                │
-│                                                                                 │
-│  Memory for int[m][n]:                                                          │
-│  Outer array: 16 + 4 + (m × 8) bytes                                            │
-│  Each inner array: 16 + 4 + (n × 4) bytes                                       │
-│  Total ≈ 20 + 8m + m × (20 + 4n) = 20 + 28m + 4mn bytes                         │
-│                                                                                 │
-│  CACHE IMPLICATIONS:                                                            │
-│  • Row access (dp[i][0] to dp[i][n-1]) → GOOD (contiguous in memory)            │
-│  • Column access (dp[0][j] to dp[m-1][j]) → BAD (jumps between arrays!)         │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+Memory for `int[m][n]` (typical 64-bit JVM with compressed pointers):
 
-## CACHE BEHAVIOR IN DP - CRITICAL FOR PERFORMANCE
+- Outer array: 16 + 4m bytes.
+- Each inner array: 16 + 4n bytes.
+- Total ≈ 16 + 4m + m × (16 + 4n) = 16 + 20m + 4mn bytes, before padding.
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DP ITERATION ORDER AND CACHE PERFORMANCE                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  EXAMPLE: Longest Common Subsequence (LCS)                                      │
-│                                                                                 │
-│  int lcs(String a, String b) {                                                  │
-│      int m = a.length(), n = b.length();                                        │
-│      int[][] dp = new int[m+1][n+1];                                            │
-│                                                                                 │
-│      for (int i = 1; i <= m; i++) {                                             │
-│          for (int j = 1; j <= n; j++) {                                         │
-│              if (a.charAt(i-1) == b.charAt(j-1)) {                              │
-│                  dp[i][j] = dp[i-1][j-1] + 1;                                   │
-│              } else {                                                           │
-│                  dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);                   │
-│              }                                                                  │
-│          }                                                                      │
-│      }                                                                          │
-│      return dp[m][n];                                                           │
-│  }                                                                              │
-│                                                                                 │
-│                                                                                 │
-│  ACCESS PATTERN VISUALIZATION:                                                  │
-│                                                                                 │
-│  GOOD ORDER (row-major):              BAD ORDER (column-major):                 │
-│  for (i) for (j)                      for (j) for (i)                           │
-│                                                                                 │
-│    j → →→ →                              j                                      │
-│  ┌─────────────┐                      ┌──↓──────────┐                           │
-│  │ 1  2  3  4  │ i=1                  │ 1  │  │  │  │                           │
-│  │ 5  6  7  8  │ i=2                  │ 2  │  │  │  │                           │
-│  │ 9 10 11 12  │ i=3                  │ 3  │  │  │  │                           │
-│  └─────────────┘                      │ 4  5  6  7  │                           │
-│  i                                    └─────────────┘                           │
-│  ↓                                                                              │
-│                                                                                 │
-│  Row-major: Elements accessed are adjacent in memory                            │
-│  Column-major: Each access jumps to a different array!                          │
-│                                                                                 │
-│                                                                                 │
-│  BENCHMARK (LCS of two 1000-char strings):                                      │
-│  ┌──────────────────────────┬─────────────┬─────────────────────────┐           │
-│  │ Iteration Order          │ Time (ms)   │ L1 Cache Misses         │           │
-│  ├──────────────────────────┼─────────────┼─────────────────────────┤           │
-│  │ Row-major (i then j)     │ 2.8         │ ~62,500                 │           │
-│  │ Column-major (j then i)  │ 15.3        │ ~1,000,000              │           │
-│  │ Ratio                    │ 5.5x slower │ 16x more misses         │           │
-│  └──────────────────────────┴─────────────┴─────────────────────────┘           │
-│                                                                                 │
-│  RULE: In Java, always iterate rows in outer loop, columns in inner loop!       │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**Cache implications:**
 
-## SPACE OPTIMIZATION - ROLLING ARRAY TECHNIQUE
+- Row access (`dp[i][0]` to `dp[i][n-1]`) is GOOD, because it is contiguous in memory.
+- Column access (`dp[0][j]` to `dp[m-1][j]`) is BAD, because it jumps between arrays.
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ROLLING ARRAY - FROM O(mn) TO O(n) SPACE                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  OBSERVATION: Many 2D DP only needs previous row!                               │
-│                                                                                 │
-│  Full 2D DP (wasteful):                                                         │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │ Row 0: [0][0][0][0][0][0][0][0][0][0]  ← Never accessed after row 1      │   │
-│  │ Row 1: [0][1][1][1][1][1][1][1][1][1]  ← Never accessed after row 2      │   │
-│  │ Row 2: [0][1][1][2][2][2][2][2][2][2]  ← Never accessed after row 3      │   │
-│  │ Row 3: [0][1][1][2][2][3][3][3][3][3]  ← Only need THIS and row 2!       │   │
-│  │ ...                                                                       │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                 │
-│  Rolling Array (2 rows):                                                        │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │ prev: [0][1][1][2][2][3][3][3][3][3]  ← Row i-1                          │   │
-│  │ curr: [0][1][1][2][2][3][3][3][3][3]  ← Row i (computing)                │   │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│  After each row: swap prev ↔ curr                                               │
-│                                                                                 │
-│                                                                                 │
-│  CODE TRANSFORMATION:                                                           │
-│  ───────────────────                                                            │
+### CACHE BEHAVIOR IN DP - CRITICAL FOR PERFORMANCE
+
+#### Dp iteration order and cache performance
+
+**Example:** Longest Common Subsequence (LCS)
+
+
+```java
+int lcs(String a, String b) {
+    int m = a.length(), n = b.length();
+    int[][] dp = new int[m+1][n+1];
 ```
+
+
+
+```java
+for (int i = 1; i <= m; i++) {
+    for (int j = 1; j <= n; j++) {
+        if (a.charAt(i-1) == b.charAt(j-1)) {
+            dp[i][j] = dp[i-1][j-1] + 1;
+        } else {
+            dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+}
+return dp[m][n];
+}
+```
+
+
+**Access pattern visualization**
+
+Filling a 3 × 4 table (numbers show the order in which cells are visited):
+
+| Good order: row-major (`for i`, then `for j`) | Bad order: column-major (`for j`, then `for i`) |
+| --- | --- |
+| `1  2  3  4`<br>`5  6  7  8`<br>`9 10 11 12` | `1  4  7 10`<br>`2  5  8 11`<br>`3  6  9 12` |
+
+- **Row-major:** consecutive accesses are adjacent in memory.
+- **Column-major:** every access jumps to a different row array.
+
+For two 1000-character strings the table is about 4 MB, larger than a typical L1 or L2 cache. Row-major iteration touches each cache line once per 16 cells. Column-major iteration touches a different row array on every access, so it misses far more often. The exact slowdown depends on the hardware and the JVM, so measure it with a benchmark harness such as JMH before quoting a number.
+
+**Rule:** In Java, always iterate rows
+
+### SPACE OPTIMIZATION - ROLLING ARRAY TECHNIQUE
+
+#### ROLLING ARRAY - FROM O(mn) TO O(n) SPACE
+
+**Observation:** Many 2D DP only needs previous row!
+
+Full 2D DP (wasteful), for example an LCS table:
+
+| Row | Contents | Still needed later? |
+| --- | --- | --- |
+| Row 0 | `0 0 0 0 0 0 0 0 0 0` | No, not after row 1 |
+| Row 1 | `0 1 1 1 1 1 1 1 1 1` | No, not after row 2 |
+| Row 2 | `0 1 1 2 2 2 2 2 2 2` | No, not after row 3 |
+| Row 3 | `0 1 1 2 2 3 3 3 3 3` | Only this row and the one above it |
+
+Rolling array (2 rows):
+
+| Array | Role |
+| --- | --- |
+| `prev` | Row `i-1` (already computed) |
+| `curr` | Row `i` (being computed) |
+
+After each row, swap `prev ↔ curr`.
+
+**Code transformation**
 
 ```java
 // BEFORE: O(mn) space
@@ -326,128 +320,111 @@ for (int i = 1; i <= m; i++) {
 return dp[n];
 ```
 
-```
-│ │
-│ │
-│ MEMORY SAVINGS: │
-│ ┌────────────────────────────────────────────────────────────────────────────┐│
-│ │ Array Size │ Full 2D │ Two Rows │ Single Row │ ││
-│ ├─────────────────────┼───────────────┼───────────────┼──────────────┤ ││
-│ │ m=1000, n=1000 │ 4,000,000 B │ 8,000 B │ 4,000 B │ ││
-│ │ m=10000, n=10000 │ 400,000,000 B │ 80,000 B │ 40,000 B │ ││
-│ │ Savings │ baseline │ 500x less │ 1000x less │ ││
-│ └────────────────────────────────────────────────────────────────────────────┘│
-│ │
-│ CACHE BENEFIT: Smaller array fits in L1/L2 cache → MUCH faster! │
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**Memory savings** (4 bytes per `int`)
+
+| Array size | Full 2D | Two rows | Single row |
+| --- | --- | --- | --- |
+| m = 1000, n = 1000 | 4,000,000 B | 8,000 B | 4,000 B |
+| m = 10000, n = 10000 | 400,000,000 B | 80,000 B | 40,000 B |
+| Savings | baseline | 500× less | 1000× less |
+
+> [!TIP]
+> **Cache benefit:** a smaller array fits in the L1/L2 cache, so the loop runs much faster.
+
+### 🖥️ Memoization vs Tabulation — CPU Perspective
+
+### Top-down vs Bottom-up: Hardware Differences
+
+**Top-down (Memoization)**:
+
+```java
+int fib(int n, int[] memo) {
+if (n <= 1) return n;
+if (memo[n] != -1) return memo[n]; // Cache hit check
+memo[n] = fib(n-1, memo) + fib(n-2, memo);
+return memo[n];
+}
 ```
 
-## 🖥️ Memoization vs Tabulation — CPU Perspective
+CPU Operations per call:
+- Function call overhead: ~15-30 cycles
+- Condition check (n <= 1): ~1-3 cycles
+- Array access memo[n]: ~3-100 cycles (cache hit vs miss)
+- Comparison (memo[n] != -1): ~1 cycle
+- Return: ~5 cycles
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ TOP-DOWN VS BOTTOM-UP: HARDWARE DIFFERENCES                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ TOP-DOWN (MEMOIZATION):                                                         │
-│ ──────────────────────                                                          │
-│                                                                                 │
-│ int fib(int n, int[] memo) {                                                    │
-│ if (n <= 1) return n;                                                           │
-│ if (memo[n] != -1) return memo[n]; // Cache hit check                           │
-│ memo[n] = fib(n-1, memo) + fib(n-2, memo);                                      │
-│ return memo[n];                                                                 │
-│ }                                                                               │
-│                                                                                 │
-│ CPU Operations per call:                                                        │
-│ • Function call overhead: ~15-30 cycles                                         │
-│ • Condition check (n <= 1): ~1-3 cycles                                         │
-│ • Array access memo[n]: ~3-100 cycles (cache hit vs miss)                       │
-│ • Comparison (memo[n] != -1): ~1 cycle                                          │
-│ • Return: ~5 cycles                                                             │
-│                                                                                 │
-│ Branch prediction: UNPREDICTABLE!                                               │
-│ • Sometimes cache hit, sometimes not                                            │
-│ • ~20 cycle penalty per misprediction                                           │
-│                                                                                 │
-│                                                                                 │
-│ BOTTOM-UP (TABULATION):                                                         │
-│ ──────────────────────                                                          │
-│                                                                                 │
-│ int fib(int n) {                                                                │
-│ if (n <= 1) return n;                                                           │
-│ int[] dp = new int[n + 1];                                                      │
-│ dp[0] = 0; dp[1] = 1;                                                           │
-│ for (int i = 2; i <= n; i++) {                                                  │
-│ dp[i] = dp[i-1] + dp[i-2];                                                      │
-│ }                                                                               │
-│ return dp[n];                                                                   │
-│ }                                                                               │
-│                                                                                 │
-│ CPU Operations per iteration:                                                   │
-│ • Loop overhead: ~1-2 cycles (no function calls!)                               │
-│ • Array access dp[i-1], dp[i-2]: ~3-4 cycles (sequential = cache hits!)         │
-│ • Addition: ~1 cycle                                                            │
-│ • Array store dp[i]: ~1-4 cycles                                                │
-│                                                                                 │
-│ Branch prediction: PERFECT!                                                     │
-│ • Loop continues n-1 times, then exits once                                     │
-│ • Predictor learns pattern quickly                                              │
-│                                                                                 │
-│                                                                                 │
-│ BENCHMARK (Fibonacci n=40):                                                     │
-│ ┌──────────────────────────────┬─────────────┬─────────────────────────┐        │
-│ │ Method │ Time (ns) │ Cache Misses │                                           │
-│ ├──────────────────────────────┼─────────────┼─────────────────────────┤        │
-│ │ Top-down (memoization) │ 450 │ ~15 │                                          │
-│ │ Bottom-up (tabulation) │ 120 │ ~3 │                                           │
-│ │ Bottom-up (space optimized) │ 85 │ 0 │                                        │
-│ └──────────────────────────────┴─────────────┴─────────────────────────┘        │
-│                                                                                 │
-│ Bottom-up is ~4x faster due to:                                                 │
-│ • No function call overhead                                                     │
-│ • Better cache locality                                                         │
-│ • Perfect branch prediction                                                     │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+Branch prediction: UNPREDICTABLE!
+- Sometimes cache hit, sometimes not
+- ~20 cycle penalty per misprediction
+
+**Bottom-up (Tabulation)**:
+
+```java
+int fib(int n) {
+if (n <= 1) return n;
+int[] dp = new int[n + 1];
+dp[0] = 0; dp[1] = 1;
+for (int i = 2; i <= n; i++) {
+dp[i] = dp[i-1] + dp[i-2];
+}
+return dp[n];
+}
 ```
 
-## 🧠 State Representation — Memory Efficiency
+CPU Operations per iteration:
+- Loop overhead: ~1-2 cycles (no function calls!)
+- Array access dp[i-1], dp[i-2]: ~3-4 cycles (sequential = cache hits!)
+- Addition: ~1 cycle
+- Array store dp[i]: ~1-4 cycles
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ STATE REPRESENTATION TECHNIQUES                                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ TECHNIQUE 1: BITMASK DP                                                         │
-│ ─────────────────────────                                                       │
-│ Instead of boolean[] visited → use int bitmask                                  │
-│                                                                                 │
-│ Example: Traveling Salesman (n ≤ 20 cities)                                     │
-│                                                                                 │
-│ // ARRAY APPROACH: Needs Map<Set<Integer>, Integer>                             │
-│ // Very slow due to hashing and object creation                                 │
-│                                                                                 │
-│ // BITMASK APPROACH:                                                            │
-│ int[][] dp = new int[1 << n][n]; // dp[mask][lastCity]                          │
-│ // mask has bit i set if city i is visited                                      │
-│                                                                                 │
-│ Memory for n=20:                                                                │
-│ • Array: 2^20 × 20 × 4 = 80 MB (fits in RAM!)                                   │
-│ • Operations on mask:                                                           │
-│ - Check if city i visited: (mask & (1 << i)) != 0 → 2 cycles                    │
-│ - Add city i to visited: mask | (1 << i) → 1 cycle                              │
-│ - Count visited cities: Integer.bitCount(mask) → 1 cycle (CPU instr!)           │
-│                                                                                 │
-│                                                                                 │
-│ TECHNIQUE 2: COORDINATE COMPRESSION                                             │
-│ ─────────────────────────────────────                                           │
-│ When values are sparse but range is huge                                        │
-│                                                                                 │
-│ Problem: dp[i] where i can be up to 10^9                                        │
-│ But only 10^5 distinct values actually used!                                    │
-│                                                                                 │
+Branch prediction: PERFECT!
+- Loop continues n-1 times, then exits once
+- Predictor learns pattern quickly
+
+BENCHMARK (Fibonacci n=40):
+
+| Method | Time (ns) | Cache Misses |
+| --- | --- | --- |
+| Top-down (memoization) | 450 | ~15 |
+| Bottom-up (tabulation) | 120 | ~3 |
+| Bottom-up (space optimized) | 85 | 0 |
+
+Bottom-up is ~4x faster due to:
+- No function call overhead
+- Better cache locality
+- Perfect branch prediction
+
+### 🧠 State Representation — Memory Efficiency
+
+**STATE REPRESENTATION TECHNIQUES**
+
+```text
+TECHNIQUE 1: BITMASK DP
+─────────────────────────
+Instead of boolean[] visited → use int bitmask
+
+Example: Traveling Salesman (n ≤ 20 cities)
+
+// ARRAY APPROACH: Needs Map<Set<Integer>, Integer>
+// Very slow due to hashing and object creation
+
+// BITMASK APPROACH:
+int[][] dp = new int[1 << n][n]; // dp[mask][lastCity]
+// mask has bit i set if city i is visited
+
+Memory for n=20:
+• Array: 2^20 × 20 × 4 = 80 MB (fits in RAM!)
+• Operations on mask:
+- Check if city i visited: (mask & (1 << i)) != 0 → 2 cycles
+- Add city i to visited: mask | (1 << i) → 1 cycle
+- Count visited cities: Integer.bitCount(mask) → 1 cycle (CPU instr!)
+
+TECHNIQUE 2: COORDINATE COMPRESSION
+─────────────────────────────────────
+When values are sparse but range is huge
+
+Problem: dp[i] where i can be up to 10^9
+But only 10^5 distinct values actually used!
 ```
 
 ```java
@@ -463,18 +440,16 @@ for (int i = 0; i < sorted.length; i++) {
 // Can use int[5] instead of int[10^9]!
 ```
 
-```
-│ │
-│ │
-│ TECHNIQUE 3: STATE ENCODING │
-│ ──────────────────────────── │
-│ Combine multiple small states into one integer │
-│ │
-│ Example: Track (position, direction, speed) where: │
-│ • position: 0-999 │
-│ • direction: 0-3 │
-│ • speed: 0-9 │
-│ │
+**TECHNIQUE 3: STATE ENCODING**
+
+```text
+────────────────────────────
+Combine multiple small states into one integer
+
+Example: Track (position, direction, speed) where:
+• position: 0-999
+• direction: 0-3
+• speed: 0-9
 ```
 
 ```java
@@ -497,40 +472,23 @@ int decodeSpd(int state) { return state % 10; }
 // • Can use as hash key directly
 ```
 
-```
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
 
-## 📌 DP Transition Cost Analysis
+### 📌 DP Transition Cost Analysis
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ TRANSITION OPERATION COSTS                                                      │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ COMMON DP TRANSITION OPERATIONS AND THEIR COSTS:                                │
-│                                                                                 │
-│ ┌──────────────────────────────────────┬─────────────┬────────────────────────┐ │
-│ │ Operation │ CPU Cycles │ Notes │                                              │
-│ ├──────────────────────────────────────┼─────────────┼────────────────────────┤ │
-│ │ dp[i] = dp[i-1] + 1 │ 3-5 │ Cache hit likely │                                │
-│ │ dp[i][j] = dp[i-1][j-1] │ 5-10 │ Depends on cache │                           │
-│ │ dp[i] = max(dp[i], dp[j] + val) │ 4-6 │ Comparison + maybe set │              │
-│ │ dp[i] = min(dp[i], dp[j] + val) │ 4-6 │ Same as max │                         │
-│ │ dp[mask | (1<<i)] = ... │ 4-8 │ Bit operations fast │                         │
-│ │ dp[i] = dp[i-1] \* dp[i-2] │ 5-15 │ Multiply costlier │                       │
-│ │ dp[i] = (dp[i-1] + dp[i-2]) % MOD │ 8-20 │ Modulo is expensive! │             │
-│ │ dp.get(state) │ 50-200 │ HashMap very expensive │                             │
-│ └──────────────────────────────────────┴─────────────┴────────────────────────┘ │
-│                                                                                 │
-│                                                                                 │
-│ MODULO OPTIMIZATION:                                                            │
-│ ─────────────────────                                                           │
-│ Problem: dp[i] = (dp[i-1] + dp[i-2]) % MOD                                      │
-│ Modulo (%) uses integer division, which is SLOW (20-80 cycles)!                 │
-│                                                                                 │
-```
+Common DP transition operations and their rough costs (CPU cycles are order-of-magnitude figures; they vary by CPU and by whether the data is in cache):
+
+| Operation | Cycles | Notes |
+| --- | --- | --- |
+| `dp[i] = dp[i-1] + 1` | 3-5 | Cache hit likely |
+| `dp[i][j] = dp[i-1][j-1]` | 5-10 | Depends on cache |
+| `dp[i] = max(dp[i], dp[j] + val)` | 4-6 | Comparison plus a maybe-set |
+| `dp[i] = min(dp[i], dp[j] + val)` | 4-6 | Same as max |
+| `dp[mask \| (1<<i)] = ...` | 4-8 | Bit operations are fast |
+| `dp[i] = dp[i-1] * dp[i-2]` | 5-15 | Multiply costs more |
+| `dp[i] = (dp[i-1] + dp[i-2]) % MOD` | 8-20 | Modulo is expensive |
+| `dp.get(state)` (a `HashMap`) | 50-200 | Hashing plus pointer chasing: very expensive |
+
+**Modulo optimization.** For `dp[i] = (dp[i-1] + dp[i-2]) % MOD`, the `%` operator uses integer division, which is slow (tens of cycles) compared with an add or a compare.
 
 ```java
 // SLOW: Modulo on every operation
@@ -553,26 +511,13 @@ for (int i = 2; i <= n; i++) {
 }
 ```
 
-```
-│ │
-│ BENCHMARK (n=10^7 Fibonacci mod 10^9+7): │
-│ • With % every iter: 180 ms │
-│ • With conditional: 65 ms │
-│ • ~2.8x speedup! │
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+The conditional subtraction usually wins because it replaces a division with a compare and a subtract. The size of the gain depends on the JIT (which can turn a constant `MOD` into a multiply) and on the CPU, so measure with a harness such as JMH before relying on a number.
 
-## 🧠 Memory Allocation Patterns
+### 🧠 Memory Allocation Patterns
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ DP ARRAY ALLOCATION STRATEGIES                                                  │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ STRATEGY 1: PREALLOCATE ARRAYS (Best for fixed size)                            │
-│ ────────────────────────────────────────────────────                            │
-```
+**DP ARRAY ALLOCATION STRATEGIES**
+
+**STRATEGY 1: PREALLOCATE ARRAYS (Best for fixed size)**
 
 ```java
 // GOOD: Single allocation
@@ -594,17 +539,14 @@ for (int i = 0; i < tests; i++) {
 }
 ```
 
-```
-│ │
-│ ALLOCATION COSTS: │
-│ • new int[1000]: ~50-100 ns │
-│ • new int[1000000]: ~500-2000 ns │
-│ • Arrays.fill(arr, 0): ~0.5 ns per element (uses fast memory set) │
-│ │
-│ │
-│ STRATEGY 2: LAZY INITIALIZATION (When sparse) │
-│ ───────────────────────────────────────────── │
-```
+**ALLOCATION COSTS:**
+
+**Allocation costs**
+
+- `new int[n]` zeroes the memory, so the cost grows with `n`; a very large array can also trigger garbage collection work.
+- `Arrays.fill(arr, 0)` is a tight, vectorizable loop, so it is cheap per element.
+
+#### Strategy 2: lazy initialization (when the table is sparse)
 
 ```java
 // When most values stay at default, don't fill!
@@ -615,36 +557,27 @@ int[] dp = new int[n + 1];
 // Java guarantees all zeros - use 0 as "not computed" if valid answers are > 0
 ```
 
-```
-│ │
-│ │
-│ STRATEGY 3: USE PRIMITIVES, NOT OBJECTS │
-│ ─────────────────────────────────────────── │
-│ │
-│ ┌────────────────────────────────────────────────────────────────────────────┐│
-│ │ Storage │ Memory per element │ Access time ││
-│ ├────────────────────────────────┼────────────────────┼─────────────────────┤│
-│ │ int[] │ 4 bytes │ ~3-4 cycles ││
-│ │ Integer[] │ 16+ bytes │ ~10-15 cycles ││
-│ │ ArrayList<Integer> │ 20+ bytes │ ~15-20 cycles ││
-│ │ HashMap<Integer,Integer> │ 48+ bytes │ ~50-200 cycles ││
-│ └────────────────────────────────────────────────────────────────────────────┘│
-│ │
-│ Rule: Use primitive arrays for DP whenever possible! │
-│ Use HashMap only when state space is truly sparse and unpredictable. │
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+#### Strategy 3: use primitives, not objects
 
-## 🔍 Reconstructing the Solution (Traceback)
+| Storage | Memory per element | Access time |
+| --- | --- | --- |
+| `int[]` | 4 bytes | ~3-4 cycles |
+| `Integer[]` | 16+ bytes | ~10-15 cycles |
+| `ArrayList<Integer>` | 20+ bytes | ~15-20 cycles |
+| `HashMap<Integer,Integer>` | 48+ bytes | ~50-200 cycles |
+
+> [!TIP]
+> **Rule:** use primitive arrays for DP whenever possible. Use a `HashMap` only when the state space is truly sparse and unpredictable.
+
+### 🔍 Reconstructing the Solution (Traceback)
 
 In _The Algorithm Design Manual_, Skiena points out a common pitfall: Dynamic Programming natively computes the _value_ of the optimal solution (e.g., "The longest path is 15"), but often the interviewer actually wants the _path itself_ (e.g., "The items to pick are A, C, and F").
 
 To reconstruct the solution, you must walk backward through your DP table, tracing the sequence of optimal decisions.
 
-### Two Ways to Traceback
+#### Two Ways to Traceback
 
-#### 1. The "Parent Pointer" Array (Explicit Tracking)
+##### 1. The "Parent Pointer" Array (Explicit Tracking)
 
 Store the optimal decision at each step in a separate array/table.
 
@@ -673,7 +606,7 @@ while (curr != -1) {
 Collections.reverse(path);
 ```
 
-#### 2. Re-evaluating the Recurrence (Implicit Tracking - Preferred)
+##### 2. Re-evaluating the Recurrence (Implicit Tracking - Preferred)
 
 You don't need a `parent` array! The DP table already contains all the information needed to deduce _which_ choice was optimal. You just check which subproblem + transition equals the current cell's value.
 
@@ -706,7 +639,7 @@ while (i > 0 && w > 0) {
 
 ---
 
-## 📎 Reference Anchor
+### 📎 Reference Anchor
 
 **Apache Commons Text `LevenshteinDistance` — production DP**
 - `LevenshteinDistance`: [LevenshteinDistance.java](https://github.com/apache/commons-text/blob/master/src/main/java/org/apache/commons/text/similarity/LevenshteinDistance.java) — bottom-up 2-row DP (space-optimized from O(m×n) to O(min(m,n))). **Invariant**: `dp[j]` = edit distance between first `i` chars of s1 and first `j` chars of s2. Rolling array: only current row and previous row needed.
@@ -716,25 +649,28 @@ while (i > 0 && w > 0) {
 
 ---
 
-## When DP Internals Break
+### When DP Internals Break
 
-### 1. Traceback on Rolled Array — Lost Data
+#### 1. Traceback on Rolled Array — Lost Data
+
 **What breaks**: Using a 1D rolling array for space optimization but then trying to traceback the solution. The previous rows are overwritten and the path cannot be reconstructed.
 **Fix**: If solution reconstruction is needed, keep the full 2D table (or store a separate `choice[i][j]` matrix). Only use rolling array if you only need the optimal VALUE, not the path.
 
-### 2. Integer Overflow in DP Value Accumulation
+#### 2. Integer Overflow in DP Value Accumulation
+
 **What breaks**: Counting paths in a grid: `dp[i][j] = dp[i-1][j] + dp[i][j-1]`. For a 20×20 grid, dp[20][20] can exceed `Integer.MAX_VALUE`. Silent overflow produces negative values.
 **Fix**: Use `long[][]` for counting problems. Or take values mod 10⁹+7 if only the modular count is needed (common in competitive programming).
 
-### 3. Using HashMap for Memoization with Arrays as Keys
+#### 3. Using HashMap for Memoization with Arrays as Keys
+
 **What breaks**: `HashMap<int[], Integer> memo` uses reference equality for `int[]` keys. Two arrays `{1,2,3}` and `{1,2,3}` (different objects, same values) are different keys. The cache is never hit.
 **Fix**: Convert array state to a canonical String key: `Arrays.toString(state)`. Or encode to a single int if bounds allow.
 
 ---
 
-## Brute Force → Optimal: DP Warm-Up
+### Brute Force → Optimal: DP Warm-Up
 
-### Problem: Longest Increasing Subsequence (LIS)
+#### Problem: Longest Increasing Subsequence (LIS)
 
 **Brute Force — O(2ⁿ) all subsequences:**
 Generate all 2ⁿ subsequences, check each for being increasing, track max length.
@@ -755,7 +691,7 @@ Maintain a `tails[]` array where `tails[k]` = smallest tail element of all IS of
 
 ---
 
-## Proof Corner -- Optimal Substructure for LCS
+### Proof Corner -- Optimal Substructure for LCS
 
 **Claim**: Let LCS(i,j) = length of the longest common subsequence of A[0..i-1] and B[0..j-1].
 
@@ -775,7 +711,7 @@ Case 2: A[i-1] != B[j-1]. The optimal LCS either excludes A[i-1] (giving LCS(i-1
 
 ---
 
-## When It Breaks -- DP Internals
+### When It Breaks -- DP Internals
 
 **1. Backward vs forward loop for 0/1 Knapsack** -- the most common DP bug. 1D rolling array needs `w` from W down to weight[i]. Scanning forward re-uses item i in the same pass (accidentally solving unbounded knapsack). Debug: add item with weight=2, value=10, capacity=6. 0/1 answer=10; unbounded answer=30.
 
@@ -787,6 +723,16 @@ Case 2: A[i-1] != B[j-1]. The optimal LCS either excludes A[i-1] (giving LCS(i-1
 
 **5. Off-by-one in string indices** -- LCS/Edit Distance tables are (n+1)x(m+1). dp[i][j] represents prefixes A[0..i-1] and B[0..j-1]. A common mistake: `dp[i][j] = dp[i-1][j-1]` when `A[i] == B[j]` (off by one -- should be `A[i-1]` and `B[j-1]`). Produces wrong answers that only show up for certain string pairs.
 
+
+---
+
+## 🏢 Enterprise Lens — DP Internals
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Sequence alignment (bioinformatics), diff tools, spell checkers, route planning |
+| **Failure modes** | Out-of-memory from full tables; incorrect rolling-array overwrite order; integer overflow in counts |
+| **Testing and verification** | Compare space-optimised and full-table versions on random inputs |
 
 ---
 

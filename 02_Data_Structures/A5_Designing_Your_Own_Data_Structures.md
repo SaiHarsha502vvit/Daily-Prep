@@ -1,6 +1,6 @@
 # A5. Designing Your Own Data Structures — The Invention Method
 
-**Navigation**: [← A4: Randomized Data Structures](A4_Randomized_Data_Structures.md) | [📚 DS Index](00_INDEX.md) | [Algorithms A5: Designing Your Own Algorithms →](../03_Algorithms/A5_Designing_Your_Own_Algorithms.md)
+> **Navigation**: [← A4. Randomized Data Structures…](A4_Randomized_Data_Structures.md) | [Chapter index](00_INDEX.md)
 
 > **MIT 6.851 Advanced Data Structures / KTH DD2440 / ETH Advanced Algorithms level**
 >
@@ -38,6 +38,64 @@
 - **WHEN**: When you can write down an operation set with required complexities, and no standard structure meets all of them simultaneously. That mismatch — and *only* that mismatch — is the trigger.
 - **WHERE**: In the gap between what your problem demands and what `java.util` supplies.
 - **HOW**: Specify the contract → find the closest existing structure → identify precisely which requirement it violates → apply one of six design tools → state the invariants → prove correctness and complexity → adversarially test the assumptions.
+
+---
+
+## 💬 Explain It Like a Study Partner — Designing Your Own Structure
+
+> [!TIP]
+> **Ask yourself first:** *"When would you ever need a data structure that is not in the standard library?"*
+
+### 1. The bottom line
+
+You design a new structure by writing down exactly which operations you need and how fast, then **bending a known structure** until it fits.
+
+### 2. The textbook core
+
+- Start with an **operation-contract table**: every operation, how often it happens, required cost.
+- Find the closest existing structure and name the row where it fails.
+- Pick a tool: **augmentation** (store extra data), **amortization**, **randomization**, **laziness**, or the **time/space/exactness** trade-off.
+- State the **invariants** before writing code, then prove each operation preserves them.
+- Attack your design with adversarial input, and remember: often the right answer is **not** to invent anything.
+
+### 3. The real-world analogy
+
+**Remodelling a kitchen instead of building a house.** You list what you cook (operations), look at the closest existing layout (a known structure), and add a counter or an island (augmentation) where it does not work, rather than starting from bare ground.
+
+### 4. Walkthrough: "give me the k-th smallest in a changing set"
+
+1. **Contract:** insert O(log n), delete O(log n), `kth(k)` O(log n).
+2. **Closest structure:** a balanced BST gives insert/delete in O(log n) but `kth` is O(n) (walk in order).
+3. **Augment:** store the **subtree size** in every node.
+4. **Invariant:** `size(node) = size(left) + size(right) + 1`; rotations and inserts update it.
+5. **`kth`:** at a node, if `k ≤ size(left)` go left, if `k = size(left) + 1` return the node, else go right with `k - size(left) - 1`. That is O(log n). You have invented an *order-statistic tree*.
+
+> [!NOTE]
+> **Quick check:** when should you not design your own? *When a standard structure already meets the contract; custom structures are hard to prove and test.*
+
+---
+
+## ⚡ At a Glance — The Design Loop
+
+> [!NOTE]
+> **Mental model:** you do not invent a data structure; you *derive* it from the operations you need, then pick the cheapest tool that satisfies them.
+
+```mermaid
+flowchart LR
+    OPS["1. List operations<br/>and their frequency"] --> INV["2. State invariants"]
+    INV --> BASE["3. Start from a known<br/>structure"]
+    BASE --> TOOL["4. Apply a tool:<br/>augment, amortize,<br/>randomize, be lazy"]
+    TOOL --> PROVE["5. Prove and test"]
+    PROVE -->|fails| INV
+    classDef step fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef tool fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef done fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class OPS,INV,BASE step
+    class TOOL tool
+    class PROVE done
+```
+
+**How to read this diagram.** Move left to right; the arrow back from step 5 to step 2 is the normal case, because failed proofs usually mean the invariant was wrong or incomplete.
 
 ---
 
@@ -86,49 +144,56 @@ The LRU example is a fourth, special case: **two structures each satisfy a disjo
 
 This is the procedure. Follow it in order; the ordering is load-bearing.
 
+```mermaid
+flowchart TD
+    S1["1. SPECIFY<br/>Write the operation-contract table.<br/>Every operation, its frequency, its required cost."]
+    S2["2. LOCATE<br/>Find the closest existing structure.<br/>Name the EXACT row it fails and WHY."]
+    S3["3. CLASSIFY<br/>Missing info? Wrong cost lumps? Impossible?<br/>Picks your tool (§3-§8)"]
+    S4["4. STATE INVARIANTS<br/>What must be true of the structure at rest, ALWAYS?<br/>Write them before any code (§4)"]
+    S5["5. DESIGN OPERATIONS<br/>For each op: how does it preserve every invariant?<br/>If it cannot cheaply, the invariant is wrong."]
+    S6["6. PROVE<br/>Correctness: invariants hold after every op.<br/>Complexity: potential function or aggregate argument."]
+    S7["7. ATTACK<br/>Build the adversarial input. What sequence of ops<br/>makes your structure degenerate? (§11)"]
+    S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7
+    S5 -. "invariant is wrong" .-> S4
+    classDef a fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef b fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef c fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class S1,S2,S3 a
+    class S4,S5 b
+    class S6,S7 c
 ```
-┌─ 1. SPECIFY ─────────────────────────────────────────────┐
-│  Write the operation-contract table.                     │
-│  Every operation, its frequency, its required cost.      │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 2. LOCATE ──────────────────────────────────────────────┐
-│  Find the closest existing structure.                    │
-│  Name the EXACT row it fails and WHY.                    │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 3. CLASSIFY ────────────────────────────────────────────┐
-│  Missing info? Wrong cost lumps? Impossible?             │
-│  → picks your tool (§3–§8)                               │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 4. STATE INVARIANTS ────────────────────────────────────┐
-│  What must be true of the structure at rest, ALWAYS?     │
-│  Write them before you write any code. (§4)              │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 5. DESIGN OPERATIONS ───────────────────────────────────┐
-│  For each op: how does it preserve every invariant?      │
-│  An op that cannot preserve an invariant cheaply         │
-│  means the invariant is wrong — go back to 4.            │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 6. PROVE ───────────────────────────────────────────────┐
-│  Correctness: invariants hold after every op.            │
-│  Complexity: potential function or aggregate argument.   │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 7. ATTACK ──────────────────────────────────────────────┐
-│  Build the adversarial input. What sequence of ops       │
-│  makes your structure degenerate? (§11)                  │
-└──────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Follow the seven steps top to bottom. The dotted arrow is the loop-back: if an operation cannot preserve an invariant cheaply, the invariant (not the operation) is what you should revisit.
 
 **Step 5 is where most designs die, and it dies productively.** When you find that an operation cannot cheaply restore an invariant, you have not failed — you have learned that your invariant was too strong. Weaken it and continue. Red-Black trees exist precisely because AVL's invariant (heights differ by ≤ 1) is too strong to maintain cheaply under deletion; relaxing it to "no red node has a red child, and all root-to-leaf paths have equal black-height" buys cheaper rebalancing at the cost of slightly worse balance. That is step 5 producing a new structure.
 
 ---
 
 ## 3. Tool 1: Augmentation — The 80% Tool
+
+### 💬 Study-Partner View — Augmentation
+
+**1. The bottom line:** Take a structure you already trust and store one extra piece of information in each node so a new question becomes cheap.
+
+**2. The textbook core:**
+
+- Pick a base (balanced BST, hash map, linked list) and add a field (subtree size, max end point, min so far).
+- Define the field with a **local rule** from children (e.g. `size = size(left) + size(right) + 1`) so updates stay O(1) per node on the path.
+- Update the field on every insert, delete and rotation.
+- Examples: order-statistic tree, interval tree, LRU cache (hash map + list), Min Stack.
+
+**3. The real-world analogy:** A **filing cabinet with a count written on each drawer**: you no longer open every drawer to know how many files are on the left.
+
+**4. Walkthrough:**
+
+1. Goal: `rank(x)` in a BST in O(log n).
+2. Augment each node with `size` of its subtree.
+3. Search for x; each time you go right, add `size(left) + 1` to a running rank.
+4. At x add `size(left) + 1`; total work is the path length, O(log n).
+
+> [!NOTE]
+> **Quick check:** What must you verify after adding a field? *That every mutation (including rotations) keeps the field correct.*
+
 
 **The most practical design tool by a wide margin.** Most "new" structures you will ever need in production are an existing structure carrying extra bookkeeping.
 
@@ -315,6 +380,30 @@ Naming which of these two systems you are building — before choosing the struc
 
 ## 6. Tool 4: Randomization — Buying Simplicity With Probability
 
+### 💬 Study-Partner View — Randomization as a Design Tool
+
+**1. The bottom line:** When the deterministic fix is complicated, a random choice can give the same expected performance with much simpler code.
+
+**2. The textbook core:**
+
+- Randomness replaces bookkeeping: random priorities (treap), random levels (skip list), random hash functions (universal hashing).
+- You trade a **worst-case** guarantee for an **expected** or **high-probability** one.
+- Analyse with expectation and tail bounds, not examples.
+- Document the failure mode (extremely unlikely, but possible) and consider seeding for reproducibility in tests.
+
+**3. The real-world analogy:** Shuffling a deck before dealing: instead of arranging cards cleverly to avoid a bad hand, you let the shuffle make a bad arrangement unlikely.
+
+**4. Walkthrough:**
+
+1. Need: a balanced search tree with minimal code.
+2. Give each key a random priority; keep the heap order with rotations (treap).
+3. The tree has the same shape as a random BST, so expected height is O(log n).
+4. Total code is far shorter than red-black deletion logic.
+
+> [!NOTE]
+> **Quick check:** What do you give up? *The strict worst-case guarantee; you rely on probability.*
+
+
 ### 6.1 The trade
 
 Deterministic balanced trees (AVL, Red-Black) achieve O(log n) worst case at the cost of substantial rebalancing machinery: rotation cases, colour rules, and deletion logic that is famously fiddly to get right.
@@ -354,6 +443,30 @@ The insight worth extracting: **a random process can produce a good structure in
 ---
 
 ## 7. Tool 5: Laziness — Deferring Work Until It Pays
+
+### 💬 Study-Partner View — Laziness (Deferred Work)
+
+**1. The bottom line:** Do not pay for work until a query actually needs it, and then do it once for many updates.
+
+**2. The textbook core:**
+
+- **Lazy deletion:** mark items deleted and clean up later (tombstones, lazy heaps).
+- **Lazy propagation:** a segment tree delays pushing range updates to children until a query descends there.
+- **Lazy rebuild:** collect many changes, rebuild once (e.g. batch-resize).
+- Cost: extra state and the invariant must say "pending work is recorded in `lazy`".
+
+**3. The real-world analogy:** A **mailroom that sorts mail only when someone asks for their post**: if nobody asks for a department's mail all day, that sorting is never done.
+
+**4. Walkthrough:**
+
+1. Range-add +5 on `[2, 7]` in a segment tree.
+2. Update only the O(log n) nodes fully covered and store `lazy = +5` there.
+3. A later query touching a covered node pushes the pending +5 down to its two children.
+4. Many updates cost O(log n) each instead of O(range size).
+
+> [!NOTE]
+> **Quick check:** What invariant do you maintain? *A node's stored value is correct once all `lazy` tags above it are applied.*
+
 
 **The design move:** do not do work when asked; record that it *needs* doing, and do it when the answer is actually required — or never, if the request is superseded.
 
@@ -480,6 +593,30 @@ This case study is the clearest illustration that **there is no universally best
 
 ## 10. Worked Invention: Deriving the Fenwick Tree From Nothing
 
+### 💬 Study-Partner View — Fenwick Tree (Binary Indexed Tree)
+
+**1. The bottom line:** A Fenwick tree stores partial sums in a clever layout so both "prefix sum" and "update" take O(log n) with a tiny array.
+
+**2. The textbook core:**
+
+- Array `bit[1..n]` where `bit[i]` stores the sum of the `lowbit(i)` elements ending at `i` (`lowbit(i) = i & -i`).
+- `update(i, δ)`: `while i <= n: bit[i] += δ; i += i & -i`.
+- `prefix(i)`: `sum = 0; while i > 0: sum += bit[i]; i -= i & -i`.
+- O(log n) per operation, O(n) space, optimal for dynamic prefix sums (cell-probe bound Ω(log n)).
+
+**3. The real-world analogy:** Keeping **running totals for blocks of different sizes** (a block of 1, 2, 4, 8 days...) so any total can be made by adding a few non-overlapping blocks.
+
+**4. Walkthrough:**
+
+1. n = 8. `prefix(7)`: i = 7 (111) → add `bit[7]` (covers 7); i = 6 (110) → add `bit[6]` (covers 5–6); i = 4 (100) → add `bit[4]` (covers 1–4); i = 0 stop.
+2. Three additions cover positions 1–7 exactly.
+3. `update(5, +3)`: i = 5 → `bit[5]`; i = 6 → `bit[6]`; i = 8 → `bit[8]`; i = 16 stop.
+4. Only the blocks containing position 5 are changed.
+
+> [!NOTE]
+> **Quick check:** Why `i & -i`? *It isolates the lowest set bit, which is the size of the block that `bit[i]` covers.*
+
+
 This section is the chapter in miniature. **Do not read ahead — try each step first.** The Fenwick tree (Binary Indexed Tree, Peter Fenwick, 1994) is the best available exercise because it is genuinely derivable, and because most people memorize it without ever seeing where it comes from.
 
 ### Step 1: Specify
@@ -575,14 +712,17 @@ You met the contract with a structure of **exactly n cells** (no extra space, un
 A structure you designed yourself has no community of users to find its bugs. You must be that community. Run all five stages.
 
 ### Stage 1: Invariant audit
+
 Write `checkInvariants()` (§4.2) and call it after **every** operation in tests. Most design bugs are invariant violations, and they surface immediately under this discipline while being nearly invisible without it.
 
 ### Stage 2: Correctness proof by induction
+
 - **Base case:** the empty structure satisfies all invariants.
 - **Inductive step:** for each operation, assume invariants hold before; show they hold after.
 - An operation you cannot argue this for is an operation you do not understand yet.
 
 ### Stage 3: Complexity proof
+
 Choose the appropriate method from [A2](A2_DS_Complexity_FirstPrinciples.md):
 - **Aggregate:** bound the total cost of n operations, divide by n.
 - **Accounting:** assign each operation a charge; show credits never go negative.
@@ -591,6 +731,7 @@ Choose the appropriate method from [A2](A2_DS_Complexity_FirstPrinciples.md):
 State which case you proved — worst, average, or amortized — and, if average, **state the distributional assumption explicitly**. An unstated assumption is where "fast in benchmarks, slow in production" is born.
 
 ### Stage 4: Adversarial attack
+
 Deliberately construct the worst input for *your specific design*:
 
 | Design element | Adversarial input |
@@ -604,6 +745,7 @@ Deliberately construct the worst input for *your specific design*:
 If you cannot construct one, either your structure is genuinely robust or you have not attacked hard enough. Assume the latter first.
 
 ### Stage 5: Differential (model-based) testing
+
 Implement the same contract with a deliberately stupid, obviously-correct reference (e.g. a plain array with O(n) scans). Then run millions of random operation sequences against both and compare every result.
 
 ```java
@@ -710,18 +852,32 @@ void delete(T x) {
 
 ---
 
-**Navigation**: [← A4: Randomized Data Structures](A4_Randomized_Data_Structures.md) | [📚 DS Index](00_INDEX.md) | [Algorithms A5: Designing Your Own Algorithms →](../03_Algorithms/A5_Designing_Your_Own_Algorithms.md)
 
 ---
 
 ## Reality Check
 
-**"Designing a data structure means inventing something nobody has built"** → Almost every custom structure in production is a *composition* or an *augmentation* of standard ones — LRU is a map plus a linked list, an indexed priority queue is a heap plus a map, an interval tree is a BST plus one cached field. The genuinely novel structure is rare and usually a research contribution. Aiming for "novel" makes the skill feel unreachable; aiming for "assembled and augmented correctly to meet my contract table" makes it a Tuesday afternoon.
+> [!CAUTION]
+> **Myth:** "Designing a data structure means inventing something nobody has built"
+>
+> **Reality:** Almost every custom structure in production is a *composition* or an *augmentation* of standard ones — LRU is a map plus a linked list, an indexed priority queue is a heap plus a map, an interval tree is a BST plus one cached field. The genuinely novel structure is rare and usually a research contribution. Aiming for "novel" makes the skill feel unreachable; aiming for "assembled and augmented correctly to meet my contract table" makes it a Tuesday afternoon.
 
-**"You start designing by thinking about the implementation"** → You start by writing the operation-contract table (§1.1). Designs that begin at the implementation produce structures that solve a problem adjacent to the real one, and the mismatch surfaces only after the code exists. The table is also what makes the design *reviewable* — a colleague can challenge a required complexity in one sentence, where challenging half-written code takes an afternoon.
+> [!CAUTION]
+> **Myth:** "You start designing by thinking about the implementation"
+>
+> **Reality:** You start by writing the operation-contract table (§1.1). Designs that begin at the implementation produce structures that solve a problem adjacent to the real one, and the mismatch surfaces only after the code exists. The table is also what makes the design *reviewable* — a colleague can challenge a required complexity in one sentence, where challenging half-written code takes an afternoon.
 
-**"A correct-looking implementation that passes tests is a validated design"** → Hand-written tests exercise the sequences you imagined; custom structures fail on the sequences you did not. The validation protocol (§11) exists because invariant checks after every operation, an inductive correctness argument, a stated complexity proof, a deliberate adversarial input, and differential testing against a stupid reference each catch a *different* class of defect. Passing tests is stage zero of five.
+> [!CAUTION]
+> **Myth:** "A correct-looking implementation that passes tests is a validated design"
+>
+> **Reality:** Hand-written tests exercise the sequences you imagined; custom structures fail on the sequences you did not. The validation protocol (§11) exists because invariant checks after every operation, an inductive correctness argument, a stated complexity proof, a deliberate adversarial input, and differential testing against a stupid reference each catch a *different* class of defect. Passing tests is stage zero of five.
 
-**"Amortized O(1) is as good as worst-case O(1)"** → They are equivalent for throughput systems and materially different for latency-bounded ones. Amortized O(1) permits one operation in the sequence to genuinely take O(n) — fine for a batch job, potentially a dropped frame or a violated p99.9 SLA in a real-time system. The design decision is upstream of the structure choice: *decide which kind of system you are building*, then pick bounds accordingly, and know that deamortization (spreading the expensive work across operations) is available when you need worst-case guarantees.
+> [!CAUTION]
+> **Myth:** "Amortized O(1) is as good as worst-case O(1)"
+>
+> **Reality:** They are equivalent for throughput systems and materially different for latency-bounded ones. Amortized O(1) permits one operation in the sequence to genuinely take O(n) — fine for a batch job, potentially a dropped frame or a violated p99.9 SLA in a real-time system. The design decision is upstream of the structure choice: *decide which kind of system you are building*, then pick bounds accordingly, and know that deamortization (spreading the expensive work across operations) is available when you need worst-case guarantees.
 
-**"If a standard structure exists, designing your own is always wasted effort"** → True in production, false in learning — and the distinction matters because the learning transfers back. Deriving the Fenwick tree (§10) does not make you ship a Fenwick tree; it makes you able to *read* one, recognize when a problem wants one, and debug the library version when it misbehaves. The production rule (§12: use the standard structure) and the learning rule (build it once from the contract) are not in conflict — they operate at different times, and skipping the second is why so many engineers can call `TreeMap` and cannot say what it costs them.
+> [!CAUTION]
+> **Myth:** "If a standard structure exists, designing your own is always wasted effort"
+>
+> **Reality:** True in production, false in learning — and the distinction matters because the learning transfers back. Deriving the Fenwick tree (§10) does not make you ship a Fenwick tree; it makes you able to *read* one, recognize when a problem wants one, and debug the library version when it misbehaves. The production rule (§12: use the standard structure) and the learning rule (build it once from the contract) are not in conflict — they operate at different times, and skipping the second is why so many engineers can call `TreeMap` and cannot say what it costs them.

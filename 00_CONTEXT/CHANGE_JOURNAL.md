@@ -4,6 +4,145 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - Resolve Pass: Fences, Broken Mermaid, 07_Modern_Java Diagrams and Tables
+
+Scope: repo-wide fence and Mermaid fixes, and the full `07_Modern_Java` conversion that the 02-06 entry below left out.
+
+- **Fences.** Fixed unbalanced code fences in `10_Enterprise_Systems/02_ERP_Advanced.md`, `15_React_Frontend/01_React_Fundamentals.md`, `25_Python_ML_DL_NLP/12_Recommender_Systems.md`, `07_Modern_Java/Ch18_JMM_GC_Deep.md`; swallowed fences (headings, `<details>` or Java inside ```text) repaired in several 07 chapters. `tools/update_context.py` now skips `node_modules/`, so `check --strict-fences` passes.
+- **Broken Mermaid.** 21 diagrams outside 02-06 parsed but did not render (subgraph without `end`, unquoted parentheses, `Loop` as a reserved word, `;` in sequence messages). Fixed in 07, 10, 14, 15, 16, 21, 22. All 164 blocks in `07_Modern_Java` now render in Chromium.
+- **07_Modern_Java.** ASCII diagrams became Mermaid (each with a "How to read this diagram" note where added), ASCII or pseudo tables became GitHub Markdown tables, step guides became numbered lists, and `<br>`-packed garbled tables were rewritten row by row (Ch13, 15, 16, 19, 26, 27, 32, 33, 42, 61-64, 68). No Java/XML/YAML/SQL code block was lost (counts compared with the previous commit). Facts fixed on the way: Sleuth replaced by Micrometer Tracing in the Spring Cloud table (Boot 3), `invokedynamic` string concat is Java 9+, Ch42 protocol and HTTP anatomy tables rebuilt.
+- **Still open (do next).** (1) Run-on plain-text lines in older `03_Algorithms` pages (for example `07a_Advanced_DS_Core/01_deep_internals_...`, `06a_Greedy_BitManip`): consecutive plain lines render as one paragraph and need list or table form. (2) About 140 Mermaid diagrams outside 02-06 (23 of them in 07) lack a "How to read this diagram" note. (3) Tree-style ASCII (folder trees, small diagrams in code comments) is intentionally left as text.
+
+Verification: `python3 tools/update_context.py update` then `check --strict-fences` pass; every fence is balanced in 07; 164/164 Mermaid blocks render (`tools/mermaid-check`, run with Chromium at `/opt/pw-browsers/chromium`).
+
+## 2026-10-24 - Diagrams to Mermaid and Tables to Markdown in 02-06
+
+Scope: `02_Data_Structures`, `03_Algorithms`, `04_Patterns_Templates`, `05_Problem_Solving`, `06_OOP_Design` (267 files). `07_Modern_Java` is out of scope here (its functional-programming pages were already clean; its other ASCII blocks remain).
+
+- **Diagrams.** Mermaid blocks in these folders went from 153 to 283 (flowcharts, sequence diagrams, class and state diagrams). Each new diagram is followed by a "How to read this diagram" explanation. Where a diagram could not be a graph (grids, memory layouts, step traces, window slides), it became a Markdown table.
+- **Tables.** ASCII box tables, banner boxes and `|`-separated pseudo-tables became GitHub Markdown tables; 13 broken Markdown tables were repaired, and three tables with unescaped `|` inside code spans were fixed.
+- **Errors found in the old figures and fixed.** Counting-sort and union-find figures (04); segment-tree heap indices, the trie that dropped `care`, the quadtree quadrant for `(1,4)`, Java array header sizes, and the complexity-hierarchy figure that put NP-hard inside PSPACE (03); the 8-direction shortest path (the centre cell was blocked, so the answer is 4 cells), the largest-island example (island sizes were wrong; the answer is 7), the trapping-rain-water-II total (3, not 4), the rising-water walkthrough, the minimum-window and flip-zeros traces (05); a domino-tiling broken-profile DP whose code returned 0 for 2x2 (now correct and checked against 2x2=2, 3x4=11, 8x8=12,988,816); monotonic-stack orientation labels. Invented benchmark numbers (DP cache and modulo timings, "ArrayDeque is 2-3x faster") were replaced with qualitative guidance.
+- **Pages rebuilt where the ASCII had been split across several fences:** `03c_Recursion_Advanced/04` (mutual recursion, CPS, Y-combinator; all code compiled and run on Java 21), `02c_Divide_And_Conquer`, `06c/04_np_hard_and_np_complete`, `08b/04` (study plan is now week tables, with calendar dates removed because the weekdays did not match), `24_Common_Mistakes` ("MISTAKE" fences became headed Java blocks), `06_OOP_Design/08/04_builder_vs_telescoping`.
+- Leftover ASCII is intentional: file-system trees, small index diagrams inside Java comments, and math underlines in proofs.
+
+Verification: all 283 Mermaid blocks render in Chromium, 0 broken file links or anchors in 489 files, balanced code fences and `<details>`, one H1 per page, every table row has the header's column count.
+
+## 2026-10-24 - 06_OOP_Design Repair, Fact Check, Book Audit and Upgrade
+
+- **Fact check.** Rewrote every "Historical Evolution" and "Production Reality" block in 01-08 against attributable sources. Removed invented or wrong claims: a fabricated 2014 parking-app incident, a 2019 Tokyo elevator story, "Christian 1972" LOOK attribution (Denning 1967 and Teorey and Pinkerton 1972 are the real references), a 2020 Twitter fan-out incident, Stripe "3D key", Prime Day 2018 "$99M", "Paxos tolerates Byzantine failures", CAP "1999 / Fischer", the Cloudflare 2019 regex description, the Facebook 2019/2021 outage mix-up, the Cisco IOS 2018 bug class, the Boeing MCAS SOLID mapping, and arithmetic errors (a 2-hour outage against a 99.99% budget). Knight Capital, Healthcare.gov, S3 2017, Cloudflare 2019 and Therac-25 now follow primary reports. Unsourced scenarios are labelled illustrative.
+- **Books in the repository.** Added `00_BOOK_COMPANION.md` mapping _Head First Design Patterns_, _GOOS_, Evans' _DDD_, Cohn's _User Stories Applied_ and _Software Design Decoded_ to chapters and pages (chapter titles checked against each book's table of contents).
+- **Gap pages with Java 21 code that was compiled and run:** `09_Domain_Driven_Design_Essentials.md`, `10_Stories_To_Design.md`, `11_Design_Heuristics.md`, `12_Remaining_GoF_Patterns.md` (the ten GoF patterns that had no section), `13_LLD_Reference_Implementations.md` (complete versions of the five LLD outlines with concurrency and property tests).
+- Added Bridge, study-partner explainer, Check-yourself sets and Enterprise Lens to the ten existing chapters; new `00_LEARNING_PATH.md`; `00_INDEX.md` rewritten (reading order, Mermaid roadmap); `CONTEXT.md` folder map rebuilt as Mermaid (the old ASCII map used folder names that do not exist).
+- Six chapters over 1,000 lines became hubs plus 24 topic pages; navigation regenerated in reading order.
+- Seven ASCII architecture boxes in `05_SD_Interview_Problems.md` became Mermaid diagrams; a rate-limiter Lua example that refreshed the window on every request was corrected. About 97 ASCII text boxes remain (monospace blocks, not diagrams).
+
+Verification: all Mermaid blocks render (17/17), 0 broken file links or anchors, balanced fences and `<details>`, one H1 per page.
+
+## 2026-10-24 - 05_Problem_Solving Repair, Fact Check and Upgrade
+
+- Removed 70 duplicated challenge items; fixed heading structure (one H1 per page), stray navigation lines and BOMs.
+- **Fact check.** Rewrote 22 "Historical Evolution" blocks (removed invented attributions, for example a Dijkstra/ARPANET link, "Mauchly implemented binary search on EDVAC", wrong CodingBat/LeetCode credits). Replaced 18 fabricated "Real-world anchor" incidents (invented GitHub, Apple, Google, NASA, United Airlines and Netflix stories) with documented cases (Ariane 5, Mars Climate Orbiter, Morris worm, Cloudbleed, Heartbleed, Therac-25, Cloudflare 2019 regex outage, Bloch 2006 binary search) or neutral statements; corrected wrong figures (HashMap resize example, JVM stack depth, `Scanner` speed claim) and labelled generic "Production impact" lines as illustrative.
+- `25_Problem_Origins.md`: added a reliability legend; documented history (Moore, Dijkstra, Hoare, von Neumann, Bellman, Luhn) kept, dramatised company scenarios relabelled "Illustrative Scenario" and made generic; removed the invented company table and quote.
+- Added Bridge, study-partner explainer, Check-yourself sets (verified answers) and Enterprise Lens to all 25 chapters.
+- **Six new tested problem pages** (Java compared with brute force on 1,500 random cases): 26 Intervals, 27 Union-Find, 28 Prefix Sums, 29 Topological Sort, 30 Tries, 31 Shortest Paths.
+- New `00_LEARNING_PATH.md`; `00_INDEX.md` reading order rewritten (the old order did not match the files); company tags marked unverified.
+- 19 long pages split into hubs plus 82 topic pages; navigation regenerated in reading order.
+
+## 2026-10-24 - Reader-Experience Pass on 02, 03, 04 (and FP gaps in 07)
+
+Driven by a reader-perspective review of the folders.
+
+- **Long files split.** 48 chapters over 1,000 lines became chapter hubs (bridge, explainer, at-a-glance, Enterprise Lens, a topic-page table) plus 212 topic pages in same-named sub-folders (median ~290 lines). Verified: zero lost lines against the original text, zero broken links or anchors in 02/03/04, all Mermaid blocks render, fences and `<details>` balanced, exactly one H1 per page.
+- **Navigation.** Previous/next links regenerated in reading order (A-series theory tracks separate); cleaner chapter titles for hubs whose first heading was a "Part N" label.
+- **Duplicated filler removed.** 136 copy-pasted "Section Challenge"/"Challenge N" blocks (the same Fibonacci bug-hunt and similar appeared up to 14 times in one file) kept only in their best-fitting section; the five-step debug workflow that appeared in 25 pattern chapters now lives once in the Master Guide; the identical "Review checklist" row (83 copies) now appears once per folder index.
+- **Personal/unverified content.** "From your Excel sheet" sections renamed Practice Problems with a note that company tags are community-reported and unverified (13 files).
+- **Rendering.** 60 `:::` container blocks (pattern, example, memory, map, timeline, warning, danger, invariants) that only render in Docusaurus-style tools were unwrapped or converted to GitHub callouts in `02a`/`02b`. Heading levels normalised (one H1 per file, no skipped levels, chapter-level sections at H2). Flattened BFS/DFS diagrams and the Fibonacci/LCS visuals in `04/03_Visual_Diagrams.md` rebuilt as Mermaid and tables.
+- **Content.** "Check yourself" sets (2-3 questions with verified answers) added to 31 pattern chapters and 35 algorithm chapters. Further fact corrections in `02/01g` (Simula 67, C 1972, universal hashing 1977, AVL order, `@Contended` JEP 142, Optane end), `01f` (splay 1985, PostgreSQL default index), `05` and `A3`.
+- **Encoding.** 205 files repo-wide had cp1252 bytes (`0x97`, `0xb7`) or `** ?` separators; repaired. One remaining structural defect noted in `22_DevOps/06_TCP_UDP_Deep_Dive.md` (a challenge block pasted inside a diagram fence).
+- **FP series.** Added `Ch06h` Parser Combinators and `Ch06i` Validation & IO as Descriptions (Java verified by tests, including 1,000 random expressions), closing two gaps listed in `Ch06a`.
+
+## 2026-10-24 - 07_Modern_Java: Functional Programming Foundations Series (Ch06a-Ch06g)
+
+- Added seven one-topic pages after `Ch06_Functional_Programming.md`, guided by the topic list of *Functional Programming in Scala* (Chiusano and Bjarnason, Manning 2014; the book file is not in the repo and was not reproduced): learning path and book map (Ch06a), purity and effects (Ch06b), ADTs and immutable lists (Ch06c), Option/Either (Ch06d), laziness (Ch06e), pure state and property-based testing (Ch06f), monoids/functors/monads (Ch06g).
+- All Java 21 code compiled and tested (list folds, Either pipelines, lazy streams and sieve, pure RNG, state monad, property harness, monoid/functor/monad laws, balanced fold vs linear fold on 500 random lists).
+- Known open gaps listed in Ch06a: parser combinators, from-scratch parallelism library, applicative/traversable theory, IO monad library.
+- Observed (not yet fixed): `07_Modern_Java` contains cp1252 encoding damage in other chapters; schedule for the folder-level pass.
+- `00_INDEX.md` and `CONTEXT.md` of `07_Modern_Java` updated.
+
+## 2026-10-24 - 04_Patterns_Templates Repair, Fact Check and Enterprise Upgrade
+
+- Repaired encoding in 18 files (cp1252 bytes, `** ?` separators, replacement characters), the headerless pattern table in `00_INDEX.md`, the broken HashMap diagram in `03_Visual_Diagrams.md` (now Mermaid) and three dead cross-links.
+- Rewrote every "Historical Evolution" block (25 files): removed fabricated or misattributed claims (e.g. "Knuth Algorithm 245" - actually Floyd's Treesort 3, invented authors, wrong years, Stanford/KACTL, Meyers/STL, Barbay et al., Hadian/Edalat) and replaced them with attributable history.
+- Added Bridge, study-partner explainer and Enterprise Lens to all 25 pattern chapters and the Master Guide; Master Guide decision flow converted to Mermaid.
+- Added `00_LEARNING_PATH.md` (abstraction ladder, dependency graph, ordered bridges, question-shape matrix, gap table) and rewrote `00_INDEX.md`.
+- Added six one-topic pattern pages with Java verified against brute force: 26 Prefix Sum & Difference Array, 27 Union-Find, 28 Topological Sort, 29 Trie, 30 Shortest Paths (BFS/0-1 BFS/Dijkstra/Bellman-Ford), 31 Top-K & Two Heaps.
+- `CONTEXT.md` updated with the standard-blocks and one-topic-one-page rules.
+
+## 2026-10-24 - Book Audit: 03_Algorithms Chapter 27, Book Companion, 02_Data_Structures History Fact Check
+
+- Audited `03_Algorithms` against the two reference books in the repo root (Competitive Programmer's Handbook; Programming Challenges). Found nine topics with zero coverage (Catalan, Burnside, Cayley/Prüfer, Kirchhoff, Wilson, Dilworth, Josephus, linear Diophantine, Stern-Brocot).
+- Added `03_Algorithms/27_Combinatorics_Counting_Toolkit.md` (all Java verified against brute force: Catalan DP/closed form/parentheses count, derangements, Burnside vs canonical form, Prufer round trip, Kirchhoff vs brute force and K_n, Wilson vs trial division, Josephus vs simulation, Dilworth vs brute-force antichain, Diophantine, Stern-Brocot).
+- Added `03_Algorithms/00_BOOK_COMPANION.md` (chapter maps for both books, input-size to complexity table, meet-in-the-middle pattern verified against brute force, working-method checklist, open gaps: de Bruijn sequences, knight's tours, Stirling numbers, integer partitions).
+- Updated `03_Algorithms/00_INDEX.md`, `00_LEARNING_PATH.md` (dependency graph, ordered table, gap table), `CONTEXT.md` (one-topic-one-page rule for new material), chapter 26 navigation.
+- `02_Data_Structures` history fact check: memory timeline (01a), stack/queue history (01d), tree/heap timeline (01f), Bloom filter and HyperLogLog attribution (A4), AVL and monotonic-queue claims (02b).
+
+## 2026-10-24 - 03_Algorithms Fact Check and Diagram Pass
+
+- Fact-checked every "Historical Evolution" paragraph, the algorithm timeline, the production map and the war-stories chapter; ~65 corrections. Notable: Fenwick tree is 1994 (not 1964); "Mo, Q. I. 1993" was invented (Mo's algorithm was popularised c. 2009 by Mo Tao); Aho–Corasick is 1975; skip lists 1989–90; Floyd–Warshall 1962; HyperLogLog never won a Gödel Prize; OSPF runs Dijkstra (not BFS); BLAST is a heuristic, not DP; Java 11 did not remove `Vector`/`Stack`; `ConcurrentHashMap` dates from Java 5; Effective C++ is by Meyers; Knuth optimization does not apply to matrix-chain multiplication; Bloom worked at the Computer Usage Company; Dijkstra with a Fibonacci heap is O(E + V log V); Kosaraju's algorithm was published by Sharir (1981); BigInteger has no FFT multiplication; made-up citations (Algorithm 245 "Treesort" by Knuth, "Park and Chin 1997", "Guy Bowl 1979", Shamos 1978 shoelace) removed.
+- Converted the highest-value ASCII diagrams (algorithm-selection flow, tree rotation, LSM write path, R-tree, Merkle tree, Bloom filter, Count-Min, consistent hashing) to Mermaid.
+
+## 2026-10-24 - 03_Algorithms Repair, Curriculum Audit and Enterprise Upgrade
+
+- Repair: cp1252 bytes fixed in 7 files (`03c`, `06`, `06c`, `06d`, `07a`, `07e`, `13_Algorithms_In_Production`); lost `→` in Reality Check lines restored; unbalanced/stray code fences fixed in `03b`, `04c`, `05e`; fenced-prose and flattened code/diagrams rebuilt in `03b`, `04a`–`04c`, `06a`, `07a`, `15`; broken tables repaired (`00_INDEX`, `02a`, `07c`, `15`, `16`); 7 stale cross-module links fixed.
+- Curriculum audit (coverage matrix in `00_LEARNING_PATH.md`): found matrix exponentiation, game theory (Sprague-Grundy), approximation/online/LP and FFT/NTT missing or thin and binary search not taught as a reusable idea. Added chapters `22`–`26` with Java that was compiled and cross-checked against brute force.
+- Flow: new `00_LEARNING_PATH.md` (abstraction ladder, dependency graph, ordered bridge table, coverage matrix, quality standard); `00_INDEX.md` rewritten in true reading order with corrected links; file-name/content mismatches (`06a`, `06d`, `06e`, `07b`, `08a`, `08b`) documented rather than renamed to keep links valid.
+- Enterprise upgrade: 45 chapters gained a Bridge box, a four-part study-partner explainer and an Enterprise Lens (production use, failure modes, testing, review checklist).
+- Not done in this pass: ~200 remaining ASCII box diagrams in `03_Algorithms` are still in `text` code fences (safe but not Mermaid); conversion continues chapter by chapter.
+
+## 2026-10-24 - 02_Data_Structures Study-Partner Views, Batch 2
+
+- Added 44 more topic-level `💬 Study-Partner View` blocks: `A1` §2–10 (array, linked list, stack/queue, hash table, BST, heap, trie, union-find invariants; stating invariants), `A2` (accounting, potential, space, amortized vs average), `A3` (comparison, cell-probe, information-theoretic, union-find bounds), `A4` (skip list, treap, Bloom, cuckoo, Count-Min, HyperLogLog, consistent hashing, MinHash), `A5` (augmentation, randomization, laziness, Fenwick tree), `03` (List, Map, Set, Queue), `01a` (memory hierarchy, stack vs heap, bit manipulation), `01g` (ArrayList, HashMap, LinkedList, TreeMap, PriorityQueue internals), `05` (Big-O vs cache lines, B-tree vs LSM, Bloom filters).
+- The folder now has 72 topic-level views plus a chapter-level explainer in every content file.
+- Verification: no unfenced box art, fences balanced, 93 Mermaid diagrams render.
+
+## 2026-10-24 - 02_Data_Structures Topic-Level Study-Partner Views
+
+- Added 28 topic-level `💬 Study-Partner View` blocks (bottom line / textbook core / analogy / walkthrough / quick check) for: the five linked-list variants (`02a` 1.1–1.5); Min/Max stack, circular queue, deque, monotonic queue, binary tree types, AVL, red-black, heap variants, hash-table variants (`02b`); sub-arrays, subsequences, searching, sorting, frequency/duplicates, circular arrays (`01b`); Floyd cycle detection (`01c`); stack/DFS and queue/BFS (`01d`); subarray-sum-equals-K (`01e`); tree traversals (`01f`); spiral traversal and matrix rotation (`04`).
+- Added chapter-level explainers to `00_DS_PROBLEM_BRIDGES.md` and `02_PROBLEM_SETS.md`, so every content file in the folder now follows the layout.
+- Re-audit of the folder: all files valid UTF-8, no unfenced box art, tables well-formed, fences balanced, 93 Mermaid diagrams render.
+
+## 2026-10-24 - 02_Data_Structures Study-Partner Explainers
+
+- Added a four-part `💬 Explain It Like a Study Partner` section (bottom line, textbook core, real-world analogy, walkthrough + quick check) to `01a`–`01g`, `02a`, `02b`, `03`, `04`, `05` and `A1`–`A5`, placed before each chapter's `⚡ At a Glance` block.
+- Documented the layout in `02_Data_Structures/CONTEXT.md` (Writing Style) and `00_INDEX.md` ("How the Chapters Explain Things").
+- Verification: `tools/mermaid-check` renders all 93 diagrams; fences balanced.
+
+## 2026-10-24 - 02_Data_Structures ASCII Diagrams to Mermaid
+
+- Converted ~70 ASCII box/tree/decision-tree diagrams across `01a`–`01g`, `02`, `02a`, `02b`, `03`, `04`, `05`, `A1`–`A5` to colour-styled Mermaid diagrams (flowcharts, mindmap) plus explanatory tables; every diagram has a "How to read this diagram" note.
+- 5W1H ASCII cards became `> [!NOTE]` callouts; "X - COMPLETE GUIDE" cards became headings, tables and lists; keyword/complexity boxes became tables.
+- Fact corrections made while converting: Metaspace sits outside the heap; Bloom filters are within ~1.44x of the information-theoretic bound (not exactly optimal); Collections Framework arrived in Java 1.2; B-tree 1970/72; HNSW authors; Kafka partitions are append-only logs, not ring buffers; Redis uses sampled LRU, not a linked list; splay-tree year 1985; A2 binary-counter worked table recomputed.
+- Verification: `tools/mermaid-check` renders all 93 diagrams in the folder; no unfenced box-drawing characters; all tables well-formed.
+
+## 2026-10-24 - 02_Data_Structures Presentation Upgrade
+
+- Added an "At a Glance" block (mental model callout, colour-styled Mermaid diagram, complexity/decision table) to the index, `01a`–`01g`, `02a`, `02b`, `03`, `04`, `05` and `A1`–`A5`.
+- Converted ~270 single-paragraph "What breaks / Defense / Fix / Key insight / Constraint warning / Invariant learned / Lesson learned" lines and all Reality Check myths into GitHub callouts (`> [!CAUTION]`, `[!TIP]`, `[!WARNING]`, `[!IMPORTANT]`, `[!NOTE]`).
+- `01a`: replaced the two oversized ASCII boxes (JVM memory layout, stack frame) with Mermaid diagrams plus tables; corrected Metaspace, which sits outside the heap in modern JVMs.
+- `05`: fixed a Mermaid parse error in the LSM-tree diagram and added its explanation.
+- Verification: `tools/mermaid-check` renders all 20 diagrams in the folder.
+
+## 2026-10-24 - 02_Data_Structures Encoding, Table and Fence Repair
+
+Formatting-only repair of `02_Data_Structures/` (no teaching content changed):
+
+- `A1`–`A4`: cp1252 em-dash bytes (`0x97`) that broke UTF-8 decoding replaced with `—`; lost `→` in Reality Check bullets (`** — `) restored.
+- `01a`, `01g`, `04`: flattened code, assembly, bit-trick and memory-layout blocks rebuilt as fenced code; broken `┼───┼` pseudo-tables converted to real Markdown tables; ASCII diagrams (cache line, hash chain, red-black bucket, BST, heap, graph) redrawn.
+- `01c`, `02b`: unbalanced code fences fixed (stray/missing ``` markers).
+- `01f`: AVL row in the tree comparison table fixed (escaped `\|`, header/separator column count).
+- `01g`: lost `#` in the keycap heading restored (`#️⃣`).
+- Verification: all 22 files decode as UTF-8; fences balanced; no unfenced box-drawing characters; every table has a header separator and consistent column counts.
+
 ## 2026-07-26 - 21_SDET_Playwright_Automation Explanation Clarity Review
 
 Added a file-by-file clarity review for the Playwright/SDET module:

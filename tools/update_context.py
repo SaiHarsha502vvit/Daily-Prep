@@ -69,6 +69,8 @@ STYLE_RULES = [
 
 
 def should_skip(relative: str) -> bool:
+    if "/node_modules/" in "/" + relative:
+        return True
     for pat in SKIP_PATTERNS:
         if relative.startswith(pat):
             return True

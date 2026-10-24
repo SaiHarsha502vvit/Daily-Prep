@@ -63,18 +63,16 @@ var entry = Map.entry("key", 42);       // Map.Entry<String, Integer>
 // var as field type         // Only local variables
 ```
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN TO USE var:                                                               │
-│  ✅ Type is obvious from right side: var list = new ArrayList<String>()          │
-│  ✅ Long generic types: var map = service.getComplexMap()                        │
-│  ✅ Try-with-resources: try (var br = new BufferedReader(...))                   │
-│                                                                                 │
-│  WHEN NOT TO USE:                                                               │
-│  ❌ Type isn't clear: var result = process(data)  // What's result?              │
-│  ❌ Numeric literals: var count = 0  // int? long? byte?                         │
-│  ❌ When it hurts readability                                                    │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+WHEN TO USE var:
+✅ Type is obvious from right side: var list = new ArrayList<String>()
+✅ Long generic types: var map = service.getComplexMap()
+✅ Try-with-resources: try (var br = new BufferedReader(...))
+
+WHEN NOT TO USE:
+❌ Type isn't clear: var result = process(data)  // What's result?
+❌ Numeric literals: var count = 0  // int? long? byte?
+❌ When it hurts readability
 ```
 
 ---
@@ -140,21 +138,20 @@ public record User(String name, int age) {
 // ❌ Have additional instance fields
 ```
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN TO USE RECORDS:                                                            │
-│  ✅ DTOs (Data Transfer Objects)         record UserDTO(String name, String email)│
-│  ✅ API responses                        record ApiResponse<T>(T data, int code)  │
-│  ✅ Value objects (DDD)                  record Money(BigDecimal amount, Currency)│
-│  ✅ Configuration holders                record DbConfig(String url, int pool)    │
-│  ✅ Compound map keys                    record CacheKey(String type, long id)    │
-│  ✅ Method return types (multiple vals)  record ParseResult(int value, int pos)   │
-│                                                                                  │
-│  DON'T USE WHEN:                                                                 │
-│  ❌ Entity needs mutability (JPA entities — but JPA 3.2 starts supporting them)   │
-│  ❌ Complex inheritance needed                                                    │
-│  ❌ Need builder pattern (records have all-args constructor only)                 │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**WHEN TO USE RECORDS:**
+
+```text
+✅ DTOs (Data Transfer Objects)         record UserDTO(String name, String email)
+✅ API responses                        record ApiResponse<T>(T data, int code)
+✅ Value objects (DDD)                  record Money(BigDecimal amount, Currency)
+✅ Configuration holders                record DbConfig(String url, int pool)
+✅ Compound map keys                    record CacheKey(String type, long id)
+✅ Method return types (multiple vals)  record ParseResult(int value, int pos)
+
+DON'T USE WHEN:
+❌ Entity needs mutability (JPA entities — but JPA 3.2 starts supporting them)
+❌ Complex inheritance needed
+❌ Need builder pattern (records have all-args constructor only)
 ```
 
 ---
@@ -193,20 +190,18 @@ public record BankTransfer(double amount, String iban) implements Payment {}
 public record Crypto(double amount, String wallet) implements Payment {}
 ```
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY SEALED CLASSES?                                                            │
-│                                                                                 │
-│  1. EXHAUSTIVE PATTERN MATCHING — compiler knows ALL subtypes                   │
-│     → No need for "default" case in switch (compiler checks all)                │
-│  2. DOMAIN MODELING — exactly represents business rules                         │
-│     "A payment can ONLY be CreditCard, BankTransfer, or Crypto"                 │
-│  3. LIB DESIGN — allow extension by known types only                            │
-│                                                                                 │
-│  sealed = "these classes and NO others can extend me"                           │
-│  final = "nobody can extend me"                                                 │
-│  non-sealed = "anyone can extend me" (escape hatch)                             │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+WHY SEALED CLASSES?
+
+1. EXHAUSTIVE PATTERN MATCHING — compiler knows ALL subtypes
+   → No need for "default" case in switch (compiler checks all)
+2. DOMAIN MODELING — exactly represents business rules
+   "A payment can ONLY be CreditCard, BankTransfer, or Crypto"
+3. LIB DESIGN — allow extension by known types only
+
+sealed = "these classes and NO others can extend me"
+final = "nobody can extend me"
+non-sealed = "anyone can extend me" (escape hatch)
 ```
 
 ---
@@ -539,57 +534,34 @@ user.getAddress().getCity().toUpperCase();
 
 # 📋 Part 8: Feature Summary Table
 
-```
-┌──────────────┬────────────────────────────────────────────────────────────────┐
-│ Java Version │ Key Features                                                   │
-├──────────────┼────────────────────────────────────────────────────────────────┤
-│ Java 9       │ Modules, JShell, Collection factories, Stream takeWhile/       │
-│              │ dropWhile, Optional.or/ifPresentOrElse, private interface      │
-│              │ methods, compact Strings internally                            │
-├──────────────┼────────────────────────────────────────────────────────────────┤
-│ Java 10      │ var (local variable type inference), List.copyOf,              │
-│              │ Collectors.toUnmodifiable*, G1 GC improvements                 │
-├──────────────┼────────────────────────────────────────────────────────────────┤
-│ Java 11 LTS  │ HttpClient, String strip/isBlank/lines/repeat,                 │
-│              │ Files.readString/writeString, Optional.isEmpty                 │
-├──────────────┼────────────────────────────────────────────────────────────────┤
-│ Java 14      │ Switch expressions (finalized), Helpful NPEs,                  │
-│              │ Records (preview)                                              │
-├──────────────┼────────────────────────────────────────────────────────────────┤
-│ Java 15      │ Text blocks (finalized), Sealed classes (preview),             │
-│              │ Hidden classes                                                 │
-├──────────────┼────────────────────────────────────────────────────────────────┤
-│ Java 16      │ Records (finalized), instanceof pattern matching,              │
-│              │ Stream.toList(), mapMulti                                      │
-├──────────────┼────────────────────────────────────────────────────────────────┤
-│ Java 17 LTS  │ Sealed classes (finalized), pattern matching for switch        │
-│              │ (preview), always-strict floating-point                        │
-├──────────────┼────────────────────────────────────────────────────────────────┤
-│ Java 21 LTS  │ Virtual threads, Record patterns, Pattern matching switch      │
-│              │ (finalized), Sequenced collections, Structured concurrency     │
-│              │ (preview), String templates (preview)                          │
-└──────────────┴────────────────────────────────────────────────────────────────┘
-```
+| Java Version | Key Features |
+| --- | --- |
+| Java 9 | Modules, JShell, Collection factories, Stream takeWhile/dropWhile, Optional.or/ifPresentOrElse, private interface methods, compact Strings internally |
+| Java 10 | var (local variable type inference), List.copyOf, Collectors.toUnmodifiable*, G1 GC improvements |
+| Java 11 LTS | HttpClient, String strip/isBlank/lines/repeat, Files.readString/writeString, Optional.isEmpty |
+| Java 14 | Switch expressions (finalized), Helpful NPEs, Records (preview) |
+| Java 15 | Text blocks (finalized), Sealed classes (preview), Hidden classes |
+| Java 16 | Records (finalized), instanceof pattern matching, Stream.toList(), mapMulti |
+| Java 17 LTS | Sealed classes (finalized), pattern matching for switch (preview), always-strict floating-point |
+| Java 21 LTS | Virtual threads, Record patterns, Pattern matching switch (finalized), Sequenced collections, Structured concurrency (preview), String templates (preview) |
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  INTERVIEW MUST-KNOWS:                                                          │
-│                                                                                 │
-│  Q: "What Java version do you use?"                                             │
-│  A: "Java 21 LTS — virtual threads, records, sealed classes, pattern matching"  │
-│                                                                                 │
-│  Q: "Records vs Lombok @Value?"                                                 │
-│  A: "Records are native, no annotation processor, work with pattern matching.   │
-│      Lombok needs compile-time dependency. Records can't have mutable fields."  │
-│                                                                                 │
-│  Q: "When would you use sealed classes?"                                        │
-│  A: "Domain modeling where exactly N types exist — payment types, AST nodes,    │
-│      state machines. Enables exhaustive switch without default."                │
-│                                                                                 │
-│  Q: "var vs explicit types — your preference?"                                  │
-│  A: "var when type is obvious from context. Explicit when it aids readability.  │
-│      Never in public API signatures."                                           │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**INTERVIEW MUST-KNOWS:**
+
+```text
+Q: "What Java version do you use?"
+A: "Java 21 LTS — virtual threads, records, sealed classes, pattern matching"
+
+Q: "Records vs Lombok @Value?"
+A: "Records are native, no annotation processor, work with pattern matching.
+    Lombok needs compile-time dependency. Records can't have mutable fields."
+
+Q: "When would you use sealed classes?"
+A: "Domain modeling where exactly N types exist — payment types, AST nodes,
+    state machines. Enables exhaustive switch without default."
+
+Q: "var vs explicit types — your preference?"
+A: "var when type is obvious from context. Explicit when it aids readability.
+    Never in public API signatures."
 ```
 
 ---

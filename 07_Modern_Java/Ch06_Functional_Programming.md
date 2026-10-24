@@ -16,7 +16,7 @@ Input requirements. A `Function<T, R>` represents a transformation. It takes exa
 
 </details>
 
-# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+## 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
 ### Why Learn Functional Programming in Java?
 
@@ -58,7 +58,7 @@ Input requirements. A `Function<T, R>` represents a transformation. It takes exa
 
 ---
 
-# 📚 Part 0: Complete Understanding of Functional Programming
+## 📚 Part 0: Complete Understanding of Functional Programming
 
 Functional programming is a paradigm where you build software by composing **pure functions** that avoid changing state and mutating data.
 
@@ -82,7 +82,7 @@ Functional programming is a paradigm where you build software by composing **pur
 
 ---
 
-## What Problem Does Functional Programming Solve?
+### What Problem Does Functional Programming Solve?
 
 **Problem 1: Bugs from shared mutable state**
 
@@ -121,7 +121,7 @@ int total = orders.stream()
 
 </details>
 
-## Why Learn Functional Programming?
+### Why Learn Functional Programming?
 
 1. **Cleaner Code** — 10 lines of loop → 1 line of stream. More readable, less error-prone.
 2. **Parallel Processing** — `list.parallelStream()` instantly parallelizes! Critical for big data, multi-core CPUs.
@@ -141,7 +141,7 @@ int total = orders.stream()
 
 </details>
 
-## When to Use Functional vs Imperative
+### When to Use Functional vs Imperative
 
 **Use Functional when**:
 
@@ -171,7 +171,7 @@ Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for tie
 
 </details>
 
-## Difficulties in Learning FP
+### Difficulties in Learning FP
 
 1. **"I think in loops"** — Start by converting existing loops to streams: `for` → `forEach`, `if` → `filter`, transformation → `map`
 2. **"Lambdas are confusing"** — Think of them as "mini-functions without a name": `(x) -> x * 2` just doubles
@@ -191,7 +191,7 @@ Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for tie
 
 </details>
 
-## Expected Outcomes
+### Expected Outcomes
 
 - ✅ **Concise Code**: Replace 10-line loops with 1-line streams
 - ✅ **Safer Code**: No shared mutable state bugs
@@ -204,9 +204,9 @@ Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for tie
 
 ---
 
-# 📌 Part 1: What is Functional Programming?
+## 📌 Part 1: What is Functional Programming?
 
-## The Mental Shift
+### The Mental Shift
 
 **Imperative** (how to do it): _"Go to the store. Pick up milk. Go to checkout. Pay. Come back."_
 
@@ -232,7 +232,7 @@ List<Integer> result = numbers.stream()
     .collect(Collectors.toList());
 ```
 
-## Core Principles
+### Core Principles
 
 ```
 1. PURE FUNCTIONS
@@ -277,9 +277,9 @@ List<Integer> result = numbers.stream()
 
 </details>
 
-# 📌 Part 2: Lambda Expressions
+## 📌 Part 2: Lambda Expressions
 
-## Basic Syntax
+### Basic Syntax
 
 ```java
 // ANONYMOUS FUNCTION SYNTAX:
@@ -309,7 +309,7 @@ x -> x * 2
 s -> s.length()           // Inferred (cleaner)
 ```
 
-## Common Usage Patterns
+### Common Usage Patterns
 
 ```java
 // 1. SORTING
@@ -349,9 +349,9 @@ button.addActionListener(e -> handleClick(e));
 
 ---
 
-# 📌 Part 3: Functional Interfaces
+## 📌 Part 3: Functional Interfaces
 
-## What Are They?
+### What Are They?
 
 ```java
 // An interface with EXACTLY ONE abstract method
@@ -367,7 +367,7 @@ Greeting hello = name -> System.out.println("Hello, " + name);
 hello.greet("Harsha");  // "Hello, Harsha"
 ```
 
-## Built-in Functional Interfaces
+### Built-in Functional Interfaces
 
 ```java
 // Java provides these in java.util.function package:
@@ -412,7 +412,7 @@ square.apply(5);  // 25
 
 </details>
 
-## Chaining Predicates
+### Chaining Predicates
 
 ```java
 Predicate<Integer> isPositive = n -> n > 0;
@@ -444,9 +444,9 @@ isNotPositive.test(-5);  // true
 
 </details>
 
-# 🔌 Part 4: Stream API
+## 🔌 Part 4: Stream API
 
-## What is a Stream?
+### What is a Stream?
 
 A Stream is a sequence of elements that supports declarative, functional-style operations.
 
@@ -479,7 +479,7 @@ Not until `collect()` (or any terminal operation). `filter()` and `map()` are LA
 
 </details>
 
-## Creating Streams
+### Creating Streams
 
 ```java
 // From Collection
@@ -517,7 +517,7 @@ IntStream rangeClosed = IntStream.rangeClosed(1, 10);  // 1 to 10
 **Local rewrite:** See Challenge 1 (Stream Source Types) — `Arrays.stream(int[])` returns a specialized `IntPipeline`, not a `ReferencePipeline`. Primitive pipelines skip boxing overhead via direct `Spliterator.OfInt`.  
 **Constraint warning:** This is OpenJDK's implementation. GraalVM's native image compiles stream pipelines at build time (partial evaluation). The laziness model holds, but profiling data may differ from JVM runtime.
 
-## Intermediate Operations (Transform Stream)
+### Intermediate Operations (Transform Stream)
 
 ```java
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
@@ -571,7 +571,7 @@ numbers.stream()
 
 </details>
 
-## Terminal Operations (Produce Result)
+### Terminal Operations (Produce Result)
 
 ```java
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
@@ -631,9 +631,9 @@ Integer[] arr = numbers.stream().toArray(Integer[]::new);
 
 </details>
 
-# 🎨 Part 5: Common Stream Patterns
+## 🎨 Part 5: Common Stream Patterns
 
-## Pattern 1: Filter-Map-Collect
+### Pattern 1: Filter-Map-Collect
 
 ```java
 // Most common pattern!
@@ -647,7 +647,7 @@ List<String> adultNames = people.stream()
     .collect(Collectors.toList());     // Collect to list
 ```
 
-## Pattern 2: Grouping
+### Pattern 2: Grouping
 
 ```java
 // Group elements by some property
@@ -676,7 +676,7 @@ Map<String, Long> countByCity = people.stream()
 
 </details>
 
-## Pattern 3: Partitioning
+### Pattern 3: Partitioning
 
 ```java
 // Split into two groups based on predicate
@@ -697,7 +697,7 @@ Map<Boolean, List<Person>> adultOrNot = people.stream()
 
 </details>
 
-## Pattern 4: Joining Strings
+### Pattern 4: Joining Strings
 
 ```java
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
@@ -723,7 +723,7 @@ String withPrefixSuffix = names.stream()
 
 </details>
 
-## Pattern 5: Statistics
+### Pattern 5: Statistics
 
 ```java
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
@@ -741,9 +741,9 @@ stats.getCount();   // 5
 
 ---
 
-# 📖 Part 6: Method References
+## 📖 Part 6: Method References
 
-## The Four Types
+### The Four Types
 
 ```java
 // Method references are shorthand for lambdas that just call a method
@@ -786,7 +786,7 @@ Function<Integer, int[]> arrayMaker = int[]::new;
 
 </details>
 
-## When to Use Method References
+### When to Use Method References
 
 ```java
 // USE when lambda just calls an existing method
@@ -799,9 +799,9 @@ list.forEach(x -> System.out.println("Value: " + x));  // Need lambda
 
 ---
 
-# 📌 Part 7: Optional
+## 📌 Part 7: Optional
 
-## The Null Problem
+### The Null Problem
 
 ```java
 // The billion-dollar mistake
@@ -822,7 +822,7 @@ if (person != null) {
 // UGLY!
 ```
 
-## Optional to the Rescue
+### Optional to the Rescue
 
 ```java
 // Optional<T> is a container that may or may not contain a value
@@ -872,9 +872,9 @@ Optional<String> result = optional
 
 </details>
 
-# 📌 Part 8: Functional DSA Examples
+## 📌 Part 8: Functional DSA Examples
 
-## Example 1: Find Max Element
+### Example 1: Find Max Element
 
 ```java
 // Imperative
@@ -906,7 +906,7 @@ Input requirements. A `Function<T, R>` represents a transformation. It takes exa
 
 </details>
 
-## Example 2: Sum of Squares of Even Numbers
+### Example 2: Sum of Squares of Even Numbers
 
 ```java
 // Imperative
@@ -936,7 +936,7 @@ int sum = numbers.stream()
 >
 > </details>
 
-## Example 3: First Duplicate
+### Example 3: First Duplicate
 
 ```java
 // Functional approach to find first duplicate
@@ -948,7 +948,7 @@ public Optional<Integer> findFirstDuplicate(List<Integer> numbers) {
 }
 ```
 
-## Example 4: Frequency Map
+### Example 4: Frequency Map
 
 ```java
 // Count frequency of each element
@@ -961,7 +961,7 @@ Map<Integer, Long> frequency = numbers.stream()
 // {1: 2, 2: 3, 3: 1}
 ```
 
-## Example 5: Flatten 2D Array
+### Example 5: Flatten 2D Array
 
 ```java
 int[][] matrix = {{1, 2}, {3, 4}, {5, 6}};
@@ -976,7 +976,7 @@ List<Integer> flat = Arrays.stream(matrix)
 
 ---
 
-# 📌 Part 9: When to Use Functional Style
+## 📌 Part 9: When to Use Functional Style
 
 **Use Functional when**:
 
@@ -998,9 +998,9 @@ List<Integer> flat = Arrays.stream(matrix)
 
 ---
 
-# PART 10: MODERN JAVA FEATURES (Java 10+)
+## PART 10: MODERN JAVA FEATURES (Java 10+)
 
-## A. LOCAL VARIABLE TYPE INFERENCE (var) - Java 10
+### A. LOCAL VARIABLE TYPE INFERENCE (var) - Java 10
 
 `var` lets the compiler **infer** the type from the right-hand side.
 
@@ -1076,7 +1076,7 @@ Function<Integer, Integer> lambda = x -> x * 2;  // Explicit type
 
 </details>
 
-## B. JAVA RECORDS (Java 16+)
+### B. JAVA RECORDS (Java 16+)
 
 A **record** is a concise way to declare classes that are "data carriers" — classes whose main purpose is to hold data, not behavior.
 
@@ -1180,7 +1180,7 @@ public class UserController {
 }
 ```
 
-### Records vs Class vs Lombok
+#### Records vs Class vs Lombok
 
 | Feature             | `class` | `record`       | `@Data` (Lombok)       |
 | ------------------- | ------- | -------------- | ---------------------- |
@@ -1209,7 +1209,7 @@ public class UserController {
 
 ---
 
-# 💪 Part 11: Practice Exercises
+## 💪 Part 11: Practice Exercises
 
 1. Write a stream pipeline to:
    - Filter strings longer than 3 characters
@@ -1250,59 +1250,28 @@ _Functional programming is about clarity and composability!_ 🎯
 
 Java 8 (2014) Streams are **lazy** — intermediate operations build a pipeline, only a terminal operation triggers traversal. Crystal-clear visualization:
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│ STREAM PIPELINE — LAZY EVALUATION (Java 8 / 2014)                  │
-└─────────────────────────────────────────────────────────────────────┘
+**Stream pipeline: lazy evaluation (Java 8, 2014)**
 
-  Caller Code
-     │
-     │  source.stream()                    ← Step 1: source (eager)
-     ▼
-  ┌──────────────┐
-  │  Stream<T>   │  ← no traversal yet
-  └──────┬───────┘
-         │
-         │  .filter(p -> p.getAge() > 18)  ← Step 2: intermediate (lazy)
-         ▼
-  ┌──────────────┐
-  │  Stream<T>   │  ← still no traversal
-  └──────┬───────┘
-         │
-         │  .map(Person::getName)          ← Step 3: intermediate (lazy)
-         ▼
-  ┌──────────────┐
-  │  Stream<R>   │  ← still no traversal
-  └──────┬───────┘
-         │
-         │  .collect(toList())             ← Step 4: terminal (EAGER trigger)
-         ▼
-  ╔══════════════╗
-  ║  List<String> ║  ← NOW pipeline runs: filter → map → collect
-  ╚══════════════╝
-
-  ▼ Failure mode: forgetting terminal op → pipeline never executes (no side effect)
-  ▼ Mitigation: always end chains with .collect() / .forEach() / .reduce()
+```mermaid
+flowchart TD
+  C["Caller code"] -->|"source.stream()  (Step 1: source, eager)"| S1["Stream&lt;T&gt;<br/>no traversal yet"]
+  S1 -->|".filter(p -> p.getAge() > 18)  (Step 2: intermediate, lazy)"| S2["Stream&lt;T&gt;<br/>still no traversal"]
+  S2 -->|".map(Person::getName)  (Step 3: intermediate, lazy)"| S3["Stream&lt;R&gt;<br/>still no traversal"]
+  S3 -->|".collect(toList())  (Step 4: terminal, EAGER trigger)"| R["List&lt;String&gt;<br/>NOW the pipeline runs: filter, map, collect"]
 ```
+
+**How to read this diagram.** Steps 1 to 3 only describe the pipeline, so nothing is traversed. The terminal operation in step 4 triggers one pass over the data.
+
+> [!WARNING]
+> **Failure mode:** forgetting the terminal operation means the pipeline never executes (no side effects happen). **Mitigation:** always end chains with `.collect()`, `.forEach()` or `.reduce()`.
 
 **Vertical-sequence step ladder** (the canonical CL template — also used in 04_Patterns_Templates):
 
-```
-┌─ Step 1: Build pipeline (no execution) ─────────────────────────────────┐
-│   stream() / .filter() / .map() / .sorted() — all return Stream<T>      │
-│   Each stage wraps the previous, defers work.                          │
-└────────────────────────────────────────────────────────────────────────┘
-        ↓
-┌─ Step 2: Attach terminal operation ─────────────────────────────────────┐
-│   .collect() / .forEach() / .count() / .reduce()                        │
-│   Terminal op splits the pipeline into "vertical" stages.               │
-└────────────────────────────────────────────────────────────────────────┘
-        ↓
-┌─ Step 3: Spliterator drives traversal ──────────────────────────────────┐
-│   Each element pulled through: filter → map → sorted-buffer → collect   │
-│   Short-circuit operators (.findFirst(), .limit()) stop early.          │
-└────────────────────────────────────────────────────────────────────────┘
-```
+| Step | What happens |
+| --- | --- |
+| 1. Build the pipeline (no execution) | `stream()`, `.filter()`, `.map()`, `.sorted()` all return `Stream<T>`. Each stage wraps the previous one and defers the work. |
+| 2. Attach a terminal operation | `.collect()`, `.forEach()`, `.count()`, `.reduce()`. The terminal operation splits the pipeline into "vertical" stages. |
+| 3. The spliterator drives traversal | Each element is pulled through filter → map → sorted-buffer → collect. Short-circuit operations (`.findFirst()`, `.limit()`) stop early. |
 
 ---
 
@@ -1311,7 +1280,7 @@ Java 8 (2014) Streams are **lazy** — intermediate operations build a pipeline,
 
 ---
 
-## Reality Check
+### Reality Check
 
 **"Lambda expressions create new method objects every time they're called"** → Each *unique* lambda is compiled to a single class (via `invokedynamic`). After the first call, subsequent invocations may reuse the same instance (if the lambda captures no state or only constant state). Lambda creation is generally NOT expensive — fear of creating lambdas is misplaced in most application code.
 

@@ -1,6 +1,6 @@
 # 21. Algorithm War Stories — How Engineers Actually Solved It
 
-**Navigation**: [← 20: DSA Patterns PDF Coverage Map](20_DSA_Patterns_PDF_Java_Coverage_Map.md) | [📚 Algorithms Index](00_INDEX.md) | [A5: Designing Your Own Algorithms →](A5_Designing_Your_Own_Algorithms.md)
+> **Navigation**: [← Algorithms in the Real World…](13_Algorithms_In_Production.md) | [Chapter index](00_INDEX.md) | [DSA Deep Reasoning →](16_DSA_Deep_Reasoning.md)
 
 > **The chapter that connects the textbook to the incident channel.**
 >
@@ -10,10 +10,54 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | The whole course |
+| **You will learn** | Ten real production incidents analysed through the algorithm design loop (what was assumed, what broke, what fixed it) |
+| **Leads to** | [Production](13_Algorithms_In_Production.md), [A5 Design](A5_Designing_Your_Own_Algorithms.md) |
+| **Abstraction level** | L8: failure as the best teacher |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Algorithm War Stories
+
+### 1. The bottom line
+
+Every algorithm failure in production traces back to an assumption about input, scale or order that stopped being true.
+
+### 2. The textbook core
+
+- Common root causes: worst-case input, hash collisions, unbounded recursion, wrong complexity at scale, ordering assumptions.
+- Fixes are often a **different algorithm or a guard**, not more hardware.
+- Use postmortems to extract the violated invariant.
+- Add tests and monitors that would have caught it.
+
+### 3. The real-world analogy
+
+A **flight-accident report**: the value is not the blame but the checklist item it adds for every future pilot.
+
+### 4. Walkthrough
+
+1. Incident: a regex or sort became quadratic on adversarial input.
+2. Identify the assumption ("input is random").
+3. Replace with a linear algorithm or add a limit.
+4. Add a regression test using the adversarial case.
+
+> [!NOTE]
+> **Quick check:** What is the most common root cause pattern? *An unstated assumption about input size or distribution.*
+
+---
+
+
 ## Table of Contents
 
 1. [How To Use This Chapter](#0-how-to-use-this-chapter)
-2. [Story 1: The Quadratic That Only Appeared at Scale](#story-1-the-quadratic-that-only-appeared-at-scale-accidentally-on-1-node)
+2. Story 1: The Quadratic That Only Appeared at Scale
 3. [Story 2: Counting Distinct Users Without the Memory](#story-2-counting-distinct-users-without-the-memory-hyperloglog)
 4. [Story 3: The Cache That Made Things Slower](#story-3-the-cache-that-made-things-slower-thundering-herd--stampede)
 5. [Story 4: Resharding Without Downtime](#story-4-resharding-without-downtime-consistent-hashing)
@@ -322,18 +366,23 @@ Sizing is engineerable, not guesswork: false-positive rate ≈ `(1 − e^(−kn/
 Ten stories, five recurring shapes. These are what you should actually retain.
 
 ### Pattern A — Hidden quadratics (Stories 1, 5)
+
 An O(n) operation inside an O(n) loop, or a per-item fan-out that scales with a second dimension. **Invisible in review, catastrophic at scale.** Diagnostic question: *what is the complexity of every call inside this loop?*
 
 ### Pattern B — Exactness is unaffordable (Stories 2, 10)
+
 When exact answers provably need too much space, relax exactness — and **choose the error direction deliberately**. Diagnostic question: *does the consumer of this answer actually need it exact, and which way may it be wrong?*
 
 ### Pattern C — Synchronized independent actors (Stories 3, 6, 9)
+
 Many clients sharing a deadline (cache expiry, window boundary, retry schedule) create load spikes that no individual actor intends. **Randomization/jitter is the cure.** Diagnostic question: *do many independent parties act on the same clock here?*
 
 ### Pattern D — Skewed distributions break uniform strategies (Stories 4, 5)
+
 Power laws — celebrity accounts, hot keys, whale tenants — defeat designs that assume uniformity. **Special-case the head; keep the simple strategy for the tail.** Diagnostic question: *what does the 99.9th percentile of this distribution look like?*
 
 ### Pattern E — Monotonic predicates unlock binary search (Story 8)
+
 Any "where in this large space" question with a monotone test collapses from linear to logarithmic. Diagnostic question: *is there a yes/no test whose answer flips exactly once across this space?*
 
 ---
@@ -343,6 +392,9 @@ Any "where in this large space" question with a monotone test collapses from lin
 Your question — *are engineers using the old algorithms or creating new ones?* — has a precise answer, and it is worth being exact about.
 
 ### The distribution of real work
+
+> [!NOTE]
+> The percentages below are an **illustrative rule of thumb from experience, not measured data**.
 
 | Tier | Frequency | What it looks like |
 | --- | --- | --- |
@@ -358,7 +410,7 @@ Your question — *are engineers using the old algorithms or creating new ones?*
 | --- | --- | --- |
 | 1996 | **LSM tree** | Write-heavy workloads that B-trees served badly |
 | 2007 | **HyperLogLog** | Web-scale cardinality with no memory |
-| 2011 | **Raft** | Paxos was correct and nobody could implement it right — *understandability* as a design goal |
+| 2014 | **Raft** (Ongaro and Ousterhout) | Paxos was correct and nobody could implement it right — *understandability* as a design goal |
 | 2014 | **Cuckoo filter** | Bloom filters cannot delete |
 | 2010s–now | **Learning-augmented structures** | ML predictions as hints, with worst-case guarantees when wrong |
 | 2010s–now | **Sketches everywhere** | Streaming data outgrew exact structures |
@@ -402,7 +454,16 @@ Notice the pattern in that right-hand column: **new algorithms are forced by new
 
 ---
 
-**Navigation**: [← 20: DSA Patterns PDF Coverage Map](20_DSA_Patterns_PDF_Java_Coverage_Map.md) | [📚 Algorithms Index](00_INDEX.md) | [A5: Designing Your Own Algorithms →](A5_Designing_Your_Own_Algorithms.md)
+
+---
+
+## 🏢 Enterprise Lens — Algorithm War Stories
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Incident reviews, SRE playbooks, design reviews |
+| **Failure modes** | Treating incidents as one-off bugs instead of classes of bug |
+| **Testing and verification** | Turn each story into a test case and a dashboard alert |
 
 ---
 

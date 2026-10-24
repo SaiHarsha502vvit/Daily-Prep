@@ -40,100 +40,96 @@
 - **Maven Central — 2005**: Sonatype. Central artifact repository. 35M+ artifacts today.
 - **Gradle 1.0 — 2012**: Hans Dockter / Gradle Inc. Groovy DSL. Incremental builds. Gradle daemon.
 - **Gradle build cache — 2017**: Remote build cache. Same inputs → cached outputs. Massive time savings.
+
 ## 1. Why Build Tools Exist
 
+**Without a build tool**
+
+```text
+1. Download 47 JAR files manually
+2. Track which version of each library you need
+3. Run javac with all 47 JARs in classpath
+4. Remember the order to compile modules
+5. Copy resources to output directory
+6. Run tests manually
+7. Package into JAR/WAR
+8. Deploy somewhere
+
+Repeat for every developer on the team...
 ```
-  WITHOUT A BUILD TOOL:
-  ═════════════════════
 
-  1. Download 47 JAR files manually
-  2. Track which version of each library you need
-  3. Run javac with all 47 JARs in classpath
-  4. Remember the order to compile modules
-  5. Copy resources to output directory
-  6. Run tests manually
-  7. Package into JAR/WAR
-  8. Deploy somewhere
+**With a build tool**
 
-  Repeat for every developer on the team...
+```text
+mvn clean package    ← One command does everything
 
-
-  WITH A BUILD TOOL:
-  ══════════════════
-
-  mvn clean package    ← One command does everything
-
-  Build tool handles:
-  • Dependency download and version management
-  • Compile order (module dependencies)
-  • Resource copying
-  • Test execution
-  • Packaging (JAR, WAR, Docker image)
-  • Publishing to artifact repositories
+Build tool handles:
+• Dependency download and version management
+• Compile order (module dependencies)
+• Resource copying
+• Test execution
+• Packaging (JAR, WAR, Docker image)
+• Publishing to artifact repositories
 ```
 
 ---
 
 ## 2. Maven Lifecycle & Phases
 
-```
-  Maven has 3 built-in lifecycles:
+Maven has 3 built-in lifecycles:
 
-  1. CLEAN lifecycle:     clean
-  2. DEFAULT lifecycle:   compile → test → package → install → deploy
-  3. SITE lifecycle:      site (generates documentation)
+| Lifecycle | Phases |
+| --- | --- |
+| 1. clean | `clean` |
+| 2. default | `compile` → `test` → `package` → `install` → `deploy` |
+| 3. site | `site` (generates documentation) |
 
+**Default lifecycle phases (in order)**
 
-  DEFAULT LIFECYCLE PHASES (in order):
-  ════════════════════════════════════
-
-  ┌─────────────────────────────────────────────────────────────┐
-  │  validate     → Check POM is correct and all info available │
-  │      ↓                                                      │
-  │  compile      → Compile src/main/java → target/classes      │
-  │      ↓                                                      │
-  │  test-compile → Compile src/test/java → target/test-classes │
-  │      ↓                                                      │
-  │  test         → Run unit tests (Surefire plugin)            │
-  │      ↓                                                      │
-  │  package      → Create JAR/WAR in target/                  │
-  │      ↓                                                      │
-  │  verify       → Run integration tests (Failsafe plugin)    │
-  │      ↓                                                      │
-  │  install      → Copy artifact to ~/.m2/repository (local)  │
-  │      ↓                                                      │
-  │  deploy       → Upload to remote repository (Nexus/Artifactory)│
-  └─────────────────────────────────────────────────────────────┘
-
-  KEY RULE: Running a phase runs ALL PRECEDING phases!
-
-  mvn package  = validate + compile + test-compile + test + package
-  mvn install  = all above + verify + install
-  mvn test     = validate + compile + test-compile + test
+```mermaid
+flowchart TD
+  V["validate: check the POM is correct and all info is available"] --> C["compile: src/main/java → target/classes"]
+  C --> TC["test-compile: src/test/java → target/test-classes"]
+  TC --> T["test: run unit tests (Surefire plugin)"]
+  T --> P["package: create the JAR/WAR in target/"]
+  P --> VF["verify: run integration tests (Failsafe plugin)"]
+  VF --> I["install: copy the artifact to ~/.m2/repository (local)"]
+  I --> D["deploy: upload to a remote repository (Nexus/Artifactory)"]
 ```
 
-```
-  COMMON COMMANDS DECODED:
-  ════════════════════════
+**How to read this diagram.** The phases run top to bottom.
 
-  mvn clean install
-  ├── clean    → Delete target/ directory
-  └── install  → validate → compile → test → package → verify → install
+> [!IMPORTANT]
+> **Key rule:** running a phase runs ALL the preceding phases.
+>
+> - `mvn package` = validate + compile + test-compile + test + package
+> - `mvn install` = all of the above + verify + install
+> - `mvn test` = validate + compile + test-compile + test
 
-  mvn clean package -DskipTests
-  ├── clean         → Delete target/
-  ├── package       → Compile and create JAR
-  └── -DskipTests   → Skip running tests (still compiles test code)
+**COMMON COMMANDS DECODED:**
 
-  mvn clean package -Dmaven.test.skip=true
-  └── Skip test compilation AND execution (faster)
+**mvn clean install**
 
-  mvn dependency:tree
-  └── Show full dependency tree (transitive deps visible)
+- clean    → Delete target/ directory
+- install  → validate → compile → test → package → verify → install
 
-  mvn dependency:analyze
-  └── Find unused declared and used undeclared dependencies
-```
+**mvn clean package -DskipTests**
+
+- clean         → Delete target/
+- package       → Compile and create JAR
+- -DskipTests   → Skip running tests (still compiles test code)
+
+**mvn clean package -Dmaven.test.skip=true**
+
+- Skip test compilation AND execution (faster)
+
+**mvn dependency:tree**
+
+- Show full dependency tree (transitive deps visible)
+
+**mvn dependency:analyze**
+
+- Find unused declared and used undeclared dependencies
 
 ---
 
@@ -189,70 +185,68 @@
 </project>
 ```
 
-```
-  POM INHERITANCE:
-  ════════════════
+**Pom inheritance**
 
-  Super POM (Maven default)
-       ↓ inherits
-  Parent POM (spring-boot-starter-parent)
-       ↓ inherits
-  Your POM (my-app)
+```text
+Super POM (Maven default)
+     ↓ inherits
+Parent POM (spring-boot-starter-parent)
+     ↓ inherits
+Your POM (my-app)
 
-  Your POM inherits:
-  • Plugin configurations
-  • Dependency versions (from parent's dependencyManagement)
-  • Properties
-  • Build settings
+Your POM inherits:
+• Plugin configurations
+• Dependency versions (from parent's dependencyManagement)
+• Properties
+• Build settings
 
-  Check effective POM (everything merged):
-  mvn help:effective-pom
+Check effective POM (everything merged):
+mvn help:effective-pom
 ```
 
 ---
 
 ## 4. Maven Dependency Resolution
 
+**How maven resolves dependencies**
+
+```text
+1. Read your POM → Build dependency tree
+2. For each dependency:
+   a. Check local repo (~/.m2/repository)
+   b. If not found → download from remote (Maven Central)
+   c. Download transitively (dependencies of dependencies)
 ```
-  HOW MAVEN RESOLVES DEPENDENCIES:
-  ═════════════════════════════════
 
-  1. Read your POM → Build dependency tree
-  2. For each dependency:
-     a. Check local repo (~/.m2/repository)
-     b. If not found → download from remote (Maven Central)
-     c. Download transitively (dependencies of dependencies)
+**Transitive dependencies**
 
+```text
+Your app → spring-boot-starter-web
+              ├── spring-web
+              ├── spring-webmvc
+              ├── spring-boot-starter-tomcat
+              │   ├── tomcat-embed-core
+              │   └── tomcat-embed-websocket
+              └── spring-boot-starter-json
+                  ├── jackson-databind
+                  └── jackson-datatype-jdk8
 
-  TRANSITIVE DEPENDENCIES:
-  ═══════════════════════
+You declared 1 dependency. Maven downloaded 20+.
+```
 
-  Your app → spring-boot-starter-web
-                ├── spring-web
-                ├── spring-webmvc
-                ├── spring-boot-starter-tomcat
-                │   ├── tomcat-embed-core
-                │   └── tomcat-embed-websocket
-                └── spring-boot-starter-json
-                    ├── jackson-databind
-                    └── jackson-datatype-jdk8
+**CONFLICT RESOLUTION (nearest-wins)**
 
-  You declared 1 dependency. Maven downloaded 20+.
+```text
+Your app → A 1.0 → C 1.0
+Your app → B 1.0 → C 2.0
 
+Which version of C?
+Both are 2 levels deep → Maven picks the FIRST one declared in POM.
 
-  CONFLICT RESOLUTION (nearest-wins):
-  ════════════════════════════════════
+Your app → C 3.0  (direct dependency, depth 1)
+Your app → A 1.0 → C 1.0  (transitive, depth 2)
 
-  Your app → A 1.0 → C 1.0
-  Your app → B 1.0 → C 2.0
-
-  Which version of C?
-  Both are 2 levels deep → Maven picks the FIRST one declared in POM.
-
-  Your app → C 3.0  (direct dependency, depth 1)
-  Your app → A 1.0 → C 1.0  (transitive, depth 2)
-
-  Which C? → C 3.0 wins (nearest to root = depth 1)
+Which C? → C 3.0 wins (nearest to root = depth 1)
 ```
 
 ```xml
@@ -288,29 +282,13 @@ Constructor injection is better: (1) Dependencies explicit — you can't create 
 
 ## 5. Dependency Scopes
 
-```
-  ┌──────────────┬───────────┬───────────┬─────────────────────────┐
-  │ Scope        │ Compile   │ Runtime   │ Purpose                 │
-  │              │ classpath │ classpath │                         │
-  ├──────────────┼───────────┼───────────┼─────────────────────────┤
-  │ compile      │    ✅     │    ✅     │ Default. Available      │
-  │ (default)    │           │           │ everywhere.             │
-  ├──────────────┼───────────┼───────────┼─────────────────────────┤
-  │ provided     │    ✅     │    ❌     │ Container provides it   │
-  │              │           │           │ (servlet-api in Tomcat) │
-  ├──────────────┼───────────┼───────────┼─────────────────────────┤
-  │ runtime      │    ❌     │    ✅     │ Not needed to compile,  │
-  │              │           │           │ only at runtime         │
-  │              │           │           │ (JDBC driver)           │
-  ├──────────────┼───────────┼───────────┼─────────────────────────┤
-  │ test         │    ❌     │    ❌     │ Only for test compile   │
-  │              │ (test ✅) │ (test ✅) │ & test runtime          │
-  │              │           │           │ (JUnit, Mockito)        │
-  ├──────────────┼───────────┼───────────┼─────────────────────────┤
-  │ system       │    ✅     │    ❌     │ Explicit JAR path       │
-  │              │           │           │ (avoid — not portable!) │
-  └──────────────┴───────────┴───────────┴─────────────────────────┘
-```
+| Scope | Compile classpath | Runtime classpath | Purpose |
+| --- | --- | --- | --- |
+| compile (default) | ✅ | ✅ | Default. Available everywhere. |
+| provided | ✅ | ❌ | Container provides it (servlet-api in Tomcat) |
+| runtime | ❌ | ✅ | Not needed to compile, only at runtime (JDBC driver) |
+| test | ❌ (test ✅) | ❌ (test ✅) | Only for test compile<br>& test runtime (JUnit, Mockito) |
+| system | ✅ | ❌ | Explicit JAR path (avoid — not portable!) |
 
 ---
 
@@ -460,27 +438,26 @@ dependencies {
 }
 ```
 
+**Gradle task graph**
+
+```text
+Every Gradle build is a DAG (Directed Acyclic Graph) of tasks:
+
+compileJava → processResources → classes → jar
+compileTestJava → processTestResources → testClasses → test
+
+Run: gradle tasks --all  (see all available tasks)
 ```
-  GRADLE TASK GRAPH:
-  ═══════════════════
 
-  Every Gradle build is a DAG (Directed Acyclic Graph) of tasks:
+**Common commands**
 
-  compileJava → processResources → classes → jar
-  compileTestJava → processTestResources → testClasses → test
-
-  Run: gradle tasks --all  (see all available tasks)
-
-
-  COMMON COMMANDS:
-  ════════════════
-
-  gradle build           → compile + test + jar
-  gradle bootRun         → Run Spring Boot app
-  gradle test            → Run tests only
-  gradle dependencies    → Show dependency tree
-  gradle clean build     → Delete build/ and rebuild
-  gradle build -x test   → Skip tests
+```text
+gradle build           → compile + test + jar
+gradle bootRun         → Run Spring Boot app
+gradle test            → Run tests only
+gradle dependencies    → Show dependency tree
+gradle clean build     → Delete build/ and rebuild
+gradle build -x test   → Skip tests
 ```
 
 ---
@@ -508,22 +485,21 @@ dependencies {
 }
 ```
 
-```
-  implementation vs api:
-  ══════════════════════
+**implementation vs api**
 
-  Module A → Module B → Module C
+```text
+Module A → Module B → Module C
 
-  If B declares C as 'implementation':
-    A CANNOT see C. C is hidden from A.
-    If C changes → only B recompiles (faster builds!)
+If B declares C as 'implementation':
+  A CANNOT see C. C is hidden from A.
+  If C changes → only B recompiles (faster builds!)
 
-  If B declares C as 'api':
-    A CAN see C. C leaks to A.
-    If C changes → both B and A recompile.
+If B declares C as 'api':
+  A CAN see C. C leaks to A.
+  If C changes → both B and A recompile.
 
-  RULE: Use 'implementation' by default. Use 'api' only when
-  your public API exposes types from the dependency.
+RULE: Use 'implementation' by default. Use 'api' only when
+your public API exposes types from the dependency.
 ```
 
 ---
@@ -540,24 +516,21 @@ Constructor injection is better: (1) Dependencies explicit — you can't create 
 
 ## 10. Maven vs Gradle Comparison
 
-```
-  ┌──────────────────────┬──────────────────┬──────────────────┐
-  │ Feature              │ Maven            │ Gradle           │
-  ├──────────────────────┼──────────────────┼──────────────────┤
-  │ Config format        │ XML (verbose)    │ Groovy/Kotlin DSL│
-  │ Build model          │ Lifecycle phases │ Task DAG         │
-  │ Speed                │ Slower           │ 2-10x faster     │
-  │                      │                  │ (daemon + cache) │
-  │ Incremental build    │ Limited          │ Excellent        │
-  │ Flexibility          │ Convention-heavy │ Very flexible    │
-  │ Learning curve       │ Lower            │ Higher           │
-  │ IDE support          │ Excellent        │ Excellent        │
-  │ Industry adoption    │ Very high        │ Growing fast     │
-  │ Android              │ No               │ Default tool     │
-  │ Multi-module         │ Good             │ Better           │
-  │ Plugin ecosystem     │ Huge             │ Large            │
-  └──────────────────────┴──────────────────┴──────────────────┘
+| Feature | Maven | Gradle |
+| --- | --- | --- |
+| Config format | XML (verbose) | Groovy/Kotlin DSL |
+| Build model | Lifecycle phases | Task DAG |
+| Speed | Slower | 2-10x faster (daemon + cache) |
+| Incremental build | Limited | Excellent |
+| Flexibility | Convention-heavy | Very flexible |
+| Learning curve | Lower | Higher |
+| IDE support | Excellent | Excellent |
+| Industry adoption | Very high | Growing fast |
+| Android | No | Default tool |
+| Multi-module | Good | Better |
+| Plugin ecosystem | Huge | Large |
 
+```
   WHICH TO CHOOSE?
   • New Spring Boot project? Either works. Gradle is faster.
   • Android? Gradle (mandatory).
@@ -633,12 +606,10 @@ gradle wrapper --gradle-version 8.5
 gradlew.bat build            # Windows
 ```
 
-```
-  ╔═══════════════════════════════════════════════════════════╗
-  ║  RULE: Always commit wrapper files to source control.     ║
-  ║  Always use ./mvnw or ./gradlew in CI/CD pipelines.      ║
-  ║  Never rely on globally installed Maven/Gradle.           ║
-  ╚═══════════════════════════════════════════════════════════╝
+```text
+RULE: Always commit wrapper files to source control.
+Always use ./mvnw or ./gradlew in CI/CD pipelines.
+Never rely on globally installed Maven/Gradle.
 ```
 
 ### Production Reality

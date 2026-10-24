@@ -21,6 +21,7 @@
 - **Competitive programming era — 2000s**: TopCoder (2001), ACM ICPC. Algorithmic problem-solving as global sport.
 - **LeetCode — 2015**: Algorithmic interview preparation platform. 3000+ problems. FAANG prep standard.
 - **JMH (Java Microbenchmark Harness) — 2013**: Doug Lea, Oracle. Nanosecond-scale JVM benchmarking.
+
 ## How to Think Like Top Engineers and Craft Your Own Solutions
 
 ---
@@ -459,17 +460,13 @@ LESSON: Solve the ROOT problem, not the SYMPTOM.
 
 ## Decomposition Framework
 
-```
-ANY PROBLEM can be broken into:
+**ANY PROBLEM can be broken into: — THE PROBLEM**
 
-┌─────────────────────────────────────────────────────────┐
-│                    THE PROBLEM                          │
-├─────────────────────────────────────────────────────────┤
-│ INPUT  │ What data do I have? What's its structure?     │
-│ OUTPUT │ What do I need to produce? Exact format?       │
-│ CONSTRAINTS │ Size limits? Time limits? Space limits?   │
-│ EDGE CASES │ Empty? Single? Max? Negative? Duplicates?  │
-└─────────────────────────────────────────────────────────┘
+```text
+INPUT  │ What data do I have? What's its structure?
+OUTPUT │ What do I need to produce? Exact format?
+CONSTRAINTS │ Size limits? Time limits? Space limits?
+EDGE CASES │ Empty? Single? Max? Negative? Duplicates?
 
 Then ask:
 1. What's the SIMPLEST way to solve this? (Brute force)
@@ -490,20 +487,19 @@ COMBINED PATTERNS are Level 2-3.
 CREATED PATTERNS are Level 4.
 
 COMMON COMBINATIONS:
-┌───────────────────┬────────────────────┬──────────────────────────────┐
-│ Pattern 1         │ Pattern 2          │ Creates                      │
-├───────────────────┼────────────────────┼──────────────────────────────┤
-│ Binary Search     │ Greedy             │ Optimization problems        │
-│ Two Pointers      │ Sorting            │ 3Sum, Container problems     │
-│ BFS/DFS           │ Memoization        │ Graph DP                     │
-│ Sliding Window    │ HashMap            │ Substring problems           │
-│ Recursion         │ Binary Search      │ Divide & Conquer             │
-│ Union-Find        │ Sorting            │ Kruskal's MST                │
-│ Trie              │ DFS                │ Word Search problems         │
-│ Segment Tree      │ Lazy Propagation   │ Range update queries         │
-│ DP                │ Bitmask            │ TSP, Subset enumeration      │
-└───────────────────┴────────────────────┴──────────────────────────────┘
 ```
+
+| Pattern 1 | Pattern 2 | Creates |
+| --- | --- | --- |
+| Binary Search | Greedy | Optimization problems |
+| Two Pointers | Sorting | 3Sum, Container problems |
+| BFS/DFS | Memoization | Graph DP |
+| Sliding Window | HashMap | Substring problems |
+| Recursion | Binary Search | Divide & Conquer |
+| Union-Find | Sorting | Kruskal's MST |
+| Trie | DFS | Word Search problems |
+| Segment Tree | Lazy Propagation | Range update queries |
+| DP | Bitmask | TSP, Subset enumeration |
 
 🔬 **Section Challenge — The Combination Matrix**
 
@@ -684,29 +680,31 @@ ENGINEER'S JOB: Choose the RIGHT trade-off for the CONTEXT
 
 ## The Decision Tree
 
-```
-WHEN FACING A PROBLEM:
+**WHEN FACING A PROBLEM:**
 
-Is it about SEARCHING?
-├── Sorted data? → Binary Search
-├── Graph/Tree? → BFS/DFS
-└── Optimization? → Maybe DP
+**Is it about SEARCHING?**
 
-Is it about OPTIMIZATION?
-├── Can build solution greedily? → Greedy
-├── Overlapping subproblems? → DP
-└── Need to try all possibilities? → Backtracking
+- Sorted data? → Binary Search
+- Graph/Tree? → BFS/DFS
+- Optimization? → Maybe DP
 
-Is it about COUNTING/FREQUENCY?
-├── Fixed window? → Array/Map
-├── Variable window? → Sliding Window + Map
-└── Prefix sums useful? → Cumulative sum
+**Is it about OPTIMIZATION?**
 
-Is it about ORDERING?
-├── Partial order matters? → Topological Sort
-├── Need sorted output? → Sort + Process
-└── Need k-th element? → Heap / Quick Select
-```
+- Can build solution greedily? → Greedy
+- Overlapping subproblems? → DP
+- Need to try all possibilities? → Backtracking
+
+**Is it about COUNTING/FREQUENCY?**
+
+- Fixed window? → Array/Map
+- Variable window? → Sliding Window + Map
+- Prefix sums useful? → Cumulative sum
+
+**Is it about ORDERING?**
+
+- Partial order matters? → Topological Sort
+- Need sorted output? → Sort + Process
+- Need k-th element? → Heap / Quick Select
 
 ---
 
@@ -1345,12 +1343,12 @@ Algorithm failures in production are rarely about "wrong answer" — they are ab
 
 ## Reality Check
 
-**"Big-O is all that matters for algorithm selection"** ? Big-O ignores constant factors that dominate at real input sizes. Quicksort is O(n log n) average and mergesort is O(n log n) guaranteed, but quicksort is faster in practice because its inner loop touches fewer cache lines. An O(n squared) algorithm with small constants beats O(n log n) with large constants for n < 1000. Profile with YOUR data sizes before choosing.
+**"Big-O is all that matters for algorithm selection"** — Big-O ignores constant factors that dominate at real input sizes. Quicksort is O(n log n) average and mergesort is O(n log n) guaranteed, but quicksort is faster in practice because its inner loop touches fewer cache lines. An O(n squared) algorithm with small constants beats O(n log n) with large constants for n < 1000. Profile with YOUR data sizes before choosing.
 
-**"Arrays.sort uses one algorithm"** ? Java Arrays.sort uses TimSort for objects (stable, O(n log n)) but dual-pivot quicksort for primitives (unstable, O(n log n) average). The reason: objects have identity so stability matters, primitives do not. Collections.sort delegates to Arrays.sort after converting to an array � it is not a separate implementation.
+**"Arrays.sort uses one algorithm"** — Java Arrays.sort uses TimSort for objects (stable, O(n log n)) but dual-pivot quicksort for primitives (unstable, O(n log n) average). The reason: objects have identity so stability matters, primitives do not. Collections.sort delegates to Arrays.sort after converting to an array — it is not a separate implementation.
 
-**"HashMap operations are O(1)"** ? O(1) is the AMORTIZED average case. A single put can trigger a resize � copying ALL entries to a new array � making that one call O(n). With pathological hash collisions, every operation degrades to O(log n) per bucket (red-black tree fallback since Java 8) or O(n) if keys do not implement Comparable.
+**"HashMap operations are O(1)"** — O(1) is the AMORTIZED average case. A single put can trigger a resize — copying ALL entries to a new array — making that one call O(n). With pathological hash collisions, every operation degrades to O(log n) per bucket (red-black tree fallback since Java 8) or O(n) if keys do not implement Comparable.
 
-**"Recursion depth does not matter if the algorithm is correct"** ? The JVM default thread stack size is 512KB-1MB. Each recursive call adds a stack frame of roughly 100-200 bytes with local variables. A recursive DFS on a graph with 10000 nodes in a linear chain causes StackOverflowError. The algorithm is correct but the implementation crashes. Convert to iterative with an explicit stack, or increase -Xss.
+**"Recursion depth does not matter if the algorithm is correct"** — The JVM default thread stack size is 512KB-1MB. Each recursive call adds a stack frame of roughly 100-200 bytes with local variables. A recursive DFS on a graph with 10000 nodes in a linear chain causes StackOverflowError. The algorithm is correct but the implementation crashes. Convert to iterative with an explicit stack, or increase -Xss.
 
-**"Algorithm complexity analysis applies equally to all JVM languages"** ? Autoboxing creates hidden object allocations. An ArrayList of Integer storing 1 million ints uses roughly 20MB (each Integer is 16 bytes plus 4 bytes pointer) vs int array using roughly 4MB. In tight loops, autoboxing between int and Integer can dominate runtime. Use primitive-specialized collections (IntStream, int array) for performance-critical algorithms.
+**"Algorithm complexity analysis applies equally to all JVM languages"** — Autoboxing creates hidden object allocations. An ArrayList of Integer storing 1 million ints uses roughly 20MB (each Integer is 16 bytes plus 4 bytes pointer) vs int array using roughly 4MB. In tight loops, autoboxing between int and Integer can dominate runtime. Use primitive-specialized collections (IntStream, int array) for performance-critical algorithms.

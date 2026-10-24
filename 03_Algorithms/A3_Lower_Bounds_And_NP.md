@@ -1,6 +1,6 @@
 # A3. Lower Bounds and NP-Completeness
 
-**Navigation**: [← A2: Complexity First Principles](A2_Complexity_FirstPrinciples.md) | [📚 Index](00_INDEX.md) | [A4: Randomized Algorithms →](A4_Randomized_Algorithms.md)
+> **Navigation**: [← A2. Complexity Analysis from…](A2_Complexity_FirstPrinciples.md) | [Chapter index](00_INDEX.md) | [A4. Randomized Algorithms →](A4_Randomized_Algorithms.md)
 
 > **MIT 6.046J L16–L23 / KTH DD2352 / TU Munich Theoretical CS foundation**
 >
@@ -8,10 +8,73 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [A2 Complexity](A2_Complexity_FirstPrinciples.md), [Greedy/DP/Backtracking](12_Greedy_Algorithms_Complete.md) |
+| **You will learn** | Decision-tree lower bounds, reductions, P vs NP, NP-completeness proofs, approximation hooks |
+| **Leads to** | [Approximation, Online & LP](25_Online_Approximation_And_Linear_Programming.md), [A4 Randomized](A4_Randomized_Algorithms.md) |
+| **Abstraction level** | L7: knowing what cannot be done fast |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Lower Bounds & NP-Completeness
+
+### 1. The bottom line
+
+A lower bound or an NP-hardness proof tells you when to stop searching for a faster exact algorithm.
+
+### 2. The textbook core
+
+- Comparison sorting needs Ω(n log n) (decision tree with n! leaves).
+- To prove problem B is NP-hard, **reduce** a known NP-hard problem A to B in polynomial time.
+- NP-complete = in NP and NP-hard.
+- Responses to hardness: approximation, heuristics, parameterised or exponential algorithms with pruning.
+
+### 3. The real-world analogy
+
+A **proof that a puzzle has no shortcut** so you stop wasting time looking for one.
+
+### 4. Walkthrough
+
+1. Show Vertex Cover is hard via Independent Set.
+2. A set `S` is independent iff its complement is a vertex cover.
+3. So a size-k independent set exists iff a size-(n−k) vertex cover exists.
+4. The reduction is polynomial → Vertex Cover is NP-hard.
+
+> [!NOTE]
+> **Quick check:** What does NP-hard guarantee? *If you could solve it in polynomial time, you could solve every NP problem in polynomial time.*
+
+
+### 5. Check yourself
+
+**Q1.** Why does comparison sorting need `Ω(n log n)` comparisons?
+
+<details><summary>Answer</summary>
+
+A decision tree must have at least `n!` leaves, so its height is at least `log₂(n!) = Θ(n log n)`.
+
+</details>
+
+**Q2.** Does "NP-complete" mean impossible to solve?
+
+<details><summary>Answer</summary>
+
+No. It means no polynomial-time algorithm is known (and one would prove P = NP); you can still use exact exponential search, approximation or heuristics.
+
+</details>
+
+---
+
+
 ## Table of Contents
 
 1. [Lower Bounds — Proving Algorithms Are Optimal](#1-lower-bounds--proving-algorithms-are-optimal)
-2. [The Comparison Sort Lower Bound — Ω(n log n)](#2-the-comparison-sort-lower-bound--n-log-n)
+2. [The Comparison Sort Lower Bound — Ω(n log n)](#2-the-comparison-sort-lower-bound--ωn-log-n)
 3. [Information-Theoretic Lower Bounds](#3-information-theoretic-lower-bounds)
 4. [The Reduction Framework](#4-the-reduction-framework)
 5. [P, NP, and the Complexity Hierarchy](#5-p-np-and-the-complexity-hierarchy)
@@ -206,35 +269,28 @@ NP-complete = in NP AND NP-hard
 
 The most important open problem in mathematics and computer science (Millennium Prize, $1M):
 
-```
-If P = NP:  Every problem whose solution can be quickly verified
-            can also be quickly solved. Cryptography breaks down.
-            Protein folding, drug design become easy.
-            
-If P ≠ NP:  (widely believed) There are problems easy to verify
-            but hard to solve. Cryptography is secure.
-            NP-complete problems have no polynomial algorithm.
-```
+| Case | Consequence |
+| --- | --- |
+| **P = NP** | Every problem whose solution can be quickly verified can also be quickly solved. Public-key cryptography as we know it would break, and many hard optimization problems would become tractable. |
+| **P ≠ NP** (widely believed) | There are problems that are easy to verify but hard to solve. Cryptography stays plausible, and NP-complete problems have no polynomial-time algorithm. |
 
 ### The Complexity Hierarchy
 
+```mermaid
+flowchart TB
+  subgraph PSP["PSPACE: solvable in polynomial space"]
+    subgraph NPS["NP: solutions verifiable in polynomial time"]
+      subgraph PS["P: solvable in polynomial time"]
+        p1["Sorting, shortest path, ..."]
+      end
+      npc["NP-complete = NP ∩ NP-hard"]
+    end
+  end
+  nph["NP-hard: at least as hard as everything in NP (may lie outside NP and even outside PSPACE)"]
+  nph --- npc
 ```
-┌─────────────────────────────────────────────────────┐
-│  PSPACE (problems solvable in polynomial SPACE)      │
-│  ┌─────────────────────────────────────────────┐    │
-│  │  NP-hard (at least as hard as everything)    │    │
-│  │  ┌─────────────────────────────────────┐   │    │
-│  │  │  NP-complete (NP ∩ NP-hard)         │   │    │
-│  │  │  ┌───────────────────────────┐     │   │    │
-│  │  │  │  NP (verifiable in poly) │     │   │    │
-│  │  │  │  ┌─────────────────┐    │     │   │    │
-│  │  │  │  │  P (solvable)  │    │     │   │    │
-│  │  │  │  └─────────────────┘    │     │   │    │
-│  │  │  └───────────────────────────┘     │   │    │
-│  │  └─────────────────────────────────────┘   │    │
-│  └─────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The nested boxes show the classes P ⊆ NP ⊆ PSPACE (assuming P ≠ NP, the inclusion P ⊂ NP is strict). NP-hard is *not* contained in PSPACE: it overlaps NP exactly in the NP-complete problems, and it also contains harder problems outside NP.
 
 ---
 
@@ -343,17 +399,15 @@ Unless P = NP, Set Cover cannot be approximated better than (1 - ε) ln n for an
 
 ### The Approximability Landscape
 
-```
-Problem            │ Best known approximation    │ Hardness (unless P=NP)
-───────────────────┼─────────────────────────────┼──────────────────────
-Vertex Cover       │ 2                           │ No factor < 1.36
-Set Cover          │ H(n) ≈ ln n                 │ No factor < (1-ε)ln n
-Metric TSP         │ 1.5 (Christofides)          │ No PTAS
-General TSP        │ None!                       │ No constant factor
-Knapsack           │ FPTAS (1+ε, poly in 1/ε)   │ No FPTAS for 0/1 unless P=NP
-Max-3-SAT          │ 7/8 (optimal!)              │ No factor > 7/8
-Independent Set    │ O(n / log² n)               │ No n^(1-ε) approx
-```
+| Problem | Best known approximation | Hardness (unless P=NP) |
+| --- | --- | --- |
+| Vertex Cover | 2 | No factor < 1.36 |
+| Set Cover | H(n) ≈ ln n | No factor < (1-ε)ln n |
+| Metric TSP | 1.5 (Christofides) | No PTAS |
+| General TSP | None! | No constant factor |
+| Knapsack | FPTAS (1+ε, poly in 1/ε) | No FPTAS for 0/1 unless P=NP |
+| Max-3-SAT | 7/8 (optimal!) | No factor > 7/8 |
+| Independent Set | O(n / log² n) | No n^(1-ε) approx |
 
 ---
 
@@ -401,22 +455,20 @@ Can you solve it in polynomial time?
 
 ## Summary
 
-```
-Concept                      │ Key Fact
-─────────────────────────────┼─────────────────────────────────────────────
-Comparison sort lower bound  │ Ω(n log n) — decision tree with n! leaves
-Binary search lower bound    │ Ω(log n) — adversary halves candidates
-Reduction A ≤_p B            │ "B is at least as hard as A"
-P                            │ Exactly solvable in polynomial time
-NP                           │ YES-certificates verifiable in polynomial time
-NP-complete                  │ In NP AND NP-hard (all of NP reduces to it)
-NP-hard                      │ At least as hard as everything in NP
-Proving NP-completeness      │ Show ∈ NP + reduce known NP-complete ≤_p it
-2-approx for Vertex Cover    │ Greedy matching + take both endpoints
-ln n-approx for Set Cover    │ Greedy pick max coverage per cost
-General TSP                  │ No constant approximation unless P=NP
-FPTAS                        │ (1+ε)-approximation in poly(n, 1/ε) time
-```
+| Concept | Key Fact |
+| --- | --- |
+| Comparison sort lower bound | Ω(n log n) — decision tree with n! leaves |
+| Binary search lower bound | Ω(log n) — adversary halves candidates |
+| Reduction A ≤_p B | "B is at least as hard as A" |
+| P | Exactly solvable in polynomial time |
+| NP | YES-certificates verifiable in polynomial time |
+| NP-complete | In NP AND NP-hard (all of NP reduces to it) |
+| NP-hard | At least as hard as everything in NP |
+| Proving NP-completeness | Show ∈ NP + reduce known NP-complete ≤_p it |
+| 2-approx for Vertex Cover | Greedy matching + take both endpoints |
+| ln n-approx for Set Cover | Greedy pick max coverage per cost |
+| General TSP | No constant approximation unless P=NP |
+| FPTAS | (1+ε)-approximation in poly(n, 1/ε) time |
 
 ---
 
@@ -639,6 +691,16 @@ for (int mask = 0; mask < (1 << n); mask++) {
 ```
 
 
+
+---
+
+## 🏢 Enterprise Lens — Lower Bounds & NP-Completeness
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Choosing exact vs heuristic solvers in logistics, scheduling and verification tools |
+| **Failure modes** | Misreading NP-hard as "impossible"; reductions in the wrong direction |
+| **Testing and verification** | Test reductions on small instances in both directions |
 
 ---
 

@@ -10,45 +10,43 @@ Distributed tracing tracks requests across multiple services, helping debug and 
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
+**WHY: Why Distributed Tracing?**
+
+```text
+• Debug microservices: "Which service caused the 500 error?"
+• Performance bottlenecks: Find the slow service in the chain
+• Dependency mapping: Visualize how services communicate
+• Production incidents: Trace exact path of failed requests
+• SLA monitoring: Measure end-to-end latency across services
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Why Distributed Tracing?                                                  │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Debug microservices: "Which service caused the 500 error?"                   │
-│  • Performance bottlenecks: Find the slow service in the chain                  │
-│  • Dependency mapping: Visualize how services communicate                       │
-│  • Production incidents: Trace exact path of failed requests                    │
-│  • SLA monitoring: Measure end-to-end latency across services                   │
-└─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How Does Tracing Work?                                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Trace ID: Unique ID for entire request journey across services               │
-│  • Span ID: Unique ID for each unit of work (DB call, API call)                 │
-│  • Propagation: Headers carry trace context between services                    │
-│  • Collection: Spans sent to collector (Zipkin/Jaeger) for visualization        │
-│  • Sampling: Not all traces collected (configurable rate)                       │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**HOW: How Does Tracing Work?**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN: When to Use Distributed Tracing?                                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Microservices: 3+ services communicating                                     │
-│  • Debugging: Request fails somewhere in the chain                              │
-│  • Performance: Need to find bottleneck services                                │
-│  • Production: Critical for observability at scale                              │
-│  • NOT needed: Single monolith, simple 2-service architecture                   │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+• Trace ID: Unique ID for entire request journey across services
+• Span ID: Unique ID for each unit of work (DB call, API call)
+• Propagation: Headers carry trace context between services
+• Collection: Spans sent to collector (Zipkin/Jaeger) for visualization
+• Sampling: Not all traces collected (configurable rate)
+```
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHICH: Which Tools to Use?                                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  SPRING BOOT 2.x: Spring Cloud Sleuth + Zipkin                                  │
-│  SPRING BOOT 3.x: Micrometer Tracing (Sleuth deprecated)                        │
-│  COLLECTORS:      Zipkin (simple), Jaeger (advanced), AWS X-Ray (cloud)         │
-│  METRICS:         Micrometer + Prometheus/Grafana for full observability        │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHEN: When to Use Distributed Tracing?**
+
+```text
+• Microservices: 3+ services communicating
+• Debugging: Request fails somewhere in the chain
+• Performance: Need to find bottleneck services
+• Production: Critical for observability at scale
+• NOT needed: Single monolith, simple 2-service architecture
+```
+
+**WHICH: Which Tools to Use?**
+
+```text
+SPRING BOOT 2.x: Spring Cloud Sleuth + Zipkin
+SPRING BOOT 3.x: Micrometer Tracing (Sleuth deprecated)
+COLLECTORS:      Zipkin (simple), Jaeger (advanced), AWS X-Ray (cloud)
+METRICS:         Micrometer + Prometheus/Grafana for full observability
 ```
 
 ---
@@ -57,21 +55,14 @@ Distributed tracing tracks requests across multiple services, helping debug and 
 
 ### Core Concepts
 
+**A trace.** Trace ID `abc123` is unique per request journey.
+
+```mermaid
+flowchart LR
+  S1["SPAN 1<br/>Gateway<br/>span-001 (root)"] --> S2["SPAN 2<br/>Service A<br/>span-002"] --> S3["SPAN 3<br/>Service B<br/>span-003"] --> S4["SPAN 4<br/>Database<br/>span-004"]
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         TRACE                                   │
-│  Trace ID: abc123 (unique per request journey)                  │
-│                                                                 │
-│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐   │
-│  │  SPAN 1  │───▶│  SPAN 2  │───▶│  SPAN 3  │───▶│  SPAN 4  │   │
-│  │ Gateway  │    │ Service A│    │ Service B│    │ Database │   │
-│  │ span-001 │    │ span-002 │    │ span-003 │    │ span-004 │   │
-│  └──────────┘    └──────────┘    └──────────┘    └──────────┘   │
-│                                                                 │
-│  Parent-Child Relationships:                                    │
-│  span-001 (root) → span-002 → span-003 → span-004               │
-└─────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Each box is a span, one unit of work. The arrows are parent-child relationships: `span-001` (the root) → `span-002` → `span-003` → `span-004`. All four share the same trace ID.
 
 ### Key Terms
 
@@ -950,15 +941,14 @@ public class ObservationConfiguration {
 
 ### Project Structure
 
-```
-distributed-tracing-demo/
-├── api-gateway/
-├── order-service/
-├── inventory-service/
-├── payment-service/
-├── notification-service/
-└── docker-compose.yml
-```
+**distributed-tracing-demo/**
+
+- api-gateway/
+- order-service/
+- inventory-service/
+- payment-service/
+- notification-service/
+- docker-compose.yml
 
 ### API Gateway
 
@@ -1468,26 +1458,23 @@ volumes:
 
 ### Finding Issues
 
-```
-Zipkin UI (http://localhost:9411):
+**Zipkin UI** (`http://localhost:9411`)
 
-1. Search by trace ID from logs
-2. Find slow spans (duration > threshold)
-3. Look for error tags
-4. Analyze service dependencies
+1. Search by trace ID from the logs.
+2. Find slow spans (duration above a threshold).
+3. Look for error tags.
+4. Analyze service dependencies.
 
-Common Issues Identified:
-┌────────────────────────────────────────────────────────────────┐
-│ Trace: abc123def456                      Duration: 2.5s        │
-├────────────────────────────────────────────────────────────────┤
-│ ├─ api-gateway (5ms)                     ✓ OK                  │
-│ ├─ order-service (50ms)                  ✓ OK                  │
-│ │  ├─ inventory-service (20ms)           ✓ OK                  │
-│ │  ├─ payment-service (2.3s)             ⚠ SLOW                │
-│ │  │  └─ external-gateway (2.2s)         🔴 BOTTLENECK          │
-│ │  └─ notification-service (100ms)       ✓ OK                  │
-└────────────────────────────────────────────────────────────────┘
-```
+**Common issues identified.** Example trace `abc123def456`, total duration 2.5 s:
+
+| Span | Duration | Status |
+| --- | --- | --- |
+| api-gateway | 5 ms | ✓ OK |
+| order-service | 50 ms | ✓ OK |
+| ↳ inventory-service | 20 ms | ✓ OK |
+| ↳ payment-service | 2.3 s | ⚠ SLOW |
+| ↳↳ external-gateway | 2.2 s | 🔴 BOTTLENECK |
+| ↳ notification-service | 100 ms | ✓ OK |
 
 ### Querying Zipkin API
 
@@ -1738,12 +1725,12 @@ Kafka doesn't automatically propagate trace context the way HTTP does. HTTP prop
 
 ## Reality Check
 
-**"Logging is enough for debugging distributed systems"** ? In a microservices architecture, a single user request can touch 5-10 services. Logs from each service are stored separately. Without a trace ID propagated across all services, correlating log lines from one request across 10 services is impossible. Distributed tracing provides the causal chain � Service A called Service B which called Service C � that logs alone cannot show.
+**"Logging is enough for debugging distributed systems"** — In a microservices architecture, a single user request can touch 5-10 services. Logs from each service are stored separately. Without a trace ID propagated across all services, correlating log lines from one request across 10 services is impossible. Distributed tracing provides the causal chain — Service A called Service B which called Service C — that logs alone cannot show.
 
-**"Adding tracing to Spring Boot requires significant code changes"** ? Spring Boot 3.x with Micrometer Tracing auto-instruments: RestTemplate, WebClient, JDBC, JMS, Kafka, and Spring MVC. Adding spring-boot-starter-actuator plus micrometer-tracing-bridge-otel (OpenTelemetry) and an exporter dependency enables tracing with ZERO code changes. Trace context propagates automatically through Spring-managed HTTP clients and message listeners.
+**"Adding tracing to Spring Boot requires significant code changes"** — Spring Boot 3.x with Micrometer Tracing auto-instruments: RestTemplate, WebClient, JDBC, JMS, Kafka, and Spring MVC. Adding spring-boot-starter-actuator plus micrometer-tracing-bridge-otel (OpenTelemetry) and an exporter dependency enables tracing with ZERO code changes. Trace context propagates automatically through Spring-managed HTTP clients and message listeners.
 
-**"Sampling 100 percent of traces is necessary for accuracy"** ? Tracing every request in a system handling 10000 requests per second generates massive data volumes and export overhead. Tail-based sampling (sample only traces with errors or high latency) captures the interesting traces while discarding the 99 percent that succeeded normally. Head-based sampling at 1-10 percent is sufficient for understanding system topology and latency distributions.
+**"Sampling 100 percent of traces is necessary for accuracy"** — Tracing every request in a system handling 10000 requests per second generates massive data volumes and export overhead. Tail-based sampling (sample only traces with errors or high latency) captures the interesting traces while discarding the 99 percent that succeeded normally. Head-based sampling at 1-10 percent is sufficient for understanding system topology and latency distributions.
 
-**"Trace IDs and span IDs are the same thing"** ? A trace ID identifies the entire request journey across all services. A span ID identifies ONE operation within that journey (one HTTP call, one database query, one message send). A trace contains multiple spans in a parent-child tree. The trace ID stays the same across all services; each service creates new span IDs for its operations.
+**"Trace IDs and span IDs are the same thing"** — A trace ID identifies the entire request journey across all services. A span ID identifies ONE operation within that journey (one HTTP call, one database query, one message send). A trace contains multiple spans in a parent-child tree. The trace ID stays the same across all services; each service creates new span IDs for its operations.
 
-**"OpenTelemetry replaced all other tracing standards"** ? OpenTelemetry is the convergence of OpenTracing and OpenCensus, and it is the current standard. But many production systems still use Zipkin (B3 propagation format) or AWS X-Ray (X-Amzn-Trace-Id format). Spring Boot supports all of these through Micrometer Tracing bridges. When integrating with legacy systems, you may need to support multiple propagation formats simultaneously using CompositeTextMapPropagator.
+**"OpenTelemetry replaced all other tracing standards"** — OpenTelemetry is the convergence of OpenTracing and OpenCensus, and it is the current standard. But many production systems still use Zipkin (B3 propagation format) or AWS X-Ray (X-Amzn-Trace-Id format). Spring Boot supports all of these through Micrometer Tracing bridges. When integrating with legacy systems, you may need to support multiple propagation formats simultaneously using CompositeTextMapPropagator.

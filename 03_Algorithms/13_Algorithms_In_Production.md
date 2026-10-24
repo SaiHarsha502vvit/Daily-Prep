@@ -1,4 +1,4 @@
-> **Navigation**: [← Greedy/BitManip](06a_Greedy_BitManip.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← Advanced Algorithms: Complete…](06a_Greedy_BitManip.md) | [Chapter index](00_INDEX.md) | [21. Algorithm War Stories — How… →](21_Algorithm_War_Stories.md)
 
 # 🌍 Algorithms in the Real World — Where They Run Today
 
@@ -6,80 +6,67 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | Almost every previous chapter |
+| **You will learn** | Where classic algorithms run in real systems: routing, search, ranking, databases, networking, UI diffing, security |
+| **Leads to** | [War Stories](21_Algorithm_War_Stories.md), [DS in Production](../02_Data_Structures/05_DS_In_Production.md) |
+| **Abstraction level** | L8: from textbook to deployed system |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Algorithms in Production
+
+### 1. The bottom line
+
+The algorithms in this course are not exercises: they are running inside the products you use every day.
+
+### 2. The textbook core
+
+- Binary search → index lookups; Dijkstra/A\* → maps; PageRank → web ranking; Bloom filters → database read paths.
+- Each production use adds **constraints** the textbook ignores: scale, latency, consistency, failure.
+- Choose the algorithm by its **worst case under your SLO**, not its average.
+- Observe, measure and alert on algorithmic regressions.
+
+### 3. The real-world analogy
+
+Reading the **engine specs after learning how engines work**: now you can see why each part is shaped the way it is.
+
+### 4. Walkthrough
+
+1. Search request arrives at a database.
+2. The planner picks an index (B+ tree), which uses binary search within pages.
+3. A Bloom filter avoids reading SSTables that cannot contain the key.
+4. Results are merged with a k-way heap merge.
+
+> [!NOTE]
+> **Quick check:** Which classic algorithm decides the order of results when merging k sorted runs? *A heap-based k-way merge.*
+
+---
+
+
 ## The Algorithm → Production System Map
 
-```
-ALGORITHM                │ WHERE IT RUNS IN PRODUCTION (2024)
-─────────────────────────┼───────────────────────────────────────────────────────
-BINARY SEARCH            │ • Database index lookups (B-Tree traversal)
-                         │ • Git bisect (find the commit that broke the build)
-                         │ • Load balancers: binary search on routing tables
-                         │ • Chrome V8: binary search in sorted inline caches
-─────────────────────────┼───────────────────────────────────────────────────────
-QUICKSORT / TIMSORT      │ • JavaScript Array.prototype.sort() → TimSort (V8)
-                         │ • Python sorted() / list.sort() → TimSort
-                         │ • Java Arrays.sort(): dual-pivot QuickSort (primitives)
-                         │ • C++ std::sort(): IntroSort (QuickSort + HeapSort fallback)
-                         │ • Database ORDER BY: external merge sort for large results
-─────────────────────────┼───────────────────────────────────────────────────────
-BFS / DFS                │ • Web crawlers (Google: BFS across the internet)
-                         │ • React reconciliation: DFS diffing of Virtual DOM trees
-                         │ • Package managers: dependency resolution (DFS + topological sort)
-                         │ • Network protocols: OSPF (Open Shortest Path First) = BFS
-                         │ • Social networks: "People You May Know" = BFS from your node
-─────────────────────────┼───────────────────────────────────────────────────────
-DIJKSTRA / A*            │ • Google Maps / Apple Maps / Waze: shortest path
-                         │ • Network routing protocols (IS-IS, OSPF)
-                         │ • Game pathfinding: A* in every game with NPC movement
-                         │ • Robot navigation: A* for autonomous vehicles
-─────────────────────────┼───────────────────────────────────────────────────────
-DYNAMIC PROGRAMMING      │ • Sequence alignment: BLAST (bioinformatics DNA matching)
-                         │ • NLP: Viterbi algorithm (POS tagging, speech recognition)
-                         │ • Finance: option pricing (binomial tree model)
-                         │ • Compression: LZ77/LZ78 (used in ZIP, GZIP)
-                         │ • Spell check: edit distance (Levenshtein) for suggestions
-─────────────────────────┼───────────────────────────────────────────────────────
-HASHING                  │ • Password storage: bcrypt/argon2 (one-way hash + salt)
-                         │ • Git: SHA-1 identifies every commit, blob, tree
-                         │ • Blockchain: SHA-256 mining, block chaining
-                         │ • CDN: content-based addressing (hash of file = cache key)
-                         │ • Consistent hashing: distribute data across server cluster
-─────────────────────────┼───────────────────────────────────────────────────────
-TOPOLOGICAL SORT         │ • Build systems: Makefile, Webpack, Gradle dependency ordering
-                         │ • CI/CD: pipeline stage ordering (test before deploy)
-                         │ • Spreadsheets: cell recalculation order (A1=B1+C1)
-                         │ • Course scheduling: prerequisite ordering
-─────────────────────────┼───────────────────────────────────────────────────────
-BACKTRACKING             │ • Regex engines (NFA-based regex uses backtracking)
-                         │ • Constraint solvers: Sudoku, N-Queens, SAT solvers
-                         │ • Compilers: parsing ambiguous grammars
-                         │ • React Router: route matching (try each pattern)
-─────────────────────────┼───────────────────────────────────────────────────────
-GREEDY                   │ • Huffman coding → JPEG, MP3, ZIP compression
-                         │ • Dijkstra IS a greedy algorithm (always pick shortest edge)
-                         │ • OS scheduling: Shortest Job First (greedy for min wait)
-                         │ • Network: TCP congestion control (additive increase)
-─────────────────────────┼───────────────────────────────────────────────────────
-UNION-FIND               │ • Kruskal's MST: network cable routing, circuit design
-                         │ • Image segmentation: connected components
-                         │ • Social networks: "are these users in the same group?"
-                         │ • Distributed systems: conflict detection in replicas
-─────────────────────────┼───────────────────────────────────────────────────────
-SLIDING WINDOW           │ • Network: TCP sliding window for flow control
-                         │ • Time-series: moving averages (stock prices, metrics)
-                         │ • Streaming: Apache Flink windowed aggregations
-                         │ • Rate limiting: fixed/sliding window algorithms
-─────────────────────────┼───────────────────────────────────────────────────────
-TWO POINTERS             │ • Merging sorted arrays: merge step of MergeSort
-                         │ • Database merge join: O(N+M) if both sorted
-                         │ • Git diff: finding longest common subsequence
-                         │ • Stack-based parsing: matching brackets in IDEs
-─────────────────────────┼───────────────────────────────────────────────────────
-PAGERANK                 │ • Original Google search ranking (Larry Page, 1998)
-                         │ • Twitter/X: recommendation algorithm (who to follow)
-                         │ • Citation networks: rank academic papers by importance
-                         │ • Fraud detection: rank suspicious transaction links
-```
+| ALGORITHM | WHERE IT RUNS IN PRODUCTION (2024) |
+| --- | --- |
+| BINARY SEARCH<br>• Git bisect (find the commit that broke the build)<br>• IP forwarding tables: longest-prefix match (tries) and binary search over sorted ranges<br>• V8: binary search over descriptor arrays for property lookup | • Database index lookups (B-Tree traversal) |
+| QUICKSORT / TIMSORT<br>• Python sorted() / list.sort() → TimSort<br>• Java Arrays.sort(): dual-pivot QuickSort (primitives)<br>• C++ std::sort(): IntroSort (QuickSort + HeapSort fallback)<br>• Database ORDER BY: external merge sort for large results | • JavaScript Array.prototype.sort() → TimSort (V8) |
+| BFS / DFS<br>• React reconciliation: DFS diffing of Virtual DOM trees<br>• Package managers: dependency resolution (DFS + topological sort)<br>• Network protocols: OSPF / IS-IS run Dijkstra on the link-state graph<br>• Social networks: "People You May Know" = BFS from your node | • Web crawlers: frontier-based breadth-first style traversal of the link graph |
+| DIJKSTRA / A*<br>• Network routing protocols (IS-IS, OSPF)<br>• Game pathfinding: A* in every game with NPC movement<br>• Robot navigation: A* for autonomous vehicles | • Google Maps / Apple Maps / Waze: shortest path |
+| DYNAMIC PROGRAMMING<br>• NLP: Viterbi algorithm (POS tagging, speech recognition)<br>• Finance: option pricing (binomial tree model)<br>• Compression: optimal parsing in encoders such as zopfli and LZMA is DP-like<br>• Spell check: edit distance (Levenshtein) for suggestions | • Sequence alignment: Needleman–Wunsch / Smith–Waterman (BLAST is a faster heuristic built on seeds) |
+| HASHING<br>• Git: SHA-1 identifies every commit, blob, tree<br>• Blockchain: SHA-256 mining, block chaining<br>• CDN: content-based addressing (hash of file = cache key)<br>• Consistent hashing: distribute data across server cluster | • Password storage: bcrypt/scrypt/Argon2 (salted, deliberately slow hashing) |
+| TOPOLOGICAL SORT<br>• CI/CD: pipeline stage ordering (test before deploy)<br>• Spreadsheets: cell recalculation order (A1=B1+C1)<br>• Course scheduling: prerequisite ordering | • Build systems: Makefile, Webpack, Gradle dependency ordering |
+| BACKTRACKING<br>• Constraint solvers: Sudoku, N-Queens, SAT solvers<br>• Compilers: parsing ambiguous grammars<br>• React Router: route matching (try each pattern) | • Regex engines (NFA-based regex uses backtracking) |
+| GREEDY<br>• Dijkstra IS a greedy algorithm (always pick shortest edge)<br>• OS scheduling: Shortest Job First (greedy for min wait)<br>• Compression: Huffman and canonical prefix codes in DEFLATE | • Huffman coding → JPEG, MP3, ZIP compression |
+| UNION-FIND<br>• Image segmentation: connected components<br>• Social networks: "are these users in the same group?"<br>• Account merging and entity resolution in data pipelines | • Kruskal's MST: network cable routing, circuit design |
+| SLIDING WINDOW<br>• Time-series: moving averages (stock prices, metrics)<br>• Streaming: Apache Flink windowed aggregations<br>• Rate limiting: fixed/sliding window algorithms | • Network: TCP sliding window for flow control |
+| TWO POINTERS<br>• Database merge join: O(N+M) if both sorted<br>• Sorted-set intersection in search engines (posting-list merge)<br>• In-place partitioning inside library sort routines | • Merging sorted arrays: merge step of MergeSort |
+| PAGERANK<br>• Recommendation systems: personalised-PageRank-style random walks (e.g. Twitter's early who-to-follow, Pinterest Pixie)<br>• Citation networks: rank academic papers by importance<br>• Fraud detection: rank suspicious transaction links | • Original Google search ranking (Larry Page, 1998) |
 
 ---
 
@@ -98,16 +85,16 @@ By turning an O(N³) academic problem into an O(N) heuristic, React revolutioniz
 
 ---
 
-### 2. Google Maps Routing (Contraction Hierarchies)
+### 2. Road Routing (Contraction Hierarchies)
 
 **The Academic Problem:** Dijkstra's Algorithm finds the shortest path, but it searches _everywhere_ circularly. If you route from New York to LA, Dijkstra will search every small residential street in Chicago along the way. Even A\* search (which biases toward the destination) is too slow for continental routing.
 
-**The Production Reality:** Google Maps uses **Contraction Hierarchies (CH)**.
+**The Production Reality:** Open-source routing engines such as **OSRM** and **GraphHopper** use **Contraction Hierarchies (CH)**; large commercial map providers use similar preprocessing-based speed-ups (their exact systems are proprietary).
 
 1. **Preprocessing (The "Contraction" phase):** The algorithm assigns an "importance" rank to every road. High-speed interstates get high ranks. Small residential cul-de-sacs get low ranks. It pre-calculates the fastest routes between important nodes.
 2. **Querying (The "Hierarchy" phase):** When you ask for a route, the algorithm only looks at local roads near your house, then rapidly jumps up the hierarchy to search _ONLY_ highways, jumping back down to local roads only when near the destination.
 
-This reduces a 3-second Dijkstra search across 50 million nodes into a 2-millisecond lookup.
+On continental road graphs this turns a Dijkstra search that visits millions of nodes into a query that typically takes about a millisecond.
 
 ---
 
@@ -156,7 +143,7 @@ To predict if User A will like Movie B, the system simply takes the dot product 
 1843: Ada Lovelace writes the first algorithm (Bernoulli numbers, for Babbage's engine)
 1936: Turing machine (Alan Turing) — theoretical foundation of ALL computation
 1945: Merge sort (John von Neumann) — first practical O(n log n) sort
-1956: Dijkstra's algorithm (Edsger Dijkstra) — shortest path, still used today
+1956/59: Dijkstra's algorithm (designed 1956, published 1959) — shortest path, still used today
 1959: Quicksort (Tony Hoare) — still the fastest average-case sort
 1960: DFS/BFS formalized (various researchers, graph theory matures)
 1962: AVL Tree (Adelson-Velsky & Landis) — first self-balancing BST
@@ -166,11 +153,11 @@ To predict if User A will like Movie B, the system simply takes the dot product 
 1977: RSA encryption (Rivest, Shamir, Adleman) — secures the internet
 1984: Karmarkar's algorithm — revolutionizes linear programming
 1998: PageRank (Page & Brin) — builds Google
-2002: TimSort (Tim Peters) — hybrid sort, default in Python and Java
-2006: MapReduce (Dean & Ghemawat, Google) — enables petabyte-scale distributed computing
+2002: TimSort (Tim Peters) — hybrid sort, default in Python (and in Java for objects since Java 7)
+2004: MapReduce (Dean & Ghemawat, Google) — enables petabyte-scale distributed computing
 2012: AlexNet (Krizhevsky) — deep learning for image recognition → AI revolution
 2017: Transformer ("Attention Is All You Need") → GPT, BERT, ChatGPT, all modern LLMs
-2023: Strassen-like improvements to matrix multiplication → faster neural network training
+2022: AlphaTensor (DeepMind) finds new matrix-multiplication algorithms for small matrix sizes — practical impact on training is still limited
 ```
 
 ---
@@ -306,14 +293,24 @@ public class AlgorithmBenchmark {
 
 ---
 
+## 🏢 Enterprise Lens — Algorithms in Production
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Everywhere: maps, feeds, payments, messaging, search, storage |
+| **Failure modes** | Choosing an average-case algorithm for a p99 requirement; no fallback for pathological input |
+| **Testing and verification** | Load tests with adversarial data; regression benchmarks in CI |
+
+---
+
 ## Reality Check
 
-**"Production code does not need algorithmic thinking"** ? Every database query involves algorithm choices: B-tree vs hash index, nested loop vs hash join vs merge join, full table scan vs index scan. The query optimizer makes these decisions, but understanding them lets you write queries the optimizer can handle efficiently and diagnose performance problems when it makes poor choices.
+**"Production code does not need algorithmic thinking"** → Every database query involves algorithm choices: B-tree vs hash index, nested loop vs hash join vs merge join, full table scan vs index scan. The query optimizer makes these decisions, but understanding them lets you write queries the optimizer can handle efficiently and diagnose performance problems when it makes poor choices.
 
-**"Big-O is all that matters in production"** ? An O(n log n) algorithm with poor cache locality can be slower than an O(n squared) algorithm with sequential memory access for n under 10000. Production performance depends on: constant factors, cache behavior, branch prediction, memory allocation patterns, and I/O costs. Profile before optimizing � the bottleneck is often not where you expect.
+**"Big-O is all that matters in production"** → An O(n log n) algorithm with poor cache locality can be slower than an O(n squared) algorithm with sequential memory access for n under 10000. Production performance depends on: constant factors, cache behavior, branch prediction, memory allocation patterns, and I/O costs. Profile before optimizing — the bottleneck is often not where you expect.
 
-**"Algorithms textbook implementations are production-ready"** ? Textbook implementations optimize for clarity, not robustness. Production implementations must handle: integer overflow in index calculations, concurrent access (ConcurrentHashMap vs HashMap), graceful degradation under memory pressure, and monitoring/observability (execution time histograms, cache hit rates). Java standard library implementations include these concerns; custom implementations often miss them.
+**"Algorithms textbook implementations are production-ready"** → Textbook implementations optimize for clarity, not robustness. Production implementations must handle: integer overflow in index calculations, concurrent access (ConcurrentHashMap vs HashMap), graceful degradation under memory pressure, and monitoring/observability (execution time histograms, cache hit rates). Java standard library implementations include these concerns; custom implementations often miss them.
 
-**"Distributed algorithms are just parallel algorithms"** ? Distributed systems face challenges absent in parallel computing: network partitions (CAP theorem), clock skew (no global time ordering), partial failures (one node crashes mid-operation), and message ordering (messages arrive out of send order). Consensus algorithms (Raft, Paxos) exist specifically because distributed agreement is fundamentally harder than local coordination.
+**"Distributed algorithms are just parallel algorithms"** → Distributed systems face challenges absent in parallel computing: network partitions (CAP theorem), clock skew (no global time ordering), partial failures (one node crashes mid-operation), and message ordering (messages arrive out of send order). Consensus algorithms (Raft, Paxos) exist specifically because distributed agreement is fundamentally harder than local coordination.
 
-**"Choosing the right algorithm is a one-time decision"** ? Data characteristics change: a dataset that started small grows large, access patterns shift from read-heavy to write-heavy, and new query types emerge. An ArrayList chosen for sequential access becomes a bottleneck when random insertions increase. Production systems need monitoring to detect when algorithmic assumptions no longer hold and the implementation should be reconsidered.
+**"Choosing the right algorithm is a one-time decision"** → Data characteristics change: a dataset that started small grows large, access patterns shift from read-heavy to write-heavy, and new query types emerge. An ArrayList chosen for sequential access becomes a bottleneck when random insertions increase. Production systems need monitoring to detect when algorithmic assumptions no longer hold and the implementation should be reconsidered.

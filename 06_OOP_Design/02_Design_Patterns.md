@@ -1,817 +1,87 @@
-**Navigation**: [< Previous](01_OOPS_Principles.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_System_Design.md)
-
 # 🎨 Design Patterns: Complete Guide from Scratch
+
+> **Navigation**: [← OOPS & Design Principles](01_OOPS_Principles.md) | [Chapter index](00_INDEX.md) | [Design Patterns in Java — Gang of… →](08_Design_Patterns_Java.md)
 
 ## Building Reusable, Maintainable Software
 
 ---
 
-# 🎨 PART 0: The 5W+H Framework
+## 🔗 Bridge — Where This Chapter Fits
 
-**Mental Model:** Think of Design Patterns as recipes in cooking. A recipe doesn't give you the exact ingredients in your fridge, but it gives you a proven approach to creating a specific dish. Knowing recipes makes you a master chef; you don't have to invent a new way to bake a cake from scratch every time.
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [OOP Principles](01_OOPS_Principles.md) (interfaces, composition), [Pattern Recognition](../04_Patterns_Templates/04_Pattern_Recognition.md) |
+| **You will learn** | The creational, structural and behavioural categories, when each pattern earns its place, and how patterns combine |
+| **Leads to** | [Design Patterns in Java](08_Design_Patterns_Java.md), [LLD Solved Problems](07_LLD_Solved_Problems.md) |
+| **Abstraction level** | Isolated principles → **named solutions to recurring forces** → **combinations of patterns in one design** |
 
-| Question  | Design Patterns Context                                                                                                                                                                                                                                 |
-| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **WHAT**  | Reusable, language-agnostic solutions to common software design problems. They are templates or blueprints for solving issues that occur repeatedly in software architecture.                                                                           |
-| **WHY**   | To prevent "reinventing the wheel." Patterns provide proven, battle-tested solutions that improve code maintainability, flexibility, and create a common vocabulary for developers (e.g., saying "I used a Singleton" conveys exact meaning instantly). |
-| **WHEN**  | Used when you recognize a recurring architectural problem, foresee requirements changing, or need to structure complex interactions between many objects without creating tight coupling.                                                               |
-| **WHERE** | Found entirely throughout enterprise codebases, libraries, and frameworks (Spring, React, Android SDK).                                                                                                                                                 |
-| **WHO**   | Formalized by the "Gang of Four" (GoF) in their famous 1994 book, _Design Patterns: Elements of Reusable Object-Oriented Software_.                                                                                                                     |
-| **HOW**   | By categorizing problems into three groups: **Creational** (how objects are made), **Structural** (how objects are composed together), and **Behavioral** (how objects communicate and delegate responsibility).                                        |
-
-### Where It's Used in Real World
-
-- **Frameworks (Spring)**: Extensively relies on the **Singleton** pattern (one instance per bean by default), **Factory** pattern (BeanFactory), and **Proxy** pattern (AOP and transactions).
-- **UI/Frontend Development**: The DOM event listener system is a pure implementation of the **Observer** pattern.
-- **Navigation Apps (Google Maps)**: Uses the **Strategy** pattern to swap between routing algorithms (driving, walking, transit) without changing the core map code.
-- **Text Editors**: Implement the **Command** pattern to encapsulate every keystroke or action as an object, enabling "Undo/Redo" functionality.
-
-## What Are Design Patterns?
-
-Design patterns are REUSABLE SOLUTIONS to COMMON problems that occur in
-software design. They are templates, not finished code.
-
-💡 **KEY INSIGHT: Patterns are like RECIPES in cooking!**
-
-- Recipe tells you the approach, not exact ingredients
-- You adapt the recipe to your specific needs
-- Knowing recipes makes you a better cook/developer
-
-💡 **ANALOGY:**
-
-**Without Patterns**:
-"I need to make food" → Start from scratch every time
-
-**With Patterns**:
-"I need to make curry" → Use curry recipe (known solution)
-"I need to bake" → Use baking techniques (known approach)
-
-**In Software**:
-"I need one global config" → Use Singleton pattern
-"I need to create objects flexibly" → Use Factory pattern
-
-**Historical Evolution**:
-
-- 1977: Christopher Alexander - patterns in architecture
-- 1987: Kent Beck & Ward Cunningham - patterns in software
-- 1994: Gang of Four (GoF) book - 23 classic patterns
-- 2000s: Enterprise patterns, Web patterns emerged
-- 2010s: Microservices patterns, Cloud patterns
-- Today: Patterns for AI, serverless, reactive systems
-
-🔬 **Section Challenge — What Are Design Patterns?**
-
-**Challenge 1 (Reasoning — Who/When/What):** The GoF book was published in 1994 using C++/Smalltalk. **What** has changed in 30 years that makes some patterns obsolete? Name a pattern that modern Java makes unnecessary and explain **why**.
-
-<details><summary>Answer</summary>
-
-**What changed?** Language features absorbed patterns. **Iterator** is built into Java's `for-each` loop and `Iterable` interface — you never manually implement Iterator anymore. **Strategy** is replaced by lambdas: `list.sort(Comparator.comparing(User::getName))` — no need for `SortStrategy` interface + concrete classes. **Observer** is built into reactive frameworks (RxJava, Project Reactor). **Command** is simplified by `Runnable`/`Callable`. The GoF patterns remain valuable as CONCEPTS, but modern implementations are far lighter.
-
-</details>
-
-## What Problem Do Design Patterns Solve?
-
-**Problem 1 — Reinventing the Wheel**: Developers solve the same problems repeatedly, each solution different and often suboptimal. Patterns provide **proven** solutions.
-
-**Problem 2 — Communication**: _"I used a thing that creates objects..."_ (vague) vs _"I used the Factory pattern"_ (precise, everyone understands). Patterns give us a **common vocabulary**.
-
-**Problem 3 — Maintainability**: Spaghetti code is hard to change. Patterns enforce **structure** and **separation**.
-
-**Problem 4 — Flexibility**: Requirements change constantly. Patterns make code **adaptable** to change.
-
-💡 **Real-World Examples**: Java Collections → Iterator pattern, Spring → Factory/Singleton/Proxy, React → Observer pattern, Android → Builder pattern
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
 
 ---
 
-🔬 **Section Challenge — What Problem Do Design Patterns Solve?**
+## 💬 Explain It Like a Study Partner — Design Patterns
 
-**Challenge 1 (Reasoning):** Problem 2 says patterns provide a "common vocabulary." In a code review, you say "this is a Facade." **Who** benefits from this? **What** if the team doesn't know patterns — does the benefit disappear?
+### 1. The bottom line
 
-<details><summary>Answer</summary>
+A pattern is a named answer to a recurring design force; learn the force first, then the shape of the answer.
 
-**Who benefits?** Every developer reading the code — now and in the future. Saying "Facade" conveys: simplified entry point, hides subsystem complexity, delegates to multiple internal classes. **Without shared knowledge?** Yes, the communication benefit disappears. BUT the structural benefit remains — the code is still well-organized. This is why learning patterns is a TEAM investment, not individual. The real ROI comes when the whole team speaks the same language.
+### 2. The textbook core
 
-</details>
+- **Creational** patterns control how objects are made (Factory, Builder, Singleton).
+- **Structural** patterns control how objects are composed (Adapter, Decorator, Facade, Proxy, Composite).
+- **Behavioural** patterns control how objects communicate (Strategy, Observer, Command, State, Template Method).
+- The GoF catalogue (1994) lists 23 patterns: 5 creational, 7 structural, 11 behavioural.
+- Many patterns are absorbed by modern language features (lambdas replace simple Strategy and Command).
 
-## Why Learn Design Patterns?
+### 3. The real-world analogy
 
-1. **Better Code Quality** — Patterns are battle-tested; fewer bugs, easier maintenance
-2. **Faster Development** — Don't waste time designing from scratch; apply known solutions
-3. **Team Communication** — _"Use Strategy pattern here"_ — everyone instantly understands
-4. **Interview Success** — OOP/Design interviews test pattern knowledge directly
-5. **Framework Understanding** — Spring, Hibernate, React all use patterns under the hood
-6. **Career Growth** — Senior developers **must** know patterns
+A **recipe book**: each recipe names a dish, when to cook it and what to watch for, but you still choose ingredients for your own kitchen.
 
-- Required for system design and architecture roles
+### 4. Walkthrough
 
-🔬 **Section Challenge — Why Learn Design Patterns?**
+1. State the force: "I need to swap the discount rule at run time".
+2. Candidate: Strategy (an interface plus implementations).
+3. Check cost: a lambda may be enough for one-line rules.
+4. Implement, then test each strategy in isolation.
+5. Name the pattern in the code or PR so teammates share the vocabulary.
 
-**Challenge 1 (Trace):** Point 5 says "Spring uses patterns under the hood." When you annotate a class `@Transactional`, **who** creates the proxy? **When** is the proxy created? **What** pattern is being used?
+> [!NOTE]
+> **Quick check:** What is the first question to ask before reaching for a pattern? *What force (change, variation, coupling) is hurting right now?*
 
-<details><summary>Answer</summary>
+### 5. Check yourself
 
-**Who?** Spring's BeanPostProcessor (specifically `AbstractAutoProxyCreator`). **When?** During application startup, after bean instantiation but before the bean is fully initialized. Spring wraps your actual bean in a CGLIB or JDK dynamic proxy. **What pattern?** Proxy pattern (specifically, a dynamic proxy). The proxy intercepts method calls, starts a transaction BEFORE your method runs, commits AFTER success, or rolls back on exception. Your code never sees the proxy — `@Autowired MyService` gives you the proxy, not the real object.
-
-</details>
-
-## When To Use Design Patterns
-
-**Use Patterns When**:
-
-- ✅ You recognize a recurring problem
-- ✅ You need flexibility for future changes
-- ✅ You're building frameworks or libraries
-- ✅ Multiple classes need to work together
-- ✅ You want to follow SOLID principles
-  **Don't Use Patterns When**:
-- ❌ Simple code does the job
-- ❌ You're forcing a pattern where it doesn't fit
-- ❌ Pattern adds unnecessary complexity
-- ❌ One-time scripts or throwaway code
-
-💡 **Golden Rule**: _"Use patterns to SOLVE problems, not to SHOW OFF knowledge."_
-Over-engineering with patterns is as bad as no patterns!
-
-🔬 **Section Challenge — When To Use Design Patterns**
-
-**Challenge 1 (Design):** The "Don't Use" list says "You're forcing a pattern where it doesn't fit." Give a concrete example of over-engineering with Singleton and explain **what** simpler alternative works.
+**Q1.** Observer or Strategy: a UI should refresh when a model changes — which fits?
 
 <details><summary>Answer</summary>
 
-**Over-engineering:** Making `UserValidator` a Singleton. It has no mutable state, no expensive construction, no shared resources. Making it Singleton adds: hidden global dependency, harder testing (can't create fresh instance per test), thread-safety concerns for no benefit. **Simpler alternative:** Just create a new instance: `new UserValidator().validate(user)`. Or make methods static if there's truly no state. Patterns solve COMPLEXITY — if there's no complexity, the pattern IS the complexity.
+**Observer.** Many dependents must be told when one subject changes. Strategy swaps an algorithm behind a single caller.
 
 </details>
 
-## ⭐ Growth Mindset: From Pattern User To Pattern Creator ⭐
-
-| Level | Stage           | Milestone                                                         |
-| ----- | --------------- | ----------------------------------------------------------------- |
-| 1     | **Learner**     | _"I know what Singleton is"_                                      |
-| 2     | **Implementer** | _"I can implement Singleton correctly"_                           |
-| 3     | **Recognizer**  | _"I can identify when to use Singleton in my code"_               |
-| 4     | **Combiner**    | _"I can combine multiple patterns to solve complex problems"_     |
-| 5     | **Creator**     | _"I can create new patterns for recurring problems in my domain"_ |
-
-💡 **The Truth**: GoF patterns were CREATED by observing recurring solutions! YOU can observe patterns in your domain and document them too!
-
-## Pattern Categories
-
-1. **Creational Patterns** — _Object Creation_
-   _"HOW do I create objects?"_
-   Singleton, Factory, Abstract Factory, Builder, Prototype
-
-2. **Structural Patterns** — _Object Composition_
-   _"HOW do I structure classes and objects?"_
-   Adapter, Bridge, Composite, Decorator, Facade, Proxy
-
-3. **Behavioral Patterns** — _Object Interaction_
-   _"HOW do objects communicate and behave?"_
-   Observer, Strategy, Command, Iterator, State, Template Method
-
-**Quick Selection Guide**:
-
-| Need                                          | Pattern       |
-| --------------------------------------------- | ------------- |
-| Only one instance                             | **Singleton** |
-| Create objects without specifying exact class | **Factory**   |
-| Complex object construction                   | **Builder**   |
-| Convert interface                             | **Adapter**   |
-| Add behavior dynamically                      | **Decorator** |
-| Simplify complex subsystem                    | **Facade**    |
-| Notify multiple objects                       | **Observer**  |
-| Swap algorithms at runtime                    | **Strategy**  |
-| Undo/Redo operations                          | **Command**   |
-| Different behavior based on state             | **State**     |
-
-🔬 **Section Challenge — Pattern Categories**
-
-**Challenge 1 (Reasoning — Who/When/What):** The selection guide maps "Only one instance" → Singleton, "Swap algorithms" → Strategy. But **when** would you use Strategy AND Factory together? Give a real scenario.
+**Q2.** Why can `Comparator.comparing(...)` be called a Strategy without any class hierarchy?
 
 <details><summary>Answer</summary>
 
-Scenario: Payment processing. **Factory** selects WHICH payment processor to create based on user choice: `PaymentFactory.create("stripe")` vs `create("paypal")`. **Strategy** defines HOW each processor charges: `StripeStrategy.pay(amount)` vs `PayPalStrategy.pay(amount)`. Factory answers "which object?" Strategy answers "which algorithm?" Combined: `PaymentStrategy strategy = PaymentFactory.create(userChoice); strategy.pay(100);`. The Factory decouples object creation; the Strategy decouples algorithm selection. They solve different problems and compose naturally.
+A functional interface is an interface; a lambda is an implementation. The role is the same, the ceremony is gone.
 
 </details>
-
-## Difficulties & Common Mistakes
-
-1. **"Too Abstract"** — Study with REAL examples, not just UML diagrams
-2. **"Don't Know When To Use"** — Learn the PROBLEM each pattern solves first
-3. **"Patterns Look Similar"** — Focus on INTENT, not structure. _Factory_ = which type, _Builder_ = how to construct
-4. **"Over-Engineering"** — Start simple, add patterns when complexity grows
-5. **"Too Many Patterns"** — Master these 10 first: Singleton, Factory, Builder, Adapter, Decorator, Facade, Observer, Strategy, Command, Template Method
-
-## Expected Outcomes
-
-- ✅ PATTERN RECOGNITION: See problem → Know which pattern applies
-- ✅ CLEAN CODE: Write maintainable, flexible code
-- ✅ FRAMEWORK MASTERY: Understand how Spring, React, etc. work
-- ✅ INTERVIEW SUCCESS: Ace OOP design interview rounds
-- ✅ COMMUNICATION: Discuss design precisely with team
-- ✅ ARCHITECTURE THINKING: Design systems, not just features
-
-**The Transformation**:
-
-**From**: "I'll figure out how to structure this code"
-
-**To**: "This is a Strategy pattern problem, I know exactly how to design it"
 
 ---
 
-# 🎨 Part 1: Creational Patterns
 
-## 1.1 Singleton Pattern
+## 📚 Topic Pages in This Chapter
 
-## What Is It?
+This chapter is split into focused pages so each topic can be read on its own. Read them in order the first time; use the table to jump back later.
 
-Ensures a class has ONLY ONE INSTANCE and provides a global point of access.
+| # | Page | What is inside | Lines |
+| --- | --- | --- | --- |
+| 1 | [The 5W+H Framework](02_Design_Patterns/01_the_5w_h_framework.md) | The 5W+H Framework | 212 |
+| 2 | [Creational Patterns](02_Design_Patterns/02_creational_patterns.md) | Creational Patterns | 151 |
+| 3 | [Structural Patterns](02_Design_Patterns/03_structural_patterns.md) | Structural Patterns | 141 |
+| 4 | [Behavioral Patterns](02_Design_Patterns/04_behavioral_patterns.md) | Behavioral Patterns · Pattern Combinations · Quick Reference Table | 301 |
 
-💡 **ANALOGY: Government of a country**
-
-- There's only ONE government at a time
-- Everyone accesses the SAME government
-- Creating a second government causes chaos
-
-## What Problem Does It Solve
-
-- Database connections: Only one connection pool needed
-- Configuration: One config object shared across app
-- Logging: One logger instance for entire application
-- Cache: One cache instance to avoid inconsistency
-
-## When To Use
-
-- ✅ When exactly one instance is needed
-- ✅ When global access is required
-- ✅ When instance is expensive to create
-- ❌ Don't use when you might need multiple instances later
-- ❌ Don't use for everything (makes testing harder)
-
-## 1.2 Factory Pattern
-
-### 5W1H: Deep Understanding
-
-```
-WHAT: Creates objects WITHOUT exposing the creation logic to the client.
-      The client asks for a TYPE, the factory returns the right object.
-
-WHY:  Without Factory, object creation logic is SCATTERED everywhere:
-      if-else chains in controllers, services, and utilities.
-      When you add a new type, you modify EVERY location.
-      Factory centralizes creation in ONE place.
-
-ANALOGY — PIZZA RESTAURANT:
-  You say: "I want Margherita"  (specify type)
-  Kitchen: creates the pizza    (factory does creation)
-  You get: a pizza             (you receive the object)
-  You don't see the kitchen, you don't know the recipe,
-  and if the recipe changes, your order doesn't change.
-
-HOW IT WORKS INTERNALLY:
-  1. All products implement a common INTERFACE (Animal, Shape, etc.)
-  2. Factory method takes a TYPE parameter (string, enum)
-  3. Factory returns the correct CONCRETE class based on type
-  4. Client works with the INTERFACE — doesn't know concrete type
-
-REAL-WORLD IN SPRING:
-  Spring's BeanFactory IS a Factory pattern!
-  You ask: context.getBean("userService")
-  Spring returns: the UserServiceImpl (you don't create it)
-  Spring's entire IoC container is a sophisticated Factory.
-
-FACTORY vs ABSTRACT FACTORY:
-  Factory: creates ONE type of product family
-  Abstract Factory: creates FAMILIES of related products
-  Example: UIFactory creates Button + TextField + Menu
-           WindowsUIFactory → WindowsButton + WindowsTextField
-           MacUIFactory     → MacButton + MacTextField
-```
-
-💡 **ANALOGY: Pizza Restaurant**
-
-- You order "Margherita" → Kitchen creates it (you don't know how)
-- You order "Pepperoni" → Kitchen creates it (different recipe)
-- You just ask for a type, factory handles the creation
-
-🔬 **Section Challenge — 1.2 Factory Pattern**
-
-**Challenge 1 (Trace — Who/When/What):** Spring's `BeanFactory` IS a Factory. When you write `@Autowired UserService userService`, **who** calls the factory? **When** does bean creation happen? **What** determines if you get a new instance or the same one?
-
-<details><summary>Answer</summary>
-
-**Who?** Spring's IoC container (specifically `DefaultListableBeanFactory`). You never call `getBean()` explicitly — `@Autowired` triggers it. **When?** For singleton-scoped beans: at startup (eager init). For prototype-scoped: at each injection point (lazy). **What determines?** The `@Scope` annotation. Default is `singleton` — the factory creates ONE instance, caches it, and returns the same object every time. `@Scope("prototype")` — factory creates a NEW instance each time. This is Factory + Singleton working together.
-
-</details>
-
-## 1.3 Builder Pattern
-
-### 5W1H: Deep Understanding
-
-```
-WHAT: Separates the construction of a complex object from its representation.
-      Allows step-by-step construction with a fluent interface.
-
-WHY:  The TELESCOPING CONSTRUCTOR anti-pattern:
-      new User(name, email, phone, address, age, null, null, null, true);
-      What are all these nulls? Which parameter is which? Error-prone.
-
-      Builder solves this:
-      User.builder().name("John").email("john@email.com").age(25).build();
-      Clear, readable, self-documenting. Add/remove fields without breaking.
-
-ANALOGY — SUBWAY SANDWICH:
-  "I'll have a 6-inch Italian on wheat" (mandatory choices)
-  "Add lettuce" (optional)
-  "Add tomato" (optional)
-  "No onions" (optional)
-  "Toast it" (optional)
-  "That's my order" (build!)
-
-  Each step is optional, order doesn't matter,
-  and the final product is immutable.
-
-HOW IT WORKS INTERNALLY:
-  1. Outer class (User) has a PRIVATE constructor
-  2. Static inner class (User.Builder) has the same fields
-  3. Each builder method sets a field and returns `this` (fluent chaining)
-  4. build() method calls the private constructor with all collected values
-  5. Allows VALIDATION in build() before creating the object
-
-REAL-WORLD IN JAVA:
-  StringBuilder, Stream API, HttpClient.newBuilder(),
-  Spring's MockMvc, Lombok's @Builder annotation.
-  ALL use the Builder pattern.
-
-BUILDER + IMMUTABILITY:
-  Builder pattern is the KEY to creating IMMUTABLE objects with
-  many fields. The object itself has no setters — all state is
-  set during construction via the builder.
-```
-
-💡 **ANALOGY: Building a Custom Burger**
-
-- Start with bun
-- Add patty (or multiple)
-- Add cheese (optional)
-- Add vegetables (optional)
-- Add sauces (optional)
-- Build final burger
-
----
-
-🔬 **Section Challenge — 1.3 Builder Pattern**
-
-**Challenge 1 (Debug — Who/When/What):** The Builder has a `build()` method that calls `new User(this)`. **When** should validation happen — in each setter method or in `build()`? **What** goes wrong if you validate in setters?
-
-<details><summary>Answer</summary>
-
-**Validate in `build()`.** Why? Cross-field validation: "if premium user, email is required" — you can't check this in `setEmail()` because `setPremium()` might not have been called yet. Order of setter calls is arbitrary. `build()` sees ALL fields and can validate the COMPLETE state. Validating in setters forces an ordering dependency (call A before B) which defeats the Builder's purpose of order-independent construction.
-
-</details>
-
-# 🎨 Part 2: Structural Patterns
-
-## 2.1 Adapter Pattern
-
-### 5W1H: Deep Understanding
-
-```
-WHAT: Converts one interface into another that a client expects.
-      Makes incompatible interfaces work together by wrapping.
-
-WHY:  In real projects, you integrate third-party libraries,
-      legacy systems, or APIs with interfaces YOU can't change.
-      The Adapter translates between your interface and theirs.
-
-ANALOGY — POWER ADAPTER:
-  US plug (110V, flat pins) can't fit European socket (220V, round pins).
-  An adapter sits between them, translating the connection.
-  The plug doesn't change. The socket doesn't change.
-  The ADAPTER makes them compatible.
-
-HOW IT WORKS INTERNALLY:
-  1. You have a TARGET interface (what your code expects)
-  2. You have an ADAPTEE class (incompatible third-party code)
-  3. You create an ADAPTER that: implements TARGET, wraps ADAPTEE
-  4. Adapter translates method calls from TARGET → ADAPTEE
-
-REAL-WORLD EXAMPLES:
-  • Arrays.asList() — adapts array to List interface
-  • InputStreamReader — adapts InputStream (bytes) to Reader (chars)
-  • Spring's HandlerAdapter — adapts different controller types
-  • JDBC Driver — adapts database-specific protocol to JDBC API
-```
-
-💡 **ANALOGY: Travel Power Adapter**
-
-- US plug (110V) → Adapter → European socket (220V)
-- The adapter makes incompatible things work together
-
-🔬 **Section Challenge — 2.1 Adapter Pattern**
-
-**Challenge 1 (Design — Who/When/What):** The real-world examples list `Arrays.asList()` as an Adapter. **Who** is the adaptee? **What** interface does it adapt TO? **What** surprising limitation does this specific adapter have?
-
-<details><summary>Answer</summary>
-
-**Adaptee:** A raw Java array (`T[]`). **Adapts to:** `List<T>` interface. **Limitation:** The returned List is a FIXED-SIZE wrapper — it's backed by the original array. `list.add("new")` throws `UnsupportedOperationException`. `list.set(0, "updated")` works (modifies the original array). This is a classic adapter trade-off: it makes the array LOOK like a List, but doesn't give you ALL List behaviors. The adapter's contract is "interface compatibility", not "full functionality."
-
-</details>
-
-## 2.2 Decorator Pattern
-
-### 5W1H: Deep Understanding
-
-```
-WHAT: Attaches additional responsibilities to an object DYNAMICALLY.
-      Provides flexible alternative to subclassing.
-
-WHY:  Subclassing creates a COMBINATORIAL EXPLOSION.
-      If you have 3 features (milk, sugar, whip cream) for coffee:
-      CoffeeWithMilk, CoffeeWithSugar, CoffeeWithMilkAndSugar,
-      CoffeeWithMilkAndWhip, CoffeeWithSugarAndWhip,
-      CoffeeWithMilkAndSugarAndWhip... = 7 subclasses!
-      Each new feature DOUBLES the number of classes.
-
-      Decorators compose features at RUNTIME:
-      new WhipDecorator(new SugarDecorator(new MilkDecorator(coffee)))
-      Add/remove features without creating new classes.
-
-HOW IT WORKS INTERNALLY:
-  1. Decorator implements the SAME interface as the wrapped object
-  2. Decorator holds a REFERENCE to the wrapped object
-  3. Decorator DELEGATES to the wrapped object for base behavior
-  4. Decorator adds its OWN behavior before/after delegation
-  5. Decorators can be STACKED (decorator wrapping decorator)
-
-ANALOGY — COFFEE SHOP:
-  Base: Plain Coffee ($2)
-  + MilkDecorator: delegates to coffee.cost() + $0.50
-  + SugarDecorator: delegates to milk.cost() + $0.25
-  Total: Sugar calls Milk calls Coffee = $2 + $0.50 + $0.25 = $2.75
-
-REAL-WORLD:
-  • Java I/O: BufferedReader(InputStreamReader(FileInputStream(file)))
-    Three decorators wrapping each other!
-  • Spring: @Transactional = TransactionInterceptor DECORATING your service
-  • Collections.unmodifiableList() = decorator that throws on modification
-```
-
-🔬 **Section Challenge — 2.2 Decorator Pattern**
-
-**Challenge 1 (Design — Who/When/What):** The code shows `EncryptionDecorator` and `CompressionDecorator` wrapping `FileDataSource`. **Why** not just use inheritance: `EncryptedCompressedFileDataSource extends FileDataSource`? **When** does Decorator beat inheritance?
-
-<details><summary>Answer</summary>
-
-**Inheritance explosion:** With 3 features (encrypt, compress, cache), inheritance needs 2³ = 8 classes: `EncryptedFile`, `CompressedFile`, `CachedFile`, `EncryptedCompressedFile`, `EncryptedCachedFile`... Adding a 4th feature → 16 classes. **Decorator:** 4 decorator classes, composed in any combination at RUNTIME. `new CacheDecorator(new EncryptionDecorator(source))` — no new classes needed. **When Decorator wins:** When behaviors are optional, combinable, and need to be applied/removed dynamically. **When Inheritance wins:** When the relationship IS-A (a Dog IS an Animal) and the behavior is fixed at compile time.
-
-</details>
-
-## 2.3 Facade Pattern
-
-### 5W1H: Deep Understanding
-
-```
-WHAT: Provides a SIMPLIFIED INTERFACE to a complex subsystem.
-      Hides complexity behind a simple API.
-
-WHY:  Complex systems have dozens of classes that interact.
-      A client shouldn't need to understand ALL of them.
-      Facade provides a SINGLE entry point.
-
-ANALOGY — UNIVERSAL REMOTE:
-  TV: power(), selectInput(), setVolume(), setBrightness()
-  SoundSystem: power(), setEqualizer(), selectSource()
-  BluRayPlayer: power(), insertDisc(), play()
-  Lights: dim(), setColor()
-
-  Facade (Remote "Watch Movie" button):
-  watchMovie() { lights.dim(); tv.power(); soundSystem.power();
-                 tv.selectInput(HDMI); bluray.play(); }
-
-  One call replaces 6 calls. Client doesn't know the subsystem.
-
-REAL-WORLD:
-  • Spring Boot itself is a Facade over Spring Framework!
-    One annotation @SpringBootApplication hides:
-    @Configuration + @EnableAutoConfiguration + @ComponentScan
-  • SLF4J is a Facade over various logging frameworks
-  • JDBC is a Facade over database-specific protocols
-```
-
----
-
-🔬 **Section Challenge — 2.3 Facade Pattern**
-
-**Challenge 1 (Reasoning — Who/When/What):** Spring Boot is called a "Facade over Spring Framework." **Who** is hidden behind the facade? **What** does `@SpringBootApplication` actually do under the hood?
-
-<details><summary>Answer</summary>
-
-**Who is hidden?** Three complex subsystems: (1) `@Configuration` — marks class as a bean definition source, (2) `@EnableAutoConfiguration` — triggers Spring Boot's auto-configuration based on classpath, (3) `@ComponentScan` — scans for `@Component`/`@Service`/`@Repository` in the package tree. **What does it do?** One annotation replaces 3 annotations + XML config + manual bean registration. The developer just writes `@SpringBootApplication` (one facade call) instead of understanding the 3 subsystems individually.
-
-</details>
-
-# 🎨 Part 3: Behavioral Patterns
-
-## 3.1 Observer Pattern
-
-### 5W1H: Deep Understanding
-
-```
-WHAT: Defines a one-to-many dependency between objects so that when
-      one object (Subject) changes state, all its dependents (Observers)
-      are notified and updated automatically.
-
-WHY:  Without Observer, objects must POLL for changes:
-      while (true) { if (subject.hasChanged()) update(); sleep(100); }
-      This wastes CPU and misses changes between polls.
-      Observer uses PUSH: subject notifies observers immediately.
-
-ANALOGY — YOUTUBE SUBSCRIPTION:
-  YouTuber = Subject (observable)
-  Subscribers = Observers
-  When YouTuber uploads a video → ALL subscribers get notified.
-  You can subscribe (register) and unsubscribe (deregister) anytime.
-  YouTuber doesn't need to know WHO the subscribers are.
-
-HOW IT WORKS INTERNALLY:
-  1. Subject maintains a List<Observer> (subscribers)
-  2. Observer interface has update(data) method
-  3. Subject.addObserver(observer) → adds to list
-  4. Subject.setState(newState) → iterates list, calls observer.update()
-  5. Each observer reacts independently to the notification
-
-REAL-WORLD:
-  • React's useState: when state changes, component re-renders (observes state)
-  • Spring's ApplicationEventPublisher / @EventListener
-  • JavaScript: addEventListener/removeEventListener
-  • Message Queues (Kafka, RabbitMQ): producers and consumers
-  • MVC: Model (subject) notifies View (observer) on data change
-
-VARIANTS:
-  Push model: Subject sends data WITH notification (observer.update(data))
-  Pull model: Subject sends notification only, observer PULLS data
-  Pub/Sub: Adds a message broker between subject and observer
-```
-
-💡 **ANALOGY: Newsletter Subscription**
-
-- You subscribe to a newsletter
-- When new content is published, all subscribers get notified
-- Subscribers can unsubscribe anytime
-
-🔬 **Section Challenge — 3.1 Observer Pattern**
-
-**Challenge 1 (Design — Who/When/What):** The variants section mentions Push vs Pull model. **When** would you choose Pull over Push? **What** is the problem with Push when observers need different data subsets?
-
-<details><summary>Answer</summary>
-
-**Push problem:** Subject sends ALL data to ALL observers. If Observer A only needs `price` and Observer B only needs `volume`, Push sends both fields to both — wasting bandwidth and coupling observers to the full data model. Adding a new field forces all observers to update. **Pull model:** Subject sends just a notification ("I changed"). Each observer calls back to get only the specific data it needs: `subject.getPrice()`. Observers are decoupled from each other's data needs. **When Pull?** When observers need different data subsets. **When Push?** When all observers need the same small payload and you want to minimize round trips.
-
-</details>
-
-## 3.2 Strategy Pattern
-
-### 5W1H: Deep Understanding
-
-```
-WHAT: Defines a family of algorithms, encapsulates each one, and makes
-      them INTERCHANGEABLE. Lets the algorithm vary independently.
-
-WHY:  Without Strategy, you get a massive if-else chain:
-      if (type == CREDIT) { ... }
-      else if (type == PAYPAL) { ... }
-      else if (type == BITCOIN) { ... }
-      Adding a new payment method = modifying existing code (violates OCP)
-
-      With Strategy: paymentStrategy.pay(amount);
-      Adding UPI? Create new UPIPayment implementing PaymentStrategy.
-      ZERO changes to existing code.
-
-ANALOGY — NAVIGATION APP:
-  Destination: same (office to home)
-  Strategy 1: by car (fastest route, consider traffic)
-  Strategy 2: by walk (shortest path, no highways)
-  Strategy 3: by bus (cheapest, follows bus routes)
-  The APP (context) doesn't know the routing algorithm.
-  It DELEGATES to the chosen strategy.
-
-HOW IT WORKS INTERNALLY:
-  1. Strategy INTERFACE defines the algorithm contract: execute(input)
-  2. ConcreteStrategy A, B, C each implement the interface differently
-  3. Context class holds a Strategy REFERENCE (composition, not inheritance)
-  4. Context delegates work to the strategy: strategy.execute(input)
-  5. Client can SWAP strategies at runtime: context.setStrategy(new B())
-
-STRATEGY vs STATE:
-  Strategy: client CHOOSES the algorithm (user selects sort method)
-  State: object TRANSITIONS between algorithms automatically
-        (order goes from Pending → Shipped → Delivered)
-
-REAL-WORLD:
-  • Collections.sort(list, comparator) — Comparator IS a Strategy
-  • Spring's AuthenticationProvider — different auth strategies
-  • Java's ScheduledExecutorService — different scheduling strategies
-```
-
-💡 **ANALOGY: Navigation App**
-
-- Same destination, different strategies: Car, Walk, Bike, Transit
-- You choose the strategy, app calculates route using that strategy
-- Strategies are interchangeable
-
-🔬 **Section Challenge — 3.2 Strategy Pattern**
-
-**Challenge 1 (Reasoning):** Strategy vs State: both swap behavior. The section says "Strategy: client CHOOSES, State: object TRANSITIONS." **Who** decides the algorithm in each case? Give one example where confusing them causes a bug.
-
-<details><summary>Answer</summary>
-
-**Strategy:** The CLIENT (external code) explicitly picks: `cart.setPaymentStrategy(new PayPalPayment())`. The object doesn't change strategy on its own. **State:** The OBJECT internally transitions: `order.ship()` changes state from PAID → SHIPPED. The client doesn't set the state directly. **Bug from confusion:** If you implement a vending machine with Strategy (client picks state), the machine could go from DISPENSING → ACCEPTING_MONEY — skipping MAKING_CHANGE. With State pattern, the machine enforces valid transitions: only DISPENSING → MAKING_CHANGE → IDLE. Invalid transitions throw exceptions.
-
-</details>
-
-## 3.3 Command Pattern
-
-### 5W1H: Deep Understanding
-
-```
-WHAT: Encapsulates a request as an OBJECT, allowing you to parameterize
-      clients, queue requests, log operations, and support undo/redo.
-
-WHY:  Sometimes you need to:
-      • UNDO an operation (Ctrl+Z in text editor)
-      • QUEUE operations for later execution (job queue)
-      • LOG all operations for audit trail
-      • RETRY failed operations
-      None of this is possible if the operation is just a method call.
-      By turning the operation into an OBJECT, it becomes data you can
-      store, queue, replay, and reverse.
-
-ANALOGY — RESTAURANT ORDER:
-  Customer → "I want pasta" (creates a command)
-  Waiter writes it on paper (Command object with all details)
-  Takes it to kitchen (passes to Invoker)
-  Chef executes the order (Receiver executes command)
-  Paper slip can be: queued, logged, undone ("cancel that pasta")
-
-HOW IT WORKS INTERNALLY:
-  1. Command interface: execute(), undo()
-  2. ConcreteCommand: stores Receiver + parameters for the action
-  3. Invoker: calls command.execute() (button, menu, scheduler)
-  4. Receiver: the object that actually does the work
-  5. History stack: stores executed commands for undo/redo
-
-REAL-WORLD:
-  • Text editor undo/redo (each keystroke = command)
-  • Transaction rollback in databases
-  • Spring's TaskExecutor — commands queued for thread pool
-  • GUI buttons — each button has a Command object
-```
-
-💡 **ANALOGY: Restaurant Order**
-
-- Waiter writes order on paper (Command object)
-- Takes it to kitchen (passes to invoker)
-- Chef executes the order (receiver)
-- Order can be queued, logged, undone
-
----
-
-🔬 **Section Challenge — 3.3 Command Pattern**
-
-**Challenge 1 (Trace — Who/When/What):** In a text editor's undo system: you type "Hello", then Ctrl+Z. Trace the Command lifecycle. **Who** creates the command? **When** is it stored? **What** does `undo()` actually do vs `execute()`?
-
-<details><summary>Answer</summary>
-
-**Who creates?** The key handler: when you type 'H', it creates `new InsertCharCommand('H', position)`. **When stored?** Immediately after `execute()`: the command is pushed onto a history stack. **What does undo() do?** The INVERSE operation. `execute()` inserts 'H' at position 5 → `undo()` deletes character at position 5. For "Hello" (5 commands on stack), Ctrl+Z pops the top command (`InsertCharCommand('o', 9)`) and calls `undo()` — deleting 'o'. The text becomes "Hell". Each command encapsulates both the DO and UNDO logic.
-
-</details>
-
-# 🎨 Part 4: Pattern Combinations
-
-**Example: E-commerce Order System using Multiple Patterns**
-
-| Pattern       | Role                                             |
-| ------------- | ------------------------------------------------ |
-| **Singleton** | Configuration, Database connection               |
-| **Factory**   | Creating different order types                   |
-| **Builder**   | Building complex Order objects                   |
-| **Observer**  | Notifying systems when order status changes      |
-| **Strategy**  | Different payment methods                        |
-| **Decorator** | Adding features to orders (gift wrap, insurance) |
-
-```java
-// 1. SINGLETON - Configuration
-public enum AppConfig {
-    INSTANCE;
-    public String getDatabaseUrl() { return "jdbc:mysql://..."; }
-}
-```
-
-```java
-// 2. BUILDER - Complex Order Creation
-public class Order {
-    public static class Builder {
-        private List<OrderItem> items = new ArrayList<>();
-        private Address shippingAddress;
-        private PaymentStrategy paymentStrategy;
-        // ... builder methods
-    }
-}
-```
-
-```java
-// 3. FACTORY - Order Types
-public class OrderFactory {
-    public static Order createOrder(String type, Order.Builder builder) {
-        switch (type) {
-            case "regular": return builder.build();
-            case "express": return new ExpressOrder(builder);
-            case "subscription": return new SubscriptionOrder(builder);
-        }
-    }
-}
-```
-
-```java
-// 4. OBSERVER - Order Status Updates
-public class Order implements Subject {
-    private List<OrderObserver> observers = new ArrayList<>();
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-        notifyObservers(); // Notify inventory, shipping, customer
-    }
-}
-```
-
-```java
-// 5. STRATEGY - Payment
-public class Order {
-    private PaymentStrategy paymentStrategy;
-
-    public void processPayment() {
-        paymentStrategy.pay(getTotal());
-    }
-}
-```
-
-```java
-// 6. DECORATOR - Add Features
-public interface Order {
-    double getTotal();
-}
-
-public class GiftWrapDecorator extends OrderDecorator {
-    @Override
-    public double getTotal() {
-        return order.getTotal() + 5.99; // Gift wrap cost
-    }
-}
-```
-
-**All patterns working together:**
-
-```java
-Order order = OrderFactory.createOrder("express",
-    Order.builder()
-        .addItem(new OrderItem("Laptop", 999))
-        .shippingAddress(address)
-        .paymentStrategy(new CreditCardPayment(card))
-        .build());
-
-order.subscribe(new InventoryService());
-order.subscribe(new NotificationService());
-
-order = new GiftWrapDecorator(order); // Add gift wrap
-order = new InsuranceDecorator(order); // Add insurance
-
-order.processPayment(); // Uses strategy
-order.setStatus(OrderStatus.PAID); // Notifies observers
-```
-
----
-
-# 📖 Part 5: Quick Reference Table
-
-| Pattern       | Use When                                                    |
-| ------------- | ----------------------------------------------------------- |
-| **Singleton** | Need exactly one instance (config, logger, connection pool) |
-| **Factory**   | Create objects without specifying exact class               |
-| **Builder**   | Complex object with many optional parameters                |
-| **Adapter**   | Make incompatible interfaces work together                  |
-| **Decorator** | Add behavior dynamically without changing original          |
-| **Facade**    | Simplify complex subsystem with single interface            |
-| **Observer**  | One-to-many notification when state changes                 |
-| **Strategy**  | Swap algorithms at runtime                                  |
-| **Command**   | Need undo/redo, queue operations, log operations            |
-| **State**     | Object behavior depends on its state                        |
-| **Template**  | Define algorithm skeleton, let subclasses fill steps        |
-| **Composite** | Tree structure of objects (file system, UI components)      |
-| **Proxy**     | Control access, lazy loading, caching                       |
-
----
-
-# 💪 Curated Practice Problems — OOP & Design Patterns
+## 💪 Curated Practice Problems — OOP & Design Patterns
 
 **HOW TO USE**: These are system design / OOP implementation problems.
 Section 1 = implement data structures using OOP. Section 2 = apply design patterns.
@@ -819,7 +89,7 @@ Section 3 = LeetCode design class problems.
 
 ---
 
-## Section 1: OOP Implementation — Build From Scratch
+### Section 1: OOP Implementation — Build From Scratch
 
 | #   | Problem                               | Platform | Difficulty | Key Technique                        |
 | --- | ------------------------------------- | -------- | ---------- | ------------------------------------ |
@@ -834,7 +104,7 @@ Section 3 = LeetCode design class problems.
 
 ---
 
-## Section 2: Design Class Problems (Strategy/Observer/Iterator)
+### Section 2: Design Class Problems (Strategy/Observer/Iterator)
 
 | #   | Problem                               | Platform | Difficulty | Key Technique                        |
 | --- | ------------------------------------- | -------- | ---------- | ------------------------------------ |
@@ -859,7 +129,7 @@ Section 3 = LeetCode design class problems.
 
 </details>
 
-## Section 3: Advanced Design
+### Section 3: Advanced Design
 
 | #   | Problem                                        | Platform | Difficulty | Key Technique                  |
 | --- | ---------------------------------------------- | -------- | ---------- | ------------------------------ |
@@ -883,7 +153,7 @@ Section 3 = LeetCode design class problems.
 
 </details>
 
-## HIDDEN GEMS — Design Problems
+### HIDDEN GEMS — Design Problems
 
 | #   | Problem                             | Platform | Why It's Valuable                      |
 | --- | ----------------------------------- | -------- | -------------------------------------- |
@@ -909,363 +179,303 @@ Section 3 = LeetCode design class problems.
 
 ---
 
-## PLUS Enhancements
+### PLUS Enhancements
 
-### Diagram 1: Pattern Categories — Full Map
+#### Diagram 1: Pattern Categories — Full Map
 
-```
-┌────────────────────────────────────────────────────────────────────────────┐
-│                  GoF DESIGN PATTERNS — Category Map                        │
-└────────────────────────────────────────────────────────────────────────────┘
+**GoF design patterns — category map**
 
-  ┌─────────────────────────────────────────────────────────────────────┐
-  │                    23 GoF Patterns                                   │
-  │                                                                     │
-  │  CREATIONAL               STRUCTURAL              BEHAVIORAL        │
-  │  "How to create objects"  "How to compose"        "How to communicate"│
-  │                                                                     │
-  │  ┌───────────────────┐   ┌───────────────────┐  ┌─────────────────┐│
-  │  │    Singleton      │   │    Adapter        │  │    Observer     ││
-  │  │ One instance only │   │ Convert interface │  │ Notify many     ││
-  │  └───────────────────┘   └───────────────────┘  └─────────────────┘│
-  │  ┌───────────────────┐   ┌───────────────────┐  ┌─────────────────┐│
-  │  │    Factory       │   │    Decorator      │  │    Strategy     ││
-  │  │ Create by type   │   │ Add behavior dyn. │  │ Swap algorithm  ││
-  │  └───────────────────┘   └───────────────────┘  └─────────────────┘│
-  │  ┌───────────────────┐   ┌───────────────────┐  ┌─────────────────┐│
-  │  │    Builder       │   │    Proxy          │  │    Command      ││
-  │  │ Step-by-step     │   │ Control access    │  │ Encapsulate req ││
-  │  │ construction     │   │ (lazy/caching)    │  │ (undo/redo)     ││
-  │  └───────────────────┘   └───────────────────┘  └─────────────────┘│
-  │  ┌───────────────────┐   ┌───────────────────┐  ┌─────────────────┐│
-  │  │ Abstract Factory │   │    Facade         │  │    State        ││
-  │  │ Family of related│   │ Simplified entry  │  │ Behavior by     ││
-  │  │ products         │   │ point to subsystem│  │ internal state  ││
-  │  └───────────────────┘   └───────────────────┘  └─────────────────┘│
-  │  ┌───────────────────┐   ┌───────────────────┐  ┌─────────────────┐│
-  │  │   Prototype      │   │    Composite      │  │  Template Method││
-  │  │ Clone to create  │   │ Tree of parts     │  │ Algorithm       ││
-  │  │                  │   │ (part-whole)      │  │ skeleton        ││
-  │  └───────────────────┘   └───────────────────┘  └─────────────────┘│
-  └─────────────────────────────────────────────────────────────────────┘
-
-  Pattern selection decision tree:
-
-  Need to CREATE?  ──► Single instance      ──► Singleton
-                   ──► By type family       ──► Factory
-                   ──► Complex steps        ──► Builder
-                   ──► Clone existing       ──► Prototype
-
-  Need to COMPOSE?  ──► Interface mismatch   ──► Adapter
-                    ──► Add features dyn     ──► Decorator
-                    ──► Simplify subsystem   ──► Facade
-                    ──► Control access       ──► Proxy
-                    ──► Tree structure       ──► Composite
-
-  Need to COMMUNICATE? ──► Notify dependents  ──► Observer
-                       ──► Swap algorithm     ──► Strategy
-                       ──► Undo/redo          ──► Command
-                       ──► Internal state     ──► State
-                       ──► Algorithm steps    ──► Template Method
+```mermaid
+flowchart TB
+  ROOT["23 GoF patterns"] --> CR["Creational<br/>how to create objects"]
+  ROOT --> ST["Structural<br/>how to compose"]
+  ROOT --> BE["Behavioural<br/>how to communicate"]
+  CR --> c1["Singleton: one instance only"]
+  CR --> c2["Factory: create by type"]
+  CR --> c3["Builder: step-by-step construction"]
+  CR --> c4["Abstract Factory: family of related products"]
+  CR --> c5["Prototype: clone to create"]
+  ST --> s1["Adapter: convert an interface"]
+  ST --> s2["Decorator: add behaviour dynamically"]
+  ST --> s3["Proxy: control access, lazy or caching"]
+  ST --> s4["Facade: simple entry point to a subsystem"]
+  ST --> s5["Composite: tree of parts"]
+  BE --> b1["Observer: notify many"]
+  BE --> b2["Strategy: swap an algorithm"]
+  BE --> b3["Command: encapsulate a request, undo/redo"]
+  BE --> b4["State: behaviour by internal state"]
+  BE --> b5["Template Method: algorithm skeleton"]
+  classDef r fill:#e5e7eb,stroke:#6b7280,color:#111;
+  classDef c fill:#dbeafe,stroke:#2563eb,color:#0c1a4a;
+  classDef s fill:#dcfce7,stroke:#16a34a,color:#052e16;
+  classDef b fill:#fef3c7,stroke:#d97706,color:#451a03;
+  class ROOT r;
+  class CR,c1,c2,c3,c4,c5 c;
+  class ST,s1,s2,s3,s4,s5 s;
+  class BE,b1,b2,b3,b4,b5 b;
 ```
 
-### Diagram 2: Observer Pattern — Sequence Diagram
+**How to read this diagram.** Only 15 of the 23 patterns are shown (the most common ones); the rest are in [The Remaining GoF Patterns](12_Remaining_GoF_Patterns.md).
 
-```
-┌────────────────────────────────────────────────────────────────────────────┐
-│                   OBSERVER PATTERN — Sequence Diagram                      │
-└────────────────────────────────────────────────────────────────────────────┘
+**Pattern selection guide**
 
-  Client                    NewsAgency (Subject)              Subscriber A/B/C
-     │                             │                              │
-     │  new Subscriber("Alice")    │                              │
-     │─────────────────────────────▶│                              │
-     │                             │                              │
-     │  new Subscriber("Bob")      │                              │
-     │────────────────────────────────────────────────────────────▶│
-     │                             │                              │
-     │  new Subscriber("Charlie")  │                              │
-     │────────────────────────────────────────────────────────────────▶│
-     │                             │                              │
-     │  agency.attach(alice)       │                              │
-     │─────────────────────────────▶│                              │
-     │  agency.attach(bob)         │                              │
-     │─────────────────────────────▶│                              │
-     │  agency.attach(charlie)     │                              │
-     │─────────────────────────────▶│                              │
-     │                             │                              │
-     │  agency.publishNews(...)    │                              │
-     │─────────────────────────────▶│                              │
-     │                             │  notifyObservers()           │
-     │                             │──────────┐                   │
-     │                             │  for each observer:         │
-     │                             │──────────┘                   │
-     │                             │                              │
-     │                             │  alice.update(news)         │
-     │                             │─────────────────────────────▶│
-     │                             │                              │
-     │                             │  bob.update(news)           │
-     │                             │────────────────────────────────────────────────▶│
-     │                             │                              │
-     │                             │  charlie.update(news)       │
-     │                             │────────────────────────────────────────────────────────────────▶│
-     │                             │                              │
+| You need to… | Situation | Pattern |
+| --- | --- | --- |
+| **Create** | A single instance | Singleton |
+| | By type family | Factory |
+| | Complex step-by-step construction | Builder |
+| | Clone an existing object | Prototype |
+| **Compose** | Interface mismatch | Adapter |
+| | Add features dynamically | Decorator |
+| | Simplify a subsystem | Facade |
+| | Control access | Proxy |
+| | Tree structure | Composite |
+| **Communicate** | Notify dependents | Observer |
+| | Swap an algorithm | Strategy |
+| | Undo/redo | Command |
+| | Behaviour depends on internal state | State |
+| | Fixed algorithm steps | Template Method |
 
-  Internal state of NewsAgency (Subject):
+#### Diagram 2: Observer Pattern — Sequence Diagram
 
-  ┌──────────────────────────────────────────────────────────┐
-  │  NewsAgency                                               │
-  │  ┌────────────────────────────────────────────────────┐  │
-  │  │ List<Observer> observers                           │  │
-  │  │  ┌──────┐  ┌──────┐  ┌──────┐                      │  │
-  │  │  │Alice │  │ Bob  │  │Charlie│                     │  │
-  │  │  └──────┘  └──────┘  └──────┘                      │  │
-  │  │    0x10    0x14    0x18                           │  │
-  │  └────────────────────────────────────────────────────┘  │
-  │  String news = "Java 21 released!"                        │
-  └──────────────────────────────────────────────────────────┘
+**Observer pattern — sequence diagram**
 
-  Flow: publishNews()  →  set news field  →  notifyObservers()
-                                   │                    │
-                                   ▼                    ▼
-                            Iterates list     Calls update(news)
-                            of observers      on each subscriber
-
-  Memory leak danger: If subscriber never calls detach(), the Subject
-  holds a strong reference → subscriber cannot be garbage collected!
-  Fix: Use WeakHashMap<Observer, Object> or explicit lifecycle detach().
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant N as NewsAgency (Subject)
+  participant A as Alice
+  participant B as Bob
+  participant H as Charlie
+  C->>A: new Subscriber("Alice")
+  C->>B: new Subscriber("Bob")
+  C->>H: new Subscriber("Charlie")
+  C->>N: attach(alice)
+  C->>N: attach(bob)
+  C->>N: attach(charlie)
+  C->>N: publishNews("Java 21 released!")
+  N->>N: notifyObservers()
+  N->>A: update(news)
+  N->>B: update(news)
+  N->>H: update(news)
 ```
 
-### Diagram 3: Strategy Pattern — Class Structure
+**How to read this diagram.** Time runs downward. The client wires up the subscribers first; a single `publishNews` call then makes the subject loop over its observer list and call `update` on each one.
 
-```
-┌────────────────────────────────────────────────────────────────────────────┐
-│                    STRATEGY PATTERN — Class Diagram                        │
-└────────────────────────────────────────────────────────────────────────────┘
+**Internal state of the subject**
 
-  ┌────────────────────────────────────────────────────────────────────────┐
-  │                        CLIENT (main / service)                          │
-  │  ShoppingCart cart = new ShoppingCart();                                │
-  │  cart.setPaymentStrategy(new CreditCardPayment());  // ← selects here  │
-  │  cart.checkout(100);                                                    │
-  └────────────────────────────────────────────────────────────────────────┘
+| Field | Value |
+| --- | --- |
+| `List<Observer> observers` | `[Alice, Bob, Charlie]` |
+| `String news` | `"Java 21 released!"` |
 
-  ┌───────────────────────────────────────────┐
-  │           <<interface>>                    │
-  │        PaymentStrategy                    │
-  ├───────────────────────────────────────────┤
-  │ + pay(amount: double): void               │
-  │ + refund(amount: double): void            │
-  └───────────────────┬───────────────────────┘
-                      │ implements
-        ┌─────────────┴─────────────┐
-        ▼                           ▼
-  ┌───────────────────┐    ┌───────────────────┐
-  │ CreditCardPayment │    │   PayPalPayment   │
-  ├───────────────────┤    ├───────────────────┤
-  │ - cardNumber      │    │ - email           │
-  │ - cvv             │    │ - password        │
-  ├───────────────────┤    ├───────────────────┤
-  │ + pay(amount)     │    │ + pay(amount)     │
-  │ + refund(amount)  │    │ + refund(amount)  │
-  └───────────────────┘    └───────────────────┘
-        ▲                           ▲
-        │                           │
-  ┌─────┴───────────────────────────┴─────┐
-  │   UPIPayment / CryptoPayment /        │
-  │   BankTransferPayment / GiftCard...   │  ← plug in new strategies
-  └───────────────────────────────────────┘
+**Flow:** `publishNews()` sets the `news` field, then `notifyObservers()` iterates the list and calls `update(news)` on each subscriber.
 
-  ┌───────────────────────────────────────────┐
-  │              ShoppingCart (Context)        │
-  ├───────────────────────────────────────────┤
-  │ - items: List<Item>                       │
-  │ - paymentStrategy: PaymentStrategy ◀── COMPOSITION (has-a) │
-  ├───────────────────────────────────────────┤
-  │ + setPaymentStrategy(strategy): void      │
-  │ + checkout(amount): void                  │
-  │   └── paymentStrategy.pay(amount)         │
-  │ + getTotal(): double                      │
-  └───────────────────────────────────────────┘
+> [!WARNING]
+> **Memory-leak danger.** If a subscriber never calls `detach()`, the subject keeps a strong reference to it and the subscriber cannot be garbage collected. Fix: detach explicitly when the subscriber's lifecycle ends, or hold observers through weak references.
 
-  KEY INSIGHT: The strategy is set at RUNTIME, not compile time.
-  The Context (ShoppingCart) doesn't know which strategy it has.
-  This is the Open/Closed Principle in action:
-  Add UPI payment → create new class, ZERO changes to ShoppingCart.
+#### Diagram 3: Strategy Pattern — Class Structure
 
-  Lambda variant (Java 8+):
-    cart.setPaymentStrategy(amount ->
-        System.out.println("Paid " + amount + " via Credit Card"));
-  No interface implementation needed — lambda IS the strategy!
-```
+**Strategy pattern — class diagram**
 
-### Deep-Dive 1: Singleton's volatile Keyword — JVM Memory Model
-
-```
-┌────────────────────────────────────────────────────────────────────────────┐
-│        DOUBLE-CHECKED LOCKING — Why volatile Is Mandatory in Java         │
-└────────────────────────────────────────────────────────────────────────────┘
-
-  The naive (broken) implementation:
-
-  public class DatabaseConnection {
-      private static DatabaseConnection instance;  // NOT volatile
-
-      public static DatabaseConnection getInstance() {
-          if (instance == null) {           // Check 1: fast path
-              synchronized (DatabaseConnection.class) {
-                  if (instance == null) {
-                      instance = new DatabaseConnection();  // Problem here!
-                  }
-              }
-          }
-          return instance;
-      }
+```mermaid
+classDiagram
+  class ShoppingCart {
+    -List~Item~ items
+    -PaymentStrategy paymentStrategy
+    +setPaymentStrategy(strategy) void
+    +checkout(amount) void
+    +getTotal() double
   }
-
-  WHY THIS FAILS WITHOUT volatile:
-
-  instance = new DatabaseConnection() is NOT atomic in bytecode.
-  It decomposes into 4 steps:
-
-  ┌─────────────────────────────────────────────────────────────────┐
-  │  bytecode for:  instance = new DatabaseConnection()             │
-  │                                                                  │
-  │  Step 1:  new DatabaseConnection    // Allocate memory          │
-  │           (object exists in heap, fields set to defaults)        │
-  │  Step 2:  dup                         // Duplicate ref on stack │
-  │  Step 3:  invokespecial <init>       // Run constructor         │
-  │           (set fields to real values)                            │
-  │  Step 4:  astore instance             // STORE reference         │
-  │           (make instance point to this object)                   │
-  └─────────────────────────────────────────────────────────────────┘
-
-  The JIT compiler and CPU can REORDER steps 2-4 (instruction reordering).
-  The actual order might become:
-
-    1. new DatabaseConnection       (allocate memory)
-    2. astore instance               (reference is NOW non-null!)
-    3. invokespecial <init>          (constructor runs)
-
-  Thread A sees instance != null (because of step 2) and returns it.
-  But Thread B might see the object BEFORE constructor finished (step 3).
-  Result: Thread B gets an object with HALF-INITIALIZED fields!
-
-  JMM (Java Memory Model) happens-before guarantee:
-
-  Without volatile:
-    Thread 1: constructor may reorder past astore  ──► Thread 2 reads uninitialized
-
-  With volatile:
-    Thread 1: volatile write (astore instance)  happens-before
-    Thread 2: volatile read (load instance)
-                                                    │
-    Thread 1's write is visible to Thread 2 only if a happens-before          │
-    relationship exists. Volatile creates that relationship:                 │
-    volatile write ──► happens-before ──► volatile read of same variable.    │
-
-  CORRECT IMPLEMENTATION:
-
-  public class DatabaseConnection {
-      private static volatile DatabaseConnection instance;  // ← MANDATORY
-
-      public static DatabaseConnection getInstance() {
-          if (instance == null) {           // Check 1: fast path
-              synchronized (DatabaseConnection.class) {
-                  if (instance == null) {   // Check 2: synchronized path
-                      instance = new DatabaseConnection();
-                  }
-              }
-          }
-          return instance;
-      }
+  class PaymentStrategy {
+    <<interface>>
+    +pay(amount) void
+    +refund(amount) void
   }
-
-  Why two checks?
-    First check: avoids synchronized lock on every call after init (performance)
-    Second check: ensures only one thread creates the instance (correctness)
-
-  Even better: use holder pattern (JVM handles synchronization):
-
-  private static class Holder {
-      private static final DatabaseConnection INSTANCE = new DatabaseConnection();
+  class CreditCardPayment {
+    -cardNumber
+    -cvv
   }
-  // INSTANCE is created lazily — only when getInstance() first calls Holder.INSTANCE
-  // JVM guarantees thread-safe init with no explicit synchronization needed.
+  class PayPalPayment {
+    -email
+  }
+  ShoppingCart o-- PaymentStrategy : has-a (composition)
+  PaymentStrategy <|.. CreditCardPayment
+  PaymentStrategy <|.. PayPalPayment
+  PaymentStrategy <|.. UPIPayment : plug in new strategies
+  PaymentStrategy <|.. CryptoPayment
 ```
 
-### Deep-Dive 2: Factory vs Builder — When to Use Which
+**How to read this diagram.** `ShoppingCart` (the context) holds a `PaymentStrategy` and delegates `checkout` to `paymentStrategy.pay(amount)`. Each payment method is a separate class behind the interface.
 
-```
-┌────────────────────────────────────────────────────────────────────────────┐
-│              FACTORY vs BUILDER — Decision Framework                       │
-└────────────────────────────────────────────────────────────────────────────┘
+The client chooses the strategy:
 
-  FACTORY: "Give me one of N similar things by specifying a type/name"
-
-  Use when:
-    - You need to CREATE ONE object from a set of known alternatives
-    - Client should NOT know the concrete class names
-    - Creation logic involves branching (if/else or switch)
-    - Objects are of the same "kind" with different implementations
-
-  Examples:
-    AnimalFactory.createAnimal("dog")      // Dog or Cat — same kind
-    NotificationFactory.create("email")    // Email or SMS notification
-    DocumentFactory.open("pdf")            // PDF or Word document
-
-  ─────────────────────────────────────────────────────────────────────────────
-
-  BUILDER: "Construct ONE complex object step by step, some optional"
-
-  Use when:
-    - The object has MANY fields (5+) with validations
-    - Some fields are REQUIRED, some are OPTIONAL
-    - Order of setting fields shouldn't matter
-    - You want a FLUENT (chainable) API
-    - The object should be IMMUTABLE after construction
-
-  Examples:
-    User.builder("John", "john@email.com").age(25).phone("123").build()
-    HttpRequest.newBuilder().uri(url).timeout(5s).header(k,v).build()
-    StringBuilder — Builder for String
-
-  ─────────────────────────────────────────────────────────────────────────────
-
-  COMPARISON TABLE:
-
-  ┌────────────────────┬─────────────────────┬──────────────────────────────┐
-  │ Dimension          │ Factory             │ Builder                      │
-  ├────────────────────┼─────────────────────┼──────────────────────────────┤
-  │ Purpose            │ Choose WHICH class  │ HOW to construct one class   │
-  │ Number of params   │ 1 (type/name)       │ Many (all object fields)     │
-  │ Object count       │ Creates ONE object  │ Creates ONE complex object   │
-  │ Optionality        │ N/A                 │ Required + optional fields   │
-  │ Return type        │ Interface/superclass│ The specific class being     │
-  │                    │                     │ built                        │
-  │ Mutability         │ Returns mutable obj │ Produces immutable object    │
-  │ Real-world Java    │ BeanFactory         │ StringBuilder, HttpClient    │
-  └────────────────────┴─────────────────────┴──────────────────────────────┘
-
-  WHEN TO USE FACTORY + BUILDER TOGETHER:
-
-  Scenario: Payment system with many types AND many optional fields
-
-    PaymentFactory.create("credit_card")          // Factory: which type
-        .cardNumber("...")                         // Builder: how to configure it
-        .expiry("...")
-        .build()
-
-  OR: nested builder for a complex product:
-
-    Order.builder()
-        .customer(customerBuilder.build())   // Builder as a field
-        .items(itemBuilder.buildList())      // of another builder
-        .shipping(addressBuilder.build())
-        .build()
+```java
+ShoppingCart cart = new ShoppingCart();
+cart.setPaymentStrategy(new CreditCardPayment());  // selected here
+cart.checkout(100);
 ```
 
-### Breadth Comparison 1: Pattern Selection by Problem Type
+> [!IMPORTANT]
+> **Key insight:** the strategy is set at **run time**, not compile time, and the cart does not know which strategy it has. This is the Open/Closed Principle in action: adding UPI payment means creating a new class with **zero changes** to `ShoppingCart`.
+
+**Lambda variant (Java 8+).** Because `PaymentStrategy` has a single method, a lambda can be the strategy, with no implementing class:
+
+```java
+cart.setPaymentStrategy(amount ->
+    System.out.println("Paid " + amount + " via Credit Card"));
+```
+
+(This works as written only if the interface declares one abstract method; the two-method interface above would need `refund` as a `default` method.)
+
+#### Deep-Dive 1: Singleton's volatile Keyword — JVM Memory Model
+
+### Double-checked locking: why `volatile` is mandatory in Java
+
+**The naive (broken) implementation**
+
+```java
+public class DatabaseConnection {
+    private static DatabaseConnection instance;   // NOT volatile
+
+    public static DatabaseConnection getInstance() {
+        if (instance == null) {                    // check 1: fast path
+            synchronized (DatabaseConnection.class) {
+                if (instance == null) {
+                    instance = new DatabaseConnection();   // problem here!
+                }
+            }
+        }
+        return instance;
+    }
+}
+```
+
+**Why it fails without `volatile`.** `instance = new DatabaseConnection()` is **not atomic**. It decomposes into these bytecode steps:
+
+| Step | Bytecode | Effect |
+| --- | --- | --- |
+| 1 | `new DatabaseConnection` | Allocate memory (the object exists in the heap, fields are defaults) |
+| 2 | `dup` | Duplicate the reference on the stack |
+| 3 | `invokespecial <init>` | Run the constructor (set fields to real values) |
+| 4 | `astore instance` | Store the reference (make `instance` point to the object) |
+
+The JIT compiler and the CPU may **reorder** the constructor call and the store. The effective order can become: allocate → store reference (now non-null!) → run constructor.
+
+Thread A has stored the reference but not finished the constructor. Thread B sees `instance != null`, skips the lock and returns an object with **half-initialised fields**.
+
+**What the Java Memory Model says.** Thread 1's writes are visible to Thread 2 only if a *happens-before* relationship exists.
+
+- **Without `volatile`:** the constructor's writes may be reordered past the store, so Thread 2 can read uninitialised fields.
+- **With `volatile`:** a volatile write happens-before every later volatile read of the same variable, so everything written before the store (including the constructor) is visible to a thread that reads the reference.
+
+**Correct implementation**
+
+```java
+public class DatabaseConnection {
+    private static volatile DatabaseConnection instance;   // volatile is mandatory
+
+    public static DatabaseConnection getInstance() {
+        if (instance == null) {                    // check 1: fast path
+            synchronized (DatabaseConnection.class) {
+                if (instance == null) {            // check 2: under the lock
+                    instance = new DatabaseConnection();
+                }
+            }
+        }
+        return instance;
+    }
+}
+```
+
+**Why two checks?**
+
+- The first check avoids taking the lock on every call after initialisation (performance).
+- The second check ensures only one thread creates the instance (correctness).
+
+**Even better: the holder idiom** (the JVM handles synchronisation)
+
+```java
+private static class Holder {
+    private static final DatabaseConnection INSTANCE = new DatabaseConnection();
+}
+
+public static DatabaseConnection getInstance() { return Holder.INSTANCE; }
+// INSTANCE is created lazily, only when getInstance() first touches Holder.
+// The JVM guarantees thread-safe class initialisation with no explicit synchronisation.
+```
+
+#### Deep-Dive 2: Factory vs Builder — When to Use Which
+
+### Factory versus Builder: decision framework
+
+**Factory:** "Give me one of N similar things by specifying a type or name."
+
+Use it when:
+
+- You need to create **one** object from a set of known alternatives.
+- The client should not know the concrete class names.
+- Creation logic involves branching (`if/else` or `switch`).
+- The objects are the same kind of thing with different implementations.
+
+Examples:
+
+```java
+AnimalFactory.createAnimal("dog");      // Dog or Cat: same kind
+NotificationFactory.create("email");    // email or SMS notification
+DocumentFactory.open("pdf");            // PDF or Word document
+```
+
+**Builder:** "Construct **one** complex object step by step, some parts optional."
+
+Use it when:
+
+- The object has many fields (5 or more) with validation.
+- Some fields are required and some are optional.
+- The order of setting fields should not matter.
+- You want a fluent (chainable) API.
+- The object should be immutable after construction.
+
+Examples:
+
+```java
+User.builder("John", "john@email.com").age(25).phone("123").build();
+HttpRequest.newBuilder().uri(url).timeout(Duration.ofSeconds(5)).header(k, v).build();
+// StringBuilder is a builder for String
+```
+
+**Comparison**
+
+| Dimension | Factory | Builder |
+| --- | --- | --- |
+| Purpose | Choose **which** class | **How** to construct one class |
+| Number of parameters | 1 (type or name) | Many (all object fields) |
+| Object count | Creates one object | Creates one complex object |
+| Optionality | Not applicable | Required plus optional fields |
+| Return type | Interface or superclass | The specific class being built |
+| Mutability | Returns whatever the class is | Typically produces an immutable object |
+| Real-world Java | `BeanFactory` | `StringBuilder`, `HttpClient.newBuilder()` |
+
+**Using both together.** A payment system with many types *and* many optional fields:
+
+```java
+PaymentFactory.create("credit_card")     // Factory: which type
+    .cardNumber("...")                   // Builder: how to configure it
+    .expiry("...")
+    .build();
+```
+
+Or a nested builder for a complex product:
+
+```java
+Order.builder()
+    .customer(customerBuilder.build())   // a builder used as a field
+    .items(itemBuilder.buildList())      // of another builder
+    .shipping(addressBuilder.build())
+    .build();
+```
+
+#### Breadth Comparison 1: Pattern Selection by Problem Type
 
 | Need / Problem                                  | Root Cause                                  | Best Pattern(s)                | Why It Fits                    |
 | ----------------------------------------------- | ------------------------------------------- | ------------------------------ | ------------------------------ |
@@ -1284,7 +494,7 @@ Section 3 = LeetCode design class problems.
 | Need algorithm skeleton with customizable steps | Repeated structure, different steps         | **Template Method**            | Inheritance for steps          |
 | Need tree / hierarchical structure              | Recursive composition                       | **Composite**                  | Part-whole hierarchy           |
 
-### Breadth Comparison 2: GoF Patterns vs Modern Language Alternatives
+#### Breadth Comparison 2: GoF Patterns vs Modern Language Alternatives
 
 | GoF Pattern   | Classic Implementation             | Modern Alternative                                                                                | When GoF Still Wins                                                                      |
 | ------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
@@ -1303,14 +513,24 @@ Section 3 = LeetCode design class problems.
 
 ---
 
+## 🏢 Enterprise Lens — Design Patterns
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | JDK (`Comparator` as Strategy, `java.io` as Decorator), Spring (proxies, templates, events) |
+| **Failure modes** | Pattern-first design, Singleton as hidden global state, over-engineered hierarchies |
+| **Testing and verification** | Test the varying part through its interface; check that adding a variant touches one place |
+
+---
+
 ## Reality Check
 
-**"Knowing all 23 GoF patterns is the goal"** ? The 1994 catalog is a HISTORICAL inventory, not a checklist: several patterns solved C++-specific problems (Prototype for expensive construction without reflection), others were absorbed into languages (Iterator is foreach; Strategy is a lambda; Observer is events/streams), and modern practice draws from maybe eight regularly. The durable skill is recognizing the FORCES a pattern balances � when someone says "we need different behavior per payment provider, chosen at runtime, testable in isolation," hearing Strategy � not reciting intent sections.
+**"Knowing all 23 GoF patterns is the goal"** — The 1994 catalog is a HISTORICAL inventory, not a checklist: several patterns solved C++-specific problems (Prototype for expensive construction without reflection), others were absorbed into languages (Iterator is foreach; Strategy is a lambda; Observer is events/streams), and modern practice draws from maybe eight regularly. The durable skill is recognizing the FORCES a pattern balances — when someone says "we need different behavior per payment provider, chosen at runtime, testable in isolation," hearing Strategy — not reciting intent sections.
 
-**"Singleton is the easy pattern"** ? Singleton is the pattern most likely to be an ANTI-pattern in context: it is global mutable state with a design-pattern alibi � untestable (cannot substitute), concurrency-delicate (double-checked locking history), and hostile to anything needing two instances (multi-tenancy, tests in parallel). The modern verdicts: for true single services, let the DI container manage scope (Spring singletons are container-scoped, not class-enforced); for stateless utility, use static methods; for the rare genuine case, an enum singleton. Interview-wise, critiquing Singleton fluently scores higher than implementing it.
+**"Singleton is the easy pattern"** — Singleton is the pattern most likely to be an ANTI-pattern in context: it is global mutable state with a design-pattern alibi — untestable (cannot substitute), concurrency-delicate (double-checked locking history), and hostile to anything needing two instances (multi-tenancy, tests in parallel). The modern verdicts: for true single services, let the DI container manage scope (Spring singletons are container-scoped, not class-enforced); for stateless utility, use static methods; for the rare genuine case, an enum singleton. Interview-wise, critiquing Singleton fluently scores higher than implementing it.
 
-**"Factory Method and Abstract Factory are the same idea at different sizes"** ? They answer different questions: Factory Method defers WHICH subclass to instantiate (one product, decided by subclasses or parameters); Abstract Factory guarantees FAMILIES stay consistent (all-Windows widgets or all-Mac widgets, never mixed). The consistency guarantee is the entire point of the second � flattening them into "factories make objects" loses the one sentence that makes Abstract Factory worth its weight, and interviewers probe exactly that sentence.
+**"Factory Method and Abstract Factory are the same idea at different sizes"** — They answer different questions: Factory Method defers WHICH subclass to instantiate (one product, decided by subclasses or parameters); Abstract Factory guarantees FAMILIES stay consistent (all-Windows widgets or all-Mac widgets, never mixed). The consistency guarantee is the entire point of the second — flattening them into "factories make objects" loses the one sentence that makes Abstract Factory worth its weight, and interviewers probe exactly that sentence.
 
-**"Decorator is how you add features to classes"** ? Decorator adds features to INSTANCES at runtime, stacking transparently behind the same interface � java.io streams being the canonical live specimen (BufferedInputStream wrapping FileInputStream). Its costs are real: deep wrapper chains obscure debugging (which layer ate the exception?), identity breaks (equals across wrappers), and Java's sealed-type future limits it. Contrast-and-choose is the skill: subclassing for compile-time fixed variants, Decorator for runtime composition, AOP/proxies for cross-cutting concerns � three tools where the naive answer sees one.
+**"Decorator is how you add features to classes"** — Decorator adds features to INSTANCES at runtime, stacking transparently behind the same interface — java.io streams being the canonical live specimen (BufferedInputStream wrapping FileInputStream). Its costs are real: deep wrapper chains obscure debugging (which layer ate the exception?), identity breaks (equals across wrappers), and Java's sealed-type future limits it. Contrast-and-choose is the skill: subclassing for compile-time fixed variants, Decorator for runtime composition, AOP/proxies for cross-cutting concerns — three tools where the naive answer sees one.
 
-**"Patterns make code better"** ? Patterns make TRADE-OFFS explicit; applied without their forces present, they make code worse � the FactoryFactoryStrategyManager enterprise parody exists because pattern-count became a proxy for design skill. The discipline that survives review: name the force (variation point, family consistency, runtime stacking), THEN reach for the matching pattern, and prefer the language feature when one absorbed the pattern (lambda over Strategy class, enum over State machine for closed sets). Pattern fluency is knowing when NOT to, stated in the same breath.
+**"Patterns make code better"** — Patterns make TRADE-OFFS explicit; applied without their forces present, they make code worse — the FactoryFactoryStrategyManager enterprise parody exists because pattern-count became a proxy for design skill. The discipline that survives review: name the force (variation point, family consistency, runtime stacking), THEN reach for the matching pattern, and prefer the language feature when one absorbed the pattern (lambda over Strategy class, enum over State machine for closed sets). Pattern fluency is knowing when NOT to, stated in the same breath.

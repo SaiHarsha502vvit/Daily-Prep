@@ -40,55 +40,51 @@
 - **Red-Black Tree — Guibas & Sedgewick 1979**: Self-balancing BST. O(log n) insert/delete. Java HashMap/TreeMap structure.
 - **LRU cache — Belady 1966**: Belady's algorithm. `LinkedHashMap` access-order implements O(1) LRU.
 - **SequencedCollection — Java 21 (2023)**: JEP 431. Ordered collections with `getFirst()`, `getLast()`, `reversed()`.
+
 ## 1. Collections Framework Architecture
 
-```
-  ┌────────────────────────────────────────────────────────────┐
-  │                    Iterable<E>                              │
-  │                        │                                    │
-  │                   Collection<E>                             │
-  │                   /    │     \                              │
-  │                  /     │      \                             │
-  │            List<E>  Set<E>  Queue<E>                       │
-  │            /   \     /   \      |    \                     │
-  │    ArrayList  LinkedList  HashSet  TreeSet  PriorityQueue  │
-  │                          LinkedHashSet                     │
-  │                                                            │
-  │                    Map<K,V>  (NOT Collection!)             │
-  │                    /    |     \                             │
-  │             HashMap  TreeMap  LinkedHashMap                 │
-  │                |                                           │
-  │        ConcurrentHashMap                                   │
-  └────────────────────────────────────────────────────────────┘
+```text
+                Iterable<E>
+                    │
+               Collection<E>
+               /    │     \
+              /     │      \
+        List<E>  Set<E>  Queue<E>
+        /   \     /   \      |    \
+ArrayList  LinkedList  HashSet  TreeSet  PriorityQueue
+                      LinkedHashSet
+
+                Map<K,V>  (NOT Collection!)
+                /    |     \
+         HashMap  TreeMap  LinkedHashMap
+            |
+    ConcurrentHashMap
 ```
 
 ---
 
 ## 2. ArrayList Internals — Dynamic Array
 
+**Internal structure**
+
+```text
+ArrayList wraps a plain Object[] array.
+
+new ArrayList<>() → Object[10]  (default capacity 10)
+
+│ A │ B │ C │ D │ E │   │   │   │   │   │
+size = 5, capacity = 10
 ```
-  INTERNAL STRUCTURE:
-  ═══════════════════
 
-  ArrayList wraps a plain Object[] array.
+**Growth strategy**
 
-  new ArrayList<>() → Object[10]  (default capacity 10)
+```text
+When array is full → create new array at 1.5x size → copy elements
 
-  ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
-  │ A │ B │ C │ D │ E │   │   │   │   │   │
-  └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
-  size = 5, capacity = 10
+Capacity 10 → 15 → 22 → 33 → 49 → 73 → ...
 
-
-  GROWTH STRATEGY:
-  ════════════════
-
-  When array is full → create new array at 1.5x size → copy elements
-
-  Capacity 10 → 15 → 22 → 33 → 49 → 73 → ...
-
-  Formula: newCapacity = oldCapacity + (oldCapacity >> 1)
-  That's: newCapacity = oldCapacity * 1.5 (integer math)
+Formula: newCapacity = oldCapacity + (oldCapacity >> 1)
+That's: newCapacity = oldCapacity * 1.5 (integer math)
 ```
 
 ```java
@@ -108,21 +104,18 @@ private void grow(int minCapacity) {
 }
 ```
 
+**Time complexities**
+
+| Operation | Time | Why |
+| --- | --- | --- |
+| get(index) | O(1) | Direct array access |
+| add(element) [end] | O(1)* | Amortized (resize rare) |
+| add(index, element) | O(n) | Shift elements right |
+| remove(index) | O(n) | Shift elements left |
+| contains(element) | O(n) | Linear scan |
+| size() | O(1) | Stored as field |
+
 ```
-  TIME COMPLEXITIES:
-  ═══════════════════
-
-  ┌──────────────────────┬────────────┬─────────────────────────┐
-  │ Operation            │ Time       │ Why                     │
-  ├──────────────────────┼────────────┼─────────────────────────┤
-  │ get(index)           │ O(1)       │ Direct array access     │
-  │ add(element) [end]   │ O(1)*      │ Amortized (resize rare) │
-  │ add(index, element)  │ O(n)       │ Shift elements right    │
-  │ remove(index)        │ O(n)       │ Shift elements left     │
-  │ contains(element)    │ O(n)       │ Linear scan             │
-  │ size()               │ O(1)       │ Stored as field         │
-  └──────────────────────┴────────────┴─────────────────────────┘
-
   * Amortized O(1): usually O(1), but occasionally O(n) during resize.
     Over n operations, total cost is O(n), so average per op is O(1).
 
@@ -154,42 +147,40 @@ None of the standard ones do all three efficiently. Tradeoffs: `ArrayList`: O(1)
 
 ## 3. LinkedList Internals — Doubly-Linked Nodes
 
+**Internal structure**
+
+```text
+Each element is a Node with prev/next pointers:
+
+null ← [prev|A|next] ↔ [prev|B|next] ↔ [prev|C|next] → null
+        ↑ first                           ↑ last
+
+private static class Node<E> {
+    E item;
+    Node<E> next;
+    Node<E> prev;
+}
+
+
+WHEN TO USE:
+• Frequent add/remove at BEGINNING (O(1) vs ArrayList's O(n))
+• Implementing Queue or Deque
+• Almost NEVER for random access (O(n) traversal)
+
+WHEN NOT TO USE:
+• Random access (get(500) walks 500 nodes!)
+• Memory-sensitive apps (each node = 3 pointers + object = ~40 bytes overhead)
 ```
-  INTERNAL STRUCTURE:
-  ═══════════════════
 
-  Each element is a Node with prev/next pointers:
+**ArrayList vs LinkedList — THE TRUTH**
 
-  null ← [prev|A|next] ↔ [prev|B|next] ↔ [prev|C|next] → null
-          ↑ first                           ↑ last
+```text
+In practice, ArrayList wins almost always because:
+1. CPU cache locality — array elements are contiguous in memory
+2. LinkedList has massive memory overhead per element
+3. Even O(n) array shifts are fast due to System.arraycopy()
 
-  private static class Node<E> {
-      E item;
-      Node<E> next;
-      Node<E> prev;
-  }
-
-
-  WHEN TO USE:
-  • Frequent add/remove at BEGINNING (O(1) vs ArrayList's O(n))
-  • Implementing Queue or Deque
-  • Almost NEVER for random access (O(n) traversal)
-
-  WHEN NOT TO USE:
-  • Random access (get(500) walks 500 nodes!)
-  • Memory-sensitive apps (each node = 3 pointers + object = ~40 bytes overhead)
-```
-
-```
-  ArrayList vs LinkedList — THE TRUTH:
-  ════════════════════════════════════
-
-  In practice, ArrayList wins almost always because:
-  1. CPU cache locality — array elements are contiguous in memory
-  2. LinkedList has massive memory overhead per element
-  3. Even O(n) array shifts are fast due to System.arraycopy()
-
-  Use LinkedList ONLY for: Queue operations (addFirst/removeLast)
+Use LinkedList ONLY for: Queue operations (addFirst/removeLast)
 ```
 
 ---
@@ -213,64 +204,66 @@ CPU cache locality: ArrayList stores elements contiguously in memory — sequent
 
 ### 4.1 Basic Structure
 
-```
-  HashMap = Array of Buckets
+```text
+ HashMap = Array of Buckets
 
-  Each bucket starts as a Linked List.
-  If a bucket gets too long (≥8 nodes), it converts to a Red-Black Tree.
+ Each bucket starts as a Linked List.
+ If a bucket gets too long (≥8 nodes), it converts to a Red-Black Tree.
 
-  ┌────────────────────────────────────────────────────────┐
-  │  index    bucket                                       │
-  │  ─────    ─────────────────────────────────────────── │
-  │  [0]  →   null                                        │
-  │  [1]  →   [K1,V1] → [K5,V5] → null  (linked list)   │
-  │  [2]  →   null                                        │
-  │  [3]  →   [K3,V3] → null                             │
-  │  [4]  →   null                                        │
-  │  [5]  →   [K2,V2] → [K7,V7] → ... (8+ = tree!)     │
-  │  ...                                                   │
-  │  [15] →   null                                        │
-  └────────────────────────────────────────────────────────┘
+index    bucket
+─────    ───────────────────────────────────────────
+[0]  →   null
+[1]  →   [K1,V1] → [K5,V5] → null  (linked list)
+[2]  →   null
+[3]  →   [K3,V3] → null
+[4]  →   null
+[5]  →   [K2,V2] → [K7,V7] → ... (8+ = tree!)
+...
+[15] →   null
 
-  Default: 16 buckets, load factor 0.75
-  Rehash when: size > capacity × loadFactor (16 × 0.75 = 12)
+ Default: 16 buckets, load factor 0.75
+ Rehash when: size > capacity × loadFactor (16 × 0.75 = 12)
 ```
 
 ### 4.2 How put() Works
 
+```text
+map.put("name", "Harsha")
 ```
-  map.put("name", "Harsha")
 
-  STEP 1: Calculate hash
-  ═══════════════════════
+**STEP 1: Calculate hash**
 
-  int hash = hash(key.hashCode())
+```text
+int hash = hash(key.hashCode())
 
-  // HashMap's hash() spreads bits to reduce collisions:
-  static final int hash(Object key) {
-      int h = key.hashCode();
-      return h ^ (h >>> 16);  // XOR with upper 16 bits
-  }
+// HashMap's hash() spreads bits to reduce collisions:
+static final int hash(Object key) {
+    int h = key.hashCode();
+    return h ^ (h >>> 16);  // XOR with upper 16 bits
+}
+```
 
-  STEP 2: Find bucket index
-  ═════════════════════════
+**STEP 2: Find bucket index**
 
-  int index = hash & (capacity - 1);  // Same as hash % capacity
-  // Works because capacity is always power of 2!
-  // 16 = 10000 in binary, 15 = 01111, so & masks lower bits
+```text
+int index = hash & (capacity - 1);  // Same as hash % capacity
+// Works because capacity is always power of 2!
+// 16 = 10000 in binary, 15 = 01111, so & masks lower bits
+```
 
-  STEP 3: Check bucket
-  ═════════════════════
+**STEP 3: Check bucket**
 
-  If bucket is empty → create new Node, place it there. Done.
-  If bucket has nodes → walk the list/tree:
-    - If key matches (hash equal AND equals() returns true) → REPLACE value
-    - If no match → append new Node at end
+```text
+If bucket is empty → create new Node, place it there. Done.
+If bucket has nodes → walk the list/tree:
+  - If key matches (hash equal AND equals() returns true) → REPLACE value
+  - If no match → append new Node at end
+```
 
-  STEP 4: Check if rehash needed
-  ══════════════════════════════
+**STEP 4: Check if rehash needed**
 
-  if (++size > threshold) resize();  // Double capacity: 16→32→64→...
+```text
+if (++size > threshold) resize();  // Double capacity: 16→32→64→...
 ```
 
 ### 4.3 Treeification (Java 8+) — and the DoS Attack That Motivated It
@@ -278,34 +271,36 @@ CPU cache locality: ArrayList stores elements contiguously in memory — sequent
 🔐 **Security Context: Hash Flooding Attack (2011)**
 Scott A. Crosby and Dan S. Wallach demonstrated that by crafting HTTP POST parameters whose keys all hash to the same bucket, an attacker could turn O(1) HashMap operations into O(N²) — bringing a web server to its knees with just a few requests. Java 7 and below were vulnerable. Java 8's treeification was the fix.
 
+**HASH FLOODING DoS**
+
+```text
+Attacker sends keys that all have hash mod N == 0:
+→ All 10,000 request parameters land in bucket [0]
+→ Linked list of 10,000 nodes
+→ Each containsKey() = O(10,000) instead of O(1)
+→ Server CPU maxes out on a few requests
 ```
-  HASH FLOODING DoS:
-  ══════════════════
-  Attacker sends keys that all have hash mod N == 0:
-  → All 10,000 request parameters land in bucket [0]
-  → Linked list of 10,000 nodes
-  → Each containsKey() = O(10,000) instead of O(1)
-  → Server CPU maxes out on a few requests
 
-  Java 8 Treeification Fix:
-  ══════════════════════════
-  When bucket has ≥ 8 nodes AND table size ≥ 64:
-    Linked List → Red-Black Tree → O(log n) worst case
-    Even all-same-bucket attack → O(log N) per lookup
+**Java 8 Treeification Fix**
 
-  When bucket shrinks to ≤ 6 nodes:
-    Tree → Linked List (untreeify — save memory)
+```text
+When bucket has ≥ 8 nodes AND table size ≥ 64:
+  Linked List → Red-Black Tree → O(log n) worst case
+  Even all-same-bucket attack → O(log N) per lookup
 
-  WHY 8? (Not 5 or 16?)
-  At load factor 0.75, bucket size follows Poisson distribution (λ=0.75)
-  P(bucket size ≥ 8) ≈ 0.00006% under random hashing.
-  Reaching 8 items in a bucket = almost certainly a DoS attack or
-  a badly broken hashCode().
+When bucket shrinks to ≤ 6 nodes:
+  Tree → Linked List (untreeify — save memory)
 
-  THRESHOLDS:
-  TREEIFY_THRESHOLD = 8    (list → tree)
-  UNTREEIFY_THRESHOLD = 6  (tree → list, hysteresis to avoid oscillation)
-  MIN_TREEIFY_CAPACITY = 64 (won't treeify tiny tables — just resize instead)
+WHY 8? (Not 5 or 16?)
+At load factor 0.75, bucket size follows Poisson distribution (λ=0.75)
+P(bucket size ≥ 8) ≈ 0.00006% under random hashing.
+Reaching 8 items in a bucket = almost certainly a DoS attack or
+a badly broken hashCode().
+
+THRESHOLDS:
+TREEIFY_THRESHOLD = 8    (list → tree)
+UNTREEIFY_THRESHOLD = 6  (tree → list, hysteresis to avoid oscillation)
+MIN_TREEIFY_CAPACITY = 64 (won't treeify tiny tables — just resize instead)
 ```
 
 ### 4.4 The hashCode/equals Contract
@@ -383,37 +378,40 @@ By asserting on the non-functional requirement (Performance SLA) injected via a 
 
 ## 5. TreeMap Internals — Red-Black Tree
 
+**Structure:** a self-balancing binary search tree (red-black tree). Keys are always sorted (natural order or a `Comparator`).
+
+```mermaid
+flowchart TD
+  K5((K5)) --> K3((K3))
+  K5 --> K8((K8))
+  K3 --> K1((K1))
+  K3 --> K4((K4))
+  K8 --> K6((K6))
+  K8 --> K9((K9))
 ```
-  STRUCTURE: Self-balancing binary search tree (Red-Black Tree)
 
-  Keys are always SORTED (natural order or Comparator).
+**How to read this diagram.** Smaller keys are always to the left and larger keys to the right, so an in-order walk visits the keys in sorted order.
 
-            ┌───[K5]───┐
-         ┌──[K3]──┐  ┌──[K8]──┐
-       [K1]     [K4] [K6]   [K9]
+**Red-black rules (simplified)**
 
-  Red-Black Rules (simplified):
-  1. Every node is red or black
-  2. Root is always black
-  3. No two consecutive red nodes (parent-child)
-  4. Every path from root to null has same number of black nodes
-  → Guarantees: height ≤ 2 × log(n) → O(log n) everything
+1. Every node is red or black.
+2. The root is always black.
+3. No two consecutive red nodes (parent and child).
+4. Every path from the root to a null has the same number of black nodes.
 
+These rules guarantee height ≤ 2 × log(n), so every operation is O(log n).
 
-  ┌──────────────────────┬────────────┐
-  │ Operation            │ Time       │
-  ├──────────────────────┼────────────┤
-  │ put(key, value)      │ O(log n)   │
-  │ get(key)             │ O(log n)   │
-  │ remove(key)          │ O(log n)   │
-  │ firstKey() / lastKey │ O(log n)   │
-  │ floorKey / ceilingKey│ O(log n)   │
-  │ subMap(from, to)     │ O(log n)   │
-  └──────────────────────┴────────────┘
+| Operation | Time |
+| --- | --- |
+| `put(key, value)` | O(log n) |
+| `get(key)` | O(log n) |
+| `remove(key)` | O(log n) |
+| `firstKey()` / `lastKey()` | O(log n) |
+| `floorKey` / `ceilingKey` | O(log n) |
+| `subMap(from, to)` | O(log n) |
 
-  USE WHEN: You need sorted keys, range queries, floor/ceiling lookups.
-  The key class must implement Comparable or you must provide a Comparator.
-```
+> [!TIP]
+> **Use when:** you need sorted keys, range queries or floor/ceiling lookups. The key class must implement `Comparable`, or you must provide a `Comparator`.
 
 ```java
 TreeMap<Integer, String> map = new TreeMap<>();
@@ -455,24 +453,24 @@ An unbalanced BST degrades into a right-leaning linked list `(1 -> 2 -> 3 -> 4 -
 
 ## 6. LinkedHashMap — Insertion/Access Order
 
+```text
+STRUCTURE: HashMap + Doubly-Linked List threading through all entries
+
+HashMap buckets:         Linked list overlay:
+[0] → [K3,V3]           head → [K1,V1] ↔ [K3,V3] ↔ [K5,V5] → tail
+[1] → [K1,V1] → [K5,V5]  (insertion order maintained)
+[2] → null
 ```
-  STRUCTURE: HashMap + Doubly-Linked List threading through all entries
 
-  HashMap buckets:         Linked list overlay:
-  [0] → [K3,V3]           head → [K1,V1] ↔ [K3,V3] ↔ [K5,V5] → tail
-  [1] → [K1,V1] → [K5,V5]  (insertion order maintained)
-  [2] → null
+**ACCESS-ORDER MODE → LRU Cache!**
 
+```text
+new LinkedHashMap<>(16, 0.75f, true);
+//                                ^^^^
+//                     accessOrder = true
 
-  ACCESS-ORDER MODE → LRU Cache!
-  ════════════════════════════════
-
-  new LinkedHashMap<>(16, 0.75f, true);
-  //                                ^^^^
-  //                     accessOrder = true
-
-  Every get() moves that entry to the END of the linked list.
-  Least recently used entries are at the HEAD.
+Every get() moves that entry to the END of the linked list.
+Least recently used entries are at the HEAD.
 ```
 
 ```java
@@ -562,35 +560,32 @@ All elements hash to the same bucket (42 % capacity). HashSet then uses `equals(
 
 ## 8. ConcurrentHashMap — Thread-Safe Without Global Locks
 
+**PROBLEM WITH synchronized HashMap**
+
+```text
+Collections.synchronizedMap(new HashMap<>())
+→ Locks the ENTIRE map for every operation
+→ Only 1 thread can read/write at a time → terrible performance
 ```
-  PROBLEM WITH synchronized HashMap:
-  ════════════════════════════════════
 
-  Collections.synchronizedMap(new HashMap<>())
-  → Locks the ENTIRE map for every operation
-  → Only 1 thread can read/write at a time → terrible performance
+**ConcurrentHashMap (Java 8+)**
 
+```text
+• Lock-free reads (volatile + CAS)
+• Fine-grained locking: locks only the BUCKET being modified
+• Multiple threads can write to DIFFERENT buckets simultaneously
 
-  ConcurrentHashMap (Java 8+):
-  ════════════════════════════
+│  [0] → nodes  ← Thread A writes here (locked)  │
+│  [1] → nodes  ← Thread B writes here (locked)  │
+│  [2] → nodes  ← Thread C reads here (no lock!) │
+│  [3] → nodes  ← Thread D reads here (no lock!) │
+│  ...                                            │
 
-  • Lock-free reads (volatile + CAS)
-  • Fine-grained locking: locks only the BUCKET being modified
-  • Multiple threads can write to DIFFERENT buckets simultaneously
-
-  ┌─────────────────────────────────────────────────┐
-  │  [0] → nodes  ← Thread A writes here (locked)  │
-  │  [1] → nodes  ← Thread B writes here (locked)  │
-  │  [2] → nodes  ← Thread C reads here (no lock!) │
-  │  [3] → nodes  ← Thread D reads here (no lock!) │
-  │  ...                                            │
-  └─────────────────────────────────────────────────┘
-
-  Key mechanisms:
-  • volatile Node[] table → all threads see latest array reference
-  • CAS (Compare-And-Swap) for adding first node to empty bucket
-  • synchronized(firstNode) for adding to non-empty bucket
-  • Reads never block (no locks for get())
+Key mechanisms:
+• volatile Node[] table → all threads see latest array reference
+• CAS (Compare-And-Swap) for adding first node to empty bucket
+• synchronized(firstNode) for adding to non-empty bucket
+• Reads never block (no locks for get())
 ```
 
 ```java
@@ -651,15 +646,17 @@ Both objects land in DIFFERENT buckets (different hashCodes → different bucket
 
   INVARIANT: parent ≤ both children (min-heap)
 
-  ┌──────────────────┬────────────┐
-  │ Operation        │ Time       │
-  ├──────────────────┼────────────┤
-  │ offer(element)   │ O(log n)   │  ← bubble up
-  │ poll()           │ O(log n)   │  ← remove root, bubble down
-  │ peek()           │ O(1)       │  ← just return root
-  │ contains()       │ O(n)       │  ← linear scan
-  │ remove(element)  │ O(n)       │  ← find + bubble
-  └──────────────────┴────────────┘
+```
+
+| Operation | Time | Why |
+| --- | --- | --- |
+| `offer(element)` | O(log n) | Bubble up |
+| `poll()` | O(log n) | Remove the root, bubble down |
+| `peek()` | O(1) | Just return the root |
+| `contains()` | O(n) | Linear scan |
+| `remove(element)` | O(n) | Find, then bubble |
+
+```text
 ```
 
 ```java
@@ -702,14 +699,13 @@ Maintain a `HashSet<E>` alongside the `PriorityQueue`. Before `offer()`: check `
 
 ## 10. Fail-Fast vs Fail-Safe Iterators
 
-```
-  FAIL-FAST (ArrayList, HashMap, HashSet):
-  ═══════════════════════════════════════
+**FAIL-FAST (ArrayList, HashMap, HashSet)**
 
-  If collection is modified DURING iteration → ConcurrentModificationException
+```text
+If collection is modified DURING iteration → ConcurrentModificationException
 
-  Mechanism: modCount field incremented on every structural change.
-  Iterator checks: if (modCount != expectedModCount) throw CME!
+Mechanism: modCount field incremented on every structural change.
+Iterator checks: if (modCount != expectedModCount) throw CME!
 ```
 
 ```java
@@ -739,46 +735,40 @@ for (String s : safeList) {
 }
 ```
 
+**FAIL-SAFE (ConcurrentHashMap, CopyOnWriteArrayList)**
+
+```text
+Iterator works on a SNAPSHOT or WEAKLY CONSISTENT view.
+Never throws ConcurrentModificationException.
+
+Trade-off: May not reflect latest modifications during iteration.
 ```
-  FAIL-SAFE (ConcurrentHashMap, CopyOnWriteArrayList):
-  ══════════════════════════════════════════════════════
 
-  Iterator works on a SNAPSHOT or WEAKLY CONSISTENT view.
-  Never throws ConcurrentModificationException.
-
-  Trade-off: May not reflect latest modifications during iteration.
-
-  ┌─────────────────┬──────────────┬────────────────────────┐
-  │ Collection      │ Iterator     │ Mechanism              │
-  ├─────────────────┼──────────────┼────────────────────────┤
-  │ ArrayList       │ Fail-fast    │ modCount check         │
-  │ HashMap         │ Fail-fast    │ modCount check         │
-  │ ConcurrentHM    │ Fail-safe    │ Weakly consistent      │
-  │ CopyOnWriteAL   │ Fail-safe    │ Snapshot of array      │
-  │ ConcurrentSkipLM│ Fail-safe    │ Weakly consistent      │
-  └─────────────────┴──────────────┴────────────────────────┘
-```
+| Collection | Iterator | Mechanism |
+| --- | --- | --- |
+| ArrayList | Fail-fast | modCount check |
+| HashMap | Fail-fast | modCount check |
+| ConcurrentHM | Fail-safe | Weakly consistent |
+| CopyOnWriteAL | Fail-safe | Snapshot of array |
+| ConcurrentSkipLM | Fail-safe | Weakly consistent |
 
 ---
 
 ## 11. Memory Overhead Comparison
 
+**MEMORY PER ELEMENT (approximate, 64-bit JVM, compressed oops)**
+
+| Collection | Overhead per element |
+| --- | --- |
+| int[] (primitive) | 4 bytes |
+| Integer[] (boxed) | ~20 bytes (16 object header + 4) |
+| ArrayList<Integer> | ~20 bytes + 4-8 bytes (array slot) |
+| LinkedList<Integer> | ~48 bytes (Node: 3 refs + Integer) |
+| HashMap<K,V> | ~48-80 bytes per entry |
+| TreeMap<K,V> | ~64-80 bytes per entry |
+| HashSet<E> | Same as HashMap (it IS a HashMap) |
+
 ```
-  MEMORY PER ELEMENT (approximate, 64-bit JVM, compressed oops):
-  ══════════════════════════════════════════════════════════════
-
-  ┌─────────────────────┬──────────────────────────────────────┐
-  │ Collection          │ Overhead per element                 │
-  ├─────────────────────┼──────────────────────────────────────┤
-  │ int[] (primitive)   │ 4 bytes                              │
-  │ Integer[] (boxed)   │ ~20 bytes (16 object header + 4)    │
-  │ ArrayList<Integer>  │ ~20 bytes + 4-8 bytes (array slot)  │
-  │ LinkedList<Integer> │ ~48 bytes (Node: 3 refs + Integer)  │
-  │ HashMap<K,V>        │ ~48-80 bytes per entry              │
-  │ TreeMap<K,V>        │ ~64-80 bytes per entry              │
-  │ HashSet<E>          │ Same as HashMap (it IS a HashMap)   │
-  └─────────────────────┴──────────────────────────────────────┘
-
   1 million integers:
   • int[]           → ~4 MB
   • ArrayList       → ~24 MB  (6x more!)
@@ -790,34 +780,26 @@ for (String s : safeList) {
 
 ## 12. Choosing the Right Collection
 
+**DECISION GUIDE:**
+
+```mermaid
+flowchart TD
+  A{"Need ordered sequence?"} -->|"Random access"| AL["ArrayList"]
+  A -->|"Frequent add/remove at the ends"| AD["ArrayDeque"]
+  A -->|"Queue behavior"| LQ["LinkedList or ArrayDeque"]
+  B{"Need unique elements?"} -->|"No order needed"| HS["HashSet (fastest)"]
+  B -->|"Sorted"| TS["TreeSet"]
+  B -->|"Insertion order"| LHS["LinkedHashSet"]
+  C{"Need key-value pairs?"} -->|"No order needed"| HM["HashMap (fastest)"]
+  C -->|"Sorted by key"| TM["TreeMap"]
+  C -->|"Insertion order"| LHM["LinkedHashMap"]
+  C -->|"Thread-safe"| CHM["ConcurrentHashMap"]
+  D{"Need priority processing?"} --> PQ["PriorityQueue"]
+  E{"Need a thread-safe list?"} -->|"Read-heavy"| COW["CopyOnWriteArrayList"]
+  E -->|"Write-heavy"| SL["Collections.synchronizedList or custom"]
 ```
-  ╔════════════════════════════════════════════════════════════════╗
-  ║  DECISION GUIDE:                                              ║
-  ║                                                                ║
-  ║  Need ordered sequence?                                       ║
-  ║  ├─ Random access → ArrayList                                 ║
-  ║  ├─ Frequent add/remove at ends → ArrayDeque                  ║
-  ║  └─ Queue behavior → LinkedList or ArrayDeque                 ║
-  ║                                                                ║
-  ║  Need unique elements?                                        ║
-  ║  ├─ No order needed → HashSet (fastest)                       ║
-  ║  ├─ Sorted → TreeSet                                          ║
-  ║  └─ Insertion order → LinkedHashSet                           ║
-  ║                                                                ║
-  ║  Need key-value pairs?                                        ║
-  ║  ├─ No order needed → HashMap (fastest)                       ║
-  ║  ├─ Sorted by key → TreeMap                                   ║
-  ║  ├─ Insertion order → LinkedHashMap                           ║
-  ║  └─ Thread-safe → ConcurrentHashMap                           ║
-  ║                                                                ║
-  ║  Need priority processing?                                    ║
-  ║  └─ PriorityQueue                                             ║
-  ║                                                                ║
-  ║  Need thread-safe list?                                       ║
-  ║  ├─ Read-heavy → CopyOnWriteArrayList                        ║
-  ║  └─ Write-heavy → Collections.synchronizedList or custom      ║
-  ╚════════════════════════════════════════════════════════════════╝
-```
+
+**How to read this diagram.** Pick the question that matches your need (ordered sequence, unique elements, key-value pairs, priority, thread-safe list) and follow the labelled arrow to the collection.
 
 ---
 

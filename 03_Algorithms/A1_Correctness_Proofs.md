@@ -1,6 +1,6 @@
 # A1. Algorithm Correctness — Proving Why It Works
 
-**Navigation**: [← Algorithm Thinking](01_Algorithm_Thinking.md) | [📚 Index](00_INDEX.md) | [A2: Complexity from First Principles →](A2_Complexity_FirstPrinciples.md)
+> **Navigation**: [Chapter index](00_INDEX.md) | [A2. Complexity Analysis from… →](A2_Complexity_FirstPrinciples.md)
 
 > **MIT 6.006 / KTH DD1352 / TU Munich IN0007 foundation**
 >
@@ -9,6 +9,69 @@
 > This chapter teaches the proof methodology that separates a computer scientist from a programmer. Every claim about an algorithm — "it always finds the shortest path," "it always returns a sorted array" — is a mathematical assertion that must be proved, not assumed.
 
 ---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Algorithm Thinking](01_Algorithm_Thinking.md) (loops and recursion) |
+| **You will learn** | Loop invariants, induction, exchange arguments, optimal substructure |
+| **Leads to** | Every proof corner in later chapters; [Greedy](12_Greedy_Algorithms_Complete.md), [DP](04b_DP_Fundamentals.md) |
+| **Abstraction level** | L1: from "it passed my tests" to "it is correct for every input" |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Algorithm Correctness
+
+### 1. The bottom line
+
+Prove an algorithm correct by naming one fact that stays true throughout and showing it is true at the start, preserved by each step, and strong enough at the end.
+
+### 2. The textbook core
+
+- **Loop invariant:** initialization, maintenance, termination.
+- **Induction** for recursion: base case + inductive step.
+- **Exchange argument** for greedy: transform any optimal solution into the greedy one without making it worse.
+- **Optimal substructure** is what makes DP and greedy valid.
+
+### 3. The real-world analogy
+
+A **bank reconciliation rule** ("total in = total out + balance") checked after every transaction: if each transaction type preserves it, the books are right without auditing everything.
+
+### 4. Walkthrough
+
+1. Insertion sort invariant: `a[0..i)` is sorted.
+2. Initialization: a single element is sorted (`i = 1`).
+3. Maintenance: inserting `a[i]` into its place keeps `a[0..i+1)` sorted.
+4. Termination: at `i = n` the whole array is sorted.
+
+> [!NOTE]
+> **Quick check:** What is the invariant of binary search? *If the target exists, it is inside `[lo, hi)`.*
+
+
+### 5. Check yourself
+
+**Q1.** What must a loop invariant satisfy?
+
+<details><summary>Answer</summary>
+
+Initialization (true before the first iteration), maintenance (preserved by each iteration) and termination (together with the exit condition it implies the goal).
+
+</details>
+
+**Q2.** Insertion sort: state the invariant at the start of iteration `i`.
+
+<details><summary>Answer</summary>
+
+`a[0..i)` contains the original first `i` elements in sorted order.
+
+</details>
+
+---
+
 
 ## Table of Contents
 
@@ -33,20 +96,13 @@ A **loop invariant** is a property that:
 
 This is mathematical induction on the iteration number. The invariant is the inductive hypothesis.
 
-```
-Structure of a loop invariant proof:
+**Structure of a loop invariant proof**
 
-  ┌─────────────────────────────────────────────────────┐
-  │  INITIALIZATION  │  Before first iteration begins,  │
-  │                  │  the invariant holds.             │
-  ├─────────────────────────────────────────────────────┤
-  │  MAINTENANCE     │  If it holds at start of iter i, │
-  │                  │  it holds at start of iter i+1.  │
-  ├─────────────────────────────────────────────────────┤
-  │  TERMINATION     │  When loop ends, invariant gives  │
-  │                  │  us the answer we want.           │
-  └─────────────────────────────────────────────────────┘
-```
+| Step | What you show |
+| --- | --- |
+| Initialization | Before the first iteration begins, the invariant holds. |
+| Maintenance | If it holds at the start of iteration `i`, it holds at the start of iteration `i+1`. |
+| Termination | When the loop ends, the invariant gives us the answer we want. |
 
 ### The Mental Model: What Does the Invariant SAY?
 
@@ -381,17 +437,15 @@ Most companies don't ask for formal proofs, but they do ask **"why does your alg
 
 ## Summary: The Proof Toolbox
 
-```
-Algorithm type          │ Proof technique
-────────────────────────┼────────────────────────────────────────────
-Loop / iterative        │ Loop invariant (init + maintenance + termination)
-Recursive               │ Strong induction on input size
-Divide and conquer      │ Structural induction on problem size
-Greedy                  │ Exchange argument (swap greedy for optimal, no worse)
-DP recurrence valid     │ Optimal substructure (cut and paste)
-DP vs greedy decision   │ Try exchange argument; if it fails, use DP
-Algorithm is wrong      │ Construct counterexample (break the invariant)
-```
+| Algorithm type | Proof technique |
+| --- | --- |
+| Loop / iterative | Loop invariant (init + maintenance + termination) |
+| Recursive | Strong induction on input size |
+| Divide and conquer | Structural induction on problem size |
+| Greedy | Exchange argument (swap greedy for optimal, no worse) |
+| DP recurrence valid | Optimal substructure (cut and paste) |
+| DP vs greedy decision | Try exchange argument; if it fails, use DP |
+| Algorithm is wrong | Construct counterexample (break the invariant) |
 
 ---
 
@@ -505,6 +559,16 @@ assert java.util.Arrays.binarySearch(arr, target) < 0;
 Rule: assertions document the invariant AND catch violations during development; formal proofs prevent the invariant from being wrong in the first place.
 
 
+
+---
+
+## 🏢 Enterprise Lens — Algorithm Correctness
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Code reviews for core libraries, safety-critical logic (payments, schedulers), design reviews that require stated invariants |
+| **Failure modes** | Invariant stated but not actually preserved on one branch; proof assumes sorted/distinct input that production data violates |
+| **Testing and verification** | Turn invariants into assertions and property-based tests; fuzz against a reference implementation |
 
 ---
 

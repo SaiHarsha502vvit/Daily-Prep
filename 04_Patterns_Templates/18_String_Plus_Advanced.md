@@ -1,39 +1,106 @@
-﻿**Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
+# 🧩 String + Advanced — Pattern Guide
 
-# String + Advanced Tricks — Combined Pattern Guide
+> **Navigation**: [← Backtracking + Pruning](17_Backtracking_Plus_Pruning.md) | [Chapter index](00_INDEX.md) | [Matrix + Grid Traversal →](19_Matrix_Plus_Grid_Traversal.md)
+
+## String + Advanced Tricks — Combined Pattern Guide
 
 **WHY this combination?** Strings combine array access, hashing, sliding window, DP, and specialized algorithms (KMP, Rabin-Karp). Most "string" problems are actually pattern problems in disguise.
 
 ### ⚠️ Constraint Lens
 
-### Historical Evolution
+## 🔗 Bridge — Where This Chapter Fits
 
-**Inventor / Originator:** KMP (Knuth-Morris-Pratt 1977), Boyer-Moore (1977), Rabin-Karp (1981), and tries (de la Briandais 1959, Fredkin 1960 name).
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Strings](../02_Data_Structures/01b_Arrays.md), [Hash Maps](10_HashMap_Plus_Counting.md), [String Algorithms](../03_Algorithms/13_String_Algorithms_Complete.md) |
+| **You will learn** | Anagram keys, palindromes by expanding around the centre, tries, Rabin–Karp and Z-algorithm |
+| **Leads to** | [Tries](29_Trie_Pattern.md), [Dynamic Programming](16_DP_Pattern_Recognition.md) |
+| **Abstraction level** | Character loops → **canonical forms and prefix structures** → linear-time matching |
 
-**Predecessor context:** Naive string matching was O(n×m) — scanning the entire pattern at each position. Tries weren't used because dictionary lookup was done via hashing or binary search.
-
-**Evolution narrative:** KMP preprocessed the pattern to skip re-examining matched characters. Boyer-Moore scanned right-to-left for faster average case. Tries provided O(k) retrieval where k is string length, independent of dictionary size.
-
-**Modern practice:** String algorithms power search engines, compilers (lexical analysis), bioinformatics (BLAST uses variants), and network intrusion detection (Aho-Corasick).
-
-- **KMP — Knuth, Morris, Pratt 1977**: O(n+m) worst-case; no repeated text examination
-- **Boyer-Moore — 1977**: Right-to-left scan; often O(n/m) in practice
-- **Rabin-Karp — 1981**: Rolling hash; O(n+m) average; natural multi-pattern extension
-- **Modern practice**: Bioinformatics (BLAST), compilers (lexing), network IDS (Aho-Corasick)
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
 
 ---
 
-### Production Reality
+## 💬 Explain It Like a Study Partner — String + Advanced
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+### 1. The bottom line
 
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+String problems become easy when you choose a canonical representation (sorted letters, counts, hashes, prefixes).
 
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+### 2. The textbook core
+
+- Anagram key: sorted string or 26-count signature.
+- Palindrome: expand from each centre (`2n − 1` centres) → `O(n²)`; Manacher gives `O(n)`.
+- Trie: shared prefixes in a tree.
+- Rolling hash/Z-array: pattern matching in linear expected/worst time.
+
+### 3. The real-world analogy
+
+A **library catalogue**: books are filed by a canonical key so equivalent ones land on the same shelf.
+
+### 4. Walkthrough
+
+1. Group anagrams: `eat, tea, tan, ate, nat, bat`.
+2. Key = sorted letters: `aet`, `aet`, `ant`, `aet`, `ant`, `abt`.
+3. Map key → list.
+4. Groups: `{eat,tea,ate}`, `{tan,nat}`, `{bat}`.
+
+> [!NOTE]
+> **Quick check:** Why is expanding around the centre `O(n²)`, not `O(n³)`? *Each expansion step is `O(1)`; there are `O(n)` centres and `O(n)` steps.*
+
+
+### 5. Check yourself
+
+**Q1.** What canonical key groups `eat`, `tea` and `ate` as anagrams?
+
+<details><summary>Answer</summary>
+
+The sorted letters `"aet"` (or a 26-count signature).
+
+</details>
+
+**Q2.** Longest palindromic substring of `"babad"`?
+
+<details><summary>Answer</summary>
+
+`"bab"` or `"aba"` (length 3).
+
+</details>
+
+**Q3.** How many centres does expand-around-centre try for length `n`?
+
+<details><summary>Answer</summary>
+
+`2n − 1` (n single-character centres and n−1 between-character centres).
+
+</details>
+
+---
+
+## Historical Evolution
+
+**Inventor / Originator:** Key string-matching papers: Morris–Pratt (1970 report) and Knuth–Morris–Pratt (published 1977), Boyer–Moore (1977), Aho–Corasick (1975), Karp–Rabin (1981 report; published 1987). Tries were described by de la Briandais (1959) and named by Edward Fredkin (1960).
+
+**Predecessor context:** Naive matching compared the pattern at every text position, `O(n·m)` in the worst case.
+
+**Evolution narrative:** KMP precomputes a failure function so the text pointer never moves back; Boyer–Moore skips ahead using right-to-left comparison; Rabin–Karp compares rolling hashes; Aho–Corasick matches many patterns in one pass. Suffix trees (Weiner 1973) and suffix arrays (Manber–Myers 1990) support substring queries on a fixed text.
+
+**Modern practice:** Editors and `grep`, intrusion detection (Aho–Corasick), plagiarism detection (rolling hashes), autocomplete (tries). Bioinformatics tools such as BLAST (1990) use seed-and-extend heuristics rather than exact KMP-style matching.
+
+- **de la Briandais — 1959 / Fredkin — 1960**: Tries (the name comes from *retrieval*)
+- **Weiner — 1973**: Suffix trees
+- **Aho & Corasick — 1975**: Multi-pattern matching automaton
+- **Knuth, Morris, Pratt — 1977**: Linear-time single-pattern matching
+- **Boyer & Moore — 1977**: Sub-linear average-case matching
+- **Karp & Rabin — 1981/1987**: Randomised rolling-hash matching
+
+---
+
+## Production Reality
+
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -59,7 +126,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Strings Are Disguised Pattern Problems
+## 🧠 Deep Intuition — Strings Are Disguised Pattern Problems
 
 Most string problems aren't really "string" problems — they're array, hash, or DP problems wearing a string costume. The key is to **identify the underlying pattern**:
 
@@ -70,11 +137,11 @@ Most string problems aren't really "string" problems — they're array, hash, or
 
 The string-specific part is usually just the data representation, not the algorithm.
 
-#### Why String Immutability Matters in Java
+### Why String Immutability Matters in Java
 
 In Java, strings are immutable — every concatenation creates a new String object. `s += c` inside a loop creates O(n) new strings of increasing size, resulting in **O(n²) total time** for what looks like an O(n) loop. Always use `StringBuilder` for building strings incrementally — it uses an internal array and amortizes to O(n) total time.
 
-#### The `int[26]` Trick — Why It's Faster Than HashMap
+### The `int[26]` Trick — Why It's Faster Than HashMap
 
 For problems involving only lowercase letters, `int[26]` (indexed by `c - 'a'`) is strictly better than `HashMap<Character, Integer>`:
 
@@ -88,18 +155,17 @@ Use `int[128]` when the problem involves ASCII characters (uppercase, digits, et
 
 ## 🧠 PATTERN DECODER FOR STRING PROBLEMS
 
-```
-String problem?
-├── "Parentheses" → Stack
-├── "Anagram/permutation" → HashMap frequency / sorted key
-├── "Substring with condition" → Sliding Window + HashMap
-├── "Palindrome" → Two Pointers (expand from center) or DP
-├── "Pattern matching" → KMP / Rabin-Karp / Z-algorithm
-├── "Transform A to B" → DP (Edit Distance)
-├── "Word break" → DP + Trie/Set
-├── "Expression evaluation" → Stack (operator precedence)
-└── "Justify/format" → Simulation
-```
+**String problem?**
+
+- "Parentheses" → Stack
+- "Anagram/permutation" → HashMap frequency / sorted key
+- "Substring with condition" → Sliding Window + HashMap
+- "Palindrome" → Two Pointers (expand from center) or DP
+- "Pattern matching" → KMP / Rabin-Karp / Z-algorithm
+- "Transform A to B" → DP (Edit Distance)
+- "Word break" → DP + Trie/Set
+- "Expression evaluation" → Stack (operator precedence)
+- "Justify/format" → Simulation
 
 ---
 
@@ -150,7 +216,7 @@ int[] buildLPS(String pattern) {
 
 ---
 
-## � FULL WALKTHROUGH: Group Anagrams
+## 🔬 FULL WALKTHROUGH: Group Anagrams
 
 ```
 Problem: Group words that are anagrams.
@@ -237,16 +303,6 @@ COMMON MISTAKES:
 | Valid Parentheses  | Stack              | O(n)         | O(n)  |
 
 ---
-
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
-
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
 
 ---
 
@@ -405,7 +461,10 @@ _Why Z over KMP?_ Both are O(N+M). Z-algorithm is often conceptually easier to u
 
 ---
 
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+## 📋 Practice Problems
+
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 | #   | Problem                                                                                                   | Companies          | Key Insight             |
 | --- | --------------------------------------------------------------------------------------------------------- | ------------------ | ----------------------- |
@@ -479,8 +538,17 @@ _Why Z over KMP?_ Both are O(N+M). Z-algorithm is often conceptually easier to u
 
 ---
 
-**Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
 
+
+---
+
+## 🏢 Enterprise Lens — String + Advanced
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Search boxes, spell checkers, log parsing, bioinformatics, plagiarism detection |
+| **Failure modes** | Unicode surprises (code points vs chars); building strings in a loop with `+=`; hash collisions in rolling hashes |
+| **Testing and verification** | Compare to naive matching on random strings with small alphabets (many collisions) |
 
 ---
 

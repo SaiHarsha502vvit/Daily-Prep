@@ -84,29 +84,27 @@ public class PassByValueDemo {
 
 "Why is String immutable? What's the String pool?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE PUBLIC LIBRARY ANALOGY                                      ║
-║                                                                  ║
-║  String pool = A public library with ONE copy of each book       ║
-║                                                                  ║
-║  String a = "hello"; → Library: "We have 'hello'. Here's the     ║
-║                         reference to the SAME copy."             ║
-║  String b = "hello"; → Library: "We already have 'hello'.        ║
-║                         Here's the SAME reference."              ║
-║  a == b → true! Same physical book (same object in pool)         ║
-║                                                                  ║
-║  String c = new String("hello"); → "I don't want the library     ║
-║                         copy. Make me a PRIVATE copy."           ║
-║  a == c → false! Different physical books (different objects)    ║
-║  a.equals(c) → true! Same content                                ║
-║                                                                  ║
-║  WHY IMMUTABLE?                                                  ║
-║  If anyone could change the library book, EVERYONE reading it    ║
-║  would see the change. Immutability ensures sharing is safe.     ║
-║  Also: security (class names, URLs), hashCode caching,           ║
-║  thread safety.                                                  ║
-╚══════════════════════════════════════════════════════════════════╝
+**THE PUBLIC LIBRARY ANALOGY**
+
+```text
+String pool = A public library with ONE copy of each book
+
+String a = "hello"; → Library: "We have 'hello'. Here's the
+                       reference to the SAME copy."
+String b = "hello"; → Library: "We already have 'hello'.
+                       Here's the SAME reference."
+a == b → true! Same physical book (same object in pool)
+
+String c = new String("hello"); → "I don't want the library
+                       copy. Make me a PRIVATE copy."
+a == c → false! Different physical books (different objects)
+a.equals(c) → true! Same content
+
+WHY IMMUTABLE?
+If anyone could change the library book, EVERYONE reading it
+would see the change. Immutability ensures sharing is safe.
+Also: security (class names, URLs), hashCode caching,
+thread safety.
 ```
 
 ```java
@@ -154,27 +152,25 @@ Security: strings are used as HashMap keys, class names, file paths. If mutable,
 
 "When do I use == and when do I use .equals()?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  ==       → "Are these the SAME object in memory?"               ║
-║              (Compares references / addresses)                   ║
-║                                                                  ║
-║  .equals()→ "Do these have the SAME content?"                    ║
-║              (Compares values — but MUST be overridden!)         ║
-║                                                                  ║
-║  For PRIMITIVES (int, char, boolean):                            ║
-║  → Use == (there's no .equals() for primitives)                  ║
-║  → 5 == 5 is true. Simple.                                       ║
-║                                                                  ║
-║  For OBJECTS (String, Integer, custom classes):                  ║
-║  → Use .equals() for content comparison                          ║
-║  → == checks if they're literally the same object                ║
-║                                                                  ║
-║  CRITICAL: Default .equals() (from Object) uses ==               ║
-║  You MUST override .equals() in your classes!                    ║
-║  And when you override equals, ALWAYS override hashCode too.     ║
-║  (HashMap depends on this contract)                              ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+==       → "Are these the SAME object in memory?"
+            (Compares references / addresses)
+
+.equals()→ "Do these have the SAME content?"
+            (Compares values — but MUST be overridden!)
+
+For PRIMITIVES (int, char, boolean):
+→ Use == (there's no .equals() for primitives)
+→ 5 == 5 is true. Simple.
+
+For OBJECTS (String, Integer, custom classes):
+→ Use .equals() for content comparison
+→ == checks if they're literally the same object
+
+CRITICAL: Default .equals() (from Object) uses ==
+You MUST override .equals() in your classes!
+And when you override equals, ALWAYS override hashCode too.
+(HashMap depends on this contract)
 ```
 
 ```java
@@ -215,24 +211,22 @@ class Point {
 
 "Why does `Integer a = 127; Integer b = 127; a == b` return true, but with 128 it returns false?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE VIP LOUNGE ANALOGY                                          ║
-║                                                                  ║
-║  Java has a VIP lounge for "popular" integers: -128 to 127.      ║
-║  These 256 Integer objects are pre-created and CACHED.           ║
-║                                                                  ║
-║  Integer a = 127 → "127 is a VIP. Here's the cached object."     ║
-║  Integer b = 127 → "127 is a VIP. Here's the SAME cached one."   ║
-║  a == b → true (same object from cache!)                         ║
-║                                                                  ║
-║  Integer c = 128 → "128 is NOT a VIP. Create a NEW object."      ║
-║  Integer d = 128 → "128 is NOT a VIP. Create ANOTHER object."    ║
-║  c == d → false (different objects!)                             ║
-║                                                                  ║
-║  LESSON: NEVER use == with wrapper types.                        ║
-║  Always use .equals() or unbox first.                            ║
-╚══════════════════════════════════════════════════════════════════╝
+**THE VIP LOUNGE ANALOGY**
+
+```text
+Java has a VIP lounge for "popular" integers: -128 to 127.
+These 256 Integer objects are pre-created and CACHED.
+
+Integer a = 127 → "127 is a VIP. Here's the cached object."
+Integer b = 127 → "127 is a VIP. Here's the SAME cached one."
+a == b → true (same object from cache!)
+
+Integer c = 128 → "128 is NOT a VIP. Create a NEW object."
+Integer d = 128 → "128 is NOT a VIP. Create ANOTHER object."
+c == d → false (different objects!)
+
+LESSON: NEVER use == with wrapper types.
+Always use .equals() or unbox first.
 ```
 
 ```java
@@ -272,29 +266,27 @@ Memory Allocation. `"hello"` is a string literal that resides in the String Pool
 
 "Why can't I write `new T()` or `instanceof T` in generics?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  TYPE ERASURE = The Costume Party                                ║
-║                                                                  ║
-║  At compile time, everyone wears name tags (types).              ║
-║  At runtime, all name tags are removed — everyone looks the      ║
-║  same (raw types).                                               ║
-║                                                                  ║
-║  List<String> at compile time → List at runtime                  ║
-║  List<Integer> at compile time → List at runtime                 ║
-║  They're THE SAME class at runtime!                              ║
-║                                                                  ║
-║  WHY? Java added generics in Java 5. Old code used raw List.     ║
-║  To maintain backward compatibility, the JVM doesn't know        ║
-║  about generic types — the compiler erases them.                 ║
-║                                                                  ║
-║  CONSEQUENCES:                                                   ║
-║  ❌ new T()            — T is erased, JVM doesn't know the type   ║
-║  ❌ instanceof T       — no type info at runtime                  ║
-║  ❌ T.class            — erased                                   ║
-║  ❌ new T[10]          — can't create generic arrays              ║
-║  ❌ catch T            — can't catch generic exceptions           ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+TYPE ERASURE = The Costume Party
+
+At compile time, everyone wears name tags (types).
+At runtime, all name tags are removed — everyone looks the
+same (raw types).
+
+List<String> at compile time → List at runtime
+List<Integer> at compile time → List at runtime
+They're THE SAME class at runtime!
+
+WHY? Java added generics in Java 5. Old code used raw List.
+To maintain backward compatibility, the JVM doesn't know
+about generic types — the compiler erases them.
+
+CONSEQUENCES:
+❌ new T()            — T is erased, JVM doesn't know the type
+❌ instanceof T       — no type info at runtime
+❌ T.class            — erased
+❌ new T[10]          — can't create generic arrays
+❌ catch T            — can't catch generic exceptions
 ```
 
 ```java
@@ -348,35 +340,33 @@ NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure).
 
 "How does HashMap work internally? What happens on collision?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE FILING CABINET ANALOGY                                      ║
-║                                                                  ║
-║  HashMap = A filing cabinet with 16 drawers (default capacity)   ║
-║                                                                  ║
-║  1. PUT("Alice", 25):                                            ║
-║     hashCode("Alice") = 92668751                                 ║
-║     Drawer index = 92668751 % 16 = 7                             ║
-║     Put entry in Drawer 7.                                       ║
-║                                                                  ║
-║  2. PUT("Bob", 30):                                              ║
-║     hashCode("Bob") = 66965 → Drawer 5. No collision.            ║
-║                                                                  ║
-║  3. COLLISION: PUT("Celia", 28) → also maps to Drawer 7!         ║
-║     Java 7: Linked list in that drawer. O(n) worst case.         ║
-║     Java 8+: If list > 8 entries, convert to RED-BLACK TREE.     ║
-║              Now O(log n) instead of O(n).                       ║
-║                                                                  ║
-║  4. RESIZE: When 75% full (load factor 0.75), capacity           ║
-║     DOUBLES (16→32) and ALL entries are REHASHED.                ║
-║     This is expensive! Set initial capacity if you know size.    ║
-║                                                                  ║
-║  WHY hashCode + equals CONTRACT MATTERS:                         ║
-║  1. hashCode → picks the drawer                                  ║
-║  2. equals → finds the right file IN that drawer                 ║
-║  If equals says "same" but hashCodes differ → different drawer   ║
-║  → HashMap can't find the entry. Lost data!                      ║
-╚══════════════════════════════════════════════════════════════════╝
+**THE FILING CABINET ANALOGY**
+
+```text
+HashMap = A filing cabinet with 16 drawers (default capacity)
+
+1. PUT("Alice", 25):
+   hashCode("Alice") = 92668751
+   Drawer index = 92668751 % 16 = 7
+   Put entry in Drawer 7.
+
+2. PUT("Bob", 30):
+   hashCode("Bob") = 66965 → Drawer 5. No collision.
+
+3. COLLISION: PUT("Celia", 28) → also maps to Drawer 7!
+   Java 7: Linked list in that drawer. O(n) worst case.
+   Java 8+: If list > 8 entries, convert to RED-BLACK TREE.
+            Now O(log n) instead of O(n).
+
+4. RESIZE: When 75% full (load factor 0.75), capacity
+   DOUBLES (16→32) and ALL entries are REHASHED.
+   This is expensive! Set initial capacity if you know size.
+
+WHY hashCode + equals CONTRACT MATTERS:
+1. hashCode → picks the drawer
+2. equals → finds the right file IN that drawer
+If equals says "same" but hashCodes differ → different drawer
+→ HashMap can't find the entry. Lost data!
 ```
 
 ```java
@@ -421,25 +411,23 @@ Both objects land in DIFFERENT buckets (different hashCodes → different bucket
 
 "What does `final` do?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  final VARIABLE → constant reference (but object can change!)    ║
-║    final List<String> list = new ArrayList<>();                  ║
-║    list.add("hello");        // ✅ Modifying contents is fine     ║
-║    list = new ArrayList<>(); // ❌ Can't reassign the variable    ║
-║    ↑ Like a permanent parking spot — the car in it can change    ║
-║      its color, but you can't move to a different spot.          ║
-║                                                                  ║
-║  final METHOD → can't be overridden by subclasses                ║
-║    public final void doWork() { ... }                            ║
-║    ↑ "This recipe is final. No one can modify it."               ║
-║                                                                  ║
-║  final CLASS → can't be extended                                 ║
-║    public final class String { ... }                             ║
-║    ↑ "No one can build on top of this." (String, Integer, etc.)  ║
-║    WHY: Immutability guarantee. If you could extend String,      ║
-║    you could create a MutableString that breaks contracts.       ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+final VARIABLE → constant reference (but object can change!)
+  final List<String> list = new ArrayList<>();
+  list.add("hello");        // ✅ Modifying contents is fine
+  list = new ArrayList<>(); // ❌ Can't reassign the variable
+  ↑ Like a permanent parking spot — the car in it can change
+    its color, but you can't move to a different spot.
+
+final METHOD → can't be overridden by subclasses
+  public final void doWork() { ... }
+  ↑ "This recipe is final. No one can modify it."
+
+final CLASS → can't be extended
+  public final class String { ... }
+  ↑ "No one can build on top of this." (String, Integer, etc.)
+  WHY: Immutability guarantee. If you could extend String,
+  you could create a MutableString that breaks contracts.
 ```
 
 ---
@@ -575,20 +563,18 @@ for (String s : list) {
 }
 ```
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE COUNTING CARDS ANALOGY                                      ║
-║                                                                  ║
-║  Iterator says: "I'm counting cards in a deck. Card 1... 2..."   ║
-║  You: *removes a card from the middle*                           ║
-║  Iterator: "Wait — the deck changed! My count is wrong now!"     ║
-║  → Throws ConcurrentModificationException                        ║
-║                                                                  ║
-║  FAIL-FAST: Java collections track a modCount. The iterator      ║
-║  checks modCount each step. If it changed (someone modified      ║
-║  the collection), it immediately fails rather than give          ║
-║  corrupt results.                                                ║
-╚══════════════════════════════════════════════════════════════════╝
+**THE COUNTING CARDS ANALOGY**
+
+```text
+Iterator says: "I'm counting cards in a deck. Card 1... 2..."
+You: *removes a card from the middle*
+Iterator: "Wait — the deck changed! My count is wrong now!"
+→ Throws ConcurrentModificationException
+
+FAIL-FAST: Java collections track a modCount. The iterator
+checks modCount each step. If it changed (someone modified
+the collection), it immediately fails rather than give
+corrupt results.
 ```
 
 ```java
@@ -640,25 +626,23 @@ Memory Allocation. `"hello"` is a string literal that resides in the String Pool
 
 "What's the difference between synchronized, volatile, and Atomic?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  volatile = A shared whiteboard (visibility only)                ║
-║  → Ensures ALL threads see the LATEST value                      ║
-║  → Does NOT prevent race conditions with compound actions        ║
-║  → Use for: flags (boolean isRunning), simple reads/writes       ║
-║                                                                  ║
-║  synchronized = A room with ONE key (mutual exclusion)           ║
-║  → Only ONE thread can enter at a time                           ║
-║  → Provides both visibility AND atomicity                        ║
-║  → Use for: compound operations (check-then-act, read-modify-    ║
-║    write). Heavier — threads must wait.                          ║
-║                                                                  ║
-║  Atomic (AtomicInteger, etc.) = Lock-free operations via CAS     ║
-║  → Uses CPU-level Compare-And-Swap instruction                   ║
-║  → Atomic read-modify-write without locking                      ║
-║  → Use for: counters, accumulators. Better performance than      ║
-║    synchronized for simple operations.                           ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+volatile = A shared whiteboard (visibility only)
+→ Ensures ALL threads see the LATEST value
+→ Does NOT prevent race conditions with compound actions
+→ Use for: flags (boolean isRunning), simple reads/writes
+
+synchronized = A room with ONE key (mutual exclusion)
+→ Only ONE thread can enter at a time
+→ Provides both visibility AND atomicity
+→ Use for: compound operations (check-then-act, read-modify-
+  write). Heavier — threads must wait.
+
+Atomic (AtomicInteger, etc.) = Lock-free operations via CAS
+→ Uses CPU-level Compare-And-Swap instruction
+→ Atomic read-modify-write without locking
+→ Use for: counters, accumulators. Better performance than
+  synchronized for simple operations.
 ```
 
 ```java
@@ -685,32 +669,30 @@ counter.incrementAndGet(); // ✅ Atomic, no lock needed
 
 "When do you use abstract class vs interface?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  PRE-JAVA 8: Clear distinction                                   ║
-║  Abstract class = partial implementation + state                 ║
-║  Interface = pure contract (all abstract)                        ║
-║                                                                  ║
-║  POST-JAVA 8: Lines blurred (interfaces got default methods)     ║
-║                                                                  ║
-║  REMAINING DIFFERENCES:                                          ║
-║  Abstract class:                                                 ║
-║  → CAN have instance fields (state)                              ║
-║  → CAN have constructors                                         ║
-║  → Single inheritance only (extends ONE)                         ║
-║  → CAN have non-public methods                                   ║
-║  → IS-A relationship ("Dog IS-A Animal")                         ║
-║                                                                  ║
-║  Interface:                                                      ║
-║  → NO instance state (only static final constants)               ║
-║  → NO constructors                                               ║
-║  → Multiple inheritance (implements MANY)                        ║
-║  → All methods are public                                        ║
-║  → CAN-DO relationship ("Dog CAN-DO Serializable")               ║
-║                                                                  ║
-║  RULE: Use interface FIRST. Only use abstract class when you     ║
-║  need shared STATE or constructors.                              ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+PRE-JAVA 8: Clear distinction
+Abstract class = partial implementation + state
+Interface = pure contract (all abstract)
+
+POST-JAVA 8: Lines blurred (interfaces got default methods)
+
+REMAINING DIFFERENCES:
+Abstract class:
+→ CAN have instance fields (state)
+→ CAN have constructors
+→ Single inheritance only (extends ONE)
+→ CAN have non-public methods
+→ IS-A relationship ("Dog IS-A Animal")
+
+Interface:
+→ NO instance state (only static final constants)
+→ NO constructors
+→ Multiple inheritance (implements MANY)
+→ All methods are public
+→ CAN-DO relationship ("Dog CAN-DO Serializable")
+
+RULE: Use interface FIRST. Only use abstract class when you
+need shared STATE or constructors.
 ```
 
 ---
@@ -736,34 +718,32 @@ Memory Allocation. `"hello"` is a string literal that resides in the String Pool
 
 "How does garbage collection work?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE OFFICE CLEANING SERVICE ANALOGY                             ║
-║                                                                  ║
-║  HEAP = An office building                                       ║
-║  Objects = Desks                                                 ║
-║  References = Name plates on desks                               ║
-║  GC = Cleaning service                                           ║
-║                                                                  ║
-║  GC asks: "Which desks still have name plates? Keep those.       ║
-║  Any desk with NO name plate? Clean it up."                      ║
-║                                                                  ║
-║  GENERATIONAL HYPOTHESIS:                                        ║
-║  "Most objects die young."                                       ║
-║  → Young Generation (Eden + Survivor spaces)                     ║
-║    New objects go here. Minor GC collects frequently.            ║
-║  → Old Generation (Tenured)                                      ║
-║    Objects that survived many Minor GCs. Major GC less frequent. ║
-║                                                                  ║
-║  ALGORITHMS:                                                     ║
-║  G1: Default since Java 9. Divides heap into regions.            ║
-║  ZGC: Ultra-low pause (< 10ms). Java 15+.                        ║
-║  Shenandoah: Concurrent compaction. OpenJDK.                     ║
-║                                                                  ║
-║  KEY: GC is NOT deterministic. System.gc() is a suggestion,      ║
-║  not a command. finalize() is deprecated — use try-with-         ║
-║  resources (AutoCloseable) instead.                              ║
-╚══════════════════════════════════════════════════════════════════╝
+**THE OFFICE CLEANING SERVICE ANALOGY**
+
+```text
+HEAP = An office building
+Objects = Desks
+References = Name plates on desks
+GC = Cleaning service
+
+GC asks: "Which desks still have name plates? Keep those.
+Any desk with NO name plate? Clean it up."
+
+GENERATIONAL HYPOTHESIS:
+"Most objects die young."
+→ Young Generation (Eden + Survivor spaces)
+  New objects go here. Minor GC collects frequently.
+→ Old Generation (Tenured)
+  Objects that survived many Minor GCs. Major GC less frequent.
+
+ALGORITHMS:
+G1: Default since Java 9. Divides heap into regions.
+ZGC: Ultra-low pause (< 10ms). Java 15+.
+Shenandoah: Concurrent compaction. OpenJDK.
+
+KEY: GC is NOT deterministic. System.gc() is a suggestion,
+not a command. finalize() is deprecated — use try-with-
+resources (AutoCloseable) instead.
 ```
 
 ---
@@ -794,12 +774,12 @@ Memory Allocation. `"hello"` is a string literal that resides in the String Pool
 
 ## Reality Check
 
-**"Java passes objects by reference"** ? Java ALWAYS passes by value. For objects, it passes the value of the REFERENCE (a pointer copy). Reassigning a parameter inside a method has no effect on the caller variable. You can mutate the object the reference points to, but you cannot change which object the caller variable refers to. This distinction is fundamental and frequently tested in interviews.
+**"Java passes objects by reference"** — Java ALWAYS passes by value. For objects, it passes the value of the REFERENCE (a pointer copy). Reassigning a parameter inside a method has no effect on the caller variable. You can mutate the object the reference points to, but you cannot change which object the caller variable refers to. This distinction is fundamental and frequently tested in interviews.
 
-**"final means immutable"** ? final on a variable means the reference cannot be reassigned. A final List of String can still have elements added, removed, or replaced � the list is fully mutable. For actual immutability, use Collections.unmodifiableList or List.of. final on a class means it cannot be subclassed � completely different semantic.
+**"final means immutable"** — final on a variable means the reference cannot be reassigned. A final List of String can still have elements added, removed, or replaced — the list is fully mutable. For actual immutability, use Collections.unmodifiableList or List.of. final on a class means it cannot be subclassed — completely different semantic.
 
-**"String.intern is free memory savings"** ? intern stores strings in the string pool which moved to heap in Java 7+. The pool uses a fixed-size hashtable with default 60013 buckets. Interning millions of distinct strings causes hash collisions that degrade lookup to O(n). The pool is never garbage collected until the classloader is unloaded. Use it for a bounded set of repeated values, not as a general deduplication strategy.
+**"String.intern is free memory savings"** — intern stores strings in the string pool which moved to heap in Java 7+. The pool uses a fixed-size hashtable with default 60013 buckets. Interning millions of distinct strings causes hash collisions that degrade lookup to O(n). The pool is never garbage collected until the classloader is unloaded. Use it for a bounded set of repeated values, not as a general deduplication strategy.
 
-**"Checked exceptions force better error handling"** ? Checked exceptions force callers to either catch or declare � but the most common response is catch Exception e then throw new RuntimeException wrapping e, which is strictly worse than unchecked exceptions because it wraps the stack trace and hides the root cause. Modern Java frameworks like Spring use unchecked exceptions exclusively because checked exceptions couple implementation details to API signatures.
+**"Checked exceptions force better error handling"** — Checked exceptions force callers to either catch or declare — but the most common response is catch Exception e then throw new RuntimeException wrapping e, which is strictly worse than unchecked exceptions because it wraps the stack trace and hides the root cause. Modern Java frameworks like Spring use unchecked exceptions exclusively because checked exceptions couple implementation details to API signatures.
 
-**"equals and == behave consistently for wrapper types"** ? For Integer values between -128 and 127, == returns true because the JVM caches these instances via IntegerCache. Integer a = 127 and Integer b = 127, a == b is true. Integer a = 128 and Integer b = 128, a == b is false. This cache boundary causes bugs that appear only with large values. Same applies to Short, Byte, Character, and Long.
+**"equals and == behave consistently for wrapper types"** — For Integer values between -128 and 127, == returns true because the JVM caches these instances via IntegerCache. Integer a = 127 and Integer b = 127, a == b is true. Integer a = 128 and Integer b = 128, a == b is false. This cache boundary causes bugs that appear only with large values. Same applies to Short, Byte, Character, and Long.

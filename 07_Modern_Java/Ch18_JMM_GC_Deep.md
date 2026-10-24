@@ -10,30 +10,27 @@
 
 ## 🎯 The 5W1H
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT = Rules for how threads see each other's writes to memory  ║
-║                                                                  ║
-║  WHY  = CPUs have caches. Thread A writes x=5 in its cache.      ║
-║         Thread B reads x from ITS cache — still sees x=0!        ║
-║         JMM defines when changes become VISIBLE to other threads ║
-║                                                                  ║
-║  WHEN = ANYTIME two or more threads share mutable data           ║
-║                                                                  ║
-║  KEY  = The "happens-before" relationship — if A happens-before  ║
-║         B, then A's writes are GUARANTEED visible to B           ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+WHAT = Rules for how threads see each other's writes to memory
+
+WHY  = CPUs have caches. Thread A writes x=5 in its cache.
+       Thread B reads x from ITS cache — still sees x=0!
+       JMM defines when changes become VISIBLE to other threads
+
+WHEN = ANYTIME two or more threads share mutable data
+
+KEY  = The "happens-before" relationship — if A happens-before
+       B, then A's writes are GUARANTEED visible to B
 ```
 
 ---
 
 ## 1. The Visibility Problem — Why JMM Exists
 
-```
+```text
 Without JMM rules, this can FAIL:
 
 Thread A:                    Thread B:
-─────────                    ─────────
 data = 42;                   while (!ready) { }
 ready = true;                System.out.println(data);
 
@@ -41,17 +38,15 @@ Expected output: 42
 Possible output: 0!  ← Thread B might see ready=true but data=0
 
 WHY?
-┌─────────────────────────────────────────────────────────────────┐
-│ 1. CPU CACHING: Each CPU core has its own L1/L2 cache.          │
-│    Thread A writes data=42 to Core 1's cache.                   │
-│    Thread B reads data from Core 2's cache — still 0!           │
-│                                                                 │
-│ 2. INSTRUCTION REORDERING: CPU/compiler can reorder operations  │
-│    Thread A might execute ready=true BEFORE data=42             │
-│    (because they're independent from compiler's perspective)    │
-│                                                                 │
-│ 3. Store buffers: Writes queue in a buffer before reaching cache│
-└─────────────────────────────────────────────────────────────────┘
+1. CPU CACHING: Each CPU core has its own L1/L2 cache.
+   Thread A writes data=42 to Core 1's cache.
+   Thread B reads data from Core 2's cache — still 0!
+
+2. INSTRUCTION REORDERING: CPU/compiler can reorder operations
+   Thread A might execute ready=true BEFORE data=42
+   (because they're independent from compiler's perspective)
+
+3. Store buffers: Writes queue in a buffer before reaching cache
 ```
 
 ---
@@ -76,42 +71,24 @@ The JIT compiler sees `flag` is never written in the loop body (from this thread
 
 ## 2. Happens-Before — The Core Concept
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║ "A happens-before B" means:                                      ║
-║   ALL memory writes done in A are GUARANTEED VISIBLE to B        ║
-║                                                                  ║
-║ This is NOT about time — it's about VISIBILITY GUARANTEE         ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+"A happens-before B" means:
+  ALL memory writes done in A are GUARANTEED VISIBLE to B
+
+This is NOT about time — it's about VISIBILITY GUARANTEE
 ```
 
 ### The 7 Happens-Before Rules
 
-```
-┌───┬─────────────────────────────────┬────────────────────────────────────────┐
-│ # │ Rule                            │ What It Means                           │
-├───┼─────────────────────────────────┼──────────────────────────────────────── ┤
-│ 1 │ Program Order                    │ In one thread, each line happens-      │
-│   │                                  │ before the next line                   │
-├───┼───────────────────────────────── ┼────────────────────────────────────────┤
-│ 2 │ Monitor Lock                     │ unlock(m) happens-before every         │
-│   │                                  │ subsequent lock(m)                     │
-├───┼───────────────────────────────── ┼────────────────────────────────────────┤
-│ 3 │ Volatile Variable                │ Write to volatile v happens-before     │
-│   │                                  │ every subsequent read of v             │
-├───┼───────────────────────────────── ┼────────────────────────────────────────┤
-│ 4 │ Thread Start                     │ thread.start() happens-before any      │
-│   │                                  │ action in the started thread           │
-├───┼───────────────────────────────── ┼────────────────────────────────────────┤
-│ 5 │ Thread Join                      │ All actions in a thread happen-before  │
-│   │                                  │ join() returns in another thread       │
-├───┼───────────────────────────────── ┼────────────────────────────────────────┤
-│ 6 │ Thread Interrupt                 │ interrupt() call happens-before the    │
-│   │                                  │ interrupted thread detects it          │
-├───┼─────────────────────────────────-┼────────────────────────────────────────┤
-│ 7 │ Transitivity                     │ If A hb B and B hb C, then A hb C      │
-└───┴─────────────────────────────────-┴────────────────────────────────────────┘
-```
+| # | Rule | What It Means |
+| --- | --- | --- |
+| 1 | Program Order | In one thread, each line happens-before the next line |
+| 2 | Monitor Lock | unlock(m) happens-before every subsequent lock(m) |
+| 3 | Volatile Variable | Write to volatile v happens-before every subsequent read of v |
+| 4 | Thread Start | thread.start() happens-before any action in the started thread |
+| 5 | Thread Join | All actions in a thread happen-before join() returns in another thread |
+| 6 | Thread Interrupt | `interrupt()` call happens-before the interrupted thread detects it |
+| 7 | Transitivity | If A hb B and B hb C, then A hb C |
 
 ---
 
@@ -150,57 +127,26 @@ if (ready) {            // Volatile read — REFRESHES everything
 
 ### NEW — Happens-Before Chain Visualization
 
+**Happens-before chain**
+
+```mermaid
+sequenceDiagram
+  participant A as Thread A
+  participant V as volatile ready
+  participant B as Thread B
+  A->>A: 1. data = 42 (plain write)
+  Note over A: program order rule: 1 happens-before 2
+  A->>V: 2. ready = true (VOLATILE WRITE)
+  Note over V: volatile rule: the write happens-before every later read of ready
+  B->>V: 3. if (ready) (VOLATILE READ sees true)
+  Note over B: transitivity: 1 happens-before 4
+  B->>B: 4. print(data) is GUARANTEED to see 42
 ```
-┌─ STEP 1: Program Order Rule ────────────────────────────────────────┐
-│                                                                       │
-│  Thread A:                                                           │
-│  ┌─────────────────┐    ┌─────────────────┐                         │
-│  │ data = 42;      │ → │ ready = true;   │                         │
-│  │ (write)         │    │ (volatile write)│                         │
-│  └─────────────────┘    └─────────────────┘                         │
-│  │ hb │                        │ hb │                                │
-│  ▼▼▼                         ▼▼▼                                    │
-│  All writes before a volatile write    ──hb──►  visible to readers  │
-└───────────────────────────────────────────────────────────────────────┘
-         ↓
-┌─ STEP 2: Volatile Read Rule ─────────────────────────────────────────┐
-│                                                                       │
-│  Thread B:                                                           │
-│  ┌─────────────────┐    ┌─────────────────┐                         │
-│  │ if (ready) {    │ ← │ ready = true;   │  ← VOLATILE SYNC        │
-│  │   print(data);  │    │                 │                         │
-│  └─────────────────┘    └─────────────────┘                         │
-│        │                        │ hb │                                │
-│        │◄──────────hb───────────┘                                    │
-│        │                                                            │
-│        └── By transitivity: data=42 is guaranteed visible!          │
-└───────────────────────────────────────────────────────────────────────┘
-         ↓
-┌─ STEP 3: Complete Happens-Before Chain ──────────────────────────────┐
-│                                                                       │
-│  ╔═══════════════════════════════════════════════════════════════╗   │
-│  ║  Thread A                          Thread B                   ║   │
-│  ║  ──────────                        ─────────                  ║   │
-│  ║                                                               ║   │
-│  ║   1. data = 42  ──────────────────────────────────────────►  ║   │
-│  ║      │                                                        ║   │
-│  ║      │ (program order)                                        ║   │
-│  ║      ▼                                                        ║   │
-│  ║   2. ready = true (VOLATILE WRITE) ─────────────────────────► ║   │
-│  ║      │                                                        ║   │
-│  ║      │ (volatile rule: hb from write to all subsequent reads) ║   │
-│  ║      ▼                                                        ║   │
-│  ║   3. ←── (VOLATILE READ: fresh from main memory)              ║   │
-│  ║               │                                                ║   │
-│  ║               │ (transitivity: A hb B)                         ║   │
-│  ║               ▼                                                ║   │
-│  ║   4. print(data) ──► GUARANTEED to see 42!                     ║   │
-│  ║                                                               ║   │
-│  ╚═══════════════════════════════════════════════════════════════╝   │
-│                                                                       │
-│  KEY: volatile write creates a WRITE BARRIER (StoreStore + StoreLoad) │
-│       volatile read creates a READ BARRIER (LoadLoad + LoadStore)     │
-└───────────────────────────────────────────────────────────────────────┘
+
+**How to read this diagram.** Three rules chain together. Within Thread A, `data = 42` comes before the volatile write (program order). The volatile write happens-before Thread B's read of `ready` that sees it (volatile rule). By transitivity, everything Thread A wrote before the volatile write is visible to Thread B after the read.
+
+> [!NOTE]
+> A volatile write acts like a write barrier (StoreStore, and StoreLoad after it), and a volatile read acts like a read barrier (LoadLoad and LoadStore). These are the effects the JIT and CPU must respect.
 
 ```java
 // volatile does NOT make operations atomic!
@@ -354,28 +300,23 @@ class SharedData {
 
 ## 7. JVM Memory Layout
 
+```mermaid
+flowchart TD
+  subgraph JVM["JVM memory"]
+    subgraph HEAP["Heap (garbage collected)"]
+      subgraph YOUNG["Young generation"]
+        EDEN["Eden"]
+        S0["S0"]
+        S1["S1"]
+      end
+      OLD["Old generation<br/>long-lived objects (survived many GCs)"]
+    end
+    META["Metaspace<br/>class metadata, method bytecode"]
+    STK["Thread stacks<br/>one per thread: method frames, local variables, return addresses"]
+  end
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         JVM MEMORY                               │
-│                                                                   │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │                    HEAP (garbage collected)                │   │
-│  │  ┌────────────────────┐  ┌───────────────────────────┐   │   │
-│  │  │   Young Generation  │  │    Old Generation         │   │   │
-│  │  │  ┌─────┐ ┌──┐ ┌──┐│  │                            │   │   │
-│  │  │  │Eden │ │S0│ │S1││  │  Long-lived objects         │   │   │
-│  │  │  │     │ │  │ │  ││  │  (survived many GCs)        │   │   │
-│  │  │  └─────┘ └──┘ └──┘│  │                            │   │   │
-│  │  └────────────────────┘  └───────────────────────────┘   │   │
-│  └──────────────────────────────────────────────────────────┘   │
-│                                                                   │
-│  ┌───────────────────┐  ┌──────────────────────────────────┐   │
-│  │   Metaspace         │  │   Thread Stacks                  │   │
-│  │  (class metadata,   │  │  (one per thread, method frames, │   │
-│  │   method bytecode)  │  │   local variables, return addrs) │   │
-│  └───────────────────┘  └──────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The heap is split into a young generation (Eden plus two survivor spaces) and an old generation. Metaspace and the thread stacks live outside the heap.
 
 ---
 
@@ -399,98 +340,65 @@ Each method call pushes a frame onto the thread's stack (~256KB-1MB per thread).
 
 ## 8. Generational Hypothesis — WHY Young/Old Works
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║ HYPOTHESIS: Most objects die young.                              ║
-║                                                                  ║
-║ Studies show: ~90% of objects are short-lived (temp variables,    ║
-║ intermediate results, request-scoped data).                      ║
-║                                                                  ║
-║ So: Divide heap into generations. Collect the Young often        ║
-║ (fast, most garbage), collect Old rarely (slow, less garbage).   ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+HYPOTHESIS: Most objects die young.
+
+Studies show: ~90% of objects are short-lived (temp variables,
+intermediate results, request-scoped data).
+
+So: Divide heap into generations. Collect the Young often
+(fast, most garbage), collect Old rarely (slow, less garbage).
 ```
 
+**Object lifecycle**
+
+```mermaid
+flowchart TD
+  N["new Object()"] --> E["Eden (born)"]
+  E -->|"dies"| X1["COLLECTED (most objects)"]
+  E -->|"survives a minor GC"| S["Survivor space (S0 or S1)"]
+  S -->|"dies"| X2["COLLECTED (some more)"]
+  S -->|"survives another minor GC<br/>(objects alternate between S0 and S1)"| S
+  S -->|"age above the threshold"| O["Old generation (promoted)"]
+  O -->|"major GC (slow, stop-the-world in older collectors)"| X3["COLLECTED"]
 ```
-Object lifecycle:
-┌──────────────────────────────────────────────────────────────┐
-│                                                               │
-│  new Object()                                                 │
-│       │                                                       │
-│       ▼                                                       │
-│  ┌─────────┐     Minor GC     ┌────┐     Minor GC   ┌────┐  │
-│  │  Eden   │ ──survived──────→│ S0 │ ──survived────→│ S1 │  │
-│  │ (born)  │                   │    │                 │    │  │
-│  └─────────┘                   └────┘                 └────┘  │
-│       │                          │                      │     │
-│    died? → COLLECTED          died? → COLLECTED      age > N? │
-│    (most objects)             (some more)                │     │
-│                                                          ▼     │
-│                                               ┌──────────────┐│
-│                                               │ Old Generation││
-│                                               │ (promoted)    ││
-│                                               └──────────────┘│
-│                                                      │         │
-│                                                   Major GC     │
-│                                                (slow, STW)     │
-└──────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Most objects die in Eden. Survivors bounce between the two survivor spaces on each minor GC, and are promoted to the old generation once they pass the age threshold.
 
 ---
 
 ## 9. GC Algorithms — What Runs When
 
-```
-┌──────────────────────┬──────────────────────────────────────────────┐
-│ Collector             │ How It Works                                  │
-├──────────────────────┼──────────────────────────────────────────────┤
-│ Serial GC             │ Single thread, stop-the-world.                │
-│ -XX:+UseSerialGC      │ For: small apps, single-core machines.        │
-├──────────────────────┼──────────────────────────────────────────────┤
-│ Parallel GC           │ Multiple GC threads, stop-the-world.          │
-│ -XX:+UseParallelGC    │ For: throughput-focused apps (batch jobs).     │
-│                       │ Java 8 default.                               │
-├──────────────────────┼──────────────────────────────────────────────┤
-│ G1 GC                 │ Divides heap into regions. Collects           │
-│ -XX:+UseG1GC          │ "garbage-first" regions. Concurrent.          │
-│                       │ For: balanced latency/throughput.              │
-│                       │ Java 9+ default.                              │
-├──────────────────────┼──────────────────────────────────────────────┤
-│ ZGC                   │ Sub-millisecond pauses (<1ms).                │
-│ -XX:+UseZGC           │ Concurrent, scalable to TB heaps.             │
-│                       │ For: latency-sensitive apps.                  │
-│                       │ Production-ready Java 15+.                    │
-├──────────────────────┼──────────────────────────────────────────────┤
-│ Shenandoah            │ Similar to ZGC, sub-ms pauses.                │
-│ -XX:+UseShenandoahGC  │ Concurrent compaction.                        │
-│                       │ OpenJDK only (not Oracle JDK).                │
-└──────────────────────┴──────────────────────────────────────────────┘
-```
+| Collector | How It Works |
+| --- | --- |
+| Serial GC -XX:+UseSerialGC | Single thread, stop-the-world.<br>For: small apps, single-core machines. |
+| Parallel GC -XX:+UseParallelGC | Multiple GC threads, stop-the-world.<br>For: throughput-focused apps (batch jobs).<br>Java 8 default. |
+| G1 GC -XX:+UseG1GC | Divides heap into regions. Collects<br>"garbage-first" regions. Concurrent.<br>For: balanced latency/throughput.<br>Java 9+ default. |
+| ZGC -XX:+UseZGC | Sub-millisecond pauses (<1ms).<br>Concurrent, scalable to TB heaps.<br>For: latency-sensitive apps.<br>Production-ready Java 15+. |
+| Shenandoah -XX:+UseShenandoahGC | Similar to ZGC, sub-ms pauses.<br>Concurrent compaction.<br>OpenJDK only (not Oracle JDK). |
 
 ---
 
 ## 10. GC Roots — What Keeps Objects Alive
 
-```
+```text
 An object is ALIVE if it's reachable from a GC Root.
 Everything else is garbage.
 
 GC ROOTS are:
-┌─────────────────────────────────────────────────────────────────┐
-│ 1. Local variables on thread stacks                              │
-│      void method() { User u = new User(); }  ← u is a root     │
-│                                                                  │
-│ 2. Static fields of loaded classes                               │
-│      static List<User> cache = new ArrayList<>();                │
-│                                                                  │
-│ 3. Active threads themselves (Thread objects)                    │
-│                                                                  │
-│ 4. JNI references (native code holding Java refs)                │
-│                                                                  │
-│ 5. Synchronized monitors (objects being locked)                  │
-│                                                                  │
-│ 6. System class loader references                                │
-└─────────────────────────────────────────────────────────────────┘
+1. Local variables on thread stacks
+     void method() { User u = new User(); }  ← u is a root
+
+2. Static fields of loaded classes
+     static List<User> cache = new ArrayList<>();
+
+3. Active threads themselves (Thread objects)
+
+4. JNI references (native code holding Java refs)
+
+5. Synchronized monitors (objects being locked)
+
+6. System class loader references
 
 Reachability from roots:
 GC Root → User → Address → City  ← ALL alive
@@ -526,16 +434,14 @@ phantom.get();  // ALWAYS returns null
 ```
 Reference Strength:
 Strong > Soft > Weak > Phantom
-
-┌──────────┬──────────────────┬────────────────────┬──────────────┐
-│ Type     │ GC Behavior       │ get() returns      │ Use Case     │
-├──────────┼──────────────────┼────────────────────┼──────────────┤
-│ Strong   │ Never collected   │ Always the object  │ Normal use   │
-│ Soft     │ When memory low   │ Object or null     │ Caches       │
-│ Weak     │ Next GC cycle     │ Object or null     │ WeakHashMap  │
-│ Phantom  │ After finalization│ Always null        │ Cleanup tasks│
-└──────────┴──────────────────┴────────────────────┴──────────────┘
 ```
+
+| Type | GC Behavior | get() returns | Use Case |
+| --- | --- | --- | --- |
+| Strong | Never collected | Always the object | Normal use |
+| Soft | When memory low | Object or null | Caches |
+| Weak | Next GC cycle | Object or null | WeakHashMap |
+| Phantom | After finalization | Always null | Cleanup tasks |
 
 ---
 
@@ -624,17 +530,16 @@ class Outer {
 -XX:MaxMetaspaceSize=512m       # Max metaspace (prevent unbounded growth)
 ```
 
-```
-TUNING RULES:
-┌──────────────────────────────────────────────────────────────┐
-│ 1. Set -Xms = -Xmx (avoid dynamic resizing overhead)        │
-│ 2. Start with G1GC (default, good for most apps)             │
-│ 3. Monitor GC pause times in production                      │
-│ 4. If pauses > 200ms consistently → tune MaxGCPauseMillis    │
-│ 5. If pause-sensitive → try ZGC (-XX:+UseZGC)                │
-│ 6. Enable HeapDumpOnOutOfMemoryError ALWAYS                  │
-│ 7. Don't over-tune — measure first, tune second              │
-└──────────────────────────────────────────────────────────────┘
+**TUNING RULES:**
+
+```text
+1. Set -Xms = -Xmx (avoid dynamic resizing overhead)
+2. Start with G1GC (default, good for most apps)
+3. Monitor GC pause times in production
+4. If pauses > 200ms consistently → tune MaxGCPauseMillis
+5. If pause-sensitive → try ZGC (-XX:+UseZGC)
+6. Enable HeapDumpOnOutOfMemoryError ALWAYS
+7. Don't over-tune — measure first, tune second
 ```
 
 ---
@@ -667,23 +572,21 @@ Soft: collected when memory is low (use for caches). Weak: collected at next GC 
 
 **The Problem**: Creating an object and making it visible to other threads are TWO separate things. You must use the right mechanism or other threads may see partially-constructed objects.
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE CONSTRUCTION SITE ANALOGY                                   ║
-║                                                                  ║
-║  Worker A builds a house (object) and puts a sign:               ║
-║  "House ready at address 0x1A2B" (reference published)           ║
-║                                                                  ║
-║  WITHOUT safe publication (CPU reordering):                      ║
-║  → CPU publishes the ADDRESS (sign) before finishing the walls!  ║
-║  → Worker B sees the sign, goes to the address                   ║
-║  → House is half-built! Walls missing! (partially init object)   ║
-║                                                                  ║
-║  WITH safe publication (happens-before established):             ║
-║  → Address only published AFTER construction FULLY complete       ║
-║  → Worker B sees address → house is 100% built                   ║
-║  → Safe!                                                         ║
-╚══════════════════════════════════════════════════════════════════╝
+**THE CONSTRUCTION SITE ANALOGY**
+
+```text
+Worker A builds a house (object) and puts a sign:
+"House ready at address 0x1A2B" (reference published)
+
+WITHOUT safe publication (CPU reordering):
+→ CPU publishes the ADDRESS (sign) before finishing the walls!
+→ Worker B sees the sign, goes to the address
+→ House is half-built! Walls missing! (partially init object)
+
+WITH safe publication (happens-before established):
+→ Address only published AFTER construction FULLY complete
+→ Worker B sees address → house is 100% built
+→ Safe!
 ```
 
 ```java
@@ -726,25 +629,23 @@ ref.set(new Holder(42));   // Thread A — CAS ensures ordering
 Holder h = ref.get();      // Thread B — guaranteed to see fully constructed Holder
 ```
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  SAFE PUBLICATION CHEAT SHEET                                                    │
-│                                                                                 │
-│  Method                        Guarantee                                        │
-│  ─────────────────────────     ──────────────────────────────────────────────  │
-│  static final field            Class loading is safe pub                        │
-│  volatile field                volatile write happens-before volatile read      │
-│  synchronized (same lock)      unlock happens-before lock                       │
-│  final fields in constructor   visible after constructor exits (JLS §17.5)     │
-│  AtomicReference.set/get       CAS provides ordering                           │
-│  BlockingQueue.put/take        internal synchronization provides ordering       │
-│  Futures/.join()               completion happens-before join() return          │
-│                                                                                 │
-│  IMMUTABLE OBJECTS:                                                             │
-│  → If all fields are final and properly initialized in constructor              │
-│  → Can be shared WITHOUT synchronization via ANY mechanism!                    │
-│  → String, Integer, LocalDate — safe to share across threads always            │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**SAFE PUBLICATION CHEAT SHEET**
+
+```text
+Method                        Guarantee
+─────────────────────────     ──────────────────────────────────────────────
+static final field            Class loading is safe pub
+volatile field                volatile write happens-before volatile read
+synchronized (same lock)      unlock happens-before lock
+final fields in constructor   visible after constructor exits (JLS §17.5)
+AtomicReference.set/get       CAS provides ordering
+BlockingQueue.put/take        internal synchronization provides ordering
+Futures/.join()               completion happens-before join() return
+
+IMMUTABLE OBJECTS:
+→ If all fields are final and properly initialized in constructor
+→ Can be shared WITHOUT synchronization via ANY mechanism!
+→ String, Integer, LocalDate — safe to share across threads always
 ```
 
 ---
@@ -753,7 +654,7 @@ Holder h = ref.get();      // Thread B — guaranteed to see fully constructed H
 
 Let's trace a complete scenario end-to-end to cement happens-before reasoning.
 
-```
+```text
 SCENARIO: Thread pool task sees correct data
 
 Main thread:
@@ -762,9 +663,11 @@ Main thread:
 
 Worker thread:
   lineW1: List<Item> data = sharedItems.get(); ← sees items from M1?
+```
 
-HAPPENS-BEFORE CHAIN:
-────────────────────
+**Happens-before chain**
+
+```text
 lineM1 HB lineM2          (Rule 1: Program order in same thread)
 lineM2 HB lineW1          (Rule 4: Thread.start / executor.submit HB any action in task)
 
@@ -818,52 +721,47 @@ class Lazy {
 
 ## 17. G1GC — Why Regions Change Everything
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE CITY BLOCKS ANALOGY (vs the Classic Farm Analogy)           ║
-║                                                                  ║
-║  CLASSIC GC (Parallel/CMS): The Farm                             ║
-║  → Heap split into TWO fixed regions: Young Farm, Old Farm       ║
-║  → Young Farm collected frequently (cheap, small)                ║
-║  → Old Farm collected rarely but ENTIRE farm at once (slow!)     ║
-║  → Problem: As Old farm fills, Full GC pauses entire JVM         ║
-║              Full GC can pause for SECONDS on large heaps        ║
-║                                                                  ║
-║  G1GC: The City of Small Blocks                                  ║
-║  → Heap divided into ~2048 equal REGIONS (~1-32MB each)          ║
-║  → Each region can be: Eden, Survivor, Old, Humongous            ║
-║  → Regions are NOT fixed: Old region collects, becomes Eden!     ║
-║  → G1 collects highest-GARBAGE regions FIRST ("Garbage First")   ║
-║  → Concurrent marking: G1 marks live objects WHILE app runs!     ║
-║  → Only pauses for evacuation (moving objects to free regions)   ║
-║  → MaxGCPauseMillis: G1 only collects as many regions as         ║
-║    fit within the pause budget! Stops, doesn't overshoot.        ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+THE CITY BLOCKS ANALOGY (vs the Classic Farm Analogy)
+
+CLASSIC GC (Parallel/CMS): The Farm
+→ Heap split into TWO fixed regions: Young Farm, Old Farm
+→ Young Farm collected frequently (cheap, small)
+→ Old Farm collected rarely but ENTIRE farm at once (slow!)
+→ Problem: As Old farm fills, Full GC pauses entire JVM
+            Full GC can pause for SECONDS on large heaps
+
+G1GC: The City of Small Blocks
+→ Heap divided into ~2048 equal REGIONS (~1-32MB each)
+→ Each region can be: Eden, Survivor, Old, Humongous
+→ Regions are NOT fixed: Old region collects, becomes Eden!
+→ G1 collects highest-GARBAGE regions FIRST ("Garbage First")
+→ Concurrent marking: G1 marks live objects WHILE app runs!
+→ Only pauses for evacuation (moving objects to free regions)
+→ MaxGCPauseMillis: G1 only collects as many regions as
+  fit within the pause budget! Stops, doesn't overshoot.
 ```
 
+**G1GC HEAP LAYOUT:**
+
+```mermaid
+flowchart LR
+  R1["E"] --- R2["S"] --- R3["O"] --- R4["E"] --- R5["O"] --- R6["O"] --- R7["H"] --- R8["H"] --- R9["... 2048+ such regions"]
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  G1GC HEAP LAYOUT:                                                               │
-│                                                                                 │
-│  ┌────┬────┬────┬────┬────┬────┬────┬────┐                                      │
-│  │ E  │ S  │ O  │ E  │ O  │ O  │ H  │ H  │  ← 2048+ such regions               │
-│  └────┴────┴────┴────┴────┴────┴────┴────┘                                      │
-│   E=Eden  S=Survivor  O=Old  H=Humongous (>50% of region size)                 │
-│                                                                                 │
-│  G1 COLLECTION CYCLE:                                                           │
-│  1. Minor GC:    Collect Eden + Survivor (Young regions) — Stop-the-World       │
-│  2. Concurrent:  Mark live objects in Old regions — NO pause (runs with app)    │
-│  3. Mixed GC:    Collect Young + some Old regions — Short pause                 │
-│  4. Full GC:     Last resort (avoid!) — Long pause like classic GC              │
-│                                                                                 │
-│  TUNING INSIGHT:                                                                │
-│  -XX:MaxGCPauseMillis=200 (default)                                             │
-│  → G1 will collect fewer regions to stay under 200ms                           │
-│  → Lower target = more frequent, shorter pauses                                │
-│  → Higher target = fewer, longer pauses                                        │
-│  → Trade-off: latency vs throughput                                             │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** G1 splits the heap into 2048+ equal regions, each of which plays one role: **E** = Eden, **S** = Survivor, **O** = Old, **H** = Humongous (an object larger than 50% of a region). Roles are assigned per region and can change between cycles.
+
+**G1 collection cycle**
+
+| Phase | What happens | Pause |
+| --- | --- | --- |
+| 1. Minor GC | Collect Eden + Survivor (young regions) | Stop-the-world |
+| 2. Concurrent | Mark live objects in Old regions | NO pause (runs with the app) |
+| 3. Mixed GC | Collect Young + some Old regions | Short pause |
+| 4. Full GC | Last resort (avoid!) | Long pause, like classic GC |
+
+> [!TIP]
+> **Tuning insight:** `-XX:MaxGCPauseMillis=200` (default). G1 collects fewer regions to stay under 200 ms. A lower target means more frequent, shorter pauses; a higher target means fewer, longer pauses. The trade-off is latency vs throughput.
 
 ---
 
@@ -890,13 +788,16 @@ flowchart TD
         T1["Thread 1\nRunning Loop"]
         T2["Thread 2\nExecuting I/O"]
         T3["Thread 3\nNative Code"]
+    end
 
     subgraph "JIT Injected Polling Pages"
         P1{"Poll global SafePoint flag\n(Is it true?)"}
+    end
 
     subgraph "JVM OS Operations"
         STW["Global SafePoint Flag = TRUE"]
         PARK["Voluntarily Park Thread\n(Dump Registers)"]
+    end
 
     STW -.->|Signals| P1
     T1 -->|Loop Back-edge| P1
@@ -933,48 +834,49 @@ flowchart LR
     %% ZGC Load Barrier Physics
     subgraph "Application Execution"
         APP["Thread: Object obj = person.address;"]
+    end
 
     subgraph "JIT Load Barrier (Injected Assembly)"
         CHECK{"Check Pointer 'Color' Bits"}
         HEAL["Stall Thread (ns)\nRemap Pointer to New Memory"]
         PASS["Return Valid Pointer"]
+    end
 
     subgraph "ZGC Concurrent Threads"
         EVAC["Moving Objects in Background\n(Marking Pointers as 'Bad')"]
+    end
 
     APP --> CHECK
     EVAC -.->|Invalidates Color| CHECK
-    CHECK -->|Color is Bad (Moved)| HEAL
+    CHECK -->|"Color is Bad (Moved)"| HEAL
     HEAL --> PASS
     CHECK -->|Color is Good| PASS
 
 ```
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  GC COMPARISON FOR PRODUCTION DECISIONS:                                         │
-│                                                                                 │
-│  Collector    Pause          Throughput  Heap size  Use case                    │
-│  ──────────   ─────────────  ──────────  ─────────  ────────────────────────   │
-│  Serial GC    Long STW       Low         Small      Dev/small apps              │
-│  Parallel GC  Long STW       Highest     Medium     Batch jobs, offline jobs    │
-│  G1GC         Short STW      High        Medium-XL  Most web services (default) │
-│  ZGC          <1ms           High (95%)  Any (TB!)  Latency-sensitive, real-time │
-│  Shenandoah   <1ms           Similar     Any        Same as ZGC (OpenJDK)       │
-│                                                                                 │
-│  COMMON MISTAKES:                                                               │
-│  1. Xms != Xmx → heap resizing causes extra GC pauses                          │
-│     FIX: Always set -Xms == -Xmx in production                                 │
-│                                                                                 │
-│  2. Too much heap → GC pause is longer (more to scan)                          │
-│     FIX: Scale horizontally (more JVMs) vs vertically (bigger heap)            │
-│                                                                                 │
-│  3. No HeapDumpOnOutOfMemoryError → can't debug OOM                            │
-│     FIX: ALWAYS set -XX:+HeapDumpOnOutOfMemoryError                            │
-│                                                                                 │
-│  4. Finalize() method → delays GC (object survives extra cycle)                │
-│     FIX: Use AutoCloseable + try-with-resources instead                        │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**GC COMPARISON FOR PRODUCTION DECISIONS:**
+
+```text
+Collector    Pause          Throughput  Heap size  Use case
+──────────   ─────────────  ──────────  ─────────  ────────────────────────
+Serial GC    Long STW       Low         Small      Dev/small apps
+Parallel GC  Long STW       Highest     Medium     Batch jobs, offline jobs
+G1GC         Short STW      High        Medium-XL  Most web services (default)
+ZGC          <1ms           High (95%)  Any (TB!)  Latency-sensitive, real-time
+Shenandoah   <1ms           Similar     Any        Same as ZGC (OpenJDK)
+
+COMMON MISTAKES:
+1. Xms != Xmx → heap resizing causes extra GC pauses
+   FIX: Always set -Xms == -Xmx in production
+
+2. Too much heap → GC pause is longer (more to scan)
+   FIX: Scale horizontally (more JVMs) vs vertically (bigger heap)
+
+3. No HeapDumpOnOutOfMemoryError → can't debug OOM
+   FIX: ALWAYS set -XX:+HeapDumpOnOutOfMemoryError
+
+4. Finalize() method → delays GC (object survives extra cycle)
+   FIX: Use AutoCloseable + try-with-resources instead
 ```
 
 ---
@@ -1017,10 +919,12 @@ flowchart LR
         ALU1["Execute: flag = true"]
         SB1["Store Buffer\n(Hardware Queue)\n[flag=true]"]
         L1_1["L1 Cache\n[flag=false]"]
+    end
 
     subgraph "CPU Core 2 (Thread B)"
         L1_2["L1 Cache\n[flag=false]"]
         ALU2["Execute: read flag"]
+    end
 
     MB["volatile (StoreLoad Memory Barrier)\nForces CPU to halt and drain Store Buffer!"]
     RAM["Main RAM"]

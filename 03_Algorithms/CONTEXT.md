@@ -2,16 +2,21 @@
 
 ## Purpose
 
-Teach algorithmic thinking, complexity, recursion, DP, graphs, greedy, strings, number theory, bit manipulation, and advanced algorithm engineering. Also contains the **University Methodology Layer** (`A1..A4`) — the proof-based, complexity-based, lower-bound, and randomized algorithm chapters from MIT 6.006 / 6.046J, KTH DD1352 / DD2352, RWTH Aachen Algo I/II, and TU Munich IN0007.
+Teach algorithmic thinking, complexity, searching, recursion, DP, graphs, greedy, strings, number theory, bit manipulation, and advanced algorithm engineering. Also contains the **University Methodology Layer** (`A1..A4`) — the proof-based, complexity-based, lower-bound, and randomized algorithm chapters from MIT 6.006 / 6.046J, KTH DD1352 / DD2352, RWTH Aachen Algo I/II, and TU Munich IN0007.
 
 ## Writing Style
 
+- Every chapter carries the standard blocks: **Bridge** (builds on / you will learn / leads to / abstraction level), **study-partner explainer** (bottom line, textbook core, analogy, walkthrough, quick check), an **At a Glance** Mermaid diagram + table where it adds value, and an **Enterprise Lens** (production use, failure modes, testing). See `00_LEARNING_PATH.md` for the dependency graph, abstraction ladder and coverage matrix.
+- **One topic, one page.** New material is written as a self-contained topic page (one idea family per file: bridge, explainer, code, verification, practice) and sequenced by [`00_LEARNING_PATH.md`](00_LEARNING_PATH.md). Large legacy chapters keep their structure; split one only when its links, registry rows and navigation can be updated in the same change.
+- New or changed code must be compiled and cross-checked (brute force / known values) before it is documented.
 - Brute force first, then optimized rewrite.
 - State the invariant.
 - Explain constraint triggers.
 - Include why the algorithm works, when it fails, and how to debug edge cases.
 - Prefer deep reasoning over template dumping.
 - Catalog chapters may include a "🎓 University Proof Corner" near the top — a 1-3 page compression of 1-3 proofs from the `A*` chapters, with MIT/KTH/RWTH/TUM attribution and a "Full proofs: [link]" footer. See `00_CONTEXT/DECISIONS.md` D015.
+
+- Chapters longer than ~800 lines are **hubs**: the chapter file keeps the bridge, study-partner explainer, at-a-glance diagram and Enterprise Lens and lists topic pages in a folder named after the chapter. Keep one H1 per page; do not paste the same challenge or answer block into several sections.
 
 ## Boundaries
 

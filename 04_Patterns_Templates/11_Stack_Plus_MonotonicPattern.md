@@ -1,39 +1,103 @@
-﻿**Navigation**: [< Previous](10_HashMap_Plus_Counting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_LinkedList_Plus_TwoPointers.md)
+# 🧩 Stack + Monotonic — Pattern Guide
 
-# Stack + Monotonic Pattern — Combined Pattern Guide
+> **Navigation**: [← HashMap + Counting](10_HashMap_Plus_Counting.md) | [Chapter index](00_INDEX.md) | [Linked List + Two Pointers →](12_LinkedList_Plus_TwoPointers.md)
+
+## Stack + Monotonic Pattern — Combined Pattern Guide
 
 **WHY this combination?** A stack processes elements in LIFO order. A **monotonic stack** maintains elements in sorted order, enabling O(n) solutions for "next greater/smaller element" problems that seem to need O(n²).
 
 ### 🧠 Deep Intuition — Why Monotonic Stack Is O(n)
 
-### Historical Evolution
+## 🔗 Bridge — Where This Chapter Fits
 
-**Inventor / Originator:** Monotonic stack techniques were formalized by Barbay, Rao, and Salinger (2013) in output-sensitive algorithms. Earlier variants appeared in parser theory and compiler construction in the 1970s.
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Stack & Queue](../02_Data_Structures/01d_Stack_Queue.md), [Monotonic Stack/Queue](../03_Algorithms/15_Monotonic_Stack_Queue_Complete.md) |
+| **You will learn** | Next-greater/smaller, histogram rectangles, stock span, and the invariant of a monotone stack |
+| **Leads to** | [Tree + DFS/BFS](13_Tree_Plus_DFS_BFS.md), [Heap + Greedy](15_Heap_Plus_GreedySelection.md) |
+| **Abstraction level** | Nested scans for "next bigger" → **a stack that keeps candidates in order** → each element pushed and popped once |
 
-**Predecessor context:** Problems like "next greater element" required O(n²) by scanning forward for each element. Stack-based solutions were known but not systematized.
-
-**Evolution narrative:** Compiler design and parser theory in the 1970s developed stack-based techniques for expression evaluation. These evolved into the general monotonic stack pattern for next-element problems. Barbay et al. proved output-sensitive bounds.
-
-**Modern practice:** Monotonic stacks solve problems in O(n) that would otherwise be O(n²). They're used in stock span problems, histogram calculations, and online algorithm scheduling.
-
-- **Parser theory — 1970s**: Stack-based techniques for expression parsing and evaluation
-- **Barbay-Rao-Salinger 2013**: Output-sensitive analysis of range queries and monotonic structures
-- **Stack-based NGE — 1980s**: Practical O(n) solution to next greater element problems
-- **Modern practice**: Used in LeetCode (Next Greater Element, Largest Rectangle in Histogram)
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
 
 ---
 
-### Production Reality
+## 💬 Explain It Like a Study Partner — Stack + Monotonic
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+### 1. The bottom line
 
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+Keep a stack of unresolved elements in sorted order; a new element resolves everything it beats.
 
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+### 2. The textbook core
+
+- Invariant: the stack is strictly monotone (decreasing for next-greater).
+- Pop while the incoming element beats the top; the popped element's answer is the incoming one.
+- Each element is pushed and popped at most once → `O(n)`.
+- Store indices, not values, when you need distances.
+
+### 3. The real-world analogy
+
+A **queue of people waiting to be matched with a taller person ahead**: when someone taller arrives, all shorter people at the front find their match.
+
+### 4. Walkthrough
+
+1. Daily temperatures `[73,74,75,71,69,72,76]`.
+2. Push 73; 74 resolves 73; 75 resolves 74; push 71, 69; 72 resolves 69 and 71; 76 resolves 72 and 75.
+3. Answers are index gaps.
+4. Total pushes/pops: 7 each.
+
+> [!NOTE]
+> **Quick check:** What does the stack hold at any moment? *Indices whose answer is still unknown, in monotone order.*
+
+
+### 5. Check yourself
+
+**Q1.** Daily temperatures `[73,74,75,71,69,72,76,73]`: what are the answers?
+
+<details><summary>Answer</summary>
+
+`[1,1,4,2,1,1,0,0]`.
+
+</details>
+
+**Q2.** Largest rectangle in histogram `[2,1,5,6,2,3]`?
+
+<details><summary>Answer</summary>
+
+**10** (height 5 across the bars 5 and 6).
+
+</details>
+
+**Q3.** Why do monotonic-stack solutions store indices rather than values?
+
+<details><summary>Answer</summary>
+
+Indices give distances and widths, and the value can still be read from the array.
+
+</details>
+
+---
+
+## Historical Evolution
+
+**Inventor / Originator:** There is no single inventor: the monotonic stack is folklore built on the *all nearest smaller values* problem (studied in parallel by Berkman, Schieber and Vishkin, 1993) and on the **Cartesian tree** (Vuillemin, 1980), which a stack builds in linear time.
+
+**Predecessor context:** "Next greater element" and "largest rectangle in a histogram" were solved with `O(n²)` rescans.
+
+**Evolution narrative:** Keeping a stack ordered by value lets every element be pushed and popped once, giving `O(n)` total. The same stack discipline underlies expression parsing, which is why the idea is much older than its interview name.
+
+**Modern practice:** Used for stock-span, daily-temperature, histogram and trapping-water style problems, and in compilers for operator-precedence parsing.
+
+- **Parser stacks — 1960s**: Stack-based expression evaluation and parsing
+- **Vuillemin — 1980**: Cartesian trees, built with a monotonic stack
+- **Berkman, Schieber, Vishkin — 1993**: All nearest smaller values
+
+---
+
+## Production Reality
+
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -47,7 +111,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 ---
 
-### ⚠️ Constraint Lens
+## ⚠️ Constraint Lens
 
 | Given Constraints              | Do This                                          |
 | ------------------------------ | ------------------------------------------------ |
@@ -59,19 +123,19 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Why Monotonic Stack Is O(n)
+## 🧠 Deep Intuition — Why Monotonic Stack Is O(n)
 
 The brute force for "next greater element" checks every element to the right for each position — nested loops, O(n²). The monotonic stack solves this in O(n) through a key insight: **elements that get "answered" can be permanently discarded.**
 
-#### The Invariant — Why This Is Correct
+### The Invariant — Why This Is Correct
 
 A monotonic decreasing stack (for next greater element) maintains this invariant: all elements on the stack are **still waiting for their answer** (next greater element). When a new element comes that is larger than the stack top, **it is the answer** for the top element. We pop the top (it's answered), and check again — repeatedly until the stack top is larger or the stack is empty.
 
-#### The Amortized O(n) Proof
+### The Amortized O(n) Proof
 
 The proof is elegant: each element is pushed onto the stack **exactly once** and popped **at most once**. Across all n elements, that's at most n pushes + n pops = **2n total operations = O(n).** The inner `while` loop doesn't make it O(n²) because the total pops across all iterations is bounded by n.
 
-#### Increasing vs Decreasing — The Key Distinction
+### Increasing vs Decreasing — The Key Distinction
 
 - **Monotonic Decreasing** stack (big → small from bottom to top): finds **next GREATER** element. New elements that are larger "answer" and pop smaller elements.
 - **Monotonic Increasing** stack (small → big from bottom to top): finds **next SMALLER** element. New elements that are smaller "answer" and pop larger elements.
@@ -190,7 +254,7 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 
 </details>
 
-## � FULL WALKTHROUGH: Largest Rectangle in Histogram
+## 🔬 FULL WALKTHROUGH: Largest Rectangle in Histogram
 
 ```
 Problem: Find the largest rectangle area in a histogram.
@@ -258,31 +322,17 @@ KEY: Stack stores elements waiting for their NGE.
 
 ---
 
-🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Next Greater Element I — Core Monotonic Template**
-
-**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-
-<details><summary>Answer</summary>
-
-In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-
-</details>
-
 ## 🛡️ EDGE CASES
 
-```
-┌────────────────────────────────┬─────────────────────────────────────────┐
-│ Edge Case                      │ Handling                                │
-├────────────────────────────────┼─────────────────────────────────────────┤
-│ All decreasing [5,4,3,2,1]    │ No element has NGE → all -1              │
-│ All increasing [1,2,3,4,5]    │ Every element except last has NGE        │
-│ All same values [3,3,3]       │ No strictly greater → all -1             │
-│ Single element [7]            │ No NGE → -1                              │
-│ Circular array (NGE II)       │ Loop 2×n, use index % n                  │
-│ Histogram: all same height    │ Area = height × n                        │
-│ Histogram: sorted ascending   │ Stack never pops until cleanup           │
-└────────────────────────────────┴─────────────────────────────────────────┘
-```
+| Edge Case | Handling |
+| --- | --- |
+| All decreasing [5,4,3,2,1] | No element has NGE → all -1 |
+| All increasing [1,2,3,4,5] | Every element except last has NGE |
+| All same values [3,3,3] | No strictly greater → all -1 |
+| Single element [7] | No NGE → -1 |
+| Circular array (NGE II) | Loop 2×n, use index % n |
+| Histogram: all same height | Area = height × n |
+| Histogram: sorted ascending | Stack never pops until cleanup |
 
 ---
 
@@ -298,17 +348,10 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 
 ---
 
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+## 📋 Practice Problems
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 | #   | Problem                                                                                                 | Companies             | Key Insight                     |
 | --- | ------------------------------------------------------------------------------------------------------- | --------------------- | ------------------------------- |
@@ -339,7 +382,7 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 | 15  | [LRU Cache](https://www.geeksforgeeks.org/lru-cache-implementation/)                                                                        | Microsoft             | HashMap + Doubly Linked List     |
 | 16  | [The Celebrity Problem](http://geeksforgeeks.org/the-celebrity-problem/)                                                                    | —                     | Stack elimination                |
 
-### Additional — Stacks & Queues from Excel
+### Additional — Stacks & Queues
 
 | #   | Problem                                                                                                                         | Key Insight              |
 | --- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
@@ -394,6 +437,16 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 
 [← 10 HashMap+Counting](10_HashMap_Plus_Counting.md) | [12 LinkedList+TwoPointers →](12_LinkedList_Plus_TwoPointers.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Stack + Monotonic
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Stock-span indicators, compilers (expression parsing), skyline computations |
+| **Failure modes** | Wrong monotone direction; strict vs non-strict comparison with duplicates; forgetting to flush the stack at the end |
+| **Testing and verification** | Brute-force `O(n²)` comparison; include equal values and strictly increasing/decreasing arrays |
 
 ---
 

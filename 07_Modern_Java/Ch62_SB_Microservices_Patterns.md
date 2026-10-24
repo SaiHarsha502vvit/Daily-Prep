@@ -46,21 +46,20 @@ spring:
 
 ### Configuration Repository Structure
 
-```
-config-repo/
-├── application.yml              # Common configuration for all services
-├── application-dev.yml          # Common dev configuration
-├── application-prod.yml         # Common prod configuration
-├── order-service/
-│   ├── order-service.yml        # Order service specific
-│   ├── order-service-dev.yml
-│   └── order-service-prod.yml
-├── user-service/
-│   ├── user-service.yml
-│   └── user-service-prod.yml
-└── payment-service/
-    └── payment-service.yml
-```
+**config-repo/**
+
+- application.yml              # Common configuration for all services
+- application-dev.yml          # Common dev configuration
+- application-prod.yml         # Common prod configuration
+- order-service/
+- order-service.yml        # Order service specific
+- order-service-dev.yml
+- order-service-prod.yml
+- user-service/
+- user-service.yml
+- user-service-prod.yml
+- payment-service/
+  - payment-service.yml
 
 ### Dynamic Configuration Refresh
 
@@ -108,56 +107,54 @@ spring:
 
 ### Why Saga?
 
-```
-Problem with Distributed Transactions:
-┌─────────────────────────────────────────────────────────────────┐
-│  Order Service → Payment Service → Inventory Service            │
-│  ❌ 2PC (Two-Phase Commit) doesn't work across services          │
-│  ❌ Long-running transactions lock resources                     │
-│  ❌ Single service failure blocks entire transaction             │
-└─────────────────────────────────────────────────────────────────┘
+**Problem with Distributed Transactions**
 
-Saga Solution:
-┌─────────────────────────────────────────────────────────────────┐
-│  Local transactions with compensating actions                   │
-│  Each step can be rolled back independently                     │
-│  ✅ Eventually consistent                                        │
-│  ✅ No distributed locks                                         │
-│  ✅ Better scalability                                           │
-└─────────────────────────────────────────────────────────────────┘
+```text
+Order Service → Payment Service → Inventory Service
+❌ 2PC (Two-Phase Commit) doesn't work across services
+❌ Long-running transactions lock resources
+❌ Single service failure blocks entire transaction
+```
+
+**Saga Solution**
+
+```text
+Local transactions with compensating actions
+Each step can be rolled back independently
+✅ Eventually consistent
+✅ No distributed locks
+✅ Better scalability
 ```
 
 ### Saga Patterns
 
-```
-CHOREOGRAPHY-BASED SAGA:
-┌──────────────────────────────────────────────────────────────────┐
-│                                                                  │
-│   Order     ──event──▶    Payment    ──event──▶   Inventory      │
-│   Service              Service               Service             │
-│      │                      │                      │             │
-│      └──────────────────────┴──────────────────────┘             │
-│                   Event Bus (Kafka)                              │
-│  ✅ Loose coupling                                                │
-│  ❌ Hard to track overall progress                                │
-└──────────────────────────────────────────────────────────────────┘
+**Choreography-based saga**
 
-ORCHESTRATION-BASED SAGA:
-┌──────────────────────────────────────────────────────────────────┐
-│                                                                  │
-│                    ┌─────────────────┐                           │
-│                    │  Saga           │                           │
-│                    │  Orchestrator   │                           │
-│                    └────────┬────────┘                           │
-│              ┌──────────────┼──────────────┐                     │
-│              ▼              ▼              ▼                     │
-│         Order           Payment       Inventory                  │
-│         Service         Service       Service                    │
-│  ✅ Clear flow visibility                                         │
-│  ✅ Easier error handling                                         │
-│  ❌ Orchestrator becomes single point                             │
-└──────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+  O["Order service"] -->|"event"| P["Payment service"] -->|"event"| I["Inventory service"]
+  O --- BUS(("Event bus (Kafka)"))
+  P --- BUS
+  I --- BUS
 ```
+
+- ✅ Loose coupling.
+- ❌ Hard to track overall progress.
+
+**Orchestration-based saga**
+
+```mermaid
+flowchart TD
+  ORC["Saga orchestrator"] --> O["Order service"]
+  ORC --> P["Payment service"]
+  ORC --> I["Inventory service"]
+```
+
+- ✅ Clear flow visibility.
+- ✅ Easier error handling.
+- ❌ The orchestrator can become a single point of failure.
+
+**How to read these diagrams.** In choreography, each service reacts to the previous service's event, with no central coordinator. In orchestration, one orchestrator tells each service what to do.
 
 ### Orchestration-Based Saga Implementation
 
@@ -396,26 +393,24 @@ public class PaymentService {
 
 ### Event Types
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                       EVENT TYPES                                │
-├──────────────────────────────────────────────────────────────────┤
-│  DOMAIN EVENTS                                                   │
-│  Something that happened in the business domain                  │
-│  Examples: OrderPlaced, PaymentReceived, UserRegistered          │
-│                                                                  │
-│  INTEGRATION EVENTS                                              │
-│  Events shared between bounded contexts/services                 │
-│  Examples: OrderCreatedIntegrationEvent                          │
-│                                                                  │
-│  EVENT COMMANDS                                                  │
-│  Request for action (imperative)                                 │
-│  Examples: ProcessPayment, ShipOrder                             │
-│                                                                  │
-│  EVENT QUERIES                                                   │
-│  Request for data                                                │
-│  Examples: GetOrderStatus                                        │
-└──────────────────────────────────────────────────────────────────┘
+**EVENT TYPES**
+
+```text
+DOMAIN EVENTS
+Something that happened in the business domain
+Examples: OrderPlaced, PaymentReceived, UserRegistered
+
+INTEGRATION EVENTS
+Events shared between bounded contexts/services
+Examples: OrderCreatedIntegrationEvent
+
+EVENT COMMANDS
+Request for action (imperative)
+Examples: ProcessPayment, ShipOrder
+
+EVENT QUERIES
+Request for data
+Examples: GetOrderStatus
 ```
 
 ### Spring Cloud Stream with Kafka
@@ -639,31 +634,18 @@ public class OrderAggregate {
 
 ### CQRS Architecture
 
+**CQRS pattern**
+
+```mermaid
+flowchart TD
+  C["Client"] -->|"commands"| CH["Command handler"]
+  C -->|"queries"| QH["Query handler"]
+  CH --> W[("Write DB<br/>PostgreSQL, normalized")]
+  QH --> R[("Read DB<br/>MongoDB, denormalized")]
+  W -->|"events"| R
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                        CQRS PATTERN                              │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│                    ┌─────────────┐                               │
-│                    │   Client    │                               │
-│                    └──────┬──────┘                               │
-│              Commands     │     Queries                          │
-│           ┌───────────────┴───────────────┐                      │
-│           ▼                               ▼                      │
-│   ┌───────────────┐               ┌───────────────┐              │
-│   │   Command     │               │    Query      │              │
-│   │   Handler     │               │    Handler    │              │
-│   └───────┬───────┘               └───────┬───────┘              │
-│           │                               │                      │
-│           ▼                               ▼                      │
-│   ┌───────────────┐               ┌───────────────┐              │
-│   │   Write DB    │ ──events──▶   │   Read DB     │              │
-│   │  (PostgreSQL) │               │   (MongoDB)   │              │
-│   │  Normalized   │               │   Denormalized│              │
-│   └───────────────┘               └───────────────┘              │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Writes go through the command handler to a normalized write database. Events then update a denormalized read database that serves the queries.
 
 ### CQRS Implementation
 
@@ -837,36 +819,32 @@ public class OrderReadModelUpdater {
 
 ### Service Mesh Overview
 
+**Service mesh**
+
+```mermaid
+flowchart TD
+  subgraph TRAD["Traditional"]
+    TA["Service A"] --> TB["Service B"]
+  end
+  subgraph MESH["With a mesh"]
+    A["Service A"] --> SA["Sidecar proxy"]
+    SA <--> SB["Sidecar proxy"]
+    SB --> B["Service B"]
+    CP["Control plane<br/>(configuration, policies)"] -.-> SA
+    CP -.-> SB
+  end
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                      SERVICE MESH                                │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Traditional:  Service A ──────────────▶ Service B               │
-│                                                                  │
-│  With Mesh:    ┌─────────┐          ┌─────────┐                  │
-│                │Service A│          │Service B│                  │
-│                └────┬────┘          └────┬────┘                  │
-│                     │                    │                       │
-│                ┌────┴────┐          ┌────┴────┐                  │
-│                │ Sidecar │──────────│ Sidecar │                  │
-│                │ Proxy   │          │ Proxy   │                  │
-│                └─────────┘          └─────────┘                  │
-│                     │                    │                       │
-│                     └────────┬───────────┘                       │
-│                          Control Plane                           │
-│                   (Configuration, Policies)                      │
-│                                                                  │
-│  Benefits:                                                       │
-│  ✅ Traffic management (routing, load balancing)                  │
-│  ✅ Security (mTLS, authorization)                                │
-│  ✅ Observability (metrics, tracing, logging)                     │
-│  ✅ Reliability (retries, circuit breakers)                       │
-│                                                                  │
-│  Popular: Istio, Linkerd, Consul Connect                         │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** In a mesh, each service talks through a sidecar proxy. A control plane configures all the proxies, so networking features live outside the application code.
+
+**Benefits**
+
+- ✅ Traffic management (routing, load balancing).
+- ✅ Security (mTLS, authorization).
+- ✅ Observability (metrics, tracing, logging).
+- ✅ Reliability (retries, circuit breakers).
+
+Popular meshes: Istio, Linkerd, Consul Connect.
 
 ### Istio Configuration Example
 
@@ -933,25 +911,25 @@ spec:
 
 ### OAuth2 / JWT Authentication
 
+**OAuth2 flow with a gateway**
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant A as Auth server
+  participant G as API gateway
+  participant S as Service
+  C->>A: 1. Login (username/password)
+  A-->>C: 2. JWT token
+  C->>G: 3. Request + JWT
+  Note over G: 4. Validate the JWT, extract the claims
+  G->>S: 5. Request + user context headers
+  Note over S: 6. Process the request
+  S-->>G: response
+  G-->>C: response
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                   OAUTH2 FLOW WITH GATEWAY                       │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. Client → Auth Server: Login (username/password)              │
-│  2. Auth Server → Client: JWT Token                              │
-│  3. Client → API Gateway: Request + JWT                          │
-│  4. Gateway: Validate JWT, extract claims                        │
-│  5. Gateway → Service: Request + User Context headers            │
-│  6. Service: Process request                                     │
-│                                                                  │
-│  ┌────────┐    ┌──────────┐    ┌─────────┐    ┌─────────┐        │
-│  │ Client │───▶│  Auth    │───▶│ Gateway │───▶│ Service │        │
-│  │        │◀───│  Server  │◀───│         │◀───│         │        │
-│  └────────┘    └──────────┘    └─────────┘    └─────────┘        │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The client gets a JWT from the auth server and sends it to the gateway. The gateway validates it and passes only the user context to the service.
 
 ### Gateway Security Configuration
 
@@ -1009,30 +987,17 @@ public class GatewaySecurityConfig {
 
 ## Observability Patterns
 
-### The Three Pillars
+### The Three Pillars of Observability
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│              THREE PILLARS OF OBSERVABILITY                      │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐             │
-│  │   METRICS   │   │   LOGGING   │   │   TRACING   │             │
-│  │             │   │             │   │             │             │
-│  │ What?       │   │ What?       │   │ What?       │             │
-│  │ Quantitative│   │ Event data  │   │ Request     │             │
-│  │ measurements│   │ & context   │   │ journey     │             │
-│  │             │   │             │   │             │             │
-│  │ Tools:      │   │ Tools:      │   │ Tools:      │             │
-│  │ Prometheus  │   │ ELK Stack   │   │ Jaeger      │             │
-│  │ Grafana     │   │ Loki        │   │ Zipkin      │             │
-│  │ Micrometer  │   │ Fluentd     │   │ Tempo       │             │
-│  └─────────────┘   └─────────────┘   └─────────────┘             │
-│                                                                  │
-│  Combined: Full visibility into system behavior                  │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+| Pillar | Question it answers | Typical tools |
+| --- | --- | --- |
+| Metrics | Quantitative measurements: what is happening, in numbers? | Prometheus, Grafana, Micrometer |
+| Logging | Event data and context: what happened? | ELK Stack, Loki, Fluentd |
+| Tracing | The request's journey: where did the time go? | Jaeger, Zipkin, Tempo |
+
+Combined, the three pillars give full visibility into system behaviour.
+
+Combined: Full visibility into system behavior
 
 ### Metrics with Micrometer
 
@@ -1087,57 +1052,45 @@ public class OrderService {
 
 ### Blue-Green Deployment
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                   BLUE-GREEN DEPLOYMENT                          │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Before:                                                         │
-│  Load Balancer ──▶ Blue (v1.0) ✅ Active                          │
-│                    Green (v1.1) 🔳 Staged                         │
-│                                                                  │
-│  After:                                                          │
-│  Load Balancer ──▶ Blue (v1.0) 🔳 Standby                         │
-│                    Green (v1.1) ✅ Active                         │
-│                                                                  │
-│  ✅ Zero downtime                                                 │
-│  ✅ Instant rollback                                              │
-│  ❌ Needs 2x infrastructure                                       │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+**Blue-green deployment**
+
+| | Load balancer sends traffic to | Blue (v1.0) | Green (v1.1) |
+| --- | --- | --- | --- |
+| **Before** | Blue | ✅ Active | 🔳 Staged |
+| **After** | Green | 🔳 Standby | ✅ Active |
+
+- ✅ Zero downtime.
+- ✅ Instant rollback (switch the load balancer back).
+- ❌ Needs 2x the infrastructure.
 
 ### Canary Deployment
 
+### Canary Deployment
+
+Phase 1: 5% to new version
+
+```text
+v1.0: ██████████████████████████████████████ 95%
+v1.1: ██ 5%
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                    CANARY DEPLOYMENT                             │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Phase 1: 5% to new version                                      │
-│  ┌─────────────────────────────────────────────────────┐         │
-│  │  v1.0: ██████████████████████████████████████ 95%  │          │
-│  │  v1.1: ██ 5%                                        │         │
-│  └─────────────────────────────────────────────────────┘         │
-│                                                                  │
-│  Phase 2: 25% to new version (if metrics good)                   │
-│  ┌─────────────────────────────────────────────────────┐         │
-│  │  v1.0: ████████████████████████████████ 75%        │          │
-│  │  v1.1: ████████ 25%                                 │         │
-│  └─────────────────────────────────────────────────────┘         │
-│                                                                  │
-│  Phase 3: 100% to new version                                    │
-│  ┌─────────────────────────────────────────────────────┐         │
-│  │  v1.0: 0%                                           │         │
-│  │  v1.1: ██████████████████████████████████████ 100% │          │
-│  └─────────────────────────────────────────────────────┘         │
-│                                                                  │
-│  ✅ Gradual rollout                                               │
-│  ✅ Real traffic validation                                       │
-│  ✅ Quick rollback if issues                                      │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
+
+Phase 2: 25% to new version (if metrics good)
+
+```text
+v1.0: ████████████████████████████████ 75%
+v1.1: ████████ 25%
 ```
+
+Phase 3: 100% to new version
+
+```text
+v1.0: 0%
+v1.1: ██████████████████████████████████████ 100%
+```
+
+- ✅ Gradual rollout
+- ✅ Real traffic validation
+- ✅ Quick rollback if issues
 
 ---
 
@@ -1237,39 +1190,33 @@ Best practices:
 
 ## Quick Reference
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                 MICROSERVICES PATTERNS CHEAT SHEET                  │
-├─────────────────────────────────────────────────────────────────────┤
-│ COMMUNICATION PATTERNS                                              │
-│  Synchronous     │ REST, gRPC, GraphQL                              │
-│  Asynchronous    │ Message queues (Kafka, RabbitMQ)                 │
-│  Event-driven    │ Events/Event Sourcing                            │
-├─────────────────────────────────────────────────────────────────────┤
-│ RESILIENCE PATTERNS                                                 │
-│  Circuit Breaker │ Fail fast when service down                      │
-│  Retry           │ Automatic retry with backoff                     │
-│  Bulkhead        │ Isolate failures                                 │
-│  Timeout         │ Don't wait forever                               │
-│  Rate Limiter    │ Protect from overload                            │
-├─────────────────────────────────────────────────────────────────────┤
-│ DATA PATTERNS                                                       │
-│  Saga            │ Distributed transactions                         │
-│  CQRS            │ Separate read/write models                       │
-│  Event Sourcing  │ Store events, derive state                       │
-│  Outbox          │ Reliable event publishing                        │
-├─────────────────────────────────────────────────────────────────────┤
-│ DEPLOYMENT PATTERNS                                                 │
-│  Blue-Green      │ Zero downtime, instant rollback                  │
-│  Canary          │ Gradual rollout                                  │
-│  Rolling         │ Sequential instance updates                      │
-├─────────────────────────────────────────────────────────────────────┤
-│ DISCOVERY & ROUTING                                                 │
-│  Service Registry│ Eureka, Consul                                   │
-│  API Gateway     │ Spring Cloud Gateway                             │
-│  Load Balancer   │ Client-side with discovery                       │
-│  Service Mesh    │ Istio, Linkerd                                   │
-└─────────────────────────────────────────────────────────────────────┘
+**MICROSERVICES PATTERNS CHEAT SHEET**
+
+```text
+COMMUNICATION PATTERNS
+ Synchronous     │ REST, gRPC, GraphQL
+ Asynchronous    │ Message queues (Kafka, RabbitMQ)
+ Event-driven    │ Events/Event Sourcing
+RESILIENCE PATTERNS
+ Circuit Breaker │ Fail fast when service down
+ Retry           │ Automatic retry with backoff
+ Bulkhead        │ Isolate failures
+ Timeout         │ Don't wait forever
+ Rate Limiter    │ Protect from overload
+DATA PATTERNS
+ Saga            │ Distributed transactions
+ CQRS            │ Separate read/write models
+ Event Sourcing  │ Store events, derive state
+ Outbox          │ Reliable event publishing
+DEPLOYMENT PATTERNS
+ Blue-Green      │ Zero downtime, instant rollback
+ Canary          │ Gradual rollout
+ Rolling         │ Sequential instance updates
+DISCOVERY & ROUTING
+ Service Registry│ Eureka, Consul
+ API Gateway     │ Spring Cloud Gateway
+ Load Balancer   │ Client-side with discovery
+ Service Mesh    │ Istio, Linkerd
 ```
 
 ---
@@ -1310,12 +1257,12 @@ HALF-OPEN is dangerous because it's a **probe state** — you're testing if the 
 
 ## Reality Check
 
-**"Circuit breaker prevents cascading failures"** ? A circuit breaker stops calling a FAILED service, but it does not handle what YOUR service should do when the dependency is unavailable. Without a fallback strategy (cached data, default response, queue for later retry), your service returns 503 to the caller, who also needs a fallback, creating the cascade you tried to prevent. Circuit breaker is the detection mechanism; fallback is the recovery mechanism.
+**"Circuit breaker prevents cascading failures"** — A circuit breaker stops calling a FAILED service, but it does not handle what YOUR service should do when the dependency is unavailable. Without a fallback strategy (cached data, default response, queue for later retry), your service returns 503 to the caller, who also needs a fallback, creating the cascade you tried to prevent. Circuit breaker is the detection mechanism; fallback is the recovery mechanism.
 
-**"Saga pattern solves distributed transactions"** ? Sagas provide eventual consistency, not transactional consistency. Between saga steps, the system is in a partially committed state visible to other operations. Compensating actions (rollbacks) may fail themselves, requiring manual intervention. A saga that books a flight, then fails to book a hotel, then fails to cancel the flight, leaves the system in an inconsistent state that requires human resolution.
+**"Saga pattern solves distributed transactions"** — Sagas provide eventual consistency, not transactional consistency. Between saga steps, the system is in a partially committed state visible to other operations. Compensating actions (rollbacks) may fail themselves, requiring manual intervention. A saga that books a flight, then fails to book a hotel, then fails to cancel the flight, leaves the system in an inconsistent state that requires human resolution.
 
-**"API Gateway is just a reverse proxy"** ? A reverse proxy forwards requests. An API Gateway adds: authentication, rate limiting, request transformation, response aggregation, protocol translation (REST to gRPC), SSL termination, and API versioning. But putting too much logic in the gateway creates a single point of failure and a bottleneck. Keep the gateway thin � authentication and routing only. Business logic belongs in services.
+**"API Gateway is just a reverse proxy"** — A reverse proxy forwards requests. An API Gateway adds: authentication, rate limiting, request transformation, response aggregation, protocol translation (REST to gRPC), SSL termination, and API versioning. But putting too much logic in the gateway creates a single point of failure and a bottleneck. Keep the gateway thin — authentication and routing only. Business logic belongs in services.
 
-**"Service discovery eliminates configuration"** ? Service discovery (Eureka, Consul) automates finding service instances, but it introduces its own operational complexity: what happens when the discovery server is down? (Services cache the last known registry.) What about split-brain in a discovery cluster? What about stale registrations from crashed instances? Health check intervals mean newly deployed instances are invisible for 30 seconds and crashed instances remain registered for 30 seconds.
+**"Service discovery eliminates configuration"** — Service discovery (Eureka, Consul) automates finding service instances, but it introduces its own operational complexity: what happens when the discovery server is down? (Services cache the last known registry.) What about split-brain in a discovery cluster? What about stale registrations from crashed instances? Health check intervals mean newly deployed instances are invisible for 30 seconds and crashed instances remain registered for 30 seconds.
 
-**"Event-driven architecture is always better than synchronous"** ? Events add latency (message broker round-trip), complexity (ordering, deduplication, dead letter queues), and debugging difficulty (no request-response trace). A user clicking Submit and waiting 5 seconds for an event to propagate through 3 services is worse UX than a synchronous 200ms response. Use events for operations where the caller does not need an immediate result: notifications, analytics, eventual updates.
+**"Event-driven architecture is always better than synchronous"** — Events add latency (message broker round-trip), complexity (ordering, deduplication, dead letter queues), and debugging difficulty (no request-response trace). A user clicking Submit and waiting 5 seconds for an event to propagate through 3 services is worse UX than a synchronous 200ms response. Use events for operations where the caller does not need an immediate result: notifications, analytics, eventual updates.

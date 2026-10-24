@@ -1,54 +1,119 @@
-﻿**Navigation**: [< Previous](02_Code_Templates.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Pattern_Recognition.md)
+# 🧩 Visual Diagrams — Pattern Guide
 
-# 🎨 VISUAL ALGORITHM DIAGRAMS - COMPLETE REFERENCE
+> **Navigation**: [← Code Templates](02_Code_Templates.md) | [Chapter index](00_INDEX.md) | [Pattern Recognition →](04_Pattern_Recognition.md)
 
-## This file contains VISUAL diagrams for ALL algorithm patterns
+## 🎨 VISUAL ALGORITHM DIAGRAMS - COMPLETE REFERENCE
+
+### This file contains VISUAL diagrams for ALL algorithm patterns
 
 > Constraint first: a diagram explains how a pattern moves, but constraints decide whether that movement is legal. Check [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md) for cases like negative numbers breaking sliding window or weighted edges breaking BFS.
 
 ---
 
-## 📚 TABLE OF CONTENTS
+### 📚 TABLE OF CONTENTS
 
-1. [Array Operations](#array-operations)
-2. [String Operations](#string-operations)
-3. [Sorting Algorithms](#sorting-algorithms)
-4. [Searching Algorithms](#searching-algorithms)
-5. [Data Structures](#data-structures)
-6. [Graph Algorithms](#graph-algorithms)
-7. [Dynamic Programming](#dynamic-programming)
-8. [Math & Bit Manipulation](#math--bit-manipulation)
-
----
-
-### Historical Evolution
-
-**Inventor / Originator:** Visual algorithm representation evolved from Donald Knuth's "Art of Computer Programming" (1968-1973), which first used box diagrams and flowcharts for algorithmic reasoning, and David Harel's "Algorithmics" (1987) with its structured visual notation.
-
-**Predecessor context:** Before visual diagrams, algorithms were described purely in prose or pseudocode, making it difficult for learners to grasp spatial and temporal behavior of pointer movements, window expansions, and data structure transformations.
-
-**Evolution narrative:** Knuth's TAOCP introduced box diagrams showing algorithmic state transitions. Harel formalized the use of state diagrams for algorithm visualization. As algorithms education expanded, practitioners developed ASCII art representations (like the diagrams in this file) as portable, text-friendly alternatives to graphics tools.
-
-**Modern practice:** Algorithm visualization tools (VisuAlgo, algorithm-visualizer) generate interactive animations. Static ASCII/text diagrams remain common in technical documentation and competitive programming resources.
-
-- **Knuth TAOCP Vol 1-3 — 1968-1973**: "The Art of Computer Programming" introduced structured box diagrams and state notation for algorithmic analysis
-- **Engelhart 2002**: "Algorithmics: The Spirit of Computing" formalized visual algorithm reasoning for computer science education
-- **VisuAlgo — 2011 (National University of Singapore)**: Interactive algorithm visualization used by millions of students worldwide
-- **Modern practice**: ASCII/text diagrams remain the standard for portable documentation (README files, competitive programming notes), while interactive tools power education platforms
+1. [Array Operations](#-array-operations)
+2. [String Operations](#-string-operations)
+3. [Sorting Algorithms](#-sorting-algorithms)
+4. [Searching Algorithms](#-searching-algorithms)
+5. [Data Structures](#-data-structures)
+6. [Graph Algorithms](#-graph-algorithms)
+7. [Dynamic Programming](#-dynamic-programming)
+8. [Math & Bit Manipulation](#-math--bit-manipulation)
 
 ---
 
-### Production Reality
+## 🔗 Bridge — Where This Chapter Fits
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Code Templates](02_Code_Templates.md), basic arrays and strings |
+| **You will learn** | How pointers, windows, stacks, queues, trees and DP tables evolve step by step |
+| **Leads to** | [Pattern Recognition](04_Pattern_Recognition.md), per-pattern chapters |
+| **Abstraction level** | Code → **picture of state over time** → intuition for the invariant |
 
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
 
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+---
+
+## 💬 Explain It Like a Study Partner — Visual Diagrams
+
+### 1. The bottom line
+
+A good diagram shows how state changes from step to step, which is exactly what code hides.
+
+### 2. The textbook core
+
+- Draw the data structure, mark the pointers, then redraw after every step.
+- Write the invariant next to the picture.
+- Use a table for DP and a tree for recursion.
+- Always say in words what the reader should notice.
+
+### 3. The real-world analogy
+
+A **flip-book**: each page is one step; flipping shows the algorithm moving.
+
+### 4. Walkthrough
+
+1. Take the two-pointer sum `[1,2,4,7]`, target 6.
+2. Draw `L` at 1 and `R` at 7: sum 8 > 6 → move `R`.
+3. Redraw: `1 + 4 = 5 < 6` → move `L`.
+4. Redraw: `2 + 4 = 6` → found.
+
+> [!NOTE]
+> **Quick check:** What belongs in every diagram? *The state after each step and the invariant that holds.*
+
+
+### 5. Check yourself
+
+**Q1.** Trace two pointers on sorted `[1,2,4,7]` with target 6. What moves?
+
+<details><summary>Answer</summary>
+
+`L=1, R=7`: sum 8 > 6 → move `R`. `1 + 4 = 5 < 6` → move `L`. `2 + 4 = 6` → found.
+
+</details>
+
+**Q2.** Name the two things every algorithm diagram should show.
+
+<details><summary>Answer</summary>
+
+The state after each step (pointer positions, stack contents, window bounds) and the invariant that holds at that step.
+
+</details>
+
+**Q3.** In a chained hash table, why do long chains slow lookups?
+
+<details><summary>Answer</summary>
+
+A lookup walks the chain comparing keys, so cost grows with chain length. A good hash function and resizing keep chains short, giving `O(1)` on average.
+
+</details>
+
+---
+
+## Historical Evolution
+
+**Inventor / Originator:** Algorithm diagrams descend from the **flow diagrams** of Goldstine and von Neumann (1947). Ronald Baecker's film *Sorting Out Sorting* (1981) pioneered algorithm animation, and David Harel's *Algorithmics: The Spirit of Computing* (1987) made the case for visual and structured reasoning about algorithms.
+
+**Predecessor context:** Algorithms were explained in prose or code alone, which hides how pointers, windows and stacks *move* over time.
+
+**Evolution narrative:** Textbooks added figures, then animations; web tools such as VisuAlgo (Steven Halim, National University of Singapore, 2011) made interactive visualisation free. Plain-text and Mermaid diagrams remain popular because they live next to the code and diff cleanly in version control.
+
+**Modern practice:** Use a diagram to show state *changing* (pointer positions, stack contents, window bounds), and always add a sentence that says how to read it.
+
+- **Goldstine & von Neumann — 1947**: Flow diagrams for planning programs
+- **Baecker — 1981**: *Sorting Out Sorting*, an early algorithm-animation film
+- **Harel — 1987**: *Algorithmics: The Spirit of Computing*
+- **VisuAlgo — 2011**: Interactive algorithm visualisations for students
+
+---
+
+## Production Reality
+
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -66,162 +131,49 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 ### Two Sum (Two Pointers on Sorted Array)
 
-```
-                  TWO SUM - TWO POINTERS
-──────────────────────────────────────────────────
+Sorted array `[1, 2, 3, 5, 7, 10, 11]`, target `9`.
 
-Sorted Array: [1, 2, 3, 5, 7, 10, 11]    Target: 9
-
-Step 1:
-┌───┬───┬───┬───┬───┬────┬────┐
-│ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │
-└───┴───┴───┴───┴───┴────┴────┘
-  ↑                        ↑
- left                    right
-
-sum = 1 + 11 = 12 > 9  → Move right LEFT
-
-Step 2:
-┌───┬───┬───┬───┬───┬────┬────┐
-│ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │
-└───┴───┴───┴───┴───┴────┴────┘
-  ↑                  ↑
- left              right
-
-sum = 1 + 10 = 11 > 9  → Move right LEFT
-
-Step 3:
-┌───┬───┬───┬───┬───┬────┬────┐
-│ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │
-└───┴───┴───┴───┴───┴────┴────┘
-  ↑              ↑
- left          right
-
-sum = 1 + 7 = 8 < 9  → Move left RIGHT
-
-Step 4:
-┌───┬───┬───┬───┬───┬────┬────┐
-│ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │
-└───┴───┴───┴───┴───┴────┴────┘
-      ↑          ↑
-     left      right
-
-sum = 2 + 7 = 9 == 9  ✓ FOUND!
-```
+| Step | `left` (value) | `right` (value) | Sum | Decision |
+| --- | --- | --- | --- | --- |
+| 1 | 0 (1) | 6 (11) | 1 + 11 = 12 > 9 | Move `right` left |
+| 2 | 0 (1) | 5 (10) | 1 + 10 = 11 > 9 | Move `right` left |
+| 3 | 0 (1) | 4 (7) | 1 + 7 = 8 < 9 | Move `left` right |
+| 4 | 1 (2) | 4 (7) | 2 + 7 = 9 | **Found** ✓ |
 
 ### Kadane's Algorithm (Maximum Subarray Sum)
 
-```
-                  KADANE'S ALGORITHM
-──────────────────────────────────────────────────
+Array: `[-2, 1, -3, 4, -1, 2, 1, -5, 4]`.
 
-Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+**Key idea:** at each position, decide, "Should I start fresh here, or extend the previous subarray?"
 
-KEY IDEA: At each position, decide:
-"Should I start fresh here, or extend previous subarray?"
+| Index | `arr[i]` | `current = max(arr[i], current + arr[i])` | Choice | `maxSum` | Best subarray ending here |
+| --- | --- | --- | --- | --- | --- |
+| 0 | −2 | max(−2, 0 + (−2)) = −2 | start | −2 | `[-2]` |
+| 1 | 1 | max(1, −2 + 1) = 1 | start fresh | 1 | `[1]` |
+| 2 | −3 | max(−3, 1 + (−3)) = −2 | extend | 1 | `[1, -3]` |
+| 3 | 4 | max(4, −2 + 4) = 4 | start fresh | 4 | `[4]` |
+| 4 | −1 | max(−1, 4 + (−1)) = 3 | extend | 4 | `[4, -1]` |
+| 5 | 2 | max(2, 3 + 2) = 5 | extend | 5 | `[4, -1, 2]` |
+| 6 | 1 | max(1, 5 + 1) = 6 | extend | **6** ⭐ | `[4, -1, 2, 1]` (maximum subarray) |
 
-Index 0: arr[0] = -2
-         current = max(-2, 0 + (-2)) = max(-2, -2) = -2
-         maxSum = -2
-         ├───┤
-         [-2]
-
-Index 1: arr[1] = 1
-         current = max(1, -2 + 1) = max(1, -1) = 1  ← Start fresh!
-         maxSum = 1
-             ├───┤
-             [1]
-
-Index 2: arr[2] = -3
-         current = max(-3, 1 + (-3)) = max(-3, -2) = -2  ← Extend
-         maxSum = 1
-             ├───────┤
-             [1, -3]
-
-Index 3: arr[3] = 4
-         current = max(4, -2 + 4) = max(4, 2) = 4  ← Start fresh!
-         maxSum = 4
-                     ├───┤
-                     [4]
-
-Index 4: arr[4] = -1
-         current = max(-1, 4 + (-1)) = max(-1, 3) = 3  ← Extend
-         maxSum = 4
-                     ├───────┤
-                     [4, -1]
-
-Index 5: arr[5] = 2
-         current = max(2, 3 + 2) = max(2, 5) = 5  ← Extend
-         maxSum = 5
-                     ├───────────┤
-                     [4, -1, 2]
-
-Index 6: arr[6] = 1
-         current = max(1, 5 + 1) = max(1, 6) = 6  ← Extend
-         maxSum = 6 ⭐
-                     ├───────────────┤
-                     [4, -1, 2, 1]    ← MAXIMUM SUBARRAY
-
-Continue... Final Answer: 6 (subarray [4, -1, 2, 1])
-```
+Continuing through the rest of the array leaves the final answer at **6**, from the subarray `[4, -1, 2, 1]`.
 
 ### Dutch National Flag (Sort 0s, 1s, 2s)
 
-```
-                  DUTCH NATIONAL FLAG
-──────────────────────────────────────────────────
+Array `[2, 0, 2, 1, 1, 0]`. Three pointers: `low` (end of the 0s zone), `mid` (scanning) and `high` (start of the 2s zone).
 
-Array: [2, 0, 2, 1, 1, 0]
+| Step | `low` | `mid` | `high` | `arr[mid]` | Action | Array after |
+| --- | --- | --- | --- | --- | --- | --- |
+| Initial | 0 | 0 | 5 | 2 | | `[2, 0, 2, 1, 1, 0]` |
+| 1 | 0 | 0 | 5 | 2 | Swap with `high`, `high--` | `[0, 0, 2, 1, 1, 2]` |
+| 2 | 0 | 0 | 4 | 0 | Swap with `low`, `low++`, `mid++` | `[0, 0, 2, 1, 1, 2]` |
+| 3 | 1 | 1 | 4 | 0 | Swap with `low`, `low++`, `mid++` | `[0, 0, 2, 1, 1, 2]` |
+| 4 | 2 | 2 | 4 | 2 | Swap with `high`, `high--` | `[0, 0, 1, 1, 2, 2]` |
+| 5 | 2 | 2 | 3 | 1 | `mid++` | `[0, 0, 1, 1, 2, 2]` |
+| 6 | 2 | 3 | 3 | 1 | `mid++` | `[0, 0, 1, 1, 2, 2]` |
+| End | 2 | 4 | 3 | | `mid > high`: done ✓ | `[0, 0, 1, 1, 2, 2]` |
 
-Three pointers: low (0s boundary), mid (scanning), high (2s boundary)
-
-Initial:
-┌───┬───┬───┬───┬───┬───┐
-│ 2 │ 0 │ 2 │ 1 │ 1 │ 0 │
-└───┴───┴───┴───┴───┴───┘
-  ↑                   ↑
-low,mid              high
-
-arr[mid]=2: Swap with high, high--
-┌───┬───┬───┬───┬───┬───┐
-│ 0 │ 0 │ 2 │ 1 │ 1 │ 2 │
-└───┴───┴───┴───┴───┴───┘
-  ↑               ↑   ↑
-low,mid          high (2s zone)
-
-arr[mid]=0: Swap with low, low++, mid++
-┌───┬───┬───┬───┬───┬───┐
-│ 0 │ 0 │ 2 │ 1 │ 1 │ 2 │
-└───┴───┴───┴───┴───┴───┘
-  ↑   ↑           ↑   ↑
- (0s) low,mid    high (2s)
-
-arr[mid]=0: Swap with low, low++, mid++
-┌───┬───┬───┬───┬───┬───┐
-│ 0 │ 0 │ 2 │ 1 │ 1 │ 2 │
-└───┴───┴───┴───┴───┴───┘
- (0s)  ↑   ↑      ↑   ↑
-      low mid    high (2s)
-
-arr[mid]=2: Swap with high, high--
-┌───┬───┬───┬───┬───┬───┐
-│ 0 │ 0 │ 1 │ 1 │ 2 │ 2 │
-└───┴───┴───┴───┴───┴───┘
- (0s)  ↑   ↑   ↑  (2s zone)
-      low mid high
-
-arr[mid]=1: Just mid++
-┌───┬───┬───┬───┬───┬───┐
-│ 0 │ 0 │ 1 │ 1 │ 2 │ 2 │
-└───┴───┴───┴───┴───┴───┘
- (0s)  ↑      ↑↑  (2s zone)
-      low   mid,high
-
-arr[mid]=1: mid++
-mid > high → DONE! ✓
-
-Result: [0, 0, 1, 1, 2, 2]
-```
+Result: `[0, 0, 1, 1, 2, 2]`. Everything left of `low` is 0, everything right of `high` is 2, and `low..mid-1` holds the 1s.
 
 ---
 
@@ -229,43 +181,31 @@ Result: [0, 0, 1, 1, 2, 2]
 
 ### Anagram Check
 
-```
-                  ANAGRAM CHECK VISUALIZATION
-──────────────────────────────────────────────────
+Strings: `"listen"` and `"silent"`.
 
-String 1: "listen"        String 2: "silent"
+**Method 1: frequency count**
 
-METHOD 1: Frequency Count
+| Letter | Count in "listen" | Count in "silent" |
+| --- | --- | --- |
+| e | 1 | 1 |
+| i | 1 | 1 |
+| l | 1 | 1 |
+| n | 1 | 1 |
+| s | 1 | 1 |
+| t | 1 | 1 |
 
-Count for "listen":       Count for "silent":
-┌───┬───┐                 ┌───┬───┐
-│ l │ 1 │                 │ s │ 1 │
-│ i │ 1 │                 │ i │ 1 │
-│ s │ 1 │                 │ l │ 1 │
-│ t │ 1 │                 │ e │ 1 │
-│ e │ 1 │                 │ n │ 1 │
-│ n │ 1 │                 │ t │ 1 │
-└───┴───┘                 └───┴───┘
+Both strings have the same characters with the same frequencies, so they are anagrams ✓.
 
-Both have same characters with same frequencies → ANAGRAM ✓
+**Method 2: single frequency array**
 
-METHOD 2: Single Frequency Array
+Start with `freq[26]` all zeros. Add 1 for each character of `"listen"`, then subtract 1 for each character of `"silent"`.
 
-Start: freq[26] = all zeros
+| Letter | a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| After "listen" (+1) | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
+| After "silent" (−1) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-Process "listen": +1 for each char
-┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
-│0│0│0│0│1│0│0│0│1│0│0│1│0│1│0│0│0│0│1│1│0│0│0│0│0│0│
-└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘
- a b c d e f g h i j k l m n o p q r s t u v w x y z
-
-Process "silent": -1 for each char
-┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
-│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│
-└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘
-
-All zeros → ANAGRAM ✓
-```
+All zeros, so the strings are anagrams ✓.
 
 ### KMP String Matching (Pattern Search)
 
@@ -353,45 +293,27 @@ Continue... Final: [1, 3, 4, 5, 10]
 
 ### Counting Sort Visualization
 
-```
-                  COUNTING SORT VISUALIZATION
-──────────────────────────────────────────────────
+Array `[4, 2, 2, 8, 3, 3, 1]` (values in the range 0 to 9).
 
-Array: [4, 2, 2, 8, 3, 3, 1]    (values range 0-9)
+**Step 1: count occurrences** (index = value)
 
-STEP 1: Count occurrences
+| Value | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `count` | 0 | 1 | 2 | 2 | 1 | 0 | 0 | 0 | 1 | 0 |
 
-Count array (index = value):
-┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
-│ 0 │ 1 │ 2 │ 1 │ 1 │ 0 │ 0 │ 0 │ 1 │ 0 │
-└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
-  0   1   2   3   4   5   6   7   8   9
-      ↑   ↑   ↑   ↑               ↑
-     one two two one             one
-      1   2s  3s  4               8
+(one 1, two 2s, two 3s, one 4, one 8)
 
-STEP 2: Cumulative sum (for stable sort)
+**Step 2: cumulative sum** (for a stable sort)
 
-┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
-│ 0 │ 1 │ 3 │ 4 │ 5 │ 5 │ 5 │ 5 │ 6 │ 6 │
-└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
-  0   1   2   3   4   5   6   7   8   9
+| Value | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `count` | 0 | 1 | 3 | 5 | 6 | 6 | 6 | 6 | 7 | 7 |
 
-Meaning: count[i] = number of elements ≤ i
+Meaning: `count[i]` = the number of elements ≤ `i`.
 
-STEP 3: Build output (right to left for stability)
+**Step 3: build the output, right to left, for stability.** Process the input `[4, 2, 2, 8, 3, 3, 1]` from the right. The last element, `1`, goes to position `count[1] - 1 = 0`, and `count[1]` is decremented. Continuing gives the final result `[1, 2, 2, 3, 3, 4, 8]`.
 
-Input:  [4, 2, 2, 8, 3, 3, 1]
-                          ↑ Process 1 first (from right)
-
-1 goes to position count[1]-1 = 0
-Output: [1, _, _, _, _, _, _]
-
-Continue... Final: [1, 2, 2, 3, 3, 4, 8]
-
-Time: O(N + K) where K = range of values
-Best when: K is small (like sorting ages 0-100)
-```
+**Time:** O(N + K), where K is the range of values. **Best when** K is small, such as sorting ages 0 to 100.
 
 ---
 
@@ -409,68 +331,17 @@ Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced par
 
 ### Binary Search Variants
 
-```
-                  BINARY SEARCH VARIANTS
-──────────────────────────────────────────────────
+Array `[1, 2, 2, 2, 2, 3, 5, 7]` (indexes 0 to 7). Find `2`.
 
-Array: [1, 2, 2, 2, 2, 3, 5, 7]    Find: 2
-Index:  0  1  2  3  4  5  6  7
+| Variant | Returns | Logic |
+| --- | --- | --- |
+| 1. Find **any** occurrence | Index 2 or 3 (any match) | Return as soon as `arr[mid] == target` |
+| 2. Find the **first** occurrence | 1 (the leftmost 2) | When found, do not return: save it and go **left**: `if (arr[mid] == target) { result = mid; high = mid - 1; }` |
+| 3. Find the **last** occurrence | 4 (the rightmost 2) | When found, do not return: save it and go **right**: `if (arr[mid] == target) { result = mid; low = mid + 1; }` |
+| 4. **Lower bound** (first element ≥ target) | 1 | First index where `arr[i] >= 2` |
+| 5. **Upper bound** (first element > target) | 5 | First index where `arr[i] > 2` |
 
-═══════════════════════════════════════════════════════════════════════
-
-VARIANT 1: Find ANY occurrence
-┌───┬───┬───┬───┬───┬───┬───┬───┐
-│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
-└───┴───┴───┴───┴───┴───┴───┴───┘
-            ↑
-         returns 2 or 3 (any match)
-
-═══════════════════════════════════════════════════════════════════════
-
-VARIANT 2: Find FIRST occurrence
-┌───┬───┬───┬───┬───┬───┬───┬───┐
-│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
-└───┴───┴───┴───┴───┴───┴───┴───┘
-      ↑
-   returns 1 (leftmost 2)
-
-Logic: When found, don't return! Save and go LEFT
-       if (arr[mid] == target) { result = mid; high = mid - 1; }
-
-═══════════════════════════════════════════════════════════════════════
-
-VARIANT 3: Find LAST occurrence
-┌───┬───┬───┬───┬───┬───┬───┬───┐
-│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
-└───┴───┴───┴───┴───┴───┴───┴───┘
-                ↑
-            returns 4 (rightmost 2)
-
-Logic: When found, don't return! Save and go RIGHT
-       if (arr[mid] == target) { result = mid; low = mid + 1; }
-
-═══════════════════════════════════════════════════════════════════════
-
-VARIANT 4: Lower Bound (first >= target)
-Target: 2
-┌───┬───┬───┬───┬───┬───┬───┬───┐
-│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
-└───┴───┴───┴───┴───┴───┴───┴───┘
-      ↑
-   returns 1 (first element ≥ 2)
-
-═══════════════════════════════════════════════════════════════════════
-
-VARIANT 5: Upper Bound (first > target)
-Target: 2
-┌───┬───┬───┬───┬───┬───┬───┬───┐
-│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
-└───┴───┴───┴───┴───┴───┴───┴───┘
-                    ↑
-                returns 5 (first element > 2)
-
-Count of 2s = Upper Bound - Lower Bound = 5 - 1 = 4
-```
+Count of 2s = upper bound − lower bound = 5 − 1 = 4.
 
 ---
 
@@ -478,68 +349,54 @@ Count of 2s = Upper Bound - Lower Bound = 5 - 1 = 4
 
 ### HashMap Internal Working
 
-## Bucket │ Contents
+```mermaid
+flowchart LR
+    subgraph table["Bucket array (size 8)"]
+        B0["0: empty"]
+        B1["1: empty"]
+        B2["2"]
+        B3["3: empty"]
+        B4["4: empty"]
+        B5["5"]
+        B6["6: empty"]
+        B7["7: empty"]
+    end
+    B2 --> N1["apple : 5"] --> N2["cherry : 7"]
+    B5 --> N3["banana : 3"]
+    classDef empty fill:#f1f3f4,stroke:#9aa0a6,color:#5f6368
+    classDef used fill:#e8f0fe,stroke:#1a73e8,color:#0b3d91
+    classDef chain fill:#e6f4ea,stroke:#188038,color:#0d652d
+    class B0,B1,B3,B4,B6,B7 empty
+    class B2,B5 used
+    class N1,N2,N3 chain
+```
 
-0 │ NULL
-1 │ NULL
-| 2 | [apple:5] → [cherry:7] → NULL | ← Chained! |
-3 │ NULL
-4 │ NULL
-5 │ [banana:3] → NULL
-6 │ NULL
-7 │ NULL
+**How to read this diagram.** The key's hash picks a bucket. Bucket 2 holds two entries chained together (a collision: `apple` and `cherry` hash to the same bucket), bucket 5 holds one, and the grey buckets are empty. Lookups walk the chain, so a good hash function keeps chains short.
 
 ### Stack vs Queue
 
-```
-                  STACK vs QUEUE
-──────────────────────────────────────────────────
+**Stack (LIFO, last in first out).** Think of a stack of plates.
 
-STACK (LIFO - Last In First Out)
-─────────────────────────────────
-Think: Stack of plates
+| Operation | Stack (bottom → top) | Result |
+| --- | --- | --- |
+| Push 1, push 2, push 3 | `1, 2, 3` | `3` is on top |
+| Pop | `1, 2` | `3` comes out first |
+| Pop | `1` | `2` comes out next |
 
-Push 1, Push 2, Push 3:          Pop:
-┌─────┐                          ┌─────┐
-│  3  │ ← top                    │  3  │ ← comes out first
-├─────┤                          └─────┘
-│  2  │                          Then:
-├─────┤                          ┌─────┐
-│  1  │                          │  2  │ ← next out
-└─────┘                          └─────┘
+Use cases: undo, recursion, balanced brackets.
 
-Use cases: Undo, Recursion, Balanced brackets
+**Queue (FIFO, first in first out).** Think of a line at a store.
 
-═══════════════════════════════════════════════════════════════════════
+| Operation | Queue (front → rear) | Result |
+| --- | --- | --- |
+| Enqueue 1, 2, 3 | `1, 2, 3` | `1` is at the front |
+| Dequeue | `2, 3` | `1` comes out first |
 
-QUEUE (FIFO - First In First Out)
-─────────────────────────────────
-Think: Line at store
+Use cases: BFS, level-order traversal, task scheduling.
 
-Enqueue 1, 2, 3:                 Dequeue:
-┌───┬───┬───┐                    ┌───┬───┬───┐
-│ 1 │ 2 │ 3 │                    │ 1 │ 2 │ 3 │
-└───┴───┴───┘                    └───┴───┴───┘
-  ↑       ↑                        ↑
-front    rear                    comes out first
+**Deque (double-ended queue).** You can add and remove at **both** ends: `addFirst`/`removeFirst` at the front and `addLast`/`removeLast` at the back.
 
-Use cases: BFS, Level-order traversal, Task scheduling
-
-═══════════════════════════════════════════════════════════════════════
-
-DEQUE (Double-Ended Queue)
-─────────────────────────────
-Can add/remove from BOTH ends!
-
-┌───┬───┬───┬───┬───┐
-│ A │ B │ C │ D │ E │
-└───┴───┴───┴───┴───┘
-  ↑               ↑
-addFirst/      addLast/
-removeFirst    removeLast
-
-Use cases: Sliding window max, BFS variations
-```
+Use cases: sliding-window maximum, BFS variations.
 
 ---
 
@@ -547,90 +404,72 @@ Use cases: Sliding window max, BFS variations
 
 ### BFS Shortest Path
 
-BFS SHORTEST PATH
+Find the shortest path from `A` to `E` in this unweighted, undirected graph.
 
-Graph (unweighted):
+```mermaid
+flowchart LR
+    A((A<br/>dist 0)) --- B((B<br/>dist 1))
+    A --- C((C<br/>dist 1))
+    A --- D((D<br/>dist 1))
+    C --- D
+    B --- E((E<br/>dist 2))
+    D --- E
+    classDef start fill:#e6f4ea,stroke:#188038,color:#0d652d
+    classDef lvl1 fill:#e8f0fe,stroke:#1a73e8,color:#0b3d91
+    classDef lvl2 fill:#fef7e0,stroke:#f9ab00,color:#7a4f01
+    class A start
+    class B,C,D lvl1
+    class E lvl2
+```
 
-A ─────── B
-│ \ │
-│ \ │
-│ \ │
-C ─── D ─ E
+**How to read this diagram.** Colours show BFS levels: green is the start, blue nodes are one edge away, yellow is two edges away. The number under each name is its shortest distance from `A`.
 
-Find shortest path from A to E
+| Level | Queue after processing | Visited | Distances |
+| --- | --- | --- | --- |
+| 0 | `[A]` | `{A}` | `A:0` |
+| 1 | `[B, C, D]` (neighbours of A) | `{A,B,C,D}` | `B:1, C:1, D:1` |
+| 2 | `[E]` (from B or D; C and D already seen) | `{A,B,C,D,E}` | `E:2` |
 
-BFS Process:
+The shortest path `A → E` has **2 edges** (`A→B→E` or `A→D→E`).
 
-Level 0: Start at A
-Queue: [A] Visited: {A} Distance: {A:0}
-
-Level 1: Process A's neighbors
-Queue: [B, C, D] Visited: {A,B,C,D} Distance: {A:0, B:1, C:1, D:1}
-
-A(0) ──── B(1)
-│ \ │
-│ \ │
-│ \ │
-C(1)─D(1)─ E
-
-Level 2: Process B's neighbors (C,D already visited)
-Queue: [E] Visited: {A,B,C,D,E} Distance: {..., E:2}
-
-A(0) ──── B(1)
-│ \ │
-│ \ │
-│ \ │
-C(1)─D(1)─E(2)
-
-Shortest path A→E: 2 edges
-Possible paths: A→B→E or A→D→E
-
-KEY: BFS finds shortest path in UNWEIGHTED graphs
-For weighted graphs, use Dijkstra's algorithm
+> [!TIP]
+> BFS finds shortest paths in **unweighted** graphs. For weighted graphs use Dijkstra's algorithm ([Shortest Paths](30_Shortest_Path_Pattern.md)).
 
 ### DFS - Detecting Cycle
 
-DFS CYCLE DETECTION
+Directed graph with edges `A→B`, `B→C`, `C→D`, `D→A`, `D→E`. The cycle is `A → B → C → D → A`.
 
-Directed Graph:
+```mermaid
+flowchart LR
+    A((A)) --> B((B))
+    B --> C((C))
+    C --> D((D))
+    D -- "back edge to a GRAY node" --> A
+    D --> E((E))
+    classDef gray fill:#e0e0e0,stroke:#616161,color:#111
+    classDef white fill:#ffffff,stroke:#616161,color:#111
+    class A,B,C,D gray
+    class E white
+```
 
-A ──→ B
-↑ │
-│ ↓
-D ←── C
-│
-↓
-E
+**How to read this diagram.** Grey nodes are on the current DFS path (state GRAY) when `D` is reached. The edge `D → A` points back to a node that is still on the path — a **back edge** — which proves a cycle. `E` has not been visited yet (WHITE).
 
-Cycle exists: A → B → C → D → A
+DFS uses three states:
 
-DFS with 3 states:
+| State | Meaning |
+| --- | --- |
+| WHITE (0) | Not visited |
+| GRAY (1) | Currently on the DFS stack (being processed) |
+| BLACK (2) | Completely processed |
 
-- WHITE (0): Not visited
-- GRAY (1): Currently in DFS stack (being processed)
-- BLACK (2): Completely processed
+Walk-through from `A`:
 
-DFS from A:
+1. Visit `A` → GRAY.
+2. Visit `B` (child of `A`) → GRAY.
+3. Visit `C` (child of `B`) → GRAY.
+4. Visit `D` (child of `C`) → GRAY. `D` points to `A`, and `A` is GRAY (in the current path) → **cycle detected**.
 
-Step 1: Visit A (GRAY)
-A(G) ──→ B
-
-Step 2: Visit B (GRAY)
-A(G) ──→ B(G)
-│
-↓
-C
-
-Step 3: Visit C (GRAY)
-A(G) ──→ B(G)
-│
-↓
-C(G)
-
-Step 4: Visit D (GRAY), D points to A
-A is GRAY (in current DFS path) → CYCLE DETECTED!
-
-Rule: Back edge to GRAY node = CYCLE
+**Rule:** an edge to a GRAY node is a back edge, and a back edge means a cycle.
 
 ---
 
@@ -656,214 +495,133 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 
 ### Fibonacci with Memoization
 
+Without memoization, `fib(5)` recomputes the same subproblems:
+
+```mermaid
+flowchart TD
+    F5["fib(5)"] --> F4["fib(4)"]
+    F5 --> F3a["fib(3)"]
+    F4 --> F3b["fib(3)"]
+    F4 --> F2a["fib(2)"]
+    F3a --> F2b["fib(2)"]
+    F3a --> F1a["fib(1)"]
+    F3b --> F2c["fib(2)"]
+    F3b --> F1b["fib(1)"]
+    F2a --> F1c["fib(1)"]
+    F2a --> F0a["fib(0)"]
+    F2b --> F1d["fib(1)"]
+    F2b --> F0b["fib(0)"]
+    F2c --> F1e["fib(1)"]
+    F2c --> F0c["fib(0)"]
+    classDef dup fill:#fce8e6,stroke:#d93025,color:#a50e0e
+    class F3a,F3b,F2a,F2b,F2c dup
 ```
-                  FIBONACCI - DP VISUALIZATION
-──────────────────────────────────────────────────
 
-WITHOUT MEMOIZATION (Exponential time):
+**How to read this diagram.** Red nodes are repeated work: `fib(3)` is computed twice and `fib(2)` three times. This is why the naive recursion takes `O(2ⁿ)` time.
 
-                        fib(5)
-                       /      \
-                  fib(4)      fib(3)
-                  /    \      /    \
-             fib(3) fib(2) fib(2) fib(1)
-             /    \
-        fib(2) fib(1)
+**With memoization (linear time).** Store each result once:
 
-Notice: fib(3) calculated twice, fib(2) calculated 3 times!
-Time: O(2^N) 😱
+| index | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `memo` | 0 | 1 | 1 | 2 | 3 | 5 |
 
-═══════════════════════════════════════════════════════════════════════
+`fib(5) = memo[4] + memo[3] = 3 + 2 = 5` — look the values up instead of recomputing. Time `O(n)`, space `O(n)`.
 
-WITH MEMOIZATION (Linear time):
+**Bottom-up (tabulation).** Only the last two values are needed:
 
-memo[] array:
-┌───┬───┬───┬───┬───┬───┐
-│ 0 │ 1 │ 1 │ 2 │ 3 │ 5 │
-└───┴───┴───┴───┴───┴───┘
-  0   1   2   3   4   5
+| step | `a` | `b` |
+| --- | --- | --- |
+| start | 0 | 1 |
+| i = 2 | 1 | 1 |
+| i = 3 | 1 | 2 |
+| i = 4 | 2 | 3 |
+| i = 5 | 3 | 5 |
 
-fib(5) = fib(4) + fib(3)
-       = memo[4] + memo[3]  ← Look up, don't recalculate!
-       = 3 + 2
-       = 5
-
-Time: O(N) 😊
-Space: O(N) for memo array
-
-═══════════════════════════════════════════════════════════════════════
-
-BOTTOM-UP (Tabulation - even better):
-
-Only need last 2 values:
-┌───┐ ┌───┐
-│ a │ │ b │
-└───┘ └───┘
-
-a=0, b=1
-i=2: a=1, b=0+1=1 → (1, 1)
-i=3: a=1, b=1+1=2 → (1, 2)
-i=4: a=2, b=1+2=3 → (2, 3)
-i=5: a=3, b=2+3=5 → (3, 5)
-
-Answer: 5
-Time: O(N), Space: O(1) 🎉
-```
+Answer `fib(5) = 5` in `O(n)` time and `O(1)` space.
 
 ### Longest Common Subsequence (LCS)
 
-```
-                  LONGEST COMMON SUBSEQUENCE
-──────────────────────────────────────────────────
+`X = "ABCDGH"`, `Y = "AEDFHR"`. Let `dp[i][j]` be the LCS length of `X[0..i-1]` and `Y[0..j-1]`.
 
-String X = "ABCDGH"
-String Y = "AEDFHR"
+| | "" | A | E | D | F | H | R |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **""** | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **A** | 0 | **1** | 1 | 1 | 1 | 1 | 1 |
+| **B** | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
+| **C** | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
+| **D** | 0 | 1 | 1 | **2** | 2 | 2 | 2 |
+| **G** | 0 | 1 | 1 | 2 | 2 | 2 | 2 |
+| **H** | 0 | 1 | 1 | 2 | 2 | **3** | 3 |
 
-DP Table: dp[i][j] = LCS length of X[0..i-1] and Y[0..j-1]
+Bold cells are where the characters match (`A`, `D`, `H`).
 
-    │ "" │ A │ E │ D │ F │ H │ R │
-────┼────┼───┼───┼───┼───┼───┼───┤
- "" │  0 │ 0 │ 0 │ 0 │ 0 │ 0 │ 0 │
-  A │  0 │ 1 │ 1 │ 1 │ 1 │ 1 │ 1 │
-  B │  0 │ 1 │ 1 │ 1 │ 1 │ 1 │ 1 │
-  C │  0 │ 1 │ 1 │ 1 │ 1 │ 1 │ 1 │
-  D │  0 │ 1 │ 1 │ 2 │ 2 │ 2 │ 2 │  ← D matches!
-  G │  0 │ 1 │ 1 │ 2 │ 2 │ 2 │ 2 │
-  H │  0 │ 1 │ 1 │ 2 │ 2 │ 3 │ 3 │  ← H matches!
+**Recurrence**
 
-Recurrence:
-┌─────────────────────────────────────────────────────────────────────┐
-│ If X[i-1] == Y[j-1]:                                                │
-│     dp[i][j] = dp[i-1][j-1] + 1    (match, add 1)                   │
-│ Else:                                                               │
-│     dp[i][j] = max(dp[i-1][j], dp[i][j-1])  (take best from left/up)│
-└─────────────────────────────────────────────────────────────────────┘
+- If `X[i-1] == Y[j-1]`: `dp[i][j] = dp[i-1][j-1] + 1` (match, extend the diagonal).
+- Otherwise: `dp[i][j] = max(dp[i-1][j], dp[i][j-1])` (take the better of up and left).
 
-LCS = "ADH" (length 3)
-
-Backtrack to find actual subsequence:
-Start at dp[6][6]=3, trace back through matches
-```
-
----
-
-🔬 **Section Challenge — 🧮 DYNAMIC PROGRAMMING**
-
-**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-
-<details><summary>Answer</summary>
-
-Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-
-</details>
-
-**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-
-<details><summary>Answer</summary>
-
-State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-
-</details>
+The LCS is **"ADH"** (length 3). To recover it, start at `dp[6][6]` and trace back: move diagonally on a match, otherwise move toward the larger neighbour.
 
 ## 🔢 MATH & BIT MANIPULATION
 
 ### Bit Operations Visual
 
-BIT MANIPULATION VISUAL
+**Checking whether `n` is a power of 2**
 
-CHECKING IF POWER OF 2:
-────────────────────────
+| `n` | Binary | `n - 1` | Binary | `n & (n - 1)` | Result |
+| --- | --- | --- | --- | --- | --- |
+| 8 | `1000` | 7 | `0111` | `0000` | All zeros: power of 2 ✓ |
+| 6 | `0110` | 5 | `0101` | `0100` | Not zero: not a power of 2 ✗ |
 
-n = 8: 1000 (binary)
-n-1 = 7: 0111 (binary)
-────
-n & (n-1): 0000 ← All zeros! Power of 2 ✓
+**Rule:** a power of 2 has exactly one bit set. `n & (n - 1)` removes the rightmost set bit, so if the result is 0 it was a power of 2.
 
-n = 6: 0110 (binary)
-n-1 = 5: 0101 (binary)
-────
-n & (n-1): 0100 ← Not zero! Not power of 2 ✗
+**Counting set bits** (Brian Kernighan's method). `n = 13` is `1101` in binary, with 3 set bits.
 
-Rule: Power of 2 has exactly ONE bit set
-n & (n-1) removes rightmost set bit
-If result is 0, it was power of 2
+| Iteration | `n` | `n - 1` | `n & (n - 1)` | Count |
+| --- | --- | --- | --- | --- |
+| 1 | `1101` | `1100` | `1100` | 1 (removed the rightmost 1) |
+| 2 | `1100` | `1011` | `1000` | 2 |
+| 3 | `1000` | `0111` | `0000` | 3 |
 
-═══════════════════════════════════════════════════════════════════════
+`n` is now 0: stop. Answer: 3 set bits ✓.
 
-COUNTING SET BITS:
-──────────────────
+**XOR properties**
 
-n = 13: 1101 (binary) → 3 set bits
+- `a ^ a = 0` (equal numbers cancel)
+- `a ^ 0 = a` (XOR with 0 gives the same number)
+- `a ^ b ^ a = b` (`a` cancels out)
 
-Iteration 1:
-n = 1101
-n-1 = 1100
-n & (n-1) = 1100 → count = 1 (removed rightmost 1)
+Example: find the single number in `[4, 1, 2, 1, 2]`.
 
-Iteration 2:
-n = 1100
-n-1 = 1011
-n & (n-1) = 1000 → count = 2
-
-Iteration 3:
-n = 1000
-n-1 = 0111
-n & (n-1) = 0000 → count = 3
-
-n = 0, stop. Answer: 3 set bits ✓
-
-═══════════════════════════════════════════════════════════════════════
-
-XOR PROPERTIES:
-───────────────
-
-a ^ a = 0 (same numbers cancel)
-a ^ 0 = a (XOR with 0 gives same number)
-a ^ b ^ a = b (a cancels out)
-
-Example: Find single number in [4, 1, 2, 1, 2]
-
+```text
 4 ^ 1 ^ 2 ^ 1 ^ 2
 = 4 ^ (1 ^ 1) ^ (2 ^ 2)
 = 4 ^ 0 ^ 0
-= 4 ← The single number!
+= 4        <- the single number
+```
+
 
 ### GCD Euclidean Algorithm
 
+Find `GCD(48, 18)`.
+
+| Step | Division | Remainder | Next |
+| --- | --- | --- | --- |
+| 1 | 48 = 18 × 2 + 12 | 12 | GCD(48, 18) = GCD(18, 12) |
+| 2 | 18 = 12 × 1 + 6 | 6 | GCD(18, 12) = GCD(12, 6) |
+| 3 | 12 = 6 × 2 + 0 | 0 | The remainder is 0, so **GCD = 6** ✓ |
+
+```mermaid
+flowchart TD
+  A["GCD(48, 18)"] -->|"48 % 18 = 12"| B["GCD(18, 12)"]
+  B -->|"18 % 12 = 6"| C["GCD(12, 6)"]
+  C -->|"12 % 6 = 0"| D["GCD(6, 0)"]
+  D --> E["return 6 (when b becomes 0, a is the GCD)"]
 ```
-                  GCD - EUCLIDEAN ALGORITHM
-──────────────────────────────────────────────────
 
-Find GCD(48, 18):
+**How to read this diagram.** Each step replaces `(a, b)` with `(b, a % b)` until `b` is 0.
 
-Step 1: 48 = 18 × 2 + 12
-        a    b        remainder
-
-        48 ÷ 18 = 2 remainder 12
-        Now: GCD(48, 18) = GCD(18, 12)
-
-Step 2: 18 = 12 × 1 + 6
-        18 ÷ 12 = 1 remainder 6
-        Now: GCD(18, 12) = GCD(12, 6)
-
-Step 3: 12 = 6 × 2 + 0
-        12 ÷ 6 = 2 remainder 0
-        Remainder is 0 → GCD = 6 ✓
-
-Visual:
-┌──────────────────────────────────────────────────────────────────────┐
-│ GCD(48, 18)                                                          │
-│    ↓                                                                 │
-│ GCD(18, 48 % 18) = GCD(18, 12)                                       │
-│    ↓                                                                 │
-│ GCD(12, 18 % 12) = GCD(12, 6)                                        │
-│    ↓                                                                 │
-│ GCD(6, 12 % 6) = GCD(6, 0)                                           │
-│    ↓                                                                 │
-│ return 6  ← When b becomes 0, a is the GCD                           │
-└──────────────────────────────────────────────────────────────────────┘
-
-Code:
+```java
 int gcd(int a, int b) {
     while (b != 0) {
         int temp = b;
@@ -872,9 +630,9 @@ int gcd(int a, int b) {
     }
     return a;
 }
-
-Time Complexity: O(log(min(a, b)))
 ```
+
+Time complexity: O(log(min(a, b))).
 
 ---
 
@@ -929,8 +687,17 @@ Remember: **Visual thinking → Clearer code!**
 
 ---
 
-> **Navigation**: [< Previous](02_Code_Templates.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Pattern_Recognition.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Visual Diagrams
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Design documents, runbooks and code-review descriptions where a sketch is faster than prose |
+| **Failure modes** | Diagrams that show the final result but not the transitions; text art that breaks when fonts change |
+| **Testing and verification** | Re-trace each diagram by hand against the code; keep diagrams next to the code they illustrate |
 
 ---
 

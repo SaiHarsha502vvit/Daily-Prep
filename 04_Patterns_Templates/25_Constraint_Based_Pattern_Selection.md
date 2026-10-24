@@ -1,35 +1,99 @@
-**Navigation**: [< Previous](24_Kadanes_Subarray_Patterns.md) | [Back to Index](00_INDEX.md) | [Pattern Master Guide](00_PATTERN_MASTER_GUIDE.md) | [Competitive Coding Thinking](../14_Mental_Models/21_Competitive_Coding_Deep_Thinking.md)
+# 🧩 Constraint-Based Pattern Selection — Pattern Guide
+
+> **Navigation**: [← Bit Manipulation + Tricks](20_BitManipulation_Plus_Tricks.md) | [Chapter index](00_INDEX.md)
 
 ---
 
-### Historical Evolution
+## 🔗 Bridge — Where This Chapter Fits
 
-**Inventor / Originator:** George Polya (1945) established problem-solving as a teachable framework. George Dantzig (1947) invented the simplex method for constraint optimization. Dijkstra formalized algorithmic constraint analysis (1959).
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | Every pattern chapter in this folder, [A2 Complexity](../03_Algorithms/A2_Complexity_FirstPrinciples.md) |
+| **You will learn** | Input-size budgets, decision tables by problem family (subarray, range, pair, graph, DP, string, math), and anti-traps |
+| **Leads to** | [Pattern Master Guide](00_PATTERN_MASTER_GUIDE.md), [Algorithm selector](../03_Algorithms/00_MASTER_ALGORITHM_SELECTOR.md) |
+| **Abstraction level** | Pattern name → **constraints decide** → verified choice |
 
-**Predecessor context:** Problem selection was based on guesswork or pattern-name memorization. The insight that constraints determine the pattern (not just keywords) wasn't formalized.
-
-**Evolution narrative:** Polya's "How to Solve It" established that problem-solving has discoverable patterns. Dantzig's simplex method introduced constraint-based optimization thinking. Dijkstra formalized that algorithm correctness depends on constraint satisfaction.
-
-**Modern practice:** Modern interview prep courses (Grokking the Coding Interview, AlgoExpert) teach constraint-based selection. FAANG interviews explicitly test whether candidates verify constraints before choosing patterns.
-
-- **Polya "How to Solve It" — 1945**: Founded problem-solving methodology; pattern recognition framework
-- **Dantzig simplex — 1947**: Constraint optimization; mathematical foundation of selection theory
-- **Dijkstra 1959**: Formalized that constraints determine algorithm correctness
-- **Modern practice**: Grokking the Coding Interview, AlgoExpert, FAANG system design
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
 
 ---
 
-### Production Reality
+## 💬 Explain It Like a Study Partner — Constraint-Based Pattern Selection
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+### 1. The bottom line
 
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+Read the limits first: they tell you the intended complexity and rule out most patterns before you think about code.
 
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+### 2. The textbook core
+
+- About 10⁸ simple operations per second: `n ≤ 10⁵` → `O(n log n)`; `n ≤ 20` → exponential; `n ≤ 5000` → `O(n²)`.
+- Properties matter as much as size: sorted? non-negative? static or updating? small value range?
+- Filter by complexity, then by question type, then by structural properties.
+- The table is a filter, not a guarantee — constants matter.
+
+### 3. The real-world analogy
+
+A **capacity plan** for a bridge: you check the load limits first, then choose the design.
+
+### 4. Walkthrough
+
+1. `n = 2·10⁵`, "count subarrays with sum k", negatives allowed.
+2. `O(n²)` is too slow; window fails (negatives).
+3. Prefix sums + hash map: `O(n)`.
+4. Confirmed by a small example.
+
+> [!NOTE]
+> **Quick check:** Why does `n = 2·10⁵` exclude `O(n²)`? *That is 4·10¹⁰ operations, far beyond ~10⁸ per second.*
+
+
+### 5. Check yourself
+
+**Q1.** `n ≤ 20`: what complexity class is acceptable?
+
+<details><summary>Answer</summary>
+
+Exponential, `O(2ⁿ)` or `O(n!)` for very small `n`: bitmask DP or backtracking.
+
+</details>
+
+**Q2.** `n = 10⁶` with a one-second limit?
+
+<details><summary>Answer</summary>
+
+`O(n log n)` or `O(n)`.
+
+</details>
+
+**Q3.** `n ≤ 5000`?
+
+<details><summary>Answer</summary>
+
+`O(n²)` is fine (about 25 million steps).
+
+</details>
+
+---
+
+## Historical Evolution
+
+**Inventor / Originator:** The habit of reading input limits to guess the intended complexity is contest folklore, written down in books such as Skiena's *The Algorithm Design Manual* and Laaksonen's *Competitive Programmer's Handbook*. The notation behind it — `O`, `Ω`, `Θ` — was popularised for computer science by Knuth's 1976 note *Big Omicron and Big Omega and Big Theta*; Pólya (1945) supplied the general advice to restate the problem and use its data and conditions.
+
+**Predecessor context:** Selection by keyword ("array" → sliding window) led to wrong tools whenever the constraints differed from the textbook case.
+
+**Evolution narrative:** The constraint tells you the budget: roughly 10⁸ simple operations per second means `n ≈ 10⁵` allows `O(n log n)` but not `O(n²)`; `n ≤ 20` suggests bitmasks; small `W` suggests pseudo-polynomial DP.
+
+**Modern practice:** Treat the table as a **filter** that rules approaches out, then confirm with the problem's structure (sorted? monotone? non-negative? static or updating?).
+
+- **Pólya — 1945**: Heuristics: understand the conditions before choosing a method
+- **Knuth — 1976**: Standardised `O`, `Ω`, `Θ` notation for algorithm analysis
+- **Contest practice — 1990s onward**: Input limit → complexity table
+
+---
+
+## Production Reality
+
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -43,9 +107,9 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 ---
 
-# Constraint-Based Pattern Selection
+## Constraint-Based Pattern Selection
 
-## If the Constraints Look Like This, Think Like That
+### If the Constraints Look Like This, Think Like That
 
 Keywords are useful, but constraints decide the final algorithm.
 
@@ -67,7 +131,7 @@ For the rewrite workflow, pair it with [Brute Force to Optimal Playbook](../14_M
 
 ---
 
-# PART 0: Open-Source Reference Anchors
+## PART 0: Open-Source Reference Anchors
 
 Open-source implementations are useful when they reveal the invariant behind a data structure. Do not paste a large implementation into your notes. Link it, explain what design choice matters, then rewrite the idea in your own contest/interview style.
 
@@ -94,7 +158,7 @@ If the repo code is short, still translate names, indexing, overflow, and langua
 
 ---
 
-# PART 1: Input Size Budget
+## PART 1: Input Size Budget
 
 The first constraint is `N`.
 
@@ -117,7 +181,7 @@ Constraints do not merely limit code. They reveal the intended shape.
 
 ---
 
-# PART 2: Subarray / Substring Decision Table
+## PART 2: Subarray / Substring Decision Table
 
 The word `subarray` only tells you the answer is contiguous. It does not automatically mean sliding window.
 
@@ -136,7 +200,7 @@ The word `subarray` only tells you the answer is contiguous. It does not automat
 | divisible by `K`           | any                      | prefix remainder count                | same remainder means divisible range   |
 | xor exactly `K`            | any                      | prefix xor + hashmap                  | `px[i] xor px[j] = K`                  |
 
-## The Negative Number Trap
+### The Negative Number Trap
 
 Sliding window sum logic usually assumes:
 
@@ -164,7 +228,7 @@ For count of exact `K`, store old prefix frequencies in a hashmap.
 
 ---
 
-# PART 3: Range Query Decision Table
+## PART 3: Range Query Decision Table
 
 | Query Type                          | Updates?     | Best Tool                              |
 | ----------------------------------- | ------------ | -------------------------------------- |
@@ -190,7 +254,7 @@ Offline queries -> consider sorting/reordering.
 
 ---
 
-# PART 4: Sorted / Pair / Search Decision Table
+## PART 4: Sorted / Pair / Search Decision Table
 
 | Situation                           | Pattern                                                   |
 | ----------------------------------- | --------------------------------------------------------- |
@@ -214,7 +278,7 @@ If yes, binary search on answer is alive.
 
 ---
 
-# PART 5: Graph Constraint Decision Table
+## PART 5: Graph Constraint Decision Table
 
 | Graph Clue                          | Best Tool      | Why                                 |
 | ----------------------------------- | -------------- | ----------------------------------- |
@@ -239,7 +303,7 @@ BFS does not work with weighted edges unless all weights are equal.
 
 ---
 
-# PART 6: DP Constraint Decision Table
+## PART 6: DP Constraint Decision Table
 
 | Clue                           | State Shape                  |
 | ------------------------------ | ---------------------------- |
@@ -263,7 +327,7 @@ If choices affect future and overlap repeats -> DP.
 
 ---
 
-# PART 7: String Constraint Decision Table
+## PART 7: String Constraint Decision Table
 
 | String Clue                               | Pattern                                                |
 | ----------------------------------------- | ------------------------------------------------------ |
@@ -286,7 +350,7 @@ The pattern changes completely.
 
 ---
 
-# PART 8: Math and Counting Decision Table
+## PART 8: Math and Counting Decision Table
 
 | Clue                             | Tool                          |
 | -------------------------------- | ----------------------------- |
@@ -309,7 +373,7 @@ If values are up to 1e9 and you add/multiply/count pairs, use long.
 
 ---
 
-# PART 9: Pattern Anti-Traps
+## PART 9: Pattern Anti-Traps
 
 | Tempting Pattern          | Fails When                            | Use Instead                       |
 | ------------------------- | ------------------------------------- | --------------------------------- |
@@ -326,7 +390,7 @@ If values are up to 1e9 and you add/multiply/count pairs, use long.
 
 ---
 
-# PART 10: 30-Second Constraint Checklist
+## PART 10: 30-Second Constraint Checklist
 
 Before choosing a pattern, answer:
 
@@ -346,14 +410,24 @@ If any answer changes, the pattern may change.
 
 ---
 
+## 🏢 Enterprise Lens — Constraint-Based Pattern Selection
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Design reviews, capacity planning, performance budgeting |
+| **Failure modes** | Ignoring constants and memory; choosing by keyword; forgetting update patterns (static vs dynamic) |
+| **Testing and verification** | Practise the table on past problems: write constraint → chosen pattern → justification |
+
+---
+
 ## Reality Check
 
-**"Constraints exist to size the test data"** ? Constraints are the setter TELLING you the intended complexity: n up to 10^5 means O(n log n) or better (rules out quadratic), n up to 20 whispers bitmask/backtracking, n up to 500 permits O(n cubed) DP, values up to 10^9 kill counting arrays and hint binary-search-on-answer. Reading them first is not a tip � it is the router that eliminates most of the pattern catalog before you read the story.
+**"Constraints exist to size the test data"** — Constraints are the setter TELLING you the intended complexity: n up to 10^5 means O(n log n) or better (rules out quadratic), n up to 20 whispers bitmask/backtracking, n up to 500 permits O(n cubed) DP, values up to 10^9 kill counting arrays and hint binary-search-on-answer. Reading them first is not a tip — it is the router that eliminates most of the pattern catalog before you read the story.
 
-**"The 10^8 operations-per-second rule is exact"** ? It is a planning heuristic with half-an-order-of-magnitude error bars either way: constant factors (hash overhead vs array walk), language (Java JIT vs Python), and judge hardware move the line. Use it directionally � 10^5 squared = 10^10 is dead-on-arrival, n log n at 10^6 is comfortable � and stop defending 3�10^8 borderline plans; borderline means find the better pattern or tighten constants deliberately (arrays over maps, iteration over recursion).
+**"The 10^8 operations-per-second rule is exact"** — It is a planning heuristic with half-an-order-of-magnitude error bars either way: constant factors (hash overhead vs array walk), language (Java JIT vs Python), and judge hardware move the line. Use it directionally — 10^5 squared = 10^10 is dead-on-arrival, n log n at 10^6 is comfortable — and stop defending 3·10^8 borderline plans; borderline means find the better pattern or tighten constants deliberately (arrays over maps, iteration over recursion).
 
-**"Tight memory limits just mean avoid waste"** ? Memory limits ENCODE algorithmic intent the way time limits do: an O(n�m) DP table at 10^4 � 10^4 ints is 400MB � the setter is mandating rolling rows; value ranges beyond 10^7 forbid boolean-array visited sets; "O(1) extra space" on range-1..n arrays is a flashing sign for cyclic sort or value-as-pointer Floyd. Treat the memory line as a second router, not a formality.
+**"Tight memory limits just mean avoid waste"** — Memory limits ENCODE algorithmic intent the way time limits do: an O(n·m) DP table at 10^4 × 10^4 ints is 400MB — the setter is mandating rolling rows; value ranges beyond 10^7 forbid boolean-array visited sets; "O(1) extra space" on range-1..n arrays is a flashing sign for cyclic sort or value-as-pointer Floyd. Treat the memory line as a second router, not a formality.
 
-**"Multiple patterns fitting means pick your favorite"** ? Fit is filtered by the QUESTION TYPE after complexity: existence questions tolerate greedy/binary-search answers; counting questions usually force DP or math (greedy cannot count); construction ("output the actual arrangement") disqualifies approaches that only track optima without parents/choices. The two-router pipeline � constraints prune complexity, answer-type prunes semantics � usually leaves exactly one serious candidate, which is the entire point of this file.
+**"Multiple patterns fitting means pick your favorite"** — Fit is filtered by the QUESTION TYPE after complexity: existence questions tolerate greedy/binary-search answers; counting questions usually force DP or math (greedy cannot count); construction ("output the actual arrangement") disqualifies approaches that only track optima without parents/choices. The two-router pipeline — constraints prune complexity, answer-type prunes semantics — usually leaves exactly one serious candidate, which is the entire point of this file.
 
-**"Constraint-reading is a competitive-programming habit only"** ? It is capacity planning wearing a costume. "How many rows before this endpoint needs an index" and "n up to what before this nested loop pages the dashboard" are the same estimation muscle: bound the input, multiply by per-item cost, compare against the budget (100ms API, 16ms frame). Engineers who practiced constraint-reading do this arithmetic instinctively in design reviews; the ones who skipped it discover complexity limits from production incidents instead.
+**"Constraint-reading is a competitive-programming habit only"** — It is capacity planning wearing a costume. "How many rows before this endpoint needs an index" and "n up to what before this nested loop pages the dashboard" are the same estimation muscle: bound the input, multiply by per-item cost, compare against the budget (100ms API, 16ms frame). Engineers who practiced constraint-reading do this arithmetic instinctively in design reviews; the ones who skipped it discover complexity limits from production incidents instead.

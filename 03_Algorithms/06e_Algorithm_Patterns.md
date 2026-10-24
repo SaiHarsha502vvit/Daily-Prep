@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](06d_String_Algorithms.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← Advanced Algo Deep](06c_Advanced_Algo_Deep.md) | [Chapter index](00_INDEX.md) | [Online, Approximation &… →](25_Online_Approximation_And_Linear_Programming.md)
 🧠 **Mental Model**: See [Optimization Pipeline](../14_Mental_Models/14_Optimization_Pipeline.md) — systematic brute force to optimal approach
 
 ---
@@ -18,9 +18,53 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [A3 Hardness](A3_Lower_Bounds_And_NP.md), [Graphs](05d_Graphs_Advanced_Algos.md), [Strings](13_String_Algorithms_Complete.md) |
+| **You will learn** | P vs NP, randomized algorithms, advanced string algorithms, network flow, computational geometry basics, a summary of design paradigms |
+| **Leads to** | [Approximation, Online & LP](25_Online_Approximation_And_Linear_Programming.md), [Production](13_Algorithms_In_Production.md) |
+| **Abstraction level** | L5→L7: breadth survey of advanced topics |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Modern Algorithms & Advanced Topics
+
+### 1. The bottom line
+
+A tour of topics that sit beyond the core paradigms: hardness, randomness, flows and geometry.
+
+### 2. The textbook core
+
+- **Max-flow = min-cut:** the largest flow equals the capacity of the smallest cut.
+- Flow algorithms: Ford–Fulkerson/Edmonds–Karp/Dinic; bipartite matching reduces to flow.
+- Randomized algorithms trade certainty for speed or simplicity.
+- Convex hull and sweep line are the workhorses of computational geometry.
+
+### 3. The real-world analogy
+
+**Water pipes**: the most water you can push through a network equals the bottleneck formed by its narrowest set of pipes.
+
+### 4. Walkthrough
+
+1. Network s→a (3), s→b (2), a→t (2), b→t (3).
+2. Augment path s→a→t with 2; s→b→t with 2.
+3. Remaining: s→a (1) cannot continue (a→t saturated); s→b (0).
+4. Max flow = 4; min cut {a→t, s→b} = 4.
+
+> [!NOTE]
+> **Quick check:** How does bipartite matching reduce to flow? *Source → left nodes → right nodes → sink with unit capacities.*
+
+---
+
+
 ### Historical Evolution
 
-Advanced offline query algorithms emerged from the intersection of competitive programming and database query optimization. **Mo's Algorithm** (offline range query answering) was introduced by **Mo, Q. I. in 1993** as a technique for answering offline queries on static arrays by reordering them to minimize the movement of the query window — the key insight is that sorting queries by block size ($n/\sqrt{q}$) reduces the total movement to $O(n\sqrt{q})$. **Heavy-Light Decomposition (HLD)** was developed by **Harold Djidjev and Robert Tarjan in the 1980s** for network flow applications, with the classic "Maintaining trees in a linear ordering" paper by **Sleator and Tarjan (1983)** formalizing heavy-path concepts for link-cut trees. **Wavelet Trees** were introduced by **Grossi, Gupta, and Vitter in 2003** for high-dimensional rank/select queries on static strings — they generalize binary indexed trees to multiple dimensions and enable $O(\log \sigma)$ queries on sequences over alphabets of size $\sigma$, critical for bioinformatics (FM-index, BWT-based searching). **Dinic's algorithm** for maximum flow was published by **Yefim Dinic in 1970** with the capacity scaling optimization (Goldberg 1985), and remains the go-to algorithm for network flow problems. Modern practice (post-2010) applies these patterns in competitive programming (CF, AtCoder), database index structures, and network analysis tools.
+Advanced offline query algorithms emerged from the intersection of competitive programming and database query optimization. **Mo's Algorithm** (offline range query answering) was introduced by the Chinese competitive programmer **Mo Tao** (popularised around 2009–2010) as a technique for answering offline queries on static arrays by reordering them to minimize the movement of the query window — the key insight is that sorting queries by block size ($n/\sqrt{q}$) reduces the total movement to $O(n\sqrt{q})$. **Heavy-Light Decomposition (HLD)** grows out of the heavy-path idea in **Sleator and Tarjan's link-cut tree work (1983)**, and its competitive-programming form (heavy chains + a segment tree) was popularised in the 2000s. **Wavelet Trees** were introduced by **Grossi, Gupta, and Vitter in 2003** for high-dimensional rank/select queries on static strings — they generalize binary indexed trees to multiple dimensions and enable $O(\log \sigma)$ queries on sequences over alphabets of size $\sigma$, critical for bioinformatics (FM-index, BWT-based searching). **Dinic's algorithm** for maximum flow was published by **Yefim Dinic in 1970** (the later push–relabel algorithm of **Goldberg and Tarjan, 1986** is another standard choice), and remains a go-to algorithm for network flow problems. Modern practice (post-2010) applies these patterns in competitive programming (CF, AtCoder), database index structures, and network analysis tools.
 
 ---
 
@@ -48,27 +92,22 @@ P (Polynomial Time):
 - Example: Halting Problem (undecidable!)
   VISUAL RELATIONSHIP (if P ≠ NP):
 
-```text
-NP-Hard
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                 │
-│  ┌────────────────────────────── NP ─────────────────────────────────────────┐  │
-│  │                                                                           │  │
-│  │  ┌────────────── P ──────────────┐   ┌──────── NP-Complete ────────────┐ │  │
-│  │  │                               │   │ • SAT                            │ │  │
-│  │  │                               │   │ • 3-SAT                          │ │  │
-│  │  └───────────────────────────────┘   │ • Vertex Cover                   │ │  │
-│  │                                      │ • Hamiltonian Path               │ │  │
-│  │                                      │ • Traveling Salesman             │ │  │
-│  │                                      │ • Graph Coloring                 │ │  │
-│  │                                      │ • Subset Sum                     │ │  │
-│  │                                      └───────────────────────────────────┘ │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                 │
-│  NP-Hard may also contain problems outside NP (e.g., Halting Problem).         │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+  subgraph NPH["NP-Hard"]
+    subgraph NPS["NP"]
+      subgraph PS["P"]
+        p1["Sorting, shortest path, ..."]
+      end
+      subgraph NPC["NP-Complete"]
+        c1["SAT, 3-SAT, Vertex Cover, Hamiltonian Path,<br/>Traveling Salesman (decision), Graph Coloring, Subset Sum"]
+      end
+    end
+    h1["Problems outside NP, e.g. the Halting Problem"]
+  end
 ```
+
+**How to read this diagram.** Each box sits inside the larger class. It assumes P ≠ NP, so P and NP-Complete are disjoint inside NP. NP-Hard also contains problems that are not in NP at all, such as the Halting Problem.
 
 PROVING NP-COMPLETENESS:
 To show problem X is NP-Complete:
@@ -111,54 +150,48 @@ public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
 }
 ```
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ EXAMPLE 2: SET COVER (log n - Approximation)                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│ Problem: Given universe U and sets S₁...Sₘ, find minimum number of sets that  │
-│ cover all elements.                                                             │
-│                                                                                 │
-│ Greedy Algorithm:                                                               │
-│ 1. While uncovered elements exist:                                              │
-│    a. Pick set Sᵢ that covers most uncovered elements                          │
-│    b. Add Sᵢ to solution                                                        │
-│    c. Mark covered elements                                                     │
-│                                                                                 │
-│ Approximation ratio: O(log n), where n = |U|                                   │
-│ (This is optimal unless P = NP.)                                                │
-│                                                                                 │
-│ EXAMPLE 3: TSP with Triangle Inequality (1.5-Approximation)                     │
-│ Christofides Algorithm:                                                         │
-│ 1. Find MST of graph                                                            │
-│ 2. Find minimum weight perfect matching on odd-degree vertices                  │
-│ 3. Combine MST + matching (Eulerian graph)                                      │
-│ 4. Find Euler tour                                                              │
-│ 5. Shortcut to Hamiltonian cycle                                                │
-│                                                                                 │
-│ Approximation ratio: 3/2 = 1.5                                                  │
-│ (Best known for metric TSP.)                                                    │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**EXAMPLE 2: SET COVER (log n - Approximation)**
+
+```text
+Problem: Given universe U and sets S₁...Sₘ, find minimum number of sets that
+cover all elements.
+
+Greedy Algorithm:
+1. While uncovered elements exist:
+   a. Pick set Sᵢ that covers most uncovered elements
+   b. Add Sᵢ to solution
+   c. Mark covered elements
+
+Approximation ratio: O(log n), where n = |U|
+(This is optimal unless P = NP.)
+
+EXAMPLE 3: TSP with Triangle Inequality (1.5-Approximation)
+Christofides Algorithm:
+1. Find MST of graph
+2. Find minimum weight perfect matching on odd-degree vertices
+3. Combine MST + matching (Eulerian graph)
+4. Find Euler tour
+5. Shortcut to Hamiltonian cycle
+
+Approximation ratio: 3/2 = 1.5
+(Best known for metric TSP.)
 ```
 
 ## 📌 Randomized Algorithms
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ RANDOMIZED ALGORITHMS - DEEP DIVE                                               │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ TWO TYPES:                                                                      │
-│ ───────────                                                                     │
-│ 1. Las Vegas: Always correct, expected polynomial time                          │
-│ Example: Randomized QuickSort                                                   │
-│                                                                                 │
-│ 2. Monte Carlo: May be wrong, but guaranteed polynomial time                    │
-│ Example: Primality testing, Min-Cut                                             │
-│                                                                                 │
-│                                                                                 │
-│ RANDOMIZED QUICKSORT:                                                           │
-│ ─────────────────────                                                           │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**RANDOMIZED ALGORITHMS - DEEP DIVE**
+
+```text
+TWO TYPES:
+───────────
+1. Las Vegas: Always correct, expected polynomial time
+Example: Randomized QuickSort
+
+2. Monte Carlo: May be wrong, but guaranteed polynomial time
+Example: Primality testing, Min-Cut
+
+RANDOMIZED QUICKSORT:
+─────────────────────
 ```
 
 ```java
@@ -178,25 +211,23 @@ void randomizedQuickSort(int[] arr, int low, int high) {
 // Worst case: O(n²) but probability is 1/n! → negligible
 ```
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ KARGER'S MIN-CUT ALGORITHM                                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│ Find minimum cut in undirected graph.                                          │
-│                                                                                 │
-│ Algorithm:                                                                      │
-│ 1. While more than 2 vertices:                                                 │
-│    a. Pick random edge (u, v)                                                  │
-│    b. Contract u and v into single vertex                                      │
-│    c. Remove self-loops                                                        │
-│ 2. Return number of edges between final 2 vertices                             │
-│                                                                                 │
-│ Probability of finding min-cut: ≥ 1/n²                                         │
-│ Run n² log n times → P(failure) < 1/n                                          │
-│ Total time: O(n⁴ log n) basic, O(n² log³ n) improved                           │
-│                                                                                 │
-│ MILLER-RABIN PRIMALITY TEST:                                                    │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**KARGER'S MIN-CUT ALGORITHM**
+
+```text
+Find minimum cut in undirected graph.
+
+Algorithm:
+1. While more than 2 vertices:
+   a. Pick random edge (u, v)
+   b. Contract u and v into single vertex
+   c. Remove self-loops
+2. Return number of edges between final 2 vertices
+
+Probability of finding min-cut: ≥ 1/n²
+Run n² log n times → P(failure) < 1/n
+Total time: O(n⁴ log n) basic, O(n² log³ n) improved
+
+MILLER-RABIN PRIMALITY TEST:
 ```
 
 ```java
@@ -241,31 +272,22 @@ private boolean millerRabinTest(long n, long d, int r, long a) {
 
 ## 📝 Advanced String Algorithms
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ STRING MATCHING ALGORITHMS - COMPLETE COMPARISON                                │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ ALGORITHM COMPARISON:                                                           │
-│ ┌─────────────────────┬────────────────┬────────────────┬──────────────────┐    │
-│ │ Algorithm │ Preprocessing │ Search Time │ Space │                             │
-│ ├─────────────────────┼────────────────┼────────────────┼──────────────────┤    │
-│ │ Naive │ O(1) │ O(nm) │ O(1) │                                                 │
-│ │ KMP │ O(m) │ O(n) │ O(m) │                                                    │
-│ │ Boyer-Moore │ O(m + σ) │ O(nm) worst │ O(m + σ) │                             │
-│ │ │ │ O(n/m) best │ │                                                           │
-│ │ Rabin-Karp │ O(m) │ O(nm) worst │ O(1) │                                      │
-│ │ │ │ O(n+m) expected│ │                                                        │
-│ │ Z-Algorithm │ O(m) │ O(n) │ O(n+m) │                                          │
-│ │ Suffix Array │ O(n log n) │ O(m log n) │ O(n) │                               │
-│ │ Suffix Tree │ O(n) │ O(m) │ O(n) │                                            │
-│ │ Aho-Corasick │ O(Σ|patterns|) │ O(n+matches) │ O(Σ|patterns|·σ) │             │
-│ └─────────────────────┴────────────────┴────────────────┴──────────────────┘    │
-│                                                                                 │
-│ n = text length, m = pattern length, σ = alphabet size                          │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### String Matching Algorithms - Complete Comparison
+
+**Algorithm Comparison**:
+
+| Algorithm | Preprocessing | Search Time | Space |
+| --- | --- | --- | --- |
+| Naive | O(1) | O(nm) | O(1) |
+| KMP | O(m) | O(n) | O(m) |
+| Boyer-Moore | O(m + σ) | O(nm) worst<br>O(n/m) best | O(m + σ) |
+| Rabin-Karp | O(m) | O(nm) worst<br>O(n+m) expected | O(1) |
+| Z-Algorithm | O(m) | O(n) | O(n+m) |
+| Suffix Array | O(n log n) | O(m log n) | O(n) |
+| Suffix Tree | O(n) | O(m) | O(n) |
+| Aho-Corasick | O(Σ\|patterns\|) | O(n+matches) | O(Σ\|patterns\|·σ) |
+
+n = text length, m = pattern length, σ = alphabet size
 
 ```java
 // Z-ALGORITHM: Find all occurrences of pattern in text
@@ -373,27 +395,20 @@ class AhoCorasick {
 
 ## 🌐 Network Flow Algorithms
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ MAXIMUM FLOW - COMPLETE GUIDE                                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ PROBLEM: Find maximum flow from source s to sink t in a directed graph          │
-│ with edge capacities                                                            │
-│                                                                                 │
-│ ALGORITHM COMPARISON:                                                           │
-│ ┌─────────────────────┬────────────────────────┬────────────────────────────┐   │
-│ │ Algorithm │ Time Complexity │ Notes │                                         │
-│ ├─────────────────────┼────────────────────────┼────────────────────────────┤   │
-│ │ Ford-Fulkerson │ O(E × maxFlow) │ Uses DFS, may not terminate│                │
-│ │ Edmonds-Karp │ O(V × E²) │ Uses BFS for augmenting │                          │
-│ │ Dinic │ O(V² × E) │ Level graph + blocking flow│                              │
-│ │ Push-Relabel │ O(V² × E) │ Different approach │                               │
-│ │ Dinic (unit cap) │ O(E × √V) │ For unit capacity graphs │                     │
-│ └─────────────────────┴────────────────────────┴────────────────────────────┘   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### Maximum Flow - Complete Guide
+
+PROBLEM: Find maximum flow from source s to sink t in a directed graph  
+with edge capacities
+
+**Algorithm Comparison**:
+
+| Algorithm | Time Complexity | Notes |
+| --- | --- | --- |
+| Ford-Fulkerson | O(E × maxFlow) | Uses DFS, may not terminate |
+| Edmonds-Karp | O(V × E²) | Uses BFS for augmenting |
+| Dinic | O(V² × E) | Level graph + blocking flow |
+| Push-Relabel | O(V² × E) | Different approach |
+| Dinic (unit cap) | O(E × √V) | For unit capacity graphs |
 
 ```java
 // DINIC'S ALGORITHM - O(V²E)
@@ -470,25 +485,10 @@ class Dinic {
 // 4. Circulation with Demands: Add super-source and super-sink
 ```
 
-🔬 **Section Challenge — 🌐 Network Flow Algorithms**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
-
 ## 📌 Computational Geometry Basics
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ COMPUTATIONAL GEOMETRY - ESSENTIAL ALGORITHMS                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+**COMPUTATIONAL GEOMETRY - ESSENTIAL ALGORITHMS**
+
 
 ```java
 // CONVEX HULL - Graham Scan O(n log n)
@@ -570,56 +570,53 @@ boolean onSegment(int[] a, int[] b, int[] c) {
 
 ## 📋 Algorithm Design Paradigms — Summary
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE WHICH PARADIGM                                                      │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ DIVIDE AND CONQUER:                                                             │
-│ • Problem can be split into independent subproblems                             │
-│ • Subproblems are similar to original                                           │
-│ • Examples: Merge Sort, Quick Sort, Binary Search, Strassen's Matrix            │
-│                                                                                 │
-│ DYNAMIC PROGRAMMING:                                                            │
-│ • Optimal substructure: optimal solution uses optimal subsolutions              │
-│ • Overlapping subproblems: same subproblems solved multiple times               │
-│ • Examples: Fibonacci, Knapsack, LCS, Edit Distance, Matrix Chain               │
-│                                                                                 │
-│ GREEDY:                                                                         │
-│ • Local optimal choice leads to global optimal                                  │
-│ • No need to reconsider past choices                                            │
-│ • Examples: Huffman, Activity Selection, Dijkstra, MST (Prim, Kruskal)          │
-│                                                                                 │
-│ BACKTRACKING:                                                                   │
-│ • Find all (or some) solutions                                                  │
-│ • Build solution incrementally, abandon if invalid                              │
-│ • Examples: N-Queens, Sudoku, Subset Sum, Permutations                          │
-│                                                                                 │
-│ BRANCH AND BOUND:                                                               │
-│ • Optimization problems                                                         │
-│ • Use bounds to prune search space                                              │
-│ • Examples: TSP, Integer Linear Programming, 0/1 Knapsack                       │
-│                                                                                 │
-│                                                                                 │
-│ COMPLEXITY CHEAT SHEET:                                                         │
-│ ┌──────────────────────┬────────────────────────────────────────────────────┐   │
-│ │ If you see... │ Think about... │                                              │
-│ ├──────────────────────┼────────────────────────────────────────────────────┤   │
-│ │ Sorted array │ Binary search O(log n) │                                       │
-│ │ Find all subsets │ 2^n solutions (exponential) │                              │
-│ │ Find all permutations│ n! solutions (factorial) │                             │
-│ │ Shortest path │ BFS (unweighted), Dijkstra (weighted) │                       │
-│ │ Connected components │ DFS/BFS/Union-Find │                                   │
-│ │ Optimal order │ DP on intervals │                                             │
-│ │ Maximum/Minimum │ DP, Greedy, or Binary search on answer │                    │
-│ │ Graph with cycles │ May need to detect or handle cycles │                     │
-│ │ String matching │ KMP, Z-algorithm, Rolling hash │                            │
-│ │ Range queries │ Segment Tree, Fenwick Tree │                                  │
-│ │ Multiple patterns │ Trie, Aho-Corasick │                                      │
-│ └──────────────────────┴────────────────────────────────────────────────────┘   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### When to USE Which Paradigm
+
+**Divide and Conquer**:
+
+- Problem can be split into independent subproblems
+- Subproblems are similar to original
+- Examples: Merge Sort, Quick Sort, Binary Search, Strassen's Matrix
+
+**Dynamic Programming**:
+
+- Optimal substructure: optimal solution uses optimal subsolutions
+- Overlapping subproblems: same subproblems solved multiple times
+- Examples: Fibonacci, Knapsack, LCS, Edit Distance, Matrix Chain
+
+**Greedy**:
+
+- Local optimal choice leads to global optimal
+- No need to reconsider past choices
+- Examples: Huffman, Activity Selection, Dijkstra, MST (Prim, Kruskal)
+
+**Backtracking**:
+
+- Find all (or some) solutions
+- Build solution incrementally, abandon if invalid
+- Examples: N-Queens, Sudoku, Subset Sum, Permutations
+
+**Branch and Bound**:
+
+- Optimization problems
+- Use bounds to prune search space
+- Examples: TSP, Integer Linear Programming, 0/1 Knapsack
+
+**Complexity Cheat Sheet**:
+
+| If you see... | Think about... |
+| --- | --- |
+| Sorted array | Binary search O(log n) |
+| Find all subsets | 2^n solutions (exponential) |
+| Find all permutations | n! solutions (factorial) |
+| Shortest path | BFS (unweighted), Dijkstra (weighted) |
+| Connected components | DFS/BFS/Union-Find |
+| Optimal order | DP on intervals |
+| Maximum/Minimum | DP, Greedy, or Binary search on answer |
+| Graph with cycles | May need to detect or handle cycles |
+| String matching | KMP, Z-algorithm, Rolling hash |
+| Range queries | Segment Tree, Fenwick Tree |
+| Multiple patterns | Trie, Aho-Corasick |
 
 ---
 
@@ -631,14 +628,14 @@ _Master these algorithms to understand the foundations of computer science!_ �
 
 ---
 
-# 💪 Curated Practice Problems — Advanced Algorithms
+## 💪 Curated Practice Problems — Advanced Algorithms
 
 **HOW TO USE**: These are harder problems covering greedy, bit manipulation, string algorithms, and competitive patterns.
 Attempt only after mastering the fundamentals in earlier chapters.
 
 ---
 
-## Section 1: Greedy Algorithms
+### Section 1: Greedy Algorithms
 
 | #   | Problem                            | Platform | Difficulty | Key Technique                         |
 | --- | ---------------------------------- | -------- | ---------- | ------------------------------------- |
@@ -655,17 +652,7 @@ Attempt only after mastering the fundamentals in earlier chapters.
 
 ---
 
-🔬 **Section Challenge — Section 1: Greedy Algorithms**
-
-**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-
-<details><summary>Answer</summary>
-
-Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-
-</details>
-
-## Section 2: Bit Manipulation
+### Section 2: Bit Manipulation
 
 | #   | Problem                                           | Platform | Difficulty | Key Technique                 |
 | --- | ------------------------------------------------- | -------- | ---------- | ----------------------------- |
@@ -682,7 +669,7 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 
 ---
 
-## Section 3: String Algorithms
+### Section 3: String Algorithms
 
 | #   | Problem                                  | Platform | Difficulty | Key Technique                    |
 | --- | ---------------------------------------- | -------- | ---------- | -------------------------------- |
@@ -699,7 +686,7 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 
 ---
 
-## HIDDEN GEMS — Advanced
+### HIDDEN GEMS — Advanced
 
 | #   | Problem                                  | Platform | Why It's Valuable                        |
 | --- | ---------------------------------------- | -------- | ---------------------------------------- |
@@ -710,7 +697,7 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 | 5   | Gray Code (LC 89)                        | LeetCode | i XOR (i &gt;&gt; 1) elegant bit pattern |
 | 6   | Circular Array Loop (LC 457)             | LeetCode | Slow/fast pointer on circular            |
 
-### Topical Breadth — Advanced Pattern Selection Trade-offs
+#### Topical Breadth — Advanced Pattern Selection Trade-offs
 
 The advanced patterns in this chapter each exploit a different constraint boundary, and the selection hinges on whether the problem is static or dynamic, online or offline. **Meet-in-the-Middle** reduces O(2^n) to O(2^(n/2) * n) by splitting the set and enumerating both halves — the trade-off is it requires O(2^(n/2)) space and works only when you can enumerate all partial solutions cleanly; the practical threshold is n <= 30 where 2^30 is too large for brute force but 2^15 is manageable. **Sqrt Decomposition** answers range queries in O(sqrt(n)) by dividing the array into blocks — the trade-off versus segment tree is that sqrt decomposition is simpler to implement and faster for static arrays with O(1) point updates, but degrades to O(sqrt(n)) per query where segment tree gives O(log n). **Mo's Algorithm** answers offline range queries in O((n+q)*sqrt(n)) on static arrays — the trade-off is it requires the array to be static (no updates) and needs block size tuning; it outperforms segment tree when you have many queries (q >> n) on read-only data. **Heavy-Light Decomposition (HLD)** enables O(log^2 n) path queries on trees by decomposing into O(log n) heavy paths — the trade-off versus Euler tour with BIT is that HLD handles both path and subtree queries efficiently, while Euler tour + BIT is O(log n) for subtree but O(n) for arbitrary paths; use HLD when the problem mixes path aggregates with point updates. **Wavelet Tree** answers static range k-th order statistics in O(log sigma) where sigma is alphabet size — the trade-off versus segment tree is that wavelet tree handles static arrays with range k-th/min/max queries elegantly but cannot handle updates; use wavelet tree when the array never changes and you need median/k-th frequently.
 
@@ -727,7 +714,7 @@ Select **Meet-in-the-Middle** when n is between 20-30 and the problem is a subse
 
 ---
 
-## Proof Corner -- Sqrt Decomposition O(sqrt(n)) per Query
+### Proof Corner -- Sqrt Decomposition O(sqrt(n)) per Query
 
 **Claim**: With sqrt decomposition, each range-sum query over [l, r] costs O(sqrt(n)) time.
 
@@ -746,7 +733,7 @@ Select **Meet-in-the-Middle** when n is between 20-30 and the problem is a subse
 
 ---
 
-## When It Breaks -- Algorithm Patterns
+### When It Breaks -- Algorithm Patterns
 
 **1. Mo's algorithm on dynamic arrays** -- Mo's algorithm requires a STATIC array (no updates). If the problem has point updates, you need Mo's with updates (3D sorting) which is O(n^(5/3)). Applying standard Mo's with updates gives wrong answers silently.
 
@@ -758,7 +745,7 @@ Select **Meet-in-the-Middle** when n is between 20-30 and the problem is a subse
 
 ---
 
-## Reference Anchor
+### Reference Anchor
 
 **No standard JDK implementations** for sqrt decomp, Mo's, or HLD -- these are competitive programming patterns. Reference implementations:
 
@@ -791,14 +778,24 @@ int query(int node, int l, int r, int ql, int qr) {
 
 ---
 
+## 🏢 Enterprise Lens — Modern Algorithms & Advanced Topics
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Traffic and logistics flows, assignment/matching systems, image segmentation (min-cut), geospatial queries |
+| **Failure modes** | Not recognising a flow model; wrong capacities for undirected edges; precision errors in geometry |
+| **Testing and verification** | Check flow conservation and min-cut equality on random networks |
+
+---
+
 ## Reality Check
 
-**"Learning more algorithms is better than mastering patterns"** ? Knowing 50 algorithms at surface level is less useful than deeply understanding 10 patterns that each apply to dozens of problems. Sliding window, two pointers, binary search on answer, BFS/DFS, dynamic programming, and greedy cover 80 percent of algorithmic problems. Recognizing WHICH pattern applies to a new problem is the skill that transfers.
+**"Learning more algorithms is better than mastering patterns"** → Knowing 50 algorithms at surface level is less useful than deeply understanding 10 patterns that each apply to dozens of problems. Sliding window, two pointers, binary search on answer, BFS/DFS, dynamic programming, and greedy cover 80 percent of algorithmic problems. Recognizing WHICH pattern applies to a new problem is the skill that transfers.
 
-**"Pattern recognition is about memorizing problem-solution mappings"** ? Pattern recognition is about identifying the STRUCTURAL similarity between a new problem and known patterns. A problem asking for the longest substring with at most k distinct characters maps to sliding window, not because you memorized that specific problem, but because you recognize the constraint of maintaining a window property while maximizing window size.
+**"Pattern recognition is about memorizing problem-solution mappings"** → Pattern recognition is about identifying the STRUCTURAL similarity between a new problem and known patterns. A problem asking for the longest substring with at most k distinct characters maps to sliding window, not because you memorized that specific problem, but because you recognize the constraint of maintaining a window property while maximizing window size.
 
-**"Each problem has exactly one correct pattern"** ? Many problems can be solved with multiple patterns: finding the kth largest element can use sorting (O(n log n)), a max-heap of size k (O(n log k)), or quickselect (O(n) average). The optimal choice depends on constraints: quickselect for one-time queries, a heap for streaming data where new elements arrive continuously.
+**"Each problem has exactly one correct pattern"** → Many problems can be solved with multiple patterns: finding the kth largest element can use sorting (O(n log n)), a max-heap of size k (O(n log k)), or quickselect (O(n) average). The optimal choice depends on constraints: quickselect for one-time queries, a heap for streaming data where new elements arrive continuously.
 
-**"Dynamic programming is the hardest pattern"** ? DP difficulty comes from two separate skills: identifying that a problem has overlapping subproblems (pattern recognition) and defining the recurrence relation (mathematical modeling). Many developers who struggle with DP can solve the same problems with memoized recursion (top-down DP), which requires only recognizing the recursive structure and adding a cache. Bottom-up DP is an optimization of top-down, not a prerequisite.
+**"Dynamic programming is the hardest pattern"** → DP difficulty comes from two separate skills: identifying that a problem has overlapping subproblems (pattern recognition) and defining the recurrence relation (mathematical modeling). Many developers who struggle with DP can solve the same problems with memoized recursion (top-down DP), which requires only recognizing the recursive structure and adding a cache. Bottom-up DP is an optimization of top-down, not a prerequisite.
 
-**"Two pointers is a simple pattern"** ? Two pointers has multiple variants: converging pointers (sorted array sum pairs), slow-fast pointers (cycle detection, middle of linked list), sliding window (variable-size subarray), and partition pointers (Dutch national flag problem). Each variant has different invariants and termination conditions. Treating all two-pointer problems as the same pattern leads to incorrect solutions.
+**"Two pointers is a simple pattern"** → Two pointers has multiple variants: converging pointers (sorted array sum pairs), slow-fast pointers (cycle detection, middle of linked list), sliding window (variable-size subarray), and partition pointers (Dutch national flag problem). Each variant has different invariants and termination conditions. Treating all two-pointer problems as the same pattern leads to incorrect solutions.

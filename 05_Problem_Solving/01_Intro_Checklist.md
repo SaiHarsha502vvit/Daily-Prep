@@ -1,6 +1,5 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Math_Numbers.md)
+> **Navigation**: [Chapter index](00_INDEX.md) | [Arrays →](04_Arrays.md)
 
-**Problems 01/14** | | [Index](../00_MASTER_INDEX.md) | [Next](02_Math_Numbers.md)
 
 ---
 
@@ -10,14 +9,79 @@
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Algorithm Thinking](../03_Algorithms/01_Algorithm_Thinking.md), [Pattern Recognition](../04_Patterns_Templates/04_Pattern_Recognition.md) |
+| **You will learn** | The read → brute force → bottleneck → optimise → test loop, timeboxing, and a reusable checklist of edge cases |
+| **Leads to** | [Arrays](04_Arrays.md) and every topic page after it |
+| **Abstraction level** | Reading a problem → **a repeatable method** → topic-specific patterns |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Problem-Solving Method
+
+### 1. The bottom line
+
+Before you code, say what is being asked, solve it the slow way, find the repeated work, and only then optimise.
+
+### 2. The textbook core
+
+- Read the constraints first: they set the complexity budget.
+- Write the brute force; it gives a correctness oracle.
+- Find the bottleneck (repeated work) and name the data structure or pattern that removes it.
+- State the invariant, then code.
+- Test empty, one element, duplicates, extremes.
+
+### 3. The real-world analogy
+
+A **mechanic diagnosing a car**: symptoms (constraints), a simple test (brute force), the faulty part (bottleneck), then the repair.
+
+### 4. Walkthrough
+
+1. Problem: do two numbers in an array sum to `t`?
+2. Brute force: two nested loops, `O(n²)`.
+3. Bottleneck: searching for the partner of each number.
+4. A hash set of seen numbers makes the search `O(1)` → `O(n)` total.
+5. Test: empty array, one element, duplicates like `[3,3]` with `t = 6`.
+
+> [!NOTE]
+> **Quick check:** What does the brute force give you besides a slow answer? *A correct reference to test the optimised version against.*
+
+
+### 5. Check yourself
+
+**Q1.** With `n = 2·10⁵` and a one-second limit, which complexity is acceptable?
+
+<details><summary>Answer</summary>
+
+`O(n log n)` or `O(n)`; `O(n²)` is about 4·10¹⁰ steps.
+
+</details>
+
+**Q2.** What do you write right after reading the problem?
+
+<details><summary>Answer</summary>
+
+The brute force: it exposes the bottleneck and gives you a reference to test against.
+
+</details>
+
+---
+
+
 ## 📚 TABLE OF CONTENTS
 
-1. [Two Pointers Problems](#two-pointers-problems)
-2. [Sliding Window Problems](#sliding-window-problems)
-3. [Binary Search Problems](#binary-search-problems)
-4. [Array Problems](#array-problems)
-5. [String Problems](#string-problems)
-6. [Math Problems](#math-problems)
+1. [Two Pointers Problems](#-two-pointers-problems)
+2. [Sliding Window Problems](#-sliding-window-problems)
+3. [Binary Search Problems](#-binary-search-problems)
+4. [Array Problems](#-array-problems)
+5. [String Problems](#-string-problems)
+6. [Math Problems](#-math-problems)
 
 ---
 
@@ -30,18 +94,13 @@ PROBLEM: Container With Most Water
 Given array of heights, find two lines that form container with
 maximum water.
 
-Visual:
+Visual (heights `[1, 8, 6, 2, 5, 4, 8, 3, 7]`):
 
-|
-| | |
-| | | | | |
-| | | | | | | |
+| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Height | 1 | **8** | 6 | 2 | 5 | 4 | **8** | 3 | **7** |
 
-─────────────────────
-1 8 6 2 5 4 8 3 7
-↑ ↑
-These two lines form max area
-Area = min(8, 7) × distance = 7 × 7 = 49
+The best container uses the lines of height 8 (index 1) and 7 (index 8): width = 8 − 1 = 7, height = min(8, 7) = 7, so area = 7 × 7 = 49.
 
 **Try it yourself first!**
 
@@ -84,25 +143,21 @@ public int maxArea(int[] height) {
 
 ### Problem 2: 3Sum (Find triplets that sum to zero)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: 3Sum                                                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find all unique triplets that sum to zero.                               ║
-║                                                                           ║
-║  Input: [-1, 0, 1, 2, -1, -4]                                             ║
-║  Output: [[-1, -1, 2], [-1, 0, 1]]                                        ║
-║                                                                           ║
-║  Approach:                                                                ║
-║  1. Sort array                                                            ║
-║  2. For each element, use two pointers to find pairs                      ║
-║                                                                           ║
-║  Sorted: [-4, -1, -1, 0, 1, 2]                                            ║
-║            ↑                                                              ║
-║           fix one, find pair that sums to -nums[i]                        ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: 3Sum**
+
+```text
+Find all unique triplets that sum to zero.
+
+Input: [-1, 0, 1, 2, -1, -4]
+Output: [[-1, -1, 2], [-1, 0, 1]]
+
+Approach:
+1. Sort array
+2. For each element, use two pointers to find pairs
+
+Sorted: [-4, -1, -1, 0, 1, 2]
+          ↑
+         fix one, find pair that sums to -nums[i]
 ```
 
 **Try it yourself first!**
@@ -166,24 +221,25 @@ The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3S
 
 ### Problem 3: Longest Substring Without Repeating Characters
 
-```
-PROBLEM: Longest Substring Without Repeating Characters
-──────────────────────────────────────────────────
+**Problem:** Longest Substring Without Repeating Characters
 
-Input: "abcabcbb"
-Output: 3 ("abc")
+- **Input:** `"abcabcbb"`
+- **Output:** `3` (`"abc"`)
 
-Visual:
-a b c a b c b b
-↑─────↑
-└─────┘ "abc" length 3
+When we see a repeat, shrink the window from the left.
 
-  ↑───────↑
-  └───────┘ "bca" length 3
+| `right` | Char | Window after the step | Length |
+| --- | --- | --- | --- |
+| 0 | a | `a` | 1 |
+| 1 | b | `ab` | 2 |
+| 2 | c | `abc` | 3 |
+| 3 | a | `bca` (dropped the old `a`) | 3 |
+| 4 | b | `cab` (dropped the old `b`) | 3 |
+| 5 | c | `abc` (dropped the old `c`) | 3 |
+| 6 | b | `cb` (dropped through the old `b`) | 2 |
+| 7 | b | `b` | 1 |
 
-When we see repeat, shrink window from left
-
-```
+The maximum length is 3.
 
 **Try it yourself first!**
 
@@ -222,27 +278,17 @@ public int lengthOfLongestSubstring(String s) {
 
 ### Problem 4: Maximum Sum of Subarray of Size K
 
-```
-PROBLEM: Maximum Sum Subarray of Size K
-──────────────────────────────────────────────────
+**Problem:** Maximum Sum Subarray of Size K
 
-Input: arr = [2, 1, 5, 1, 3, 2], k = 3
-Output: 9 (subarray [5, 1, 3])
+- **Input:** `arr = [2, 1, 5, 1, 3, 2]`, `k = 3`
+- **Output:** `9` (subarray `[5, 1, 3]`)
 
-Visual:
-┌─────────┐
-2  1  5  1  3  2     sum = 8
-└─────────┘
-
-   ┌─────────┐
-2  1  5  1  3  2     sum = 7
-   └─────────┘
-
-      ┌─────────┐
-2  1  5  1  3  2     sum = 9 ⭐ MAX
-      └─────────┘
-
-```
+| Window | Sum |
+| --- | --- |
+| `[2, 1, 5]` | 8 |
+| `[1, 5, 1]` | 7 |
+| `[5, 1, 3]` | **9** ⭐ max |
+| `[1, 3, 2]` | 6 |
 
 **Try it yourself first!**
 
@@ -295,29 +341,25 @@ Should shrink `while(valid)` to find the minimum window — this is correct! But
 
 ### Problem 5: Search in Rotated Sorted Array
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Search in Rotated Sorted Array                                  ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Array was sorted, then rotated at some pivot.                            ║
-║  Find target in O(log N).                                                 ║
-║                                                                           ║
-║  Original: [0, 1, 2, 4, 5, 6, 7]                                          ║
-║  Rotated:  [4, 5, 6, 7, 0, 1, 2]  (rotated at pivot 4)                    ║
-║  Target: 0                                                                ║
-║  Output: 4 (index of 0)                                                   ║
-║                                                                           ║
-║  Key insight: One half is ALWAYS sorted!                                  ║
-║                                                                           ║
-║  [4, 5, 6, 7, 0, 1, 2]                                                    ║
-║   ↑        ↑        ↑                                                     ║
-║  low      mid     high                                                    ║
-║                                                                           ║
-║  Left half [4,5,6,7] is sorted (arr[low] <= arr[mid])                     ║
-║  Check if target is in sorted half, else search other half                ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Search in Rotated Sorted Array**
+
+```text
+Array was sorted, then rotated at some pivot.
+Find target in O(log N).
+
+Original: [0, 1, 2, 4, 5, 6, 7]
+Rotated:  [4, 5, 6, 7, 0, 1, 2]  (rotated at pivot 4)
+Target: 0
+Output: 4 (index of 0)
+
+Key insight: One half is ALWAYS sorted!
+
+[4, 5, 6, 7, 0, 1, 2]
+ ↑        ↑        ↑
+low      mid     high
+
+Left half [4,5,6,7] is sorted (arr[low] <= arr[mid])
+Check if target is in sorted half, else search other half
 ```
 
 **Try it yourself first!**
@@ -362,29 +404,25 @@ public int search(int[] nums, int target) {
 
 ### Problem 6: Find Peak Element
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Find Peak Element                                               ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Peak = element greater than its neighbors.                               ║
-║  nums[-1] and nums[n] are considered -∞.                                  ║
-║                                                                           ║
-║  Input: [1, 2, 3, 1]                                                      ║
-║  Output: 2 (index of element 3)                                           ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║         3 ← peak                                                          ║
-║        /\                                                                 ║
-║       2  \                                                                ║
-║      /    1                                                               ║
-║     1                                                                     ║
-║                                                                           ║
-║  Binary Search approach:                                                  ║
-║  - If arr[mid] < arr[mid+1], peak is on RIGHT                             ║
-║  - If arr[mid] > arr[mid+1], peak is on LEFT (including mid)              ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Find Peak Element**
+
+```text
+Peak = element greater than its neighbors.
+nums[-1] and nums[n] are considered -∞.
+
+Input: [1, 2, 3, 1]
+Output: 2 (index of element 3)
+
+Visual:
+       3 ← peak
+      /\
+     2  \
+    /    1
+   1
+
+Binary Search approach:
+- If arr[mid] < arr[mid+1], peak is on RIGHT
+- If arr[mid] > arr[mid+1], peak is on LEFT (including mid)
 ```
 
 **Try it yourself first!**
@@ -416,16 +454,6 @@ public int findPeakElement(int[] nums) {
 
 ---
 
-🔬 **Section Challenge — 🔍 Binary Search Problems**
-
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-
-<details><summary>Answer</summary>
-
-lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-
-</details>
-
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
 
 <details><summary>Answer</summary>
@@ -438,24 +466,20 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 
 ### Problem 7: Rotate Array
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Rotate Array                                                    ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Rotate array to the right by k steps.                                    ║
-║                                                                           ║
-║  Input: [1, 2, 3, 4, 5, 6, 7], k = 3                                      ║
-║  Output: [5, 6, 7, 1, 2, 3, 4]                                            ║
-║                                                                           ║
-║  Approach: Three reverses                                                 ║
-║                                                                           ║
-║  Original:    [1, 2, 3, 4, 5, 6, 7]                                       ║
-║  Reverse all: [7, 6, 5, 4, 3, 2, 1]                                       ║
-║  Reverse [0, k-1]: [5, 6, 7, 4, 3, 2, 1]                                  ║
-║  Reverse [k, n-1]: [5, 6, 7, 1, 2, 3, 4] ✓                                ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Rotate Array**
+
+```text
+Rotate array to the right by k steps.
+
+Input: [1, 2, 3, 4, 5, 6, 7], k = 3
+Output: [5, 6, 7, 1, 2, 3, 4]
+
+Approach: Three reverses
+
+Original:    [1, 2, 3, 4, 5, 6, 7]
+Reverse all: [7, 6, 5, 4, 3, 2, 1]
+Reverse [0, k-1]: [5, 6, 7, 4, 3, 2, 1]
+Reverse [k, n-1]: [5, 6, 7, 1, 2, 3, 4] ✓
 ```
 
 **Try it yourself first!**
@@ -490,29 +514,25 @@ private void reverse(int[] nums, int start, int end) {
 
 ### Problem 8: Product of Array Except Self
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Product of Array Except Self                                    ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Return array where each element is product of all OTHER elements.        ║
-║  Cannot use division.                                                     ║
-║                                                                           ║
-║  Input: [1, 2, 3, 4]                                                      ║
-║  Output: [24, 12, 8, 6]                                                   ║
-║                                                                           ║
-║  output[0] = 2 * 3 * 4 = 24                                               ║
-║  output[1] = 1 * 3 * 4 = 12                                               ║
-║  output[2] = 1 * 2 * 4 = 8                                                ║
-║  output[3] = 1 * 2 * 3 = 6                                                ║
-║                                                                           ║
-║  Approach: Left products × Right products                                 ║
-║                                                                           ║
-║  Left products:  [1, 1, 2, 6]    (product of all to the left)             ║
-║  Right products: [24, 12, 4, 1]  (product of all to the right)            ║
-║  Result:         [24, 12, 8, 6]  (multiply left × right)                  ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Product of Array Except Self**
+
+```text
+Return array where each element is product of all OTHER elements.
+Cannot use division.
+
+Input: [1, 2, 3, 4]
+Output: [24, 12, 8, 6]
+
+output[0] = 2 * 3 * 4 = 24
+output[1] = 1 * 3 * 4 = 12
+output[2] = 1 * 2 * 4 = 8
+output[3] = 1 * 2 * 3 = 6
+
+Approach: Left products × Right products
+
+Left products:  [1, 1, 2, 6]    (product of all to the left)
+Right products: [24, 12, 4, 1]  (product of all to the right)
+Result:         [24, 12, 8, 6]  (multiply left × right)
 ```
 
 **Try it yourself first!**
@@ -551,24 +571,20 @@ public int[] productExceptSelf(int[] nums) {
 
 ### Problem 9: Valid Palindrome
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Valid Palindrome                                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Check if string is palindrome (considering only alphanumeric, ignore     ║
-║  case).                                                                   ║
-║                                                                           ║
-║  Input: "A man, a plan, a canal: Panama"                                  ║
-║  Output: true                                                             ║
-║                                                                           ║
-║  After cleaning: "amanaplanacanalpanama"                                  ║
-║                   ↑                   ↑                                   ║
-║                  left              right                                  ║
-║                                                                           ║
-║  Two pointers from both ends, skip non-alphanumeric                       ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Valid Palindrome**
+
+```text
+Check if string is palindrome (considering only alphanumeric, ignore
+case).
+
+Input: "A man, a plan, a canal: Panama"
+Output: true
+
+After cleaning: "amanaplanacanalpanama"
+                 ↑                   ↑
+                left              right
+
+Two pointers from both ends, skip non-alphanumeric
 ```
 
 **Try it yourself first!**
@@ -610,24 +626,20 @@ public boolean isPalindrome(String s) {
 
 ### Problem 10: Group Anagrams
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Group Anagrams                                                  ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Group words that are anagrams of each other.                             ║
-║                                                                           ║
-║  Input: ["eat", "tea", "tan", "ate", "nat", "bat"]                        ║
-║  Output: [["eat","tea","ate"], ["tan","nat"], ["bat"]]                    ║
-║                                                                           ║
-║  Key insight: Anagrams have same SORTED form                              ║
-║  eat → aet                                                                ║
-║  tea → aet  (same!)                                                       ║
-║  ate → aet  (same!)                                                       ║
-║                                                                           ║
-║  Use sorted form as HashMap key                                           ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Group Anagrams**
+
+```text
+Group words that are anagrams of each other.
+
+Input: ["eat", "tea", "tan", "ate", "nat", "bat"]
+Output: [["eat","tea","ate"], ["tan","nat"], ["bat"]]
+
+Key insight: Anagrams have same SORTED form
+eat → aet
+tea → aet  (same!)
+ate → aet  (same!)
+
+Use sorted form as HashMap key
 ```
 
 **Try it yourself first!**
@@ -684,25 +696,21 @@ public List<List<String>> groupAnagramsV2(String[] strs) {
 
 ### Problem 11: Missing Number
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Missing Number                                                  ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Array contains n distinct numbers from [0, n]. Find missing one.         ║
-║                                                                           ║
-║  Input: [3, 0, 1]                                                         ║
-║  Output: 2                                                                ║
-║                                                                           ║
-║  Method 1: Math (Sum formula)                                             ║
-║  Expected sum = n * (n + 1) / 2                                           ║
-║  Missing = Expected sum - Actual sum                                      ║
-║                                                                           ║
-║  Method 2: XOR                                                            ║
-║  XOR all indices 0 to n, XOR all array elements                           ║
-║  Missing number will remain (duplicates cancel)                           ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Missing Number**
+
+```text
+Array contains n distinct numbers from [0, n]. Find missing one.
+
+Input: [3, 0, 1]
+Output: 2
+
+Method 1: Math (Sum formula)
+Expected sum = n * (n + 1) / 2
+Missing = Expected sum - Actual sum
+
+Method 2: XOR
+XOR all indices 0 to n, XOR all array elements
+Missing number will remain (duplicates cancel)
 ```
 
 **Try it yourself first!**
@@ -740,26 +748,22 @@ public int missingNumberXOR(int[] nums) {
 
 ### Problem 12: Single Number
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Single Number                                                   ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Every element appears twice except one. Find that one.                   ║
-║                                                                           ║
-║  Input: [4, 1, 2, 1, 2]                                                   ║
-║  Output: 4                                                                ║
-║                                                                           ║
-║  XOR property:                                                            ║
-║  a ^ a = 0  (same numbers cancel)                                         ║
-║  a ^ 0 = a  (XOR with 0 gives same number)                                ║
-║                                                                           ║
-║  4 ^ 1 ^ 2 ^ 1 ^ 2                                                        ║
-║  = 4 ^ (1 ^ 1) ^ (2 ^ 2)                                                  ║
-║  = 4 ^ 0 ^ 0                                                              ║
-║  = 4                                                                      ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Single Number**
+
+```text
+Every element appears twice except one. Find that one.
+
+Input: [4, 1, 2, 1, 2]
+Output: 4
+
+XOR property:
+a ^ a = 0  (same numbers cancel)
+a ^ 0 = a  (XOR with 0 gives same number)
+
+4 ^ 1 ^ 2 ^ 1 ^ 2
+= 4 ^ (1 ^ 1) ^ (2 ^ 2)
+= 4 ^ 0 ^ 0
+= 4
 ```
 
 **Try it yourself first!**
@@ -835,36 +839,48 @@ Here are problem names to search on LeetCode/HackerRank:
 
 ---
 
-# 🔥 COMPREHENSIVE PROBLEM BANK
+## 🔥 COMPREHENSIVE PROBLEM BANK
 
-## From Basics to Advanced - With LeetCode Links & Premium Problems
-
----
-
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Math_Numbers.md)
+### From Basics to Advanced - With LeetCode Links & Premium Problems
 
 ---
 
-### Historical Evolution
-
-**Algorithmic problem-solving practice** originated with Eratosthenes (~240 BC, Greek mathematician) who developed the Sieve of Eratosthenes for finding prime numbers, establishing the foundational idea of systematic algorithm design through methodical iteration. Euclid (~300 BC, Greek mathematician) formalized logical proof and the Euclidean algorithm for computing greatest common divisors, introducing the concept of algorithm correctness verification and finite termination arguments that remain central to algorithm analysis today. The field of algorithm design was revolutionized by Alan Turing (1936) with the Turing machine model, providing a formal framework for understanding computation limits. Kadane's algorithm (1984, Jay Kadane at Carnegie Mellon) solved the maximum subarray problem in O(N) time, replacing the O(N³) brute-force approach and demonstrating how a clever insight can transform an exponential gap into linear efficiency. Modern practice anchors this legacy in LeetCode since 2010 and similar competitive programming platforms, where developers from Google, Meta, and Amazon train on algorithmic problem sets that trace their intellectual heritage directly to these foundational techniques.
 
 ---
 
-### Production Reality
+#### Historical Evolution
+
+Systematic problem solving has long roots: Euclid's algorithm for the greatest common divisor appears in the *Elements* (about 300 BC) and the sieve attributed to Eratosthenes dates to the 3rd century BC. George Pólya's *How to Solve It* (1945) taught heuristics for attacking unfamiliar problems, and Turing's 1936 paper defined what an algorithm can compute. The maximum-subarray problem was posed by Ulf Grenander and its linear-time solution credited to Jay Kadane by Bentley's 1984 column.
+
+- **Euclid — c. 300 BC**: Gcd algorithm with a termination argument
+- **Pólya — 1945**: Heuristics: understand, plan, carry out, look back
+- **Turing — 1936**: Formal model of computation
+- **Bentley — 1984**: Popularised maximum subarray and Kadane's scan
+
+#### Production Reality
 
 **Problem Solving** patterns introduce several production failure modes that learners must internalize:
 
-**Failure mode 1: Off-by-one errors in array boundaries.** When implementing two-pointer or sliding window solutions, developers frequently miscount loop termination conditions. For example, using `i <= n` instead of `i < n` in a zero-indexed array causes an `ArrayIndexOutOfBoundsException` at n=100000 on the final iteration. In LeetCode 11 (Container With Most Water), iterating with `left <= right` instead of `left < right` reads an invalid memory location in C++ causing undefined behavior. Production impact: customer-facing 500 errors, data corruption if bounds are used for write operations, security vulnerability if out-of-bounds reads leak memory.
+**Failure mode 1: Off-by-one errors in array boundaries.** When implementing two-pointer or sliding window solutions, developers frequently miscount loop termination conditions. For example, using `i <= n` instead of `i < n` in a zero-indexed array causes an `ArrayIndexOutOfBoundsException` at n=100000 on the final iteration. In LeetCode 11 (Container With Most Water), iterating with `left <= right` instead of `left < right` reads an invalid memory location in C++ causing undefined behavior. Illustrative impact: customer-facing 500 errors, data corruption if bounds are used for write operations, security vulnerability if out-of-bounds reads leak memory.
 
-**Failure mode 2: Integer overflow on multiplication.** Computing `width * height` for area calculations in `maxArea` exceeds 32-bit bounds when width>46340 and height>46340, silently wrapping to negative values in Java. The two-sum complement check `target - nums[i]` overflows when both values are large negatives in Java's int range. Production impact: wrong business logic decisions (incorrect pricing, billing errors), algorithm silently returns wrong answer, audit failures.
+**Failure mode 2: Integer overflow on multiplication.** Computing `width * height` for area calculations in `maxArea` exceeds 32-bit bounds when width>46340 and height>46340, silently wrapping to negative values in Java. The two-sum complement check `target - nums[i]` overflows when both values are large negatives in Java's int range. Illustrative impact: wrong business logic decisions (incorrect pricing, billing errors), algorithm silently returns wrong answer, audit failures.
 
-**Failure mode 3: Stack overflow on deep recursion.** Recursive implementations of tree traversals or divide-and-conquer algorithms hit `StackOverflowError` for inputs exceeding ~10^4 depth in JVM default stack (1MB). LeetCode's recursive Fibonacci `fib(n) = fib(n-1) + fib(n-2)` crashes at n>10000. Production impact: application crash, denial of service if uncaught, cascading failure in distributed systems.
+**Failure mode 3: Stack overflow on deep recursion.** Recursive implementations of tree traversals or divide-and-conquer algorithms hit `StackOverflowError` for inputs exceeding ~10^4 depth in JVM default stack (1MB). LeetCode's recursive Fibonacci `fib(n) = fib(n-1) + fib(n-2)` crashes at n>10000. Illustrative impact: application crash, denial of service if uncaught, cascading failure in distributed systems.
 
 **Debug workflow:** 1. Trace execution with n=1, n=2, and edge cases (empty input, single element, maximum values). 2. Print loop variables at each iteration to verify pointer update rule. 3. Check for `<=` vs `<` in termination conditions. 4. Verify no overflow by testing near int/long limits (Integer.MAX_VALUE - 1). 5. Add assertion guards at boundaries. 6. For recursion, either convert to iterative or set `-Xss2m` to increase stack with caution.
 
-**Real-world anchor:** The 2019 Boeing 737 MAX crash was partially traced to software boundary condition handling—sensor data at limits triggered unexpected behavior due to inadequate edge case testing in the flight control system, same root cause as off-by-one boundary errors in competitive programming.
+**Real-world anchor:** The Mars Climate Orbiter (1999) was lost because one team's software produced thrust data in pound-force seconds while another expected newton-seconds. The boundary between the two components was never checked — the same kind of unchecked assumption that edge-case lists catch.
 
+
+---
+
+## 🏢 Enterprise Lens — Problem-Solving Method
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Code reviews, interviews, incident analysis (reproduce small, then scale) |
+| **Failure modes** | Skipping the brute force and trusting an unverified optimisation; ignoring the constraints |
+| **Testing and verification** | Compare the optimised solution with the brute force on random small inputs |
 
 ---
 

@@ -1,39 +1,105 @@
-﻿**Navigation**: [< Previous](09_Array_Plus_SlidingWindow.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Stack_Plus_MonotonicPattern.md)
+# 🧩 HashMap + Counting — Pattern Guide
 
-# HashMap + Frequency Counting — Combined Pattern Guide
+> **Navigation**: [← Array + Sliding Window](09_Array_Plus_SlidingWindow.md) | [Chapter index](00_INDEX.md) | [Stack + Monotonic →](11_Stack_Plus_MonotonicPattern.md)
+
+## HashMap + Frequency Counting — Combined Pattern Guide
 
 **WHY this combination?** HashMap gives O(1) lookup/insert. Combined with counting, grouping, or existence checks, it transforms O(n²) comparisons into O(n) lookups. The most versatile DS+Algo combination.
 
 ### 🧠 Deep Intuition — Why HashMap Transforms Quadratic to Linear
 
-### Historical Evolution
+## 🔗 Bridge — Where This Chapter Fits
 
-**Inventor / Originator:** Hash tables were analyzed by Donald Knuth in Vol 3 (1973). The birthday paradox was documented by Richard von Mises (1939). Gene Amdahl's law (1967) quantified parallel speedup limits.
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Hash Maps](../02_Data_Structures/01e_HashTable.md), [Prefix Sum](26_Prefix_Sum_And_Difference_Array.md) |
+| **You will learn** | Complement lookup, frequency maps, anagram keys, prefix-sum + hash map for subarray counts |
+| **Leads to** | [Union-Find](27_Union_Find_Pattern.md), [Tries](29_Trie_Pattern.md), [Heap + Greedy](15_Heap_Plus_GreedySelection.md) |
+| **Abstraction level** | Repeated scans → **trade memory for `O(1)` lookup** → store what you have seen |
 
-**Predecessor context:** Before hash tables, programmers used linear search or sorted arrays (binary search) for lookups. Counting problems required nested loops or sorting.
-
-**Evolution narrative:** Hash tables emerged from information retrieval research. Knuth's analysis in TAOCP Vol 3 proved average-case O(1) lookup. The birthday paradox illustrates collision probability — motivating bloom filters and hash function design.
-
-**Modern practice:** HashMap is the default data structure for O(1) lookups in all languages. Java's HashMap, Python's dict, and C++'s unordered_map all use variations of chaining or open addressing.
-
-- **Birthday paradox — von Mises 1939**: Documented collision probability in hash functions
-- **Knuth Vol 3 — 1973**: Formal analysis of hash table performance characteristics
-- **Amdahl 1967**: "Amdahl's Law" quantifying parallel processing limits from serial bottlenecks
-- **Modern practice**: HashMap in every language; foundation of cache design and deduplication
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
 
 ---
 
-### Production Reality
+## 💬 Explain It Like a Study Partner — HashMap + Counting
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+### 1. The bottom line
 
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+Remember what you have already seen in a hash map so each element is checked once.
 
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+### 2. The textbook core
+
+- Complement lookup: for `x`, ask whether `target − x` has been seen.
+- Frequency map: count occurrences, then reason about counts.
+- Canonical key: sort characters (or count signature) to group anagrams.
+- Prefix sum + map: `count[prefix − k]` gives the number of subarrays ending here with sum `k`.
+
+### 3. The real-world analogy
+
+A **guest list at the door**: instead of searching the whole party for a name, you check the list.
+
+### 4. Walkthrough
+
+1. Two Sum on `[2,7,11,15]`, target 9.
+2. See 2 → look for 7 (not seen) → store 2.
+3. See 7 → look for 2 → found at index 0.
+4. Return `[0,1]` in one pass.
+
+> [!NOTE]
+> **Quick check:** What does the map store in "subarray sum equals k"? *How many times each prefix sum has occurred.*
+
+
+### 5. Check yourself
+
+**Q1.** Two Sum on `[2,7,11,15]`, target 9: what is in the map when you reach 7?
+
+<details><summary>Answer</summary>
+
+`{2: 0}`; looking up `9 − 7 = 2` finds index 0, so the answer is `[0, 1]`.
+
+</details>
+
+**Q2.** How many subarrays of `[1,-1,1,-1]` sum to 0?
+
+<details><summary>Answer</summary>
+
+**4**. Prefix sums `0,1,0,1,0`: prefix 0 occurs 3 times (3 pairs) and prefix 1 twice (1 pair).
+
+</details>
+
+**Q3.** Why seed the prefix map with `{0: 1}`?
+
+<details><summary>Answer</summary>
+
+So subarrays that start at index 0 are counted (their earlier prefix is the empty prefix, 0).
+
+</details>
+
+---
+
+## Historical Evolution
+
+**Inventor / Originator:** Hashing was developed at IBM in the early 1950s: Hans Peter Luhn's 1953 internal memo described chaining, and Amdahl, Boehme, Rochester and Samuel used open addressing around the same time. W. W. Peterson analysed open addressing in 1957; Knuth's *TAOCP* Vol. 3 (1973) gave the classical analysis; Carter and Wegman introduced universal hashing in 1977.
+
+**Predecessor context:** Lookups used linear scans or binary search on sorted tables.
+
+**Evolution narrative:** Hash tables made average-case `O(1)` lookup practical. The birthday paradox (a 1939 result usually credited to Richard von Mises) explains why collisions appear much sooner than intuition suggests.
+
+**Modern practice:** Java's `HashMap` uses chaining (with tree bins for long chains since Java 8); Python's `dict` uses open addressing. Frequency maps, anagram grouping and two-sum lookups all rely on them.
+
+- **Luhn — 1953**: Chained hashing (IBM internal memo)
+- **Peterson — 1957**: Analysis of open addressing
+- **von Mises — 1939**: Birthday-problem result behind collision estimates
+- **Knuth — 1973**: TAOCP Vol. 3 analysis of hashing
+- **Carter & Wegman — 1977**: Universal hashing
+
+---
+
+## Production Reality
+
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -49,7 +115,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 ---
 
-### ⚠️ Constraint Lens
+## ⚠️ Constraint Lens
 
 | Given Constraints                                    | Do This                           |
 | ---------------------------------------------------- | --------------------------------- |
@@ -62,11 +128,11 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Why HashMap Transforms Quadratic to Linear
+## 🧠 Deep Intuition — Why HashMap Transforms Quadratic to Linear
 
 The fundamental idea: many O(n²) algorithms are slow because for each element, they scan all other elements to find a match. **HashMap replaces scanning with constant-time lookup.** Instead of asking "let me scan everything to find X," you ask "HashMap, do you have X?" — and the answer is instant.
 
-#### The Complement Pattern — The Most Important Application
+### The Complement Pattern — The Most Important Application
 
 Many problems follow this structure: "For each element A[i], does there exist A[j] such that A[i] + A[j] = target?" The brute force checks all pairs (O(n²)). The HashMap approach is:
 
@@ -76,7 +142,7 @@ Many problems follow this structure: "For each element A[i], does there exist A[
 
 This works because you're building the lookup table as you go. When you reach index 5, the HashMap contains indices 0-4. If the complement exists among them, you find it instantly.
 
-#### Prefix Sum + HashMap — Why It Handles Negatives
+### Prefix Sum + HashMap — Why It Handles Negatives
 
 The sliding window fails with negatives because shrinking doesn't reliably decrease the sum. Prefix sums bypass this entirely. If `prefix[j] - prefix[i] = k`, then the subarray `[i+1..j]` sums to `k`. By storing all previous prefix sums in a HashMap, you can check "has any previous prefix sum equal to `current_prefix - k`?" in O(1). This is mathematically equivalent to checking all possible subarrays but in linear time.
 
@@ -185,16 +251,6 @@ Answer: 2
 
 ---
 
-🔬 **Section Challenge — 🔬 VISUAL: Prefix Sum + HashMap**
-
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
 ## 🔥 KEY TRICKS
 
 | Trick                      | When                       | Example                                  |
@@ -207,7 +263,7 @@ Answer: 2
 
 ---
 
-## � FULL WALKTHROUGH: Two Sum (Complement Lookup)
+## 🔬 FULL WALKTHROUGH: Two Sum (Complement Lookup)
 
 ```
 Problem: Find two indices whose values sum to target=9.
@@ -233,16 +289,6 @@ Time: O(n) | Space: O(n)
 ```
 
 ---
-
-🔬 **Section Challenge — � FULL WALKTHROUGH: Two Sum (Complement Lookup)**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
 
 ## 🔬 FULL WALKTHROUGH 2: Subarray Sum Equals K (Prefix Sum + HashMap)
 
@@ -283,32 +329,17 @@ CRITICAL: Always initialize map with {0: 1}!
 
 ---
 
-🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Subarray Sum Equals K (Prefix Sum + HashMap)**
-
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
 ## 🛡️ EDGE CASES
 
-```
-┌─────────────────────────────┬──────────────────────────────────────────┐
-│ Edge Case                   │ Handling                                 │
-├─────────────────────────────┼──────────────────────────────────────────┤
-│ Duplicate values [1,1,1]    │ Two Sum: need DIFFERENT indices (check!) │
-│ Single element = target     │ Subarray of length 1 is valid            │
-│ Negative numbers            │ Prefix Sum + HashMap (NOT sliding window)│
-│ All zeros, target=0         │ Every subarray of any length sums to 0   │
-│ Empty array                 │ Return 0 / empty                         │
-│ Large values (overflow)     │ Use long for prefix sums if needed       │
-│ HashMap collision concern   │ Java handles internally, but int[26]     │
-│                             │ is faster for lowercase-only problems    │
-└─────────────────────────────┴──────────────────────────────────────────┘
-```
+| Edge Case | Handling |
+| --- | --- |
+| Duplicate values [1,1,1] | Two Sum: need DIFFERENT indices (check!) |
+| Single element = target | Subarray of length 1 is valid |
+| Negative numbers | Prefix Sum + HashMap (NOT sliding window) |
+| All zeros, target=0 | Every subarray of any length sums to 0 |
+| Empty array | Return 0 / empty |
+| Large values (overflow) | Use long for prefix sums if needed |
+| HashMap collision concern | Java handles internally, but int[26] is faster for lowercase-only problems |
 
 ---
 
@@ -324,20 +355,15 @@ CRITICAL: Always initialize map with {0: 1}!
 
 ---
 
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+## 📋 Practice Problems
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 ### Easy
 
+| # | Problem | Companies | Approach |
+| --- | --- | --- | --- |
 | 3 | [Missing Number](https://leetcode.com/problems/missing-number/) | Amazon | XOR trick or math sum |
 | 4 | [Happy Number](https://leetcode.com/problems/happy-number/) | Salesforce | HashSet for cycle detection |
 | 5 | [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/) | Salesforce | Stack + HashMap for matching |
@@ -415,6 +441,16 @@ CRITICAL: Always initialize map with {0: 1}!
 
 [← 09 Array+SlidingWindow](09_Array_Plus_SlidingWindow.md) | [11 Stack+Monotonic →](11_Stack_Plus_MonotonicPattern.md)
 
+
+---
+
+## 🏢 Enterprise Lens — HashMap + Counting
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Deduplication, caching, sessionisation, join keys, inverted indexes |
+| **Failure modes** | Hash-collision attacks; forgetting to seed the map with prefix `0`; mutating keys |
+| **Testing and verification** | Property tests against brute force; test duplicates, negatives and the empty input |
 
 ---
 

@@ -544,33 +544,31 @@ You physically segregate the Write Model (The Command) from the Read Model (The 
 flowchart TD
     UI[Client Application]
 
-    subgraph Command Side (Writes)
+    subgraph CMD_SIDE["Command Side (Writes)"]
         CMD_API[Command API]
         ES[(Event Store / Append Only)]
         CMD_API -->|1. Validate & Append Event| ES
     end
 
-    subgraph Event Bus
+    subgraph BUS["Event Bus"]
         KAFKA[Kafka Cluster]
-        ES -.->|2. Publish Event| KAFKA
     end
 
-    subgraph Query Side (Reads)
+    subgraph QRY_SIDE["Query Side (Reads)"]
         PROJ1[Postgres Projector]
         PROJ2[Elastic Projector]
         DB_PG[(Relational Read DB)]
         DB_ES[(Search Read DB)]
-
-        KAFKA -->|3. Consume| PROJ1
-        KAFKA -->|3. Consume| PROJ2
+        QRY_API[Query API]
         PROJ1 -->|4. SQL Update| DB_PG
         PROJ2 -->|4. Index Docs| DB_ES
-
-        QRY_API[Query API]
         QRY_API -->|Fast Select| DB_PG
         QRY_API -->|Fast Search| DB_ES
     end
 
+    ES -.->|2. Publish Event| KAFKA
+    KAFKA -->|3. Consume| PROJ1
+    KAFKA -->|3. Consume| PROJ2
     UI -->|POST /withdraw| CMD_API
     UI -->|GET /balance| QRY_API
 ```
@@ -747,12 +745,12 @@ Variant example: a `Money` class as a `Value Object` (immutable, attribute-equal
 
 ## Reality Check
 
-**"DDD tactical patterns are a way to structure classes"** ? Entities, value objects, aggregates, and repositories are the VISIBLE tactics, but applying them without the STRATEGIC design (bounded contexts, ubiquitous language, context mapping) produces DDD-shaped code that misses the point: the patterns exist to protect INVARIANTS and model a domain faithfully, and using them as a class-organization convention (the "aggregate" that is just a folder, the "value object" that is a struct with no invariant) is cargo-culting the tactics without the modeling. The tactics are how you IMPLEMENT a well-understood bounded context — they are worthless applied to a domain nobody modeled first.
+**"DDD tactical patterns are a way to structure classes"** â€” Entities, value objects, aggregates, and repositories are the VISIBLE tactics, but applying them without the STRATEGIC design (bounded contexts, ubiquitous language, context mapping) produces DDD-shaped code that misses the point: the patterns exist to protect INVARIANTS and model a domain faithfully, and using them as a class-organization convention (the "aggregate" that is just a folder, the "value object" that is a struct with no invariant) is cargo-culting the tactics without the modeling. The tactics are how you IMPLEMENT a well-understood bounded context â€” they are worthless applied to a domain nobody modeled first.
 
-**"An aggregate is a group of related objects"** ? An aggregate is a CONSISTENCY BOUNDARY with one root through which all changes flow — its purpose is enforcing invariants that must hold across the group ATOMICALLY (the order and its line items, where "total must equal sum of lines" is an invariant the aggregate protects by forbidding direct line-item mutation from outside). The design rules follow from consistency, not grouping: keep aggregates SMALL (large aggregates are contention and transaction-size problems — the whole-customer-with-all-orders aggregate that locks half the database per change), reference other aggregates by ID not object (aggregate boundaries are transaction boundaries), and accept eventual consistency BETWEEN aggregates ([distributed-systems]). "A group of related objects" misses that the boundary is about which invariants must be atomically true — the wrong boundary produces either broken invariants or crippling contention.
+**"An aggregate is a group of related objects"** â€” An aggregate is a CONSISTENCY BOUNDARY with one root through which all changes flow â€” its purpose is enforcing invariants that must hold across the group ATOMICALLY (the order and its line items, where "total must equal sum of lines" is an invariant the aggregate protects by forbidding direct line-item mutation from outside). The design rules follow from consistency, not grouping: keep aggregates SMALL (large aggregates are contention and transaction-size problems â€” the whole-customer-with-all-orders aggregate that locks half the database per change), reference other aggregates by ID not object (aggregate boundaries are transaction boundaries), and accept eventual consistency BETWEEN aggregates ([distributed-systems]). "A group of related objects" misses that the boundary is about which invariants must be atomically true â€” the wrong boundary produces either broken invariants or crippling contention.
 
-**"Value objects are just immutable data classes"** ? Immutability is the mechanism; the CONCEPT is identity-by-value with domain BEHAVIOR: Money is a value object not because it is immutable but because two 5-dollar amounts are interchangeable (no identity) AND because it OWNS the rules (currency-mismatch rejection, rounding, the arithmetic that a bare BigDecimal would let you get wrong — [03_Algorithms money-as-integer]). Value objects are where domain logic that would otherwise scatter into services CONDENSES into the type (the EmailAddress that validates itself, the DateRange that knows overlap — [21 intervals]). "Immutable data class" describes the shell; the value is that the type enforces its own validity and behavior, making illegal values unrepresentable ([17_TS]'s same lesson in the type system).
+**"Value objects are just immutable data classes"** â€” Immutability is the mechanism; the CONCEPT is identity-by-value with domain BEHAVIOR: Money is a value object not because it is immutable but because two 5-dollar amounts are interchangeable (no identity) AND because it OWNS the rules (currency-mismatch rejection, rounding, the arithmetic that a bare BigDecimal would let you get wrong â€” [03_Algorithms money-as-integer]). Value objects are where domain logic that would otherwise scatter into services CONDENSES into the type (the EmailAddress that validates itself, the DateRange that knows overlap â€” [21 intervals]). "Immutable data class" describes the shell; the value is that the type enforces its own validity and behavior, making illegal values unrepresentable ([17_TS]'s same lesson in the type system).
 
-**"Repositories abstract the database"** ? Repositories abstract PERSISTENCE behind a COLLECTION-like, domain-oriented interface — the distinction matters: a repository speaks the domain (findActiveSubscribers, save(order)) and hides not just the database but the query mechanism, so the domain layer never knows about SQL, ORMs, or storage (the [OOP composition] and [13_DE API-design] boundary). The anti-pattern is the "repository" that is a thin CRUD wrapper leaking database concepts (the findByComplexSqlSpecificString that exposes exactly what it was meant to hide, the repository returning ORM entities with lazy-loading that ties the domain to the persistence framework). A real repository lets you swap persistence without the domain noticing; a leaky one is a rename of the DAO.
+**"Repositories abstract the database"** â€” Repositories abstract PERSISTENCE behind a COLLECTION-like, domain-oriented interface â€” the distinction matters: a repository speaks the domain (findActiveSubscribers, save(order)) and hides not just the database but the query mechanism, so the domain layer never knows about SQL, ORMs, or storage (the [OOP composition] and [13_DE API-design] boundary). The anti-pattern is the "repository" that is a thin CRUD wrapper leaking database concepts (the findByComplexSqlSpecificString that exposes exactly what it was meant to hide, the repository returning ORM entities with lazy-loading that ties the domain to the persistence framework). A real repository lets you swap persistence without the domain noticing; a leaky one is a rename of the DAO.
 
-**"DDD is overkill for most projects"** ? DDD's STRATEGIC insights are valuable at almost any scale (a ubiquitous language shared with domain experts, clear bounded-context boundaries, modeling the domain rather than the database) while its TACTICAL machinery genuinely IS overkill for simple CRUD (the aggregate-repository-value-object ceremony on a form-over-data app is friction without benefit). The maturity is knowing which layer applies: use the strategic lens (what are the contexts, what is the language, where are the boundaries) broadly; reach for the tactical patterns only where the domain has real invariants and complexity worth protecting ([clean-code]'s wrong-abstraction warning — DDD tactics on a domain that does not need them is exactly that). "Overkill for most projects" is right about the tactics and wrong about the strategy — the two get conflated, and teams either over-engineer simple apps or under-model complex ones.
+**"DDD is overkill for most projects"** â€” DDD's STRATEGIC insights are valuable at almost any scale (a ubiquitous language shared with domain experts, clear bounded-context boundaries, modeling the domain rather than the database) while its TACTICAL machinery genuinely IS overkill for simple CRUD (the aggregate-repository-value-object ceremony on a form-over-data app is friction without benefit). The maturity is knowing which layer applies: use the strategic lens (what are the contexts, what is the language, where are the boundaries) broadly; reach for the tactical patterns only where the domain has real invariants and complexity worth protecting ([clean-code]'s wrong-abstraction warning â€” DDD tactics on a domain that does not need them is exactly that). "Overkill for most projects" is right about the tactics and wrong about the strategy â€” the two get conflated, and teams either over-engineer simple apps or under-model complex ones.

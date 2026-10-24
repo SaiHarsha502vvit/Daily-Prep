@@ -1,12 +1,75 @@
-﻿> **Navigation**: [< Previous](02_Math_Numbers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Arrays.md)
+> **Navigation**: [← HashMap Hashing](17_HashMap_Hashing.md) | [Chapter index](00_INDEX.md) | [Section 1: Basic Math & Number… →](02_Math_Numbers.md)
 
-> **Problems 03/14** | [Prev](02_Math_Numbers.md) | [Index](../00_MASTER_INDEX.md) | [Next](04_Arrays.md)
 
 ---
 
 # 📝 Section 2: String Problems
 
 ---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Strings and Hashing patterns](../04_Patterns_Templates/18_String_Plus_Advanced.md), [HashMap](17_HashMap_Hashing.md) |
+| **You will learn** | Frequency counts, two-pointer scans, palindromes, anagrams, parsing, and the cost of string concatenation |
+| **Leads to** | [Arrays](04_Arrays.md), [Sliding Window](05_Sliding_Window.md) |
+| **Abstraction level** | Characters in a loop → **canonical forms and counts** → linear scans |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — String Problems
+
+### 1. The bottom line
+
+Most string problems become easy once you pick a canonical form (sorted letters, character counts, a hash) or scan with two indices.
+
+### 2. The textbook core
+
+- Use a 26/128-slot count array instead of a map for fixed alphabets.
+- Strings are immutable in Java: use `StringBuilder` in loops.
+- Palindrome: expand around the centre (`2n − 1` centres).
+- Compare with `equals`, never `==`.
+- Mind Unicode: `char` is a UTF-16 unit.
+
+### 3. The real-world analogy
+
+A **word-game rack**: you rarely care about the order of tiles, only which letters you hold.
+
+### 4. Walkthrough
+
+1. Group anagrams in `["eat","tea","tan","ate","nat","bat"]`.
+2. Key each word by its sorted letters: `aet, aet, ant, aet, ant, abt`.
+3. Put words with equal keys in the same list.
+4. Groups: `[eat, tea, ate]`, `[tan, nat]`, `[bat]`.
+
+> [!NOTE]
+> **Quick check:** Why does `s += c` in a loop take `O(n²)`? *Each concatenation copies the whole string; use `StringBuilder`.*
+
+
+### 5. Check yourself
+
+**Q1.** Is `"A man, a plan, a canal: Panama"` a palindrome when you ignore case and non-alphanumerics?
+
+<details><summary>Answer</summary>
+
+Yes: it reads `amanaplanacanalpanama` both ways. Use two pointers that skip other characters.
+
+</details>
+
+**Q2.** Cost of an anagram check with a 26-slot count array?
+
+<details><summary>Answer</summary>
+
+`O(n)` time and `O(1)` space.
+
+</details>
+
+---
+
 
 ## 🎨 2.1 Isomorphic & Pattern Matching
 
@@ -87,31 +150,27 @@ public boolean isIsomorphicMap(String s, String t) {
 **LeetCode 290** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/word-pattern/](https://leetcode.com/problems/word-pattern/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  WORD PATTERN                                                             ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Check if string follows same pattern as given pattern.                   ║
-║  Pattern char → word must be bijective (one-to-one).                      ║
-║                                                                           ║
-║  Input: pattern = "abba", s = "dog cat cat dog"                           ║
-║  Output: true                                                             ║
-║  Explanation: a→dog, b→cat                                                ║
-║                                                                           ║
-║  Input: pattern = "abba", s = "dog cat cat fish"                          ║
-║  Output: false                                                            ║
-║  Explanation: a→dog but also a→fish (inconsistent)                        ║
-║                                                                           ║
-║  Input: pattern = "aaaa", s = "dog cat cat dog"                           ║
-║  Output: false                                                            ║
-║  Explanation: a→dog, a→cat (inconsistent)                                 ║
-║                                                                           ║
-║  Input: pattern = "abba", s = "dog dog dog dog"                           ║
-║  Output: false                                                            ║
-║  Explanation: b must map to different word than a                         ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**WORD PATTERN**
+
+```text
+Check if string follows same pattern as given pattern.
+Pattern char → word must be bijective (one-to-one).
+
+Input: pattern = "abba", s = "dog cat cat dog"
+Output: true
+Explanation: a→dog, b→cat
+
+Input: pattern = "abba", s = "dog cat cat fish"
+Output: false
+Explanation: a→dog but also a→fish (inconsistent)
+
+Input: pattern = "aaaa", s = "dog cat cat dog"
+Output: false
+Explanation: a→dog, a→cat (inconsistent)
+
+Input: pattern = "abba", s = "dog dog dog dog"
+Output: false
+Explanation: b must map to different word than a
 ```
 
 ```java
@@ -148,50 +207,45 @@ public boolean wordPattern(String pattern, String s) {
 
 **LeetCode 291** | **Difficulty:** Medium | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  WORD PATTERN II                                                          ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given a pattern and a string s, find if s follows the same pattern.      ║
-║                                                                           ║
-║  Here, "follow" means a full match, such that there is a bijection        ║
-║  between a letter in pattern and a non-empty substring in s.              ║
-║                                                                           ║
-║  NOTE: Unlike Word Pattern I, words are NOT separated by spaces!          ║
-║  You must determine where words begin and end.                            ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: pattern = "abab", s = "redblueredblue"                            ║
-║  Output: true                                                             ║
-║  Explanation: a→"red", b→"blue"                                           ║
-║  "redblueredblue" matches "abab"                                          ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: pattern = "aaaa", s = "asdasdasdasd"                              ║
-║  Output: true                                                             ║
-║  Explanation: a→"asd"                                                     ║
-║                                                                           ║
-║  Example 3:                                                               ║
-║  Input: pattern = "aabb", s = "xyzabcxzyabc"                              ║
-║  Output: false                                                            ║
-║  Explanation: No valid mapping exists                                     ║
-║                                                                           ║
-║  Example 4:                                                               ║
-║  Input: pattern = "ab", s = "aa"                                          ║
-║  Output: false                                                            ║
-║  Explanation: a→"a", b→"a" violates bijection (two chars map to same)     ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 1 <= pattern.length, s.length <= 20                                    ║
-║  - pattern and s consist of only lowercase English letters                ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**WORD PATTERN II — (LeetCode Premium - Full Problem Description)**
+
+```text
+Given a pattern and a string s, find if s follows the same pattern.
+
+Here, "follow" means a full match, such that there is a bijection
+between a letter in pattern and a non-empty substring in s.
+
+NOTE: Unlike Word Pattern I, words are NOT separated by spaces!
+You must determine where words begin and end.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: pattern = "abab", s = "redblueredblue"
+Output: true
+Explanation: a→"red", b→"blue"
+"redblueredblue" matches "abab"
+
+Example 2:
+Input: pattern = "aaaa", s = "asdasdasdasd"
+Output: true
+Explanation: a→"asd"
+
+Example 3:
+Input: pattern = "aabb", s = "xyzabcxzyabc"
+Output: false
+Explanation: No valid mapping exists
+
+Example 4:
+Input: pattern = "ab", s = "aa"
+Output: false
+Explanation: a→"a", b→"a" violates bijection (two chars map to same)
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 1 <= pattern.length, s.length <= 20
+- pattern and s consist of only lowercase English letters
 ```
 
 ```java
@@ -247,41 +301,36 @@ private boolean backtrack(String pattern, int pIdx, String s, int sIdx,
 
 **Custom Problem** | **Difficulty:** Medium
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  FIND ALL ISOMORPHIC PAIRS                                                ║
-║  (Custom Premium-Style Problem)                                           ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given an array of strings, group all isomorphic strings together.        ║
-║                                                                           ║
-║  Two strings are isomorphic if the characters in one string can be        ║
-║  replaced to get the other string while preserving the order.             ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: ["egg", "add", "foo", "bar", "paper", "title", "abc", "xyz"]      ║
-║  Output: [["egg", "add"], ["foo"], ["bar", "abc", "xyz"],                 ║
-║           ["paper", "title"]]                                             ║
-║                                                                           ║
-║  Explanation:                                                             ║
-║  - "egg" ↔ "add" (pattern: 011)                                           ║
-║  - "foo" alone (pattern: 011, but different length group)                 ║
-║  - "bar", "abc", "xyz" (pattern: 012)                                     ║
-║  - "paper" ↔ "title" (pattern: 01023)                                     ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: ["aab", "xxy", "xyz", "abc", "def", "aba"]                        ║
-║  Output: [["aab", "xxy"], ["xyz", "abc", "def"], ["aba"]]                 ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 1 <= words.length <= 1000                                              ║
-║  - 1 <= words[i].length <= 20                                             ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**FIND ALL ISOMORPHIC PAIRS — (Custom Premium-Style Problem)**
+
+```text
+Given an array of strings, group all isomorphic strings together.
+
+Two strings are isomorphic if the characters in one string can be
+replaced to get the other string while preserving the order.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: ["egg", "add", "foo", "bar", "paper", "title", "abc", "xyz"]
+Output: [["egg", "add"], ["foo"], ["bar", "abc", "xyz"],
+         ["paper", "title"]]
+
+Explanation:
+- "egg" ↔ "add" (pattern: 011)
+- "foo" alone (pattern: 011, but different length group)
+- "bar", "abc", "xyz" (pattern: 012)
+- "paper" ↔ "title" (pattern: 01023)
+
+Example 2:
+Input: ["aab", "xxy", "xyz", "abc", "def", "aba"]
+Output: [["aab", "xxy"], ["xyz", "abc", "def"], ["aba"]]
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 1 <= words.length <= 1000
+- 1 <= words[i].length <= 20
 ```
 
 ```java
@@ -332,21 +381,17 @@ They ARE both isomorphic to the same abstract pattern "01" (two distinct charact
 **LeetCode 242** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/valid-anagram/](https://leetcode.com/problems/valid-anagram/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  VALID ANAGRAM                                                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given two strings s and t, return true if t is an anagram of s.          ║
-║  Anagram = same characters, same frequency, different order.              ║
-║                                                                           ║
-║  Input: s = "anagram", t = "nagaram"                                      ║
-║  Output: true                                                             ║
-║                                                                           ║
-║  Input: s = "rat", t = "car"                                              ║
-║  Output: false                                                            ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**VALID ANAGRAM**
+
+```text
+Given two strings s and t, return true if t is an anagram of s.
+Anagram = same characters, same frequency, different order.
+
+Input: s = "anagram", t = "nagaram"
+Output: true
+
+Input: s = "rat", t = "car"
+Output: false
 ```
 
 ```java
@@ -374,23 +419,19 @@ public boolean isAnagram(String s, String t) {
 **LeetCode 438** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/find-all-anagrams-in-a-string/](https://leetcode.com/problems/find-all-anagrams-in-a-string/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  FIND ALL ANAGRAMS IN A STRING                                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find all start indices of p's anagrams in s.                             ║
-║                                                                           ║
-║  Input: s = "cbaebabacd", p = "abc"                                       ║
-║  Output: [0, 6]                                                           ║
-║  Explanation:                                                             ║
-║  Index 0: "cba" is anagram of "abc"                                       ║
-║  Index 6: "bac" is anagram of "abc"                                       ║
-║                                                                           ║
-║  Input: s = "abab", p = "ab"                                              ║
-║  Output: [0, 1, 2]                                                        ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**FIND ALL ANAGRAMS IN A STRING**
+
+```text
+Find all start indices of p's anagrams in s.
+
+Input: s = "cbaebabacd", p = "abc"
+Output: [0, 6]
+Explanation:
+Index 0: "cba" is anagram of "abc"
+Index 6: "bac" is anagram of "abc"
+
+Input: s = "abab", p = "ab"
+Output: [0, 1, 2]
 ```
 
 ```java
@@ -429,53 +470,48 @@ public List<Integer> findAnagrams(String s, String p) {
 
 **LeetCode 246** | **Difficulty:** Easy | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  STROBOGRAMMATIC NUMBER                                                   ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  A strobogrammatic number is a number that looks the same when rotated    ║
-║  180 degrees (looked at upside down).                                     ║
-║                                                                           ║
-║  Given a string num representing an integer, return true if num is a      ║
-║  strobogrammatic number.                                                  ║
-║                                                                           ║
-║  Valid strobogrammatic digits:                                            ║
-║  - 0 rotated is 0                                                         ║
-║  - 1 rotated is 1                                                         ║
-║  - 6 rotated is 9                                                         ║
-║  - 8 rotated is 8                                                         ║
-║  - 9 rotated is 6                                                         ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: num = "69"                                                        ║
-║  Output: true                                                             ║
-║  Explanation: 69 rotated 180° is 69                                       ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: num = "88"                                                        ║
-║  Output: true                                                             ║
-║                                                                           ║
-║  Example 3:                                                               ║
-║  Input: num = "962"                                                       ║
-║  Output: false                                                            ║
-║  Explanation: 962 rotated is 296 ≠ 962                                    ║
-║                                                                           ║
-║  Example 4:                                                               ║
-║  Input: num = "1"                                                         ║
-║  Output: true                                                             ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 1 <= num.length <= 50                                                  ║
-║  - num consists of only digits                                            ║
-║  - num does not have leading zeros except for zero itself                 ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**STROBOGRAMMATIC NUMBER — (LeetCode Premium - Full Problem Description)**
+
+```text
+A strobogrammatic number is a number that looks the same when rotated
+180 degrees (looked at upside down).
+
+Given a string num representing an integer, return true if num is a
+strobogrammatic number.
+
+Valid strobogrammatic digits:
+- 0 rotated is 0
+- 1 rotated is 1
+- 6 rotated is 9
+- 8 rotated is 8
+- 9 rotated is 6
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: num = "69"
+Output: true
+Explanation: 69 rotated 180° is 69
+
+Example 2:
+Input: num = "88"
+Output: true
+
+Example 3:
+Input: num = "962"
+Output: false
+Explanation: 962 rotated is 296 ≠ 962
+
+Example 4:
+Input: num = "1"
+Output: true
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 1 <= num.length <= 50
+- num consists of only digits
+- num does not have leading zeros except for zero itself
 ```
 
 ```java
@@ -511,39 +547,34 @@ public boolean isStrobogrammatic(String num) {
 
 **LeetCode 247** | **Difficulty:** Medium | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  STROBOGRAMMATIC NUMBER II                                                ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given an integer n, return all the strobogrammatic numbers that are of   ║
-║  length n. A strobogrammatic number is a number that looks the same       ║
-║  when rotated 180 degrees.                                                ║
-║                                                                           ║
-║  You may return the answer in any order.                                  ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: n = 2                                                             ║
-║  Output: ["11", "69", "88", "96"]                                         ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: n = 1                                                             ║
-║  Output: ["0", "1", "8"]                                                  ║
-║                                                                           ║
-║  Example 3:                                                               ║
-║  Input: n = 3                                                             ║
-║  Output: ["101", "111", "181", "609", "619", "689",                       ║
-║           "808", "818", "888", "906", "916", "986"]                       ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 1 <= n <= 14                                                           ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**STROBOGRAMMATIC NUMBER II — (LeetCode Premium - Full Problem Description)**
+
+```text
+Given an integer n, return all the strobogrammatic numbers that are of
+length n. A strobogrammatic number is a number that looks the same
+when rotated 180 degrees.
+
+You may return the answer in any order.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: n = 2
+Output: ["11", "69", "88", "96"]
+
+Example 2:
+Input: n = 1
+Output: ["0", "1", "8"]
+
+Example 3:
+Input: n = 3
+Output: ["101", "111", "181", "609", "619", "689",
+         "808", "818", "888", "906", "916", "986"]
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 1 <= n <= 14
 ```
 
 ```java
@@ -582,22 +613,18 @@ private List<String> helper(int n, int finalLength) {
 **LeetCode 680** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/valid-palindrome-ii/](https://leetcode.com/problems/valid-palindrome-ii/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  VALID PALINDROME II                                                      ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given string s, return true if it can become palindrome after deleting   ║
-║  at most one character.                                                   ║
-║                                                                           ║
-║  Input: s = "abca"                                                        ║
-║  Output: true                                                             ║
-║  Explanation: Delete 'c' → "aba" or delete 'b' → "aca"                    ║
-║                                                                           ║
-║  Input: s = "abc"                                                         ║
-║  Output: false                                                            ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**VALID PALINDROME II**
+
+```text
+Given string s, return true if it can become palindrome after deleting
+at most one character.
+
+Input: s = "abca"
+Output: true
+Explanation: Delete 'c' → "aba" or delete 'b' → "aca"
+
+Input: s = "abc"
+Output: false
 ```
 
 ```java
@@ -632,46 +659,41 @@ private boolean isPalindrome(String s, int left, int right) {
 
 **LeetCode 266** | **Difficulty:** Easy | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PALINDROME PERMUTATION                                                   ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given a string s, return true if a permutation of the string could       ║
-║  form a palindrome.                                                       ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: s = "code"                                                        ║
-║  Output: false                                                            ║
-║  Explanation: No permutation of "code" is a palindrome.                   ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: s = "aab"                                                         ║
-║  Output: true                                                             ║
-║  Explanation: "aba" is a palindrome permutation.                          ║
-║                                                                           ║
-║  Example 3:                                                               ║
-║  Input: s = "carerac"                                                     ║
-║  Output: true                                                             ║
-║  Explanation: "carerac" → "racecar" is a palindrome.                      ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  KEY INSIGHT:                                                             ║
-║  A string can form a palindrome if at most ONE character has odd count.   ║
-║  - Even length: all chars must have even count                            ║
-║  - Odd length: exactly one char has odd count (middle char)               ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 1 <= s.length <= 5000                                                  ║
-║  - s consists of only lowercase English letters                           ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PALINDROME PERMUTATION — (LeetCode Premium - Full Problem Description)**
+
+```text
+Given a string s, return true if a permutation of the string could
+form a palindrome.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: s = "code"
+Output: false
+Explanation: No permutation of "code" is a palindrome.
+
+Example 2:
+Input: s = "aab"
+Output: true
+Explanation: "aba" is a palindrome permutation.
+
+Example 3:
+Input: s = "carerac"
+Output: true
+Explanation: "carerac" → "racecar" is a palindrome.
+
+─────────────────────────────────────────────────────────────────────
+
+KEY INSIGHT:
+A string can form a palindrome if at most ONE character has odd count.
+- Even length: all chars must have even count
+- Odd length: exactly one char has odd count (middle char)
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 1 <= s.length <= 5000
+- s consists of only lowercase English letters
 ```
 
 ```java
@@ -709,36 +731,43 @@ public boolean canPermutePalindromeSet(String s) {
 
 ---
 
-> **Navigation**: [< Previous](02_Math_Numbers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Arrays.md)
 
 ---
 
 ### Historical Evolution
 
-**String algorithms** originated with the Knuth-Morris-Pratt algorithm (1977, Donald Knuth, Vaughan Pratt, and James Morris) who solved the substring search problem in O(N+M) time by preprocessing a failure function that enables constant-time longest prefix-suffix matches. The technique was refined by the Rabin-Karp algorithm (1987, Richard Karp and Michael Rabin) who introduced rolling hash-based searching, enabling efficient multi-pattern matching through hash comparisons—a breakthrough for plagiarism detection systems. Gusfield's Z-algorithm (published in his 1997 book "Strings, Sequences, and Streams") provided an alternative linear-time solution by computing Z-values that measure prefix matches, while Manacher's algorithm (1975, Glenn Manacher) discovered how to find longest palindromes in O(N) time by processing palindromes centered between characters rather than at characters. Modern practice anchors this work in bioinformatics applications (DNA sequence alignment using suffix arrays and KMP variants since the Human Genome Project, 1990-2003), plagiarism detection (Turnitin and similar systems using Rabin-Karp fingerprints since 1998), and search engine indexing (inverted indices built on string processing foundations).
+Classic string-matching results: Aho–Corasick (1975), Manacher's palindrome algorithm (1975), Knuth–Morris–Pratt and Boyer–Moore (both published 1977), Karp–Rabin hashing (report 1981, paper 1987) and the Z-function popularised by Gusfield's *Algorithms on Strings, Trees, and Sequences* (1997). Suffix arrays came from Manber and Myers (1990). Most interview string problems are small applications of these ideas: two pointers, hashing, frequency counts and dynamic programming.
 
-<details><summary>Answer</summary>
-
-Both are O(N²) in time, but expand-around-center uses **O(1) space** while DP uses **O(N²) space** for the dp[i][j] table. In practice, the constant factor matters enormously: expand-around-center accesses contiguous memory (expanding outward from a center), giving excellent cache locality. DP fills a 2D table with non-sequential access patterns (diagonal fills), causing cache misses. For N=1000, DP allocates a 1M boolean table; expand uses two integer pointers. Both are O(N²) comparisons, but expand is ~2-3× faster in practice. **Manacher's algorithm** beats both at O(N) time, O(N) space — but is rarely expected in interviews due to its complexity.
-
-</details>
-
----
+- **Aho & Corasick — 1975**: Multi-pattern matching automaton
+- **Manacher — 1975**: Longest palindromic substring in linear time
+- **KMP, Boyer–Moore — 1977**: Linear and sub-linear pattern search
+- **Karp & Rabin — 1981/1987**: Rolling hash matching
+- **Manber & Myers — 1990**: Suffix arrays
 
 ### Production Reality
 
 **String** patterns introduce several production failure modes that learners must internalize:
 
-**Failure mode 1: Integer overflow in reverse operations.** LeetCode 7 (Reverse Integer) silently returns 0 for inputs like 1534236469 because reversing produces 9646324351, which exceeds Integer.MAX_VALUE (2147483647). In production, a payment system reversing transaction amounts could lose thousands of dollars if overflow is unchecked. Java's `Integer.parseInt` throws NumberFormatException; returning 0 silently is more dangerous. Production impact: incorrect financial calculations, regulatory compliance failures, potential legal liability.
+**Failure mode 1: Integer overflow in reverse operations.** LeetCode 7 (Reverse Integer) silently returns 0 for inputs like 1534236469 because reversing produces 9646324351, which exceeds Integer.MAX_VALUE (2147483647). In production, a payment system reversing transaction amounts could lose thousands of dollars if overflow is unchecked. Java's `Integer.parseInt` throws NumberFormatException; returning 0 silently is more dangerous. Illustrative impact: incorrect financial calculations, regulatory compliance failures, potential legal liability.
 
-**Failure mode 2: Quadratic time from string concatenation in loops.** Using `s += c` in a tight loop creates a new String object each iteration (Strings are immutable in Java). For n=100000 characters, this causes O(n²) memory allocations and copies, leading to 5-10 second execution times. A logging system appending characters line-by-line degrades from O(n) to O(n²), causing timeouts. Production impact: request timeouts, thread pool exhaustion, cascading failures in high-throughput systems.
+**Failure mode 2: Quadratic time from string concatenation in loops.** Using `s += c` in a tight loop creates a new String object each iteration (Strings are immutable in Java). For n=100000 characters, this causes O(n²) memory allocations and copies, leading to 5-10 second execution times. A logging system appending characters line-by-line degrades from O(n) to O(n²), causing timeouts. Illustrative impact: request timeouts, thread pool exhaustion, cascading failures in high-throughput systems.
 
-**Failure mode 3: Reference equality vs value equality.** Using `==` to compare Strings compares references, not content. After `String a = new String("test")` and `String b = new String("test")`, `a == b` is false even though `a.equals(b)` is true. This causes authentication failures, cache misses, and incorrect conditional logic in production. Production impact: login failures, data mismatches, unpredictable business logic.
+**Failure mode 3: Reference equality vs value equality.** Using `==` to compare Strings compares references, not content. After `String a = new String("test")` and `String b = new String("test")`, `a == b` is false even though `a.equals(b)` is true. This causes authentication failures, cache misses, and incorrect conditional logic in production. Illustrative impact: login failures, data mismatches, unpredictable business logic.
 
 **Debug workflow:** 1. Pre-check overflow before multiplication: `if (x > Integer.MAX_VALUE / 10) return 0`. 2. Use `StringBuilder` for string concatenation in loops—reserve capacity with `new StringBuilder(n)`. 3. Always use `.equals()` for String comparison; use `==` only for interned Strings or when reference equality is intentional. 4. Profile hot loops with `JMH` or visualvm to catch hidden O(n²) behavior. 5. Test with maximum-length inputs (e.g., 100K chars).
 
-**Real-world anchor:** The 2017 Cloudbleed security vulnerability in Cloudflare occurred partly due to string buffer handling issues—when buffers weren't properly managed, sensitive data leaked from memory. Improper string handling in parsing logic caused buffer over-reads, exposing encrypted traffic. This parallels the quadratic concatenation bug and string comparison failures in competitive programming.
+**Real-world anchor:** Cloudbleed (2017): a bug in an HTML parser (code generated with Ragel) at Cloudflare caused a buffer over-read, so some HTTP responses contained fragments of other customers' memory. Boundary handling in text parsers is a security issue, not just a correctness one.
 
+
+---
+
+## 🏢 Enterprise Lens — String Problems
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Search boxes, parsers, tokenisers, text normalisation |
+| **Failure modes** | Quadratic string building; `==` instead of `equals`; assuming ASCII |
+| **Testing and verification** | Randomised tests against brute force; include empty strings and repeated characters |
 
 ---
 

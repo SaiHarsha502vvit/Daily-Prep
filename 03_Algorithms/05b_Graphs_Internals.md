@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05c_Graphs_Fundamentals.md)
+> **Navigation**: [← TREES](05_Trees.md) | [Chapter index](00_INDEX.md) | [Graphs Fundamentals →](05c_Graphs_Fundamentals.md)
 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — traversal intuition and pattern recognition
 
 ---
@@ -12,27 +12,81 @@ See also: [Trees](05_Trees.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Trees](05_Trees.md) |
+| **You will learn** | Graph representations (adjacency list/matrix/edge list), memory layout, cache behaviour, density and complexity trade-offs |
+| **Leads to** | [Graph Fundamentals](05c_Graphs_Fundamentals.md) |
+| **Abstraction level** | L0–L4: representation decisions that decide performance |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Graph Internals
+
+### 1. The bottom line
+
+Pick the graph representation by density: adjacency lists for sparse graphs, matrices for dense ones.
+
+### 2. The textbook core
+
+- Adjacency list: O(V + E) space, iterate neighbours in O(deg).
+- Adjacency matrix: O(V²) space, edge check O(1).
+- Edge list: simplest, ideal for Kruskal and Bellman–Ford.
+- Prefer primitive arrays (`int[]` CSR layout) over `List<List<Integer>>` for large graphs.
+
+### 3. The real-world analogy
+
+A **phone book of friends** (list per person) versus a **huge grid** of everyone against everyone (matrix).
+
+### 4. Walkthrough
+
+1. Graph with 1,000 nodes and 5,000 edges.
+2. Matrix: 1,000 × 1,000 = 10⁶ cells even though only 5,000 are used.
+3. List: about 5,000 × 2 entries.
+4. Choose the list; BFS touches each edge twice.
+
+> [!NOTE]
+> **Quick check:** When is a matrix the better choice? *Dense graphs or when O(1) edge lookup is essential (e.g. Floyd–Warshall).*
+
+---
+
+
 ### 5W1H: Mastering Graph Internals
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: Memory models of graphs (Adjacency List vs Matrix), edge list storage,║
-║        and internal CPU/Cache behavior during graph traversal algorithms.    ║
-║                                                                              ║
-║  WHY:  Incorrect graph representation leads to O(V²) memory blowouts or      ║
-║        cache thrashing. Understanding memory layout defines performance.     ║
-║                                                                              ║
-║  WHO:  Performance-minded engineers deciding how to encode networks, paths,  ║
-║        and dependencies in memory-constrained environments.                  ║
-║                                                                              ║
-║  WHEN: Adjacency List for sparse graphs (E < V²/2). Adj Matrix for dense     ║
-║        graphs or O(1) edge lookups. Edge List for sorting edges (Kruskal's). ║
-║                                                                              ║
-║  HOW:  By comparing memory overhead of Object-based adjacency lists vs flat  ║
-║        2D arrays, and selecting ArrayDeque over LinkedList for cache-        ║
-║        friendly BFS/DFS queues.                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** Memory models of graphs (Adjacency List vs Matrix), edge list storage, and internal CPU/Cache behavior during graph traversal algorithms.
+>
+> **WHY:** Incorrect graph representation leads to O(V²) memory blowouts or cache thrashing. Understanding memory layout defines performance.
+>
+> **WHO:** Performance-minded engineers deciding how to encode networks, paths, and dependencies in memory-constrained environments.
+>
+> **WHEN:** Adjacency List for sparse graphs (E < V²/2). Adj Matrix for dense graphs or O(1) edge lookups. Edge List for sorting edges (Kruskal's).
+>
+> **HOW:** By comparing memory overhead of Object-based adjacency lists vs flat 2D arrays, and selecting ArrayDeque over LinkedList for cache- friendly BFS/DFS queues.
+
+
+### 5. Check yourself
+
+**Q1.** Space of an adjacency list versus an adjacency matrix?
+
+<details><summary>Answer</summary>
+
+`O(V + E)` versus `O(V²)`.
+
+</details>
+
+**Q2.** Cost of BFS on a graph stored as adjacency lists?
+
+<details><summary>Answer</summary>
+
+`O(V + E)`.
+
+</details>
 
 ---
 
@@ -65,7 +119,7 @@ Adjacency matrix: O(V²) regardless of E — wastes O(V²−E) space on sparse g
 
 ### Historical Evolution
 
-**Leonhard Euler (1736)**: Königsberg bridge problem → invented graph theory. Proved no Eulerian circuit exists when odd-degree vertices > 0. **Arthur Cayley (1857)**: Introduced "trees" (connected acyclic graphs); proved Vᵛ⁻² labelled spanning trees exist on V vertices (Cayley's formula). **Dénes Kőnig (1931)**: Graph Theory textbook — first systematic treatment; König's theorem (bipartite max-matching = min vertex cover). **CLRS Introduction to Algorithms (1990)**: Standardized the adjacency list representation, BFS, DFS pseudocode now universal in CS education.
+**Leonhard Euler (1736)**: Königsberg bridge problem → invented graph theory. Proved no Eulerian circuit exists when odd-degree vertices > 0. **Arthur Cayley (1857)**: Introduced "trees" (connected acyclic graphs); Cayley's formula (V^(V−2) labelled trees on V vertices) was first proved by Borchardt (1860) and popularised by Cayley (1889). **Dénes Kőnig (1931, 1936)**: König's theorem (bipartite max-matching = min vertex cover, 1931) and the first graph-theory textbook (1936). **CLRS Introduction to Algorithms (1990)**: Standardized the adjacency list representation, BFS, DFS pseudocode now universal in CS education.
 
 > BFS/Dijkstra proofs: [05c — Graphs Fundamentals](05c_Graphs_Fundamentals.md) | Lower bound for graph problems: [A3 — Lower Bounds & NP](A3_Lower_Bounds_And_NP.md)
 
@@ -76,24 +130,6 @@ Adjacency matrix: O(V²) regardless of E — wastes O(V²−E) space on sparse g
 
 ---
 
-🔬 **Section Challenge — From Fundamentals to Advanced Graph Algorithms**
-
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-
-<details><summary>Answer</summary>
-
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-
-</details>
-
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-
-</details>
-
 ### Historical Evolution
 
 Graph theory as a mathematical discipline traces its formal origin to **Leonhard Euler's 1736 paper on the Seven Bridges of Königsberg** — Euler proved it impossible to cross all seven bridges exactly once by introducing the concept of vertices and edges as abstract graph elements, founding the entire field of topology. The adjacency list and adjacency matrix representations emerged from early computer implementations: **Warshall (1962)** and **Floyd** popularized matrix-based graph algorithms, while **adjacency lists** became the standard for sparse graphs in the 1970s as researchers like **Tarjan** (1972) developed depth-first search and its applications. The memory tradeoff between these representations (list: $O(V+E)$, matrix: $O(V^2)$) was first quantified in **Knuth's 1968 analysis of graph algorithms**, and remains the fundamental decision point in production graph systems. Modern practice (post-2010) extends these representations: CSR (Compressed Sparse Row) format for efficient graph processing in libraries like NetworkX and Pregel, distributed graph processing (Pregel/GraphX) that partitions adjacency lists across machines, and graph databases (Neo4j) that use adjacency list representations optimized for traversal patterns.
@@ -102,152 +138,110 @@ Graph theory as a mathematical discipline traces its formal origin to **Leonhard
 
 ## 🧠 Graph Representation — Memory Deep Dive
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ADJACENCY LIST VS MATRIX - MEMORY INTERNALS                  │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  GRAPH:  0 ─── 1                                                                │
-│          │     │                                                                │
-│          3 ─── 2                                                                │
-│                                                                                 │
-│  ADJACENCY MATRIX MEMORY LAYOUT:                                                │
-│  ─────────────────────────────────                                              │
-│  int[][] matrix = new int[4][4];                                                │
-│                                                                                 │
-│  HEAP MEMORY:                                                                   │
-│  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │ int[][] object (outer array):                                           │    │
-│  │ ┌────────────────────────────────────────────────────────────────────┐  │    │
-│  │ │ Header (16 bytes) │ row[0] ptr │ row[1] ptr │ row[2] ptr │ row[3] │  │     │
-│  │ │                   │ 0x1000     │ 0x2000     │ 0x3000     │ 0x4000 │  │     │
-│  │ └────────────────────────────────────────────────────────────────────┘  │    │
-│  │                                                                         │    │
-│  │ int[] row[0] at 0x1000:                                                 │    │
-│  │ ┌────────────────────────────────────────────────────────────────────┐  │    │
-│  │ │ Header (16 bytes) │ [0,0]=0 │ [0,1]=1 │ [0,2]=0 │ [0,3]=1 │        │  │    │
-│  │ └────────────────────────────────────────────────────────────────────┘  │    │
-│  │                                                                         │    │
-│  │ int[] row[1] at 0x2000: ...                                            │     │
-│  │ int[] row[2] at 0x3000: ...                                            │     │
-│  │ int[] row[3] at 0x4000: ...                                            │     │
-│  └─────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                 │
-│  TOTAL MEMORY:                                                                  │
-│  • Outer array: 16 + 4×4 = 32 bytes                                             │
-│  • Each row: 16 + 4×4 = 32 bytes                                                │
-│  • Total: 32 + 4×32 = 160 bytes for 4 vertices                                  │
-│                                                                                 │
-│  For V vertices: O(V²) space regardless of edges!                               │
-│  1000 vertices: 1000 × 1000 × 4 = 4 MB                                          │
-│  1,000,000 vertices: 4 TB (impossible!)                                         │
-│                                                                                 │
-│                                                                                 │
-│  ADJACENCY LIST MEMORY LAYOUT:                                                  │
-│  ────────────────────────────────                                               │
-│  List<List<Integer>> adj = new ArrayList<>();                                   │
-│                                                                                 │
-│  HEAP MEMORY:                                                                   │
-│  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │ ArrayList (outer):                                                      │    │
-│  │ ┌────────────────────────────────────────────────────────────────────┐  │    │
-│  │ │ Header │ Object[] elementData → [list0, list1, list2, list3]      │  │     │
-│  │ └────────────────────────────────────────────────────────────────────┘  │    │
-│  │                                                                         │    │
-│  │ ArrayList (vertex 0): neighbors [1, 3]                                 │     │
-│  │ ┌────────────────────────────────────────────────────────────────────┐  │    │
-│  │ │ Header │ Object[] → [Integer(1), Integer(3), null, ...]           │  │     │
-│  │ └────────────────────────────────────────────────────────────────────┘  │    │
-│  │                                                                         │    │
-│  │ ArrayList (vertex 1): neighbors [0, 2]  ...                            │     │
-│  └─────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                 │
-│  TOTAL MEMORY:                                                                  │
-│  • Outer ArrayList: ~32 bytes                                                   │
-│  • Each inner ArrayList: ~32 bytes + edges                                      │
-│  • Each Integer: 16 bytes                                                       │
-│  • Total: 32 + V×32 + E×16 = O(V + E)                                           │
-│                                                                                 │
-│  For sparse graph (V=1000, E=5000):                                             │
-│  • Matrix: 4 MB                                                                 │
-│  • List:   ~112 KB (35x smaller!)                                               │
-│                                                                                 │
-│  For dense graph (V=1000, E=500,000):                                           │
-│  • Matrix: 4 MB                                                                 │
-│  • List:   ~8 MB (matrix is smaller!)                                           │
-│                                                                                 │
-│  RULE: Use adjacency list for sparse graphs (E < V²/2)                          │
-│        Use adjacency matrix for dense graphs or when edge lookup is frequent    │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+### Adjacency list vs matrix: memory internals
+
+The example graph is a 4-cycle: `0 — 1`, `1 — 2`, `2 — 3`, `3 — 0`.
+
+```mermaid
+flowchart LR
+  v0((0)) --- v1((1))
+  v1 --- v2((2))
+  v2 --- v3((3))
+  v3 --- v0
 ```
 
-🔬 **Section Challenge — 🧠 Graph Representation — Memory Deep Dive**
+**How to read this diagram.** Four vertices joined in a square, so vertex 0 is adjacent to 1 and 3, vertex 1 to 0 and 2, and so on.
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+#### Adjacency matrix memory layout
 
-<details><summary>Answer</summary>
+`int[][] matrix = new int[4][4];` is an outer array of references, each pointing to its own row array on the heap:
 
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+| Object | Contents |
+| --- | --- |
+| Outer `int[][]` | Header (16 bytes), then `row[0]`, `row[1]`, `row[2]`, `row[3]` references |
+| `int[] row[0]` | Header (16 bytes), then `[0,0]=0`, `[0,1]=1`, `[0,2]=0`, `[0,3]=1` |
+| `int[] row[1]`, `row[2]`, `row[3]` | Same shape, one array each |
 
-</details>
+**Total memory** (compressed pointers):
 
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+- Outer array: 16 + 4 × 4 = 32 bytes.
+- Each row: 16 + 4 × 4 = 32 bytes.
+- Total: 32 + 4 × 32 = 160 bytes for 4 vertices.
 
-<details><summary>Answer</summary>
+For `V` vertices that is O(V²) space **regardless of the number of edges**. With 1,000 vertices: 1000 × 1000 × 4 = 4 MB. With 1,000,000 vertices: about 4 TB, which is impossible.
 
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+#### Adjacency list memory layout
 
-</details>
+`List<List<Integer>> adj = new ArrayList<>();` is an outer `ArrayList` whose `elementData` array holds one inner `ArrayList` per vertex. Each inner list holds boxed `Integer` objects:
+
+| Object | Contents |
+| --- | --- |
+| Outer `ArrayList` | Header, and an `Object[] elementData` → `[list0, list1, list2, list3]` |
+| Inner `ArrayList` (vertex 0) | Header, and an `Object[]` → `[Integer(1), Integer(3), null, ...]` |
+| Inner `ArrayList` (vertex 1) | Neighbors `[0, 2]`, and so on |
+
+**Total memory** (rough):
+
+- Outer `ArrayList`: about 32 bytes.
+- Each inner `ArrayList`: about 32 bytes, plus its edges.
+- Each `Integer` object: about 16 bytes (values from -128 to 127 are cached and shared).
+- Total ≈ 32 + V × 32 + E × 16 = O(V + E).
+
+| Graph | Matrix | List | Winner |
+| --- | --- | --- | --- |
+| Sparse (V = 1000, E = 5000) | 4 MB | about 112 KB (roughly 35× smaller) | List |
+| Dense (V = 1000, E = 500,000) | 4 MB | about 8 MB | Matrix |
+
+> [!TIP]
+> **Rule:** use an adjacency list for sparse graphs (E < V²/2). Use an adjacency matrix for dense graphs, or when edge lookup is frequent.
 
 ## 📌 Edge List Representation
 
+### Edge List - the Simplest Graph Representation
+
+**Structure:** just a list of edges, each edge is `(src, dst, weight)`.
+
+```java
+int[][] edges = {{0, 1, 5}, {0, 2, 3}, {1, 2, 1}, {2, 3, 7}};
+// Each row: [from, to, weight]
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    EDGE LIST - THE SIMPLEST GRAPH REPRESENTATION                │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  STRUCTURE: Just a list of edges — each edge is (src, dst, weight)              │
-│                                                                                 │
-│  int[][] edges = {{0,1,5}, {0,2,3}, {1,2,1}, {2,3,7}};                          │
-│  // Each row: [from, to, weight]                                                │
-│                                                                                 │
-│  GRAPH:       5       3       7                                                 │
-│         0 ------→ 1     0 ----→ 2 ----→ 3                                       │
-│                    ↑    1                                                       │
-│                    └────┘                                                       │
-│                                                                                 │
-│  MEMORY: O(E) — just the edges, nothing more                                    │
-│                                                                                 │
-│  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                 │
-│  WHEN TO USE EDGE LIST:                                                         │
-│  ✅ Bellman-Ford algorithm (iterates over ALL edges each relaxation)             │
-│  ✅ Kruskal's MST (sort edges by weight, process in order)                       │
-│  ✅ When you just need to store/sort edges                                       │
-│  ✅ Problems that give input as edge list directly                               │
-│                                                                                 │
-│  WHEN NOT TO USE:                                                               │
-│  ❌ Need to find neighbors of a vertex → O(E) scan each time!                    │
-│  ❌ BFS/DFS (adjacency list is much better)                                      │
-│  ❌ Need edge existence check (adjacency matrix is O(1))                         │
-│                                                                                 │
-│  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                 │
-│  COMPARISON OF ALL THREE:                                                       │
-│  ┌──────────────────┬──────────────┬────────────────┬──────────────────────┐    │
-│  │ Operation        │ Adj Matrix   │ Adj List       │ Edge List            │    │
-│  ├──────────────────┼──────────────┼────────────────┼──────────────────────┤    │
-│  │ Space            │ O(V²)       │ O(V + E)       │ O(E)                 │     │
-│  │ Add edge         │ O(1)         │ O(1)           │ O(1)                 │    │
-│  │ Edge exists?     │ O(1)         │ O(degree)      │ O(E)                 │    │
-│  │ All neighbors    │ O(V)         │ O(degree)      │ O(E)                 │    │
-│  │ All edges        │ O(V²)       │ O(V + E)       │ O(E)                 │     │
-│  │ Sort edges       │ O(V² log V) │ O(E log E)     │ O(E log E)           │     │
-│  └──────────────────┴──────────────┴────────────────┴──────────────────────┘    │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+```mermaid
+flowchart LR
+  n0((0)) -->|5| n1((1))
+  n0 -->|3| n2((2))
+  n1 -->|1| n2
+  n2 -->|7| n3((3))
 ```
+
+**How to read this diagram.** The graph described by the edge list above; each arrow is one row of the array and its label is the weight.
+
+
+MEMORY: O(E) — just the edges, nothing more
+
+**When to USE Edge List**:
+
+- ✅ Bellman-Ford algorithm (iterates over ALL edges each relaxation)
+- ✅ Kruskal's MST (sort edges by weight, process in order)
+- ✅ When you just need to store/sort edges
+- ✅ Problems that give input as edge list directly
+
+**When NOT to USE**:
+
+- ❌ Need to find neighbors of a vertex → O(E) scan each time!
+- ❌ BFS/DFS (adjacency list is much better)
+- ❌ Need edge existence check (adjacency matrix is O(1))
+
+**Comparison of ALL Three**:
+
+| Operation | Adj Matrix | Adj List | Edge List |
+| --- | --- | --- | --- |
+| Space | O(V²) | O(V + E) | O(E) |
+| Add edge | O(1) | O(1) | O(1) |
+| Edge exists? | O(1) | O(degree) | O(E) |
+| All neighbors | O(V) | O(degree) | O(E) |
+| All edges | O(V²) | O(V + E) | O(E) |
+| Sort edges | O(V² log V) | O(E log E) | O(E log E) |
 
 ```java
 // EDGE LIST — Java Implementation
@@ -275,163 +269,154 @@ Arrays.sort(edges, (a, b) -> a[2] - b[2]);  // sort by weight
 
 ## 🔬 BFS and DFS — Internal Operations
 
+### BFS vs DFS: memory and CPU behavior
+
+The example graph has edges `0—1`, `1—2`, `0—3`, `1—4` and `3—4`:
+
+```mermaid
+flowchart LR
+  v0((0)) --- v1((1))
+  v1 --- v2((2))
+  v0 --- v3((3))
+  v1 --- v4((4))
+  v3 --- v4
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    BFS VS DFS - MEMORY AND CPU BEHAVIOR                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  GRAPH:    0 ─── 1 ─── 2                                                        │
-│            │     │                                                              │
-│            3 ─── 4                                                              │
-│                                                                                 │
-│  BFS USING QUEUE:                                                               │
-│  ─────────────────                                                              │
-│  Queue<Integer> queue = new LinkedList<>();                                     │
-│  queue.offer(0);                                                                │
-│  visited[0] = true;                                                             │
-│                                                                                 │
-│  QUEUE EVOLUTION:                                                               │
-│  Step 1: queue = [0], visit 0, add neighbors                                    │
-│  Step 2: queue = [1, 3], visit 1                                                │
-│  Step 3: queue = [3, 2, 4], visit 3                                             │
-│  Step 4: queue = [2, 4], visit 2                                                │
-│  Step 5: queue = [4], visit 4                                                   │
-│  Step 6: queue = [], done!                                                      │
-│                                                                                 │
-│  Visit order: 0, 1, 3, 2, 4 (level by level)                                    │
-│                                                                                 │
-│  MEMORY: Queue holds O(V) nodes worst case (wide graph)                         │
-│                                                                                 │
-│                                                                                 │
-│  DFS USING STACK (or recursion):                                                │
-│  ───────────────────────────────                                                │
-│  Stack<Integer> stack = new Stack<>();                                          │
-│  stack.push(0);                                                                 │
-│                                                                                 │
-│  STACK EVOLUTION:                                                               │
-│  Step 1: stack = [0], visit 0, push neighbors                                   │
-│  Step 2: stack = [3, 1], visit 1                                                │
-│  Step 3: stack = [3, 4, 2], visit 2 (deepest first!)                            │
-│  Step 4: stack = [3, 4], visit 4                                                │
-│  Step 5: stack = [3], visit 3                                                   │
-│  Step 6: stack = [], done!                                                      │
-│                                                                                 │
-│  Visit order: 0, 1, 2, 4, 3 (goes deep first)                                   │
-│                                                                                 │
-│  MEMORY: Stack holds O(V) nodes worst case (deep graph)                         │
-│                                                                                 │
-│                                                                                 │
-│  CPU CACHE BEHAVIOR:                                                            │
-│  ────────────────────                                                           │
-│  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │ BFS:                                                                    │    │
-│  │ • Visits nearby nodes first                                            │     │
-│  │ • Better for graphs with spatial locality                              │     │
-│  │ • Queue operations: offer() and poll() - O(1)                         │      │
-│  │ • LinkedList queue: Poor cache locality (scattered nodes)             │      │
-│  │ • ArrayDeque queue: Better cache locality (contiguous array)          │      │
-│  │                                                                        │     │
-│  │ DFS:                                                                    │    │
-│  │ • Goes deep, may jump around in memory                                 │     │
-│  │ • Recursive DFS has function call overhead                            │      │
-│  │ • Iterative DFS with ArrayDeque is cache-friendlier                   │      │
-│  └─────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                 │
-│                                                                                 │
-│  RECOMMENDATION:                                                                │
-│  ───────────────                                                                │
-│  • Use ArrayDeque instead of LinkedList for Queue/Stack                         │
-│  • ArrayDeque is 2-3x faster due to better cache locality                       │
-│                                                                                 │
-│  // Prefer this:                                                                │
-│  Queue<Integer> queue = new ArrayDeque<>();                                     │
-│  Deque<Integer> stack = new ArrayDeque<>();                                     │
-│                                                                                 │
-│  // Over this:                                                                  │
-│  Queue<Integer> queue = new LinkedList<>();  // Slower!                         │
-│  Stack<Integer> stack = new Stack<>();       // Slower + synchronized!          │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+**How to read this diagram.** Vertex 0 connects to 1 and 3, vertex 1 connects to 0, 2 and 4, and vertex 3 connects to 0 and 4.
+
+#### BFS using a queue
+
+```java
+Queue<Integer> queue = new LinkedList<>();
+queue.offer(0);
+visited[0] = true;
+```
+
+| Step | Queue after the step | Action |
+| --- | --- | --- |
+| 1 | `[0]` | Visit 0, add its neighbors |
+| 2 | `[1, 3]` | Visit 1 |
+| 3 | `[3, 2, 4]` | Visit 3 |
+| 4 | `[2, 4]` | Visit 2 |
+| 5 | `[4]` | Visit 4 |
+| 6 | `[]` | Done |
+
+Visit order: **0, 1, 3, 2, 4** (level by level). Memory: the queue holds O(V) nodes in the worst case (a wide graph).
+
+#### DFS using a stack (or recursion)
+
+```java
+Stack<Integer> stack = new Stack<>();
+stack.push(0);
+```
+
+| Step | Stack after the step (top is rightmost) | Action |
+| --- | --- | --- |
+| 1 | `[0]` | Visit 0, push its neighbors |
+| 2 | `[3, 1]` | Visit 1 |
+| 3 | `[3, 4, 2]` | Visit 2 (deepest first!) |
+| 4 | `[3, 4]` | Visit 4 |
+| 5 | `[3]` | Visit 3 (a duplicate 3 pushed by vertex 4 is skipped once it is marked visited) |
+| 6 | `[]` | Done |
+
+Visit order: **0, 1, 2, 4, 3** (goes deep first). Memory: the stack holds O(V) nodes in the worst case (a deep graph).
+
+#### CPU cache behavior
+
+| | BFS | DFS |
+| --- | --- | --- |
+| Pattern | Visits nearby nodes first. Better for graphs with spatial locality. | Goes deep and may jump around in memory. |
+| Queue/stack cost | `offer()` and `poll()` are O(1). | Recursive DFS has function-call overhead. |
+| Container choice | `LinkedList` queue: poor cache locality (scattered nodes). `ArrayDeque` queue: better locality (contiguous array). | Iterative DFS with `ArrayDeque` is more cache-friendly. |
+
+#### Recommendation
+
+Use `ArrayDeque` instead of `LinkedList` or `Stack`. Its contiguous array has better cache locality, and the `ArrayDeque` Javadoc notes it is likely to be faster than `Stack` as a stack and faster than `LinkedList` as a queue.
+
+```java
+// Prefer this:
+Queue<Integer> queue = new ArrayDeque<>();
+Deque<Integer> stack = new ArrayDeque<>();
+
+// Over this:
+Queue<Integer> queue = new LinkedList<>();  // Slower
+Stack<Integer> stack = new Stack<>();       // Slower, and synchronized
 ```
 
 ## 🔬 Shortest Path Algorithms — Internal Comparison
 
+### Dijkstra vs Bellman-ford vs Floyd-warshall
+
+DIJKSTRA'S ALGORITHM (Single source, non-negative weights):  
+Time: O((V + E) log V) with binary heap  
+Space: O(V) for distance array + O(V) for priority queue
+
+**Internal Working**:
+
+PriorityQueue<int[]> pq = new PriorityQueue<>((a,b) -> a[1] - b[1]);
+
+- pq.offer(): O(log V) - bubble up in heap
+- pq.poll(): O(log V) - bubble down in heap
+- Each edge relaxed once: E times
+- Total: O(E log V)
+
+**WHY Negative Weights Break Dijkstra**:
+
+Once a node is "done" (popped from PQ), Dijkstra assumes it won't improve  
+Negative edge could make it shorter later → incorrect result!
+
+BELLMAN-FORD (Single source, handles negative weights):  
+Time: O(V × E)  
+Space: O(V) for distance array
+
+**Internal Working**:
+
+```java
+for (int i = 0; i < V - 1; i++) {           // V-1 iterations
+    for (int[] edge : edges) {              // All E edges
+        int u = edge[0], v = edge[1], w = edge[2];
+        if (dist[u] + w < dist[v])
+            dist[v] = dist[u] + w;          // Relax
+    }
+}
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DIJKSTRA VS BELLMAN-FORD VS FLOYD-WARSHALL                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  DIJKSTRA'S ALGORITHM (Single source, non-negative weights):                    │
-│  ──────────────────────────────────────────────────────────                     │
-│  Time: O((V + E) log V) with binary heap                                        │
-│  Space: O(V) for distance array + O(V) for priority queue                       │
-│                                                                                 │
-│  INTERNAL WORKING:                                                              │
-│  PriorityQueue<int[]> pq = new PriorityQueue<>((a,b) -> a[1] - b[1]);           │
-│                                                                                 │
-│  • pq.offer(): O(log V) - bubble up in heap                                     │
-│  • pq.poll(): O(log V) - bubble down in heap                                    │
-│  • Each edge relaxed once: E times                                              │
-│  • Total: O(E log V)                                                            │
-│                                                                                 │
-│  WHY NEGATIVE WEIGHTS BREAK DIJKSTRA:                                           │
-│  Once a node is "done" (popped from PQ), Dijkstra assumes it won't improve      │
-│  Negative edge could make it shorter later → incorrect result!                  │
-│                                                                                 │
-│                                                                                 │
-│  BELLMAN-FORD (Single source, handles negative weights):                        │
-│  ─────────────────────────────────────────────────────────                      │
-│  Time: O(V × E)                                                                 │
-│  Space: O(V) for distance array                                                 │
-│                                                                                 │
-│  INTERNAL WORKING:                                                              │
-│  for (int i = 0; i < V - 1; i++) {           // V-1 iterations                  │
-│      for (int[] edge : edges) {              // All E edges                     │
-│          int u = edge[0], v = edge[1], w = edge[2];                             │
-│          if (dist[u] + w < dist[v])                                             │
-│              dist[v] = dist[u] + w;          // Relax                           │
-│      }                                                                          │
-│  }                                                                              │
-│                                                                                 │
-│  WHY V-1 ITERATIONS?                                                            │
-│  • Shortest path has at most V-1 edges                                          │
-│  • Each iteration guarantees at least one more correct distance                 │
-│  • After V-1, all shortest paths found (if no negative cycle)                   │
-│                                                                                 │
-│  NEGATIVE CYCLE DETECTION:                                                      │
-│  Run one more iteration - if any distance improves → negative cycle exists!     │
-│                                                                                 │
-│                                                                                 │
-│  FLOYD-WARSHALL (All pairs shortest paths):                                     │
-│  ──────────────────────────────────────────                                     │
-│  Time: O(V³)                                                                    │
-│  Space: O(V²) for distance matrix                                               │
-│                                                                                 │
-│  INTERNAL WORKING:                                                              │
-│  for (int k = 0; k < V; k++) {               // Intermediate vertex             │
-│      for (int i = 0; i < V; i++) {           // Source                          │
-│          for (int j = 0; j < V; j++) {       // Destination                     │
-│              dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);             │
-│          }                                                                      │
-│      }                                                                          │
-│  }                                                                              │
-│                                                                                 │
-│  KEY INSIGHT: After iteration k, dist[i][j] contains shortest path              │
-│  from i to j using only vertices 0 to k as intermediates                        │
-│                                                                                 │
-│                                                                                 │
-│  COMPARISON TABLE:                                                              │
-│  ┌────────────────┬──────────────┬────────────┬────────────┬─────────────────┐  │
-│  │ Algorithm      │ Time         │ Space      │ Neg. Edges │ Use Case        │  │
-│  ├────────────────┼──────────────┼────────────┼────────────┼─────────────────┤  │
-│  │ Dijkstra       │ O(E log V)   │ O(V)       │ No         │ Single source   │  │
-│  │ Bellman-Ford   │ O(V × E)     │ O(V)       │ Yes        │ Neg. edges      │  │
-│  │ Floyd-Warshall │ O(V³)        │ O(V²)      │ Yes        │ All pairs       │  │
-│  │ BFS (unweight) │ O(V + E)     │ O(V)       │ N/A        │ Unweighted      │  │
-│  └────────────────┴──────────────┴────────────┴────────────┴─────────────────┘  │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+WHY V-1 ITERATIONS?
+- Shortest path has at most V-1 edges
+- Each iteration guarantees at least one more correct distance
+- After V-1, all shortest paths found (if no negative cycle)
+
+**Negative Cycle Detection**:
+
+Run one more iteration - if any distance improves → negative cycle exists!
+
+FLOYD-WARSHALL (All pairs shortest paths):  
+Time: O(V³)  
+Space: O(V²) for distance matrix
+
+**Internal Working**:
+
+```java
+for (int k = 0; k < V; k++) {               // Intermediate vertex
+    for (int i = 0; i < V; i++) {           // Source
+        for (int j = 0; j < V; j++) {       // Destination
+            dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+        }
+    }
+}
 ```
+
+KEY INSIGHT: After iteration k, dist[i][j] contains shortest path  
+from i to j using only vertices 0 to k as intermediates
+
+**Comparison Table**:
+
+| Algorithm | Time | Space | Neg. Edges | Use Case |
+| --- | --- | --- | --- | --- |
+| Dijkstra | O(E log V) | O(V) | No | Single source |
+| Bellman-Ford | O(V × E) | O(V) | Yes | Neg. edges |
+| Floyd-Warshall | O(V³) | O(V²) | Yes | All pairs |
+| BFS (unweight) | O(V + E) | O(V) | N/A | Unweighted |
 
 ---
 
@@ -490,18 +475,22 @@ In _The Algorithm Design Manual_, Steven Skiena emphasizes that the hardest part
 ## When It Breaks -- Graph Internals
 
 ### 1. HashMap Adjacency List — Non-Deterministic Traversal Order
+
 **What breaks**: `Map<Integer, Set<Integer>> adj` with `HashSet` for neighbors. BFS/DFS iteration order is non-deterministic between JVM runs (hash seeds differ since Java 8). Tests that assert a specific traversal order pass locally and fail in CI.
 **Fix**: Use `LinkedHashSet` to preserve insertion order, or `TreeSet` for sorted order. For competitive programming: use `List<Integer>` (insertion order, fastest iteration).
 
 ### 2. Directed vs Undirected — Adding Edge Only Once
+
 **What breaks**: For an undirected graph, forgetting to add the reverse edge: `adj.get(u).add(v)` without `adj.get(v).add(u)`. Result: a directed graph masquerading as undirected. BFS from u reaches v, but BFS from v doesn't reach u.
 **Debug signal**: If `|edges from A| != |edges from B|` for a "symmetric" graph, one direction is missing.
 
 ### 3. DFS Stack Overflow on Dense Graphs
+
 **What breaks**: Recursive DFS on a path graph with 10⁵ nodes causes `StackOverflowError` (JVM default stack ~8k–15k frames). Happens specifically on star graphs, path graphs, or any graph with high depth.
 **Fix**: Convert to iterative DFS with an explicit `ArrayDeque<Integer>` stack. The stack mirrors the recursion stack but lives on the heap.
 
 ### 4. Forgetting to Initialize All Nodes in the Adjacency List
+
 **What breaks**: Calling `adj.get(node)` for an isolated node (no edges) returns `null` if you only initialized nodes that appear in edge lists. `NullPointerException` on `.size()` or `.iterator()`.
 **Fix**: Always pre-initialize: `for (int i = 0; i < n; i++) adj.add(new ArrayList<>())` before adding edges.
 
@@ -528,6 +517,16 @@ boolean dfs(int u, int target, boolean[] visited, List<List<Integer>> adj) {
 **Optimal for connectivity — O(α(n)) Union-Find:**
 Build DSU once from all edges, then answer `connected(src, dst)` in O(1) per query after O(E·α(V)) build. For repeated queries, Union-Find dominates BFS/DFS by 10–100× on query throughput.
 
+
+---
+
+## 🏢 Enterprise Lens — Graph Internals
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Social/road/dependency graphs, build systems, recommendation graphs; CSR formats in graph databases and analytics engines |
+| **Failure modes** | Using a matrix for a million-node sparse graph (memory blow-up); boxing overhead; undirected edges added once instead of twice |
+| **Testing and verification** | Unit-test with isolated nodes, self-loops, parallel edges, disconnected components |
 
 ---
 

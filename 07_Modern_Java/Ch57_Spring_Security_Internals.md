@@ -47,49 +47,27 @@
 
 ## 1. The Big Picture — What Happens to Every Request
 
+```mermaid
+flowchart TD
+  C["Client sends an HTTP request"] --> T
+  subgraph T["Tomcat (servlet container)"]
+    DFP["DelegatingFilterProxy<br/>bridge between the servlet world and the Spring world"]
+    FCP["FilterChainProxy<br/>Spring Security's entry point: matches the request to a SecurityFilterChain"]
+    SFC["SecurityFilterChain (ordered list of filters)<br/>1 DisableEncodeUrlFilter, 2 WebAsyncManagerIntegrationFilter, 3 SecurityContextHolderFilter,<br/>4 HeaderWriterFilter, 5 CorsFilter, 6 CsrfFilter, 7 LogoutFilter,<br/>8 UsernamePasswordAuthenticationFilter, 9 DefaultLoginPageGeneratingFilter,<br/>10 BasicAuthenticationFilter, 11 RequestCacheAwareFilter,<br/>12 SecurityContextHolderAwareRequestFilter, 13 AnonymousAuthenticationFilter,<br/>14 ExceptionTranslationFilter, 15 AuthorizationFilter"]
+    APP["DispatcherServlet → Controller → Service → Repository"]
+    DFP --> FCP --> SFC --> APP
+  end
 ```
-  Client sends HTTP Request
-       │
-       ▼
-  ┌─── Tomcat (Servlet Container) ─────────────────────────────────┐
-  │                                                                │
-  │  DelegatingFilterProxy                                         │
-  │  (Bridge between Servlet world and Spring world)               │
-  │       │                                                        │
-  │       ▼                                                        │
-  │  FilterChainProxy (Spring Security's entry point)              │
-  │       │                                                        │
-  │       ├── Match request to SecurityFilterChain                 │
-  │       │   (you can have MULTIPLE chains for different paths)   │
-  │       │   /api/** → chain with JWT filters                     │
-  │       │   /admin/** → chain with session + RBAC filters        │
-  │       │   /public/** → chain that permits all                  │
-  │       │                                                        │
-  │       ▼                                                        │
-  │  SecurityFilterChain (ordered list of filters)                 │
-  │  ┌──────────────────────────────────────────────────────┐      │
-  │  │ Filter 1: DisableEncodeUrlFilter                     │      │
-  │  │ Filter 2: WebAsyncManagerIntegrationFilter           │      │
-  │  │ Filter 3: SecurityContextHolderFilter                │      │
-  │  │ Filter 4: HeaderWriterFilter                         │      │
-  │  │ Filter 5: CorsFilter                                 │      │
-  │  │ Filter 6: CsrfFilter                                 │      │
-  │  │ Filter 7: LogoutFilter                               │      │
-  │  │ Filter 8: UsernamePasswordAuthenticationFilter       │      │
-  │  │ Filter 9: DefaultLoginPageGeneratingFilter           │      │
-  │  │ Filter 10: BasicAuthenticationFilter                 │      │
-  │  │ Filter 11: RequestCacheAwareFilter                   │      │
-  │  │ Filter 12: SecurityContextHolderAwareRequestFilter   │      │
-  │  │ Filter 13: AnonymousAuthenticationFilter             │      │
-  │  │ Filter 14: ExceptionTranslationFilter                │      │
-  │  │ Filter 15: AuthorizationFilter                       │      │
-  │  └──────────────────────────────────────────────────────┘      │
-  │       │                                                        │
-  │       ▼                                                        │
-  │  DispatcherServlet → Controller → Service → Repository         │
-  │                                                                │
-  └────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** `DelegatingFilterProxy` hands the request to `FilterChainProxy`, which picks one `SecurityFilterChain` and runs its filters in order before the request reaches your application code.
+
+You can have MULTIPLE chains for different paths:
+
+| Path | Chain |
+| --- | --- |
+| `/api/**` | A chain with JWT filters |
+| `/admin/**` | A chain with session and RBAC filters |
+| `/public/**` | A chain that permits all |
 
 ---
 
@@ -97,41 +75,31 @@
 
 ### What Each Key Filter Does
 
-```
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │  FILTER                          │  JOB                                 │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │  SecurityContextHolderFilter     │  Load SecurityContext from repo      │
-  │                                  │  (HttpSession for sessions,          │
-  │                                  │   empty for stateless JWT)           │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │  CorsFilter                      │  Handle CORS preflight OPTIONS       │
-  │                                  │  Add Access-Control-Allow-* headers  │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │  CsrfFilter                      │  Validate CSRF token for state-      │
-  │                                  │  changing requests (POST/PUT/DELETE) │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │  LogoutFilter                    │  Intercept POST /logout              │
-  │                                  │  Clear session, cookies, context     │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │  UsernamePasswordAuthFilter      │  Intercept POST /login               │
-  │                                  │  Extract username/password from form │
-  │                                  │  Delegate to AuthenticationManager   │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │  BasicAuthenticationFilter       │  Extract credentials from            │
-  │                                  │  Authorization: Basic header         │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │  AnonymousAuthenticationFilter   │  If no auth yet, create anonymous    │
-  │                                  │  Authentication (role_ANONYMOUS)     │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │  ExceptionTranslationFilter      │  Catch AuthenticationException →     │
-  │                                  │  redirect to login or send 401       │
-  │                                  │  Catch AccessDeniedException → 403   │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │  AuthorizationFilter             │  Check if current Authentication     │
-  │                                  │  has permission for this URL         │
-  │                                  │  (replaces old FilterSecurityInter.) │
-  └──────────────────────────────────────────────────────────────────────────┘
+**FILTER                          │  JOB**
+
+```text
+SecurityContextHolderFilter     │  Load SecurityContext from repo
+                                │  (HttpSession for sessions,
+                                │   empty for stateless JWT)
+CorsFilter                      │  Handle CORS preflight OPTIONS
+                                │  Add Access-Control-Allow-* headers
+CsrfFilter                      │  Validate CSRF token for state-
+                                │  changing requests (POST/PUT/DELETE)
+LogoutFilter                    │  Intercept POST /logout
+                                │  Clear session, cookies, context
+UsernamePasswordAuthFilter      │  Intercept POST /login
+                                │  Extract username/password from form
+                                │  Delegate to AuthenticationManager
+BasicAuthenticationFilter       │  Extract credentials from
+                                │  Authorization: Basic header
+AnonymousAuthenticationFilter   │  If no auth yet, create anonymous
+                                │  Authentication (role_ANONYMOUS)
+ExceptionTranslationFilter      │  Catch AuthenticationException →
+                                │  redirect to login or send 401
+                                │  Catch AccessDeniedException → 403
+AuthorizationFilter             │  Check if current Authentication
+                                │  has permission for this URL
+                                │  (replaces old FilterSecurityInter.)
 ```
 
 ### Filter Ordering Matters!
@@ -169,45 +137,44 @@
 
 ## 3. Authentication vs Authorization — Two Different Questions
 
+```text
+AUTHENTICATION (AuthN)               AUTHORIZATION (AuthZ)
+"WHO are you?"                       "WHAT can you do?"
+
+Input: credentials                   Input: authenticated user + resource
+(username/password, JWT, OAuth)
+
+Output: Authentication object        Output: allow / deny
+(principal, authorities)
+
+When: During login or                When: Every request,
+token validation                     after authentication
+
+Failure: 401 Unauthorized            Failure: 403 Forbidden
+
+Spring class:                        Spring class:
+AuthenticationManager                AuthorizationManager
+AuthenticationProvider               (or @PreAuthorize)
 ```
-  AUTHENTICATION (AuthN)               AUTHORIZATION (AuthZ)
-  ══════════════════════               ══════════════════════
-  "WHO are you?"                       "WHAT can you do?"
 
-  Input: credentials                   Input: authenticated user + resource
-  (username/password, JWT, OAuth)
+**The authentication object**
 
-  Output: Authentication object        Output: allow / deny
-  (principal, authorities)
+```text
+public interface Authentication extends Principal {
+    Collection<? extends GrantedAuthority> getAuthorities();
+    Object getCredentials();   // password (usually erased after auth)
+    Object getDetails();       // IP, session ID, etc.
+    Object getPrincipal();     // UserDetails (your user object)
+    boolean isAuthenticated();
+}
 
-  When: During login or                When: Every request,
-  token validation                     after authentication
-
-  Failure: 401 Unauthorized            Failure: 403 Forbidden
-
-  Spring class:                        Spring class:
-  AuthenticationManager                AuthorizationManager
-  AuthenticationProvider               (or @PreAuthorize)
-
-
-  THE AUTHENTICATION OBJECT:
-  ══════════════════════════
-
-  public interface Authentication extends Principal {
-      Collection<? extends GrantedAuthority> getAuthorities();
-      Object getCredentials();   // password (usually erased after auth)
-      Object getDetails();       // IP, session ID, etc.
-      Object getPrincipal();     // UserDetails (your user object)
-      boolean isAuthenticated();
-  }
-
-  Concrete implementation (most common):
-  UsernamePasswordAuthenticationToken {
-      principal = UserDetails { username="harsha", authorities=[ROLE_USER] }
-      credentials = null  (erased after successful auth)
-      authorities = [SimpleGrantedAuthority("ROLE_USER")]
-      isAuthenticated = true
-  }
+Concrete implementation (most common):
+UsernamePasswordAuthenticationToken {
+    principal = UserDetails { username="harsha", authorities=[ROLE_USER] }
+    credentials = null  (erased after successful auth)
+    authorities = [SimpleGrantedAuthority("ROLE_USER")]
+    isAuthenticated = true
+}
 ```
 
 ---
@@ -226,67 +193,62 @@
 
 ## 4. SecurityContext and ThreadLocal — Where "Current User" Lives
 
+**How spring knows who the current user is**
+
+```text
+Thread-1 (handling /api/orders for Harsha):
+│ ThreadLocal<SecurityContext>                                │
+│   └── SecurityContextImpl                                  │
+│        └── Authentication                                  │
+│             ├── principal = UserDetails{username="harsha"}  │
+│             ├── authorities = [ROLE_USER, ROLE_ADMIN]       │
+│             └── isAuthenticated = true                       │
+
+Thread-2 (handling /api/products for John):
+│ ThreadLocal<SecurityContext>                                │
+│   └── SecurityContextImpl                                  │
+│        └── Authentication                                  │
+│             ├── principal = UserDetails{username="john"}    │
+│             ├── authorities = [ROLE_USER]                   │
+│             └── isAuthenticated = true                       │
+
+Each thread has its OWN SecurityContext.
+Threads can't see each other's context.
 ```
-  HOW SPRING KNOWS WHO THE CURRENT USER IS:
-  ═══════════════════════════════════════════
 
-  Thread-1 (handling /api/orders for Harsha):
-  ┌────────────────────────────────────────────────────────────┐
-  │ ThreadLocal<SecurityContext>                                │
-  │   └── SecurityContextImpl                                  │
-  │        └── Authentication                                  │
-  │             ├── principal = UserDetails{username="harsha"}  │
-  │             ├── authorities = [ROLE_USER, ROLE_ADMIN]       │
-  │             └── isAuthenticated = true                       │
-  └────────────────────────────────────────────────────────────┘
+**Accessing current user in your code**
 
-  Thread-2 (handling /api/products for John):
-  ┌────────────────────────────────────────────────────────────┐
-  │ ThreadLocal<SecurityContext>                                │
-  │   └── SecurityContextImpl                                  │
-  │        └── Authentication                                  │
-  │             ├── principal = UserDetails{username="john"}    │
-  │             ├── authorities = [ROLE_USER]                   │
-  │             └── isAuthenticated = true                       │
-  └────────────────────────────────────────────────────────────┘
+```text
+// Method 1: SecurityContextHolder static access
+Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+String username = auth.getName();
 
-  Each thread has its OWN SecurityContext.
-  Threads can't see each other's context.
+// Method 2: Inject in controller method
+@GetMapping("/profile")
+public UserProfile getProfile(@AuthenticationPrincipal UserDetails user) {
+    return profileService.getProfile(user.getUsername());
+}
 
+// Method 3: In SpEL expressions
+@PreAuthorize("#userId == authentication.principal.id")
+public User getUser(Long userId) { ... }
+```
 
-  ACCESSING CURRENT USER IN YOUR CODE:
-  ═════════════════════════════════════
+**Lifecycle**
 
-  // Method 1: SecurityContextHolder static access
-  Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-  String username = auth.getName();
+```text
+SecurityContextHolderFilter (start of chain):
+→ Load SecurityContext from SecurityContextRepository
+→ Store in ThreadLocal via SecurityContextHolder.setContext()
 
-  // Method 2: Inject in controller method
-  @GetMapping("/profile")
-  public UserProfile getProfile(@AuthenticationPrincipal UserDetails user) {
-      return profileService.getProfile(user.getUsername());
-  }
+... request processing ...
 
-  // Method 3: In SpEL expressions
-  @PreAuthorize("#userId == authentication.principal.id")
-  public User getUser(Long userId) { ... }
+SecurityContextHolderFilter (end of chain, in finally block):
+→ Clear ThreadLocal via SecurityContextHolder.clearContext()
+→ Save to SecurityContextRepository if changed
 
-
-  LIFECYCLE:
-  ═════════
-
-  SecurityContextHolderFilter (start of chain):
-  → Load SecurityContext from SecurityContextRepository
-  → Store in ThreadLocal via SecurityContextHolder.setContext()
-
-  ... request processing ...
-
-  SecurityContextHolderFilter (end of chain, in finally block):
-  → Clear ThreadLocal via SecurityContextHolder.clearContext()
-  → Save to SecurityContextRepository if changed
-
-  WHY clear? Thread pool reuse!
-  If not cleared, next request on same thread would see previous user!
+WHY clear? Thread pool reuse!
+If not cleared, next request on same thread would see previous user!
 ```
 
 ---
@@ -305,305 +267,297 @@
 
 ## 5. How Username/Password Authentication Works (All 12 Steps)
 
+```text
+Client sends: POST /login
+              Content-Type: application/x-www-form-urlencoded
+              Body: username=harsha&password=secret123
+
+
+Step 1: UsernamePasswordAuthenticationFilter intercepts POST /login
+        (configured to match this path)
+
+Step 2: Extract credentials
+        String username = request.getParameter("username");  // "harsha"
+        String password = request.getParameter("password");  // "secret123"
+
+Step 3: Create UNAUTHENTICATED token
+        UsernamePasswordAuthenticationToken token =
+            UsernamePasswordAuthenticationToken.unauthenticated(username, password);
+        // token.isAuthenticated() == false at this point
+
+Step 4: Delegate to AuthenticationManager
+        Authentication result = authenticationManager.authenticate(token);
+
+Step 5: AuthenticationManager (ProviderManager) iterates its providers
+        for (AuthenticationProvider provider : providers) {
+            if (provider.supports(token.getClass())) {
+                return provider.authenticate(token);  // → DaoAuthenticationProvider
+            }
+        }
+
+Step 6: DaoAuthenticationProvider.authenticate()
+        → Calls UserDetailsService.loadUserByUsername("harsha")
+
+Step 7: YOUR UserDetailsService runs
+        @Service
+        public class MyUserDetailsService implements UserDetailsService {
+            public UserDetails loadUserByUsername(String username) {
+                User user = userRepo.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("Not found"));
+                return new org.springframework.security.core.userdetails.User(
+                    user.getUsername(),
+                    user.getPassword(),    // BCrypt hash from DB
+                    user.getAuthorities()
+                );
+            }
+        }
+
+Step 8: Password verification
+        DaoAuthenticationProvider calls:
+        passwordEncoder.matches("secret123", "$2a$10$ABC...hashedValue")
+        → BCrypt internally:
+          1. Extract salt from stored hash
+          2. Hash "secret123" with same salt
+          3. Compare resulting hash with stored hash
+          4. Return true/false
+
+Step 9: If password matches → Create AUTHENTICATED token
+        UsernamePasswordAuthenticationToken authenticated =
+            UsernamePasswordAuthenticationToken.authenticated(
+                userDetails,      // principal
+                null,             // credentials erased!
+                authorities       // [ROLE_USER, ROLE_ADMIN]
+            );
+
+Step 10: Store in SecurityContext
+         SecurityContextHolder.getContext().setAuthentication(authenticated);
+
+Step 11: Save SecurityContext to HttpSession
+         (SecurityContextRepository saves it)
+         Session gets a JSESSIONID cookie
+
+Step 12: AuthenticationSuccessHandler runs
+         → Redirect to / or original URL
+         → Or return 200 with user info (REST API)
 ```
-  Client sends: POST /login
-                Content-Type: application/x-www-form-urlencoded
-                Body: username=harsha&password=secret123
 
+**IF STEP 8 FAILS (wrong password)**
 
-  Step 1: UsernamePasswordAuthenticationFilter intercepts POST /login
-          (configured to match this path)
-
-  Step 2: Extract credentials
-          String username = request.getParameter("username");  // "harsha"
-          String password = request.getParameter("password");  // "secret123"
-
-  Step 3: Create UNAUTHENTICATED token
-          UsernamePasswordAuthenticationToken token =
-              UsernamePasswordAuthenticationToken.unauthenticated(username, password);
-          // token.isAuthenticated() == false at this point
-
-  Step 4: Delegate to AuthenticationManager
-          Authentication result = authenticationManager.authenticate(token);
-
-  Step 5: AuthenticationManager (ProviderManager) iterates its providers
-          for (AuthenticationProvider provider : providers) {
-              if (provider.supports(token.getClass())) {
-                  return provider.authenticate(token);  // → DaoAuthenticationProvider
-              }
-          }
-
-  Step 6: DaoAuthenticationProvider.authenticate()
-          → Calls UserDetailsService.loadUserByUsername("harsha")
-
-  Step 7: YOUR UserDetailsService runs
-          @Service
-          public class MyUserDetailsService implements UserDetailsService {
-              public UserDetails loadUserByUsername(String username) {
-                  User user = userRepo.findByUsername(username)
-                      .orElseThrow(() -> new UsernameNotFoundException("Not found"));
-                  return new org.springframework.security.core.userdetails.User(
-                      user.getUsername(),
-                      user.getPassword(),    // BCrypt hash from DB
-                      user.getAuthorities()
-                  );
-              }
-          }
-
-  Step 8: Password verification
-          DaoAuthenticationProvider calls:
-          passwordEncoder.matches("secret123", "$2a$10$ABC...hashedValue")
-          → BCrypt internally:
-            1. Extract salt from stored hash
-            2. Hash "secret123" with same salt
-            3. Compare resulting hash with stored hash
-            4. Return true/false
-
-  Step 9: If password matches → Create AUTHENTICATED token
-          UsernamePasswordAuthenticationToken authenticated =
-              UsernamePasswordAuthenticationToken.authenticated(
-                  userDetails,      // principal
-                  null,             // credentials erased!
-                  authorities       // [ROLE_USER, ROLE_ADMIN]
-              );
-
-  Step 10: Store in SecurityContext
-           SecurityContextHolder.getContext().setAuthentication(authenticated);
-
-  Step 11: Save SecurityContext to HttpSession
-           (SecurityContextRepository saves it)
-           Session gets a JSESSIONID cookie
-
-  Step 12: AuthenticationSuccessHandler runs
-           → Redirect to / or original URL
-           → Or return 200 with user info (REST API)
-
-
-  IF STEP 8 FAILS (wrong password):
-  ══════════════════════════════════
-
-  Step 8b: passwordEncoder.matches() returns false
-  Step 9b: throw BadCredentialsException("Bad credentials")
-  Step 10b: ExceptionTranslationFilter catches it
-  Step 11b: AuthenticationFailureHandler runs
-            → Redirect to /login?error
-            → Or return 401 (REST API)
+```text
+Step 8b: passwordEncoder.matches() returns false
+Step 9b: throw BadCredentialsException("Bad credentials")
+Step 10b: ExceptionTranslationFilter catches it
+Step 11b: AuthenticationFailureHandler runs
+          → Redirect to /login?error
+          → Or return 401 (REST API)
 ```
 
 ---
 
 ## 6. How JWT Authentication Works (All 10 Steps)
 
+```text
+JWT is STATELESS — no HttpSession, no server-side state.
+The token itself IS the identity proof.
+
+Client sends: GET /api/orders
+              Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYXJzaGE...
+
+
+Step 1: Your custom JwtAuthenticationFilter runs
+        (extends OncePerRequestFilter, added to chain)
+
+Step 2: Extract token from header
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);  // No token? Skip, let next filter handle
+            return;
+        }
+        String jwt = authHeader.substring(7);  // Remove "Bearer "
+
+Step 3: Parse and validate JWT
+        Claims claims = Jwts.parser()
+            .verifyWith(secretKey)           // HMAC-SHA256 verification
+            .build()
+            .parseSignedClaims(jwt)
+            .getPayload();
+
+        // JWT Structure:
+        // Header:  {"alg":"HS256","typ":"JWT"}  (Base64)
+        // Payload: {"sub":"harsha","roles":["USER","ADMIN"],"exp":1720000000}
+        // Signature: HMAC-SHA256(header.payload, secretKey)
+        //
+        // Verification: Re-compute HMAC-SHA256 and compare with signature.
+        // If someone tampered with payload, signature won't match → reject!
+
+Step 4: Check expiration
+        if (claims.getExpiration().before(new Date())) {
+            // Token expired! Send 401
+            response.sendError(401, "Token expired");
+            return;
+        }
+
+Step 5: Extract user info from claims
+        String username = claims.getSubject();  // "harsha"
+        List<String> roles = claims.get("roles", List.class);  // ["USER","ADMIN"]
+
+Step 6: Load UserDetails (optional but recommended)
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        // Verifies user still exists and isn't disabled/locked
+
+Step 7: Create Authentication object
+        UsernamePasswordAuthenticationToken auth =
+            UsernamePasswordAuthenticationToken.authenticated(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+            );
+        auth.setDetails(new WebAuthenticationDetailsSource()
+            .buildDetails(request));  // IP, session ID
+
+Step 8: Store in SecurityContext (ThreadLocal — for this request only)
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+Step 9: Continue filter chain
+        filterChain.doFilter(request, response);
+        // AuthorizationFilter will now see an authenticated user
+        // Controller can access @AuthenticationPrincipal
+
+Step 10: After response sent, SecurityContext cleared
+         // Since stateless — nothing saved to session
+         // Next request must send JWT again
 ```
-  JWT is STATELESS — no HttpSession, no server-side state.
-  The token itself IS the identity proof.
 
-  Client sends: GET /api/orders
-                Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYXJzaGE...
+**JWT CONFIG — Disable sessions**
 
-
-  Step 1: Your custom JwtAuthenticationFilter runs
-          (extends OncePerRequestFilter, added to chain)
-
-  Step 2: Extract token from header
-          String authHeader = request.getHeader("Authorization");
-          if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-              filterChain.doFilter(request, response);  // No token? Skip, let next filter handle
-              return;
-          }
-          String jwt = authHeader.substring(7);  // Remove "Bearer "
-
-  Step 3: Parse and validate JWT
-          Claims claims = Jwts.parser()
-              .verifyWith(secretKey)           // HMAC-SHA256 verification
-              .build()
-              .parseSignedClaims(jwt)
-              .getPayload();
-
-          // JWT Structure:
-          // Header:  {"alg":"HS256","typ":"JWT"}  (Base64)
-          // Payload: {"sub":"harsha","roles":["USER","ADMIN"],"exp":1720000000}
-          // Signature: HMAC-SHA256(header.payload, secretKey)
-          //
-          // Verification: Re-compute HMAC-SHA256 and compare with signature.
-          // If someone tampered with payload, signature won't match → reject!
-
-  Step 4: Check expiration
-          if (claims.getExpiration().before(new Date())) {
-              // Token expired! Send 401
-              response.sendError(401, "Token expired");
-              return;
-          }
-
-  Step 5: Extract user info from claims
-          String username = claims.getSubject();  // "harsha"
-          List<String> roles = claims.get("roles", List.class);  // ["USER","ADMIN"]
-
-  Step 6: Load UserDetails (optional but recommended)
-          UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-          // Verifies user still exists and isn't disabled/locked
-
-  Step 7: Create Authentication object
-          UsernamePasswordAuthenticationToken auth =
-              UsernamePasswordAuthenticationToken.authenticated(
-                  userDetails,
-                  null,
-                  userDetails.getAuthorities()
-              );
-          auth.setDetails(new WebAuthenticationDetailsSource()
-              .buildDetails(request));  // IP, session ID
-
-  Step 8: Store in SecurityContext (ThreadLocal — for this request only)
-          SecurityContextHolder.getContext().setAuthentication(auth);
-
-  Step 9: Continue filter chain
-          filterChain.doFilter(request, response);
-          // AuthorizationFilter will now see an authenticated user
-          // Controller can access @AuthenticationPrincipal
-
-  Step 10: After response sent, SecurityContext cleared
-           // Since stateless — nothing saved to session
-           // Next request must send JWT again
-
-
-  JWT CONFIG — Disable sessions:
-  ═══════════════════════════════
-
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-      return http
-          .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-          .csrf(csrf -> csrf.disable())  // No CSRF needed for stateless JWT
-          .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-          .build();
-  }
+```text
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    return http
+        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .csrf(csrf -> csrf.disable())  // No CSRF needed for stateless JWT
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
+}
 ```
 
 ---
 
 ## 7. How Authorization Decisions Are Made
 
-```
-  AFTER authentication, AuthorizationFilter runs:
+```text
+AFTER authentication, AuthorizationFilter runs:
 
-  AuthorizationFilter.doFilter(request, response, chain)
-       │
-       ├── Get current Authentication from SecurityContext
-       │   auth = SecurityContextHolder.getContext().getAuthentication()
-       │
-       ├── Get AuthorizationManager (Spring Security 6+)
-       │
-       ├── Call: authorizationManager.check(auth, request)
-       │   │
-       │   ├── URL-based rules:
-       │   │   .requestMatchers("/api/admin/**").hasRole("ADMIN")
-       │   │   .requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN")
-       │   │   .requestMatchers("/public/**").permitAll()
-       │   │
-       │   ├── Match request URL against patterns
-       │   │   GET /api/admin/dashboard → matches "/api/admin/**"
-       │   │   → requires ROLE_ADMIN
-       │   │
-       │   ├── Check: auth.getAuthorities() contains ROLE_ADMIN?
-       │   │   ├── YES → return AuthorizationDecision(true)
-       │   │   └── NO  → return AuthorizationDecision(false)
-       │   │
-       │   └── return decision
-       │
-       ├── If granted → chain.doFilter() → reach controller
-       │
-       └── If denied → throw AccessDeniedException
-            → ExceptionTranslationFilter catches it
-            → Send 403 Forbidden
+AuthorizationFilter.doFilter(request, response, chain)
 
+     ├── Get current Authentication from SecurityContext
+auth = SecurityContextHolder.getContext().getAuthentication()
 
-  ROLE vs AUTHORITY:
-  ══════════════════
+     ├── Get AuthorizationManager (Spring Security 6+)
 
-  hasRole("ADMIN")      → checks for GrantedAuthority "ROLE_ADMIN"
-                           (Spring auto-prepends "ROLE_")
+     ├── Call: authorizationManager.check(auth, request)
 
-  hasAuthority("ADMIN") → checks for GrantedAuthority "ADMIN"
-                           (exact match, no prefix)
+├── URL-based rules:
+│   .requestMatchers("/api/admin/**").hasRole("ADMIN")
+│   .requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN")
+│   .requestMatchers("/public/**").permitAll()
 
-  hasRole("ADMIN")         == hasAuthority("ROLE_ADMIN")
+├── Match request URL against patterns
+│   GET /api/admin/dashboard → matches "/api/admin/**"
+│   → requires ROLE_ADMIN
 
-  Best practice: Use hasRole() for coarse-grained (USER, ADMIN, MODERATOR)
-                 Use hasAuthority() for fine-grained (READ_PRIVILEGE, WRITE_PRIVILEGE)
+├── Check: auth.getAuthorities() contains ROLE_ADMIN?
+│   ├── YES → return AuthorizationDecision(true)
+│   └── NO  → return AuthorizationDecision(false)
+
+└── return decision
+
+     ├── If granted → chain.doFilter() → reach controller
+
+     └── If denied → throw AccessDeniedException
+          → ExceptionTranslationFilter catches it
+          → Send 403 Forbidden
+
+ROLE vs AUTHORITY:
+
+hasRole("ADMIN")      → checks for GrantedAuthority "ROLE_ADMIN"
+                         (Spring auto-prepends "ROLE_")
+
+hasAuthority("ADMIN") → checks for GrantedAuthority "ADMIN"
+                         (exact match, no prefix)
+
+hasRole("ADMIN")         == hasAuthority("ROLE_ADMIN")
+
+Best practice: Use hasRole() for coarse-grained (USER, ADMIN, MODERATOR)
+               Use hasAuthority() for fine-grained (READ_PRIVILEGE, WRITE_PRIVILEGE)
 ```
 
 ---
 
 ## 8. How @PreAuthorize Works Under the Hood
 
-```
-  @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
-  public User getUser(Long userId) { ... }
+```text
+@PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
+public User getUser(Long userId) { ... }
 
+WHAT HAPPENS:
 
-  WHAT HAPPENS:
-  ═════════════
+Step 1: At startup, Spring creates a PROXY for your service
+        (CGLIB proxy wrapping UserService)
 
-  Step 1: At startup, Spring creates a PROXY for your service
-          (CGLIB proxy wrapping UserService)
+Step 2: The proxy contains a MethodSecurityInterceptor
+        (an AOP around-advice)
 
-  Step 2: The proxy contains a MethodSecurityInterceptor
-          (an AOP around-advice)
+Step 3: When getUser(5L) is called:
 
-  Step 3: When getUser(5L) is called:
+        Proxy.getUser(5L)
 
-          Proxy.getUser(5L)
-               │
-               ▼
-          MethodSecurityInterceptor.invoke()
-               │
-               ├── Get @PreAuthorize expression:
-               │   "hasRole('ADMIN') or #userId == authentication.principal.id"
-               │
-               ├── Create SpEL EvaluationContext:
-               │   ├── authentication = SecurityContextHolder.getContext().getAuth()
-               │   ├── #userId = 5L  (method parameter)
-               │   ├── principal = authentication.getPrincipal()
-               │   └── returnObject = null (not evaluated yet for @Pre)
-               │
-               ├── Evaluate SpEL expression:
-               │   ├── hasRole('ADMIN') → check auth.getAuthorities()
-               │   │   → false (user is not admin)
-               │   ├── OR
-               │   ├── #userId == authentication.principal.id
-               │   │   → 5L == user.getId() → true (user accessing own data)
-               │   └── Result: true (because of OR)
-               │
-               ├── If true → proceed to actual method
-               │   return userService.getUser(5L)
-               │
-               └── If false → throw AccessDeniedException
-                   → 403 Forbidden
+             ▼
+        MethodSecurityInterceptor.invoke()
 
+             ├── Get @PreAuthorize expression:
+"hasRole('ADMIN') or #userId == authentication.principal.id"
 
-  @PostAuthorize — checked AFTER method runs:
-  ════════════════════════════════════════════
+             ├── Create SpEL EvaluationContext:
+├── authentication = SecurityContextHolder.getContext().getAuth()
+├── #userId = 5L  (method parameter)
+├── principal = authentication.getPrincipal()
+└── returnObject = null (not evaluated yet for @Pre)
 
-  @PostAuthorize("returnObject.owner == authentication.name")
-  public Document getDocument(Long id) {
-      return documentRepo.findById(id).orElseThrow();
-  }
+             ├── Evaluate SpEL expression:
+├── hasRole('ADMIN') → check auth.getAuthorities()
+│   → false (user is not admin)
+├── OR
+├── #userId == authentication.principal.id
+│   → 5L == user.getId() → true (user accessing own data)
+└── Result: true (because of OR)
 
-  Method runs FIRST → result inspected → denied if check fails.
-  Careful: method side effects still happen even if denied!
+             ├── If true → proceed to actual method
+return userService.getUser(5L)
 
+             └── If false → throw AccessDeniedException
+                 → 403 Forbidden
 
-  ENABLING METHOD SECURITY:
-  ═════════════════════════
+@PostAuthorize — checked AFTER method runs:
 
-  @Configuration
-  @EnableMethodSecurity  // Spring Security 6+
-  public class SecurityConfig {
-      // @EnableMethodSecurity enables:
-      // @PreAuthorize, @PostAuthorize — SpEL expressions (recommended)
-      // @Secured — simpler, role-based only
-      // JSR-250 @RolesAllowed — if jsr250Enabled = true
-  }
+@PostAuthorize("returnObject.owner == authentication.name")
+public Document getDocument(Long id) {
+    return documentRepo.findById(id).orElseThrow();
+}
+
+Method runs FIRST → result inspected → denied if check fails.
+Careful: method side effects still happen even if denied!
+
+ENABLING METHOD SECURITY:
+
+@Configuration
+@EnableMethodSecurity  // Spring Security 6+
+public class SecurityConfig {
+    // @EnableMethodSecurity enables:
+    // @PreAuthorize, @PostAuthorize — SpEL expressions (recommended)
+    // @Secured — simpler, role-based only
+    // JSR-250 @RolesAllowed — if jsr250Enabled = true
+}
 ```
 
 ---
@@ -612,101 +566,100 @@
 
 ### CORS (Cross-Origin Resource Sharing)
 
+**The problem**
+
+```text
+Browser security: JavaScript on https://frontend.com
+cannot call https://api.backend.com by default.
+This is the Same-Origin Policy.
+
+CORS is the mechanism that says: "It's OK, I trust this origin."
 ```
-  THE PROBLEM:
-  ════════════
-  Browser security: JavaScript on https://frontend.com
-  cannot call https://api.backend.com by default.
-  This is the Same-Origin Policy.
 
-  CORS is the mechanism that says: "It's OK, I trust this origin."
+**Flow**
 
+```text
+Browser → OPTIONS /api/users (preflight request)
+          Origin: https://frontend.com
+          Access-Control-Request-Method: POST
+          Access-Control-Request-Headers: Content-Type, Authorization
+     │
+     ▼
+CorsFilter checks:
+├── Is https://frontend.com in allowed origins? YES
+├── Is POST in allowed methods? YES
+├── Are those headers allowed? YES
+└── Respond with:
+    Access-Control-Allow-Origin: https://frontend.com
+    Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+    Access-Control-Allow-Headers: Content-Type, Authorization
+    Access-Control-Max-Age: 3600
 
-  FLOW:
-  ═════
+Browser → POST /api/users  (actual request, now allowed)
+```
 
-  Browser → OPTIONS /api/users (preflight request)
-            Origin: https://frontend.com
-            Access-Control-Request-Method: POST
-            Access-Control-Request-Headers: Content-Type, Authorization
-       │
-       ▼
-  CorsFilter checks:
-  ├── Is https://frontend.com in allowed origins? YES
-  ├── Is POST in allowed methods? YES
-  ├── Are those headers allowed? YES
-  └── Respond with:
-      Access-Control-Allow-Origin: https://frontend.com
-      Access-Control-Allow-Methods: GET, POST, PUT, DELETE
-      Access-Control-Allow-Headers: Content-Type, Authorization
-      Access-Control-Max-Age: 3600
+**Spring configuration**
 
-  Browser → POST /api/users  (actual request, now allowed)
-
-
-  SPRING CONFIGURATION:
-  ═════════════════════
-
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-      return http
-          .cors(cors -> cors.configurationSource(request -> {
-              var config = new CorsConfiguration();
-              config.setAllowedOrigins(List.of("https://frontend.com"));
-              config.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
-              config.setAllowedHeaders(List.of("*"));
-              config.setAllowCredentials(true);
-              return config;
-          }))
-          .build();
-  }
+```text
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    return http
+        .cors(cors -> cors.configurationSource(request -> {
+            var config = new CorsConfiguration();
+            config.setAllowedOrigins(List.of("https://frontend.com"));
+            config.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
+            config.setAllowedHeaders(List.of("*"));
+            config.setAllowCredentials(true);
+            return config;
+        }))
+        .build();
+}
 ```
 
 ### CSRF (Cross-Site Request Forgery)
 
+**The attack**
+
+```text
+1. You log into bank.com → get session cookie
+2. You visit evil.com
+3. evil.com has: <form action="https://bank.com/transfer" method="POST">
+                  <input name="to" value="attacker">
+                  <input name="amount" value="10000">
+                  </form>
+                  <script>document.forms[0].submit()</script>
+4. Browser sends POST to bank.com WITH your session cookie
+5. Bank thinks it's you → transfers money!
 ```
-  THE ATTACK:
-  ═══════════
 
-  1. You log into bank.com → get session cookie
-  2. You visit evil.com
-  3. evil.com has: <form action="https://bank.com/transfer" method="POST">
-                    <input name="to" value="attacker">
-                    <input name="amount" value="10000">
-                    </form>
-                    <script>document.forms[0].submit()</script>
-  4. Browser sends POST to bank.com WITH your session cookie
-  5. Bank thinks it's you → transfers money!
+**Csrf protection**
 
+```text
+Server generates a random token, stores it in session.
+Every form must include this token as a hidden field.
 
-  CSRF PROTECTION:
-  ════════════════
+<form action="/transfer" method="POST">
+    <input type="hidden" name="_csrf" value="abc123-random-token">
+    ...
+</form>
 
-  Server generates a random token, stores it in session.
-  Every form must include this token as a hidden field.
+CsrfFilter:
+├── POST request? → check _csrf parameter
+├── Token matches session token? → allow
+└── Token missing or wrong? → 403 Forbidden
 
-  <form action="/transfer" method="POST">
-      <input type="hidden" name="_csrf" value="abc123-random-token">
-      ...
-  </form>
+evil.com can't read the CSRF token (same-origin policy blocks reading)
+So evil.com can't include it in the forged form → attack fails!
+```
 
-  CsrfFilter:
-  ├── POST request? → check _csrf parameter
-  ├── Token matches session token? → allow
-  └── Token missing or wrong? → 403 Forbidden
+**When to disable csrf**
 
-  evil.com can't read the CSRF token (same-origin policy blocks reading)
-  So evil.com can't include it in the forged form → attack fails!
+```text
+.csrf(csrf -> csrf.disable())  // OK for stateless JWT APIs
 
-
-  WHEN TO DISABLE CSRF:
-  ═════════════════════
-
-  .csrf(csrf -> csrf.disable())  // OK for stateless JWT APIs
-
-  If you use JWT (no cookies/sessions), CSRF doesn't apply.
-  CSRF only matters when browser automatically sends credentials (cookies).
-  JWT in Authorization header is NOT sent automatically.
+If you use JWT (no cookies/sessions), CSRF doesn't apply.
+CSRF only matters when browser automatically sends credentials (cookies).
+JWT in Authorization header is NOT sent automatically.
 ```
 
 ---
@@ -801,128 +754,93 @@ public class SecurityConfig {
 
 ## 11. OAuth2 / OpenID Connect Flow
 
+**OAuth2 authorization code flow** (the most secure flow for web apps)
+
+```mermaid
+sequenceDiagram
+  participant B as Browser (user)
+  participant A as Your app (backend)
+  participant P as Auth provider (Google/Okta)
+  B->>A: 1. Click "Login with Google"
+  A-->>B: 2. Redirect to Google: Location https://accounts.google.com/?client_id=YOUR_APP_ID&redirect_uri=https://yourapp.com/callback&response_type=code&scope=openid email profile&state=random123
+  B->>P: 3. User logs in and consents
+  P-->>B: 4. Redirect back with the AUTH CODE: https://yourapp.com/callback?code=XYZ
+  B->>A: 5. Follow the redirect to /callback?code=XYZ
+  A->>P: Exchange the code for tokens: POST /oauth/token (code=XYZ, client_secret=SECRET)
+  P-->>A: 6. { access_token, id_token, refresh_token }
+  Note over A: 7. Validate the id_token, extract the user info, create a session or JWT
+  A-->>B: 8. Set-Cookie, or return the JWT
 ```
-  OAUTH2 AUTHORIZATION CODE FLOW (most secure for web apps):
-  ═══════════════════════════════════════════════════════════
 
-  ┌──────────┐     ┌──────────────┐     ┌─────────────────┐
-  │  Browser  │     │ Your App     │     │ Auth Provider   │
-  │  (User)   │     │ (Backend)    │     │ (Google/Okta)   │
-  └─────┬─────┘     └──────┬───────┘     └────────┬────────┘
-        │                  │                       │
-   1.   │ Click "Login     │                       │
-        │ with Google"     │                       │
-        │─────────────────→│                       │
-        │                  │                       │
-   2.   │  Redirect to Google                      │
-        │←─────────────────│                       │
-        │  Location: https://accounts.google.com/  │
-        │    ?client_id=YOUR_APP_ID                │
-        │    &redirect_uri=https://yourapp.com/callback
-        │    &response_type=code                   │
-        │    &scope=openid email profile           │
-        │    &state=random123                      │
-        │                  │                       │
-   3.   │──────────────────────────────────────────→│
-        │  User logs in + consents                 │
-        │                  │                       │
-   4.   │←─────────────────────────────────────────│
-        │  Redirect back with AUTH CODE:           │
-        │  https://yourapp.com/callback?code=XYZ   │
-        │                  │                       │
-   5.   │─────────────────→│                       │
-        │                  │  Exchange code for tokens
-        │                  │─────────────────────→ │
-        │                  │  POST /oauth/token     │
-        │                  │  code=XYZ              │
-        │                  │  client_secret=SECRET  │
-        │                  │                       │
-   6.   │                  │ ←─────────────────────│
-        │                  │  {                     │
-        │                  │    access_token: "...",│
-        │                  │    id_token: "...",    │
-        │                  │    refresh_token: "..."│
-        │                  │  }                     │
-        │                  │                       │
-   7.   │                  │  Validate id_token     │
-        │                  │  Extract user info     │
-        │                  │  Create session or JWT │
-        │                  │                       │
-   8.   │ ←────────────────│                       │
-        │  Set-Cookie or   │                       │
-        │  return JWT      │                       │
+**How to read this diagram.** The browser only carries the short-lived code. Your backend exchanges it for tokens directly with the provider.
 
+**Why the auth code flow is secure**
 
-  WHY AUTH CODE FLOW IS SECURE:
-  ═════════════════════════════
-
-  • Auth code alone is useless (needs client_secret to exchange)
-  • client_secret NEVER goes to browser (server-to-server exchange in step 5-6)
-  • Token exchange happens server-side (not visible in URL/browser)
-  • State parameter prevents CSRF on redirect
-  • PKCE (Proof Key for Code Exchange) added for extra security
-```
+- The auth code alone is useless (you need the `client_secret` to exchange it).
+- The `client_secret` NEVER goes to the browser (the exchange in steps 5-6 is server-to-server).
+- The token exchange happens server-side, so it isn't visible in the URL or browser.
+- The `state` parameter prevents CSRF on the redirect.
+- PKCE (Proof Key for Code Exchange) adds extra security.
 
 ---
 
 ## 12. Common Security Mistakes and Fixes
 
+**MISTAKE 1: Order of matchers matters!**
+
+```text
+❌ WRONG — permitAll() first, catches everything:
+.requestMatchers("/**").permitAll()
+.requestMatchers("/api/admin/**").hasRole("ADMIN")  // NEVER reached!
+
+✅ CORRECT — specific first, general last:
+.requestMatchers("/api/admin/**").hasRole("ADMIN")
+.requestMatchers("/api/**").authenticated()
+.requestMatchers("/**").permitAll()
 ```
-  MISTAKE 1: Order of matchers matters!
-  ═════════════════════════════════════
 
-  ❌ WRONG — permitAll() first, catches everything:
-  .requestMatchers("/**").permitAll()
-  .requestMatchers("/api/admin/**").hasRole("ADMIN")  // NEVER reached!
+**MISTAKE 2: Storing plain-text passwords**
 
-  ✅ CORRECT — specific first, general last:
-  .requestMatchers("/api/admin/**").hasRole("ADMIN")
-  .requestMatchers("/api/**").authenticated()
-  .requestMatchers("/**").permitAll()
+```text
+❌ user.setPassword("secret123");
+✅ user.setPassword(passwordEncoder.encode("secret123"));
+```
 
+**MISTAKE 3: Exposing sensitive data in JWT**
 
-  MISTAKE 2: Storing plain-text passwords
-  ════════════════════════════════════════
+```text
+❌ JWT payload: {"sub":"harsha","password":"secret","creditCard":"1234-5678"}
+✅ JWT payload: {"sub":"harsha","roles":["USER"],"exp":1720000000}
 
-  ❌ user.setPassword("secret123");
-  ✅ user.setPassword(passwordEncoder.encode("secret123"));
+JWTs are Base64-encoded (NOT encrypted). Anyone can read the payload!
+Put ONLY: user ID, roles, expiration. Never secrets.
+```
 
+**MISTAKE 4: Not validating JWT properly**
 
-  MISTAKE 3: Exposing sensitive data in JWT
-  ══════════════════════════════════════════
+```text
+❌ Decode JWT without signature verification
+✅ Always verify signature + check expiration + check issuer
+```
 
-  ❌ JWT payload: {"sub":"harsha","password":"secret","creditCard":"1234-5678"}
-  ✅ JWT payload: {"sub":"harsha","roles":["USER"],"exp":1720000000}
+**MISTAKE 5: CORS allow all origins in production**
 
-  JWTs are Base64-encoded (NOT encrypted). Anyone can read the payload!
-  Put ONLY: user ID, roles, expiration. Never secrets.
+```text
+❌ config.setAllowedOrigins(List.of("*"));
+   config.setAllowCredentials(true);  // This combination is ILLEGAL in CORS spec!
 
+✅ config.setAllowedOrigins(List.of("https://yourfrontend.com"));
+   config.setAllowCredentials(true);
+```
 
-  MISTAKE 4: Not validating JWT properly
-  ═══════════════════════════════════════
+**MISTAKE 6: Forgetting @Transactional in UserDetailsService**
 
-  ❌ Decode JWT without signature verification
-  ✅ Always verify signature + check expiration + check issuer
+```text
+❌ If user has lazy-loaded roles and no @Transactional:
+   LazyInitializationException during authentication!
 
-
-  MISTAKE 5: CORS allow all origins in production
-  ═════════════════════════════════════════════════
-
-  ❌ config.setAllowedOrigins(List.of("*"));
-     config.setAllowCredentials(true);  // This combination is ILLEGAL in CORS spec!
-
-  ✅ config.setAllowedOrigins(List.of("https://yourfrontend.com"));
-     config.setAllowCredentials(true);
-
-
-  MISTAKE 6: Forgetting @Transactional in UserDetailsService
-  ══════════════════════════════════════════════════════════
-
-  ❌ If user has lazy-loaded roles and no @Transactional:
-     LazyInitializationException during authentication!
-
-  ✅ @Transactional(readOnly = true) on loadUserByUsername()
-     Or use JOIN FETCH in the repository query
+✅ @Transactional(readOnly = true) on loadUserByUsername()
+   Or use JOIN FETCH in the repository query
 ```
 
 ---
@@ -946,12 +864,12 @@ public class SecurityConfig {
 
 ## Reality Check
 
-**"SecurityContext is stored in the HttpSession"** ? By default yes, but the SecurityContextRepository is configurable. For stateless JWT APIs, SecurityContextHolderFilter stores it only in the SecurityContextHolder (ThreadLocal for the request duration) and NOT in the session. If you configure both JWT and session-based auth, you can accidentally create sessions for API requests, wasting server memory and breaking statelessness.
+**"SecurityContext is stored in the HttpSession"** — By default yes, but the SecurityContextRepository is configurable. For stateless JWT APIs, SecurityContextHolderFilter stores it only in the SecurityContextHolder (ThreadLocal for the request duration) and NOT in the session. If you configure both JWT and session-based auth, you can accidentally create sessions for API requests, wasting server memory and breaking statelessness.
 
-**"AuthenticationManager handles authentication"** ? AuthenticationManager is a DELEGATOR. It holds a list of AuthenticationProviders and iterates them until one supports the Authentication type and returns a result. DaoAuthenticationProvider handles username/password with UserDetailsService. JwtAuthenticationProvider handles JWT tokens. You can have multiple providers for different authentication mechanisms in the same application.
+**"AuthenticationManager handles authentication"** — AuthenticationManager is a DELEGATOR. It holds a list of AuthenticationProviders and iterates them until one supports the Authentication type and returns a result. DaoAuthenticationProvider handles username/password with UserDetailsService. JwtAuthenticationProvider handles JWT tokens. You can have multiple providers for different authentication mechanisms in the same application.
 
-**"antMatchers and requestMatchers are the same thing"** ? antMatchers was removed in Spring Security 6.x and replaced with requestMatchers which auto-detects whether to use AntPathRequestMatcher or MvcRequestMatcher based on Spring MVC presence. MvcRequestMatcher considers Spring MVC path matching rules (trailing slashes, path extensions) which can differ from Ant patterns. This change broke many security configurations during the Spring Boot 2.x to 3.x migration.
+**"antMatchers and requestMatchers are the same thing"** — antMatchers was removed in Spring Security 6.x and replaced with requestMatchers which auto-detects whether to use AntPathRequestMatcher or MvcRequestMatcher based on Spring MVC presence. MvcRequestMatcher considers Spring MVC path matching rules (trailing slashes, path extensions) which can differ from Ant patterns. This change broke many security configurations during the Spring Boot 2.x to 3.x migration.
 
-**"Spring Security handles all authentication"** ? Spring Security authenticates the request and stores the result in SecurityContext. But authorization decisions may require data that Spring Security does not have: does this user own this specific resource? Is this user in the same organization as the resource? These are BUSINESS RULES that require database lookups in your service layer, not security filter configuration.
+**"Spring Security handles all authentication"** — Spring Security authenticates the request and stores the result in SecurityContext. But authorization decisions may require data that Spring Security does not have: does this user own this specific resource? Is this user in the same organization as the resource? These are BUSINESS RULES that require database lookups in your service layer, not security filter configuration.
 
-**"CORS and CSRF configuration are optional for APIs"** ? CORS is mandatory for any API called from a browser on a different origin � without CORS headers, the browser blocks the response (the request still reaches your server). CSRF is mandatory for cookie-authenticated endpoints because browsers automatically send cookies on cross-origin requests. Disabling CSRF is only safe when you use header-based authentication like Bearer tokens, which browsers do not attach automatically.
+**"CORS and CSRF configuration are optional for APIs"** — CORS is mandatory for any API called from a browser on a different origin — without CORS headers, the browser blocks the response (the request still reaches your server). CSRF is mandatory for cookie-authenticated endpoints because browsers automatically send cookies on cross-origin requests. Disabling CSRF is only safe when you use header-based authentication like Bearer tokens, which browsers do not attach automatically.

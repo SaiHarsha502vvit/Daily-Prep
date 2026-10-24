@@ -1,39 +1,103 @@
-﻿**Navigation**: [< Previous](11_Stack_Plus_MonotonicPattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Tree_Plus_DFS_BFS.md)
+# 🧩 Linked List + Two Pointers — Pattern Guide
 
-# LinkedList + Two Pointers — Combined Pattern Guide
+> **Navigation**: [← Stack + Monotonic](11_Stack_Plus_MonotonicPattern.md) | [Chapter index](00_INDEX.md) | [Tree + DFS/BFS →](13_Tree_Plus_DFS_BFS.md)
+
+## LinkedList + Two Pointers — Combined Pattern Guide
 
 **WHY this combination?** LinkedLists have no random access — you can't use indices. Two pointers (fast/slow) let you find midpoints, detect cycles, and locate k-th from end in a single pass.
 
 ### ⚠️ Constraint Lens
 
-### Historical Evolution
+## 🔗 Bridge — Where This Chapter Fits
 
-**Inventor / Originator:** Robert Floyd (1967) invented cycle detection for linked lists. Tony Hoare developed the "Find" algorithm (1961) which introduced the two-pointer concept for selection problems.
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Linked Lists](../02_Data_Structures/01c_LinkedList.md), [Two Pointers](07_Two_Pointers_Complete.md) |
+| **You will learn** | Fast/slow pointers for cycles and middles, reversal, merge, and intersection |
+| **Leads to** | [Tree + DFS/BFS](13_Tree_Plus_DFS_BFS.md), [Cyclic Sort](22_Cyclic_Sort_Pattern.md) (Floyd for duplicates) |
+| **Abstraction level** | Visited sets (`O(n)` space) → **speed difference as a signal** → `O(1)` space |
 
-**Predecessor context:** Detecting cycles in linked lists required O(n²) marking with visited flags or nested iteration. Finding the middle required two passes or storing references.
-
-**Evolution narrative:** Floyd's "tortoise and hare" algorithm demonstrated that two pointers moving at different speeds could detect cycles in O(n) time and O(1) space. This insight generalized to finding middles, k-th elements, and list intersection problems.
-
-**Modern practice:** Floyd's algorithm is implemented in every standard library's cycle detection. The fast/slow pattern appears in cycle detection, palindrome checking, and rotation detection for linked lists.
-
-- **Hoare Find — 1961**: Selection algorithm introducing two-pointer concept for partition-based find
-- **Floyd cycle detection — 1967**: "Tortoise and Hare" for O(n) cycle detection, O(1) space
-- **Floyd randomized selection — 1967**: Median finding using random sampling
-- **Modern practice**: Floyd's algorithm in every language's linked list library
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
 
 ---
 
-### Production Reality
+## 💬 Explain It Like a Study Partner — Linked List + Two Pointers
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+### 1. The bottom line
 
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+Two pointers at different speeds meet inside any cycle, and reveal the middle when the fast one hits the end.
 
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+### 2. The textbook core
+
+- Cycle: if `fast` ever equals `slow`, a cycle exists.
+- Middle: when `fast` reaches the end, `slow` is at the middle.
+- Reverse with three pointers: `prev`, `cur`, `next`.
+- Dummy head nodes remove special cases at the head.
+
+### 3. The real-world analogy
+
+Two runners on a **circular track**: the faster eventually laps the slower; on a straight track the faster just finishes first.
+
+### 4. Walkthrough
+
+1. List `1→2→3→4→5`.
+2. `slow=1, fast=1` → `2, 3` → `3, 5` → fast cannot jump.
+3. Slow is at `3`: the middle.
+4. If `5` pointed back to `2`, fast would catch slow inside the cycle.
+
+> [!NOTE]
+> **Quick check:** Why does fast catch slow in a cycle? *The gap shrinks by 1 each step, so it hits 0.*
+
+
+### 5. Check yourself
+
+**Q1.** List `1→2→3→4` with `while (fast != null && fast.next != null)`: where is `slow` at the end?
+
+<details><summary>Answer</summary>
+
+At node **3** (the second middle). Iteration 1: slow=2, fast=3; iteration 2: slow=3, fast=null.
+
+</details>
+
+**Q2.** After fast and slow meet in a cycle, how do you find the entry node?
+
+<details><summary>Answer</summary>
+
+Reset one pointer to the head and move both one step at a time; they meet at the cycle entry.
+
+</details>
+
+**Q3.** Why use a dummy head node?
+
+<details><summary>Answer</summary>
+
+It removes special cases for inserting or deleting at the head.
+
+</details>
+
+---
+
+## Historical Evolution
+
+**Inventor / Originator:** Floyd's cycle-finding ("tortoise and hare") algorithm is attributed to Robert Floyd in the 1960s; Knuth records it in *TAOCP* Vol. 2. Richard Brent published a faster variant in 1980, and John Pollard's rho factoring method (1975) applies the same idea to number theory.
+
+**Predecessor context:** Cycle detection marked visited nodes (`O(n)` extra space) or compared every pair of nodes.
+
+**Evolution narrative:** Two pointers moving at different speeds meet inside any cycle, using `O(1)` space. The same pair finds the middle of a list (when fast reaches the end, slow is at the middle) and, with one more phase, the cycle's entry point.
+
+**Modern practice:** Cycle checks in linked structures, finding the middle node, palindrome-list checks and the duplicate-number problem all use it.
+
+- **Floyd — 1960s**: Tortoise-and-hare cycle detection
+- **Pollard — 1975**: Rho factorisation built on cycle finding
+- **Brent — 1980**: Improved cycle-detection algorithm
+
+---
+
+## Production Reality
+
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -59,7 +123,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### Open-Source Implementation Anchors
+## Open-Source Implementation Anchors
 
 Use these as design references, not as code to paste:
 
@@ -75,15 +139,15 @@ If the open-source code has many API concerns, extract the invariant only.
 For interview linked lists, the invariant is usually: never lose the rest of the list.
 ```
 
-### 🧠 Deep Intuition — Why Pointer Techniques Are Essential for Linked Lists
+## 🧠 Deep Intuition — Why Pointer Techniques Are Essential for Linked Lists
 
 With arrays, finding the middle element is trivial: `arr[arr.length / 2]` — O(1). With linked lists, you can't do this because there's no index. You don't even know the length without traversing the entire list first. Fast/slow pointers solve this **without needing to know the length**.
 
-#### The Fast/Slow Pointer Proof — Why Slow Lands on the Middle
+### The Fast/Slow Pointer Proof — Why Slow Lands on the Middle
 
 When `fast` moves 2 nodes per step and `slow` moves 1 node per step, by the time `fast` reaches the end (having traveled `n` nodes), `slow` has traveled `n/2` nodes — exactly the middle. This is essentially using two counters where one counts at twice the speed.
 
-#### Floyd's Cycle Detection — The Mathematical Proof
+### Floyd's Cycle Detection — The Mathematical Proof
 
 This is one of the most elegant algorithms in computer science. Here's why the "reset to head" trick finds the cycle start:
 
@@ -96,7 +160,7 @@ Let `a` = distance from head to cycle start, `b` = distance from cycle start to 
 
 This means: the distance from **head to cycle start** equals the distance from **meeting point to cycle start** (going forward in the cycle). So if you reset one pointer to head and advance both at the same speed, they'll meet at the cycle start.
 
-#### The Dummy Node Pattern — Why It Eliminates Edge Cases
+### The Dummy Node Pattern — Why It Eliminates Edge Cases
 
 When building or modifying a linked list, the head can change (e.g., inserting before the head, removing the head). Without a dummy, you need special `if (head == null)` checks everywhere. A dummy node (`new ListNode(0); dummy.next = head`) acts as a permanent "anchor" — the result is always `dummy.next`, regardless of what happened to the original head.
 
@@ -217,7 +281,7 @@ Find cycle start:
 
 ---
 
-## � FULL WALKTHROUGH: Reverse a Linked List (3-Pointer Technique)
+## 🔬 FULL WALKTHROUGH: Reverse a Linked List (3-Pointer Technique)
 
 ```
 Problem: Reverse 1→2→3→4→5→null  to  5→4→3→2→1→null
@@ -292,17 +356,18 @@ Time: O(n) | Space: O(1)
 
 ```
 EDGE CASES:
-┌────────────────────────────┬─────────────────────────────────────────────┐
-│ Edge Case                  │ Handling                                    │
-├────────────────────────────┼─────────────────────────────────────────────┤
-│ Empty list (null)          │ Return immediately                          │
-│ Single node, no cycle      │ fast.next is null → no cycle                │
-│ Single node, self-cycle    │ 1 → 1. fast == slow after 1 step            │
-│ Cycle at head              │ a = 0, cycle start = head                   │
-│ Cycle at tail              │ Long path before cycle                      │
-│ Even vs odd length         │ Fast/slow still works for middle finding    │
-└────────────────────────────┴─────────────────────────────────────────────┘
+```
 
+| Edge Case | Handling |
+| --- | --- |
+| Empty list (null) | Return immediately |
+| Single node, no cycle | fast.next is null → no cycle |
+| Single node, self-cycle | 1 → 1. fast == slow after 1 step |
+| Cycle at head | a = 0, cycle start = head |
+| Cycle at tail | Long path before cycle |
+| Even vs odd length | Fast/slow still works for middle finding |
+
+```
 COMMON MISTAKES:
 1. Forgetting NULL check: while (fast != null && fast.next != null)
    Missing fast.next check → NullPointerException
@@ -340,7 +405,10 @@ The broken constraint is recursion depth. Recursive reversal uses one call frame
 
 </details>
 
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+## 📋 Practice Problems
+
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 | #   | Problem                                                                                                                                                | Companies             | Key Insight                              |
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- | ---------------------------------------- |
@@ -413,6 +481,16 @@ The broken constraint is recursion depth. Recursive reversal uses one call frame
 
 [← 11 Stack+Monotonic](11_Stack_Plus_MonotonicPattern.md) | [13 Tree+DFS/BFS →](13_Tree_Plus_DFS_BFS.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Linked List + Two Pointers
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Detecting corrupted linked structures, memory-pool free lists, undo histories |
+| **Failure modes** | Null-pointer errors on `fast.next.next`; forgetting to handle empty or single-node lists |
+| **Testing and verification** | Generate lists with and without cycles and compare with a visited-set oracle |
 
 ---
 

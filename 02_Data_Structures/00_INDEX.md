@@ -2,6 +2,11 @@
 
 > Foundation of everything — understand how data is stored, accessed, and manipulated.
 
+> [!NOTE]
+> **Chapter hubs and topic pages.** Long chapters are split: the chapter file (the *hub*) keeps the bridge, study-partner explainer, at-a-glance diagram and Enterprise Lens, and lists its **topic pages** in a table (in a folder with the same name as the chapter). Read the pages in order the first time; use the hub table to jump back later. Previous/next links follow the reading order of this index.
+
+**Review checklist for every chapter:** state time **and** space complexity · state the invariant · list edge cases (empty, one element, duplicates, extremes) · say what happens at 10× data.
+
 ## 5W1H — Why This Section Matters
 
 > **WHAT:** The Data Structures section of this curriculum — every core data structure, every important variant, every production use.
@@ -13,6 +18,45 @@
 > **WHEN:** Before studying algorithms, before interviewing, before designing systems. Also revisited throughout your career.
 >
 > **HOW:** Read top-down (Foundations → Internals → Variants → Production). For interview prep, jump to Problem Sets first. For production work, start with `05_DS_In_Production`.
+
+## ⚡ Section Map
+
+```mermaid
+flowchart LR
+    F["01a Memory<br/>foundations"] --> C["01b-01f Core structures<br/>array, list, stack/queue, hash, tree/heap"]
+    C --> I["01g Internals"]
+    C --> V["02a / 02b Variants"]
+    C --> J["03 Java collections"]
+    V --> P["05 Production"]
+    I --> P
+    C --> PS["02 Problem sets and bridges"]
+    C --> A["A1-A5 University methodology"]
+    classDef found fill:#e0e0e0,stroke:#616161,color:#111
+    classDef core fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef deep fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef apply fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class F found
+    class C core
+    class I,V,A deep
+    class J,P,PS apply
+```
+
+**How to read this diagram.** Grey is the foundation, blue the core structures, orange the depth layers (internals, variants, proofs), green the application layers. Arrows show the suggested reading order.
+
+---
+
+## 💬 How the Chapters Explain Things
+
+Every chapter now opens with a short **study-partner explainer** in the same four steps, so you always know where to look:
+
+| Step | What you get |
+| ---- | ------------ |
+| 1. **The bottom line** | The core idea in one plain-English sentence |
+| 2. **The textbook core** | The accurate definition, rules and terminology |
+| 3. **The real-world analogy** | The idea mapped onto something from everyday life |
+| 4. **The walkthrough** | A small step-by-step example, then a quick check question |
+
+After the explainer comes the **⚡ At a Glance** block (diagram, complexity table, pitfalls) and then the full chapter.
 
 ## How to Read This Section
 
@@ -69,13 +113,21 @@ This section supports four distinct reading paths:
 
 ## Roadmap
 
+```mermaid
+flowchart TD
+    U["University Methodology (U1-U4)<br/>read first for rigor"]
+    C["Memory → Arrays → LinkedList → Stack/Queue → HashTable → Trees/Heaps"]
+    D["DS Internals → Variants → Collections → 2D Arrays → Advanced Deep Add-ons"]
+    U --> C --> D
+    classDef a fill:#e1d5f7,stroke:#6a1b9a,color:#111
+    classDef b fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef c fill:#ffd9b3,stroke:#e65100,color:#111
+    class U a
+    class C b
+    class D c
 ```
-🎓 University Methodology (U1–U4) ← read first for rigor
-    ↓
-Memory → Arrays → LinkedList → Stack/Queue → HashTable → Trees/Heaps
-    ↓
-DS Internals → Variants → Collections → 2D Arrays → Advanced Deep Add-ons
-```
+
+**How to read this diagram.** Read the university layer first, then the core chapters in order, then the depth chapters.
 
 ## Historical Note
 

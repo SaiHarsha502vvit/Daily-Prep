@@ -211,39 +211,32 @@ resource "azurerm_key_vault" "main" {
 
 ### GCP Architecture
 
+**GOOGLE CLOUD PLATFORM**
+
+```mermaid
+flowchart TD
+  CDN["Cloud CDN + Cloud Armor"] --> LB["Global HTTP(S) Load Balancer"]
+  LB --> K
+  subgraph K["GKE Autopilot"]
+    subgraph ZA["Zone A"]
+      A1["Pod"]
+      A2["Pod"]
+    end
+    subgraph ZB["Zone B"]
+      B1["Pod"]
+      B2["Pod"]
+    end
+  end
+  K --> M
+  subgraph M["Managed services"]
+    SQL["Cloud SQL (Postgres)"]
+    MS["MemoryStore (Redis)"]
+    GCS["GCS"]
+    SM["Secret Manager"]
+  end
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                     GOOGLE CLOUD PLATFORM                        │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐     │
-│  │              Cloud CDN + Cloud Armor                     │    │
-│  └───────────────────────────┬─────────────────────────────┘     │
-│                              │                                   │
-│  ┌─────────────────────────────────────────────────────────┐     │
-│  │              Global HTTP(S) Load Balancer                │    │
-│  └───────────────────────────┬─────────────────────────────┘     │
-│                              │                                   │
-│  ┌───────────────────────────┴───────────────────────────┐       │
-│  │                    GKE Autopilot                       │      │
-│  │  ┌──────────────────┐    ┌──────────────────┐         │       │
-│  │  │   Zone A         │    │   Zone B         │         │       │
-│  │  │  ┌────┐ ┌────┐   │    │  ┌────┐ ┌────┐   │         │       │
-│  │  │  │Pod │ │Pod │   │    │  │Pod │ │Pod │   │         │       │
-│  │  │  └────┘ └────┘   │    │  └────┘ └────┘   │         │       │
-│  │  └──────────────────┘    └──────────────────┘         │       │
-│  └───────────────────────────────────────────────────────┘       │
-│                              │                                   │
-│  ┌───────────────────────────┴───────────────────────────┐       │
-│  │              Managed Services                          │      │
-│  │  ┌────────┐  ┌─────────┐  ┌───────┐  ┌────────────┐  │        │
-│  │  │Cloud SQL│  │MemoryStore│  │ GCS  │  │Secret Mgr │  │       │
-│  │  │(Postgres)│ │ (Redis) │  │      │  │            │  │        │
-│  │  └────────┘  └─────────┘  └───────┘  └────────────┘  │        │
-│  └───────────────────────────────────────────────────────┘       │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Requests pass the CDN and Cloud Armor (WAF), then the global load balancer, which routes to pods in two zones of a GKE Autopilot cluster. Pods use the managed services below.
 
 ### GCP SDK Integration
 
@@ -665,31 +658,30 @@ deploy-production:
 
 ### Terraform Multi-Cloud Structure
 
-```
-infrastructure/
-├── modules/
-│   ├── kubernetes/
-│   │   ├── main.tf
-│   │   ├── variables.tf
-│   │   └── outputs.tf
-│   ├── database/
-│   │   ├── main.tf
-│   │   └── variables.tf
-│   └── storage/
-│       ├── main.tf
-│       └── variables.tf
-├── environments/
-│   ├── dev/
-│   │   ├── main.tf
-│   │   ├── variables.tf
-│   │   └── terraform.tfvars
-│   ├── staging/
-│   └── production/
-└── providers/
-    ├── aws/
-    ├── azure/
-    └── gcp/
-```
+**infrastructure/**
+
+- modules/
+- kubernetes/
+  - main.tf
+  - variables.tf
+  - outputs.tf
+- database/
+  - main.tf
+  - variables.tf
+- storage/
+  - main.tf
+  - variables.tf
+- environments/
+- dev/
+  - main.tf
+  - variables.tf
+  - terraform.tfvars
+- staging/
+- production/
+- providers/
+  - aws/
+  - azure/
+  - gcp/
 
 ### Terraform Kubernetes Module
 
@@ -921,33 +913,29 @@ management:
 
 ### Best Practices
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                   COST OPTIMIZATION STRATEGIES                   │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  COMPUTE                                                         │
-│  ✅ Right-size instances based on actual usage                    │
-│  ✅ Use Spot/Preemptible instances for non-critical workloads     │
-│  ✅ Implement auto-scaling with proper thresholds                 │
-│  ✅ Schedule non-prod environments to shut down                   │
-│                                                                  │
-│  STORAGE                                                         │
-│  ✅ Use appropriate storage tiers (hot/cold/archive)              │
-│  ✅ Implement lifecycle policies for old data                     │
-│  ✅ Compress data before storing                                  │
-│                                                                  │
-│  DATABASE                                                        │
-│  ✅ Use reserved instances for production                         │
-│  ✅ Implement read replicas for read-heavy workloads              │
-│  ✅ Use serverless options for variable workloads                 │
-│                                                                  │
-│  NETWORK                                                         │
-│  ✅ Use CDN for static content                                    │
-│  ✅ Minimize cross-region data transfer                           │
-│  ✅ Use private endpoints where possible                          │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
+**COST OPTIMIZATION STRATEGIES**
+
+```text
+COMPUTE
+✅ Right-size instances based on actual usage
+✅ Use Spot/Preemptible instances for non-critical workloads
+✅ Implement auto-scaling with proper thresholds
+✅ Schedule non-prod environments to shut down
+
+STORAGE
+✅ Use appropriate storage tiers (hot/cold/archive)
+✅ Implement lifecycle policies for old data
+✅ Compress data before storing
+
+DATABASE
+✅ Use reserved instances for production
+✅ Implement read replicas for read-heavy workloads
+✅ Use serverless options for variable workloads
+
+NETWORK
+✅ Use CDN for static content
+✅ Minimize cross-region data transfer
+✅ Use private endpoints where possible
 ```
 
 ### Kubernetes Cost Optimization
@@ -1126,43 +1114,38 @@ Strategies:
 
 ## Quick Reference
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    CLOUD DEPLOYMENT CHEAT SHEET                     │
-├─────────────────────────────────────────────────────────────────────┤
-│ DOCKER COMMANDS                                                     │
-│  docker build -t app .           │ Build image                      │
-│  docker run -p 8080:8080 app     │ Run container                    │
-│  docker push registry/app        │ Push to registry                 │
-│  docker-compose up -d            │ Start services                   │
-├─────────────────────────────────────────────────────────────────────┤
-│ KUBECTL COMMANDS                                                    │
-│  kubectl apply -f manifest.yaml  │ Apply configuration              │
-│  kubectl get pods -n namespace   │ List pods                        │
-│  kubectl logs pod-name           │ View logs                        │
-│  kubectl describe pod name       │ Pod details                      │
-│  kubectl rollout restart deploy  │ Restart deployment               │
-│  kubectl scale deploy --replicas │ Scale deployment                 │
-├─────────────────────────────────────────────────────────────────────┤
-│ CLOUD CLI COMMANDS                                                  │
-│  AWS                                                                │
-│  aws eks update-kubeconfig       │ Configure kubectl                │
-│  aws ecr get-login-password      │ Docker login to ECR              │
-│                                                                     │
-│  AZURE                                                              │
-│  az aks get-credentials          │ Configure kubectl                │
-│  az acr login                    │ Docker login to ACR              │
-│                                                                     │
-│  GCP                                                                │
-│  gcloud container clusters get-credentials│ Configure kubectl       │
-│  gcloud auth configure-docker    │ Docker login to GCR              │
-├─────────────────────────────────────────────────────────────────────┤
-│ TERRAFORM COMMANDS                                                  │
-│  terraform init                  │ Initialize                       │
-│  terraform plan                  │ Preview changes                  │
-│  terraform apply                 │ Apply changes                    │
-│  terraform destroy               │ Destroy resources                │
-└─────────────────────────────────────────────────────────────────────┘
+**CLOUD DEPLOYMENT CHEAT SHEET**
+
+```text
+DOCKER COMMANDS
+ docker build -t app .           │ Build image
+ docker run -p 8080:8080 app     │ Run container
+ docker push registry/app        │ Push to registry
+ docker-compose up -d            │ Start services
+KUBECTL COMMANDS
+ kubectl apply -f manifest.yaml  │ Apply configuration
+ kubectl get pods -n namespace   │ List pods
+ kubectl logs pod-name           │ View logs
+ kubectl describe pod name       │ Pod details
+ kubectl rollout restart deploy  │ Restart deployment
+ kubectl scale deploy --replicas │ Scale deployment
+CLOUD CLI COMMANDS
+ AWS
+ aws eks update-kubeconfig       │ Configure kubectl
+ aws ecr get-login-password      │ Docker login to ECR
+
+ AZURE
+ az aks get-credentials          │ Configure kubectl
+ az acr login                    │ Docker login to ACR
+
+ GCP
+ gcloud container clusters get-credentials│ Configure kubectl
+ gcloud auth configure-docker    │ Docker login to GCR
+TERRAFORM COMMANDS
+ terraform init                  │ Initialize
+ terraform plan                  │ Preview changes
+ terraform apply                 │ Apply changes
+ terraform destroy               │ Destroy resources
 ```
 
 ---
@@ -1204,12 +1187,12 @@ Automatic refresh is dangerous because: (1) **Mid-request config change** — if
 
 ## Reality Check
 
-**"Blue-green deployment eliminates downtime"** ? Blue-green requires running TWO complete environments simultaneously, doubling infrastructure cost during deployment. Database schema changes must be backward-compatible because both blue and green read from the same database during the switch. If the new version writes data in a new format, the old version crashes when reading it. Canary deployments (gradual traffic shifting) reduce risk without doubling infrastructure.
+**"Blue-green deployment eliminates downtime"** — Blue-green requires running TWO complete environments simultaneously, doubling infrastructure cost during deployment. Database schema changes must be backward-compatible because both blue and green read from the same database during the switch. If the new version writes data in a new format, the old version crashes when reading it. Canary deployments (gradual traffic shifting) reduce risk without doubling infrastructure.
 
-**"Infrastructure as Code means the infrastructure is reproducible"** ? IaC tools like Terraform define DESIRED state, but drift happens: manual console changes, failed applies that leave partial state, and provider API changes. Without periodic drift detection (terraform plan in CI), your IaC definition and actual infrastructure diverge silently. Also, IaC does not capture the ORDER of creation � circular dependencies between resources require manual intervention.
+**"Infrastructure as Code means the infrastructure is reproducible"** — IaC tools like Terraform define DESIRED state, but drift happens: manual console changes, failed applies that leave partial state, and provider API changes. Without periodic drift detection (terraform plan in CI), your IaC definition and actual infrastructure diverge silently. Also, IaC does not capture the ORDER of creation — circular dependencies between resources require manual intervention.
 
-**"Secrets management is solved by Vault"** ? Vault stores secrets securely, but secrets still need to reach your application. The Vault token itself is a secret � how do you bootstrap it? Kubernetes ServiceAccount tokens, cloud IAM roles, or AppRole authentication solve the bootstrap problem. But secrets in application memory can still be leaked through heap dumps, debug endpoints, or error messages. Rotate secrets automatically and use short-lived tokens.
+**"Secrets management is solved by Vault"** — Vault stores secrets securely, but secrets still need to reach your application. The Vault token itself is a secret — how do you bootstrap it? Kubernetes ServiceAccount tokens, cloud IAM roles, or AppRole authentication solve the bootstrap problem. But secrets in application memory can still be leaked through heap dumps, debug endpoints, or error messages. Rotate secrets automatically and use short-lived tokens.
 
-**"Multi-region deployment provides high availability"** ? Multi-region prevents outages from a single region failure, but it introduces data consistency challenges. If a user in US-East writes data, how quickly does US-West see it? Synchronous replication adds latency (cross-region RTT of 60-200ms). Asynchronous replication means US-West serves stale data. Active-active multi-region requires conflict resolution for concurrent writes to the same record.
+**"Multi-region deployment provides high availability"** — Multi-region prevents outages from a single region failure, but it introduces data consistency challenges. If a user in US-East writes data, how quickly does US-West see it? Synchronous replication adds latency (cross-region RTT of 60-200ms). Asynchronous replication means US-West serves stale data. Active-active multi-region requires conflict resolution for concurrent writes to the same record.
 
-**"Managed services eliminate operational complexity"** ? AWS RDS eliminates database server management but you still must: tune query performance, manage connection pools, handle failover behavior, configure backup retention, plan storage growth, and understand pricing (IOPS charges, data transfer costs, reserved vs on-demand). Managed services shift responsibility from infrastructure to configuration and cost management � different complexity, not less complexity.
+**"Managed services eliminate operational complexity"** — AWS RDS eliminates database server management but you still must: tune query performance, manage connection pools, handle failover behavior, configure backup retention, plan storage growth, and understand pricing (IOPS charges, data transfer costs, reserved vs on-demand). Managed services shift responsibility from infrastructure to configuration and cost management — different complexity, not less complexity.

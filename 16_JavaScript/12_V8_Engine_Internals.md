@@ -51,7 +51,7 @@ sequenceDiagram
     participant TurboFan as TurboFan (optimizing JIT)
     participant CPU as Running machine code
 
-    You->>Parser: function add(a, b) { return a + b; }
+    You->>Parser: function add(a, b) { return a + b, }
     Parser->>Parser: tokenize -> build AST
     Parser->>Ignition: compile AST -> bytecode (fast to produce, compact)
     Ignition->>CPU: interpret bytecode, run add(1, 2)

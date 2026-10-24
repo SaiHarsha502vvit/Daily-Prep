@@ -6,11 +6,15 @@ Teach data structures from memory model to operations, variants, Java collection
 
 ## Writing Style
 
+- Open each chapter with a **study-partner explainer** (`## 💬 Explain It Like a Study Partner`): 1) the bottom line in one plain sentence, 2) the textbook core, 3) a real-world analogy, 4) a step-by-step walkthrough with a quick-check question. Follow it with the `## ⚡ At a Glance` block (colour-styled Mermaid diagram + table).
+- Use Mermaid (with `tools/mermaid-check`) and GitHub callouts instead of ASCII box diagrams; every diagram gets a "How to read this diagram" note.
 - Start with why the structure exists.
 - Explain memory/layout and operation cost.
 - Include constraints, invariants, and when the structure breaks.
 - Bridge to Java implementation details when useful.
 - Catalog chapters may include a "🎓 University Proof Corner" near the top — a 1-3 page compression of 1-3 proofs from the `A*_DS` chapters, with MIT/KTH/RWTH/TUM attribution and a "Full proofs: [link]" footer. See `00_CONTEXT/DECISIONS.md` D015.
+
+- Chapters longer than ~800 lines are **hubs**: the chapter file keeps the bridge, study-partner explainer, at-a-glance diagram and Enterprise Lens and lists topic pages in a folder named after the chapter. Keep one H1 per page and regenerate previous/next links in reading order when pages are added.
 
 ## Boundaries
 

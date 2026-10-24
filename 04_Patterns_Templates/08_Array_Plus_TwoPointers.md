@@ -1,37 +1,104 @@
-**Navigation**: [< Previous](07_Two_Pointers_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Array_Plus_SlidingWindow.md)
+# 🧩 Array + Two Pointers — Pattern Guide
 
-# Array + Two Pointers — Combined Pattern Guide
+> **Navigation**: [← Kadane and Subarray Patterns](24_Kadanes_Subarray_Patterns.md) | [Chapter index](00_INDEX.md) | [Array + Sliding Window →](09_Array_Plus_SlidingWindow.md)
+
+## Array + Two Pointers — Combined Pattern Guide
 
 ### 🧠 Deep Intuition — Why Two Pointers Works
 
-### Historical Evolution
+## 🔗 Bridge — Where This Chapter Fits
 
-**Inventor / Originator:** Same as Two Pointers — Robert Floyd (1967) for cycle detection, Dijkstra (1976) for Dutch National Flag, and Tony Hoare (1959) for quicksort partitioning.
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Two Pointers](07_Two_Pointers_Complete.md) |
+| **You will learn** | Array-specific recipes: 3Sum (fix one + two pointers), trapping rain water, in-place compaction, with edge cases |
+| **Leads to** | [Array + Sliding Window](09_Array_Plus_SlidingWindow.md), [Cyclic Sort](22_Cyclic_Sort_Pattern.md) |
+| **Abstraction level** | General pointer idea → **array recipes you can recite** |
 
-**Predecessor context:** Array problems requiring pair/triplet finding used O(n²) brute force. The sorted-array + two-pointer optimization was not widely known until CLRS popularized it.
-
-**Evolution narrative:** Floyd, Dijkstra, and Hoare independently developed pointer-based techniques for different array problems. These converged into the modern "Two Pointers" pattern category on LeetCode.
-
-**Modern practice:** Two Pointers is one of LeetCode's 14 core patterns. The "opposite ends" variant solves Two Sum in sorted arrays; "fast/slow" solves remove-in-place problems.
-
-- **Floyd cycle detection — 1967**: O(n) cycle detection using two pointers at different speeds
-- **Dijkstra Dutch National Flag — 1976**: Three-way partitioning for 0/1/2 element problems
-- **Hoare 1959**: In-place partitioning scheme enabling O(1) space sorting
-- **Modern practice**: LeetCode Two Pointers category; Floyd's algorithm in standard libraries
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
 
 ---
 
-### Production Reality
+## 💬 Explain It Like a Study Partner — Array + Two Pointers
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+### 1. The bottom line
 
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+On arrays, two pointers turn pair/triple searches into one sorted scan.
 
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+### 2. The textbook core
+
+- Sort first when order does not matter; skip duplicates deliberately.
+- 3Sum: fix `i`, run opposite-direction pointers on the suffix → `O(n²)`.
+- Read/write pointers compact an array in place.
+- Trapping water: move the pointer with the smaller boundary.
+
+### 3. The real-world analogy
+
+Two **bookmark ribbons** in a book: one marks where you read, the other where you write.
+
+### 4. Walkthrough
+
+1. 3Sum on `[-1,0,1,2,-1,-4]`: sort → `[-4,-1,-1,0,1,2]`.
+2. Fix `-1`; pointers at `-1` and `2`: sum 0 → record.
+3. Skip duplicates, continue.
+4. Result `[-1,-1,2]`, `[-1,0,1]`.
+
+> [!NOTE]
+> **Quick check:** Why sort before 3Sum? *Sorting enables pointer movement rules and duplicate skipping.*
+
+
+### 5. Check yourself
+
+**Q1.** 3Sum on `[-1,0,1,2,-1,-4]`: what are the unique triplets?
+
+<details><summary>Answer</summary>
+
+Sorted `[-4,-1,-1,0,1,2]` → `[-1,-1,2]` and `[-1,0,1]`.
+
+</details>
+
+**Q2.** Why skip equal values after finding a triplet?
+
+<details><summary>Answer</summary>
+
+To avoid reporting the same triplet more than once.
+
+</details>
+
+**Q3.** In trapping rain water with two pointers, which pointer moves?
+
+<details><summary>Answer</summary>
+
+The one with the smaller boundary height, because the water level there is limited by that smaller side.
+
+</details>
+
+---
+
+## Historical Evolution
+
+*Shares its roots with [Two Pointers](07_Two_Pointers_Complete.md).*
+
+**Inventor / Originator:** Two-pointer techniques have several independent roots: Hoare's partitioning (invented 1959, published in *Quicksort*, 1961), Floyd's cycle-finding algorithm (credited to Robert Floyd in the 1960s; Knuth records it), and Dijkstra's Dutch national flag problem (*A Discipline of Programming*, 1976).
+
+**Predecessor context:** Pair-finding over a sorted array was `O(n²)`; scanning from both ends exploits the order to cut it to `O(n)`.
+
+**Evolution narrative:** Each root contributes a different pointer pattern: opposite ends (partitioning, pair sums), same direction at different speeds (cycle detection, read/write compaction), and three-way partitions (flag problem).
+
+**Modern practice:** Pointer patterns appear in standard-library partition routines, linked-list cycle checks and in-place array compaction.
+
+- **Hoare — 1959/1961**: In-place partition for quicksort
+- **Floyd — 1960s**: Tortoise-and-hare cycle detection (Knuth, TAOCP Vol. 2)
+- **Brent — 1980**: A faster cycle-finding variant
+- **Dijkstra — 1976**: Dutch national flag three-way partition
+
+---
+
+## Production Reality
+
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -47,7 +114,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 **WHY this combination?** Arrays provide O(1) random access. Two pointers exploit **sorted order** or **structural constraints** to avoid nested loops, reducing O(n²) → O(n).
 
-### ⚠️ Constraint Lens
+## ⚠️ Constraint Lens
 
 | Given Constraints                               | Do This                                       |
 | ----------------------------------------------- | --------------------------------------------- |
@@ -59,11 +126,11 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Why Two Pointers Works
+## 🧠 Deep Intuition — Why Two Pointers Works
 
 The key insight behind two pointers isn't just "it's faster" — it's about **systematically eliminating search space without missing valid answers**.
 
-#### Opposite-Direction Pointers (e.g., Two Sum on Sorted Array)
+### Opposite-Direction Pointers (e.g., Two Sum on Sorted Array)
 
 When you have a sorted array and want pairs summing to a target, the brute force checks all O(n²) pairs. Two pointers checks at most O(n) by exploiting an **invariant**:
 
@@ -74,13 +141,13 @@ When you have a sorted array and want pairs summing to a target, the brute force
 
 This is provably correct because sorted order guarantees that moving `left` right **always increases the sum** and moving `right` left **always decreases it** — a monotonic relationship.
 
-#### Same-Direction Pointers (Reader-Writer Pattern)
+### Same-Direction Pointers (Reader-Writer Pattern)
 
 Used for in-place modifications (remove duplicates, move zeroes). The idea: one pointer (`reader`) scans every element; another pointer (`writer`) tracks where to place the next valid element. Elements before `writer` are the "clean" result; elements between `writer` and `reader` are garbage to be overwritten.
 
 This works because we never need to go backwards — each element is examined exactly once, giving O(n) time and O(1) space.
 
-#### When NOT to Use Two Pointers
+### When NOT to Use Two Pointers
 
 - **Unsorted array + looking for a target sum** → HashMap is better (O(n) without sorting)
 - **Need ALL pairs, not just one** → Two pointers can miss combinations (depends on problem)
@@ -102,18 +169,17 @@ THEN → Two Pointers on Array
 
 ### Decision Tree
 
-```
-Problem involves array?
-├── Need pair with target sum?
-│   ├── Array sorted? → OPPOSITE DIRECTION pointers
-│   └── Array unsorted? → HashMap (not two pointers)
-├── Remove/move elements in-place?
-│   └── SAME DIRECTION (reader-writer) pointers
-├── Partition into groups (0s, 1s, 2s)?
-│   └── THREE POINTERS (Dutch National Flag)
-└── Compare from both ends?
-    └── OPPOSITE DIRECTION pointers
-```
+**Problem involves array?**
+
+- Need pair with target sum?
+- Array sorted? → OPPOSITE DIRECTION pointers
+- Array unsorted? → HashMap (not two pointers)
+- Remove/move elements in-place?
+- SAME DIRECTION (reader-writer) pointers
+- Partition into groups (0s, 1s, 2s)?
+- THREE POINTERS (Dutch National Flag)
+- Compare from both ends?
+  - OPPOSITE DIRECTION pointers
 
 ---
 
@@ -308,20 +374,16 @@ Both are O(N) time, but two-pointer is O(1) space vs prefix array's O(N). In mem
 
 ## 🛡️ EDGE CASES TO WATCH
 
-```
-┌────────────────────────┬───────────────────────────────────────────┐
-│ Edge Case              │ What Happens                              │
-├────────────────────────┼───────────────────────────────────────────┤
-│ Empty array []         │ Return immediately, no pointers to set    │
-│ Single element [5]     │ No pair exists, return -1 / false         │
-│ Two elements [1,5]     │ Only one pair to check                    │
-│ All same values [3,3,3]│ All sums equal, handle duplicates!        │
-│ Already sorted         │ Two pointer works perfectly               │
-│ Target impossible      │ L crosses R without finding → return []   │
-│ Negative numbers       │ Two pointers still works on sorted array  │
-│ Overflow (a[L]+a[R])   │ Use long for sum if values near INT_MAX   │
-└────────────────────────┴───────────────────────────────────────────┘
-```
+| Edge Case | What Happens |
+| --- | --- |
+| Empty array [] | Return immediately, no pointers to set |
+| Single element [5] | No pair exists, return -1 / false |
+| Two elements [1,5] | Only one pair to check |
+| All same values [3,3,3] | All sums equal, handle duplicates! |
+| Already sorted | Two pointer works perfectly |
+| Target impossible | L crosses R without finding → return [] |
+| Negative numbers | Two pointers still works on sorted array |
+| Overflow (a[L]+a[R]) | Use long for sum if values near INT_MAX |
 
 ---
 
@@ -337,7 +399,10 @@ Both are O(N) time, but two-pointer is O(1) space vs prefix array's O(N). In mem
 
 ---
 
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+## 📋 Practice Problems
+
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 ### Easy
 
@@ -421,14 +486,24 @@ Both are O(N) time, but two-pointer is O(1) space vs prefix array's O(N). In mem
 
 ---
 
+## 🏢 Enterprise Lens — Array + Two Pointers
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Batch data cleaning, pair matching in ledgers, stable compaction of buffers |
+| **Failure modes** | Missing duplicate-skip logic; overflow when summing large integers |
+| **Testing and verification** | Compare with the `O(n³)` brute force; include duplicates, zeros and negatives |
+
+---
+
 ## Reality Check
 
-**"In-place array modification with pointers is just an optimization"** ? The write-pointer pattern (remove duplicates, move zeros) changes the CONTRACT, not just the memory: elements beyond the returned length are garbage the caller must ignore, and relative order is preserved only if the pattern was designed for stability. Production analog: compaction in log-structured storage does exactly this � and the same off-by-one at the write boundary corrupts the segment.
+**"In-place array modification with pointers is just an optimization"** — The write-pointer pattern (remove duplicates, move zeros) changes the CONTRACT, not just the memory: elements beyond the returned length are garbage the caller must ignore, and relative order is preserved only if the pattern was designed for stability. Production analog: compaction in log-structured storage does exactly this — and the same off-by-one at the write boundary corrupts the segment.
 
-**"Pointer problems on arrays are easier than on linked lists"** ? Arrays give random access but TAKE mutation safety: on a linked list, removing during traversal is pointer surgery with clear rules; on an array, removing while iterating shifts indexes under the loop, the classic skipped-element bug. The array version of "remove while scanning" is precisely the read/write two-pointer pattern � it exists BECAUSE naive removal is broken.
+**"Pointer problems on arrays are easier than on linked lists"** — Arrays give random access but TAKE mutation safety: on a linked list, removing during traversal is pointer surgery with clear rules; on an array, removing while iterating shifts indexes under the loop, the classic skipped-element bug. The array version of "remove while scanning" is precisely the read/write two-pointer pattern — it exists BECAUSE naive removal is broken.
 
-**"Both pointers always move toward each other"** ? In read/write compaction both pointers move the SAME direction at different rates � it is fast-slow on an array. Container-with-most-water converges; sorted-squares fills the OUTPUT from the back while pointers converge on the input. The movement geometry follows from what each pointer MEANS; memorizing arrows without meanings produces the wrong geometry on the next variant.
+**"Both pointers always move toward each other"** — In read/write compaction both pointers move the SAME direction at different rates — it is fast-slow on an array. Container-with-most-water converges; sorted-squares fills the OUTPUT from the back while pointers converge on the input. The movement geometry follows from what each pointer MEANS; memorizing arrows without meanings produces the wrong geometry on the next variant.
 
-**"The two-pointer result is where the pointers meet"** ? Sometimes the answer is the meeting point (binary-search-like partitions); often it is ACCUMULATED along the way (max area seen, count of pairs) and the meeting is merely the termination signal; in write-pointer patterns the answer is the WRITE index � the read pointer's final position is meaningless. Misreading which of the three the problem wants is a silent wrong-answer, not a crash.
+**"The two-pointer result is where the pointers meet"** — Sometimes the answer is the meeting point (binary-search-like partitions); often it is ACCUMULATED along the way (max area seen, count of pairs) and the meeting is merely the termination signal; in write-pointer patterns the answer is the WRITE index — the read pointer's final position is meaningless. Misreading which of the three the problem wants is a silent wrong-answer, not a crash.
 
-**"Trapping rain water needs a stack or DP"** ? The two-pointer solution exists and is the eleganter one: move the side with the smaller max inward, because that side's water level is already? determined by its own smaller bound. The reason people find it unintuitive is the invariant is asymmetric � "the answer for the side I move is finalized by the OTHER side's maximum." Stating that sentence is the entire difficulty of the problem; the code is six lines.
+**"Trapping rain water needs a stack or DP"** — The two-pointer solution exists and is the eleganter one: move the side with the smaller max inward, because that side's water level is already? determined by its own smaller bound. The reason people find it unintuitive is the invariant is asymmetric — "the answer for the side I move is finalized by the OTHER side's maximum." Stating that sentence is the entire difficulty of the problem; the code is six lines.

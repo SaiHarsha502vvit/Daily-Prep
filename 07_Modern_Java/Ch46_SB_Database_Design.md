@@ -11,69 +11,63 @@ _"Secure your data from the ground up"_
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
+**WHY: Why Database Security Matters?**
+
+```text
+• SQL injection is #1 OWASP vulnerability - costs millions yearly
+• Data breaches destroy companies: reputation, lawsuits, fines
+• Compliance requirements: GDPR, HIPAA, PCI-DSS mandate security
+• Your API is only as secure as your data layer
+• Audit trails are legally required in many industries
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Why Database Security Matters?                                            │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • SQL injection is #1 OWASP vulnerability - costs millions yearly              │
-│  • Data breaches destroy companies: reputation, lawsuits, fines                 │
-│  • Compliance requirements: GDPR, HIPAA, PCI-DSS mandate security               │
-│  • Your API is only as secure as your data layer                                │
-│  • Audit trails are legally required in many industries                         │
-└─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How to Secure Database Layer?                                             │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Use parameterized queries (NEVER string concatenation)                       │
-│  • Hash passwords with BCrypt/Argon2 (NEVER plain text)                         │
-│  • Encrypt sensitive fields (SSN, credit cards) at rest                         │
-│  • Implement row-level security for multi-tenant apps                           │
-│  • Use connection pooling with encrypted credentials                            │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**HOW: How to Secure Database Layer?**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN: When to Apply Security Measures?                                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • User management: Any app with authentication                                 │
-│  • Row-level security: Multi-tenant, data isolation needed                      │
-│  • Encryption: PII, financial data, health records                              │
-│  • Audit logging: Compliance requirements, debugging security issues            │
-│  • SQL injection prevention: ALWAYS (every app with database)                   │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+• Use parameterized queries (NEVER string concatenation)
+• Hash passwords with BCrypt/Argon2 (NEVER plain text)
+• Encrypt sensitive fields (SSN, credit cards) at rest
+• Implement row-level security for multi-tenant apps
+• Use connection pooling with encrypted credentials
+```
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHICH: Which Security Layers to Implement?                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Password hashing, SQL injection prevention, RBAC                │
-│  IMPORTANT:     Audit logging, method security, connection encryption           │
-│  ADVANCED:      Field encryption, row security, multi-tenancy isolation         │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHEN: When to Apply Security Measures?**
+
+```text
+• User management: Any app with authentication
+• Row-level security: Multi-tenant, data isolation needed
+• Encryption: PII, financial data, health records
+• Audit logging: Compliance requirements, debugging security issues
+• SQL injection prevention: ALWAYS (every app with database)
+```
+
+**WHICH: Which Security Layers to Implement?**
+
+```text
+ESSENTIAL:     Password hashing, SQL injection prevention, RBAC
+IMPORTANT:     Audit logging, method security, connection encryption
+ADVANCED:      Field encryption, row security, multi-tenancy isolation
 ```
 
 ---
 
 # 📌 Table of Contents
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              WHAT THIS PART COVERS                                              │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  1. User Management Entity Design                                               │
-│  2. Role-Based Access Control (RBAC)                                            │
-│  3. Permission/Authority Management                                             │
-│  4. Password Security (BCrypt, Argon2)                                          │
-│  5. Custom UserDetailsService Implementation                                    │
-│  6. Method-Level Security (@PreAuthorize, @Secured)                             │
-│  7. Database Row-Level Security                                                 │
-│  8. Audit Logging (Who did what, when)                                          │
-│  9. SQL Injection Prevention                                                    │
-│  10. Encrypting Sensitive Data                                                  │
-│  11. Database Connection Security                                               │
-│  12. Multi-Tenancy Security                                                     │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHAT THIS PART COVERS**
+
+```text
+1. User Management Entity Design
+2. Role-Based Access Control (RBAC)
+3. Permission/Authority Management
+4. Password Security (BCrypt, Argon2)
+5. Custom UserDetailsService Implementation
+6. Method-Level Security (@PreAuthorize, @Secured)
+7. Database Row-Level Security
+8. Audit Logging (Who did what, when)
+9. SQL Injection Prevention
+10. Encrypting Sensitive Data
+11. Database Connection Security
+12. Multi-Tenancy Security
 ```
 
 ---
@@ -84,34 +78,45 @@ _"Secure your data from the ground up"_
 
 ## Chapter 1: Complete User Entity Model
 
+**User-role-permission model**
+
+```mermaid
+erDiagram
+  USER ||--o{ USER_ROLES : has
+  ROLE ||--o{ USER_ROLES : "assigned via"
+  ROLE ||--o{ ROLE_PERMISSIONS : grants
+  PERMISSION ||--o{ ROLE_PERMISSIONS : "included in"
+  USER {
+    long id
+    string username
+    string email
+    string password
+    boolean enabled
+    boolean locked
+    boolean expired
+  }
+  ROLE {
+    long id
+    string name
+    string description
+  }
+  PERMISSION {
+    long id
+    string name
+    string resource
+    string action
+  }
+  USER_ROLES {
+    long user_id
+    long role_id
+  }
+  ROLE_PERMISSIONS {
+    long role_id
+    long permission_id
+  }
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              USER-ROLE-PERMISSION MODEL                                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ┌─────────────┐     ┌─────────────────┐     ┌─────────────┐                    │
-│  │    USER     │────►│   USER_ROLES    │◄────│    ROLE     │                    │
-│  │             │     │  (Join Table)   │     │             │                    │
-│  │ - id        │     │ - user_id       │     │ - id        │                    │
-│  │ - username  │     │ - role_id       │     │ - name      │                    │
-│  │ - email     │     └─────────────────┘     │ - desc      │                    │
-│  │ - password  │                              └─────────────┘                   │
-│  │ - enabled   │                                     │                          │
-│  │ - locked    │                                     │                          │
-│  │ - expired   │     ┌─────────────────┐            │                           │
-│  └─────────────┘     │ ROLE_PERMISSIONS│◄───────────┘                           │
-│                      │  (Join Table)   │                                        │
-│                      │ - role_id       │     ┌─────────────┐                    │
-│                      │ - permission_id │────►│ PERMISSION  │                    │
-│                      └─────────────────┘     │             │                    │
-│                                              │ - id        │                    │
-│                                              │ - name      │                    │
-│                                              │ - resource  │                    │
-│                                              │ - action    │                    │
-│                                              └─────────────┘                    │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** `USER_ROLES` and `ROLE_PERMISSIONS` are join tables that model two many-to-many relationships: a user can have many roles, and a role can grant many permissions.
 
 ### Entity Classes
 

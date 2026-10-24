@@ -25,41 +25,40 @@
 
 ## 1. The Big Picture — What Kubernetes Actually Solves
 
+**Without kubernetes**
+
+```text
+3 servers, 5 microservices. You manually:
+❌ Decide which service runs where
+❌ SSH into servers to deploy new versions
+❌ Restart crashed services (if you notice!)
+❌ Scale up manually when traffic increases
+❌ Update one by one, hoping nothing breaks
+❌ Configure networking between services manually
+❌ Manage environment variables per server
 ```
-  WITHOUT KUBERNETES:
-  ═══════════════════
 
-  3 servers, 5 microservices. You manually:
-  ❌ Decide which service runs where
-  ❌ SSH into servers to deploy new versions
-  ❌ Restart crashed services (if you notice!)
-  ❌ Scale up manually when traffic increases
-  ❌ Update one by one, hoping nothing breaks
-  ❌ Configure networking between services manually
-  ❌ Manage environment variables per server
+**With kubernetes**
 
+```text
+You DECLARE desired state: "Run 3 replicas of order-service, version 2.1"
 
-  WITH KUBERNETES:
-  ════════════════
+Kubernetes CONTINUOUSLY ensures reality matches desired state:
+✅ Schedules pods onto healthy nodes with sufficient resources
+✅ Restarts crashed containers automatically
+✅ Scales up/down based on CPU/memory metrics
+✅ Rolling updates: new version deployed with zero downtime
+✅ Service discovery: services find each other by name
+✅ Load balancing: traffic distributed across healthy pods
+✅ Config management: environment variables, secrets, mounted files
+```
 
-  You DECLARE desired state: "Run 3 replicas of order-service, version 2.1"
+**THE CORE PRINCIPLE: Declarative, not Imperative**
 
-  Kubernetes CONTINUOUSLY ensures reality matches desired state:
-  ✅ Schedules pods onto healthy nodes with sufficient resources
-  ✅ Restarts crashed containers automatically
-  ✅ Scales up/down based on CPU/memory metrics
-  ✅ Rolling updates: new version deployed with zero downtime
-  ✅ Service discovery: services find each other by name
-  ✅ Load balancing: traffic distributed across healthy pods
-  ✅ Config management: environment variables, secrets, mounted files
-
-
-  THE CORE PRINCIPLE: Declarative, not Imperative
-  ════════════════════════════════════════════════
-
-  Imperative (without K8s): "Start container X on server A"
-  Declarative (with K8s):    "I want 3 instances of X running"
-                              K8s figures out the HOW
+```text
+Imperative (without K8s): "Start container X on server A"
+Declarative (with K8s):    "I want 3 instances of X running"
+                            K8s figures out the HOW
 ```
 
 ---
@@ -76,127 +75,104 @@ In an imperative system (like a script), you tell the system _how_ to do things 
 
 ## 2. Architecture — Control Plane vs Worker Nodes
 
+```text
+• Front door to the cluster (REST API)
+• ALL communication goes through here
+• kubectl → API Server → etcd
+• Authentication, Authorization, Admission Control
 ```
-  ┌─── CONTROL PLANE (Master) ─────────────────────────────────────────────┐
-  │                                                                         │
-  │  ┌── API Server (kube-apiserver) ──────────────────────────────────┐  │
-  │  │ • Front door to the cluster (REST API)                          │  │
-  │  │ • ALL communication goes through here                           │  │
-  │  │ • kubectl → API Server → etcd                                   │  │
-  │  │ • Authentication, Authorization, Admission Control              │  │
-  │  └─────────────────────────────────────────────────────────────────┘  │
-  │                                                                         │
-  │  ┌── etcd ─────────────────────────────────────────────────────────┐  │
-  │  │ • Distributed key-value store                                    │  │
-  │  │ • SINGLE SOURCE OF TRUTH for cluster state                      │  │
-  │  │ • Stores: all resource definitions, pod locations, configs      │  │
-  │  │ • Uses Raft consensus for consistency                            │  │
-  │  │ • If etcd dies, cluster is brain-dead                            │  │
-  │  └─────────────────────────────────────────────────────────────────┘  │
-  │                                                                         │
-  │  ┌── Scheduler (kube-scheduler) ───────────────────────────────────┐  │
-  │  │ • Watches for unscheduled pods                                   │  │
-  │  │ • Decides which node to place each pod on                       │  │
-  │  │ • Considers: resources, affinity, taints, topology              │  │
-  │  └─────────────────────────────────────────────────────────────────┘  │
-  │                                                                         │
-  │  ┌── Controller Manager ───────────────────────────────────────────┐  │
-  │  │ • Runs control loops that reconcile desired vs actual state     │  │
-  │  │ • Deployment Controller: manages ReplicaSets                    │  │
-  │  │ • ReplicaSet Controller: ensures right number of pods           │  │
-  │  │ • Node Controller: monitors node health                          │  │
-  │  │ • Job Controller: manages batch jobs                             │  │
-  │  └─────────────────────────────────────────────────────────────────┘  │
-  │                                                                         │
-  └─────────────────────────────────────────────────────────────────────────┘
 
-  ┌─── WORKER NODE 1 ──────────────────────────────────────────────────────┐
-  │                                                                         │
-  │  ┌── kubelet ──────────────────────────────────────────────────────┐  │
-  │  │ • Agent on every node                                            │  │
-  │  │ • Talks to API Server: "What pods should I run?"                │  │
-  │  │ • Talks to container runtime: "Start/stop this container"       │  │
-  │  │ • Reports node status and pod health back to API Server         │  │
-  │  └─────────────────────────────────────────────────────────────────┘  │
-  │                                                                         │
-  │  ┌── kube-proxy ───────────────────────────────────────────────────┐  │
-  │  │ • Network proxy on every node                                    │  │
-  │  │ • Maintains iptables/IPVS rules for Service routing             │  │
-  │  │ • Enables: service-name → pod-IP load balancing                 │  │
-  │  └─────────────────────────────────────────────────────────────────┘  │
-  │                                                                         │
-  │  ┌── Container Runtime (containerd) ───────────────────────────────┐  │
-  │  │ • Actually runs the containers                                   │  │
-  │  │ • Pulls images, manages container lifecycle                     │  │
-  │  │ • containerd (default), CRI-O, Docker (deprecated as runtime)   │  │
-  │  └─────────────────────────────────────────────────────────────────┘  │
-  │                                                                         │
-  │  ┌── Pods ─────────────────────────────────────────────────────────┐  │
-  │  │  [order-svc-abc12]  [payment-svc-def34]  [user-svc-ghi56]     │  │
-  │  └─────────────────────────────────────────────────────────────────┘  │
-  │                                                                         │
-  └─────────────────────────────────────────────────────────────────────────┘
+```text
+• Distributed key-value store
+• SINGLE SOURCE OF TRUTH for cluster state
+• Stores: all resource definitions, pod locations, configs
+• Uses Raft consensus for consistency
+• If etcd dies, cluster is brain-dead
+```
+
+```text
+• Watches for unscheduled pods
+• Decides which node to place each pod on
+• Considers: resources, affinity, taints, topology
+```
+
+```text
+• Runs control loops that reconcile desired vs actual state
+• Deployment Controller: manages ReplicaSets
+• ReplicaSet Controller: ensures right number of pods
+• Node Controller: monitors node health
+• Job Controller: manages batch jobs
+```
+
+```text
+• Agent on every node
+• Talks to API Server: "What pods should I run?"
+• Talks to container runtime: "Start/stop this container"
+• Reports node status and pod health back to API Server
+```
+
+```text
+• Network proxy on every node
+• Maintains iptables/IPVS rules for Service routing
+• Enables: service-name → pod-IP load balancing
+```
+
+```text
+• Actually runs the containers
+• Pulls images, manages container lifecycle
+• containerd (default), CRI-O, Docker (deprecated as runtime)
+```
+
+```text
+[order-svc-abc12]  [payment-svc-def34]  [user-svc-ghi56]
 ```
 
 ---
 
 ## 3. Pods — The Smallest Deployable Unit
 
+A Pod is NOT a container. A Pod CONTAINS one or more containers.
+
+**Single-container pod (the most common)**
+
+```mermaid
+flowchart TD
+  subgraph POD["Pod: order-service-7d4f5b-abc12 (IP 10.244.1.5, unique pod IP within the cluster)"]
+    C["Container: order-service<br/>image myregistry/order-service:2.1, port 8080,<br/>resources 256Mi memory + 250m CPU, env SPRING_PROFILES_ACTIVE=prod"]
+    V["Volumes: config-vol mounted at /config"]
+  end
 ```
-  A Pod is NOT a container. A Pod CONTAINS one or more containers.
 
+**Multi-container pod (sidecar pattern)**
 
-  SINGLE-CONTAINER POD (most common):
-  ════════════════════════════════════
+```mermaid
+flowchart LR
+  subgraph POD2["Pod (IP 10.244.1.6, SHARED between all containers)"]
+    A["Container: app<br/>image my-app:1.0, writes to /var/log"]
+    L["Container: log-shipper<br/>image fluentd:latest, reads /var/log, ships to Elasticsearch"]
+    VOL[("Shared volume: log-vol<br/>mounted at /var/log in BOTH containers")]
+    A --- VOL --- L
+  end
+```
 
-  ┌─── Pod: order-service-7d4f5b-abc12 ──────────────────────────────────┐
-  │                                                                        │
-  │  IP: 10.244.1.5 (unique pod IP within cluster)                        │
-  │                                                                        │
-  │  ┌── Container: order-service ─────────────────────────────────────┐ │
-  │  │  Image: myregistry/order-service:2.1                             │ │
-  │  │  Ports: 8080                                                     │ │
-  │  │  Resources: 256Mi memory, 250m CPU                               │ │
-  │  │  Environment: SPRING_PROFILES_ACTIVE=prod                        │ │
-  │  └──────────────────────────────────────────────────────────────────┘ │
-  │                                                                        │
-  │  Volumes: [config-vol mounted at /config]                              │
-  │                                                                        │
-  └────────────────────────────────────────────────────────────────────────┘
+**How to read these diagrams.** The outer box is the pod, and the boxes inside are containers. In the second pod, both containers mount the same volume, so what `app` writes the log shipper can read.
 
+Containers in the same pod:
 
-  MULTI-CONTAINER POD (sidecar pattern):
-  ══════════════════════════════════════
+- Share the network namespace (`localhost` works between them).
+- Share volumes (they can read and write the same files).
+- Share the IPC namespace.
+- Are scheduled together on the same node.
+- Live and die together.
 
-  ┌─── Pod ───────────────────────────────────────────────────────────────┐
-  │                                                                        │
-  │  IP: 10.244.1.6 (SHARED between all containers)                      │
-  │                                                                        │
-  │  ┌── Container: app ──────┐  ┌── Container: log-shipper ──────────┐ │
-  │  │  Image: my-app:1.0      │  │  Image: fluentd:latest              │ │
-  │  │  Writes to /var/log     │  │  Reads from /var/log               │ │
-  │  └─────────────────────────┘  │  Ships to Elasticsearch             │ │
-  │                                │                                     │ │
-  │  Shared Volume: [log-vol]     └─────────────────────────────────────┘ │
-  │  (mounted at /var/log in BOTH containers)                              │
-  │                                                                        │
-  │  Containers in same pod:                                               │
-  │  • Share network namespace (localhost works between them!)            │
-  │  • Share volumes (can read/write same files)                          │
-  │  • Share IPC namespace                                                 │
-  │  • Scheduled together on same node                                     │
-  │  • Live and die together                                               │
-  │                                                                        │
-  └────────────────────────────────────────────────────────────────────────┘
+**Pod lifecycle**
 
-
-  POD LIFECYCLE:
-
-  Pending → Running → Succeeded/Failed
-     │         │
-     │         └── containers running + health checks passing
-     │
-     └── waiting for scheduling, image pull, or init containers
+```mermaid
+stateDiagram-v2
+  [*] --> Pending: waiting for scheduling, image pull, or init containers
+  Pending --> Running: containers running and health checks passing
+  Running --> Succeeded
+  Running --> Failed
 ```
 
 ---
@@ -249,100 +225,80 @@ spec:
             cpu: "500m"
 ```
 
+**ROLLING UPDATE — What happens when you change image to :2.2**
+
+```text
+BEFORE (v2.1):
+[Pod-A v2.1 ✅] [Pod-B v2.1 ✅] [Pod-C v2.1 ✅]
+
+Step 1: Create new pod with v2.2 (maxSurge=1 allows 4 pods temporarily)
+[Pod-A v2.1 ✅] [Pod-B v2.1 ✅] [Pod-C v2.1 ✅] [Pod-D v2.2 🔄 starting]
+
+Step 2: Pod-D passes readiness check
+[Pod-A v2.1 ✅] [Pod-B v2.1 ✅] [Pod-C v2.1 ✅] [Pod-D v2.2 ✅]
+
+Step 3: Terminate oldest v2.1 pod (maxUnavailable=0, we have 4 healthy)
+[Pod-A v2.1 ❌ terminating] [Pod-B v2.1 ✅] [Pod-C v2.1 ✅] [Pod-D v2.2 ✅]
+
+Step 4-5: Repeat for remaining pods
+[Pod-B v2.1 ✅] [Pod-C v2.1 ✅] [Pod-D v2.2 ✅] [Pod-E v2.2 🔄]
+→ [Pod-C v2.1 ✅] [Pod-D v2.2 ✅] [Pod-E v2.2 ✅] [Pod-F v2.2 🔄]
+
+FINAL:
+[Pod-D v2.2 ✅] [Pod-E v2.2 ✅] [Pod-F v2.2 ✅]
+
+→ ZERO DOWNTIME! At least 3 healthy pods at all times
+→ If v2.2 fails readiness check → rollout pauses → v2.1 still serving
 ```
-  ROLLING UPDATE — What happens when you change image to :2.2
-  ═══════════════════════════════════════════════════════════
 
-  BEFORE (v2.1):
-  [Pod-A v2.1 ✅] [Pod-B v2.1 ✅] [Pod-C v2.1 ✅]
+**Hierarchy**
 
-  Step 1: Create new pod with v2.2 (maxSurge=1 allows 4 pods temporarily)
-  [Pod-A v2.1 ✅] [Pod-B v2.1 ✅] [Pod-C v2.1 ✅] [Pod-D v2.2 🔄 starting]
-
-  Step 2: Pod-D passes readiness check
-  [Pod-A v2.1 ✅] [Pod-B v2.1 ✅] [Pod-C v2.1 ✅] [Pod-D v2.2 ✅]
-
-  Step 3: Terminate oldest v2.1 pod (maxUnavailable=0, we have 4 healthy)
-  [Pod-A v2.1 ❌ terminating] [Pod-B v2.1 ✅] [Pod-C v2.1 ✅] [Pod-D v2.2 ✅]
-
-  Step 4-5: Repeat for remaining pods
-  [Pod-B v2.1 ✅] [Pod-C v2.1 ✅] [Pod-D v2.2 ✅] [Pod-E v2.2 🔄]
-  → [Pod-C v2.1 ✅] [Pod-D v2.2 ✅] [Pod-E v2.2 ✅] [Pod-F v2.2 🔄]
-
-  FINAL:
-  [Pod-D v2.2 ✅] [Pod-E v2.2 ✅] [Pod-F v2.2 ✅]
-
-  → ZERO DOWNTIME! At least 3 healthy pods at all times
-  → If v2.2 fails readiness check → rollout pauses → v2.1 still serving
-
-
-  HIERARCHY:
-  ══════════
-
-  Deployment (you manage this)
-      │
-      ├── creates ReplicaSet-v2.1  (manages v2.1 pods)
-      │   └── Pod-A, Pod-B, Pod-C
-      │
-      └── creates ReplicaSet-v2.2  (manages v2.2 pods)
-          └── Pod-D, Pod-E, Pod-F
+```text
+Deployment (you manage this)
+    │
+    ├── creates ReplicaSet-v2.1  (manages v2.1 pods)
+    │   └── Pod-A, Pod-B, Pod-C
+    │
+    └── creates ReplicaSet-v2.2  (manages v2.2 pods)
+        └── Pod-D, Pod-E, Pod-F
 ```
 
 ---
 
 ## 5. Services — How Networking Works Inside the Cluster
 
+**Problem.** Pods get random IPs, and pods die and get recreated with new IPs. How does `payment-service` find `order-service`?
+
+**Answer:** a Kubernetes Service is a stable DNS name plus a load balancer.
+
+```mermaid
+flowchart TD
+  CL["payment-service calls http://order-service/api/orders"] --> SVC
+  subgraph SVC["Service: order-service"]
+    SP["Type ClusterIP (internal only, the default)<br/>Cluster IP 10.96.45.123 (stable)<br/>DNS order-service.default.svc.cluster.local<br/>Port 80 to targetPort 8080<br/>Selector app=order-service"]
+  end
+  SVC --> PD["10.244.1.5:8080 (Pod-D, healthy ✅)"]
+  SVC --> PE["10.244.2.8:8080 (Pod-E, healthy ✅)"]
+  SVC --> PF["10.244.3.2:8080 (Pod-F, healthy ✅)"]
 ```
-  PROBLEM: Pods get random IPs. Pods die and get recreated with new IPs.
-  How does "payment-service" find "order-service"?
 
+**How to read this diagram.** The Service has one stable address. The endpoints behind it are the healthy pods that match its selector.
 
-  ANSWER: Kubernetes Service = stable DNS name + load balancer
+When `payment-service` calls `http://order-service/api/orders`:
 
+1. DNS lookup: `order-service` → `10.96.45.123`.
+2. kube-proxy (iptables/IPVS) intercepts traffic to `10.96.45.123`.
+3. It load-balances to one of the endpoint pods (round-robin).
+4. If a pod dies, it is removed from the endpoints and no traffic is routed to it.
 
-  ┌─── Service: order-service ──────────────────────────────────────────┐
-  │                                                                      │
-  │  Type: ClusterIP (internal only, default)                           │
-  │  Cluster IP: 10.96.45.123 (stable, doesn't change)                 │
-  │  DNS: order-service.default.svc.cluster.local                       │
-  │  Port: 80 → targetPort: 8080                                       │
-  │                                                                      │
-  │  Selector: app=order-service                                         │
-  │                                                                      │
-  │  Endpoints (discovered by selector):                                 │
-  │  ├── 10.244.1.5:8080  (Pod-D, healthy ✅)                          │
-  │  ├── 10.244.2.8:8080  (Pod-E, healthy ✅)                          │
-  │  └── 10.244.3.2:8080  (Pod-F, healthy ✅)                          │
-  │                                                                      │
-  └──────────────────────────────────────────────────────────────────────┘
+**Service types**
 
-  When payment-service calls: http://order-service/api/orders
-
-  1. DNS lookup: "order-service" → 10.96.45.123
-  2. kube-proxy (iptables/IPVS) intercepts traffic to 10.96.45.123
-  3. Load-balances to one of the endpoint pods (round-robin)
-  4. If a pod dies → removed from endpoints → no traffic routed to it
-
-
-  SERVICE TYPES:
-  ══════════════
-
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │ Type          │ Scope                │ Use Case                          │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ ClusterIP     │ Internal only        │ Service-to-service communication  │
-  │ (default)     │ Cluster IP assigned  │ Databases, internal APIs          │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ NodePort      │ External via node IP │ Direct access for testing         │
-  │               │ Port 30000-32767     │ $NodeIP:$NodePort → pod           │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ LoadBalancer  │ External via cloud LB│ Production external access        │
-  │               │ Provisions cloud LB  │ AWS ALB, GCP LB, Azure LB        │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ ExternalName  │ DNS alias            │ Map to external service           │
-  │               │ CNAME record         │ external-db.company.com           │
-  └──────────────────────────────────────────────────────────────────────────┘
-```
+| Type | Scope | Use case |
+| --- | --- | --- |
+| `ClusterIP` (default) | Internal only; a cluster IP is assigned | Service-to-service communication, databases, internal APIs |
+| `NodePort` | External via the node IP, port 30000-32767 | Direct access for testing: `$NodeIP:$NodePort` → pod |
+| `LoadBalancer` | External via a cloud load balancer (it provisions one) | Production external access: AWS ALB, GCP LB, Azure LB |
+| `ExternalName` | DNS alias (CNAME record) | Map to an external service such as `external-db.company.com` |
 
 ---
 
@@ -358,37 +314,21 @@ No. Kubernetes `ClusterIP` Services do not use a centralized proxy hop. The DNS 
 
 ## 6. Ingress — How External Traffic Reaches Your App
 
+An Ingress is the single entry point for external HTTP(S) traffic into the cluster: **Internet → Ingress controller → Services → Pods**.
+
+```mermaid
+flowchart TD
+  U["Internet: user browses https://api.myapp.com/orders"] --> IC
+  subgraph IC["Ingress controller (NGINX / Traefik / HAProxy)"]
+    TLS["TLS termination: decrypt HTTPS to HTTP"]
+    R["Route by rules:<br/>api.myapp.com/orders → order-service:80<br/>api.myapp.com/payments → payment-service:80<br/>api.myapp.com/users → user-service:80<br/>myapp.com/* → frontend-service:80"]
+    TLS --> R
+  end
+  IC --> OS["order-service → Pod1, Pod2, Pod3"]
+  IC --> PS["payment-service → Pod4, Pod5"]
 ```
-  The single entry point for external HTTP(S) traffic into the cluster.
 
-  Internet → Ingress Controller → Services → Pods
-
-
-  ┌─── Internet ───────────────────────────────────────────────────────────┐
-  │  User browses: https://api.myapp.com/orders                           │
-  └───────────────────────────────┬─────────────────────────────────────────┘
-                                  │
-                                  ▼
-  ┌─── Ingress Controller (NGINX/Traefik/HAProxy) ────────────────────────┐
-  │                                                                        │
-  │  TLS termination: decrypt HTTPS → HTTP                                │
-  │                                                                        │
-  │  Route by rules:                                                       │
-  │  ├── api.myapp.com/orders   → order-service:80                        │
-  │  ├── api.myapp.com/payments → payment-service:80                      │
-  │  ├── api.myapp.com/users    → user-service:80                         │
-  │  └── myapp.com/*            → frontend-service:80                     │
-  │                                                                        │
-  └───────────────────────────────┬─────────────────────────────────────────┘
-                                  │
-                                  ▼
-  ┌─── ClusterIP Services → Pods ─────────────────────────────────────────┐
-  │                                                                        │
-  │  order-service → [Pod1] [Pod2] [Pod3]                                 │
-  │  payment-service → [Pod4] [Pod5]                                      │
-  │                                                                        │
-  └────────────────────────────────────────────────────────────────────────┘
-```
+**How to read this diagram.** The controller terminates TLS, then routes each request by host and path to a ClusterIP Service, which load-balances across its pods.
 
 ```yaml
 
@@ -461,98 +401,71 @@ data:
   JWT_SECRET: c3VwZXJzZWNyZXQ= # base64("supersecret")
 ```
 
-```
-  HOW PODS USE THEM:
-  ══════════════════
+**How pods use them**
 
-  METHOD 1: Environment variables
+```text
+METHOD 1: Environment variables
 
-  env:
-  - name: DB_URL
-    valueFrom:
-      configMapKeyRef:
-        name: app-config
-        key: DATABASE_URL
-  - name: DB_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: app-secrets
-        key: DB_PASSWORD
-
-
-  METHOD 2: Volume mounts (files)
-
-  volumes:
-  - name: config-volume
-    configMap:
+env:
+- name: DB_URL
+  valueFrom:
+    configMapKeyRef:
       name: app-config
-
-  containers:
-  - volumeMounts:
-    - name: config-volume
-      mountPath: /etc/config
-      # Creates files: /etc/config/SPRING_PROFILES_ACTIVE
-      #                /etc/config/DATABASE_URL
-      #                /etc/config/LOG_LEVEL
+      key: DATABASE_URL
+- name: DB_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: app-secrets
+      key: DB_PASSWORD
 
 
-  ⚠️ SECRETS ARE NOT ENCRYPTED: Base64 encoding is NOT security.
-  For production, use:
-  • External secrets (AWS Secrets Manager, HashiCorp Vault)
-  • Sealed Secrets (encrypted in Git, decrypted in cluster)
-  • etcd encryption at rest
+METHOD 2: Volume mounts (files)
+
+volumes:
+- name: config-volume
+  configMap:
+    name: app-config
+
+containers:
+- volumeMounts:
+  - name: config-volume
+    mountPath: /etc/config
+    # Creates files: /etc/config/SPRING_PROFILES_ACTIVE
+    #                /etc/config/DATABASE_URL
+    #                /etc/config/LOG_LEVEL
+
+
+⚠️ SECRETS ARE NOT ENCRYPTED: Base64 encoding is NOT security.
+For production, use:
+• External secrets (AWS Secrets Manager, HashiCorp Vault)
+• Sealed Secrets (encrypted in Git, decrypted in cluster)
+• etcd encryption at rest
 ```
 
 ---
 
 ## 8. StatefulSets — For Databases and Stateful Apps
 
-```
-  DEPLOYMENT vs STATEFULSET:
-  ══════════════════════════
+**Deployment vs StatefulSet**
 
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │                     │ Deployment              │ StatefulSet              │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ Pod names           │ Random (app-7d4f-abc)   │ Ordered (app-0, app-1)  │
-  │ Startup order       │ All at once              │ Sequential (0, 1, 2)    │
-  │ Shutdown order      │ Any order               │ Reverse (2, 1, 0)       │
-  │ Network identity    │ No stable hostname       │ app-0.service, app-1... │
-  │ Storage             │ Shared or ephemeral     │ Each pod owns its PVC   │
-  │ Use case            │ Stateless apps          │ Databases, Kafka, ZK    │
-  └──────────────────────────────────────────────────────────────────────────┘
+| | Deployment | StatefulSet |
+| --- | --- | --- |
+| Pod names | Random (`app-7d4f-abc`) | Ordered (`app-0`, `app-1`) |
+| Startup order | All at once | Sequential (0, 1, 2) |
+| Shutdown order | Any order | Reverse (2, 1, 0) |
+| Network identity | No stable hostname | `app-0.service`, `app-1.service`, ... |
+| Storage | Shared or ephemeral | Each pod owns its PVC |
+| Use case | Stateless apps | Databases, Kafka, ZooKeeper |
 
+**Why databases need StatefulSets.** PostgreSQL with replication, as a StatefulSet named `postgres`:
 
-  WHY DATABASES NEED STATEFULSETS:
-  ════════════════════════════════
+| Pod | Hostname | PVC | Role |
+| --- | --- | --- | --- |
+| `postgres-0` (PRIMARY) | `postgres-0.postgres-headless.default.svc` | `data-postgres-0` (100Gi SSD, survives a pod restart) | Accepts reads AND writes |
+| `postgres-1` (REPLICA) | `postgres-1.postgres-headless.default.svc` | `data-postgres-1` (100Gi SSD, its OWN separate disk) | Read-only replica, streams the WAL from `postgres-0` |
+| `postgres-2` (REPLICA) | `postgres-2.postgres-headless.default.svc` | `data-postgres-2` (100Gi SSD) | Read-only replica |
 
-  PostgreSQL with replication:
-
-  ┌── StatefulSet: postgres ──────────────────────────────────────────────┐
-  │                                                                        │
-  │  postgres-0 (PRIMARY)                                                 │
-  │  ├── Hostname: postgres-0.postgres-headless.default.svc               │
-  │  ├── PVC: data-postgres-0 → 100Gi SSD (survives pod restart!)       │
-  │  └── Role: accepts reads AND writes                                   │
-  │                                                                        │
-  │  postgres-1 (REPLICA)                                                 │
-  │  ├── Hostname: postgres-1.postgres-headless.default.svc               │
-  │  ├── PVC: data-postgres-1 → 100Gi SSD (its OWN separate disk)       │
-  │  └── Role: read-only replica, streams WAL from postgres-0            │
-  │                                                                        │
-  │  postgres-2 (REPLICA)                                                 │
-  │  ├── Hostname: postgres-2.postgres-headless.default.svc               │
-  │  ├── PVC: data-postgres-2 → 100Gi SSD                               │
-  │  └── Role: read-only replica                                          │
-  │                                                                        │
-  └────────────────────────────────────────────────────────────────────────┘
-
-  If postgres-1 dies and restarts:
-  → Gets SAME name (postgres-1), SAME PVC (data-postgres-1)
-  → Reattaches to its data → no data loss!
-
-  With Deployment: pod gets random name, different PVC → DATA LOST
-```
+If `postgres-1` dies and restarts, it gets the SAME name (`postgres-1`) and the SAME PVC (`data-postgres-1`). It reattaches to its data, so there is no data loss. With a Deployment, the pod would get a random name and a different PVC, and the DATA would be LOST.
 
 ---
 
@@ -568,34 +481,15 @@ resources:
     cpu: "500m" # If exceeded → throttled (not killed)
 ```
 
-```
-  CPU UNITS:
-  ══════════
-  1 CPU = 1000m (millicores)
-  250m = 25% of one CPU core
-  0.5 = 500m = half a core
+**CPU UNITS: — 1 CPU = 1000m (millicores) — 250m = 25% of one CPU core — 0.5 = 500m = half a core — MEMORY UNITS: — Mi = Mebibytes (1024-based) — 256Mi = 268,435,456 bytes — QoS CLASSES (determined by how you set requests/limits): — QoS Class     │ Condition                                │ Eviction**
 
-  MEMORY UNITS:
-  ═════════════
-  Mi = Mebibytes (1024-based)
-  256Mi = 268,435,456 bytes
-
-
-  QoS CLASSES (determined by how you set requests/limits):
-  ════════════════════════════════════════════════════════
-
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │ QoS Class     │ Condition                                │ Eviction     │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ Guaranteed    │ requests == limits for ALL containers    │ Last to die  │
-  │               │ (CPU and memory both set and equal)      │ Most stable  │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ Burstable     │ At least one request OR limit set        │ Middle       │
-  │               │ (requests < limits, or only one set)     │              │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ BestEffort    │ NO requests AND NO limits set            │ First to die │
-  │               │ (gets whatever is left over)              │ Avoid in prod│
-  └──────────────────────────────────────────────────────────────────────────┘
+```text
+Guaranteed    │ requests == limits for ALL containers    │ Last to die
+              │ (CPU and memory both set and equal)      │ Most stable
+Burstable     │ At least one request OR limit set        │ Middle
+              │ (requests < limits, or only one set)     │
+BestEffort    │ NO requests AND NO limits set            │ First to die
+              │ (gets whatever is left over)              │ Avoid in prod
 
   When node runs out of memory:
   1. Kill BestEffort pods first
@@ -611,25 +505,18 @@ resources:
 
 ## 10. Health Checks — Liveness, Readiness, Startup Probes
 
-```
-  THREE TYPES OF PROBES:
-  ══════════════════════
+**THREE TYPES OF PROBES: — Probe      │ Question                   │ If Fails**
 
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │ Probe      │ Question                   │ If Fails                      │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ Startup    │ "Has the app STARTED?"     │ Keep waiting (don't restart)  │
-  │            │ Runs once at beginning      │ If exceeds timeout → restart  │
-  │            │                              │ Protects slow-starting apps   │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ Liveness   │ "Is the app ALIVE?"        │ RESTART the container         │
-  │            │ Runs continuously            │ (kills and recreates)         │
-  │            │                              │ For deadlocks, hung states    │
-  ├──────────────────────────────────────────────────────────────────────────┤
-  │ Readiness  │ "Can the app SERVE traffic?"│ REMOVE from service endpoints │
-  │            │ Runs continuously            │ (stop sending requests)       │
-  │            │                              │ For warmup, dependency down   │
-  └──────────────────────────────────────────────────────────────────────────┘
+```text
+Startup    │ "Has the app STARTED?"     │ Keep waiting (don't restart)
+           │ Runs once at beginning      │ If exceeds timeout → restart
+           │                              │ Protects slow-starting apps
+Liveness   │ "Is the app ALIVE?"        │ RESTART the container
+           │ Runs continuously            │ (kills and recreates)
+           │                              │ For deadlocks, hung states
+Readiness  │ "Can the app SERVE traffic?"│ REMOVE from service endpoints
+           │ Runs continuously            │ (stop sending requests)
+           │                              │ For warmup, dependency down
 ```
 
 ```yaml
@@ -682,56 +569,57 @@ containers:
 
 ## 11. How Scheduling Works — From YAML to Running Pod
 
+**What happens on `kubectl apply -f deployment.yaml`**
+
+```mermaid
+sequenceDiagram
+  participant K as kubectl
+  participant API as API server
+  participant E as etcd
+  participant DC as Deployment controller
+  participant RC as ReplicaSet controller
+  participant S as Scheduler
+  participant KL as kubelet (Node-2)
+  participant KP as kube-proxy
+  K->>API: 1. POST /apis/apps/v1/namespaces/default/deployments
+  API->>E: 2. validate, then store the Deployment spec
+  DC->>API: 3. sees the new Deployment, creates a ReplicaSet
+  RC->>API: 4. desired replicas = 3, creates 3 Pod objects (status Pending)
+  S->>API: 5. sees 3 unscheduled pods: filter, score, bind each pod to a node (Node-2)
+  KL->>KL: 6. sees a pod assigned to its node: pull image, create container, set up networking, mount volumes, start, run probes
+  KL->>API: report status Running
+  KP->>KP: 7. update iptables/IPVS rules so the Service endpoints include the new pod
 ```
-  kubectl apply -f deployment.yaml
-       │
-       ▼
-  Step 1: kubectl sends to API Server
-          POST /apis/apps/v1/namespaces/default/deployments
-       │
-  Step 2: API Server validates, writes to etcd
-          etcd stores Deployment spec
-       │
-  Step 3: Deployment Controller sees new Deployment
-          Creates ReplicaSet → API Server → etcd
-       │
-  Step 4: ReplicaSet Controller sees desired replicas = 3
-          Creates 3 Pod objects (status: Pending) → etcd
-       │
-  Step 5: Scheduler sees 3 unscheduled pods
-          FOR EACH POD:
-          │
-          ├── FILTERING (which nodes CAN run this pod?):
-          │   ├── Does node have enough CPU? (request: 250m)
-          │   ├── Does node have enough memory? (request: 256Mi)
-          │   ├── Does pod have node selector/affinity? (match?)
-          │   ├── Is node tainted? Does pod tolerate it?
-          │   └── Result: 2 of 3 nodes pass
-          │
-          ├── SCORING (which node SHOULD run this pod?):
-          │   ├── Balance pods across nodes (spread)
-          │   ├── Node with more available resources (score higher)
-          │   ├── Prefer nodes where image already pulled
-          │   ├── Anti-affinity rules (don't colocate with same app)
-          │   └── Result: Node-2 scores highest
-          │
-          └── BIND: assign pod to Node-2 → update in etcd
-       │
-  Step 6: kubelet on Node-2 sees new pod assigned to it
-          │
-          ├── Pull image (if not cached): docker pull myregistry/order-service:2.1
-          ├── Create container via containerd
-          ├── Set up networking (CNI plugin): assign pod IP
-          ├── Mount volumes (ConfigMap, Secret, PVC)
-          ├── Start container: java -jar app.jar
-          ├── Run startup probe → wait for success
-          ├── Pod status: Running
-          └── Report status back to API Server
-       │
-  Step 7: kube-proxy updates iptables/IPVS rules
-          Service endpoints now include this pod
-          Traffic can flow to the new pod
-```
+
+**How to read this diagram.** Every component watches the API server for changes and reacts to them. No component calls another directly.
+
+**Step 5 in detail: the scheduler, for each pod**
+
+- **Filtering** (which nodes CAN run this pod?):
+  - Does the node have enough CPU (request: 250m)?
+  - Does it have enough memory (request: 256Mi)?
+  - Does the pod have a node selector or affinity that matches?
+  - Is the node tainted, and does the pod tolerate it?
+  - Result: 2 of 3 nodes pass.
+- **Scoring** (which node SHOULD run this pod?):
+  - Balance pods across nodes (spread).
+  - Prefer nodes with more available resources.
+  - Prefer nodes where the image is already pulled.
+  - Apply anti-affinity rules (don't colocate with the same app).
+  - Result: Node-2 scores highest.
+- **Bind:** assign the pod to Node-2 and update etcd.
+
+**Step 6 in detail: the kubelet on Node-2**
+
+1. Pull the image if it isn't cached (`docker pull myregistry/order-service:2.1`).
+2. Create the container via containerd.
+3. Set up networking (CNI plugin) and assign the pod IP.
+4. Mount volumes (ConfigMap, Secret, PVC).
+5. Start the container (`java -jar app.jar`).
+6. Run the startup probe and wait for success.
+7. Set the pod status to Running and report it back to the API server.
+
+**Step 7:** kube-proxy updates the iptables/IPVS rules. The Service endpoints now include the new pod, and traffic can flow to it.
 
 ---
 
@@ -815,12 +703,12 @@ spec:
 
 ## Reality Check
 
-**"Kubernetes is necessary for production deployments"** ? Kubernetes adds operational complexity: etcd cluster management, networking (CNI plugins, service mesh), RBAC configuration, resource quota management, node scaling, and upgrade coordination. A single Spring Boot application serving 1000 requests per second runs fine on 2 VMs behind a load balancer with zero Kubernetes overhead. Use Kubernetes when you have 10+ services, need automated scaling, or require self-healing infrastructure.
+**"Kubernetes is necessary for production deployments"** — Kubernetes adds operational complexity: etcd cluster management, networking (CNI plugins, service mesh), RBAC configuration, resource quota management, node scaling, and upgrade coordination. A single Spring Boot application serving 1000 requests per second runs fine on 2 VMs behind a load balancer with zero Kubernetes overhead. Use Kubernetes when you have 10+ services, need automated scaling, or require self-healing infrastructure.
 
-**"Pod resource limits prevent OOM kills"** ? Resource limits tell Kubernetes the MAXIMUM a pod can use. If your JVM heap is 512MB but the container limit is 400MB, the kernel OOM-kills the JVM without warning (no graceful shutdown, no heap dump). The container limit must exceed: JVM heap (Xmx) + metaspace + thread stacks + direct memory + native memory + JVM overhead. A safe formula: container memory limit is at least 1.5x the -Xmx value.
+**"Pod resource limits prevent OOM kills"** — Resource limits tell Kubernetes the MAXIMUM a pod can use. If your JVM heap is 512MB but the container limit is 400MB, the kernel OOM-kills the JVM without warning (no graceful shutdown, no heap dump). The container limit must exceed: JVM heap (Xmx) + metaspace + thread stacks + direct memory + native memory + JVM overhead. A safe formula: container memory limit is at least 1.5x the -Xmx value.
 
-**"Rolling deployments are always safe"** ? During a rolling deployment, old and new versions run simultaneously. If the new version writes data in a format the old version cannot read, active old pods crash. Database migrations that remove columns break old pods still using those columns. Rolling deployments require: backward-compatible code changes, expand-then-contract database migrations, and feature flags for behavior changes.
+**"Rolling deployments are always safe"** — During a rolling deployment, old and new versions run simultaneously. If the new version writes data in a format the old version cannot read, active old pods crash. Database migrations that remove columns break old pods still using those columns. Rolling deployments require: backward-compatible code changes, expand-then-contract database migrations, and feature flags for behavior changes.
 
-**"Horizontal Pod Autoscaler reacts instantly to load spikes"** ? HPA checks metrics every 15 seconds by default, then adds pods. New pods need: image pull (seconds to minutes if not cached), JVM startup (5-15 seconds), Spring context initialization (10-60 seconds), and readiness probe passing (configurable delay). Total time from load spike to new pod serving traffic: 30 seconds to 3 minutes. Size your baseline replica count to handle expected traffic spikes without autoscaling.
+**"Horizontal Pod Autoscaler reacts instantly to load spikes"** — HPA checks metrics every 15 seconds by default, then adds pods. New pods need: image pull (seconds to minutes if not cached), JVM startup (5-15 seconds), Spring context initialization (10-60 seconds), and readiness probe passing (configurable delay). Total time from load spike to new pod serving traffic: 30 seconds to 3 minutes. Size your baseline replica count to handle expected traffic spikes without autoscaling.
 
-**"ConfigMaps and Secrets are the same except for encoding"** ? Secrets are Base64-encoded (NOT encrypted) at rest in etcd by default. Anyone with etcd access reads all secrets in plaintext. Kubernetes Secrets are slightly more secure than ConfigMaps because: they can be mounted as tmpfs (not written to node disk), RBAC can restrict access separately, and encryption at rest can be configured. But without encryption-at-rest configuration, Secrets provide obscurity, not security.
+**"ConfigMaps and Secrets are the same except for encoding"** — Secrets are Base64-encoded (NOT encrypted) at rest in etcd by default. Anyone with etcd access reads all secrets in plaintext. Kubernetes Secrets are slightly more secure than ConfigMaps because: they can be mounted as tmpfs (not written to node disk), RBAC can restrict access separately, and encryption at rest can be configured. But without encryption-at-rest configuration, Secrets provide obscurity, not security.

@@ -1,37 +1,101 @@
-﻿**Navigation**: [< Previous](21_Intervals_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Knapsack_Family.md)
+# 🧩 Cyclic Sort — Pattern Guide
+
+> **Navigation**: [← Intervals](21_Intervals_Pattern.md) | [Chapter index](00_INDEX.md) | [Knapsack Family →](23_Knapsack_Family.md)
 
 **Pattern 22** | [Prev](21_Intervals_Pattern.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
 
-### Historical Evolution
+## 🔗 Bridge — Where This Chapter Fits
 
-**Inventor / Originator:** Cyclic sort is used since the 1960s. Abdi Edalat (1997) formalized the cycle decomposition. Related to Floyd's cycle detection (1967). Hadian (1969) studied sorting under permutation.
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Arrays](../02_Data_Structures/01b_Arrays.md), [Two Pointers](07_Two_Pointers_Complete.md) |
+| **You will learn** | Placing each value at index `value − 1`, then reading missing/duplicate numbers from the leftovers |
+| **Leads to** | [Linked List + Two Pointers](12_LinkedList_Plus_TwoPointers.md) (Floyd), [HashMap + Counting](10_HashMap_Plus_Counting.md) |
+| **Abstraction level** | Sort or hash for membership → **use the array itself as the hash table** → `O(1)` extra space |
 
-**Predecessor context:** Sorting required comparison-based algorithms (O(n log n)). When values are in a known range, cyclic sort's O(n) time and O(1) space was known but not widely taught.
-
-**Evolution narrative:** Cyclic sort leverages the fact that if elements are in range [1, n] (or can be mapped), each element belongs to exactly one position. By swapping until the position is correct, we achieve O(n) with O(1) space.
-
-**Modern practice:** Cyclic sort is ideal for "find missing number" and "find duplicate" problems where values are in range [1, n]. It's commonly asked in interviews.
-
-- **Floyd cycle detection — 1967**: Foundational insight that cycles can be detected with two pointers
-- **Hadian 1969**: "Sorting under permutation" — theoretical study of cycle-based sorting
-- **Cycle decomposition — 1997**: Formal analysis of permutation cycles in sorting
-- **Modern practice**: LeetCode "find duplicate" and "find missing number" problems
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
 
 ---
 
-### Production Reality
+## 💬 Explain It Like a Study Partner — Cyclic Sort
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+### 1. The bottom line
 
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+When values are in `1..n`, each value has exactly one home index — swap until everything is home, then the misplaced ones tell the story.
 
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+### 2. The textbook core
+
+- Loop: while `nums[i]` is in range and not at its home, swap it home.
+- Duplicates: if the home already holds the same value, stop (avoids infinite loops).
+- After one pass, index `i` where `nums[i] != i + 1` marks a missing value.
+- Time `O(n)` (each swap places one value), space `O(1)`.
+
+### 3. The real-world analogy
+
+A **coat check**: each coat goes to the hook with its number; at the end, empty hooks are the missing coats.
+
+### 4. Walkthrough
+
+1. `[3,1,5,4]` → find the first missing positive (n = 4).
+2. Swap 3 home → `[5,1,3,4]`; 5 is out of range, so move on; swap 1 home → `[1,5,3,4]`.
+3. 3 and 4 are already home.
+4. Scan: index 1 holds 5 ≠ 2 → the first missing positive is 2.
+
+> [!NOTE]
+> **Quick check:** Why does the duplicate check prevent an infinite loop? *Swapping two equal values changes nothing.*
+
+
+### 5. Check yourself
+
+**Q1.** `[3,1,5,4]`: what is the first missing positive?
+
+<details><summary>Answer</summary>
+
+**2**. After placing values at their homes the array is `[1,5,3,4]`; index 1 holds 5 instead of 2.
+
+</details>
+
+**Q2.** Find the duplicates in `[4,3,2,7,8,2,3,1]`.
+
+<details><summary>Answer</summary>
+
+**2 and 3**: after cycling values home, positions 1 and 2 hold the wrong values 2 and 3.
+
+</details>
+
+**Q3.** The loop has a `while` inside a `for`. Why is it `O(n)`?
+
+<details><summary>Answer</summary>
+
+Each swap places at least one value permanently at its home index, so there are at most `n` swaps in total.
+
+</details>
+
+---
+
+## Historical Evolution
+
+**Inventor / Originator:** In-place permutation by following cycles is classical (Knuth, TAOCP Vol. 3 and Vol. 1 on permutations). B. K. Haddon named and analysed **cycle sort** in 1990 (*Cycle-sort: a linear sorting method*, The Computer Journal), a write-minimising sort. The interview pattern "place each value at index value−1" is folklore built on the same idea.
+
+**Predecessor context:** Sorting needed `O(n log n)` comparisons, even when the values were known to be a permutation of `1..n`.
+
+**Evolution narrative:** When each value has exactly one correct slot, repeatedly swapping an element to its home position sorts in `O(n)` time and `O(1)` space; leftovers reveal missing or duplicate values.
+
+**Modern practice:** First-missing-positive, find-all-duplicates and set-mismatch problems; cycle sort itself is used when writes to memory are expensive.
+
+- **Knuth — 1968–1973**: Permutation cycles in TAOCP
+- **Haddon — 1990**: Cycle sort, minimising writes
+- **Floyd — 1960s**: Cycle detection for duplicates when mutation is forbidden
+
+---
+
+## Production Reality
+
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -45,7 +109,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 ---
 
-# 📚 CYCLIC SORT — THE MISSING PATTERN
+## 📚 CYCLIC SORT — THE MISSING PATTERN
 
 ### ⚠️ Constraint Lens
 
@@ -59,114 +123,83 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                  CYCLIC SORT PATTERN                            │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  WHEN YOU SEE: "Find the missing/duplicate number in range      │
-│  [1..n] using O(1) extra space"  →  CYCLIC SORT.                │
-│                                                                 │
-│  CORE IDEA: Numbers in range [1..n] or [0..n] should each       │
-│  sit at their "correct" index. Place each number at its home    │
-│  index, then scan for mismatches.                               │
-│                                                                 │
-│  TEMPLATE:                                                      │
-│    1. While nums[i] isn't at correct position → SWAP to home    │
-│    2. Scan array: where nums[i] ≠ expected → that's answer      │
-│                                                                 │
-│  TIME: O(n)  |  SPACE: O(1)  ← the magic of this pattern        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**CYCLIC SORT PATTERN**
+
+```text
+WHEN YOU SEE: "Find the missing/duplicate number in range
+[1..n] using O(1) extra space"  →  CYCLIC SORT.
+
+CORE IDEA: Numbers in range [1..n] or [0..n] should each
+sit at their "correct" index. Place each number at its home
+index, then scan for mismatches.
+
+TEMPLATE:
+  1. While nums[i] isn't at correct position → SWAP to home
+  2. Scan array: where nums[i] ≠ expected → that's answer
+
+TIME: O(n)  |  SPACE: O(1)  ← the magic of this pattern
 ```
 
 ---
 
-## PART 0: THE MENTAL MODEL — "Everyone Go Home"
+### PART 0: THE MENTAL MODEL — "Everyone Go Home"
 
+### Cyclic sort: complete theory and pattern
+
+**The real-world origin** (illustrative)
+
+- 📖 **Roll call:** a teacher with 30 students numbered 1 to 30 asks each to stand at their numbered desk. Afterwards, an empty desk is an absent student and two students at one desk is a duplicate. This *is* cyclic sort.
+- 📖 **Library shelving:** books numbered 1 to 1000 go to their shelf position. Rather than sorting them, place each at its designated slot. Missing books are gaps; two copies are duplicates.
+- 📖 **Packet reassembly:** TCP segments are numbered. Place each at its sequence-number slot; missing slots are lost packets.
+
+**Why cyclic sort instead of a hash set?**
+
+| Approach | Time | Space | Note |
+| --- | --- | --- | --- |
+| Hash set | O(n) | O(n) | Easy but uses extra memory |
+| Sorting | O(n log n) | O(1) | Does not use the range constraint |
+| **Cyclic sort** | **O(n)** | **O(1)** | Optimal when the numbers lie in `[1..n]` |
+
+**Recognise it** whenever you see:
+
+- "Given an array of n numbers from the range [1..n]" (or [0..n]).
+- "Find the missing / duplicate / corrupt number".
+- "O(1) extra space".
+
+**Why O(n)?** Each swap puts one element in its final position, so the total number of swaps is at most `n`, even though there is a `while` inside a `for`.
+
+**The base template.** For numbers in `[1..n]` the correct index is `nums[i] - 1`; for numbers in `[0..n]` it is `nums[i]`.
+
+*Step 1: place each number at its correct index.*
+
+```java
+for (int i = 0; i < n; i++) {
+    while (nums[i] != nums[correctIdx])   // swap until correct
+        swap(nums, i, correctIdx);
+}
 ```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│            CYCLIC SORT — COMPLETE THEORY & PATTERN                           │
-└──────────────────────────────────────────────────────────────────────────────┘
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE REAL-WORLD ORIGIN                                                        │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 📖 ROLL CALL: Imagine a teacher with 30 students numbered 1-30.               │
-│    She asks each to stand at their numbered desk. After everyone             │
-│    moves, empty desks = absent students, two at one desk = duplicate.        │
-│    This IS cyclic sort.                                                      │
-│                                                                              │
-│ 📖 LIBRARY SHELVING: Books numbered 1-1000 need to go to their                │
-│    shelf position. Rather than sort them, place each at its                  │
-│    designated slot. Missing books = gaps. Two copies = duplicates.           │
-│                                                                              │
-│ 📖 NETWORK PACKET REASSEMBLY: TCP packets numbered sequentially.              │
-│    Place each at its sequence number slot. Missing slots = lost packets.     │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+*Step 2: scan for mismatches.*
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY CYCLIC SORT INSTEAD OF HASH SET?                                         │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  HASH SET: O(n) time, O(n) space  ← easy but uses extra memory               │
-│  SORTING:  O(n log n) time, O(1) space  ← doesn't leverage range constraint  │
-│  CYCLIC:   O(n) time, O(1) space  ← optimal when numbers ∈ [1..n]            │
-│                                                                              │
-│  RECOGNIZE IT: Anytime you see:                                              │
-│    • "Given array of n numbers from range [1..n]" (or [0..n])                │
-│    • "Find missing / duplicate / correction"                                 │
-│    • "O(1) extra space"                                                      │
-│    → Cyclic Sort.                                                            │
-│                                                                              │
-│  WHY O(n)? Each element swaps at most once to its correct position.          │
-│  Even though there's a while loop inside a for loop, total swaps ≤ n.        │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE BASE TEMPLATE                                                            │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  For numbers in range [1..n], correct index = nums[i] - 1                    │
-│  For numbers in range [0..n], correct index = nums[i]                        │
-│                                                                              │
-│  STEP 1: Place each number at correct index                                  │
-│  ┌─────────────────────────────────────────┐                                 │
-│  │ for (int i = 0; i < n; i++) {           │                                 │
-│  │     while (nums[i] != nums[correctIdx]) │  ← swap until correct           │
-│  │         swap(nums, i, correctIdx);      │                                 │
-│  │ }                                       │                                 │
-│  └─────────────────────────────────────────┘                                 │
-│                                                                              │
-│  STEP 2: Scan for mismatches                                                 │
-│  ┌─────────────────────────────────────────┐                                 │
-│  │ for (int i = 0; i < n; i++) {           │                                 │
-│  │     if (nums[i] != i + 1)               │  ← this position is wrong       │
-│  │         // i+1 is missing/duplicate     │                                 │
-│  │ }                                       │                                 │
-│  └─────────────────────────────────────────┘                                 │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ COMMON MISTAKES                                                              │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. Off-by-one: [1..n] → index = val-1, but [0..n-1] → index = val            │
-│ 2. Infinite loop: must check nums[i] != nums[correctIdx], NOT nums[i] != i+1 │
-│    (if duplicate exists, swapping back and forth forever)                    │
-│ 3. Ignoring out-of-range values: if val < 1 or val > n, SKIP the swap        │
-│ 4. Trying to use this on ranges that aren't [0..n] or [1..n]                 │
-│ 5. Forgetting step 2: the sort itself doesn't produce the answer, the        │
-│    subsequent scan does                                                      │
-└──────────────────────────────────────────────────────────────────────────────┘
+```java
+for (int i = 0; i < n; i++) {
+    if (nums[i] != i + 1) {
+        // i + 1 is missing or duplicated
+    }
+}
 ```
+
+**Common mistakes**
+
+1. **Off-by-one:** for `[1..n]` the index is `val - 1`, but for `[0..n-1]` it is `val`.
+2. **Infinite loop:** compare `nums[i]` with `nums[correctIdx]`, not with `i + 1`. Otherwise a duplicate makes you swap back and forth forever.
+3. **Ignoring out-of-range values:** if `val < 1` or `val > n`, skip the swap.
+4. **Using it on ranges other than `[0..n]` or `[1..n]`.**
+5. **Forgetting step 2:** the placement alone does not produce the answer; the scan does.
 
 ---
 
-## PROBLEM 1: Find the Missing Number (LC 268)
+### PROBLEM 1: Find the Missing Number (LC 268)
 
 ```
 DIFFICULTY: Easy
@@ -223,7 +256,7 @@ NOTE: Gauss formula (n*(n+1)/2 - sum) also works for Easy version.
 
 ---
 
-## PROBLEM 2: Find All Numbers Disappeared in Array (LC 448)
+### PROBLEM 2: Find All Numbers Disappeared in Array (LC 448)
 
 ```
 DIFFICULTY: Easy
@@ -262,7 +295,7 @@ COMPLEXITY: Time O(n) | Space O(1) excluding output
 
 ---
 
-## PROBLEM 3: Find All Duplicates in Array (LC 442)
+### PROBLEM 3: Find All Duplicates in Array (LC 442)
 
 ```
 DIFFICULTY: Medium
@@ -303,7 +336,7 @@ KEY INSIGHT: After sort, duplicates end up at "wrong" positions.
 
 ---
 
-## PROBLEM 4: First Missing Positive (LC 41) — THE HARD ONE
+### PROBLEM 4: First Missing Positive (LC 41) — THE HARD ONE
 
 ```
 DIFFICULTY: Hard
@@ -358,7 +391,7 @@ is what makes it work with arbitrary input.
 
 ---
 
-## PROBLEM 5: Find the Duplicate Number (LC 287)
+### PROBLEM 5: Find the Duplicate Number (LC 287)
 
 ```
 DIFFICULTY: Medium
@@ -416,7 +449,7 @@ COMPLEXITY: Both O(n) | Floyd's uses O(1) space without modification
 
 ---
 
-## PROBLEM 6: Set Mismatch (LC 645)
+### PROBLEM 6: Set Mismatch (LC 645)
 
 ```
 DIFFICULTY: Easy
@@ -454,48 +487,33 @@ COMPLEXITY: Time O(n) | Space O(1)
 
 ---
 
-## 🔄 Summary: Cyclic Sort Decision Table
+### 🔄 Summary: Cyclic Sort Decision Table
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    CYCLIC SORT CHEATSHEET                               │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  TRIGGER: "n numbers in range [0..n] or [1..n]" + "O(1) space"          │
-│                                                                         │
-│  PROBLEM              │ RANGE   │ SCAN FOR           │ LC#              │
-│  ═════════════════════╪═════════╪════════════════════╪═════════════════ │
-│  Missing Number       │ [0..n]  │ nums[i] ≠ i      │ 268                │
-│  All Disappeared      │ [1..n]  │ nums[i] ≠ i+1    │ 448                │
-│  All Duplicates       │ [1..n]  │ nums[i] ≠ i+1    │ 442                │
-│  First Missing +ve    │ [1..n]  │ nums[i] ≠ i+1    │ 41                 │
-│  Find Duplicate       │ [1..n]  │ nums[i] ≠ i+1    │ 287                │
-│  Set Mismatch         │ [1..n]  │ nums[i] ≠ i+1    │ 645                │
-│                                                                         │
-│  TEMPLATE:                                                              │
-│  1. while (nums[i] out of range) skip                                   │
-│  2. while (nums[i] != nums[correctIdx]) swap                            │
-│  3. Scan: where nums[i] ≠ expected → answer                             │
-│                                                                         │
-│  THE SWAP GUARD: Always compare nums[i] with nums[correctIdx]           │
-│  NOT nums[i] with i+1. This prevents infinite loops on duplicates.      │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+**CYCLIC SORT CHEATSHEET**
+
+**Trigger:** "n numbers in range [0..n] or [1..n]" plus "O(1) space".
+
+| Problem | Range | Scan for | LC # |
+| --- | --- | --- | --- |
+| Missing Number | [0..n] | `nums[i] ≠ i` | 268 |
+| Find All Disappeared Numbers | [1..n] | `nums[i] ≠ i + 1` | 448 |
+| Find All Duplicates | [1..n] | `nums[i] ≠ i + 1` | 442 |
+| First Missing Positive | [1..n] | `nums[i] ≠ i + 1` | 41 |
+| Find the Duplicate Number | [1..n] | `nums[i] ≠ i + 1` (modifies the array; LC 287 forbids that, so Floyd's cycle detection is the usual answer) | 287 |
+| Set Mismatch | [1..n] | `nums[i] ≠ i + 1` | 645 |
+
+**Template**
+
+1. Skip values that are out of range.
+2. `while (nums[i] != nums[correctIdx])` swap.
+3. Scan: where `nums[i]` differs from the expected value, that position is the answer.
+
+> [!WARNING]
+> **The swap guard:** always compare `nums[i]` with `nums[correctIdx]`, not with `i + 1`. This prevents infinite loops on duplicates.
 
 ---
 
-🔬 **Section Challenge — 🔄 Summary: Cyclic Sort Decision Table**
-
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 CURATED PRACTICE PROBLEMS
+### 📋 CURATED PRACTICE PROBLEMS
 
 | #   | Problem                                                                                                 | LC#  | Difficulty | Key Twist             |
 | --- | ------------------------------------------------------------------------------------------------------- | ---- | ---------- | --------------------- |
@@ -508,6 +526,16 @@ COMPLEXITY: Time O(n) | Space O(1)
 | 7   | [Couples Holding Hands](https://leetcode.com/problems/couples-holding-hands/)                           | 765  | Hard       | Cyclic swap variant   |
 | 8   | [Kth Missing Positive](https://leetcode.com/problems/kth-missing-positive-number/)                      | 1539 | Easy       | Binary search variant |
 
+
+---
+
+## 🏢 Enterprise Lens — Cyclic Sort
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Data validation on dense ID ranges, integrity checks, in-place permutation |
+| **Failure modes** | Input out of range; mutating a read-only array; infinite loop on duplicates |
+| **Testing and verification** | Compare with a hash-set solution on random arrays with deliberate missing/duplicate values |
 
 ---
 

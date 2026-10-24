@@ -1,39 +1,104 @@
-﻿**Navigation**: [< Previous](15_Heap_Plus_GreedySelection.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Backtracking_Plus_Pruning.md)
+# 🧩 DP Pattern Recognition — Pattern Guide
 
-# DP Pattern Recognition — Combined Pattern Guide
+> **Navigation**: [← Heap + Greedy Selection](15_Heap_Plus_GreedySelection.md) | [Chapter index](00_INDEX.md) | [Backtracking + Pruning →](17_Backtracking_Plus_Pruning.md)
+
+## DP Pattern Recognition — Combined Pattern Guide
 
 **WHY this matters?** DP problems look overwhelming because there are hundreds of them. But they ALL fall into ~8 pattern families. Recognize the family → apply the template → solve.
 
 ### ⚠️ Constraint Lens
 
-### Historical Evolution
+## 🔗 Bridge — Where This Chapter Fits
 
-**Inventor / Originator:** Richard Bellman (1957) coined "Dynamic Programming" at RAND. Andrew Viterbi (1967) applied DP to hidden Markov models. Needleman and Wunsch (1970) applied it to bioinformatics.
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Recursion](../03_Algorithms/03b_Recursion_Fundamentals.md), [DP Fundamentals](../03_Algorithms/04b_DP_Fundamentals.md) |
+| **You will learn** | A decision tree for spotting DP, eight pattern families, and worked examples (House Robber, LCS, 0/1 knapsack) |
+| **Leads to** | [Knapsack Family](23_Knapsack_Family.md), [Kadane](24_Kadanes_Subarray_Patterns.md) |
+| **Abstraction level** | Overlapping brute-force recursion → **state + transition** → memoised or tabulated DP |
 
-**Predecessor context:** Before DP, optimization problems required exhaustive search or calculus-based methods. The overlapping subproblems property was not recognized as a general structure.
-
-**Evolution narrative:** Bellman's principle of optimality formalized that optimal solutions have optimal substructures. This insight enabled tractable solutions to scheduling, sequence alignment, and control problems that previously seemed intractable.
-
-**Modern practice:** DP is ubiquitous — Viterbi algorithm in speech recognition, Needleman-Wunsch in DNA alignment, Bellman-Ford for routing, and countless LeetCode problems.
-
-- **Bellman 1957**: Coined "Dynamic Programming" at RAND; Bellman optimality principle
-- **Viterbi algorithm — 1967**: DP for hidden Markov models; used in speech recognition and LTE
-- **Needleman-Wunsch — 1970**: DP for global sequence alignment in bioinformatics
-- **Modern practice**: GPS routing, NLP (Viterbi/HMM), bioinformatics, resource scheduling
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
 
 ---
 
-### Production Reality
+## 💬 Explain It Like a Study Partner — DP Pattern Recognition
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+### 1. The bottom line
 
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+If the brute force repeats the same sub-question, name the sub-question (state), store its answer, and combine answers with a recurrence.
 
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+### 2. The textbook core
+
+- Ask: choices at each step? repeated subproblems? optimal substructure?
+- Define `dp[state]` in one sentence; write the recurrence; fix the base cases and fill order.
+- Families: linear, two-sequence, grid, interval, knapsack, bitmask, tree, digit.
+- Space can often be reduced by keeping only the previous row.
+
+### 3. The real-world analogy
+
+A **spreadsheet**: each cell is computed once from cells you already filled.
+
+### 4. Walkthrough
+
+1. House Robber `[2,7,9,3,1]`.
+2. `dp[i] = max(dp[i-1], dp[i-2] + a[i])`.
+3. dp = `[2, 7, 11, 11, 12]`.
+4. Answer 12.
+
+> [!NOTE]
+> **Quick check:** What is the single most important sentence in a DP solution? *The definition of the state.*
+
+
+### 5. Check yourself
+
+**Q1.** House Robber on `[2,7,9,3,1]`?
+
+<details><summary>Answer</summary>
+
+**12** (rob 2, 9, 1). `dp = [2, 7, 11, 11, 12]`.
+
+</details>
+
+**Q2.** What is the single most important sentence in a DP solution?
+
+<details><summary>Answer</summary>
+
+The definition of the state, e.g. `dp[i][j]` = length of the LCS of the first `i` and `j` characters.
+
+</details>
+
+**Q3.** Memoised Fibonacci: time and space?
+
+<details><summary>Answer</summary>
+
+`O(n)` time and `O(n)` space (or `O(1)` space with two variables).
+
+</details>
+
+---
+
+## Historical Evolution
+
+**Inventor / Originator:** Richard Bellman developed dynamic programming at RAND in the early 1950s (his book *Dynamic Programming* appeared in 1957). Later landmark applications: Viterbi (1967, decoding convolutional codes, later central to hidden Markov models) and Needleman–Wunsch (1970, sequence alignment).
+
+**Predecessor context:** Optimisation problems were solved by exhaustive search or calculus.
+
+**Evolution narrative:** Bellman's *principle of optimality* showed that optimal solutions can be assembled from optimal sub-solutions. Edit distance (Levenshtein 1965, Wagner–Fischer 1974), knapsack and shortest-path recurrences are all instances.
+
+**Modern practice:** Used in speech recognition (Viterbi), bioinformatics (alignment), routing (Bellman–Ford) and resource planning.
+
+- **Bellman — 1950s**: Dynamic programming and the principle of optimality
+- **Viterbi — 1967**: Optimal decoding of convolutional codes
+- **Needleman & Wunsch — 1970**: Global sequence alignment
+- **Wagner & Fischer — 1974**: Edit-distance DP
+
+---
+
+## Production Reality
+
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -62,7 +127,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — What Makes a Problem DP?
+## 🧠 Deep Intuition — What Makes a Problem DP?
 
 Two conditions must BOTH be present for DP to be applicable:
 
@@ -72,7 +137,7 @@ Two conditions must BOTH be present for DP to be applicable:
 
 If a problem has optimal substructure but NO overlapping subproblems, use **greedy** or **divide-and-conquer** instead (e.g., merge sort has optimal substructure but each subarray is only solved once).
 
-#### The DP Thinking Framework — 4 Steps
+### The DP Thinking Framework — 4 Steps
 
 Every DP solution follows the same mental process:
 
@@ -81,7 +146,7 @@ Every DP solution follows the same mental process:
 3. **Identify base cases**: What are the trivially known values? `dp[0]`, `dp[1]`, or empty string/array cases.
 4. **Determine build order**: Fill dp table so that dependencies are computed first. This is why bottom-up fills left-to-right (linear DP) or row-by-row (grid DP).
 
-#### Top-Down vs Bottom-Up — When to Use Which
+### Top-Down vs Bottom-Up — When to Use Which
 
 - **Top-down (memoization)**: Write the natural recursive solution, add a cache. Easier to think about, only computes needed states. Use when the state space is large but sparsely visited.
 - **Bottom-up (tabulation)**: Fill the table iteratively. Slightly faster (no recursion overhead), easier to optimize space (rolling array). Use when all states are needed.
@@ -92,24 +157,24 @@ Both have the same time complexity. Top-down is better for **thinking**; bottom-
 
 ## 🧠 THE DP DECISION TREE
 
-```
-Does the problem have:
-├── Optimal substructure? (optimal solution uses optimal sub-solutions)
-├── Overlapping subproblems? (same sub-problem solved multiple times)
-└── YES to both → USE DP
+**Does the problem have:**
 
-Which family?
-├── "How many ways?" → COUNTING DP
-├── "Minimum/Maximum cost?" → OPTIMIZATION DP
-├── "Can we achieve X?" → FEASIBILITY DP
-├── Involves two sequences → LCS / EDIT DISTANCE family
-├── Involves one sequence → LIS / KADANE family
-├── Items with weights/values → KNAPSACK family
-├── Interval operations → INTERVAL DP
-├── Grid traversal → GRID DP
-├── Choices at each step → DECISION DP
-└── String palindrome → PALINDROME DP
-```
+- Optimal substructure? (optimal solution uses optimal sub-solutions)
+- Overlapping subproblems? (same sub-problem solved multiple times)
+- YES to both → USE DP
+
+**Which family?**
+
+- "How many ways?" → COUNTING DP
+- "Minimum/Maximum cost?" → OPTIMIZATION DP
+- "Can we achieve X?" → FEASIBILITY DP
+- Involves two sequences → LCS / EDIT DISTANCE family
+- Involves one sequence → LIS / KADANE family
+- Items with weights/values → KNAPSACK family
+- Interval operations → INTERVAL DP
+- Grid traversal → GRID DP
+- Choices at each step → DECISION DP
+- String palindrome → PALINDROME DP
 
 ---
 
@@ -204,7 +269,7 @@ for each unvisited j:
 
 ---
 
-## � FULL WALKTHROUGH: House Robber (Linear DP Decision)
+## 🔬 FULL WALKTHROUGH: House Robber (Linear DP Decision)
 
 ```
 Problem: Rob houses for max money. Can't rob adjacent houses.
@@ -265,16 +330,6 @@ Time: O(m×n) | Space: O(m×n), optimizable to O(min(m,n))
 ```
 
 ---
-
-🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Longest Common Subsequence (Two-Sequence DP)**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
 
 ## 🔬 FULL WALKTHROUGH 3: 0/1 Knapsack (The Classic)
 
@@ -348,17 +403,10 @@ COMMON MISTAKES:
 
 ---
 
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+## 📋 Practice Problems
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 ### Easy
 
@@ -476,6 +524,16 @@ COMMON MISTAKES:
 
 [← 15 Heap+Greedy](15_Heap_Plus_GreedySelection.md) | [17 Backtracking+Pruning →](17_Backtracking_Plus_Pruning.md)
 
+
+---
+
+## 🏢 Enterprise Lens — DP Pattern Recognition
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Resource allocation, text diffing, route planning, speech and sequence decoding |
+| **Failure modes** | Vague state definition; wrong iteration order; forgetting base cases |
+| **Testing and verification** | Always compare to the brute-force recursion on small inputs |
 
 ---
 

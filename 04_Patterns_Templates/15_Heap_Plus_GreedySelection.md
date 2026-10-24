@@ -1,39 +1,104 @@
-﻿**Navigation**: [< Previous](14_Graph_Plus_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_DP_Pattern_Recognition.md)
+# 🧩 Heap + Greedy Selection — Pattern Guide
 
-# Heap + Greedy Selection — Combined Pattern Guide
+> **Navigation**: [← Graph + Traversal](14_Graph_Plus_Traversal.md) | [Chapter index](00_INDEX.md) | [DP Pattern Recognition →](16_DP_Pattern_Recognition.md)
+
+## Heap + Greedy Selection — Combined Pattern Guide
 
 **WHY this combination?** Heaps give O(log n) access to the min/max element. Combined with greedy strategy (always pick the best available), they solve "Top K", "merge K sorted", and scheduling problems efficiently.
 
 ### ⚠️ Constraint Lens
 
-### Historical Evolution
+## 🔗 Bridge — Where This Chapter Fits
 
-**Inventor / Originator:** Binary heap invented by J.W.J. Williams (1964). Heapify by Floyd (1964). Huffman coding (1952), Kruskal (1956), Prim (1957), and Dijkstra (1959) built greedy selection on heaps.
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Heaps](../02_Data_Structures/01f_Trees_Heaps.md), [Greedy](../03_Algorithms/12_Greedy_Algorithms_Complete.md) |
+| **You will learn** | Top-K with a bounded heap, merge K sorted lists, scheduling, median from a stream with two heaps |
+| **Leads to** | [Two Heaps & Top-K](31_Top_K_And_Two_Heaps_Pattern.md), [Intervals](21_Intervals_Pattern.md) |
+| **Abstraction level** | Repeated min/max scans → **a priority queue** → always take the best available |
 
-**Predecessor context:** Priority queues before heaps used sorted arrays or linked lists — O(n) insertion or removal. Greedy algorithms like Prim's required such data structures.
-
-**Evolution narrative:** Williams' binary heap provided O(log n) insertion and deletion. Floyd's in-place heapify enabled O(n) heap construction. These structures enabled efficient implementations of Dijkstra, Prim, Huffman, and other greedy algorithms.
-
-**Modern practice:** Priority queues in every language use heap implementations (Java PriorityQueue, C++ priority_queue, Python heapq). Dijkstra's algorithm with a binary heap is the standard for shortest path.
-
-- **Huffman coding — Huffman 1952**: Greedy optimal prefix code construction using a min-heap
-- **Williams binary heap — 1964**: O(log n) insert/delete for priority queues
-- **Floyd heapify — 1964**: O(n) in-place heap construction
-- **Modern practice**: Dijkstra with binary heap for shortest path; Huffman in compression (JPEG, MP3)
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
 
 ---
 
-### Production Reality
+## 💬 Explain It Like a Study Partner — Heap + Greedy Selection
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+### 1. The bottom line
 
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+When the next best choice is always "the smallest/largest remaining", a heap gives it in `O(log n)`.
 
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+### 2. The textbook core
+
+- Top-K largest: keep a **min-heap of size K**; the root is the K-th largest.
+- Merge K sorted lists: heap of heads.
+- Greedy scheduling: heap of available tasks by priority/deadline.
+- Median stream: max-heap for the lower half, min-heap for the upper half.
+
+### 3. The real-world analogy
+
+An **emergency-room triage desk**: whoever is most urgent is served next, no matter when they arrived.
+
+### 4. Walkthrough
+
+1. Find the 2nd largest in `[3,2,1,5,6,4]` with a min-heap of size 2.
+2. Push 3 and 2 → heap `{2,3}`; see 1: smaller than the root 2, skip.
+3. See 5: bigger than the root → pop 2, push 5 → `{3,5}`; see 6 → pop 3, push 6 → `{5,6}`; see 4: smaller than the root 5, skip.
+4. The root, 5, is the 2nd largest.
+
+> [!NOTE]
+> **Quick check:** Why a min-heap for the K largest? *Its root is the weakest of the K kept, the one to evict.*
+
+
+### 5. Check yourself
+
+**Q1.** Which heap do you use to keep the K largest elements?
+
+<details><summary>Answer</summary>
+
+A min-heap of size K; its root is the smallest of the K and the one to evict.
+
+</details>
+
+**Q2.** Merge 3 sorted lists with `n` elements in total. What is the cost with a heap?
+
+<details><summary>Answer</summary>
+
+`O(n log 3) = O(n log k)` for `k` lists.
+
+</details>
+
+**Q3.** Running median of `5, 15, 1, 3`?
+
+<details><summary>Answer</summary>
+
+After each insert: 5, 10, 5, **4**.
+
+</details>
+
+---
+
+## Historical Evolution
+
+**Inventor / Originator:** J. W. J. Williams published the binary heap with heapsort in 1964 (ACM Algorithm 232); Robert Floyd's *Treesort 3* (ACM Algorithm 245, 1964) added the linear-time bottom-up heap construction. The greedy algorithms that use heaps are older: Huffman coding (1952), Kruskal (1956), Prim (1957, after Jarník 1930) and Dijkstra (1959).
+
+**Predecessor context:** Priority queues were sorted lists or arrays with `O(n)` insertion or removal.
+
+**Evolution narrative:** Heaps give `O(log n)` insert and extract-min, making greedy "pick the best available" loops efficient. Fredman and Tarjan's Fibonacci heaps (1984) improved Dijkstra's bound to `O(E + V log V)`.
+
+**Modern practice:** `PriorityQueue` (Java), `heapq` (Python) and `priority_queue` (C++) are binary heaps; they power schedulers, Top-K selection, k-way merges and Dijkstra.
+
+- **Huffman — 1952**: Optimal prefix codes with a greedy merge of the two lightest trees
+- **Williams — 1964**: Binary heap and heapsort
+- **Floyd — 1964**: Linear-time heap construction
+- **Fredman & Tarjan — 1984**: Fibonacci heaps
+
+---
+
+## Production Reality
+
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -60,13 +125,13 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Heaps and Greedy Correctness
+## 🧠 Deep Intuition — Heaps and Greedy Correctness
 
-#### Why Heaps Give O(log n) Insert/Extract
+### Why Heaps Give O(log n) Insert/Extract
 
 A heap is a **complete binary tree** stored in an array. "Complete" means every level is fully filled except possibly the last, which is filled left-to-right. The heap property (min-heap: parent ≤ children; max-heap: parent ≥ children) means the root always holds the extreme value. Insert and extract require "bubbling" up or down through the tree height, which is O(log n) since a complete binary tree has height ⌊log₂ n⌋.
 
-#### Why Min-Heap for K-Largest (The Counterintuitive Trick)
+### Why Min-Heap for K-Largest (The Counterintuitive Trick)
 
 This confuses everyone at first. To find the K largest elements, you maintain a **min-heap of size K**. Why? Because the min-heap's top is the smallest of the K elements you've kept. When a new element arrives:
 
@@ -75,7 +140,7 @@ This confuses everyone at first. To find the K largest elements, you maintain a 
 
 At the end, the heap contains exactly the K largest elements, and `heap.peek()` is the Kth largest. The alternative (max-heap of everything) uses O(n) space and O(n log n) time to build, while this approach uses only O(k) space and O(n log k) time.
 
-#### When Is Greedy Correct?
+### When Is Greedy Correct?
 
 Greedy algorithms make the locally optimal choice at each step, hoping to reach the globally optimal solution. They're correct when two conditions hold:
 
@@ -169,7 +234,7 @@ double findMedian() {
 
 ---
 
-## � FULL WALKTHROUGH: Kth Largest Element in an Array
+## 🔬 FULL WALKTHROUGH: Kth Largest Element in an Array
 
 ```
 Problem: Find the kth largest element. nums = [3,2,1,5,6,4], k = 2
@@ -260,17 +325,18 @@ Not until `collect()` (or any terminal operation). `filter()` and `map()` are LA
 
 ```
 EDGE CASES:
-┌──────────────────────────────┬─────────────────────────────────────────┐
-│ Edge Case                    │ Handling                                │
-├──────────────────────────────┼─────────────────────────────────────────┤
-│ k = 1                        │ Heap of size 1 = max element            │
-│ k = n                        │ Heap of size n → just min of all        │
-│ All same values [3,3,3,3]    │ Works correctly, peek always = 3        │
-│ Negative numbers             │ PQ handles naturally                    │
-│ Single element stream        │ Median = that element                   │
-│ k > n (invalid)              │ Handle before processing                │
-└──────────────────────────────┴─────────────────────────────────────────┘
+```
 
+| Edge Case | Handling |
+| --- | --- |
+| k = 1 | Heap of size 1 = max element |
+| k = n | Heap of size n → just min of all |
+| All same values [3,3,3,3] | Works correctly, peek always = 3 |
+| Negative numbers | PQ handles naturally |
+| Single element stream | Median = that element |
+| k > n (invalid) | Handle before processing |
+
+```
 COMMON MISTAKES:
 1. Min-heap vs Max-heap confusion for Kth Largest
    Kth LARGEST uses Min-heap (evict smallest). Kth SMALLEST uses Max-heap.
@@ -297,17 +363,10 @@ COMMON MISTAKES:
 
 ---
 
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+## 📋 Practice Problems
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 | #   | Problem                                                                                                                 | Key Insight                                    |
 | --- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
@@ -331,7 +390,7 @@ COMMON MISTAKES:
 | 13  | [Swim in Rising Water](https://leetcode.com/problems/swim-in-rising-water/)                     | Min-heap BFS (Dijkstra on grid)      |
 | 14  | [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/)                 | Monotonic deque (heap is O(n log n)) |
 
-### Additional — Greedy Problems from Excel
+### Additional — Greedy Problems
 
 | #   | Problem                                                                                                                         | Key Insight                       |
 | --- | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
@@ -400,6 +459,16 @@ COMMON MISTAKES:
 
 [← 14 Graph+Traversal](14_Graph_Plus_Traversal.md) | [16 DP Patterns →](16_DP_Pattern_Recognition.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Heap + Greedy Selection
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Schedulers, top-N dashboards, event simulation, k-way merge in databases |
+| **Failure modes** | Using a max-heap of size n (wasted memory); comparator inconsistencies; stale entries after priority changes |
+| **Testing and verification** | Compare with full sort; test K = 1, K = n, duplicates and empty input |
 
 ---
 

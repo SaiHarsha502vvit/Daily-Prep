@@ -19,6 +19,7 @@
 - **TestContainers — 2016**: AtomicJar. Real Docker containers for integration tests. Postgres, Redis, Kafka.
 - **Spring Boot `@MockBean` — 1.4 (2016)**: Spring context mock injection. `@MockBean UserService userService`.
 - **JUnit 5 (Jupiter) — 2017**: Marc Philipp. Modular: Platform + Jupiter + Vintage. `@Nested`, `@ParameterizedTest`.
+
 # Spring Boot Part 19: Testing Complete Guide
 
 ## Unit, Integration, Mockito, and Test-Driven Development
@@ -39,44 +40,42 @@
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
+**WHY: Why Testing is Non-Negotiable?**
+
+```text
+• Bug in production costs 100x more to fix than in development
+• Tests = documentation that never gets outdated
+• Refactoring confidence: change code without fear of breaking things
+• CI/CD requirement: automated deployment needs automated testing
+• Interview essential: All senior interviews include testing questions
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Why Testing is Non-Negotiable?                                            │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Bug in production costs 100x more to fix than in development                 │
-│  • Tests = documentation that never gets outdated                               │
-│  • Refactoring confidence: change code without fear of breaking things          │
-│  • CI/CD requirement: automated deployment needs automated testing              │
-│  • Interview essential: All senior interviews include testing questions         │
-└─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How to Test in Spring Boot?                                               │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • JUnit 5: Test framework (@Test, @BeforeEach, assertions)                     │
-│  • Mockito: Mock dependencies (@Mock, @InjectMocks, when/thenReturn)            │
-│  • @SpringBootTest: Full integration test with entire context                   │
-│  • @WebMvcTest: Test only controllers with MockMvc                              │
-│  • @DataJpaTest: Test only repositories with in-memory DB                       │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**HOW: How to Test in Spring Boot?**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN: When to Use Each Test Type?                                              │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Unit tests: Business logic in services (70% of tests)                        │
-│  • Integration tests: Database operations, API contracts (20%)                  │
-│  • E2E tests: Critical user flows only (10%)                                    │
-│  • TestContainers: When in-memory DB isn't realistic enough                     │
-│  • TDD: When requirements are clear, write tests first                          │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+• JUnit 5: Test framework (@Test, @BeforeEach, assertions)
+• Mockito: Mock dependencies (@Mock, @InjectMocks, when/thenReturn)
+• @SpringBootTest: Full integration test with entire context
+• @WebMvcTest: Test only controllers with MockMvc
+• @DataJpaTest: Test only repositories with in-memory DB
+```
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHICH: Which Testing Tools to Master?                                          │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     JUnit 5, Mockito, @SpringBootTest, MockMvc                      │
-│  IMPORTANT:     TestContainers, @DataJpaTest, @WebMvcTest                       │
-│  ADVANCED:      JMeter, Gatling, ArchUnit, Contract Testing                     │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHEN: When to Use Each Test Type?**
+
+```text
+• Unit tests: Business logic in services (70% of tests)
+• Integration tests: Database operations, API contracts (20%)
+• E2E tests: Critical user flows only (10%)
+• TestContainers: When in-memory DB isn't realistic enough
+• TDD: When requirements are clear, write tests first
+```
+
+**WHICH: Which Testing Tools to Master?**
+
+```text
+ESSENTIAL:     JUnit 5, Mockito, @SpringBootTest, MockMvc
+IMPORTANT:     TestContainers, @DataJpaTest, @WebMvcTest
+ADVANCED:      JMeter, Gatling, ArchUnit, Contract Testing
 ```
 
 ---
@@ -105,26 +104,24 @@
 
 ### Why Test?
 
-```
+```text
 🎯 Testing Benefits:
-┌─────────────────────────────────────────────────────────────┐
-│  ✅ Catch bugs early (cheaper to fix)                        │
-│  ✅ Documentation through code                               │
-│  ✅ Refactoring confidence                                   │
-│  ✅ Design improvement (testable = good design)              │
-│  ✅ Regression prevention                                    │
-│  ✅ Continuous Integration enablement                        │
-└─────────────────────────────────────────────────────────────┘
+ ✅ Catch bugs early (cheaper to fix)
+ ✅ Documentation through code
+ ✅ Refactoring confidence
+ ✅ Design improvement (testable = good design)
+ ✅ Regression prevention
+ ✅ Continuous Integration enablement
+```
 
 ### Cost of Bugs by Stage
 
-Stage          │ Cost Multiplier │ Example
-───────────────┼─────────────────┼─────────────────────
-Development    │ 1x              │ $100 to fix
-Testing        │ 10x             │ $1,000 to fix
-Production     │ 100x            │ $10,000 to fix
-Post-Release   │ 1000x           │ $100,000+ to fix
-```
+| Stage | Cost Multiplier | Example |
+| --- | --- | --- |
+| Development | 1x | $100 to fix |
+| Testing | 10x | $1,000 to fix |
+| Production | 100x | $10,000 to fix |
+| Post-Release | 1000x | $100,000+ to fix |
 
 ---
 
@@ -144,21 +141,23 @@ Post-Release   │ 1000x           │ $100,000+ to fix
 
 ## Testing Pyramid
 
+```text
+          ╱╲
+         ╱  ╲
+        ╱ E2E╲         ← Few, Slow, Expensive
+       ╱──────╲          (Selenium, Cypress)
+      ╱        ╲
+     ╱Integration╲     ← Some, Medium Speed
+    ╱────────────╲       (@SpringBootTest)
+   ╱              ╲
+  ╱   Unit Tests   ╲   ← Many, Fast, Cheap
+ ╱──────────────────╲    (JUnit, Mockito)
+╱                    ╲
 ```
-                    ╱╲
-                   ╱  ╲
-                  ╱ E2E╲         ← Few, Slow, Expensive
-                 ╱──────╲          (Selenium, Cypress)
-                ╱        ╲
-               ╱Integration╲     ← Some, Medium Speed
-              ╱────────────╲       (@SpringBootTest)
-             ╱              ╲
-            ╱   Unit Tests   ╲   ← Many, Fast, Cheap
-           ╱──────────────────╲    (JUnit, Mockito)
-          ╱                    ╲
-         ╱   Foundation Base    ╲
-        ──────────────────────────
 
+**╱   Foundation Base    ╲**
+
+```text
 Recommended Ratio: 70% Unit : 20% Integration : 10% E2E
 ```
 
@@ -787,19 +786,17 @@ class StaticMockTest {
 
 ### Annotation Overview
 
-```
+```text
 🎯 Spring Boot Test Annotations:
-┌────────────────────────────────────────────────────────────────────┐
-│ @SpringBootTest         │ Full application context (integration)   │
-│ @WebMvcTest             │ Only web layer (controllers)             │
-│ @DataJpaTest            │ Only JPA components (repositories)       │
-│ @WebFluxTest            │ Only WebFlux components                  │
-│ @JsonTest               │ Only JSON serialization                  │
-│ @RestClientTest         │ Only REST client components              │
-│ @MockBean               │ Add mock to Spring context               │
-│ @SpyBean                │ Add spy to Spring context                │
-│ @TestConfiguration      │ Test-specific configuration              │
-└────────────────────────────────────────────────────────────────────┘
+@SpringBootTest         │ Full application context (integration)
+@WebMvcTest             │ Only web layer (controllers)
+@DataJpaTest            │ Only JPA components (repositories)
+@WebFluxTest            │ Only WebFlux components
+@JsonTest               │ Only JSON serialization
+@RestClientTest         │ Only REST client components
+@MockBean               │ Add mock to Spring context
+@SpyBean                │ Add spy to Spring context
+@TestConfiguration      │ Test-specific configuration
 ```
 
 ### @SpringBootTest Deep Dive
@@ -1416,12 +1413,12 @@ Tests pass in isolation and fail in production for reasons that unit test exerci
 
 ## Reality Check
 
-**"@SpringBootTest is the standard way to test"** ? @SpringBootTest loads the ENTIRE application context � every bean, every auto-configuration. For testing a single controller, this starts the database, message broker connections, and scheduled tasks unnecessarily. Use test SLICES: @WebMvcTest for controllers only, @DataJpaTest for repositories only, @JsonTest for serialization only. Slice tests are 10-50x faster than full context tests.
+**"@SpringBootTest is the standard way to test"** — @SpringBootTest loads the ENTIRE application context — every bean, every auto-configuration. For testing a single controller, this starts the database, message broker connections, and scheduled tasks unnecessarily. Use test SLICES: @WebMvcTest for controllers only, @DataJpaTest for repositories only, @JsonTest for serialization only. Slice tests are 10-50x faster than full context tests.
 
-**"Mocking everything makes tests reliable"** ? Over-mocking creates tests that verify your mock setup, not your code. If you mock the repository to return a specific user, then test that the service returns that user, you have tested nothing � you verified that your mock works. Mock external dependencies (HTTP calls, message brokers) but use real implementations for your own code. Integration tests with @DataJpaTest catch query bugs that mocked tests miss.
+**"Mocking everything makes tests reliable"** — Over-mocking creates tests that verify your mock setup, not your code. If you mock the repository to return a specific user, then test that the service returns that user, you have tested nothing — you verified that your mock works. Mock external dependencies (HTTP calls, message brokers) but use real implementations for your own code. Integration tests with @DataJpaTest catch query bugs that mocked tests miss.
 
-**"Test coverage above 80 percent means well-tested"** ? Coverage measures lines executed, not behaviors verified. A test that calls a method without any assertions achieves coverage without testing anything. Mutation testing (changing operators, removing statements) reveals whether tests actually detect bugs. A codebase with 60 percent coverage and strong assertions is better tested than one with 95 percent coverage and weak assertions.
+**"Test coverage above 80 percent means well-tested"** — Coverage measures lines executed, not behaviors verified. A test that calls a method without any assertions achieves coverage without testing anything. Mutation testing (changing operators, removing statements) reveals whether tests actually detect bugs. A codebase with 60 percent coverage and strong assertions is better tested than one with 95 percent coverage and weak assertions.
 
-**"Tests should not depend on execution order"** ? Individual tests should be independent AND idempotent. But test CLASS ordering matters when sharing expensive resources: @DirtiesContext on one test class forces Spring to rebuild the context for the next class, adding 5-10 seconds. Organize tests so context-dirtying tests run last. Use @TestMethodOrder to enforce method ordering within a class when state management requires it.
+**"Tests should not depend on execution order"** — Individual tests should be independent AND idempotent. But test CLASS ordering matters when sharing expensive resources: @DirtiesContext on one test class forces Spring to rebuild the context for the next class, adding 5-10 seconds. Organize tests so context-dirtying tests run last. Use @TestMethodOrder to enforce method ordering within a class when state management requires it.
 
-**"TestContainers solve all integration testing problems"** ? TestContainers start real database and message broker instances in Docker, which is excellent for CI. But containers add 5-30 seconds startup time per test class. Without container reuse (testcontainers.reuse.enable=true and keeping containers between runs), a test suite with 50 test classes starts 50 database containers. Use @Container with static field for class-level reuse, or Singleton Container pattern for suite-level reuse.
+**"TestContainers solve all integration testing problems"** — TestContainers start real database and message broker instances in Docker, which is excellent for CI. But containers add 5-30 seconds startup time per test class. Without container reuse (testcontainers.reuse.enable=true and keeping containers between runs), a test suite with 50 test classes starts 50 database containers. Use @Container with static field for class-level reuse, or Singleton Container pattern for suite-level reuse.

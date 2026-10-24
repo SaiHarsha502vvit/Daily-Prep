@@ -33,26 +33,21 @@
 
 ### Deep Reasoning
 
-```
 THE OFFICE BUILDING ANALOGY
 
 HTTP Request arrives at your Spring Boot application:
 
-┌──────────────── SERVLET CONTAINER (Tomcat) ────────────────────┐
-│                                                                │
-│  [Request] → FILTER 1 → FILTER 2 → FILTER 3 →                  │
-│                                                                │
-│              ┌── DISPATCHER SERVLET ──────────────────┐        │
-│              │                                        │        │
-│              │  HandlerMapping → "Which controller?"  │        │
-│              │  HandlerAdapter → "Call the method"     │       │
-│              │  ViewResolver → "Render the response"  │        │
-│              │                                        │        │
-│              │  @Controller methods live HERE          │       │
-│              └────────────────────────────────────────┘        │
-│                                                                │
-│  ← FILTER 3 ← FILTER 2 ← FILTER 1 ← [Response]                 │
-└────────────────────────────────────────────────────────────────┘
+[Request] → FILTER 1 → FILTER 2 → FILTER 3 →
+
+```text
+HandlerMapping → "Which controller?"
+HandlerAdapter → "Call the method"
+ViewResolver → "Render the response"
+
+@Controller methods live HERE
+```
+
+← FILTER 3 ← FILTER 2 ← FILTER 1 ← [Response]
 
 FILTER = Security guard at the building entrance
 → Runs BEFORE and AFTER the request reaches Spring
@@ -66,7 +61,6 @@ DISPATCHER SERVLET = The receptionist inside the building
 → IS the entry point to Spring MVC
 → Only ONE DispatcherServlet (front controller pattern)
 → Handles: URL mapping, argument binding, exception handling
-```
 
 ```java
 // FILTER: Runs at Servlet container level, wraps the entire request
@@ -155,29 +149,27 @@ JWT: stateless — any service can validate without a DB call (verify signature 
 
 "What does @SpringBootApplication do? Could you build a Spring Boot app without it?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  @SpringBootApplication = THREE annotations in one:              ║
-║                                                                  ║
-║  @Configuration                                                  ║
-║  → "This class itself is a configuration (can define @Beans)"    ║
-║  → Makes main class a source of bean definitions                 ║
-║                                                                  ║
-║  @EnableAutoConfiguration                                        ║
-║  → "Scan classpath and auto-configure beans based on what's      ║
-║     on the classpath"                                            ║
-║  → Found spring-boot-starter-web? → Configure Tomcat,            ║
-║    DispatcherServlet, Jackson, error handling...                 ║
-║  → Found spring-boot-starter-data-jpa? → Configure DataSource,   ║
-║    EntityManagerFactory, TransactionManager...                   ║
-║                                                                  ║
-║  @ComponentScan                                                  ║
-║  → "Scan THIS package and sub-packages for @Component,           ║
-║    @Service, @Repository, @Controller"                           ║
-║  → THIS is why your main class should be in the ROOT package     ║
-║  → If main class is in com.app, it scans com.app.** only         ║
-║  → Classes in com.other will NOT be found!                       ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+@SpringBootApplication = THREE annotations in one:
+
+@Configuration
+→ "This class itself is a configuration (can define @Beans)"
+→ Makes main class a source of bean definitions
+
+@EnableAutoConfiguration
+→ "Scan classpath and auto-configure beans based on what's
+   on the classpath"
+→ Found spring-boot-starter-web? → Configure Tomcat,
+  DispatcherServlet, Jackson, error handling...
+→ Found spring-boot-starter-data-jpa? → Configure DataSource,
+  EntityManagerFactory, TransactionManager...
+
+@ComponentScan
+→ "Scan THIS package and sub-packages for @Component,
+  @Service, @Repository, @Controller"
+→ THIS is why your main class should be in the ROOT package
+→ If main class is in com.app, it scans com.app.** only
+→ Classes in com.other will NOT be found!
 ```
 
 ```java
@@ -222,34 +214,32 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 
 "How does Spring Boot know to configure a DataSource without you configuring it?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE SMART HOME ANALOGY                                          ║
-║                                                                  ║
-║  Spring Boot's auto-configuration is like a smart home system:   ║
-║                                                                  ║
-║  1. You plug in a smart thermostat (add dependency to pom.xml)   ║
-║  2. Smart home detects it (classpath scanning)                   ║
-║  3. It auto-configures: connects to HVAC, sets default temp      ║
-║  4. You CAN override: set your own temperature (properties)      ║
-║                                                                  ║
-║  HOW IT ACTUALLY WORKS:                                          ║
-║                                                                  ║
-║  spring-boot-autoconfigure.jar contains:                         ║
-║  META-INF/spring/org.springframework.boot.autoconfigure.         ║
-║  AutoConfiguration.imports (list of auto-config classes)         ║
-║                                                                  ║
-║  Each auto-config class has CONDITIONS:                          ║
-║  @ConditionalOnClass(DataSource.class)                           ║
-║    → "Only if DataSource is on classpath"                        ║
-║  @ConditionalOnMissingBean(DataSource.class)                     ║
-║    → "Only if user hasn't defined their own DataSource"          ║
-║  @ConditionalOnProperty(name = "spring.datasource.url")          ║
-║    → "Only if this property is set"                              ║
-║                                                                  ║
-║  KEY INSIGHT: Auto-config BACKS OFF when you define your own.    ║
-║  It's not magic — it's conditional bean registration.            ║
-╚══════════════════════════════════════════════════════════════════╝
+**THE SMART HOME ANALOGY**
+
+```text
+Spring Boot's auto-configuration is like a smart home system:
+
+1. You plug in a smart thermostat (add dependency to pom.xml)
+2. Smart home detects it (classpath scanning)
+3. It auto-configures: connects to HVAC, sets default temp
+4. You CAN override: set your own temperature (properties)
+
+HOW IT ACTUALLY WORKS:
+
+spring-boot-autoconfigure.jar contains:
+META-INF/spring/org.springframework.boot.autoconfigure.
+AutoConfiguration.imports (list of auto-config classes)
+
+Each auto-config class has CONDITIONS:
+@ConditionalOnClass(DataSource.class)
+  → "Only if DataSource is on classpath"
+@ConditionalOnMissingBean(DataSource.class)
+  → "Only if user hasn't defined their own DataSource"
+@ConditionalOnProperty(name = "spring.datasource.url")
+  → "Only if this property is set"
+
+KEY INSIGHT: Auto-config BACKS OFF when you define your own.
+It's not magic — it's conditional bean registration.
 ```
 
 ```java
@@ -308,24 +298,22 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 
 "I put @Transactional on a method but it doesn't create a transaction. Why?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE BODYGUARD ANALOGY                                           ║
-║                                                                  ║
-║  Spring creates a PROXY (bodyguard) around your bean.            ║
-║  All calls from OUTSIDE go through the proxy.                    ║
-║  The proxy adds behavior (transaction, security, caching).       ║
-║                                                                  ║
-║  [Caller] → [Proxy: begin TX] → [Your Bean] → [Proxy: commit]    ║
-║                                                                  ║
-║  BUT! If your bean calls ITS OWN method:                         ║
-║  [Your Bean] → this.internalMethod()                             ║
-║  → Bypasses the proxy! No transaction started!                   ║
-║                                                                  ║
-║  It's like the bodyguard stands at the door.                     ║
-║  If you're already inside the room and call yourself,            ║
-║  you don't go through the door (proxy) again.                    ║
-╚══════════════════════════════════════════════════════════════════╝
+**THE BODYGUARD ANALOGY**
+
+```text
+Spring creates a PROXY (bodyguard) around your bean.
+All calls from OUTSIDE go through the proxy.
+The proxy adds behavior (transaction, security, caching).
+
+[Caller] → [Proxy: begin TX] → [Your Bean] → [Proxy: commit]
+
+BUT! If your bean calls ITS OWN method:
+[Your Bean] → this.internalMethod()
+→ Bypasses the proxy! No transaction started!
+
+It's like the bodyguard stands at the door.
+If you're already inside the room and call yourself,
+you don't go through the door (proxy) again.
 ```
 
 ```java
@@ -396,25 +384,23 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 
 "What's the Spring Bean lifecycle?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE EMPLOYEE ONBOARDING ANALOGY                                 ║
-║                                                                  ║
-║  1. INSTANTIATION: Hire the employee (new MyBean())              ║
-║  2. POPULATE PROPERTIES: Give them a desk, laptop (@Autowired)   ║
-║  3. AWARE INTERFACES: Tell them company name, their ID           ║
-║     (BeanNameAware, ApplicationContextAware)                     ║
-║  4. @PostConstruct: Employee orientation (run custom init)       ║
-║  5. InitializingBean.afterPropertiesSet(): Second init hook      ║
-║  6. Custom init-method: Third init hook                          ║
-║  7. BEAN IS READY — now serving requests                         ║
-║  ...                                                             ║
-║  8. @PreDestroy: Goodbye party (cleanup before shutdown)         ║
-║  9. DisposableBean.destroy(): Second cleanup hook                ║
-║  10. Custom destroy-method: Third cleanup hook                   ║
-║                                                                  ║
-║  PRACTICAL: You usually only need @PostConstruct/@PreDestroy     ║
-╚══════════════════════════════════════════════════════════════════╝
+**THE EMPLOYEE ONBOARDING ANALOGY**
+
+```text
+1. INSTANTIATION: Hire the employee (new MyBean())
+2. POPULATE PROPERTIES: Give them a desk, laptop (@Autowired)
+3. AWARE INTERFACES: Tell them company name, their ID
+   (BeanNameAware, ApplicationContextAware)
+4. @PostConstruct: Employee orientation (run custom init)
+5. InitializingBean.afterPropertiesSet(): Second init hook
+6. Custom init-method: Third init hook
+7. BEAN IS READY — now serving requests
+...
+8. @PreDestroy: Goodbye party (cleanup before shutdown)
+9. DisposableBean.destroy(): Second cleanup hook
+10. Custom destroy-method: Third cleanup hook
+
+PRACTICAL: You usually only need @PostConstruct/@PreDestroy
 ```
 
 ```java
@@ -445,32 +431,30 @@ public class CacheService {
 
 "What is Inversion of Control? What's being inverted?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  COOKING AT HOME vs RESTAURANT — The Inversion                   ║
-║                                                                  ║
-║  WITHOUT IoC (cooking at home):                                  ║
-║  YOU control everything:                                         ║
-║  → You decide what to buy                                        ║
-║  → You buy ingredients (create dependencies)                     ║
-║  → You cook (main logic)                                         ║
-║  → You clean up                                                  ║
-║  YOU have the control.                                           ║
-║                                                                  ║
-║  WITH IoC (restaurant):                                          ║
-║  The FRAMEWORK controls:                                         ║
-║  → Restaurant decides kitchen setup (container manages beans)    ║
-║  → Waiter brings ingredients (container injects dependencies)    ║
-║  → You just cook your dish (write business logic)                ║
-║  → Restaurant cleans up (container manages lifecycle)            ║
-║  CONTROL IS INVERTED — the framework calls YOU.                  ║
-║                                                                  ║
-║  WHAT'S INVERTED: Who creates and manages objects.               ║
-║  Normal: Your code creates dependencies.                         ║
-║  IoC: Framework creates and gives you dependencies.              ║
-║  DI: The specific mechanism — injecting through constructor,     ║
-║      setter, or field.                                           ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+COOKING AT HOME vs RESTAURANT — The Inversion
+
+WITHOUT IoC (cooking at home):
+YOU control everything:
+→ You decide what to buy
+→ You buy ingredients (create dependencies)
+→ You cook (main logic)
+→ You clean up
+YOU have the control.
+
+WITH IoC (restaurant):
+The FRAMEWORK controls:
+→ Restaurant decides kitchen setup (container manages beans)
+→ Waiter brings ingredients (container injects dependencies)
+→ You just cook your dish (write business logic)
+→ Restaurant cleans up (container manages lifecycle)
+CONTROL IS INVERTED — the framework calls YOU.
+
+WHAT'S INVERTED: Who creates and manages objects.
+Normal: Your code creates dependencies.
+IoC: Framework creates and gives you dependencies.
+DI: The specific mechanism — injecting through constructor,
+    setter, or field.
 ```
 
 ```java
@@ -519,31 +503,29 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 
 "What's wrong with @Autowired on fields?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THREE INJECTION STYLES:                                         ║
-║                                                                  ║
-║  FIELD INJECTION (the lazy way):                                 ║
-║  @Autowired private UserRepository repo;                         ║
-║  ❌ Can't make fields final (no immutability)                     ║
-║  ❌ Hidden dependencies (not visible in constructor)              ║
-║  ❌ Can't use without Spring (can't new + inject in tests)        ║
-║  ❌ Allows too many dependencies (no visible bloat signal)        ║
-║                                                                  ║
-║  SETTER INJECTION (for optional deps):                           ║
-║  @Autowired public void setRepo(UserRepository repo) {...}       ║
-║  ⚠️ Bean can exist in partially initialized state                ║
-║  ✅ Good for optional/changeable dependencies                     ║
-║                                                                  ║
-║  CONSTRUCTOR INJECTION (the right way):                          ║
-║  public UserService(UserRepository repo) { this.repo = repo; }   ║
-║  ✅ Immutable (final fields)                                      ║
-║  ✅ All dependencies visible in constructor                       ║
-║  ✅ Works without Spring (easy testing: new UserService(mock))    ║
-║  ✅ Fails fast if dependency missing (constructor error)          ║
-║  ✅ Too many params? Signal to split the class                    ║
-║  ✅ No @Autowired needed if single constructor (Spring auto)      ║
-╚══════════════════════════════════════════════════════════════════╝
+**THREE INJECTION STYLES:**
+
+```text
+FIELD INJECTION (the lazy way):
+@Autowired private UserRepository repo;
+❌ Can't make fields final (no immutability)
+❌ Hidden dependencies (not visible in constructor)
+❌ Can't use without Spring (can't new + inject in tests)
+❌ Allows too many dependencies (no visible bloat signal)
+
+SETTER INJECTION (for optional deps):
+@Autowired public void setRepo(UserRepository repo) {...}
+⚠️ Bean can exist in partially initialized state
+✅ Good for optional/changeable dependencies
+
+CONSTRUCTOR INJECTION (the right way):
+public UserService(UserRepository repo) { this.repo = repo; }
+✅ Immutable (final fields)
+✅ All dependencies visible in constructor
+✅ Works without Spring (easy testing: new UserService(mock))
+✅ Fails fast if dependency missing (constructor error)
+✅ Too many params? Signal to split the class
+✅ No @Autowired needed if single constructor (Spring auto)
 ```
 
 ```java
@@ -592,28 +574,26 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 
 "I defined a prototype bean but it's acting like a singleton. Why?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE COFFEE MACHINE ANALOGY                                      ║
-║                                                                  ║
-║  Singleton scope: One coffee machine in the office. Everyone     ║
-║  shares it. Created once at startup.                             ║
-║                                                                  ║
-║  Prototype scope: Fresh cup for each person. Created each time   ║
-║  it's requested.                                                 ║
-║                                                                  ║
-║  THE PROBLEM:                                                    ║
-║  Singleton OrderService is created ONCE at startup.              ║
-║  During creation, Spring injects Prototype ShoppingCart.         ║
-║  That cart is created ONCE and stored in OrderService forever.   ║
-║                                                                  ║
-║  Result: ALL users share the SAME cart!                          ║
-║  The prototype is "trapped" inside the singleton.                ║
-║                                                                  ║
-║  It's like installing a fresh coffee cup holder once —           ║
-║  the "fresh cup each time" promise is broken because the         ║
-║  holder only gets filled once (at singleton creation).           ║
-╚══════════════════════════════════════════════════════════════════╝
+**THE COFFEE MACHINE ANALOGY**
+
+```text
+Singleton scope: One coffee machine in the office. Everyone
+shares it. Created once at startup.
+
+Prototype scope: Fresh cup for each person. Created each time
+it's requested.
+
+THE PROBLEM:
+Singleton OrderService is created ONCE at startup.
+During creation, Spring injects Prototype ShoppingCart.
+That cart is created ONCE and stored in OrderService forever.
+
+Result: ALL users share the SAME cart!
+The prototype is "trapped" inside the singleton.
+
+It's like installing a fresh coffee cup holder once —
+the "fresh cup each time" promise is broken because the
+holder only gets filled once (at singleton creation).
 ```
 
 ```java
@@ -669,33 +649,31 @@ public class ShoppingCart { ... }
 
 "What's the actual difference?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  @Controller = View Returns (traditional MVC web apps)           ║
-║  → Return value is a VIEW NAME (JSP, Thymeleaf template)         ║
-║  → DispatcherServlet passes to ViewResolver to render HTML       ║
-║                                                                  ║
-║  @RestController = @Controller + @ResponseBody on every method   ║
-║  → Return value is SERIALIZED directly to response body (JSON)   ║
-║  → No view resolution — Jackson converts to JSON automatically   ║
-║                                                                  ║
-║  THE DEEPER UNDERSTANDING:                                       ║
-║                                                                  ║
-║  @Controller + return "users" → ViewResolver looks for           ║
-║    templates/users.html → renders HTML                           ║
-║                                                                  ║
-║  @RestController + return userList → HttpMessageConverter        ║
-║    (Jackson) serializes to JSON → {"users": [...]}               ║
-║                                                                  ║
-║  You CAN use @Controller for REST APIs:                          ║
-║  @Controller                                                     ║
-║  public class UserController {                                   ║
-║    @ResponseBody  // ← Must add this to EACH method              ║
-║    @GetMapping("/users")                                         ║
-║    public List<User> getUsers() { ... }                          ║
-║  }                                                               ║
-║  @RestController just avoids repeating @ResponseBody.            ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+@Controller = View Returns (traditional MVC web apps)
+→ Return value is a VIEW NAME (JSP, Thymeleaf template)
+→ DispatcherServlet passes to ViewResolver to render HTML
+
+@RestController = @Controller + @ResponseBody on every method
+→ Return value is SERIALIZED directly to response body (JSON)
+→ No view resolution — Jackson converts to JSON automatically
+
+THE DEEPER UNDERSTANDING:
+
+@Controller + return "users" → ViewResolver looks for
+  templates/users.html → renders HTML
+
+@RestController + return userList → HttpMessageConverter
+  (Jackson) serializes to JSON → {"users": [...]}
+
+You CAN use @Controller for REST APIs:
+@Controller
+public class UserController {
+  @ResponseBody  // ← Must add this to EACH method
+  @GetMapping("/users")
+  public List<User> getUsers() { ... }
+}
+@RestController just avoids repeating @ResponseBody.
 ```
 
 ---
@@ -706,36 +684,34 @@ public class ShoppingCart { ... }
 
 "How does Spring Security authenticate a request?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  Spring Security = A CHAIN of Servlet Filters                    ║
-║  (This ties back to Section 1 — Filters run BEFORE Dispatcher)   ║
-║                                                                  ║
-║  Request → SecurityFilterChain:                                  ║
-║                                                                  ║
-║  1. SecurityContextPersistenceFilter                             ║
-║     → Load existing security context (from session/token)        ║
-║                                                                  ║
-║  2. UsernamePasswordAuthenticationFilter                         ║
-║     → If login request: extract credentials, authenticate        ║
-║     → Delegates to AuthenticationManager                         ║
-║       → Which uses AuthenticationProvider                        ║
-║         → Which uses UserDetailsService (your DB lookup)         ║
-║         → Which uses PasswordEncoder (BCrypt check)              ║
-║                                                                  ║
-║  3. BasicAuthenticationFilter (if using HTTP Basic)              ║
-║  4. BearerTokenAuthenticationFilter (if using JWT/OAuth2)        ║
-║                                                                  ║
-║  5. AuthorizationFilter                                          ║
-║     → Check: Does this user have the required role/authority?    ║
-║     → @PreAuthorize, @Secured, hasRole() evaluated here          ║
-║                                                                  ║
-║  6. ExceptionTranslationFilter                                   ║
-║     → Converts auth exceptions to HTTP 401/403                   ║
-║                                                                  ║
-║  KEY: Spring Security is NOT inside Spring MVC.                  ║
-║  It runs BEFORE DispatcherServlet even sees the request.         ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+Spring Security = A CHAIN of Servlet Filters
+(This ties back to Section 1 — Filters run BEFORE Dispatcher)
+
+Request → SecurityFilterChain:
+
+1. SecurityContextPersistenceFilter
+   → Load existing security context (from session/token)
+
+2. UsernamePasswordAuthenticationFilter
+   → If login request: extract credentials, authenticate
+   → Delegates to AuthenticationManager
+     → Which uses AuthenticationProvider
+       → Which uses UserDetailsService (your DB lookup)
+       → Which uses PasswordEncoder (BCrypt check)
+
+3. BasicAuthenticationFilter (if using HTTP Basic)
+4. BearerTokenAuthenticationFilter (if using JWT/OAuth2)
+
+5. AuthorizationFilter
+   → Check: Does this user have the required role/authority?
+   → @PreAuthorize, @Secured, hasRole() evaluated here
+
+6. ExceptionTranslationFilter
+   → Converts auth exceptions to HTTP 401/403
+
+KEY: Spring Security is NOT inside Spring MVC.
+It runs BEFORE DispatcherServlet even sees the request.
 ```
 
 ---
@@ -822,24 +798,22 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 
 "I added @Async but the method still runs synchronously."
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  Same proxy problem as @Transactional (Section 4):               ║
-║                                                                  ║
-║  @Async tells Spring: "Run this in a different thread."          ║
-║  But Spring needs to create a PROXY to intercept the call        ║
-║  and redirect it to a thread pool.                               ║
-║                                                                  ║
-║  @EnableAsync tells Spring: "Create those proxies."              ║
-║  Without it, @Async is just an annotation — no behavior.         ║
-║                                                                  ║
-║  SAME GOTCHAS:                                                   ║
-║  1. Self-call bypasses proxy → runs synchronously                ║
-║  2. Private methods can't be proxied → @Async ignored            ║
-║  3. Return void or Future<T>, not raw types                      ║
-║  4. Default thread pool is SimpleAsyncTaskExecutor (no pool!)    ║
-║     → ALWAYS configure a proper ThreadPoolTaskExecutor           ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+Same proxy problem as @Transactional (Section 4):
+
+@Async tells Spring: "Run this in a different thread."
+But Spring needs to create a PROXY to intercept the call
+and redirect it to a thread pool.
+
+@EnableAsync tells Spring: "Create those proxies."
+Without it, @Async is just an annotation — no behavior.
+
+SAME GOTCHAS:
+1. Self-call bypasses proxy → runs synchronously
+2. Private methods can't be proxied → @Async ignored
+3. Return void or Future<T>, not raw types
+4. Default thread pool is SimpleAsyncTaskExecutor (no pool!)
+   → ALWAYS configure a proper ThreadPoolTaskExecutor
 ```
 
 ```java
@@ -907,12 +881,12 @@ public class EmailService {
 
 ## Reality Check
 
-**"Understanding Spring Boot means memorizing annotations"** ? Annotations are API surface. Deep understanding means knowing the LIFECYCLE: when does @Configuration get processed? (During BeanDefinitionRegistration.) When does @Autowired resolve? (During bean initialization, after instantiation.) When does @PostConstruct fire? (After all dependencies are injected.) When does @Transactional proxy get created? (During BeanPostProcessor phase.) The sequence matters � getting it wrong means beans that are partially initialized or unproxied.
+**"Understanding Spring Boot means memorizing annotations"** — Annotations are API surface. Deep understanding means knowing the LIFECYCLE: when does @Configuration get processed? (During BeanDefinitionRegistration.) When does @Autowired resolve? (During bean initialization, after instantiation.) When does @PostConstruct fire? (After all dependencies are injected.) When does @Transactional proxy get created? (During BeanPostProcessor phase.) The sequence matters — getting it wrong means beans that are partially initialized or unproxied.
 
-**"You understand a concept when you can use it"** ? You understand it when you can explain WHY it exists and WHAT PROBLEM it solves. Anyone can write @Autowired. Understanding means knowing that without DI, a controller creates its own service which creates its own repository � making the controller untestable because you cannot substitute mock dependencies. DI exists for testability and decoupling, not convenience.
+**"You understand a concept when you can use it"** — You understand it when you can explain WHY it exists and WHAT PROBLEM it solves. Anyone can write @Autowired. Understanding means knowing that without DI, a controller creates its own service which creates its own repository — making the controller untestable because you cannot substitute mock dependencies. DI exists for testability and decoupling, not convenience.
 
-**"Reading documentation is enough for deep understanding"** ? Documentation describes intended behavior. Deep understanding requires reading source code to see ACTUAL behavior. The Spring Security documentation says @PreAuthorize checks authorization. The source code reveals it uses SpEL expression evaluation, which means injection vulnerabilities if user input reaches the expression. Documentation tells you what to use; source code tells you what can go wrong.
+**"Reading documentation is enough for deep understanding"** — Documentation describes intended behavior. Deep understanding requires reading source code to see ACTUAL behavior. The Spring Security documentation says @PreAuthorize checks authorization. The source code reveals it uses SpEL expression evaluation, which means injection vulnerabilities if user input reaches the expression. Documentation tells you what to use; source code tells you what can go wrong.
 
-**"Design patterns are academic concepts"** ? Spring Boot is BUILT on design patterns: Template Method (JdbcTemplate, RestTemplate), Strategy (HandlerMapping, ViewResolver, AuthenticationProvider), Proxy (AOP, @Transactional), Factory (BeanFactory), Observer (ApplicationEvent), Chain of Responsibility (FilterChain, HandlerInterceptor). If you cannot identify these patterns in Spring, you are memorizing API calls without understanding architecture.
+**"Design patterns are academic concepts"** — Spring Boot is BUILT on design patterns: Template Method (JdbcTemplate, RestTemplate), Strategy (HandlerMapping, ViewResolver, AuthenticationProvider), Proxy (AOP, @Transactional), Factory (BeanFactory), Observer (ApplicationEvent), Chain of Responsibility (FilterChain, HandlerInterceptor). If you cannot identify these patterns in Spring, you are memorizing API calls without understanding architecture.
 
-**"Spring Boot debugging means reading stack traces"** ? Spring Boot stack traces include proxy class names like $$EnhancerBySpringCGLIB$$abc123, transaction interceptor calls, security filter chains, and AOP advice invocations. Without understanding the proxy and filter architecture, a 50-line stack trace looks like noise. The skill is knowing which frames are Spring infrastructure (skip them) and which are your code (read them). Enable --debug to see auto-configuration decisions, not just exceptions.
+**"Spring Boot debugging means reading stack traces"** — Spring Boot stack traces include proxy class names like $$EnhancerBySpringCGLIB$$abc123, transaction interceptor calls, security filter chains, and AOP advice invocations. Without understanding the proxy and filter architecture, a 50-line stack trace looks like noise. The skill is knowing which frames are Spring infrastructure (skip them) and which are your code (read them). Enable --debug to see auto-configuration decisions, not just exceptions.

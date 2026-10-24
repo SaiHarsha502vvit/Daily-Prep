@@ -1,8 +1,75 @@
+# Arrays
+
+> **Navigation**: [← PRACTICE PROBLEMS WITH SOLUTIONS](01_Intro_Checklist.md) | [Chapter index](00_INDEX.md) | [Prefix Sum Problems →](28_Prefix_Sum_Problems.md)
+
 ﻿> **Navigation**: [< Previous](03_Strings.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Sliding_Window.md)
 
-> **Problems 04/14** | [Prev](03_Strings.md) | [Index](../00_MASTER_INDEX.md) | [Next](05_Sliding_Window.md)
 
 ---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Arrays](../02_Data_Structures/01b_Arrays.md), [Prefix Sum](../04_Patterns_Templates/26_Prefix_Sum_And_Difference_Array.md) |
+| **You will learn** | In-place updates, Kadane, majority vote, rotation, partitioning, and prefix/suffix tricks |
+| **Leads to** | [Sliding Window](05_Sliding_Window.md), [Two Pointers](06_Two_Pointers.md) |
+| **Abstraction level** | Indexed loops → **one pass with a running summary** |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Array Problems
+
+### 1. The bottom line
+
+Many array problems can be solved in one pass by carrying a small summary (best sum so far, a count, a pointer) instead of re-scanning.
+
+### 2. The textbook core
+
+- Kadane: `best_here = max(a[i], best_here + a[i])`.
+- Boyer–Moore vote: keep a candidate and a counter.
+- Rotate by reverse-reverse-reverse in `O(1)` space.
+- Dutch national flag: three-way partition with three indices.
+- Prefix and suffix arrays replace nested loops.
+
+### 3. The real-world analogy
+
+A **running tally on a scoreboard**: you update the tally per round instead of re-adding all rounds.
+
+### 4. Walkthrough
+
+1. Maximum subarray of `[-2,1,-3,4,-1,2,1,-5,4]`.
+2. Track `best_here`: −2, 1, −2, 4, 3, 5, 6, 1, 5.
+3. Track `best` = max over these = 6.
+4. Subarray `[4,-1,2,1]`.
+
+> [!NOTE]
+> **Quick check:** What is the answer for `[-3,-1,-2]` and why is initialisation important? *−1; starting from 0 would wrongly return 0.*
+
+
+### 5. Check yourself
+
+**Q1.** Rotate `[1,2,3,4,5,6,7]` right by 3.
+
+<details><summary>Answer</summary>
+
+`[5,6,7,1,2,3,4]` (reverse all, reverse the first 3, reverse the rest).
+
+</details>
+
+**Q2.** Majority element of `[2,2,1,1,2,2,3]`?
+
+<details><summary>Answer</summary>
+
+**2** (4 of 7 values, more than ⌊7/2⌋).
+
+</details>
+
+---
+
 
 ## 🗺️ Pattern Recognition Header
 
@@ -28,7 +95,7 @@
 
 ---
 
-# 📊 Section 3: Array Problems
+## 📊 Section 3: Array Problems
 
 ---
 
@@ -70,45 +137,40 @@ public int[] twoSum(int[] nums, int target) {
 
 **LeetCode 170** | **Difficulty:** Easy | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  TWO SUM III - DATA STRUCTURE DESIGN                                      ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Design a data structure that accepts a stream of integers and checks     ║
-║  if it has a pair of integers that sum up to a particular value.          ║
-║                                                                           ║
-║  Implement the TwoSum class:                                              ║
-║  - TwoSum() Initializes the TwoSum object                                 ║
-║  - void add(int number) Adds number to the data structure                 ║
-║  - boolean find(int value) Returns true if there exists any pair of       ║
-║    numbers whose sum is equal to value, otherwise returns false.          ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input:                                                                   ║
-║  ["TwoSum", "add", "add", "add", "find", "find"]                          ║
-║  [[], [1], [3], [5], [4], [7]]                                            ║
-║  Output: [null, null, null, null, true, false]                            ║
-║                                                                           ║
-║  Explanation:                                                             ║
-║  TwoSum twoSum = new TwoSum();                                            ║
-║  twoSum.add(1);   // [1]                                                  ║
-║  twoSum.add(3);   // [1, 3]                                               ║
-║  twoSum.add(5);   // [1, 3, 5]                                            ║
-║  twoSum.find(4);  // 1 + 3 = 4, return true                               ║
-║  twoSum.find(7);  // No pairs sum to 7, return false                      ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - -10^5 <= number <= 10^5                                                ║
-║  - -2^31 <= value <= 2^31 - 1                                             ║
-║  - At most 10^4 calls will be made to add and find                        ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**TWO SUM III - DATA STRUCTURE DESIGN — (LeetCode Premium - Full Problem Description)**
+
+```text
+Design a data structure that accepts a stream of integers and checks
+if it has a pair of integers that sum up to a particular value.
+
+Implement the TwoSum class:
+- TwoSum() Initializes the TwoSum object
+- void add(int number) Adds number to the data structure
+- boolean find(int value) Returns true if there exists any pair of
+  numbers whose sum is equal to value, otherwise returns false.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input:
+["TwoSum", "add", "add", "add", "find", "find"]
+[[], [1], [3], [5], [4], [7]]
+Output: [null, null, null, null, true, false]
+
+Explanation:
+TwoSum twoSum = new TwoSum();
+twoSum.add(1);   // [1]
+twoSum.add(3);   // [1, 3]
+twoSum.add(5);   // [1, 3, 5]
+twoSum.find(4);  // 1 + 3 = 4, return true
+twoSum.find(7);  // No pairs sum to 7, return false
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- -10^5 <= number <= 10^5
+- -2^31 <= value <= 2^31 - 1
+- At most 10^4 calls will be made to add and find
 ```
 
 ```java
@@ -146,20 +208,16 @@ class TwoSum {
 **LeetCode 217** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/contains-duplicate/](https://leetcode.com/problems/contains-duplicate/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  CONTAINS DUPLICATE                                                       ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Return true if any value appears at least twice in the array.            ║
-║                                                                           ║
-║  Input: nums = [1, 2, 3, 1]                                               ║
-║  Output: true                                                             ║
-║                                                                           ║
-║  Input: nums = [1, 2, 3, 4]                                               ║
-║  Output: false                                                            ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**CONTAINS DUPLICATE**
+
+```text
+Return true if any value appears at least twice in the array.
+
+Input: nums = [1, 2, 3, 1]
+Output: true
+
+Input: nums = [1, 2, 3, 4]
+Output: false
 ```
 
 ```java
@@ -178,40 +236,35 @@ public boolean containsDuplicate(int[] nums) {
 
 **LeetCode 220** | **Difficulty:** Hard | **Premium-Level Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  CONTAINS DUPLICATE III                                                   ║
-║  (Premium-Level Difficulty)                                               ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given an integer array nums and two integers indexDiff and valueDiff,    ║
-║  find a pair of indices (i, j) such that:                                 ║
-║  - i != j                                                                 ║
-║  - abs(i - j) <= indexDiff                                                ║
-║  - abs(nums[i] - nums[j]) <= valueDiff                                    ║
-║                                                                           ║
-║  Return true if such pair exists, false otherwise.                        ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: nums = [1,2,3,1], indexDiff = 3, valueDiff = 0                    ║
-║  Output: true                                                             ║
-║  Explanation: i=0, j=3, |0-3|<=3, |1-1|<=0                                ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: nums = [1,5,9,1,5,9], indexDiff = 2, valueDiff = 3                ║
-║  Output: false                                                            ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 2 <= nums.length <= 10^5                                               ║
-║  - -10^9 <= nums[i] <= 10^9                                               ║
-║  - 1 <= indexDiff <= nums.length                                          ║
-║  - 0 <= valueDiff <= 10^9                                                 ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**CONTAINS DUPLICATE III — (Premium-Level Difficulty)**
+
+```text
+Given an integer array nums and two integers indexDiff and valueDiff,
+find a pair of indices (i, j) such that:
+- i != j
+- abs(i - j) <= indexDiff
+- abs(nums[i] - nums[j]) <= valueDiff
+
+Return true if such pair exists, false otherwise.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: nums = [1,2,3,1], indexDiff = 3, valueDiff = 0
+Output: true
+Explanation: i=0, j=3, |0-3|<=3, |1-1|<=0
+
+Example 2:
+Input: nums = [1,5,9,1,5,9], indexDiff = 2, valueDiff = 3
+Output: false
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 2 <= nums.length <= 10^5
+- -10^9 <= nums[i] <= 10^9
+- 1 <= indexDiff <= nums.length
+- 0 <= valueDiff <= 10^9
 ```
 
 ```java
@@ -256,18 +309,14 @@ private long getBucket(int num, long bucketSize) {
 **LeetCode 283** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/move-zeroes/](https://leetcode.com/problems/move-zeroes/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MOVE ZEROES                                                              ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Move all 0's to end while maintaining relative order of non-zero         ║
-║  elements. Do it in-place.                                                ║
-║                                                                           ║
-║  Input: nums = [0, 1, 0, 3, 12]                                           ║
-║  Output: [1, 3, 12, 0, 0]                                                 ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**MOVE ZEROES**
+
+```text
+Move all 0's to end while maintaining relative order of non-zero
+elements. Do it in-place.
+
+Input: nums = [0, 1, 0, 3, 12]
+Output: [1, 3, 12, 0, 0]
 ```
 
 ```java
@@ -294,49 +343,44 @@ public void moveZeroes(int[] nums) {
 
 **LeetCode 252** | **Difficulty:** Easy | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MEETING ROOMS                                                            ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given an array of meeting time intervals where intervals[i] =            ║
-║  [start_i, end_i], determine if a person could attend all meetings.       ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: intervals = [[0,30], [5,10], [15,20]]                             ║
-║  Output: false                                                            ║
-║  Explanation: [0,30] overlaps with [5,10] and [15,20]                     ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: intervals = [[7,10], [2,4]]                                       ║
-║  Output: true                                                             ║
-║  Explanation: No overlap between meetings                                 ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  Example 1:                                                               ║
-║  |=============================| [0,30]                                   ║
-║       |===| [5,10]                                                        ║
-║                 |====| [15,20]                                            ║
-║  Overlapping! Can't attend all.                                           ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║    |==| [2,4]                                                             ║
-║             |===| [7,10]                                                  ║
-║  No overlap! Can attend all.                                              ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 0 <= intervals.length <= 10^4                                          ║
-║  - intervals[i].length == 2                                               ║
-║  - 0 <= start_i < end_i <= 10^6                                           ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**MEETING ROOMS — (LeetCode Premium - Full Problem Description)**
+
+```text
+Given an array of meeting time intervals where intervals[i] =
+[start_i, end_i], determine if a person could attend all meetings.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: intervals = [[0,30], [5,10], [15,20]]
+Output: false
+Explanation: [0,30] overlaps with [5,10] and [15,20]
+
+Example 2:
+Input: intervals = [[7,10], [2,4]]
+Output: true
+Explanation: No overlap between meetings
+
+─────────────────────────────────────────────────────────────────────
+
+Visual:
+Example 1:
+|=============================| [0,30]
+     |===| [5,10]
+               |====| [15,20]
+Overlapping! Can't attend all.
+
+Example 2:
+  |==| [2,4]
+           |===| [7,10]
+No overlap! Can attend all.
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 0 <= intervals.length <= 10^4
+- intervals[i].length == 2
+- 0 <= start_i < end_i <= 10^6
 ```
 
 ```java
@@ -361,48 +405,43 @@ public boolean canAttendMeetings(int[][] intervals) {
 
 **LeetCode 253** | **Difficulty:** Medium | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MEETING ROOMS II                                                         ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given an array of meeting time intervals, find the minimum number of     ║
-║  conference rooms required.                                               ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: intervals = [[0,30], [5,10], [15,20]]                             ║
-║  Output: 2                                                                ║
-║  Explanation:                                                             ║
-║  Room 1: [0,30]                                                           ║
-║  Room 2: [5,10], then [15,20]                                             ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: intervals = [[7,10], [2,4]]                                       ║
-║  Output: 1                                                                ║
-║  Explanation: No overlap, one room is enough                              ║
-║                                                                           ║
-║  Example 3:                                                               ║
-║  Input: intervals = [[1,5], [2,6], [3,7], [4,8]]                          ║
-║  Output: 4                                                                ║
-║  Explanation: All meetings overlap at time 4, need 4 rooms                ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Visual for Example 1:                                                    ║
-║  Time: 0  5  10  15  20  25  30                                           ║
-║  Room1: |=========================|                                       ║
-║  Room2:    |==|     |====|                                                ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 1 <= intervals.length <= 10^4                                          ║
-║  - 0 <= start_i < end_i <= 10^6                                           ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**MEETING ROOMS II — (LeetCode Premium - Full Problem Description)**
+
+```text
+Given an array of meeting time intervals, find the minimum number of
+conference rooms required.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: intervals = [[0,30], [5,10], [15,20]]
+Output: 2
+Explanation:
+Room 1: [0,30]
+Room 2: [5,10], then [15,20]
+
+Example 2:
+Input: intervals = [[7,10], [2,4]]
+Output: 1
+Explanation: No overlap, one room is enough
+
+Example 3:
+Input: intervals = [[1,5], [2,6], [3,7], [4,8]]
+Output: 4
+Explanation: All meetings overlap at time 4, need 4 rooms
+
+─────────────────────────────────────────────────────────────────────
+
+Visual for Example 1:
+Time: 0  5  10  15  20  25  30
+Room1: |=========================|
+Room2:    |==|     |====|
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 1 <= intervals.length <= 10^4
+- 0 <= start_i < end_i <= 10^6
 ```
 
 ```java
@@ -462,54 +501,49 @@ public int minMeetingRoomsV2(int[][] intervals) {
 
 **LeetCode 163** | **Difficulty:** Easy | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MISSING RANGES                                                           ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given a sorted unique integer array nums and two integers lower and      ║
-║  upper, return the smallest sorted list of ranges that cover every        ║
-║  missing number exactly. That is, no element of nums is in any range,     ║
-║  and each missing number is in one of the ranges.                         ║
-║                                                                           ║
-║  Each range [a,b] in the list should be output as:                        ║
-║  - "a->b" if a != b                                                       ║
-║  - "a" if a == b                                                          ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: nums = [0, 1, 3, 50, 75], lower = 0, upper = 99                   ║
-║  Output: ["2", "4->49", "51->74", "76->99"]                               ║
-║  Explanation:                                                             ║
-║  - 2 is missing                                                           ║
-║  - 4 to 49 are missing                                                    ║
-║  - 51 to 74 are missing                                                   ║
-║  - 76 to 99 are missing                                                   ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: nums = [-1], lower = -1, upper = -1                               ║
-║  Output: []                                                               ║
-║  Explanation: No missing numbers in range [-1, -1]                        ║
-║                                                                           ║
-║  Example 3:                                                               ║
-║  Input: nums = [], lower = 1, upper = 1                                   ║
-║  Output: ["1"]                                                            ║
-║                                                                           ║
-║  Example 4:                                                               ║
-║  Input: nums = [], lower = -3, upper = -1                                 ║
-║  Output: ["-3->-1"]                                                       ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - -10^9 <= lower <= upper <= 10^9                                        ║
-║  - 0 <= nums.length <= 100                                                ║
-║  - lower <= nums[i] <= upper                                              ║
-║  - All values of nums are unique                                          ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**MISSING RANGES — (LeetCode Premium - Full Problem Description)**
+
+```text
+Given a sorted unique integer array nums and two integers lower and
+upper, return the smallest sorted list of ranges that cover every
+missing number exactly. That is, no element of nums is in any range,
+and each missing number is in one of the ranges.
+
+Each range [a,b] in the list should be output as:
+- "a->b" if a != b
+- "a" if a == b
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: nums = [0, 1, 3, 50, 75], lower = 0, upper = 99
+Output: ["2", "4->49", "51->74", "76->99"]
+Explanation:
+- 2 is missing
+- 4 to 49 are missing
+- 51 to 74 are missing
+- 76 to 99 are missing
+
+Example 2:
+Input: nums = [-1], lower = -1, upper = -1
+Output: []
+Explanation: No missing numbers in range [-1, -1]
+
+Example 3:
+Input: nums = [], lower = 1, upper = 1
+Output: ["1"]
+
+Example 4:
+Input: nums = [], lower = -3, upper = -1
+Output: ["-3->-1"]
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- -10^9 <= lower <= upper <= 10^9
+- 0 <= nums.length <= 100
+- lower <= nums[i] <= upper
+- All values of nums are unique
 ```
 
 ```java
@@ -640,24 +674,37 @@ private String formatRange(int lower, int upper) {
 
 ### Historical Evolution
 
-**Array algorithms** originated with Kadane's algorithm (1984, Jay Kadane at Carnegie Mellon University) which solved the maximum subarray problem in O(N) time, replacing the O(N³) divide-and-conquer approach with a single-pass dynamic programming insight that tracks running sums. The technique was formalized and generalized by computer scientists studying dynamic programming optimization. Dijkstra's Dutch National Flag algorithm (1976, Edsger Dijkstra) solved three-way partitioning for sorting algorithms, introducing the three-pointer technique that partitions arrays around a pivot color-coded red, white, or blue—the algorithm influenced QuickSort variants and remains critical in database query planners. Boyer-Moore majority vote algorithm (1980, Robert Boyer and J Strother Moore) provided an elegant O(N) time, O(1) space solution for finding elements appearing more than N/2 times, using vote cancellation that emerged from formal verification research. Modern practice anchors these techniques in signal processing (audio codecs using Kadane's algorithm for peak detection since the 1990s), image processing (GPU-accelerated convolution filters implementing sliding window and prefix sum operations), and real-time analytics dashboards at companies like Netflix and YouTube for computing trending metrics.
+Array techniques have several roots. The maximum-subarray scan is credited to Jay Kadane (reported in Bentley's 1984 column). Dijkstra's Dutch national flag problem (*A Discipline of Programming*, 1976) gave the three-way partition. The Boyer–Moore majority-vote algorithm (technical report 1981) finds a majority element in one pass and `O(1)` space. Prefix sums are the serial form of parallel prefix computation (Ladner and Fischer, 1980).
 
----
+- **Dijkstra — 1976**: Dutch national flag three-way partition
+- **Ladner & Fischer — 1980**: Parallel prefix computation
+- **Boyer & Moore — 1981**: Majority vote in one pass
+- **Bentley — 1984**: Kadane's maximum-subarray scan
 
 ### Production Reality
 
 **Array** patterns introduce several production failure modes that learners must internalize:
 
-**Failure mode 1: Cyclic rotation with excessive memory allocation.** The naive approach to rotating arrays by k positions creates O(n) temporary buffers on each call. For a real-time trading system rotating order books 60 times per second with 10,000 orders, this allocates 600,000 order objects per second, triggering garbage collection pauses that cause latency spikes. LeetCode 189 (Rotate Array) passes in competition but times out in production with strict SLAs. Production impact: latency spikes above 99th percentile, missed trading windows, customer complaints.
+**Failure mode 1: Cyclic rotation with excessive memory allocation.** The naive approach to rotating arrays by k positions creates O(n) temporary buffers on each call. For a real-time trading system rotating order books 60 times per second with 10,000 orders, this allocates 600,000 order objects per second, triggering garbage collection pauses that cause latency spikes. LeetCode 189 (Rotate Array) passes in competition but times out in production with strict SLAs. Illustrative impact: latency spikes above 99th percentile, missed trading windows, customer complaints.
 
-**Failure mode 2: In-place rotation losing original data.** The 3-reverse algorithm for array rotation (`reverse(0,k)`, `reverse(k,n)`, `reverse(0,n)`) is elegant but destroys the original array during rotation. If code needs to preserve original order for rollback or audit, in-place rotation loses data irreversibly. Database query result sets rotated in-place cannot be re-sorted for alternative analyses. Production impact: data loss, inability to audit/replay operations, compliance violations in regulated industries.
+**Failure mode 2: In-place rotation losing original data.** The 3-reverse algorithm for array rotation (`reverse(0,k)`, `reverse(k,n)`, `reverse(0,n)`) is elegant but destroys the original array during rotation. If code needs to preserve original order for rollback or audit, in-place rotation loses data irreversibly. Database query result sets rotated in-place cannot be re-sorted for alternative analyses. Illustrative impact: data loss, inability to audit/replay operations, compliance violations in regulated industries.
 
-**Failure mode 3: Two-pointer fails on unsorted input.** Two-pointer algorithms like two-sum optimization assume the array is sorted or have predictable ordering. Applying two-pointer to find pairs in an unsorted array produces wrong answers—pointers move based on comparison, not original indices. Anomaly detection systems using two-pointer without verifying sort order miss fraud patterns. Production impact: incorrect fraud detection, missed compliance violations, financial loss.
+**Failure mode 3: Two-pointer fails on unsorted input.** Two-pointer algorithms like two-sum optimization assume the array is sorted or have predictable ordering. Applying two-pointer to find pairs in an unsorted array produces wrong answers—pointers move based on comparison, not original indices. Anomaly detection systems using two-pointer without verifying sort order miss fraud patterns. Illustrative impact: incorrect fraud detection, missed compliance violations, financial loss.
 
 **Debug workflow:** 1. Verify sort order assumption before applying two-pointer—add assertion `assert isSorted(arr)`. 2. Allocate temp buffer if memory permits: `int[] temp = new int[n]` for safety-critical rotations. 3. For O(1) space rotation, use the 3-reverse trick but document data loss risk. 4. Profile memory allocation rates in production-like load testing. 5. Test with maximum array sizes (e.g., 10^6 elements) to catch scaling issues before deployment.
 
-**Real-world anchor:** The 2012 Knight Capital trading algorithm loss ($440M in 45 minutes) was partially caused by array/queue management bugs—when order queues weren't properly rotated or reset after certain conditions, stale orders executed at wrong prices. The same failure mode as array rotation bugs in competitive programming, causing catastrophic financial impact.
+**Real-world anchor:** The 1988 Morris worm exploited a buffer overflow in the Unix `fingerd` service, which read input into a fixed-size buffer without checking its length. Array bounds are the oldest source of security bugs.
 
+
+---
+
+## 🏢 Enterprise Lens — Array Problems
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Time-series analysis, log processing, batch jobs |
+| **Failure modes** | Wrong initial value for all-negative arrays; off-by-one on rotations |
+| **Testing and verification** | Brute force `O(n²)` on random arrays |
 
 ---
 

@@ -1,39 +1,104 @@
-﻿**Navigation**: [< Previous](13_Tree_Plus_DFS_BFS.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Heap_Plus_GreedySelection.md)
+# 🧩 Graph + Traversal — Pattern Guide
 
-# Graph + Traversal Patterns — Combined Pattern Guide
+> **Navigation**: [← Tree + DFS/BFS](13_Tree_Plus_DFS_BFS.md) | [Chapter index](00_INDEX.md) | [Heap + Greedy Selection →](15_Heap_Plus_GreedySelection.md)
+
+## Graph + Traversal Patterns — Combined Pattern Guide
 
 **WHY this combination?** Graphs model relationships. BFS gives shortest unweighted path. DFS explores all reachable nodes. Dijkstra handles weighted graphs. Union-Find manages connected components. Choosing the right traversal is THE key skill.
 
 ### ⚠️ Constraint Lens
 
-### Historical Evolution
+## 🔗 Bridge — Where This Chapter Fits
 
-**Inventor / Originator:** Graph theory began with Euler (1736) and the Seven Bridges of Konigsberg. Tarjan (1972) invented SCC algorithms. BFS/DFS history is same as file 13.
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Graphs](../02_Data_Structures/01g_DS_Internals.md), [Tree + DFS/BFS](13_Tree_Plus_DFS_BFS.md) |
+| **You will learn** | Grid and adjacency-list DFS/BFS, visited sets, connected components, cycle detection, topological ordering |
+| **Leads to** | [Topological Sort](28_Topological_Sort_Pattern.md), [Union-Find](27_Union_Find_Pattern.md), [Shortest Paths](30_Shortest_Path_Pattern.md) |
+| **Abstraction level** | Tree traversal → **add a visited set** → components, cycles, ordering |
 
-**Predecessor context:** Graph algorithms before formal graph theory relied on trial-and-error. Finding strongly connected components required multiple passes with no clear methodology.
-
-**Evolution narrative:** Euler's 1736 paper founded graph theory. Tarjan's 1972 algorithm provided the first single-pass O(V+E) SCC solution using DFS with low-link values. BFS and DFS became the two fundamental graph traversal paradigms.
-
-**Modern practice:** Graph traversal underlies web indexing (Google's PageRank uses BFS), social networks, and dependency resolution. Tarjan's SCC algorithm is used in compilers and build systems.
-
-- **Euler 1736**: "Seven Bridges of Konigsberg" — founding paper of graph theory
-- **Tarjan SCC — 1972**: Single DFS pass with low-link values for O(V+E) SCC detection
-- **Moore BFS — 1959 / Dijkstra 1959**: Fundamental graph traversal algorithms
-- **Modern practice**: PageRank (BFS), compilers for dependency resolution (SCC)
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
 
 ---
 
-### Production Reality
+## 💬 Explain It Like a Study Partner — Graph + Traversal
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+### 1. The bottom line
 
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+A graph traversal is a tree traversal plus a visited set so cycles do not trap you.
 
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+### 2. The textbook core
+
+- Adjacency list: `O(V + E)` traversal.
+- BFS finds shortest paths in unweighted graphs; DFS finds components, cycles and finishing order.
+- Mark nodes visited when *enqueued* (BFS) to avoid duplicates.
+- Grids are implicit graphs: neighbours are the four (or eight) adjacent cells.
+
+### 3. The real-world analogy
+
+Exploring a **city with one-way streets**: you keep a map of visited intersections so you never loop.
+
+### 4. Walkthrough
+
+1. Count islands in a grid.
+2. Scan cells; on an unvisited `1`, start a DFS.
+3. The DFS marks the whole island visited.
+4. Each new start increments the count.
+
+> [!NOTE]
+> **Quick check:** Why mark visited on enqueue in BFS? *Otherwise the same node can be queued many times.*
+
+
+### 5. Check yourself
+
+**Q1.** Count islands in `[[1,1,0],[0,1,0],[1,0,1]]`.
+
+<details><summary>Answer</summary>
+
+**3**: the connected group at the top-left, the single cell at (2,0) and the single cell at (2,2).
+
+</details>
+
+**Q2.** In BFS, when should a node be marked visited?
+
+<details><summary>Answer</summary>
+
+When it is enqueued, otherwise it can be queued many times.
+
+</details>
+
+**Q3.** What extra bookkeeping does cycle detection in a directed graph need compared with an undirected one?
+
+<details><summary>Answer</summary>
+
+A three-state mark (unvisited, in progress, done): reaching an in-progress node is a back edge, hence a cycle.
+
+</details>
+
+---
+
+## Historical Evolution
+
+**Inventor / Originator:** Graph theory begins with Euler's 1736 solution of the Königsberg bridge problem. Linear-time DFS algorithms are due to Tarjan (strongly connected components, 1972); Kahn (1962) gave the queue-based topological sort and Tarjan (1976) the DFS-based one.
+
+**Predecessor context:** Dependency ordering and connectivity questions were solved by repeated scanning.
+
+**Evolution narrative:** Once DFS and BFS were available in `O(V+E)`, component counting, cycle detection, topological ordering and SCC condensation became routine building blocks.
+
+**Modern practice:** Build systems and package managers use topological order; compilers use SCCs; crawlers use BFS over the web graph. (PageRank is a separate iterative eigenvector computation, not a traversal.)
+
+- **Euler — 1736**: Seven Bridges of Königsberg
+- **Kahn — 1962**: Queue-based topological sorting
+- **Tarjan — 1972**: Strongly connected components with one DFS
+- **Tarjan — 1976**: DFS-based topological sort
+
+---
+
+## Production Reality
+
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -61,9 +126,9 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Choosing the Right Graph Algorithm
+## 🧠 Deep Intuition — Choosing the Right Graph Algorithm
 
-#### Graph Representation — The First Decision
+### Graph Representation — The First Decision
 
 Before choosing an algorithm, you must decide how to represent the graph. This decision affects both code complexity and performance:
 
@@ -74,19 +139,19 @@ Before choosing an algorithm, you must decide how to represent the graph. This d
 
 Most interview problems use adjacency lists because real-world graphs are sparse (each node has few connections relative to total nodes).
 
-#### Why BFS Guarantees Shortest Path (Unweighted)
+### Why BFS Guarantees Shortest Path (Unweighted)
 
 BFS explores nodes in **order of increasing distance from the source**. All nodes at distance 1 are explored before any node at distance 2. So the **first time you reach any node, you've reached it via the shortest path**. This is why BFS is the correct algorithm for unweighted shortest paths — it's a direct consequence of the level-by-level exploration.
 
 This does NOT work for weighted graphs — a path with more edges might have a lower total weight, and BFS doesn't account for edge weights.
 
-#### Why Dijkstra Is Correct — The Greedy Proof Sketch
+### Why Dijkstra Is Correct — The Greedy Proof Sketch
 
 Dijkstra always processes the unvisited node with the **smallest known distance**. Its correctness relies on one assumption: **all edge weights are non-negative.** When you process a node, you know its distance is final because any other path would go through an unprocessed node with a _larger_ distance, and since all edges are non-negative, that alternative path can only be _longer_.
 
 With negative edges, this assumption breaks — a longer path through a negative edge might turn out shorter. This is why Dijkstra fails on negative-weight graphs and you must use Bellman-Ford instead.
 
-#### Union-Find — The Power of Amortized O(1) Operations
+### Union-Find — The Power of Amortized O(1) Operations
 
 Union-Find achieves near-constant time per operation through two optimizations:
 
@@ -99,19 +164,18 @@ Together, these give **O(α(n))** amortized time per operation, where α is the 
 
 ## 🧠 WHEN TO RECOGNIZE
 
-```
-Problem type → Algorithm:
-├── "Shortest path" (unweighted) → BFS
-├── "Shortest path" (weighted, no negative) → Dijkstra
-├── "Shortest path" (negative edges) → Bellman-Ford
-├── "All pairs shortest path" → Floyd-Warshall
-├── "Connected components" → BFS/DFS or Union-Find
-├── "Cycle detection" → DFS (directed) or Union-Find (undirected)
-├── "Topological ordering" → Kahn's BFS or DFS
-├── "Minimum spanning tree" → Prim's or Kruskal's
-├── "Bridges/Articulation points" → Tarjan's DFS
-└── "Bipartite check" → BFS/DFS with 2-coloring
-```
+**Problem type → Algorithm:**
+
+- "Shortest path" (unweighted) → BFS
+- "Shortest path" (weighted, no negative) → Dijkstra
+- "Shortest path" (negative edges) → Bellman-Ford
+- "All pairs shortest path" → Floyd-Warshall
+- "Connected components" → BFS/DFS or Union-Find
+- "Cycle detection" → DFS (directed) or Union-Find (undirected)
+- "Topological ordering" → Kahn's BFS or DFS
+- "Minimum spanning tree" → Prim's or Kruskal's
+- "Bridges/Articulation points" → Tarjan's DFS
+- "Bipartite check" → BFS/DFS with 2-coloring
 
 ---
 
@@ -207,7 +271,7 @@ boolean union(int x, int y) {
 
 ---
 
-## � FULL WALKTHROUGH: Number of Islands (Grid DFS)
+## 🔬 FULL WALKTHROUGH: Number of Islands (Grid DFS)
 
 ```
 Problem: Count number of islands in a grid.
@@ -275,18 +339,19 @@ Time: O(V + E) | Space: O(V + E)
 
 ```
 EDGE CASES:
-┌──────────────────────────────────┬──────────────────────────────────────┐
-│ Edge Case                        │ Handling                             │
-├──────────────────────────────────┼──────────────────────────────────────┤
-│ Disconnected graph               │ BFS/DFS may miss components — loop!  │
-│ Self-loop                        │ Cycle detection catches this         │
-│ Empty graph (no edges)           │ All nodes are valid, indegree=0      │
-│ Grid with all 0s                 │ 0 islands                            │
-│ Grid with all 1s                 │ 1 island                             │
-│ Single node, no edges            │ Trivially works                      │
-│ Negative weights (Dijkstra)      │ Dijkstra FAILS! Use Bellman-Ford     │
-└──────────────────────────────────┴──────────────────────────────────────┘
+```
 
+| Edge Case | Handling |
+| --- | --- |
+| Disconnected graph | BFS/DFS may miss components — loop! |
+| Self-loop | Cycle detection catches this |
+| Empty graph (no edges) | All nodes are valid, indegree=0 |
+| Grid with all 0s | 0 islands |
+| Grid with all 1s | 1 island |
+| Single node, no edges | Trivially works |
+| Negative weights (Dijkstra) | Dijkstra FAILS! Use Bellman-Ford |
+
+```
 COMMON MISTAKES:
 1. BFS: Adding to visited AFTER dequeue instead of WHEN enqueueing
    Result: same node enqueued multiple times → TLE or wrong answer
@@ -311,17 +376,10 @@ COMMON MISTAKES:
 
 ---
 
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+## 📋 Practice Problems
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 ### Easy
 
@@ -423,6 +481,16 @@ COMMON MISTAKES:
 
 [← 13 Tree+DFS/BFS](13_Tree_Plus_DFS_BFS.md) | [15 Heap+Greedy →](15_Heap_Plus_GreedySelection.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Graph + Traversal
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Dependency resolution, social-graph reachability, network crawling, flood-fill tools |
+| **Failure modes** | Missing visited marks; recursion depth on large grids; treating directed edges as undirected |
+| **Testing and verification** | Randomised graph tests against a simple reference; test empty graph, disconnected graph, self-loops |
 
 ---
 

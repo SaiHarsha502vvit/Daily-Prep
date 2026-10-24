@@ -1,12 +1,75 @@
 # A4. Randomized Algorithms
 
-**Navigation**: [← A3: Lower Bounds & NP](A3_Lower_Bounds_And_NP.md) | [📚 Index](00_INDEX.md) | [Sorting Fundamentals →](02a_Sorting_Fundamentals.md)
+> **Navigation**: [← A3. Lower Bounds and…](A3_Lower_Bounds_And_NP.md) | [Chapter index](00_INDEX.md) | [A5. Designing Your Own Algorithms… →](A5_Designing_Your_Own_Algorithms.md)
 
 > **MIT 6.046J L9–L12 / KTH DD2352 / RWTH Aachen Randomized Algorithms foundation**
 >
 > "Randomization is the most powerful tool in algorithm design that most engineers have never formally studied. It is not luck — it is controlled probability used to defeat adversarial inputs and break worst-case barriers."
 
 ---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [A2 Complexity](A2_Complexity_FirstPrinciples.md), basic probability |
+| **You will learn** | Las Vegas vs Monte Carlo, indicator random variables, expected running time, universal hashing, randomized quicksort, Bloom filters |
+| **Leads to** | [Approximation](25_Online_Approximation_And_Linear_Programming.md), [Probabilistic DS](07d_Probabilistic_DS_Deep.md) |
+| **Abstraction level** | L7: using randomness as a design tool |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Randomized Algorithms
+
+### 1. The bottom line
+
+Randomness lets an algorithm be simple and fast on average while no single bad input can reliably hurt it.
+
+### 2. The textbook core
+
+- **Las Vegas:** always correct, random running time. **Monte Carlo:** fast, may be wrong with bounded probability.
+- **Linearity of expectation** (with indicator variables) computes expected costs without independence.
+- Randomized quicksort has expected O(n log n) for every input.
+- Amplify Monte Carlo success by repeating independent runs.
+
+### 3. The real-world analogy
+
+Choosing a **random pivot** is like shuffling a deck before dealing: no particular order can consistently ruin the game.
+
+### 4. Walkthrough
+
+1. Randomized quicksort on a sorted array.
+2. A random pivot splits the array roughly evenly in expectation.
+3. Expected depth is O(log n).
+4. No fixed input triggers the quadratic worst case.
+
+> [!NOTE]
+> **Quick check:** How do you reduce a Monte Carlo error from 1/4 to 1/16? *Run it twice independently and take the majority/OR as appropriate.*
+
+
+### 5. Check yourself
+
+**Q1.** Expected running time of randomised quicksort?
+
+<details><summary>Answer</summary>
+
+`O(n log n)` for every input, because the pivot choice is random rather than the input.
+
+</details>
+
+**Q2.** Las Vegas versus Monte Carlo?
+
+<details><summary>Answer</summary>
+
+Las Vegas always returns a correct answer but its running time is random; Monte Carlo has a fixed running time but may return a wrong answer with small probability.
+
+</details>
+
+---
+
 
 ## Table of Contents
 
@@ -402,22 +465,20 @@ Fix: **Randomize the hash seed per process startup.** Python 3.3+, Java 7u6+, Ru
 
 ## Summary
 
-```
-Concept                        │ Key Fact
-───────────────────────────────┼──────────────────────────────────────────────
-Las Vegas                      │ Always correct, random runtime
-Monte Carlo                    │ Always fast, sometimes wrong (probability ε)
-Markov's inequality            │ Pr[X ≥ t] ≤ E[X]/t — LV → MC conversion
-Linearity of expectation       │ E[X+Y] = E[X]+E[Y], even if dependent
-Indicator random variables     │ E[Σ Iᵢ] = Σ Pr[Aᵢ] — decompose complex expectations
-Randomized quicksort           │ O(n log n) expected comparisons, provably
-Proof key: Pr[i,j compared]    │ 2/(j-i+1) — both elegant and exact
-Universal hashing              │ Pr[h(x)=h(y)] ≤ 1/m for random h from family H
-Skip list expected height      │ O(log n) — n·(1/2)ᵏ < 1 when k > log n
-Bloom filter false positive    │ ≈ (1 - e^{-kn/m})^k, minimized by k=(m/n)ln2
-Randomization vs adversary     │ Enemy can't predict random choices → no worst case
-Yao minimax                    │ Best rand algo = best det algo on best distribution
-```
+| Concept | Key Fact |
+| --- | --- |
+| Las Vegas | Always correct, random runtime |
+| Monte Carlo | Always fast, sometimes wrong (probability ε) |
+| Markov's inequality | Pr[X ≥ t] ≤ E[X]/t — LV → MC conversion |
+| Linearity of expectation | E[X+Y] = E[X]+E[Y], even if dependent |
+| Indicator random variables | E[Σ Iᵢ] = Σ Pr[Aᵢ] — decompose complex expectations |
+| Randomized quicksort | O(n log n) expected comparisons, provably |
+| Proof key: Pr[i,j compared] | 2/(j-i+1) — both elegant and exact |
+| Universal hashing | Pr[h(x)=h(y)] ≤ 1/m for random h from family H |
+| Skip list expected height | O(log n) — n·(1/2)ᵏ < 1 when k > log n |
+| Bloom filter false positive | ≈ (1 - e^{-kn/m})^k, minimized by k=(m/n)ln2 |
+| Randomization vs adversary | Enemy can't predict random choices → no worst case |
+| Yao minimax | Best rand algo = best det algo on best distribution |
 
 ---
 
@@ -630,6 +691,16 @@ Collections.shuffle(arr, ThreadLocalRandom.current());
 
 *[← A3: Lower Bounds & NP](A3_Lower_Bounds_And_NP.md) | [Back to Index](00_INDEX.md)*
 
+
+---
+
+## 🏢 Enterprise Lens — Randomized Algorithms
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Hash tables, load balancing, sampling, cryptography, probabilistic data structures |
+| **Failure modes** | Weak random sources; reusing seeds across runs in tests; relying on expectation for latency-critical tails |
+| **Testing and verification** | Seed deterministically in tests; verify distribution and error rate empirically |
 
 ---
 

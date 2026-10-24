@@ -23,186 +23,103 @@
 
 ## 1. The CAP Theorem — The Fundamental Trade-off
 
-```
-  In a DISTRIBUTED system, you can have at most TWO of three:
+In a DISTRIBUTED system, you can have at most TWO of three:
 
-  ┌──────────────────────────────────────────────────────────────────────┐
-  │                                                                      │
-  │                    Consistency (C)                                   │
-  │                    ┌─────────────┐                                  │
-  │                    │ Every read  │                                  │
-  │                    │ gets the    │                                  │
-  │                    │ most recent │                                  │
-  │                    │ write       │                                  │
-  │                    └──────┬──────┘                                  │
-  │                          │                                          │
-  │              ┌───────────┴───────────┐                             │
-  │              │                       │                             │
-  │     ┌────────┴────────┐   ┌─────────┴────────┐                    │
-  │     │ Availability(A) │   │ Partition         │                    │
-  │     │ Every request   │   │ Tolerance (P)     │                    │
-  │     │ gets a response │   │ System works      │                    │
-  │     │ (not error)     │   │ despite network   │                    │
-  │     │                 │   │ partitions         │                    │
-  │     └─────────────────┘   └──────────────────┘                    │
-  │                                                                      │
-  │  IN PRACTICE: Network partitions WILL happen.                       │
-  │  So you really choose between:                                      │
-  │                                                                      │
-  │  CP (Consistency + Partition Tolerance):                             │
-  │  → Refuse requests during partition (return errors)                 │
-  │  → Examples: ZooKeeper, etcd, HBase, PostgreSQL (single primary)   │
-  │  → When: Financial data, inventory counts, leader election          │
-  │                                                                      │
-  │  AP (Availability + Partition Tolerance):                            │
-  │  → Return possibly stale data during partition                      │
-  │  → Examples: Cassandra, DynamoDB, CouchDB, DNS                     │
-  │  → When: Shopping carts, social feeds, caches                       │
-  │                                                                      │
-  └──────────────────────────────────────────────────────────────────────┘
-```
+**Consistency (C)**
+
+| Property | Meaning |
+| --- | --- |
+| **C**onsistency | Every read gets the most recent write |
+| **A**vailability | Every request gets a response (not an error) |
+| **P**artition tolerance | The system works despite network partitions |
+
+Network partitions WILL happen, so in practice you choose between:
+
+| Choice | During a partition | Examples | When to use |
+| --- | --- | --- | --- |
+| **CP** (consistency + partition tolerance) | Refuse requests (return errors) | ZooKeeper, etcd, HBase, PostgreSQL (single primary) | Financial data, inventory counts, leader election |
+| **AP** (availability + partition tolerance) | Return possibly stale data | Cassandra, DynamoDB, CouchDB, DNS | Shopping carts, social feeds, caches |
 
 ---
 
 ## 2. Raft Consensus — How Leaders Get Elected
 
+Raft is the consensus algorithm used by etcd (Kubernetes), CockroachDB, TiKV, Consul and RabbitMQ quorum queues.
+
+**Core idea:** one LEADER, the rest are FOLLOWERS. All writes go to the leader, and the leader replicates them to a majority.
+
+**Three states**
+
+```mermaid
+stateDiagram-v2
+  [*] --> Follower
+  Follower --> Candidate: election timeout, no leader heard
+  Candidate --> Leader: wins the election (majority of votes)
+  Candidate --> Follower: discovers a current leader or a higher term
+  Leader --> Follower: discovers a higher term
 ```
-  Raft is the consensus algorithm used by: etcd (Kubernetes), CockroachDB,
-  TiKV, Consul, RabbitMQ Quorum Queues.
 
-  CORE IDEA: One LEADER, rest are FOLLOWERS.
-  All writes go to leader. Leader replicates to majority.
+**How to read this diagram.** Every node starts as a follower. If it stops hearing from a leader, it becomes a candidate and asks for votes. A candidate that wins a majority becomes the leader.
 
+**Leader election**
 
-  THREE STATES:
-  ═════════════
+| Stage | Node-1 | Node-2 | Node-3 |
+| --- | --- | --- | --- |
+| Normal operation | LEADER (term 5), sends heartbeats to both followers | FOLLOWER (term 5), ACKs | FOLLOWER (term 5), ACKs |
+| Leader dies | DEAD ❌ | FOLLOWER: no heartbeat within the election timeout (about 150-300 ms) | FOLLOWER |
+| Timeout fires | DEAD ❌ | CANDIDATE (term 6): "Vote for me!" | FOLLOWER: "OK, I vote for Node-2" |
+| Majority reached (2 of 3) | DEAD ❌ | LEADER (term 6), sends heartbeats | FOLLOWER (term 6) |
 
-  Follower ──(timeout, no leader heard)──→ Candidate
-     ▲                                        │
-     │                                        │ (wins election)
-     │                                        ▼
-     └──────────(discovers new leader)──── Leader
+**Log replication (how writes work).** The client sends the leader `SET key=value`:
 
+1. The leader appends to its log: `[index:7, term:6, SET key=value]`.
+2. The leader sends an `AppendEntries` RPC to all followers.
+3. Followers append to their logs and respond with an ACK.
+4. When a MAJORITY responds (2 of 3), the leader COMMITS the entry (applies it to the state machine) and responds to the client with "SUCCESS".
+5. The next heartbeat tells the followers: "commit up to index 7".
+6. The followers apply the entry to their state machines.
 
-  LEADER ELECTION:
-  ════════════════
-
-  Normal operation:
-  ┌──────┐  heartbeat  ┌──────┐   heartbeat  ┌──────┐
-  │Node-1│────────────→│Node-2│─────────────→│Node-3│
-  │LEADER│             │FOLLOW│              │FOLLOW│
-  │Term:5│←────────────│Term:5│←─────────────│Term:5│
-  └──────┘  ACK        └──────┘    ACK       └──────┘
-
-  Leader dies:
-  ┌──────┐             ┌──────┐              ┌──────┐
-  │Node-1│     ❌      │Node-2│              │Node-3│
-  │ DEAD │             │FOLLOW│              │FOLLOW│
-  └──────┘             └──────┘              └──────┘
-                       (no heartbeat for 150-300ms)
-                       │
-                       ▼ timeout!
-
-  ┌──────┐             ┌──────────┐          ┌──────┐
-  │Node-1│     ❌      │Node-2    │          │Node-3│
-  │ DEAD │             │CANDIDATE │          │FOLLOW│
-  └──────┘             │Term: 6   │          └──────┘
-                       │Vote me!  │──────────→ "OK, I vote for Node-2"
-                       └──────────┘
-                       │
-                       ▼ Got majority (2 of 3)!
-
-  ┌──────┐             ┌──────────┐          ┌──────┐
-  │Node-1│     ❌      │Node-2    │          │Node-3│
-  │ DEAD │             │LEADER    │          │FOLLOW│
-  └──────┘             │Term: 6   │──────────→│Term:6│
-                       └──────────┘ heartbeat └──────┘
-
-
-  LOG REPLICATION (how writes work):
-  ══════════════════════════════════
-
-  Client → Leader: "SET key=value"
-
-  1. Leader appends to its log: [index:7, term:6, SET key=value]
-  2. Leader sends AppendEntries RPC to all followers
-  3. Followers append to their logs, respond with ACK
-  4. When MAJORITY responds (2 of 3):
-     → Leader COMMITS entry (applies to state machine)
-     → Leader responds to client: "SUCCESS"
-  5. Next heartbeat tells followers: "commit up to index 7"
-  6. Followers apply to their state machines
-
-  MAJORITY = (N/2) + 1
-  3-node cluster: majority = 2 → tolerates 1 failure
-  5-node cluster: majority = 3 → tolerates 2 failures
-```
+Majority = (N/2) + 1. A 3-node cluster has a majority of 2 and tolerates 1 failure. A 5-node cluster has a majority of 3 and tolerates 2 failures.
 
 ---
 
 ## 3. Two-Phase Commit (2PC) — Distributed Transactions
 
+Two-phase commit (2PC) is for when you NEED atomic transactions across multiple databases or services.
+
+```mermaid
+sequenceDiagram
+  participant C as Coordinator
+  participant A as Participant A
+  participant B as Participant B
+  Note over C,B: PHASE 1: PREPARE (vote)
+  C->>A: prepare to commit T1
+  C->>B: prepare to commit T1
+  Note over A: take locks, write to WAL, ready to commit
+  Note over B: take locks, write to WAL, ready to commit
+  A-->>C: vote YES ✅
+  B-->>C: vote YES ✅
+  Note over C: ALL voted YES, so proceed to phase 2
+  Note over C,B: PHASE 2: COMMIT
+  C->>A: COMMIT T1
+  C->>B: COMMIT T1
+  Note over A: apply changes, release locks
+  Note over B: apply changes, release locks
+  A-->>C: ACK ✅
+  B-->>C: ACK ✅
 ```
-  When you NEED atomic transactions across multiple databases/services.
 
+**How to read this diagram.** In phase 1 every participant votes after preparing. If all vote YES, phase 2 commits on every participant.
 
-  PHASE 1: PREPARE (vote)
-  ════════════════════════
+**If any participant votes NO,** the coordinator sends ABORT to all participants. Everyone rolls back and releases their locks.
 
-  ┌─── Coordinator ────────────────────────────────────────────────────┐
-  │  "Everyone: prepare to commit transaction T1"                       │
-  └──────┬───────────────────────────┬──────────────────────────────────┘
-         │                           │
-         ▼                           ▼
-  ┌── Participant A ──┐     ┌── Participant B ──┐
-  │ Take locks         │     │ Take locks         │
-  │ Write to WAL       │     │ Write to WAL       │
-  │ Ready to commit    │     │ Ready to commit    │
-  │ → vote YES ✅     │     │ → vote YES ✅     │
-  └────────┬───────────┘     └────────┬───────────┘
-           │                           │
-           └───────────┬───────────────┘
-                       ▼
-  ┌─── Coordinator ────────────────────────────────────────────────────┐
-  │  ALL voted YES → proceed to Phase 2                                 │
-  └─────────────────────────────────────────────────────────────────────┘
+**The problems with 2PC**
 
+1. **Blocking:** if the coordinator crashes after phase 1 but before phase 2, participants are stuck holding locks, waiting forever.
+2. **Slow:** at least 2 network round trips (4 messages per participant).
+3. **Single point of failure:** a coordinator crash means stuck transactions.
 
-  PHASE 2: COMMIT
-  ════════════════
-
-  ┌─── Coordinator ────────────────────────────────────────────────────┐
-  │  "Everyone: COMMIT transaction T1"                                  │
-  └──────┬───────────────────────────┬──────────────────────────────────┘
-         │                           │
-         ▼                           ▼
-  ┌── Participant A ──┐     ┌── Participant B ──┐
-  │ Apply changes      │     │ Apply changes      │
-  │ Release locks      │     │ Release locks      │
-  │ → ACK ✅          │     │ → ACK ✅          │
-  └────────────────────┘     └────────────────────┘
-
-
-  IF ANY PARTICIPANT VOTES NO:
-  ════════════════════════════
-
-  Coordinator sends ABORT to all participants.
-  Everyone rolls back. Locks released.
-
-
-  THE PROBLEM WITH 2PC:
-  ═════════════════════
-
-  1. BLOCKING: If coordinator crashes after Phase 1 but before Phase 2,
-     participants are stuck holding locks, waiting forever!
-
-  2. SLOW: 2 network round-trips minimum (4 messages × N participants)
-
-  3. SINGLE POINT OF FAILURE: Coordinator crash = stuck transactions
-
-  THIS IS WHY microservices prefer the SAGA pattern instead.
-  2PC is used within a single system (e.g., database internal).
-```
+This is why microservices prefer the SAGA pattern instead. 2PC is used within a single system (for example inside a database).
 
 ---
 
@@ -218,57 +135,57 @@ This exposes the fatal flaw of 2PC: **Blocking**. The participants are stuck hol
 
 ## 4. Consistent Hashing — How Data Is Distributed
 
+```text
+PROBLEM: You have 4 cache servers. Which server holds key "user:42"?
+
+NAIVE APPROACH: server = hash(key) % 4
+Works until you add/remove a server → ALL keys remap! Cache invalidation storm.
 ```
-  PROBLEM: You have 4 cache servers. Which server holds key "user:42"?
 
-  NAIVE APPROACH: server = hash(key) % 4
-  Works until you add/remove a server → ALL keys remap! Cache invalidation storm.
+**Consistent hashing**
 
+```text
+Imagine a ring (0 to 2^32-1)
 
-  CONSISTENT HASHING:
-  ═══════════════════
+                      0 (= 2^32)
+                     ╱    ╲
+                   ╱        ╲
+                 ╱            ╲
+Server-A (pos 100)            Server-B (pos 800)
+               ╲                ╱
+                 ╲            ╱
+                   ╲        ╱
+                     ╲    ╱
+                Server-C (pos 500)
 
-  Imagine a ring (0 to 2^32-1)
+To find which server owns key "user:42":
+1. Hash the key: hash("user:42") = 350
+2. Walk clockwise from 350
+3. First server you hit: Server-C (at position 500)
+4. Server-C owns "user:42"
+```
 
-                        0 (= 2^32)
-                       ╱    ╲
-                     ╱        ╲
-                   ╱            ╲
-  Server-A (pos 100)            Server-B (pos 800)
-                 ╲                ╱
-                   ╲            ╱
-                     ╲        ╱
-                       ╲    ╱
-                  Server-C (pos 500)
+**WHEN SERVER-D (pos 650) IS ADDED**
 
-  To find which server owns key "user:42":
-  1. Hash the key: hash("user:42") = 350
-  2. Walk clockwise from 350
-  3. First server you hit: Server-C (at position 500)
-  4. Server-C owns "user:42"
+```text
+Only keys between Server-C(500) and Server-D(650) remap!
+Keys at 350 (→ still Server-C), 700 (→ now Server-D, was Server-B)
 
+Instead of ALL keys moving → only ~1/N keys move. Minimal disruption.
+```
 
-  WHEN SERVER-D (pos 650) IS ADDED:
-  ══════════════════════════════════
+**VIRTUAL NODES (vnodes)**
 
-  Only keys between Server-C(500) and Server-D(650) remap!
-  Keys at 350 (→ still Server-C), 700 (→ now Server-D, was Server-B)
+```text
+Problem: With few servers, distribution is uneven.
+Solution: Each server gets multiple positions on the ring.
 
-  Instead of ALL keys moving → only ~1/N keys move. Minimal disruption.
+Server-A: vnodes at positions [100, 300, 700, 950]
+Server-B: vnodes at positions [200, 450, 600, 850]
 
+Now the ring is more evenly divided.
 
-  VIRTUAL NODES (vnodes):
-  ═══════════════════════
-
-  Problem: With few servers, distribution is uneven.
-  Solution: Each server gets multiple positions on the ring.
-
-  Server-A: vnodes at positions [100, 300, 700, 950]
-  Server-B: vnodes at positions [200, 450, 600, 850]
-
-  Now the ring is more evenly divided.
-
-  USED BY: Cassandra, DynamoDB, Redis Cluster, Memcached, CDNs
+USED BY: Cassandra, DynamoDB, Redis Cluster, Memcached, CDNs
 ```
 
 ---
@@ -285,56 +202,56 @@ The random hashing of just 3 server IP addresses placed them unevenly on the rin
 
 ## 5. Leader Election — Who's in Charge
 
+```text
+Many systems need ONE leader for coordination:
+- Database primary (accepts writes)
+- Kafka partition leader (handles produce/consume)
+- Cron job runner (only one should execute)
+- Cache invalidation coordinator
 ```
-  Many systems need ONE leader for coordination:
-  - Database primary (accepts writes)
-  - Kafka partition leader (handles produce/consume)
-  - Cron job runner (only one should execute)
-  - Cache invalidation coordinator
 
+**USING ZOOKEEPER/etcd (external coordinator)**
 
-  USING ZOOKEEPER/etcd (external coordinator):
-  ═════════════════════════════════════════════
+```text
+1. All nodes try to create an EPHEMERAL node: /election/leader
+2. Only ONE succeeds (atomic create) → becomes leader
+3. Others watch the node for deletion
+4. If leader dies → ephemeral node auto-deleted (session timeout)
+5. Watchers notified → race to create /election/leader again
+6. First one wins → new leader
+```
 
-  1. All nodes try to create an EPHEMERAL node: /election/leader
-  2. Only ONE succeeds (atomic create) → becomes leader
-  3. Others watch the node for deletion
-  4. If leader dies → ephemeral node auto-deleted (session timeout)
-  5. Watchers notified → race to create /election/leader again
-  6. First one wins → new leader
+**USING REDIS (Redlock)**
 
+```text
+SET leader_lock "node-1" NX PX 30000
+(NX = only if not exists, PX = expire in 30 seconds)
 
-  USING REDIS (Redlock):
-  ══════════════════════
+If SET succeeds: you're the leader
+Must RENEW before 30s expires (heartbeat)
+If fails: someone else is leader, retry periodically
 
-  SET leader_lock "node-1" NX PX 30000
-  (NX = only if not exists, PX = expire in 30 seconds)
+⚠️ Single Redis = single point of failure
+Redlock algorithm: acquire lock on majority of Redis instances
+```
 
-  If SET succeeds: you're the leader
-  Must RENEW before 30s expires (heartbeat)
-  If fails: someone else is leader, retry periodically
+**Using database**
 
-  ⚠️ Single Redis = single point of failure
-  Redlock algorithm: acquire lock on majority of Redis instances
+```text
+-- Leader table with optimistic locking
+CREATE TABLE leader_election (
+    id INT PRIMARY KEY DEFAULT 1,
+    leader_id VARCHAR(255),
+    heartbeat TIMESTAMP,
+    CHECK (id = 1)  -- only one row ever
+);
 
-
-  USING DATABASE:
-  ═══════════════
-
-  -- Leader table with optimistic locking
-  CREATE TABLE leader_election (
-      id INT PRIMARY KEY DEFAULT 1,
-      leader_id VARCHAR(255),
-      heartbeat TIMESTAMP,
-      CHECK (id = 1)  -- only one row ever
-  );
-
-  -- Try to become leader (if no recent heartbeat):
-  UPDATE leader_election
-  SET leader_id = 'node-1', heartbeat = NOW()
-  WHERE heartbeat < NOW() - INTERVAL '30 seconds';
-  -- If rows affected = 1: you're the leader
-  -- If rows affected = 0: someone else is alive
+-- Try to become leader (if no recent heartbeat):
+UPDATE leader_election
+SET leader_id = 'node-1', heartbeat = NOW()
+WHERE heartbeat < NOW() - INTERVAL '30 seconds';
+-- If rows affected = 1: you're the leader
+-- If rows affected = 0: someone else is alive
 ```
 
 ---
@@ -351,40 +268,41 @@ You must use **Fencing Tokens**. When a lock is acquired, the lock service must 
 
 ## 6. CRDT — Conflict-Free Replicated Data Types
 
+```text
+IN AP SYSTEMS (eventual consistency), concurrent writes can conflict.
+
+Node-A: counter = 5, increment → counter = 6
+Node-B: counter = 5, increment → counter = 6  (simultaneously)
+
+When they sync: counter should be 7, but both say 6!
+
+
+CRDT SOLUTION: Design data structures that MERGE without conflicts.
 ```
-  IN AP SYSTEMS (eventual consistency), concurrent writes can conflict.
 
-  Node-A: counter = 5, increment → counter = 6
-  Node-B: counter = 5, increment → counter = 6  (simultaneously)
+**G-COUNTER (Grow-only Counter)**
 
-  When they sync: counter should be 7, but both say 6!
+```text
+Each node tracks its OWN increments:
 
+Node-A state: {A: 3, B: 0, C: 0}  → total = 3
+Node-B state: {A: 0, B: 5, C: 0}  → total = 5
+Node-C state: {A: 0, B: 0, C: 2}  → total = 2
 
-  CRDT SOLUTION: Design data structures that MERGE without conflicts.
+Merge: take MAX of each node's counter:
+Merged: {A: 3, B: 5, C: 2} → total = 10 ✅
 
+No conflicts! No coordination needed! Works offline!
+```
 
-  G-COUNTER (Grow-only Counter):
-  ══════════════════════════════
+**Real uses**
 
-  Each node tracks its OWN increments:
-
-  Node-A state: {A: 3, B: 0, C: 0}  → total = 3
-  Node-B state: {A: 0, B: 5, C: 0}  → total = 5
-  Node-C state: {A: 0, B: 0, C: 2}  → total = 2
-
-  Merge: take MAX of each node's counter:
-  Merged: {A: 3, B: 5, C: 2} → total = 10 ✅
-
-  No conflicts! No coordination needed! Works offline!
-
-
-  REAL USES:
-  ══════════
-  • Redis CRDTs (Redis Enterprise)
-  • Riak (distributed database)
-  • Automerge (collaborative editing library)
-  • Shopping carts (add items from multiple devices)
-  • Like counters (social media)
+```text
+• Redis CRDTs (Redis Enterprise)
+• Riak (distributed database)
+• Automerge (collaborative editing library)
+• Shopping carts (add items from multiple devices)
+• Like counters (social media)
 ```
 
 ---
@@ -403,66 +321,37 @@ NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure).
 
 ## 7. Circuit Breaker — Failing Fast and Recovering
 
+**Problem.** Service B is down and Service A keeps calling it. 100 requests → 100 timeouts → 100 × 30 s = 50 minutes of wasted threads.
+
+**Circuit breaker: detailed state machine**
+
+```mermaid
+stateDiagram-v2
+  [*] --> CLOSED
+  CLOSED --> OPEN: failure threshold reached
+  OPEN --> HALF_OPEN: wait duration expires
+  HALF_OPEN --> CLOSED: test calls succeed
+  HALF_OPEN --> OPEN: test calls fail (timer resets)
+  state "CLOSED (normal operation)" as CLOSED
+  state "OPEN (fail fast)" as OPEN
+  state "HALF-OPEN (testing recovery)" as HALF_OPEN
 ```
-  PROBLEM: Service B is down. Service A keeps calling it.
-  100 requests → 100 timeouts → 100 × 30s = 50 minutes of wasted threads!
 
+**How to read this diagram.** The breaker moves between three states. CLOSED lets everything through, OPEN blocks everything, and HALF-OPEN tests whether the service has recovered.
 
-  CIRCUIT BREAKER — DETAILED STATE MACHINE:
-  ═════════════════════════════════════════════════
+| State | What happens |
+| --- | --- |
+| **CLOSED** (normal operation) | ✓ All requests pass through to Service B.<br>✓ Failures are tracked in a sliding window (the last N calls).<br>✓ A success resets the failure count.<br>If failures reach the threshold (for example 5 failures in 10 calls), the circuit OPENS. |
+| **OPEN** (fail fast) | ✗ ALL requests FAIL IMMEDIATELY (no call to Service B).<br>✗ A fallback or error is returned to the caller.<br>✓ Service B is protected from being overwhelmed.<br>✓ Threads don't block on timeouts.<br>A timer runs for `waitDurationInOpenState` (for example 60 seconds). When it expires, the circuit goes HALF-OPEN. |
+| **HALF-OPEN** (testing recovery) | A limited number of test requests are allowed through to Service B.<br>If the test requests SUCCEED, the circuit CLOSES (Service B recovered) and the failure count is reset.<br>If they FAIL, the circuit re-OPENS (Service B is still broken) and the timer is reset. |
 
-  ┌─ STATE 1: CLOSED (Normal Operation) ────────────────────────────────────────┐
-  │                                                                              │
-  │  ┌────────────────────────────────────────────────────────────────────┐     │
-  │  │  ✓ All requests pass through to Service B                           │     │
-  │  │  ✓ Failures tracked in sliding window (last N calls)               │     │
-  │  │  ✓ Success resets failure count                                     │     │
-  │  │                                                                     │     │
-  │  │  IF failures >= threshold (e.g., 5 failures in 10 calls)           │     │
-  │  │  THEN ────────────────────────────────────────────────►  OPEN       │     │
-  │  └────────────────────────────────────────────────────────────────────┘     │
-  └──────────────────────────────────────────────────────────────────────────────┘
-                                       │
-                                       │ failure threshold reached
-                                       ▼
-  ┌─ STATE 2: OPEN (Fail Fast) ─────────────────────────────────────────────────┐
-  │                                                                              │
-  │  ┌────────────────────────────────────────────────────────────────────┐     │
-  │  │  ✗ ALL requests FAIL IMMEDIATELY (no call to Service B!)           │     │
-  │  │  ✗ Return fallback / error to caller                               │     │
-  │  │  ✓ Protects Service B from being overwhelmed                       │     │
-  │  │  ✓ Threads don't block on timeouts                                 │     │
-  │  │                                                                     │     │
-  │  │  TIMER RUNNING: waitDurationInOpenState (e.g., 60 seconds)         │     │
-  │  │  IF timer expires ───────────────────────────────────►  HALF-OPEN  │     │
-  │  └────────────────────────────────────────────────────────────────────┘     │
-  └──────────────────────────────────────────────────────────────────────────────┘
-                                       │
-                                       │ timeout expires
-                                       ▼
-  ┌─ STATE 3: HALF-OPEN (Testing Recovery) ─────────────────────────────────────┐
-  │                                                                              │
-  │  ┌────────────────────────────────────────────────────────────────────┐     │
-  │  │  ? ONE test request allowed through to Service B                   │     │
-  │  │                                                                     │     │
-  │  │  IF test request SUCCEEDS:                                         │     │
-  │  │     → Circuit CLOSED (Service B recovered!)                        │     │
-  │  │     → Reset failure count, resume normal operation                 │     │
-  │  │                                                                     │     │
-  │  │  IF test request FAILS:                                            │     │
-  │  │     → Circuit re-OPEN (Service B still broken)                     │     │
-  │  │     → Reset timer, wait another waitDurationInOpenState            │     │
-  │  └────────────────────────────────────────────────────────────────────┘     │
-  └──────────────────────────────────────────────────────────────────────────────┘
+**Production Resilience4j config example**
 
-  ╔═══════════════════════════════════════════════════════════════════════╗   │
-  ║  PRODUCTION RESILIENCE4J CONFIG EXAMPLE                              ║   │
-  ║  ─────────────────────────────────────────────────────────────────   ║   │
-  ║  failureRateThreshold: 50        # Open if 50%+ calls fail            ║   │
-  ║  waitDurationInOpenState: 60s    # Test after 60 seconds              ║   │
-  ║  slidingWindowSize: 10           # Track last 10 calls                ║   │
-  ║  minimumNumberOfCalls: 5         # Need 5 calls before evaluating     ║   │
-  ╚═══════════════════════════════════════════════════════════════════════╝   │
+```yaml
+failureRateThreshold: 50        # Open if 50%+ of calls fail
+waitDurationInOpenState: 60s    # Test again after 60 seconds
+slidingWindowSize: 10           # Track the last 10 calls
+minimumNumberOfCalls: 5         # Need 5 calls before evaluating
 ```
 
 ```java
@@ -500,48 +389,34 @@ Retry Storms. If Service B is struggling and timing out, Service A aggressively 
 
 ## 8. Idempotency — Safe Retries in Distributed Systems
 
+**Problem.** The client sends "transfer $100", the network times out, and the client doesn't know whether it succeeded. If it retries "transfer $100", was $200 transferred?
+
+**Idempotent** means the same operation applied multiple times gives the same result.
+
+| Naturally idempotent | NOT idempotent |
+| --- | --- |
+| `GET /users/42` | `POST /transfers {amount: 100}` |
+| `PUT /users/42 {name:"H"}` | `POST /orders` (creates a new one each time) |
+| `DELETE /users/42` | `counter++` |
+| `SET key=value` | append to a list |
+
+**Making non-idempotent operations safe: use an idempotency key.**
+
+The client sends `POST /transfers` with the header `Idempotency-Key: "txn-abc-123"` (a UUID generated by the client) and the body `{from: "A", to: "B", amount: 100}`.
+
+```mermaid
+flowchart TD
+  R["1. Receive the request with key 'txn-abc-123'"] --> Q{"2. SELECT * FROM idempotency_keys<br/>WHERE key = 'txn-abc-123'"}
+  Q -->|"FOUND"| F["Return the stored response (already processed)"]
+  Q -->|"NOT FOUND"| P["3. Process the transfer (debit A, credit B)"]
+  P --> S["4. INSERT INTO idempotency_keys (key, response, created_at)<br/>VALUES ('txn-abc-123', '{success: true}', NOW())"]
+  S --> RE["5. Return the response"]
 ```
-  PROBLEM: Client sends "transfer $100" → network timeout → Did it succeed?
-  Client retries "transfer $100" → now $200 was transferred?!
 
+**How to read this diagram.** The server looks up the key first. A known key returns the stored response without redoing the work.
 
-  IDEMPOTENT = Same operation applied multiple times = same result.
-
-  NATURALLY IDEMPOTENT:       NOT IDEMPOTENT:
-  GET /users/42               POST /transfers {amount: 100}
-  PUT /users/42 {name:"H"}   POST /orders (creates new each time)
-  DELETE /users/42            increment counter++
-  SET key=value               append to list
-
-
-  MAKING NON-IDEMPOTENT OPERATIONS SAFE:
-  ═══════════════════════════════════════
-
-  Use an IDEMPOTENCY KEY:
-
-  Client → POST /transfers
-           Idempotency-Key: "txn-abc-123"  (UUID generated by client)
-           Body: {from: "A", to: "B", amount: 100}
-
-  Server:
-  ┌──────────────────────────────────────────────────────────────────────┐
-  │                                                                      │
-  │  1. Receive request with key "txn-abc-123"                          │
-  │  2. Check: SELECT * FROM idempotency_keys WHERE key = 'txn-abc-123'│
-  │     ├── FOUND: Return stored response (already processed!)         │
-  │     └── NOT FOUND: Continue...                                      │
-  │  3. Process transfer (debit A, credit B)                            │
-  │  4. Store: INSERT INTO idempotency_keys                             │
-  │            (key, response, created_at)                               │
-  │            VALUES ('txn-abc-123', '{success: true}', NOW())         │
-  │  5. Return response                                                  │
-  │                                                                      │
-  │  Steps 3-4 happen in SAME database transaction!                     │
-  │                                                                      │
-  └──────────────────────────────────────────────────────────────────────┘
-
-  Now client can safely retry. Same key → same (stored) response.
-```
+> [!IMPORTANT]
+> Steps 3 and 4 happen in the SAME database transaction. Now the client can safely retry: the same key gives the same (stored) response.
 
 ---
 
@@ -557,57 +432,57 @@ Because the first request hasn't committed yet, the `Idempotency-Key` check in t
 
 ## 9. Distributed Locking — Mutual Exclusion Across Services
 
+```text
+PROBLEM: Two instances of "report-generator" service both try to
+generate the same monthly report at the same time → duplicates.
+
+Need: Only ONE instance runs the report at a time.
+In one JVM: synchronized or ReentrantLock.
+Across JVMs/services: DISTRIBUTED LOCK.
 ```
-  PROBLEM: Two instances of "report-generator" service both try to
-  generate the same monthly report at the same time → duplicates.
 
-  Need: Only ONE instance runs the report at a time.
-  In one JVM: synchronized or ReentrantLock.
-  Across JVMs/services: DISTRIBUTED LOCK.
+**Redis-based lock**
 
+```text
+ACQUIRE:
+SET report_lock "instance-1" NX PX 30000
+// NX: only if key doesn't exist (atomic check-and-set)
+// PX 30000: auto-expire in 30 seconds (prevent deadlock if holder crashes)
 
-  REDIS-BASED LOCK:
-  ═════════════════
+If SET returns OK → lock acquired!
+If SET returns nil → lock held by someone else → retry or abort
 
-  ACQUIRE:
-  SET report_lock "instance-1" NX PX 30000
-  // NX: only if key doesn't exist (atomic check-and-set)
-  // PX 30000: auto-expire in 30 seconds (prevent deadlock if holder crashes)
+RELEASE:
+// MUST verify you're the owner before deleting!
+// Lua script for atomicity:
+if redis.call("GET", KEYS[1]) == ARGV[1] then
+    return redis.call("DEL", KEYS[1])
+else
+    return 0
+end
 
-  If SET returns OK → lock acquired!
-  If SET returns nil → lock held by someone else → retry or abort
+WHY Lua script? Between GET and DEL, lock might have expired
+and been acquired by someone else. Lua runs atomically in Redis.
+```
 
-  RELEASE:
-  // MUST verify you're the owner before deleting!
-  // Lua script for atomicity:
-  if redis.call("GET", KEYS[1]) == ARGV[1] then
-      return redis.call("DEL", KEYS[1])
-  else
-      return 0
-  end
+**⚠️ the fencing token problem**
 
-  WHY Lua script? Between GET and DEL, lock might have expired
-  and been acquired by someone else. Lua runs atomically in Redis.
+```text
+Timeline:
+Client-1 acquires lock (token: 34) → starts work
+Client-1 has long GC pause → lock expires!
+Client-2 acquires lock (token: 35) → starts work
+Client-1 GC ends → thinks it still holds lock → writes to DB!
 
+Now BOTH wrote to DB. Lock didn't protect!
 
-  ⚠️ THE FENCING TOKEN PROBLEM:
-  ═════════════════════════════
+SOLUTION: Fencing tokens
+Each lock acquisition gets an incrementing token.
+Database rejects writes with token < last seen token.
 
-  Timeline:
-  Client-1 acquires lock (token: 34) → starts work
-  Client-1 has long GC pause → lock expires!
-  Client-2 acquires lock (token: 35) → starts work
-  Client-1 GC ends → thinks it still holds lock → writes to DB!
-
-  Now BOTH wrote to DB. Lock didn't protect!
-
-  SOLUTION: Fencing tokens
-  Each lock acquisition gets an incrementing token.
-  Database rejects writes with token < last seen token.
-
-  Client-1 writes with token 34 → accepted
-  Client-2 writes with token 35 → accepted
-  Client-1 retries with token 34 → REJECTED (34 < 35)
+Client-1 writes with token 34 → accepted
+Client-2 writes with token 35 → accepted
+Client-1 retries with token 34 → REJECTED (34 < 35)
 ```
 
 ---
@@ -624,81 +499,67 @@ A single Redis node is a single point of failure. If the master crashes _after_ 
 
 ## 10. Outbox Pattern — Reliable Event Publishing
 
+**Problem**
+
+```text
+@Transactional
+public void createOrder(OrderRequest req) {
+    Order order = new Order(req);
+    orderRepo.save(order);                    // DB write
+    kafkaTemplate.send("order-events", new OrderCreated(order));  // Kafka publish
+}
+
+What if DB commit succeeds but Kafka publish fails?
+→ Order exists in DB but no event published → other services never know!
+
+What if Kafka publish succeeds but DB commit fails?
+→ Event published but no order exists → downstream processes phantom data!
+
+You CANNOT have an atomic transaction across DB + Kafka.
 ```
-  PROBLEM:
-  ════════
 
-  @Transactional
-  public void createOrder(OrderRequest req) {
-      Order order = new Order(req);
-      orderRepo.save(order);                    // DB write
-      kafkaTemplate.send("order-events", new OrderCreated(order));  // Kafka publish
-  }
+**Step 1:** write the event to an OUTBOX TABLE in the SAME database transaction.
 
-  What if DB commit succeeds but Kafka publish fails?
-  → Order exists in DB but no event published → other services never know!
+```java
+@Transactional
+public void createOrder(OrderRequest req) {
+    Order order = new Order(req);
+    orderRepo.save(order);
 
-  What if Kafka publish succeeds but DB commit fails?
-  → Event published but no order exists → downstream processes phantom data!
-
-  You CANNOT have an atomic transaction across DB + Kafka.
-
-
-  SOLUTION: TRANSACTIONAL OUTBOX
-  ═══════════════════════════════
-
-  Step 1: Write event to an OUTBOX TABLE in the SAME database transaction.
-
-  @Transactional
-  public void createOrder(OrderRequest req) {
-      Order order = new Order(req);
-      orderRepo.save(order);
-
-      // Same transaction! Both succeed or both fail.
-      OutboxEvent event = new OutboxEvent(
-          "OrderCreated",
-          objectMapper.writeValueAsString(new OrderCreatedEvent(order))
-      );
-      outboxRepo.save(event);
-  }
-
-  -- Outbox table:
-  -- ┌────────────────────────────────────────────────────────────┐
-  -- │ id │ event_type    │ payload          │ published │ created │
-  -- ├────────────────────────────────────────────────────────────┤
-  -- │ 1  │ OrderCreated  │ {"orderId":42,...}│ false     │ 10:30  │
-  -- └────────────────────────────────────────────────────────────┘
-
-  Step 2: Separate process reads unpublished events and sends to Kafka.
-
-  OPTION A: Polling publisher (simplest)
-  Every 1 second:
-    SELECT * FROM outbox WHERE published = false ORDER BY created_at
-    For each event: kafkaTemplate.send(event)
-    If Kafka ACK: UPDATE outbox SET published = true WHERE id = ?
-
-  OPTION B: CDC (Change Data Capture) — Debezium
-  Reads database WAL (Write-Ahead Log)
-  Detects INSERTs into outbox table
-  Automatically publishes to Kafka
-  No polling! Real-time! More complex to set up.
-
-
-  ┌── Service ──────────┐     ┌── Outbox Table ──┐     ┌── Kafka ────────┐
-  │                      │     │                   │     │                  │
-  │ Save Order + Event   │────→│ OrderCreated      │     │                  │
-  │ (SAME transaction)   │     │ published=false   │     │                  │
-  │                      │     │                   │     │                  │
-  └──────────────────────┘     │    ↓ Publisher    │────→│ order-events     │
-                               │ published=true    │     │ topic            │
-                               │                   │     │                  │
-                               └───────────────────┘     └──────────────────┘
-
-  GUARANTEES:
-  • If DB transaction fails → no outbox event → nothing published → consistent
-  • If publisher fails to send → event stays unpublished → retried → at-least-once
-  • Consumer must be idempotent (may receive duplicates)
+    // Same transaction! Both succeed or both fail.
+    OutboxEvent event = new OutboxEvent(
+        "OrderCreated",
+        objectMapper.writeValueAsString(new OrderCreatedEvent(order))
+    );
+    outboxRepo.save(event);
+}
 ```
+
+Outbox table after the commit:
+
+| id | event_type | payload | published | created |
+| --- | --- | --- | --- | --- |
+| 1 | `OrderCreated` | `{"orderId":42,...}` | false | 10:30 |
+
+**Step 2:** a separate process reads unpublished events and sends them to Kafka.
+
+- **Option A: polling publisher (simplest).** Every second, run `SELECT * FROM outbox WHERE published = false ORDER BY created_at`. For each event, `kafkaTemplate.send(event)`. When Kafka ACKs, run `UPDATE outbox SET published = true WHERE id = ?`.
+- **Option B: CDC (Change Data Capture) with Debezium.** Reads the database WAL (write-ahead log), detects INSERTs into the outbox table and publishes them to Kafka automatically. No polling and real-time, but more complex to set up.
+
+```mermaid
+flowchart LR
+  SVC["Service<br/>saves Order + Event<br/>(SAME transaction)"] -->|"INSERT"| OB["Outbox table<br/>OrderCreated<br/>published = false"]
+  OB -->|"Publisher (poll or CDC)"| K["Kafka<br/>order-events topic"]
+  OB -.->|"after ACK"| DONE["published = true"]
+```
+
+**How to read this diagram.** The service writes the business row and the outbox row in one local transaction, so they succeed or fail together. A publisher then moves unpublished rows from the outbox to the Kafka topic and marks them published only after Kafka acknowledges.
+
+**Guarantees**
+
+- If the DB transaction fails, there is no outbox event, so nothing is published and the system stays consistent.
+- If the publisher fails to send, the event stays unpublished and is retried, giving **at-least-once** delivery.
+- The consumer must be idempotent (it may receive duplicates).
 
 ---
 
@@ -721,12 +582,12 @@ Because of the **At-Least-Once** delivery guarantee. If the background publisher
 
 ## Reality Check
 
-**"Distributed systems are just networked applications"** ? The fallacies of distributed computing are not theoretical: the network IS unreliable (packets drop), latency IS nonzero (cross-region calls take 60-200ms), bandwidth IS limited (serializing large objects saturates links), and the network IS insecure (man-in-the-middle without mTLS). Every remote call can fail in ways local calls cannot: timeout, partial failure, duplicate delivery, and out-of-order messages.
+**"Distributed systems are just networked applications"** — The fallacies of distributed computing are not theoretical: the network IS unreliable (packets drop), latency IS nonzero (cross-region calls take 60-200ms), bandwidth IS limited (serializing large objects saturates links), and the network IS insecure (man-in-the-middle without mTLS). Every remote call can fail in ways local calls cannot: timeout, partial failure, duplicate delivery, and out-of-order messages.
 
-**"Idempotency is just handling duplicate requests"** ? Idempotency means the EFFECT of a repeated operation is the same as doing it once. For a payment endpoint, idempotency requires: storing the idempotency key with the result, checking for existing results before processing, and returning the cached result for duplicates. Without this, a network timeout causes the client to retry, and the customer is charged twice. Idempotency is a correctness requirement, not an optimization.
+**"Idempotency is just handling duplicate requests"** — Idempotency means the EFFECT of a repeated operation is the same as doing it once. For a payment endpoint, idempotency requires: storing the idempotency key with the result, checking for existing results before processing, and returning the cached result for duplicates. Without this, a network timeout causes the client to retry, and the customer is charged twice. Idempotency is a correctness requirement, not an optimization.
 
-**"CAP theorem means choose two of three"** ? CAP is more nuanced: in the ABSENCE of a network partition, you can have both consistency and availability. The choice between C and A only matters DURING a partition. Most systems are CP (reject requests during partition to stay consistent) or AP (serve potentially stale data during partition to stay available). But partitions are rare � the real tradeoff in practice is between consistency and LATENCY (the PACELC theorem).
+**"CAP theorem means choose two of three"** — CAP is more nuanced: in the ABSENCE of a network partition, you can have both consistency and availability. The choice between C and A only matters DURING a partition. Most systems are CP (reject requests during partition to stay consistent) or AP (serve potentially stale data during partition to stay available). But partitions are rare — the real tradeoff in practice is between consistency and LATENCY (the PACELC theorem).
 
-**"Leader election is a solved problem"** ? Leader election algorithms (Raft, Paxos, ZAB) are proven correct but their implementations have edge cases: clock skew causing split-brain, network partitions causing multiple leaders, and slow followers causing leader re-election storms. Even using a coordination service like ZooKeeper or etcd, your application must handle: becoming leader mid-operation, losing leadership while holding locks, and the window between losing leadership and detecting it.
+**"Leader election is a solved problem"** — Leader election algorithms (Raft, Paxos, ZAB) are proven correct but their implementations have edge cases: clock skew causing split-brain, network partitions causing multiple leaders, and slow followers causing leader re-election storms. Even using a coordination service like ZooKeeper or etcd, your application must handle: becoming leader mid-operation, losing leadership while holding locks, and the window between losing leadership and detecting it.
 
-**"Retry with exponential backoff handles all transient failures"** ? Exponential backoff prevents overwhelming a recovering service, but without jitter (randomization), all clients retry at the same exponential intervals creating thundering herd spikes. Also, retrying is only safe for IDEMPOTENT operations � retrying a non-idempotent payment creates duplicate charges. And retrying indefinitely keeps connections open, eventually exhausting connection pools. Set a maximum retry count and a circuit breaker.
+**"Retry with exponential backoff handles all transient failures"** — Exponential backoff prevents overwhelming a recovering service, but without jitter (randomization), all clients retry at the same exponential intervals creating thundering herd spikes. Also, retrying is only safe for IDEMPOTENT operations — retrying a non-idempotent payment creates duplicate charges. And retrying indefinitely keeps connections open, eventually exhausting connection pools. Set a maximum retry count and a circuit breaker.

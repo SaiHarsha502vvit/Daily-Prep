@@ -1,8 +1,75 @@
+# Two Pointers
+
+> **Navigation**: [← Section 1: Basic Math & Number…](02_Math_Numbers.md) | [Chapter index](00_INDEX.md) | [Sliding Window →](05_Sliding_Window.md)
+
 ﻿**Navigation**: [< Previous](05_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Binary_Search.md)
 
-**Problems 06/14** | [Prev](05_Sliding_Window.md) | [Index](../00_MASTER_INDEX.md) | [Next](07_Binary_Search.md)
 
 ---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Two Pointers pattern](../04_Patterns_Templates/07_Two_Pointers_Complete.md), [Sorting](20_Sorting.md) |
+| **You will learn** | Opposite-end scans, read/write pointers, fast/slow pointers and merging sorted inputs |
+| **Leads to** | [Binary Search](07_Binary_Search.md), [Linked List](15_LinkedList.md) |
+| **Abstraction level** | Nested loops over pairs → **two monotone indices** |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Two-Pointer Problems
+
+### 1. The bottom line
+
+Move two indices so each element is visited a constant number of times, using order to discard candidates.
+
+### 2. The textbook core
+
+- Sorted + pair sum → opposite ends.
+- In-place compaction → reader/writer.
+- Cycle or middle → fast/slow.
+- Skip duplicates deliberately.
+- Needs a sorted or monotone structure.
+
+### 3. The real-world analogy
+
+Two people **walking toward each other along a corridor** to find a matching pair.
+
+### 4. Walkthrough
+
+1. Two-sum II on `[2,7,11,15]`, target 9.
+2. `2 + 15 = 17 > 9` → move right pointer.
+3. `2 + 11 = 13 > 9` → move right pointer.
+4. `2 + 7 = 9` → found (indices 1 and 2 in 1-based form).
+
+> [!NOTE]
+> **Quick check:** Why is it safe to move the right pointer when the sum is too big? *Every pair with that right element and a larger-or-equal left element is even bigger.*
+
+
+### 5. Check yourself
+
+**Q1.** Container with most water for `[1,8,6,2,5,4,8,3,7]`?
+
+<details><summary>Answer</summary>
+
+**49** (heights 8 and 7, width 7); always move the pointer at the shorter side.
+
+</details>
+
+**Q2.** Length after removing duplicates in sorted `[0,0,1,1,1,2,2,3,3,4]`?
+
+<details><summary>Answer</summary>
+
+**5** (`[0,1,2,3,4]`).
+
+</details>
+
+---
+
 
 ## 🗺️ Pattern Recognition Header — Two Pointers
 
@@ -29,17 +96,7 @@ Time: O(n log n) for sort + O(n) scan = O(n log n)
 
 ---
 
-🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Two Pointers**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
-
-# 🚀 Section 5: Two Pointers Advanced Variants
+## 🚀 Section 5: Two Pointers Advanced Variants
 
 ---
 
@@ -50,22 +107,16 @@ The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3S
 **LeetCode 167** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/)
 
-TWO SUM II - SORTED ARRAY
+**Two Sum II: sorted array.** The array is sorted. Find two numbers that add to `target` and return their 1-indexed positions.
 
-Array is SORTED. Find two numbers that add to target.
-Return 1-indexed positions.
+Input: `numbers = [2, 7, 11, 15]`, `target = 9`. Output: `[1, 2]`.
 
-Input: numbers = [2, 7, 11, 15], target = 9
-Output: [1, 2]
+| Step | `L` | `R` | Sum | Decision |
+| --- | --- | --- | --- | --- |
+| 1 | 0 (2) | 3 (15) | 17 > 9 | Move `R` left |
+| 2 | 0 (2) | 2 (11) | 13 > 9 | Move `R` left |
+| 3 | 0 (2) | 1 (7) | 9 = target ✓ | Found |
 
-Visual:
-[2, 7, 11, 15]
-↑ ↑
-L R sum=17 > 9, move R left
-↑ ↑
-L R sum=13 > 9, move R left
-↑ ↑
-L R sum=9 = target ✓
 
 ```java
 public int[] twoSum(int[] numbers, int target) {
@@ -92,26 +143,22 @@ public int[] twoSum(int[] numbers, int target) {
 **LeetCode 15** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/3sum/](https://leetcode.com/problems/3sum/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  3SUM                                                                     ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find all unique triplets that sum to zero.                               ║
-║                                                                           ║
-║  Input: nums = [-1, 0, 1, 2, -1, -4]                                      ║
-║  Output: [[-1, -1, 2], [-1, 0, 1]]                                        ║
-║                                                                           ║
-║  Algorithm:                                                               ║
-║  1. Sort the array                                                        ║
-║  2. Fix one element, use two pointers for remaining                       ║
-║  3. Skip duplicates to avoid duplicate triplets                           ║
-║                                                                           ║
-║  Sorted: [-4, -1, -1, 0, 1, 2]                                            ║
-║           ↑   ↑            ↑                                              ║
-║           i   L            R                                              ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**3SUM**
+
+```text
+Find all unique triplets that sum to zero.
+
+Input: nums = [-1, 0, 1, 2, -1, -4]
+Output: [[-1, -1, 2], [-1, 0, 1]]
+
+Algorithm:
+1. Sort the array
+2. Fix one element, use two pointers for remaining
+3. Skip duplicates to avoid duplicate triplets
+
+Sorted: [-4, -1, -1, 0, 1, 2]
+         ↑   ↑            ↑
+         i   L            R
 ```
 
 ```java
@@ -159,18 +206,14 @@ public List<List<Integer>> threeSum(int[] nums) {
 **LeetCode 16** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/3sum-closest/](https://leetcode.com/problems/3sum-closest/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  3SUM CLOSEST                                                             ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find three integers whose sum is closest to target.                      ║
-║                                                                           ║
-║  Input: nums = [-1, 2, 1, -4], target = 1                                 ║
-║  Output: 2                                                                ║
-║  Explanation: (-1) + 2 + 1 = 2, closest to target 1                       ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**3SUM CLOSEST**
+
+```text
+Find three integers whose sum is closest to target.
+
+Input: nums = [-1, 2, 1, -4], target = 1
+Output: 2
+Explanation: (-1) + 2 + 1 = 2, closest to target 1
 ```
 
 ```java
@@ -208,19 +251,15 @@ public int threeSumClosest(int[] nums, int target) {
 **LeetCode 18** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/4sum/](https://leetcode.com/problems/4sum/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  4SUM                                                                     ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find all unique quadruplets that sum to target.                          ║
-║                                                                           ║
-║  Input: nums = [1, 0, -1, 0, -2, 2], target = 0                           ║
-║  Output: [[-2,-1,1,2], [-2,0,0,2], [-1,0,0,1]]                            ║
-║                                                                           ║
-║  Pattern: Extend 3Sum with one more loop                                  ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**4SUM**
+
+```text
+Find all unique quadruplets that sum to target.
+
+Input: nums = [1, 0, -1, 0, -2, 2], target = 0
+Output: [[-2,-1,1,2], [-2,0,0,2], [-1,0,0,1]]
+
+Pattern: Extend 3Sum with one more loop
 ```
 
 ```java
@@ -267,49 +306,44 @@ public List<List<Integer>> fourSum(int[] nums, int target) {
 
 **LeetCode 259** | **Difficulty:** Medium | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  3SUM SMALLER                                                             ║
-║  (LeetCode 259 - Premium)                                                 ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Count triplets with sum LESS than target.                                ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: nums = [-2, 0, 1, 3], target = 2                                  ║
-║  Output: 2                                                                ║
-║  Explanation:                                                             ║
-║  (-2) + 0 + 1 = -1 < 2 ✓                                                  ║
-║  (-2) + 0 + 3 = 1 < 2 ✓                                                   ║
-║  (-2) + 1 + 3 = 2, not < 2                                                ║
-║  0 + 1 + 3 = 4, not < 2                                                   ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: nums = [], target = 0                                             ║
-║  Output: 0                                                                ║
-║                                                                           ║
-║  Example 3:                                                               ║
-║  Input: nums = [0], target = 0                                            ║
-║  Output: 0                                                                ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  KEY INSIGHT:                                                             ║
-║  If nums[i] + nums[left] + nums[right] < target,                          ║
-║  Then ALL pairs (left, left+1), (left, left+2)...(left, right) work!      ║
-║  Count = right - left                                                     ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - n == nums.length                                                       ║
-║  - 0 <= n <= 3500                                                         ║
-║  - -100 <= nums[i] <= 100                                                 ║
-║  - -100 <= target <= 100                                                  ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**3SUM SMALLER — (LeetCode 259 - Premium)**
+
+```text
+Count triplets with sum LESS than target.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: nums = [-2, 0, 1, 3], target = 2
+Output: 2
+Explanation:
+(-2) + 0 + 1 = -1 < 2 ✓
+(-2) + 0 + 3 = 1 < 2 ✓
+(-2) + 1 + 3 = 2, not < 2
+0 + 1 + 3 = 4, not < 2
+
+Example 2:
+Input: nums = [], target = 0
+Output: 0
+
+Example 3:
+Input: nums = [0], target = 0
+Output: 0
+
+─────────────────────────────────────────────────────────────────────
+
+KEY INSIGHT:
+If nums[i] + nums[left] + nums[right] < target,
+Then ALL pairs (left, left+1), (left, left+2)...(left, right) work!
+Count = right - left
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- n == nums.length
+- 0 <= n <= 3500
+- -100 <= nums[i] <= 100
+- -100 <= target <= 100
 ```
 
 ```java
@@ -343,22 +377,18 @@ public int threeSumSmaller(int[] nums, int target) {
 **LeetCode 611** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/valid-triangle-number/](https://leetcode.com/problems/valid-triangle-number/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  VALID TRIANGLE NUMBER                                                    ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Count triplets that can form a valid triangle.                           ║
-║  Triangle rule: sum of any two sides > third side                         ║
-║                                                                           ║
-║  Input: nums = [2, 2, 3, 4]                                               ║
-║  Output: 3                                                                ║
-║  Valid: (2,3,4), (2,3,4), (2,2,3)                                         ║
-║                                                                           ║
-║  KEY: After sorting, only need to check a + b > c                         ║
-║  (other conditions automatically satisfied)                               ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**VALID TRIANGLE NUMBER**
+
+```text
+Count triplets that can form a valid triangle.
+Triangle rule: sum of any two sides > third side
+
+Input: nums = [2, 2, 3, 4]
+Output: 3
+Valid: (2,3,4), (2,3,4), (2,2,3)
+
+KEY: After sorting, only need to check a + b > c
+(other conditions automatically satisfied)
 ```
 
 ```java
@@ -386,16 +416,6 @@ public int triangleNumber(int[] nums) {
 
 ---
 
-🔬 **Section Challenge — 📌 5.1 Opposite Direction Two Pointers**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
-
 ## 📌 5.2 Same Direction Two Pointers
 
 ### Problem: Remove Duplicates from Sorted Array
@@ -403,24 +423,20 @@ The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3S
 **LeetCode 26** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/remove-duplicates-from-sorted-array/](https://leetcode.com/problems/remove-duplicates-from-sorted-array/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  REMOVE DUPLICATES FROM SORTED ARRAY                                      ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Remove duplicates in-place. Return new length.                           ║
-║                                                                           ║
-║  Input: nums = [1, 1, 2]                                                  ║
-║  Output: 2, nums = [1, 2, _]                                              ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  [1, 1, 2]                                                                ║
-║   ↑  ↑       slow=0, fast=1, same value, skip                             ║
-║   ↑     ↑    slow=0, fast=2, different! copy                              ║
-║      ↑  ↑    slow=1, nums[1]=2                                            ║
-║  Result: [1, 2, _], length = 2                                            ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**REMOVE DUPLICATES FROM SORTED ARRAY**
+
+```text
+Remove duplicates in-place. Return new length.
+
+Input: nums = [1, 1, 2]
+Output: 2, nums = [1, 2, _]
+
+Visual:
+[1, 1, 2]
+ ↑  ↑       slow=0, fast=1, same value, skip
+ ↑     ↑    slow=0, fast=2, different! copy
+    ↑  ↑    slow=1, nums[1]=2
+Result: [1, 2, _], length = 2
 ```
 
 ```java
@@ -446,19 +462,15 @@ public int removeDuplicates(int[] nums) {
 **LeetCode 80** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/](https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  REMOVE DUPLICATES II (Allow at most 2 duplicates)                        ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Each element can appear at most TWICE.                                   ║
-║                                                                           ║
-║  Input: nums = [1, 1, 1, 2, 2, 3]                                         ║
-║  Output: 5, nums = [1, 1, 2, 2, 3, _]                                     ║
-║                                                                           ║
-║  KEY: Compare with nums[slow - 2] instead of nums[slow - 1]               ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**REMOVE DUPLICATES II (Allow at most 2 duplicates)**
+
+```text
+Each element can appear at most TWICE.
+
+Input: nums = [1, 1, 1, 2, 2, 3]
+Output: 5, nums = [1, 1, 2, 2, 3, _]
+
+KEY: Compare with nums[slow - 2] instead of nums[slow - 1]
 ```
 
 ```java
@@ -484,17 +496,13 @@ public int removeDuplicates(int[] nums) {
 **LeetCode 27** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/remove-element/](https://leetcode.com/problems/remove-element/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  REMOVE ELEMENT                                                           ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Remove all instances of val in-place. Return new length.                 ║
-║                                                                           ║
-║  Input: nums = [3, 2, 2, 3], val = 3                                      ║
-║  Output: 2, nums = [2, 2, _, _]                                           ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**REMOVE ELEMENT**
+
+```text
+Remove all instances of val in-place. Return new length.
+
+Input: nums = [3, 2, 2, 3], val = 3
+Output: 2, nums = [2, 2, _, _]
 ```
 
 ```java
@@ -518,28 +526,24 @@ public int removeElement(int[] nums, int val) {
 **LeetCode 75** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/sort-colors/](https://leetcode.com/problems/sort-colors/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  SORT COLORS (Dutch National Flag Problem)                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Sort array with only 0s, 1s, and 2s in-place.                            ║
-║  One-pass algorithm with constant space.                                  ║
-║                                                                           ║
-║  Input: nums = [2, 0, 2, 1, 1, 0]                                         ║
-║  Output: [0, 0, 1, 1, 2, 2]                                               ║
-║                                                                           ║
-║  Three Pointers:                                                          ║
-║  - low: boundary for 0s (everything before low is 0)                      ║
-║  - mid: current element being examined                                    ║
-║  - high: boundary for 2s (everything after high is 2)                     ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  [0, 0, 0, | 1, 1, 1, | ?, ?, ? | 2, 2, 2]                                ║
-║            ↑          ↑         ↑                                         ║
-║           low        mid       high                                       ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**SORT COLORS (Dutch National Flag Problem)**
+
+```text
+Sort array with only 0s, 1s, and 2s in-place.
+One-pass algorithm with constant space.
+
+Input: nums = [2, 0, 2, 1, 1, 0]
+Output: [0, 0, 1, 1, 2, 2]
+
+Three Pointers:
+- low: boundary for 0s (everything before low is 0)
+- mid: current element being examined
+- high: boundary for 2s (everything after high is 2)
+
+Visual:
+[0, 0, 0, | 1, 1, 1, | ?, ?, ? | 2, 2, 2]
+          ↑          ↑         ↑
+         low        mid       high
 ```
 
 ```java
@@ -575,18 +579,14 @@ private void swap(int[] nums, int i, int j) {
 **LeetCode 2161** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/partition-array-according-to-given-pivot/](https://leetcode.com/problems/partition-array-according-to-given-pivot/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PARTITION ARRAY ACCORDING TO PIVOT                                       ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Rearrange so elements < pivot come before, = pivot in middle,            ║
-║  > pivot at end. Maintain relative order.                                 ║
-║                                                                           ║
-║  Input: nums = [9, 12, 5, 10, 14, 3, 10], pivot = 10                      ║
-║  Output: [9, 5, 3, 10, 10, 12, 14]                                        ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PARTITION ARRAY ACCORDING TO PIVOT**
+
+```text
+Rearrange so elements < pivot come before, = pivot in middle,
+> pivot at end. Maintain relative order.
+
+Input: nums = [9, 12, 5, 10, 14, 3, 10], pivot = 10
+Output: [9, 5, 3, 10, 10, 12, 14]
 ```
 
 ```java
@@ -615,16 +615,6 @@ public int[] pivotArray(int[] nums, int pivot) {
 
 ---
 
-🔬 **Section Challenge — 📌 5.2 Same Direction Two Pointers**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
-
 ## 🔗 5.3 Linked List Two Pointers
 
 ### Problem: Linked List Cycle
@@ -632,23 +622,19 @@ The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3S
 **LeetCode 141** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/linked-list-cycle/](https://leetcode.com/problems/linked-list-cycle/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  LINKED LIST CYCLE                                                        ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Detect if linked list has a cycle.                                       ║
-║                                                                           ║
-║  Visual (with cycle):                                                     ║
-║  3 → 2 → 0 → -4                                                           ║
-║      ↑__________|                                                         ║
-║                                                                           ║
-║  Floyd's Cycle Detection (Tortoise & Hare):                               ║
-║  - Slow pointer moves 1 step                                              ║
-║  - Fast pointer moves 2 steps                                             ║
-║  - If they meet, there's a cycle                                          ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**LINKED LIST CYCLE**
+
+```text
+Detect if linked list has a cycle.
+
+Visual (with cycle):
+3 → 2 → 0 → -4
+    ↑__________|
+
+Floyd's Cycle Detection (Tortoise & Hare):
+- Slow pointer moves 1 step
+- Fast pointer moves 2 steps
+- If they meet, there's a cycle
 ```
 
 ```java
@@ -674,29 +660,25 @@ public boolean hasCycle(ListNode head) {
 **LeetCode 142** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/linked-list-cycle-ii/](https://leetcode.com/problems/linked-list-cycle-ii/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  LINKED LIST CYCLE II - Find Start of Cycle                               ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Return the node where cycle begins. Return null if no cycle.             ║
-║                                                                           ║
-║  MATHEMATICAL PROOF:                                                      ║
-║  Let:                                                                     ║
-║  - Distance from head to cycle start = a                                  ║
-║  - Distance from cycle start to meeting point = b                         ║
-║  - Cycle length = c                                                       ║
-║                                                                           ║
-║  When they meet:                                                          ║
-║  - Slow traveled: a + b                                                   ║
-║  - Fast traveled: a + b + n*c (some multiple of cycle)                    ║
-║  - Fast = 2 * Slow → a + b + n*c = 2(a + b)                               ║
-║  - Therefore: a = n*c - b                                                 ║
-║                                                                           ║
-║  After meeting: move one pointer to head, both move 1 step                ║
-║  They'll meet at cycle start!                                             ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**LINKED LIST CYCLE II - Find Start of Cycle**
+
+```text
+Return the node where cycle begins. Return null if no cycle.
+
+MATHEMATICAL PROOF:
+Let:
+- Distance from head to cycle start = a
+- Distance from cycle start to meeting point = b
+- Cycle length = c
+
+When they meet:
+- Slow traveled: a + b
+- Fast traveled: a + b + n*c (some multiple of cycle)
+- Fast = 2 * Slow → a + b + n*c = 2(a + b)
+- Therefore: a = n*c - b
+
+After meeting: move one pointer to head, both move 1 step
+They'll meet at cycle start!
 ```
 
 ```java
@@ -733,18 +715,14 @@ public ListNode detectCycle(ListNode head) {
 **LeetCode 876** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/middle-of-the-linked-list/](https://leetcode.com/problems/middle-of-the-linked-list/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MIDDLE OF LINKED LIST                                                    ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  When fast reaches end, slow is at middle.                                ║
-║  For even length, return second middle.                                   ║
-║                                                                           ║
-║  Odd:  1 → 2 → 3 → 4 → 5    Middle = 3                                    ║
-║  Even: 1 → 2 → 3 → 4 → 5 → 6    Middle = 4 (second)                       ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**MIDDLE OF LINKED LIST**
+
+```text
+When fast reaches end, slow is at middle.
+For even length, return second middle.
+
+Odd:  1 → 2 → 3 → 4 → 5    Middle = 3
+Even: 1 → 2 → 3 → 4 → 5 → 6    Middle = 4 (second)
 ```
 
 ```java
@@ -766,21 +744,17 @@ public ListNode middleNode(ListNode head) {
 **LeetCode 19** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/remove-nth-node-from-end-of-list/](https://leetcode.com/problems/remove-nth-node-from-end-of-list/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  REMOVE NTH NODE FROM END                                                 ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Remove the nth node from end of list.                                    ║
-║                                                                           ║
-║  Input: 1 → 2 → 3 → 4 → 5, n = 2                                          ║
-║  Output: 1 → 2 → 3 → 5                                                    ║
-║                                                                           ║
-║  Technique: Advance fast pointer n steps first                            ║
-║  Then move both until fast reaches end                                    ║
-║  Slow will be at (n+1)th from end                                         ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**REMOVE NTH NODE FROM END**
+
+```text
+Remove the nth node from end of list.
+
+Input: 1 → 2 → 3 → 4 → 5, n = 2
+Output: 1 → 2 → 3 → 5
+
+Technique: Advance fast pointer n steps first
+Then move both until fast reaches end
+Slow will be at (n+1)th from end
 ```
 
 ```java
@@ -814,46 +788,41 @@ public ListNode removeNthFromEnd(ListNode head, int n) {
 
 **LeetCode 369** | **Difficulty:** Medium | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PLUS ONE LINKED LIST                                                     ║
-║  (LeetCode 369 - Premium)                                                 ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Linked list represents a number. Add 1 to it.                            ║
-║  Most significant digit is at head.                                       ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: 1 → 2 → 3                                                         ║
-║  Output: 1 → 2 → 4                                                        ║
-║  Explanation: 123 + 1 = 124                                               ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: 1 → 2 → 9                                                         ║
-║  Output: 1 → 3 → 0                                                        ║
-║  Explanation: 129 + 1 = 130                                               ║
-║                                                                           ║
-║  Example 3:                                                               ║
-║  Input: 9 → 9 → 9                                                         ║
-║  Output: 1 → 0 → 0 → 0                                                    ║
-║  Explanation: 999 + 1 = 1000                                              ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  KEY INSIGHT: Find rightmost non-9 digit                                  ║
-║  - Increment it                                                           ║
-║  - Set all following 9s to 0                                              ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - Number of nodes: [1, 100]                                              ║
-║  - 0 <= Node.val <= 9                                                     ║
-║  - Number doesn't have leading zeros except 0 itself                      ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PLUS ONE LINKED LIST — (LeetCode 369 - Premium)**
+
+```text
+Linked list represents a number. Add 1 to it.
+Most significant digit is at head.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: 1 → 2 → 3
+Output: 1 → 2 → 4
+Explanation: 123 + 1 = 124
+
+Example 2:
+Input: 1 → 2 → 9
+Output: 1 → 3 → 0
+Explanation: 129 + 1 = 130
+
+Example 3:
+Input: 9 → 9 → 9
+Output: 1 → 0 → 0 → 0
+Explanation: 999 + 1 = 1000
+
+─────────────────────────────────────────────────────────────────────
+
+KEY INSIGHT: Find rightmost non-9 digit
+- Increment it
+- Set all following 9s to 0
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- Number of nodes: [1, 100]
+- 0 <= Node.val <= 9
+- Number doesn't have leading zeros except 0 itself
 ```
 
 ```java
@@ -892,16 +861,6 @@ public ListNode plusOne(ListNode head) {
 
 ---
 
-🔬 **Section Challenge — 🔗 5.3 Linked List Two Pointers**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
-
 ## 🏆 Competitive Programming — Codeforces Problems
 
 | Problem                   | Link                                                         | Techniques                | Difficulty  |
@@ -932,17 +891,6 @@ The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3S
 
 ---
 
-**Navigation**: [< Previous](05_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Binary_Search.md)
-
-🔬 **Section Challenge — 🌍 Real-World Applications of Two Pointers**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
 
 ---
 
@@ -950,14 +898,24 @@ The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3S
 
 **Two Pointers** patterns introduce several production failure modes that learners must internalize:
 
-**Failure mode 1: Sort-order invariant violated on unsorted data.** The two-pointer pattern fundamentally requires monotonic pointer movement based on sorted order. Applying opposite-direction pointers to an unsorted array, or using same-direction pointers on data with non-monotonic properties, guarantees wrong results. Production impact: the 2018 United Airlines app bug where a seat selection algorithm used two-pointer logic on non-sorted passenger priority scores, causing premium seat assignments to random frequent flyers instead of top-tier members. Affected 10,000+ bookings before hotfix.
+**Failure mode 1: Sort-order invariant violated on unsorted data.** The two-pointer pattern fundamentally requires monotonic pointer movement based on sorted order. Applying opposite-direction pointers to an unsorted array, or using same-direction pointers on data with non-monotonic properties, guarantees wrong results. Illustrative impact: silently wrong answers (no exception) whenever the input is not sorted, which is easy to miss in tests that happen to use sorted data.
 
-**Failure mode 2: Infinite loop when pointers fail to advance.** Same-direction (slow/fast) pointer patterns require `fast` to always advance. A subtle bug: forgetting `fast++` in the body of an inner loop means `fast` never moves past an element, causing infinite loops on arrays with all elements matching the filter condition (e.g., removing all zeros from `[0,0,0,0,0]`). Production impact: request timeouts, CPU starvation, watchdog timer kills. The bug crashed a real-time trading system's order matching engine during market open when all incoming orders matched the "skip" condition.
+**Failure mode 2: Infinite loop when pointers fail to advance.** Same-direction (slow/fast) pointer patterns require `fast` to always advance. A subtle bug: forgetting `fast++` in the body of an inner loop means `fast` never moves past an element, causing infinite loops on arrays with all elements matching the filter condition (e.g., removing all zeros from `[0,0,0,0,0]`). Illustrative impact: request timeouts, CPU starvation, watchdog timer kills. The bug crashed a real-time trading system's order matching engine during market open when all incoming orders matched the "skip" condition.
 
 **Debug workflow:** (1) Verify the array is sorted BEFORE entering the pointer loop. (2) Add `assert(fast > slow || /* reset condition */)` to catch stalls. (3) Log pointer positions at each iteration and verify monotonic advancement. (4) Test edge cases: already-sorted, reverse-sorted, all-same, single-element, empty array. (5) Add iteration counter: `assert(iterations < n)` to guarantee termination.
 
-**Real-world anchor:** Apple's 2019 Swift compiler bug where a two-pointer deduplication pass on unsorted symbol tables produced non-deterministic binaries depending on hash seed order, causing debug and release builds to have different symbol resolution.
+**Real-world anchor:** The merge phase of external merge sort and sort-merge joins in databases is a two-pointer scan. It is correct only because both inputs are sorted; feeding it unsorted data silently produces wrong results, a classic data-pipeline bug.
 
+
+---
+
+## 🏢 Enterprise Lens — Two-Pointer Problems
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Merging sorted streams, deduplication, partitioning |
+| **Failure modes** | Using it on unsorted data; missing duplicate handling |
+| **Testing and verification** | Compare with brute force on random sorted arrays |
 
 ---
 

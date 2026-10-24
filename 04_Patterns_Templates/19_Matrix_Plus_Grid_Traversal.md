@@ -1,39 +1,104 @@
-﻿**Navigation**: [< Previous](18_String_Plus_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](20_BitManipulation_Plus_Tricks.md)
+# 🧩 Matrix + Grid Traversal — Pattern Guide
 
-# Matrix + Grid Traversal — Combined Pattern Guide
+> **Navigation**: [← String + Advanced](18_String_Plus_Advanced.md) | [Chapter index](00_INDEX.md) | [Bit Manipulation + Tricks →](20_BitManipulation_Plus_Tricks.md)
+
+## Matrix + Grid Traversal — Combined Pattern Guide
 
 **WHY this combination?** 2D grids are graphs where each cell connects to its 4 (or 8) neighbors. BFS/DFS on grids solve island counting, flood fill, shortest path, and rotation problems.
 
 ### ⚠️ Constraint Lens
 
-### Historical Evolution
+## 🔗 Bridge — Where This Chapter Fits
 
-**Inventor / Originator:** Floyd-Warshall (1962) for all-pairs shortest path. Bellman-Ford (1958) for single-source with negative edges. Dijkstra (1959) for positive weights.
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [2D Arrays](../02_Data_Structures/04_2D_Arrays_Matrix.md), [Graph + Traversal](14_Graph_Plus_Traversal.md) |
+| **You will learn** | Direction arrays, spiral and diagonal traversal, flood fill, multi-source BFS, in-place rotation |
+| **Leads to** | [Shortest Paths](30_Shortest_Path_Pattern.md), [DP grids](16_DP_Pattern_Recognition.md) |
+| **Abstraction level** | Nested loops over `(r, c)` → **grid as an implicit graph** → BFS/DFS/DP |
 
-**Predecessor context:** Grid/graph problems required explicit graph construction. Dynamic programming on grids wasn't recognized as a distinct pattern from graph traversal.
-
-**Evolution narrative:** Matrix operations and grid traversal evolved separately but merged when practitioners realized grids are special cases of graphs. Floyd and Warshall independently discovered all-pairs shortest path; Bellman extended Bellman's equations to graphs.
-
-**Modern practice:** Matrix multiplication (Floyd-Warshall uses matrix min-plus multiplication) is the basis of GPU computing. Grid DP appears in LeetCode and competitive programming.
-
-- **Bellman-Ford — 1958**: V-1 relaxation rounds; negative cycle detection
-- **Dijkstra 1959**: Positive-weight shortest path; extended with binary heap for O(E log V)
-- **Floyd-Warshall — 1962**: All-pairs shortest path O(V^3); independently discovered
-- **Modern practice**: GPU computing (matrix multiply), LeetCode grid DP problems
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
 
 ---
 
-### Production Reality
+## 💬 Explain It Like a Study Partner — Matrix + Grid Traversal
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+### 1. The bottom line
 
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+A grid is a graph whose neighbours come from a small list of direction offsets.
 
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+### 2. The textbook core
+
+- Use `dr[] / dc[]` arrays and a bounds check helper.
+- BFS from one or many sources gives shortest steps.
+- Mark visited in place (or in a boolean grid) to avoid revisits.
+- Spiral traversal keeps four shrinking boundaries.
+
+### 3. The real-world analogy
+
+A **chessboard**: from any square you know which neighbouring squares you can move to.
+
+### 4. Walkthrough
+
+1. Rotting oranges: enqueue all rotten cells (multi-source BFS).
+2. Each BFS layer is one minute.
+3. Neighbours that are fresh become rotten and join the queue.
+4. Answer is the number of layers, or −1 if fresh oranges remain.
+
+> [!NOTE]
+> **Quick check:** Why multi-source BFS rather than one BFS per source? *One pass handles all sources simultaneously in `O(rc)`.*
+
+
+### 5. Check yourself
+
+**Q1.** How do you rotate an `n×n` matrix 90° clockwise in place?
+
+<details><summary>Answer</summary>
+
+Transpose it, then reverse each row.
+
+</details>
+
+**Q2.** Write the direction arrays for 4-neighbour movement.
+
+<details><summary>Answer</summary>
+
+`dr = {-1, 1, 0, 0}` and `dc = {0, 0, -1, 1}`.
+
+</details>
+
+**Q3.** Which traversal solves "rotting oranges"?
+
+<details><summary>Answer</summary>
+
+Multi-source BFS: start with all rotten cells in the queue; each BFS layer is one minute.
+
+</details>
+
+---
+
+## Historical Evolution
+
+**Inventor / Originator:** Grid search grew from maze routing: C. Y. Lee's 1961 algorithm is BFS on a grid for circuit routing, and connected-component labelling on pixel grids was formalised by Rosenfeld and Pfaltz (1966). Shortest-path building blocks: Bellman–Ford (1956–58), Dijkstra (1959), Floyd and Warshall (both 1962), and A* (Hart, Nilsson and Raphael, 1968).
+
+**Predecessor context:** Grids were handled with special-purpose loops rather than as graphs.
+
+**Evolution narrative:** Treating each cell as a node with up to four (or eight) neighbours reduces flood fill, island counting, shortest path in a maze and multi-source spreading (rotting oranges) to BFS/DFS; weighted grids use Dijkstra or A*.
+
+**Modern practice:** Image segmentation, game pathfinding, map routing and circuit layout.
+
+- **Lee — 1961**: Grid BFS for wire routing
+- **Rosenfeld & Pfaltz — 1966**: Connected components in images
+- **Hart, Nilsson, Raphael — 1968**: A* search
+- **Floyd / Warshall — 1962**: All-pairs shortest paths and transitive closure
+
+---
+
+## Production Reality
+
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -59,21 +124,21 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Grids Are Implicit Graphs
+## 🧠 Deep Intuition — Grids Are Implicit Graphs
 
 A 2D matrix with R rows and C columns is really a **graph with R×C nodes** where each cell (r,c) has edges to its 4 (or 8) neighbors. You never need to explicitly build this graph — the adjacency is implicit in the grid structure. This is why DFS/BFS on grids use the direction array `{{0,1},{0,-1},{1,0},{-1,0}}` — it defines the edges.
 
-#### DFS vs BFS for Grid Problems
+### DFS vs BFS for Grid Problems
 
 - **DFS (recursion or stack)**: Use for **exploring/marking connected components** (island counting, flood fill). DFS is simpler to implement recursively and uses the call stack. Caveat: for very large grids, recursive DFS can cause stack overflow — use iterative DFS or BFS instead.
 
 - **BFS (queue)**: Use for **shortest path** problems on grids. BFS explores cells in order of increasing distance, so the first time you reach the target is via the shortest path. Also essential for **multi-source BFS** — starting from multiple cells simultaneously (rotten oranges, distance to nearest 1).
 
-#### Multi-Source BFS — A Key Grid Technique
+### Multi-Source BFS — A Key Grid Technique
 
 Instead of running BFS from each source cell separately (O(k × R×C) for k sources), add ALL source cells to the queue at the start. They become "level 0," and BFS naturally computes the minimum distance from _any_ source to every cell in a single O(R×C) pass. This is the correct approach for "rotten oranges" and "distance to nearest" problems.
 
-#### In-Place Visited Marking — Trading Purity for Efficiency
+### In-Place Visited Marking — Trading Purity for Efficiency
 
 Instead of maintaining a separate `boolean[][] visited` array, you can mark visited cells by modifying the grid itself (e.g., changing `'1'` to `'0'` or using a sentinel value like `'#'`). This saves O(R×C) space. However, it modifies the input — only use this when the problem allows it or when you can restore the grid afterwards.
 
@@ -180,7 +245,7 @@ void rotate(int[][] matrix) {
 
 ---
 
-## � FULL WALKTHROUGH: Spiral Matrix Traversal
+## 🔬 FULL WALKTHROUGH: Spiral Matrix Traversal
 
 ```
 Problem: Return elements of matrix in spiral order.
@@ -254,18 +319,19 @@ Time: O(R×C) | Space: O(R×C)
 
 ```
 EDGE CASES:
-┌────────────────────────────────┬──────────────────────────────────────────┐
-│ Edge Case                      │ Handling                                 │
-├────────────────────────────────┼──────────────────────────────────────────┤
-│ 1×1 matrix                    │ Spiral = [matrix[0][0]], path = 0 steps   │
-│ Single row [1,2,3]            │ Spiral = [1,2,3], no up/down movement     │
-│ Single column [[1],[2],[3]]   │ Spiral = [1,2,3], no left/right movement  │
-│ Non-square matrix (m≠n)       │ Boundaries still work, check conditions   │
-│ Start/end blocked             │ Return -1 (no path exists)                │
-│ All walls                     │ Return -1                                 │
-│ 8-directional movement        │ Use 8-dir array instead of 4              │
-└────────────────────────────────┴──────────────────────────────────────────┘
+```
 
+| Edge Case | Handling |
+| --- | --- |
+| 1×1 matrix | Spiral = [matrix[0][0]], path = 0 steps |
+| Single row [1,2,3] | Spiral = [1,2,3], no up/down movement |
+| Single column [[1],[2],[3]] | Spiral = [1,2,3], no left/right movement |
+| Non-square matrix (m≠n) | Boundaries still work, check conditions |
+| Start/end blocked | Return -1 (no path exists) |
+| All walls | Return -1 |
+| 8-directional movement | Use 8-dir array instead of 4 |
+
+```
 COMMON MISTAKES:
 1. Spiral: not checking top<=bottom BEFORE bottom row traversal
    On non-square matrices, you may re-traverse already-visited rows!
@@ -293,17 +359,10 @@ COMMON MISTAKES:
 
 ---
 
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+## 📋 Practice Problems
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 | #   | Problem                                                                                                    | Companies  | Key Insight                  |
 | --- | ---------------------------------------------------------------------------------------------------------- | ---------- | ---------------------------- |
@@ -347,6 +406,16 @@ COMMON MISTAKES:
 
 [← 18 String+Advanced](18_String_Plus_Advanced.md) | [20 BitManip+Tricks →](20_BitManipulation_Plus_Tricks.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Matrix + Grid Traversal
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Image processing, game maps, robot navigation, layout engines |
+| **Failure modes** | Out-of-bounds neighbours; swapping row/column; modifying the grid while iterating |
+| **Testing and verification** | Test 1×1, 1×n, n×1 grids, blocked starts, and compare with a naive search |
 
 ---
 

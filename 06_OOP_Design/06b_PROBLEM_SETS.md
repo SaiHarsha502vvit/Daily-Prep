@@ -1,10 +1,75 @@
 # 📝 OOP & Design — Problem Sets
 
+> **Navigation**: [← LLD Reference Implementations…](13_LLD_Reference_Implementations.md) | [Chapter index](00_INDEX.md) | [From User Stories to Design… →](10_Stories_To_Design.md)
+
 ## `06_OOP_Design` Module | ETH Zurich / MIT Style
 
 > **How to use:** Attempt every part before reading the answer. Part B code goes in `JavaSolutions/ps/oop/`. Run JUnit stubs. Read 🔴 **Erklärung** if you fail.
 
 ---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [OOP Principles](01_OOPS_Principles.md), [Design Patterns](02_Design_Patterns.md), [LLD Solved Problems](07_LLD_Solved_Problems.md) |
+| **You will learn** | Practice on SOLID, GoF patterns and low-level design with starter code and tests |
+| **Leads to** | [LLD Solved Problems](07_LLD_Solved_Problems.md), [Design Patterns in Java](08_Design_Patterns_Java.md) |
+| **Abstraction level** | Reading solutions → **producing your own designs under constraints** |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — OOP and Design Problem Sets
+
+### 1. The bottom line
+
+Attempt the problem, run the tests, then compare with the model solution; the struggle is the learning.
+
+### 2. The textbook core
+
+- Each set targets one skill: SOLID, patterns, or LLD.
+- Starter stubs show the expected signatures.
+- Tests define the behaviour; the design is yours.
+- Review your solution against the principle each problem trains.
+
+### 3. The real-world analogy
+
+A **gym circuit**: each station isolates a muscle so that when you play the real game, the movements are automatic.
+
+### 4. Walkthrough
+
+1. Read the problem and the tests.
+2. Sketch the classes and responsibilities.
+3. Implement until the tests pass.
+4. Refactor against the principle being trained.
+5. Compare with the model answer and note the differences.
+
+> [!NOTE]
+> **Quick check:** Why do the tests come before the model answer? *Attempting first reveals what you do not yet know.*
+
+### 5. Check yourself
+
+**Q1.** How can you measure whether your design is flexible?
+
+<details><summary>Answer</summary>
+
+Add a plausible new requirement and count how many classes you must edit; fewer is better.
+
+</details>
+
+**Q2.** Why include JUnit stubs?
+
+<details><summary>Answer</summary>
+
+They fix the interface and give immediate feedback so effort goes into design, not guessing signatures.
+
+</details>
+
+---
+
 
 ## Problem Set OOP-PS1 — SOLID Principles
 
@@ -222,24 +287,15 @@ class PaymentProcessorTest {
 **Subject:** `UserService` publishes `UserRegisteredEvent`.
 **Observers:** `WelcomeEmailListener`, `AnalyticsListener`, `AuditLogListener`.
 
-```java
-// Event
-record UserRegisteredEvent(String userId, String email) {}
-
-// Subject (publisher)
-@Service class UserService {
-    @Autowired ApplicationEventPublisher publisher;
-    public void register(User user) {
-        userRepo.save(user);
-        publisher.publishEvent(new UserRegisteredEvent(user.id(), user.email()));
-    }
-}
-
-// Observer 1 — knows nothing about UserService
-@Component class WelcomeEmailListener {
-    @EventListener void on(UserRegisteredEvent e) { /* send welcome email to e.email() */ }
-}
+```mermaid
+flowchart LR
+  US["UserService<br/>register(u)"] -->|"publishes UserRegisteredEvent(userId)"| EP["ApplicationEventPublisher<br/>(Spring event bus)"]
+  EP --> W["WelcomeEmailListener<br/>@EventListener: sends welcome email"]
+  EP --> A["AnalyticsListener<br/>@EventListener: tracks registration"]
+  EP --> AU["AuditLogListener<br/>@EventListener: writes security log"]
 ```
+
+**How to read this diagram.** `UserService` knows only the publisher. Each listener subscribes independently, so adding a new reaction to registration means adding a class, not editing `UserService`.
 
 `UserService` is completely unaware of what happens after publishing. New observers are added with zero changes to `UserService`. This is textbook Observer.
 
@@ -457,98 +513,54 @@ class ParkingLotTest {
 
 ### Diagram 1: SOLID Principles Relationship Diagram
 
+```mermaid
+flowchart BT
+  SRP["SRP (base)<br/>One reason to change"] --> OCP["OCP<br/>Open for extension, closed for modification"]
+  SRP --> LSP["LSP<br/>Subtypes satisfy base contracts"]
+  OCP --> ISP["ISP<br/>Many client-specific interfaces"]
+  LSP --> ISP
+  ISP --> DIP["DIP (top)<br/>Depend on abstractions, not concretions"]
+  classDef a fill:#dbeafe,stroke:#2563eb,color:#0c1a4a;
+  class SRP,OCP,LSP,ISP,DIP a;
 ```
-                         ┌──────────────────┐
-                         │   DIP (top)       │
-                         │ Dependency Inver. │
-                         │ Depend on abs-    │
-                         │ tractions, not    │
-                         │ concretions       │
-                         └────────┬─────────┘
-                                  ▲
-                         ┌────────┴─────────┐
-                         │   ISP (top)       │
-                         │ Interface Seg.    │
-                         │ Many client-      │
-                         │ specific interfac.│
-                         └────────┬─────────┘
-                                  │
-          ┌───────────────────────┼──────────────────────────┐
-          │                       │                          │
-          ▼                       ▼                          ▼
-  ┌───────────────┐     ┌─────────────────┐      ┌─────────────────┐
-  │  OCP (middle) │     │  LSP (middle)    │      │                 │
-  │  Open-Closed  │     │  Liskov Subst.   │      │                 │
-  │  Open for ext │     │ Subtypes must    │      │                 │
-  │  Closed for   │     │ satisfy base     │      │                 │
-  │  mod          │     │ contracts        │      │                 │
-  └───────┬───────┘     └────────┬─────────┘      │                 │
-          │                      │                │                 │
-          │         ┌────────────┴────────────┐   │                 │
-          ▼         ▼                           ▼   │                 │
-  ┌─────────────────────────────────────────────────┐ │                 │
-  │              SRP (BASE)                         │ │                 │
-  │              Single Responsibility              │ │                 │
-  │              One reason to change               │ │                 │
-  │  All other principles depend on SRP:            │ │                 │
-  │    If a class has ONE reason to change,         │ │                 │
-  │    → It can be extended without modification    │ │                 │
-  │      (OCP)                                      │ │                 │
-  │    → Its contract is clear for LSP              │ │                 │
-  │    → Its interface is focused for ISP           │ │                 │
-  │    → Dependencies are injectable for DIP        │ │                 │
-  └─────────────────────────────────────────────────┘ │                 │
-                                                         │                 │
-                                                         │                 │
-                            All 5 principles form a COHESIVE SYSTEM:
-                            Violating any one creates cascade violations.
-```
+
+**How to read this diagram.** One way to see the principles as a system: if a class has one reason to change (SRP), it is easier to extend without modification (OCP), its contract is clear for substitution (LSP), its interface is focused (ISP) and its dependencies are injectable (DIP). Violating one often triggers violations of the others.
 
 ### Diagram 2: Observer Pattern with Spring EventBus Sequence
 
+```mermaid
+flowchart LR
+  US["UserService<br/>register(u)"] -->|"publishes UserRegisteredEvent(userId)"| EP["ApplicationEventPublisher<br/>(Spring event bus)"]
+  EP --> W["WelcomeEmailListener<br/>@EventListener: sends welcome email"]
+  EP --> A["AnalyticsListener<br/>@EventListener: tracks registration"]
+  EP --> AU["AuditLogListener<br/>@EventListener: writes security log"]
 ```
-  ┌──────────────┐   publishes    ┌──────────────────────────────────┐
-  │ UserService  │────────────────▶│      ApplicationEventPublisher   │
-  │              │  UserRegistered │         (Spring EventBus)        │
-  │ register(u)──│──Event(userId)  └──────────┬───────────┬───────────┘
-  └──────────────┘                            │           │
-                                                │           │
-                                 ┌─────────────┘  ┌────────┴───────────┐
-                                 ▼                ▼                    ▼
-                        ┌─────────────────┐ ┌──────────────┐ ┌────────────────┐
-                        │WelcomeEmailList │ │AnalyticsList│ │AuditLogListener│
-                        │                 │ │             │ │                │
-                        │ @EventListener  │ │@EventListener│ │@EventListener │
-                        │                 │ │             │ │                │
-                        │ Sends welcome   │ │ Tracks user │ │ Writes to     │
-                        │ email to user   │ │ registration│ │ security log  │
-                        └─────────────────┘ │ event       │ └────────────────┘
-                                            └──────────────┘
 
-  KEY PROPERTIES:
-  1. UserService KNOWS NOTHING about listeners
-     → Decoupled: new listeners added with ZERO changes to UserService
-  2. All 3 listeners fire in parallel (separate threads in Spring async mode)
-  3. If one listener fails, others continue (isolated failure)
-  4. Order of listener invocation is NOT guaranteed (don't rely on it)
+**How to read this diagram.** `UserService` knows only the publisher. Each listener subscribes independently.
 
-  CODE FLOW:
-  ════════════
-  1. UserService.register(user)
-     └─ userRepo.save(user)
-     └─ publisher.publishEvent(new UserRegisteredEvent(user.id, user.email))
-          └─ Spring scans @EventListener beans
-               └─ dispatches to: WelcomeEmailListener, AnalyticsListener, AuditLogListener
-                    └─ all receive SAME event object (independent copies)
+**Key properties**
 
-  ADDING A NEW LISTENER:
-  ════════════════════
-  @Component
-  class NewRelicListener {
-      @EventListener  ◀── just add @EventListener annotation
-      void on(UserRegisteredEvent e) { newRelic.trackEvent(e); }
-  }
-  // Zero changes to UserService. This is textbook OCP + Observer.
+1. `UserService` knows nothing about the listeners. New listeners are added with **zero changes** to `UserService`.
+2. By default Spring calls listeners **synchronously, in the publisher's thread**. They run in parallel on separate threads only if you make them asynchronous (`@Async` with `@EnableAsync`, or an async multicaster).
+3. In the default synchronous mode an exception in one listener propagates to the publisher and stops later listeners. Isolated failure needs async listeners or an error handler.
+4. The order of listener invocation is not guaranteed unless you add `@Order`; do not rely on it.
+
+**Code flow**
+
+1. `UserService.register(user)` saves the user with `userRepo.save(user)`.
+2. It calls `publisher.publishEvent(new UserRegisteredEvent(user.id, user.email))`.
+3. Spring finds the `@EventListener` methods and dispatches to `WelcomeEmailListener`, `AnalyticsListener` and `AuditLogListener`.
+4. All of them receive the **same event object**, so events should be immutable (a record is ideal).
+
+**Adding a new listener**
+
+```java
+@Component
+class NewRelicListener {
+    @EventListener                       // just add the annotation
+    void on(UserRegisteredEvent e) { newRelic.trackEvent(e); }
+}
+// Zero changes to UserService: textbook OCP + Observer.
 ```
 
 ### Mechanism Deep-Dive: Liskov Substitution and the Role of @Override
@@ -641,175 +653,101 @@ The `@Override` annotation is a developer tool that leverages the compiler as a 
 
 ### Why-This-Not-That: Strategy vs Template Method
 
+| DIMENSION | STRATEGY | TEMPLATE METHOD |
+| --- | --- | --- |
+| MECHANISM (how it varies) | COMPOSITION (HAS-A)<br>Algorithm is a separate object injected into context | INHERITANCE (IS-A)<br>Subclass overrides specific steps of a fixed algorithm skeleton |
+| RUNTIME FLEXIBILITY | ✓ Swap at runtime (cart.setStrategy) | ✗ Fixed at compile time (new CSVImporter) |
+| MULTIPLE STRATEGIES (can combine) | ✓ Inject multiple (discount+tax+shipping simultaneously) | ✗ One inheritance path (CSVImporter can't also be JSONImporter) |
+| TESTABILITY | ✓ Test strategies in isolation | ✗ Requires subclass for each variant |
+| USE WHEN | Algorithms interchangeable at runtime, or multiple concerns combined | Algorithm skeleton fixed, specific steps vary by subclass type |
+| JAVA EXAMPLE | DiscountStrategy (PaymentStrategy) | DataImporter (JdbcTemplate) |
+| OOP PRINCIPLE<br>ALIGNMENT | Favor composition over inheritance (GoF) | Inversion of Control (frameworks) |
+| KEY LIMITATION | Must expose strategy interface to context | Single inheritance limits flexibility |
+
+**Decision tree: Strategy vs Template Method**
+
+```mermaid
+flowchart TD
+  q1{"Does the algorithm have a FIXED skeleton with variable steps?"}
+  q1 -->|"Yes"| tm1["Template Method<br/>(framework hooks: beforeProcess, afterProcess)"]
+  q1 -->|"No"| q2{"Does behavior need to change at runtime?"}
+  q2 -->|"Yes"| st["Strategy<br/>(swap discount from 10% to 20% per user segment)"]
+  q2 -->|"No"| q3{"Does behavior vary by type?"}
+  q3 -->|"Yes"| tm2["Template Method<br/>(CSVImporter vs JSONImporter share read → parse → save)"]
+  q3 -->|"No"| nn["Neither: use simple conditional logic"]
 ```
-┌─────────────────────────┬──────────────────────────┬──────────────────────────┐
-│  DIMENSION              │  STRATEGY                │  TEMPLATE METHOD        │
-├─────────────────────────┼──────────────────────────┼──────────────────────────┤
-│  MECHANISM              │  COMPOSITION (HAS-A)     │  INHERITANCE (IS-A)      │
-│  (how it varies)        │  Algorithm is a separate │  Subclass overrides      │
-│                         │  object injected into    │  specific steps of a     │
-│                         │  context                 │  fixed algorithm skeleton│
-├─────────────────────────┼──────────────────────────┼──────────────────────────┤
-│  RUNTIME FLEXIBILITY    │  ✓ Swap at runtime       │  ✗ Fixed at compile time │
-│                         │    (cart.setStrategy)    │    (new CSVImporter)     │
-├─────────────────────────┼──────────────────────────┼──────────────────────────┤
-│  MULTIPLE STRATEGIES    │  ✓ Inject multiple       │  ✗ One inheritance path  │
-│  (can combine)          │    (discount+tax+shipping│    (CSVImporter can't    │
-│                         │    simultaneously)       │    also be JSONImporter) │
-├─────────────────────────┼──────────────────────────┼──────────────────────────┤
-│  TESTABILITY            │  ✓ Test strategies in    │  ✗ Requires subclass     │
-│                         │    isolation             │    for each variant      │
-├─────────────────────────┼──────────────────────────┼──────────────────────────┤
-│  USE WHEN               │  Algorithms interchangeable│  Algorithm skeleton     │
-│                         │  at runtime, or multiple │  fixed, specific steps   │
-│                         │  concerns combined       │  vary by subclass type   │
-├─────────────────────────┼──────────────────────────┼──────────────────────────┤
-│  JAVA EXAMPLE           │  DiscountStrategy        │  DataImporter            │
-│                         │  (PaymentStrategy)       │  (JdbcTemplate)          │
-├─────────────────────────┼──────────────────────────┼──────────────────────────┤
-│  OOP PRINCIPLE          │  Favor composition over  │  Inversion of Control    │
-│  ALIGNMENT              │  inheritance (GoF)       │  (frameworks)            │
-├─────────────────────────┼──────────────────────────┼──────────────────────────┤
-│  KEY LIMITATION         │  Must expose strategy    │  Single inheritance      │
-│                         │    interface to context  │  limits flexibility      │
-└─────────────────────────┴──────────────────────────┴──────────────────────────┘
 
-  DECISION TREE:
-  ══════════════
-  Does the algorithm have a FIXED skeleton with variable steps?
-  YES → Template Method (framework hooks: beforeProcess, afterProcess)
-  NO  → Does behavior need to change at runtime?
-        YES → Strategy (swap discount from 10% to 20% per user segment)
-        NO  → Does behavior vary by type?
-              YES → Template Method (CSVImporter vs JSONImporter share read→parse→save)
-              NO  → Neither — use simple conditional logic
+**How to read this diagram.** Start at the top question and follow Yes/No down to a pattern.
 
-  MODERN JAVA TREND: Favor Strategy (composition) over Template Method.
-  Lambda expressions (Java 8+) make Strategy even lighter:
-  cart.setDiscountStrategy(price -> price * 0.9);  // inline Strategy
+**Modern Java trend:** favor Strategy (composition) over Template Method. Lambda expressions (Java 8+) make Strategy even lighter:
+
+```java
+cart.setDiscountStrategy(price -> price * 0.9);  // inline Strategy
 ```
 
 ### Breadth Comparison 1: Design Pattern Selection Table (10+ Scenarios)
 
-```
-┌────────────────────────────────┬─────────────────────┬────────────────────────────────────┐
-│  PROBLEM / SCENARIO            │  PATTERN(S)         │  WHY                               │
-├────────────────────────────────┼─────────────────────┼────────────────────────────────────┤
-│  1. One instance, global       │  Singleton          │  Registry, config, logger          │
-│  access (but prefer DI)        │  (enum form best)   │  or use Spring @Component          │
-├────────────────────────────────┼─────────────────────┼────────────────────────────────────┤
-│  2. Create objects based on    │  Factory Method     │  new X() → factory.create(X.class) │
-│  type string/config            │  / Abstract Factory │  decouples creator from product    │
-├────────────────────────────────┼─────────────────────┼────────────────────────────────────┤
-│  3. Object with 5+ optional    │  Builder            │  Avoids 2^n telescoping constructors│
-│  fields, need immutability     │                     │  readable, chainable, validated    │
-├────────────────────────────────┼─────────────────────┼────────────────────────────────────┤
-│  4. Need different algorithm   │  Strategy           │  Swap SortStrategy at runtime      │
-│  at runtime                    │                     │  (discount, sort, routing)         │
-├────────────────────────────────┼─────────────────────┼────────────────────────────────────┤
-│  5. Fixed algorithm,           │  Template Method    │  ImportData: read→parse→validate   │
-│  variable steps                │                     │  (JdbcTemplate, test hooks)        │
-├────────────────────────────────┼─────────────────────┼────────────────────────────────────┤
-│  6. State change → notify      │  Observer           │  One event → many listeners        │
-│  multiple dependents           │  / Publish-Subscriber│  (Spring @EventListener)           │
-├────────────────────────────────┼─────────────────────┼────────────────────────────────────┤
-│  7. Add logging/caching        │  Decorator          │  Stack decorators (compress→encrpyt│
-│  WITHOUT modifying class       │                     │  →log) around same interface       │
-├────────────────────────────────┼─────────────────────┼────────────────────────────────────┤
-│  8. Control access to object   │  Proxy              │  Lazy init, caching, auth checks   │
-│  (don't load/hit real object)  │                     │  (Spring @Transactional AOP)       │
-├────────────────────────────────┼─────────────────────┼────────────────────────────────────┤
-│  9. Incompatible interfaces,   │  Adapter            │  Legacy XML parser → new JSON API  │
-│  make them work together       │                     │  wrap interface B around A         │
-├────────────────────────────────┼─────────────────────┼────────────────────────────────────┤
-│  10. Complex subsystem,        │  Facade             │  OrderFacade.placeOrder() wraps    │
-│  need simple entry point       │                     │  Inventory+Payment+Shipping+Notify │
-├────────────────────────────────┼─────────────────────┼────────────────────────────────────┤
-│  11. Request passes through    │  Chain of Resp.     │  Auth middleware: rate→auth→authz  │
-│  multiple handlers, unknown    │                     │  Spring Security filter chain      │
-├────────────────────────────────┼─────────────────────┼────────────────────────────────────┤
-│  12. Object with two states,   │  State              │  Order: PENDING→PAID→SHIPPED→DONE  │
-│  behavior changes by state     │                     │  each state = different behavior   │
-├────────────────────────────────┼─────────────────────┼────────────────────────────────────┤
-│  13. Capture & replay          │  Memento            │  Undo/redo (save object state,     │
-│  object state externally       │                     │  restore later)                    │
-├────────────────────────────────┼─────────────────────┼────────────────────────────────────┤
-│  14. Traverse tree/hierarchy   │  Iterator / Visitor │  Recurse tree, process each node   │
-│  without exposing structure    │                     │  (FileSystem traversal)            │
-└────────────────────────────────┴─────────────────────┴────────────────────────────────────┘
-```
+| PROBLEM / SCENARIO | PATTERN(S) | WHY |
+| --- | --- | --- |
+| 1. One instance, global access (but prefer DI) | Singleton (enum form best) | Registry, config, logger or use Spring @Component |
+| 2. Create objects based on type string/config | Factory Method / Abstract Factory | new X() → factory.create(X.class) decouples creator from product |
+| 3. Object with 5+ optional fields, need immutability | Builder | Avoids 2^n telescoping constructors readable, chainable, validated |
+| 4. Need different algorithm at runtime | Strategy | Swap SortStrategy at runtime (discount, sort, routing) |
+| 5. Fixed algorithm, variable steps | Template Method | ImportData: read→parse→validate (JdbcTemplate, test hooks) |
+| 6. State change → notify multiple dependents | Observer / Publish-Subscriber | One event → many listeners (Spring @EventListener) |
+| 7. Add logging/caching<br>WITHOUT modifying class | Decorator | Stack decorators (compress→encrpyt<br>→log) around same interface |
+| 8. Control access to object (don't load/hit real object) | Proxy | Lazy init, caching, auth checks (Spring @Transactional AOP) |
+| 9. Incompatible interfaces, make them work together | Adapter | Legacy XML parser → new JSON API wrap interface B around A |
+| 10. Complex subsystem, need simple entry point | Facade | OrderFacade.placeOrder() wraps<br>Inventory+Payment+Shipping+Notify |
+| 11. Request passes through multiple handlers, unknown | Chain of Resp. | Auth middleware: rate→auth→authz<br>Spring Security filter chain |
+| 12. Object with two states, behavior changes by state | State | Order: PENDING→PAID→SHIPPED→DONE each state = different behavior |
+| 13. Capture & replay object state externally | Memento | Undo/redo (save object state, restore later) |
+| 14. Traverse tree/hierarchy without exposing structure | Iterator / Visitor | Recurse tree, process each node (FileSystem traversal) |
 
 ### Breadth Comparison 2: SOLID Violation Symptom Table
 
-```
-┌─────────────┬─────────────────────────────────────┬───────────────────────────────┐
-│  PRINCIPLE  │  WHAT VIOLATION LOOKS LIKE         │  FIX PATTERN                  │
-├─────────────┼─────────────────────────────────────┼───────────────────────────────┤
-│  SRP        │  Class changes for multiple reasons │  SPLIT into focused classes   │
-│             │  UserService: save+email+audit+val  │  UserRepo / EmailSvc /        │
-│             │  God class with 50 unrelated methods│  AuditLogger / PasswordValidator│
-│             │  Merge conflict in every PR         │                               │
-├─────────────┼─────────────────────────────────────┼───────────────────────────────┤
-│  OCP        │  Adding new type → modify switch/   │  STRATEGY / POLYMORPHISM      │
-│             │  if-else in existing class          │  TaxCalculator + TaxStrategy  │
-│             │  "Adding Germany required changing   │  interface. New country =     │
-│             │   TaxCalculator.java"               │  new class, no existing code  │
-├─────────────┼─────────────────────────────────────┼───────────────────────────────┤
-│  LSP        │  instanceof checks downstream       │  DESIGN BY CONTRACT /         │
-│             │  Square extends Rectangle →         │  REFACTOR hierarchy           │
-│             │  area() breaks for Square           │  Square and Rectangle should  │
-│             │  Methods that "should work"          │  NOT have inheritance here.   │
-│             │  fail mysteriously for subtypes     │  Use composition or separate  │
-│             │                                     │  interfaces instead.          │
-├─────────────┼─────────────────────────────────────┼───────────────────────────────┤
-│  ISP        │  Interface with 20 methods,         │  SEGREGATE into small         │
-│             │  clients only use 2-3               │  interfaces                   │
-│             │  "implements HugeInterface,          │  Printable / Scannable /      │
-│             │   but only override print()"         │  Faxable instead of           │
-│             │  Clients forced to implement        │  AllInOneInterface            │
-│             │  methods they don't need            │                               │
-├─────────────┼─────────────────────────────────────┼───────────────────────────────┤
-│  DIP        │  High-level module depends on       │  DEPEND ON ABSTRACTIONS       │
-│             │  low-level concrete classes         │  OrderService depends on      │
-│             │  "Changing MySQL requires rewriting │  PaymentGateway interface,    │
-│             │   OrderService"                     │  not StripePaymentGateway.    │
-│             │  Constructor does `new` of          │  Inject via constructor/Spring│
-│             │  concrete class (tight coupling)    │  @Autowired PaymentGateway    │
-└─────────────┴─────────────────────────────────────┴───────────────────────────────┘
+| PRINCIPLE | WHAT VIOLATION LOOKS LIKE | FIX PATTERN |
+| --- | --- | --- |
+| SRP | Class changes for multiple reasons<br>UserService: save+email+audit+val<br>God class with 50 unrelated methods<br>Merge conflict in every PR | SPLIT into focused classes<br>UserRepo / EmailSvc /AuditLogger / PasswordValidator |
+| OCP | Adding new type → modify switch/if-else in existing class<br>"Adding Germany required changing<br>TaxCalculator.java" | STRATEGY / POLYMORPHISM<br>TaxCalculator + TaxStrategy interface. New country = new class, no existing code |
+| LSP | instanceof checks downstream<br>Square extends Rectangle → area() breaks for Square<br>Methods that "should work" fail mysteriously for subtypes | DESIGN BY CONTRACT /REFACTOR hierarchy<br>Square and Rectangle should<br>NOT have inheritance here.<br>Use composition or separate interfaces instead. |
+| ISP | Interface with 20 methods, clients only use 2-3<br>"implements HugeInterface, but only override print()"<br>Clients forced to implement methods they don't need | SEGREGATE into small interfaces<br>Printable / Scannable /Faxable instead of<br>AllInOneInterface |
+| DIP | High-level module depends on low-level concrete classes<br>"Changing MySQL requires rewriting<br>OrderService"<br>Constructor does `new` of concrete class (tight coupling) | DEPEND ON ABSTRACTIONS<br>OrderService depends on<br>PaymentGateway interface, not StripePaymentGateway.<br>Inject via constructor/Spring<br>@Autowired PaymentGateway |
 
-  VIOLATION CASCADE DETECTION:
-  ═══════════════════════════
-  You identify ONE violation → ask: "What else broke?"
+**Violation cascade detection.** When you identify ONE violation, ask: "What else broke?"
 
-  SRP → OCP: If class has multiple reasons to change,
-           adding new types requires modifying the class (violates OCP)
+| Chain | Why |
+| --- | --- |
+| SRP → OCP | If a class has multiple reasons to change, adding new types requires modifying the class (violates OCP). |
+| LSP → OCP | If subtypes break contracts, you add `instanceof` checks to work around it (violates OCP). |
+| ISP → DIP | Fat interfaces force clients to depend on methods they don't use, so they depend on more than they need (violates DIP). |
+| OCP → DIP | Modifying high-level code to handle new cases adds dependencies on low-level details (violates DIP). |
 
-  LSP → OCP: If subtypes break contracts, you add instanceof checks
-             to work around it (violates OCP)
-
-  ISP → DIP: Fat interfaces force clients to depend on methods
-             they don't use (violates DIP — depends on more than needed)
-
-  OCP → DIP: Open for modification = violating DIP by adding dependencies
-             on low-level details in high-level code
-
-  THE CASCADE PATTERN: Every SOLID violation tends to create another.
-  Fixing SRP often fixes OCP. Fixing DIP often fixes ISP.
-```
+**The cascade pattern:** every SOLID violation tends to create another. Fixing SRP often fixes OCP. Fixing DIP often fixes ISP.
 
 [← Back to Semester 2 Guide](../00_CURRICULUM/SEMESTER_2_GUIDE.md)
 
 
 ---
 
+## 🏢 Enterprise Lens — OOP and Design Problem Sets
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Onboarding exercises, code katas, interview practice |
+| **Failure modes** | Copying solutions without attempting; passing tests with a poor design |
+| **Testing and verification** | Run the stub tests; add a requirement change and count the lines it touches |
+
+---
+
 ## Reality Check
 
-**"Design problem sets are read-and-nod material"** ? A design problem set only trains when you produce an ARTIFACT per problem � a numbers sheet, a component sketch, one seam explored deep � BEFORE reading any provided direction. Reading solutions first converts every problem into confirmation; producing first converts every solution into a diff against your own thinking, which is where the learning density is. The discipline: 25 minutes of production, then compare, then write the one-line delta lesson.
+**"Design problem sets are read-and-nod material"** — A design problem set only trains when you produce an ARTIFACT per problem — a numbers sheet, a component sketch, one seam explored deep — BEFORE reading any provided direction. Reading solutions first converts every problem into confirmation; producing first converts every solution into a diff against your own thinking, which is where the learning density is. The discipline: 25 minutes of production, then compare, then write the one-line delta lesson.
 
-**"Problem sets should be completed in order, once"** ? Design skills decay toward slogan-recall without SPACED revisits, and revisiting the same problem with changed constraints is the highest-value rep: the same feed design at 100x scale, the same chat with groups of 10k, the same rate limiter as a shared library instead of a service. Second passes cost a third of the time and teach the branch points � which is what the interview actually tests. One pass through twenty problems loses to three passes through seven.
+**"Problem sets should be completed in order, once"** — Design skills decay toward slogan-recall without SPACED revisits, and revisiting the same problem with changed constraints is the highest-value rep: the same feed design at 100x scale, the same chat with groups of 10k, the same rate limiter as a shared library instead of a service. Second passes cost a third of the time and teach the branch points — which is what the interview actually tests. One pass through twenty problems loses to three passes through seven.
 
-**"The goal is a complete design per problem"** ? Completeness is the wrong optimization target for practice: rotating FOCUS beats finishing everything � this session only estimation and bottleneck identification, that session only failure modes, another only the data model. Focused reps build the individual muscles; complete-design reps rehearse the assembly. Doing only assembly reps is why practiced candidates still hand-wave the arithmetic � they always spent their session time touring components instead.
+**"The goal is a complete design per problem"** — Completeness is the wrong optimization target for practice: rotating FOCUS beats finishing everything — this session only estimation and bottleneck identification, that session only failure modes, another only the data model. Focused reps build the individual muscles; complete-design reps rehearse the assembly. Doing only assembly reps is why practiced candidates still hand-wave the arithmetic — they always spent their session time touring components instead.
 
-**"Solo practice on problem sets prepares you for the interview"** ? Solo practice cannot train INTERRUPTION RECOVERY � the defining texture of real design rounds: requirement changes mid-design, "actually assume 10x that," a hostile what-if against your queue choice. The cheapest simulation: after your solo design, roll one of three prepared perturbations (scale jump, region failure, new consistency requirement) and revise for ten minutes. Candidates who never practiced perturbation present beautifully and collapse at the first push.
+**"Solo practice on problem sets prepares you for the interview"** — Solo practice cannot train INTERRUPTION RECOVERY — the defining texture of real design rounds: requirement changes mid-design, "actually assume 10x that," a hostile what-if against your queue choice. The cheapest simulation: after your solo design, roll one of three prepared perturbations (scale jump, region failure, new consistency requirement) and revise for ten minutes. Candidates who never practiced perturbation present beautifully and collapse at the first push.
 
-**"More problems covered means better preparation"** ? Coverage has sharply diminishing returns after the core archetypes (feed, chat, shortener/KV, rate limiter, queue-based pipeline, top-k/trending, storage service, scheduler) because new problems recombine the same decisions: fan-out, partitioning, consistency-per-flow, hot keys, idempotency. Depth on the recurring DECISIONS � able to argue each from numbers in any costume � beats breadth over problem titles. The problem set is the gymnasium, not the syllabus.
+**"More problems covered means better preparation"** — Coverage has sharply diminishing returns after the core archetypes (feed, chat, shortener/KV, rate limiter, queue-based pipeline, top-k/trending, storage service, scheduler) because new problems recombine the same decisions: fan-out, partitioning, consistency-per-flow, hot keys, idempotency. Depth on the recurring DECISIONS — able to argue each from numbers in any costume — beats breadth over problem titles. The problem set is the gymnasium, not the syllabus.

@@ -620,85 +620,75 @@ Default vs Explicit. `@Primary` is placed on the Bean definition to declare it a
 
 ### ACID Properties - Database Transaction Fundamentals
 
+### Acid Properties Explained
+
+ACID = The four guarantees every database transaction should provide
+
+```text
+A = ATOMICITY ("All or Nothing")
+WHAT: Transaction either FULLY completes or FULLY fails
+
+Bank Transfer Example:
+  1. Debit $100 from Account A  \ BOTH must succeed,
+  2. Credit $100 to Account B   / or NEITHER
+
+WITHOUT ATOMICITY: Crash after step 1 = money disappears!
+WITH ATOMICITY: Crash after step 1 = both steps rolled back
+
+IN SPRING: @Transactional ensures atomicity via rollback
 ```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                        ACID PROPERTIES EXPLAINED                                 │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ACID = The four guarantees every database transaction should provide            │
-│                                                                                  │
-│  ┌─────────────────────────────────────────────────────────────────────────┐     │
-│  │ A = ATOMICITY ("All or Nothing")                                        │     │
-│  │ ───────────────────────────────────────────────────────────────────────│      │
-│  │ WHAT: Transaction either FULLY completes or FULLY fails               │       │
-│  │                                                                         │     │
-│  │ Bank Transfer Example:                                                  │     │
-│  │   1. Debit $100 from Account A  ─┐                                     │      │
-│  │   2. Credit $100 to Account B   ─┤ BOTH must succeed, or NEITHER      │       │
-│  │                                                                         │     │
-│  │ WITHOUT ATOMICITY: Crash after step 1 = money disappears!             │       │
-│  │ WITH ATOMICITY: Crash after step 1 = both steps rolled back           │       │
-│  │                                                                         │     │
-│  │ IN SPRING: @Transactional ensures atomicity via rollback              │       │
-│  └─────────────────────────────────────────────────────────────────────────┘     │
-│                                                                                  │
-│  ┌─────────────────────────────────────────────────────────────────────────┐     │
-│  │ C = CONSISTENCY ("Valid State to Valid State")                          │     │
-│  │ ───────────────────────────────────────────────────────────────────────│      │
-│  │ WHAT: Transaction moves database from one valid state to another      │       │
-│  │                                                                         │     │
-│  │ Example Constraints:                                                    │     │
-│  │   • Account balance cannot be negative                                 │      │
-│  │   • Foreign key must reference existing row                            │      │
-│  │   • Total debits must equal total credits                              │      │
-│  │                                                                         │     │
-│  │ WITHOUT CONSISTENCY: Order references non-existent product            │       │
-│  │ WITH CONSISTENCY: Constraint violation = transaction rejected         │       │
-│  │                                                                         │     │
-│  │ IN SPRING: JPA validations + DB constraints enforce consistency       │       │
-│  └─────────────────────────────────────────────────────────────────────────┘     │
-│                                                                                  │
-│  ┌─────────────────────────────────────────────────────────────────────────┐     │
-│  │ I = ISOLATION ("Transactions Don't Interfere")                          │     │
-│  │ ───────────────────────────────────────────────────────────────────────│      │
-│  │ WHAT: Concurrent transactions appear to run sequentially              │       │
-│  │                                                                         │     │
-│  │ Problem Without Isolation:                                              │     │
-│  │   TX1: Read balance ($100)                                             │      │
-│  │   TX2: Read balance ($100), Withdraw $50, Commit ($50)                │       │
-│  │   TX1: Withdraw $80, Commit → NEGATIVE BALANCE (-$30)!                │       │
-│  │                                                                         │     │
-│  │ ISOLATION LEVELS:                                                       │     │
-│  │   READ_UNCOMMITTED → Dirty reads possible (see uncommitted changes)   │       │
-│  │   READ_COMMITTED   → No dirty reads (default for most DBs)            │       │
-│  │   REPEATABLE_READ  → Same read = same result within transaction       │       │
-│  │   SERIALIZABLE     → Full isolation (as if transactions run serially) │       │
-│  │                                                                         │     │
-│  │ IN SPRING: @Transactional(isolation = Isolation.REPEATABLE_READ)      │       │
-│  └─────────────────────────────────────────────────────────────────────────┘     │
-│                                                                                  │
-│  ┌─────────────────────────────────────────────────────────────────────────┐     │
-│  │ D = DURABILITY ("Committed = Permanent")                                │     │
-│  │ ───────────────────────────────────────────────────────────────────────│      │
-│  │ WHAT: Once committed, data survives system crashes/restarts           │       │
-│  │                                                                         │     │
-│  │ Example:                                                                │     │
-│  │   • User completes purchase → commit → server crashes                 │       │
-│  │   • After restart, purchase is STILL in database                      │       │
-│  │                                                                         │     │
-│  │ HOW DATABASES ACHIEVE DURABILITY:                                       │     │
-│  │   • Write-ahead logging (WAL)                                          │      │
-│  │   • Flushing to disk before confirming commit                          │      │
-│  │   • Replication for fault tolerance                                    │      │
-│  │                                                                         │     │
-│  │ IN SPRING: Handled by database engine automatically                   │       │
-│  └─────────────────────────────────────────────────────────────────────────┘     │
-│                                                                                  │
-│  INTERVIEW TIP: "ACID ensures database transactions are reliable even with       │
-│  concurrent access and system failures"                                          │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+
+```text
+C = CONSISTENCY ("Valid State to Valid State")
+WHAT: Transaction moves database from one valid state to another
+
+Example Constraints:
+  • Account balance cannot be negative
+  • Foreign key must reference existing row
+  • Total debits must equal total credits
+
+WITHOUT CONSISTENCY: Order references non-existent product
+WITH CONSISTENCY: Constraint violation = transaction rejected
+
+IN SPRING: JPA validations + DB constraints enforce consistency
 ```
+
+```text
+I = ISOLATION ("Transactions Don't Interfere")
+WHAT: Concurrent transactions appear to run sequentially
+
+Problem Without Isolation:
+  TX1: Read balance ($100)
+  TX2: Read balance ($100), Withdraw $50, Commit ($50)
+  TX1: Withdraw $80, Commit → NEGATIVE BALANCE (-$30)!
+
+ISOLATION LEVELS:
+  READ_UNCOMMITTED → Dirty reads possible (see uncommitted changes)
+  READ_COMMITTED   → No dirty reads (default for most DBs)
+  REPEATABLE_READ  → Same read = same result within transaction
+  SERIALIZABLE     → Full isolation (as if transactions run serially)
+
+IN SPRING: @Transactional(isolation = Isolation.REPEATABLE_READ)
+```
+
+```text
+D = DURABILITY ("Committed = Permanent")
+WHAT: Once committed, data survives system crashes/restarts
+
+Example:
+  • User completes purchase → commit → server crashes
+  • After restart, purchase is STILL in database
+
+HOW DATABASES ACHIEVE DURABILITY:
+  • Write-ahead logging (WAL)
+  • Flushing to disk before confirming commit
+  • Replication for fault tolerance
+
+IN SPRING: Handled by database engine automatically
+```
+
+INTERVIEW TIP: "ACID ensures database transactions are reliable even with  
+concurrent access and system failures"
 
 ### Transaction Configuration
 
@@ -1300,62 +1290,54 @@ Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL l
 
 ## Quick Reference Card
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                        SPRING BOOT ANNOTATIONS CHEAT SHEET                       │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│ ENTITY LIFECYCLE                                                                 │
-│   @PrePersist    - Before INSERT                                                 │
-│   @PostPersist   - After INSERT (ID available)                                   │
-│   @PreUpdate     - Before UPDATE                                                 │
-│   @PostUpdate    - After UPDATE                                                  │
-│   @PreRemove     - Before DELETE                                                 │
-│   @PostRemove    - After DELETE                                                  │
-│   @PostLoad      - After SELECT                                                  │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│ VALIDATION                                                                       │
-│   @NotNull       - Cannot be null                                                │
-│   @NotEmpty      - Not null, not empty                                           │
-│   @NotBlank      - Not null, not empty, not whitespace                           │
-│   @Size          - Length/size constraint                                        │
-│   @Min/@Max      - Numeric bounds                                                │
-│   @Email         - Valid email format                                            │
-│   @Pattern       - Regex match                                                   │
-│   @Past/@Future  - Date constraints                                              │
-│   @Valid         - Trigger nested validation                                     │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│ CACHING                                                                          │
-│   @Cacheable     - Cache result                                                  │
-│   @CachePut      - Update cache                                                  │
-│   @CacheEvict    - Remove from cache                                             │
-│   @Caching       - Multiple cache operations                                     │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│ ASYNC & SCHEDULING                                                               │
-│   @Async         - Run asynchronously                                            │
-│   @Scheduled     - Run periodically (fixedRate, cron)                            │
-│   @EnableAsync   - Enable async processing                                       │
-│   @EnableScheduling - Enable scheduling                                          │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│ TRANSACTION                                                                      │
-│   @Transactional(propagation=?)   - REQUIRED, REQUIRES_NEW, etc.                 │
-│   @Transactional(isolation=?)     - READ_COMMITTED, SERIALIZABLE, etc.           │
-│   @Transactional(rollbackFor=?)   - Exceptions to rollback on                    │
-│   @Transactional(readOnly=true)   - Optimization for reads                       │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│ SECURITY                                                                         │
-│   @PreAuthorize  - Check before execution                                        │
-│   @PostAuthorize - Check after execution                                         │
-│   @PreFilter     - Filter input collection                                       │
-│   @PostFilter    - Filter output collection                                      │
-│   @Secured       - Simple role check                                             │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│ AUDITING                                                                         │
-│   @CreatedDate   - Auto-set creation time                                        │
-│   @LastModifiedDate - Auto-set update time                                       │
-│   @CreatedBy     - Auto-set creator                                              │
-│   @LastModifiedBy - Auto-set modifier                                            │
-│   @Version       - Optimistic locking                                            │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**SPRING BOOT ANNOTATIONS CHEAT SHEET**
+
+```text
+ENTITY LIFECYCLE
+  @PrePersist    - Before INSERT
+  @PostPersist   - After INSERT (ID available)
+  @PreUpdate     - Before UPDATE
+  @PostUpdate    - After UPDATE
+  @PreRemove     - Before DELETE
+  @PostRemove    - After DELETE
+  @PostLoad      - After SELECT
+VALIDATION
+  @NotNull       - Cannot be null
+  @NotEmpty      - Not null, not empty
+  @NotBlank      - Not null, not empty, not whitespace
+  @Size          - Length/size constraint
+  @Min/@Max      - Numeric bounds
+  @Email         - Valid email format
+  @Pattern       - Regex match
+  @Past/@Future  - Date constraints
+  @Valid         - Trigger nested validation
+CACHING
+  @Cacheable     - Cache result
+  @CachePut      - Update cache
+  @CacheEvict    - Remove from cache
+  @Caching       - Multiple cache operations
+ASYNC & SCHEDULING
+  @Async         - Run asynchronously
+  @Scheduled     - Run periodically (fixedRate, cron)
+  @EnableAsync   - Enable async processing
+  @EnableScheduling - Enable scheduling
+TRANSACTION
+  @Transactional(propagation=?)   - REQUIRED, REQUIRES_NEW, etc.
+  @Transactional(isolation=?)     - READ_COMMITTED, SERIALIZABLE, etc.
+  @Transactional(rollbackFor=?)   - Exceptions to rollback on
+  @Transactional(readOnly=true)   - Optimization for reads
+SECURITY
+  @PreAuthorize  - Check before execution
+  @PostAuthorize - Check after execution
+  @PreFilter     - Filter input collection
+  @PostFilter    - Filter output collection
+  @Secured       - Simple role check
+AUDITING
+  @CreatedDate   - Auto-set creation time
+  @LastModifiedDate - Auto-set update time
+  @CreatedBy     - Auto-set creator
+  @LastModifiedBy - Auto-set modifier
+  @Version       - Optimistic locking
 ```
 
 ---

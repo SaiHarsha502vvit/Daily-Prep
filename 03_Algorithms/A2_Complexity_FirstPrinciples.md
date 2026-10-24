@@ -1,12 +1,75 @@
 # A2. Complexity Analysis from First Principles
 
-**Navigation**: [← A1: Correctness Proofs](A1_Correctness_Proofs.md) | [📚 Index](00_INDEX.md) | [A3: Lower Bounds & NP →](A3_Lower_Bounds_And_NP.md)
+> **Navigation**: [← A1. Algorithm Correctness…](A1_Correctness_Proofs.md) | [Chapter index](00_INDEX.md) | [A3. Lower Bounds and… →](A3_Lower_Bounds_And_NP.md)
 
 > **MIT 6.006 L2–L4 / RWTH Aachen Algo I / TU Munich IN0007 foundation**
 >
 > "The purpose of complexity analysis is not just to say O(n log n). It is to *derive* that bound from first principles — from the structure of the algorithm itself — so that you understand *why* the algorithm behaves as it does, and *when* that bound breaks."
 
 ---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [A1 Proofs](A1_Correctness_Proofs.md), [Algorithm Thinking](01_Algorithm_Thinking.md) |
+| **You will learn** | Asymptotic notation, recurrences, the Master theorem, amortized analysis (aggregate, accounting, potential) |
+| **Leads to** | [Divide & Conquer](02c_Divide_And_Conquer.md), [DP](04a_DP_Internals.md), [A3 Lower Bounds](A3_Lower_Bounds_And_NP.md) |
+| **Abstraction level** | L1: from counting steps by hand to solving recurrences |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Complexity from First Principles
+
+### 1. The bottom line
+
+Complexity analysis turns "how long will it take?" into an equation you can solve.
+
+### 2. The textbook core
+
+- `O`, `Ω`, `Θ` bound growth rates; constants and lower-order terms are dropped.
+- Recurrence `T(n) = aT(n/b) + f(n)` is solved by the **Master theorem** by comparing `f(n)` with `n^(log_b a)`.
+- **Amortized** cost averages over a worst-case *sequence* (not random inputs).
+- Space counts auxiliary memory including recursion depth.
+
+### 3. The real-world analogy
+
+A **taxi meter**: the fare grows with distance (input size), and the meter formula tells you the price of any trip before you take it.
+
+### 4. Walkthrough
+
+1. Merge sort: `T(n) = 2T(n/2) + n`.
+2. `a = 2, b = 2`, so `n^(log₂ 2) = n`; `f(n) = n` matches it.
+3. Case 2 of the Master theorem → `T(n) = Θ(n log n)`.
+4. Intuition: `log n` levels, each doing `n` work.
+
+> [!NOTE]
+> **Quick check:** Solve `T(n) = T(n/2) + 1`. *Θ(log n): binary search.*
+
+
+### 5. Check yourself
+
+**Q1.** Solve `T(n) = 2T(n/2) + n`.
+
+<details><summary>Answer</summary>
+
+`Θ(n log n)` (Master theorem, case 2): `log n` levels, each doing `n` work.
+
+</details>
+
+**Q2.** A dynamic array doubles when full. What is the amortised cost of an append?
+
+<details><summary>Answer</summary>
+
+`O(1)`: the total copying over `n` appends is below `2n`.
+
+</details>
+
+---
+
 
 ## Table of Contents
 
@@ -171,23 +234,21 @@ T(n) = a·T(n/b) + f(n)     where a ≥ 1, b > 1, f asymptotically positive
 
 ### Three Cases
 
-```
+```text
 Compare f(n) with nˡᵒᵍᵇ⁽ᵃ⁾:
 
-┌──────────────────────────────────────────────────────────────────────┐
-│ CASE 1: f(n) = O(nˡᵒᵍᵇ⁽ᵃ⁾ - ε) for some ε > 0                     │
-│         → leaves dominate                                            │
-│         T(n) = Θ(nˡᵒᵍᵇ⁽ᵃ⁾)                                         │
-│                                                                      │
-│ CASE 2: f(n) = Θ(nˡᵒᵍᵇ⁽ᵃ⁾ · logᵏ(n)) for some k ≥ 0              │
-│         → equally distributed (add a log factor)                    │
-│         T(n) = Θ(nˡᵒᵍᵇ⁽ᵃ⁾ · logᵏ⁺¹(n))                           │
-│                                                                      │
-│ CASE 3: f(n) = Ω(nˡᵒᵍᵇ⁽ᵃ⁾ ⁺ ε) for some ε > 0                     │
-│         AND a·f(n/b) ≤ c·f(n) for some c < 1 (regularity cond.)   │
-│         → root dominates                                            │
-│         T(n) = Θ(f(n))                                              │
-└──────────────────────────────────────────────────────────────────────┘
+CASE 1: f(n) = O(nˡᵒᵍᵇ⁽ᵃ⁾ - ε) for some ε > 0
+        → leaves dominate
+        T(n) = Θ(nˡᵒᵍᵇ⁽ᵃ⁾)
+
+CASE 2: f(n) = Θ(nˡᵒᵍᵇ⁽ᵃ⁾ · logᵏ(n)) for some k ≥ 0
+        → equally distributed (add a log factor)
+        T(n) = Θ(nˡᵒᵍᵇ⁽ᵃ⁾ · logᵏ⁺¹(n))
+
+CASE 3: f(n) = Ω(nˡᵒᵍᵇ⁽ᵃ⁾ ⁺ ε) for some ε > 0
+        AND a·f(n/b) ≤ c·f(n) for some c < 1 (regularity cond.)
+        → root dominates
+        T(n) = Θ(f(n))
 ```
 
 ### Worked Examples (Must Memorize)
@@ -508,18 +569,16 @@ Fix: `"".join(words)` — builds the string once in O(n).
 
 ## Summary
 
-```
-Tool                    │ Use when
-────────────────────────┼──────────────────────────────────────────────
-O / Ω / Θ              │ Describe worst/best/tight growth rates
-Substitution method     │ You can guess the form; verify by induction
-Recursion tree          │ Visualize multi-level work; sum geometric series
-Master Theorem          │ T(n) = aT(n/b) + f(n); match one of 3 cases
-Aggregate amortized     │ Total work / n operations is tight
-Accounting amortized    │ Per-element credits fund future expensive ops
-Potential amortized     │ Global "energy" function models work savings
-Space analysis          │ Count stack depth (recursion) + heap allocations
-```
+| Tool | Use when |
+| --- | --- |
+| O / Ω / Θ | Describe worst/best/tight growth rates |
+| Substitution method | You can guess the form; verify by induction |
+| Recursion tree | Visualize multi-level work; sum geometric series |
+| Master Theorem | T(n) = aT(n/b) + f(n); match one of 3 cases |
+| Aggregate amortized | Total work / n operations is tight |
+| Accounting amortized | Per-element credits fund future expensive ops |
+| Potential amortized | Global "energy" function models work savings |
+| Space analysis | Count stack depth (recursion) + heap allocations |
 
 ---
 
@@ -715,6 +774,16 @@ int idx = Arrays.binarySearch(sortedArr, key);
 
 *[← A1: Correctness Proofs](A1_Correctness_Proofs.md) | [A3: Lower Bounds & NP →](A3_Lower_Bounds_And_NP.md)*
 
+
+---
+
+## 🏢 Enterprise Lens — Complexity from First Principles
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Capacity planning, SLO budgeting, choosing between O(n log n) and O(n²) paths for a data pipeline |
+| **Failure modes** | Ignoring constants and cache effects; quoting amortized bounds for latency-critical paths; forgetting space (recursion depth) |
+| **Testing and verification** | Empirical complexity check: time at n, 2n, 4n, 8n and confirm the growth ratio |
 
 ---
 
