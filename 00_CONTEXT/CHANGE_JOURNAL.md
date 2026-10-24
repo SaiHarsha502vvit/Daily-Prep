@@ -4,6 +4,19 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-25 - Redundancy Removal, Run-on Lines and Diagram Notes Repo-wide
+
+Scope: every content folder except `18_CSS_Complete`, `19_Frontend_Integration` (except one dedupe in `07_Web_Accessibility_A11y.md`), `23_Mobile_Dev_And_Testing` and `10_Enterprise_Systems/01_ERP_Fundamentals.md` (uncommitted user edits).
+
+- **Duplicated challenges.** The same `Challenge N` question plus answer had been copy-pasted into several files. `tools/dedupe_challenges.py` keeps one canonical home per question (IDF topic coverage, title match, folder preference) and removes the rest, renumbering each file. 150+ blocks removed; sections left with no challenge are listed in `00_CURRICULUM/audit/sections_without_challenge.txt` (about 160 entries) for topic-specific replacements.
+- **Orphan answers.** 43 bare `<details>` Answer blocks (one generic paragraph pasted after unrelated answers) removed from 9 `07_Modern_Java` chapters and one SQL page; stray `</details>` tags and repeated orphan paragraphs removed from Ch04, Ch33, Ch52, Ch59 (tags now balance).
+- **Run-on lines.** Line-per-item plain text became lists, tables or `text` fences (about 650 blocks); soft-wrapped prose, 5W1H paragraphs and display math were left alone (D014). Repaired fences in `13_Developer_Essentials` (DNS, monitoring runbooks, Lambda Java/XML) and inverted fences in `09_Career_Reference/07_DSA_Guide_Foundations.md`; fixed `APIGatewayProxy` type names in the Lambda sample.
+- **Diagrams.** Every Mermaid block in the cleaned folders has a "How to read this diagram" note; all render.
+- **Chapter 53.** Stryker chapter sections 1-9 re-derived on Stryker 10.0.0 (no `defineConfig`, CompileError excluded from the score, score formula, config keys); sections 10-17 still to verify.
+- **Tools.** `tools/find_runon_lines.py`, `tools/find_redundancy.py` (report: `00_CURRICULUM/REDUNDANCY_REPORT.md`), `tools/dedupe_challenges.py`, `tools/mermaid-check`.
+
+Verification: per batch, fences and `<details>` balanced, code-block counts per language and 5W1H counts match `HEAD`, no distinct paragraph lost; `update_context.py update` then `check --strict-fences` pass; finder now reports 0 exact-duplicate files, 2 overlapping file pairs, 12 files with internal repeats.
+
 ## 2026-10-24 - Resolve Pass: Fences, Broken Mermaid, 07_Modern_Java Diagrams and Tables
 
 Scope: repo-wide fence and Mermaid fixes, and the full `07_Modern_Java` conversion that the 02-06 entry below left out.
