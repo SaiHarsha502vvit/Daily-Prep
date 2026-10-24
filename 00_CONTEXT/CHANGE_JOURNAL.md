@@ -4,6 +4,14 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - Book Audit: 03_Algorithms Chapter 27, Book Companion, 02_Data_Structures History Fact Check
+
+- Audited `03_Algorithms` against the two reference books in the repo root (Competitive Programmer's Handbook; Programming Challenges). Found nine topics with zero coverage (Catalan, Burnside, Cayley/Prüfer, Kirchhoff, Wilson, Dilworth, Josephus, linear Diophantine, Stern-Brocot).
+- Added `03_Algorithms/27_Combinatorics_Counting_Toolkit.md` (all Java verified against brute force: Catalan DP/closed form/parentheses count, derangements, Burnside vs canonical form, Prufer round trip, Kirchhoff vs brute force and K_n, Wilson vs trial division, Josephus vs simulation, Dilworth vs brute-force antichain, Diophantine, Stern-Brocot).
+- Added `03_Algorithms/00_BOOK_COMPANION.md` (chapter maps for both books, input-size to complexity table, meet-in-the-middle pattern verified against brute force, working-method checklist, open gaps: de Bruijn sequences, knight's tours, Stirling numbers, integer partitions).
+- Updated `03_Algorithms/00_INDEX.md`, `00_LEARNING_PATH.md` (dependency graph, ordered table, gap table), `CONTEXT.md` (one-topic-one-page rule for new material), chapter 26 navigation.
+- `02_Data_Structures` history fact check: memory timeline (01a), stack/queue history (01d), tree/heap timeline (01f), Bloom filter and HyperLogLog attribution (A4), AVL and monotonic-queue claims (02b).
+
 ## 2026-10-24 - 03_Algorithms Fact Check and Diagram Pass
 
 - Fact-checked every "Historical Evolution" paragraph, the algorithm timeline, the production map and the war-stories chapter; ~65 corrections. Notable: Fenwick tree is 1994 (not 1964); "Mo, Q. I. 1993" was invented (Mo's algorithm was popularised c. 2009 by Mo Tao); Aho–Corasick is 1975; skip lists 1989–90; Floyd–Warshall 1962; HyperLogLog never won a Gödel Prize; OSPF runs Dijkstra (not BFS); BLAST is a heuristic, not DP; Java 11 did not remove `Vector`/`Stack`; `ConcurrentHashMap` dates from Java 5; Effective C++ is by Meyers; Knuth optimization does not apply to matrix-chain multiplication; Bloom worked at the Computer Usage Company; Dijkstra with a Fibonacci heap is O(E + V log V); Kosaraju's algorithm was published by Sharir (1981); BigInteger has no FFT multiplication; made-up citations (Algorithm 245 "Treesort" by Knuth, "Park and Chin 1997", "Guy Bowl 1979", Shamos 1978 shoelace) removed.

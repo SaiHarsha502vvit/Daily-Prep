@@ -7,6 +7,7 @@ Teach algorithmic thinking, complexity, searching, recursion, DP, graphs, greedy
 ## Writing Style
 
 - Every chapter carries the standard blocks: **Bridge** (builds on / you will learn / leads to / abstraction level), **study-partner explainer** (bottom line, textbook core, analogy, walkthrough, quick check), an **At a Glance** Mermaid diagram + table where it adds value, and an **Enterprise Lens** (production use, failure modes, testing). See `00_LEARNING_PATH.md` for the dependency graph, abstraction ladder and coverage matrix.
+- **One topic, one page.** New material is written as a self-contained topic page (one idea family per file: bridge, explainer, code, verification, practice) and sequenced by [`00_LEARNING_PATH.md`](00_LEARNING_PATH.md). Large legacy chapters keep their structure; split one only when its links, registry rows and navigation can be updated in the same change.
 - New or changed code must be compiled and cross-checked (brute force / known values) before it is documented.
 - Brute force first, then optimized rewrite.
 - State the invariant.

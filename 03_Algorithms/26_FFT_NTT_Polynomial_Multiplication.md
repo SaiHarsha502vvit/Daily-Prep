@@ -1,6 +1,6 @@
 # 🌊 FFT, NTT & Fast Polynomial Multiplication — Complete Guide
 
-> **Navigation**: [← Online, Approximation & LP](25_Online_Approximation_And_Linear_Programming.md) | [Back to Index](00_INDEX.md) | [Learning Path](00_LEARNING_PATH.md)
+> **Navigation**: [← Online, Approximation & LP](25_Online_Approximation_And_Linear_Programming.md) | [Back to Index](00_INDEX.md) | [Next: Combinatorics & Counting →](27_Combinatorics_Counting_Toolkit.md)
 
 ## 🔗 Bridge — Where This Chapter Fits
 
@@ -168,4 +168,4 @@ static long[] multiply(long[] x, long[] y) {
 
 ---
 
-[← Online, Approximation & LP](25_Online_Approximation_And_Linear_Programming.md) | [Index](00_INDEX.md) | [Learning Path](00_LEARNING_PATH.md)
+[← Online, Approximation & LP](25_Online_Approximation_And_Linear_Programming.md) | [Index](00_INDEX.md) | [Next: Combinatorics & Counting →](27_Combinatorics_Counting_Toolkit.md)
