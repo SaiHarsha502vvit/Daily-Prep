@@ -4,6 +4,12 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - 02_Data_Structures Study-Partner Views, Batch 2
+
+- Added 44 more topic-level `💬 Study-Partner View` blocks: `A1` §2–10 (array, linked list, stack/queue, hash table, BST, heap, trie, union-find invariants; stating invariants), `A2` (accounting, potential, space, amortized vs average), `A3` (comparison, cell-probe, information-theoretic, union-find bounds), `A4` (skip list, treap, Bloom, cuckoo, Count-Min, HyperLogLog, consistent hashing, MinHash), `A5` (augmentation, randomization, laziness, Fenwick tree), `03` (List, Map, Set, Queue), `01a` (memory hierarchy, stack vs heap, bit manipulation), `01g` (ArrayList, HashMap, LinkedList, TreeMap, PriorityQueue internals), `05` (Big-O vs cache lines, B-tree vs LSM, Bloom filters).
+- The folder now has 72 topic-level views plus a chapter-level explainer in every content file.
+- Verification: no unfenced box art, fences balanced, 93 Mermaid diagrams render.
+
 ## 2026-10-24 - 02_Data_Structures Topic-Level Study-Partner Views
 
 - Added 28 topic-level `💬 Study-Partner View` blocks (bottom line / textbook core / analogy / walkthrough / quick check) for: the five linked-list variants (`02a` 1.1–1.5); Min/Max stack, circular queue, deque, monotonic queue, binary tree types, AVL, red-black, heap variants, hash-table variants (`02b`); sub-arrays, subsequences, searching, sorting, frequency/duplicates, circular arrays (`01b`); Floyd cycle detection (`01c`); stack/DFS and queue/BFS (`01d`); subarray-sum-equals-K (`01e`); tree traversals (`01f`); spiral traversal and matrix rotation (`04`).

@@ -144,6 +144,30 @@ Each section below follows the same three-part pattern:
 
 ## 2. Arrays — Contiguous Layout Invariant
 
+### 💬 Study-Partner View — Array Invariants
+
+**1. The bottom line:** An array stays correct as long as the used slots are exactly the first `size` slots and every index you touch is in range.
+
+**2. The textbook core:**
+
+- Layout invariant: element `i` lives at `base + i × elementSize`.
+- Dynamic array invariant: `0 <= size <= capacity` and elements occupy indices `0..size-1` with no gaps.
+- Preservation: `add` writes at `size` then increments; `remove(i)` shifts `i+1..size-1` left then decrements `size`.
+- Bounds invariant: every access satisfies `0 <= i < size` (or `< length` for a plain array).
+
+**3. The real-world analogy:** A **row of numbered seats in a theatre**: seats are filled from the left with no empty seat in between, and a ticket number always names exactly one seat.
+
+**4. Walkthrough:**
+
+1. Start `size = 0`, `capacity = 4` (invariant holds trivially).
+2. `add(x)` four times → `size = 4 = capacity`; the invariant still holds.
+3. The fifth `add` first allocates capacity 8 and copies indices `0..3` to the same indices, so the invariant holds on the new array.
+4. Then it writes at index 4 and sets `size = 5`: elements are still `0..4` with no gaps.
+
+> [!NOTE]
+> **Quick check:** What breaks if `remove` forgets to decrement `size`? *The "no stale element" part of the invariant fails and old data stays visible.*
+
+
 ### Invariant Statement
 
 For a resizable array `data` with logical size field `size`:
@@ -204,6 +228,30 @@ Without the layout invariant, an `ArrayList` could develop "holes" (nulls in the
 ---
 
 ## 3. Linked Lists — Reachability, Acyclicity, Order
+
+### 💬 Study-Partner View — Linked-List Invariants
+
+**1. The bottom line:** A linked list is correct when every node can be reached from the head, nothing loops back (unless it should), and the order is the one you intend.
+
+**2. The textbook core:**
+
+- **Reachability:** every live node is reachable from `head` by following `next`.
+- **Acyclicity:** no node appears twice on the path from `head` to `null` (for non-circular lists).
+- **Order:** `head`, `head.next`, ... is the logical sequence; `tail.next == null` and `size` equals the node count.
+- Every mutator (insert/delete) must re-link in an order that never loses a node.
+
+**3. The real-world analogy:** A **chain of paper clips**: if you unhook the middle clip without first holding the clip after it, the rest of the chain falls on the floor (a memory leak).
+
+**4. Walkthrough:**
+
+1. Delete `B` from `A → B → C`.
+2. Save `C = B.next` first (so `C` stays reachable).
+3. Set `A.next = C`.
+4. Reachability holds (`A → C`), acyclicity holds, size decreases by 1; `B` is no longer reachable and can be freed.
+
+> [!NOTE]
+> **Quick check:** Which invariant does the fast/slow pointer test check? *Acyclicity.*
+
 
 ### Invariant Statement
 
@@ -281,6 +329,30 @@ Traversing `index` steps from `head` follows exactly the `index`-th node in the 
 
 ## 4. Stacks & Queues — Capacity, Order Discipline
 
+### 💬 Study-Partner View — Stack & Queue Invariants
+
+**1. The bottom line:** A stack is correct if only the top moves, and a queue is correct if elements leave in exactly the order they arrived.
+
+**2. The textbook core:**
+
+- Stack: `0 <= size <= capacity`; `top` is the last pushed element; `pop` returns the most recent push still present.
+- Queue (circular array): `0 <= size <= capacity`; `front` and `rear` are indices modulo `capacity`; dequeue order = enqueue order.
+- Empty vs full must be distinguishable (use `size`, or leave one slot empty).
+- Every operation is O(1) because only an end index changes.
+
+**3. The real-world analogy:** A **stack of plates** (only the top plate is touched) and a **supermarket line** (people leave in arrival order).
+
+**4. Walkthrough:**
+
+1. Circular queue, capacity 3: enqueue A, B, C → `size = 3` (full).
+2. Dequeue → A leaves, `front` moves from 0 to 1, `size = 2`.
+3. Enqueue D → written at `rear = (rear + 1) % 3 = 0` (wrap), `size = 3`.
+4. Order of leaving remains B, C, D: FIFO is preserved.
+
+> [!NOTE]
+> **Quick check:** How can `front == rear` mean both empty and full? *It can, which is why a size counter (or a spare slot) is part of the invariant.*
+
+
 ### Stack Invariant Statement
 
 > **Invariant (Stack)**: The top of the stack is always the most recently pushed element that has not yet been popped. The stack contents below `top` are exactly the elements pushed in LIFO order, with the bottom being the oldest unpopped element. `size ≤ capacity` at all times.
@@ -357,6 +429,30 @@ Without the circular queue invariant, `dequeue()` might return the wrong element
 
 ## 5. Hash Tables — Key Distribution, Load Factor, No-Cycle Invariant
 
+### 💬 Study-Partner View — Hash-Table Invariants
+
+**1. The bottom line:** A hash table is correct when every key sits in the bucket its hash points to, and it stays fast when the table is not too full.
+
+**2. The textbook core:**
+
+- **Placement:** key `k` is stored in bucket `hash(k) mod capacity` (or in its probe sequence).
+- **Uniqueness:** a key appears at most once.
+- **Load factor:** `size / capacity <= α` (Java default 0.75), restored by resizing and rehashing.
+- **Contract:** `equals` implies equal `hashCode`; keys are not mutated while stored.
+
+**3. The real-world analogy:** A **coat check**: each ticket number names one hook, no coat is on two hooks, and when the rack is nearly full the staff move everything to a bigger rack.
+
+**4. Walkthrough:**
+
+1. Capacity 4, load factor 0.75 → resize when `size` would exceed 3.
+2. Insert 3 keys: invariant holds (`3/4 = 0.75`).
+3. Insert a 4th key: first double capacity to 8 and **rehash** every key into its new bucket.
+4. Then place the new key; placement and load-factor invariants hold again.
+
+> [!NOTE]
+> **Quick check:** Why must you rehash instead of copying buckets as they are? *The bucket index depends on the capacity, so every key's position changes.*
+
+
 ### Invariant Statement (Chaining)
 
 > **Invariant (Hash Table — Chaining)**: Every key-value pair inserted into the table is stored in the bucket returned by `hash(k) mod capacity`. For any bucket `i`, the linked chain starting at `buckets[i]` contains exactly the pairs whose keys hash to `i`. No key appears in more than one bucket. The `size` field equals the total number of stored pairs.
@@ -415,6 +511,30 @@ For double hashing (`h(k, i) = (hash₁(k) + i · hash₂(k)) mod capacity`): th
 ---
 
 ## 6. BSTs — BST Property + Balance Invariant (AVL, Red-Black)
+
+### 💬 Study-Partner View — BST Invariants
+
+**1. The bottom line:** A BST stays correct when every node is larger than everything on its left and smaller than everything on its right; balanced trees add a height rule on top.
+
+**2. The textbook core:**
+
+- **BST property:** for every node `x`, all keys in `x.left` are `< x.key` and all keys in `x.right` are `> x.key` (not just the immediate children).
+- **AVL:** `|height(left) - height(right)| <= 1` at every node.
+- **Red-black:** root black; no red node has a red child; every root-to-null path has the same number of black nodes.
+- Insert/delete restore these with rotations and recolouring.
+
+**3. The real-world analogy:** A **filing cabinet sorted alphabetically**: everything in the left drawers comes before, everything in the right drawers after, at every level.
+
+**4. Walkthrough:**
+
+1. Insert 5, 3, 8 → root 5, left 3, right 8 (property holds).
+2. Insert 4: 4 < 5 go left; 4 > 3 go right → right child of 3.
+3. Check the **whole** left subtree of 5: {3, 4} are all < 5 ✓.
+4. A wrong insert of 6 as the right child of 3 would violate the property because 6 > 5 but sits in 5's left subtree.
+
+> [!NOTE]
+> **Quick check:** Why is "left child < node < right child" not enough? *The rule must hold for the entire subtree, not just direct children.*
+
 
 ### BST Property Invariant
 
@@ -521,6 +641,30 @@ Insertion places a new node as a red leaf, then rebalances:
 
 ## 7. Heaps — Heap-Order + Complete-Tree Invariant
 
+### 💬 Study-Partner View — Heap Invariants
+
+**1. The bottom line:** A heap is correct when it is a complete tree and every parent is at least as good as its children.
+
+**2. The textbook core:**
+
+- **Shape:** complete binary tree stored in an array indices `0..n-1` (no gaps).
+- **Order (min-heap):** `a[(i-1)/2] <= a[i]` for all `i > 0`.
+- `insert` appends then **sift-up** until the order holds; `extractMin` moves the last element to the root then **sift-down**.
+- The order is local (parent vs child); siblings are unordered.
+
+**3. The real-world analogy:** A **company hierarchy where every manager earns no more than the people they manage** (for a min-heap): the cheapest salary is always the CEO's seat.
+
+**4. Walkthrough:**
+
+1. Heap `[2, 5, 4, 9]`; `insert(1)`.
+2. Append → `[2, 5, 4, 9, 1]`; parent of index 4 is index 1 (value 5); 1 < 5 → swap.
+3. Now `[2, 1, 4, 9, 5]`; parent of index 1 is index 0 (value 2); 1 < 2 → swap.
+4. Heap `[1, 2, 4, 9, 5]` satisfies the order again.
+
+> [!NOTE]
+> **Quick check:** Is a heap sorted? *No: only parent ≤ child is guaranteed.*
+
+
 ### Invariant Statement
 
 > **Invariant (Min-Heap Order)**: For every node `N` with `N.key = k`, `k ≤` all keys in `N.left` and `k ≤` all keys in `N.right`. In other words, `parent.key ≤ child.key` for every parent-child pair.
@@ -616,6 +760,30 @@ Floyd's algorithm builds a heap in O(n) time, vs O(n log n) for n sequential ins
 
 ## 8. Tries — Prefix Invariant
 
+### 💬 Study-Partner View — Trie Invariants
+
+**1. The bottom line:** In a trie, the path from the root spells a prefix, so every key is just a path ending at a marked node.
+
+**2. The textbook core:**
+
+- **Prefix property:** the string spelled by the path from the root to node `v` is a prefix shared by all keys below `v`.
+- **Terminal marker:** a node has `isEnd = true` exactly when its path is a stored key.
+- Insert/search/prefix lookup cost **O(L)** for key length `L`, independent of the number of keys.
+- Space can be large (many child pointers); compressed tries (radix/Patricia) reduce it.
+
+**3. The real-world analogy:** The **autocomplete dropdown** on your phone: typing "ca" walks to a node whose descendants are "cat", "car", "card"...
+
+**4. Walkthrough:**
+
+1. Insert "car" and "cat": path c → a → r (end) and c → a → t (end).
+2. The node for "ca" is shared by both words.
+3. `startsWith("ca")`: walk c, a → node exists → true.
+4. `search("ca")`: node exists but `isEnd` is false → false.
+
+> [!NOTE]
+> **Quick check:** Why store `isEnd`? *Without it you cannot tell the stored word "car" from the mere prefix "ca".*
+
+
 ### Invariant Statement
 
 > **Invariant (Trie Prefix)**: For every key `k` in the set, there exists a root-to-leaf path whose edge labels, concatenated, equal `k`. Every node on this path (including intermediate nodes) is marked with `isEndOfWord = true` if and only if a key ends at that node. No node is labeled with an edge character other than those from inserted keys.
@@ -699,6 +867,30 @@ The invariant is preserved by construction: every inserted key creates exactly o
 
 ## 9. Union-Find — Parent-Pointer Invariant
 
+### 💬 Study-Partner View — Union-Find Invariants
+
+**1. The bottom line:** Union-Find is correct when following parent pointers always ends at a root, and two elements are in the same set exactly when they reach the same root.
+
+**2. The textbook core:**
+
+- **Parent-pointer forest:** `parent[x]` points to another node or to itself (a root); no cycles other than self-loops at roots.
+- **Set identity:** `find(x) == find(y)` iff `x` and `y` are in the same set.
+- **Union by rank/size** keeps trees shallow; **path compression** flattens paths during `find`.
+- With both, `m` operations cost **O(m · α(n))**, effectively constant.
+
+**3. The real-world analogy:** **Teams in a company**: each team has one captain; asking "who is your captain?" for two people tells you whether they are on the same team, and merging teams means one captain reports to the other.
+
+**4. Walkthrough:**
+
+1. Start with singletons `0..4` (each its own parent).
+2. `union(0, 1)`: roots 0 and 1 differ → set `parent[1] = 0`.
+3. `union(1, 2)`: `find(1) = 0`, `find(2) = 2` → `parent[2] = 0`.
+4. `find(2)` follows 2 → 0 and compresses the path; `find(2) == find(0)` → connected.
+
+> [!NOTE]
+> **Quick check:** What does path compression change? *It makes later `find` calls faster without changing which sets exist.*
+
+
 ### Invariant Statement
 
 > **Invariant (Parent-Pointer)**: For every element `x`, following `parent[x]` repeatedly leads to a root element `r` where `parent[r] = r`. All elements in the same connected component share the same root. The `rank` (or `size`) of a root is the size bound of its subtree; non-root elements' ranks are unchanged.
@@ -771,6 +963,30 @@ By the parent-pointer invariant, `find(x)` returns the unique root of `x`'s set.
 ---
 
 ## 10. How to State an Invariant in an Interview
+
+### 💬 Study-Partner View — Stating an Invariant in an Interview
+
+**1. The bottom line:** Before you code, say in one sentence what is always true about your structure, and then show each step keeps it true.
+
+**2. The textbook core:**
+
+- Name the **state** (variables/pointers) the invariant talks about.
+- State it as a sentence with quantifiers: "for every `i`, ...".
+- Show **initialization**, **preservation** and what it **implies** at the end.
+- Use it to justify boundaries and edge cases (empty, one element, full).
+
+**3. The real-world analogy:** Like **saying the rules of a game out loud before playing**: both players know what "legal" means, so mistakes are easy to spot.
+
+**4. Walkthrough:**
+
+1. Problem: binary search for `target` in sorted `a`.
+2. Invariant: "if `target` is present, it is in `a[lo..hi]`".
+3. Init: `lo = 0`, `hi = n-1` covers everything.
+4. Each step discards the half that cannot contain `target`, so the invariant is preserved; when `lo > hi` the range is empty → not present.
+
+> [!NOTE]
+> **Quick check:** Why is this stronger than "I tested some cases"? *It argues about every input, not just the ones you tried.*
+
 
 ### The Invariant Template
 
