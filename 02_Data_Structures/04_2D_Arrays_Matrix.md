@@ -266,29 +266,40 @@ USE 2D ARRAY WHEN:
 
 ## 🧬 What is a 2D Array REALLY?
 
+> [!IMPORTANT]
+> **Mental model: it is NOT actually "2D" in memory!** Memory is linear; rows are stored consecutively.
+
+```mermaid
+flowchart LR
+    subgraph BRAIN["YOUR BRAIN THINKS (grid)"]
+        direction TB
+        R0["Row 0:  1  2  3  4"] --- R1["Row 1:  5  6  7  8"] --- R2["Row 2:  9 10 11 12"]
+    end
+    subgraph MEM["COMPUTER STORES (one line)"]
+        direction LR
+        m1["1"] --- m2["2"] --- m3["3"] --- m4["4"] --- m5["5"] --- m6["6"] --- m7["7"] --- m8["8"] --- m9["9"] --- m10["10"] --- m11["11"] --- m12["12"]
+    end
+    BRAIN ==> MEM
+    classDef r0 fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef r1 fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef r2 fill:#ffd9b3,stroke:#e65100,color:#111
+    class R0,m1,m2,m3,m4 r0
+    class R1,m5,m6,m7,m8 r1
+    class R2,m9,m10,m11,m12 r2
 ```
-MENTAL MODEL - It's NOT actually "2D" in memory!
 
-YOUR BRAIN THINKS:            COMPUTER STORES:
-┌───┬───┬───┬───┐            ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
-│ 1 │ 2 │ 3 │ 4 │   Row 0    │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │10 │11 │12 │
-├───┼───┼───┼───┤            └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
-│ 5 │ 6 │ 7 │ 8 │   Row 1     ↑Row0 ends↑    ↑Row1 ends↑    ↑Row2 ends↑
-├───┼───┼───┼────────────────────────────────────────────────────────────────┤
-│ 9 │10 │11 │12 │   Row 2    Memory is LINEAR! Rows stored CONSECUTIVELY.
-└───┴───┴───┴────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** Matching colours show which row each memory cell came from: blue = row 0, green = row 1, orange = row 2. Row 1 starts right after row 0 ends.
 
-WHY THIS MATTERS:
-- arr[i][j] = baseAddress + (i × numColumns + j) × elementSize
-- arr[1][2] = base + (1 × 4 + 2) × 4 = base + 24
+**Why this matters:**
+
+- `arr[i][j] = baseAddress + (i × numColumns + j) × elementSize`
+- `arr[1][2] = base + (1 × 4 + 2) × 4 = base + 24`
 - This is still O(1) access!
 
-ROW-MAJOR ORDER (Java, C, Python):
-arr[0][0], arr[0][1], arr[0][2], arr[1][0], arr[1][1]...
-
-COLUMN-MAJOR ORDER (Fortran, MATLAB):
-arr[0][0], arr[1][0], arr[2][0], arr[0][1], arr[1][1]...
-```
+| Order | Languages | Traversal order |
+| ----- | --------- | --------------- |
+| Row-major | Java, C, Python (NumPy default) | `arr[0][0], arr[0][1], arr[0][2], arr[1][0], arr[1][1]...` |
+| Column-major | Fortran, MATLAB | `arr[0][0], arr[1][0], arr[2][0], arr[0][1], arr[1][1]...` |
 
 ## 🔴 Real-World Origin: Spreadsheets & Images (1970s)
 
@@ -1496,26 +1507,24 @@ private static void dfsIsland(int[][] grid, int r, int c,
 
 ## Matrix Challenge Patterns Summary
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    MATRIX PROBLEM RECOGNITION GUIDE                             │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  "Find shortest distance..."          → BFS                                     │
-│  "Can wrap around edges..."           → Use modulo: (pos + delta + size) % size │
-│  "Find NxN square with property..."   → Nested loops, check all positions       │
-│  "Count distinct shapes..."           → DFS + normalize coordinates             │
-│  "Path from A to B..."                → BFS (shortest) or DFS (any path)        │
-│  "Rotate matrix..."                   → Formula: new[j][n-1-i] = old[i][j]      │
-│  "Transform based on neighbors..."    → Need copy or process in specific order  │
-│                                                                                 │
-│  COMMON EDGE CASES:                                                             │
-│  • Empty matrix                  • Single cell                                  │
-│  • No valid path exists          • Target not found                             │
-│  • All cells are same value      • Wrap-around boundaries                       │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### Matrix problem recognition guide
+
+| If the problem says... | Reach for |
+| ---------------------- | --------- |
+| "Find shortest distance..." | BFS |
+| "Can wrap around edges..." | Modulo: `(pos + delta + size) % size` |
+| "Find N×N square with property..." | Nested loops, check all positions |
+| "Count distinct shapes..." | DFS + normalize coordinates |
+| "Path from A to B..." | BFS (shortest) or DFS (any path) |
+| "Rotate matrix..." | Formula: `new[j][n-1-i] = old[i][j]` |
+| "Transform based on neighbors..." | Need a copy, or process in a specific order |
+
+**Common edge cases:**
+
+| | | |
+| --- | --- | --- |
+| Empty matrix | Single cell | All cells are the same value |
+| No valid path exists | Target not found | Wrap-around boundaries |
 
 ---
 

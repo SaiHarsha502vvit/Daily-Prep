@@ -66,20 +66,11 @@ An **algorithm** correctness proof concerns *state transitions*: starting from a
 
 A **data structure** correctness proof concerns *structural preservation*: the data structure begins life in a valid state, and every mutator operation (insert, delete, resize, rotate) must transform the state while preserving the defining invariant. The proof has a different shape:
 
-```
-┌──────────────────────────────────────────────────────────┐
-│  INITIALIZATION  │  Constructor builds an empty or       │
-│                  │  initial DS that satisfies invariant.  │
-├──────────────────┼───────────────────────────────────────┤
-│  PRESERVATION    │  Every mutator (insert/delete/update/ │
-│  (MAINTENANCE)   │  rotate/resize) preserves the         │
-│                  │  invariant — proved by case analysis. │
-├──────────────────┼───────────────────────────────────────┤
-│  CORRECTNESS     │  If the invariant holds, every        │
-│  (TERMINATION)   │  query operation returns the correct  │
-│                  │  answer (by structural induction).     │
-└──────────────────────────────────────────────────────────┘
-```
+| Step | What you must show |
+| ---- | ------------------ |
+| **Initialization** | The constructor builds an empty or initial DS that satisfies the invariant. |
+| **Preservation** (maintenance) | Every mutator (insert/delete/update/rotate/resize) preserves the invariant, proved by case analysis. |
+| **Correctness** (termination) | If the invariant holds, every query operation returns the correct answer (by structural induction). |
 
 The two invariants differ:
 

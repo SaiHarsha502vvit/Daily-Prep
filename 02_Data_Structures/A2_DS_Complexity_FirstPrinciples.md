@@ -929,32 +929,15 @@ Explain why the cascade must stop after O(log n) cuts (the **rank bound lemma**)
 
 ## Summary
 
-```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│  Data Structure     │ Amortized Method │ Potential / Key Idea               │
-├─────────────────────┼──────────────────┼────────────────────────────────────┤
-│  Dynamic Array      │ Aggregate        │ Σ 2^i geometric series = O(n)      │
-│  (doubling)         │ (Section 3)      │                                    │
-├─────────────────────┼──────────────────┼────────────────────────────────────┤
-│  Stack+Multipop     │ Accounting       │ Each element carries 1 credit      │
-│                     │ (Section 4)      │ → Pay for future pop               │
-├─────────────────────┼──────────────────┼────────────────────────────────────┤
-│  Binary Counter     │ Potential        │ Φ = # 1-bits                       │
-│                     │ (Section 5)      │ â = c + ΔΦ = 2 always              │
-├─────────────────────┼──────────────────┼────────────────────────────────────┤
-│  Hash Table         │ Aggregate        │ Resize at n, 2n, 4n, ...           │
-│  (doubling)         │ (Section 6.3)    │ Σ n_i ≤ 2n total                   │
-├─────────────────────┼──────────────────┼────────────────────────────────────┤
-│  Union-Find         │ Potential        │ Track rank + path length           │
-│  (Tarjan)           │ (Section 6.4)    │ α(n) = inverse Ackermann ≤ 4       │
-├─────────────────────┼──────────────────┼────────────────────────────────────┤
-│  Splay Tree         │ Potential        │ Φ = Σ size(v)·log size(v)          │
-│  (Sleator-Tarjan)   │ (Section 6.5)    │ Access lemma: Σ log size ≤ 3·log n │
-├─────────────────────┼──────────────────┼────────────────────────────────────┤
-│  Fibonacci Heap     │ Potential        │ Φ = 2·(#roots) + Σ degree·rank     │
-│                     │ (Section 6.6)    │ Cascading cuts → rank bound O(log n)│
-└─────────────────────┴──────────────────┴────────────────────────────────────┘
-```
+| Data Structure | Amortized method | Potential / key idea |
+| -------------- | ---------------- | -------------------- |
+| Dynamic array (doubling) | Aggregate (Section 3) | Σ 2^i geometric series = O(n) |
+| Stack + multipop | Accounting (Section 4) | Each element carries 1 credit → pays for a future pop |
+| Binary counter | Potential (Section 5) | Φ = number of 1-bits; â = c + ΔΦ = 2 always |
+| Hash table (doubling) | Aggregate (Section 6.3) | Resize at n, 2n, 4n, ...; Σ nᵢ ≤ 2n total |
+| Union-Find (Tarjan) | Potential (Section 6.4) | Track rank + path length; α(n) = inverse Ackermann ≤ 4 |
+| Splay tree (Sleator-Tarjan) | Potential (Section 6.5) | Φ = Σ size(v)·log size(v); access lemma: Σ log size ≤ 3·log n |
+| Fibonacci heap | Potential (Section 6.6) | Φ = 2·(#roots) + Σ degree·rank; cascading cuts → rank bound O(log n) |
 
 > **Key theorem to remember**: For any mutable data structure where expensive operations are **triggered by** cheap ones and are **bounded in frequency**, amortized analysis converts O(n) worst-case into O(1) average-per-operation. The three methods — aggregate, accounting, potential — are different proof styles for the same underlying truth.
 
