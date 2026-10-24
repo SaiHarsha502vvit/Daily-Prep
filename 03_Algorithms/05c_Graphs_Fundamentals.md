@@ -42,10 +42,10 @@
 
 > Full proofs with worked examples: [A1 — Algorithm Correctness](A1_Correctness_Proofs.md) (Section 7: BFS + Dijkstra)
 
-📎 **Reference Anchor**: [Guava GraphTraverser](https://github.com/google/guava/blob/master/guava/src/com/google/common/graph/Traverser.java) · [OpenJDK LinkedList (BFS queue)](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/LinkedList.java)
-**Invariant learned**: Guava's `Traverser.forGraph(graph).breadthFirst(start)` maintains the BFS invariant explicitly: it uses a `Queue<N>` and a `Set<N> visited`. Every node is added to `visited` before being enqueued — preventing the "enqueue twice" bug that produces incorrect distance counts in manual BFS implementations.
-**Local rewrite**: This chapter's BFS correctness proof (induction on distance d) is exactly the invariant `Traverser` relies on. The `visited` set is the mechanization of the invariant: "once d[v] is set, it is final."
-**Constraint warning**: `Traverser.breadthFirst()` returns a lazy `Iterable` — nodes are not expanded until you iterate. Calling `.iterator()` twice creates two independent BFS traversals, each restarting from scratch. Materialise to a `List` if you need to traverse the order multiple times.
+- 📎 **Reference Anchor**: [Guava GraphTraverser](https://github.com/google/guava/blob/master/guava/src/com/google/common/graph/Traverser.java) · [OpenJDK LinkedList (BFS queue)](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/LinkedList.java)
+- **Invariant learned**: Guava's `Traverser.forGraph(graph).breadthFirst(start)` maintains the BFS invariant explicitly: it uses a `Queue<N>` and a `Set<N> visited`. Every node is added to `visited` before being enqueued — preventing the "enqueue twice" bug that produces incorrect distance counts in manual BFS implementations.
+- **Local rewrite**: This chapter's BFS correctness proof (induction on distance d) is exactly the invariant `Traverser` relies on. The `visited` set is the mechanization of the invariant: "once d[v] is set, it is final."
+- **Constraint warning**: `Traverser.breadthFirst()` returns a lazy `Iterable` — nodes are not expanded until you iterate. Calling `.iterator()` twice creates two independent BFS traversals, each restarting from scratch. Materialise to a `List` if you need to traverse the order multiple times.
 
 ---
 
@@ -921,8 +921,9 @@ int[] bfs(List<List<Integer>> adj, int src) {
 For each pair (u,v), check if there's a path — O(V) DFS per pair = O(V²) per query.
 
 **Optimal — Union-Find, O(E·α(V)) ≈ O(E):**
-Process each edge once: `union(u, v)`. Count distinct roots at the end. For the Java example, see [UnionFind.java](../JavaSolutions/AlgorithmExamples/UnionFind.java).
-**Why it's better**: One pass over edges, no repeated DFS. Union-Find's amortized cost per operation is essentially O(1) (inverse Ackermann).
+
+- Process each edge once: `union(u, v)`. Count distinct roots at the end. For the Java example, see [UnionFind.java](../JavaSolutions/AlgorithmExamples/UnionFind.java).
+- **Why it's better**: One pass over edges, no repeated DFS. Union-Find's amortized cost per operation is essentially O(1) (inverse Ackermann).
 
 
 ---

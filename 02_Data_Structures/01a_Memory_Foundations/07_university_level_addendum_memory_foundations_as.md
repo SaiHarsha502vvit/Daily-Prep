@@ -235,33 +235,33 @@ class Counters { long counter0; long counter1; }
 ```
 **Fix**: Pad fields to separate cache lines (6 longs of padding = 48 bytes between fields). Java 8+: `@jdk.internal.vm.annotation.Contended` with `-XX:-RestrictContended`.
 
-📎 **Reference Anchor**: [OpenJDK LongAdder](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/concurrent/atomic/LongAdder.java)
-**Invariant learned**: `LongAdder` maintains per-thread cells, each padded to its own cache line. Only aggregates on `sum()`. That's why `LongAdder` scales better than `AtomicLong` under high write contention — no false sharing.
-**Constraint warning**: `@Contended` is an internal JVM annotation not part of the public API. In production, prefer `LongAdder`/`LongAccumulator` which handle padding internally.
+- 📎 **Reference Anchor**: [OpenJDK LongAdder](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/concurrent/atomic/LongAdder.java)
+- **Invariant learned**: `LongAdder` maintains per-thread cells, each padded to its own cache line. Only aggregates on `sum()`. That's why `LongAdder` scales better than `AtomicLong` under high write contention — no false sharing.
+- **Constraint warning**: `@Contended` is an internal JVM annotation not part of the public API. In production, prefer `LongAdder`/`LongAccumulator` which handle padding internally.
 
 ### 2. Escape Analysis Defeat → Heap Allocation Where Stack Was Expected
 
-**What breaks**: JVM escape analysis can stack-allocate short-lived objects (no GC overhead), but only if the object stays local. Passing it to a non-inlined method, storing in an array, or returning it forces heap allocation.
-**Symptom**: GC pause frequency increases with an allocation-heavy inner loop. `-XX:+PrintEscapeAnalysis` reveals heap-allocated objects that look local.
-**Fix**: Keep hot-path objects fully within the method scope. For repeated small allocations in tight loops, use primitive arrays instead of object arrays.
+- **What breaks**: JVM escape analysis can stack-allocate short-lived objects (no GC overhead), but only if the object stays local. Passing it to a non-inlined method, storing in an array, or returning it forces heap allocation.
+- **Symptom**: GC pause frequency increases with an allocation-heavy inner loop. `-XX:+PrintEscapeAnalysis` reveals heap-allocated objects that look local.
+- **Fix**: Keep hot-path objects fully within the method scope. For repeated small allocations in tight loops, use primitive arrays instead of object arrays.
 
 ### 3. Off-Heap Memory Leak with `DirectByteBuffer`
 
-**What breaks**: `ByteBuffer.allocateDirect(n)` allocates outside the Java heap. It is freed by a finalizer — but only when the `ByteBuffer` object itself is GC'd. A long-lived reference (e.g., in a static field or cache) prevents the off-heap memory from ever being released.
-**Symptom**: `OutOfMemoryError: Direct buffer memory` while heap usage looks normal.
-**Fix**: Explicitly call `((sun.nio.ch.DirectBuffer) buf).cleaner().clean()`, or use Java 9+ `Cleaner` API. Always close `FileChannel` and `SocketChannel` which hold `DirectByteBuffer`s internally.
+- **What breaks**: `ByteBuffer.allocateDirect(n)` allocates outside the Java heap. It is freed by a finalizer — but only when the `ByteBuffer` object itself is GC'd. A long-lived reference (e.g., in a static field or cache) prevents the off-heap memory from ever being released.
+- **Symptom**: `OutOfMemoryError: Direct buffer memory` while heap usage looks normal.
+- **Fix**: Explicitly call `((sun.nio.ch.DirectBuffer) buf).cleaner().clean()`, or use Java 9+ `Cleaner` API. Always close `FileChannel` and `SocketChannel` which hold `DirectByteBuffer`s internally.
 
 ### 4. Autoboxing in Hot Loops → GC Pressure
 
-**What breaks**: Using `Integer`, `Long`, `Double` in arithmetic-heavy inner loops. Every `Integer x = a + b` allocates a new object on the heap. At 10M iterations, that's 10M object allocations → GC pause.
-**Benchmark**: Summing 10M integers via `Integer` ≈ 200ms; via `int` ≈ 5ms — 40× difference from boxing alone.
-**Fix**: Use primitive arrays (`int[]`, `long[]`), `IntStream`, or specialized collections (`IntArrayList` in Eclipse Collections). Never use `Integer[]` in performance-critical numeric code.
+- **What breaks**: Using `Integer`, `Long`, `Double` in arithmetic-heavy inner loops. Every `Integer x = a + b` allocates a new object on the heap. At 10M iterations, that's 10M object allocations → GC pause.
+- **Benchmark**: Summing 10M integers via `Integer` ≈ 200ms; via `int` ≈ 5ms — 40× difference from boxing alone.
+- **Fix**: Use primitive arrays (`int[]`, `long[]`), `IntStream`, or specialized collections (`IntArrayList` in Eclipse Collections). Never use `Integer[]` in performance-critical numeric code.
 
 ### 5. Stack Depth Exhaustion
 
-**What breaks**: Default JVM thread stack = 512KB–1MB. At ~1KB per frame, that allows ~500–1000 recursive frames. Deep tree traversal, parsing, or divide-and-conquer without tail-call elimination exceeds this.
-**Symptom**: `StackOverflowError` with no useful stack trace (the trace itself overflows).
-**Fix**: Convert to iterative with an explicit `ArrayDeque` stack. Or increase per-thread stack: `-Xss2m` (but this applies to all threads — costs 2MB × thread count in memory).
+- **What breaks**: Default JVM thread stack = 512KB–1MB. At ~1KB per frame, that allows ~500–1000 recursive frames. Deep tree traversal, parsing, or divide-and-conquer without tail-call elimination exceeds this.
+- **Symptom**: `StackOverflowError` with no useful stack trace (the trace itself overflows).
+- **Fix**: Convert to iterative with an explicit `ArrayDeque` stack. Or increase per-thread stack: `-Xss2m` (but this applies to all threads — costs 2MB × thread count in memory).
 
 ---
 
@@ -310,8 +310,10 @@ Both longs are adjacent in heap memory (8 bytes each). A CPU cache line = 64 byt
   ĉ = 1 + ΔΦ = 1 + 2 = 3
 
 **Amortized cost of expensive append** (resize from n to 2n, cost = n+1 copies):
-  ĉ = (n+1) + ΔΦ = (n+1) + (0 − n) = 1
-  (Potential drops by n, exactly paying for the n copy operations.)
+
+ĉ = (n+1) + ΔΦ = (n+1) + (0 − n) = 1
+
+(Potential drops by n, exactly paying for the n copy operations.)
 
 **Conclusion**: Every `append()` has amortized cost ≤ 3 = O(1). Over m appends: total real cost ≤ 3m = O(m).
 

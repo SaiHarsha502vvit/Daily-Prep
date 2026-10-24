@@ -95,13 +95,20 @@ The lowest set bit of `x` (for `x = 12` it is 4).
 Simple comparison: if (a > b)
 
 **Java Bytecode**:
+
+```text
 iload_1 // Load a from local variable slot 1 onto stack
 iload_2 // Load b from local variable slot 2 onto stack
 if_icmple L1 // If a <= b, jump to L1 (skip true branch)
+```
+
 JIT-COMPILED x86-64 ASSEMBLY:
+
+```asm
 mov eax, [rsp+8] ; Load a into register eax
 cmp eax, [rsp+12] ; Compare eax with b
 jle .L1 ; Jump if less or equal
+```
 
 **Cpu Cycles**:
 
@@ -120,12 +127,15 @@ Binary Search (random access):
 - High cache miss rate
 - Unpredictable branches (50% each way)
 - Real performance: ~60-80 cycles per comparison
-  Linear Search (sequential access):
+
+Linear Search (sequential access):
+
 - Sequential memory access → cache prefetching works
 - Predictable branches (usually false until found)
 - Real performance: ~4-5 cycles per comparison
 
 **Surprising Result**:
+
 For n < 64, linear search can be FASTER than binary search!
 Because cache effects dominate for small n.
 
@@ -302,45 +312,59 @@ interface Trampoline<T> {
 ### Asymptotic Analysis - Rigorous Definitions
 
 FORMAL DEFINITION OF BIG-O:
+
 f(n) = O(g(n)) if and only if:
+
 ∃ c > 0, n₀ > 0 such that ∀ n ≥ n₀:
+
 f(n) ≤ c · g(n)
+
 In words: f(n) is bounded above by g(n) multiplied by some constant,
 for all sufficiently large n.
 
 **Example Proof**: 3n² + 5n + 7 = O(n²)
-Need to find c and n₀ such that:
-3n² + 5n + 7 ≤ c · n²
-For n ≥ 1:
-3n² + 5n + 7 ≤ 3n² + 5n² + 7n² (since n² ≥ n ≥ 1)
-= 15n²
-So c = 15, n₀ = 1 works.
-Therefore: 3n² + 5n + 7 = O(n²) ✓
+
+- Need to find c and n₀ such that:
+- 3n² + 5n + 7 ≤ c · n²
+- For n ≥ 1:
+- 3n² + 5n + 7 ≤ 3n² + 5n² + 7n² (since n² ≥ n ≥ 1)
+- = 15n²
+- So c = 15, n₀ = 1 works.
+- Therefore: 3n² + 5n + 7 = O(n²) ✓
+
 FORMAL DEFINITION OF BIG-Ω:
-f(n) = Ω(g(n)) if and only if:
-∃ c > 0, n₀ > 0 such that ∀ n ≥ n₀:
-f(n) ≥ c · g(n)
+
+- f(n) = Ω(g(n)) if and only if:
+- ∃ c > 0, n₀ > 0 such that ∀ n ≥ n₀:
+- f(n) ≥ c · g(n)
+
 FORMAL DEFINITION OF BIG-Θ:
-f(n) = Θ(g(n)) if and only if:
-f(n) = O(g(n)) AND f(n) = Ω(g(n))
+
+- f(n) = Θ(g(n)) if and only if:
+- f(n) = O(g(n)) AND f(n) = Ω(g(n))
+
 Equivalently:
-∃ c₁, c₂, n₀ > 0 such that ∀ n ≥ n₀:
-c₁ · g(n) ≤ f(n) ≤ c₂ · g(n)
+
+- ∃ c₁, c₂, n₀ > 0 such that ∀ n ≥ n₀:
+- c₁ · g(n) ≤ f(n) ≤ c₂ · g(n)
+
 LITTLE-o AND LITTLE-ω:
-f(n) = o(g(n)) means: lim(n→∞) f(n)/g(n) = 0
-"f(n) grows strictly slower than g(n)"
-f(n) = ω(g(n)) means: lim(n→∞) f(n)/g(n) = ∞
-"f(n) grows strictly faster than g(n)"
+
+- f(n) = o(g(n)) means: lim(n→∞) f(n)/g(n) = 0
+- "f(n) grows strictly slower than g(n)"
+- f(n) = ω(g(n)) means: lim(n→∞) f(n)/g(n) = ∞
+- "f(n) grows strictly faster than g(n)"
 
 **Master Theorem For Recurrences**:
-For recurrence: T(n) = aT(n/b) + f(n)
-Let c_crit = log_b(a)
-Case 1: If f(n) = O(n^(c_crit - ε)) for some ε > 0
-Then T(n) = Θ(n^c_crit)
-Case 2: If f(n) = Θ(n^c_crit · log^k(n))
-Then T(n) = Θ(n^c_crit · log^(k+1)(n))
-Case 3: If f(n) = Ω(n^(c_crit + ε)) and regularity condition holds
-Then T(n) = Θ(f(n))
+
+- For recurrence: T(n) = aT(n/b) + f(n)
+- Let c_crit = log_b(a)
+- Case 1: If f(n) = O(n^(c_crit - ε)) for some ε > 0
+   - Then T(n) = Θ(n^c_crit)
+- Case 2: If f(n) = Θ(n^c_crit · log^k(n))
+   - Then T(n) = Θ(n^c_crit · log^(k+1)(n))
+- Case 3: If f(n) = Ω(n^(c_crit + ε)) and regularity condition holds
+   - Then T(n) = Θ(f(n))
 
 **Master Theorem Examples**:
 
@@ -407,6 +431,7 @@ $O(n)$. For $n$ insertions, it would resize $n/10$ times. The cost of resizes wo
 
 ⚠️ **MOVED**: Unit 1 (Algorithm Analysis + Divide & Conquer + Binary Search + Master Theorem)
 has been extracted to its own dedicated file for discoverability:
+
 **→ [02c_Divide_And_Conquer.md](02c_Divide_And_Conquer.md)**
 
 ---

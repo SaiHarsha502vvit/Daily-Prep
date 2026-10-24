@@ -227,8 +227,9 @@ private void reverse(int[] arr, int l, int r) {
 ## 🌀 Part 10: Recursion in Arrays
 
 📖 **GO LEARN Recursion fundamentals first if new:**
-📖 [03b_Recursion_Fundamentals.md](../../03_Algorithms/03b_Recursion_Fundamentals.md)
-⬅️ Return here to apply it to arrays.
+
+- 📖 [03b_Recursion_Fundamentals.md](../../03_Algorithms/03b_Recursion_Fundamentals.md)
+- ⬅️ Return here to apply it to arrays.
 
 ### Recursive Sum
 

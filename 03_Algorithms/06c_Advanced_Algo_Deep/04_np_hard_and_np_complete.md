@@ -99,9 +99,9 @@ Let f* be a max flow. The following are equivalent:
 2. There is no augmenting path in the residual graph G_f*.
 3. There exists an s-t cut (S, T) where capacity(S,T) = |f*|.
 
-(1 => 2): If an augmenting path existed, we could increase |f|, contradicting maximality.
-(2 => 3): Let S = {v reachable from s in G_f*}, T = V\S. t is not in S (no augmenting path). For every edge (u,v) with u in S, v in T: residual capacity = 0, so f(u,v) = c(u,v). For every edge (v,u) with v in T, u in S: f(v,u) = 0. Therefore |f*| = capacity(S,T).
-(3 => 1): |f| <= capacity of any cut. If |f*| = min capacity, f* is maximum. QED.
+- (1 => 2): If an augmenting path existed, we could increase |f|, contradicting maximality.
+- (2 => 3): Let S = {v reachable from s in G_f*}, T = V\S. t is not in S (no augmenting path). For every edge (u,v) with u in S, v in T: residual capacity = 0, so f(u,v) = c(u,v). For every edge (v,u) with v in T, u in S: f(v,u) = 0. Therefore |f*| = capacity(S,T).
+- (3 => 1): |f| <= capacity of any cut. If |f*| = min capacity, f* is maximum. QED.
 
 ---
 

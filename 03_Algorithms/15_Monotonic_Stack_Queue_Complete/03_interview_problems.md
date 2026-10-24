@@ -399,8 +399,10 @@ Total operations = 2n → O(n)
 ### 2. Sliding Window Max — Queue Direction and Window Expiry
 
 **What breaks**: Monotonic deque for sliding window max must:
-  a. Pop from FRONT when `deque.peekFirst() < i - k` (element left the window).
-  b. Pop from BACK when `arr[i] >= arr[deque.peekLast()]` (new element dominates older smaller ones).
+
+- a. Pop from FRONT when `deque.peekFirst() < i - k` (element left the window).
+- b. Pop from BACK when `arr[i] >= arr[deque.peekLast()]` (new element dominates older smaller ones).
+
 Swapping a or b causes wrong answers — missing expired elements or keeping dominated elements.
 
 ### 3. Storing Values Instead of Indices

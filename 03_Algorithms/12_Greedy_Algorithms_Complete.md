@@ -120,10 +120,10 @@ Greedy fails when a locally optimal early choice **blocks a globally better futu
 
 > Full proof methodology: [A1 — Algorithm Correctness](A1_Correctness_Proofs.md) (Section 5: Exchange Argument)
 
-📎 **Reference Anchor**: [OpenJDK PriorityQueue](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/PriorityQueue.java)
-**Invariant learned**: `PriorityQueue` is a min-heap (by default) with the heap invariant maintained by `siftUp` on offer and `siftDown` on poll. Greedy algorithms that always process the locally optimal element (smallest cost, earliest deadline, largest profit) typically delegate the "next best" decision to a `PriorityQueue` — this is the structural link between the greedy proof's "optimal choice" step and the concrete Java data structure.
-**Local rewrite**: Activity Selection (this chapter's Proof Corner) uses an implicit greedy choice: always pick the activity with the earliest finish time. In code, pre-sort by finish time once — no PriorityQueue needed — because the sort establishes the invariant the greedy choice relies on.
-**Constraint warning**: `PriorityQueue` does NOT guarantee iteration order; `iterator()` returns elements in "some order." Only `poll()` is guaranteed to return the minimum. Using a for-each loop to process in priority order is a common bug.
+- 📎 **Reference Anchor**: [OpenJDK PriorityQueue](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/PriorityQueue.java)
+- **Invariant learned**: `PriorityQueue` is a min-heap (by default) with the heap invariant maintained by `siftUp` on offer and `siftDown` on poll. Greedy algorithms that always process the locally optimal element (smallest cost, earliest deadline, largest profit) typically delegate the "next best" decision to a `PriorityQueue` — this is the structural link between the greedy proof's "optimal choice" step and the concrete Java data structure.
+- **Local rewrite**: Activity Selection (this chapter's Proof Corner) uses an implicit greedy choice: always pick the activity with the earliest finish time. In code, pre-sort by finish time once — no PriorityQueue needed — because the sort establishes the invariant the greedy choice relies on.
+- **Constraint warning**: `PriorityQueue` does NOT guarantee iteration order; `iterator()` returns elements in "some order." Only `poll()` is guaranteed to return the minimum. Using a for-each loop to process in priority order is a common bug.
 
 ---
 

@@ -265,8 +265,9 @@ public int binarySearch(int[] arr, int target) {
 ```
 
 📖 **GO DEEPER** — Binary Search has many variants (lower bound, answer space):
-📖 [06_Binary_Search_Patterns.md](../../04_Patterns_Templates/06_Binary_Search_Patterns.md)
-⬅️ Return here after studying for: search in rotated array, first/last occurrence.
+
+- 📖 [06_Binary_Search_Patterns.md](../../04_Patterns_Templates/06_Binary_Search_Patterns.md)
+- ⬅️ Return here after studying for: search in rotated array, first/last occurrence.
 
 |                  | Linear Search          | Binary Search              |
 | ---------------- | ---------------------- | -------------------------- |

@@ -162,8 +162,11 @@ flowchart TD
 
 
 **The Catastrophe of Read Amplification in LSM-Trees:**
+
 If LSM-Trees write data to dozens of different immutable SSTable files, how do you `SELECT` data?
+
 You have to check the RAM MemTable, then check SSTable 1, then SSTable 2...
+
 If the data _doesn't exist_, you just forced the database to physically read 50 files from the hard drive, destroying your disk I/O bandwidth.
 
 **The Mechanical Solution: The Bloom Filter.**

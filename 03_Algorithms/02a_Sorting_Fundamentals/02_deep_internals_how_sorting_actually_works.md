@@ -224,37 +224,52 @@ Walking down the leftmost path visits `0, 1, 3, 7, 15, 31, ...`, which are expon
 ## Java'S Arrays.Sort() - Internal Implementation
 
 FOR PRIMITIVES (int[], double[], etc.):
+
 Algorithm: DUAL-PIVOT QUICKSORT (Vladimir Yaroslavskiy, 2009)
+
 Why not regular QuickSort?
 
 - Dual-pivot: Uses 2 pivots, creates 3 partitions
 - Fewer comparisons on average
 - Better cache utilization
-  Regular: [<pivot] [>pivot]
-  Dual: [<P1] [P1-P2] [>P2]
-  For small subarrays (< 47 elements):
-  → Switches to INSERTION SORT
-  Why? Insertion sort is faster for small arrays due to:
+   - Regular: [<pivot] [>pivot]
+   - Dual: [<P1] [P1-P2] [>P2]
+
+For small subarrays (< 47 elements):
+
+- Switches to INSERTION SORT
+
+Why? Insertion sort is faster for small arrays due to:
+
 - Less overhead (no recursion)
 - Better cache behavior
 - Branch prediction works well
-  FOR OBJECTS (Object[], String[], etc.):
-  Algorithm: TIMSORT (Tim Peters, 2002 - from Python)
-  Why not QuickSort?
+
+FOR OBJECTS (Object[], String[], etc.):
+
+Algorithm: TIMSORT (Tim Peters, 2002 - from Python)
+
+Why not QuickSort?
+
 - Stability required (equal elements keep order)
 - Real data often has "runs" of sorted elements
 - TimSort exploits existing order
-  TimSort combines:
+
+TimSort combines:
+
 - Find "runs" (already sorted sequences)
 - Extend short runs using Insertion Sort
 - Merge runs using smart merging strategy
-  Best case (already sorted): O(n)
-  Worst case: O(n log n)
-  Space: O(n)
-  SOURCE CODE LOCATION (OpenJDK):
-  Primitives: java.util.DualPivotQuicksort
-  Objects: java.util.TimSort
-  You can read the actual implementation!
+   - Best case (already sorted): O(n)
+   - Worst case: O(n log n)
+   - Space: O(n)
+
+SOURCE CODE LOCATION (OpenJDK):
+
+- Primitives: java.util.DualPivotQuicksort
+- Objects: java.util.TimSort
+
+You can read the actual implementation!
 
 ## ⚖️ Counting Comparisons and Swaps
 
@@ -268,9 +283,9 @@ For array of n elements:
 - Swaps (worst): n(n-1)/2 (already reverse sorted)
 - Swaps (best): 0 (already sorted)
 - Swaps (average): n(n-1)/4
-  Example n=5 worst case:
-  Comparisons: 4+3+2+1 = 10
-  Swaps: 4+3+2+1 = 10
+   - Example n=5 worst case:
+     - Comparisons: 4+3+2+1 = 10
+     - Swaps: 4+3+2+1 = 10
 
 **Selection Sort**:
 

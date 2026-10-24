@@ -12,40 +12,35 @@
 
 ### FAILURE 1: MONOTONIC QUEUE OVERFLOW (Unbounded Window Growth)
 
-Scenario: Streaming data with variable window sizes
-Problem:  If window size k grows unboundedly, deque stores O(n) elements
-Symptom:  Memory exhaustion in long-running stream processors
-Example:  Apache Spark job processing stock trades without watermark
-timeout → deque accumulates all prices → OOM
-Fix:      Implement explicit eviction policy or use time-based windows
+- **Scenario:** Streaming data with variable window sizes
+- **Problem:** If window size k grows unboundedly, deque stores O(n) elements
+- **Symptom:** Memory exhaustion in long-running stream processors
+- **Example:** Apache Spark job processing stock trades without watermark timeout → deque accumulates all prices → OOM
+- **Fix:** Implement explicit eviction policy or use time-based windows
 
 **Failure 2:** AVL REBALANCING CASCADE (Skewed Insertions)
 
-Scenario: Sequential insertion of sorted data (e.g., auto-increment IDs)
-Problem:  Each insertion triggers balance check up to root; O(log n) per
-insert, but constants are higher than Red-Black (more rotations)
-Symptom:  15-20% slower than Red-Black for bulk inserts in benchmarks
-Example:  Inserting 1M sequential IDs into AVL vs RB tree in Java
-Fix:      Use bulk loading (balanced array build) or switch to Red-Black
+- **Scenario:** Sequential insertion of sorted data (e.g., auto-increment IDs)
+- **Problem:** Each insertion triggers balance check up to root; O(log n) per insert, but constants are higher than Red-Black (more rotations)
+- **Symptom:** 15-20% slower than Red-Black for bulk inserts in benchmarks
+- **Example:** Inserting 1M sequential IDs into AVL vs RB tree in Java
+- **Fix:** Use bulk loading (balanced array build) or switch to Red-Black
 
 **Failure 3:** MIN STACK STACK-OVERFLOW (Recursive Implementation)
 
-Scenario: Deep stack usage (DFS on large graphs, recursive JSON parsers)
-Problem:  If getMin() uses recursion to find minimum, stack depth hits
-Java's default ~1024 frame limit
-Symptom:  StackOverflowError in production under deep recursion
-Example:  Processing JSON with nesting depth > 2000
-Fix:      Use iterative two-stack approach; stack storage in heap
+- **Scenario:** Deep stack usage (DFS on large graphs, recursive JSON parsers)
+- **Problem:** If getMin() uses recursion to find minimum, stack depth hits Java's default ~1024 frame limit
+- **Symptom:** StackOverflowError in production under deep recursion
+- **Example:** Processing JSON with nesting depth > 2000
+- **Fix:** Use iterative two-stack approach; stack storage in heap
 
 **Failure 4:** ROPE TREE IMBALANCE (Pathological Text Patterns)
 
-Scenario: Concatenating strings with similar length distributions
-Problem:  Naive rope implementation can create O(n) depth if concatenating
-sequences of equal-sized ropes (not truly balanced)
-Symptom:  O(n) traversal instead of O(log n) — silent performance death
-Example:  Appending log lines of similar length to a Rope buffer
-Fix:      Use weight-based rebalancing (like implicit treap) or Fibonacci
-concatenation strategy
+- **Scenario:** Concatenating strings with similar length distributions
+- **Problem:** Naive rope implementation can create O(n) depth if concatenating sequences of equal-sized ropes (not truly balanced)
+- **Symptom:** O(n) traversal instead of O(log n) — silent performance death
+- **Example:** Appending log lines of similar length to a Rope buffer
+- **Fix:** Use weight-based rebalancing (like implicit treap) or Fibonacci concatenation strategy
 
 **Mitigation Checklist:**
 
@@ -109,14 +104,17 @@ For any stack state S with minStack M:
 ```
 
 APPROACH 1 - TWO STACKS:
-Main Stack: [3, 5, 2, 7, 1] top→
-Min Stack: [3, 3, 2, 2, 1] top→
-Min stack stores the minimum at each point!
-When we pop, both stacks pop.
-getMin() = minStack.top()
+
+- Main Stack: [3, 5, 2, 7, 1] top→
+- Min Stack: [3, 3, 2, 2, 1] top→
+- Min stack stores the minimum at each point!
+- When we pop, both stacks pop.
+- getMin() = minStack.top()
+
 APPROACH 2 - SINGLE STACK WITH PAIRS:
-Stack: [(3,3), (5,3), (2,2), (7,2), (1,1)]
-(value, min_at_this_point)
+
+- Stack: [(3,3), (5,3), (2,2), (7,2), (1,1)]
+- (value, min_at_this_point)
 
 
 ```java

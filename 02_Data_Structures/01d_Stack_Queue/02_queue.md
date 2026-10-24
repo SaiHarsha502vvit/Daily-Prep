@@ -60,17 +60,19 @@
 
 Before compilers and managed runtimes existed, programmers manually calculated return addresses using GOTO. The stack was invented because ALGOL 60 required **recursive functions** — and recursion demands a LIFO call stack.
 
-**Before 1955:** No formal call stack. Return addresses stored in fixed registers. No recursion possible.
-**1961:** Burroughs B5000 — a production computer designed around a stack (Robert Barton, designed for ALGOL). The architecture pushed operands and addresses onto a stack, making recursion hardware-native.
-**1960:** ALGOL 60 standardizes recursive functions. Every compiler must now implement a call stack.
-**1965:** Dijkstra introduces semaphores (P/V) for process synchronisation; his THE multiprogramming system (1968) uses queues of waiting processes.
-**1968:** Dijkstra's "Cooperating Sequential Processes" paper — semaphores + queue primitives for OS process synchronization.
-**1970s–80s:** Stack-based languages: Forth (Charles H. Moore, c. 1970) and PostScript (Adobe, 1982).
-**1973:** Unix pipes (Doug McIlroy and Ken Thompson): the `|` operator connects processes through a FIFO byte queue.
-**1990s:** JVM (1995) and CLR (2002) formalize managed call stacks with hardware-guarded StackOverflowError semantics.
-**2011:** LMAX Disruptor — a ring-buffer queue that let the LMAX exchange process millions of orders per second on a single thread.
-**2010s:** async/await (C# 5 in 2012, Python 3.5 in 2015, JavaScript ES2017) — language-level suspendable functions.
-**2020s:** Virtual threads (Java 21, JEP 444, 2023) — millions of lightweight threads, each with a virtual stack, multiplexed onto a small pool of OS carrier threads (their stack frames are stored on the heap while unmounted).
+| Year | Event |
+| --- | --- |
+| Before 1955 | No formal call stack. Return addresses stored in fixed registers. No recursion possible. |
+| 1961 | Burroughs B5000 — a production computer designed around a stack (Robert Barton, designed for ALGOL). The architecture pushed operands and addresses onto a stack, making recursion hardware-native. |
+| 1960 | ALGOL 60 standardizes recursive functions. Every compiler must now implement a call stack. |
+| 1965 | Dijkstra introduces semaphores (P/V) for process synchronisation; his THE multiprogramming system (1968) uses queues of waiting processes. |
+| 1968 | Dijkstra's "Cooperating Sequential Processes" paper — semaphores + queue primitives for OS process synchronization. |
+| 1970s–80s | Stack-based languages: Forth (Charles H. Moore, c. 1970) and PostScript (Adobe, 1982). |
+| 1973 | Unix pipes (Doug McIlroy and Ken Thompson): the `\|` operator connects processes through a FIFO byte queue. |
+| 1990s | JVM (1995) and CLR (2002) formalize managed call stacks with hardware-guarded StackOverflowError semantics. |
+| 2011 | LMAX Disruptor — a ring-buffer queue that let the LMAX exchange process millions of orders per second on a single thread. |
+| 2010s | async/await (C# 5 in 2012, Python 3.5 in 2015, JavaScript ES2017) — language-level suspendable functions. |
+| 2020s | Virtual threads (Java 21, JEP 444, 2023) — millions of lightweight threads, each with a virtual stack, multiplexed onto a small pool of OS carrier threads (their stack frames are stored on the heap while unmounted). |
 
 **Named Predecessors:**
 

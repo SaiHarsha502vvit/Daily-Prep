@@ -285,7 +285,9 @@ public String longestCommonPrefix(String[] words) {
 <details><summary>Answer</summary>
 
 **The Performance Hit (Cache Misses):**
+
 An array of 26 pointers takes exactly `26 * 8 = 208 bytes`. This fits within just 4 CPU cache lines (64 bytes each). Accessing `children['c' - 'a']` is a single contiguous memory offset calculation (`O(1)` pointer math) that almost guarantees an L1/L2 cache hit.
+
 Conversely, a `HashMap` node forces an additional object instantiation, hashing overhead, and most importantly: **Memory Indirection**. Looking up a character in the `HashMap` requires jumping to a non-contiguous memory address on the heap to fetch the bucket. Each jump is a guaranteed cache miss (~100x slower than a cache hit). Thus, while `HashMap` saves RAM in sparse nodes, it destroys CPU cache locality, drastically slowing down traversal speed.
 
 </details>
@@ -295,8 +297,11 @@ Conversely, a `HashMap` node forces an additional object instantiation, hashing 
 <details><summary>Answer</summary>
 
 **GOOS Outside-In Approach:**
+
 You start by defining the Port (Interface) required by the client (e.g., the REST Controller):
+
 `public interface AutocompleteService { List<String> getSuggestions(String prefix); }`
+
 You do not test the `TrieNode` directly. Instead:
 
 1. **The Test:** You write a test for the `SearchController`. You inject a **Mock** `AutocompleteService`.

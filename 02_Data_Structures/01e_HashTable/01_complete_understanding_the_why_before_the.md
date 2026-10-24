@@ -16,7 +16,9 @@
 | **Hash Table**               | **O(1)** — converts any key into an index! |
 
 💡 **Hash Table Breakthrough:**
+
 "What if we could CONVERT any key into an index?"
+
 `hash("Alice") → 3` → `table[3] = Alice's data` → **O(1) lookup!**
 
 Keys can be strings, objects, anything — the hash function handles it.

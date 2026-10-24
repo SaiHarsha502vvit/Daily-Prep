@@ -43,8 +43,9 @@
 
 ### Redis Cluster Resharding Storm
 
-**Name:** Hash Slot Migration Latency Spike
-**Mechanism:** When a Redis Cluster node is added or removed, slots are reassigned across nodes. Until both source and destination nodes complete the migration, a client may receive a `MOVED` redirect for any key in the affected slot. Under high write load, this causes a cascade of `ASKING` protocol overhead, pipeline starvation, and latency spikes.
+- **Name:** Hash Slot Migration Latency Spike
+- **Mechanism:** When a Redis Cluster node is added or removed, slots are reassigned across nodes. Until both source and destination nodes complete the migration, a client may receive a `MOVED` redirect for any key in the affected slot. Under high write load, this causes a cascade of `ASKING` protocol overhead, pipeline starvation, and latency spikes.
+
 **Debug step (metric):**
 
 ```bash
@@ -64,8 +65,9 @@ redis-cli --latency-history
 
 ### PostgreSQL B-Tree Page Bloat
 
-**Name:** Dead Tuple Accumulation in Heap and Index Pages
-**Mechanism:** PostgreSQL uses MVCC (Multi-Version Concurrency Control). An `UPDATE` does not overwrite the row — it inserts a new version and marks the old one as dead. Until `VACUUM` runs, dead tuples occupy space in both the heap and every B-Tree index pointing to them. This causes table bloat (disk grows), index bloat (fan-out degrades), and slower index-only scans (more pages to read).
+- **Name:** Dead Tuple Accumulation in Heap and Index Pages
+- **Mechanism:** PostgreSQL uses MVCC (Multi-Version Concurrency Control). An `UPDATE` does not overwrite the row — it inserts a new version and marks the old one as dead. Until `VACUUM` runs, dead tuples occupy space in both the heap and every B-Tree index pointing to them. This causes table bloat (disk grows), index bloat (fan-out degrades), and slower index-only scans (more pages to read).
+
 **Debug step (command):**
 
 ```sql
@@ -95,8 +97,9 @@ VACUUM VERBOSE ANALYZE orders;
 
 ### Kafka Under-Replicated Partition (ISR Shrinkage)
 
-**Name:** In-Sync Replica Set Contraction Causing Producer Throttling
-**Mechanism:** Kafka guarantees durability by replicating writes to all in-sync replicas (ISRs). If a broker goes down or a network partition occurs, replicas fall out of ISR. The leader continues accepting writes, but the under-replicated partition metric increments. If `min.insync.replicas=2` and ISR drops to 1, the broker starts rejecting produce requests with `NotEnoughReplicasException`.
+- **Name:** In-Sync Replica Set Contraction Causing Producer Throttling
+- **Mechanism:** Kafka guarantees durability by replicating writes to all in-sync replicas (ISRs). If a broker goes down or a network partition occurs, replicas fall out of ISR. The leader continues accepting writes, but the under-replicated partition metric increments. If `min.insync.replicas=2` and ISR drops to 1, the broker starts rejecting produce requests with `NotEnoughReplicasException`.
+
 **Debug step (command):**
 
 ```bash
@@ -124,8 +127,9 @@ iostat -x 1 | grep sd  # look for %util > 80% on follower brokers
 
 ### Memcached Thundering Herd
 
-**Name:** Cache Stampede After TTL Expiry
-**Mechanism:** When a popular cache key expires (TTL reaches 0), all concurrent requests for that key miss the cache simultaneously and hit the backend database. With thousands of requests in flight, this can generate a database stampede that takes down the primary store, which then cascades to other services.
+- **Name:** Cache Stampede After TTL Expiry
+- **Mechanism:** When a popular cache key expires (TTL reaches 0), all concurrent requests for that key miss the cache simultaneously and hit the backend database. With thousands of requests in flight, this can generate a database stampede that takes down the primary store, which then cascades to other services.
+
 **Debug step (command):**
 
 ```bash
@@ -298,15 +302,17 @@ echo "stats" | nc -w 2 $MEMCACHED_HOST 11211 | grep evicted_items
 - k = key length (number of characters).
 
 CACHE BEHAVIOR (often more important than BigO!):
-Array: L1/L2 cache FRIENDLY — contiguous memory, prefetching works.
-LinkedList: cache HOSTILE — nodes scattered in memory, many cache misses.
-Hash Table: moderate — depends on implementation (open addressing > chaining).
-B-Tree: designed for disk pages — each node = one I/O = one page.
+
+- Array: L1/L2 cache FRIENDLY — contiguous memory, prefetching works.
+- LinkedList: cache HOSTILE — nodes scattered in memory, many cache misses.
+- Hash Table: moderate — depends on implementation (open addressing > chaining).
+- B-Tree: designed for disk pages — each node = one I/O = one page.
 
 WHY THIS MATTERS:
-Linked list O(1) insert SOUNDS better than array O(n) insert.
-But: array operations per second are 10-100x faster because of cache locality!
-For < 1000 elements: arrays beat everything due to cache efficiency.
+
+- Linked list O(1) insert SOUNDS better than array O(n) insert.
+- But: array operations per second are 10-100x faster because of cache locality!
+- For < 1000 elements: arrays beat everything due to cache efficiency.
 
 ---
 
@@ -385,9 +391,10 @@ flowchart TD
 | Trie          | Per character → large | Compressed trie for dictionaries    |
 
 REAL EXAMPLE:
-Store 10M user IDs (long):
-long[] → 80 MB (10M × 8 bytes), cache-friendly with fast iteration.
-HashSet<Long> → ~400 MB (10M × ~40 bytes overhead), about 5x more memory.
+
+- Store 10M user IDs (long):
+- long[] → 80 MB (10M × 8 bytes), cache-friendly with fast iteration.
+- HashSet<Long> → ~400 MB (10M × ~40 bytes overhead), about 5x more memory.
 
 LESSON:
 When scale matters, choose data structures based on memory, not just Big-O.

@@ -58,10 +58,10 @@ Recursive function theory was formalized by **Wilhelm Ackermann (1928)** — the
 
 > Full structural induction proofs and worked examples: [A1 — Algorithm Correctness](../A1_Correctness_Proofs.md) (Section 3)
 
-📎 **Reference Anchor**: [OpenJDK TreeMap (recursive operations)](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/TreeMap.java) · [JVM spec — method invocation](https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-6.html#jvms-6.5.invokevirtual)
-**Invariant learned**: `TreeMap.getEntry(key)` uses a while loop (not recursion) for lookup — a reminder that recursive logic at the mathematical level becomes iterative in production to avoid stack overflow at scale. The recursive structure (BST left < root < right) is preserved by BST invariants, not by recursive calls at runtime.
-**Local rewrite**: The "structural induction on binary trees" pattern in this chapter's Proof Corner directly models how `TreeMap`'s invariant is maintained: at every insertion, the tree height invariant (Red-Black property) holds by inductive argument on the tree structure.
-**Constraint warning**: Default JVM thread stack is ~512KB (client) to ~1MB (server). A recursive method with one `long` local variable allows ~8,000–15,000 frames before `StackOverflowError`. Always provide an iterative path for inputs of unknown depth.
+- 📎 **Reference Anchor**: [OpenJDK TreeMap (recursive operations)](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/TreeMap.java) · [JVM spec — method invocation](https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-6.html#jvms-6.5.invokevirtual)
+- **Invariant learned**: `TreeMap.getEntry(key)` uses a while loop (not recursion) for lookup — a reminder that recursive logic at the mathematical level becomes iterative in production to avoid stack overflow at scale. The recursive structure (BST left < root < right) is preserved by BST invariants, not by recursive calls at runtime.
+- **Local rewrite**: The "structural induction on binary trees" pattern in this chapter's Proof Corner directly models how `TreeMap`'s invariant is maintained: at every insertion, the tree height invariant (Red-Black property) holds by inductive argument on the tree structure.
+- **Constraint warning**: Default JVM thread stack is ~512KB (client) to ~1MB (server). A recursive method with one `long` local variable allows ~8,000–15,000 frames before `StackOverflowError`. Always provide an iterative path for inputs of unknown depth.
 
 ---
 

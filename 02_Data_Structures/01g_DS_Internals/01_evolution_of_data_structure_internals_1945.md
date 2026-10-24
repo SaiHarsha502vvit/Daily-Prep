@@ -121,7 +121,9 @@ static final int UNTREEIFY_THRESHOLD = 6;  // hysteresis: don't oscillate
 ```
 
 The `TREEIFY_THRESHOLD = 8` is not an arbitrary number — it is derived from the **Poisson distribution**. Under a good hash function with load factor 0.75, the probability of a bucket having k entries is:
+
 `P(k) = (λ^k × e^(-λ)) / k!` where `λ ≈ 0.5` (average chain length)
+
 `P(k ≥ 8) ≈ 6 × 10^(-8)` — roughly 1 in 16 million buckets. This means treeifying at 8 entries catches the genuinely pathological cases without converting for minor collisions. The inverse (`UNTREEIFY_THRESHOLD = 6`) prevents oscillation between tree and list when the bucket hovers around 7 entries.
 
 > **Invariant 2:** _For any key K, if `map.containsKey(K)` returns true, then `map.get(K)` returns a non-null value and K.equals(key) must hold for the matching entry._

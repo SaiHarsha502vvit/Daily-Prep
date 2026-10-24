@@ -428,11 +428,12 @@ Notice the pattern in that right-hand column: **new algorithms are forced by new
 ## 🏋️ Practice Challenges
 
 **Challenge 1 — Diagnose from symptom.** For each symptom, name the likely algorithmic cause and the fix, without looking back:
-   a. "The job is fine in staging, times out in production with the big customer."
-   b. "Every hour on the hour, our DB CPU spikes to 100% for 30 seconds."
-   c. "We added a server to the cache cluster and the site went down."
-   d. "One tenant's activity makes the whole system slow for everyone."
-   e. "The bug appeared somewhere in the last 300 commits."
+
+- a. "The job is fine in staging, times out in production with the big customer."
+- b. "Every hour on the hour, our DB CPU spikes to 100% for 30 seconds."
+- c. "We added a server to the cache cluster and the site went down."
+- d. "One tenant's activity makes the whole system slow for everyone."
+- e. "The bug appeared somewhere in the last 300 commits."
 
 **Challenge 2 — Design the error direction.** You must deduplicate payment webhook deliveries (the provider guarantees at-least-once). Would you use a Bloom filter? Argue both directions of error in *this* domain, and state your decision. *(Careful — this one differs from Story 10.)*
 

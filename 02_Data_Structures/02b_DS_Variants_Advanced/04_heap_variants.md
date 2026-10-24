@@ -250,16 +250,19 @@ Cons: Extra memory for pointers, cache unfriendly
    Find another slot in same array
 
 a) LINEAR PROBING: Try next slot
-h(k), h(k)+1, h(k)+2, ...
-Problem: Clustering
+
+- h(k), h(k)+1, h(k)+2, ...
+- Problem: Clustering
 
 b) QUADRATIC PROBING: Try squared distances
-h(k), h(k)+1², h(k)+2², h(k)+3², ...
-Better distribution
+
+- h(k), h(k)+1², h(k)+2², h(k)+3², ...
+- Better distribution
 
 c) DOUBLE HASHING: Use second hash function
-h(k), h(k)+h2(k), h(k)+2*h2(k), ...
-Best distribution
+
+- h(k), h(k)+h2(k), h(k)+2*h2(k), ...
+- Best distribution
 
 3. ROBIN HOOD HASHING:
    Elements with larger "probe distance" steal from shorter ones
@@ -271,13 +274,15 @@ Best distribution
 
 #### Java hash map variants
 
-HashMap:         Basic, not thread-safe, allows null
-LinkedHashMap:   Maintains insertion order
-TreeMap:         Sorted by keys (Red-Black Tree)
-HashTable:       Thread-safe (legacy, use ConcurrentHashMap)
-ConcurrentHashMap: Thread-safe, modern
-WeakHashMap:     Keys can be garbage collected
-IdentityHashMap: Uses == instead of equals()
+| Class | Characteristics |
+| --- | --- |
+| HashMap | Basic, not thread-safe, allows null |
+| LinkedHashMap | Maintains insertion order |
+| TreeMap | Sorted by keys (Red-Black Tree) |
+| HashTable | Thread-safe (legacy, use ConcurrentHashMap) |
+| ConcurrentHashMap | Thread-safe, modern |
+| WeakHashMap | Keys can be garbage collected |
+| IdentityHashMap | Uses == instead of equals() |
 
 
 ---

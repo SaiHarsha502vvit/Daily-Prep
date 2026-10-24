@@ -48,10 +48,11 @@ PLUS the children array:
 
 children[] array: 120 bytes
 
-**Total Per Node**: 24 + 120 = 144 bytes!
-For 100,000 words average 8 chars, assuming 30% node sharing:
-Nodes ≈ 100,000 × 8 × 0.7 = 560,000 nodes
-Memory ≈ 560,000 × 144 = 80 MB!
+- **Total Per Node**: 24 + 120 = 144 bytes!
+- For 100,000 words average 8 chars, assuming 30% node sharing:
+- Nodes ≈ 100,000 × 8 × 0.7 = 560,000 nodes
+- Memory ≈ 560,000 × 144 = 80 MB!
+
 MEMORY-OPTIMIZED TRIE (HashMap children):
 
 ```java
@@ -82,15 +83,20 @@ Patricia: fewer nodes, less memory, similar time complexity.
 
 For array of size n, segment tree needs array of size 4n (safe upper bound)
 Actually needs 2^⌈log₂(n)⌉+1 - 1 nodes, but 4n is simpler
+
 ARRAY-BASED INDEXING:
+
 Index i:
-Left child: 2*i + 1
-Right child: 2*i + 2
-Parent: (i-1) / 2
+
+- Left child: 2*i + 1
+- Right child: 2*i + 2
+- Parent: (i-1) / 2
+
 OR (1-indexed, simpler):
-Left child: 2*i
-Right child: 2*i + 1
-Parent: i / 2
+
+- Left child: 2*i
+- Right child: 2*i + 1
+- Parent: i / 2
 
 **Example**: Array [1, 3, 5, 7, 9, 11] - Sum Segment Tree
 
@@ -122,15 +128,16 @@ flowchart TD
 For n = 1,000,000: 16 MB
 
 **Cache Behavior**:
-Query path: index 1 → 2 or 3 → 4,5,6,7 → ...
-Each level doubles the index → Sequential cache misses
-Level 0: index 1 (cache line A)
-Level 1: index 2,3 (cache line A, probably hit)
-Level 2: index 4-7 (might need new cache line)
-Level 3: index 8-15 (likely new cache line)
-...
-For log₂(n) levels: log₂(n) potential cache misses
-n = 1M → log₂(1M) ≈ 20 cache misses per query
+
+- Query path: index 1 → 2 or 3 → 4,5,6,7 → ...
+- Each level doubles the index → Sequential cache misses
+- Level 0: index 1 (cache line A)
+- Level 1: index 2,3 (cache line A, probably hit)
+- Level 2: index 4-7 (might need new cache line)
+- Level 3: index 8-15 (likely new cache line)
+- ...
+- For log₂(n) levels: log₂(n) potential cache misses
+- n = 1M → log₂(1M) ≈ 20 cache misses per query
 
 **Optimization**: "Cache-oblivious" segment trees (van Emde Boas layout)
 
@@ -139,15 +146,18 @@ n = 1M → log₂(1M) ≈ 20 cache misses per query
 ## Fenwick Tree (Bit) - The Magic Of Binary
 
 💡 **KEY INSIGHT: Use lowest set bit for range calculation!**
+
 LOWEST SET BIT (LSB):
+
 For number i, LSB = i & (-i)
 
 **Why It Works**:
--i = two's complement = invert all bits and add 1
-i = 12 = 1100 (binary)
-~i = 0011
--i = ~i + 1 = 0100
-i & -i = 1100 & 0100 = 0100 = 4 = LSB
+
+- -i = two's complement = invert all bits and add 1
+- i = 12 = 1100 (binary)
+- ~i = 0011
+- -i = ~i + 1 = 0100
+- i & -i = 1100 & 0100 = 0100 = 4 = LSB
 
 **Examples**:
 
@@ -165,31 +175,36 @@ i & -i = 1100 & 0100 = 0100 = 4 = LSB
 BIT[i] stores sum of elements from (i - LSB(i) + 1) to i
 
 **Visual**:
+
 Original: [1, 2, 3, 4, 5, 6, 7, 8] (1-indexed)
+
 BIT array stores:
-BIT[1] = arr[1] = 1 (covers 1)
-BIT[2] = arr[1] + arr[2] = 3 (covers 1-2)
-BIT[3] = arr[3] = 3 (covers 3)
-BIT[4] = arr[1] + arr[2] + arr[3] + arr[4] = 10 (covers 1-4)
-BIT[5] = arr[5] = 5 (covers 5)
-BIT[6] = arr[5] + arr[6] = 11 (covers 5-6)
-BIT[7] = arr[7] = 7 (covers 7)
-BIT[8] = arr[1] + ... + arr[8] = 36 (covers 1-8)
+
+- BIT[1] = arr[1] = 1 (covers 1)
+- BIT[2] = arr[1] + arr[2] = 3 (covers 1-2)
+- BIT[3] = arr[3] = 3 (covers 3)
+- BIT[4] = arr[1] + arr[2] + arr[3] + arr[4] = 10 (covers 1-4)
+- BIT[5] = arr[5] = 5 (covers 5)
+- BIT[6] = arr[5] + arr[6] = 11 (covers 5-6)
+- BIT[7] = arr[7] = 7 (covers 7)
+- BIT[8] = arr[1] + ... + arr[8] = 36 (covers 1-8)
 
 **Query**: Sum of [1, 7]
-sum = 0
-i = 7: sum += BIT[7] = 7, i -= LSB(7) = 7-1 = 6
-i = 6: sum += BIT[6] = 11, i -= LSB(6) = 6-2 = 4
-i = 4: sum += BIT[4] = 10, i -= LSB(4) = 4-4 = 0
-DONE! sum = 7 + 11 + 10 = 28 ✓
-Number of operations: Count of 1s in binary of 7 = 3 operations
-Maximum: log₂(n) operations
+
+- sum = 0
+- i = 7: sum += BIT[7] = 7, i -= LSB(7) = 7-1 = 6
+- i = 6: sum += BIT[6] = 11, i -= LSB(6) = 6-2 = 4
+- i = 4: sum += BIT[4] = 10, i -= LSB(4) = 4-4 = 0
+- DONE! sum = 7 + 11 + 10 = 28 ✓
+- Number of operations: Count of 1s in binary of 7 = 3 operations
+- Maximum: log₂(n) operations
 
 **Update**: Add 5 to index 3
-i = 3: BIT[3] += 5, i += LSB(3) = 3+1 = 4
-i = 4: BIT[4] += 5, i += LSB(4) = 4+4 = 8
-i = 8: BIT[8] += 5, i += LSB(8) = 8+8 = 16 > n, STOP
-Updates all ranges that include index 3!
+
+- i = 3: BIT[3] += 5, i += LSB(3) = 3+1 = 4
+- i = 4: BIT[4] += 5, i += LSB(4) = 4+4 = 8
+- i = 8: BIT[8] += 5, i += LSB(8) = 8+8 = 16 > n, STOP
+- Updates all ranges that include index 3!
 
 ## 📌 Union — Find — Path Compression Visualization
 
@@ -361,10 +376,11 @@ WHY SKIP LIST OVER BALANCED BST?
 
 
 **False Positive Probability**:
-After inserting n elements with k hash functions into m bits:
-P(bit is still 0) = (1 - 1/m)^(kn) ≈ e^(-kn/m)
-P(false positive) = (1 - e^(-kn/m))^k
-OPTIMAL k = (m/n) × ln(2) ≈ 0.693 × (m/n)
+
+- After inserting n elements with k hash functions into m bits:
+- P(bit is still 0) = (1 - 1/m)^(kn) ≈ e^(-kn/m)
+- P(false positive) = (1 - e^(-kn/m))^k
+- OPTIMAL k = (m/n) × ln(2) ≈ 0.693 × (m/n)
 
 **Example Calculations**:
 
@@ -430,19 +446,22 @@ GET(key):
 1. Look up in HashMap: O(1)
 2. If found, move node to head: O(1)
 3. Return value
-   PUT(key, value):
-4. If key exists: update value, move to head
-5. If key doesn't exist:
-   a. Create new node, add to head
-   b. Add to HashMap
-   c. If over capacity, remove tail node (LRU item)
+
+PUT(key, value):
+
+1. If key exists: update value, move to head
+2. If key doesn't exist:
+   - a. Create new node, add to head
+   - b. Add to HashMap
+   - c. If over capacity, remove tail node (LRU item)
 
 **Memory Per Entry**:
-Node: ~48 bytes (key ref, value ref, prev, next, object header)
-HashMap entry: ~32 bytes (key ref, value ref, hash, next)
-Total: ~80 bytes per cache entry
-For 10,000 entries: ~800 KB
-For 1,000,000 entries: ~80 MB
+
+- Node: ~48 bytes (key ref, value ref, prev, next, object header)
+- HashMap entry: ~32 bytes (key ref, value ref, hash, next)
+- Total: ~80 bytes per cache entry
+- For 10,000 entries: ~800 KB
+- For 1,000,000 entries: ~80 MB
 
 ---
 

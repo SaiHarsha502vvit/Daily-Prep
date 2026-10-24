@@ -67,7 +67,9 @@ Use case: decompose a complex random sum into a sum of simpler indicator variabl
 Indicator I_A = 1 if event A occurs, 0 otherwise. Key property: **E[I_A] = Pr[A]**.
 
 Define X = number of elements promoted to level k in a skip list.
+
 Each element independently promoted with probability p = 1/2.
+
 E[X] = n·p = n/2. No joint distribution needed.
 
 ### Markov's Inequality

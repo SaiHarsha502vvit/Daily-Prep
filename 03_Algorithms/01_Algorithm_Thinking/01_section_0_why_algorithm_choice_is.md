@@ -174,8 +174,9 @@ Computers need PRECISE, COMPLETE instructions.
 - Brute force: for each start, sum the next 3 elements, O(n·k).
 
 **Observation**: "I'm adding same numbers multiple times!"
-sum(0,1,2) = a + b + c
-sum(1,2,3) = b + c + d ← I already know b+c from previous!
+
+- sum(0,1,2) = a + b + c
+- sum(1,2,3) = b + c + d ← I already know b+c from previous!
 
 **Invention**: "Instead of re-summing, I'll ADD new - REMOVE old!"
 sum(1,2,3) = sum(0,1,2) - a + d → O(n)!
@@ -187,31 +188,31 @@ sum(1,2,3) = sum(0,1,2) - a + d → O(n)!
 ### How To Develop Algorithm Creation Skills
 
 1. ALWAYS START WITH BRUTE FORCE
-   "What's the simplest way to solve this?"
-   Don't worry about efficiency first - get CORRECT solution
+   - "What's the simplest way to solve this?"
+   - Don't worry about efficiency first - get CORRECT solution
 2. IDENTIFY THE WASTE
-   "Where am I repeating work?"
-   "What am I computing multiple times?"
-   "What information am I not using?"
+   - "Where am I repeating work?"
+   - "What am I computing multiple times?"
+   - "What information am I not using?"
 3. ASK THE MAGIC QUESTIONS
-   "Can I precompute something?"
-   "Can I sort first?"
-   "Can I use extra space to save time?"
-   "Can I process while reading input?"
-   "Can I divide the problem?"
+   - "Can I precompute something?"
+   - "Can I sort first?"
+   - "Can I use extra space to save time?"
+   - "Can I process while reading input?"
+   - "Can I divide the problem?"
 4. LOOK FOR STRUCTURE
-   "Is there ordering I can exploit?"
-   "Is there hierarchy/tree structure?"
-   "Are there independent subproblems?"
-   "Are there overlapping subproblems?"
+   - "Is there ordering I can exploit?"
+   - "Is there hierarchy/tree structure?"
+   - "Are there independent subproblems?"
+   - "Are there overlapping subproblems?"
 5. COMBINE KNOWN TECHNIQUES
-   Binary Search + Greedy = Optimization
-   HashMap + Sliding Window = Substring problems
-   DFS + Memoization = Tree DP
+   - Binary Search + Greedy = Optimization
+   - HashMap + Sliding Window = Substring problems
+   - DFS + Memoization = Tree DP
 6. TEST AND REFINE
-   Does it work for edge cases?
-   Can it be simpler?
-   Can it be faster?
+   - Does it work for edge cases?
+   - Can it be simpler?
+   - Can it be faster?
 
 ### Creating Your Own Data Structures
 
@@ -225,8 +226,9 @@ EXAMPLE - How LRU Cache was "invented":
 **Need**: Fast lookup (HashMap) + Fast ordering (LinkedList)
 
 **Invention**: Combine HashMap + DoublyLinkedList!
-HashMap: O(1) lookup of any item
-LinkedList: O(1) move-to-front and remove-from-back
+
+- HashMap: O(1) lookup of any item
+- LinkedList: O(1) move-to-front and remove-from-back
 
 **Result**: LRU Cache - a NEW DATA STRUCTURE from combining existing ones!
 YOUR TURN - Try these exercises:

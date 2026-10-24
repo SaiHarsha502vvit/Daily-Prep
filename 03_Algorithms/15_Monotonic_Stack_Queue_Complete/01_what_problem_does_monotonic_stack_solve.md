@@ -25,11 +25,12 @@ Each element may scan up to n others, so the cost is O(n²). For n = 100,000 tha
 **Monotonic stack:** process each element ONCE. When an element arrives, pop every smaller element on the stack (they have found their answer: the current element). Each element is pushed once and popped once, so the total is O(n). For n = 100,000 that is about 200,000 operations, a few milliseconds at most. ✅
 
 💡 **WHY O(n)? THE KEY INSIGHT:**
-Each element enters the stack exactly ONCE.
-Each element leaves the stack at most ONCE.
-Total push + pop operations = 2n = O(n).
-Despite the while loop INSIDE the for loop, it's NOT O(n²)!
-(Amortized analysis: each element pays for its own push and pop.)
+
+- Each element enters the stack exactly ONCE.
+- Each element leaves the stack at most ONCE.
+- Total push + pop operations = 2n = O(n).
+- Despite the while loop INSIDE the for loop, it's NOT O(n²)!
+- (Amortized analysis: each element pays for its own push and pop.)
 
 🔬 **Section Challenge — What Problem Does Monotonic Stack Solve**
 
@@ -43,20 +44,27 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 
 ## Real-World Origin Story
 
-1984 — LARGEST RECTANGLE IN HISTOGRAM:
+**1984 — LARGEST RECTANGLE IN HISTOGRAM:**
+
 Computational geometry researchers needed to find the largest axis-aligned
 rectangle in a histogram (bar chart). Brute force was O(n²).
+
 Someone realized: "Keep a stack of increasing heights. When a shorter
 bar arrives, pop and calculate rectangle with the popped height."
+
 Result: O(n) algorithm! This became THE classic monotonic stack problem.
-2000s — COMPETITIVE PROGRAMMING EXPLOSION:
+
+**2000s — COMPETITIVE PROGRAMMING EXPLOSION:**
+
 Monotonic stack became a core technique in contests (IOI, ACM-ICPC).
 Dozens of seemingly different problems share this core pattern:
 
 - Stock Price Span (finance: days since price was this low)
 - Trapping Rain Water (civil engineering: water accumulation)
 - Buildings With Sunset View (architecture: visibility)
-  TODAY — INDUSTRY USES:
+
+TODAY — INDUSTRY USES:
+
 - Real-time dashboards: Sliding window max over streaming data
 - Financial analysis: Stock span, volatility tracking
 - Computer vision: Local maxima/minima detection in signal processing
@@ -66,7 +74,9 @@ Dozens of seemingly different problems share this core pattern:
 ## The Mental Model: The Bouncer At A Nightclub
 
 MONOTONIC DECREASING STACK (for Next Greater Element):
+
 Imagine a bouncer maintaining a LINE of people sorted by HEIGHT.
+
 When a NEW person arrives:
 
 1. Anyone in line SHORTER than new person gets kicked out.
@@ -74,20 +84,21 @@ When a NEW person arrives:
 2. The new person joins the end of the line.
 
 **Full Walkthrough**: arr = [2, 1, 4, 3, 5]
-Step 1: Process 2 Stack: [2] Line: just 2 standing
-No one to kick out. 2 enters line.
-Step 2: Process 1 Stack: [2, 1] Line: 2 then 1
-1 < 2, so 1 stands behind 2. No one kicked out.
-Step 3: Process 4 Stack: [4] Kicks: 1→NGE=4, 2→NGE=4
-4 arrives. 1 < 4 → kicked! (NGE of 1 = 4)
-2 < 4 → kicked! (NGE of 2 = 4)
-4 enters empty line.
-Step 4: Process 3 Stack: [4, 3] 3 stands behind 4
-3 < 4, no one kicked. 3 enters.
-Step 5: Process 5 Stack: [5] Kicks: 3→NGE=5, 4→NGE=5
-5 kicks out 3 (NGE=5) and 4 (NGE=5). 5 enters.
-Final: 5 has no NGE → -1
-Result: NGE = [4, 4, 5, 5, -1]
+
+- Step 1: Process 2 Stack: [2] Line: just 2 standing
+   - No one to kick out. 2 enters line.
+- Step 2: Process 1 Stack: [2, 1] Line: 2 then 1
+   - 1 < 2, so 1 stands behind 2. No one kicked out.
+- Step 3: Process 4 Stack: [4] Kicks: 1→NGE=4, 2→NGE=4
+   - 4 arrives. 1 < 4 → kicked! (NGE of 1 = 4)
+   - 2 < 4 → kicked! (NGE of 2 = 4)
+   - 4 enters empty line.
+- Step 4: Process 3 Stack: [4, 3] 3 stands behind 4
+   - 3 < 4, no one kicked. 3 enters.
+- Step 5: Process 5 Stack: [5] Kicks: 3→NGE=5, 4→NGE=5
+   - 5 kicks out 3 (NGE=5) and 4 (NGE=5). 5 enters.
+- Final: 5 has no NGE → -1
+- Result: NGE = [4, 4, 5, 5, -1]
 
 **Total**: 5 pushes + 5 pops = 10 operations = O(2n) = O(n) ✅
 
@@ -116,7 +127,9 @@ Result: NGE = [4, 4, 5, 5, -1]
 - For **next**: the answer is found when the element is **popped** (something bigger came).
 - For **previous**: the answer is the element **on top** after pushing the current one.
 - The direction can also change by scanning R→L instead of L→R.
+
 SIGNAL WORDS in interviews:
+
 "next greater/smaller", "span", "visible buildings/people",
 "sliding window max/min", "histogram", "trapping water/rain",
 "stock price span", "days until warmer", "sum of subarray minimums"

@@ -17,12 +17,17 @@ Three approaches to optimization:
 "selfish" best choice at each step happens to lead to the overall best.
 
 💡 **ANALOGY — The ATM Machine:**
+
 Making change for $0.63 with coins [25¢, 10¢, 5¢, 1¢]:
-Greedy: Take biggest coin possible: 25+25+10+1+1+1 = 6 coins ✅
-This is OPTIMAL for US coins!
+
+- Greedy: Take biggest coin possible: 25+25+10+1+1+1 = 6 coins ✅
+- This is OPTIMAL for US coins!
+
 BUT with coins [1¢, 3¢, 4¢], make change for 6¢:
-Greedy: 4+1+1 = 3 coins ❌
-Optimal: 3+3 = 2 coins ✅
+
+- Greedy: 4+1+1 = 3 coins ❌
+- Optimal: 3+3 = 2 coins ✅
+
 Greedy FAILS for some coin systems → need DP for general coins.
 
 | Greedy Works            | Greedy Fails (Need DP)        |
@@ -53,22 +58,31 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 
 ## Real-World Origin Story
 
-1952 — DAVID HUFFMAN'S HOMEWORK ASSIGNMENT:
+**1952 — DAVID HUFFMAN'S HOMEWORK ASSIGNMENT:**
+
 MIT professor Robert Fano gave a term paper assignment: find the most
 efficient binary code for a set of symbols. Fano himself had worked on
 this (Shannon-Fano coding) but couldn't prove optimality. Student David
 Huffman, about to give up, realized: "What if I build the tree BOTTOM-UP,
 always merging the TWO LEAST-FREQUENT symbols first?"
+
 This GREEDY insight gave us HUFFMAN CODING:
-→ Foundation of ZIP, GZIP, JPEG, MP3, MP4, DEFLATE
-→ Still used today in every compressed file you download
-→ A homework assignment that changed computing forever
-1956 — JOSEPH KRUSKAL AT BELL LABS:
+
+- Foundation of ZIP, GZIP, JPEG, MP3, MP4, DEFLATE
+- Still used today in every compressed file you download
+- A homework assignment that changed computing forever
+
+**1956 — JOSEPH KRUSKAL AT BELL LABS:**
+
 "How to wire telephone offices with minimum cable?"
+
 Kruskal: "Sort all possible cables by cost. Pick cheapest that doesn't
 create a loop." → Kruskal's MST algorithm.
+
 Still used: Internet backbone routing, power grid design, circuit boards.
-1959 — EDSGER DIJKSTRA IN 20 MINUTES:
+
+**1959 — EDSGER DIJKSTRA IN 20 MINUTES:**
+
 Dijkstra invented his shortest path algorithm in 20 minutes while
 drinking coffee at a café in Amsterdam. "Always expand the nearest
 unvisited node." This greedy choice is guaranteed optimal for
@@ -80,37 +94,48 @@ trying all approaches — they came from INSIGHT about the problem structure.
 ## The Two Required Properties
 
 For greedy to work, BOTH must hold:
+
 PROPERTY 1: GREEDY CHOICE PROPERTY
+
 "A globally optimal solution CAN be built from locally optimal choices."
 
 **Think Of It As**: "Being selfish at each step is fine."
 At each step, we make the choice that looks BEST RIGHT NOW,
 and we NEVER go back to reconsider.
+
 PROPERTY 2: OPTIMAL SUBSTRUCTURE
+
 "After making the greedy choice, we're left with a SMALLER version
 of the SAME kind of problem."
 
 **Think Of It As**: "After choosing, the remaining problem has the same
 shape — it's just smaller."
+
 VISUAL — Activity Selection:
+
 Activities: A=[1,4], B=[3,5], C=[0,6], D=[5,7], E=[3,9], F=[5,9]
 G=[6,10], H=[8,11], I=[8,12], J=[2,14], K=[12,16]
+
 Timeline:
-0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
-C
-A
-J
-B
-E
-D
-F
-G
-H
-I
-K
+
+```text
+0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16
+██████████████████ C
+   █████████ A
+      ████████████████████████████████████ J
+         ██████ B
+         ██████████████████ E
+               ██████ D
+               ████████████ F
+                  ████████████ G
+                        █████████ H
+                        ████████████ I
+                                    ████████████ K
+```
 
 **Greedy**: Sort by end time → pick A(ends 4), D(ends 7), H(ends 11),
 K(ends 16). Result: 4 activities. This IS optimal!
+
 WHY? After picking A, we only need to solve the SAME problem
 for activities starting after time 4 → smaller subproblem.
 
@@ -172,30 +197,40 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 
 0/1 KNAPSACK: capacity=50, items: {val:60,wt:10}, {val:100,wt:20},
 {val:120,wt:30}
+
 Greedy strategy 1 — Sort by value/weight ratio:
-Item 1: 60/10 = 6.0 Item 2: 100/20 = 5.0 Item 3: 120/30 = 4.0
-Pick Item 1 (wt 10, val 60), then Item 2 (wt 20, val 100).
-Remaining capacity: 50-10-20 = 20. Item 3 needs 30 → can't fit.
-Greedy answer: 60 + 100 = 160
+
+- Item 1: 60/10 = 6.0 Item 2: 100/20 = 5.0 Item 3: 120/30 = 4.0
+- Pick Item 1 (wt 10, val 60), then Item 2 (wt 20, val 100).
+- Remaining capacity: 50-10-20 = 20. Item 3 needs 30 → can't fit.
+- Greedy answer: 60 + 100 = 160
+
 Greedy strategy 2 — Sort by value:
-Pick Item 3 (val 120, wt 30), then Item 2 (val 100, wt 20).
-Remaining: 50-30-20 = 0. Greedy answer: 120 + 100 = 220
+
+- Pick Item 3 (val 120, wt 30), then Item 2 (val 100, wt 20).
+- Remaining: 50-30-20 = 0. Greedy answer: 120 + 100 = 220
+
 Greedy strategy 3 — Sort by weight (lightest first):
-Pick Item 1 (wt 10), Item 2 (wt 20), then Item 3 needs 30 > 20 left.
-Greedy answer: 60 + 100 = 160
+
+- Pick Item 1 (wt 10), Item 2 (wt 20), then Item 3 needs 30 > 20 left.
+- Greedy answer: 60 + 100 = 160
+
 DP solution: Try all subsets →
-{Item 2, Item 3} = 100+120 = 220, weight 50 ✅ OPTIMAL
+
+- {Item 2, Item 3} = 100+120 = 220, weight 50 ✅ OPTIMAL
+
 Notice: Greedy strategy 2 happens to get 220 here, but change items to
 {val:60,wt:10}, {val:100,wt:20}, {val:120,wt:30}, capacity=35
-Greedy (by value): Item 3(30)+can't fit Item 2(20)→only 120
-DP optimal: Item 1(10)+Item 2(20) = 160, weight 30 ✅
+
+- Greedy (by value): Item 3(30)+can't fit Item 2(20)→only 120
+- DP optimal: Item 1(10)+Item 2(20) = 160, weight 30 ✅
 
 **Lesson**: No single greedy strategy works for 0/1 Knapsack.
 The problem lacks greedy choice property → must use DP.
 
-**But**: FRACTIONAL Knapsack (can take partial items) → Greedy WORKS!
-Sort by value/weight ratio. Take as much of best ratio as possible.
-Why? You can always "pour in" more of the best-ratio item.
+- **But**: FRACTIONAL Knapsack (can take partial items) → Greedy WORKS!
+- Sort by value/weight ratio. Take as much of best ratio as possible.
+- Why? You can always "pour in" more of the best-ratio item.
 
 🔬 **Section Challenge — "Greedy Fails" — Full Worked Example**
 
@@ -226,13 +261,15 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 | Decision at each step    | One best      | Try all       | Try all + prune  |
 
 DECISION TREE (use in interviews):
-Can you sort + pick locally best?
-YES → Can you prove exchange argument?
-YES → GREEDY ✅
-NO → Think harder or fall back to DP
-NO → Does problem have overlapping subproblems?
-YES → DP
-NO → Backtracking / DFS
+
+- Can you sort + pick locally best?
+  - YES → Can you prove exchange argument?
+    - YES → GREEDY ✅
+    - NO → Think harder or fall back to DP
+  - NO → Does problem have overlapping subproblems?
+    - YES → DP
+    - NO → Backtracking / DFS
+
 💡 Interview tip: "I believe greedy works here because of the exchange
 argument: [explain swap]. If I'm wrong, I'd fall back to DP."
 

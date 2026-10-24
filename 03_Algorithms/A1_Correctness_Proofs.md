@@ -108,9 +108,9 @@ This is mathematical induction on the iteration number. The invariant is the ind
 
 A loop invariant describes **what the algorithm has accomplished so far**. After `i` iterations, what is true about the work done?
 
-For a sorting algorithm after processing `i` elements: "the first `i` elements are in sorted order."
-For binary search after iteration `i`: "the target, if present, is in `A[lo..hi]`."
-For BFS after processing level `i`: "all vertices at distance ≤ i from source have been visited."
+- For a sorting algorithm after processing `i` elements: "the first `i` elements are in sorted order."
+- For binary search after iteration `i`: "the target, if present, is in `A[lo..hi]`."
+- For BFS after processing level `i`: "all vertices at distance ≤ i from source have been visited."
 
 ---
 
@@ -160,9 +160,9 @@ void bubbleSort(int[] A) {
 
 **Invariant**: After `i` complete passes of the inner loop, `A[n-i..n-1]` contains the `i` largest elements in sorted order in their final positions.
 
-*Initialization*: Before any pass, `A[n-0..n-1]` = empty range. Vacuously true. ✓
-*Maintenance*: Each pass of the inner loop "bubbles" the largest remaining element to position `n-1-i`. ✓
-*Termination*: After `n-1` passes, `A[1..n-1]` contains the `n-1` largest elements sorted. `A[0]` must be the minimum. Array is sorted. ✓
+- *Initialization*: Before any pass, `A[n-0..n-1]` = empty range. Vacuously true. ✓
+- *Maintenance*: Each pass of the inner loop "bubbles" the largest remaining element to position `n-1-i`. ✓
+- *Termination*: After `n-1` passes, `A[1..n-1]` contains the `n-1` largest elements sorted. `A[0]` must be the minimum. Array is sorted. ✓
 
 ---
 

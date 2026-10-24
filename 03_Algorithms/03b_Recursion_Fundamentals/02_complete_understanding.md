@@ -77,9 +77,9 @@ Each frame WAITS until the frame above returns, then continues.
 
 1. STACK OVERFLOW (Most Common!):
 
-Cause: No base case OR base case never reached
-Java default stack: ~10,000-20,000 frames (varies by JVM/OS)
-Solution: Always verify base case is reachable!
+- Cause: No base case OR base case never reached
+- Java default stack: ~10,000-20,000 frames (varies by JVM/OS)
+- Solution: Always verify base case is reachable!
 
 2. EXPONENTIAL TIME COMPLEXITY:
 

@@ -137,33 +137,39 @@ For each topic, verify you can do all of these in Java:
 
 ### Week 1 - Core speed
 
-Day 1: arrays, hashing, prefix sum
-Day 2: sliding window and two pointers
-Day 3: binary search patterns
-Day 4: recursion + backtracking
-Day 5: bit basics + xor range logic
-Day 6: trees fundamentals
-Day 7: mock set + recap
+| Day | Focus |
+| --- | --- |
+| Day 1 | arrays, hashing, prefix sum |
+| Day 2 | sliding window and two pointers |
+| Day 3 | binary search patterns |
+| Day 4 | recursion + backtracking |
+| Day 5 | bit basics + xor range logic |
+| Day 6 | trees fundamentals |
+| Day 7 | mock set + recap |
 
 ### Week 2 - Interview depth
 
-Day 8: dynamic programming 1D/2D
-Day 9: graph traversal + topo
-Day 10: shortest path and union-find
-Day 11: bitwise trie + max xor
-Day 12: 2D prefix and matrix sums
-Day 13: advanced DS intro
-Day 14: timed mixed round
+| Day | Focus |
+| --- | --- |
+| Day 8 | dynamic programming 1D/2D |
+| Day 9 | graph traversal + topo |
+| Day 10 | shortest path and union-find |
+| Day 11 | bitwise trie + max xor |
+| Day 12 | 2D prefix and matrix sums |
+| Day 13 | advanced DS intro |
+| Day 14 | timed mixed round |
 
 ### Week 3 - Production-style communication
 
-Day 15: solve and narrate in interview language
-Day 16: solve with complexity trade-off discussion
-Day 17: convert solutions to clean Java classes
-Day 18: failure case drills and bug fixing
-Day 19: problem mashup day (graph + dp / prefix + hashmap)
-Day 20: full mock interview set
-Day 21: finalize personal cheat sheets
+| Day | Focus |
+| --- | --- |
+| Day 15 | solve and narrate in interview language |
+| Day 16 | solve with complexity trade-off discussion |
+| Day 17 | convert solutions to clean Java classes |
+| Day 18 | failure case drills and bug fixing |
+| Day 19 | problem mashup day (graph + dp / prefix + hashmap) |
+| Day 20 | full mock interview set |
+| Day 21 | finalize personal cheat sheets |
 
 ---
 

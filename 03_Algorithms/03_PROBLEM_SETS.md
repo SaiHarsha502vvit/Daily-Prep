@@ -162,9 +162,9 @@ class BSTTest {
 
 At height `h`, there are at most `⌈n/2^(h+1)⌉` nodes, each requiring at most `h` sift-down operations.
 
-Total work = `Σ(h=0 to log n) ⌈n/2^(h+1)⌉ × h`
-= `O(n × Σ(h=0 to ∞) h/2^h)`
-= `O(n × 2)` ← geometric series sum converges to 2
+Total work = `Σ(h=0 to log n) ⌈n/2^(h+1)⌉ × h`  
+= `O(n × Σ(h=0 to ∞) h/2^h)`  
+= `O(n × 2)` ← geometric series sum converges to 2  
 = **O(n)**
 
 The reason: most nodes are at the bottom (height 0) and require 0 sift-down work. Only the root (height log n) requires log n work. The sum is dominated by the bottom levels.

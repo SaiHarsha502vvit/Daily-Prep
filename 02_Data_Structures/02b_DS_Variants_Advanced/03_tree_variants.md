@@ -155,8 +155,9 @@ Unbalanced BST: O(n) worst case (degenerates to linked list)
 Balanced AVL:   O(log n) GUARANTEED for all operations!
 
 BALANCE FACTOR = height(left) - height(right)
-Valid values: -1, 0, +1
-If BF becomes -2 or +2, we ROTATE!
+
+- Valid values: -1, 0, +1
+- If BF becomes -2 or +2, we ROTATE!
 
 **INVARIANT (AVL Tree — Strict Balance):**
 ```

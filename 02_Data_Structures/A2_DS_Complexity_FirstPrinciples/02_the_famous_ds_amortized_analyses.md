@@ -512,7 +512,9 @@ This sequence is m = 3n operations → O(3n·α(n)) = O(n) total. The α(n) fact
 ## Practice Problems
 
 **Problem 1 (Aggregate Method — Dynamic Array)**
+
 A dynamic array grows by doubling: capacity 1 → 2 → 4 → 8 → ...
+
 Suppose the load factor threshold is 0.5 (resize when `size == capacity`, i.e., the array is 100% full). Show that the amortized cost per insert is still O(1) and compute the exact constant.
 
 *Hint*: Resizes occur at sizes 1, 2, 4, 8, ..., n. The cost of resize i is 2^{i−1}. Sum the geometric series and divide by n.
@@ -543,9 +545,9 @@ In a hash table with open addressing and linear probing, deletion from a cluster
 **Problem 5 (Amortized vs Average — BST Height)**
 Let T be a BST built by inserting n random keys (uniform random permutation). The expected height is O(log n). Now consider an adversary who always inserts keys in sorted order, producing a BST of height n.
 
-(a) What is the amortized cost per insert for the sorted sequence? (Hint: worst-case is O(n), but amortized over n inserts?)
-(b) What is the average-case cost assuming random insert order?
-(c) Explain why amortized analysis says nothing about the random average-case.
+- (a) What is the amortized cost per insert for the sorted sequence? (Hint: worst-case is O(n), but amortized over n inserts?)
+- (b) What is the average-case cost assuming random insert order?
+- (c) Explain why amortized analysis says nothing about the random average-case.
 
 ---
 
@@ -561,10 +563,12 @@ For a splay tree with n nodes, define the potential function:
 ```
 Φ = Σ  size(v) · log(size(v))   over all nodes v
 ```
+
 Prove (qualitatively) that:
-(a) Φ ≥ 0 always
-(b) After a single splay operation, the amortized cost is O(log n)
-(c) What happens to Φ when we splay a deep node to the root?
+
+- (a) Φ ≥ 0 always
+- (b) After a single splay operation, the amortized cost is O(log n)
+- (c) What happens to Φ when we splay a deep node to the root?
 
 *Hint*: The key is the **weight-biased** potential: nodes in larger subtrees contribute more to Φ. Splaying reduces the depth of accessed nodes and redistributes subtree sizes in a way that the sum shrinks or grows slowly enough that `â = O(log n)`.
 

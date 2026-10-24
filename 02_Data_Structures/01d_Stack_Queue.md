@@ -163,9 +163,9 @@ This chapter is split into focused pages so each topic can be read on its own. R
 > **Quick check:** Which one finds the fewest-hops path? *BFS, because it finishes all nodes at distance k before any at distance k+1.*
 
 
-[!IMPORTANT]
-This is the single most important connection in all of graph algorithms.
-Understanding it rewires how you think about every traversal problem.
+> [!IMPORTANT]
+> This is the single most important connection in all of graph algorithms.
+> Understanding it rewires how you think about every traversal problem.
 
 ```mermaid
 flowchart TD

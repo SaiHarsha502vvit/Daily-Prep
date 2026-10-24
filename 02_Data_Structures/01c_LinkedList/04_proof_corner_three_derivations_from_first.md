@@ -89,11 +89,11 @@ Now reset `slow` to head. Both move at speed 1.
 
 - After `μ` steps, `slow` reaches the cycle entry.
 - After `μ` steps, `fast` (starting from the meeting point) has moved `μ` more steps.
-  Fast's total distance from cycle entry: (meeting point offset) + μ.
-  Meeting point offset from entry = (k - μ) mod C = (mC - μ) mod C = (-μ) mod C = C - (μ mod C).
-  After μ more steps: C - (μ mod C) + μ = C + μ - (μ mod C).
-  This is a multiple of C (since μ - (μ mod C) = ⌊μ/C⌋ × C).
-  So fast is also at the cycle entry. ∎
+   - Fast's total distance from cycle entry: (meeting point offset) + μ.
+   - Meeting point offset from entry = (k - μ) mod C = (mC - μ) mod C = (-μ) mod C = C - (μ mod C).
+   - After μ more steps: C - (μ mod C) + μ = C + μ - (μ mod C).
+   - This is a multiple of C (since μ - (μ mod C) = ⌊μ/C⌋ × C).
+   - So fast is also at the cycle entry. ∎
 
 **Worked trace.** List: `1 → 2 → 3 → 4 → 5 → 3` (cycle entry at node 3, μ = 2, C = 3).
 
@@ -438,14 +438,14 @@ LL search is always O(n); there is no shortcut. Compare to array: same O(n), but
 
 ### 1. Cache Thrashing — 16× Slower Than Array for Sequential Access
 
-**What breaks**: Iterating a linked list to compute a sum, find a max, or copy to another structure.
-**Why**: Each node lives at an arbitrary heap address. The CPU prefetcher cannot predict the next address — every node access is a cache miss (~100ns vs ~4ns for array). At 500K nodes, this difference is measurable seconds.
-**Fix**: If random access or sequential scan dominates, use `ArrayList`. Use `LinkedList` only when O(1) insertions/deletions at arbitrary positions via an iterator are the dominant operation.
-**Production rule**: Java's `LinkedList` is rarely the right choice. `ArrayDeque` is faster for both stack and queue. `ArrayList` is faster for everything else.
+- **What breaks**: Iterating a linked list to compute a sum, find a max, or copy to another structure.
+- **Why**: Each node lives at an arbitrary heap address. The CPU prefetcher cannot predict the next address — every node access is a cache miss (~100ns vs ~4ns for array). At 500K nodes, this difference is measurable seconds.
+- **Fix**: If random access or sequential scan dominates, use `ArrayList`. Use `LinkedList` only when O(1) insertions/deletions at arbitrary positions via an iterator are the dominant operation.
+- **Production rule**: Java's `LinkedList` is rarely the right choice. `ArrayDeque` is faster for both stack and queue. `ArrayList` is faster for everything else.
 
-📎 **Reference Anchor**: [OpenJDK LinkedList source](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/LinkedList.java)
-**Invariant learned**: `size` is maintained as a field — O(1) `size()` — but every structural modification increments `modCount` to detect `ConcurrentModificationException` during iteration.
-**Constraint warning**: Java's `LinkedList` implements both `List` and `Deque` — but its `get(i)` is O(n) since it traverses from head or tail. Never use it as a `List` with index access.
+- 📎 **Reference Anchor**: [OpenJDK LinkedList source](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/LinkedList.java)
+- **Invariant learned**: `size` is maintained as a field — O(1) `size()` — but every structural modification increments `modCount` to detect `ConcurrentModificationException` during iteration.
+- **Constraint warning**: Java's `LinkedList` implements both `List` and `Deque` — but its `get(i)` is O(n) since it traverses from head or tail. Never use it as a `List` with index access.
 
 ### 2. Losing the Head Pointer During In-Place Reversal
 
@@ -465,9 +465,10 @@ curr = next;                 // advance
 
 ### 3. Infinite Loop Without Cycle Detection
 
-**What breaks**: Traversing a corrupt or cyclic linked list without a visited-set or two-pointer check.
-**Example**: A `next` pointer is accidentally set to an earlier node (common in LRU cache bugs or manual node manipulation). A naive `while (curr != null)` loop runs forever.
-**Fix — Floyd's Tortoise and Hare**:
+- **What breaks**: Traversing a corrupt or cyclic linked list without a visited-set or two-pointer check.
+- **Example**: A `next` pointer is accidentally set to an earlier node (common in LRU cache bugs or manual node manipulation). A naive `while (curr != null)` loop runs forever.
+- **Fix — Floyd's Tortoise and Hare**:
+
 ```java
 ListNode slow = head, fast = head;
 while (fast != null && fast.next != null) {
@@ -486,9 +487,9 @@ return false;
 
 ### 5. `ConcurrentModificationException` During Iteration
 
-**What breaks**: Modifying the list (add/remove) while iterating via a `for-each` loop in Java.
-**Root cause**: Iterator stores `expectedModCount` at construction; any structural change increments `modCount`; iterator checks on each `next()` call.
-**Fix**: Use `Iterator.remove()` for safe remove during iteration, or collect nodes to remove in a separate list and remove after the loop.
+- **What breaks**: Modifying the list (add/remove) while iterating via a `for-each` loop in Java.
+- **Root cause**: Iterator stores `expectedModCount` at construction; any structural change increments `modCount`; iterator checks on each `next()` call.
+- **Fix**: Use `Iterator.remove()` for safe remove during iteration, or collect nodes to remove in a separate list and remove after the loop.
 
 ---
 
@@ -535,10 +536,10 @@ If no cycle exists, fast reaches null after ⌈n/2⌉ steps. ✓
 
 <details><summary>Model Answer</summary>
 
-(a) **Insert at head**: O(1) — update new node's next to current head, update head pointer.
-(b) **Insert at tail**: O(n) — must traverse from head to find the last node (no tail pointer). With a tail pointer: O(1).
-(c) **Delete given predecessor**: O(1) — `pred.next = pred.next.next`.
-(d) **Search**: O(n) — must traverse from head; no random access, no sorted structure to exploit.
+- (a) **Insert at head**: O(1) — update new node's next to current head, update head pointer.
+- (b) **Insert at tail**: O(n) — must traverse from head to find the last node (no tail pointer). With a tail pointer: O(1).
+- (c) **Delete given predecessor**: O(1) — `pred.next = pred.next.next`.
+- (d) **Search**: O(n) — must traverse from head; no random access, no sorted structure to exploit.
 
 </details>
 

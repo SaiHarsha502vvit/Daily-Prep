@@ -433,9 +433,9 @@ public int dpCoinChange(int[] coins, int amount) {
 
 ### 2. Interval Scheduling — Greedy on Wrong Attribute
 
-**What breaks**: "Maximize number of non-overlapping intervals" — greedy by *earliest start* gives wrong answers when an early-starting interval spans the whole range. Correct attribute is *earliest finish*.
-**Proof it's wrong**: `[(0,10), (1,2), (3,4)]` — earliest-start picks `(0,10)`, leaving only 0 more. Earliest-finish picks `(1,2)` then `(3,4)` = 2 intervals.
-**Fix**: Always sort by *finish time* for interval scheduling; sort by *start time* for interval merging. The attributes differ and the choice is load-bearing.
+- **What breaks**: "Maximize number of non-overlapping intervals" — greedy by *earliest start* gives wrong answers when an early-starting interval spans the whole range. Correct attribute is *earliest finish*.
+- **Proof it's wrong**: `[(0,10), (1,2), (3,4)]` — earliest-start picks `(0,10)`, leaving only 0 more. Earliest-finish picks `(1,2)` then `(3,4)` = 2 intervals.
+- **Fix**: Always sort by *finish time* for interval scheduling; sort by *start time* for interval merging. The attributes differ and the choice is load-bearing.
 
 ### 3. Huffman Coding — Wrong Priority Queue Direction
 

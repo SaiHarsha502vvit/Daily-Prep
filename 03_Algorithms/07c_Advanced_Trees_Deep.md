@@ -78,7 +78,9 @@ Standard Binary Search Trees (BST) degenerate into $O(N)$ linked lists when elem
 ### The Asymptotic Height Constraint
 
 A tree of $N$ nodes has the minimum possible height bounded by:
+
 $$ H \ge \lfloor \log_2(N+1) \rfloor $$
+
 Self-balancing trees guarantee $H = \Theta(\log N)$, ensuring that **Search, Insert, and Delete** continuously operate in optimal bounds.
 
 | Tree Type     | Height Bound             | Balance Factor                                     |

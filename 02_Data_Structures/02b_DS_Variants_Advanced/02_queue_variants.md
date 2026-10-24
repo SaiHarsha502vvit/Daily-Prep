@@ -226,8 +226,9 @@ flowchart LR
 ALL OPERATIONS ARE O(1)!
 
 DEQUE = STACK + QUEUE
-Can use as stack (addFirst/removeFirst)
-Can use as queue (addLast/removeFirst)
+
+- Can use as stack (addFirst/removeFirst)
+- Can use as queue (addLast/removeFirst)
 
 
 ```
@@ -369,12 +370,14 @@ A deque that maintains elements in MONOTONIC order
 (either increasing or decreasing).
 
 MONOTONIC DECREASING QUEUE (for finding max):
-Elements from front to back: 8 > 6 > 5 > 3
-Front is always the maximum!
+
+- Elements from front to back: 8 > 6 > 5 > 3
+- Front is always the maximum!
 
 MONOTONIC INCREASING QUEUE (for finding min):
-Elements from front to back: 2 < 4 < 7 < 9
-Front is always the minimum!
+
+- Elements from front to back: 2 < 4 < 7 < 9
+- Front is always the minimum!
 
 HOW IT WORKS (Decreasing for max):
 When adding element x:

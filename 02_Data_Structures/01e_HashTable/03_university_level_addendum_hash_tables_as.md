@@ -343,10 +343,10 @@ Java's `String.hashCode()` and `Integer.hashCode()` pass these tests. Custom has
 
 ### 1. Load Factor > 0.75 → O(n) Degradation
 
-**What breaks**: A `HashMap` with too many entries and too small a table. Chains grow long, destroying O(1) lookup.
-**Trigger**: Java's default `HashMap` rehashes at 75% capacity. If you pre-fill a map with `new HashMap<>(16)` but insert 13+ entries, a rehash is triggered. More critically: if you initialise with the right final size but forget the load factor, you still trigger rehash.
-**Fix**: Pre-size to the expected number of entries divided by load factor: `new HashMap<>((int)(expectedSize / 0.75) + 1)`.
-**Diagnosis**: In production, monitor `bucket.size()` via reflection or JMX; a bucket with 8+ entries treeifies (Java 8+), which is a signal the table is too small.
+- **What breaks**: A `HashMap` with too many entries and too small a table. Chains grow long, destroying O(1) lookup.
+- **Trigger**: Java's default `HashMap` rehashes at 75% capacity. If you pre-fill a map with `new HashMap<>(16)` but insert 13+ entries, a rehash is triggered. More critically: if you initialise with the right final size but forget the load factor, you still trigger rehash.
+- **Fix**: Pre-size to the expected number of entries divided by load factor: `new HashMap<>((int)(expectedSize / 0.75) + 1)`.
+- **Diagnosis**: In production, monitor `bucket.size()` via reflection or JMX; a bucket with 8+ entries treeifies (Java 8+), which is a signal the table is too small.
 
 ### 2. Birthday Attack → Expected First Collision at √m Insertions
 
@@ -355,13 +355,13 @@ Java's `String.hashCode()` and `Integer.hashCode()` pass these tests. Custom has
 
 ### 3. HashDoS — Non-Randomized Seeds → Adversarial O(n) Chains
 
-**What breaks**: If the hash function has a fixed seed (no per-process randomization), an attacker can craft O(n) input strings that all hash to the same bucket.
-**Historical incident**: In 2011, researchers showed that PHP, Python, Java, Ruby, and most web frameworks were vulnerable — a POST request with ~65,000 crafted form parameters could consume 100% CPU for 100+ seconds.
-**Fix**: Java 5+ randomizes `String.hashCode()` at the JVM level per process. Verify with `System.identityHashCode()` behaviour. For custom key types, use `Objects.hash()` or derive from `HashCode.fromString()` in Guava.
+- **What breaks**: If the hash function has a fixed seed (no per-process randomization), an attacker can craft O(n) input strings that all hash to the same bucket.
+- **Historical incident**: In 2011, researchers showed that PHP, Python, Java, Ruby, and most web frameworks were vulnerable — a POST request with ~65,000 crafted form parameters could consume 100% CPU for 100+ seconds.
+- **Fix**: Java 5+ randomizes `String.hashCode()` at the JVM level per process. Verify with `System.identityHashCode()` behaviour. For custom key types, use `Objects.hash()` or derive from `HashCode.fromString()` in Guava.
 
-📎 **Reference Anchor**: [OpenJDK HashMap.hash()](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/HashMap.java#L336)
-**Invariant learned**: Java's `HashMap.hash()` applies a secondary "spread" step: `(h = key.hashCode()) ^ (h >>> 16)` — XORs high bits into low bits to reduce collisions in small tables. Without this, power-of-2 table sizes cluster all keys with the same low bits.
-**Constraint warning**: This spread is only applied in `HashMap`. If you implement your own table using `hashCode()` directly, you miss this correction.
+- 📎 **Reference Anchor**: [OpenJDK HashMap.hash()](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/HashMap.java#L336)
+- **Invariant learned**: Java's `HashMap.hash()` applies a secondary "spread" step: `(h = key.hashCode()) ^ (h >>> 16)` — XORs high bits into low bits to reduce collisions in small tables. Without this, power-of-2 table sizes cluster all keys with the same low bits.
+- **Constraint warning**: This spread is only applied in `HashMap`. If you implement your own table using `hashCode()` directly, you miss this correction.
 
 ### 4. Mutating a Key After Insertion → Key Becomes Unretrievable
 
@@ -378,9 +378,9 @@ map.get(Arrays.asList(1, 2, 3));   // also null — key is at wrong bucket
 
 ### 5. `ConcurrentModificationException` on Structural Modification During Iteration
 
-**What breaks**: Adding or removing entries while iterating with a `for-each` or `Iterator`.
-**Root cause**: `HashMap` maintains a `modCount` field incremented on every structural change. The iterator stores `expectedModCount`; if they differ at `next()`, it throws `CME`.
-**Fix**: Collect keys to remove in a `Set<K> toRemove`, then call `map.keySet().removeAll(toRemove)` after the loop. Or use `entrySet().removeIf(...)` in Java 8+.
+- **What breaks**: Adding or removing entries while iterating with a `for-each` or `Iterator`.
+- **Root cause**: `HashMap` maintains a `modCount` field incremented on every structural change. The iterator stores `expectedModCount`; if they differ at `next()`, it throws `CME`.
+- **Fix**: Collect keys to remove in a `Set<K> toRemove`, then call `map.keySet().removeAll(toRemove)` after the loop. Or use `entrySet().removeIf(...)` in Java 8+.
 
 ---
 

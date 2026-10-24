@@ -20,9 +20,9 @@ LinkedList because "linked lists are faster for insertions."
 
 **The bug:** 
 
-LinkedList.get(i) requires O(n) traversal: head -> next -> next -> ...
-For a list of 10,000 items accessed by random index, each access is O(n)
-Worst case: 10,000 * 10,000 = 100,000,000 pointer hops!
+- LinkedList.get(i) requires O(n) traversal: head -> next -> next -> ...
+- For a list of 10,000 items accessed by random index, each access is O(n)
+- Worst case: 10,000 * 10,000 = 100,000,000 pointer hops!
 
 ArrayList.get(i) is O(1): arr[i] = base_addr + (i * element_size)
 
@@ -34,10 +34,10 @@ ArrayList.get(i) is O(1): arr[i] = base_addr + (i * element_size)
 
 **Rule:** 
 
-Use ArrayList (or array) when you need random access by index.
-Use LinkedList ONLY when you need O(1) insert/delete at known position
-(especially head/tail) without index-based access.
-For most "list of items" use cases, ArrayList is correct.
+- Use ArrayList (or array) when you need random access by index.
+- Use LinkedList ONLY when you need O(1) insert/delete at known position
+  (especially head/tail) without index-based access.
+- For most "list of items" use cases, ArrayList is correct.
 
 ## Failure Mode 2: ArrayList Resizing Storm Under High-Churn Insertion
 
@@ -48,9 +48,9 @@ with default growth strategy.
 
 **The bug:** 
 
-Default growth: newCapacity = oldCapacity + (oldCapacity >> 1)
-This means: capacity grows by 1.5x each resize
-Initial: 10 → 15 → 22 → 33 → 49 → 73 → 109 → 163 → 244 → ...
+- Default growth: newCapacity = oldCapacity + (oldCapacity >> 1)
+- This means: capacity grows by 1.5x each resize
+- Initial: 10 → 15 → 22 → 33 → 49 → 73 → 109 → 163 → 244 → ...
 
 At high insertion rate, the array must be:
 
@@ -84,23 +84,27 @@ False positive rate formula: FPR = (1 - e^(-kn/m))^k
 Where: k = hash functions, n = elements, m = bits
 
 With k=10, n=10M, m=1M:
+
+```text
 FPR = (1 - e^(-10*10M/1M))^10
 = (1 - e^(-100))^10
 ≈ (1 - 3.7e-44)^10
 ≈ 0.9999999...
 ≈ 99.99% false positive rate!
+```
 
-Optimal k for given n/m: k_optimal = (m/n) * ln(2)
-For m=1M, n=10M: k_optimal = (1/10) * 0.693 = 0.069 ≈ 1 hash!
-With k=1: FPR = (1 - e^(-10))^1 ≈ 99.995% anyway!
+- Optimal k for given n/m: k_optimal = (m/n) * ln(2)
+- For m=1M, n=10M: k_optimal = (1/10) * 0.693 = 0.069 ≈ 1 hash!
+- With k=1: FPR = (1 - e^(-10))^1 ≈ 99.995% anyway!
 
 **The failure:** Bloom says "key exists" but Redis has nothing → null pointer
-
 exception in application code that trusted the cache layer.
+
 PROPER SIZING (for 1% FPR):
-m_needed = -n * ln(FPR) / (ln(2)^2)
-For n=10M, FPR=0.01: m = -10M * ln(0.01) / 0.48 ≈ 95MB (760M bits)
-Always size Bloom filter based on expected n and desired FPR, not guesses.
+
+- m_needed = -n * ln(FPR) / (ln(2)^2)
+- For n=10M, FPR=0.01: m = -10M * ln(0.01) / 0.48 ≈ 95MB (760M bits)
+- Always size Bloom filter based on expected n and desired FPR, not guesses.
 
 ## Failure Mode 4: B-tree vs LSM-tree Write Amplification
 

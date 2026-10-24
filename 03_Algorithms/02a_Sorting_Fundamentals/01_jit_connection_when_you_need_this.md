@@ -45,10 +45,10 @@ Sub-linear sorts (counting, radix, bucket) avoid this bound by exploiting value 
 
 > Full proofs: [A1 — Algorithm Correctness](../A1_Correctness_Proofs.md) | [A3 — Lower Bounds](../A3_Lower_Bounds_And_NP.md)
 
-📎 **Reference Anchor**: [OpenJDK TimSort](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/TimSort.java) · [DualPivotQuicksort](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/DualPivotQuicksort.java)
-**Invariant learned**: `Arrays.sort(Object[])` uses TimSort (stable, O(n log n), min-run 32 elements for Insertion Sort threshold); `Arrays.sort(int[])` uses Dual-Pivot Quicksort (in-place, cache-friendly, no stability guarantee). The split is deliberate: object arrays need stability for `Comparable`/`Comparator` contracts; primitive arrays can sacrifice stability for speed.
-**Local rewrite**: the "decision tree Ω(n log n)" proof in this chapter's Proof Corner shows *why* TimSort can't beat n log n on the worst case, even though it is O(n) on already-sorted data (run detection).
-**Constraint warning**: `Arrays.sort()` on an array of objects with a non-transitive `Comparator` throws `IllegalArgumentException` in Java 7+ (TimSort's merge step requires the total order invariant).
+- 📎 **Reference Anchor**: [OpenJDK TimSort](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/TimSort.java) · [DualPivotQuicksort](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/DualPivotQuicksort.java)
+- **Invariant learned**: `Arrays.sort(Object[])` uses TimSort (stable, O(n log n), min-run 32 elements for Insertion Sort threshold); `Arrays.sort(int[])` uses Dual-Pivot Quicksort (in-place, cache-friendly, no stability guarantee). The split is deliberate: object arrays need stability for `Comparable`/`Comparator` contracts; primitive arrays can sacrifice stability for speed.
+- **Local rewrite**: the "decision tree Ω(n log n)" proof in this chapter's Proof Corner shows *why* TimSort can't beat n log n on the worst case, even though it is O(n) on already-sorted data (run detection).
+- **Constraint warning**: `Arrays.sort()` on an array of objects with a non-transitive `Comparator` throws `IllegalArgumentException` in Java 7+ (TimSort's merge step requires the total order invariant).
 
 ---
 

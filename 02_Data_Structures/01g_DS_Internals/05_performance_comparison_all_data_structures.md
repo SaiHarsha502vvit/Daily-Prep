@@ -26,7 +26,9 @@
 | Graph (adjacency matrix) | - | O(1) | O(1) | O(1) | O(V²) | Dense |
 
 \* Amortized O(1), worst case O(n) during resize.
+
 † O(1) if the position is known, O(n) to find the position.
+
 `m` = length of the string (for Trie); `V` = vertices, `E` = edges (for Graph).
 
 ## Memory overhead comparison — storing 1,000,000 integers

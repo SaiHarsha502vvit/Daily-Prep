@@ -229,10 +229,10 @@ For linear growth (`+1` per resize), the same proof gives `O(n)` per append — 
 
 ### 1. Integer Overflow in Binary Search Mid Calculation
 
-**What breaks**: `int mid = (lo + hi) / 2` overflows when `lo + hi > Integer.MAX_VALUE` (≈ 2.1 billion). The sum wraps to a negative number → mid is negative → `ArrayIndexOutOfBoundsException`.
-**History**: This bug lived in textbooks since 1946 and was in Java's `Arrays.binarySearch()` from 1997 until Joshua Bloch reported it at Google in 2006.
-**Fix**: `int mid = lo + (hi - lo) / 2;` — equivalent result, no overflow.
-**Production scope**: Any binary search on an array of size > 1 billion elements (common in distributed sorted datasets).
+- **What breaks**: `int mid = (lo + hi) / 2` overflows when `lo + hi > Integer.MAX_VALUE` (≈ 2.1 billion). The sum wraps to a negative number → mid is negative → `ArrayIndexOutOfBoundsException`.
+- **History**: This bug lived in textbooks since 1946 and was in Java's `Arrays.binarySearch()` from 1997 until Joshua Bloch reported it at Google in 2006.
+- **Fix**: `int mid = lo + (hi - lo) / 2;` — equivalent result, no overflow.
+- **Production scope**: Any binary search on an array of size > 1 billion elements (common in distributed sorted datasets).
 
 📎 **Reference Anchor**: [OpenJDK Arrays.binarySearch()](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/Arrays.java)
 **Invariant learned**: The invariant `lo ≤ target_index ≤ hi` must hold at every step. The correct mid formula preserves this by staying within the [lo, hi] range even at Integer boundary values.
@@ -277,9 +277,9 @@ Arrays.sort(scores);  // now scores[0] is the lowest score,
 
 ### 5. `Arrays.asList()` Returns a Fixed-Size List
 
-**What breaks**: `Arrays.asList(1, 2, 3)` returns a fixed-size list backed by the array. Calling `.add()` or `.remove()` throws `UnsupportedOperationException`.
-**Root cause**: `Arrays.asList()` returns `Arrays.ArrayList` — not `java.util.ArrayList`. It wraps the array without copying.
-**Fix**: `new ArrayList<>(Arrays.asList(...))` creates a mutable copy. Or `List.of(...)` (Java 9+) for an immutable list with a clearer contract.
+- **What breaks**: `Arrays.asList(1, 2, 3)` returns a fixed-size list backed by the array. Calling `.add()` or `.remove()` throws `UnsupportedOperationException`.
+- **Root cause**: `Arrays.asList()` returns `Arrays.ArrayList` — not `java.util.ArrayList`. It wraps the array without copying.
+- **Fix**: `new ArrayList<>(Arrays.asList(...))` creates a mutable copy. Or `List.of(...)` (Java 9+) for an immutable list with a clearer contract.
 
 ---
 

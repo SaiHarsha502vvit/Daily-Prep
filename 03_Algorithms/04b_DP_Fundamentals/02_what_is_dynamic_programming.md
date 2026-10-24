@@ -63,9 +63,10 @@ If this wasn't true, you could find a shorter A→C!
 "Same subproblems appear multiple times during recursion"
 
 Example: Fibonacci fib(5)
-fib(5) = fib(4) + fib(3)
-fib(4) = fib(3) + fib(2) ← fib(3) needed TWICE!
-fib(3) = fib(2) + fib(1) ← fib(2) needed THRICE!
+
+- fib(5) = fib(4) + fib(3)
+- fib(4) = fib(3) + fib(2) ← fib(3) needed TWICE!
+- fib(3) = fib(2) + fib(1) ← fib(2) needed THRICE!
 
 If subproblems DON'T overlap → Use Divide & Conquer instead!
 
@@ -127,9 +128,9 @@ Each brick relies on the ones below it.
 
 1. IDENTIFYING THE STATE (Hardest Part!):
 
-"What information do I need to solve a subproblem?"
-Wrong state definition = wrong solution
-Tip: Ask "What changes between recursive calls?"
+- "What information do I need to solve a subproblem?"
+- Wrong state definition = wrong solution
+- Tip: Ask "What changes between recursive calls?"
 
 2. FINDING THE RECURRENCE:
 

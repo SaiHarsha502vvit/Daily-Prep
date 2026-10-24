@@ -142,7 +142,9 @@ This is a beautiful theorem often used in competitive programming (Skiena/UVa) w
 ### The Math
 
 For any simple polygon whose vertices lie on a regular grid (integer coordinates):
+
 $$ \text{Area} = I + \frac{B}{2} - 1 $$
+
 Where:
 
 - $I$ = number of interior lattice points
@@ -156,7 +158,9 @@ $$ I = \text{Area} - \frac{B}{2} + 1 $$
 ### Finding $B$ (Boundary Points)
 
 The number of lattice points on a line segment between integer coordinates $(x_1, y_1)$ and $(x_2, y_2)$ is exactly:
+
 $$ \text{Points} = \gcd(|x_1 - x_2|, |y_1 - y_2|) $$
+
 _(Note: this doesn't include the starting point if you're summing over a polygon)._
 
 ### Java Implementation

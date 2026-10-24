@@ -122,9 +122,13 @@ For `x`, at each level:
 Why can we make a greedy, irrevocable choice at the $k$-th bit and _know_ it's optimal, without looking ahead at the remaining branches?
 
 **The $2^k$ Domination Principle:**
+
 In binary, a bit at position $k$ contributes $2^k$ to the total value.
+
 What if we fail to get a 1 at position $k$, but we perfectly match EVERY single bit below it?
+
 The maximum possible sum of all bits below $k$ is:
+
 $$\sum_{i=0}^{k-1} 2^i = 2^k - 1$$
 
 Because **$2^k > 2^k - 1$**, successfully getting a 1 at the $k$-th bit is **strictly more valuable** than getting a 1 at _every single lower bit combined_.

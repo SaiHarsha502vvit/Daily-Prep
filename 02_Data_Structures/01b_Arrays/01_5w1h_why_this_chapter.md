@@ -192,8 +192,9 @@ There is NO perfect data structure — only the **perfect choice for your proble
 - ✅ **Creation** — Design custom DS when needed
 
 🔄 **The Transformation:**
-FROM: "I'll try arrays for everything"
-TO: "I'll choose the **RIGHT DS** for each operation"
+
+- FROM: "I'll try arrays for everything"
+- TO: "I'll choose the **RIGHT DS** for each operation"
 
 ---
 
