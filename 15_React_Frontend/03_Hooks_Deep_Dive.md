@@ -103,15 +103,7 @@ Quick reminder: `const [state, setState] = useState(initialValue);`
 
 🔬 **Section Challenge — useState (Already covered in Fundamentals)**
 
-**Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
-
-<details><summary>Answer</summary>
-
-Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
+**Challenge 1 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
 
 <details><summary>Answer</summary>
 
@@ -233,14 +225,6 @@ function UserProfile({ userId }) {
 ---
 
 🔬 **Section Challenge — useEffect — Side Effects**
-
-**Challenge 1 (Reasoning):** A useEffect with dependency `[user]` runs after every render where `user` changes. But `user` is an object. What subtle bug can occur?
-
-<details><summary>Answer</summary>
-
-React uses `Object.is()` to compare dependency values (===). A new object reference is ALWAYS different from the previous one even if the content is identical: `{name:'John'} !== {name:'John'}`. If the parent creates a new `user` object each render, the effect runs on every parent render even though the data didn't change. Fix: depend on `user.id` (primitive) instead, or `useMemo` to stabilize the reference.
-
-</details>
 
 **Challenge 2 (Design):** When does `useEffect` cleanup run? Give a concrete scenario where missing cleanup causes a bug.
 
@@ -477,16 +461,6 @@ function ThemeToggle() {
 
 ---
 
-🔬 **Section Challenge — useContext — Global State Without Prop Drilling**
-
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
-
-<details><summary>Answer</summary>
-
-Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
-
-</details>
-
 ## useReducer — Complex State Logic
 
 ### 5W1H: When to Use useReducer?
@@ -670,7 +644,7 @@ function useDebounce(value, delay = 300) {
 
 🔬 **Section Challenge — Custom Hooks — Reuse Logic**
 
-**Challenge 1 (Design):** Design a `useAsync(asyncFn)` hook that handles loading, error, and data states. What edge case does every junior miss?
+**Challenge 3 (Design):** Design a `useAsync(asyncFn)` hook that handles loading, error, and data states. What edge case does every junior miss?
 
 <details><summary>Answer</summary>
 

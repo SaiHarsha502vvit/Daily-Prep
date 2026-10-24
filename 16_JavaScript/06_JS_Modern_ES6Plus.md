@@ -526,16 +526,6 @@ function* combined() {
 
 ---
 
-🔬 **Section Challenge — 7. Iterators & Generators (Deep Dive)**
-
-**Challenge 1 (Reasoning):** A generator that yields 1,000,000 numbers — what's its memory footprint vs a list?
-
-<details><summary>Answer</summary>
-
-Generator: O(1) — stores only the current execution state (stack frame: local variables, instruction pointer). ~200-300 bytes total, regardless of N. List: O(N) — stores all 1M integer objects. 1M Python ints ≈ 28MB (small ints cached, but larger ints ~28 bytes each). Generators are essential for: large file processing (yield one line at a time), infinite sequences, streaming pipelines where you process and discard data.
-
-</details>
-
 ## 7b. Symbols — The Hidden Language of JavaScript
 
 _Content enriched from Educative "Front End Developer" — Symbols & Well-Known Symbols_

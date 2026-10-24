@@ -387,24 +387,6 @@ function Dashboard() {
 
 ---
 
-🔬 **Section Challenge — Defer & Suspense (Streaming Data)**
-
-**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-
-<details><summary>Answer</summary>
-
-Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
-
-</details>
-
-**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-
-<details><summary>Answer</summary>
-
-`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-
-</details>
-
 ## Advanced Authentication Flow
 
 ```tsx

@@ -223,14 +223,6 @@ Both calls use the SAME `state` closure value captured at render time. Both comp
 
 </details>
 
-**Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
-
-<details><summary>Answer</summary>
-
-`useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
-
-</details>
-
 ## 2. Why Re-renders Happen (The REAL Trigger)
 
 ### The Freeze Question
@@ -436,19 +428,11 @@ const filteredList = useMemo(() => list.filter((item) => item.active), [list]);
 
 🔬 **Section Challenge — 4. useEffect: The Lifecycle Mental Model is WRONG**
 
-**Challenge 1 (Reasoning):** A useEffect with dependency `[user]` runs after every render where `user` changes. But `user` is an object. What subtle bug can occur?
+**Challenge 2 (Reasoning):** A useEffect with dependency `[user]` runs after every render where `user` changes. But `user` is an object. What subtle bug can occur?
 
 <details><summary>Answer</summary>
 
 React uses `Object.is()` to compare dependency values (===). A new object reference is ALWAYS different from the previous one even if the content is identical: `{name:'John'} !== {name:'John'}`. If the parent creates a new `user` object each render, the effect runs on every parent render even though the data didn't change. Fix: depend on `user.id` (primitive) instead, or `useMemo` to stabilize the reference.
-
-</details>
-
-**Challenge 2 (Design):** When does `useEffect` cleanup run? Give a concrete scenario where missing cleanup causes a bug.
-
-<details><summary>Answer</summary>
-
-Cleanup runs: (1) before the effect runs again (when deps change), (2) when the component unmounts. Bug scenario: effect fetches data and updates state. User navigates away (unmounts) before fetch completes. Fetch completes → tries to `setState` on unmounted component → React warning (memory leak). Fix: `let cancelled = false; return () => { cancelled = true; }` — check `if (!cancelled) setState(data)`.
 
 </details>
 
@@ -565,24 +549,6 @@ function Component() {
 ```
 
 ---
-
-🔬 **Section Challenge — 6. useRef vs useState: When to Use Which**
-
-**Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
-
-<details><summary>Answer</summary>
-
-Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
-
-<details><summary>Answer</summary>
-
-`useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
-
-</details>
 
 ## 7. useMemo/useCallback: When They Hurt Performance
 
@@ -710,7 +676,7 @@ const CartContext = createContext([]);
 
 🔬 **Section Challenge — 8. Context: Why It's NOT a State Manager**
 
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+**Challenge 3 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
 
 <details><summary>Answer</summary>
 

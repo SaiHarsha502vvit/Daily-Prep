@@ -226,16 +226,6 @@ console.log(fns[2]()); // 3
 
 ---
 
-🔬 **Section Challenge — 2. Closures: The Stale Variable Trap**
-
-**Challenge 1 (Reasoning):** What is a closure and why can't garbage collection remove variables that are closed over?
-
-<details><summary>Answer</summary>
-
-A closure is a function that retains a reference to its lexical environment (the scope where it was created). Variables closed over are kept alive by the closure reference — GC can't collect them because there's still a reference (the closure's internal scope). Memory leak scenario: large data object captured in a closure, closure stored in a long-lived event listener → data stays in memory for the page's lifetime. Fix: explicitly null the large variable after use, or use a WeakRef.
-
-</details>
-
 ## 3. `this` Binding: The 5 Rules Nobody Fully Knows
 
 ### The Freeze Question
@@ -476,16 +466,6 @@ value == undefined; // same as above
 
 ---
 
-🔬 **Section Challenge — 6. Prototypes: Why `typeof null === 'object'`**
-
-**Challenge 1 (Reasoning):** `Object.create(proto)` vs `new Constructor()` — what's the practical difference?
-
-<details><summary>Answer</summary>
-
-`new Constructor()`: runs the constructor function (initializes instance properties), sets `__proto__` to `Constructor.prototype`. `Object.create(proto)`: creates an object with `proto` as its prototype, NO constructor called. Use `Object.create(null)` to create a pure dictionary with no inherited properties (no `toString`, `hasOwnProperty`, etc.) — useful for safe maps. `Object.create(SomeClass.prototype)` creates an instance-like object without running the constructor (used in class inheritance setup).
-
-</details>
-
 ## 7. Promise Microtask vs setTimeout Macrotask
 
 ### The Freeze Question
@@ -542,15 +522,7 @@ function infiniteMicro() {
 
 🔬 **Section Challenge — 7. Promise Microtask vs setTimeout Macrotask**
 
-**Challenge 1 (Reasoning):** `Promise.all([p1,p2,p3])` — p2 rejects. What happens to p1 and p3?
-
-<details><summary>Answer</summary>
-
-`Promise.all` rejects immediately when ANY promise rejects (fail-fast). p1 and p3 are still running — their promises continue executing, but their results are ignored. If they reject too, those rejections are also silently ignored (potential unhandled rejection warnings). Use `Promise.allSettled` to wait for ALL to complete regardless of success/failure, getting all results including errors.
-
-</details>
-
-**Challenge 2 (Design):** Implement `Promise.race` from scratch.
+**Challenge 1 (Design):** Implement `Promise.race` from scratch.
 
 <details><summary>Answer</summary>
 
@@ -767,24 +739,6 @@ const results = await Promise.all(promises); // all at once!
 
 ---
 
-🔬 **Section Challenge — 10. Async/Await: It's NOT Just Syntactic Sugar**
-
-**Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
-
-<details><summary>Answer</summary>
-
-`Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
-
-<details><summary>Answer</summary>
-
-Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
-
-</details>
-
 ## 11. WeakMap/WeakRef: Why GC Matters in JS
 
 ### The Freeze Question
@@ -909,7 +863,7 @@ fib.next(); // { value: 2, done: false }
 
 🔬 **Section Challenge — 12. Generator Functions: Lazy Evaluation in JS**
 
-**Challenge 1 (Reasoning):** A generator that yields 1,000,000 numbers — what's its memory footprint vs a list?
+**Challenge 2 (Reasoning):** A generator that yields 1,000,000 numbers — what's its memory footprint vs a list?
 
 <details><summary>Answer</summary>
 

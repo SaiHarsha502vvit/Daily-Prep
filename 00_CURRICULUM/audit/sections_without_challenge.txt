@@ -90,3 +90,15 @@
 08_SQL/23_SQL_Deep_Reasoning.md :: 🔬 **Section Challenge — 3. JOIN Execution: What Actually Happens Under The Hood**
 08_SQL/24_SQL_Data_Analyst_RealWorld.md :: 🔬 **Section Challenge — 9. Advanced Window Functions for Analytics**
 08_SQL/37_SQL_5WH_Deep_Reasoning.md :: 🔬 **Section Challenge — 6. Window Functions**
+15_React_Frontend/01_React_Fundamentals.md :: 🔬 **Section Challenge — Part 5: State — useState Hook**
+15_React_Frontend/03_Hooks_Deep_Dive.md :: 🔬 **Section Challenge — useContext — Global State Without Prop Drilling**
+15_React_Frontend/06_React_Router.md :: 🔬 **Section Challenge — Defer & Suspense (Streaming Data)**
+15_React_Frontend/09_React_Deep_Reasoning.md :: 🔬 **Section Challenge — 6. useRef vs useState: When to Use Which**
+15_React_Frontend/10_Custom_Hooks_Library.md :: 🔬 **Section Challenge — 10. useAsync — Generic Async Operation Handler**
+15_React_Frontend/11_Complex_UI_Pages_Patterns.md :: 🔬 **Section Challenge — 2. Data Table — Sorting, Filtering, Pagination**
+15_React_Frontend/11_Complex_UI_Pages_Patterns.md :: 🔬 **Section Challenge — 6. Search with Autocomplete & Suggestions**
+16_JavaScript/06_JS_Modern_ES6Plus.md :: 🔬 **Section Challenge — 7. Iterators & Generators (Deep Dive)**
+16_JavaScript/08_JS_Deep_Reasoning.md :: 🔬 **Section Challenge — 10. Async/Await: It's NOT Just Syntactic Sugar**
+16_JavaScript/08_JS_Deep_Reasoning.md :: 🔬 **Section Challenge — 2. Closures: The Stale Variable Trap**
+16_JavaScript/08_JS_Deep_Reasoning.md :: 🔬 **Section Challenge — 6. Prototypes: Why `typeof null === 'object'`**
+16_JavaScript/10_Web_Workers_ServiceWorkers.md :: 🔬 **Section Challenge — 10. Caching Strategies — Offline-First Patterns**

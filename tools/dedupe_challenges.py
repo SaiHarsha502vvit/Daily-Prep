@@ -171,7 +171,9 @@ def main():
             out.append(new[k]); k += 1
         open(p, "wb").write(eol.join(out).encode("utf-8", errors="surrogateescape")); changed += 1
     d = os.path.join(ROOT, "00_CURRICULUM", "audit"); os.makedirs(d, exist_ok=True)
-    open(os.path.join(d, "sections_without_challenge.txt"), "w", encoding="utf-8").write("\n".join(empty_sections))
+    sec = os.path.join(d, "sections_without_challenge.txt")
+    prev = open(sec, encoding="utf-8").read().splitlines() if os.path.exists(sec) else []
+    open(sec, "w", encoding="utf-8").write("\n".join(sorted(set(prev) | set(empty_sections))))
     print(f"\napplied: {changed} files rewritten; {len(empty_sections)} 'Section Challenge' headers dropped (listed in 00_CURRICULUM/audit/sections_without_challenge.txt)")
 
 

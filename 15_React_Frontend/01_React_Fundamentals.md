@@ -655,24 +655,6 @@ function Form() {
 
 ---
 
-🔬 **Section Challenge — Part 5: State — useState Hook**
-
-**Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
-
-<details><summary>Answer</summary>
-
-Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
-
-<details><summary>Answer</summary>
-
-`useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
-
-</details>
-
 ## Part 6: Event Handling
 
 ### 5W1H: How Does React Handle Events?

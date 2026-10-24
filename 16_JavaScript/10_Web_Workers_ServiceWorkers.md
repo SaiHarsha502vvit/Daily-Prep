@@ -723,16 +723,6 @@ self.addEventListener("fetch", (event) => {
 
 ---
 
-🔬 **Section Challenge — 10. Caching Strategies — Offline-First Patterns**
-
-**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
-
-<details><summary>Answer</summary>
-
-Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-
-</details>
-
 ## 11. Background Sync & Push Notifications
 
 ```javascript
