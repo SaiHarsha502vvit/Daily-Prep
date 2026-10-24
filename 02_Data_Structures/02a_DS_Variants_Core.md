@@ -196,56 +196,57 @@ mindmap
 
 ::: pattern
 
+### Singly linked list - complete guide
+
+#### What is it
+
+A linear data structure where each element (node) contains:
+
+1. DATA - The actual value stored
+2. NEXT - Reference/pointer to the next node
+
+**Visual:** 
+
+```mermaid
+flowchart LR
+    H(["head"]) --> A["10 | next"] --> B["20 | next"] --> C["30 | next"] --> D["40 | next"] --> NUL(["null"])
+    T(["tail"]) --> D
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ptr fill:#fff3b0,stroke:#b58900,color:#111
+    classDef end1 fill:#e0e0e0,stroke:#616161,color:#111
+    class A,B,C,D node
+    class H,T ptr
+    class NUL end1
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    SINGLY LINKED LIST - COMPLETE GUIDE                       ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS IT?                                                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ A linear data structure where each element (node) contains:                 │
-│ 1. DATA - The actual value stored                                           │
-│ 2. NEXT - Reference/pointer to the next node                                │
-│                                                                             │
-│ VISUAL:                                                                     │
-│  ┌────┬────┐    ┌────┬────┐    ┌────┬────┐    ┌────┬────┐                   │
-│  │ 10 │  ●─┼───▶│ 20 │  ●─┼───▶│ 30 │  ●─┼───▶│ 40 │null│                   │
-│  └────┴────┘    └────┴────┘    └────┴────┘    └────┴────┘                   │
-│   head                                          tail                        │
-│                                                                             │
-│ KEY PROPERTY: Can only traverse FORWARD (one direction)                     │
-└─────────────────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** Each node holds a value and one `next` reference. `head` marks the start, `tail` the last node, and the last `next` is `null`. You can only walk forward.
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ TIME COMPLEXITY                                                             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ Operation              │ Time    │ Explanation                              │
-│ ─────────────────────────────────────────────────────────────────────────── │
-│ Access by index        │ O(n)    │ Must traverse from head                  │
-│ Search                 │ O(n)    │ Must check each node                     │
-│ Insert at head         │ O(1)    │ Just change head pointer                 │
-│ Insert at tail         │ O(1)*   │ *If tail pointer maintained              │
-│ Insert at middle       │ O(n)    │ Must find position first                 │
-│ Delete at head         │ O(1)    │ Just change head pointer                 │
-│ Delete at tail         │ O(n)    │ Must find second-to-last                 │
-│ Delete at middle       │ O(n)    │ Must find position first                 │
-└─────────────────────────────────────────────────────────────────────────────┘
+**Key property:** Can only traverse FORWARD (one direction)
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE?                                                                │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ ✅ Frequent insertions/deletions at beginning                                │
-│ ✅ Don't know size in advance                                                │
-│ ✅ Memory is fragmented (non-contiguous is OK)                               │
-│ ✅ Implementing stack (LIFO)                                                 │
-│                                                                             │
-│ ❌ Need random access by index                                               │
-│ ❌ Need backward traversal                                                   │
-│ ❌ Delete at end frequently (use doubly linked)                              │
-│ ❌ Memory efficiency is critical (pointers add overhead)                     │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+#### Time complexity
+
+| Operation | Time | Explanation |
+| --- | --- | --- |
+| Access by index | O(n) | Must traverse from head |
+| Search | O(n) | Must check each node |
+| Insert at head | O(1) | Just change head pointer |
+| Insert at tail | O(1)* | *If tail pointer maintained |
+| Insert at middle | O(n) | Must find position first |
+| Delete at head | O(1) | Just change head pointer |
+| Delete at tail | O(n) | Must find second-to-last |
+| Delete at middle | O(n) | Must find position first |
+
+#### When to use
+
+- ✅ Frequent insertions/deletions at beginning
+- ✅ Don't know size in advance
+- ✅ Memory is fragmented (non-contiguous is OK)
+- ✅ Implementing stack (LIFO)
+
+- ❌ Need random access by index
+- ❌ Need backward traversal
+- ❌ Delete at end frequently (use doubly linked)
+- ❌ Memory efficiency is critical (pointers add overhead)
 
 :::
 
@@ -556,70 +557,74 @@ public class SinglyLinkedList<T> {
 
 ::: pattern
 
+### Doubly linked list - complete guide
+
+#### What is it
+
+A linked list where each node has TWO pointers:
+
+1. DATA - The actual value
+2. PREV - Reference to PREVIOUS node
+3. NEXT - Reference to NEXT node
+
+**Visual:** 
+
+null                                                           null
+↑                                                              ↑
+
+```mermaid
+flowchart LR
+    H(["head"]) --> A["10"]
+    A <--> B["20"] <--> C["30"] <--> D["40"]
+    T(["tail"]) --> D
+    A -.-> N1(["prev = null"])
+    D -.-> N2(["next = null"])
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ptr fill:#fff3b0,stroke:#b58900,color:#111
+    classDef end1 fill:#e0e0e0,stroke:#616161,color:#111
+    class A,B,C,D node
+    class H,T ptr
+    class N1,N2 end1
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    DOUBLY LINKED LIST - COMPLETE GUIDE                       ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS IT?                                                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ A linked list where each node has TWO pointers:                             │
-│ 1. DATA - The actual value                                                  │
-│ 2. PREV - Reference to PREVIOUS node                                        │
-│ 3. NEXT - Reference to NEXT node                                            │
-│                                                                             │
-│ VISUAL:                                                                     │
-│     null                                                           null     │
-│      ↑                                                              ↑       │
-│  ┌───┴───────┐    ┌───────────┐    ┌───────────┐    ┌───────────┬──┴──┐     │
-│  │prev│10│next│◄──►│prev│20│next│◄──►│prev│30│next│◄──►│prev│40│next│       │
-│  └───────────┘    └───────────┘    └───────────┘    └───────────────┘       │
-│     head                                                   tail             │
-│                                                                             │
-│ KEY PROPERTY: Can traverse BOTH directions (forward AND backward)           │
-└─────────────────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** Each node has both `prev` and `next` references, so the arrows point both ways. The first node's `prev` and the last node's `next` are `null`.
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ ADVANTAGES OVER SINGLY LINKED LIST                                          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ 1. BIDIRECTIONAL TRAVERSAL:                                                 │
-│    - Can go forward AND backward                                            │
-│    - Essential for "Previous" buttons                                       │
-│                                                                             │
-│ 2. O(1) DELETE FROM TAIL:                                                   │
-│    Singly: O(n) - must find second-to-last                                  │
-│    Doubly: O(1) - just use tail.prev                                        │
-│                                                                             │
-│ 3. EASIER NODE DELETION:                                                    │
-│    Given a node reference, can delete in O(1)                               │
-│    Don't need to find previous node!                                        │
-│                                                                             │
-│ 4. BETTER FOR LRU CACHE:                                                    │
-│    Move nodes to front/back in O(1)                                         │
-│                                                                             │
-│ DISADVANTAGE:                                                               │
-│    - More memory (extra prev pointer)                                       │
-│    - More complex insertion/deletion code                                   │
-└─────────────────────────────────────────────────────────────────────────────┘
+**Key property:** Can traverse BOTH directions (forward AND backward)
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ TIME COMPLEXITY COMPARISON                                                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ Operation              │ Singly  │ Doubly  │ Winner                         │
-│ ─────────────────────────────────────────────────────────────────────────── │
-│ Access by index        │ O(n)    │ O(n)    │ Tie                            │
-│ Insert at head         │ O(1)    │ O(1)    │ Tie                            │
-│ Insert at tail         │ O(1)*   │ O(1)    │ Tie                            │
-│ Delete at head         │ O(1)    │ O(1)    │ Tie                            │
-│ Delete at tail         │ O(n)    │ O(1)    │ DOUBLY 🏆                       │
-│ Delete given node      │ O(n)    │ O(1)    │ DOUBLY 🏆                       │
-│ Traverse backward      │ O(n²)   │ O(n)    │ DOUBLY 🏆                       │
-│ Memory per node        │ Less    │ More    │ SINGLY (if memory matters)     │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+#### Advantages over singly linked list
+
+1. BIDIRECTIONAL TRAVERSAL:
+   - Can go forward AND backward
+   - Essential for "Previous" buttons
+
+2. O(1) DELETE FROM TAIL:
+   Singly: O(n) - must find second-to-last
+   Doubly: O(1) - just use tail.prev
+
+3. EASIER NODE DELETION:
+   Given a node reference, can delete in O(1)
+   Don't need to find previous node!
+
+4. BETTER FOR LRU CACHE:
+   Move nodes to front/back in O(1)
+
+**Disadvantage:** 
+
+- More memory (extra prev pointer)
+- More complex insertion/deletion code
+
+#### Time complexity comparison
+
+| Operation | Singly | Doubly | Winner |
+| --- | --- | --- | --- |
+| Access by index | O(n) | O(n) | Tie |
+| Insert at head | O(1) | O(1) | Tie |
+| Insert at tail | O(1)* | O(1) | Tie |
+| Delete at head | O(1) | O(1) | Tie |
+| Delete at tail | O(n) | O(1) | DOUBLY 🏆 |
+| Delete given node | O(n) | O(1) | DOUBLY 🏆 |
+| Traverse backward | O(n²) | O(n) | DOUBLY 🏆 |
+| Memory per node | Less | More | SINGLY (if memory matters) |
 
 :::
 
@@ -1040,63 +1045,66 @@ public class DoublyLinkedList<T> {
 
 ::: pattern
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    CIRCULAR LINKED LIST - COMPLETE GUIDE                     ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Circular linked list - complete guide
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS IT?                                                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ A linked list where the LAST node points BACK to the FIRST node.            │
-│ No NULL at end - forms a CIRCLE!                                            │
-│                                                                             │
-│ SINGLY CIRCULAR:                                                            │
-│       ┌────────────────────────────────────────┐                            │
-│       │                                        │                            │
-│       ▼                                        │                            │
-│  ┌────┬────┐  ┌────┬────┐  ┌────┬────┐  ┌────┬─┴──┐                         │
-│  │ 10 │  ●─┼─▶│ 20 │  ●─┼─▶│ 30 │  ●─┼─▶│ 40 │  ● │                         │
-│  └────┴────┘  └────┴────┘  └────┴────┘  └────┴────┘                         │
-│     head                                  tail                              │
-│                                                                             │
-│ DOUBLY CIRCULAR:                                                            │
-│       ┌────────────────────────────────────────┐                            │
-│       │      ┌──────────────────────────────┐  │                            │
-│       ▼      │                              │  ▼                            │
-│  ┌───┬───┬───┴┐  ┌───┬───┬───┐  ┌───┬───┬──┴┐                               │
-│  │ ● │10 │ ●──┼─▶│ ● │20 │ ●─┼─▶│ ● │30 │ ● │                               │
-│  └─▲─┴───┴────┘  └─▲─┴───┴───┘  └───┴───┴─▲─┘                               │
-│    │               │                       │                                │
-│    └───────────────┴───────────────────────┘                                │
-│                                                                             │
-│ KEY PROPERTY: Can traverse the entire list starting from ANY node!          │
-│               No "end" - goes round and round.                              │
-└─────────────────────────────────────────────────────────────────────────────┘
+#### What is it
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHY USE CIRCULAR?                                                           │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ 1. ROUND-ROBIN SCHEDULING:                                                  │
-│    - Process1 → Process2 → Process3 → Process1 → ...                        │
-│    - CPU gives time to each process in circular order                       │
-│                                                                             │
-│ 2. MULTIPLAYER GAME TURNS:                                                  │
-│    - Player1 → Player2 → Player3 → Player1 → ...                            │
-│    - No need to reset to beginning                                          │
-│                                                                             │
-│ 3. CIRCULAR BUFFER/QUEUE:                                                   │
-│    - Audio streaming                                                        │
-│    - Producer-consumer problems                                             │
-│                                                                             │
-│ 4. REPEATED TRAVERSAL:                                                      │
-│    - Carousel/slideshow that loops                                          │
-│    - Music playlist on repeat                                               │
-│                                                                             │
-│ KEY INSIGHT: Useful when you need to wrap around!                           │
-└─────────────────────────────────────────────────────────────────────────────┘
+A linked list where the LAST node points BACK to the FIRST node.
+No NULL at end - forms a CIRCLE!
+
+**Singly circular:** 
+
+```mermaid
+flowchart LR
+    H(["head"]) --> A["10"] --> B["20"] --> C["30"] --> D["40"]
+    D -- "next = head" --> A
+    T(["tail"]) --> D
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ptr fill:#fff3b0,stroke:#b58900,color:#111
+    class A,B,C,D node
+    class H,T ptr
 ```
+
+**How to read this diagram.** The last node points back to the first instead of `null`, so you can keep traversing forever (use `head` or a counter to know when to stop).
+
+**Doubly circular:** 
+
+```mermaid
+flowchart LR
+    A["10"] -- next --> B["20"] -- next --> C["30"]
+    C -- next --> A
+    A -- prev --> C
+    B -- prev --> A
+    C -- prev --> B
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class A,B,C node
+```
+
+**How to read this diagram.** Every node has `prev` and `next`, and the ends wrap around: `30.next` is `10` and `10.prev` is `30`.
+
+**Key property:** Can traverse the entire list starting from ANY node!
+
+No "end" - goes round and round.
+
+#### Why use circular
+
+1. ROUND-ROBIN SCHEDULING:
+   - Process1 → Process2 → Process3 → Process1 → ...
+   - CPU gives time to each process in circular order
+
+2. MULTIPLAYER GAME TURNS:
+   - Player1 → Player2 → Player3 → Player1 → ...
+   - No need to reset to beginning
+
+3. CIRCULAR BUFFER/QUEUE:
+   - Audio streaming
+   - Producer-consumer problems
+
+4. REPEATED TRAVERSAL:
+   - Carousel/slideshow that loops
+   - Music playlist on repeat
+
+**Key insight:** Useful when you need to wrap around!
 
 :::
 
@@ -1310,55 +1318,49 @@ public class CircularLinkedList<T> {
 
 ::: pattern
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║               CIRCULAR DOUBLY LINKED LIST - COMPLETE GUIDE                   ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Circular doubly linked list - complete guide
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS IT?                                                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ Combines BOTH concepts:                                                     │
-│ • Doubly: Each node has prev AND next pointers                              │
-│ • Circular: Last node connects to first, first connects to last             │
-│                                                                             │
-│ VISUAL:                                                                     │
-│     ┌───────────────────────────────────────────────────────────┐           │
-│     │                                                           │           │
-│     │    ┌─────────────────────────────────────────────────┐    │           │
-│     │    │                                                 │    │           │
-│     ▼    │                                                 ▼    │           │
-│  ┌──┴──┬───┬─────┐  ┌─────┬───┬─────┐  ┌─────┬───┬──┴──┐       │            │
-│  │prev │ A │ next│◄─►│prev │ B │ next│◄─►│prev │ C │next │       │          │
-│  └─────┴───┴──┬──┘  └─────┴───┴─────┘  └──┬──┴───┴─────┘       │            │
-│               │                           │                     │           │
-│               └───────────────────────────┘                     │           │
-│     ▲                                                           │           │
-│     └───────────────────────────────────────────────────────────┘           │
-│                                                                             │
-│ KEY: A.prev = C, C.next = A (circular in BOTH directions!)                  │
-└─────────────────────────────────────────────────────────────────────────────┘
+#### What is it
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ ADVANTAGES                                                                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ ✅ O(1) insertion at both ends                                               │
-│ ✅ O(1) deletion at both ends                                                │
-│ ✅ O(1) deletion of any node (given reference)                               │
-│ ✅ Can traverse in both directions                                           │
-│ ✅ Can wrap around in both directions                                        │
-│ ✅ No need to check for null at boundaries                                   │
-│                                                                             │
-│ ❌ More memory (two pointers per node)                                       │
-│ ❌ More complex code                                                         │
-│                                                                             │
-│ PERFECT FOR:                                                                │
-│ • Deque (double-ended queue) implementation                                 │
-│ • Applications needing wrap-around in both directions                       │
-│ • When you frequently access both ends                                      │
-└─────────────────────────────────────────────────────────────────────────────┘
+Combines BOTH concepts:
+
+- Doubly: Each node has prev AND next pointers
+- Circular: Last node connects to first, first connects to last
+
+**Visual:** 
+
+```mermaid
+flowchart LR
+    A["A"] <--> B["B"] <--> C["C"]
+    C <-- "wraps around" --> A
+    HD(["head"]) --> A
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ptr fill:#fff3b0,stroke:#b58900,color:#111
+    class A,B,C node
+    class HD ptr
 ```
+
+**How to read this diagram.** A circular doubly linked list: every link works in both directions, and the last node links back to the first (and the first back to the last), so there is no `null` end.
+
+KEY: A.prev = C, C.next = A (circular in BOTH directions!)
+
+#### Advantages
+
+- ✅ O(1) insertion at both ends
+- ✅ O(1) deletion at both ends
+- ✅ O(1) deletion of any node (given reference)
+- ✅ Can traverse in both directions
+- ✅ Can wrap around in both directions
+- ✅ No need to check for null at boundaries
+
+- ❌ More memory (two pointers per node)
+- ❌ More complex code
+
+**Perfect for:** 
+
+- Deque (double-ended queue) implementation
+- Applications needing wrap-around in both directions
+- When you frequently access both ends
 
 :::
 
@@ -1590,75 +1592,78 @@ public class CircularDoublyLinkedList<T> {
 
 ::: pattern
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                       SKIP LIST - COMPLETE GUIDE                             ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Skip list - complete guide
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS IT?                                                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ A probabilistic data structure that allows O(log n) search, insert, and     │
-│ delete in a SORTED linked list. It's like a "fast lane" over the list!      │
-│                                                                             │
-│ INVENTED: 1989 by William Pugh                                              │
-│                                                                             │
-│ VISUAL - MULTIPLE LAYERS OF LINKED LISTS:                                   │
-│                                                                             │
-│ Level 3: HEAD ────────────────────────────────────────────> 50 ────> NIL    │
-│            │                                                  │             │
-│ Level 2: HEAD ──────────────> 25 ────────────────────────> 50 ────> NIL     │
-│            │                   │                              │             │
-│ Level 1: HEAD ───> 10 ──────> 25 ──────> 35 ──────────────> 50 ────> NIL    │
-│            │       │           │          │                   │             │
-│ Level 0: HEAD ─> 5 ─> 10 ─> 20 ─> 25 ─> 30 ─> 35 ─> 40 ─> 50 ─> 60 ─> NIL   │
-│                                                                             │
-│ KEY INVARIANTS:                                                             │
-│ ─────────────────                                                          │
-│ Invariant 1 (Height): Each node appears at level-i with probability p^h    │
-│   where h = node height. P = 0.5 (coin flip) by default in many impls.     │
-│   Expected height of n-node list = O(log n).                               │
-│                                                                             │
-│ Invariant 2 (Ordering): For every valid level L, the forward[L] chain      │
-│   is sorted in ascending order by node value. This is what enables         │
-│   binary-search-style traversal across levels.                             │
-│                                                                             │
-│ Invariant 3 (Reachability): Every node at level-i is reachable by         │
-│   following forward pointers from at least one node at level-(i+1).        │
-│   (Level-linked structure ensures complete coverage at each layer.)        │
-│                                                                             │
-│ SEARCH FOR 35:                                                              │
-│ 1. Start at Level 3: HEAD -> 50 (too big, go down)                          │
-│ 2. Level 2: HEAD -> 25 -> 50 (25 < 35 < 50, go down from 25)                │
-│ 3. Level 1: 25 -> 35 (FOUND!)                                               │
-│                                                                             │
-│ Only visited: HEAD, 50, 25, 35 = 4 nodes instead of 7!                      │
-└─────────────────────────────────────────────────────────────────────────────┘
+#### What is it
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHY USE SKIP LIST?                                                          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ PROBLEM: Sorted linked list has O(n) search                                 │
-│ SOLUTION: Add "express lanes" for faster traversal                          │
-│                                                                             │
-│ COMPARISON:                                                                 │
-│ ┌───────────────────────┬──────────────┬──────────────┬──────────────────┐  │
-│ │ Operation             │ Linked List  │ BST          │ Skip List        │  │
-│ ├───────────────────────┼──────────────┼──────────────┼──────────────────┤  │
-│ │ Search                │ O(n)         │ O(log n)*    │ O(log n) avg     │  │
-│ │ Insert                │ O(n)         │ O(log n)*    │ O(log n) avg     │  │
-│ │ Delete                │ O(n)         │ O(log n)*    │ O(log n) avg     │  │
-│ │ Ordered iteration     │ O(n)         │ O(n)         │ O(n)             │  │
-│ │ Implementation        │ Simple       │ Complex      │ Moderate         │  │
-│ │ Concurrent access     │ Hard         │ Very hard    │ Easier!          │  │
-│ └───────────────────────┴──────────────┴──────────────┴──────────────────┘  │
-│ * BST worst case is O(n) if unbalanced                                      │
-│                                                                             │
-│ KEY ADVANTAGE: Easier to implement concurrent (thread-safe) version!        │
-│ This is why Redis uses skip list for sorted sets!                           │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+A probabilistic data structure that allows O(log n) search, insert, and
+delete in a SORTED linked list. It's like a "fast lane" over the list!
+
+**Invented:** 1989 by William Pugh
+
+**Visual - multiple layers of linked lists:** 
+
+Level 3: HEAD ────────────────────────────────────────────> 50 ────> NIL
+
+|  |  |  |
+| --- | --- | --- |
+
+Level 2: HEAD ──────────────> 25 ────────────────────────> 50 ────> NIL
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+
+Level 1: HEAD ───> 10 ──────> 25 ──────> 35 ──────────────> 50 ────> NIL
+
+|  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- |
+
+Level 0: HEAD ─> 5 ─> 10 ─> 20 ─> 25 ─> 30 ─> 35 ─> 40 ─> 50 ─> 60 ─> NIL
+
+**Key invariants:** 
+
+Invariant 1 (Height): Each node appears at level-i with probability p^h
+where h = node height. P = 0.5 (coin flip) by default in many impls.
+Expected height of n-node list = O(log n).
+
+Invariant 2 (Ordering): For every valid level L, the forward[L] chain
+is sorted in ascending order by node value. This is what enables
+binary-search-style traversal across levels.
+
+Invariant 3 (Reachability): Every node at level-i is reachable by
+following forward pointers from at least one node at level-(i+1).
+(Level-linked structure ensures complete coverage at each layer.)
+
+**Search for 35:** 
+
+1. Start at Level 3: HEAD -> 50 (too big, go down)
+2. Level 2: HEAD -> 25 -> 50 (25 < 35 < 50, go down from 25)
+3. Level 1: 25 -> 35 (FOUND!)
+
+Only visited: HEAD, 50, 25, 35 = 4 nodes instead of 7!
+
+#### Why use skip list
+
+**Problem:** Sorted linked list has O(n) search
+
+**Solution:** Add "express lanes" for faster traversal
+
+**Comparison:** 
+
+| Operation | Linked List | BST | Skip List |
+| --------- | ----------- | --- | --------- |
+| Search | O(n) | O(log n)* | O(log n) avg |
+| Insert | O(n) | O(log n)* | O(log n) avg |
+| Delete | O(n) | O(log n)* | O(log n) avg |
+| Ordered iteration | O(n) | O(n) | O(n) |
+| Implementation | Simple | Complex | Moderate |
+| Concurrent access | Hard | Very hard | Easier! |
+
+\* A BST's worst case is O(n) if it is unbalanced.
+
+**Key advantage:** Easier to implement concurrent (thread-safe) version!
+
+This is why Redis uses skip list for sorted sets!
 
 :::
 
@@ -1865,134 +1870,135 @@ variant can degrade performance by 10x to 1000x or cause memory exhaustion.
 
 ### Failure Mode 1: LinkedList Instead of ArrayList for Random Access
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ CONTEXT:                                                                    │
-│ A service processes items by index in a tight loop. Developer picks        │
-│ LinkedList because "linked lists are faster for insertions."               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ THE BUG:                                                                    │
-│ LinkedList.get(i) requires O(n) traversal: head -> next -> next -> ...     │
-│ For a list of 10,000 items accessed by random index, each access is O(n)   │
-│ Worst case: 10,000 * 10,000 = 100,000,000 pointer hops!                    │
-│                                                                             │
-│ ArrayList.get(i) is O(1): arr[i] = base_addr + (i * element_size)          │
-│                                                                             │
-│ PERFORMANCE IMPACT:                                                         │
-│ • LinkedList: ~100ms per 1000 random accesses                               │
-│ • ArrayList:  ~1ms per 1000 random accesses                                │
-│ • 100x slowdown from the wrong variant choice                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ RULE:                                                                       │
-│ Use ArrayList (or array) when you need random access by index.             │
-│ Use LinkedList ONLY when you need O(1) insert/delete at known position     │
-│ (especially head/tail) without index-based access.                         │
-│ For most "list of items" use cases, ArrayList is correct.                  │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+#### Context
+
+A service processes items by index in a tight loop. Developer picks
+LinkedList because "linked lists are faster for insertions."
+
+**The bug:** 
+
+LinkedList.get(i) requires O(n) traversal: head -> next -> next -> ...
+For a list of 10,000 items accessed by random index, each access is O(n)
+Worst case: 10,000 * 10,000 = 100,000,000 pointer hops!
+
+ArrayList.get(i) is O(1): arr[i] = base_addr + (i * element_size)
+
+**Performance impact:** 
+
+- LinkedList: ~100ms per 1000 random accesses
+- ArrayList:  ~1ms per 1000 random accesses
+- 100x slowdown from the wrong variant choice
+
+**Rule:** 
+
+Use ArrayList (or array) when you need random access by index.
+Use LinkedList ONLY when you need O(1) insert/delete at known position
+(especially head/tail) without index-based access.
+For most "list of items" use cases, ArrayList is correct.
 
 ### Failure Mode 2: ArrayList Resizing Storm Under High-Churn Insertion
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ CONTEXT:                                                                    │
-│ A queue-like system processes 1M items/second. Developer uses ArrayList    │
-│ with default growth strategy.                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ THE BUG:                                                                    │
-│ Default growth: newCapacity = oldCapacity + (oldCapacity >> 1)             │
-│ This means: capacity grows by 1.5x each resize                             │
-│ Initial: 10 → 15 → 22 → 33 → 49 → 73 → 109 → 163 → 244 → ...              │
-│                                                                             │
-│ At high insertion rate, the array must be:                                 │
-│ 1. Allocated at new size                                                    │
-│ 2. All existing elements copied (System.arraycopy)                         │
-│ 3. Old array GC'd                                                           │
-│                                                                             │
-│ If insertions outpace growth:                                               │
-│ • Each resize copies ALL elements (O(n) per resize)                        │
-│ • Frequent resize = O(n^2) total copy overhead                            │
-│ • GC pressure from temporary oversized arrays                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ MITIGATION:                                                                 │
-│ • If size is known: new ArrayList<>(knownSize)                             │
-│ • If rate is predictable: pre-allocate with buffer                         │
-│ • For true queue semantics: use ArrayDeque or circular buffer              │
-│ • Monitor: array resize events correlate with latency spikes               │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+#### Context
+
+A queue-like system processes 1M items/second. Developer uses ArrayList
+with default growth strategy.
+
+**The bug:** 
+
+Default growth: newCapacity = oldCapacity + (oldCapacity >> 1)
+This means: capacity grows by 1.5x each resize
+Initial: 10 → 15 → 22 → 33 → 49 → 73 → 109 → 163 → 244 → ...
+
+At high insertion rate, the array must be:
+
+1. Allocated at new size
+2. All existing elements copied (System.arraycopy)
+3. Old array GC'd
+
+If insertions outpace growth:
+
+- Each resize copies ALL elements (O(n) per resize)
+- Frequent resize = O(n^2) total copy overhead
+- GC pressure from temporary oversized arrays
+
+**Mitigation:** 
+
+- If size is known: new ArrayList<>(knownSize)
+- If rate is predictable: pre-allocate with buffer
+- For true queue semantics: use ArrayDeque or circular buffer
+- Monitor: array resize events correlate with latency spikes
 
 ### Failure Mode 3: Bloom Filter False Positive Causing User-Visible Bug
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ CONTEXT:                                                                    │
-│ Caching layer uses Bloom filter to check "is key in cache?" before Redis.  │
-│ Developer sets 10M elements, 1M bits (m=1,000,000, n=10,000,000).          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ THE MATH:                                                                   │
-│ False positive rate formula: FPR = (1 - e^(-kn/m))^k                        │
-│ Where: k = hash functions, n = elements, m = bits                          │
-│                                                                             │
-│ With k=10, n=10M, m=1M:                                                     │
-│   FPR = (1 - e^(-10*10M/1M))^10                                            │
-│       = (1 - e^(-100))^10                                                   │
-│       ≈ (1 - 3.7e-44)^10                                                   │
-│       ≈ 0.9999999...                                                       │
-│       ≈ 99.99% false positive rate!                                        │
-│                                                                             │
-│ Optimal k for given n/m: k_optimal = (m/n) * ln(2)                         │
-│ For m=1M, n=10M: k_optimal = (1/10) * 0.693 = 0.069 ≈ 1 hash!             │
-│ With k=1: FPR = (1 - e^(-10))^1 ≈ 99.995% anyway!                         │
-│                                                                             │
-│ THE FAILURE: Bloom says "key exists" but Redis has nothing → null pointer  │
-│ exception in application code that trusted the cache layer.                │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ PROPER SIZING (for 1% FPR):                                                │
-│ m_needed = -n * ln(FPR) / (ln(2)^2)                                        │
-│ For n=10M, FPR=0.01: m = -10M * ln(0.01) / 0.48 ≈ 95MB (760M bits)        │
-│ Always size Bloom filter based on expected n and desired FPR, not guesses. │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+#### Context
+
+Caching layer uses Bloom filter to check "is key in cache?" before Redis.
+Developer sets 10M elements, 1M bits (m=1,000,000, n=10,000,000).
+
+**The math:** 
+
+False positive rate formula: FPR = (1 - e^(-kn/m))^k
+Where: k = hash functions, n = elements, m = bits
+
+With k=10, n=10M, m=1M:
+FPR = (1 - e^(-10*10M/1M))^10
+= (1 - e^(-100))^10
+≈ (1 - 3.7e-44)^10
+≈ 0.9999999...
+≈ 99.99% false positive rate!
+
+Optimal k for given n/m: k_optimal = (m/n) * ln(2)
+For m=1M, n=10M: k_optimal = (1/10) * 0.693 = 0.069 ≈ 1 hash!
+With k=1: FPR = (1 - e^(-10))^1 ≈ 99.995% anyway!
+
+**The failure:** Bloom says "key exists" but Redis has nothing → null pointer
+
+exception in application code that trusted the cache layer.
+PROPER SIZING (for 1% FPR):
+m_needed = -n * ln(FPR) / (ln(2)^2)
+For n=10M, FPR=0.01: m = -10M * ln(0.01) / 0.48 ≈ 95MB (760M bits)
+Always size Bloom filter based on expected n and desired FPR, not guesses.
 
 ### Failure Mode 4: B-tree vs LSM-tree Write Amplification
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ CONTEXT:                                                                    │
-│ High-write workload (IoT sensor ingestion, 100K writes/sec). Team debates  │
-│ B-tree (PostgreSQL) vs LSM-tree (RocksDB).                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ THE PROBLEM: Write Amplification Factor (WAF)                              │
-│ WAF = bytes_written_to_disk / bytes_application_wrote                       │
-│                                                                             │
-│ B-tree WAF: 10x to 50x                                                      │
-│ • Each write: random I/O to update leaf + traverse root-to-leaf           │
-│ • Page splits propagate upward (multiple page writes)                     │
-│ • For 1 byte update: may write 10-50 bytes to disk                         │
-│                                                                             │
-│ LSM-tree WAF: 5x to 20x (for sorted flushes/merges)                        │
-│ • Writes go to memory (memtable) — no disk I/O initially                  │
-│ • Periodic flush: sequential write of sorted run                          │
-│ • Compaction: merges sorted runs, but writes are sequential               │
-│                                                                             │
-│ REAL NUMBERS (Dell SSD, 100K writes/sec):                                   │
-│ • B-tree: ~500K IOPS consumed, SSD wear in 2 years                        │
-│ • LSM-tree: ~150K IOPS consumed, better SSD longevity                      │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ READ/WRITE TRADE-OFF:                                                       │
-│ ┌────────────────┬───────────────────┬───────────────────┐                 │
-│ │ Metric         │ B-tree            │ LSM-tree          │                 │
-│ ├────────────────┼───────────────────┼───────────────────┤                 │
-│ │ Write speed    │ Slow (10K/s)      │ Fast (100K/s)     │                 │
-│ │ Read speed     │ Fast (single IO)  │ Slower (merge IO) │                 │
-│ │ Write amplify  │ 10-50x            │ 5-20x             │                 │
-│ │ Space amplify  │ 1.5x              │ 1.5-2x (overhead) │                 │
-│ │ Best for       │ Read-heavy OLTP   │ Write-heavy OLAP  │                 │
-│ └────────────────┴───────────────────┴───────────────────┘                 │
-│ RULE: Write-heavy? Use LSM-tree. Read-heavy? Use B-tree.                   │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+#### Context
+
+High-write workload (IoT sensor ingestion, 100K writes/sec). Team debates
+B-tree (PostgreSQL) vs LSM-tree (RocksDB).
+
+**The problem:** Write Amplification Factor (WAF)
+
+WAF = bytes_written_to_disk / bytes_application_wrote
+
+B-tree WAF: 10x to 50x
+
+- Each write: random I/O to update leaf + traverse root-to-leaf
+- Page splits propagate upward (multiple page writes)
+- For 1 byte update: may write 10-50 bytes to disk
+
+LSM-tree WAF: 5x to 20x (for sorted flushes/merges)
+
+- Writes go to memory (memtable) — no disk I/O initially
+- Periodic flush: sequential write of sorted run
+- Compaction: merges sorted runs, but writes are sequential
+
+REAL NUMBERS (Dell SSD, 100K writes/sec):
+
+- B-tree: ~500K IOPS consumed, SSD wear in 2 years
+- LSM-tree: ~150K IOPS consumed, better SSD longevity
+
+**Read/write trade-off:** 
+
+| Metric | B-tree | LSM-tree |
+| ------ | ------ | -------- |
+| Write speed | Slow (≈10K/s) | Fast (≈100K/s) |
+| Read speed | Fast (single I/O) | Slower (merge I/O) |
+| Write amplification | 10–50× | 5–20× |
+| Space amplification | 1.5× | 1.5–2× (overhead) |
+| Best for | Read-heavy OLTP | Write-heavy workloads |
+
+> [!TIP]
+> **Rule:** write-heavy? Use an LSM-tree. Read-heavy? Use a B-tree. (Figures are illustrative orders of magnitude.)
 
 ---
 
