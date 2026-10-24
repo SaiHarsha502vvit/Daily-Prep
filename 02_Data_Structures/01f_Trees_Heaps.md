@@ -166,9 +166,9 @@ No pointers needed! This makes heaps extremely cache-friendly (contiguous memory
 ### Tree Variants Comparison Table
 
 | Structure          | Year  | Balance Invariant                                   | Search                       | Insert          | Primary Use Case                              | Cache Behavior                                 |
-| ------------------ | ----- | --------------------------------------------------- | ---------------------------- | --------------- | --------------------------------------------- | ---------------------------------------------- | --------------------- | ----------------------- |
+| ------------------ | ----- | --------------------------------------------------- | ---------------------------- | --------------- | --------------------------------------------- | ---------------------------------------------- |
 | BST (unbalanced)   | 1960s | None                                                | O(n) worst                   | O(n) worst      | Teaching only                                 | Pointer-chasing, poor locality                 |
-| AVL Tree           | 1962  | `                                                   | height(left) − height(right) | ≤ 1`            | O(log n)                                      | O(log n)                                       | Read-heavy DB indexes | Good; strictly balanced |
+| AVL Tree           | 1962  | `\|height(left) − height(right)\| ≤ 1`              | O(log n)                     | O(log n)        | Read-heavy DB indexes                         | Good; strictly balanced                        |
 | Red-Black Tree     | 1978  | 4 color rules → height ≤ 2 log₂(N+1)                | O(log n)                     | O(log n)        | In-memory maps (Java TreeMap, C++ `std::map`) | Good; less rigid than AVL                      |
 | B-Tree             | 1970  | `⌈m/2⌉ ≤ children ≤ m`; all leaves same depth       | O(log_m N)                   | O(log_m N)      | Database disk indexes                         | Excellent; high fan-out, few page faults       |
 | B+Tree             | 1970s | B-tree + all data in linked leaf nodes              | O(log_m N)                   | O(log_m N)      | SQL indexes (MySQL, PostgreSQL, Oracle)       | Best; sequential leaf scan for range queries   |

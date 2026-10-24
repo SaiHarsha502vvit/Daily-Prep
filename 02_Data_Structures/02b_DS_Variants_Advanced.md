@@ -703,6 +703,7 @@ public class MyDeque<T> {
 │                                                                             │
 │ KEY USE CASE: Sliding Window Maximum/Minimum in O(n)!                       │
 └─────────────────────────────────────────────────────────────────────────────┘
+```
 
 **INVARIANT (Monotonic Decreasing Queue for Sliding Window Max):**
 ```
@@ -717,6 +718,7 @@ For window [i-k+1, i] with deque D (stores indices):
 
 ```
 
+```
 EXAMPLE - SLIDING WINDOW MAXIMUM:
 Array: [1, 3, -1, -3, 5, 3, 6, 7], Window size: 3
 
@@ -919,6 +921,7 @@ Essentially a linked list!
 │ Valid values: -1, 0, +1                                                     │
 │ If BF becomes -2 or +2, we ROTATE!                                          │
 └─────────────────────────────────────────────────────────────────────────────┘
+```
 
 **INVARIANT (AVL Tree — Strict Balance):**
 ```
@@ -934,6 +937,7 @@ Implications:
 
 ```
 
+```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ ROTATIONS (The Key to Balance)                                              │
 ├─────────────────────────────────────────────────────────────────────────────┤

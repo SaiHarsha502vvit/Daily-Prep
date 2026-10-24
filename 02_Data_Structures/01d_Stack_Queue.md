@@ -577,6 +577,7 @@ public long fibIter(int n) {
 ```
 
 **Stack Sizes (JVM defaults):**
+
 | JVM Flag | Stack Size | Max Recursion Depth (approx) |
 |---|---|---|
 | `-Xss256k` | 256 KB | ~100–150 frames |

@@ -169,14 +169,15 @@ All data structure design — from B-trees to skiplists to hash tables — is an
 
 BEFORE YOU LEARN DATA STRUCTURES - UNDERSTAND THE MACHINE
 
-Why does this matter?
-─────────────────────
+**Why does this matter?**
+
 Every data structure exists in MEMORY. If you don't understand memory,
 you'll never truly understand why:
-• Arrays are fast for random access
-• LinkedLists are slow for random access
-• HashMaps are O(1) but use more memory
-• Cache-friendly code runs 100x faster
+
+- Arrays are fast for random access
+- LinkedLists are slow for random access
+- HashMaps are O(1) but use more memory
+- Cache-friendly code runs 100x faster
 
 Let's go DEEP into how computers actually work!
 
@@ -603,19 +604,25 @@ for (int i = 0; i < arr.length; i++) {
 
 ## Cpu Instruction Cycle - The Basics
 
-Every operation in your code becomes CPU instructions
-Java Code: int sum = a + b;
-Bytecode: iload_1 // Load 'a' onto stack
-iload_2 // Load 'b' onto stack
-iadd // Add top two values
-istore_3 // Store result in 'sum'
-Machine Code: MOV eax, [a] // Load a into register
-(x86) ADD eax, [b] // Add b to register
-MOV [sum], eax // Store result
+Every operation in your code becomes CPU instructions:
 
-**Cpu Clock Cycles For Common Operations**:
+```text
+Java Code:    int sum = a + b;
+
+Bytecode:     iload_1     // Load 'a' onto stack
+              iload_2     // Load 'b' onto stack
+              iadd        // Add top two values
+              istore_3    // Store result in 'sum'
+
+Machine Code: MOV eax, [a]  // Load a into register
+(x86)         ADD eax, [b]  // Add b to register
+              MOV [sum], eax // Store result
+```
+
+**CPU Clock Cycles For Common Operations**:
+
 | Operation | Cycles | Notes |
-┼────────┼
+| --------- | ------ | ----- |
 | Integer ADD/SUB | 1 | Fastest operations |
 | Integer MUL | 3 | Multiplication is costlier |
 | Integer DIV | 20-80 | Division is VERY expensive! |
@@ -630,7 +637,6 @@ MOV [sum], eax // Store result
 | Memory Read (RAM) | 200 | Cache miss - EXPENSIVE! |
 | Function Call | 15-30 | Stack frame setup |
 | Virtual Method Call | 25-50 | Vtable lookup + call |
-┴────────┴
 
 **Why This Matters For Dsa**:
 
@@ -824,107 +830,94 @@ Look for call chains with >10,000 frames — those indicate pathological recursi
 ## Bit-Level Operations - Complete Guide
 
 **Binary Representation**:
+
+```text
 int x = 42;
 42 in binary: 00000000 00000000 00000000 00101010
-Position: 5 4 3 2 1 0
-Value: 32+0+8+0+2+0 = 42
-32
-8
-2
+Position:                                 5 4 3 2 1 0
+Value:        32 + 8 + 2 = 42   (bits 5, 3 and 1 are set)
+```
 
 **Bit Operations**:
-AND (&) - Both bits must be 1
-42 & 15 = ?
-42: 00101010
-15: 00001111
-00001010 = 10
 
-**Use**: Masking bits, checking if bit is set
+| Operator | Name | Rule | Example (8-bit view) |
+| -------- | ---- | ---- | -------------------- |
+| `&` | AND | Both bits must be 1 | `42 & 15` → `00101010 & 00001111 = 00001010` = 10 |
+| `\|` | OR | Either bit can be 1 | `42 \| 15` → `00101010 \| 00001111 = 00101111` = 47 |
+| `^` | XOR | Bits must differ | `42 ^ 15` → `00101010 ^ 00001111 = 00100101` = 37 |
+| `~` | NOT | Flip all bits | `~42` → `11111111 11111111 11111111 11010101` = -43 |
+| `<<` | Left shift | Multiply by 2ⁿ | `42 << 2` → `10101000` = 168 (42 × 4) |
+| `>>` | Right shift | Divide by 2ⁿ | `42 >> 2` → `00001010` = 10 (42 / 4, integer division) |
 
-- Check if even: (n & 1) == 0
-- Get last k bits: n & ((1 << k) - 1)
-  OR (|) - Either bit can be 1
-  42 | 15 = ?
-  42: 00101010
-  15: 00001111
-  00101111 = 47
+Two's complement note: `-43 = ~42`, i.e. `~x = -x - 1`.
 
-**Use**: Setting bits
+**AND (`&`) — use:** masking bits, checking if a bit is set.
 
-- Set bit i: n | (1 << i)
-  XOR (^) - Bits must be different
-  42 ^ 15 = ?
-  42: 00101010
-  15: 00001111
-  00100101 = 37
+- Check if even: `(n & 1) == 0`
+- Get last k bits: `n & ((1 << k) - 1)`
 
-**Use**: Toggle bits, find single number, swap
+**OR (`|`) — use:** setting bits.
 
-- Toggle bit i: n ^ (1 << i)
-- Swap without temp: a ^= b; b ^= a; a ^= b;
-- a ^ a = 0 (cancel out)
-- a ^ 0 = a (identity)
-  NOT (~) - Flip all bits
-  ~42 = ?
-  42: 00000000 00000000 00000000 00101010
-  ~42: 11111111 11111111 11111111 11010101 = -43
-  (Two's complement: -43 = ~42)
-  LEFT SHIFT (<<) - Multiply by 2^n
-  42 << 2 = ?
-  42: 00101010
-  42<<2: 10101000 = 168
-  42 × 4 = 168 (same as 42 × 2²)
+- Set bit i: `n | (1 << i)`
 
-**Use**: Fast multiplication
+**XOR (`^`) — use:** toggle bits, find the single number, swap.
 
-- n \* 2: n << 1
-- n \* 8: n << 3
-- n \* 2^k: n << k
-  RIGHT SHIFT (>>) - Divide by 2^n
-  42 >> 2 = ?
-  42: 00101010
-  42>>2: 00001010 = 10
-  42 / 4 = 10 (integer division)
+- Toggle bit i: `n ^ (1 << i)`
+- Swap without temp: `a ^= b; b ^= a; a ^= b;`
+- `a ^ a = 0` (cancel out)
+- `a ^ 0 = a` (identity)
 
-**Use**: Fast division
+**Shifts — use:** fast multiplication and division by powers of two.
 
-- n / 2: n >> 1
-- n / 8: n >> 3
+- `n * 2` → `n << 1`
+- `n * 8` → `n << 3`
+- `n * 2^k` → `n << k`
+- `n / 2` → `n >> 1`
+- `n / 8` → `n >> 3`
 
 **Common Bit Tricks**:
 
-1. Check if power of 2:
-   (n & (n-1)) == 0
+1. **Check if power of 2:** `(n & (n-1)) == 0`
+
+   ```text
    8: 1000
    7: 0111
    8 & 7: 0000 ✓ (power of 2)
    6: 0110
    5: 0101
    6 & 5: 0100 ✗ (not power of 2)
-2. Get lowest set bit:
-   n & (-n)
-   12: 1100
-   -12: 0100 (two's complement)
-   12&-12: 0100 = 4 (lowest set bit)
-3. Clear lowest set bit:
-   n & (n-1)
+   ```
+
+2. **Get lowest set bit:** `n & (-n)`
+
+   ```text
+   12:  1100
+   -12: 0100 (two's complement, low bits)
+   12 & -12: 0100 = 4 (lowest set bit)
+   ```
+
+3. **Clear lowest set bit:** `n & (n-1)`
+
+   ```text
    12: 1100
    11: 1011
-   12&11: 1000 = 8 (cleared bit at position 2)
-4. Count set bits (Brian Kernighan's):
+   12 & 11: 1000 = 8 (cleared bit at position 2)
+   ```
+
+4. **Count set bits (Brian Kernighan's):**
+
+   ```java
    int count = 0;
    while (n != 0) {
-   n = n & (n - 1); // Clear lowest bit
-   count++;
+       n = n & (n - 1);  // Clear lowest bit
+       count++;
    }
-5. Check if bit i is set:
-   (n & (1 << i)) != 0
-6. Set bit i:
-   n | (1 << i)
-7. Clear bit i:
-   n & ~(1 << i)
-8. Toggle bit i:
-   n ^ (1 << i)
+   ```
+
+5. **Check if bit i is set:** `(n & (1 << i)) != 0`
+6. **Set bit i:** `n | (1 << i)`
+7. **Clear bit i:** `n & ~(1 << i)`
+8. **Toggle bit i:** `n ^ (1 << i)`
 
 ---
 

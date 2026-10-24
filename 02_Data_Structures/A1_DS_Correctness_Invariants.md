@@ -378,7 +378,7 @@ Node insert(Node node, int key) {
 }
 ```
 
-**Proof by structural induction on `node`**: 
+**Proof by structural induction on `node`**:
 
 *Base case*: If `node == null`, a new leaf is created with `key`. Since it has no children, the BST property is vacuously satisfied for this leaf. ✓
 
@@ -849,12 +849,12 @@ Rule: invariant checks are O(n) or worse -- too expensive for production hot pat
 
 ## Reality Check
 
-**"Testing proves correctness"** ? Testing shows the ABSENCE of bugs for tested inputs, not the absence of bugs for ALL inputs. A binary search implementation that fails only when the array has exactly 2^31-1 elements will pass every reasonable test suite. Invariant-based reasoning proves correctness for ALL inputs: if the invariant holds before and after each iteration and implies the postcondition at termination, the algorithm is correct for every valid input.
+**"Testing proves correctness"** → Testing shows the ABSENCE of bugs for tested inputs, not the absence of bugs for ALL inputs. A binary search implementation that fails only when the array has exactly 2^31-1 elements will pass every reasonable test suite. Invariant-based reasoning proves correctness for ALL inputs: if the invariant holds before and after each iteration and implies the postcondition at termination, the algorithm is correct for every valid input.
 
-**"Invariants are just assertions"** ? Assertions check that a condition holds at a specific point in execution. Invariants are LOGICAL PROPERTIES that hold throughout an operation: the BST invariant (left < root < right) must hold before and after every insertion, deletion, and rotation. An assertion is a runtime check at one moment. An invariant is a mathematical claim about every reachable state of the data structure.
+**"Invariants are just assertions"** → Assertions check that a condition holds at a specific point in execution. Invariants are LOGICAL PROPERTIES that hold throughout an operation: the BST invariant (left < root < right) must hold before and after every insertion, deletion, and rotation. An assertion is a runtime check at one moment. An invariant is a mathematical claim about every reachable state of the data structure.
 
-**"Off-by-one errors are minor bugs"** ? Off-by-one errors in data structure implementations can violate structural invariants: a heap with an off-by-one parent index formula accesses the wrong children, corrupting the heap property silently. The heap APPEARS to work for small inputs but produces incorrect results for specific configurations. Invariant checking (is heap property satisfied after every operation) catches these immediately.
+**"Off-by-one errors are minor bugs"** → Off-by-one errors in data structure implementations can violate structural invariants: a heap with an off-by-one parent index formula accesses the wrong children, corrupting the heap property silently. The heap APPEARS to work for small inputs but produces incorrect results for specific configurations. Invariant checking (is heap property satisfied after every operation) catches these immediately.
 
-**"Representation invariants are implementation details"** ? A representation invariant defines what makes a data structure instance VALID. For a Red-Black tree: every path from root to null has the same number of black nodes, red nodes have black children, and root is black. Violating any of these means the tree is corrupt � operations will produce wrong results or crash. The rep invariant is the CONTRACT between the data structure and its operations.
+**"Representation invariants are implementation details"** → A representation invariant defines what makes a data structure instance VALID. For a Red-Black tree: every path from root to null has the same number of black nodes, red nodes have black children, and root is black. Violating any of these means the tree is corrupt — operations will produce wrong results or crash. The rep invariant is the CONTRACT between the data structure and its operations.
 
-**"Formal verification is impractical"** ? Lightweight formal reasoning (writing preconditions, postconditions, and loop invariants as comments, then mentally checking them) catches bugs that testing misses, costs minutes, and requires no tools. Full formal verification with proof assistants (Coq, Isabelle) is expensive, but the REASONING DISCIPLINE of formal methods � stating exactly what must be true and why � is practical and immediately useful in everyday programming.
+**"Formal verification is impractical"** → Lightweight formal reasoning (writing preconditions, postconditions, and loop invariants as comments, then mentally checking them) catches bugs that testing misses, costs minutes, and requires no tools. Full formal verification with proof assistants (Coq, Isabelle) is expensive, but the REASONING DISCIPLINE of formal methods — stating exactly what must be true and why — is practical and immediately useful in everyday programming.

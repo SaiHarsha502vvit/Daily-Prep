@@ -1158,7 +1158,6 @@ Now reset `slow` to head. Both move at speed 1.
   After μ more steps: C - (μ mod C) + μ = C + μ - (μ mod C).
   This is a multiple of C (since μ - (μ mod C) = ⌊μ/C⌋ × C).
   So fast is also at the cycle entry. ∎
-```
 
 **Worked trace.** List: `1 → 2 → 3 → 4 → 5 → 3` (cycle entry at node 3, μ = 2, C = 3).
 

@@ -139,19 +139,25 @@ INVARIANT 3 — CSR (Compressed Sparse Row) Array Lengths:
 
 ## What Problem Do 2D Arrays Solve
 
-PROBLEM 1: Representing GRID-BASED data
+**Problem 1: Representing GRID-BASED data**
 
 - Maps: Geographic data in grid form
 - Games: Chess, Sudoku, Tic-Tac-Toe boards
 - Images: Pixels arranged in grid
-  PROBLEM 2: Representing RELATIONSHIPS between two sets
+
+**Problem 2: Representing RELATIONSHIPS between two sets**
+
 - Graph adjacency matrix: connections between nodes
 - Distance matrix: distances between cities
 - Transition matrix: state changes in systems
-  PROBLEM 3: Table-structured data
+
+**Problem 3: Table-structured data**
+
 - Spreadsheets: Rows of records, columns of fields
 - Databases: Conceptually stored as tables
-  WITHOUT 2D ARRAYS:
+
+**Without 2D arrays:**
+
 - Would need multiple 1D arrays with manual coordination
 - Prone to index mismatch errors
 - Harder to visualize and reason about
@@ -206,21 +212,16 @@ USE 2D ARRAY WHEN:
 
 ## Difficulties & Common Mistakes
 
-1. INDEX CONFUSION:
-   "Is it [row][col] or [col][row]?"
-   Solution: ALWAYS use [row][col] in Java. Row = y, Col = x
-2. BOUNDARY CHECKING:
-   ArrayIndexOutOfBounds is common
-   Solution: Always check 0 <= row < rows && 0 <= col < cols
-3. TRAVERSAL ORDER:
-   "Which direction first?"
-   Solution: Use direction arrays: dx = {0,0,1,-1}, dy = {1,-1,0,0}
-4. MODIFYING WHILE TRAVERSING:
-   Changing values affects later iterations
-   Solution: Use visited array or mark with special value
-5. JAGGED ARRAYS:
-   "Rows have different lengths!"
-   Solution: Use matrix[i].length for each row's column count
+1. **Index confusion** — "Is it `[row][col]` or `[col][row]`?"
+   **Solution:** ALWAYS use `[row][col]` in Java. Row = y, Col = x.
+2. **Boundary checking** — `ArrayIndexOutOfBounds` is common.
+   **Solution:** Always check `0 <= row < rows && 0 <= col < cols`.
+3. **Traversal order** — "Which direction first?"
+   **Solution:** Use direction arrays: `dx = {0,0,1,-1}`, `dy = {1,-1,0,0}`.
+4. **Modifying while traversing** — changing values affects later iterations.
+   **Solution:** Use a visited array or mark with a special value.
+5. **Jagged arrays** — "Rows have different lengths!"
+   **Solution:** Use `matrix[i].length` for each row's column count.
 
 ## Expected Outcomes
 
