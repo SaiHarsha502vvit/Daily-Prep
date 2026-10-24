@@ -85,6 +85,8 @@ Every chapter follows the same enterprise-grade layout so you always know where 
 | 27 | [Essential Array Patterns](08b_NumberTheory_Advanced.md) | Kadane, Dutch flag, Boyer–Moore, Floyd, prefix/difference arrays |
 | 28 | [Matrix Exponentiation & Linear Recurrences](23_Matrix_Exponentiation_And_Linear_Recurrences.md) 🆕 | Huge-`n` recurrences, walk counting |
 | 29 | [FFT / NTT](26_FFT_NTT_Polynomial_Multiplication.md) 🆕 | Fast convolution |
+| 29b | [Combinatorics & Counting](27_Combinatorics_Counting_Toolkit.md) 🆕 | Catalan, inclusion–exclusion, Burnside, Cayley, Kirchhoff, Dilworth, Diophantine |
+| 29c | [Book Companion](00_BOOK_COMPANION.md) 🆕 | Chapter maps to two classic books, complexity-by-input-size table, working method |
 | 30 | [Game Theory](24_Game_Theory_Nim_Sprague_Grundy.md) 🆕 | Nim, Grundy numbers |
 | 31 | [Math & Geometry](06_Math_Geometry_Java_Complete.md) | Cross product, shoelace, Pick's theorem |
 

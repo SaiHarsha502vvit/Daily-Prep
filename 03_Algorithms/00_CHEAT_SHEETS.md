@@ -80,7 +80,7 @@ for (int hi = 0; hi < n; hi++) {
 **Gotchas**:
 - `mid = (lo + hi) / 2` overflows when lo + hi > Integer.MAX_VALUE. Always use `lo + (hi-lo)/2`.
 - Off-by-one: decide upfront if your range is `[lo, hi]` or `[lo, hi)` — be consistent.
-- Two-pointer only works on SORTED arrays. For unsorted: sort first (O(n log n)) or use HashMap (O(n)).
+- The two-pointer *pair-sum* technique needs SORTED input. For unsorted input: sort first (O(n log n)) or use a HashMap (O(n)). (Other two-pointer patterns, such as sliding windows and in-place partitioning, do not require sorting.)
 
 ---
 

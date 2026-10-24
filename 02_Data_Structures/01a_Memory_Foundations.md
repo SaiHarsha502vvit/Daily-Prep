@@ -197,17 +197,17 @@ Every concept in this chapter has a history. Understanding _why_ memory architec
 
 | Era     | Technology                                        | Key Innovation                                               | Why It Mattered                                                                                                            |
 | ------- | ------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| 1945    | **Williams-Kilburn tube** (Manchester)            | First practical DRAM (cathode ray tube)                      | Random access replacing sequential punch cards; 1,024 bits stored as charge spots                                          |
-| 1947    | **Selectron tube** (RCA)                          | 4,096-bit electrostatic memory                               | Too expensive; superseded by magnetic core                                                                                 |
-| 1950s   | **Magnetic core memory**                          | Ferrite rings on wire grids; non-volatile                    | Dominated computing until 1970s; IBM 405, IBM 704; read/write with no power loss                                           |
-| 1968    | **MOS dynamic RAM** (Intel 1103, 1970)            | One transistor + one capacitor per cell; density 1 Kbit/chip | First DRAM chip to undercut magnetic core on cost; became the standard RAM of mainframes and minis                         |
-| 1976    | **Cray-1 vector processor**                       | First commercial cache hierarchy (512 KiB B-board)           | Seymour Cray recognized that memory latency (not compute) was the bottleneck; introduced cache to bridge CPU/RAM speed gap |
-| 1978-85 | **x86 cache coherency** (Intel 386 + 387)         | Separate L1 cache controller; MESI protocol defined 1982     | Multi-processor systems needed coherency; MESI still underpins modern CPUs                                                 |
+| 1946–48 | **Williams–Kilburn tube** (Manchester) | First electronic random-access memory (CRT charge spots that must be refreshed, a DRAM ancestor) | Random access replacing sequential delay lines; the Manchester Baby (1948) held 1,024 bits |
+| 1947+   | **Selectron tube** (RCA) | Electrostatic memory (4,096-bit design; production tubes held 256 bits) | Too expensive and unreliable; superseded by magnetic core |
+| 1950s   | **Magnetic core memory** | Ferrite rings on wire grids; non-volatile | Dominated computing until the 1970s (e.g. IBM 704, 1955); data survives power loss |
+| 1966–70 | **MOS dynamic RAM** (Dennard 1966; Intel 1103, 1970) | One transistor + one capacitor per cell; 1 Kbit per chip | First DRAM chip to undercut magnetic core on cost; became the standard RAM of mainframes and minis |
+| 1968    | **IBM System/360 Model 85** | First commercial computer with a cache memory | Showed that a small fast buffer in front of slower main memory hides latency |
+| 1984    | **MESI / Illinois protocol** (Papamarcos and Patel) | Cache-coherence protocol for multiprocessors | Multi-processor systems need coherent caches; MESI-style protocols still underpin modern CPUs |
 | 1989    | **Intel 80486**                                   | First on-chip L1 cache (8 KiB)                               | Eliminated the external cache bus bottleneck; instruction decode now overlapped with cache fetch                           |
 | 1993    | **Pentium (P5)**                                  | Separate L1 instruction + data caches                        | Enables simultaneous fetch of instructions and data; halves conflict misses                                                |
-| 1999    | **AMD Athlon Thunderbird**                        | First on-die L2 cache                                        | Reduces latency vs. off-chip L2 by ~40%; marks the end of the external L2 era                                              |
-| 2008+   | **NUMA topology** (AMD HyperTransport, Intel QPI) | Non-uniform memory access; each socket owns local DRAM       | Scale-out servers showed that flat memory was a bottleneck; locality became a first-class concern                          |
-| 2019+   | **Intel Optane DC Persistent Memory**             | Memory-mode DIMMs; 256-512 GiB per socket, ~1 µs latency     | Blurs the line between DRAM and storage; datasets too large for DRAM now fit in "memory"                                   |
+| 2000    | **Pentium III Coppermine / AMD Athlon Thunderbird** | Full-speed on-die L2 cache | Reduced L2 latency versus off-chip L2 and ended the external L2 era |
+| 2003–08 | **NUMA topology** (AMD Opteron/HyperTransport 2003, Intel QPI 2008) | Non-uniform memory access; each socket owns local DRAM | Scale-out servers showed that flat memory was a bottleneck; locality became a first-class concern |
+| 2019–22 | **Intel Optane DC Persistent Memory** | Memory-mode DIMMs of 128–512 GiB, roughly 300 ns latency (product line discontinued in 2022) | Blurred the line between DRAM and storage; the idea lives on in CXL-attached memory |
 | 2020s   | **Compute Express Link (CXL)**                    | Cache-coherent CPU-device memory pooling                     | Heterogeneous memory hierarchies; GPU/HBM and DRAM served by a single coherent address space                               |
 
 ### Named Predecessors Still Visible in Modern Code
@@ -217,7 +217,7 @@ Every concept in this chapter has a history. Understanding _why_ memory architec
 | **Williams tube** (1947)   | Refresh cycles                             | DRAM needs `REF` commands every 64 ms; `memtest86` checks refresh integrity                                        |
 | **Magnetic core** (1950s)  | Memory-mapped I/O, non-volatile primitives | `mmap(2)` and `fadvise(2)` inherit core's "attach physical location to address" semantics                          |
 | **Intel 1103 DRAM** (1970) | Row/column addressing, bank conflicts      | Modern DDR4 row-hit rate directly determines memory throughput; profilers (perf, VTune) report "row buffer misses" |
-| **Cray-1 cache** (1976)    | Cache line behavior, prefetching           | Cache-line size (64 bytes on x86, 128 bytes on Cray vector) still governs all spatial locality decisions           |
+| **IBM System/360 Model 85 cache** (1968) | Cache line behavior, prefetching | Cache-line size (64 bytes on x86) still governs spatial locality decisions |
 
 ### Why This History Matters for Your Code
 

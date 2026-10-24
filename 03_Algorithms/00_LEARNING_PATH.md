@@ -92,6 +92,8 @@ flowchart LR
     BM --> NT["08a-08b Number Theory"]
     NT --> ME["23 Matrix Exponentiation"]
     ME --> FF["26 FFT / NTT"]
+    NT --> CB["27 Combinatorics"]
+    DP --> CB
     BM --> GT["24 Game Theory"]
     TR --> ADS["07a-07e Advanced DS"]
     UF --> ADS
@@ -108,7 +110,7 @@ flowchart LR
     class T,A1,A2 base
     class S1,S2,DC,R1,DP,BT,GR,TR,G1,G2,G3,ST,PS,BM,NT,MS,UF,TRI core
     class ADS,NP,A4,PROD adv
-    class SR,ME,FF,GT,AP new
+    class SR,ME,FF,GT,AP,CB new
 ```
 
 **How to read this diagram.** Arrows mean "read before". Green boxes are chapters added by the curriculum audit to close gaps; orange are the advanced/limits layer.
@@ -141,6 +143,7 @@ Each row says what you **carry in**, what **new problem** forces the chapter, an
 | 18 | [Bitwise Trie](18_Bitwise_Trie_Java_Complete.md) | Tries, bit tricks | Max/min XOR queries | Advanced DS |
 | 19 | [Number Theory Core](08a_NumberTheory_Core.md) → [Number Theory Advanced / Essential Patterns](08b_NumberTheory_Advanced.md) | Modular arithmetic | GCD, primes, modular inverse, classic array patterns | Matrix exponentiation |
 | 20 | [Matrix Exponentiation](23_Matrix_Exponentiation_And_Linear_Recurrences.md) 🆕 → [FFT/NTT](26_FFT_NTT_Polynomial_Multiplication.md) 🆕 | Fast power, D&C | Huge-`n` recurrences, fast convolution | Counting problems |
+| 20b | [Combinatorics & Counting](27_Combinatorics_Counting_Toolkit.md) 🆕 | Modular inverse, DP recurrences, spanning trees | Count without listing: Catalan, inclusion–exclusion, Burnside, Cayley, Kirchhoff, Dilworth | Randomized algorithms, backtracking (listing what you counted) |
 | 21 | [Game Theory](24_Game_Theory_Nim_Sprague_Grundy.md) 🆕 | XOR, DP, backtracking | Who wins a two-player game | Adversary arguments |
 | 22 | [Math & Geometry](06_Math_Geometry_Java_Complete.md) | Cross products, area | Orientation, polygon area, lattice points | Computational geometry |
 | 23 | [Advanced DS Core](07a_Advanced_DS_Core.md) → [Patterns](07b_Advanced_DS_Patterns.md) → [Advanced Trees](07c_Advanced_Trees_Deep.md) → [Probabilistic](07d_Probabilistic_DS_Deep.md) → [Algorithm Engineering](07e_Advanced_Algorithm_Engineering_Deep.md) | Trees, DSU, hashing | Range queries (segment/Fenwick), balanced/disk trees, sketches, HLD/Mo/wavelet | Production |
@@ -188,6 +191,8 @@ The audit searched every chapter for the topics a complete algorithms syllabus (
 | Game theory / Sprague–Grundy: 0 mentions | New [chapter 24](24_Game_Theory_Nim_Sprague_Grundy.md) |
 | Approximation, online algorithms, LP: ≤ 3 mentions each | New [chapter 25](25_Online_Approximation_And_Linear_Programming.md) |
 | FFT/NTT: scattered mentions, no derivation or code | New [chapter 26](26_FFT_NTT_Polynomial_Multiplication.md) |
+| Catalan, Burnside, Cayley/Prüfer, Kirchhoff, Wilson, Dilworth, Josephus, Diophantine, Stern–Brocot: 0 mentions (found by the [book audit](00_BOOK_COMPANION.md)) | New [chapter 27](27_Combinatorics_Counting_Toolkit.md) |
+| No single place mapping the repository to the two reference books or giving the input-size → complexity table | New [Book Companion](00_BOOK_COMPANION.md) |
 | Index numbering stale; some links pointed to files that do not exist | [00_INDEX](00_INDEX.md) rewritten and links corrected |
 | File names mismatch content for `06a`, `06d`, `06e`, `07b`, `08a`, `08b` | Documented above and in the index; chapters carry a Bridge box |
 

@@ -28,7 +28,7 @@ This file answers: "When was this invented, by whom, and what problem forced it 
 - **See**: [05b — Graphs Internals](05b_Graphs_Internals.md)
 
 ### 1857 — Cayley: Trees and Spanning Trees
-**Arthur Cayley** introduced "trees" — connected acyclic graphs — and proved Cayley's formula: there are V^(V-2) distinct labelled spanning trees on V vertices.
+**Arthur Cayley** introduced "trees" — connected acyclic graphs — in 1857. Cayley's formula, `V^(V−2)` labelled trees on V vertices, was first proved by Borchardt (1860) and popularised by Cayley (1889).
 - **Created**: Tree data structure concept, spanning tree theory.
 - **Modern use**: Minimum Spanning Trees, Prüfer sequences, phylogenetics.
 
@@ -39,7 +39,7 @@ This file answers: "When was this invented, by whom, and what problem forced it 
 - **See**: [A2 — Complexity](A2_Complexity_FirstPrinciples.md)
 
 ### 1931 — König: Bipartite Graphs
-**Dénes Kőnig** published the first graph theory textbook and proved König's theorem: in bipartite graphs, max matching = min vertex cover.
+**Dénes Kőnig** proved König's theorem in 1931: in bipartite graphs, max matching = min vertex cover. (He also wrote the first graph-theory textbook, 1936; Hall's marriage theorem followed in 1935.)
 - **Created**: Bipartite matching, Hall's marriage theorem.
 - **Modern use**: Task scheduling, network flow, matching in online platforms.
 
@@ -52,7 +52,7 @@ This file answers: "When was this invented, by whom, and what problem forced it 
 ## 2. Birth of Algorithms (1940s–1950s)
 
 ### 1945 — von Neumann: Merge Sort
-**John von Neumann** invented merge sort while working on ENIAC, for sorting punch-card runs. The first practical O(n log n) sorting algorithm.
+**John von Neumann** invented merge sort in 1945 while working on the EDVAC stored-program design. It is among the first practical O(n log n) sorting algorithms.
 - **Innovation**: Divide two halves independently, merge in linear time.
 - **Complexity**: Θ(n log n) worst-case — still optimal for comparison sort.
 - **Modern use**: Java's `Arrays.sort(Object[])` uses TimSort (merge sort variant); Python's `sort()` is TimSort.
@@ -65,8 +65,8 @@ This file answers: "When was this invented, by whom, and what problem forced it 
 - **Modern use**: Network design, cluster analysis, image segmentation.
 - **See**: [12 — Greedy Algorithms](12_Greedy_Algorithms_Complete.md), [14 — Union-Find](14_Union_Find_DSU_Complete.md)
 
-### 1957 — Bellman: Dynamic Programming + Shortest Paths
-**Richard Bellman** coined the term "dynamic programming" (the name was chosen to sound impressive to military funders) and invented Bellman-Ford shortest path algorithm.
+### 1957–58 — Bellman: Dynamic Programming + Shortest Paths
+**Richard Bellman** coined the term "dynamic programming" (by his own account, chosen to sound non-mathematical to the funding bosses at RAND/the Defense Department). The shortest-path algorithm now called **Bellman–Ford** was published by Ford (1956) and Bellman (1958), and independently by Moore (1959).
 - **Innovation**: Optimal substructure principle — optimal solution composed of optimal sub-solutions.
 - **Complexity**: O(VE) — handles negative edge weights, detects negative cycles.
 - **Modern use**: Distance vector routing (RIP protocol), arbitrage detection.
@@ -81,7 +81,7 @@ This file answers: "When was this invented, by whom, and what problem forced it 
 ### 1959 — Dijkstra: Shortest Path in Weighted Graphs
 **Edsger W. Dijkstra** designed his shortest-path algorithm in 20 minutes in a café (self-reported). Original paper was 3 pages with no pseudocode.
 - **Innovation**: Greedy relaxation via priority queue; correct only for non-negative weights.
-- **Complexity**: O((V+E) log V) with binary heap; O(V² + E) with Fibonacci heap.
+- **Complexity**: O((V+E) log V) with a binary heap; O(V²) with a plain array; O(E + V log V) with a Fibonacci heap.
 - **Key proof**: When a node is extracted from the min-heap, its distance is final — proved by contradiction (see [05c — Graphs Fundamentals](05c_Graphs_Fundamentals.md)).
 - **Modern use**: Google Maps, IP routing (OSPF), game pathfinding (A\* generalises it).
 
@@ -93,8 +93,8 @@ This file answers: "When was this invented, by whom, and what problem forced it 
 - **Modern use**: `Arrays.sort(int[])` in Java uses dual-pivot Quicksort (Yaroslavskiy 2009).
 - **See**: [02b — Sorting Advanced](02b_Sorting_Advanced.md)
 
-### 1959 — Floyd: All-Pairs Shortest Path
-**Robert Floyd** (and independently **Stephen Warshall** for transitive closure) gave the O(V³) dynamic programming recurrence for all-pairs shortest paths.
+### 1962 — Floyd–Warshall: All-Pairs Shortest Path
+**Robert Floyd** (1962) and, independently, **Stephen Warshall** (1962, transitive closure; building on Bernard Roy, 1959) gave the O(V³) dynamic-programming recurrence for all-pairs shortest paths.
 - **Innovation**: dp[i][j][k] = shortest path from i to j using only vertices {1..k} as intermediates.
 - **See**: [05d — Graphs Advanced](05d_Graphs_Advanced_Algos.md)
 
@@ -118,12 +118,6 @@ This file answers: "When was this invented, by whom, and what problem forced it 
 - **Modern use**: Still used in some language runtimes; Java uses Red-Black trees instead.
 - **See**: [07c — Advanced Trees Deep](07c_Advanced_Trees_Deep.md)
 
-### 1964 — Fenwick: Binary Indexed Tree (BIT)
-**Peter Fenwick** (University of Canterbury, NZ) invented the Binary Indexed Tree as a compact alternative to segment trees. Key insight: index i stores sum of a range of size `i & (-i)`.
-- **Innovation**: Both point update and prefix query in O(log n) with only n integers.
-- **Modern use**: Competitive programming (prefix sums with updates), order statistics, financial data.
-- **See**: [07a — Advanced DS Core](07a_Advanced_DS_Core.md)
-
 ### 1965 — Cooley-Tukey: Fast Fourier Transform
 **James Cooley and John Tukey** published the FFT, reducing DFT from O(n²) to O(n log n) using divide-and-conquer on polynomials.
 - **Impact**: The most practically important D&C algorithm — underpins signal processing, audio compression (MP3), GPS, 5G, cryptography.
@@ -134,7 +128,7 @@ This file answers: "When was this invented, by whom, and what problem forced it 
 - **See**: [03c — Recursion Advanced](03c_Recursion_Advanced.md), [11 — Backtracking](11_Backtracking_Complete.md)
 
 ### 1968 — Knuth: The Art of Computer Programming
-**Donald Knuth** published Volume 1 (fundamental algorithms) and Volume 3 (sorting and searching), establishing the mathematical analysis of algorithms as a discipline. Introduced O-notation as standard.
+**Donald Knuth** published Volume 1 (fundamental algorithms) in 1968 (Volume 3, sorting and searching, followed in 1973), establishing the mathematical analysis of algorithms as a discipline. Introduced O-notation as standard.
 - **Impact**: Every complexity analysis done today uses Knuth's notation framework.
 - **See**: [A2 — Complexity from First Principles](A2_Complexity_FirstPrinciples.md)
 
@@ -176,7 +170,7 @@ This file answers: "When was this invented, by whom, and what problem forced it 
 - **Modern use**: Range sum, range min/max queries with point or range updates.
 - **See**: [07a — Advanced DS Core](07a_Advanced_DS_Core.md)
 
-### 1978 — Aho-Corasick: Multi-Pattern String Search
+### 1975 — Aho-Corasick: Multi-Pattern String Search
 **Alfred Aho and Margaret Corasick** published the Aho-Corasick automaton — simultaneous search for all patterns in a dictionary in O(n + m + z) where z = number of matches.
 - **Modern use**: Anti-virus scanners (signature matching), intrusion detection systems, DNS filtering.
 - **See**: [13 — String Algorithms](13_String_Algorithms_Complete.md)
@@ -202,13 +196,13 @@ This file answers: "When was this invented, by whom, and what problem forced it 
 **Sleator and Tarjan** invented splay trees — self-adjusting BSTs with O(log n) amortised operations and the working-set property (recently accessed nodes are fast to re-access).
 - **Innovation**: No stored balance information; tree restructures itself via splaying.
 
-### 1987 — Skip Lists
-**William Pugh** invented skip lists as a probabilistic alternative to balanced BSTs. Expected O(log n) search, insert, delete. Simpler to implement than AVL or Red-Black.
+### 1989–90 — Skip Lists
+**William Pugh** invented skip lists (workshop paper 1989, CACM 1990) as a probabilistic alternative to balanced BSTs. Expected O(log n) search, insert, delete. Simpler to implement than AVL or Red-Black.
 - **Modern use**: Redis sorted sets, MemTable in LevelDB/RocksDB, Java `ConcurrentSkipListMap`.
 - **See**: [A4 — Randomized Algorithms](A4_Randomized_Algorithms.md)
 
 ### 1989 — Universal Hashing
-**Carter and Wegman (1979)** defined universal hash families; **Dietzfelbinger et al. (1989)** gave practical constructions. Guarantees Pr[h(x)=h(y)] ≤ 1/m for any two distinct keys x, y.
+**Carter and Wegman (1977/1979)** defined universal hash families; later work (e.g. Dietzfelbinger et al., 1990s) gave fast practical constructions. Guarantees Pr[h(x)=h(y)] ≤ 1/m for any two distinct keys x, y.
 - **Impact**: Defends against adversarial hash-flooding attacks (HashDoS).
 - **See**: [A4 — Randomized Algorithms](A4_Randomized_Algorithms.md)
 
@@ -219,12 +213,18 @@ This file answers: "When was this invented, by whom, and what problem forced it 
 
 ## 6. The Internet Era (1990s–2000s)
 
-### 1993 — Mo's Algorithm (offline range queries)
-**Mo Tao** (competitive programmer, later at Google) published the sqrt-decomposition technique for offline range queries in O((n+q)√n).
+### 1994 — Fenwick: Binary Indexed Tree (BIT)
+**Peter Fenwick** (University of Canterbury, NZ) invented the Binary Indexed Tree as a compact alternative to segment trees. Key insight: index i stores sum of a range of size `i & (-i)`.
+- **Innovation**: Both point update and prefix query in O(log n) with only n integers.
+- **Modern use**: Competitive programming (prefix sums with updates), order statistics, financial data.
+- **See**: [07a — Advanced DS Core](07a_Advanced_DS_Core.md)
+
+### c. 2009 — Mo's Algorithm (offline range queries)
+The technique is named after the Chinese competitive programmer **Mo Tao**, who popularised it around 2009–2010 for offline range queries in O((n+q)√n); it is a sqrt-decomposition idea (it became widely known through Codeforces blogs).
 - **Innovation**: Sort queries by left endpoint's block, then by right endpoint — minimises total pointer movement.
 - **See**: [06e — Algorithm Patterns](06e_Algorithm_Patterns.md)
 
-### 1994 — Cuckoo Hashing (precursor ideas)
+### 2001 — Cuckoo Hashing
 Cuckoo hashing formalised by **Pagh and Rodler (2001)**: two hash functions, two tables — guaranteed O(1) worst-case lookup.
 - **Modern use**: High-performance network packet lookup, Intel's DPDK, some DNS resolvers.
 - **See**: [A4 DS — Randomized Data Structures](../02_Data_Structures/A4_Randomized_Data_Structures.md)
@@ -233,8 +233,8 @@ Cuckoo hashing formalised by **Pagh and Rodler (2001)**: two hash functions, two
 **Brin and Page** applied power iteration on the web graph's adjacency matrix to compute stationary distribution — effectively a random walk / eigenvector computation on a massive graph.
 - **Impact**: Showed that graph algorithms on internet-scale data are practically important.
 
-### 2001 — HyperLogLog (precursor: Flajolet-Martin 1983)
-**Flajolet and Martin (1983)** introduced probabilistic counting; **Flajolet, Fusy, Gandouet, Meunier (2007)** published HyperLogLog — estimates cardinality in O(1) space with 2% error using only ~12KB.
+### 2007 — HyperLogLog (precursor: Flajolet-Martin 1983)
+**Flajolet and Martin (1983)** introduced probabilistic counting; **Flajolet, Fusy, Gandouet, Meunier (2007)** published HyperLogLog — estimates cardinality with a standard error of about `1.04/√m` (≈0.8% with m = 16,384 registers, ~12 KB as in Redis).
 - **Modern use**: Redis `PFCOUNT`, BigQuery, ClickHouse — counting unique visitors without storing all IDs.
 - **See**: [A4 DS — Randomized Data Structures](../02_Data_Structures/A4_Randomized_Data_Structures.md)
 
@@ -247,22 +247,22 @@ Cuckoo hashing formalised by **Pagh and Rodler (2001)**: two hash functions, two
 ## 7. Modern Era (2010s–present)
 
 ### 2006 — Java Binary Search Fix
-The `mid = (lo + hi) / 2` integer overflow bug was reported by **Joshua Bloch (Google/Sun)** in a blog post — the bug had been in Java's `Arrays.binarySearch` since 1946 (in academic texts) and was in the JDK since 1997. Fixed to `lo + (hi - lo) / 2`.
+The `mid = (lo + hi) / 2` integer overflow bug was reported by **Joshua Bloch (Google/Sun)** in a blog post — the faulty midpoint idiom had appeared in textbooks and implementations for decades (binary search was first published in 1946) and was present in the JDK's `Arrays.binarySearch` from the late 1990s. Fixed to `lo + (hi - lo) / 2`.
 - **See**: [02c — Divide & Conquer](02c_Divide_And_Conquer.md)
 
 ### 2009 — Dual-Pivot Quicksort (Java 7+)
 **Vladimir Yaroslavskiy** proposed dual-pivot quicksort: use two pivots to partition into 3 parts. Adopted in Java 7's `Arrays.sort(int[])`. ~10–15% faster than single-pivot in practice.
 
 ### 2011 — HashDoS Attack
-Researchers demonstrated that non-randomized hash seeds in Python, Java, PHP, Ruby allowed adversarial string inputs to degrade HashMap from O(1) to O(n) — causing denial-of-service. Resulted in mandatory hash randomisation in all major runtimes.
+Researchers demonstrated that non-randomized hash seeds in Python, Java, PHP, Ruby allowed adversarial string inputs to degrade HashMap from O(1) to O(n) — causing denial-of-service. Major runtimes responded with randomised hashing or other mitigations (for example, Java 8 added tree bins, which bound the damage to O(log n) per bucket).
 - **See**: [A4 — Randomized Algorithms](A4_Randomized_Algorithms.md), [01e — Hash Tables](../02_Data_Structures/01e_HashTable.md)
 
 ### 2014 — Java 8: HashMap Treeification
 Java 8 added treeification of HashMap bins: when a bucket exceeds 8 elements (and table size > 64), the linked-list bin is converted to a Red-Black tree — O(n) worst-case collision degraded to O(log n).
 - **See**: [07c — Advanced Trees Deep](07c_Advanced_Trees_Deep.md)
 
-### 2016 — Consistent Hashing at Scale
-Consistent hashing (Karger et al. 1997) became universally adopted for distributed caches (DynamoDB, Redis Cluster, Cassandra) — minimises remapping when nodes join/leave.
+### 1997–2007 — Consistent Hashing Goes Mainstream
+Consistent hashing (Karger et al., 1997) was adopted by distributed systems such as Amazon's Dynamo (2007), Cassandra and memcached client libraries (Ketama) — it minimises remapping when nodes join or leave. (Redis Cluster uses fixed hash *slots* instead.)
 - **See**: [A4 DS — Randomized Data Structures](../02_Data_Structures/A4_Randomized_Data_Structures.md)
 
 ---
@@ -277,15 +277,15 @@ Consistent hashing (Karger et al. 1997) became universally adopted for distribut
 | Recursive functions | 1936 | Kleene | — | [03b](03b_Recursion_Fundamentals.md) |
 | Merge sort | 1945 | von Neumann | Θ(n log n) | [02a](02a_Sorting_Fundamentals.md) |
 | Kruskal's MST | 1956 | Kruskal | O(E log E) | [12_Greedy](12_Greedy_Algorithms_Complete.md) |
-| Bellman-Ford | 1957 | Bellman | O(VE) | [05d](05d_Graphs_Advanced_Algos.md) |
+| Bellman-Ford | 1956–58 | Bellman | O(VE) | [05d](05d_Graphs_Advanced_Algos.md) |
 | Prim's MST | 1957 | Prim | O((V+E)log V) | [12_Greedy](12_Greedy_Algorithms_Complete.md) |
 | Dijkstra | 1959 | Dijkstra | O((V+E)log V) | [05c](05c_Graphs_Fundamentals.md) |
 | Quicksort | 1959 | Hoare | Θ(n log n) avg | [02b](02b_Sorting_Advanced.md) |
-| Floyd-Warshall | 1959/62 | Floyd/Warshall | O(V³) | [05d](05d_Graphs_Advanced_Algos.md) |
+| Floyd-Warshall | 1962 | Floyd/Warshall | O(V³) | [05d](05d_Graphs_Advanced_Algos.md) |
 | Trie | 1959/60 | de la Briandais/Fredkin | O(k) lookup | [07a](07a_Advanced_DS_Core.md) |
 | LISP recursion | 1960 | McCarthy | — | [03b](03b_Recursion_Fundamentals.md) |
 | AVL tree | 1962 | Adelson-Velsky & Landis | O(log n) | [07c](07c_Advanced_Trees_Deep.md) |
-| Fenwick tree (BIT) | 1964 | Fenwick | O(log n) | [07a](07a_Advanced_DS_Core.md) |
+| Fenwick tree (BIT) | 1994 | Fenwick | O(log n) | [07a](07a_Advanced_DS_Core.md) |
 | FFT | 1965 | Cooley-Tukey | O(n log n) | [02c](02c_Divide_And_Conquer.md) |
 | Backtracking formalised | 1965 | Golomb & Baumert | exp | [03c](03c_Recursion_Advanced.md) |
 | Knuth TAOCP | 1968 | Knuth | — | [A2](A2_Complexity_FirstPrinciples.md) |
@@ -297,14 +297,14 @@ Consistent hashing (Karger et al. 1997) became universally adopted for distribut
 | Red-Black tree | 1972/78 | Bayer / Guibas-Sedgewick | O(log n) | [07c](07c_Advanced_Trees_Deep.md) |
 | Segment tree | 1977 | Bentley | O(log n) | [07a](07a_Advanced_DS_Core.md) |
 | KMP | 1977 | Knuth-Morris-Pratt | O(n+m) | [06d](06d_String_Algorithms.md) |
-| Aho-Corasick | 1978 | Aho-Corasick | O(n+m+z) | [13](13_String_Algorithms_Complete.md) |
-| Universal hashing | 1979 | Carter-Wegman | O(1) expected | [A4](A4_Randomized_Algorithms.md) |
+| Aho-Corasick | 1975 | Aho-Corasick | O(n+m+z) | [13](13_String_Algorithms_Complete.md) |
+| Universal hashing | 1977/79 | Carter-Wegman | O(1) expected | [A4](A4_Randomized_Algorithms.md) |
 | Fibonacci heap | 1984 | Fredman-Tarjan | O(1) amortised decrease-key | — |
 | Bloom filter | 1970/80s | Bloom | O(k) | [A4](A4_Randomized_Algorithms.md) |
 | Splay tree | 1985 | Sleator-Tarjan | O(log n) amortised | — |
-| Skip list | 1987 | Pugh | O(log n) expected | [A4](A4_Randomized_Algorithms.md) |
+| Skip list | 1989–90 | Pugh | O(log n) expected | [A4](A4_Randomized_Algorithms.md) |
 | CLRS textbook | 1990 | CLRS | — | All chapters |
-| Mo's algorithm | 1993 | Mo | O((n+q)√n) | [06e](06e_Algorithm_Patterns.md) |
+| Mo's algorithm | c. 2009 | Mo | O((n+q)√n) | [06e](06e_Algorithm_Patterns.md) |
 | Cuckoo hashing | 2001 | Pagh-Rodler | O(1) worst lookup | [A4 DS](../02_Data_Structures/A4_Randomized_Data_Structures.md) |
 | HyperLogLog | 2007 | Flajolet et al. | O(1) space | [A4 DS](../02_Data_Structures/A4_Randomized_Data_Structures.md) |
 | Binary search overflow fix | 2006 | Bloch | — | [02c](02c_Divide_And_Conquer.md) |

@@ -1,6 +1,6 @@
 # 🌊 FFT, NTT & Fast Polynomial Multiplication — Complete Guide
 
-> **Navigation**: [← Online, Approximation & LP](25_Online_Approximation_And_Linear_Programming.md) | [Back to Index](00_INDEX.md) | [Learning Path](00_LEARNING_PATH.md)
+> **Navigation**: [← Online, Approximation & LP](25_Online_Approximation_And_Linear_Programming.md) | [Back to Index](00_INDEX.md) | [Next: Combinatorics & Counting →](27_Combinatorics_Counting_Toolkit.md)
 
 ## 🔗 Bridge — Where This Chapter Fits
 
@@ -147,7 +147,7 @@ static long[] multiply(long[] x, long[] y) {
 
 | Area | What top-tier engineering looks like |
 | ---- | ------------------------------------ |
-| **Where it runs in production** | Signal and image processing (filters are convolutions), audio codecs, big-number libraries (GMP, Java `BigInteger` uses Karatsuba/Toom-Cook and FFT-style methods for very large operands), polynomial arithmetic in cryptography (lattice schemes), large-scale counting in analytics |
+| **Where it runs in production** | Signal and image processing (filters are convolutions), audio codecs, big-number libraries (GMP uses FFT-based Schönhage–Strassen multiplication for huge operands; Java's `BigInteger` uses schoolbook, Karatsuba and Toom-Cook only), polynomial arithmetic in cryptography (lattice schemes), large-scale counting in analytics |
 | **Failure modes** | Result length exceeds `2²³` for this prime; forgetting to pad to a power of two; coefficients ≥ P (reduce first); floating-point FFT rounding for large coefficients; mixing the forward/inverse root |
 | **Testing strategy** | Differential test against the O(n²) product on random inputs of many sizes (including length 1); round-trip test `inverse(forward(a)) == a`; boundary sizes at powers of two |
 | **Verification done for this chapter** | The NTT multiplication above was compiled and compared with the naive convolution on 200 random polynomial pairs (lengths 1–20, coefficients < 1000) and matched every time |
@@ -168,4 +168,4 @@ static long[] multiply(long[] x, long[] y) {
 
 ---
 
-[← Online, Approximation & LP](25_Online_Approximation_And_Linear_Programming.md) | [Index](00_INDEX.md) | [Learning Path](00_LEARNING_PATH.md)
+[← Online, Approximation & LP](25_Online_Approximation_And_Linear_Programming.md) | [Index](00_INDEX.md) | [Next: Combinatorics & Counting →](27_Combinatorics_Counting_Toolkit.md)

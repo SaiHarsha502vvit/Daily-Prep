@@ -100,7 +100,7 @@ Adjacency matrix: O(V²) regardless of E — wastes O(V²−E) space on sparse g
 
 ### Historical Evolution
 
-**Leonhard Euler (1736)**: Königsberg bridge problem → invented graph theory. Proved no Eulerian circuit exists when odd-degree vertices > 0. **Arthur Cayley (1857)**: Introduced "trees" (connected acyclic graphs); proved Vᵛ⁻² labelled spanning trees exist on V vertices (Cayley's formula). **Dénes Kőnig (1931)**: Graph Theory textbook — first systematic treatment; König's theorem (bipartite max-matching = min vertex cover). **CLRS Introduction to Algorithms (1990)**: Standardized the adjacency list representation, BFS, DFS pseudocode now universal in CS education.
+**Leonhard Euler (1736)**: Königsberg bridge problem → invented graph theory. Proved no Eulerian circuit exists when odd-degree vertices > 0. **Arthur Cayley (1857)**: Introduced "trees" (connected acyclic graphs); Cayley's formula (V^(V−2) labelled trees on V vertices) was first proved by Borchardt (1860) and popularised by Cayley (1889). **Dénes Kőnig (1931, 1936)**: König's theorem (bipartite max-matching = min vertex cover, 1931) and the first graph-theory textbook (1936). **CLRS Introduction to Algorithms (1990)**: Standardized the adjacency list representation, BFS, DFS pseudocode now universal in CS education.
 
 > BFS/Dijkstra proofs: [05c — Graphs Fundamentals](05c_Graphs_Fundamentals.md) | Lower bound for graph problems: [A3 — Lower Bounds & NP](A3_Lower_Bounds_And_NP.md)
 
