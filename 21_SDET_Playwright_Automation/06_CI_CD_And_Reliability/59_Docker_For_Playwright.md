@@ -195,6 +195,8 @@ Linux containers default to 64 MB of `/dev/shm` (shared memory). Chromium uses s
 docker run --rm --shm-size=2g playwright-framework
 ```
 
+> **Two more flags Playwright's own Docker guide recommends** ([playwright.dev/docs/docker](https://playwright.dev/docs/docker), checked 2026-10-24): `--init`, "to avoid special treatment for processes with PID=1", and `--ipc=host` "when using Chromium" — without it Chromium "can run out of memory and crash". They solve different problems. `--init` runs a tiny init process as PID 1 that reaps zombie children and forwards signals; the kernel treats PID 1 of a PID namespace specially (it does not apply default signal actions, and orphans are re-parented to it), which is why a bare Node/Java process as PID 1 can ignore `docker stop` and leak zombies — traced step by step in [`22_DevOps/internals/I01`](../../22_DevOps/internals/I01_What_Really_Happens_When_You_Type_ls.md). `--ipc=host` shares the host's IPC namespace so Chromium's shared memory is not limited to `/dev/shm`'s 64 MB, at the cost of weaker isolation; `--shm-size=2g` (above) is the more isolated alternative when you cannot share the host IPC namespace.
+
 Or in `docker-compose.yml`:
 
 ```yaml

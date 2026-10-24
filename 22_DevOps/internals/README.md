@@ -64,4 +64,5 @@ Status of each chapter is tracked in the table at the bottom of this file.
 
 | Chapter | State |
 | --- | --- |
-| I01–I14 | Planned — see commit history for what has landed |
+| [I01 — What Really Happens When You Type `ls`](I01_What_Really_Happens_When_You_Type_ls.md) | ✅ Written — 8 diagrams, traced on Linux 6.6.87; kernel functions checked against the v6.6 source |
+| I02–I14 | Planned — see commit history for what has landed |

@@ -34,6 +34,15 @@
 | 14  | [SSH & Remote Access](14_SSH_Remote_Access.md)               | Key management, SSH config, tunneling (local/remote/SOCKS), VPN, hardening |
 | 15  | [Network Debugging](15_Network_Debugging.md)                 | Layer-by-layer methodology, tcpdump, Wireshark, nmap, K8s debugging        |
 
+### Depth Series (in progress)
+
+The chapters above teach *what to run*. These series teach *what the machine does*, *why the tool exists*, *what came before*, *the alternatives*, and *when to use it* — every command traced on a real kernel, every diagram explained.
+
+| Series | Start here | State |
+| --- | --- | --- |
+| Linux & platform internals (I01–I14) | [internals/README.md](internals/README.md) | I01 written: [What Really Happens When You Type `ls`](internals/I01_What_Really_Happens_When_You_Type_ls.md) |
+| Jenkins, first principles to operations (J01–J12) | [jenkins/README.md](jenkins/README.md) | Roadmap only — chapters planned |
+
 ### Deep-Dive: DevOps Core (8 Chapters)
 
 | #   | Chapter                                                      | What You'll Master                                                           |
