@@ -6,7 +6,6 @@
 
 ---
 
-
 ### Historical Evolution
 
 **Inventor / Originator:** Linus Torvalds / BSD (1983) — `select()` system call in 4.2 BSD Unix. Foundation of Java NIO's Selector API.
@@ -137,11 +136,6 @@ Most threads are WAITING. Massive waste.
 **Who determines the limit:** The OS. Each Java thread maps to a native OS thread (platform threads). The OS limits: maximum thread count per JVM process (typically 10k-30k on Linux, configurable). Each thread consumes stack memory (default 512KB-1MB). **When the thread-per-connection model fails:** At C10K scale (10,000 concurrent connections). 10k threads × 512KB stack = 5GB RAM just for stacks. Context-switching overhead becomes extreme — CPU spends more time switching threads than doing work. This is called "thread starvation." **What the OS limit is:** Linux: `/proc/sys/kernel/threads-max` (often ~127k per system). JVM: `-Xss` controls stack size. Reducing to 256KB doubles thread count but risks StackOverflow. **Why Tomcat uses thread pool:** Tomcat's default pool (maxThreads=200) limits threads. Beyond 200 concurrent requests, Tomcat queues or rejects. Netty/NIO can handle 10k+ connections on a handful of threads using event-driven I/O. **Java 21 Virtual Threads:** Platform threads cost 1MB stack. Virtual threads cost 1-10KB. Virtual threads allow thread-per-connection style code that scales like NIO internally.
 
 </details>
-<details><summary>Answer</summary>
-
-Thread-per-connection vs Multiplexing. Traditional IO `InputStream.read()` blocks the current thread until data arrives. If you have 10,000 clients, you need 10,000 threads, which consumes gigabytes of memory and crashes the OS via context switching. NIO uses an `Epoll Selector` (Multiplexer) that monitors thousands of open SocketChannels using a single thread. It only wakes up a worker thread when a channel actually has data ready to be read.
-
-</details>
 
 ## 3. ServerSocket — Building a Server
 
@@ -206,11 +200,6 @@ try (ServerSocket server = new ServerSocket(8080)) {
 **Who is blocked:** The current thread. `accept()` suspends the thread in an OS system call (`epoll_wait` or `accept4` internally). The thread is in `WAITING` state (not consuming CPU, but consuming stack memory). **When this is acceptable:** Single-client servers (development tools, embedded systems). Test servers where one connection at a time is the design. Servers with a thread-per-connection pool where each thread calls `accept()` on the SAME `ServerSocket` (only one thread returns, the rest continue blocking). **What exception is thrown:** `SocketException: Socket closed`. If another thread calls `serverSocket.close()` while the first thread is blocked in `accept()`, the blocked `accept()` throws `SocketException`. This is the standard shutdown pattern: close the `ServerSocket` to unblock all waiting `accept()` threads. **Timeout alternative:** `serverSocket.setSoTimeout(1000)` makes `accept()` throw `SocketTimeoutException` if no connection arrives within 1 second. Allows polling for a shutdown flag: `while (!shutdown) { try { socket = server.accept(); } catch (SocketTimeoutException e) { /* check shutdown */ } }`.
 
 </details>
-<details><summary>Answer</summary>
-
-Thread-per-connection vs Multiplexing. Traditional IO `InputStream.read()` blocks the current thread until data arrives. If you have 10,000 clients, you need 10,000 threads, which consumes gigabytes of memory and crashes the OS via context switching. NIO uses an `Epoll Selector` (Multiplexer) that monitors thousands of open SocketChannels using a single thread. It only wakes up a worker thread when a channel actually has data ready to be read.
-
-</details>
 
 ## 4. Java 11 HttpClient — Modern HTTP
 
@@ -240,7 +229,6 @@ HttpResponse<String> response = client.send(
 System.out.println(response.statusCode());  // 200
 System.out.println(response.body());        // JSON string
 
-
 // Asynchronous (non-blocking):
 client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
     .thenApply(HttpResponse::body)
@@ -249,7 +237,6 @@ client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
         System.err.println("Failed: " + ex.getMessage());
         return null;
     });
-
 
 // POST with JSON body:
 HttpRequest postRequest = HttpRequest.newBuilder()
@@ -373,11 +360,6 @@ ByteBuffer directBuffer = ByteBuffer.allocateDirect(1024);
 **Who changes what:** `flip()` sets `limit = position`, then `position = 0`. After writing to buffer: position = bytes written, limit = capacity. After `flip()`: position = 0 (start reading from beginning), limit = bytes written (stop at what was written). Now the buffer is in READ mode. **Write-to-read cycle:** `buffer.clear()` (reset for writing) → `buffer.put(data)` → `buffer.flip()` (switch to read mode) → `channel.write(buffer)` (read from buffer, write to channel) → `buffer.clear()` (reset for next write). **`clear()` vs `flip()`:** `clear()` sets `position = 0, limit = capacity` (ready to write ALL available space). `flip()` sets `limit = position, position = 0` (ready to read what was just written). `compact()` copies unread bytes to start and positions after them (used when partial reads occur). **If you forget `flip()`:** `channel.write(buffer)` reads from current position (at end of data) to limit (at capacity). Nothing is between position and limit (or garbage after your data). Channel writes 0 bytes or garbage. The data you wrote is lost. This is a silent bug — no exception, just nothing is sent.
 
 </details>
-<details><summary>Answer</summary>
-
-Thread-per-connection vs Multiplexing. Traditional IO `InputStream.read()` blocks the current thread until data arrives. If you have 10,000 clients, you need 10,000 threads, which consumes gigabytes of memory and crashes the OS via context switching. NIO uses an `Epoll Selector` (Multiplexer) that monitors thousands of open SocketChannels using a single thread. It only wakes up a worker thread when a channel actually has data ready to be read.
-
-</details>
 
 ## 7. Channels — Bidirectional I/O
 
@@ -474,11 +456,6 @@ SELECTABLE OPERATIONS:
 **Who updates the interest set:** Your application code, via `key.interestOps(key.interestOps() | SelectionKey.OP_WRITE)`. Or register with `OP_WRITE` only when there's data to write. **When to REMOVE `OP_WRITE`:** After all pending write data is fully flushed (buffer is completely sent). Remove `OP_WRITE`: `key.interestOps(key.interestOps() & ~SelectionKey.OP_WRITE)`. Or de-register and re-register only `OP_READ`. **What happens if left permanently:** `selector.select()` returns IMMEDIATELY every loop because the channel is writable (socket send buffer has space). Your CPU spins at 100% in a busy loop, calling `select()` thousands of times per second but having no data to write. This is a classic NIO performance bug called "CPU spin" or "busy selector." **Pattern for correct write handling:** Only register `OP_WRITE` when your write buffer is non-empty. After each `OP_WRITE` event, flush as much as possible. If buffer drains to empty, remove `OP_WRITE`. If partial write remains, keep `OP_WRITE` registered and try again on next `OP_WRITE` event.
 
 </details>
-<details><summary>Answer</summary>
-
-Thread-per-connection vs Multiplexing. Traditional IO `InputStream.read()` blocks the current thread until data arrives. If you have 10,000 clients, you need 10,000 threads, which consumes gigabytes of memory and crashes the OS via context switching. NIO uses an `Epoll Selector` (Multiplexer) that monitors thousands of open SocketChannels using a single thread. It only wakes up a worker thread when a channel actually has data ready to be read.
-
-</details>
 
 ## 9. Building a Non-Blocking Server
 
@@ -572,11 +549,6 @@ public class NioServer {
 **Who is responsible:** Your application code. NIO gives you control; it doesn't buffer writes for you. If `write()` returns N < buffer.remaining(), you must track the remaining bytes and retry. **When a partial write occurs:** When the OS socket send buffer is full. The kernel can't accept more data right now (the remote side isn't reading fast enough). `write()` writes what it can (0 to remaining) and returns. **Retry strategy:** (1) Check `buffer.hasRemaining()` after `write()`. (2) If true, register `OP_WRITE` on the selector. (3) On next `OP_WRITE` event, call `write(buffer)` again (buffer already positioned after the written bytes). (4) Repeat until `buffer.hasRemaining()` is false. (5) Remove `OP_WRITE` interest. **Why blocking I/O is easier here:** `socket.getOutputStream().write(bytes)` blocks until ALL bytes are written or an exception is thrown. No partial write handling needed. This is why NIO code is more complex but scales better: you control every byte, every event, with no thread blocking.
 
 </details>
-<details><summary>Answer</summary>
-
-Thread-per-connection vs Multiplexing. Traditional IO `InputStream.read()` blocks the current thread until data arrives. If you have 10,000 clients, you need 10,000 threads, which consumes gigabytes of memory and crashes the OS via context switching. NIO uses an `Epoll Selector` (Multiplexer) that monitors thousands of open SocketChannels using a single thread. It only wakes up a worker thread when a channel actually has data ready to be read.
-
-</details>
 
 ## 10. SSL/TLS in Java
 
@@ -629,11 +601,6 @@ keytool -list -keystore $JAVA_HOME/lib/security/cacerts
 <details><summary>Answer</summary>
 
 **Who validates:** The Java TrustManager (specifically `X509TrustManager`). JSSE (Java Secure Socket Extension) uses a trust store (`cacerts`) containing trusted root CAs. During handshake, the server presents its certificate chain. The `TrustManager` validates the chain ends at a trusted root in `cacerts`. **When PKIX path building fails:** The certificate chain cannot be completed to a trusted root. Three causes: (1) **Self-signed certificate:** Server uses a self-signed cert not in `cacerts`. Fix: Add the cert to `cacerts`: `keytool -importcert -alias myserver -file server.crt -keystore $JAVA_HOME/lib/security/cacerts`. (2) **Expired certificate:** The server's cert or an intermediate CA cert expired. Fix: Server must renew the certificate. `openssl s_client -connect host:443 -showcerts` to inspect the chain. (3) **Missing intermediate CA:** The server doesn't send the full chain. Fix: Server configuration must include intermediate certs. Or import the intermediate CA into `cacerts`. **Quick debug:** `System.setProperty("javax.net.debug", "ssl:handshake")` enables verbose TLS debugging. Shows exact certificate chain, which CA is untrusted, and where validation fails. **Never do this in production:** `trustAllCerts` disabling TrustManager makes TLS useless — it defeats the entire purpose of HTTPS.
-
-</details>
-<details><summary>Answer</summary>
-
-Thread-per-connection vs Multiplexing. Traditional IO `InputStream.read()` blocks the current thread until data arrives. If you have 10,000 clients, you need 10,000 threads, which consumes gigabytes of memory and crashes the OS via context switching. NIO uses an `Epoll Selector` (Multiplexer) that monitors thousands of open SocketChannels using a single thread. It only wakes up a worker thread when a channel actually has data ready to be read.
 
 </details>
 
@@ -692,7 +659,6 @@ public Mono<User> getUser(@PathVariable String id) {
 ---
 
 **Back to Index**: [Master Index](../00_MASTER_INDEX.md)
-
 
 ---
 

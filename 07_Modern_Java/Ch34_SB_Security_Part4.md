@@ -269,11 +269,6 @@ public class Address {
 **Who fires how many SQL queries:** The JPA EntityManager via Hibernate. With EAGER fetch on `@OneToMany`, Hibernate loads ALL orders for EVERY user immediately. This fires: 1 query for `SELECT * FROM users` + 100 queries for `SELECT * FROM orders WHERE user_id = ?` = **101 queries** (classic N+1). But with JOIN FETCH, just 1 query. **When EAGER causes OOM:** If a User has 10,000 orders and you load 100 users, Hibernate loads 1,000,000 Order objects into the first-level cache (EntityManager session). The Hibernate session holds all these in memory until the session closes. High-traffic APIs can fill heap quickly. **Production-safe pattern:** (1) Always use `FetchType.LAZY` on `@OneToMany` (it's actually the JPA default, but Hibernate's default for `@OneToMany` is LAZY anyway). (2) Use `JOIN FETCH` only in specific JPQL queries where you need the collection: `SELECT DISTINCT u FROM User u JOIN FETCH u.orders WHERE u.id IN :ids`. (3) Use `@EntityGraph` on repository methods to declare which associations to fetch per use case — different queries can fetch different associations.
 
 </details>
-<details><summary>Answer</summary>
-
-Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
-
-</details>
 
 ## Chapter 3: Entity Relationships
 
@@ -330,7 +325,6 @@ public class Order {
  * mappedBy = "user" means: "Look at Order.user to find mapping"
  */
 
-
 // ═══════════════════════════════════════════════════════════════════════════════
 // MANY-TO-MANY
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -367,7 +361,6 @@ public class Course {
  * │ name      │     │ course_id (FK)    │────►│ name      │
  * └───────────┘     └───────────────────┘     └───────────┘
  */
-
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // ONE-TO-ONE
@@ -422,7 +415,6 @@ public class User {
  *
  * RULE: Almost always use LAZY, then fetch what you need explicitly
  */
-
 
 // THE N+1 PROBLEM (Most common JPA performance issue)
 
@@ -582,11 +574,6 @@ public class UserService {
 <details><summary>Answer</summary>
 
 **Who parses the method name:** Spring Data JPA's `PartTree` parser in `QueryCreator`. It splits the method name at AND/OR/Between/LessThan/etc. keywords and maps each part to an entity field. `findByFirstNameAndLastName` → `WHERE first_name = ? AND last_name = ?`. **When derived queries break:** (1) Method name exceeds ~50 chars — becomes unreadable and unmaintainable. (2) Field doesn't exist on the entity — startup exception `No property 'firstName' found for type User` (Spring Data validates at startup, not at query time). (3) Navigation path typo: `findByAddress_CityName` vs `findByAddressCityName`. **`findByFirstNameOrLastNameAndActive` ambiguity:** This is `WHERE first_name=? OR (last_name=? AND active=?)` — AND binds more tightly than OR in Spring Data's parser (same as standard Java operator precedence). This is a SILENT LOGIC BUG — you may intend `(first_name=? OR last_name=?) AND active=?` but get different results. **Fix:** Use `@Query("SELECT u FROM User u WHERE (u.firstName = ?1 OR u.lastName = ?2) AND u.active = ?3")` for any OR+AND combination. Derived queries are only safe for simple, unambiguous predicates.
-
-</details>
-<details><summary>Answer</summary>
-
-Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
 
 </details>
 
@@ -859,11 +846,6 @@ public record ErrorResponse(String message, List<String> errors) {}
 <details><summary>Answer</summary>
 
 **Who creates duplicates:** The server. `POST` is NOT idempotent by the HTTP spec. If the first request succeeded (order created, 201 returned) but the network dropped the response before the client received it, the client retries. The server sees a NEW `POST` request and creates another order. The server has no way to know this is a retry without extra logic. **When POST is non-idempotent:** By design. `POST /api/orders` creates a resource — calling it N times should (per HTTP semantics) create N resources. Compare: `PUT /api/orders/123` IS idempotent — calling it N times with the same body results in the same state. **Idempotency key pattern:** Client generates a unique `Idempotency-Key: uuid-abc-123` header. Server stores `(idempotency_key, response)` in a key-value store (Redis/DB) for e.g., 24 hours. On retry: server finds the key — returns the SAME stored response without creating a duplicate. Stripe, PayPal, and most payment APIs use this pattern. **Spring implementation:** `@PostMapping` handler checks: `String key = request.getHeader("Idempotency-Key"); if (redisCache.hasKey(key)) return cachedResponse; // else process and store`.
-
-</details>
-<details><summary>Answer</summary>
-
-Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
 
 </details>
 
@@ -1186,7 +1168,6 @@ class UserRepositoryTest {
 
 ```yaml
 
-
 🔬 **Section Challenge — Chapter 8: Testing Spring Boot Applications**
 
 **Challenge 7 (@MockBean vs @SpyBean):** You use `@MockBean UserRepository userRepo` in a `@SpringBootTest`. **Who** replaces the real bean? **When** does `@SpyBean` prevent you from bypassing real logic? **What** is the precise behavioral difference in a test?
@@ -1200,7 +1181,6 @@ class UserRepositoryTest {
 
 Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
 </details>
-
 
 # application-test.yml
 spring:
@@ -1295,7 +1275,6 @@ _You now have a complete Spring Boot foundation. Practice with real projects!_
 ---
 
 > **Navigation**: [< Previous](Ch33_SB_Web_Part3.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch35_SB_Lombok_DTOs.md)
-
 
 ---
 

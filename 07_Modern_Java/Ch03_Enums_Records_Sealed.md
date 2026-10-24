@@ -270,11 +270,6 @@ Compare to traditional singleton:
 **Who guarantees thread safety:** The JVM's class loading mechanism. All enum constants are `static final` fields initialized in the enum's `<clinit>` (class initializer). The JVM guarantees that `<clinit>` is executed exactly ONCE, atomically, with class loading locks. No explicit synchronization needed. **When initialized:** On first use — when any code references `Config.INSTANCE` or any other `Config` member. This is lazy initialization (class loading is lazy in JVM). **10 threads simultaneously:** All 10 threads trigger class loading. The JVM's class loading lock ensures only ONE thread executes `<clinit>`. The other 9 block until initialization completes, then all see the fully initialized singleton. No data races, no double-checked locking complexity. **Why enums beat `synchronized getInstance()`:** Double-checked locking requires `volatile` and complex reasoning. Enum singleton is provably correct, serialization-safe (enum deserialization always returns the same instance), and reflection-attack-proof (`Constructor.newInstance()` on enums throws `IllegalArgumentException`).
 
 </details>
-<details><summary>Answer</summary>
-
-Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
-
-</details>
 
 ## 6. EnumSet and EnumMap — Specialized Collections
 
@@ -364,11 +359,6 @@ private static final Color[] VALUES = Color.values(); // Cache once
 <details><summary>Answer</summary>
 
 **What the compiler generates:** `public final class Color extends java.lang.Enum<Color>`. Each constant becomes `public static final Color RED = new Color("RED", 0)`. The enum class is `final` (cannot be subclassed). `ordinal()` returns the declaration index (0, 1, 2). `name()` returns the string name. **Who creates `values()` and `valueOf()`:** The compiler inserts them. `values()` returns a CLONE of an internal `$VALUES` array (a defensive copy — modifying the returned array doesn't affect the enum). `valueOf(String)` delegates to `Enum.valueOf(Color.class, name)`. **When `==` works:** ALWAYS for enums. Enum constants are singletons — there is exactly ONE `Color.RED` object in the JVM. Comparing with `==` is safe and faster than `.equals()`. In fact, `Enum.equals()` uses `==` internally. `.equals()` works too but `==` is idiomatic and preferred. **EnumSet/EnumMap:** Use these for enum collections — they use `ordinal()`-based bitset/array internally. O(1) operations, no hashing, extremely memory efficient.
-
-</details>
-<details><summary>Answer</summary>
-
-Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
 
 </details>
 
@@ -574,11 +564,6 @@ BUT they're perfect for:
 **Who causes the failure:** Jackson's default deserializer. Records don't have a no-arg constructor (records have ONE canonical constructor with all fields). Old versions of Jackson (pre-2.12) require a no-arg constructor + setters for deserialization. **When it happens:** Jackson 2.12+ has built-in record support via `RecordNamingStrategies`. In older versions or mismatched configs, deserialization fails with `Cannot construct instance`. **Fix 1 — `@JsonCreator` + `@JsonProperty`:** `record User(@JsonProperty("name") String name, @JsonProperty("age") int age) {}`. This tells Jackson to use the canonical constructor for deserialization. `@JsonCreator` marks it as the factory method. **Fix 2 (Jackson 2.12+):** Register `JavaRecordModule` or ensure `ObjectMapper` has `MapperFeature.USE_GETTERS_AS_SETTERS` disabled + Jackson auto-detects records. **Spring Boot 3.x:** Automatically supports records with no additional config (uses Jackson 2.14+). In Boot 2.x: add `jackson-modules-java-base` or explicit `@JsonCreator`. **Key insight:** Records generate accessor methods named `name()` and `age()` (not `getName()`). Jackson must be configured to recognize these non-standard accessor names.
 
 </details>
-<details><summary>Answer</summary>
-
-Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
-
-</details>
 
 ## PART 3: SEALED CLASSES — Controlled Inheritance (Java 17+)
 
@@ -591,11 +576,6 @@ Immutability and Boilerplate Elimination. A `Record` is a specialized class desi
 <details><summary>Answer</summary>
 
 **Who enforces `permits`:** The Java compiler AND the JVM verifier. At compile time: `implements Shape` in a class not listed in `permits` — `compiler error: class X is not allowed to extend sealed class Shape`. At runtime (JVM): the `sealed` attribute in bytecode prevents subclassing even via bytecode manipulation. **When a class doesn't need explicit `permits`:** If all permitted subclasses are in the SAME compilation unit (same .java file), the `permits` clause can be OMITTED. The compiler infers it. `sealed interface Shape { record Circle(double r) implements Shape {} }` — no `permits` needed. **Different package:** Sealed classes CAN permit subclasses from different packages (unlike `package-private`). The requirement is that each permitted subclass must be: (1) `final`, (2) `sealed`, or (3) `non-sealed`. `non-sealed` reopens the hierarchy for arbitrary subclassing. **Design pattern:** `sealed` + `record` subclasses = closed algebraic data type. Pattern matching can exhaustively switch on all cases at compile time.
-
-</details>
-<details><summary>Answer</summary>
-
-Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
 
 </details>
 
@@ -706,11 +686,6 @@ public static String classify(Shape shape) {
 <details><summary>Answer</summary>
 
 **Who reports the error:** The Java compiler (Java 21+). For switch expressions over sealed types, the compiler performs exhaustiveness checking. If a permitted subtype is not covered and there's no `default` branch, the compiler fails: `switch expression does not cover all possible input values`. **When it compiles without `default`:** When ALL permitted subtypes are covered (all three: `Num`, `Add`, `Mul` cases present). Also: if you add a `default ->` branch, the compiler accepts the switch but you LOSE exhaustiveness checking — if a new subtype is added to the sealed hierarchy, the compiler won't warn you. **Why `default` defeats the purpose:** The point of sealed + pattern matching is compile-time proof that all cases are handled. A `default` silences the exhaustiveness check. Best practice: no `default` in switches over sealed types. **Java version note:** Pattern matching switch is a preview in Java 17-20, standard in Java 21+. `switch` statement (not expression) has different rules — use `switch` EXPRESSION for exhaustiveness enforcement.
-
-</details>
-<details><summary>Answer</summary>
-
-Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
 
 </details>
 
@@ -870,11 +845,6 @@ public class OrderProcessor {
 **Who calls the sealed API:** Payment processing code that uses pattern matching to handle all outcomes: `switch (result) { case Success s -> processSuccess(s); case Failure f -> handleFailure(f); case Pending p -> scheduleRetry(p); }`. Exhaustiveness check ensures no outcome is silently dropped. **What each permitted class must be:** (1) `final` — cannot be subclassed. Use for leaf classes: `record Success(String txId, BigDecimal amount) implements PaymentResult {}`. (2) `sealed` — itself sealed, with its own permitted subclasses. Use for nested hierarchies. (3) `non-sealed` — reopens inheritance for that branch. Any class can extend `non-sealed` subclass. **When to use `non-sealed`:** When you own the sealed hierarchy but want to allow third-party extension of ONE specific variant. E.g., `non-sealed class Pending implements PaymentResult {}` — allows payment processors to create custom pending subtypes (`BankPending`, `CardPending`). But the switch statement must include a `default` or `Pending p ->` to handle all `Pending` subtypes (exhaustiveness over the `Pending` branch is lost). **Production guideline:** Prefer `final records` for all permitted classes to maximize type safety and pattern matching exhaustiveness. Only use `non-sealed` when extension points are intentional.
 
 </details>
-<details><summary>Answer</summary>
-
-Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
-
-</details>
 
 ## 17. Interview Questions & Answers
 
@@ -904,7 +874,6 @@ hierarchies. Combined with pattern matching, they eliminate entire categories
 of bugs by making illegal states unrepresentable.
 
 **Navigation**: [< Events & Listeners](Ch11_Events_Listeners.md) | [Back to Index](../00_MASTER_INDEX.md) | [DateTime & Regex >](Ch05_DateTime_Regex.md)
-
 
 ---
 

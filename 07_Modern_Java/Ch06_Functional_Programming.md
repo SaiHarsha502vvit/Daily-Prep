@@ -327,7 +327,6 @@ Collections.sort(names, (a, b) -> a.compareTo(b));
 // Even simpler with method reference
 names.sort(String::compareTo);
 
-
 // 2. THREADING
 // Old way
 new Thread(new Runnable() {
@@ -339,7 +338,6 @@ new Thread(new Runnable() {
 
 // Lambda way
 new Thread(() -> System.out.println("Running!")).start();
-
 
 // 3. EVENT HANDLING
 button.addActionListener(e -> handleClick(e));
@@ -880,11 +878,6 @@ int max = numbers.stream()
 **Who is more expressive:** `max(Comparator.naturalOrder())` — semantically clear ("I want the maximum"). `reduce` with `Integer::max` is a manual implementation of max. **When reduce vs max differ on EMPTY stream:** `reduce(identity, accumulator)` returns the IDENTITY value on empty stream: `reduce(Integer.MIN_VALUE, Integer::max)` returns `Integer.MIN_VALUE` (not empty). `max(comparator)` returns `Optional.empty()` on empty stream, forcing explicit handling. `max` is safer because it forces you to handle the empty case via `Optional`. **Type difference:** `stream.reduce(identity, f)` returns `T` (never null, never Optional). `stream.reduce(f)` (without identity) returns `Optional<T>`. `stream.max(comparator)` returns `Optional<T>`. **When to use reduce:** Custom aggregations that have no dedicated collector: sum of squares `reduce(0, (acc, x) -> acc + x*x)`. Concatenation with separator (better to use `Collectors.joining`). String building of complex results. **Performance:** `reduce` is sequential-friendly. `collect` is parallelism-friendly (uses mutable containers). For parallel streams, prefer `collect` over `reduce` for mutable accumulation.
 
 </details>
-<details><summary>Answer</summary>
-
-Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
-
-</details>
 
 ### Example 2: Sum of Squares of Even Numbers
 
@@ -1256,7 +1249,6 @@ flowchart TD
 ---
 
 > **Navigation**: [< Previous](Ch24_Spring_Boot_Roadmap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch20_AlgoEng_Core.md)
-
 
 ---
 

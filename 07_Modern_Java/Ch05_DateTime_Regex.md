@@ -219,11 +219,6 @@ long hoursBetween = ChronoUnit.HOURS.between(startDateTime, endDateTime);
 **Who calculates:** `Duration.between()` works on `Instant` (wall clock time in UTC nanoseconds). If you use `ZonedDateTime` with a DST-observing zone, `Duration.between(zdt1, zdt2)` returns the ACTUAL elapsed time (which may be 0 seconds for a DST skip, or 7200 seconds for a DST fall-back hour). **When Period.between() ignores DST:** `Period` works at DATE level (years/months/days), not time level. `Period.between(localDate1, localDate2)` counts calendar days. A day with DST transition is still "1 day" in Period terms, regardless of having 23 or 25 clock hours. **`ChronoUnit` alternative:** `ChronoUnit.HOURS.between(zdt1, zdt2)` computes hour difference from actual `Instant` values. For the 2am→3am DST skip: returns 0 hours (they're the same instant). For the 2am→1am DST fall-back: returns -1 hour (time went backwards). **Production trap:** Scheduling "run every 24 hours" with `Duration.ofHours(24)` on DST days may fire 23h or 25h later in wall-clock time. Use `LocalTime` + a cron scheduler for wall-clock-accurate daily scheduling.
 
 </details>
-<details><summary>Answer</summary>
-
-Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
-
-</details>
 
 ## 6. DateTimeFormatter — Parsing and Formatting
 
@@ -280,11 +275,6 @@ Common Format Patterns:
 <details><summary>Answer</summary>
 
 **Who makes it safe:** `DateTimeFormatter` is IMMUTABLE. It holds no mutable state (no internal calendar or fields that change per format call). `SimpleDateFormat` stored the parsed result in instance fields, making it mutable and thread-unsafe. **Why `SimpleDateFormat` failed:** Two threads calling `format()` concurrently would clobber each other's intermediate state. Thread-local `SimpleDateFormat` was the workaround (ugly). `DateTimeFormatter` needs no workaround — share it freely as a `static final` constant. **`ofPattern()` vs pre-defined:** `DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")` creates a custom formatter for a specific format string. `ISO_DATE_TIME` is the ISO 8601 standard: `"2025-01-15T10:30:00"`. Use ISO constants when interoperating with APIs/JSON. Use `ofPattern()` for display/user-facing formats. **RFC-1123 (HTTP dates):** `DateTimeFormatter.RFC_1123_DATE_TIME`. Formats to `"Tue, 3 Jun 2008 11:05:30 GMT"`. Used in HTTP `Date` header, `Last-Modified`, `Expires`. Locale-independent — always English month/day names. **Parsing gotcha:** `DateTimeFormatter.ISO_DATE_TIME` requires time component. For date-only parsing, use `ISO_DATE`. Mixing up causes `DateTimeParseException: Unable to obtain LocalTime from TemporalAccessor`.
-
-</details>
-<details><summary>Answer</summary>
-
-Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
 
 </details>
 
@@ -405,11 +395,6 @@ ANCHORS & GROUPS:
 **Who causes the blowup:** Java's NFA-based regex engine. `(a+)+` creates nested quantifiers: outer `+` tries different counts of `a+` groups, inner `a+` tries different lengths per group. On `"aaaaaac"` (no match), the engine tries ALL possible ways to partition `aaaa` into groups of `a+`: `(aaaa)`, `(aaa)(a)`, `(aa)(aa)`, `(aa)(a)(a)`, `(a)(aaa)`, etc. This is 2^n combinations for n `a`s. **When it becomes exponential:** Nested quantifiers on overlapping patterns. `(a+)+`, `(a|a)+`, `(x+y+)+` are classic ReDoS patterns. With n=30: 2^30 = 1 billion combinations — hangs for seconds/minutes. ReDoS (Regular expression Denial of Service) is a real CVE category. **Fixes:** (1) Atomic groups (if supported): `(?>a+)+` — once the inner group matches, it cannot backtrack. Java has NO atomic groups natively (use `(?>...)` via possessive quantifiers in Java 8+). (2) Possessive quantifiers: `(a++)b` — `a++` matches greedily and never gives back characters. (3) Rewrite pattern to `a+b` (equivalent, linear). (4) Use `java.util.regex.Pattern.CASE_INSENSITIVE` + input validation to reject untrusted input. **Production rule:** Never apply user-supplied regex to user-supplied input without timeout/length limits.
 
 </details>
-<details><summary>Answer</summary>
-
-Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
-
-</details>
 
 ## 9. Pattern and Matcher — Java's Regex Engine
 
@@ -459,11 +444,6 @@ Pattern.compile("\\d+").matcher("hello123world").find() → true (found 123)
 **Who finds the match:** `find()` scans from the current position until it finds ANY match anywhere in the string (like `grep`). `"abc123"` contains `\d+` at position 3. `find()` returns `true`. **`matches()` behavior:** Matches the pattern against the ENTIRE string (like `^pattern$` anchors). `"abc123"` is NOT entirely digits — `matches()` returns `false`. Equivalent to `Pattern.compile("^\\d+$")`. **When `matches()` works correctly:** When you want to validate the full string format: email validation, UUID check, ISO date format. `Pattern.compile("\\d{4}-\\d{2}-\\d{2}").matcher(str).matches()` — checks if the ENTIRE string is a date format. **Practical rule:** `matches()` = form validation (entire string must conform). `find()` = extraction (find all occurrences). **Compile once:** Always store compiled `Pattern` as a `static final` field. `Pattern.compile()` is expensive (regex compilation). Calling it inline in a loop is a common performance bug.
 
 </details>
-<details><summary>Answer</summary>
-
-Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
-
-</details>
 
 ## 10. Capturing Groups — Extracting Data
 
@@ -511,11 +491,6 @@ if (m.find()) {
 <details><summary>Answer</summary>
 
 **Who creates the back-reference:** The regex engine. `(\\w+)` captures a group (group 1). `\\1` is a back-reference that matches THE SAME TEXT captured by group 1. Not "any word", but exactly the same characters. `"cat cat"` matches. `"cat dog"` doesn't. **When `\\1` fails in `replaceAll()`:** Back-references in REPLACEMENT strings use `$1`, not `\\1`. `"hello hello".replaceAll("(\\w+) \\1", "\\1")` — the replacement `"\\1"` is WRONG. Use `"$1"`. `\\1` in the REPLACEMENT string is interpreted as the literal character `\x01` (SOH control character). **Replacement string syntax:** `$1` references group 1. `$2` references group 2. `${name}` references named group `(?<name>...)`. **Named groups in Java:** `"(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})"`. Access via `matcher.group("year")`. Replace with `"${year}/${month}/${day}"`. **Java 11+ note:** `"hello hello".replaceFirst("(\\w+) \\1", "$1")` — replaces first occurrence only. Use `replaceAll` for all occurrences.
-
-</details>
-<details><summary>Answer</summary>
-
-Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
 
 </details>
 
@@ -612,11 +587,6 @@ String text = "<p>Hello <b>World</b></p>".replaceAll("<[^>]+>", "");
 <details><summary>Answer</summary>
 
 **Who is at risk:** Your server. `String.replaceAll(regex, replacement)` treats the FIRST argument as a regex pattern. If `userInput = "(a+)+"`, the call triggers catastrophic backtracking. If `userInput = "["`, it throws `PatternSyntaxException`. Both are denial-of-service vectors. **When it becomes a ReDoS attack:** Attacker sends crafted regex that causes exponential backtracking. Your thread hangs for seconds/minutes. With thread pool exhaustion, all requests block. Server appears down. Real CVEs have been filed for this pattern in logging libraries, web frameworks, and API validators. **Safe alternatives:** (1) **Literal replacement:** `str.replace(userInput, "REDACTED")` — `replace()` (not `replaceAll`) treats the first argument as a LITERAL string, not regex. No pattern compilation. (2) **Quote the pattern:** `str.replaceAll(Pattern.quote(userInput), "REDACTED")` — `Pattern.quote()` wraps input in `\\Q...\\E`, making it a literal pattern. (3) **Input validation:** Reject inputs matching known ReDoS patterns. **Rule:** Never pass user input directly to regex methods. Always use `replace()` for literal substitution or `Pattern.quote()` for safe regex escaping.
-
-</details>
-<details><summary>Answer</summary>
-
-Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
 
 </details>
 
@@ -730,7 +700,6 @@ Regex is a powerful tool but compile patterns once and watch for ReDoS.
 Both are daily-use skills in any Java role.
 
 **Navigation**: [< Enums, Records & Sealed](Ch03_Enums_Records_Sealed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Generics & Exceptions >](Ch04_Generics_Exceptions.md)
-
 
 ---
 

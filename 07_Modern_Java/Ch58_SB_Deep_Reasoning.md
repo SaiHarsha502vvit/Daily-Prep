@@ -286,11 +286,6 @@ public class MyConfig {
 **Who:** `DataSourceAutoConfiguration` and `HibernateJpaAutoConfiguration`. With `spring-boot-starter-data-jpa` on the classpath, `@ConditionalOnClass(DataSource.class)` is TRUE. Spring tries to auto-configure a DataSource but finds no URL → `DataSourceProperties` binding fails → `Cannot determine embedded database driver class for database type NONE`. **When `debug=true` shows it:** Add `debug=true` to `application.properties`. The startup log shows the "CONDITIONS EVALUATION REPORT": Positive matches (what loaded), Negative matches (what was skipped and WHY — e.g., `DataSourceAutoConfiguration matched: @ConditionalOnClass found class javax.sql.DataSource`). This is the #1 tool for diagnosing auto-configuration surprises. **Two fixes without real DB:** (1) Add H2 to classpath + `spring.datasource.url=jdbc:h2:mem:testdb` — Spring auto-configures in-memory H2. (2) Exclude the JPA auto-config: `@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})` — tell Spring to skip DataSource auto-configuration entirely.
 
 </details>
-<details><summary>Answer</summary>
-
-Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the bean in a CGLIB or JDK Proxy. When an external class calls the method, it hits the proxy, which intercepts the call and submits it to a thread pool. However, if an internal method calls the `@Async` method directly via `this.method()`, the call never leaves the instance, completely bypassing the proxy wrapper, and executes synchronously.
-
-</details>
 
 ## 4. The Proxy Pattern: Why @Transactional Fails On Self-Calls
 
@@ -491,11 +486,6 @@ public class OrderService {
 **Who makes testing impossible:** `OrderService` itself, by controlling its own dependency creation with `new StripeProcessor()`. The test has no way to substitute a mock without Mockito's PowerMock (which requires a Java agent) or reflection hacks. **When it becomes an integration test:** Whenever `StripeProcessor` makes an HTTP call, hits a DB, reads a file, or has external state. A "unit test" that calls Stripe's real API is an integration test by definition — slow, flaky, environment-dependent. **Java limitation:** `new` expressions are NOT overridable/interceptable in plain Java. The JVM allocates and constructs the object directly. Mockito (standard) works by subclassing (CGLIB) — it can mock class types injected AFTER construction, but cannot intercept `new` calls inside methods. IoC solves this at the architecture level: if `OrderService` receives its `PaymentProcessor` via constructor injection, the test passes `new MockPaymentProcessor()` — zero framework magic needed.
 
 </details>
-<details><summary>Answer</summary>
-
-Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the bean in a CGLIB or JDK Proxy. When an external class calls the method, it hits the proxy, which intercepts the call and submits it to a thread pool. However, if an internal method calls the `@Async` method directly via `this.method()`, the call never leaves the instance, completely bypassing the proxy wrapper, and executes synchronously.
-
-</details>
 
 ## 7. @Autowired vs Constructor Injection: Why Seniors Choose Constructor
 
@@ -560,11 +550,6 @@ UserService service = new UserService(mockRepo, mockEmail, mockCache);
 <details><summary>Answer</summary>
 
 **Who prevents circular constructor deps:** The JVM at runtime (not the compiler). `final` fields must be assigned in the constructor — but Spring throws `BeanCurrentlyInCreationException` before the constructors can form a deadlock cycle. **When immutability matters for thread safety:** Singleton beans are shared across all threads. If a singleton has `private final UserRepository repo` (final + reference set in constructor), the Java Memory Model's final field semantics guarantee that ALL threads see the initialized value of `repo` without synchronization — this is a JMM guarantee for `final` fields written in constructors. **`final` field visibility without `volatile`:** The JMM guarantees: after a constructor completes, all threads that subsequently read the object's `final` field see its value correctly initialized — even without `volatile` or `synchronized`. This is `final` field freeze. BUT: if the constructor reference (`this`) escapes during construction (e.g., `EventBus.register(this)` inside the constructor), the `final` field guarantee is voided and a partially constructed object may be visible. This is "safe publication via constructor" and a key JMM subtlety.
-
-</details>
-<details><summary>Answer</summary>
-
-Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the bean in a CGLIB or JDK Proxy. When an external class calls the method, it hits the proxy, which intercepts the call and submits it to a thread pool. However, if an internal method calls the `@Async` method directly via `this.method()`, the call never leaves the instance, completely bypassing the proxy wrapper, and executes synchronously.
 
 </details>
 
@@ -725,11 +710,6 @@ It runs BEFORE DispatcherServlet even sees the request.
 **401 (no token) — Who:** `BearerTokenAuthenticationFilter` (if using JWT/OAuth2 resource server). When no `Authorization: Bearer` header is present, the filter finds no credentials. `AuthenticationEntryPoint.commence()` is called → returns HTTP 401 with `WWW-Authenticate` header. The request never reaches `AuthorizationFilter`. **403 (valid token, wrong role) — Who:** `AuthorizationFilter` (Spring Security 6+, replaces `FilterSecurityInterceptor`). The token is valid → authentication succeeds → `SecurityContext` populated with `ROLE_USER`. `AuthorizationFilter` checks: does this principal have `ROLE_ADMIN` for this path? No → `AccessDeniedException` → `AccessDeniedHandler` → HTTP 403. **Filter sequence:** `BearerTokenAuthFilter` (authentication) → `AuthorizationFilter` (authorization). They are separate filters: authentication answers "who are you?" (401 if unknown), authorization answers "are you allowed?" (403 if not permitted). This is the standard security pipeline principle — authn before authz.
 
 </details>
-<details><summary>Answer</summary>
-
-JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-
-</details>
 
 ## 11. Profiles & Conditional Beans: How Spring Switches Environments
 
@@ -784,11 +764,6 @@ public class StorageConfig {
 <details><summary>Answer</summary>
 
 **Winner:** Command-line argument `--app.timeout=90`. **Spring property source priority (highest to lowest):** (1) Command-line args (`--key=value`). (2) `SPRING_APPLICATION_JSON` (inline JSON env var). (3) OS environment variables. (4) `application-{profile}.properties/yml` (active profile-specific). (5) `application.properties/yml` (default). (6) `@PropertySource` annotations. (7) Default values (`@Value("${key:default}")`). So `application-prod.yml` (priority 4) beats `application.yml` (priority 5), but command-line (priority 1) beats both. **`@Value` vs `@ConfigurationProperties` under profiles:** Both resolve from the same `Environment` — same priority order. The difference is binding time: `@Value` binds at bean creation. `@ConfigurationProperties` binds all at once via `ConfigurationPropertiesBindingPostProcessor`. If you change a property programmatically AFTER context startup, `@Value` fields are NOT updated (they're `final` equivalent). Use Spring Cloud's `@RefreshScope` + `/actuator/refresh` for dynamic property reloading.
-
-</details>
-<details><summary>Answer</summary>
-
-Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the bean in a CGLIB or JDK Proxy. When an external class calls the method, it hits the proxy, which intercepts the call and submits it to a thread pool. However, if an internal method calls the `@Async` method directly via `this.method()`, the call never leaves the instance, completely bypassing the proxy wrapper, and executes synchronously.
 
 </details>
 
@@ -875,7 +850,6 @@ public class EmailService {
 ---
 
 > **Navigation**: [< Previous](Ch22_Java_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch23_Streams_Deep_Reasoning.md)
-
 
 ---
 

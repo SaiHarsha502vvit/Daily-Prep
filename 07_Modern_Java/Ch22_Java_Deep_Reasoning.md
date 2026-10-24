@@ -397,11 +397,6 @@ final CLASS → can't be extended
 **`final` on a field:** Enforced by the compiler. The field must be assigned exactly once (in declaration or constructor). A `final List<String>` means the REFERENCE can't change (can't reassign `list = new ArrayList()`), but the LIST CONTENTS can (`list.add("item")` is fine). NOT immutability of the object. **`final` on a method:** Enforced at compile time AND JVM (via inheritance). Subclasses CANNOT override the method. Used in template method pattern to lock algorithm steps. Also enables JVM inlining optimization (JIT knows the method can't be overridden). **`final` on a class:** Enforced at compile time. No class can extend it. `String`, `Integer`, `LocalDate` are all `final`. Prevents inheritance-based mutability attacks. **Who enforces at runtime:** JVM throws `VerifyError` if bytecode tries to reassign a final field after construction. Compiler catches most violations. **`effectively final` in lambdas (Java 8+):** A local variable that is NEVER reassigned after initial assignment. `int count = 5; stream.filter(x -> x > count)` — `count` doesn't need `final` keyword if it's never reassigned. The compiler treats it as effectively final. If you try to reassign `count`, the lambda fails to compile: `Variable used in lambda expression should be final or effectively final`.
 
 </details>
-<details><summary>Answer</summary>
-
-Memory Allocation. `"hello"` is a string literal that resides in the String Pool inside the JVM Heap. When you use `new String("hello")`, you explicitly force the JVM to bypass the String Pool and allocate a brand new String object in the general Heap space. The `==` operator compares memory references, not object values. Since they are two different objects in memory, the result is false. You must always use `.equals()` for value comparison.
-
-</details>
 
 ## 8. Checked vs Unchecked Exceptions: The Design Philosophy
 
@@ -481,11 +476,6 @@ System.out.println(a == b); // false! (see Section 4 — cache only -128 to 127)
 **Who creates 1 million objects:** The compiler's autoboxing. `sum += i` is equivalent to `sum = Long.valueOf(sum.longValue() + i)`. Each iteration: (1) unbox `sum` to `long`, (2) add `i`, (3) box result back to `new Long(result)`. This creates ~999,872 new `Long` objects on the heap (128 values are cached, the rest are new). **When it becomes a GC problem:** In tight loops, high-frequency computations, or large dataset processing. The minor GC pressure from millions of short-lived `Long` objects causes frequent Eden space collections. This is a performance cliff that's invisible until profiling. **The fix:** Use primitive `long sum = 0L`. This eliminates ALL boxing/unboxing. `sum += i` becomes a single JVM `ladd` instruction with no allocation. **Production detection:** Use JProfiler/YourKit or `jstat -gc <pid>` to monitor GC frequency. If Eden collections are happening every few seconds, look for autoboxing loops. Also: `List<Integer>` vs `int[]` or `IntStream` for large numeric processing.
 
 </details>
-<details><summary>Answer</summary>
-
-Memory Allocation. `"hello"` is a string literal that resides in the String Pool inside the JVM Heap. When you use `new String("hello")`, you explicitly force the JVM to bypass the String Pool and allocate a brand new String object in the general Heap space. The `==` operator compares memory references, not object values. Since they are two different objects in memory, the result is false. You must always use `.equals()` for value comparison.
-
-</details>
 
 ## 10. ConcurrentModificationException: Why Iterating + Modifying Fails
 
@@ -551,11 +541,6 @@ list.removeAll(toRemove);
 <details><summary>Answer</summary>
 
 **Who throws:** The `HashMap`'s iterator, specifically `HashIterator.nextNode()`. `HashMap` maintains an internal `modCount` field incremented on every structural modification (put, remove, resize). When the iterator was created, it captured `modCount` as `expectedModCount`. On each `next()`, it checks: `if (modCount != expectedModCount) throw new ConcurrentModificationException()`. **When detected:** On the NEXT iteration call after the modification, not at the modification itself. So you'll always process at least one more element after the modification before the exception. **Safe pattern 1 — Iterator.remove():** Use `iterator.remove()` instead of `map.remove()` — this updates `expectedModCount` to match the new `modCount`. Only supports removal, not addition. **Safe pattern 2 — collect then modify:** Collect keys to add/remove in a separate `List`, then apply changes AFTER the loop. **Safe pattern 3 — ConcurrentHashMap:** Use `ConcurrentHashMap` — its iterator is weakly consistent (no `ConcurrentModificationException`), but may or may not see mutations made after iterator creation.
-
-</details>
-<details><summary>Answer</summary>
-
-Memory Allocation. `"hello"` is a string literal that resides in the String Pool inside the JVM Heap. When you use `new String("hello")`, you explicitly force the JVM to bypass the String Pool and allocate a brand new String object in the general Heap space. The `==` operator compares memory references, not object values. Since they are two different objects in memory, the result is false. You must always use `.equals()` for value comparison.
 
 </details>
 
@@ -645,11 +630,6 @@ need shared STATE or constructors.
 **Who resolves:** The Java compiler. Multiple-inheritance of default methods creates a conflict — Java cannot automatically choose which `greet()` to inherit. `class C implements A, B` FAILS TO COMPILE with: `class C inherits unrelated defaults for greet() from types A and B`. **When it becomes a compile error:** Immediately — at compile time, not runtime. Class `C` MUST override `greet()` explicitly. Inside the override, you can delegate: `A.super.greet()` or `B.super.greet()` — this is the only way to call a specific interface's default implementation. **If `C` extends a class with `greet()`:** The CLASS method always wins over interface default methods ("class always wins" rule). If `class D extends ConcreteClass implements A, B` and `ConcreteClass` has `greet()`, the class method is inherited — no conflict, no compile error. The interface defaults are ignored. Rule summary: (1) Class methods beat interface defaults. (2) More specific interface beats less specific. (3) Conflict between unrelated interfaces → must override.
 
 </details>
-<details><summary>Answer</summary>
-
-Memory Allocation. `"hello"` is a string literal that resides in the String Pool inside the JVM Heap. When you use `new String("hello")`, you explicitly force the JVM to bypass the String Pool and allocate a brand new String object in the general Heap space. The `==` operator compares memory references, not object values. Since they are two different objects in memory, the result is false. You must always use `.equals()` for value comparison.
-
-</details>
 
 ## 13. Garbage Collection: What Actually Happens
 
@@ -707,7 +687,6 @@ resources (AutoCloseable) instead.
 ---
 
 > **Navigation**: [< Previous](Ch30_Dependencies_Annotations_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch58_SB_Deep_Reasoning.md)
-
 
 ---
 

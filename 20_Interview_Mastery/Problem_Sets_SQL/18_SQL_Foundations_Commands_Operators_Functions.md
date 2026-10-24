@@ -713,11 +713,6 @@ SELECT DATEDIFF('2026-03-13', '2026-03-01');
 **Who handles DST:** Neither `DATEDIFF` nor date subtraction accounts for DST — they work with calendar days only. March 8 to March 9 in a DST-observing timezone is actually 23 real hours (clocks spring forward), but `DATEDIFF` returns 1. **When DATEDIFF is unsafe:** Any calculation involving timezones where DST transitions occur. Booking systems ("room available for 3 days"), subscription billing ("charge after 30 days"), expiry calculations. **Date arithmetic in different databases:** MySQL: `DATEDIFF(date2, date1)` (day difference), `TIMESTAMPDIFF(HOUR, ts1, ts2)` (hour difference). PostgreSQL: `date2 - date1` returns `interval` or integer days. `EXTRACT(EPOCH FROM (ts2 - ts1)) / 3600` for precise hours. **Interval arithmetic:** `'2025-02-01'::date + INTERVAL '1 month'` = `'2025-03-01'`. Note: `+ INTERVAL '1 month'` on `'2025-01-31'` = `'2025-02-28'` (not March 2) — PostgreSQL clamps to end of month. **Production pattern for expiry:** Store as `created_at + INTERVAL '30 days' > NOW()` or store explicit `expires_at` timestamp computed at write time.
 
 </details>
-<details><summary>Answer</summary>
-
-Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-
-</details>
 
 ## 12) Datatypes and Constraints (Practical Interview View)
 
@@ -845,11 +840,6 @@ Avoid when:
 **Who materializes:** Depends on the database. PostgreSQL pre-14: CTEs are ALWAYS materialized (executed once, result stored in temp table). PostgreSQL 14+: CTEs are inlined by default (treated as subquery, can be optimized). MySQL: CTEs are inlined (re-evaluated per reference). SQL Server: CTEs are inlined (like a view macro). **When a CTE hurts performance (PostgreSQL pre-14):** Materialized CTEs prevent the optimizer from pushing WHERE predicates into the CTE. `WITH cte AS (SELECT * FROM orders) SELECT * FROM cte WHERE id = 5` — the CTE scans ALL orders, materializes all rows, THEN filters to id=5. A subquery would push the `id=5` predicate inside. **PostgreSQL CTE materialization flag (14+):** `WITH cte AS MATERIALIZED (SELECT ...)` forces materialization. `WITH cte AS NOT MATERIALIZED (SELECT ...)` forces inlining. Use `MATERIALIZED` when the CTE result is used multiple times (avoids re-execution). Use `NOT MATERIALIZED` when the optimizer needs predicate pushdown. **Best practice:** Use CTEs for readability. In performance-critical code, test with `EXPLAIN ANALYZE` to see if the CTE is materialized or inlined.
 
 </details>
-<details><summary>Answer</summary>
-
-Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-
-</details>
 
 ## 14.1 CTE
 
@@ -896,11 +886,6 @@ FROM t1;
 **ROW_NUMBER():** Sequential with no ties. Alice=1, Bob=2, Carol=3 (or Alice=2, Bob=1 depending on ORDER BY tie-breaking — non-deterministic for ties without a tiebreaker column). **RANK():** Ties get the SAME rank, next rank skips. Alice=1, Bob=1, Carol=3. No rank 2 exists. The gap "1,1,3" represents "two people tied for 1st." **DENSE_RANK():** Ties get the same rank, NO gap. Alice=1, Bob=1, Carol=2. Dense = no missing numbers. **When to use each:** `ROW_NUMBER()` — de-duplication (latest record per user: `WHERE rn=1`), pagination. `RANK()` — sports-style leaderboards (tied gold medals, next is bronze). `DENSE_RANK()` — percentile bands (top 3 salary grades, no gaps). **Interview gotcha:** `SELECT * FROM (SELECT *, RANK() OVER (ORDER BY salary DESC) r FROM emp) t WHERE r = 2` — returns Carol (70k) but not Alice or Bob (both rank 1, skip 2). `DENSE_RANK()` would return Alice and Bob at rank 2. Know which one to use for "2nd highest salary."
 
 </details>
-<details><summary>Answer</summary>
-
-Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-
-</details>
 
 ## 14.3 Value window functions
 
@@ -929,11 +914,6 @@ FROM t1;
 <details><summary>Answer</summary>
 
 **Who computes it:** The SQL window function engine. `LAG(expr, offset, default)` looks back `offset` rows within the window partition. No self-join needed. **When LAG returns NULL:** When `offset` exceeds the number of preceding rows in the partition. For the first row in each `PRODUCT` group (no previous month): `LAG(revenue, 1)` returns NULL. **Default value syntax:** `LAG(revenue, 1, 0) OVER (PARTITION BY product ORDER BY month)` — returns 0 instead of NULL for the first row. Or: `COALESCE(LAG(revenue, 1) OVER (...), 0)`. **MoM growth calculation:** `(revenue - LAG(revenue, 1) OVER (PARTITION BY product ORDER BY month)) / NULLIF(LAG(revenue, 1) OVER (...), 0) * 100 AS growth_pct`. `NULLIF(..., 0)` prevents division by zero when previous month = 0. **LEAD:** Same as LAG but looks FORWARD. Useful for: time-to-next-event, churn prediction ("days until customer churned"). `LEAD(order_date, 1) OVER (PARTITION BY customer ORDER BY order_date) AS next_order_date`. **Performance:** Window functions scan the ordered partition once. Much faster than correlated subqueries that re-execute per row.
-
-</details>
-<details><summary>Answer</summary>
-
-Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
 
 </details>
 
@@ -1047,7 +1027,6 @@ FROM revised;
 5. Did I explain one alternative approach?
 6. Did I mention performance/index thought briefly?
 7. Is output ordering/limit consistent with prompt?
-
 
 ---
 
