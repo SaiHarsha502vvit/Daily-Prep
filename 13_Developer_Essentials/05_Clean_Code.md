@@ -198,8 +198,6 @@ record UserRegistrationRequest(
 ) {}
 ```
 
-🔬 **Section Challenge — Command/Query Separation Violation**
-
 A function `validateAndProcessPayment` returns a `PaymentResult` AND sends a confirmation email AND logs to audit. List the clean code rules this function violates. How would you refactor it? What is the invariant Command/Query Separation enforces, and why does violating it cause cascading test failures?
 
 <details>
@@ -351,24 +349,6 @@ class OrderService {
 }
 ```
 
-🔬 **Section Challenge — 4. SOLID Principles**
-
-**Challenge 1 (Reasoning):** Open/Closed Principle says 'closed for modification'. Does this mean code can NEVER be changed?
-
-<details><summary>Answer</summary>
-
-No — it means don't modify existing, tested behavior to add new features. Add new classes/methods instead. In practice: use interfaces + plugins. Adding a new payment type = new class implementing `PaymentStrategy`. Not modifying `PaymentProcessor`. The existing processor is 'closed' (don't touch tested code). The system is 'open' (easily extend by adding new implementations).
-
-</details>
-
-**Challenge 2 (Design):** A class has 5 public methods but clients only use 1-2. Which SOLID principle is violated and what's the fix?
-
-<details><summary>Answer</summary>
-
-Interface Segregation Principle (ISP): clients shouldn't depend on methods they don't use. Fix: split the class into smaller, focused interfaces. `Printable`, `Scannable`, `FaxMachine` instead of one `AllInOnePrinter`. Each client implements/uses only the interface it needs.
-
-</details>
-
 ## 5. Code Smells (Warning Signs)
 
 ### Diagram: Code Smell Severity Pyramid
@@ -432,7 +412,7 @@ public void processPayment(Payment payment) {
 
 🔬 **Section Challenge — 5. Code Smells (Warning Signs)**
 
-**Challenge 1 (Trace):** A 200-line `processOrder` method handles validation, tax calculation, discount logic, payment charging, and email sending. Name the smell, the SOLID principle violated, and the exact refactoring pattern.
+**Challenge 3 (Trace):** A 200-line `processOrder` method handles validation, tax calculation, discount logic, payment charging, and email sending. Name the smell, the SOLID principle violated, and the exact refactoring pattern.
 
 <details><summary>Answer</summary>
 
@@ -440,7 +420,7 @@ Smell: **Long Method** (and **God Class** if this is the only method in the clas
 
 </details>
 
-**Challenge 2 (Design):** `if (type.equals("standard"))... if (type.equals("express"))... if (type.equals("overnight"))...` appears in 3 different classes. Which code smell does this represent, which OCP violation does it create, and what is the single fix?
+**Challenge 4 (Design):** `if (type.equals("standard"))... if (type.equals("express"))... if (type.equals("overnight"))...` appears in 3 different classes. Which code smell does this represent, which OCP violation does it create, and what is the single fix?
 
 <details><summary>Answer</summary>
 

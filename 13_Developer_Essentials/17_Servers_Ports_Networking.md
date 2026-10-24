@@ -341,7 +341,7 @@ Total worst case: ~600ms (cold cache)
 
 🔬 **Section Challenge — 6. DNS — How Names Become IP Addresses**
 
-**Challenge 1 (Reasoning):** Your service's DNS TTL is 300s. You deploy to a new IP. When is traffic fully migrated?
+**Challenge 2 (Reasoning):** Your service's DNS TTL is 300s. You deploy to a new IP. When is traffic fully migrated?
 
 <details><summary>Answer</summary>
 
@@ -408,16 +408,6 @@ Database is NEVER directly accessible from the internet.
 
 ---
 
-🔬 **Section Challenge — 7. Firewalls & Security Groups**
-
-**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
-
-<details><summary>Answer</summary>
-
-JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-
-</details>
-
 ## 8. Load Balancers & Reverse Proxies
 
 ```
@@ -460,7 +450,7 @@ Sits in front of your app server. Handles:
 
 🔬 **Section Challenge — 8. Load Balancers & Reverse Proxies**
 
-**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+**Challenge 3 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
 
 <details><summary>Answer</summary>
 
@@ -520,7 +510,7 @@ Total time: 100-500ms for a typical API call.
 
 🔬 **Section Challenge — 10. Common Networking Errors (What They Mean)**
 
-**Challenge 1 (Connection Refused vs Timed Out):** A Spring Boot app deployed on EC2 port 8080 works fine when curled via `localhost:8080` from SSH, but the public IP `http://1.2.3.4:8080` gives "Connection timed out". What are the two most likely causes at the infrastructure layer?
+**Challenge 4 (Connection Refused vs Timed Out):** A Spring Boot app deployed on EC2 port 8080 works fine when curled via `localhost:8080` from SSH, but the public IP `http://1.2.3.4:8080` gives "Connection timed out". What are the two most likely causes at the infrastructure layer?
 
 <details><summary>Answer</summary>
 
@@ -528,7 +518,7 @@ Total time: 100-500ms for a typical API call.
 
 </details>
 
-**Challenge 2 (502 During Traffic Spikes):** The same application is put behind an Nginx reverse proxy. Nginx handles SSL and forwards to Spring Boot on `localhost:8080`. Users report occasional "502 Bad Gateway" errors during traffic spikes. Spring Boot logs show no crashes. What is happening?
+**Challenge 5 (502 During Traffic Spikes):** The same application is put behind an Nginx reverse proxy. Nginx handles SSL and forwards to Spring Boot on `localhost:8080`. Users report occasional "502 Bad Gateway" errors during traffic spikes. Spring Boot logs show no crashes. What is happening?
 
 <details><summary>Answer</summary>
 

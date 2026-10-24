@@ -287,16 +287,6 @@ private int countPairs(int[] nums, int maxDist) {
 
 ---
 
-🔬 **Section Challenge — 🔍 6.4 Binary Search on Answer**
-
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-
-<details><summary>Answer</summary>
-
-lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-
-</details>
-
 ---
 
 [← 6.3 Rotated Sorted Array](02_rotated_sorted_array.md) | [Chapter overview](../07_Binary_Search.md) | [SECTION 5: Additional Binary Search Problems →](04_section_5_additional_binary_search_problems.md)

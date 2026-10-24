@@ -4,31 +4,6 @@
 > Page 1 of 2 in **SECTION: RECURSION & SUBSETS PROBLEMS**
 
 
-🔬 **Section Challenge — PART 0: WHY Recursion & Subsets — The Heart of Combinatorial Thinking**
-
-**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-
-<details><summary>Answer</summary>
-
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-
-</details>
-
-**Challenge 2 (Bug Hunt):**
-
-```java
-void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
-fib(50) // takes forever
-```
-
-Why and what are the 3 fixes?
-
-<details><summary>Answer</summary>
-
-Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-
-</details>
-
 ## The Real-World Origin
 
 Subset problems appear wherever you choose a group from a larger set (illustrative examples):
@@ -544,7 +519,7 @@ EDGE CASES:
 
 🔬 **Section Challenge — PROBLEM 6: Partition Equal Subset Sum (LC 416)**
 
-**Challenge 1 (Debug — Who/When/What):** `canPartition([1,5,11,5])` runs correctly. But `canPartition([1,2,5])` returns `false` when the total sum is 8 (odd divided target). Trace the first 2 lines of logic to confirm why it returns `false` early and never runs DP.
+**Challenge 2 (Debug — Who/When/What):** `canPartition([1,5,11,5])` runs correctly. But `canPartition([1,2,5])` returns `false` when the total sum is 8 (odd divided target). Trace the first 2 lines of logic to confirm why it returns `false` early and never runs DP.
 
 <details><summary>Answer</summary>
 
@@ -612,7 +587,7 @@ BRILLIANT REDUCTION: +/- assignment → subset partition → subset sum count!
 
 🔬 **Section Challenge — PROBLEM 7: Target Sum (LC 494)**
 
-**Challenge 1 (Reasoning — Mathematical Reduction):** `findTargetSumWays([1,1,1,1,1], target=3)` uses the reduction `subsetSum = (totalSum + target) / 2`. Verify the math: what is `totalSum`, what is `subsetSum`, and intuitively WHY does "count subsets with sum=subsetSum" equal "count +/- assignments reaching target"?
+**Challenge 3 (Reasoning — Mathematical Reduction):** `findTargetSumWays([1,1,1,1,1], target=3)` uses the reduction `subsetSum = (totalSum + target) / 2`. Verify the math: what is `totalSum`, what is `subsetSum`, and intuitively WHY does "count subsets with sum=subsetSum" equal "count +/- assignments reaching target"?
 
 <details><summary>Answer</summary>
 
@@ -624,7 +599,7 @@ BRILLIANT REDUCTION: +/- assignment → subset partition → subset sum count!
 
 </details>
 
-**Challenge 2 (Debug):** `findTargetSumWays([1,2], target=4)`. Total sum=3. `(3+4)/2 = 3.5` → not an integer. The code checks `(sum + target) % 2 != 0`. What does it return and why?
+**Challenge 4 (Debug):** `findTargetSumWays([1,2], target=4)`. Total sum=3. `(3+4)/2 = 3.5` → not an integer. The code checks `(sum + target) % 2 != 0`. What does it return and why?
 
 <details><summary>Answer</summary>
 

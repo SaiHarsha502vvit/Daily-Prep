@@ -212,16 +212,6 @@ public int coinChange(int[] coins, int amount) {
 
 ---
 
-🔬 **Section Challenge — 10.1 1D Dynamic Programming**
-
-**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-
-<details><summary>Answer</summary>
-
-Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-
-</details>
-
 ---
 
 [← Why Is Dp The Most Feared Interview Topic](01_why_is_dp_the_most_feared.md) | [Chapter overview](../11_Dynamic_Programming.md) | [10.2 2D Dynamic Programming →](03_dynamic_programming.md)

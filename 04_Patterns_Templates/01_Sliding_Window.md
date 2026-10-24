@@ -54,7 +54,7 @@ Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selec
 
 ---
 
-**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+**Challenge 1 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
 
 <details><summary>Answer</summary>
 
@@ -246,17 +246,6 @@ _Based on your breakthrough understanding_
 | Sliding window in ML (mini-batch) | [ML Fundamentals](../25_Python_ML_DL_NLP/05_ML_Fundamentals.md)                |
 
 ---
-
-
-🔬 **Section Challenge — HIDDEN GEMS — Sliding Window & Two Pointers**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
 
 
 ---

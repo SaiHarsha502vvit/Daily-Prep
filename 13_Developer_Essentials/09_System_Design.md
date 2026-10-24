@@ -72,16 +72,6 @@ Algorithms:
 Tools: NGINX, HAProxy, AWS ALB, Kubernetes Ingress
 ```
 
-🔬 **Section Challenge — 1. Load Balancer**
-
-**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
-
-<details><summary>Answer</summary>
-
-Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
-
-</details>
-
 ## 2. Caching
 
 ```
@@ -133,7 +123,7 @@ public class ProductService {
 
 🔬 **Section Challenge — 2. Caching**
 
-**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+**Challenge 3 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
 
 <details><summary>Answer</summary>
 
@@ -167,7 +157,7 @@ SQL vs NoSQL Decision:
 
 🔬 **Section Challenge — 3. Database Scaling**
 
-**Challenge 1 (Reasoning):** A PostgreSQL database has 500 million rows. A simple `SELECT * FROM users WHERE last_login > '2023-01-01'` takes 14 seconds. The CTO suggests sharding the database across 4 servers to speed it up. Why is this the wrong first step, and what is the correct one?
+**Challenge 4 (Reasoning):** A PostgreSQL database has 500 million rows. A simple `SELECT * FROM users WHERE last_login > '2023-01-01'` takes 14 seconds. The CTO suggests sharding the database across 4 servers to speed it up. Why is this the wrong first step, and what is the correct one?
 
 <details><summary>Answer</summary>
 
@@ -175,7 +165,7 @@ Sharding is the most complex, highest-overhead database scaling strategy; it bre
 
 </details>
 
-**Challenge 2 (Design):** A social media app uses MongoDB (NoSQL) for user profiles and posts. They want to add a billing system that deducts credits when a user buys a premium sticker. A developer suggests storing the `credit_balance` in MongoDB. What is the fundamental risk here?
+**Challenge 5 (Design):** A social media app uses MongoDB (NoSQL) for user profiles and posts. They want to add a billing system that deducts credits when a user buys a premium sticker. A developer suggests storing the `credit_balance` in MongoDB. What is the fundamental risk here?
 
 <details><summary>Answer</summary>
 
@@ -269,7 +259,7 @@ Tools: Cloudflare, AWS CloudFront, Akamai
 
 🔬 **Section Challenge — 5. CDN (Content Delivery Network)**
 
-**Challenge 1 (Reasoning):** You deploy a new JS bundle to your server. CDN edge servers globally are still serving the old cached version. Walk through the two standard strategies to force cache invalidation.
+**Challenge 6 (Reasoning):** You deploy a new JS bundle to your server. CDN edge servers globally are still serving the old cached version. Walk through the two standard strategies to force cache invalidation.
 
 <details><summary>Answer</summary>
 
@@ -277,7 +267,7 @@ Tools: Cloudflare, AWS CloudFront, Akamai
 
 </details>
 
-**Challenge 2 (Design):** Which of these should NOT be cached on a CDN: (a) product images, (b) `GET /api/users/me`, (c) React app bundle, (d) company logo? Explain each.
+**Challenge 7 (Design):** Which of these should NOT be cached on a CDN: (a) product images, (b) `GET /api/users/me`, (c) React app bundle, (d) company logo? Explain each.
 
 <details><summary>Answer</summary>
 
@@ -344,16 +334,6 @@ MICROSERVICES:
 
 RULE: Start with monolith, extract microservices WHEN NEEDED
 ```
-
-🔬 **Section Challenge — Microservices vs Monolith**
-
-**Challenge 1 (Reasoning):** Service A calls Service B which calls Service C. C is slow. How does this cause a cascade failure?
-
-<details><summary>Answer</summary>
-
-Without circuit breakers: A has a thread pool for B calls. B is slow (waiting for C) → B responses are slow → A's thread pool fills with waiting threads → A's thread pool exhausted → A becomes slow for ALL callers, not just B-related ones. Cascade: C slow → B slow → A slow → entire system degraded. Fix: Resilience4j circuit breaker — after N failures, 'open' the circuit → fail fast with fallback response instead of waiting. Timeouts + bulkhead patterns to isolate failure.
-
-</details>
 
 ## CAP Theorem
 
@@ -423,7 +403,7 @@ So you choose: CP or AP.
 
 🔬 **Section Challenge — Rate Limiting Algorithms**
 
-**Challenge 1 (Trace):** Token bucket starts full at 10 tokens. Refill rate: 2 tokens/second. A client sends 10 requests in 1 second, then 3 more in the next second. Trace the token count and which requests are rejected.
+**Challenge 8 (Trace):** Token bucket starts full at 10 tokens. Refill rate: 2 tokens/second. A client sends 10 requests in 1 second, then 3 more in the next second. Trace the token count and which requests are rejected.
 
 <details><summary>Answer</summary>
 
@@ -431,7 +411,7 @@ T=0s: bucket = 10 tokens. Requests 1-10 consume all 10 tokens → all allowed. B
 
 </details>
 
-**Challenge 2 (Design):** You implement rate limiting per-user with Redis. User makes 1000 req/s from 50 IPs (distributed botnet). Why does per-IP rate limiting fail here, and what is the correct key strategy?
+**Challenge 9 (Design):** You implement rate limiting per-user with Redis. User makes 1000 req/s from 50 IPs (distributed botnet). Why does per-IP rate limiting fail here, and what is the correct key strategy?
 
 <details><summary>Answer</summary>
 

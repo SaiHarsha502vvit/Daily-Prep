@@ -108,14 +108,6 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 
 </details>
 
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-
-</details>
-
 ## 📚 Topic Pages in This Chapter
 
 This chapter is split into focused pages so each topic can be read on its own. Read them in order the first time; use the table to jump back later.

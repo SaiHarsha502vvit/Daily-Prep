@@ -213,16 +213,6 @@ public int maxSumSubarrayV2(int[] arr, int k) {
 
 ---
 
-🔬 **Section Challenge — 📌 2. Sliding Window — Fixed**
-
-**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-
-<details><summary>Answer</summary>
-
-Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-
-</details>
-
 ---
 
 [Chapter overview](../02_Code_Templates.md) | [3. Sliding Window — Variable →](02_sliding_window_variable.md)

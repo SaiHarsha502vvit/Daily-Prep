@@ -149,7 +149,7 @@ THE SAME IDEA APPEARS IN:
 
 🔬 **Section Challenge — DFS - Depth First Search**
 
-**Challenge 1 (DFS Call Stack Depth Analysis):** DFS on a tree of height h uses h recursive frames. **Who** determines the maximum DFS stack depth? **When** does recursive DFS on a tree of 10^6 nodes crash in Java? **What** is the iterative alternative?
+**Challenge 2 (DFS Call Stack Depth Analysis):** DFS on a tree of height h uses h recursive frames. **Who** determines the maximum DFS stack depth? **When** does recursive DFS on a tree of 10^6 nodes crash in Java? **What** is the iterative alternative?
 
 <details><summary>Answer</summary>
 
@@ -288,7 +288,7 @@ THIS IS WHY:
 
 🔬 **Section Challenge — Binary Search Tree**
 
-**Challenge 1 (BST Search Path Comparison):** A BST stores `[50, 30, 70, 20, 40, 60, 80]`. Search for 40. **Who** traces the path? **When** does BST search degrade to O(n)? **What** property guarantees O(log n) on average?
+**Challenge 3 (BST Search Path Comparison):** A BST stores `[50, 30, 70, 20, 40, 60, 80]`. Search for 40. **Who** traces the path? **When** does BST search degrade to O(n)? **What** property guarantees O(log n) on average?
 
 <details><summary>Answer</summary>
 
@@ -364,7 +364,7 @@ THIS IS WHY:
 
 🔬 **Section Challenge — HashMap Collision Resolution**
 
-**Challenge 1 (Open Addressing vs Chaining):** HashMap collision resolution: chaining uses `LinkedList/TreeMap` per bucket. Open addressing uses probing (linear, quadratic, double hashing). **Who** uses which in Java? **When** does chaining outperform open addressing? **What** is the load factor threshold where Java HashMap converts a chain to a tree?
+**Challenge 4 (Open Addressing vs Chaining):** HashMap collision resolution: chaining uses `LinkedList/TreeMap` per bucket. Open addressing uses probing (linear, quadratic, double hashing). **Who** uses which in Java? **When** does chaining outperform open addressing? **What** is the load factor threshold where Java HashMap converts a chain to a tree?
 
 <details><summary>Answer</summary>
 
@@ -375,14 +375,6 @@ THIS IS WHY:
 <details><summary>More detail</summary>
 
 Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-
-<details><summary>Answer</summary>
-
-Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
 
 </details>
 

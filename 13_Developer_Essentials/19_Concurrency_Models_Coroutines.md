@@ -174,7 +174,7 @@ suspend fun fetchUserData(): User {
 
 🔬 **Section Challenge — 2. Coroutines: What They Actually Are**
 
-**Challenge 1 (Trace):** A Kotlin coroutine executes `val a = fetchA(); val b = fetchB(); return a + b`. If `fetchA()` takes 2 seconds and `fetchB()` takes 3 seconds, what exactly is the OS thread doing during those 5 seconds?
+**Challenge 3 (Trace):** A Kotlin coroutine executes `val a = fetchA(); val b = fetchB(); return a + b`. If `fetchA()` takes 2 seconds and `fetchB()` takes 3 seconds, what exactly is the OS thread doing during those 5 seconds?
 
 <details><summary>Answer</summary>
 
@@ -243,7 +243,7 @@ add(3, 4, function(result) {
 
 🔬 **Section Challenge — 3. Continuations: The Foundation Under Everything**
 
-**Challenge 1 (Design):** In older Java (before async/await or Project Loom), how did developers manually handle continuations when making asynchronous network calls? What was this architectural pattern called, and why was it notoriously difficult to read?
+**Challenge 4 (Design):** In older Java (before async/await or Project Loom), how did developers manually handle continuations when making asynchronous network calls? What was this architectural pattern called, and why was it notoriously difficult to read?
 
 <details><summary>Answer</summary>
 
@@ -298,7 +298,7 @@ Developers handled continuations manually using **Callbacks**. When making an as
 
 🔬 **Section Challenge — 4. Coroutines vs Continuations: The Precise Difference**
 
-**Challenge 1 (Reasoning):** A Python generator uses the `yield` keyword to return a value and pause its execution. `next()` resumes it. Is a Python generator a coroutine? Is it stackful or stackless?
+**Challenge 5 (Reasoning):** A Python generator uses the `yield` keyword to return a value and pause its execution. `next()` resumes it. Is a Python generator a coroutine? Is it stackful or stackless?
 
 <details><summary>Answer</summary>
 
@@ -350,24 +350,6 @@ Yes, a Python generator is a type of coroutine because it can suspend (`yield`) 
 ```
 
 ---
-
-🔬 **Section Challenge — 5. How async/await Works In Different Languages**
-
-**Challenge 1 (Promise.all Concurrency):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
-
-<details><summary>Answer</summary>
-
-`Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
-
-</details>
-
-**Challenge 2 (Async Error Handling):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
-
-<details><summary>Answer</summary>
-
-Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
-
-</details>
 
 ## 6. Java Virtual Threads (Project Loom): The Game Changer
 
@@ -528,7 +510,7 @@ Solution: Worker Threads, or offload to microservices.
 
 🔬 **Section Challenge — 9. Go Goroutines: The CSP Model**
 
-**Challenge 1 (Reasoning):** A Java developer learning Go writes a goroutine that modifies a shared global map. What concurrency bug will likely occur, and how does the CSP model dictate this _should_ have been written?
+**Challenge 6 (Reasoning):** A Java developer learning Go writes a goroutine that modifies a shared global map. What concurrency bug will likely occur, and how does the CSP model dictate this _should_ have been written?
 
 <details><summary>Answer</summary>
 
@@ -574,7 +556,7 @@ The bug is a **Race Condition** (specifically, concurrent map writes are a fatal
 
 🔬 **Section Challenge — 10. Concurrency vs Parallelism: The Definition That Matters**
 
-**Challenge 1 (Design):** You have an API endpoint that resizes an uploaded 10MB image, then saves it to an S3 bucket. Should you scale this using Concurrency (more async tasks) or Parallelism (more CPU cores)?
+**Challenge 7 (Design):** You have an API endpoint that resizes an uploaded 10MB image, then saves it to an S3 bucket. Should you scale this using Concurrency (more async tasks) or Parallelism (more CPU cores)?
 
 <details><summary>Answer</summary>
 
@@ -749,7 +731,7 @@ Is the bottleneck CPU (computation, math) or I/O (network, disk, database)?
 
 🔬 **Section Challenge — Summary Comparison Table**
 
-**Challenge 1 (Trace):** A developer switches their Java 17 application (using OS threads) to Java 21 Virtual Threads (`Executors.newVirtualThreadPerTaskExecutor()`). They test it by running a complex cryptocoin mining algorithm. They observe exactly zero performance improvement. Why did Virtual Threads fail to speed this up?
+**Challenge 8 (Trace):** A developer switches their Java 17 application (using OS threads) to Java 21 Virtual Threads (`Executors.newVirtualThreadPerTaskExecutor()`). They test it by running a complex cryptocoin mining algorithm. They observe exactly zero performance improvement. Why did Virtual Threads fail to speed this up?
 
 <details><summary>Answer</summary>
 

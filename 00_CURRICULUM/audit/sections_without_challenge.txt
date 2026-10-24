@@ -15,6 +15,25 @@
 03_Algorithms/17_DSA_Java_Implementation_Mastery.md :: 🔬 **Section Challenge — 3. TreeMap & TreeSet: Your BST in Disguise**
 03_Algorithms/17_DSA_Java_Implementation_Mastery.md :: 🔬 **Section Challenge — 8. String Manipulation for DSA: StringBuilder Reasoning**
 03_Algorithms/20_DSA_Patterns_PDF_Java_Coverage_Map.md :: 🔬 **Section Challenge — 5. Gap Closure Status from PDF**
+04_Patterns_Templates/01_Sliding_Window.md :: 🔬 **Section Challenge — HIDDEN GEMS — Sliding Window & Two Pointers**
+04_Patterns_Templates/02_Code_Templates/01_two_pointers.md :: 🔬 **Section Challenge — 📌 2. Sliding Window — Fixed**
+04_Patterns_Templates/02_Code_Templates/04_prefix_sum.md :: 🔬 **Section Challenge — 📌 5. Prefix Sum**
+04_Patterns_Templates/02_Code_Templates/07_recursion_backtracking.md :: 🔬 **Section Challenge — 🔁 9. Recursion & Backtracking**
+04_Patterns_Templates/02_Code_Templates/08_dynamic_programming.md :: 🔬 **Section Challenge — 💎 10. Dynamic Programming**
+04_Patterns_Templates/03_Visual_Diagrams.md :: 🔬 **Section Challenge — 🌐 GRAPH ALGORITHMS**
+04_Patterns_Templates/03_Visual_Diagrams.md :: 🔬 **Section Challenge — 🔢 SORTING ALGORITHMS**
+04_Patterns_Templates/04_Pattern_Recognition/04_binary_search_variants.md :: 🔬 **Section Challenge — Variant 4: Binary Search on Answer**
+04_Patterns_Templates/11_Stack_Plus_MonotonicPattern.md :: 🔬 **Section Challenge — 🔬 VISUAL: Monotonic Stack for Next Greater**
+04_Patterns_Templates/15_Heap_Plus_GreedySelection.md :: 🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Find Median from Data Stream (Two Heaps)**
+05_Problem_Solving/01_Intro_Checklist.md :: 🔬 **Section Challenge — 🧩 Sliding Window Problems**
+05_Problem_Solving/01_Intro_Checklist.md :: 🔬 **Section Challenge — 🧩 Two Pointers Problems**
+05_Problem_Solving/07_Binary_Search/03_binary_search_on_answer.md :: 🔬 **Section Challenge — 🔍 6.4 Binary Search on Answer**
+05_Problem_Solving/08_Stack_Queue/03_monotonic_stack_problems.md :: 🔬 **Section Challenge — 7.2 Monotonic Stack Problems**
+05_Problem_Solving/11_Dynamic_Programming/02_dynamic_programming.md :: 🔬 **Section Challenge — 10.1 1D Dynamic Programming**
+05_Problem_Solving/13_Greedy.md :: 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Greedy**
+05_Problem_Solving/17_HashMap_Hashing/01_why_hashmap_mit_kth_style.md :: 🔬 **Section Challenge — PART 0: WHY HashMap — MIT/KTH STYLE**
+05_Problem_Solving/22_Recursion_Subsets/01_why_recursion_subsets_the_heart_of.md :: 🔬 **Section Challenge — PART 0: WHY Recursion & Subsets — The Heart of Combinatorial Think
+06_OOP_Design/07_LLD_Solved_Problems/02_plus_enhancements.md :: 🔬 **Section Challenge — SOLID Principles in Every Solution**
 07_Modern_Java/Ch01_Core_Foundations.md :: 🔬 **Section Challenge — 2. Initialization Order — The Exact Sequence**
 07_Modern_Java/Ch01_Core_Foundations.md :: 🔬 **Section Challenge — 3. Wrapper Classes & Caching Trap**
 07_Modern_Java/Ch01_Core_Foundations.md :: 🔬 **Section Challenge — 5. Optional — Deep Dive**
@@ -90,6 +109,12 @@
 08_SQL/23_SQL_Deep_Reasoning.md :: 🔬 **Section Challenge — 3. JOIN Execution: What Actually Happens Under The Hood**
 08_SQL/24_SQL_Data_Analyst_RealWorld.md :: 🔬 **Section Challenge — 9. Advanced Window Functions for Analytics**
 08_SQL/37_SQL_5WH_Deep_Reasoning.md :: 🔬 **Section Challenge — 6. Window Functions**
+13_Developer_Essentials/05_Clean_Code.md :: 🔬 **Section Challenge — 4. SOLID Principles**
+13_Developer_Essentials/05_Clean_Code.md :: 🔬 **Section Challenge — Command/Query Separation Violation**
+13_Developer_Essentials/09_System_Design.md :: 🔬 **Section Challenge — 1. Load Balancer**
+13_Developer_Essentials/09_System_Design.md :: 🔬 **Section Challenge — Microservices vs Monolith**
+13_Developer_Essentials/17_Servers_Ports_Networking.md :: 🔬 **Section Challenge — 7. Firewalls & Security Groups**
+13_Developer_Essentials/19_Concurrency_Models_Coroutines.md :: 🔬 **Section Challenge — 5. How async/await Works In Different Languages**
 15_React_Frontend/01_React_Fundamentals.md :: 🔬 **Section Challenge — Part 5: State — useState Hook**
 15_React_Frontend/03_Hooks_Deep_Dive.md :: 🔬 **Section Challenge — useContext — Global State Without Prop Drilling**
 15_React_Frontend/06_React_Router.md :: 🔬 **Section Challenge — Defer & Suspense (Streaming Data)**

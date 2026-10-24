@@ -99,16 +99,6 @@ FAILS:   0/1 Knapsack, Coin Change (arbitrary), LIS, Edit Distance
 
 ---
 
-🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Greedy**
-
-**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-
-<details><summary>Answer</summary>
-
-Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-
-</details>
-
 ## 📚 SECTION 12: GREEDY ALGORITHMS
 
 ## 📚 Topic Pages in This Chapter
