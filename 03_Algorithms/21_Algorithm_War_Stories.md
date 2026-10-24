@@ -388,6 +388,9 @@ Your question — *are engineers using the old algorithms or creating new ones?*
 
 ### The distribution of real work
 
+> [!NOTE]
+> The percentages below are an **illustrative rule of thumb from experience, not measured data**.
+
 | Tier | Frequency | What it looks like |
 | --- | --- | --- |
 | **Applying a classical algorithm** | ~90% | Story 1 (hash set), Story 8 (binary search), Story 5's merge step |
@@ -402,7 +405,7 @@ Your question — *are engineers using the old algorithms or creating new ones?*
 | --- | --- | --- |
 | 1996 | **LSM tree** | Write-heavy workloads that B-trees served badly |
 | 2007 | **HyperLogLog** | Web-scale cardinality with no memory |
-| 2011 | **Raft** | Paxos was correct and nobody could implement it right — *understandability* as a design goal |
+| 2014 | **Raft** (Ongaro and Ousterhout) | Paxos was correct and nobody could implement it right — *understandability* as a design goal |
 | 2014 | **Cuckoo filter** | Bloom filters cannot delete |
 | 2010s–now | **Learning-augmented structures** | ML predictions as hints, with worst-case guarantees when wrong |
 | 2010s–now | **Sketches everywhere** | Streaming data outgrew exact structures |

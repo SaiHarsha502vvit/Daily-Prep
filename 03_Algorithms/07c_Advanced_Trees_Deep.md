@@ -91,21 +91,30 @@ Insertions use the **Uncle's Color** to determine whether to perform a _Color Fl
 
 However, **Deletion in a Red-Black Tree** is notoriously one of the most complex algorithms in standard computer science, containing **6 distinct cases** handling "Double Black" nodes to restore the Black Height invariant without violating the Red Sequence rule.
 
-```text
-┌──────────────────────────────────────────────────────────────┐
-│                    Left Rotation Mechanics                   │
-├──────────────────────────────────────────────────────────────┤
-│         BEFORE                             AFTER             │
-│                                                              │
-│           [X]                                [Y]             │
-│          /   \                              /   \            │
-│        [A]   [Y]       =======>           [X]   [C]          │
-│             /   \                        /   \               │
-│           [B]   [C]                    [A]   [B]             │
-│                                                              │
-│    Time Complexity: O(1) pointer updates                     │
-└──────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph BEFORE["Before"]
+        direction TB
+        X1((X)) --> A1((A))
+        X1 --> Y1((Y))
+        Y1 --> B1((B))
+        Y1 --> C1((C))
+    end
+    subgraph AFTER["After left rotation at X"]
+        direction TB
+        Y2((Y)) --> X2((X))
+        Y2 --> C2((C))
+        X2 --> A2((A))
+        X2 --> B2((B))
+    end
+    BEFORE ==> AFTER
+    classDef n fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef r fill:#ffd9b3,stroke:#e65100,color:#111
+    class X1,A1,B1,C1,X2,A2,B2,C2 n
+    class Y1,Y2 r
 ```
+
+**How to read this diagram.** The right child `Y` is lifted above `X`; `Y`'s old left subtree `B` becomes `X`'s right subtree. In-order order `A X B Y C` is unchanged. Only a constant number of pointers change: **O(1)**.
 
 ## 2.3 Concurrency: The SkipList Alternative
 
@@ -193,23 +202,21 @@ LSM Trees convert all random writes into **Sequential Log Appends**.
 4. **Bloom Filters:** Reads must search multiple SSTables. To prevent massive I/O, a Bloom Filter (probabilistic bit-array) sits in front of each SSTable, instantly answering _"Is this key definitely NOT here?"_
 5. **Compaction:** Background threads eventually merge multiple Level-0 SSTables into larger Level-1 SSTables, purging deleted data (Tombstones).
 
-```text
-┌──────────────────────────────────────────────────────────────┐
-│ LSM TREE ARCHITECTURE: THE WRITE PATH                        │
-├──────────────────────────────────────────────────────────────┤
-│ 1. [ DISK ] Action -> Append to WAL (Write-Ahead Log)        │
-│ 2. [ RAM  ] Action -> Update MemTable (O(log N) in-memory)   │
-│                                                              │
-│                   | (Threshold Reached: Flush)               │
-│ ------------------|----------------------------------------- │
-│                   v                                          │
-│ 3. [ DISK ] L-0: [SSTable A]   [SSTable B]                   │
-│                                                              │
-│                   | (Background Compaction)                  │
-│                   v                                          │
-│    [ DISK ] L-1: [       Merged SSTable (Sorted)      ]      │
-└──────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    W["Write request"] --> WAL["1. DISK: append to WAL<br/>(write-ahead log)"]
+    W --> MT["2. RAM: update MemTable<br/>O(log N) in memory"]
+    MT -- "threshold reached: flush" --> L0["3. DISK Level 0:<br/>SSTable A, SSTable B"]
+    L0 -- "background compaction" --> L1["DISK Level 1:<br/>merged sorted SSTable"]
+    classDef disk fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ram fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef req fill:#fff3b0,stroke:#b58900,color:#111
+    class WAL,L0,L1 disk
+    class MT ram
+    class W req
 ```
+
+**How to read this diagram.** Every write is logged sequentially (durability) and applied in memory (speed). When the MemTable fills it is flushed as an immutable sorted file, and background compaction merges files into larger sorted levels.
 
 ---
 
@@ -250,22 +257,21 @@ How does Uber find the closest drivers in $O(\log N)$ time across a 2D map? Sear
 - **QuadTrees:** Recursively divide a 2D space into 4 equal quadrants (NW, NE, SW, SE). If a quadrant has too many points, it splits again.
 - **R-Trees (Rectangle Trees):** B-Trees but for multi-dimensional spaces. Nodes represent **Minimum Bounding Rectangles (MBR)**.
 
-```text
-┌──────────────────────────────────────────────────────────────┐
-│                  R-TREE SPATIAL BOUNDING                     │
-├──────────────────────────────────────────────────────────────┤
-│  [ R1: North America ] ──────────────────────┐               │
-│  │                                           │               │
-│  │   [ R2: West Coast ]    [ R3: East Coast] │               │
-│  │   │ * SF     * LA  │    │ * NYC  * MIA  │ │               │
-│  │   └────────────────┘    └───────────────┘ │               │
-│  └───────────────────────────────────────────┘               │
-│                                                              │
-│  * Search "Find cafes near me":                              │
-│    Are my coords inside R1? Yes. R2? Yes. -> Search R2.      │
-│  * Database: PostGIS (PostgreSQL spatial extension).         │
-└──────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    R1["R1: North America<br/>bounding box"] --> R2["R2: West Coast<br/>SF, LA"]
+    R1 --> R3["R3: East Coast<br/>NYC, MIA"]
+    Q(["Query: cafes near me"]) -. "inside R1? yes" .-> R1
+    R1 -. "inside R2? yes: search R2 only" .-> R2
+    classDef box fill:#e1d5f7,stroke:#6a1b9a,color:#111
+    classDef leaf fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef q fill:#fff3b0,stroke:#b58900,color:#111
+    class R1 box
+    class R2,R3 leaf
+    class Q q
 ```
+
+**How to read this diagram.** Each node is a rectangle that contains its children's rectangles. A query descends only into rectangles that overlap the search area, skipping whole regions (R3 here). PostGIS (PostgreSQL's spatial extension) uses this idea via GiST indexes.
 
 ---
 
@@ -279,19 +285,23 @@ A **Merkle Tree (Hash Tree)** flips the concept of a tree upside down: it's not 
 - **Parent Nodes** are hashes of the combined hashes of their children.
 - **Root Node (Merkle Root)** mathematically represents the exact state of the entire system.
 
-```text
-┌──────────────────────────────────────────────────────────────┐
-│                    MERKLE TREE (Hash Tree)                   │
-├──────────────────────────────────────────────────────────────┤
-│                      [ Root Hash ]                           │
-│                       Hash(H1+H2)                            │
-│                      /           \                           │
-│            [ Hash 1 ]             [ Hash 2 ]                 │
-│           Hash(A+B)                Hash(C+D)                 │
-│           /        \              /        \                 │
-│     [Data A]   [Data B]      [Data C]   [Data D]             │
-└──────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    Root["Root hash<br/>Hash(H1 + H2)"] --> H1["Hash 1<br/>Hash(A + B)"]
+    Root --> H2["Hash 2<br/>Hash(C + D)"]
+    H1 --> A["Data A"]
+    H1 --> B["Data B"]
+    H2 --> C["Data C"]
+    H2 --> D["Data D"]
+    classDef root fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef hash fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef data fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Root root
+    class H1,H2 hash
+    class A,B,C,D data
 ```
+
+**How to read this diagram.** Each parent stores the hash of its children, so changing any data block changes the root hash. Comparing two roots tells you whether two datasets match; descending only into the differing hashes finds the changed block in O(log n).
 
 ### Production Use Cases:
 

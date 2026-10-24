@@ -350,35 +350,23 @@ Transform from "I need to know the algorithm" to
 
 ### Decision Tree for Common Problems
 
+```mermaid
+flowchart TD
+    S{"Is the data SORTED?"}
+    S -- YES --> A["Binary search<br/>Two pointers"]
+    S -- NO --> O{"Optimal substructure<br/>needed?"}
+    O -- YES --> DP["Dynamic programming"]
+    O -- NO --> T{"Searching /<br/>traversing?"}
+    T -- YES --> K{"Data shape?"}
+    K -- "Tree / graph" --> BD["BFS / DFS"]
+    K -- "Array / string" --> AS["Sliding window<br/>Two pointers<br/>HashMap"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class S,O,T,K ask
+    class A,DP,BD,AS ans
 ```
-                    START
-                      │
-          ┌──────────┴──────────┐
-          │ Is data SORTED?     │
-          └──────────┬──────────┘
-                 YES │ NO
-           ┌─────────┴─────────┐
-           │                   │
-    Binary Search      ┌───────┴───────┐
-    Two Pointers       │ Need OPTIMAL  │
-                       │ substructure? │
-                       └───────┬───────┘
-                           YES │ NO
-                      ┌────────┴────────┐
-                      │                 │
-               Dynamic           ┌──────┴──────┐
-               Programming       │ Searching/  │
-                                │ Traversing? │
-                                └──────┬──────┘
-                                   YES │
-                            ┌──────────┴──────────┐
-                            │                     │
-                    Tree/Graph?           Array/String?
-                        │                       │
-                   BFS / DFS              Sliding Window
-                                         Two Pointers
-                                         HashMap
-```
+
+**How to read this diagram.** Answer the blue questions top-down; the green box is the family of techniques to try first. This is a starting heuristic, not a proof: always confirm with the constraints.
 
 ### Keyword → Pattern Mapping
 

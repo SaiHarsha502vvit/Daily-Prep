@@ -4,6 +4,11 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - 03_Algorithms Fact Check and Diagram Pass
+
+- Fact-checked every "Historical Evolution" paragraph, the algorithm timeline, the production map and the war-stories chapter; ~65 corrections. Notable: Fenwick tree is 1994 (not 1964); "Mo, Q. I. 1993" was invented (Mo's algorithm was popularised c. 2009 by Mo Tao); Aho–Corasick is 1975; skip lists 1989–90; Floyd–Warshall 1962; HyperLogLog never won a Gödel Prize; OSPF runs Dijkstra (not BFS); BLAST is a heuristic, not DP; Java 11 did not remove `Vector`/`Stack`; `ConcurrentHashMap` dates from Java 5; Effective C++ is by Meyers; Knuth optimization does not apply to matrix-chain multiplication; Bloom worked at the Computer Usage Company; Dijkstra with a Fibonacci heap is O(E + V log V); Kosaraju's algorithm was published by Sharir (1981); BigInteger has no FFT multiplication; made-up citations (Algorithm 245 "Treesort" by Knuth, "Park and Chin 1997", "Guy Bowl 1979", Shamos 1978 shoelace) removed.
+- Converted the highest-value ASCII diagrams (algorithm-selection flow, tree rotation, LSM write path, R-tree, Merkle tree, Bloom filter, Count-Min, consistent hashing) to Mermaid.
+
 ## 2026-10-24 - 03_Algorithms Repair, Curriculum Audit and Enterprise Upgrade
 
 - Repair: cp1252 bytes fixed in 7 files (`03c`, `06`, `06c`, `06d`, `07a`, `07e`, `13_Algorithms_In_Production`); lost `→` in Reality Check lines restored; unbalanced/stray code fences fixed in `03b`, `04c`, `05e`; fenced-prose and flattened code/diagrams rebuilt in `03b`, `04a`–`04c`, `06a`, `07a`, `15`; broken tables repaired (`00_INDEX`, `02a`, `07c`, `15`, `16`); 7 stale cross-module links fixed.

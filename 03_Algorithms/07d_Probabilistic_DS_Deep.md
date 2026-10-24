@@ -6,7 +6,7 @@
 
 ### Historical Evolution
 
-Probabilistic data structures emerged as a pragmatic solution when exact answers require infeasible amounts of memory. **Bloom Filters** were invented by **Burton Howard Bloom in 1970** at General Electric's Computer Science Center, published in the Communications of the ACM as "Space/Time Trade-offs in Hash Coding with Allowable Errors" — Bloom's original paper showed that for membership queries, trading a small false positive rate for massive space savings was often the correct engineering tradeoff. The original application was spell-checking in editors; modern applications include web cache proxies (Akamai, Chrome Safe Browsing), database Bloom filters (Cassandra, PostgreSQL), and blockchain SPV nodes. **Count-Min Sketch** was introduced by **Cormode and Muthukrishnan in 2005** as a probabilistic counter for heavy hitter detection and range query estimation. **HyperLogLog** was published by **Flajolet et al. in 2007** (Google) for cardinality estimation using $O(1)$ memory with ~1.6% standard error — it won the Godel Prize in 2022. **Consistent Hashing** was introduced by **Karger et al. at MIT in 1997** for Akamai's content delivery network, minimizing reorganization when servers are added/removed. Modern practice (post-2010): Cassandra uses Bloom filters to skip SSTables, Redis HLL counts unique visitors at scale, and consistent hashing is the foundation of distributed caches (Memcached) and NoSQL databases (DynamoDB).
+Probabilistic data structures emerged as a pragmatic solution when exact answers require infeasible amounts of memory. **Bloom Filters** were invented by **Burton Howard Bloom in 1970** while at the Computer Usage Company, published in the Communications of the ACM as "Space/Time Trade-offs in Hash Coding with Allowable Errors" — Bloom's original paper showed that for membership queries, trading a small false positive rate for massive space savings was often the correct engineering tradeoff. Bloom's original application was a hyphenation program that had to look words up in a large dictionary; modern applications include web cache proxies (Akamai, Chrome Safe Browsing), database Bloom filters (Cassandra, PostgreSQL), and blockchain SPV nodes. **Count-Min Sketch** was introduced by **Cormode and Muthukrishnan in 2005** as a probabilistic counter for heavy hitter detection and range query estimation. **HyperLogLog** was published by **Flajolet, Fusy, Gandouet and Meunier in 2007** for cardinality estimation in a few kilobytes with a standard error of about $1.04/\sqrt{m}$ for $m$ registers (≈0.8% with 16,384 registers); Google later published the HyperLogLog++ refinement. **Consistent Hashing** was introduced by **Karger et al. at MIT in 1997** for Akamai's content delivery network, minimizing reorganization when servers are added/removed. Modern practice (post-2010): Cassandra uses Bloom filters to skip SSTables, Redis HLL counts unique visitors at scale, and consistent hashing is the foundation of distributed caches (Memcached) and NoSQL databases (DynamoDB).
 
 ---
 
@@ -78,20 +78,27 @@ A **Bloom Filter** answers one specific question: _"Have I seen this element bef
 
 It consists of a single **Bit Array** of size $M$ (initially all 0s) and $K$ different **Hash Functions**.
 
-```text
-┌──────────────────────────────────────────────────────────────┐
-│                  BLOOM FILTER INSERTION                      │
-├──────────────────────────────────────────────────────────────┤
-│  Data: "apple"                                               │
-│                                                              │
-│  Hash1("apple") = 2  ─────┐                                  │
-│  Hash2("apple") = 5  ─────┼─────┐                            │
-│  Hash3("apple") = 9  ─────┼─────┼─────────┐                  │
-│                           v     v         v                  │
-│  Bit Array:         [0][0][1][0][0][1][0][0][0][1]           │
-│  Index:              0  1  2  3  4  5  6  7  8  9            │
-└──────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    D["Insert 'apple'"] --> h1["Hash1 = 2"]
+    D --> h2["Hash2 = 5"]
+    D --> h3["Hash3 = 9"]
+    subgraph BITS["Bit array (indices 0-9)"]
+        direction LR
+        b0["0: 0"] --- b1["1: 0"] --- b2["2: 1"] --- b3["3: 0"] --- b4["4: 0"] --- b5["5: 1"] --- b6["6: 0"] --- b7["7: 0"] --- b8["8: 0"] --- b9["9: 1"]
+    end
+    h1 --> b2
+    h2 --> b5
+    h3 --> b9
+    classDef set fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef zero fill:#e0e0e0,stroke:#616161,color:#111
+    classDef hash fill:#fff3b0,stroke:#b58900,color:#111
+    class b2,b5,b9 set
+    class b0,b1,b3,b4,b6,b7,b8 zero
+    class h1,h2,h3,D hash
 ```
+
+**How to read this diagram.** Three hash functions each point to a bit; inserting "apple" sets bits 2, 5 and 9 to 1. A later query is "possibly present" only if all three bits are 1.
 
 ### The Math of False Positives
 
@@ -115,24 +122,15 @@ The **Count-Min Sketch** tracks frequencies in sub-linear space. Like a Bloom Fi
 
 A 2D array of integer counters: $W$ width (hash range) $\times$ $D$ depth (number of hash functions).
 
-```text
-┌──────────────────────────────────────────────────────────────┐
-│                COUNT-MIN SKETCH (Frequency)                  │
-├──────────────────────────────────────────────────────────────┤
-│  Data: "Java" -> Hash1=1, Hash2=4, Hash3=2                   │
-│                                                              │
-│            0   1   2   3   4   5                             │
-│          +---+---+---+---+---+---+                           │
-│ Hash 1:  | 0 | 1 | 0 | 0 | 0 | 0 |  <-- Increment index 1    │
-│          +---+---+---+---+---+---+                           │
-│ Hash 2:  | 0 | 0 | 0 | 0 | 1 | 0 |  <-- Increment index 4    │
-│          +---+---+---+---+---+---+                           │
-│ Hash 3:  | 0 | 0 | 1 | 0 | 0 | 0 |  <-- Increment index 2    │
-│          +---+---+---+---+---+---+                           │
-│                                                              │
-│  * Query("Java"): Return MIN(Array[0][1], Array[1][4], Array[2][2])
-└──────────────────────────────────────────────────────────────┘
-```
+**Insert "Java"**: Hash1 = 1, Hash2 = 4, Hash3 = 2.
+
+| | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | - | - | - | - | - | - |
+| **Hash 1** | 0 | **1** | 0 | 0 | 0 | 0 |
+| **Hash 2** | 0 | 0 | 0 | 0 | **1** | 0 |
+| **Hash 3** | 0 | 0 | **1** | 0 | 0 | 0 |
+
+Each row increments the cell chosen by its own hash function (bold = incremented). `Query("Java")` returns `MIN(row1[1], row2[4], row3[2])`; taking the minimum limits the overcount caused by collisions.
 
 ### Production Use Case:
 
@@ -172,26 +170,24 @@ If you distribute caching data using `Server = Hash(Key) % N`, what happens when
 Map the hash outputs to a circular ring (e.g., $0 \to 2^{32}-1$). Place both the **Servers** and the **Keys** on this ring using the same Hash function.
 A key is stored on the _very next server_ traveling clockwise.
 
-```text
-┌──────────────────────────────────────────────────────────────┐
-│                 CONSISTENT HASHING RING                      │
-├──────────────────────────────────────────────────────────────┤
-│                          [ Node A ]                          │
-│                          /        \                          │
-│                         /          \                         │
-│                    Key 1            Key 4                    │
-│                     /                \                       │
-│           [ Node C ]                  [ Node B ]             │
-│                     \                /                       │
-│                    Key 3            Key 2                    │
-│                         \          /                         │
-│                          \        /                          │
-│                          [ Node D ]                          │
-│                                                              │
-│  * If Node B dies, Key 4 simply routes clockwise to Node D.  │
-│  * Only Key 4 is remapped. Keys 1, 2, 3 remain unaffected!   │
-└──────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph RING["Hash ring (clockwise): A, B, D, C"]
+        direction LR
+        NA["Node A"] --> NB["Node B"] --> ND["Node D"] --> NC["Node C"]
+        NC --> NA
+    end
+    K4(["Key 4"]) -- "first node clockwise" --> NB
+    K2(["Key 2"]) -- "first node clockwise" --> ND
+    K3(["Key 3"]) -- "first node clockwise" --> NC
+    K1(["Key 1"]) -- "first node clockwise" --> NA
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef key fill:#fff3b0,stroke:#b58900,color:#111
+    class NA,NB,ND,NC node
+    class K1,K2,K3,K4 key
 ```
+
+**How to read this diagram.** Each key belongs to the first node clockwise from its hash. If Node B fails, only Key 4 (which mapped to B) moves on to the next node clockwise, Node D. Keys 1, 2 and 3 are unaffected.
 
 ### Virtual Nodes (VNodes)
 
