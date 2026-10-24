@@ -2,7 +2,6 @@
 
 ---
 
-
 ### Historical Evolution
 
 **Inventor / Originator:** Kent Beck / Erich Gamma (1997) — JUnit 1.0. First mainstream automated testing framework for Java.
@@ -137,8 +136,6 @@ ADVANCED:      JMeter, Gatling, ArchUnit, Contract Testing
 
 `@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the _real_ instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 
-</details>
-
 ## Testing Pyramid
 
 ```text
@@ -178,10 +175,6 @@ Recommended Ratio: 70% Unit : 20% Integration : 10% E2E
 <details><summary>Answer</summary>
 
 **(A) Mock-based PaymentService test → Unit Test.** Only `PaymentService` is real. All dependencies mocked. Tests business logic in isolation. Fast, deterministic. **(B) MockMvc endpoint test → Integration Test (slice).** Tests the HTTP layer (request mapping, validation, response serialization) without a real server. `@WebMvcTest` loads only the web layer. Medium speed. **(C) Repository against H2 → Integration Test (slice).** Tests JPA mapping, queries, and DB behavior. `@DataJpaTest` spins up H2 and JPA layer only. Medium speed. **(D) Browser checkout flow → End-to-End Test.** Full stack: browser + frontend + API + DB + Stripe sandbox. Slowest, most brittle, most realistic. **Pyramid implication:** You should have 100s of type-A tests, 20-30 of type-B/C, and 5-10 of type-D. The pyramid shape = test count (wide base = many unit tests).
-
-</details>
-
-`@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the _real_ instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 
 </details>
 
@@ -514,10 +507,6 @@ class UserServiceNestedTest {
 <details><summary>Answer</summary>
 
 **Who runs each set:** JUnit 5's `ParameterizedTestExtension` — it invokes the test method once per parameter set, each as a separate test case with its own pass/fail status. **When a failing case stops:** NEVER by default — each parameter set is independent. A failure in case 3 doesn't cancel cases 4-10. All 10 run. This is the major advantage over a for-loop inside a test: a loop stops at the first assertion failure. **@MethodSource vs @CsvSource:** `@MethodSource("discountCases")` points to a static `Stream<Arguments>` factory method — can use complex Java objects, computed values, external data files. Best when inputs need logic to construct. `@CsvSource({"100,GOLD,85", "50,SILVER,45", ...})` is inline CSV strings parsed at runtime — quick for simple primitive inputs, readable in one place. Limitation: can only use types that JUnit can convert from String (int, long, double, String, enum). For complex types (custom objects), `@MethodSource` is mandatory.
-
-</details>
-
-`@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the _real_ instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 
 </details>
 
@@ -868,10 +857,6 @@ class SpecificConfigTest {
 
 </details>
 
-`@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the _real_ instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
-
-</details>
-
 ## Service Layer Testing
 
 ### Service Test Example
@@ -1077,10 +1062,6 @@ class OrderServiceTest {
 
 </details>
 
-`@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the _real_ instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
-
-</details>
-
 ## Repository Layer Testing
 
 ### @DataJpaTest
@@ -1233,10 +1214,6 @@ class UserRepositoryH2Test {
 <details><summary>Answer</summary>
 
 **Who manages the transaction:** `@DataJpaTest` wraps each test in a transaction that is ROLLED BACK after the test (default `@Transactional` with rollback=true). So your test data never pollutes the DB across tests. **When flush is needed:** `flush()` sends the INSERT SQL to the DB immediately. Without it, the INSERT may only be in the persistence context (first-level cache) — not yet in the actual H2 tables. Your JPQL query `SELECT u FROM User u WHERE...` goes through JPQL, which triggers a flush anyway (Hibernate's AUTO flush mode flushes before queries). BUT `nativeQuery=true` queries bypass JPQL — they hit the raw DB and will NOT see unflushed data. **What happens without flush for native queries:** The native `SELECT * FROM users WHERE email = ?` finds 0 rows because the INSERT hasn't been sent to H2 yet. The test falsely asserts the query is broken. **Best practice:** Always use `persistAndFlush()` (not just `persist()`) in `@DataJpaTest` to guarantee the DB state is visible to all query types before assertions.
-
-</details>
-
-`@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the _real_ instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 
 </details>
 
@@ -1403,11 +1380,6 @@ Tests pass in isolation and fail in production for reasons that unit test exerci
 **Who validates:** `MethodArgumentNotValidException` is thrown by `HandlerMethodArgumentResolver` during argument resolution — BEFORE the controller method body executes. The `@Valid` annotation triggers Bean Validation (Hibernate Validator). **When it runs:** In the Spring MVC request processing chain: `DispatcherServlet` → `HandlerAdapter` → `HandlerMethodArgumentResolver.resolveArgument()` → Bean Validation → if invalid, throw `MethodArgumentNotValidException` (mapped to 400) → controller method NEVER executes. **MockMvc assertion:** `mockMvc.perform(post("/users").contentType(APPLICATION_JSON).content("{\"name\":\"\"}")).andExpect(status().isBadRequest()).andExpect(jsonPath("$.errors[0].field").value("name")).andExpect(jsonPath("$.errors[0].message").value("must not be blank"))` — assuming your `@ControllerAdvice` formats errors as `{errors: [{field, message}]}`. **Key insight:** `@WebMvcTest` automatically includes `@ControllerAdvice` beans, so your global exception handler IS active during the test. You're testing the real HTTP error response format, not just that an exception was thrown.
 
 </details>
-
-`@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the _real_ instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
-
-</details>
-
 
 ---
 

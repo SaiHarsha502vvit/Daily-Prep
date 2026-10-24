@@ -45,7 +45,6 @@
 
 ---
 
-
 ## Roadmap
 
 This chapter covers 14 independent topics: WebSocket, SSE, GraphQL, gRPC, Spring Batch, Pagination, HATEOAS, i18n, Multi-Tenancy, Java 17+ features, GraalVM, Modulith, Rate Limiting, and Liquibase. Suggested future splits (approximate — actual breaks follow the file's `## ` headers):
@@ -803,7 +802,6 @@ Spring Batch models the work as a `Job` made of `Step`s. Each step reads, proces
 Use a controller only to submit/start the job and return a job id. Let Spring Batch own long-running processing, idempotency, restart behavior, and operational visibility.
 
 </details>
-</details>
 
 ## HOW — Core Concepts
 
@@ -1127,7 +1125,6 @@ If the UI only needs "is there a next page?", use `Slice` instead of `Page`. If 
 For large feeds, prefer keyset/cursor pagination using a stable indexed sort key such as `(created_at, id)`. Keep offset pagination for small admin tables where total page counts are genuinely needed.
 
 </details>
-</details>
 
 # 6. HATEOAS (Hypermedia-Driven REST)
 
@@ -1215,7 +1212,6 @@ HATEOAS embeds links and affordances in the response, such as `self`, `orders`, 
 
 Use it when API discoverability, workflow state, or third-party client evolution matters. Skip it for simple internal APIs where typed clients, OpenAPI contracts, and direct endpoints are cheaper and clearer.
 
-</details>
 </details>
 
 # 7. Internationalization (i18n)
@@ -1921,7 +1917,6 @@ databaseChangeLog:
 ---
 
 _Now Parts 0-23 cover EVERY important Spring Boot topic from beginner to expert level._
-
 
 ---
 

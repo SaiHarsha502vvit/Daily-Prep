@@ -367,8 +367,6 @@ dogs.sort(byName);  // ✅ sort() accepts Comparator<? super Dog>
 
 Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
 
-</details>
-
 ## 5. PECS — Producer Extends, Consumer Super
 
 ```text
@@ -801,8 +799,6 @@ record ErrorResponse(String code, String message) {}
 
 `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
 
-</details>
-
 ## 12. try-with-resources — Deep Understanding
 
 ```java
@@ -977,10 +973,6 @@ User user = retry(() -> userService.fetchFromExternalApi(id), 3, Duration.ofSeco
 
 </details>
 
-Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
-
-</details>
-
 ## 14. Checked vs Unchecked — When to Use Which
 
 **USE CHECKED EXCEPTION WHEN:**
@@ -1063,10 +1055,6 @@ try (reader; br) {  // Can use existing variables if effectively final
 <details><summary>Answer</summary>
 
 **Who loses information:** The monitoring/alerting system. `ServiceException("Failed", e)` wraps but the message "Failed" is generic. If the same wrapper is used for 50 different failure modes, logs show 50 identical "Failed" errors with no discrimination. **When dangerous in monitoring:** When you can't distinguish between `OutOfMemoryError` (critical) and `UserNotFoundException` (normal) from the same `ServiceException("Failed")` without reading the full stack trace. Alert rules can't work on generic messages. **Two mandatory fields for wrapper exceptions:** (1) `errorCode` (String or Enum) — machine-readable, unique per failure type (`"USER_NOT_FOUND"`, `"DB_TIMEOUT"`). Used for alert routing, retry decisions, and client error messages. (2) `correlationId` (String) — the request trace ID (from MDC/Span). Links the exception to the full distributed trace in logs. `throw new ServiceException("USER_NOT_FOUND", MDC.get("requestId"), "User not found", cause);` — this is a complete, monitorable exception.
-
-</details>
-
-`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
 
 </details>
 
@@ -1178,10 +1166,6 @@ public void doWork() throws InterruptedException {
 
 </details>
 
-Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
-
-</details>
-
 ## 19. Exceptions in CompletableFuture — Async Exception Handling
 
 ```java
@@ -1247,10 +1231,6 @@ public AsyncUncaughtExceptionHandler asyncUncaughtExceptionHandler() {
 <details><summary>Answer</summary>
 
 **Who handles it:** `exceptionally(e -> fallback)` at the END of the chain. When `fetchUser()` throws, the exception propagates through the chain. **When `thenApply()` runs:** NEVER. `thenApply()` only runs on SUCCESS. When `fetchUser()` throws, the stage is completed exceptionally, and `thenApply` is skipped entirely (like a short-circuit). **What `.get()` returns:** The `fallback` value returned by `exceptionally`. The chain recovers at the `exceptionally` stage and produces a normal value. **Contrast with `handle()`:** `handle((result, ex) -> ...)` runs for BOTH success AND failure (like a `finally` that can transform). Use `handle` when you always need to do something regardless of outcome. **The pattern:** `exceptionally` = catch and recover (replace exception with value). `handle` = catch and transform (inspect both result and exception). `whenComplete` = side effect regardless of outcome (doesn't transform result).
-
-</details>
-
-Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
 
 </details>
 
@@ -1403,11 +1383,6 @@ always chain the original cause, **and handle UncaughtExceptionHandler in every 
 **Who decides:** Spring's `ExceptionHandlerExceptionResolver`. It searches for the MOST SPECIFIC exception handler matching the thrown exception type. Since `ResourceNotFoundException extends ApplicationException`, it picks the `ResourceNotFoundException` handler first (most specific match). **When both handlers run:** NEVER for the same exception — only the most specific handler fires. **If two `@ControllerAdvice` classes handle the same type:** The one with higher `@Order` priority (lower number = higher priority) wins. Default: undefined order. **Production problem:** Two teams add a `@ControllerAdvice` for `Exception.class` in different modules. Both are loaded. The one that wins is unpredictable by `@Order`. **Fix:** Have ONE canonical `@ControllerAdvice` with a clear hierarchy. Mark it `@Order(Ordered.HIGHEST_PRECEDENCE)`. For library code, use `@Order(Ordered.LOWEST_PRECEDENCE)` to be overridable. **Handler method resolution:** Spring first checks the controller class itself for `@ExceptionHandler`, then checks `@ControllerAdvice` beans in priority order.
 
 </details>
-
-Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
-
-</details>
-
 
 ---
 

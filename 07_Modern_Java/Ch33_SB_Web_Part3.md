@@ -166,8 +166,6 @@ public class LoggingAspect {
 
 Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 
-</details>
-
 ## Chapter 3: Advice Types
 
 ### 🟢 HOW: All Five Advice Types
@@ -477,10 +475,6 @@ public class PointcutExamplesAspect {
 
 </details>
 
-Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
-
-</details>
-
 ## Chapter 5: How Spring AOP Works (Proxy Magic)
 
 ### 🔵 WHY: Understanding the Limitations
@@ -629,10 +623,6 @@ public class UserService {
 <details><summary>Answer</summary>
 
 **Who is `this`:** The REAL `UserService` object — not the proxy. When Spring wraps `UserService` in a proxy, `this` inside the object still refers to itself directly, bypassing the proxy. **When proxy is bypassed:** Any time you call a method on `this` directly from within the same bean. The AOP proxy only intercepts external calls (from outside the bean). Internal `this.method()` calls skip the proxy entirely. **What is the fix:** (1) **Self-injection:** `@Autowired private UserService self;` then call `self.validate()`. This references the proxy. (2) **AOP-aware lookup:** `((UserService) AopContext.currentProxy()).validate()` — requires `@EnableAspectJAutoProxy(exposeProxy=true)`. (3) **Refactor:** Move `validate()` to a separate Spring bean (`ValidatorService`) so external injection routes through the proxy. **Why this matters:** `@Transactional`, `@Cacheable`, `@Async`, `@Retryable` ALL use Spring AOP proxies. Internal self-calls silently break all of them — no error, just wrong behavior.
-
-</details>
-
-Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 
 </details>
 
@@ -917,7 +907,6 @@ spring:
 
 ```bash
 
-
 🔬 **Section Challenge — Chapter 7: The Magic of @SpringBootApplication**
 
 **Challenge 6 (Annotation Internals):** `@SpringBootApplication` is a meta-annotation composed of 3 annotations. **What** are they, **who** triggers auto-configuration, and **when** does `@ConditionalOnMissingBean` fire to prevent double-registering a DataSource?
@@ -930,7 +919,6 @@ spring:
 
 Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 </details>
-
 
 # See what auto-configuration is happening
 java -jar myapp.jar --debug
@@ -1071,7 +1059,6 @@ LOADING ORDER (later overrides earlier):
 
 ```yaml
 
-
 🔬 **Section Challenge — Chapter 9: Profiles in Spring Boot**
 
 **Challenge 7 (Profile Debug — Who/When/What):** You have `application-dev.yml` with `spring.datasource.url=jdbc:h2:mem:testdb` and `application-prod.yml` with the real PostgreSQL URL. You deploy to production but it's connecting to H2. **Who** determines the active profile? **When** is it resolved? **What** are the 4 ways to set the active profile in order of precedence?
@@ -1084,7 +1071,6 @@ LOADING ORDER (later overrides earlier):
 
 Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 </details>
-
 
 # application.yml (defaults)
 spring:
@@ -1184,7 +1170,6 @@ _Continue to Part 4: Data Access (JPA & Hibernate), Security, Web & Testing_
 ---
 
 > **Navigation**: [< Previous](Ch32_SB_Data_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch34_SB_Security_Part4.md)
-
 
 ---
 
