@@ -104,6 +104,8 @@ sequenceDiagram
     Playwright-->>Test: ✅ Event caught, returns new Page object
 ```
 
+**How to read this diagram.** The top half (WRONG) awaits the click first, so the new tab's `page` event fires before any listener exists and `waitForEvent` hangs until the 30s timeout; the bottom half (CORRECT) uses `Promise.all` so the listener is registered before the click. Notice that the only difference is the order of registering the listener versus triggering the click.
+
 ### Why This Is a True Race
 
 The event loop processes microtasks before the next I/O callback. When you `await page.click()`, control returns to the event loop while Playwright handles the CDP click command. The browser may process the click and emit the `page` event in the same I/O cycle — before your next `await page.context().waitForEvent()` line even runs. This is a genuine race condition, not a "usually works" issue.

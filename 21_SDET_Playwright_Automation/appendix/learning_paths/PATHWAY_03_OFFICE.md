@@ -22,30 +22,30 @@ For the fastest answers, [`reference/`](../quick_reference/) has 10 cheat-sheet 
 
 ### "My test is flaky"
 
-→ Ch26 [Flakiness Diagnosis and Fixing](../../06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md) — the 9 flake types and how to identify which one you have
-→ Ch55 [Inspector, Trace Viewer & UI Mode](../../01_Foundations/55_Inspector_TraceViewer_UIMode_Walkthrough.md) — use the trace to see exactly what happened
-→ [`framework/utilities/analytics/cli.ts`](../../framework/utilities/analytics/cli.ts) — `npm run flake:report --since 7d` to rank flakies
-→ [`framework/tests/broken/`](../../framework/tests/broken/) — 10 reference anti-patterns to compare against
+- Ch26 [Flakiness Diagnosis and Fixing](../../06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md) — the 9 flake types and how to identify which one you have
+- Ch55 [Inspector, Trace Viewer & UI Mode](../../01_Foundations/55_Inspector_TraceViewer_UIMode_Walkthrough.md) — use the trace to see exactly what happened
+- [`framework/utilities/analytics/cli.ts`](../../framework/utilities/analytics/cli.ts) — `npm run flake:report --since 7d` to rank flakies
+- [`framework/tests/broken/`](../../framework/tests/broken/) — 10 reference anti-patterns to compare against
 
 ### "My test passes locally but fails in CI"
 
-→ Ch26 [Flakiness](../../06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md) — the environment-vs-network section
-→ Ch59 [Docker for Playwright](../../06_CI_CD_And_Reliability/59_Docker_For_Playwright.md) — reproduce CI locally with `docker compose run`
-→ Ch25 [CI/CD Integration](../../06_CI_CD_And_Reliability/25_CICD_Integration_GitHub_Azure.md) — env-var mismatch checklist
-→ Anti-pattern: assuming `localhost` works in CI — use `.env.ci` for explicit CI config
+- Ch26 [Flakiness](../../06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md) — the environment-vs-network section
+- Ch59 [Docker for Playwright](../../06_CI_CD_And_Reliability/59_Docker_For_Playwright.md) — reproduce CI locally with `docker compose run`
+- Ch25 [CI/CD Integration](../../06_CI_CD_And_Reliability/25_CICD_Integration_GitHub_Azure.md) — env-var mismatch checklist
+- Anti-pattern: assuming `localhost` works in CI — use `.env.ci` for explicit CI config
 
 ### "A test hangs / times out"
 
-→ Ch26 [Flakiness](../../06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md) — the timing & race section
-→ Ch57 [Playwright Config Theory Catalog](../../01_Foundations/56_Playwright_Config_Deep_Dive.md) — timeout hierarchy (test / expect / action / navigation)
-→ [`framework/constants/timeouts.ts`](../../framework/constants/timeouts.ts) — named timeout enum to replace magic numbers
-→ Anti-pattern: `await page.waitForTimeout(N)` — use `expect.poll`, `waitForResponse`, or `waitFor({state:'visible'})` instead
+- Ch26 [Flakiness](../../06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md) — the timing & race section
+- Ch57 [Playwright Config Theory Catalog](../../01_Foundations/56_Playwright_Config_Deep_Dive.md) — timeout hierarchy (test / expect / action / navigation)
+- [`framework/constants/timeouts.ts`](../../framework/constants/timeouts.ts) — named timeout enum to replace magic numbers
+- Anti-pattern: `await page.waitForTimeout(N)` — use `expect.poll`, `waitForResponse`, or `waitFor({state:'visible'})` instead
 
 ### "Tests pass individually but fail when run together"
 
-→ Ch09 [Parallel Execution & Workers](../../02_Test_Architecture/09_Parallel_Execution_Workers.md) — worker isolation rules
-→ Ch28 [Test Data Lifecycle and Cleanup](../../03_Real_World_Scenarios/28_Test_Data_Lifecycle_and_Cleanup.md) — find data pollution
-→ Anti-pattern: module-level `let sharedId` — see [`tests/broken/03-module-level-state.spec.ts`](../../framework/tests/broken/)
+- Ch09 [Parallel Execution & Workers](../../02_Test_Architecture/09_Parallel_Execution_Workers.md) — worker isolation rules
+- Ch28 [Test Data Lifecycle and Cleanup](../../03_Real_World_Scenarios/28_Test_Data_Lifecycle_and_Cleanup.md) — find data pollution
+- Anti-pattern: module-level `let sharedId` — see [`tests/broken/03-module-level-state.spec.ts`](../../framework/tests/broken/)
 
 ---
 
@@ -53,16 +53,16 @@ For the fastest answers, [`reference/`](../quick_reference/) has 10 cheat-sheet 
 
 ### "I need to reuse a login across many tests (storageState)"
 
-→ Ch16 [Cross-site Pattern 6 — storageState chaining](../../04_Cross_Site_Patterns_And_D365/16_CrossSite_Pattern6_StorageState_Chaining.md)
-→ Ch57 [Config Theory Catalog](../../01_Foundations/56_Playwright_Config_Deep_Dive.md) — `globalSetup` vs `dependencies: [setup]`
-→ [`framework/fixtures/auth.fixture.ts`](../../framework/fixtures/auth.fixture.ts) — file-locked account pool (better than naive storageState for multi-role suites)
-→ Anti-pattern: writing `storageState` before login completes — see [`tests/broken/06-storageState-too-early.spec.ts`](../../framework/tests/broken/)
+- Ch16 [Cross-site Pattern 6 — storageState chaining](../../04_Cross_Site_Patterns_And_D365/16_CrossSite_Pattern6_StorageState_Chaining.md)
+- Ch57 [Config Theory Catalog](../../01_Foundations/56_Playwright_Config_Deep_Dive.md) — `globalSetup` vs `dependencies: [setup]`
+- [`framework/fixtures/auth.fixture.ts`](../../framework/fixtures/auth.fixture.ts) — file-locked account pool (better than naive storageState for multi-role suites)
+- Anti-pattern: writing `storageState` before login completes — see [`tests/broken/06-storageState-too-early.spec.ts`](../../framework/tests/broken/)
 
 ### "I need to test an OAuth 2.0 login"
 
-→ Ch57 [Auth Taxonomy — OAuth, OIDC, SAML, MFA, mTLS](../../03_Real_World_Scenarios/57_Login_Taxonomy_OAuth_OIDC_SAML_MFA_mTLS.md)
-→ [`framework/fixtures/auth.oauth.fixture.ts`](../../framework/fixtures/auth.oauth.fixture.ts) — worker-scoped client-credentials token fetch
-→ [`framework/tests/auth-demo/oauth.api.spec.ts`](../../framework/tests/auth-demo/oauth.api.spec.ts) — runnable example
+- Ch57 [Auth Taxonomy — OAuth, OIDC, SAML, MFA, mTLS](../../03_Real_World_Scenarios/57_Login_Taxonomy_OAuth_OIDC_SAML_MFA_mTLS.md)
+- [`framework/fixtures/auth.oauth.fixture.ts`](../../framework/fixtures/auth.oauth.fixture.ts) — worker-scoped client-credentials token fetch
+- [`framework/tests/auth-demo/oauth.api.spec.ts`](../../framework/tests/auth-demo/oauth.api.spec.ts) — runnable example
 
 ### "I need to test SAML / SSO"
 
@@ -84,9 +84,9 @@ For the fastest answers, [`reference/`](../quick_reference/) has 10 cheat-sheet 
 
 ### "I need to test a REST API endpoint"
 
-→ Ch23 [APIUtils HTTP Library](../../05_Enterprise_Framework/23_APIUtils_HTTP_Library.md)
-→ Ch44 [Enterprise API Client Library](../../05_Enterprise_Framework/44_Enterprise_API_Client_Library.md) — 5-layer architecture explained
-→ [`framework/clients/UsersClient.ts`](../../framework/clients/UsersClient.ts) — typed client with response validation
+- Ch23 [APIUtils HTTP Library](../../05_Enterprise_Framework/23_APIUtils_HTTP_Library.md)
+- Ch44 [Enterprise API Client Library](../../05_Enterprise_Framework/44_Enterprise_API_Client_Library.md) — 5-layer architecture explained
+- [`framework/clients/UsersClient.ts`](../../framework/clients/UsersClient.ts) — typed client with response validation
 
 ### "I need to mock an API response in a UI test"
 
@@ -105,9 +105,9 @@ For the fastest answers, [`reference/`](../quick_reference/) has 10 cheat-sheet 
 
 ### "I need to test a rate-limited endpoint"
 
-→ Ch26 [Flakiness](../../06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md) — retry-with-backoff section
-→ [`framework/utilities/api/ApiCore.ts`](../../framework/utilities/api/ApiCore.ts) — built-in exponential backoff with jitter
-→ [`framework/tests/api/retry.api.spec.ts`](../../framework/tests/api/retry.api.spec.ts) — runnable retry assertion
+- Ch26 [Flakiness](../../06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md) — retry-with-backoff section
+- [`framework/utilities/api/ApiCore.ts`](../../framework/utilities/api/ApiCore.ts) — built-in exponential backoff with jitter
+- [`framework/tests/api/retry.api.spec.ts`](../../framework/tests/api/retry.api.spec.ts) — runnable retry assertion
 
 ### "I need to test GraphQL"
 
@@ -146,15 +146,15 @@ For the fastest answers, [`reference/`](../quick_reference/) has 10 cheat-sheet 
 
 ### "I need to set up GitHub Actions for Playwright"
 
-→ Ch25 [CI/CD Integration — GitHub & Azure](../../06_CI_CD_And_Reliability/25_CICD_Integration_GitHub_Azure.md)
-→ [`framework/.github/workflows/ci.yml`](../../framework/.github/workflows/ci.yml) — copy-pasteable working workflow
-→ [`reference/10_ci_docker.md`](../quick_reference/10_ci_docker.md) — quick reference
+- Ch25 [CI/CD Integration — GitHub & Azure](../../06_CI_CD_And_Reliability/25_CICD_Integration_GitHub_Azure.md)
+- [`framework/.github/workflows/ci.yml`](../../framework/.github/workflows/ci.yml) — copy-pasteable working workflow
+- [`reference/10_ci_docker.md`](../quick_reference/10_ci_docker.md) — quick reference
 
 ### "I need to shard the suite to run faster"
 
-→ Ch48 [Sharding & Test Selection](../../06_CI_CD_And_Reliability/48_Sharding_And_Test_Selection.md)
-→ Ch57 [Config Theory Catalog](../../01_Foundations/56_Playwright_Config_Deep_Dive.md) — shard config field
-→ _(P-chapter removed in cleanup)_
+- Ch48 [Sharding & Test Selection](../../06_CI_CD_And_Reliability/48_Sharding_And_Test_Selection.md)
+- Ch57 [Config Theory Catalog](../../01_Foundations/56_Playwright_Config_Deep_Dive.md) — shard config field
+- _(P-chapter removed in cleanup)_
 
 ### "I need to use Docker for tests"
 
@@ -185,15 +185,15 @@ For the fastest answers, [`reference/`](../quick_reference/) has 10 cheat-sheet 
 
 ### "I need to test accessibility (a11y)"
 
-→ Ch39 [Accessibility Testing with axe-core](../../07_Specialised_Testing/39_Accessibility_Testing_axe_core.md) — WCAG 2.1, POUR principles
-→ [`framework/a11y/runner.ts`](../../framework/a11y/runner.ts) — `runAxe(page)` + `assertNoViolations`
-→ [`framework/utilities/matchers/to-be-readable-to.ts`](../../framework/utilities/matchers/to-be-readable-to.ts) — custom contrast-ratio matcher
+- Ch39 [Accessibility Testing with axe-core](../../07_Specialised_Testing/39_Accessibility_Testing_axe_core.md) — WCAG 2.1, POUR principles
+- [`framework/a11y/runner.ts`](../../framework/a11y/runner.ts) — `runAxe(page)` + `assertNoViolations`
+- [`framework/utilities/matchers/to-be-readable-to.ts`](../../framework/utilities/matchers/to-be-readable-to.ts) — custom contrast-ratio matcher
 
 ### "I need to test performance"
 
-→ Ch37 [Performance Testing — Lighthouse & k6](../../07_Specialised_Testing/37_Performance_Testing_Lighthouse_k6.md) — Core Web Vitals + load
-→ [`framework/perf/budgets.ts`](../../framework/perf/budgets.ts), [`framework/perf/helpers.ts`](../../framework/perf/helpers.ts) — budget assertion
-→ [`framework/utilities/matchers/to-respond-within.ts`](../../framework/utilities/matchers/to-respond-within.ts) — API response-time matcher
+- Ch37 [Performance Testing — Lighthouse & k6](../../07_Specialised_Testing/37_Performance_Testing_Lighthouse_k6.md) — Core Web Vitals + load
+- [`framework/perf/budgets.ts`](../../framework/perf/budgets.ts), [`framework/perf/helpers.ts`](../../framework/perf/helpers.ts) — budget assertion
+- [`framework/utilities/matchers/to-respond-within.ts`](../../framework/utilities/matchers/to-respond-within.ts) — API response-time matcher
 
 ### "I need visual regression testing"
 
@@ -216,9 +216,9 @@ For the fastest answers, [`reference/`](../quick_reference/) has 10 cheat-sheet 
 
 ### "I need to test file upload/download"
 
-→ Ch58 [File Uploads & Downloads](../../03_Real_World_Scenarios/58_File_Uploads_Downloads.md) — `setInputFiles`, drag-drop, download event race
-→ [`framework/utilities/helpers/file.helpers.ts`](../../framework/utilities/helpers/file.helpers.ts)
-→ [`framework/tests/file-io/upload-download.spec.ts`](../../framework/tests/file-io/upload-download.spec.ts)
+- Ch58 [File Uploads & Downloads](../../03_Real_World_Scenarios/58_File_Uploads_Downloads.md) — `setInputFiles`, drag-drop, download event race
+- [`framework/utilities/helpers/file.helpers.ts`](../../framework/utilities/helpers/file.helpers.ts)
+- [`framework/tests/file-io/upload-download.spec.ts`](../../framework/tests/file-io/upload-download.spec.ts)
 
 ### "I need BDD / Gherkin / Cucumber"
 
@@ -238,9 +238,9 @@ For the fastest answers, [`reference/`](../quick_reference/) has 10 cheat-sheet 
 
 ### "I need to design a POM for a new app"
 
-→ Ch05 [POM Architecture Deep Dive](../../02_Test_Architecture/05_POM_Architecture_Deep_Dive.md)
-→ Ch18 [Mega POM splitting](../../05_Enterprise_Framework/18_Mega_POM_Architecture.md) — composition pattern
-→ [`framework/pages/`](../../framework/pages/) + [`framework/components/`](../../framework/components/) — reference impl
+- Ch05 [POM Architecture Deep Dive](../../02_Test_Architecture/05_POM_Architecture_Deep_Dive.md)
+- Ch18 [Mega POM splitting](../../05_Enterprise_Framework/18_Mega_POM_Architecture.md) — composition pattern
+- [`framework/pages/`](../../framework/pages/) + [`framework/components/`](../../framework/components/) — reference impl
 
 ### "My POMs are getting huge — how do I split?"
 
@@ -248,9 +248,9 @@ For the fastest answers, [`reference/`](../quick_reference/) has 10 cheat-sheet 
 
 ### "I need to write custom fixtures"
 
-→ Ch06 [Custom Fixtures Architecture](../../02_Test_Architecture/06_Custom_Fixtures_Architecture.md) — `test.extend`, scope, auto, yield/teardown
-→ [`framework/fixtures/orangehrm.fixture.ts`](../../framework/fixtures/orangehrm.fixture.ts) — full example with auto-fixture
-→ [`reference/04_fixtures.md`](../quick_reference/04_fixtures.md) — quick reference
+- Ch06 [Custom Fixtures Architecture](../../02_Test_Architecture/06_Custom_Fixtures_Architecture.md) — `test.extend`, scope, auto, yield/teardown
+- [`framework/fixtures/orangehrm.fixture.ts`](../../framework/fixtures/orangehrm.fixture.ts) — full example with auto-fixture
+- [`reference/04_fixtures.md`](../quick_reference/04_fixtures.md) — quick reference
 
 ### "I need to write a custom matcher"
 
@@ -288,9 +288,9 @@ For the fastest answers, [`reference/`](../quick_reference/) has 10 cheat-sheet 
 
 ### "I have an interview soon"
 
-→ Ch32 [SDET Interview Prep](../../08_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md) — LADDER + STAR + live-coding
-→ [`career/mock_interviews/`](../../career/mock_interviews/) — 5 worked LADDER transcripts
-→ [`career/INTERVIEW_BANK.md`](../../career/INTERVIEW_BANK.md)
+- Ch32 [SDET Interview Prep](../../08_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md) — LADDER + STAR + live-coding
+- [`career/mock_interviews/`](../../career/mock_interviews/) — 5 worked LADDER transcripts
+- [`career/INTERVIEW_BANK.md`](../../career/INTERVIEW_BANK.md)
 
 ### "I need to assess where I am in my career"
 

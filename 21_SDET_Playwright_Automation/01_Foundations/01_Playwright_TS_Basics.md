@@ -893,6 +893,8 @@ flowchart TD
     Timeout -->|yes| Fail["throw AssertionError ❌"]
 ```
 
+**How to read this diagram.** Start at the `expect(...)` call: evaluate the locator, check the condition, and pass if it holds; otherwise check the timeout and, if time remains, wait about 100ms and loop back to evaluating the locator. Notice that the loop returns to the locator query, not just the condition check, and only the timeout branch ends in a thrown AssertionError.
+
 The key: **both the locator query AND the condition check are re-evaluated on every retry**. If the DOM changes between retries (React re-render, async data load), Playwright picks up the new state automatically.
 
 **This flowchart is an algorithm with a name: bounded polling with a termination condition.** `toHaveText()`'s built-in loop uses a fixed ~100ms interval, but `expect.poll()`'s own `intervals: [500, 1000, 2000]` option — used further down this section — is a hand-written exponential backoff sequence, the exact pattern [Ch34 Section 8](../08_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md#8-dynamic-programming--optimal-retry-backoff) derives from first principles and grounds in AWS's real "Exponential Backoff and Jitter" engineering post. The reason to know the name now, this early: the moment you're polling something *shared* — a queue depth, a feature flag service, anything many parallel test workers hit simultaneously rather than one isolated per-test locator — a fixed or naively-exponential interval is exactly the pattern that AWS's post warns synchronizes retries into a "thundering herd." A single test's `expect.poll()` against its own isolated data, as used here, doesn't have that problem; a polling helper reused across hundreds of parallel workers hitting the same backend might.

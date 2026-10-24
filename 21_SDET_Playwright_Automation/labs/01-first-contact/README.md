@@ -1,8 +1,8 @@
 # Lab 01 — First Contact: Locators, Auto-Waiting & Precise Assertions
 
-**You'll practise:** turning written requirements into tests · finding elements the way a user does · why Playwright tests don't need `sleep` · assertions precise enough to catch real bugs
-**Read first:** [Ch01 Playwright & TS Basics](../../01_Foundations/01_Playwright_TS_Basics.md), [Ch02 Locators](../../01_Foundations/02_Enterprise_Locators_XPath.md), [Ch55 Trace Viewer](../../01_Foundations/55_Inspector_TraceViewer_UIMode_Walkthrough.md)
-**Time:** 45–90 minutes
+- **You'll practise:** turning written requirements into tests · finding elements the way a user does · why Playwright tests don't need `sleep` · assertions precise enough to catch real bugs
+- **Read first:** [Ch01 Playwright & TS Basics](../../01_Foundations/01_Playwright_TS_Basics.md), [Ch02 Locators](../../01_Foundations/02_Enterprise_Locators_XPath.md), [Ch55 Trace Viewer](../../01_Foundations/55_Inspector_TraceViewer_UIMode_Walkthrough.md)
+- **Time:** 45–90 minutes
 
 ---
 

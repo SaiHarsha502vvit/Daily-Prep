@@ -88,6 +88,8 @@ graph TD
     style JSON fill:#bfb,stroke:#0f0
 ```
 
+**How to read this diagram.** The `BrowserContext` holds in-memory session state and IndexedDB, and `context.storageState()` writes only the cookies array and the origins/localStorage into the JSON file. Notice the red dashed boxes: in-memory session and IndexedDB are not captured, while the green JSON box is what you can save and reuse.
+
 **What is NOT captured:**
 
 - `sessionStorage` (per-tab, not serializable across sessions)
@@ -425,6 +427,8 @@ sequenceDiagram
 
     Note over File: This state CANNOT be used for T2!<br/>T2 needs its own local storage init.
 ```
+
+**How to read this diagram.** Read it top to bottom: login on the auth domain sets a `.company.com` cookie, navigating to tenant 1 lets it read that cookie and set its own local storage, and the combined state is saved to `tenant1-state.json`. Notice the final note: that file cannot be reused for tenant 2, because tenant 2 needs its own local storage initialised.
 
 To solve this, your `globalSetup` must explicitly visit the tenant URL after the Auth URL to initialize the tenant's specific local storage and sub-domain cookies before saving.
 
@@ -901,18 +905,18 @@ Key insight: One `BrowserContext` accumulates cookies from ALL domains visited. 
 
 Your suite has 5 test roles (admin, customer, supervisor, auditor, agent). UI login takes 45 seconds per role in globalSetup. API token endpoint takes 2 seconds per role. How much time does switching to API auth save per CI run?
 
-A) 43 seconds
-B) 215 seconds (3m 35s)
-C) 175 seconds (2m 55s)
-D) 225 seconds (3m 45s)
+- A) 43 seconds
+- B) 215 seconds (3m 35s)
+- C) 175 seconds (2m 55s)
+- D) 225 seconds (3m 45s)
 
 <details><summary>Answer</summary>
 
 **B — 215 seconds**.
 
-UI auth: 5 roles × 45s = 225s
-API auth: 5 roles × 2s = 10s (parallelized with Promise.all → effectively ~2s total)
-Savings: 225s - 10s = **215 seconds per run**
+- UI auth: 5 roles × 45s = 225s
+- API auth: 5 roles × 2s = 10s (parallelized with Promise.all → effectively ~2s total)
+- Savings: 225s - 10s = **215 seconds per run**
 
 With CI running 10 times per day: **2150 seconds = 36 minutes saved daily**.
 

@@ -1,8 +1,8 @@
 # Lab 04 — Webhook Receiver: Signatures, Replays, Duplicates & Disorder
 
-**You'll practise:** API testing with Playwright's `request` fixture · implementing a signing scheme from a written spec · negative security tests · designing tests for things providers *guarantee won't* be orderly
-**Read first:** [Ch67 — Payment Gateway Testing](../../03_Real_World_Scenarios/67_Payment_Gateway_Testing.md) §6
-**Time:** 90–150 minutes
+- **You'll practise:** API testing with Playwright's `request` fixture · implementing a signing scheme from a written spec · negative security tests · designing tests for things providers *guarantee won't* be orderly
+- **Read first:** [Ch67 — Payment Gateway Testing](../../03_Real_World_Scenarios/67_Payment_Gateway_Testing.md) §6
+- **Time:** 90–150 minutes
 
 ---
 

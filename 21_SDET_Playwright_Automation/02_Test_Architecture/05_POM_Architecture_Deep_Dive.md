@@ -584,7 +584,7 @@ classDiagram
     MasterSearchPageComp *-- WaitHelper : composes (has-a)
 ```
 
-**This diagram is drawing two different shapes, and that's the real reason one scales and the other doesn't.** The inheritance half is a tree — TypeScript/JavaScript classes have exactly one `extends` target, so every class has exactly one parent, the same one-parent constraint [Ch01](../01_Foundations/01_Playwright_TS_Basics.md) and [Ch02](../01_Foundations/02_Enterprise_Locators_XPath.md) already established for the DOM. The composition half is a graph, not a tree: `WaitHelper` has no such restriction — the exact same `WaitHelper` instance-shape can be composed into `MasterSearchPage`, `CaseManagementPage`, and a dozen others simultaneously, each holding its own reference to it. A tree structurally cannot express "this node has two unrelated parents"; a graph can. That's the precise, structural reason a "God Base Page" happens under inheritance and not under composition: cramming an unrelated capability into `BasePage` forces it onto *every* class in the tree below it (there's only one path down), while adding a new helper under composition only touches the classes that actually construct it — you're adding a node to a graph, not growing every branch of a tree.
+**How to read this diagram.** **This diagram is drawing two different shapes, and that's the real reason one scales and the other doesn't.** The inheritance half is a tree — TypeScript/JavaScript classes have exactly one `extends` target, so every class has exactly one parent, the same one-parent constraint [Ch01](../01_Foundations/01_Playwright_TS_Basics.md) and [Ch02](../01_Foundations/02_Enterprise_Locators_XPath.md) already established for the DOM. The composition half is a graph, not a tree: `WaitHelper` has no such restriction — the exact same `WaitHelper` instance-shape can be composed into `MasterSearchPage`, `CaseManagementPage`, and a dozen others simultaneously, each holding its own reference to it. A tree structurally cannot express "this node has two unrelated parents"; a graph can. That's the precise, structural reason a "God Base Page" happens under inheritance and not under composition: cramming an unrelated capability into `BasePage` forces it onto *every* class in the tree below it (there's only one path down), while adding a new helper under composition only touches the classes that actually construct it — you're adding a node to a graph, not growing every branch of a tree.
 
 ```typescript
 // ── INHERITANCE approach ──────────────────────────────────────────────────
@@ -694,9 +694,13 @@ When automating complex enterprise applications (like Dynamics 365, Salesforce, 
 ### War Story 1: The `.nth(1)` Modal Trap (A Classic D365 Issue)
 
 **The Scenario:**
+
 You are testing a flow in D365 where a modal pops up. You enter details, submit, and a "Success" modal appears with a "Close" button. However, there is _another_ "Close" button in the background UI, outside the modal.
+
 A previous engineer wrote this in the POM:
+
 `closeButton = this.page.getByRole('button', { name: 'Close' })`
+
 And the test uses `await page.closeButton.nth(1).click()` to target the modal's button.
 
 **The Failure:**
@@ -728,8 +732,11 @@ By explicitly scoping to `getByRole('dialog')` (or the specific modal container 
 ### War Story 2: The Two-Phase Render "Empty Text" Trap
 
 **The Scenario:**
+
 D365 grids often load in two phases. Phase 1 renders the grid shell and empty cells. Phase 2 loads the data via XHR and fills the cells.
+
 Your POM has: `statusCell = this.page.locator('[data-col-id="status"]')`
+
 Your test checks: `const status = await statusCell.textContent(); expect(status).toBe('PAID');`
 
 **The Failure:**
@@ -749,7 +756,9 @@ await expect(statusCell).toHaveText("PAID", { timeout: 15_000 });
 ### War Story 3: The "Save" vs "Save & Close" Ambiguity
 
 **The Scenario:**
+
 Fluent UI command bars often contain buttons with similar names. You want to click "Save", but there's also a "Save & Close" button.
+
 `await this.page.getByText('Save').click()`
 
 **The Failure:**

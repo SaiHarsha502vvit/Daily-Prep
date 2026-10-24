@@ -75,6 +75,8 @@ sequenceDiagram
     MCP-->>AI: snapshot result (JSON-RPC 2.0)
 ```
 
+**How to read this diagram.** Read it top to bottom as one round trip: the AI model sends a `tools/call` request (JSON-RPC) to the Playwright MCP server, which sends a navigate command to the app in the browser over CDP, and the DOM / accessibility state flows back as a snapshot result. Notice that two different protocols are in play, JSON-RPC on the AI side and CDP on the browser side.
+
 The AI sends tool calls like:
 ```json
 { "method": "tools/call", "params": { "name": "browser_navigate", "arguments": { "url": "http://localhost:4200/pim" } } }
@@ -689,6 +691,8 @@ sequenceDiagram
     L->>S: generator_write_test(fileName, code)
     S-->>L: written (only inside a project testDir)
 ```
+
+**How to read this diagram.** Read it top to bottom: the LLM calls `generator_setup_page`, the server runs the seed test paused at the end and returns a snapshot, and then each `browser_type` call is performed on the live page and logged in a journal. Notice the last two calls: `generator_read_log` returns every recorded step with its code, and `generator_write_test` writes the file, only inside a project `testDir`.
 
 Real responses, trimmed. After `browser_type` with `intent: "Type milk in the input"`:
 

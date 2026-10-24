@@ -1,8 +1,8 @@
 # Lab 06 — Virtual Grid: Testing 10,000 Rows That Mostly Don't Exist
 
-**You'll practise:** asserting the *logical* state of a UI whose DOM is a small window onto it · reaching deep rows deterministically · using the API as an independent oracle · spotting boundary bugs
-**Read first:** [Ch64 — Dynamic Locators & Data Structures](../../02_Test_Architecture/64_Dynamic_Locators_And_Data_Structures_In_POMs.md) §6 (virtualised grids)
-**Time:** 90–150 minutes
+- **You'll practise:** asserting the *logical* state of a UI whose DOM is a small window onto it · reaching deep rows deterministically · using the API as an independent oracle · spotting boundary bugs
+- **Read first:** [Ch64 — Dynamic Locators & Data Structures](../../02_Test_Architecture/64_Dynamic_Locators_And_Data_Structures_In_POMs.md) §6 (virtualised grids)
+- **Time:** 90–150 minutes
 
 ---
 

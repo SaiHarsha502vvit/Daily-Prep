@@ -44,6 +44,8 @@ mindmap
       Type 9: Third-Party Service
 ```
 
+**How to read this diagram.** The mind map groups the nine flakiness types into three branches: Timing and State (types 1, 8, 3), Data and Environment (types 2, 7, 4), and Execution (types 5, 6, 9). Notice that the types are numbered by type, not by branch, so the numbers are not in order within a branch.
+
 ```
 TYPE 1 — Timing / Race Condition
   Symptom: passes with a delay, fails without one; fails more on slow machines
@@ -114,6 +116,8 @@ flowchart TD
     style S6 fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
     style Done fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
 ```
+
+**How to read this diagram.** Start at Step 1, reproduce locally with `--repeat-each=10`: 0/10 failures points to CI-specific factors (step 4), while 1-9/10 failures lead to getting the trace (step 2) and comparing passing and failing runs (step 3). Both paths meet at classifying the type (step 5) and applying one fix (step 6). Notice the loop back: if the fix is still flaky at 50 runs it returns to step 2, and only 50/50 passes ends in "Merge fix, monitor 1 week in CI".
 
 Now the exact commands and detail for each step:
 
@@ -484,6 +488,8 @@ graph TD
     Q5 -->|Yes| Type6[Type 6: Locator Ambiguity]
     Q5 -->|No| TypeOther[Review Animation/Platform Types]
 ```
+
+**How to read this diagram.** Start at the trace analysis and ask one question per diamond: was the assertion before the API response (type 1), does it fail only in parallel (type 3 if module state is shared, otherwise type 2), only in CI (type 4), only after an hour (type 7), or does it click the wrong element (type 6). Notice that the questions are ordered, so each "No" moves you on to the next suspect, and the final fallthrough is to review the animation and platform types.
 
 ### Quick Reference Matrix
 
@@ -866,10 +872,10 @@ You have 3 tests in quarantine. Your manager asks: "Why are these tests quaranti
 
 A test that fails 1 run out of every 20 (5% failure rate) must be proven fixed before you remove the quarantine. You run it 10 times and it passes all 10. Is the test fixed?
 
-A) Yes — 10/10 passes proves the fix worked
-B) No — at a 5% failure rate, the probability of getting 10 consecutive passes by chance is (0.95)^10 = 59.9%. A 60% chance means you have a 40% chance the bug is still present and you got lucky
-C) Yes — 10 runs is the industry standard for flakiness verification
-D) No — you need to run exactly 200 times as per the Playwright documentation
+- A) Yes — 10/10 passes proves the fix worked
+- B) No — at a 5% failure rate, the probability of getting 10 consecutive passes by chance is (0.95)^10 = 59.9%. A 60% chance means you have a 40% chance the bug is still present and you got lucky
+- C) Yes — 10 runs is the industry standard for flakiness verification
+- D) No — you need to run exactly 200 times as per the Playwright documentation
 
 <details><summary>Answer</summary>
 

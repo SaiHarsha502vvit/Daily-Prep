@@ -1,8 +1,8 @@
 # Lab 02 — Cookie Consent: Tracking, Choices & a Banner That Won't Sit Still
 
-**You'll practise:** watching the network as evidence · testing what must *not* happen · persistence across reloads · `page.addLocatorHandler()` for UI that appears at unpredictable moments
-**Read first:** [Ch68 — Consent Banners, Overlays & CAPTCHA](../../03_Real_World_Scenarios/68_Consent_Overlays_And_CAPTCHA.md) §1–4
-**Time:** 60–120 minutes
+- **You'll practise:** watching the network as evidence · testing what must *not* happen · persistence across reloads · `page.addLocatorHandler()` for UI that appears at unpredictable moments
+- **Read first:** [Ch68 — Consent Banners, Overlays & CAPTCHA](../../03_Real_World_Scenarios/68_Consent_Overlays_And_CAPTCHA.md) §1–4
+- **Time:** 60–120 minutes
 
 ---
 

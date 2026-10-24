@@ -283,6 +283,8 @@ flowchart LR
     style E fill:#ffebee,stroke:#e53935,stroke-width:2px
 ```
 
+**How to read this diagram.** Read the solid arrows left to right as the flag lifecycle (Creation, Rollout, Full adoption, Deprecation, Removal) and the dotted arrows as the test type that belongs to the first four stages: smoke test, gradual ramp, regression suite, cleanup tests. Notice that Removal is the end of the line and has no test type attached.
+
 ### Stage 1 — Creation (flag at 0%)
 
 ```typescript

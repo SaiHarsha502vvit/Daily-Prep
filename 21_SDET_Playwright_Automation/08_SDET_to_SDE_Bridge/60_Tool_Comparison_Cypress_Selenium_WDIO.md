@@ -134,6 +134,8 @@ flowchart BT
     style Browser fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px
 ```
 
+**How to read this diagram.** The test file talks to a Node.js server (Cypress), which acts as an HTTP proxy for the browser, and inside the browser the app under test and the Cypress runner share the same origin and the same JavaScript event loop. Notice that the runner lives inside the browser alongside your app, which is the architectural difference from tools that drive the browser from outside.
+
 **Implication:** Cypress commands are NOT async/await — they are a synchronous DSL that queues commands. You do NOT write `await cy.click()`. You write `cy.get('.btn').click()` and Cypress serialises and retries them internally.
 
 ### 2.2 Locator Model
@@ -548,6 +550,8 @@ flowchart TD
     style R4 fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
     style R6 fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
 ```
+
+**How to read this diagram.** Start at "Need Java or Python?" and follow the answers: a yes leads to Selenium 4, a JS/TS team then asks about first-class Cucumber BDD (WebdriverIO), single-origin without OAuth redirects (Cypress), WebKit/Safari coverage (Playwright) and IE11 (Selenium 4). Notice that the final fallthrough, when none of those needs apply, is "Default: Playwright".
 
 ---
 

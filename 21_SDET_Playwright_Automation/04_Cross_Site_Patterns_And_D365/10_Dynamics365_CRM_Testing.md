@@ -667,6 +667,8 @@ sequenceDiagram
     D365-->>Worker 1: Already Authenticated! (0s overhead)
 ```
 
+**How to read this diagram.** Read it top to bottom in two phases: global setup logs in once through Azure AD, loads the D365 shell and saves the cookies to `d365-auth.json`; then each worker reads that file and loads D365 with the cookies already injected. Notice the payoff on the last line: the worker is already authenticated with zero login overhead.
+
 ```typescript
 // global.setup.ts — runs ONCE before all tests
 import { chromium, expect } from "@playwright/test";

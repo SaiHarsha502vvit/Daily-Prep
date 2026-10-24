@@ -31,6 +31,8 @@ graph TD
     D -->|Throws ApiHttpError| E[Layer 1: Playwright APIRequestContext<br>request.post]
 ```
 
+**How to read this diagram.** Read it from top to bottom as the five layers: domain clients at the top call the endpoint registry and the header builder, both of which feed the HTTP core `ApiCore`, which sits on Playwright's `APIRequestContext`. Notice the labelled arrows: the HTTP core throws `ApiHttpError` upward, and domain clients turn that into domain errors.
+
 ```
 Layer 5: Domain Clients
   CitationsClient, UsersClient, PaymentsClient, NotificationsClient
@@ -592,6 +594,8 @@ graph TD
     RequestValidationError --> PaymentValidationError
 ```
 
+**How to read this diagram.** Read it top down as inheritance: every custom error extends `Error`, `ApiError` branches into one class per HTTP status (404, 409, 422, 429, 5xx), and the domain errors (`CitationNotFoundError`, `CitationAlreadyPaidError`, `PaymentValidationError`) specialise those. Notice that `SchemaValidationError` is a separate branch from `ApiError`, because it signals a Zod parse failure rather than an HTTP status.
+
 ```typescript
 // lib/errors/ApiErrors.ts
 
@@ -1054,6 +1058,8 @@ sequenceDiagram
         Client-->>Test: throws SchemaValidationError
     end
 ```
+
+**How to read this diagram.** Read it top to bottom: the test calls the domain client, which fetches raw `unknown` JSON through `ApiCore` and Playwright, then hands it to the Zod schema. Notice the two exits at the bottom: a matching schema returns a typed `Citation` to the test, while a mismatch becomes a thrown `SchemaValidationError`.
 
 ```typescript
 // lib/types/domain.ts — the module CitationsClient imports its types from.
@@ -1572,9 +1578,9 @@ Why C is best:
 - Tests can use `catch (e) { if (e instanceof CitationNotFoundError) { ... } }` to handle expected 404s gracefully
 - The error is part of your domain language, not generic HTTP
 
-Why not A: Returning `null` forces every caller to null-check. Easy to forget. Silences real errors.
-Why not B: Generic `Error('Not found')` loses the citation ID and URL — harder to debug.
-Why not D: A test assertion failure gives no information about why the citation wasn't found.
+- Why not A: Returning `null` forces every caller to null-check. Easy to forget. Silences real errors.
+- Why not B: Generic `Error('Not found')` loses the citation ID and URL — harder to debug.
+- Why not D: A test assertion failure gives no information about why the citation wasn't found.
 
 </details>
 
@@ -1616,10 +1622,10 @@ The 20/80 rule: 20% of fields carry 80% of the validation value. Start with IDs,
 
 What is the primary architectural benefit of wrapping Playwright's `APIRequestContext` inside an `ApiClient` class instead of calling `request.post()` directly in spec files?
 
-A) It speeds up the test execution because classes run faster than raw function calls.
-B) It centralizes endpoint URLs, payload construction, header injection, and response parsing, keeping spec files strictly focused on business logic assertions.
-C) It prevents Playwright from logging the API calls.
-D) It allows the tests to bypass network proxies.
+- A) It speeds up the test execution because classes run faster than raw function calls.
+- B) It centralizes endpoint URLs, payload construction, header injection, and response parsing, keeping spec files strictly focused on business logic assertions.
+- C) It prevents Playwright from logging the API calls.
+- D) It allows the tests to bypass network proxies.
 
 <details><summary>Answer</summary>
 
@@ -1718,10 +1724,10 @@ Write a `requestWithRetry` wrapper method inside your `ApiClient` that takes a c
 
 Where is the most secure and maintainable place to inject an Authorization token into the `ApiClient` so that every method (`get`, `post`, `put`) uses it automatically?
 
-A) Pass the token as a parameter to every method: `client.get('/url', token)`.
-B) Pass the token into the `ApiClient` constructor and store it as a private readonly class property.
-C) Read the token from `process.env.TOKEN` inside the `get()` method.
-D) Put the token in a global variable.
+- A) Pass the token as a parameter to every method: `client.get('/url', token)`.
+- B) Pass the token into the `ApiClient` constructor and store it as a private readonly class property.
+- C) Read the token from `process.env.TOKEN` inside the `get()` method.
+- D) Put the token in a global variable.
 
 <details><summary>Answer</summary>
 

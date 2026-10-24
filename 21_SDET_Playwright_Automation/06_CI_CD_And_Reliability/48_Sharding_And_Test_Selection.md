@@ -120,6 +120,8 @@ flowchart TD
     style F fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
 ```
 
+**How to read this diagram.** Read it top to bottom: `git diff origin/main...HEAD` gives the changed files, which are sorted into production code, test files and shared utilities, merged into one touched-files map, and then mapped to every test file that imports (transitively) any touched file. Notice that the final output is just a list passed to `playwright test`, so only the affected tests run.
+
 ### Cheap implementation — file path heuristics
 
 ```typescript

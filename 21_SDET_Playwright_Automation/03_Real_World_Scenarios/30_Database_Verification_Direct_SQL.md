@@ -256,6 +256,8 @@ sequenceDiagram
     Note over Test: If API cached stale data, DB assertion catches it.
 ```
 
+**How to read this diagram.** Read it top to bottom as three layers of proof: the test creates data through the API and asserts 201, navigates and searches in the UI and asserts the element is visible, then queries the database and asserts the status is `PENDING`. Notice the closing note: the database is the ground truth, so it catches stale data the API layer may have cached.
+
 ```typescript
 // tests/specs/citations/create-citation-three-layer.spec.ts
 

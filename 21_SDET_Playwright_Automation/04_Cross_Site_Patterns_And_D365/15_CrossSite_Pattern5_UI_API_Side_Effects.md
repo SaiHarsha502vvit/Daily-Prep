@@ -50,6 +50,8 @@ sequenceDiagram
     end
 ```
 
+**How to read this diagram.** Read it top to bottom: the UI places an order, the backend writes it to the Order DB and immediately returns "Order placed successfully!", and only afterwards does the diagram split into Scenario A (notification and warehouse calls succeed) and Scenario B (both fail). Notice the note in Scenario B: the UI had already shown success before the downstream calls ran, so the UI alone cannot tell the two scenarios apart.
+
 **The fix:** After the UI shows success, verify the DOWNSTREAM EFFECTS via API.
 
 ---

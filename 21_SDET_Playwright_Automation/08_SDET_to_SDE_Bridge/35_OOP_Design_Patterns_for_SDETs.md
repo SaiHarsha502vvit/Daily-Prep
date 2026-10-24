@@ -270,6 +270,8 @@ classDiagram
     TestScript --> PayloadFactory: uses
 ```
 
+**How to read this diagram.** `PayloadFactory` is an interface with two creation methods, and `UKPayloadFactory` and `USPayloadFactory` both implement it. Notice that `TestScript` depends only on the `PayloadFactory` interface, so which concrete factory it gets can change without touching the test.
+
 **In test code — already implemented:**
 
 ```typescript
@@ -374,6 +376,8 @@ classDiagram
     Observer <|.. ErrorLogger
     Page o--> Observer: notifies
 ```
+
+**How to read this diagram.** `Page` is the subject (it inherits `on` and `emit` from `Subject`), and observers implement the `Observer` interface: `ApiCallObserver` and `ErrorLogger`. Notice the last arrow: the page notifies observers, but it only knows them through the interface.
 
 **In Playwright — `page.on()` IS the Observer pattern:**
 
@@ -486,6 +490,8 @@ classDiagram
     }
     TestDataManager o--> SeedingStrategy: uses
 ```
+
+**How to read this diagram.** `SeedingStrategy` is the interface, with `ApiSeedingStrategy` and `DbSeedingStrategy` as two interchangeable implementations. Notice that `TestDataManager` holds only the interface, so the seeding method can be swapped without changing the manager.
 
 **In test code — seeding strategies (Ch28):**
 
@@ -612,6 +618,8 @@ classDiagram
     BaseApiClient <|-- GraphQlUtils
 ```
 
+**How to read this diagram.** `BaseApiClient` defines the hooks `processResponse` and `parseBody` (marked with `*`), and `APIUtils` and `GraphQlUtils` both inherit from it and provide their own versions. Notice that the shared skeleton lives in the base class while the subclasses fill in the specific steps.
+
 **In `APIUtils` — already implemented:**
 
 ```typescript
@@ -666,6 +674,8 @@ flowchart TD
     style S3 fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
 ```
 
+**How to read this diagram.** Read it top to bottom as the fixed template: log, error check, parse body, return. Notice that only Step 3 (highlighted) varies: the body is parsed as `response.json()`, `undefined` for status 204, or `response.text()`, and all three paths rejoin at the fixed Step 4.
+
 ---
 
 ## 6. Proxy Pattern — `page.route()` and the Managed Client
@@ -689,6 +699,8 @@ classDiagram
     ClientInterface <|.. ProxyClient
     ProxyClient --> RealClient: delegates
 ```
+
+**How to read this diagram.** `ClientInterface` is implemented by both `RealClient` and `ProxyClient`, and the proxy holds a `RealClient` and delegates to it. Notice that because both satisfy the same interface, callers cannot tell whether they are talking to the real client or the proxy.
 
 ```typescript
 // page.route() IS a proxy:
@@ -848,6 +860,8 @@ classDiagram
     SearchPanelComponent o--> SearchInputComponent: contains
     MasterSearchPage o--> SearchPanelComponent: contains
 ```
+
+**How to read this diagram.** `PageComponent` is the shared interface (`waitForLoad`), implemented by `SearchInputComponent`, `SearchPanelComponent` and `MasterSearchPage`. Notice the "contains" arrows: `MasterSearchPage` contains a panel and the panel contains inputs, so a leaf and a composite expose the same interface and form a tree.
 
 ```typescript
 // Component (leaf and composite have the same interface):
@@ -1029,10 +1043,10 @@ await notificationsClient.send(
 
 Your SDET framework needs to support multiple output formats: HTML report, JUnit XML (for Azure DevOps), and a Slack webhook notification — each triggered based on the CI environment. Which OOP pattern is most appropriate?
 
-A) Singleton — there should be only one reporter per run
-B) Strategy — define a `Reporter` interface and inject the appropriate implementation at runtime based on environment
-C) Decorator — wrap the test runner with reporting behaviour
-D) Template Method — define the report generation steps in a base class, override specifics per format
+- A) Singleton — there should be only one reporter per run
+- B) Strategy — define a `Reporter` interface and inject the appropriate implementation at runtime based on environment
+- C) Decorator — wrap the test runner with reporting behaviour
+- D) Template Method — define the report generation steps in a base class, override specifics per format
 
 <details><summary>Answer</summary>
 

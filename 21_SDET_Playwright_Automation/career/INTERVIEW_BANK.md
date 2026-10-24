@@ -114,11 +114,11 @@ Build at least **five** real stories from your own work. Template per story:
 
 ### Story title: **************\_\_\_**************
 
-**Situation**: where, when, what was happening
-**Task**: what was your responsibility
-**Action**: what _you_ did (not "we") — specifics
-**Result**: numbers — flakes dropped from X% to Y%, runtime cut from Am to Bm, etc.
-**Reflection**: what you'd do differently
+- **Situation**: where, when, what was happening
+- **Task**: what was your responsibility
+- **Action**: what _you_ did (not "we") — specifics
+- **Result**: numbers — flakes dropped from X% to Y%, runtime cut from Am to Bm, etc.
+- **Reflection**: what you'd do differently
 
 Slots to fill — pick the ones that match your real experiences:
 

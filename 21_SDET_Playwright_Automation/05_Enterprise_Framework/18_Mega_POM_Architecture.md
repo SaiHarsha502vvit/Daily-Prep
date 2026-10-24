@@ -269,6 +269,8 @@ classDiagram
     MasterSearchPage *-- DetailPanel : "composes"
 ```
 
+**How to read this diagram.** `MasterSearchPage` is the orchestrator and composes three component objects (`SearchPanel`, `ResultsGrid`, `DetailPanel`), each owning only its own locators and actions. Notice that the filled-diamond composition arrows point from the page to its parts, so the 400+ locators are split by component rather than kept in one class.
+
 ```
 pages/
 └── MasterSearchPage.ts     ← Orchestrator (~80 lines): navigation, waitForLoad, composes components

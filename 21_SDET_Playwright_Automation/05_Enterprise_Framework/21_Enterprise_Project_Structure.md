@@ -583,6 +583,8 @@ graph TD
     CUST --> POM
 ```
 
+**How to read this diagram.** Read it bottom up: three test projects (CRM, Billing, Customer Portal), each with its own `playwright.config.ts`, depend on shared libraries (`core-test-utils`, `shared-api-clients`, `shared-poms`) that live once in the monorepo. Notice which arrows exist: CRM and Customer Portal use all three libraries, while Billing uses only core utilities and the API clients.
+
 **The Shared Library Pattern:**
 Create an internal npm package (e.g., `@mycompany/test-core`) containing the setup code, generic helpers, API clients, and common page objects.
 

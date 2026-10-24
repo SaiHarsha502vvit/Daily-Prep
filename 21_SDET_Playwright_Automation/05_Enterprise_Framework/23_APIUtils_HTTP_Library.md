@@ -82,6 +82,8 @@ graph TD
     Util2 --> HTTP
 ```
 
+**How to read this diagram.** The two subgraphs compare the approaches: in Pattern A the spec file talks to specific clients (`CitationsApiClient`, `NotificationsClient`) that both sit on `APIUtils`, while in Pattern B the spec file calls `APIUtils` directly. Notice that both patterns end at the same Playwright `request` object at the bottom.
+
 ### Pattern A — Specific Client Per Service (Recommended for large suites)
 
 ```
@@ -363,6 +365,8 @@ flowchart TD
     Backoff2 --> Start
     StatusCheck -->|"no — 4xx, or a 5xx<br/>on the last attempt"| Process["processResponse()<br/>decides return vs throw"]
 ```
+
+**How to read this diagram.** Start at `operation()` called and follow the three exits: a network error is retried with backoff until the last attempt, where it is thrown; a retriable status (408/429/502/503/504) is retried with backoff while attempts remain; and anything else goes to `processResponse()`, which decides return versus throw. Notice that both retry branches loop back to the start, so every retry re-runs the whole operation.
 
 ```typescript
 async get<T = unknown>(url: string, options: RequestOptions = {}): Promise<ApiResponse<T>> {
@@ -662,6 +666,8 @@ flowchart TD
     Cit -->|injects citationsClient| Test
 ```
 
+**How to read this diagram.** Read it from the top: Playwright provides `request`, which is injected into the test-scoped `citationsClient` fixture, and the worker-scoped `account` fixture is injected into both that client and the test spec. Notice that the test spec receives `citationsClient` and `account` ready-made and never constructs them itself.
+
 ---
 
 ## 6. Calling APIUtils From a Test — What the Test LOOKS Like
@@ -910,10 +916,10 @@ async delete(citationId: string): Promise<void> {
 }
 ```
 
-A) Option A — try/catch is the correct JavaScript pattern for handling expected errors
-B) Option B — `ignoreStatuses` in the client is more explicit and does not swallow unexpected errors
-C) Both are equivalent — choose based on team preference
-D) Neither — the test should always clean up before deletion to prevent this situation
+- A) Option A — try/catch is the correct JavaScript pattern for handling expected errors
+- B) Option B — `ignoreStatuses` in the client is more explicit and does not swallow unexpected errors
+- C) Both are equivalent — choose based on team preference
+- D) Neither — the test should always clean up before deletion to prevent this situation
 
 <details><summary>Answer</summary>
 

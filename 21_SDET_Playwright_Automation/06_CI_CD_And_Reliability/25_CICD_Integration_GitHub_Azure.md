@@ -157,6 +157,8 @@ graph TD
     style K fill:#ede7f6,stroke:#673ab7,stroke-width:2px
 ```
 
+**How to read this diagram.** Read it top to bottom: a PR triggers setup and caching, then the smoke tests act as a gate, and only if they pass do four regression shards run in parallel. Notice the "Sync Point": each shard uploads a blob report, and the merge-reports job combines them into one unified HTML report and uploads it as the final artifact.
+
 ```yaml
 # .github/workflows/playwright.yml
 
@@ -787,10 +789,10 @@ strategy:
 
 Why is `fail-fast: false` critical for sharded Playwright runs?
 
-A) Without it, shards run sequentially instead of in parallel
-B) Without it, if shard 1 fails, GitHub cancels shards 2-4 — you lose test results from three-quarters of the suite and the merged HTML report will be incomplete
-C) `fail-fast: false` enables the blob reporter to write partial results
-D) It prevents duplicate test execution when matrix values overlap
+- A) Without it, shards run sequentially instead of in parallel
+- B) Without it, if shard 1 fails, GitHub cancels shards 2-4 — you lose test results from three-quarters of the suite and the merged HTML report will be incomplete
+- C) `fail-fast: false` enables the blob reporter to write partial results
+- D) It prevents duplicate test execution when matrix values overlap
 
 <details><summary>Answer</summary>
 

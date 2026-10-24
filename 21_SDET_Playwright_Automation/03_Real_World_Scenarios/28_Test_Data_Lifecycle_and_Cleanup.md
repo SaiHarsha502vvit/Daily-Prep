@@ -136,6 +136,8 @@ sequenceDiagram
     TDM->>DB: Delete User A
 ```
 
+**How to read this diagram.** Read it top to bottom: the test creates User A, then a Citation, then a Payment, and after each creation pushes the matching delete onto the TestDataManager stack. Notice the last section: whether the test fails or completes, `cleanup()` pops in reverse order (Payment, Citation, User A), which is the LIFO behaviour explained below.
+
 **Why LIFO? (Last-In, First-Out) / FK-Constraint Cleanup Order**
 It perfectly handles **Foreign Key (FK) constraints**. If you create a User, then a Citation for that user, the database enforces that you _cannot_ delete the User while the Citation exists. By pushing cleanup tasks to a stack, popping them in reverse order guarantees that children (Citations) are deleted before their parents (Users), naturally respecting database constraints.
 
@@ -547,6 +549,8 @@ graph TD
     W2 -.->|Searches for AUTO-67890| D2
 ```
 
+**How to read this diagram.** Each of the two workers creates its own record with a unique ID (solid arrows) and later searches only for that same ID (dotted arrows). Notice that the two workers never touch each other's data, which is what keeps parallel runs from colliding.
+
 When 4 workers run simultaneously, each creating citations for `account.userId`, the results grid can show citations from all 4 workers:
 
 ```typescript
@@ -807,10 +811,10 @@ export class SeedManager {
 
 Your team runs 200 tests in parallel across 4 workers. Each test creates a citation. At the end of the run, some citations aren't deleted because 8 tests failed during teardown. Over 3 months, the staging database accumulates 50,000 orphaned test citations, causing search tests to return thousands of results and become flaky. What is the correct multi-layer defense?
 
-A) Increase the teardown timeout so deletions always complete
-B) Implement unique ID prefixing for all test data + a weekly database cleanup job + fixture-level try/catch on teardown
-C) Run tests serially so teardown always completes before the next test starts
-D) Use a separate staging database for each developer
+- A) Increase the teardown timeout so deletions always complete
+- B) Implement unique ID prefixing for all test data + a weekly database cleanup job + fixture-level try/catch on teardown
+- C) Run tests serially so teardown always completes before the next test starts
+- D) Use a separate staging database for each developer
 
 <details><summary>Answer</summary>
 

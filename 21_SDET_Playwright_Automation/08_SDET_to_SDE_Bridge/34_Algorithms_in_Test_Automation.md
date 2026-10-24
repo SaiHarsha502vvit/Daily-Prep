@@ -654,6 +654,8 @@ flowchart TD
     style U fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
 ```
 
+**How to read this diagram.** Start at the question "What are you actually asking?" and pick the branch that matches: ordering by dependencies leads to a graph with topological sort, most-urgent-now with arrivals leads to a min-heap, counting distinct groups from pairwise signals leads to Union-Find, and a full list ranked once leads to `Array.sort()`. Notice that the choice is driven by the shape of the question, not by the data.
+
 ---
 
 ## 8. Dynamic Programming → Optimal Retry Backoff
@@ -995,10 +997,10 @@ Match each test problem to its algorithm pattern and implementation strategy:
 
 You receive an audit log with 50,000 timestamped events. You need to find the 10-second window with the highest number of FAILED_LOGIN events (to detect brute-force attacks in your test data). Which algorithmic approach solves this in O(n) time?
 
-A) Nested loop: for each event, count FAILED_LOGIN events within 10 seconds. O(n²).
-B) Sort by event type first, then scan. O(n log n).
-C) Sliding window with two pointers: maintain a window [left, right]. Advance right; when the window exceeds 10 seconds, advance left. Track the max count. O(n).
-D) Binary search for every event's 10-second boundary. O(n log n).
+- A) Nested loop: for each event, count FAILED_LOGIN events within 10 seconds. O(n²).
+- B) Sort by event type first, then scan. O(n log n).
+- C) Sliding window with two pointers: maintain a window [left, right]. Advance right; when the window exceeds 10 seconds, advance left. Track the max count. O(n).
+- D) Binary search for every event's 10-second boundary. O(n log n).
 
 <details><summary>Answer</summary>
 
@@ -1113,6 +1115,8 @@ graph LR
     style Valid fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
     style Cyclic fill:#ffebee,stroke:#e53935,stroke-width:2px
 ```
+
+**How to read this diagram.** The left subgraph is a valid DAG: `testD` depends on `testA` and `testC`, `testA` on `testB`, and `testB` on `testC`, so the DFS can finish `testC` first. The right subgraph is a cycle, `testA` depends on `testB` and `testB` back on `testA`, so neither is ever finished. Notice the labels: in the valid case a node is pushed only after all its dependencies are done, which a cycle can never satisfy.
 
 Push order for the valid DAG: `testC` first (no deps), then `testB` (its only dep, C, is done), then `testA`, then `testD` — giving `C, B, A, D`.
 

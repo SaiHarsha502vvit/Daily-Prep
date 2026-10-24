@@ -211,6 +211,8 @@ flowchart TD
     end
 ```
 
+**How to read this diagram.** Read it from the outside in: the whole run (`globalTimeout`) contains each test (`timeout`), which contains each step (`test.step.timeout`), which contains the individual action and expect timeouts. Notice that each inner budget has to fit inside its parent's remaining budget.
+
 The framework example sets:
 
 | Field                   | Value (via `Timeouts` constants) | Purpose                                        |
@@ -690,6 +692,8 @@ flowchart TD
     E2 --> GT
     GT --> Done(["TEST RUN COMPLETE"])
 ```
+
+**How to read this diagram.** Follow the arrows top to bottom: global setup runs once for all projects, the two dependency setup projects each feed their own E2E tests (workers in parallel), and both E2E groups converge on a single global teardown. Notice that teardown is the shared join point and runs once, always, before the run completes.
 
 | Feature | Global Setup | Global Teardown | Dependencies |
 |---------|-------------|----------------|-------------|

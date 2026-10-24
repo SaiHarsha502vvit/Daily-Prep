@@ -1,10 +1,10 @@
 # AUDIT_RESULTS.md — SDET Playwright Automation Module
 
-**Date:** 2026-06-14  
-**Phase 6 COMPLETE:** All sub-phases (6.1 CUTs · 6.2 MERGEs · 6.3 REWRITE HEAVY · 6.4 REWRITE LIGHT) executed and committed.
-**Total Chapters Audited:** 67 (Ch60–69 Principal Extension no longer on disk)
-**Rubric:** D1 Depth · D2 Breadth · D3 Production reality · D4 Code quality · D5 Progressive teaching (each 1–5; any single dim ≤ 2 forces REWRITE HEAVY regardless of avg)
-**Calibration anchor:** Ch26 Flakiness Diagnosis = 5/5/5/5/5
+- **Date:** 2026-06-14
+- **Phase 6 COMPLETE:** All sub-phases (6.1 CUTs · 6.2 MERGEs · 6.3 REWRITE HEAVY · 6.4 REWRITE LIGHT) executed and committed.
+- **Total Chapters Audited:** 67 (Ch60–69 Principal Extension no longer on disk)
+- **Rubric:** D1 Depth · D2 Breadth · D3 Production reality · D4 Code quality · D5 Progressive teaching (each 1–5; any single dim ≤ 2 forces REWRITE HEAVY regardless of avg)
+- **Calibration anchor:** Ch26 Flakiness Diagnosis = 5/5/5/5/5
 
 **Distribution (original audit):**
 | Verdict | Count | Status |

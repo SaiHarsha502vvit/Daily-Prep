@@ -187,6 +187,8 @@ flowchart LR
     E --> F2["assertion: every expected\nkey was found"]
 ```
 
+**How to read this diagram.** Read it left to right as a pipeline: `Locator.all()` / `allTextContents()` produces an array of raw strings, `map()` with a regex and `trim()` turns them into structured records, and those records then split into a `Set` (dedupe / duplicate-key detection) and a `Map` (key to value for O(1) cross-reference). Notice that each branch ends in its own assertion: zero duplicates from the Set, and every expected key found from the Map.
+
 A grid with two real, independent bugs — a duplicated row (a common symptom of a websocket-driven re-render firing twice) and a row the API says should exist but the UI silently dropped:
 
 ```html

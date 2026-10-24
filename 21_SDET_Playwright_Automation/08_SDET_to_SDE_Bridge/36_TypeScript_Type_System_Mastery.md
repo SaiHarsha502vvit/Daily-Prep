@@ -539,6 +539,8 @@ flowchart TD
     H -->|false| J(Alternative Type)
 ```
 
+**How to read this diagram.** The diagram has two groups: type widening, where `const x = 'Hello'` keeps the literal type `'Hello'` while `let y = 'Hello'` widens to `string`, and control flow, where an `if` statement narrows the type in its true branch and gives an alternative type in its false branch. Notice that the declaration keyword (`const` versus `let`) decides whether the literal type is kept.
+
 **Control Flow Analysis in assertions:**
 
 ```typescript
@@ -886,10 +888,10 @@ function getField<T, K extends keyof T>(obj: T, field: K): T[K] {
 
 What does `K extends keyof T` guarantee that a plain `string` parameter would not?
 
-A) That `field` is a valid property name of `T` at compile time, so accessing `obj[field]` returns the specific type of that property (e.g., `string`, `number`) not `any`
-B) That the function only works with objects that have string keys
-C) That the function cannot be called with `undefined` as the field argument
-D) That `T[K]` is always a primitive type
+- A) That `field` is a valid property name of `T` at compile time, so accessing `obj[field]` returns the specific type of that property (e.g., `string`, `number`) not `any`
+- B) That the function only works with objects that have string keys
+- C) That the function cannot be called with `undefined` as the field argument
+- D) That `T[K]` is always a primitive type
 
 <details><summary>Answer</summary>
 

@@ -617,6 +617,8 @@ sequenceDiagram
     Mail-->>Req: notify email ("Approved by...")
 ```
 
+**How to read this diagram.** Read it top to bottom as a hand-off between two people through email: the requester submits and the app sends an "approval required" email, the approver waits for that email, opens the link and approves, and the app sends an "approved" email that the requester finally waits for. Notice that every hand-off between the two roles goes through the Email Inbox, never directly between the two browsers.
+
 ```typescript
 test("@e2e approval workflow sends notify email after approval", async ({
   page,

@@ -361,6 +361,8 @@ flowchart TD
     S6 -->|no, ruled out| S7["STEP 7 — You found a REAL bug.<br/>File it with trace + screenshot<br/>+ reproduction steps."]
 ```
 
+**How to read this diagram.** Start at "Test fails" and work down the chain: read the failure message (step 1), open the trace (step 2), then rule out locator, timing, data and environment causes in that order, with each diamond's "yes" branch leading to its fix. Notice that you only reach step 7, "a REAL bug", after all four causes have been ruled out.
+
 ```
 STEP 1: Read the failure message carefully.
   - "Expected 'PENDING' but got 'undefined'" → element exists but text not loaded (two-phase render)
@@ -564,6 +566,8 @@ graph TD
     style SDET fill:#2b6cb0,stroke:#3182ce,color:#fff
     style SDE fill:#276749,stroke:#38a169,color:#fff
 ```
+
+**How to read this diagram.** Read it top to bottom as a progression: Manual QA adds engineering (code, CI, frameworks) to become an SDET, and an SDET adds CS depth (algorithms, system design, architecture ownership) to become an SDE in Test / Staff SDET. Notice that each arrow is labelled with what you add, not just a new title; the table below spells out each transition.
 
 **What each transition requires:**
 

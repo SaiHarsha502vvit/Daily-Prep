@@ -1,8 +1,8 @@
 # Lab 05 — OTP Login: Single-Use Codes, Lockouts & Whose Clock Is It?
 
-**You'll practise:** getting a secret out of a side channel (the "email") through a test-support endpoint · mixing UI and API steps in one test · testing *rules* rather than *screens* · controlling time on the right side of the wire
-**Read first:** [Ch57 — Login Taxonomy](../../03_Real_World_Scenarios/57_Login_Taxonomy_OAuth_OIDC_SAML_MFA_mTLS.md) §6.2 (Email / SMS OTP) · [Ch61 — Emulation](../../03_Real_World_Scenarios/61_Emulation_Clock_Network_And_Devices.md) §3 (the Clock API)
-**Time:** 90–150 minutes
+- **You'll practise:** getting a secret out of a side channel (the "email") through a test-support endpoint · mixing UI and API steps in one test · testing *rules* rather than *screens* · controlling time on the right side of the wire
+- **Read first:** [Ch57 — Login Taxonomy](../../03_Real_World_Scenarios/57_Login_Taxonomy_OAuth_OIDC_SAML_MFA_mTLS.md) §6.2 (Email / SMS OTP) · [Ch61 — Emulation](../../03_Real_World_Scenarios/61_Emulation_Clock_Network_And_Devices.md) §3 (the Clock API)
+- **Time:** 90–150 minutes
 
 ---
 

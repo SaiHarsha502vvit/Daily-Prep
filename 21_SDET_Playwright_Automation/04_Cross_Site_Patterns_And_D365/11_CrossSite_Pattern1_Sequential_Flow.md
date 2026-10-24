@@ -65,6 +65,8 @@ sequenceDiagram
     API->>API: assert response.status === 'onboarding'<br/>(API agrees with what the UI showed)
 ```
 
+**How to read this diagram.** Read it top to bottom in three groups of steps: the Admin CRM writes `userId`, `email` and `tempPassword` into the in-memory data object, the Customer Portal reads the credentials, logs in and writes `loginSucceeded`, and the User API reads `userId` to cross-check the status. Notice that the shared data object is the only link between the sites, which is what makes this one connected test.
+
 ---
 
 ## 3. TypeScript Interfaces for Cross-Website Data

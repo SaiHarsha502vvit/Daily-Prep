@@ -515,6 +515,8 @@ sequenceDiagram
     Note over User,API: Every arrow is a REAL call — no mocks anywhere in this chain.<br/>That's what makes it E2E instead of integration.
 ```
 
+**How to read this diagram.** Read it top to bottom as a conversation: the user opens the app, logs in against the backend, opens a citation, then pays, and each step returns a screen. Notice the note at the bottom: every arrow is a real call with no mocks, which is what makes this E2E rather than integration.
+
 ### What It Catches
 
 - Broken navigation flows
@@ -1330,6 +1332,8 @@ flowchart TD
     STAGE --> PROD
     PROD --> POST
 ```
+
+**How to read this diagram.** Read it top to bottom through seven stages (Development, Pull Request, Merge to Develop, QA Phase, Staging, Production Release, Post-Release), each box listing the test types that run there. Notice that the arrow from Pull Request to Merge is labelled as blocking (any failed check stops the merge) and that production ends in a rollback-or-monitor decision based on the error/crash rate.
 
 ---
 

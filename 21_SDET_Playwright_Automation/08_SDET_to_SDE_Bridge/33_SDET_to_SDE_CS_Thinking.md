@@ -599,6 +599,8 @@ flowchart TD
     style Found fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
 ```
 
+**How to read this diagram.** Start with the 150 commits and check out the middle one, run the smoke test, and mark it good (the bug is in the upper half) or bad (the bug is in the lower half). Notice the loop: while more than one commit remains, the search space is halved and you go back to the middle, ending at the exact commit in about 7 steps instead of 150.
+
 **Two-pointer thinking → parallel resource management:**
 
 ```typescript
@@ -888,10 +890,10 @@ for (const citation of citations) {
 }
 ```
 
-A) Both are O(n²) because Set.has() uses hashing which is O(n) in the worst case
-B) Option A is O(n²), Option B is O(n) amortized — for 10,000 rows Option A makes ~50 million comparisons vs Option B's 10,000 lookups
-C) Option B uses more memory so it's slower overall
-D) They are equivalent — TypeScript optimizes nested loops to O(n) automatically
+- A) Both are O(n²) because Set.has() uses hashing which is O(n) in the worst case
+- B) Option A is O(n²), Option B is O(n) amortized — for 10,000 rows Option A makes ~50 million comparisons vs Option B's 10,000 lookups
+- C) Option B uses more memory so it's slower overall
+- D) They are equivalent — TypeScript optimizes nested loops to O(n) automatically
 
 <details><summary>Answer</summary>
 

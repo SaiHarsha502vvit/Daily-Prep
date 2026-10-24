@@ -1000,6 +1000,8 @@ graph TD
     C -->|No, server-to-client only| E[SSE Server-Sent Events]
 ```
 
+**How to read this diagram.** Start at the top question, "Is the data real-time?": a background job leads to polling with `expect.poll`, while instant push leads to a second question about whether the client also sends data. Notice that the second question separates a bi-directional WebSocket from a server-to-client-only SSE stream.
+
 ```typescript
 // When the backend sends STATUS_UPDATE via WebSocket, you don't need to poll
 // You listen for the EXACT message
@@ -1569,10 +1571,10 @@ await expect
 
 What is the primary advantage of Playwright's `expect.poll` over writing your own `while (Date.now() < timeout)` loop with `await page.waitForTimeout(1000)`?
 
-A) `expect.poll` runs in a separate Node.js thread, avoiding event loop blocking.
-B) `expect.poll` respects the test's global timeout, automatically logs the retries in the Playwright HTML report, and terminates cleanly without leaving dangling promises if the test times out.
-C) `expect.poll` can intercept database queries directly.
-D) `expect.poll` is just syntactic sugar; there is no functional difference.
+- A) `expect.poll` runs in a separate Node.js thread, avoiding event loop blocking.
+- B) `expect.poll` respects the test's global timeout, automatically logs the retries in the Playwright HTML report, and terminates cleanly without leaving dangling promises if the test times out.
+- C) `expect.poll` can intercept database queries directly.
+- D) `expect.poll` is just syntactic sugar; there is no functional difference.
 
 <details><summary>Answer</summary>
 
@@ -1689,10 +1691,10 @@ Use Playwright's `page.waitForEvent('websocket')` and `ws.waitForEvent('framerec
 
 You have an `expect.poll` block waiting for an API resource state to change. The backend logs show the database updated instantly, but your test polls for 30 seconds and fails. What is the most likely architectural cause?
 
-A) `expect.poll` is executing too fast, causing the Node event loop to crash.
-B) The API endpoint is returning a cached `304 Not Modified` or hitting a CDN/Redis cache because the test client isn't sending cache-busting headers.
-C) Playwright `request` context cannot make more than 5 requests to the same endpoint.
-D) The database is locked by the test runner.
+- A) `expect.poll` is executing too fast, causing the Node event loop to crash.
+- B) The API endpoint is returning a cached `304 Not Modified` or hitting a CDN/Redis cache because the test client isn't sending cache-busting headers.
+- C) Playwright `request` context cannot make more than 5 requests to the same endpoint.
+- D) The database is locked by the test runner.
 
 <details><summary>Answer</summary>
 

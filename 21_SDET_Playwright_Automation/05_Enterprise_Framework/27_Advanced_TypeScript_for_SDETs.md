@@ -828,10 +828,10 @@ const config = {
 
 Both validate against `EnvironmentConfig`. What is the key difference in how TypeScript infers types for each?
 
-A) Option A is checked at runtime; Option B is checked at compile time
-B) Option A widens `config.crmUrl` to `string` and `config.roles` to `string[]`; Option B retains the literal types `'https://staging-crm.company.com'` and `readonly ['ADMIN', 'AGENT']`
-C) Option B is only valid in TypeScript 5.0+; Option A works in all versions
-D) There is no difference — both produce identical types
+- A) Option A is checked at runtime; Option B is checked at compile time
+- B) Option A widens `config.crmUrl` to `string` and `config.roles` to `string[]`; Option B retains the literal types `'https://staging-crm.company.com'` and `readonly ['ADMIN', 'AGENT']`
+- C) Option B is only valid in TypeScript 5.0+; Option A works in all versions
+- D) There is no difference — both produce identical types
 
 <details><summary>Answer</summary>
 

@@ -302,6 +302,8 @@ classDiagram
     note for PayloadsCitation "Static methods accept Partial<CreateCitationPayload>\nOverrides are merged with defaults"
 ```
 
+**How to read this diagram.** `PayloadsCitation` offers one static method per status (`pending`, `paid`, `disputed`, `overdue`), and each returns a `CreateCitationPayload`. Notice the note on the class: the methods accept a partial payload, and those overrides are merged with the defaults.
+
 ### The Override Pattern — The Key to Flexibility
 
 Every payload factory method accepts `Partial<TheInterface>`. This means:
@@ -557,6 +559,8 @@ sequenceDiagram
     Note over Client: assertStatus(response, 201, 'create citation') -- passes
     Client-->>Test: response.json()
 ```
+
+**How to read this diagram.** Read it top to bottom: the test asks the factory for a payload, hands it to the client, and the client builds the URL, headers and body and POSTs to the staging API. Notice that the client asserts the 201 status itself and returns only `response.json()`, so the test never touches URLs or headers.
 
 **The test spec file sees:** `await citationsClient.create(PayloadsCitation.pending({ customerId: account.userId }))`.
 **The test spec file does NOT see:** any URL, any header key-value pairs, any JSON construction.

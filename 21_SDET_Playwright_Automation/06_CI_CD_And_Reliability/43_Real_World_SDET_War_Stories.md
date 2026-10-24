@@ -1612,10 +1612,10 @@ Your team runs 50 Playwright workers in CI against a shared Staging environment.
 
 What is the architectural root cause, and what is the proper SDET solution?
 
-A) Playwright is too fast. You should add `await page.waitForTimeout(2000)` before every API call.
-B) The Staging environment is accurately simulating production rate limits, but the test suite's burst traffic (50 workers × 10 requests/sec = 500 RPS) exceeds the limit. The solution is to whitelist the CI IP in the API Gateway or spin up isolated ephemeral environments for CI runs.
-C) The tests are creating infinite loops.
-D) The API client lacks a try-catch block.
+- A) Playwright is too fast. You should add `await page.waitForTimeout(2000)` before every API call.
+- B) The Staging environment is accurately simulating production rate limits, but the test suite's burst traffic (50 workers × 10 requests/sec = 500 RPS) exceeds the limit. The solution is to whitelist the CI IP in the API Gateway or spin up isolated ephemeral environments for CI runs.
+- C) The tests are creating infinite loops.
+- D) The API client lacks a try-catch block.
 
 <details><summary>Answer</summary>
 
@@ -1669,10 +1669,10 @@ A test logs in and asserts `expect(userName).toBe('John Doe')`. Six months later
 
 What core test data principle was violated?
 
-A) Manual testing should not be allowed in Staging.
-B) Tests should never assert on names, only IDs.
-C) The test relied on shared, pre-existing state instead of creating its own isolated state (Arrange-Act-Assert).
-D) The database should be read-only.
+- A) Manual testing should not be allowed in Staging.
+- B) Tests should never assert on names, only IDs.
+- C) The test relied on shared, pre-existing state instead of creating its own isolated state (Arrange-Act-Assert).
+- D) The database should be read-only.
 
 <details><summary>Answer</summary>
 

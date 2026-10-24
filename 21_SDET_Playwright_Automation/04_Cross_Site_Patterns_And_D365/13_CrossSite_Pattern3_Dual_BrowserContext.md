@@ -55,6 +55,8 @@ graph TD
     style C2 fill:#c4e1f9,stroke:#333,stroke-width:2px
 ```
 
+**How to read this diagram.** Read it top down: one Playwright browser instance holds two contexts, Admin and Customer, and each context owns its own storage state, page and API route interceptors inside its own isolation box. Notice that nothing connects the two session boxes, which is the isolation the rule above requires.
+
 ---
 
 ## 2. Creating Two Contexts From the Same Browser

@@ -120,15 +120,16 @@
 | 67     | [Payment Gateway Testing — Hosted Fields, 3-D Secure, Idempotency, Webhooks & Money](./03_Real_World_Scenarios/67_Payment_Gateway_Testing.md) | 90 min | **Cross-origin card iframes via frameLocator, nested 3DS challenge, idempotency (assert charges not requests), webhook signature matrix verified against Stripe's SDK, minor-unit rounding** | Ch42, Ch57, Ch30 |
 | 68     | [Consent Banners, Overlays & CAPTCHA](./03_Real_World_Scenarios/68_Consent_Overlays_And_CAPTCHA.md) | 60 min | **`page.addLocatorHandler` and its non-dismissing-handler trap, pre-seeded consent, GDPR no-tracking-before-consent tests, CAPTCHA test keys verified against live siteverify endpoints** | Ch26, Ch57, Ch16 |
 
-**Bolded chapters** = Advanced content built on your real codebase.
-**Ch33–36** = Read alongside the corresponding guide folder (DSA, OOP, TypeScript) for maximum cross-pollination.
-**Ch37–41** = Industry-standard open-source tools (Lighthouse, k6, Pact, axe-core, OWASP ZAP, GraphQL).
-**Ch42–44** = Real-world depth: the async waiting patterns, actual war stories, and the API library architecture that separates SDETs from senior SDEs.
-**Ch45** = AI & MCP: the frontier of agentic test automation and what AI can (and cannot) replace.
-**Ch46–51** = Enterprise tooling: BDD, Allure/ReportPortal, sharding, feature flags, email testing, secrets management.
-**Ch52–54** = Depth testing: component isolation, mutation score, synthetic monitoring — the upper tier of SDET competency.
-**Ch55** = Debugging surfaces: Inspector, Trace Viewer, UI Mode — hands-on only, no shortcuts.
-**Ch56–60** = Reader-requested fills: config deep-dive (with companion theory catalog at Ch57), auth taxonomy beyond storageState, file I/O, Docker, and an honest tool comparison for interview prep.
+- **Bolded chapters** = Advanced content built on your real codebase.
+- **Ch33–36** = Read alongside the corresponding guide folder (DSA, OOP, TypeScript) for maximum cross-pollination.
+- **Ch37–41** = Industry-standard open-source tools (Lighthouse, k6, Pact, axe-core, OWASP ZAP, GraphQL).
+- **Ch42–44** = Real-world depth: the async waiting patterns, actual war stories, and the API library architecture that separates SDETs from senior SDEs.
+- **Ch45** = AI & MCP: the frontier of agentic test automation and what AI can (and cannot) replace.
+- **Ch46–51** = Enterprise tooling: BDD, Allure/ReportPortal, sharding, feature flags, email testing, secrets management.
+- **Ch52–54** = Depth testing: component isolation, mutation score, synthetic monitoring — the upper tier of SDET competency.
+- **Ch55** = Debugging surfaces: Inspector, Trace Viewer, UI Mode — hands-on only, no shortcuts.
+- **Ch56–60** = Reader-requested fills: config deep-dive (with companion theory catalog at Ch57), auth taxonomy beyond storageState, file I/O, Docker, and an honest tool comparison for interview prep.
+
 **Staff/Principal extension:** the competencies below are real and already assessed in [`career/READINESS_RUBRIC.md`](./career/READINESS_RUBRIC.md) (12 competency areas, Junior→Principal bands), but not every one has a matching teaching chapter yet. Confirmed already covered: observability/OpenTelemetry ([`framework/utilities/api/TELEMETRY_README.md`](./framework/utilities/api/TELEMETRY_README.md) — real OTel spans + W3C traceparent propagation on `ApiCore`), test impact analysis (Ch48 §11, "Test Impact Analysis with madge"), **chaos engineering** ([Ch65](./06_CI_CD_And_Reliability/65_Chaos_Engineering_For_Playwright.md) — fault injection built on Ch08's CDP model and Ch61's network APIs, verified against Netflix's real Chaos Monkey origin and the 2017 Principles of Chaos Engineering), and **self-healing locators, mechanism-level** ([Ch45](./07_Specialised_Testing/45_AI_Agents_MCP_And_Playwright.md) §6.1 — a runtime fallback-and-similarity-scoring algorithm verified against Healenium's real documented approach, distinct from and complementary to the chapter's existing LLM-based offline healing script), **SLO/error-budget-driven testing** ([Ch62](./06_CI_CD_And_Reliability/62_Enterprise_Test_Operations.md) §3.3 — the real Google SRE error-budget and burn-rate formulas, verified by citation, applied to formalize the chapter's own pre-existing flake-rate target), and **senior decision-making itself** ([Ch66](./08_SDET_to_SDE_Bridge/66_Senior_SDET_Decision_Making.md) — risk-based prioritization, when not to automate, and a real ADR plus a real filled RFC walked as worked case studies, rather than just naming the competency). ADRs are covered too, as real worked examples: [`framework/docs/adrs/`](./framework/docs/adrs/README.md) (6 real Playwright-specific ADRs). Every gap this section originally opened with is now closed — see the Roadmap table below, which is why it's short.
 
 > **Total estimated study time: ~175–210 hours** (60 core chapters + 10 Module II chapters x 60–90 min + quizzes)

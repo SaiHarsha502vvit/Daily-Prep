@@ -64,6 +64,8 @@ flowchart TD
     Q3 -->|YES| REGRESSION["REGRESSION TEST"]
 ```
 
+**How to read this diagram.** Read it as three questions asked in order: is the build stable (smoke), did a specific fix or change work (sanity), do existing features still work (regression). Notice that the first YES decides the test type, and you only fall through to the next question on a NO.
+
 Memorize this. Use it in interviews. Use it on the job.
 
 ---

@@ -208,6 +208,8 @@ flowchart TD
     style F fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
 ```
 
+**How to read this diagram.** Start at "Rule fires" and answer two questions: is it an external-library boundary, and if not, can it cause a real bug or CI hazard. External-library boundaries get `warn`, real bugs (floating promise, `test.only`, missing await) get `error` and block the commit, and style preferences get `warn`. Notice that `error` is reachable by only one path, which is what keeps it meaningful.
+
 **Tier 1 — real bugs, `error`, blocks `--max-warnings=0` from mattering because these fail outright:**
 
 ```javascript
@@ -316,6 +318,8 @@ sequenceDiagram
         CI-->>CI: build fails — PR blocked from merge
     end
 ```
+
+**How to read this diagram.** Read it top to bottom as increasingly strict gates: the editor lints on save (optional), the pre-commit hook runs `lint-staged` on staged files only and blocks the commit if an error remains after `--fix`, and CI runs `npm run lint` on the entire repo and blocks the PR if any file fails. Notice that scope widens at each layer: staged files at commit, the whole repo in CI.
 
 Three layers, three different scopes, verified directly from the repo's own config rather than assumed:
 

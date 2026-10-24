@@ -268,6 +268,8 @@ sequenceDiagram
     Note over W: ... repeats for all 10 tests —<br/>10 logins, 10 logouts total
 ```
 
+**How to read this diagram.** Read it top to bottom as one worker's timeline: every test is wrapped by its own Login and Logout, so ten tests mean ten logins and ten logouts. Notice that this repeated cycle is exactly the cost of per-test scope.
+
 **Use when:** The test needs a guaranteed fresh auth state (e.g., a test that logs out as part of its steps, or tests that run as different users).
 
 ### `scope: 'worker'`
@@ -302,6 +304,8 @@ sequenceDiagram
     W->>W: Logout (once)
     Note over W: 1 login, 1 logout total — regardless of test count
 ```
+
+**How to read this diagram.** Read it top to bottom: one Login at the start, every test reusing the same token, and one Logout at the end. Notice the contrast with the per-test timeline above: one login and one logout in total, regardless of test count.
 
 **Use when:** All tests in a worker run as the same user and you want to avoid the overhead of logging in before every single test. This is the right choice for the vast majority of enterprise test suites.
 

@@ -784,10 +784,10 @@ test('overall chart layout matches the approved baseline', async ({ page }) => {
 
 Why does Playwright store separate screenshots per OS (e.g., `screenshot-chromium-linux.png`, `screenshot-chromium-win32.png`)?
 
-A) Each OS has different screen resolutions
-B) Font rendering, sub-pixel anti-aliasing, and default system font metrics differ between Linux, macOS, and Windows — the same page looks subtly different
-C) Playwright uses different Chromium versions per OS
-D) CI runs on Linux; local runs on Windows — tests would always fail
+- A) Each OS has different screen resolutions
+- B) Font rendering, sub-pixel anti-aliasing, and default system font metrics differ between Linux, macOS, and Windows — the same page looks subtly different
+- C) Playwright uses different Chromium versions per OS
+- D) CI runs on Linux; local runs on Windows — tests would always fail
 
 <details><summary>Answer</summary>
 
@@ -801,11 +801,11 @@ D) CI runs on Linux; local runs on Windows — tests would always fail
 
 Your visual tests are failing intermittently because a CSS slide-in animation sometimes captures mid-animation. Which TWO approaches fix this correctly?
 
-A) Add `await page.waitForTimeout(2000)` before every screenshot
-B) Set `animations: 'disabled'` in playwright.config.ts `toHaveScreenshot` defaults
-C) Use `page.addStyleTag({ content: '* { animation-duration: 0s !important; }' })`
-D) Screenshot a component instead of the full page
-E) Increase `maxDiffPixelRatio` to 0.05
+- A) Add `await page.waitForTimeout(2000)` before every screenshot
+- B) Set `animations: 'disabled'` in playwright.config.ts `toHaveScreenshot` defaults
+- C) Use `page.addStyleTag({ content: '* { animation-duration: 0s !important; }' })`
+- D) Screenshot a component instead of the full page
+- E) Increase `maxDiffPixelRatio` to 0.05
 
 <details><summary>Answer</summary>
 
@@ -947,10 +947,10 @@ test("Citation status badge shows PENDING correctly", async ({
 
 Your team ships a UI redesign that changes the primary color scheme (blue to green) across 47 components. 312 visual regression tests fail with pixel differences. How should you handle the baseline updates?
 
-A) Delete all `.png` baselines and re-run tests — they will auto-regenerate
-B) Run `npx playwright test --update-snapshots` on the CI machine that generates the official baselines, review the diff report, get design approval on the changes, then commit the new baselines
-C) Manually inspect each of the 312 screenshots and approve individually
-D) Increase the pixel threshold to 20% to ignore the color changes
+- A) Delete all `.png` baselines and re-run tests — they will auto-regenerate
+- B) Run `npx playwright test --update-snapshots` on the CI machine that generates the official baselines, review the diff report, get design approval on the changes, then commit the new baselines
+- C) Manually inspect each of the 312 screenshots and approve individually
+- D) Increase the pixel threshold to 20% to ignore the color changes
 
 <details><summary>Answer</summary>
 

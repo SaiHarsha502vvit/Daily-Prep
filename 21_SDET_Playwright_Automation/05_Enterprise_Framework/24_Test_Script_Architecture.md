@@ -209,6 +209,8 @@ graph TD
     style G fill:#dfd,stroke:#333,stroke-width:2px
 ```
 
+**How to read this diagram.** Read it top to bottom as the four sections of a spec file: imports, the describe block with its tags and name, shared static test data, and finally the test function. Inside the test function box, the POMs and the data accumulator are declared first, then three `test.step` blocks run in order (API setup, UI action, API cross-validation). Notice that steps 1 to 3 all sit inside the single test function scope.
+
 ```typescript
 // tests/specs/citations/dispute-flow.spec.ts
 //
@@ -785,10 +787,10 @@ await test.step("Verify citation in UI", async () => {
 
 When is the `!` (non-null assertion) safe, and when is it masking a bug?
 
-A) `!` is always safe — TypeScript checks it at compile time so it can never be null at runtime
-B) `!` is safe when a prior step's assertion guarantees the value is set; it masks a bug when the prior step has no assertion
-C) `!` should never be used — always use `??` to provide a default instead
-D) `!` is safe after `await` calls because async functions always return defined values
+- A) `!` is always safe — TypeScript checks it at compile time so it can never be null at runtime
+- B) `!` is safe when a prior step's assertion guarantees the value is set; it masks a bug when the prior step has no assertion
+- C) `!` should never be used — always use `??` to provide a default instead
+- D) `!` is safe after `await` calls because async functions always return defined values
 
 <details><summary>Answer</summary>
 

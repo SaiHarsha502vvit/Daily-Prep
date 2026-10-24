@@ -886,10 +886,10 @@ const deleteRes = await request.delete(`/api/citations/${id}`, {
 
 You send `customerId: "USR-001' OR '1'='1"` to the API search endpoint. The API returns a `200 OK` and exactly ONE record belonging to USR-001. What does this mean?
 
-A) The API is vulnerable to SQL injection — `' OR '1'='1` succeeded and bypassed the filter.
-B) The API is using parameterized queries correctly — it treated the payload as a literal string.
-C) The API is not vulnerable to *this* payload, but the row count rules out parameterized queries: something stripped or truncated the input before it reached the database, which is blocklist filtering — a weaker defence worth raising.
-D) The test is inconclusive because SQL injection can only be tested on login forms.
+- A) The API is vulnerable to SQL injection — `' OR '1'='1` succeeded and bypassed the filter.
+- B) The API is using parameterized queries correctly — it treated the payload as a literal string.
+- C) The API is not vulnerable to *this* payload, but the row count rules out parameterized queries: something stripped or truncated the input before it reached the database, which is blocklist filtering — a weaker defence worth raising.
+- D) The test is inconclusive because SQL injection can only be tested on login forms.
 
 <details><summary>Answer</summary>
 
@@ -971,18 +971,18 @@ not a login form.
 
 Your team has a suite of 50 security tests (XSS, IDOR, SQLi) using Playwright API requests. Where should these run in the CI/CD pipeline?
 
-A) On every PR before merging, alongside unit tests.
-B) In a nightly cron job against the production environment.
-C) After merging to `main`, deployed to a Staging environment, run as a blocking gate before Production.
-D) Manually triggered by the security team once a month.
+- A) On every PR before merging, alongside unit tests.
+- B) In a nightly cron job against the production environment.
+- C) After merging to `main`, deployed to a Staging environment, run as a blocking gate before Production.
+- D) Manually triggered by the security team once a month.
 
 <details><summary>Answer</summary>
 
 **C** — Run in a Staging/Integration environment before production deployment.
 
-Why not A? Security tests often require complex state setup (multiple users interacting) and a real database (to test SQLi properly). Running them on every PR can be too slow and flaky if developers are using mocked local environments.
-Why not B? Nightly production runs are good for monitoring, but injecting SQLi and XSS payloads into a Production database is extremely dangerous and pollutes live data.
-Why not D? Manual is too slow; the goal of DevSecOps is automation.
+- Why not A? Security tests often require complex state setup (multiple users interacting) and a real database (to test SQLi properly). Running them on every PR can be too slow and flaky if developers are using mocked local environments.
+- Why not B? Nightly production runs are good for monitoring, but injecting SQLi and XSS payloads into a Production database is extremely dangerous and pollutes live data.
+- Why not D? Manual is too slow; the goal of DevSecOps is automation.
 
 By running as a blocking gate in Staging, you catch vulnerabilities _before_ they reach production, in a safe environment that accurately reflects the production database architecture.
 

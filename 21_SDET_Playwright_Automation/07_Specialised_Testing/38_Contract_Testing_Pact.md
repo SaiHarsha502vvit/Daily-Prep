@@ -99,6 +99,8 @@ sequenceDiagram
     Note over Consumer,Provider: Both teams use `can-i-deploy` to check safe deployment status
 ```
 
+**How to read this diagram.** Read it top to bottom as four numbered steps: the consumer writes a test and runs it against a mock server, publishes the resulting contract (`pact.json`) to the broker, the provider fetches that contract in its CI and verifies it against the real API, and publishes the verification results. Notice the closing note: both teams use `can-i-deploy` to check whether it is safe to deploy.
+
 ```
 The situation without Pact:
 
@@ -574,6 +576,8 @@ sequenceDiagram
     Note over Provider,PactFlow: Unlike traditional Pact: the provider never runs a verifier
 ```
 
+**How to read this diagram.** Read it top to bottom: the consumer publishes its contract and the provider publishes an OpenAPI spec to PactFlow, which compares the two and reports mismatches back to both sides. Notice the note at the bottom: unlike the traditional flow above, the provider never runs a verifier.
+
 ```bash
 # BDCT: Upload your OpenAPI spec to PactFlow (provider side):
 npx pactflow publish-provider-contract \
@@ -909,10 +913,10 @@ _Fix_: Remove fields the consumer doesn't actively parse.
 
 When the Provider runs its verification pipeline against the Pact broker, and the verification fails because a field type changed from `number` to `string`, what is the correct SDET interpretation of this failure?
 
-A) The Provider introduced a bug and must fix their code to revert to `number`.
-B) The Consumer's contract is outdated and the Consumer team must update their tests to expect `string`.
-C) The Provider has successfully detected that deploying their code would break the Consumer. The deployment must be blocked until the Consumer is updated to handle `string`.
-D) Pact is misconfigured because field types should not break contracts.
+- A) The Provider introduced a bug and must fix their code to revert to `number`.
+- B) The Consumer's contract is outdated and the Consumer team must update their tests to expect `string`.
+- C) The Provider has successfully detected that deploying their code would break the Consumer. The deployment must be blocked until the Consumer is updated to handle `string`.
+- D) Pact is misconfigured because field types should not break contracts.
 
 <details><summary>Answer</summary>
 

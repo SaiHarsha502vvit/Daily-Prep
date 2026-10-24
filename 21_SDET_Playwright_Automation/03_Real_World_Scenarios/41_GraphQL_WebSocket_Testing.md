@@ -655,6 +655,8 @@ sequenceDiagram
     Playwright->>Playwright: ws.on('framereceived') captures it
 ```
 
+**How to read this diagram.** Read it top to bottom: the browser sends an HTTP upgrade request, the server answers `101 Switching Protocols`, and from then on messages flow both ways while Playwright's `page.on('websocket')` listener observes them. Notice the last two steps: a change in the backend pushes an update frame to the browser, and `ws.on('framereceived')` is how the test captures it.
+
 ```typescript
 // tests/specs/websocket/live-updates.spec.ts
 
@@ -1117,10 +1119,10 @@ test("WebSocket subscription flow", async ({ page }) => {
 
 Why did modern enterprise teams move from REST to GraphQL for mobile and frontend aggregation layers, and how does this impact SDET API tests?
 
-A) GraphQL is faster because it uses WebSockets instead of HTTP.
-B) GraphQL solves over-fetching (getting 50 fields when the UI only needs 3) and under-fetching (requiring 4 separate REST calls to render one page). SDETs now test specific field projections rather than static JSON shapes.
-C) GraphQL automatically encrypts payloads, making it more secure than REST.
-D) GraphQL runs entirely in the browser, eliminating the need for backend testing.
+- A) GraphQL is faster because it uses WebSockets instead of HTTP.
+- B) GraphQL solves over-fetching (getting 50 fields when the UI only needs 3) and under-fetching (requiring 4 separate REST calls to render one page). SDETs now test specific field projections rather than static JSON shapes.
+- C) GraphQL automatically encrypts payloads, making it more secure than REST.
+- D) GraphQL runs entirely in the browser, eliminating the need for backend testing.
 
 <details><summary>Answer</summary>
 

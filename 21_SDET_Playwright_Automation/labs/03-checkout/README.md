@@ -1,8 +1,8 @@
 # Lab 03 — Checkout: Card Iframes, Double Clicks, Declines & Pennies
 
-**You'll practise:** reaching into cross-origin iframes · asserting on the **server's** state, not just the page · the double-click an impatient customer makes · money in minor units
-**Read first:** [Ch67 — Payment Gateway Testing](../../03_Real_World_Scenarios/67_Payment_Gateway_Testing.md) §2, §3, §5, §8
-**Time:** 60–120 minutes
+- **You'll practise:** reaching into cross-origin iframes · asserting on the **server's** state, not just the page · the double-click an impatient customer makes · money in minor units
+- **Read first:** [Ch67 — Payment Gateway Testing](../../03_Real_World_Scenarios/67_Payment_Gateway_Testing.md) §2, §3, §5, §8
+- **Time:** 60–120 minutes
 
 ---
 

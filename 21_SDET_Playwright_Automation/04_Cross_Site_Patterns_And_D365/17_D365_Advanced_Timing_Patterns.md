@@ -45,6 +45,8 @@ sequenceDiagram
     Note over Browser: ✅ SAFE: Data is now in the DOM.
 ```
 
+**How to read this diagram.** Read it in two phases, top to bottom: in Phase 1 the browser parses the page and React renders empty components, and in Phase 2 the shell fires an async OData query whose JSON response (2-12s later) triggers a re-render with the real data. Notice the two warnings on the Browser lifeline: Playwright sees the elements in Phase 1 while they are still empty, and the data is only safe once Phase 2 completes.
+
 **Total time from navigation to "ready for testing": 3–15 seconds.**
 
 Standard Playwright locators interact with the DOM after the FIRST render — the shell with empty text. This is why `waitFor({ state: 'visible' })` passes on an empty element and your test reads empty strings. You must wait for Phase 2 before reading text or asserting values.
@@ -396,6 +398,8 @@ flowchart TD
     Text -->|spinner still showing| TextSpinner["Wait for spinner to go<br/>(toHaveCount(0))"]
     Text -->|OData slow| TextOData["toHaveText(expected,<br/>{timeout: 45000})"]
 ```
+
+**How to read this diagram.** Start at "My D365 locator failed or returned wrong data" and branch on `count()`: zero means check for an IFrame and then whether the component has rendered; one or more means check `isVisible()`, and a visible element with wrong or empty text branches again by cause (stale render, data still loading, spinner, slow OData). Notice that every leaf names a concrete fix, so you end the walk with an action rather than a diagnosis.
 
 ---
 

@@ -21,6 +21,8 @@ flowchart LR
   G -- all caught --> D[Debrief<br/>read the app source,<br/>compare the reference]
 ```
 
+**How to read this diagram.** Read it left to right as the lab loop: Explore the app by hand, Plan the TEST PLAN block, Predict by answering the README's questions, Code one test per requirement, then Grade with `npm run grade`. Notice the two exits from Grade: a missed bug or flaky test sends you back to Plan, and only when all bugs are caught do you reach Debrief.
+
 The **Plan** and **Predict** steps aren't optional extras. Writing *"R3: after a decline, the Pay button must be enabled again"* before you code is what makes you realise you have to test the decline *and* what happens after it. Predicting *"`textContent()` straight after the click will return an empty string"* and then being right (or wrong) is how auto-waiting sticks.
 
 ## Setup (once)

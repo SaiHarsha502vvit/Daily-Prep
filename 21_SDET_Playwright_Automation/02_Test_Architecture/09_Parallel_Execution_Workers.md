@@ -139,6 +139,8 @@ flowchart LR
     end
 ```
 
+**How to read this diagram.** Four workers run side by side (the four subgraphs), and inside each worker the arrows run that file's tests one after another, left to right. Notice that parallelism is across workers while execution within a worker is strictly sequential.
+
 **Use when:** Tests within a file depend on each other (create user in test 1, use user in test 2). This is common in enterprise E2E suites.
 
 ### `fullyParallel: true` (Test-Level Parallelism)

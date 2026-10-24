@@ -865,10 +865,10 @@ These checks run on a 15-minute schedule alongside your functional synthetics. S
 | Error handling           | Missing log file handled gracefully          | Crashes on empty file               | Crashes on missing file        | Not handled                        |
 | **Total**                | **24**                                       | **16**                              | **8**                          | **0**                              |
 
-Score ≥ 20: Excellent — production-ready synthetic pipeline.
-Score 13-19: Good — core loop is sound, address error handling gaps.
-Score 6-12: Developing — re-run Part A with a simpler app to validate the runner first.
-Score < 6: Review sections 9-10 and retry.
+- Score ≥ 20: Excellent — production-ready synthetic pipeline.
+- Score 13-19: Good — core loop is sound, address error handling gaps.
+- Score 6-12: Developing — re-run Part A with a simpler app to validate the runner first.
+- Score < 6: Review sections 9-10 and retry.
 
 
 ---
