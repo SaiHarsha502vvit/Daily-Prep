@@ -121,7 +121,7 @@ Unlike the probabilistic structures above, **Consistent Hashing** is a determini
 
 ### The Problem with standard Modulo Hashing
 
-If you distribute caching data using `Server = Hash(Key) % N`, what happens when a server crashes, and $N$ drops to $N-1$? **Every single key hashes to a new server**, causing a 100% cache miss rate and immediate database collapse.
+If you distribute caching data using `Server = Hash(Key) % N`, what happens when a server crashes, and $N$ drops to $N-1$? **Almost every key hashes to a new server**: going from $N$ to $N\pm1$ servers, only about $1/(N+1)$ of keys keep their old server (measured by enumerating one full cycle: going from 16 to 17 servers moves 94.1% of keys). The cache miss rate is therefore roughly $(N-1)/N$ — effectively 100% for realistic $N$ — and the database collapses.
 
 ### The Hash Ring Solution
 

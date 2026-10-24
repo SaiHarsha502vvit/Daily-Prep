@@ -427,7 +427,7 @@ await expect(page.locator(".notification")).toHaveText("Citation saved");
 //   1. Find .notification in DOM → found? check text → matches? → resolve ✅
 //   2. Not found yet? → wait 100ms → try again
 //   3. Found, text doesn't match yet? → wait 100ms → try again
-//   4. ... repeats until timeout (default: 5000ms in expect, 30000ms in toHaveText)
+//   4. ... repeats until timeout (default: 5000ms for `expect(...)` assertions including toHaveText; 30000ms is the per-test timeout and the default for actions)
 //   5. Timeout reached → throw descriptive error
 
 // This is WHY you should always use expect(locator).toHaveText() over:
