@@ -339,6 +339,30 @@ The compiler needs to detect this!
 
 ## 🔑 The Key Bridge: Stack → DFS · Queue → BFS
 
+### 💬 Study-Partner View — Stack ⇄ DFS and Queue ⇄ BFS
+
+**1. The bottom line:** DFS is "go deep, then back up" and a stack does exactly that; BFS is "explore closest first" and a queue does exactly that.
+
+**2. The textbook core:**
+
+- **DFS** uses a stack (explicit, or the call stack via recursion): visits a node, then its neighbours, always continuing from the most recently discovered node.
+- **BFS** uses a queue: processes nodes in order of discovery, so nodes are visited by distance from the start.
+- Both are O(V + E) on a graph (O(n) on a tree).
+- BFS finds shortest paths in **unweighted** graphs; DFS is natural for exhaustive search, cycle detection and topological sort.
+
+**3. The real-world analogy:** Exploring a **maze**: DFS is following one corridor to its end before trying another (leaving a ball of string to backtrack); BFS is sending a crowd to explore all corridors a step at a time.
+
+**4. Walkthrough:**
+
+1. Graph: `A–B`, `A–C`, `B–D`, `B–E`.
+2. **BFS from A** (queue): `[A]` → visit A, enqueue B, C → visit B, enqueue D, E → visit C → D → E. Order: A B C D E.
+3. **DFS from A** (stack): push A → pop A, push C then B → pop B, push E then D → pop D → pop E → pop C. Order: A B D E C.
+4. Same graph, different frontier structure, different visiting order.
+
+> [!NOTE]
+> **Quick check:** Which one finds the fewest-hops path? *BFS, because it finishes all nodes at distance k before any at distance k+1.*
+
+
 [!IMPORTANT]
 This is the single most important connection in all of graph algorithms.
 Understanding it rewires how you think about every traversal problem.
@@ -407,6 +431,30 @@ Same complexity but different behavior: DFS explores ONE component completely us
 </details>
 
 # 📬 Part 5: Queue
+
+### 💬 Study-Partner View — Queues in Depth
+
+**1. The bottom line:** A queue is a fair waiting line: first come, first served, and every operation is O(1) if you track both ends.
+
+**2. The textbook core:**
+
+- **FIFO:** `offer`/`enqueue` at the rear, `poll`/`dequeue` at the front, `peek` looks at the front.
+- Implementations: linked list (two pointers), circular array (`front`, `rear`, modulo), `ArrayDeque`.
+- Variants: **deque**, **priority queue** (heap-ordered, O(log n)), **blocking queue** (thread-safe producer–consumer).
+- Queue via two stacks: push to `in`, move to `out` when `out` is empty → amortized O(1).
+
+**3. The real-world analogy:** A **line at the bakery**: new customers join the back; the baker always serves whoever has been waiting longest.
+
+**4. Walkthrough:**
+
+1. Enqueue A, B, C → front `A`, rear `C`.
+2. Dequeue → returns A; front is now `B`.
+3. Enqueue D → queue is `B, C, D`.
+4. Each step touched only one end, so each was O(1).
+
+> [!NOTE]
+> **Quick check:** When would you choose a priority queue instead? *When urgency, not arrival time, decides who goes next.*
+
 
 ### 5W1H: Deep Understanding of Queue
 

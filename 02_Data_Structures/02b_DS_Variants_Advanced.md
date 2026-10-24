@@ -194,6 +194,29 @@ concatenation strategy
 
 ## 2.1 Min Stack
 
+### 💬 Study-Partner View — Min Stack
+
+**1. The bottom line:** A stack that always knows its smallest value, so `getMin()` is instant.
+
+**2. The textbook core:**
+
+- Each entry stores the value **and** the minimum so far (or use a second stack for mins).
+- `push`, `pop`, `peek`, `getMin`: all **O(1)**; space O(n).
+- Invariant: the min stored at the top equals the minimum of all elements currently in the stack.
+- Popping automatically restores the previous minimum.
+
+**3. The real-world analogy:** A **stack of plates with a price tag on each plate showing the cheapest plate underneath and including it**. The top plate's tag always answers "what is the cheapest?".
+
+**4. Walkthrough:**
+
+1. Push 3 → store `(3, min 3)`. Push 5 → `(5, min 3)`. Push 2 → `(2, min 2)`.
+2. `getMin()` reads the top tag → 2.
+3. `pop()` removes `(2, min 2)`; the top is `(5, min 3)`, so `getMin()` is 3 again.
+
+> [!NOTE]
+> **Quick check:** Why not just track one `min` variable? *After popping the minimum you would not know the next smallest.*
+
+
 ::: pattern
 
 ## What Is It?
@@ -315,6 +338,29 @@ public class MinStackOptimized {
 
 ## 2.2 Max Stack
 
+### 💬 Study-Partner View — Max Stack
+
+**1. The bottom line:** The mirror image of a Min Stack: a stack that always knows its largest value.
+
+**2. The textbook core:**
+
+- Same design as the Min Stack but each entry stores the **maximum** so far.
+- `push`, `pop`, `peek`, `getMax`: all **O(1)**.
+- `popMax()` (remove the max wherever it is) needs more machinery, such as a second stack or a heap with lazy deletion.
+- Common in stock-span and "largest so far" problems.
+
+**3. The real-world analogy:** A **scoreboard that keeps the high score visible**; each new play updates it, and undoing a play restores the previous high score.
+
+**4. Walkthrough:**
+
+1. Push 1 → `(1, max 1)`, push 7 → `(7, max 7)`, push 4 → `(4, max 7)`.
+2. `getMax()` → 7.
+3. Pop 4 → still 7; pop 7 → top is `(1, max 1)`, so max is 1.
+
+> [!NOTE]
+> **Quick check:** What changes for `popMax()`? *The max may be buried; you pop elements into a buffer until you hit it, then push the buffer back.*
+
+
 ::: pattern
 
 ### Max stack - complete guide
@@ -408,6 +454,30 @@ public class MaxStackSimple {
 # 📬 Part 3: Queue Variants
 
 ## 3.1 Circular Queue
+
+### 💬 Study-Partner View — Circular Queue
+
+**1. The bottom line:** A queue stored in a fixed array whose indices wrap around, so freed space at the front is reused.
+
+**2. The textbook core:**
+
+- Keep `front`, `rear` and `size` (or leave one slot empty) to tell full from empty.
+- Wrap with modulo: `rear = (rear + 1) % capacity`.
+- `enqueue`, `dequeue`, `peek`: **O(1)**; capacity is fixed unless you resize.
+- Avoids the "wasted front space" of a naive array queue.
+
+**3. The real-world analogy:** A **revolving sushi belt**: plates circle forever, and you place a new plate where a taken one used to be.
+
+**4. Walkthrough:**
+
+1. Capacity 5, queue `[A, B, C]` with `front = 0`, `rear = 3`.
+2. Dequeue `A` → `front = 1`; dequeue `B` → `front = 2`.
+3. Enqueue `D`, `E`, `F`: `rear` goes 3 → 4 → 0 → 1 (wrapping), so `F` lands at index 1.
+4. Full when `size == capacity`.
+
+> [!NOTE]
+> **Quick check:** How do you tell full from empty when `front == rear`? *Keep a `size` counter or sacrifice one slot.*
+
 
 ::: pattern
 
@@ -543,6 +613,30 @@ public class CircularQueue<T> {
 ---
 
 ## 3.2 Deque (Double-Ended Queue)
+
+### 💬 Study-Partner View — Deque
+
+**1. The bottom line:** A queue you can add to or remove from at **both** ends, so it can act as a stack, a queue, or both.
+
+**2. The textbook core:**
+
+- Operations: `addFirst`, `addLast`, `removeFirst`, `removeLast`, `peekFirst`, `peekLast`, all **O(1)**.
+- Implemented as a circular array (`ArrayDeque`) or a doubly linked list.
+- Use as a stack (push/pop one end), a queue (add one end, remove the other), or a sliding window.
+- `ArrayDeque` does not allow `null` elements.
+
+**3. The real-world analogy:** A **line at a ticket counter where people can join or leave from either end**: VIPs go to the front, people giving up leave from the back.
+
+**4. Walkthrough:**
+
+1. Start empty. `addLast(1)`, `addLast(2)` → `[1, 2]`.
+2. `addFirst(0)` → `[0, 1, 2]`.
+3. `removeLast()` → returns 2, leaving `[0, 1]`.
+4. `removeFirst()` → returns 0, leaving `[1]`.
+
+> [!NOTE]
+> **Quick check:** Which Java class should you use? *`ArrayDeque` for both stack and queue use cases.*
+
 
 ::: pattern
 
@@ -699,6 +793,30 @@ public class MyDeque<T> {
 
 ## 3.3 Monotonic Queue
 
+### 💬 Study-Partner View — Monotonic Queue
+
+**1. The bottom line:** A deque that keeps its values in sorted order by throwing away items that can never be the answer.
+
+**2. The textbook core:**
+
+- Store **indices**; keep values monotonically decreasing (for max) from front to back.
+- Before pushing `i`, pop from the back while `nums[back] <= nums[i]` (they are dominated).
+- Pop from the front when its index leaves the window.
+- Each element enters and leaves at most once → **O(n)** total for sliding-window max/min.
+
+**3. The real-world analogy:** A **queue of job candidates where a newer, stronger candidate makes weaker earlier ones irrelevant**. Once someone better and younger arrives, the weaker ones can never win.
+
+**4. Walkthrough:**
+
+1. `nums = [1, 3, -1, -3, 5]`, window size 3.
+2. Add 1 → `[1]`; add 3 → pop 1 (smaller) → `[3]`; add -1 → `[3, -1]`. Max = 3.
+3. Add -3 → `[3, -1, -3]`. Max = 3.
+4. Add 5 → pop -3, -1, 3 → `[5]`; the window moved so 3 would have expired anyway. Max = 5.
+
+> [!NOTE]
+> **Quick check:** Why store indices, not values? *To know when the front has left the window.*
+
+
 ::: pattern
 
 ### Monotonic queue - complete guide
@@ -843,6 +961,30 @@ Use the potential method / accounting argument: each element is pushed into the 
 
 ## 4.1 Binary Tree Types
 
+### 💬 Study-Partner View — Binary Tree Types
+
+**1. The bottom line:** Binary trees come in named shapes (full, complete, perfect, balanced, degenerate), and the shape decides how fast they are.
+
+**2. The textbook core:**
+
+- **Full:** every node has 0 or 2 children. **Complete:** all levels filled except maybe the last, which fills left to right. **Perfect:** all internal nodes have 2 children and all leaves share a level.
+- **Balanced:** left and right heights differ by at most 1 (AVL) or are otherwise bounded.
+- **Degenerate:** each node has one child, which is effectively a linked list.
+- Height `h` drives cost: perfect tree has `h = log₂(n+1) - 1`; degenerate has `h = n - 1`.
+
+**3. The real-world analogy:** **Shapes of a family tree**: a tidy, evenly branching tree lets you find anyone quickly; a single long line of ancestors takes forever to walk.
+
+**4. Walkthrough:**
+
+1. Insert 1, 2, 3, 4, 5 in sorted order into a plain BST.
+2. Every new key goes right, so the tree is a chain of height 4.
+3. Insert the same keys in the order 3, 2, 4, 1, 5 and the tree is perfectly balanced (height 2).
+4. Same data, different shape: search cost is O(n) versus O(log n).
+
+> [!NOTE]
+> **Quick check:** Which shape do binary heaps use? *Complete, which is why they fit in an array.*
+
+
 ::: map
 
 ### Binary tree variants overview
@@ -930,6 +1072,30 @@ flowchart TD
 > </details>
 
 ## 4.2 AVL Tree (Self-Balancing BST)
+
+### 💬 Study-Partner View — AVL Tree
+
+**1. The bottom line:** A binary search tree that fixes itself with rotations whenever one side gets more than one level taller than the other.
+
+**2. The textbook core:**
+
+- Invariant: for every node, `|height(left) - height(right)| <= 1`.
+- Balance factor = `height(left) - height(right)`; allowed values are -1, 0, +1.
+- Four rebalancing cases: LL (right rotation), RR (left rotation), LR and RL (double rotations).
+- Height ≤ about 1.44·log₂(n); search/insert/delete are **O(log n)** worst case.
+
+**3. The real-world analogy:** A **seesaw that corrects itself**: whenever one side hangs too low, the arrangement is shifted so both sides are almost level.
+
+**4. Walkthrough:**
+
+1. Insert 10, 20, 30 into an empty AVL tree.
+2. After 30, the node 10 has balance factor -2 (right-right heavy).
+3. Apply a **left rotation** at 10: 20 becomes the root with children 10 and 30.
+4. The tree is balanced again with height 1.
+
+> [!NOTE]
+> **Quick check:** AVL or red-black for a read-heavy workload? *AVL, because it is more strictly balanced and lookups are shallower.*
+
 
 ::: pattern
 
@@ -1185,6 +1351,30 @@ public class AVLTree {
 
 ## 4.3 Red-Black Tree
 
+### 💬 Study-Partner View — Red-Black Tree
+
+**1. The bottom line:** A self-balancing BST that uses node colours instead of exact heights, trading perfect balance for fewer rotations.
+
+**2. The textbook core:**
+
+- Rules: nodes are red or black; the root is black; red nodes have only black children; every root-to-null path has the same number of black nodes.
+- These rules force height ≤ 2·log₂(n+1), so operations are **O(log n)**.
+- Insert and delete need at most a constant number of rotations plus recolouring.
+- Used by Java `TreeMap`/`TreeSet`, C++ `std::map`, and the Linux scheduler (CFS).
+
+**3. The real-world analogy:** A **traffic-light system for balance**: colours tell you when a branch is getting too long, and a few quick recolourings or rotations restore order.
+
+**4. Walkthrough:**
+
+1. Insert a new node; colour it **red**.
+2. If its parent is black, you are done (no rule is broken).
+3. If the parent and the uncle are both red, recolour them black and the grandparent red, then check upward.
+4. If the uncle is black, rotate (and possibly recolour) to restore the rules.
+
+> [!NOTE]
+> **Quick check:** Why does red-black rebalance less often than AVL? *Its balance rule is looser, so it tolerates taller trees (up to 2× the minimum height).*
+
+
 ::: pattern
 
 ### Red-black tree - complete guide
@@ -1262,6 +1452,30 @@ B = Black, R = Red
 ---
 
 # 📦 Part 5: Heap Variants
+
+### 💬 Study-Partner View — Heap Variants
+
+**1. The bottom line:** Heaps keep the best element on top; the variants differ in how many children a node has and how cheaply they can merge or lower a key.
+
+**2. The textbook core:**
+
+- **Binary heap:** array-based, `insert`/`extractMin` O(log n), `peek` O(1), build in O(n).
+- **d-ary heap:** `d` children per node → shallower tree, faster `decreaseKey` (useful in Dijkstra).
+- **Binomial heap:** merge in O(log n). **Fibonacci heap:** amortized O(1) insert/decreaseKey/merge, but complex and slow constants in practice.
+- Min-heap: parent ≤ children; max-heap: parent ≥ children.
+
+**3. The real-world analogy:** A **tournament bracket** where the champion is always at the top: a d-ary heap is a bracket with more teams per match, so it has fewer rounds.
+
+**4. Walkthrough:**
+
+1. Min-heap array `[1, 3, 6, 5, 9]`; `insert(2)`.
+2. Append at the end: `[1, 3, 6, 5, 9, 2]`; parent of index 5 is `(5-1)/2 = 2` (value 6).
+3. 2 < 6 → swap: `[1, 3, 2, 5, 9, 6]`. Parent of index 2 is 1; 2 > 1 → stop.
+4. Cost: at most `log n` swaps.
+
+> [!NOTE]
+> **Quick check:** Which heap makes Dijkstra fastest in theory? *The Fibonacci heap, O(E + V log V), though binary or d-ary heaps usually win in practice.*
+
 
 ::: pattern
 
@@ -1442,6 +1656,30 @@ public class MinHeap {
 ---
 
 # #️⃣ Part 6: Hash Table Variants
+
+### 💬 Study-Partner View — Hash Table Variants
+
+**1. The bottom line:** Every hash table must handle collisions; the variants differ in **how** they do it and what they guarantee.
+
+**2. The textbook core:**
+
+- **Separate chaining:** each bucket holds a list (Java `HashMap`; tree bins at 8+ entries).
+- **Open addressing** (linear/quadratic probing, double hashing): all entries live in the array; deletions need tombstones.
+- **Cuckoo hashing:** each key has two possible slots → worst-case O(1) lookup, with rare rebuilds.
+- **Perfect hashing:** zero collisions for a **static** key set. **Linked/ordered** variants keep insertion or access order.
+
+**3. The real-world analogy:** A **hotel front desk**: chaining is "put two guests in one room's guest book", open addressing is "if your room is taken, try the next one down the hall".
+
+**4. Walkthrough:**
+
+1. Linear probing, table size 7. `hash(A) = 2`, `hash(B) = 2`.
+2. Insert A → slot 2. Insert B → slot 2 is taken, try slot 3 → store there.
+3. Lookup B → start at 2 (not B), continue to 3 → found.
+4. If A is deleted, mark slot 2 as a **tombstone** so the search for B does not stop early.
+
+> [!NOTE]
+> **Quick check:** Why can't you simply empty a slot in open addressing? *It would break the probe chain for keys stored after it.*
+
 
 ::: pattern
 

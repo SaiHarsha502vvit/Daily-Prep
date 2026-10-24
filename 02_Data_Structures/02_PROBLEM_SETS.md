@@ -28,6 +28,40 @@
 
 ---
 
+## 💬 Explain It Like a Study Partner — Solving DS Problem Sets
+
+> [!TIP]
+> **Ask yourself first:** *"I read the solution and it made sense. Why can't I solve a new problem on my own?"*
+
+### 1. The bottom line
+
+Solve problems by reading the **constraints first**, picking the structure they point to, and checking your idea against the cost you are allowed.
+
+### 2. The textbook core
+
+- Constraint-first method: `n` (size) → allowed time (n ≤ 10⁵ → about O(n log n); n ≤ 10³ → O(n²) is fine), values, ordering, memory, and whether the data changes.
+- Map signals to structures: lookups → hash map; order/range → tree or sorted array; "next greater" → monotonic stack; level-by-level → queue; top-k → heap.
+- Work in this loop: **brute force → bottleneck → structure that removes it → code → test edge cases (empty, one element, duplicates, extremes)**.
+- State the invariant of your loop or structure before coding.
+
+### 3. The real-world analogy
+
+A **doctor's diagnosis**: they do not try every treatment; they read the symptoms (constraints), form a hypothesis (structure), check it against test results (complexity), and only then prescribe (code).
+
+### 4. Walkthrough: "find two numbers that add up to a target" with n = 10⁵
+
+1. **Constraint:** n = 10⁵ rules out O(n²) pair checking (about 10¹⁰ steps).
+2. **Brute force:** check every pair → O(n²), the bottleneck is "searching for the partner".
+3. **Structure:** a hash map gives O(1) partner lookup.
+4. **Code idea:** for each `x`, check whether `target - x` is in the map, then store `x`.
+5. **Edge cases:** duplicates (`[3, 3]` with target 6), negative numbers, no answer.
+6. Result: O(n) time, O(n) space.
+
+> [!NOTE]
+> **Quick check:** what if memory were tiny? *Sort and use two pointers: O(n log n) time, O(1) extra space.*
+
+---
+
 ## Historical Evolution of Algorithm Problem Sets in CS Education
 
 Algorithm problem sets did not appear fully formed — they evolved through distinct eras, each solving a specific pedagogical or practical need. Understanding this lineage clarifies why MIT 6.006 problem sets look the way they do and how they differ from competitive-programming judges or interview-prep platforms.

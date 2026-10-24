@@ -19,6 +19,37 @@
 
 ---
 
+## 💬 Explain It Like a Study Partner — DS → Pattern → Problem Bridges
+
+> [!TIP]
+> **Ask yourself first:** *"I just learned arrays. Which problems should I solve next, and why those?"*
+
+### 1. The bottom line
+
+Every data structure naturally unlocks a few problem-solving **patterns**, and every pattern has a short list of classic problems, so you can practise in the right order instead of at random.
+
+### 2. The textbook core
+
+- A **pattern** is a reusable technique (two pointers, sliding window, monotonic stack, BFS, …) triggered by constraints in the problem statement.
+- The mapping runs **data structure → pattern → problems**; this file lists it for arrays, lists, stacks/queues, hash tables, trees, heaps and graphs.
+- Learn the structure's costs first (chapters `01a`–`01g`), then practise its patterns (this file), then drill the problem sets (`02_PROBLEM_SETS.md`).
+
+### 3. The real-world analogy
+
+A **map of a transit system**: the stations are data structures, the lines are patterns, and the stops along each line are the practice problems. You do not wander the city; you follow a line.
+
+### 4. Walkthrough: after finishing arrays
+
+1. Look up **Array** in the map below.
+2. It unlocks patterns such as **two pointers**, **sliding window** and **prefix sum**.
+3. Pick one pattern (say sliding window) and solve its listed problems from easy to hard.
+4. Move to **Hash Map**: it pairs with prefix sums to solve "subarray sum equals K", which links back to what you just practised.
+
+> [!NOTE]
+> **Quick check:** which structure goes with "next greater element"? *A monotonic stack.*
+
+---
+
 ## Historical Evolution: How DS-Problem Bridges Emerged
 
 | Era       | Event                                                                              | Impact on DS-Problem Mapping                                                                                                                               |

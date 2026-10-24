@@ -688,6 +688,30 @@ for (int i = 0; i < n; i++) {
 
 ## Pattern 4: Spiral Traversal (⭐ COMMON INTERVIEW QUESTION)
 
+### 💬 Study-Partner View — Spiral Traversal
+
+**1. The bottom line:** To walk a matrix in a spiral, keep four shrinking boundaries and peel the matrix like an onion.
+
+**2. The textbook core:**
+
+- Maintain `top`, `bottom`, `left`, `right`.
+- Loop: traverse the top row left→right (`top++`), right column top→bottom (`right--`), bottom row right→left (`bottom--`), left column bottom→top (`left++`).
+- Re-check `top <= bottom` and `left <= right` before the last two sides to avoid duplicates.
+- Time O(R·C), extra space O(1) (besides output).
+
+**3. The real-world analogy:** Peeling an **onion** or an apple in one long strip: finish the outer layer, then repeat on what is left.
+
+**4. Walkthrough:**
+
+1. Matrix `[[1,2,3],[4,5,6],[7,8,9]]`.
+2. Top row: 1 2 3 → `top = 1`. Right column: 6 9 → `right = 1`.
+3. Bottom row (right→left): 8 7 → `bottom = 1`. Left column (bottom→top): 4 → `left = 1`.
+4. Now `top = bottom = left = right = 1`: top row has just 5. Result: 1 2 3 6 9 8 7 4 5.
+
+> [!NOTE]
+> **Quick check:** Why the extra boundary checks? *For a single remaining row or column, the "return trip" would visit cells twice.*
+
+
 ```java
 public List<Integer> spiralOrder(int[][] matrix) {
     List<Integer> result = new ArrayList<>();
@@ -781,6 +805,30 @@ public void printBoundary(int[][] matrix) {
 # 📌 Part 4: Matrix Transformations
 
 ## Rotate Matrix 90° Clockwise (⭐ AMAZON FAVORITE)
+
+### 💬 Study-Partner View — Rotating a Matrix 90°
+
+**1. The bottom line:** Rotating a square matrix clockwise is just **transpose, then reverse each row**.
+
+**2. The textbook core:**
+
+- Transpose: swap `a[i][j]` with `a[j][i]` for `j > i` (O(n²), in place).
+- Then reverse every row (O(n²)).
+- Net mapping: `new[j][n-1-i] = old[i][j]`.
+- Counter-clockwise: transpose then reverse each **column** (or reverse rows first, then transpose).
+
+**3. The real-world analogy:** Turning a **photo on a table**: first flip it along its diagonal, then mirror it left-to-right; the picture ends up turned a quarter turn.
+
+**4. Walkthrough:**
+
+1. Matrix `[[1,2],[3,4]]`.
+2. Transpose → `[[1,3],[2,4]]`.
+3. Reverse each row → `[[3,1],[4,2]]`.
+4. Check: the top-left `1` moved to the top-right, which is a 90° clockwise turn.
+
+> [!NOTE]
+> **Quick check:** Does this work for a non-square matrix? *Not in place; you must allocate a new `C × R` matrix.*
+
 
 ```java
 // METHOD 1: Using Extra Space O(n²)

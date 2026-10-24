@@ -4,6 +4,12 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - 02_Data_Structures Topic-Level Study-Partner Views
+
+- Added 28 topic-level `💬 Study-Partner View` blocks (bottom line / textbook core / analogy / walkthrough / quick check) for: the five linked-list variants (`02a` 1.1–1.5); Min/Max stack, circular queue, deque, monotonic queue, binary tree types, AVL, red-black, heap variants, hash-table variants (`02b`); sub-arrays, subsequences, searching, sorting, frequency/duplicates, circular arrays (`01b`); Floyd cycle detection (`01c`); stack/DFS and queue/BFS (`01d`); subarray-sum-equals-K (`01e`); tree traversals (`01f`); spiral traversal and matrix rotation (`04`).
+- Added chapter-level explainers to `00_DS_PROBLEM_BRIDGES.md` and `02_PROBLEM_SETS.md`, so every content file in the folder now follows the layout.
+- Re-audit of the folder: all files valid UTF-8, no unfenced box art, tables well-formed, fences balanced, 93 Mermaid diagrams render.
+
 ## 2026-10-24 - 02_Data_Structures Study-Partner Explainers
 
 - Added a four-part `💬 Explain It Like a Study Partner` section (bottom line, textbook core, real-world analogy, walkthrough + quick check) to `01a`–`01g`, `02a`, `02b`, `03`, `04`, `05` and `A1`–`A5`, placed before each chapter's `⚡ At a Glance` block.
