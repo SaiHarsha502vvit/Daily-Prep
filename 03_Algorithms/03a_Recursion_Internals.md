@@ -548,7 +548,6 @@ STACK (much shorter!):
 
 ---
 
-**Navigation**: [< Back to Index](../00_MASTER_INDEX.md) | [Next: Recursion Fundamentals >](03b_Recursion_Fundamentals.md)
 
 🔬 **Section Challenge — Recursion Internals**
 
@@ -654,7 +653,6 @@ long fib(int n) {
 
 ---
 
-**Navigation**: [< Back to Index](../00_MASTER_INDEX.md) | [Next: Recursion Fundamentals >](03b_Recursion_Fundamentals.md)
 
 
 ---

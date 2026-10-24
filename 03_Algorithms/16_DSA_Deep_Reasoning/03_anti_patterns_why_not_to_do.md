@@ -344,7 +344,6 @@ Every experienced interviewer tests these. Mention them **before** the interview
 
 ---
 
-**Navigation**: [< Previous](../15_Monotonic_Stack_Queue_Complete.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](../17_DSA_Java_Implementation_Mastery.md)
 
 ---
 

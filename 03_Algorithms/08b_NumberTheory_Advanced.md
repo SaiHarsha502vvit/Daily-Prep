@@ -235,7 +235,6 @@ static long modPow(long base, long exp, long mod) {
 | GCD(a, b) | Subtract smaller from larger | O(max(a,b)) | Euclidean algorithm | O(log(min(a,b))) |
 | Modular inverse | Extended Euclid | O(log m) | Fermat (prime mod only) | O(log p) |
 | Factorisation | Trial division | O(sqrt(n)) | Pollard's rho | O(n^{1/4}) |
-**Navigation**: [< Previous](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Pattern_Programs_Complete.md)
 
 
 ---

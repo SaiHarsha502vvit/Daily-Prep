@@ -539,7 +539,6 @@ _Why Z over KMP?_ Both are O(N+M). Z-algorithm is often conceptually easier to u
 
 ---
 
-**Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
 
 
 ---

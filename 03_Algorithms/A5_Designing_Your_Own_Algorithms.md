@@ -538,7 +538,6 @@ for (T item : stream) {
 
 ---
 
-**Navigation**: [← A4: Randomized Algorithms](A4_Randomized_Algorithms.md) | [📚 Algorithms Index](00_INDEX.md) | [← DS A5: Designing Your Own Data Structures](../02_Data_Structures/A5_Designing_Your_Own_Data_Structures.md)
 
 ---
 

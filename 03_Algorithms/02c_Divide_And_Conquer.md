@@ -929,7 +929,6 @@ T(n) = Θ(n¹ · (1 + ∫₁ⁿ u / u² du))
 
 ---
 
-**Navigation**: [← Sorting Advanced](02b_Sorting_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Recursion Internals →](03a_Recursion_Internals.md)
 
 
 ---

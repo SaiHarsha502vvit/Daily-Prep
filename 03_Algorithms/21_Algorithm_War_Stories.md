@@ -449,7 +449,6 @@ Notice the pattern in that right-hand column: **new algorithms are forced by new
 
 ---
 
-**Navigation**: [← 20: DSA Patterns PDF Coverage Map](20_DSA_Patterns_PDF_Java_Coverage_Map.md) | [📚 Algorithms Index](00_INDEX.md) | [A5: Designing Your Own Algorithms →](A5_Designing_Your_Own_Algorithms.md)
 
 ---
 

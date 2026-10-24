@@ -630,7 +630,6 @@ SortedMap<String, Integer> prefix = trie.prefixMap("he"); // all keys starting w
 
 ---
 
-**Navigation**: [< Previous](17_DSA_Java_Implementation_Mastery.md) | [Back to Index](00_INDEX.md) | [Next >](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)
 
 
 ---

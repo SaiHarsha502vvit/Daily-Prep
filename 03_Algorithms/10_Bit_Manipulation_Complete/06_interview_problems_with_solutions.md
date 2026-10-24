@@ -563,7 +563,6 @@ for (int k = 0; k < 30; k++) {
 
 **Consequence**: Every XOR trick (missing number, single-non-repeating, single-in-triples) is an application of identity (3) under appropriate grouping.
 
-> **Navigation**: [< Previous](../09_Pattern_Programs_Complete.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](../11_Backtracking_Complete.md)
 
 ---
 

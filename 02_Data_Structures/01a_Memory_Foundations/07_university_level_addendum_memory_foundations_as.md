@@ -320,7 +320,6 @@ Both longs are adjacent in heap memory (8 bytes each). A CPU cache line = 64 byt
 
 **Corollary**: Column-major traversal of `int[R][C]` (treating rows as contiguous, accessing column c for all rows) loads R distinct cache lines but wastes 15 of 16 words per line → R cache misses vs ⌈R·C/16⌉ for row-major. For C >> 16, column-major is 16× worse.
 
-> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](../01b_Arrays.md)
 
 ---
 

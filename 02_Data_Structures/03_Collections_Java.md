@@ -118,7 +118,6 @@ _This reference is your go-to guide during practice!_
 
 ---
 
-> **Navigation**: [< Previous](02b_DS_Variants_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_2D_Arrays_Matrix.md)
 
 ---
 

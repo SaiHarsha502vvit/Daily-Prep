@@ -812,7 +812,6 @@ void backtrack(int[] nums, int start, List<Integer> cur, List<List<Integer>> res
 
 ---
 
-**Navigation**: [< Previous](../03a_Recursion_Internals.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](../03c_Recursion_Advanced.md)
 
 ---
 
