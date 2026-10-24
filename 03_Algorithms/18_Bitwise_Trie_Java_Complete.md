@@ -557,17 +557,6 @@ The bitwise trie supports several variants beyond max XOR, each exploiting diffe
 Select **max XOR trie** when the problem asks for maximum XOR of any pair or pair with a query value. Select **array-based** when space is severely constrained and n is small. Default to the **bitwise trie** for any problem where you need to pick optimal bit branches for XOR objectives.
 
 
-🔬 **Section Challenge — 12. Summary**
-
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-
 ---
 
 ## Proof Corner -- Trie O(L) per Operation
@@ -634,7 +623,6 @@ SortedMap<String, Integer> prefix = trie.prefixMap("he"); // all keys starting w
 | **Where it runs in production** | Maximum-XOR queries, IP routing (tries), compression |
 | **Failure modes** | Wrong bit width; memory growth for large inputs; offline queries needing deletes |
 | **Testing and verification** | Brute-force O(n²) comparison on small arrays |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

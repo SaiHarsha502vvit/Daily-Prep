@@ -82,7 +82,7 @@ flowchart LR
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** Arthur Kahn published the queue-based algorithm in 1962 (*Topological sorting of large networks*); Tarjan (1976) gave the depth-first version. Project-scheduling methods of the late 1950s (CPM at DuPont, PERT for the US Navy Polaris programme) already needed dependency ordering, and Knuth presented the problem in *TAOCP* Vol. 1 (1968).
 
@@ -165,7 +165,6 @@ Once nodes are in topological order, many DAG problems become a single left-to-r
 | **Where it runs in production** | Build systems (`make`, Gradle, Bazel), package managers, spreadsheet recalculation, task schedulers (Airflow DAGs), database migration ordering, course prerequisites |
 | **Failure modes** | Not handling cycles (infinite or partial order returned silently); duplicate edges inflating in-degree incorrectly; assuming uniqueness of the order |
 | **Testing and verification** | Compare with a transitive-closure cycle check on 1 000 random graphs and verify every edge goes forward in the produced order |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -55,7 +55,7 @@ A **proof that a puzzle has no shortcut** so you stop wasting time looking for o
 ## Table of Contents
 
 1. [Lower Bounds — Proving Algorithms Are Optimal](#1-lower-bounds--proving-algorithms-are-optimal)
-2. [The Comparison Sort Lower Bound — Ω(n log n)](#2-the-comparison-sort-lower-bound--n-log-n)
+2. [The Comparison Sort Lower Bound — Ω(n log n)](#2-the-comparison-sort-lower-bound--ωn-log-n)
 3. [Information-Theoretic Lower Bounds](#3-information-theoretic-lower-bounds)
 4. [The Reduction Framework](#4-the-reduction-framework)
 5. [P, NP, and the Complexity Hierarchy](#5-p-np-and-the-complexity-hierarchy)
@@ -693,7 +693,6 @@ for (int mask = 0; mask < (1 << n); mask++) {
 | **Where it runs in production** | Choosing exact vs heuristic solvers in logistics, scheduling and verification tools |
 | **Failure modes** | Misreading NP-hard as "impossible"; reductions in the wrong direction |
 | **Testing and verification** | Test reductions on small instances in both directions |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

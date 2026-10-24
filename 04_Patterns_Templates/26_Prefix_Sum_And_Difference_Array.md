@@ -79,7 +79,7 @@ flowchart LR
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** Cumulative sums are old statistics (cumulative distributions); the parallel **prefix computation** was studied by Ladner and Fischer (1980) and popularised by Blelloch (*Prefix Sums and Their Applications*, 1990). The 2D version in graphics is the **summed-area table** (Franklin Crow, 1984). Peter Fenwick's 1994 paper introduced the binary indexed tree for dynamic prefix sums.
 
@@ -199,7 +199,6 @@ flowchart LR
 | **Where it runs in production** | Analytics dashboards (range totals), image processing (summed-area tables), batch range updates (booking and capacity systems), histogram and heat-map aggregation |
 | **Failure modes** | Off-by-one between inclusive and exclusive bounds; `int` overflow on large sums (use `long`); using prefix sums when updates interleave with queries (needs a Fenwick or segment tree) |
 | **Testing and verification** | Compare against nested-loop sums on random arrays (2 000 cases including negatives); test empty ranges, single elements, and `k` not present |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

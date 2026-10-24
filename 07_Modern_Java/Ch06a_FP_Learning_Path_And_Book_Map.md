@@ -129,7 +129,6 @@ The first edition is organised in four parts. Chapter numbers below are listed f
 | **Where it runs in production** | Service code that is easy to test (pure business rules), stream/batch pipelines, event-sourced domains, concurrent code that shares nothing mutable |
 | **Failure modes** | Calling code "functional" because it uses lambdas while it still mutates shared state; over-abstracting with monad vocabulary where a loop is clearer |
 | **Testing and verification** | Each page ships runnable Java checked against tests or algebraic laws; reuse the same habit — test laws, not only examples |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -559,7 +559,6 @@ Rule: assertions document the invariant AND catch violations during development;
 | **Where it runs in production** | Code reviews for core libraries, safety-critical logic (payments, schedulers), design reviews that require stated invariants |
 | **Failure modes** | Invariant stated but not actually preserved on one branch; proof assumes sorted/distinct input that production data violates |
 | **Testing and verification** | Turn invariants into assertions and property-based tests; fuzz against a reference implementation |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

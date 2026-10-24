@@ -145,7 +145,7 @@ Each row says what you **carry in**, what **new problem** forces the chapter, an
 | Encoding damage (`0x97` bytes, `** ?`, replacement characters) in 18 files | Repaired |
 | Fabricated or wrong history (e.g. "Knuth Algorithm 245", invented authors and dates) in every chapter's *Historical Evolution* | Rewritten from verifiable sources |
 | Chapters had no explicit bridge to what comes before and after | Bridge box, study-partner explainer and Enterprise Lens added to every pattern chapter |
-| Three broken cross-links (`07_TwoPointers.md`, `07_Binary_Search_Patterns.md`, `03_TwoPointers.md`) | Pointed to the real files |
+| Three broken cross-links (`07_Two_Pointers_Complete.md`, `07_Binary_Search_Patterns.md`, `03_TwoPointers.md`) | Pointed to the real files |
 
 ---
 

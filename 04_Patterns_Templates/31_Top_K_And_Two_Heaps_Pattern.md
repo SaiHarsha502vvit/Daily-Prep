@@ -78,7 +78,7 @@ flowchart LR
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** The binary heap is due to J. W. J. Williams (1964). C. A. R. Hoare's FIND (quickselect, 1961) selects the K-th element in expected linear time; Blum, Floyd, Pratt, Rivest and Tarjan (1973) proved worst-case linear selection (*median of medians*). For streams, Misra and Gries (1982) and Metwally et al. (Space-Saving, 2005) track frequent items with bounded memory; Cormode and Muthukrishnan's Count-Min Sketch appeared in 2005.
 
@@ -173,7 +173,6 @@ static int[] topKFrequent(int[] a, int k) {
 | **Where it runs in production** | Trending topics, leaderboards, anomaly detection (median/percentile tracking), scheduling by priority, k-way merges in databases |
 | **Failure modes** | Using a max-heap of size n; comparator that is inconsistent with ties; not rebalancing both heaps; integer overflow when averaging two ints |
 | **Testing and verification** | K-th largest vs full sort (2 000 cases), running median vs sorted-list median after every insert, top-K frequent vs sort-by-count with deterministic tie-breaks |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

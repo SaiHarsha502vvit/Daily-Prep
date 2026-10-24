@@ -145,7 +145,6 @@ The snippets above were compiled and checked: `sum(of(1,2,3,4)) = 10`, `map(l, x
 | **Where it runs in production** | Domain modelling (payment states, commands, events), compilers/interpreters (expression trees), persistent collections in concurrent code, undo history |
 | **Failure modes** | Recursion on very long lists overflowing the stack (Java has no tail-call elimination); non-exhaustive `switch` with a `default` hiding missing cases; leaking mutability through contained collections |
 | **Testing and verification** | Check `reverse(reverse(l)) == l`, `foldRight(l, Nil, Cons) == l`, `toJava(map(l, f))` against `stream().map`; random lists for lengths 0–10 |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -49,7 +49,7 @@ A **calendar**: sort the meetings by start time and walk down the day.
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** Interval problems come from scheduling and computational geometry. The greedy "earliest finish first" strategy for maximum non-overlapping intervals is a textbook result; interval graphs and their colouring were studied from the 1960s; the Shamos–Hoey (1976) and Bentley–Ottmann (1979) sweep-line algorithms process interval events in sorted order. Edelsbrunner (1980) and McCreight (1981) introduced interval and priority-search trees; CLRS augments a red-black tree for interval queries.
 
@@ -65,17 +65,10 @@ A **calendar**: sort the meetings by start time and walk down the day.
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -89,7 +82,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 ---
 
-# 📚 INTERVAL PROBLEMS — THE COMPLETE PATTERN GUIDE
+## 📚 INTERVAL PROBLEMS — THE COMPLETE PATTERN GUIDE
 
 ### ⚠️ Constraint Lens
 
@@ -145,9 +138,9 @@ Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selec
 
 ---
 
-## PART 0: THE MENTAL MODEL — "Sort, Scan, Decide"
+### PART 0: THE MENTAL MODEL — "Sort, Scan, Decide"
 
-## The Real-World Origin
+### The Real-World Origin
 
 📖 CALENDAR APPS: Google Calendar must detect overlapping events.
 When you schedule 2-3pm and 2:30-4pm, it highlights the conflict.
@@ -162,7 +155,7 @@ overlapping regions to find functional units.
 📖 OPERATING SYSTEMS: Memory allocation = interval management.
 malloc/free creates and merges free memory intervals.
 
-## The Two Core Techniques
+### The Two Core Techniques
 
 TECHNIQUE 1: SORT + LINEAR SCAN
 Sort all intervals by start time.
@@ -185,17 +178,7 @@ Works for: Meeting Rooms II, Min Platforms
 - "Merge/modify intervals" → Sort + Scan
 - "Count/max simultaneous" → Sweep Line or Min-Heap
 
-🔬 **Section Challenge — The Two Core Techniques**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
-
-## The Overlap Check — Memorize This
+### The Overlap Check — Memorize This
 
 Two intervals [a,b] and [c,d] OVERLAP if and only if:
 a ≤ d AND c ≤ b
@@ -204,7 +187,7 @@ After sorting by start (a ≤ c), overlap simplifies to:
 c ≤ b (next start ≤ current end)
 This ONE check drives 80% of interval problems.
 
-## Difficulties & Common Mistakes
+### Difficulties & Common Mistakes
 
 1. Not sorting first — intervals aren't guaranteed sorted in input
 2. Sorting by end when you should sort by start (or vice versa)
@@ -221,7 +204,7 @@ This ONE check drives 80% of interval problems.
 
 ---
 
-## PROBLEM 1: Merge Intervals (LC 56) — THE Foundation
+### PROBLEM 1: Merge Intervals (LC 56) — THE Foundation
 
 ```
 DIFFICULTY: Medium
@@ -272,7 +255,7 @@ TEMPLATE: This is the base template for all "merge" interval problems.
 
 ---
 
-## PROBLEM 2: Insert Interval (LC 57)
+### PROBLEM 2: Insert Interval (LC 57)
 
 ```
 DIFFICULTY: Medium
@@ -323,7 +306,7 @@ COMPLEXITY: Time O(n) — input is already sorted | Space O(n)
 
 ---
 
-## PROBLEM 3: Meeting Rooms I (LC 252)
+### PROBLEM 3: Meeting Rooms I (LC 252)
 
 ```
 DIFFICULTY: Easy
@@ -353,7 +336,7 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 
 ---
 
-## PROBLEM 4: Meeting Rooms II (LC 253) — Min Rooms Needed
+### PROBLEM 4: Meeting Rooms II (LC 253) — Min Rooms Needed
 
 ```
 DIFFICULTY: Medium
@@ -428,7 +411,7 @@ SWEEP LINE IS MORE GENERAL — works for "max overlap" variants too.
 
 ---
 
-## PROBLEM 5: Non-overlapping Intervals (LC 435) — Min Removals
+### PROBLEM 5: Non-overlapping Intervals (LC 435) — Min Removals
 
 ```
 DIFFICULTY: Medium
@@ -473,7 +456,7 @@ KEY: Sort by END for greedy removal. Sort by START for merge.
 
 ---
 
-## PROBLEM 6: Interval List Intersections (LC 986)
+### PROBLEM 6: Interval List Intersections (LC 986)
 
 ```
 DIFFICULTY: Medium
@@ -517,7 +500,7 @@ ELEGANT: The Math.max/Math.min trick handles all overlap cases.
 
 ---
 
-## PROBLEM 7: Minimum Number of Arrows to Burst Balloons (LC 452)
+### PROBLEM 7: Minimum Number of Arrows to Burst Balloons (LC 452)
 
 ```
 DIFFICULTY: Medium
@@ -554,7 +537,7 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 
 ---
 
-## 📋 Summary: the Interval Pattern Cheatsheet
+### 📋 Summary: the Interval Pattern Cheatsheet
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -584,7 +567,7 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 
 ---
 
-## 📋 CURATED PRACTICE PROBLEMS
+### 📋 CURATED PRACTICE PROBLEMS
 
 | #   | Problem                                                                                                | LC#  | Pattern           | Company          |
 | --- | ------------------------------------------------------------------------------------------------------ | ---- | ----------------- | ---------------- |
@@ -611,7 +594,6 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 | **Where it runs in production** | Calendars, booking systems, resource allocation, genomic range queries |
 | **Failure modes** | Treating touching endpoints inconsistently; sorting by the wrong key; integer overflow in endpoints |
 | **Testing and verification** | Compare to an `O(n²)` pairwise check; test touching, nested and identical intervals |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

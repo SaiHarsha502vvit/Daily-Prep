@@ -2,7 +2,7 @@
 
 **Navigation**: [< Previous](19_Matrix_Plus_Grid_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Intervals_Pattern.md)
 
-# Bit Manipulation + Tricks — Combined Pattern Guide
+## Bit Manipulation + Tricks — Combined Pattern Guide
 
 **WHY this matters?** Bit manipulation provides O(1) operations that replace expensive loops. XOR finds unique elements, bitmasks encode sets, and bit tricks optimize space and time.
 
@@ -51,7 +51,7 @@ A **row of light switches**: each switch is a bit; masks flip or read several at
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** Boolean logic in circuits: Claude Shannon's 1937 master's thesis. Information theory: Shannon, 1948. Error-correcting codes: Richard Hamming, 1950. Karnaugh maps: 1953. Gray code: Frank Gray's 1953 patent. Counting set bits by clearing the lowest one (`n & (n-1)`) was published by Peter Wegner in 1960 and later popularised by Kernighan and Ritchie.
 
@@ -69,17 +69,10 @@ A **row of light switches**: each switch is a bit; masks flip or read several at
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -104,13 +97,13 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Why Bit Operations Are So Powerful
+## 🧠 Deep Intuition — Why Bit Operations Are So Powerful
 
-#### CPU-Native Operations — True O(1)
+### CPU-Native Operations — True O(1)
 
 Bit operations (AND, OR, XOR, shift) are executed in a **single CPU cycle** — they're the fundamental operations that CPUs are literally built to perform. Compared to arithmetic operations (which may take multiple cycles) or hash lookups (which involve function calls, memory access), bit operations are as fast as computation gets.
 
-#### XOR — The Most Useful Bit Operation
+### XOR — The Most Useful Bit Operation
 
 XOR has three magical properties that make it incredibly useful:
 
@@ -120,11 +113,11 @@ XOR has three magical properties that make it incredibly useful:
 
 These properties mean that if you XOR a collection of numbers where every number appears twice except one, all the pairs cancel out (`a ^ a = 0`), leaving only the unique number. This replaces an O(n) space HashMap solution with an O(1) space solution.
 
-#### Two's Complement — Why `-n` Is `~n + 1`
+### Two's Complement — Why `-n` Is `~n + 1`
 
 In Java/C, negative numbers use **two's complement**: flip all bits and add 1. This means `-n = ~n + 1`. This is why `n & (-n)` gives the lowest set bit: `-n` has the same rightmost 1-bit as `n`, with all higher bits flipped. The AND isolates just that one bit.
 
-#### Bitmask DP — Encoding Sets as Integers
+### Bitmask DP — Encoding Sets as Integers
 
 A bitmask is an integer where each bit represents whether an element is "included" in a set. For n elements, there are 2ⁿ possible subsets, each represented by an n-bit integer. This allows DP over subsets: `dp[mask]` represents the answer for the subset encoded by `mask`. This is the foundation of solutions to TSP (Travelling Salesman Problem), assignment problems, and other NP-hard problems optimized from O(n!) to O(2ⁿ × n²).
 
@@ -278,17 +271,10 @@ COMMON MISTAKES:
 
 ---
 
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+## 📋 Practice Problems
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 | #   | Problem                                                               | Key Insight                |
 | --- | --------------------------------------------------------------------- | -------------------------- |
@@ -317,7 +303,7 @@ COMMON MISTAKES:
 | 13  | [Valid Square](https://leetcode.com/problems/valid-square/)                                          | Salesforce | Distance set has exactly 2 values      |
 | 14  | [Kth Factor of N](https://leetcode.com/problems/the-kth-factor-of-n/)                                | —          | Iterate up to sqrt                     |
 
-### Sorting & Searching from Excel
+### Sorting & Searching
 
 | #   | Problem                                                                                                          | Companies           | Key Insight                     |
 | --- | ---------------------------------------------------------------------------------------------------------------- | ------------------- | ------------------------------- |
@@ -335,7 +321,7 @@ COMMON MISTAKES:
 | 26  | [Count Smaller After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/)                   | —                   | Merge sort counting             |
 | 27  | [Split Array Largest Sum](https://leetcode.com/problems/split-array-largest-sum/)                                | Walmart             | Binary search on answer         |
 
-### Segment Tree from Excel
+### Segment Tree
 
 | #   | Problem                                                                                                   | Companies     | Key Insight                         |
 | --- | --------------------------------------------------------------------------------------------------------- | ------------- | ----------------------------------- |
@@ -368,17 +354,6 @@ COMMON MISTAKES:
 
 [← 19 Matrix+Grid](19_Matrix_Plus_Grid_Traversal.md) | [Back to Index →](../00_MASTER_INDEX.md)
 
-🔬 **Section Challenge — 🔥 BIT TRICKS SUMMARY**
-
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-
 ---
 
 ## 🏢 Enterprise Lens — Bit Manipulation + Tricks
@@ -388,7 +363,6 @@ COMMON MISTAKES:
 | **Where it runs in production** | Permission flags, feature toggles, Bloom filters, compact state in DP |
 | **Failure modes** | Signed shifts, overflow of `1 << 31`, precedence mistakes (`&` vs `==`) |
 | **Testing and verification** | Test against loop-based implementations for random 32/64-bit values and boundary values (0, −1, MIN_VALUE) |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

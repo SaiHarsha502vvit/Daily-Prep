@@ -57,7 +57,7 @@ A **flight-accident report**: the value is not the blame but the checklist item 
 ## Table of Contents
 
 1. [How To Use This Chapter](#0-how-to-use-this-chapter)
-2. [Story 1: The Quadratic That Only Appeared at Scale](#story-1-the-quadratic-that-only-appeared-at-scale-accidentally-on-1-node)
+2. Story 1: The Quadratic That Only Appeared at Scale
 3. [Story 2: Counting Distinct Users Without the Memory](#story-2-counting-distinct-users-without-the-memory-hyperloglog)
 4. [Story 3: The Cache That Made Things Slower](#story-3-the-cache-that-made-things-slower-thundering-herd--stampede)
 5. [Story 4: Resharding Without Downtime](#story-4-resharding-without-downtime-consistent-hashing)
@@ -460,7 +460,6 @@ Notice the pattern in that right-hand column: **new algorithms are forced by new
 | **Where it runs in production** | Incident reviews, SRE playbooks, design reviews |
 | **Failure modes** | Treating incidents as one-off bugs instead of classes of bug |
 | **Testing and verification** | Turn each story into a test case and a dashboard alert |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

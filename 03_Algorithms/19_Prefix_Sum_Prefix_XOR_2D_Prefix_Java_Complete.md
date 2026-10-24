@@ -1,3 +1,5 @@
+# Prefix Sum Prefix XOR 2D Prefix Java Complete
+
 **Navigation**: [< Previous](18_Bitwise_Trie_Java_Complete.md) | [Back to Index](00_INDEX.md) | [Next >](20_DSA_Patterns_PDF_Java_Coverage_Map.md)
 
 ---
@@ -67,7 +69,7 @@ for (int i = 1; i <= m; i++)
 ```
 
 
-# Chapter 19 - Prefix Sum, Prefix XOR, and 2D Prefix Java Complete Guide
+## Chapter 19 - Prefix Sum, Prefix XOR, and 2D Prefix Java Complete Guide
 
 Purpose: Build one unified Java playbook for all prefix-family interview problems: 1D sum, XOR, modular prefix, 2D matrix prefix, and difference arrays.
 
@@ -143,16 +145,6 @@ For XOR:
 - `rangeXor(l, r) = px[r + 1] ^ px[l]`
 
 ---
-
-🔬 **Section Challenge — 1. Prefix Family - One Core Idea**
-
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
 
 ## 2. 1D Prefix Sum (Java)
 
@@ -288,14 +280,6 @@ public static int rangeXor(int[] px, int l, int r) {
 <details><summary>Answer</summary>
 
 Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-
-<details><summary>Answer</summary>
-
-Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
 
 </details>
 
@@ -660,7 +644,6 @@ Select **prefix sum + two-pointer** when array is non-negative and you need slid
 | **Where it runs in production** | Analytics dashboards, image processing (integral images), game maps, financial running totals |
 | **Failure modes** | Off-by-one with the leading zero; overflow in large sums; mutating the base array after building |
 | **Testing and verification** | Randomised comparison with direct summation |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

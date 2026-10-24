@@ -514,16 +514,6 @@ class Dinic {
 // 4. Circulation with Demands: Add super-source and super-sink
 ```
 
-🔬 **Section Challenge — 🌐 Network Flow Algorithms**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
-
 ## 📌 Computational Geometry Basics
 
 ```
@@ -675,14 +665,14 @@ _Master these algorithms to understand the foundations of computer science!_ �
 
 ---
 
-# 💪 Curated Practice Problems — Advanced Algorithms
+## 💪 Curated Practice Problems — Advanced Algorithms
 
 **HOW TO USE**: These are harder problems covering greedy, bit manipulation, string algorithms, and competitive patterns.
 Attempt only after mastering the fundamentals in earlier chapters.
 
 ---
 
-## Section 1: Greedy Algorithms
+### Section 1: Greedy Algorithms
 
 | #   | Problem                            | Platform | Difficulty | Key Technique                         |
 | --- | ---------------------------------- | -------- | ---------- | ------------------------------------- |
@@ -699,17 +689,7 @@ Attempt only after mastering the fundamentals in earlier chapters.
 
 ---
 
-🔬 **Section Challenge — Section 1: Greedy Algorithms**
-
-**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-
-<details><summary>Answer</summary>
-
-Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-
-</details>
-
-## Section 2: Bit Manipulation
+### Section 2: Bit Manipulation
 
 | #   | Problem                                           | Platform | Difficulty | Key Technique                 |
 | --- | ------------------------------------------------- | -------- | ---------- | ----------------------------- |
@@ -726,7 +706,7 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 
 ---
 
-## Section 3: String Algorithms
+### Section 3: String Algorithms
 
 | #   | Problem                                  | Platform | Difficulty | Key Technique                    |
 | --- | ---------------------------------------- | -------- | ---------- | -------------------------------- |
@@ -743,7 +723,7 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 
 ---
 
-## HIDDEN GEMS — Advanced
+### HIDDEN GEMS — Advanced
 
 | #   | Problem                                  | Platform | Why It's Valuable                        |
 | --- | ---------------------------------------- | -------- | ---------------------------------------- |
@@ -754,7 +734,7 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 | 5   | Gray Code (LC 89)                        | LeetCode | i XOR (i &gt;&gt; 1) elegant bit pattern |
 | 6   | Circular Array Loop (LC 457)             | LeetCode | Slow/fast pointer on circular            |
 
-### Topical Breadth — Advanced Pattern Selection Trade-offs
+#### Topical Breadth — Advanced Pattern Selection Trade-offs
 
 The advanced patterns in this chapter each exploit a different constraint boundary, and the selection hinges on whether the problem is static or dynamic, online or offline. **Meet-in-the-Middle** reduces O(2^n) to O(2^(n/2) * n) by splitting the set and enumerating both halves — the trade-off is it requires O(2^(n/2)) space and works only when you can enumerate all partial solutions cleanly; the practical threshold is n <= 30 where 2^30 is too large for brute force but 2^15 is manageable. **Sqrt Decomposition** answers range queries in O(sqrt(n)) by dividing the array into blocks — the trade-off versus segment tree is that sqrt decomposition is simpler to implement and faster for static arrays with O(1) point updates, but degrades to O(sqrt(n)) per query where segment tree gives O(log n). **Mo's Algorithm** answers offline range queries in O((n+q)*sqrt(n)) on static arrays — the trade-off is it requires the array to be static (no updates) and needs block size tuning; it outperforms segment tree when you have many queries (q >> n) on read-only data. **Heavy-Light Decomposition (HLD)** enables O(log^2 n) path queries on trees by decomposing into O(log n) heavy paths — the trade-off versus Euler tour with BIT is that HLD handles both path and subtree queries efficiently, while Euler tour + BIT is O(log n) for subtree but O(n) for arbitrary paths; use HLD when the problem mixes path aggregates with point updates. **Wavelet Tree** answers static range k-th order statistics in O(log sigma) where sigma is alphabet size — the trade-off versus segment tree is that wavelet tree handles static arrays with range k-th/min/max queries elegantly but cannot handle updates; use wavelet tree when the array never changes and you need median/k-th frequently.
 
@@ -771,7 +751,7 @@ Select **Meet-in-the-Middle** when n is between 20-30 and the problem is a subse
 
 ---
 
-## Proof Corner -- Sqrt Decomposition O(sqrt(n)) per Query
+### Proof Corner -- Sqrt Decomposition O(sqrt(n)) per Query
 
 **Claim**: With sqrt decomposition, each range-sum query over [l, r] costs O(sqrt(n)) time.
 
@@ -790,7 +770,7 @@ Select **Meet-in-the-Middle** when n is between 20-30 and the problem is a subse
 
 ---
 
-## When It Breaks -- Algorithm Patterns
+### When It Breaks -- Algorithm Patterns
 
 **1. Mo's algorithm on dynamic arrays** -- Mo's algorithm requires a STATIC array (no updates). If the problem has point updates, you need Mo's with updates (3D sorting) which is O(n^(5/3)). Applying standard Mo's with updates gives wrong answers silently.
 
@@ -802,7 +782,7 @@ Select **Meet-in-the-Middle** when n is between 20-30 and the problem is a subse
 
 ---
 
-## Reference Anchor
+### Reference Anchor
 
 **No standard JDK implementations** for sqrt decomp, Mo's, or HLD -- these are competitive programming patterns. Reference implementations:
 
@@ -842,7 +822,6 @@ int query(int node, int l, int r, int ql, int qr) {
 | **Where it runs in production** | Traffic and logistics flows, assignment/matching systems, image segmentation (min-cut), geospatial queries |
 | **Failure modes** | Not recognising a flow model; wrong capacities for undirected edges; precision errors in geometry |
 | **Testing and verification** | Check flow conservation and min-cut equality on random networks |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

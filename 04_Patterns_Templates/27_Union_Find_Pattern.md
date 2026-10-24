@@ -79,7 +79,7 @@ flowchart TD
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** Bernard Galler and Michael Fischer described the forest-of-trees equivalence algorithm in 1964 (*An improved equivalence algorithm*). Hopcroft and Ullman (1973) analysed it with a `log* n` bound and Robert Tarjan (1975) proved the tight inverse-Ackermann bound.
 
@@ -186,7 +186,6 @@ flowchart LR
 | **Where it runs in production** | Kruskal minimum spanning tree, network connectivity monitoring, image segmentation, clustering, equivalence classes in compilers (type unification) |
 | **Failure modes** | Forgetting to call `find` before comparing; recursion depth on unbalanced trees (use the iterative `find`); assuming it supports deletions |
 | **Testing and verification** | Compare component counts and pairwise connectivity with a Floyd–Warshall reachability matrix on 1 000 random graphs |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

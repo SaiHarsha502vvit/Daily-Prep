@@ -140,7 +140,6 @@ Checked: same seed → same value; `ints` reproducible; state-monad example retu
 | **Where it runs in production** | Reproducible simulations, test-data generators, fuzzing, load-test scenarios, game logic that must replay deterministically |
 | **Failure modes** | Using `System.nanoTime()` as a seed without logging it (irreproducible failures); properties that restate the implementation; generators that never produce edge cases (empty, zero, max) |
 | **Testing and verification** | Prove determinism (same seed, same output); property-test the properties themselves on a deliberately wrong implementation to ensure they fail |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -769,7 +769,6 @@ int idx = Arrays.binarySearch(sortedArr, key);
 | **Where it runs in production** | Capacity planning, SLO budgeting, choosing between O(n log n) and O(n²) paths for a data pipeline |
 | **Failure modes** | Ignoring constants and cache effects; quoting amortized bounds for latency-critical paths; forgetting space (recursion depth) |
 | **Testing and verification** | Empirical complexity check: time at n, 2n, 4n, 8n and confirm the growth ratio |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

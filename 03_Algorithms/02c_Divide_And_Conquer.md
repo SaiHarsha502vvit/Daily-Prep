@@ -922,7 +922,6 @@ T(n) = Θ(n¹ · (1 + ∫₁ⁿ u / u² du))
 | **Where it runs in production** | MapReduce-style processing, parallel merge sort, FFT-based signal processing, divide-and-conquer in image and geometry pipelines |
 | **Failure modes** | Unbalanced splits degrading to O(n²); copying subarrays at every level; recursion depth overflow |
 | **Testing and verification** | Test base cases (n = 0, 1, 2) and compare against the brute-force result on random inputs |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

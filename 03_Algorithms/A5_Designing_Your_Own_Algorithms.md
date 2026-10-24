@@ -549,7 +549,6 @@ for (T item : stream) {
 | **Where it runs in production** | Library and system design, optimisation of hot paths, research prototypes |
 | **Failure modes** | Over-engineering; skipping the reference test; ignoring adversarial inputs |
 | **Testing and verification** | Property-based tests and fuzzing against the reference |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

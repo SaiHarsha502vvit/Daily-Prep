@@ -430,6 +430,16 @@ flowchart TD
 
 ---
 
+## Pattern Mis-Selection Debug Workflow
+
+Use this when a solution is `O(N²)` but you expected `O(N)`, or fails on specific inputs. The cause is usually the **pattern**, not the code.
+
+1. **Check the constraint lens:** did the input violate the pattern's prerequisite? (sorted input for two pointers, non-negative numbers for a sum window, monotone predicate for binary search)
+2. **Trace the smallest failing input** and name the invariant that broke.
+3. **Measure the real complexity:** count inner-loop iterations. `O(N²)` where you expected `O(N)` usually means a redundant scan.
+4. **Test the cases the pattern does not cover:** empty input, a single element, all-equal values, minimum and maximum values.
+5. **Switch pattern family** if steps 1–4 do not fix it, using the [constraint-based selection tables](25_Constraint_Based_Pattern_Selection.md).
+
 ## Reality Check
 
 **"There are exactly N patterns and they cover everything"** — Pattern catalogs (14, 20, 27 — every course counts differently) cover roughly 80 percent of interview problems. The remaining 20 percent are deliberately pattern-resistant: ad-hoc simulation, clever observations, or hybrid problems where the pattern only solves one phase. Treating the catalog as complete produces the worst interview failure mode: forcing the nearest pattern onto a problem that needed a direct observation.

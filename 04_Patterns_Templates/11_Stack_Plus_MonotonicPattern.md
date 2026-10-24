@@ -2,7 +2,7 @@
 
 **Navigation**: [< Previous](10_HashMap_Plus_Counting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_LinkedList_Plus_TwoPointers.md)
 
-# Stack + Monotonic Pattern — Combined Pattern Guide
+## Stack + Monotonic Pattern — Combined Pattern Guide
 
 **WHY this combination?** A stack processes elements in LIFO order. A **monotonic stack** maintains elements in sorted order, enabling O(n) solutions for "next greater/smaller element" problems that seem to need O(n²).
 
@@ -51,7 +51,7 @@ A **queue of people waiting to be matched with a taller person ahead**: when som
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** There is no single inventor: the monotonic stack is folklore built on the *all nearest smaller values* problem (studied in parallel by Berkman, Schieber and Vishkin, 1993) and on the **Cartesian tree** (Vuillemin, 1980), which a stack builds in linear time.
 
@@ -67,17 +67,10 @@ A **queue of people waiting to be matched with a taller person ahead**: when som
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -91,7 +84,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 ---
 
-### ⚠️ Constraint Lens
+## ⚠️ Constraint Lens
 
 | Given Constraints              | Do This                                          |
 | ------------------------------ | ------------------------------------------------ |
@@ -103,19 +96,19 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Why Monotonic Stack Is O(n)
+## 🧠 Deep Intuition — Why Monotonic Stack Is O(n)
 
 The brute force for "next greater element" checks every element to the right for each position — nested loops, O(n²). The monotonic stack solves this in O(n) through a key insight: **elements that get "answered" can be permanently discarded.**
 
-#### The Invariant — Why This Is Correct
+### The Invariant — Why This Is Correct
 
 A monotonic decreasing stack (for next greater element) maintains this invariant: all elements on the stack are **still waiting for their answer** (next greater element). When a new element comes that is larger than the stack top, **it is the answer** for the top element. We pop the top (it's answered), and check again — repeatedly until the stack top is larger or the stack is empty.
 
-#### The Amortized O(n) Proof
+### The Amortized O(n) Proof
 
 The proof is elegant: each element is pushed onto the stack **exactly once** and popped **at most once**. Across all n elements, that's at most n pushes + n pops = **2n total operations = O(n).** The inner `while` loop doesn't make it O(n²) because the total pops across all iterations is bounded by n.
 
-#### Increasing vs Decreasing — The Key Distinction
+### Increasing vs Decreasing — The Key Distinction
 
 - **Monotonic Decreasing** stack (big → small from bottom to top): finds **next GREATER** element. New elements that are larger "answer" and pop smaller elements.
 - **Monotonic Increasing** stack (small → big from bottom to top): finds **next SMALLER** element. New elements that are smaller "answer" and pop larger elements.
@@ -302,16 +295,6 @@ KEY: Stack stores elements waiting for their NGE.
 
 ---
 
-🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Next Greater Element I — Core Monotonic Template**
-
-**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-
-<details><summary>Answer</summary>
-
-In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-
-</details>
-
 ## 🛡️ EDGE CASES
 
 ```
@@ -342,17 +325,10 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 
 ---
 
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+## 📋 Practice Problems
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 | #   | Problem                                                                                                 | Companies             | Key Insight                     |
 | --- | ------------------------------------------------------------------------------------------------------- | --------------------- | ------------------------------- |
@@ -383,7 +359,7 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 | 15  | [LRU Cache](https://www.geeksforgeeks.org/lru-cache-implementation/)                                                                        | Microsoft             | HashMap + Doubly Linked List     |
 | 16  | [The Celebrity Problem](http://geeksforgeeks.org/the-celebrity-problem/)                                                                    | —                     | Stack elimination                |
 
-### Additional — Stacks & Queues from Excel
+### Additional — Stacks & Queues
 
 | #   | Problem                                                                                                                         | Key Insight              |
 | --- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
@@ -448,7 +424,6 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 | **Where it runs in production** | Stock-span indicators, compilers (expression parsing), skyline computations |
 | **Failure modes** | Wrong monotone direction; strict vs non-strict comparison with duplicates; forgetting to flush the stack at the end |
 | **Testing and verification** | Brute-force `O(n²)` comparison; include equal values and strictly increasing/decreasing arrays |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

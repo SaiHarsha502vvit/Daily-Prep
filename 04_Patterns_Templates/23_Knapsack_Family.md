@@ -49,7 +49,7 @@ Packing a **suitcase with a weight limit**: for every item you decide to bring i
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** George Dantzig named and studied the knapsack problem (*Discrete-Variable Extremum Problems*, Operations Research, 1957); Bellman's dynamic-programming formulation appeared in the same period. Gilmore and Gomory (1961) treated cutting stock; Karp (1972) listed knapsack/subset-sum among NP-complete problems; Horowitz and Sahni (1974) gave the `O(2^(n/2))` meet-in-the-middle algorithm; Ibarra and Kim (1975) gave the first FPTAS.
 
@@ -67,17 +67,10 @@ Packing a **suitcase with a weight limit**: for every item you decide to bring i
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -91,9 +84,9 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 ---
 
-# 📚 KNAPSACK FAMILY — THE UNIFICATION GUIDE
+## 📚 KNAPSACK FAMILY — THE UNIFICATION GUIDE
 
-## The Knapsack Family Tree
+### The Knapsack Family Tree
 
 KNAPSACK
 / | \
@@ -110,7 +103,7 @@ Coin Ways
 dp[i][w] = max/min/count of (take item, skip item)
 The ONLY difference: 0/1 vs unbounded vs bounded.
 
-### ⚠️ Constraint Lens
+#### ⚠️ Constraint Lens
 
 | Given Constraints                | Do This                                      |
 | -------------------------------- | -------------------------------------------- |
@@ -125,7 +118,7 @@ Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selec
 
 ---
 
-## PART 0: THEORY — "Take/Skip × Capacity"
+### PART 0: THEORY — "Take/Skip × Capacity"
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -254,7 +247,7 @@ Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selec
 
 ---
 
-## PROBLEM 1: Classic 0/1 Knapsack
+### PROBLEM 1: Classic 0/1 Knapsack
 
 ```
 THE TEMPLATE PROBLEM — not on LeetCode but on every interview prep list.
@@ -317,7 +310,7 @@ COMPLEXITY: Time O(n×W) | Space O(W) with 1D optimization
 
 ---
 
-## PROBLEM 2: Partition Equal Subset Sum (LC 416)
+### PROBLEM 2: Partition Equal Subset Sum (LC 416)
 
 ```
 DIFFICULTY: Medium
@@ -357,17 +350,7 @@ COMPLEXITY: Time O(n × sum) | Space O(sum)
 
 ---
 
-🔬 **Section Challenge — PROBLEM 2: Partition Equal Subset Sum (LC 416)**
-
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## PROBLEM 3: Target Sum (LC 494)
+### PROBLEM 3: Target Sum (LC 494)
 
 ```
 DIFFICULTY: Medium
@@ -410,17 +393,7 @@ KEY: The mathematical transformation is the hardest part!
 
 ---
 
-🔬 **Section Challenge — PROBLEM 3: Target Sum (LC 494)**
-
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## PROBLEM 4: Coin Change — Minimum Coins (LC 322)
+### PROBLEM 4: Coin Change — Minimum Coins (LC 322)
 
 ```
 DIFFICULTY: Medium
@@ -454,7 +427,7 @@ COMPLEXITY: Time O(coins × amount) | Space O(amount)
 
 ---
 
-## PROBLEM 5: Coin Change II — Count Ways (LC 518)
+### PROBLEM 5: Coin Change II — Count Ways (LC 518)
 
 ```
 DIFFICULTY: Medium
@@ -512,7 +485,7 @@ REMEMBER: Outer/inner loop order controls combinations vs permutations!
 
 ---
 
-## PROBLEM 6: Ones and Zeroes (LC 474)
+### PROBLEM 6: Ones and Zeroes (LC 474)
 
 ```
 DIFFICULTY: Medium
@@ -554,7 +527,7 @@ COMPLEXITY: Time O(strs × m × n) | Space O(m × n)
 
 ---
 
-### Why Loop Direction Is Forced — The 2D-to-1D Derivation Most People Skip
+#### Why Loop Direction Is Forced — The 2D-to-1D Derivation Most People Skip
 
 The "Direction Rule" box below shows the visual trace, but it doesn't show the *derivation*: why does the *same recurrence* `dp[w] = max(dp[w], dp[w - weight] + value)` produce correct answers for both 0/1 and unbounded knapsack, when only the loop direction changes? That question is what makes the rule feel inevitable instead of arbitrary — and once you see it, you can re-derive the right direction for any new knapsack variant without looking it up.
 
@@ -660,7 +633,7 @@ If `k` weren't exactly a sum of distinct powers of 2 (e.g., `k = 10`), we'd use 
 </details>
 
 
-## 📌 The Direction Rule — Visual Proof
+### 📌 The Direction Rule — Visual Proof
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -694,7 +667,7 @@ If `k` weren't exactly a sum of distinct powers of 2 (e.g., `k = 10`), we'd use 
 
 ---
 
-## 📋 CURATED PRACTICE PROBLEMS — KNAPSACK FAMILY
+### 📋 CURATED PRACTICE PROBLEMS — KNAPSACK FAMILY
 
 | #   | Problem                                                                                 | LC#  | Type      | Objective    | Key Insight             |
 | --- | --------------------------------------------------------------------------------------- | ---- | --------- | ------------ | ----------------------- |
@@ -723,7 +696,6 @@ If `k` weren't exactly a sum of distinct powers of 2 (e.g., `k = 10`), we'd use 
 | **Where it runs in production** | Budget allocation, cargo loading, portfolio selection under limits, partition checks |
 | **Failure modes** | Wrong loop direction; confusing "exact weight" with "at most weight"; huge `W` blowing memory |
 | **Testing and verification** | Brute-force subsets for `n ≤ 15`; test zero capacity and items heavier than capacity |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

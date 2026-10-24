@@ -49,7 +49,7 @@ A **coat check**: each coat goes to the hook with its number; at the end, empty 
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** In-place permutation by following cycles is classical (Knuth, TAOCP Vol. 3 and Vol. 1 on permutations). B. K. Haddon named and analysed **cycle sort** in 1990 (*Cycle-sort: a linear sorting method*, The Computer Journal), a write-minimising sort. The interview pattern "place each value at index value−1" is folklore built on the same idea.
 
@@ -65,17 +65,10 @@ A **coat check**: each coat goes to the hook with its number; at the end, empty 
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -89,7 +82,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 ---
 
-# 📚 CYCLIC SORT — THE MISSING PATTERN
+## 📚 CYCLIC SORT — THE MISSING PATTERN
 
 ### ⚠️ Constraint Lens
 
@@ -126,7 +119,7 @@ Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selec
 
 ---
 
-## PART 0: THE MENTAL MODEL — "Everyone Go Home"
+### PART 0: THE MENTAL MODEL — "Everyone Go Home"
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -210,7 +203,7 @@ Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selec
 
 ---
 
-## PROBLEM 1: Find the Missing Number (LC 268)
+### PROBLEM 1: Find the Missing Number (LC 268)
 
 ```
 DIFFICULTY: Easy
@@ -267,7 +260,7 @@ NOTE: Gauss formula (n*(n+1)/2 - sum) also works for Easy version.
 
 ---
 
-## PROBLEM 2: Find All Numbers Disappeared in Array (LC 448)
+### PROBLEM 2: Find All Numbers Disappeared in Array (LC 448)
 
 ```
 DIFFICULTY: Easy
@@ -306,7 +299,7 @@ COMPLEXITY: Time O(n) | Space O(1) excluding output
 
 ---
 
-## PROBLEM 3: Find All Duplicates in Array (LC 442)
+### PROBLEM 3: Find All Duplicates in Array (LC 442)
 
 ```
 DIFFICULTY: Medium
@@ -347,7 +340,7 @@ KEY INSIGHT: After sort, duplicates end up at "wrong" positions.
 
 ---
 
-## PROBLEM 4: First Missing Positive (LC 41) — THE HARD ONE
+### PROBLEM 4: First Missing Positive (LC 41) — THE HARD ONE
 
 ```
 DIFFICULTY: Hard
@@ -402,7 +395,7 @@ is what makes it work with arbitrary input.
 
 ---
 
-## PROBLEM 5: Find the Duplicate Number (LC 287)
+### PROBLEM 5: Find the Duplicate Number (LC 287)
 
 ```
 DIFFICULTY: Medium
@@ -460,7 +453,7 @@ COMPLEXITY: Both O(n) | Floyd's uses O(1) space without modification
 
 ---
 
-## PROBLEM 6: Set Mismatch (LC 645)
+### PROBLEM 6: Set Mismatch (LC 645)
 
 ```
 DIFFICULTY: Easy
@@ -498,7 +491,7 @@ COMPLEXITY: Time O(n) | Space O(1)
 
 ---
 
-## 🔄 Summary: Cyclic Sort Decision Table
+### 🔄 Summary: Cyclic Sort Decision Table
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -529,17 +522,7 @@ COMPLEXITY: Time O(n) | Space O(1)
 
 ---
 
-🔬 **Section Challenge — 🔄 Summary: Cyclic Sort Decision Table**
-
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 CURATED PRACTICE PROBLEMS
+### 📋 CURATED PRACTICE PROBLEMS
 
 | #   | Problem                                                                                                 | LC#  | Difficulty | Key Twist             |
 | --- | ------------------------------------------------------------------------------------------------------- | ---- | ---------- | --------------------- |
@@ -562,7 +545,6 @@ COMPLEXITY: Time O(n) | Space O(1)
 | **Where it runs in production** | Data validation on dense ID ranges, integrity checks, in-place permutation |
 | **Failure modes** | Input out of range; mutating a read-only array; infinite loop on duplicates |
 | **Testing and verification** | Compare with a hash-set solution on random arrays with deliberate missing/duplicate values |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

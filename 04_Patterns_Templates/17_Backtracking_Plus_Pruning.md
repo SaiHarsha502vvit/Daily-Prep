@@ -2,7 +2,7 @@
 
 **Navigation**: [< Previous](16_DP_Pattern_Recognition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_String_Plus_Advanced.md)
 
-# Backtracking + Pruning — Combined Pattern Guide
+## Backtracking + Pruning — Combined Pattern Guide
 
 **WHY this combination?** Backtracking explores ALL possibilities systematically. Pruning eliminates impossible branches early ⇒ can reduce exponential time dramatically. Together they solve constraint satisfaction problems.
 
@@ -51,7 +51,7 @@ A **maze explorer with chalk**: mark a turn, explore, erase the mark if it was a
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** The word *backtrack* was coined by D. H. Lehmer in the 1950s. R. J. Walker described an enumerative backtracking technique in 1960, and Golomb and Baumert's *Backtrack Programming* (J. ACM, 1965) gave the classic general formulation. Knuth's *Estimating the Efficiency of Backtrack Programs* (1975) introduced a sampling method to predict tree size.
 
@@ -69,17 +69,10 @@ A **maze explorer with chalk**: mark a turn, explore, erase the mark if it was a
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -106,11 +99,11 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Why Backtracking Works
+## 🧠 Deep Intuition — Why Backtracking Works
 
 Backtracking is **exhaustive search done systematically**. Instead of generating all possible configurations and checking each one, it builds solutions incrementally and abandons ("backtracks from") partial solutions that can't possibly lead to valid complete solutions.
 
-#### The State Space Tree — Visualizing the Search
+### The State Space Tree — Visualizing the Search
 
 Every backtracking problem can be visualized as a **tree of choices**:
 
@@ -121,7 +114,7 @@ Every backtracking problem can be visualized as a **tree of choices**:
 
 Backtracking performs a DFS on this tree. When it reaches a leaf (solution found or dead end), it backs up to the previous decision point and tries the next branch.
 
-#### The CHOOSE-EXPLORE-UNCHOOSE Framework
+### The CHOOSE-EXPLORE-UNCHOOSE Framework
 
 Every backtracking template follows this exact pattern:
 
@@ -131,7 +124,7 @@ Every backtracking template follows this exact pattern:
 
 The "un-choose" step is what makes backtracking work — it's what distinguishes it from regular DFS. Without it, the state would be permanently modified and future branches would be corrupted.
 
-#### Why Pruning Is Critical — The Math
+### Why Pruning Is Critical — The Math
 
 Without pruning, backtracking visits every node in the state space tree — O(n!) for permutations, O(2ⁿ) for subsets. With pruning, entire subtrees are skipped. For example, in N-Queens, checking column and diagonal conflicts before placing a queen eliminates ~50% of branches at each level. For a 4×4 board: brute force checks 4⁴ = 256 placements; with pruning, it checks only ~60.
 
@@ -350,17 +343,10 @@ COMMON MISTAKES:
 
 ---
 
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+## 📋 Practice Problems
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 | #   | Problem                                                                                   | Key Insight                             |
 | --- | ----------------------------------------------------------------------------------------- | --------------------------------------- |
@@ -463,7 +449,6 @@ COMMON MISTAKES:
 | **Where it runs in production** | Constraint solvers, puzzle generators, test-case generation, scheduling with hard rules |
 | **Failure modes** | Missing unchoose step; shared mutable state copied incorrectly; no pruning |
 | **Testing and verification** | Count solutions and compare with a known formula (e.g. permutations `n!`); test duplicates and empty input |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

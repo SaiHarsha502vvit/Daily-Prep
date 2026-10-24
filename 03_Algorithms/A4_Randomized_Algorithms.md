@@ -684,7 +684,6 @@ Collections.shuffle(arr, ThreadLocalRandom.current());
 | **Where it runs in production** | Hash tables, load balancing, sampling, cryptography, probabilistic data structures |
 | **Failure modes** | Weak random sources; reusing seeds across runs in tests; relying on expectation for latency-critical tails |
 | **Testing and verification** | Seed deterministically in tests; verify distribution and error rate empirically |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

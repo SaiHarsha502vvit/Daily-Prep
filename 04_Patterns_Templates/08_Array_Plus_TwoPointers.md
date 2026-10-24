@@ -2,7 +2,7 @@
 
 **Navigation**: [< Previous](07_Two_Pointers_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Array_Plus_SlidingWindow.md)
 
-# Array + Two Pointers — Combined Pattern Guide
+## Array + Two Pointers — Combined Pattern Guide
 
 ### 🧠 Deep Intuition — Why Two Pointers Works
 
@@ -49,7 +49,7 @@ Two **bookmark ribbons** in a book: one marks where you read, the other where yo
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 *Shares its roots with [Two Pointers](07_Two_Pointers_Complete.md).*
 
@@ -68,17 +68,10 @@ Two **bookmark ribbons** in a book: one marks where you read, the other where yo
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -94,7 +87,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 **WHY this combination?** Arrays provide O(1) random access. Two pointers exploit **sorted order** or **structural constraints** to avoid nested loops, reducing O(n²) → O(n).
 
-### ⚠️ Constraint Lens
+## ⚠️ Constraint Lens
 
 | Given Constraints                               | Do This                                       |
 | ----------------------------------------------- | --------------------------------------------- |
@@ -106,11 +99,11 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Why Two Pointers Works
+## 🧠 Deep Intuition — Why Two Pointers Works
 
 The key insight behind two pointers isn't just "it's faster" — it's about **systematically eliminating search space without missing valid answers**.
 
-#### Opposite-Direction Pointers (e.g., Two Sum on Sorted Array)
+### Opposite-Direction Pointers (e.g., Two Sum on Sorted Array)
 
 When you have a sorted array and want pairs summing to a target, the brute force checks all O(n²) pairs. Two pointers checks at most O(n) by exploiting an **invariant**:
 
@@ -121,13 +114,13 @@ When you have a sorted array and want pairs summing to a target, the brute force
 
 This is provably correct because sorted order guarantees that moving `left` right **always increases the sum** and moving `right` left **always decreases it** — a monotonic relationship.
 
-#### Same-Direction Pointers (Reader-Writer Pattern)
+### Same-Direction Pointers (Reader-Writer Pattern)
 
 Used for in-place modifications (remove duplicates, move zeroes). The idea: one pointer (`reader`) scans every element; another pointer (`writer`) tracks where to place the next valid element. Elements before `writer` are the "clean" result; elements between `writer` and `reader` are garbage to be overwritten.
 
 This works because we never need to go backwards — each element is examined exactly once, giving O(n) time and O(1) space.
 
-#### When NOT to Use Two Pointers
+### When NOT to Use Two Pointers
 
 - **Unsorted array + looking for a target sum** → HashMap is better (O(n) without sorting)
 - **Need ALL pairs, not just one** → Two pointers can miss combinations (depends on problem)
@@ -384,7 +377,10 @@ Both are O(N) time, but two-pointer is O(1) space vs prefix array's O(N). In mem
 
 ---
 
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+## 📋 Practice Problems
+
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 ### Easy
 
@@ -475,7 +471,6 @@ Both are O(N) time, but two-pointer is O(1) space vs prefix array's O(N). In mem
 | **Where it runs in production** | Batch data cleaning, pair matching in ledgers, stable compaction of buffers |
 | **Failure modes** | Missing duplicate-skip logic; overflow when summing large integers |
 | **Testing and verification** | Compare with the `O(n³)` brute force; include duplicates, zeros and negatives |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

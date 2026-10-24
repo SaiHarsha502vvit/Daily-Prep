@@ -78,7 +78,7 @@ flowchart TD
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** Edward Moore (1959) published BFS for mazes; Edsger Dijkstra published his algorithm in 1959 (*A note on two problems in connexion with graphs*); Bellman–Ford has several roots (Shimbel 1955, Ford 1956, Bellman 1958, Moore 1959); Floyd and Warshall gave all-pairs methods in 1962; Hart, Nilsson and Raphael introduced A* in 1968; Fredman and Tarjan's Fibonacci heaps (1984) improved Dijkstra's bound to `O(E + V log V)`.
 
@@ -210,7 +210,6 @@ flowchart LR
 | **Where it runs in production** | Navigation and routing (OSPF uses Dijkstra, RIP uses Bellman–Ford), network latency maps, game pathfinding (A* extends Dijkstra), logistics and supply-chain planning |
 | **Failure modes** | Using Dijkstra with negative weights; forgetting to skip stale heap entries (performance, not correctness); `int` overflow with infinity sentinels |
 | **Testing and verification** | Dijkstra compared with Bellman–Ford, 0-1 BFS with Bellman–Ford, and BFS with unit-weight Bellman–Ford on 1 000 random graphs |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

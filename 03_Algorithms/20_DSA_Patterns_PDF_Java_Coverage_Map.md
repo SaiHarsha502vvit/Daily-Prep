@@ -70,25 +70,6 @@ Both **(B) Sliding Window** and **(D) BFS/Graph traversal** are missing as built
   - `04_Dynamic_Programming_Complete.md`
   - `14_Dynamic_Programming_Deep_Dive.md`
 
-🔬 **Section Challenge — 2.3 Recursion, Backtracking, DP**
-
-**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-
-**Challenge 2 (Bug Hunt):**
-
-```java
-void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
-fib(50) // takes forever
-```
-
-Why and what are the 3 fixes?
-
-<details><summary>Answer</summary>
-
-Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-
-</details>
-
 ## 2.4 Graphs and Trees
 
 - Trees, traversals, BST, LCA
@@ -97,24 +78,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 - Graph BFS/DFS/topological/shortest path
   - `06_Graphs_Complete.md`
   - `15_Graphs_Deep_Dive.md`
-
-🔬 **Section Challenge — 2.4 Graphs and Trees**
-
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-
-<details><summary>Answer</summary>
-
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-
-</details>
-
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-
-</details>
 
 ## 2.5 Bit Manipulation and XOR
 

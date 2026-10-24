@@ -136,7 +136,6 @@ Checked in tests: the `variance` example (`1.25`, `None` for empty input), the t
 | **Where it runs in production** | Input validation, parsing, configuration loading, domain operations with business-rule failures, API clients that map HTTP errors to typed results |
 | **Failure modes** | Using `Either<Exception, A>` everywhere (loses meaning); swallowing the `Left`; mixing exceptions and `Either` in the same layer; using `Optional` as a field or parameter |
 | **Testing and verification** | Table-driven tests for each failure branch; assert fail-fast order; property: `map(identity) == original` |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -288,7 +288,6 @@ BigInteger result = BigInteger.valueOf(3).modPow(BigInteger.valueOf(100), BigInt
 | **Where it runs in production** | GIS and mapping, collision detection, CAD, computer graphics, delivery-zone geometry |
 | **Failure modes** | Overflow in cross products; epsilon comparison mistakes; degenerate (collinear) cases |
 | **Testing and verification** | Test collinear, duplicate and very large coordinates |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

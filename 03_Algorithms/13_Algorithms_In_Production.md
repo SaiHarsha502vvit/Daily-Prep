@@ -357,7 +357,6 @@ public class AlgorithmBenchmark {
 | **Where it runs in production** | Everywhere: maps, feeds, payments, messaging, search, storage |
 | **Failure modes** | Choosing an average-case algorithm for a p99 requirement; no fallback for pathological input |
 | **Testing and verification** | Load tests with adversarial data; regression benchmarks in CI |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

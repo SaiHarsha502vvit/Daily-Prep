@@ -79,7 +79,7 @@ flowchart TD
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** René de la Briandais described the structure in 1959 and Edward Fredkin coined the name *trie* (from re*trie*val) in 1960. Donald Morrison's PATRICIA tree (1968) compressed single-child chains; radix trees later became the basis of IP routing tables. Aho and Corasick (1975) added failure links for multi-pattern matching.
 
@@ -168,7 +168,6 @@ Build a trie of the dictionary, then DFS from each cell while walking the trie. 
 | **Where it runs in production** | Autocomplete and spell-check, IP routing (longest-prefix match with radix tries), dictionary word games, URL routers, T9 predictors |
 | **Failure modes** | Memory blow-up with 26-slot arrays for sparse data; forgetting the end flag so prefixes are mistaken for words; case/Unicode assumptions |
 | **Testing and verification** | Compare `contains`, `startsWith` and `countWithPrefix` with brute-force string operations on 500 random word sets over a small alphabet |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

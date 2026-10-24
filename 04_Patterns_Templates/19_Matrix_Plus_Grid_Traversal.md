@@ -2,7 +2,7 @@
 
 **Navigation**: [< Previous](18_String_Plus_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](20_BitManipulation_Plus_Tricks.md)
 
-# Matrix + Grid Traversal — Combined Pattern Guide
+## Matrix + Grid Traversal — Combined Pattern Guide
 
 **WHY this combination?** 2D grids are graphs where each cell connects to its 4 (or 8) neighbors. BFS/DFS on grids solve island counting, flood fill, shortest path, and rotation problems.
 
@@ -51,7 +51,7 @@ A **chessboard**: from any square you know which neighbouring squares you can mo
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** Grid search grew from maze routing: C. Y. Lee's 1961 algorithm is BFS on a grid for circuit routing, and connected-component labelling on pixel grids was formalised by Rosenfeld and Pfaltz (1966). Shortest-path building blocks: Bellman–Ford (1956–58), Dijkstra (1959), Floyd and Warshall (both 1962), and A* (Hart, Nilsson and Raphael, 1968).
 
@@ -68,17 +68,10 @@ A **chessboard**: from any square you know which neighbouring squares you can mo
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -104,21 +97,21 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Grids Are Implicit Graphs
+## 🧠 Deep Intuition — Grids Are Implicit Graphs
 
 A 2D matrix with R rows and C columns is really a **graph with R×C nodes** where each cell (r,c) has edges to its 4 (or 8) neighbors. You never need to explicitly build this graph — the adjacency is implicit in the grid structure. This is why DFS/BFS on grids use the direction array `{{0,1},{0,-1},{1,0},{-1,0}}` — it defines the edges.
 
-#### DFS vs BFS for Grid Problems
+### DFS vs BFS for Grid Problems
 
 - **DFS (recursion or stack)**: Use for **exploring/marking connected components** (island counting, flood fill). DFS is simpler to implement recursively and uses the call stack. Caveat: for very large grids, recursive DFS can cause stack overflow — use iterative DFS or BFS instead.
 
 - **BFS (queue)**: Use for **shortest path** problems on grids. BFS explores cells in order of increasing distance, so the first time you reach the target is via the shortest path. Also essential for **multi-source BFS** — starting from multiple cells simultaneously (rotten oranges, distance to nearest 1).
 
-#### Multi-Source BFS — A Key Grid Technique
+### Multi-Source BFS — A Key Grid Technique
 
 Instead of running BFS from each source cell separately (O(k × R×C) for k sources), add ALL source cells to the queue at the start. They become "level 0," and BFS naturally computes the minimum distance from _any_ source to every cell in a single O(R×C) pass. This is the correct approach for "rotten oranges" and "distance to nearest" problems.
 
-#### In-Place Visited Marking — Trading Purity for Efficiency
+### In-Place Visited Marking — Trading Purity for Efficiency
 
 Instead of maintaining a separate `boolean[][] visited` array, you can mark visited cells by modifying the grid itself (e.g., changing `'1'` to `'0'` or using a sentinel value like `'#'`). This saves O(R×C) space. However, it modifies the input — only use this when the problem allows it or when you can restore the grid afterwards.
 
@@ -338,17 +331,10 @@ COMMON MISTAKES:
 
 ---
 
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+## 📋 Practice Problems
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 | #   | Problem                                                                                                    | Companies  | Key Insight                  |
 | --- | ---------------------------------------------------------------------------------------------------------- | ---------- | ---------------------------- |
@@ -402,7 +388,6 @@ COMMON MISTAKES:
 | **Where it runs in production** | Image processing, game maps, robot navigation, layout engines |
 | **Failure modes** | Out-of-bounds neighbours; swapping row/column; modifying the grid while iterating |
 | **Testing and verification** | Test 1×1, 1×n, n×1 grids, blocked starts, and compare with a naive search |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

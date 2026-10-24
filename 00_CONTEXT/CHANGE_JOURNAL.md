@@ -79,7 +79,7 @@ Add short entries when context, structure, or domain boundaries change.
 
 Formatting-only repair of `02_Data_Structures/` (no teaching content changed):
 
-- `A1`–`A4`: cp1252 em-dash bytes (`0x97`) that broke UTF-8 decoding replaced with `—`; lost `→` in Reality Check bullets (`** ? `) restored.
+- `A1`–`A4`: cp1252 em-dash bytes (`0x97`) that broke UTF-8 decoding replaced with `—`; lost `→` in Reality Check bullets (`** — `) restored.
 - `01a`, `01g`, `04`: flattened code, assembly, bit-trick and memory-layout blocks rebuilt as fenced code; broken `┼───┼` pseudo-tables converted to real Markdown tables; ASCII diagrams (cache line, hash chain, red-black bucket, BST, heap, graph) redrawn.
 - `01c`, `02b`: unbalanced code fences fixed (stray/missing ``` markers).
 - `01f`: AVL row in the tree comparison table fixed (escaped `\|`, header/separator column count).

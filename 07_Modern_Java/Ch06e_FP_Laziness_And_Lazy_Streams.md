@@ -136,7 +136,6 @@ Checked: `orLazy(true, …)` does not evaluate its second argument; a `Lazy` thu
 | **Where it runs in production** | Database cursors and paginated APIs, log/file streaming, `java.util.stream` pipelines, infinite generators in simulations, lazy configuration loading |
 | **Failure modes** | Holding the head of a huge lazy stream (memory leak); expecting effects to happen at definition time; stack overflow when filtering through very long runs of rejected elements; not memoising an expensive thunk |
 | **Testing and verification** | Count evaluations with a counter (`evalCount == 1` after two `get()`s); test infinite streams with `take`; compare with an eager `stream().filter().map()` on finite data |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

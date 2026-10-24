@@ -2,24 +2,24 @@
 
 **Navigation**: [< Previous](02_Code_Templates.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Pattern_Recognition.md)
 
-# 🎨 VISUAL ALGORITHM DIAGRAMS - COMPLETE REFERENCE
+## 🎨 VISUAL ALGORITHM DIAGRAMS - COMPLETE REFERENCE
 
-## This file contains VISUAL diagrams for ALL algorithm patterns
+### This file contains VISUAL diagrams for ALL algorithm patterns
 
 > Constraint first: a diagram explains how a pattern moves, but constraints decide whether that movement is legal. Check [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md) for cases like negative numbers breaking sliding window or weighted edges breaking BFS.
 
 ---
 
-## 📚 TABLE OF CONTENTS
+### 📚 TABLE OF CONTENTS
 
-1. [Array Operations](#array-operations)
-2. [String Operations](#string-operations)
-3. [Sorting Algorithms](#sorting-algorithms)
-4. [Searching Algorithms](#searching-algorithms)
-5. [Data Structures](#data-structures)
-6. [Graph Algorithms](#graph-algorithms)
-7. [Dynamic Programming](#dynamic-programming)
-8. [Math & Bit Manipulation](#math--bit-manipulation)
+1. [Array Operations](#-array-operations)
+2. [String Operations](#-string-operations)
+3. [Sorting Algorithms](#-sorting-algorithms)
+4. [Searching Algorithms](#-searching-algorithms)
+5. [Data Structures](#-data-structures)
+6. [Graph Algorithms](#-graph-algorithms)
+7. [Dynamic Programming](#-dynamic-programming)
+8. [Math & Bit Manipulation](#-math--bit-manipulation)
 
 ---
 
@@ -66,7 +66,7 @@ A **flip-book**: each page is one step; flipping shows the algorithm moving.
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** Algorithm diagrams descend from the **flow diagrams** of Goldstine and von Neumann (1947). Ronald Baecker's film *Sorting Out Sorting* (1981) pioneered algorithm animation, and David Harel's *Algorithmics: The Spirit of Computing* (1987) made the case for visual and structured reasoning about algorithms.
 
@@ -83,17 +83,10 @@ A **flip-book**: each page is one step; flipping shows the algorithm moving.
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -805,24 +798,6 @@ Start at dp[6][6]=3, trace back through matches
 
 ---
 
-🔬 **Section Challenge — 🧮 DYNAMIC PROGRAMMING**
-
-**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-
-<details><summary>Answer</summary>
-
-Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-
-</details>
-
-**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-
-<details><summary>Answer</summary>
-
-State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-
-</details>
-
 ## 🔢 MATH & BIT MANIPULATION
 
 ### Bit Operations Visual
@@ -999,7 +974,6 @@ Remember: **Visual thinking → Clearer code!**
 | **Where it runs in production** | Design documents, runbooks and code-review descriptions where a sketch is faster than prose |
 | **Failure modes** | Diagrams that show the final result but not the transitions; text art that breaks when fonts change |
 | **Testing and verification** | Re-trace each diagram by hand against the code; keep diagrams next to the code they illustrate |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

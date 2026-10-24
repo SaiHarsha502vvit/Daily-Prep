@@ -70,9 +70,9 @@ Looking **under the hood of a car**: you can drive without it, but it explains w
 
 ---
 
-# 🔬 PART 0: DEEP INTERNALS - HOW ALGORITHMS ACTUALLY WORK AT CPU/MEMORY LEVEL
+## 🔬 PART 0: DEEP INTERNALS - HOW ALGORITHMS ACTUALLY WORK AT CPU/MEMORY LEVEL
 
-## Cpu Instruction Execution - Deep Dive
+### Cpu Instruction Execution - Deep Dive
 
 Simple comparison: if (a > b)
 
@@ -111,7 +111,7 @@ Binary Search (random access):
 For n < 64, linear search can be FASTER than binary search!
 Because cache effects dominate for small n.
 
-## Operation Costs - What They Don'T Teach You
+### Operation Costs - What They Don'T Teach You
 
 INSTRUCTION LATENCIES (cycles on modern x86-64):
 
@@ -158,7 +158,7 @@ INSTRUCTION LATENCIES (cycles on modern x86-64):
 - Java virtual calls even more expensive
 - JIT inlining helps but has limits
 
-## What Actually Happens During Recursion
+### What Actually Happens During Recursion
 
 ```java
 int factorial(int n) {
@@ -219,26 +219,7 @@ flowchart TB
 
 For `factorial(1000)` that is ~35,000 cycles of overhead alone.
 
-🔬 **Section Challenge — What Actually Happens During Recursion**
-
-**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-
-**Challenge 2 (Bug Hunt):**
-
-```java
-void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
-fib(50) // takes forever
-```
-
-Why and what are the 3 fixes?
-
-<details><summary>Answer</summary>
-
-Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-
-</details>
-
-## Tail Call Optimization - What It Means
+### Tail Call Optimization - What It Means
 
 | Regular recursion | Tail recursion |
 | ----------------- | -------------- |
@@ -300,7 +281,7 @@ interface Trampoline<T> {
 
 - Scheme, Haskell, Scala (partial), Kotlin (tailrec keyword)
 
-## Asymptotic Analysis - Rigorous Definitions
+### Asymptotic Analysis - Rigorous Definitions
 
 FORMAL DEFINITION OF BIG-O:
 f(n) = O(g(n)) if and only if:
@@ -354,7 +335,7 @@ Then T(n) = Θ(f(n))
 | T(n) = T(n/2) + 1 | 1 | 2 | 0 | 1=Θ(n⁰) | Θ(log n) |
 | T(n) = 3T(n/2) + n | 3 | 2 | 1.58 | n=O(n¹) | Θ(n^1.58) |
 
-## Amortized Analysis - Deep Understanding
+### Amortized Analysis - Deep Understanding
 
 WHAT IS AMORTIZED ANALYSIS?
 Average cost per operation over a sequence of operations.
@@ -424,9 +405,9 @@ has been extracted to its own dedicated file for discoverability:
 
 ---
 
-# 🎯 Unit 2: the Greedy Method
+## 🎯 Unit 2: the Greedy Method
 
-## The General Method
+### The General Method
 
 ```
 GREEDY APPROACH:
@@ -452,18 +433,18 @@ WHEN GREEDY FAILS:
 ✗ Non-monotonic conditions (e.g., Coin change with arbitrary denominations)
 ```
 
-## 🔬 Deep Dive: The Matroid Connection (Why Greedy Actually Works)
+### 🔬 Deep Dive: The Matroid Connection (Why Greedy Actually Works)
 
 While the "Exchange Argument" proves greedy works for a _specific_ problem, **Matroid Theory** explains the underlying mathematical structure that makes greedy work for an entire _class_ of problems. If a problem's solution space forms a weighted Matroid, the standard Greedy algorithm is **guaranteed** to find the optimal solution.
 
-### What is a Matroid?
+#### What is a Matroid?
 
 A Matroid is a structure $M = (S, I)$ where $S$ is a finite set of elements, and $I$ is a family of "independent" subsets of $S$, satisfying two critical axioms:
 
 1. **Hereditary Property:** If subset $B \in I$ and $A \subset B$, then $A \in I$. _(Every subset of a valid set is also valid)._
 2. **Exchange Property:** If $A, B \in I$ and $|A| < |B|$, there exists some element $x \in B \setminus A$ such that $A \cup \{x\} \in I$. _(You can always grow a smaller valid set by borrowing an element from a larger valid set)._
 
-### How it connects to the Greedy Algorithm:
+#### How it connects to the Greedy Algorithm:
 
 If your problem can be mapped to finding the maximum-weight independent set of a Matroid, the canonical Greedy Algorithm works flawlessly:
 
@@ -471,12 +452,12 @@ If your problem can be mapped to finding the maximum-weight independent set of a
 2. Initialize an empty set $A$.
 3. For each element $x$ in sorted order: if $A \cup \{x\}$ is independent (maintains constraints), add $x$ to $A$.
 
-### Classic Matroid Successes:
+#### Classic Matroid Successes:
 
 - **Kruskal's MST:** The set $S$ is graph edges. Independent sets $I$ are acyclic edge sets (forests). Because graphs satisfy the exchange property (graphic matroids), sorting edges by weight and adding them if they don't form a cycle _mathematically guarantees_ the MST.
 - **Task Scheduling with Deadlines & Penalties:** Tasks are $S$. A set of tasks is independent if there exists a valid schedule where _all_ of them meet their deadlines. This forms a transversal matroid. Sorting by penalty and greedily scheduling guarantees the minimum penalty.
 
-### Why Greedy Fails (Not a Matroid):
+#### Why Greedy Fails (Not a Matroid):
 
 - **0/1 Knapsack:** Let capacity be 10kg. Suppose $A=\{6kg\}$ and $B=\{5kg, 5kg\}$. Both sets are valid (weight $\le 10$). Notice $|A| = 1$ and $|B| = 2$, so $|A| < |B|$. According to the Matroid Exchange Property, we should be able to take a 5kg item from $B$ and add it to $A$ to get a valid set. But $\{6kg\} \cup \{5kg\} = 11kg$, which exceeds capacity and is INVALID. The exchange property fails! Therefore, the knapsack problem does not form a matroid, and the greedy algorithm is doomed to fail, requiring Dynamic Programming instead.
 
@@ -494,7 +475,7 @@ In Fractional Knapsack, the domain of items is infinitely divisible. If we have 
 
 ---
 
-## 📎 Reference Anchor
+### 📎 Reference Anchor
 
 **OpenJDK `PriorityQueue` — greedy's core data structure**
 - `PriorityQueue`: [PriorityQueue.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/PriorityQueue.java) — min-heap backed by `Object[]`. **Invariant**: `queue[k] <= queue[2k+1]` and `queue[k] <= queue[2k+2]` for all valid k (binary heap property). `offer/poll` are O(log n); `peek` is O(1).
@@ -503,21 +484,21 @@ In Fractional Knapsack, the domain of items is infinitely divisible. If we have 
 
 ---
 
-## When It Breaks -- Greedy + Bit Manipulation
+### When It Breaks -- Greedy + Bit Manipulation
 
-### 1. Greedy — Exchange Argument Assumed Without Verification
+#### 1. Greedy — Exchange Argument Assumed Without Verification
 **What breaks**: Applying greedy to a problem where the greedy choice property does NOT hold. E.g., "minimum number of operations to reduce n to 1" — greedy "always halve if even, subtract 1 if odd" fails for n=15: greedy does 15→14→7→6→3→2→1 (6 steps), but optimal is 15→16→8→4→2→1 (5 steps via +1 first).
 **Fix**: Always try to construct a counterexample before committing to greedy. If you can't find one in 5 minutes AND you can sketch an exchange argument, then trust greedy.
 
-### 2. Bit Shift Precedence in Compound Expressions
+#### 2. Bit Shift Precedence in Compound Expressions
 **What breaks**: `int result = 1 << n + 1` evaluates as `1 << (n+1)` not `(1 << n) + 1` — addition has higher precedence than `<<`. This is correct if you want `2^(n+1)`, but wrong if you want `2^n + 1`.
 **Fix**: Always parenthesize shift expressions: `(1 << n) + 1`.
 
 ---
 
-## Brute Force → Optimal: Greedy Pattern
+### Brute Force → Optimal: Greedy Pattern
 
-### Problem: Minimum Platforms (Interval Scheduling)
+#### Problem: Minimum Platforms (Interval Scheduling)
 
 **Brute Force — O(n²):**
 For each train's arrival time, count how many other trains are currently at the station. Track the max.
@@ -529,7 +510,7 @@ Sort arrivals and departures separately. Use two pointers: if `arrival[i] <= dep
 
 ---
 
-## Proof Corner: Greedy Exchange Argument Template
+### Proof Corner: Greedy Exchange Argument Template
 
 **Template for proving a greedy algorithm is correct**:
 
@@ -552,7 +533,6 @@ Sort arrivals and departures separately. Use two pointers: if `arrival[i] <= dep
 | **Where it runs in production** | Performance engineering and profiling reviews; teaching material for onboarding engineers |
 | **Failure modes** | Treating Big-O as a stopwatch; ignoring cache/branch costs in hot loops |
 | **Testing and verification** | Micro-benchmark with JMH; do not guess |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

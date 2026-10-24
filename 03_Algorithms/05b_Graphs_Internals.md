@@ -111,24 +111,6 @@ Adjacency matrix: O(V²) regardless of E — wastes O(V²−E) space on sparse g
 
 ---
 
-🔬 **Section Challenge — From Fundamentals to Advanced Graph Algorithms**
-
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-
-<details><summary>Answer</summary>
-
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-
-</details>
-
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-
-</details>
-
 ### Historical Evolution
 
 Graph theory as a mathematical discipline traces its formal origin to **Leonhard Euler's 1736 paper on the Seven Bridges of Königsberg** — Euler proved it impossible to cross all seven bridges exactly once by introducing the concept of vertices and edges as abstract graph elements, founding the entire field of topology. The adjacency list and adjacency matrix representations emerged from early computer implementations: **Warshall (1962)** and **Floyd** popularized matrix-based graph algorithms, while **adjacency lists** became the standard for sparse graphs in the 1970s as researchers like **Tarjan** (1972) developed depth-first search and its applications. The memory tradeoff between these representations (list: $O(V+E)$, matrix: $O(V^2)$) was first quantified in **Knuth's 1968 analysis of graph algorithms**, and remains the fundamental decision point in production graph systems. Modern practice (post-2010) extends these representations: CSR (Compressed Sparse Row) format for efficient graph processing in libraries like NetworkX and Pregel, distributed graph processing (Pregel/GraphX) that partitions adjacency lists across machines, and graph databases (Neo4j) that use adjacency list representations optimized for traversal patterns.
@@ -216,24 +198,6 @@ Graph theory as a mathematical discipline traces its formal origin to **Leonhard
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
-🔬 **Section Challenge — 🧠 Graph Representation — Memory Deep Dive**
-
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-
-<details><summary>Answer</summary>
-
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-
-</details>
-
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-
-</details>
 
 ## 📌 Edge List Representation
 
@@ -573,7 +537,6 @@ Build DSU once from all edges, then answer `connected(src, dst)` in O(1) per que
 | **Where it runs in production** | Social/road/dependency graphs, build systems, recommendation graphs; CSR formats in graph databases and analytics engines |
 | **Failure modes** | Using a matrix for a million-node sparse graph (memory blow-up); boxing overhead; undirected edges added once instead of twice |
 | **Testing and verification** | Unit-test with isolated nodes, self-loops, parallel edges, disconnected components |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 
