@@ -766,56 +766,52 @@ In the dynamic version: each `update` changes many prefix sums (specifically, al
 
 ## DS Lower Bound Cheat Sheet
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    DS LOWER BOUND CHEAT SHEET                   │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  COMPARISON MODEL (only <, >, = comparisons)                    │
-│  ─────────────────────────────────────────────                  │
-│  Sorted array search      Ω(log n)    → Binary search is optimal│
-│  BST any operation        Ω(log n)    → Red-black, AVL optimal  │
-│  Heap extract-min         Ω(log n)    → Binary heap optimal     │
-│  Priority queue (comp.)   Ω(log n)    → Binary heap optimal     │
-│  Any sort                 Ω(n log n)  → Merge/heap sort optimal  │
-│                                                                 │
-│  CELL-PROBE MODEL (count memory accesses, computation free)      │
-│  ───────────────────────────────────────────────────────         │
-│  Predecessor (integer)    Ω(log log n) → vEB tree matches!      │
-│  Partial-sums (dynamic)   Ω(log n)     → Fenwick tree optimal   │
-│  Union-Find m ops         Ω(m·α(n))   → Tarjan optimal! SOLVED  │
-│  Dynamic connectivity     Ω(log n)    → Gap to upper bound      │
-│                                                                 │
-│  INFORMATION-THEORETIC (model-independent)                      │
-│  ──────────────────────────────────────────                     │
-│  Static membership exact  Ω(n) bits     → Bit vector optimal    │
-│  Static membership (ε FP)  Ω(n·log(1/ε)) → Bloom filter optimal │
-│  Sorted array encoding    Ω(n log n) bits → Sorted array optimal│
-│                                                                 │
-│  HASH TABLE                                                    │
-│  ───────────                                                   │
-│  Load factor α = n/m                                            │
-│  When α > 1: worst-case bucket ≥ ⌈α⌉ → Ω(α) worst-case lookup  │
-│  Optimal ε-FP Bloom: m = -n·ln(ε)/ln²2, k = (m/n)·ln2          │
-│                                                                 │
-│  INTEGER KEYS / NON-COMPARISON                                  │
-│  ─────────────────────────────────                              │
-│  Predecessor on [0, U-1]    O(log log U)  → vEB tree            │
-│  (Beats Ω(log n) comparison bound by using bit indexing)        │
-│                                                                 │
-│  REMEMBER                                                       │
-│  ─────────                                                      │
-│  Ω(log n) = always applies to comparison-based BST/heap/search  │
-│  Ω(log log n) = the integer-key cell-probe floor               │
-│  Ω(α(n)) = the Union-Find floor — effectively constant          │
-│  Ω(n) bits = the floor for exact static membership              │
-│                                                                 │
-│  When upper bound = lower bound → PROBLEM IS SOLVED             │
-│  Known solved DS problems: BST, binary heap, bit vector,        │
-│    Bloom filter (optimal m), Union-Find, Fenwick tree, vEB tree │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+### DS lower-bound cheat sheet
+
+**Comparison model** (only `<`, `>`, `=` comparisons):
+
+| Problem | Lower bound | Optimal structure / algorithm |
+| ------- | ----------- | ----------------------------- |
+| Sorted array search | Ω(log n) | Binary search is optimal |
+| BST, any operation | Ω(log n) | Red-black, AVL are optimal |
+| Heap extract-min | Ω(log n) | Binary heap is optimal |
+| Priority queue (comparison-based) | Ω(log n) | Binary heap is optimal |
+| Any sort | Ω(n log n) | Merge sort / heap sort are optimal |
+
+**Cell-probe model** (count memory accesses, computation is free):
+
+| Problem | Lower bound | Notes |
+| ------- | ----------- | ----- |
+| Predecessor (integer keys) | Ω(log log n) | vEB tree matches |
+| Partial sums (dynamic) | Ω(log n) | Fenwick tree is optimal |
+| Union-Find, m operations | Ω(m·α(n)) | Tarjan's structure is optimal: **solved** |
+| Dynamic connectivity | Ω(log n) | Gap to the best upper bound |
+
+**Information-theoretic** (model-independent):
+
+| Problem | Lower bound | Notes |
+| ------- | ----------- | ----- |
+| Static membership, exact | Ω(n) bits | Bit vector is optimal |
+| Static membership, ε false-positive rate | Ω(n·log(1/ε)) bits | A Bloom filter uses ≈ 1.44× this; cuckoo/xor filters get closer |
+| Sorted array encoding | Ω(n log n) bits | Sorted array is optimal |
+
+**Hash table:**
+
+- Load factor α = n/m.
+- When α > 1 the worst-case bucket holds ≥ ⌈α⌉ items → Ω(α) worst-case lookup.
+- Bloom filter sizing for false-positive rate ε: `m = -n·ln(ε)/ln²2`, `k = (m/n)·ln 2`.
+
+**Integer keys / non-comparison:**
+
+- Predecessor on `[0, U-1]` is `O(log log U)` with a vEB tree. It beats the Ω(log n) comparison bound by using bit indexing.
+
+> [!IMPORTANT]
+> **Remember**
+> - Ω(log n): always applies to comparison-based BST / heap / search.
+> - Ω(log log n): the integer-key cell-probe floor.
+> - Ω(α(n)): the Union-Find floor, effectively constant.
+> - Ω(n) bits: the floor for exact static membership.
+> - When **upper bound = lower bound**, the problem is **solved**. Known solved DS problems: BST, binary heap, bit vector, Union-Find, Fenwick tree, vEB tree (and Bloom filter up to a constant factor).
 
 *[← A2: DS Complexity](A2_DS_Complexity_FirstPrinciples.md) | [A4: Randomized DS →](A4_Randomized_Data_Structures.md)*
 
