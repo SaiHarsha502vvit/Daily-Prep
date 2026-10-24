@@ -57,26 +57,16 @@ Sub-linear sorts (counting, radix, bucket) avoid this bound by exploiting value 
 
 ### 5W1H: Mastering Sorting Fundamentals
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: The foundational algorithms (Bubble, Selection, Insertion, Merge,     ║
-║        Quick, Heap) used to arrange data in a specific ordered sequence.     ║
-║                                                                              ║
-║  WHY:  Understanding sorting isn't about memorizing the code; it's about     ║
-║        understanding algorithm design paradigms (Divide & Conquer), time/    ║
-║        space trade-offs, stability, and hardware cache locality.             ║
-║                                                                              ║
-║  WHO:  Every software engineer, especially those preparing for interviews    ║
-║        where they must choose the correct sort or adapt sorting logic.       ║
-║                                                                              ║
-║  WHEN: Use standard sorting (`Arrays.sort()`) for O(N log N) ordering. Use   ║
-║        specific sorts when constraints demand it (e.g., Insertion Sort for   ║
-║        nearly-sorted data or small N).                                       ║
-║                                                                              ║
-║  HOW:  By comparing elements and swapping/shifting them, either iteratively  ║
-║        or via recursive partitioning and merging.                            ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** The foundational algorithms (Bubble, Selection, Insertion, Merge, Quick, Heap) used to arrange data in a specific ordered sequence.
+>
+> **WHY:** Understanding sorting isn't about memorizing the code; it's about understanding algorithm design paradigms (Divide & Conquer), time/ space trade-offs, stability, and hardware cache locality.
+>
+> **WHO:** Every software engineer, especially those preparing for interviews where they must choose the correct sort or adapt sorting logic.
+>
+> **WHEN:** Use standard sorting (`Arrays.sort()`) for O(N log N) ordering. Use specific sorts when constraints demand it (e.g., Insertion Sort for nearly-sorted data or small N).
+>
+> **HOW:** By comparing elements and swapping/shifting them, either iteratively or via recursive partitioning and merging.
 
 ### Historical Evolution
 
@@ -180,32 +170,50 @@ This is why Insertion Sort can beat QuickSort for small arrays.
 
 ## What Happens When You Swap Two Elements
 
-METHOD 1: TEMP VARIABLE (Standard)
+**Method 1: temp variable (standard)**
+
+```java
 int temp = arr[i];
 arr[i] = arr[j];
 arr[j] = temp;
+```
+
 Assembly:
-mov eax, [rsi + rcx*4] ; Load arr[i] into eax (temp)
-mov ebx, [rsi + rdx*4] ; Load arr[j] into ebx
-mov [rsi + rcx*4], ebx ; Store arr[j] into arr[i]
-mov [rsi + rdx*4], eax ; Store temp into arr[j]
-Cycles: 2 loads + 2 stores = ~8-16 cycles (cache hits)
-METHOD 2: XOR SWAP (No temp variable)
+
+```asm
+mov eax, [rsi + rcx*4]   ; Load arr[i] into eax (temp)
+mov ebx, [rsi + rdx*4]   ; Load arr[j] into ebx
+mov [rsi + rcx*4], ebx   ; Store arr[j] into arr[i]
+mov [rsi + rdx*4], eax   ; Store temp into arr[j]
+```
+
+Cycles: 2 loads + 2 stores = ~8–16 cycles (cache hits).
+
+**Method 2: XOR swap (no temp variable)**
+
+```java
 arr[i] ^= arr[j]; // arr[i] = arr[i] XOR arr[j]
 arr[j] ^= arr[i]; // arr[j] = arr[j] XOR (arr[i] XOR arr[j]) = original i
 arr[i] ^= arr[j]; // arr[i] = (arr[i] XOR arr[j]) XOR original i = orig j
-⚠️ WARNING: This is SLOWER on modern CPUs!
+```
 
-- Requires 3 memory reads + 3 memory writes
-- Has DATA DEPENDENCIES (each line depends on previous)
-- Fails if i == j (element becomes 0!)
-  USE temp variable swap - it's faster and safer!
+> [!WARNING]
+> This is **slower** on modern CPUs:
+>
+> - Requires 3 memory reads + 3 memory writes
+> - Has data dependencies (each line depends on the previous one)
+> - Fails if `i == j` (the element becomes 0!)
+>
+> Use the temp-variable swap: it is faster and safer.
 
 **Memory Access During Swap**:
 Array in memory:
-| Address | 0x1000 | 0x1004 | 0x1008 | 0x100C | 0x1010 | |
-| Index | [0] | [1] | [2] | [3] | [4] | |
-| Value | 5 | 2 | 8 | 1 | 9 | |
+
+| | 0x1000 | 0x1004 | 0x1008 | 0x100C | 0x1010 |
+| --- | --- | --- | --- | --- | --- |
+| **Index** | [0] | [1] | [2] | [3] | [4] |
+| **Value** | 5 | 2 | 8 | 1 | 9 |
+
 Swap arr[0] and arr[3]:
 
 1. CPU reads 0x1000 → 5 (goes into register)
@@ -239,9 +247,13 @@ The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3S
 CACHE LINE = 64 bytes = 16 integers
 When you access arr[0], CPU loads arr[0] through arr[15] into cache!
 BUBBLE SORT - EXCELLENT CACHE BEHAVIOR:
+
+```java
 for (j = 0; j < n-1; j++) {
-if (arr[j] > arr[j+1]) swap(j, j+1);
+    if (arr[j] > arr[j+1]) swap(j, j+1);
 }
+```
+
 Access pattern: [0], [1], [2], [3], [4], [5], ...
 Cache Line 1: arr[0-15] ← All accessed sequentially!
 Cache Line 2: arr[16-31] ← Loaded when we reach arr[16]
@@ -249,10 +261,14 @@ Cache Line 3: arr[32-47]
 Cache hits: ~98%+
 This is "SEQUENTIAL ACCESS" - the best pattern for cache!
 QUICKSORT - VARIES BY PARTITION:
+
+```java
 int pivot = arr[right];
 for (j = left; j < right; j++) {
-if (arr[j] < pivot) swap(i++, j);
+    if (arr[j] < pivot) swap(i++, j);
 }
+```
+
 Good partition: Sequential access (cache-friendly)
 Bad partition: Swaps between distant elements (cache-unfriendly)
 Average cache behavior: Good, but not as consistent as Bubble Sort

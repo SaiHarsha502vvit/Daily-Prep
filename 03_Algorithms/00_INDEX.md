@@ -27,6 +27,8 @@
 
 ### Recursion & DP
 
+| #   | File | What You'll Learn |
+| --- | ---- | ----------------- |
 | 5 | [Recursion Internals](03a_Recursion_Internals.md) | Call stack, tail recursion, JVM behavior |
 | 6 | [Recursion Fundamentals](03b_Recursion_Fundamentals.md) | Base cases, recursive leap of faith |
 | 7 | [Recursion Advanced](03c_Recursion_Advanced.md) | Memoization bridge, tree recursion |
@@ -36,6 +38,8 @@
 
 ### Trees & Graphs
 
+| #   | File | What You'll Learn |
+| --- | ---- | ----------------- |
 | 11 | [Trees](05_Trees.md) | BST, traversals, balanced trees |
 | 12 | [Graphs Internals](05b_Graphs_Internals.md) | Adjacency list/matrix, graph theory |
 | 13 | [Graphs Fundamentals](05c_Graphs_Fundamentals.md) | BFS, DFS, connected components |
@@ -44,6 +48,8 @@
 
 ### Specialized
 
+| #   | File | What You'll Learn |
+| --- | ---- | ----------------- |
 | 16 | [Greedy & Bit Manipulation](06a_Greedy_BitManip.md) | Greedy proofs, bit tricks |
 | 17 | [Advanced Algo Deep](06c_Advanced_Algo_Deep.md) | Segment tree, Fenwick tree |
 | 18 | [String Algorithms](06d_String_Algorithms.md) | KMP, Rabin-Karp, Z-algorithm |
@@ -58,19 +64,23 @@
 
 ### Complete Guides
 
+| #   | File | What You'll Learn |
+| --- | ---- | ----------------- |
 | 24 | [Pattern Programs](09_Pattern_Programs_Complete.md) | Star, number, character patterns |
 | 25 | [Bit Manipulation](10_Bit_Manipulation_Complete.md) | All bit tricks and problems |
 | 26 | [Backtracking](11_Backtracking_Complete.md) | N-Queens, Sudoku, permutations |
 | 27 | [Greedy](12_Greedy_Algorithms_Complete.md) | Activity selection, Huffman |
 | 28 | [Algorithms In Production](13_Algorithms_In_Production.md) | React diffing, PageRank, Bloom filters |
-| 29 | [String Algorithms](14_String_Algorithms_Complete.md) | Complete string processing |
-| 30 | [Union Find / DSU](15_Union_Find_DSU_Complete.md) | Disjoint sets, path compression |
-| 31 | [Monotonic Stack/Queue](16_Monotonic_Stack_Queue_Complete.md) | Next greater element patterns |
-| 32 | [DSA Deep Reasoning](17_DSA_Deep_Reasoning.md) | Why algorithms work — proofs & intuition |
-| 33 | [Java Implementation](18_DSA_Java_Implementation_Mastery.md) | Java-specific DSA implementation |
+| 29 | [String Algorithms](13_String_Algorithms_Complete.md) | Complete string processing |
+| 30 | [Union Find / DSU](14_Union_Find_DSU_Complete.md) | Disjoint sets, path compression |
+| 31 | [Monotonic Stack/Queue](15_Monotonic_Stack_Queue_Complete.md) | Next greater element patterns |
+| 32 | [DSA Deep Reasoning](16_DSA_Deep_Reasoning.md) | Why algorithms work — proofs & intuition |
+| 33 | [Java Implementation](17_DSA_Java_Implementation_Mastery.md) | Java-specific DSA implementation |
 
 ### Java Deep Additions
 
+| #   | File | What You'll Learn |
+| --- | ---- | ----------------- |
 | 33 | [Bitwise Trie Java Complete](18_Bitwise_Trie_Java_Complete.md) | Maximum/minimum XOR, offline queries, counting variants |
 | 34 | [Prefix Family Java Complete](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) | Prefix sum, prefix xor, 2D prefix, difference arrays |
 | 35 | [PDF Coverage Map (Java)](20_DSA_Patterns_PDF_Java_Coverage_Map.md) | DSA patterns to Java chapter mapping + revision route |

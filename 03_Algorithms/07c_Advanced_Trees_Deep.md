@@ -381,9 +381,9 @@ Instead of thinking "the null child is broken", think:
 | Case          | Sibling                         | Sibling Children                              | Action                                                               |
 | ------------- | ------------------------------- | --------------------------------------------- | -------------------------------------------------------------------- |
 | Sibling RED   | RED                             | any                                           | Rotate parent, recolor sibling/parent, convert to black-sibling case |
-| Sibling BLACK | both BLACK                      | Recolor sibling RED, move double-black upward |
-| Sibling BLACK | near child RED, far child BLACK | Rotate sibling to convert to far-red case     |
-| Sibling BLACK | far child RED                   | Rotate parent, recolor, finish                |
+| Sibling BLACK | BLACK | both children BLACK | Recolor sibling RED, move double-black upward |
+| Sibling BLACK | BLACK | near child RED, far child BLACK | Rotate sibling to convert to far-red case |
+| Sibling BLACK | BLACK | far child RED | Rotate parent, recolor, finish |
 
 The "far child" is the child farther from the double-black node. If the double-black node is on the left, sibling's far child is sibling.right.
 

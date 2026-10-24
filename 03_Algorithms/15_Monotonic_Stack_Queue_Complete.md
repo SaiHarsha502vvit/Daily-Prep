@@ -113,26 +113,29 @@ Result: NGE = [4, 4, 5, 5, -1]
 
 ## The Complete Variant Table
 
-┬
-You Need │ Use This
-┼
-Next Greater Element │ Monotonic DECREASING stack, scan L→R
-Next Smaller Element │ Monotonic INCREASING stack, scan L→R
-Prev Greater Element │ Monotonic DECREASING stack, scan L→R
-Prev Smaller Element │ Monotonic INCREASING stack, scan L→R
-Sliding Window Max │ Monotonic DECREASING deque
-Sliding Window Min │ Monotonic INCREASING deque
-Largest Rectangle │ Monotonic INCREASING stack (heights)
-Trapping Rain Water │ Monotonic DECREASING stack (heights)
-┴
-MEMORY TRICK for Increasing vs Decreasing:
-Want GREATER? Keep SMALLER ones waiting → DECREASING stack
-Want SMALLER? Keep GREATER ones waiting → INCREASING stack
-Think: "What I'm KEEPING is OPPOSITE of what I'm LOOKING FOR."
-PREVIOUS vs NEXT:
-For NEXT: answer is found when element is POPPED (something bigger came)
-For PREV: answer is the element ON TOP after pushing current
-Direction can also change by scanning R→L instead of L→R.
+| You need | Use this |
+| -------- | -------- |
+| Next Greater Element | Monotonic **decreasing** stack, scan L→R |
+| Next Smaller Element | Monotonic **increasing** stack, scan L→R |
+| Previous Greater Element | Monotonic **decreasing** stack, scan L→R |
+| Previous Smaller Element | Monotonic **increasing** stack, scan L→R |
+| Sliding Window Max | Monotonic **decreasing** deque |
+| Sliding Window Min | Monotonic **increasing** deque |
+| Largest Rectangle in Histogram | Monotonic **increasing** stack (heights) |
+| Trapping Rain Water | Monotonic **decreasing** stack (heights) |
+
+> [!TIP]
+> **Memory trick for increasing vs decreasing:**
+>
+> - Want **greater**? Keep **smaller** ones waiting → **decreasing** stack.
+> - Want **smaller**? Keep **greater** ones waiting → **increasing** stack.
+> - Think: *"What I'm KEEPING is the OPPOSITE of what I'm LOOKING FOR."*
+
+**Previous vs next:**
+
+- For **next**: the answer is found when the element is **popped** (something bigger came).
+- For **previous**: the answer is the element **on top** after pushing the current one.
+- The direction can also change by scanning R→L instead of L→R.
 SIGNAL WORDS in interviews:
 "next greater/smaller", "span", "visible buildings/people",
 "sliding window max/min", "histogram", "trapping water/rain",

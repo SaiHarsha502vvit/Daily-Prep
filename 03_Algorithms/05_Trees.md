@@ -2,26 +2,16 @@
 
 ### 5W1H: Mastering Trees
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: Tree data structures, their memory representations (heap layouts),    ║
-║        traversals (DFS, BFS), and common algorithmic patterns.               ║
-║                                                                              ║
-║  WHY:  Trees naturally model hierarchical data (DOM, file systems, orgs).    ║
-║        Understanding cache misses in pointer-based trees vs arrays, and the  ║
-║        call stack in recursion is vital for production-level optimization.   ║
-║                                                                              ║
-║  WHO:  Software engineers designing scalable hierarchical models or aiming   ║
-║        to master complex recursive traversal problems in interviews.         ║
-║                                                                              ║
-║  WHEN: Use trees when relationships are parent-child, not flat. Use specific ║
-║        traversals: Postorder for deletion/bottom-up, Inorder for BST sorted  ║
-║        access, Preorder for copying.                                         ║
-║                                                                              ║
-║  HOW:  By mastering recursion stacks, iterative stack conversions, and       ║
-║        recognizing when to pass data down (parameters) vs up (returns).      ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** Tree data structures, their memory representations (heap layouts), traversals (DFS, BFS), and common algorithmic patterns.
+>
+> **WHY:** Trees naturally model hierarchical data (DOM, file systems, orgs). Understanding cache misses in pointer-based trees vs arrays, and the call stack in recursion is vital for production-level optimization.
+>
+> **WHO:** Software engineers designing scalable hierarchical models or aiming to master complex recursive traversal problems in interviews.
+>
+> **WHEN:** Use trees when relationships are parent-child, not flat. Use specific traversals: Postorder for deletion/bottom-up, Inorder for BST sorted access, Preorder for copying.
+>
+> **HOW:** By mastering recursion stacks, iterative stack conversions, and recognizing when to pass data down (parameters) vs up (returns).
 
 ### Historical Evolution
 
@@ -242,30 +232,39 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 ## Iterative Vs Recursive - Memory Comparison
 
 **Recursive Inorder**:
+
+```java
 void inorder(TreeNode root) {
-if (root == null) return;
-inorder(root.left);
-visit(root);
-inorder(root.right);
+    if (root == null) return;
+    inorder(root.left);
+    visit(root);
+    inorder(root.right);
 }
+```
+
 Uses CALL STACK: ~48 bytes per frame (includes return address, saved regs)
 
 **Iterative Inorder**:
+
+```java
 void inorderIterative(TreeNode root) {
-Stack<TreeNode> stack = new Stack<>();
-TreeNode curr = root;
-while (curr != null || !stack.isEmpty()) {
-while (curr != null) {
-stack.push(curr);
-curr = curr.left;
+    Stack<TreeNode> stack = new Stack<>();
+    TreeNode curr = root;
+    while (curr != null || !stack.isEmpty()) {
+        while (curr != null) {
+            stack.push(curr);
+            curr = curr.left;
+        }
+        curr = stack.pop();
+        visit(curr);
+        curr = curr.right;
+    }
 }
-curr = stack.pop();
-visit(curr);
-curr = curr.right;
-}
-}
+```
+
 Uses HEAP STACK: ~8 bytes per node reference
 MEMORY COMPARISON (tree height h = 20):
+
 | Method | Memory Used | Notes |
 |---|---|---|
 | Recursive | 20 × 48 = 960 B | Uses call stack (limited) |

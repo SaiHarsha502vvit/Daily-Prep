@@ -115,11 +115,13 @@ public class DigitDP {
 // How many numbers in [1, 100] have digit sum = 5?
 // Answer: 10 (5, 14, 23, 32, 41, 50, 104... wait, cap at 100)
 // Actually: 5, 14, 23, 32, 41, 50 = 6 numbers
+```
 
 
 
 ## Pattern 2: Bitmask DP
 
+```text
 CONCEPT:
 Use bitmask to represent which elements are "used" or "visited".
 Each bit represents one element's state.
@@ -216,6 +218,7 @@ public class AssignmentProblem {
         return result;
     }
 }
+```
 
 
 
@@ -278,7 +281,7 @@ Note the state-space optimization: if (0,0) is the only "start" and we always en
 
 <details><summary>Answer</summary>
 
-```
+```text
 mask = 0b10110 = 22
 
 sub = 22 = 0b10110
@@ -299,10 +302,11 @@ That's 7 subsets (= 2^popcount(22) - 1 = 2^3 - 1 = 7 non-empty subsets of a 3-bi
 The pattern: each iteration visits the next-smaller subset, in decreasing order, never revisiting. Total O(2^popcount(mask)) iterations regardless of n — that's why this is efficient for sparse masks.
 
 </details>
-
+```
 
 ## Pattern 3: Interval DP
 
+```text
 CONCEPT:
 Solve problems on intervals/subarrays by considering all ways
 to split the interval and combining results.
@@ -311,6 +315,7 @@ RECURRENCE:
 dp[i][j] = optimal value for interval [i, j]
          = combine(dp[i][k], dp[k+1][j]) for all k in [i, j)
 ```
+
 
 ```java
 // Matrix Chain Multiplication
@@ -453,6 +458,7 @@ So the heuristic for "is this interval DP or linear DP?": if the optimal substru
 
 ## Pattern 4: Tree DP
 
+```text
 CONCEPT:
 DP on tree structures. Usually compute answers for subtrees
 and combine at each node.
@@ -610,6 +616,7 @@ This is why the reroot trick is O(n) total: O(n) for pass 1 (sizes + `dp_down`),
 
 ## Pattern 5: DP with Monotonic Optimization
 
+```text
 CONCEPT:
 Use monotonic data structures to optimize DP transitions.
 Reduces O(n²) to O(n) or O(n log n).
@@ -1079,39 +1086,26 @@ MISTAKE 6: Redundant states
 > - **Divide & Conquer DP Optimization** (when opt[i] is monotone)
 > - **Broken Profile DP** (tiling/grid problems with bitmask rows)
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║          ADVANCED DYNAMIC PROGRAMMING - COMPETITIVE PROGRAMMING LEVEL            ║
-╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                  ║
-║  This section covers advanced DP patterns used in:                               ║
-║  • Competitive programming (Codeforces, ICPC, IOI)                               ║
-║  • Technical interviews at top companies                                         ║
-║  • Real-world optimization problems                                              ║
-║                                                                                  ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+### ADVANCED DYNAMIC PROGRAMMING - COMPETITIVE PROGRAMMING LEVEL ╠══════════════════════════════════════════════════════════════════════════════════╣  This section covers advanced DP patterns used in: • Competitive programming (Codeforces, ICPC, IOI) • Technical interviews at top companies • Real-world optimization problems
 
 ## DIGIT DP - COUNTING NUMBERS WITH PROPERTIES
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DIGIT DP - THE PATTERN                                       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  PROBLEM TYPE: Count numbers in range [L, R] with some digit property           │
-│  Examples:                                                                      │
-│  • Count numbers with digit sum = K                                             │
-│  • Count numbers without repeated digits                                        │
-│  • Count numbers divisible by D                                                 │
-│                                                                                 │
-│  KEY IDEA: Build number digit by digit, tracking:                               │
-│  • Position (which digit we're placing)                                         │
-│  • Tight bound (are we still bounded by limit?)                                 │
-│  • Problem-specific state (sum, remainder, etc.)                                │
-│                                                                                 │
-│                                                                                 │
-│  TEMPLATE:                                                                      │
-│  ───────────                                                                    │
-```
+#### Digit dp - the pattern
+
+**Problem type:** Count numbers in range [L, R] with some digit property Examples:
+
+- Count numbers with digit sum = K
+- Count numbers without repeated digits
+- Count numbers divisible by D
+
+**Key idea:** Build number digit by digit, tracking:
+
+- Position (which digit we're placing)
+- Tight bound (are we still bounded by limit?)
+- Problem-specific state (sum, remainder, etc.)
+
+**Template:** ───────────
+
 
 ```java
 // Count numbers from 0 to N with digit sum = targetSum
@@ -1914,12 +1908,13 @@ long dominoTiling(int n, int m) {
 
 DP PATTERNS QUICK REFERENCE
 
-```
+```text
 ──────────────────────────────────────────────────
-
+```
 
 ## Pattern │ Signal │ Time │ Space
 
+```text
 | Linear DP | One sequence | O(n) | O(1) to O(n) |
 | Two-sequence DP | Compare two strings | O(nm) | O(m) with rolling |
 | Interval DP | Range [i,j] optimal | O(n³) | O(n²) |
@@ -1935,6 +1930,7 @@ DP PATTERNS QUICK REFERENCE
 
 _DP is not about memorizing solutions - it's about SEEING the substructure!_
 ```
+
 
 ---
 

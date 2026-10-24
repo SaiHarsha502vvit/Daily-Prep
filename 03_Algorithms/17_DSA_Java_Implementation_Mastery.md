@@ -166,9 +166,13 @@ Need fast insert/delete at ends? → LinkedList (rare!)
 PriorityQueue = MIN-HEAP by default (smallest first)
 
 GOTCHA #1: Natural order is MIN, not MAX!
+
+```java
 PriorityQueue<Integer> pq = new PriorityQueue<>();
 pq.addAll(List.of(5, 1, 3));
 pq.poll(); // Returns 1 (smallest!), not 5
+```
+
 
 For MAX-HEAP:
 PriorityQueue<Integer> maxPQ = new PriorityQueue<>(

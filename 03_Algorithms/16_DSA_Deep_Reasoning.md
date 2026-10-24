@@ -1068,9 +1068,7 @@ Every experienced interviewer tests these. Mention them **before** the interview
 
 ---
 
-← Previous: [Chapter 15 — Pattern Programs](09_Pattern_Programs_Complete.md)
-| [📚 Index](../00_MASTER_INDEX.md)
-| Next: [SQL Deep Reasoning →](../08_SQL/23_SQL_Deep_Reasoning.md)
+← Previous: [Chapter 15 — Pattern Programs](09_Pattern_Programs_Complete.md) | [📚 Index](../00_MASTER_INDEX.md) | Next: [SQL Deep Reasoning →](../08_SQL/23_SQL_Deep_Reasoning.md)
 
 ---
 

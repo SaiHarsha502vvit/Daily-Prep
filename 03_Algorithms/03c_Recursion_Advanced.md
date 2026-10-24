@@ -7,26 +7,16 @@
 
 ### 5W1H: Mastering Advanced Recursion
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: Advanced recursive techniques including Include/Exclude (Backtracking), ║
-║        Permutations, and complex Divide & Conquer state management.          ║
-║                                                                              ║
-║  WHY:  Standard recursion solves tree traversals, but many real-world and    ║
-║        interview problems require generating subsets, searching grids, or    ║
-║        finding optimal paths using constraint satisfaction (backtracking).   ║
-║                                                                              ║
-║  WHO:  Engineers tackling complex algorithmic problems, dynamic programming  ║
-║        prerequisites, or constraint satisfaction domains (like AI search).   ║
-║                                                                              ║
-║  WHEN: Use when generating combinations, subsets, or permutations, or when   ║
-║        the search space is an implicit graph/tree (e.g., Sudoku, N-Queens,   ║
-║        Word Search).                                                         ║
-║                                                                              ║
-║  HOW:  By mastering state passing, Choice/Explore/Unchoose (Backtracking)    ║
-║        patterns, and systematic recursion-to-iteration conversions.          ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** Advanced recursive techniques including Include/Exclude (Backtracking), Permutations, and complex Divide & Conquer state management.
+>
+> **WHY:** Standard recursion solves tree traversals, but many real-world and interview problems require generating subsets, searching grids, or finding optimal paths using constraint satisfaction (backtracking).
+>
+> **WHO:** Engineers tackling complex algorithmic problems, dynamic programming prerequisites, or constraint satisfaction domains (like AI search).
+>
+> **WHEN:** Use when generating combinations, subsets, or permutations, or when the search space is an implicit graph/tree (e.g., Sudoku, N-Queens, Word Search).
+>
+> **HOW:** By mastering state passing, Choice/Explore/Unchoose (Backtracking) patterns, and systematic recursion-to-iteration conversions.
 
 ### Historical Evolution
 
@@ -2135,12 +2125,12 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 
 ## Reality Check
 
-**"Recursion and iteration are equivalent in practice"** ? Mathematically equivalent, but recursion consumes stack space proportional to depth. The JVM default stack is 512KB-1MB, limiting recursion to roughly 5000-10000 frames. An iterative DFS on a 100000-node linear graph succeeds; recursive DFS causes StackOverflowError. Tail-call optimization (which Java and Python lack) would fix this, but without it, deep recursion requires conversion to iterative form with an explicit stack.
+**"Recursion and iteration are equivalent in practice"** → Mathematically equivalent, but recursion consumes stack space proportional to depth. The JVM default stack is 512KB-1MB, limiting recursion to roughly 5000-10000 frames. An iterative DFS on a 100000-node linear graph succeeds; recursive DFS causes StackOverflowError. Tail-call optimization (which Java and Python lack) would fix this, but without it, deep recursion requires conversion to iterative form with an explicit stack.
 
-**"Memoization always improves recursive performance"** ? Memoization helps when the same subproblems recur. In tree traversals with unique subproblems (each node visited once), memoization adds HashMap overhead without reducing work. In Fibonacci (massive overlap), memoization reduces O(2^n) to O(n). Analyze the subproblem OVERLAP before adding memoization � it is not a universal speedup.
+**"Memoization always improves recursive performance"** → Memoization helps when the same subproblems recur. In tree traversals with unique subproblems (each node visited once), memoization adds HashMap overhead without reducing work. In Fibonacci (massive overlap), memoization reduces O(2^n) to O(n). Analyze the subproblem OVERLAP before adding memoization — it is not a universal speedup.
 
-**"Recursive solutions are always cleaner"** ? Recursive tree traversal and divide-and-conquer are naturally recursive and cleaner. But recursive string processing, iterative simulations, and linear scans become HARDER to reason about when forced into recursive form. Recursion fits problems with recursive STRUCTURE (trees, fractals, divide-and-conquer). Problems with linear structure are cleaner as loops.
+**"Recursive solutions are always cleaner"** → Recursive tree traversal and divide-and-conquer are naturally recursive and cleaner. But recursive string processing, iterative simulations, and linear scans become HARDER to reason about when forced into recursive form. Recursion fits problems with recursive STRUCTURE (trees, fractals, divide-and-conquer). Problems with linear structure are cleaner as loops.
 
-**"Base case errors cause infinite recursion"** ? Missing or incorrect base cases cause StackOverflowError, not infinite recursion. The stack is finite, so the recursion terminates � with a crash. More subtle: a base case that is technically reachable but takes exponentially many calls to reach (off-by-one in reduction step) completes but with exponential time complexity instead of the expected polynomial.
+**"Base case errors cause infinite recursion"** → Missing or incorrect base cases cause StackOverflowError, not infinite recursion. The stack is finite, so the recursion terminates — with a crash. More subtle: a base case that is technically reachable but takes exponentially many calls to reach (off-by-one in reduction step) completes but with exponential time complexity instead of the expected polynomial.
 
-**"Backtracking is brute force with pruning"** ? Backtracking is STRUCTURED enumeration with early termination. Brute force generates ALL candidates then filters. Backtracking builds candidates incrementally and abandons a partial candidate as soon as it violates a constraint � never exploring its subtree. For N-Queens, brute force checks N^N configurations. Backtracking with column, diagonal, and anti-diagonal pruning explores a fraction of that space.
+**"Backtracking is brute force with pruning"** → Backtracking is STRUCTURED enumeration with early termination. Brute force generates ALL candidates then filters. Backtracking builds candidates incrementally and abandons a partial candidate as soon as it violates a constraint — never exploring its subtree. For N-Queens, brute force checks N^N configurations. Backtracking with column, diagonal, and anti-diagonal pruning explores a fraction of that space.

@@ -14,25 +14,16 @@ See also: [Trees](05_Trees.md) | [Index](../00_MASTER_INDEX.md)
 
 ### 5W1H: Mastering Graph Internals
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: Memory models of graphs (Adjacency List vs Matrix), edge list storage,║
-║        and internal CPU/Cache behavior during graph traversal algorithms.    ║
-║                                                                              ║
-║  WHY:  Incorrect graph representation leads to O(V²) memory blowouts or      ║
-║        cache thrashing. Understanding memory layout defines performance.     ║
-║                                                                              ║
-║  WHO:  Performance-minded engineers deciding how to encode networks, paths,  ║
-║        and dependencies in memory-constrained environments.                  ║
-║                                                                              ║
-║  WHEN: Adjacency List for sparse graphs (E < V²/2). Adj Matrix for dense     ║
-║        graphs or O(1) edge lookups. Edge List for sorting edges (Kruskal's). ║
-║                                                                              ║
-║  HOW:  By comparing memory overhead of Object-based adjacency lists vs flat  ║
-║        2D arrays, and selecting ArrayDeque over LinkedList for cache-        ║
-║        friendly BFS/DFS queues.                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** Memory models of graphs (Adjacency List vs Matrix), edge list storage, and internal CPU/Cache behavior during graph traversal algorithms.
+>
+> **WHY:** Incorrect graph representation leads to O(V²) memory blowouts or cache thrashing. Understanding memory layout defines performance.
+>
+> **WHO:** Performance-minded engineers deciding how to encode networks, paths, and dependencies in memory-constrained environments.
+>
+> **WHEN:** Adjacency List for sparse graphs (E < V²/2). Adj Matrix for dense graphs or O(1) edge lookups. Edge List for sorting edges (Kruskal's).
+>
+> **HOW:** By comparing memory overhead of Object-based adjacency lists vs flat 2D arrays, and selecting ArrayDeque over LinkedList for cache- friendly BFS/DFS queues.
 
 ---
 

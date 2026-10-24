@@ -7,26 +7,16 @@
 
 ### 5W1H: Mastering DP Internals
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: The physical mechanics of Dynamic Programming: DP table memory layout,║
-║        cache behavior (L1/L2 hits vs misses), state representation limits,   ║
-║        and the hardware differences between Tabulation and Memoization.      ║
-║                                                                              ║
-║  WHY:  Understanding memory architecture and CPU behavior explains why an    ║
-║        O(N²) DP might run 5x slower or hit memory limits depending purely on ║
-║        iteration order (row vs column) or object allocations.                ║
-║                                                                              ║
-║  WHO:  Engineers optimizing latency-sensitive DP algorithms, managing memory ║
-║        constraints in production, or debugging TLE/MLE in coding interviews. ║
-║                                                                              ║
-║  WHEN: Study this BEFORE writing complex 2D/3D DP tables. It teaches you     ║
-║        when to use rolling arrays, bitmasks, or coordinate compression.      ║
-║                                                                              ║
-║  HOW:  By analyzing DP arrays in physical memory, observing branch prediction║
-║        costs, and employing space optimization techniques like rolling arrays.║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** The physical mechanics of Dynamic Programming: DP table memory layout, cache behavior (L1/L2 hits vs misses), state representation limits, and the hardware differences between Tabulation and Memoization.
+>
+> **WHY:** Understanding memory architecture and CPU behavior explains why an O(N²) DP might run 5x slower or hit memory limits depending purely on iteration order (row vs column) or object allocations.
+>
+> **WHO:** Engineers optimizing latency-sensitive DP algorithms, managing memory constraints in production, or debugging TLE/MLE in coding interviews.
+>
+> **WHEN:** Study this BEFORE writing complex 2D/3D DP tables. It teaches you when to use rolling arrays, bitmasks, or coordinate compression.
+>
+> **HOW:** By analyzing DP arrays in physical memory, observing branch prediction costs, and employing space optimization techniques like rolling arrays.
 
 ## From Recursion to Optimal Solutions
 
@@ -122,158 +112,153 @@ In every row the win is the same move: throw away the *history of how you got he
 
 # 🔬 PART 0: DEEP INTERNALS - HOW DP ACTUALLY WORKS AT CPU/MEMORY LEVEL
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║       DYNAMIC PROGRAMMING AT THE HARDWARE LEVEL - THE COMPLETE PICTURE           ║
-╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                  ║
-║  Understanding what PHYSICALLY happens when you run a DP algorithm:              ║
-║  • Memory layout of DP tables                                                    ║
-║  • Cache behavior differences between 1D, 2D, and rolling arrays                 ║
-║  • Why certain DP approaches are faster despite same Big-O                       ║
-║  • Memory allocation overhead                                                    ║
-║  • Branch prediction in DP transitions                                           ║
-║                                                                                  ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+### DYNAMIC PROGRAMMING AT THE HARDWARE LEVEL - THE COMPLETE PICTURE ╠══════════════════════════════════════════════════════════════════════════════════╣  Understanding what PHYSICALLY happens when you run a DP algorithm: • Memory layout of DP tables • Cache behavior differences between 1D, 2D, and rolling arrays • Why certain DP approaches are faster despite same Big-O • Memory allocation overhead • Branch prediction in DP transitions
 
 ## DP TABLE MEMORY LAYOUT
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DP TABLE IN PHYSICAL MEMORY                                  │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  1D DP ARRAY: int[] dp = new int[n]                                             │
-│  ──────────────────────────────────                                             │
-│                                                                                 │
-│  Java int array: Header (16 bytes) + length (4 bytes) + data                    │
-│                                                                                 │
-│  Memory Layout (n=10):                                                          │
-│  ┌────────────────┬────────┬────────────────────────────────────────────────┐   │
-│  │ Object Header  │ Length │ int[0] int[1] int[2] int[3] ... int[9]       │     │
-│  │ 16 bytes       │ 4 bytes│ 4      4      4      4          4   bytes   │      │
-│  └────────────────┴────────┴────────────────────────────────────────────────┘   │
-│                                                                                 │
-│  Total Memory = 16 + 4 + (n × 4) + padding                                      │
-│  For n=10: 16 + 4 + 40 = 60 bytes (padded to 64 bytes)                          │
-│                                                                                 │
-│  CACHE BEHAVIOR:                                                                │
-│  Cache line = 64 bytes = 16 integers                                            │
-│  Sequential access → EXCELLENT cache performance!                               │
-│  dp[i] access pulls dp[i+1] to dp[i+15] into cache                              │
-│                                                                                 │
-│                                                                                 │
-│  2D DP ARRAY: int[][] dp = new int[m][n]                                        │
-│  ──────────────────────────────────────                                         │
-│                                                                                 │
-│  Java stores 2D arrays as "array of arrays" (NOT contiguous!)                   │
-│                                                                                 │
-│  Memory Layout (3×4):                                                           │
-│  ┌────────────────────────────────────────┐                                     │
-│  │ Header   dp[0]     dp[1]     dp[2]    │  ← Array of references               │
-│  │ 16 bytes ptr→      ptr→      ptr→     │     (8 bytes each on 64-bit)         │
-│  └─────────┬──────────┬─────────┬────────┘                                      │
-│            │          │         │                                               │
-│            ↓          ↓         ↓                                               │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                                │
-│  │Header Length│ │Header Length│ │Header Length│                                │
-│  │[0][1][2][3]│ │[0][1][2][3]│ │[0][1][2][3]│  ← Each row is separate array     │
-│  └─────────────┘ └─────────────┘ └─────────────┘                                │
-│                                                                                 │
-│  Memory for int[m][n]:                                                          │
-│  Outer array: 16 + 4 + (m × 8) bytes                                            │
-│  Each inner array: 16 + 4 + (n × 4) bytes                                       │
-│  Total ≈ 20 + 8m + m × (20 + 4n) = 20 + 28m + 4mn bytes                         │
-│                                                                                 │
-│  CACHE IMPLICATIONS:                                                            │
-│  • Row access (dp[i][0] to dp[i][n-1]) → GOOD (contiguous in memory)            │
-│  • Column access (dp[0][j] to dp[m-1][j]) → BAD (jumps between arrays!)         │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+#### Dp table in physical memory
+
+1D DP ARRAY: int[] dp = new int[n]
+
+Java int array: Header (16 bytes) + length (4 bytes) + data
+
+Memory Layout (n=10):
+
+```text
+ ┌────────────────┬────────┬────────────────────────────────────────────────┐
+ │ Object Header  │ Length │ int[0] int[1] int[2] int[3] ... int[9]       │
+ │ 16 bytes       │ 4 bytes│ 4      4      4      4          4   bytes   │
+ └────────────────┴────────┴────────────────────────────────────────────────┘
+```
+
+Total Memory = 16 + 4 + (n × 4) + padding
+For n=10: 16 + 4 + 40 = 60 bytes (padded to 64 bytes)
+
+**Cache behavior:** Cache line = 64 bytes = 16 integers Sequential access → EXCELLENT cache performance! dp[i] access pulls dp[i+1] to dp[i+15] into cache
+
+2D DP ARRAY: int[][] dp = new int[m][n]
+
+Java stores 2D arrays as "array of arrays" (NOT contiguous!)
+
+Memory Layout (3×4):
+
+```text
+ ┌────────────────────────────────────────┐
+ │ Header   dp[0]     dp[1]     dp[2]    │  ← Array of references
+ │ 16 bytes ptr→      ptr→      ptr→     │     (8 bytes each on 64-bit)
+ └─────────┬──────────┬─────────┬────────┘
+           │          │         │
+           ↓          ↓         ↓
+ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+ │Header Length│ │Header Length│ │Header Length│
+ │[0][1][2][3]│ │[0][1][2][3]│ │[0][1][2][3]│  ← Each row is separate array
+ └─────────────┘ └─────────────┘ └─────────────┘
+```
+
+Memory for int[m][n]:
+Outer array: 16 + 4 + (m × 8) bytes
+Each inner array: 16 + 4 + (n × 4) bytes
+Total ≈ 20 + 8m + m × (20 + 4n) = 20 + 28m + 4mn bytes
+
+**Cache implications:** 
+
+- Row access (dp[i][0] to dp[i][n-1]) → GOOD (contiguous in memory)
+- Column access (dp[0][j] to dp[m-1][j]) → BAD (jumps between arrays!)
 
 ## CACHE BEHAVIOR IN DP - CRITICAL FOR PERFORMANCE
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DP ITERATION ORDER AND CACHE PERFORMANCE                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  EXAMPLE: Longest Common Subsequence (LCS)                                      │
-│                                                                                 │
-│  int lcs(String a, String b) {                                                  │
-│      int m = a.length(), n = b.length();                                        │
-│      int[][] dp = new int[m+1][n+1];                                            │
-│                                                                                 │
-│      for (int i = 1; i <= m; i++) {                                             │
-│          for (int j = 1; j <= n; j++) {                                         │
-│              if (a.charAt(i-1) == b.charAt(j-1)) {                              │
-│                  dp[i][j] = dp[i-1][j-1] + 1;                                   │
-│              } else {                                                           │
-│                  dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);                   │
-│              }                                                                  │
-│          }                                                                      │
-│      }                                                                          │
-│      return dp[m][n];                                                           │
-│  }                                                                              │
-│                                                                                 │
-│                                                                                 │
-│  ACCESS PATTERN VISUALIZATION:                                                  │
-│                                                                                 │
-│  GOOD ORDER (row-major):              BAD ORDER (column-major):                 │
-│  for (i) for (j)                      for (j) for (i)                           │
-│                                                                                 │
-│    j → →→ →                              j                                      │
-│  ┌─────────────┐                      ┌──↓──────────┐                           │
-│  │ 1  2  3  4  │ i=1                  │ 1  │  │  │  │                           │
-│  │ 5  6  7  8  │ i=2                  │ 2  │  │  │  │                           │
-│  │ 9 10 11 12  │ i=3                  │ 3  │  │  │  │                           │
-│  └─────────────┘                      │ 4  5  6  7  │                           │
-│  i                                    └─────────────┘                           │
-│  ↓                                                                              │
-│                                                                                 │
-│  Row-major: Elements accessed are adjacent in memory                            │
-│  Column-major: Each access jumps to a different array!                          │
-│                                                                                 │
-│                                                                                 │
-│  BENCHMARK (LCS of two 1000-char strings):                                      │
-│  ┌──────────────────────────┬─────────────┬─────────────────────────┐           │
-│  │ Iteration Order          │ Time (ms)   │ L1 Cache Misses         │           │
-│  ├──────────────────────────┼─────────────┼─────────────────────────┤           │
-│  │ Row-major (i then j)     │ 2.8         │ ~62,500                 │           │
-│  │ Column-major (j then i)  │ 15.3        │ ~1,000,000              │           │
-│  │ Ratio                    │ 5.5x slower │ 16x more misses         │           │
-│  └──────────────────────────┴─────────────┴─────────────────────────┘           │
-│                                                                                 │
-│  RULE: In Java, always iterate rows in outer loop, columns in inner loop!       │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+#### Dp iteration order and cache performance
+
+**Example:** Longest Common Subsequence (LCS)
+
+
+```java
+int lcs(String a, String b) {
+    int m = a.length(), n = b.length();
+    int[][] dp = new int[m+1][n+1];
+```
+
+
+
+```java
+for (int i = 1; i <= m; i++) {
+    for (int j = 1; j <= n; j++) {
+        if (a.charAt(i-1) == b.charAt(j-1)) {
+            dp[i][j] = dp[i-1][j-1] + 1;
+        } else {
+            dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+}
+return dp[m][n];
+}
+```
+
+
+**Access pattern visualization:** 
+
+GOOD ORDER (row-major):              BAD ORDER (column-major):
+for (i) for (j)                      for (j) for (i)
+
+j → →→ →                              j
+
+```text
+ ┌─────────────┐                      ┌──↓──────────┐
+ │ 1  2  3  4  │ i=1                  │ 1  │  │  │  │
+ │ 5  6  7  8  │ i=2                  │ 2  │  │  │  │
+ │ 9 10 11 12  │ i=3                  │ 3  │  │  │  │
+ └─────────────┘                      │ 4  5  6  7  │
+ i                                    └─────────────┘
+ ↓
+```
+
+Row-major: Elements accessed are adjacent in memory
+Column-major: Each access jumps to a different array!
+
+BENCHMARK (LCS of two 1000-char strings):
+
+```text
+ ┌──────────────────────────┬─────────────┬─────────────────────────┐
+ │ Iteration Order          │ Time (ms)   │ L1 Cache Misses         │
+ ├──────────────────────────┼─────────────┼─────────────────────────┤
+ │ Row-major (i then j)     │ 2.8         │ ~62,500                 │
+ │ Column-major (j then i)  │ 15.3        │ ~1,000,000              │
+ │ Ratio                    │ 5.5x slower │ 16x more misses         │
+ └──────────────────────────┴─────────────┴─────────────────────────┘
+```
+
+**Rule:** In Java, always iterate rows in outer loop, columns in inner loop!
 
 ## SPACE OPTIMIZATION - ROLLING ARRAY TECHNIQUE
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ROLLING ARRAY - FROM O(mn) TO O(n) SPACE                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  OBSERVATION: Many 2D DP only needs previous row!                               │
-│                                                                                 │
-│  Full 2D DP (wasteful):                                                         │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │ Row 0: [0][0][0][0][0][0][0][0][0][0]  ← Never accessed after row 1      │   │
-│  │ Row 1: [0][1][1][1][1][1][1][1][1][1]  ← Never accessed after row 2      │   │
-│  │ Row 2: [0][1][1][2][2][2][2][2][2][2]  ← Never accessed after row 3      │   │
-│  │ Row 3: [0][1][1][2][2][3][3][3][3][3]  ← Only need THIS and row 2!       │   │
-│  │ ...                                                                       │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                 │
-│  Rolling Array (2 rows):                                                        │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │ prev: [0][1][1][2][2][3][3][3][3][3]  ← Row i-1                          │   │
-│  │ curr: [0][1][1][2][2][3][3][3][3][3]  ← Row i (computing)                │   │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│  After each row: swap prev ↔ curr                                               │
-│                                                                                 │
-│                                                                                 │
-│  CODE TRANSFORMATION:                                                           │
-│  ───────────────────                                                            │
+#### ROLLING ARRAY - FROM O(mn) TO O(n) SPACE
+
+**Observation:** Many 2D DP only needs previous row!
+
+Full 2D DP (wasteful):
+
+```text
+ ┌───────────────────────────────────────────────────────────────────────────┐
+ │ Row 0: [0][0][0][0][0][0][0][0][0][0]  ← Never accessed after row 1      │
+ │ Row 1: [0][1][1][1][1][1][1][1][1][1]  ← Never accessed after row 2      │
+ │ Row 2: [0][1][1][2][2][2][2][2][2][2]  ← Never accessed after row 3      │
+ │ Row 3: [0][1][1][2][2][3][3][3][3][3]  ← Only need THIS and row 2!       │
+ │ ...                                                                       │
+ └───────────────────────────────────────────────────────────────────────────┘
 ```
+
+Rolling Array (2 rows):
+
+```text
+ ┌───────────────────────────────────────────────────────────────────────────┐
+ │ prev: [0][1][1][2][2][3][3][3][3][3]  ← Row i-1                          │
+ │ curr: [0][1][1][2][2][3][3][3][3][3]  ← Row i (computing)                │
+ └───────────────────────────────────────────────────────────────────────────┘
+ After each row: swap prev ↔ curr
+```
+
+**Code transformation:** ───────────────────
+
 
 ```java
 // BEFORE: O(mn) space

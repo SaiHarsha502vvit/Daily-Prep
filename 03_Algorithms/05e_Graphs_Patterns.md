@@ -7,21 +7,20 @@
 
 ### 5W1H: Mastering Graph Patterns
 
-┌─────────────────────────────────────────────────────────────────────────┐
-│ 5W1H: Mastering Graph Patterns │
-├─────────────────────────────────────────────────────────────────────────┤
-│ WHAT : Advanced graph algorithms and structural patterns including SCC, │
-│ MST, Articulation Points, Euler Paths, and A* Pathfinding. │
-│ WHY : These represent the pinnacle of graph algorithm engineering, │
-│ solving complex network topology problems and routing. │
-│ WHEN : Use SCC to group interdependent nodes. Use Articulation Points │
-│ to find single points of failure. Use A* for heuristic search. │
-│ WHERE: Applied in game AI, network routing protocols, reliability │
-│ analysis, and mapping software (like Google Maps). │
-│ WHO : Senior engineers and candidates tackling hard graph problems. │
-│ HOW : Combining DFS with low-link values (Tarjan), Union-Find with │
-│ greedy sorting (Kruskal), and Priority Queues with heuristics. │
-└─────────────────────────────────────────────────────────────────────────┘
+> [!NOTE]
+> #### 5W1H: Mastering Graph Patterns
+>
+> **What:** Advanced graph algorithms and structural patterns including SCC, MST, Articulation Points, Euler Paths, and A* Pathfinding.
+>
+> **Why:** These represent the pinnacle of graph algorithm engineering, solving complex network topology problems and routing.
+>
+> **When:** Use SCC to group interdependent nodes. Use Articulation Points to find single points of failure. Use A* for heuristic search.
+>
+> **Where:** Applied in game AI, network routing protocols, reliability analysis, and mapping software (like Google Maps).
+>
+> **Who:** Senior engineers and candidates tackling hard graph problems.
+>
+> **How:** Combining DFS with low-link values (Tarjan), Union-Find with greedy sorting (Kruskal), and Priority Queues with heuristics.
 
 ### Historical Evolution
 
@@ -39,6 +38,7 @@ Strongly Connected Components algorithms emerged from the need to decompose dire
 
 ### 5. STRONGLY CONNECTED COMPONENTS (SCC)
 
+```java
 // TARJAN'S ALGORITHM: O(V + E), single DFS
 public List<List<Integer>> tarjanSCC(int n, int[][] edges) {
 List<List<Integer>> adj = new ArrayList<>();
@@ -97,8 +97,7 @@ onStack[u] = true;
 
 }
 
-````
-
+```
 ### 6. MINIMUM SPANNING TREE (MST)
 
 ```java
@@ -206,8 +205,7 @@ public int primMST(int n, int[][] edges) {
 
     return count == n ? mstWeight : -1;
 }
-````
-
+```
 ### 7. ARTICULATION POINTS AND BRIDGES
 
 ```java

@@ -126,27 +126,16 @@ Both are O(n log n). On a benchmark, quicksort is usually 2–3× faster. Big-O 
 
 ### 5W1H: Mastering Advanced Sorting
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: Advanced sorting algorithms that either break the O(N log N) bound    ║
-║        using non-comparison techniques (Counting, Radix, Bucket) or combine  ║
-║        algorithms to exploit real-world data patterns (TimSort, Introsort).  ║
-║                                                                              ║
-║  WHY:  Real-world systems don't just sort random arrays. They sort bounded   ║
-║        integers, partially sorted logs, or enormous datasets where a generic ║
-║        QuickSort would be inefficient or unstable.                           ║
-║                                                                              ║
-║  WHO:  Engineers optimizing latency-critical pipelines, database indexes, or ║
-║        solving hard algorithmic challenges like "Sort colors in O(N)".       ║
-║                                                                              ║
-║  WHEN: Use when data has specific constraints (e.g., ages 0-120 → Counting   ║
-║        Sort), or when the language runtime needs a stable, adaptive sort     ║
-║        for object references (Java's TimSort).                               ║
-║                                                                              ║
-║  HOW:  By distributing elements into buckets/frequencies, sorting digits     ║
-║        iteratively, or detecting existing "runs" to minimize comparisons.    ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** Advanced sorting algorithms that either break the O(N log N) bound using non-comparison techniques (Counting, Radix, Bucket) or combine algorithms to exploit real-world data patterns (TimSort, Introsort).
+>
+> **WHY:** Real-world systems don't just sort random arrays. They sort bounded integers, partially sorted logs, or enormous datasets where a generic QuickSort would be inefficient or unstable.
+>
+> **WHO:** Engineers optimizing latency-critical pipelines, database indexes, or solving hard algorithmic challenges like "Sort colors in O(N)".
+>
+> **WHEN:** Use when data has specific constraints (e.g., ages 0-120 → Counting Sort), or when the language runtime needs a stable, adaptive sort for object references (Java's TimSort).
+>
+> **HOW:** By distributing elements into buckets/frequencies, sorting digits iteratively, or detecting existing "runs" to minimize comparisons.
 
 ### Historical Evolution
 
