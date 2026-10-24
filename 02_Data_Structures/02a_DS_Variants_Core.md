@@ -957,28 +957,28 @@ public class DoublyLinkedList<T> {
 
 ::: memory
 
-```
-🧠 INTERVIEW KEY POINTS - DOUBLY LINKED LIST:
-
-1. "Why use doubly over singly?"
-   → Delete at tail: O(1) vs O(n)
-   → Bidirectional traversal
-   → Delete given node: O(1) vs O(n)
-
-2. "What's the main disadvantage?"
-   → Extra memory for prev pointer
-   → More complex code
-
-3. "Real-world use case?"
-   → LRU Cache (HashMap + Doubly Linked)
-   → Browser back/forward
-   → Text editor undo/redo
-
-4. "How to delete a node in O(1)?"
-   → node.prev.next = node.next
-   → node.next.prev = node.prev
-   → Handle edge cases (head/tail)
-```
+> [!TIP]
+> **🧠 Interview key points — Doubly Linked List**
+>
+>
+> 1. **"Why use doubly over singly?"**
+>    - Delete at tail: O(1) vs O(n)
+>    - Bidirectional traversal
+>    - Delete given node: O(1) vs O(n)
+>
+> 2. **"What's the main disadvantage?"**
+>    - Extra memory for prev pointer
+>    - More complex code
+>
+> 3. **"Real-world use case?"**
+>    - LRU Cache (HashMap + Doubly Linked)
+>    - Browser back/forward
+>    - Text editor undo/redo
+>
+> 4. **"How to delete a node in O(1)?"**
+>    - node.prev.next = node.next
+>    - node.next.prev = node.prev
+>    - Handle edge cases (head/tail)
 
 :::
 

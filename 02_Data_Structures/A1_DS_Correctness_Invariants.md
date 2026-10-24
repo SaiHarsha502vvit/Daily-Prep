@@ -418,15 +418,30 @@ Therefore, by structural induction, the entire tree satisfies the BST property a
 
 **Lemma (Single Right Rotation preserves BST property)**: Consider nodes `P` (parent) and `L` (left child), where `L` becomes right-heavy after an insert in `L`'s right subtree. The rotation:
 
+```mermaid
+flowchart LR
+    subgraph BEFORE["Before (right rotation at P)"]
+        direction TB
+        P1((P)) --> L1((L))
+        P1 --> C1((C))
+        L1 --> A1((A))
+        L1 --> B1((B))
+    end
+    subgraph AFTER["After"]
+        direction TB
+        L2((L)) --> A2((A))
+        L2 --> P2((P))
+        P2 --> B2((B))
+        P2 --> C2((C))
+    end
+    BEFORE ==> AFTER
+    classDef n fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef r fill:#ffd9b3,stroke:#e65100,color:#111
+    class P1,L1,C1,A1,B1,A2,P2,B2,C2 n
+    class L2 r
 ```
-Before:          After:
 
-   P                L
-  / \              / \
- L   C    →       A   P
-/ \                  / \
-A   B               B   C
-```
+**How to read this diagram.** A right rotation lifts `L` above `P`: `L` becomes the root (orange), `P` becomes its right child, and `L`'s old right subtree `B` moves across to become `P`'s left child. The in-order sequence `A L B P C` is unchanged.
 
 **Proof**: All keys in subtree `A` are `< L.key` (original). All keys in subtree `B` are `> L.key` and `< P.key` (original BST property: `L.key < B < P.key`). All keys in subtree `C` are `> P.key`. After rotation, `L` becomes the root. `L.right = P`. The ordering is: `A < L.key < B < P.key < C`. This exactly satisfies the BST invariant for the entire subtree. ✓
 

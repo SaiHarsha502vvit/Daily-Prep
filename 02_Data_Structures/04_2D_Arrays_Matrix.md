@@ -86,37 +86,17 @@ The "2D" is just an abstraction for human understanding.
 
 ## Timeline: From Punch Cards to GPU Tensors
 
-```
-Pre-1958  →  Actuarial hand-computed tables → punch card matrices → magnetic drum storage
-     ↓
-1958     →  FORTRAN introduces multi-dimensional arrays (John Backus, IBM)
-            The "scientific method of computing" begins: matrix algebra becomes
-            expressible in code, not just mathematics notation.
-     ↓
-1979     →  VisiCalc on Apple II (Dan Bricklin, Bob Frankston)
-            First killer app for 2D arrays on consumer hardware.
-            Spreadsheets = 2D arrays made accessible to non-programmers.
-     ↓
-1980s    →  BLAS (Basic Linear Algebra Subprograms) established
-            Fortran standard library for matrix multiplication, LU decomposition,
-            and other linear algebra primitives. Row-major by default.
-     ↓
-1987     →  SPARSKIT released (Yousef Saad, University of Minnesota)
-            Toolkit for sparse matrix computations. CSR/CSC formats become standard.
-     ↓
-1990s    →  OpenGL texture storage maps 2D arrays directly to GPU memory.
-            Texture pixels accessed via (u, v) coordinates; hardware handles filtering.
-     ↓
-2001     →  NumPy (Travis Olliphant) brings true 2D arrays to Python.
-            Memory model exposed to scripting-language programmers at last.
-     ↓
-2010s    →  TensorFlow/PyTorch: n-dimensional arrays (tensors) on GPU/TPU.
-            CUDA memory coalescing requires understanding row vs column layout.
-     ↓
-2017     →  Tile-based GPU architectures (NVIDIA Volta, AMD Vega) make blocked/
-            tiled 2D layouts critical for performance. 64×64 tile size emerges
-            as the sweet spot matching shared memory capacity and warp size.
-```
+| Year | Milestone | Why it matters for 2D arrays |
+| ---- | --------- | ---------------------------- |
+| Pre-1958 | Actuarial hand-computed tables → punch-card matrices → magnetic drum storage | Tabular data existed long before code |
+| 1958 | FORTRAN introduces multi-dimensional arrays (John Backus, IBM) | Matrix algebra becomes expressible in code, not just mathematical notation |
+| 1979 | VisiCalc on Apple II (Dan Bricklin, Bob Frankston) | First killer app for 2D arrays on consumer hardware: spreadsheets make 2D arrays accessible to non-programmers |
+| 1979 | BLAS (Basic Linear Algebra Subprograms) | Standard library for matrix multiplication and other linear-algebra primitives; Fortran's column-major layout is the default |
+| c. 1990 | SPARSKIT (Yousef Saad, University of Minnesota) | Toolkit for sparse-matrix computation; CSR/CSC formats become standard |
+| 1990s | OpenGL texture storage | 2D arrays map directly to GPU memory; pixels are accessed via (u, v) coordinates while hardware handles filtering |
+| 1995 / 2006 | Numeric, then NumPy (Travis Oliphant) | True N-dimensional arrays in Python; the memory model is exposed to scripting-language programmers |
+| 2010s | TensorFlow / PyTorch | N-dimensional arrays (tensors) on GPU/TPU; CUDA memory coalescing requires understanding row vs column layout |
+| 2017 | Tile-based GPU architectures (NVIDIA Volta, AMD Vega) | Blocked/tiled 2D layouts become critical for performance; tile sizes are chosen to match shared-memory capacity and warp size |
 
 ## Predecessor Systems
 

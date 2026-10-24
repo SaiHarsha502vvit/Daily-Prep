@@ -757,23 +757,28 @@ Time: **O(n²)** — too slow for real-time trading!
 
 ### 📖 Theory — What is a Sub Array?
 
-```
-Input: {1, 2, 3}
-All sub-arrays:
-  Length 1: {1}    {2}    {3}
-  Length 2: {1,2}  {2,3}
-  Length 3: {1,2,3}
-  Total = n*(n+1)/2 = 3*4/2 = 6
+**Input:** `{1, 2, 3}`
 
-KEY PROPERTIES:
-  ✅ Contiguous  ← elements must be adjacent in original
-  ✅ Order preserved
-  ✅ Non-empty
+| Length | Sub-arrays |
+| ------ | ---------- |
+| 1 | `{1}`, `{2}`, `{3}` |
+| 2 | `{1,2}`, `{2,3}` |
+| 3 | `{1,2,3}` |
 
-SUBARRAY vs SUBSEQUENCE:
-  {1,3} from {1,2,3} → ❌ NOT a sub-array  (2 is skipped)
-  {1,3} from {1,2,3} → ✅ Valid subsequence (order kept, gaps allowed)
-```
+Total = n·(n+1)/2 = 3·4/2 = **6**.
+
+**Key properties:**
+
+- ✅ **Contiguous:** elements must be adjacent in the original array
+- ✅ **Order preserved**
+- ✅ **Non-empty**
+
+**Sub-array vs subsequence:**
+
+| Candidate | From `{1,2,3}` | Why |
+| --------- | -------------- | --- |
+| `{1,3}` as a sub-array | ❌ Not a sub-array | `2` is skipped |
+| `{1,3}` as a subsequence | ✅ Valid subsequence | Order kept, gaps allowed |
 
 ❓ **Quick Check:** How many sub-arrays in `{1,2,3,4,5}`?
 → 5×6/2 = **15**
@@ -1028,22 +1033,29 @@ COMPARISON:
 
 ### 🔵 Level 1: The Include/Exclude Paradigm
 
-```
-For each element you have exactly 2 choices:
-  ① INCLUDE it in current subsequence
-  ② EXCLUDE it
+For each element you have exactly 2 choices: ① **include** it in the current subsequence, or ② **exclude** it. That is a binary decision tree with 2ⁿ leaves.
 
-Binary decision tree → 2ⁿ leaves
-
-        {1,2,3}
-           []
-          /    \
-      Incl 1   Excl 1
-       [1]       []
-      /   \     /   \
-  [1,2] [1]  [2]   []
-  ...
+```mermaid
+flowchart TD
+    R["start: []"] -->|"include 1"| I1["[1]"]
+    R -->|"exclude 1"| E1["[]"]
+    I1 -->|"include 2"| I12["[1,2]"]
+    I1 -->|"exclude 2"| I1x["[1]"]
+    E1 -->|"include 2"| E12["[2]"]
+    E1 -->|"exclude 2"| E1x["[]"]
+    I12 --> D1["... decide on 3"]
+    I1x --> D2["..."]
+    E12 --> D3["..."]
+    E1x --> D4["..."]
+    classDef root fill:#e0e0e0,stroke:#616161,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef more fill:#fff3b0,stroke:#b58900,color:#111
+    class R root
+    class I1,E1,I12,I1x,E12,E1x node
+    class D1,D2,D3,D4 more
 ```
+
+**How to read this diagram.** Each level decides one element of `{1,2,3}`. After all three decisions there are 2³ = 8 leaves, one per subsequence.
 
 ---
 

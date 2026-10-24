@@ -581,13 +581,23 @@ That index arithmetic isn't a coincidence to memorize — it falls out of one fa
 
 Number the nodes in level order — row by row, left to right — starting at 0:
 
+```mermaid
+flowchart TD
+    i0(("0")) --> i1(("1"))
+    i0 --> i2(("2"))
+    i1 --> i3(("3"))
+    i1 --> i4(("4"))
+    i2 --> i5(("5"))
+    i2 --> i6(("6"))
+    classDef l0 fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef l1 fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef l2 fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class i0 l0
+    class i1,i2 l1
+    class i3,i4,i5,i6 l2
 ```
-            0              ← level 0: index 0
-          /   \
-        1       2          ← level 1: indices 1–2
-       / \     / \
-      3   4   5   6        ← level 2: indices 3–6
-```
+
+**How to read this diagram.** Node labels are array indices. Level 0 is index 0 (orange), level 1 holds indices 1–2 (blue), level 2 holds indices 3–6 (green).
 
 Now stare at any node `i` and its children. Node 1's children are 3 and 4. Node 2's children are 5 and 6. The pattern `left = 2i+1, right = 2i+2` is *forced* by completeness: before node `i`'s children appear, every node to `i`'s left on the same row has already placed its two children, and all earlier rows are full. Count them and the arithmetic is exact — there are no gaps to throw it off, precisely because a complete tree has no holes. Lose completeness (allow gaps) and the formula breaks, which is *why* heaps insist on it.
 

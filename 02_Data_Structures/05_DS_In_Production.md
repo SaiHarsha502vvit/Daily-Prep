@@ -197,13 +197,14 @@ Recommendation: Use both — AOF for durability, RDB for fast restarts.
 
 **Kafka offset-based replay (vs traditional queue deletion):**
 
-```
-Traditional Queue: DELETE message on ACKs → new consumer group = miss all history.
-Kafka: COMMIT offset to __consumer_offsets topic (compacted hash map: group→topic→offset).
-  → Any consumer group can replay from any offset in the retained log window.
-  → Producers write to append-only partition log; brokers never modify records.
-  → DS invariant: partition log is immutable; consumer position is tracked separately.
-```
+| | Traditional queue | Kafka |
+| --- | ----------------- | ----- |
+| On acknowledgement | **Deletes** the message | **Commits an offset** to the `__consumer_offsets` topic (a compacted map: group → topic → offset) |
+| New consumer group | Misses all history | Can replay from any offset in the retained log window |
+| Producers | Hand messages to the broker | Write to an append-only partition log; brokers never modify records |
+
+> [!IMPORTANT]
+> **DS invariant:** the partition log is immutable; each consumer's position is tracked separately.
 
 ---
 

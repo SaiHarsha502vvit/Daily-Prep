@@ -119,25 +119,33 @@ flowchart LR
 
 ### The Types at a Glance
 
+```mermaid
+flowchart LR
+    subgraph S["Singly linked list"]
+        direction LR
+        s1["10"] --> s2["20"] --> s3["30"] --> sn(["null"])
+    end
+    subgraph D["Doubly linked list"]
+        direction LR
+        dn0(["null"]) --- d1["10"] <--> d2["20"] <--> d3["30"] --- dn1(["null"])
+    end
+    subgraph C["Circular linked list"]
+        direction LR
+        c1["10"] --> c2["20"] --> c3["30"] --> c1
+    end
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef nul fill:#e0e0e0,stroke:#616161,color:#111
+    class s1,s2,s3,d1,d2,d3,c1,c2,c3 node
+    class sn,dn0,dn1 nul
 ```
-SINGLY LINKED LIST:
-  [10|●]→[20|●]→[30|null]
-  - Each node: data + next pointer
-  - Can only traverse FORWARD
-  - Used in: Stack, simple queue, hash chaining
 
-DOUBLY LINKED LIST:
-  null←[●|10|●]↔[●|20|●]↔[●|30|●]→null
-  - Each node: prev + data + next
-  - Can traverse BOTH directions
-  - Used in: LRU cache, browser history, text editors
+**How to read this diagram.** Each box is a node. Arrows are references; grey `null` marks the end of a list.
 
-CIRCULAR LINKED LIST:
-  [10|●]→[20|●]→[30|●]→(back to 10)
-  - Last node points back to first
-  - No null at the end
-  - Used in: Round-robin scheduling, multiplayer game turns
-```
+| Type | Node layout | Traversal | Used in |
+| ---- | ----------- | --------- | ------- |
+| **Singly** | data + `next` | Forward only | Stack, simple queue, hash chaining |
+| **Doubly** | `prev` + data + `next` | Both directions | LRU cache, browser history, text editors |
+| **Circular** | last node points back to the first (no `null` end) | Forward, wraps around | Round-robin scheduling, multiplayer game turns |
 
 ### Linked List Variants Comparison Table
 
@@ -523,15 +531,20 @@ while (curr != null) {
 
 > 💡 **Why it works:** Fast moves at 2x speed → when fast reaches end, slow is at middle. If there's a cycle → fast will eventually "lap" slow.
 
+```mermaid
+flowchart LR
+    n1["1"] --> n2["2"] --> n3["3<br/>slow"] --> n4["4"] --> n5["5<br/>fast"] --> nn(["null"])
+    classDef slow fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef fast fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef nul fill:#e0e0e0,stroke:#616161,color:#111
+    class n3 slow
+    class n5 fast
+    class n1,n2,n4 node
+    class nn nul
 ```
-             slow
-              ↓
-  [1] → [2] → [3] → [4] → [5] → null
-                             ↑
-                            fast
 
-  After 2 steps: slow=3, fast=5 → fast at end → slow IS the middle!
-```
+**How to read this diagram.** After 2 steps `slow` (green) is at node 3 and `fast` (orange) is at node 5, the end of the list. When `fast` reaches the end, `slow` **is** the middle.
 
 ```java
 // Find Nth node from end (one-pass, O(1) space)
@@ -554,30 +567,27 @@ ListNode nthFromEnd(ListNode head, int n) {
 
 **Key Insight:** Change arrow direction one by one:
 
-```
-  BEFORE: 1 → 2 → 3 → null
-
-  Step 1: null ← 1    2 → 3 → null   (reverse 1's pointer)
-  Step 2: null ← 1 ← 2    3 → null   (reverse 2's pointer)
-  Step 3: null ← 1 ← 2 ← 3           (reverse 3's pointer)
-
-  AFTER:  null ← 1 ← 2 ← 3  →  head = 3
-```
+| Step | List state | What happened |
+| ---- | ---------- | ------------- |
+| Before | `1 → 2 → 3 → null` | original list |
+| 1 | `null ← 1`   `2 → 3 → null` | reverse 1's pointer |
+| 2 | `null ← 1 ← 2`   `3 → null` | reverse 2's pointer |
+| 3 | `null ← 1 ← 2 ← 3` | reverse 3's pointer |
+| After | `null ← 1 ← 2 ← 3` | `head = 3` |
 
 ### Pattern 3: Merge Two Sorted Lists
 
 > **Foundation for merge sort on linked lists, and a common interview question.**
 
-```
-     L1: 1 → 3 → 5
-     L2: 2 → 4 → 6
+`L1: 1 → 3 → 5` and `L2: 2 → 4 → 6`
 
-     Compare heads: 1 < 2 → take 1
-     Compare: 3 > 2 → take 2
-     Compare: 3 < 4 → take 3
-     ...
-     Result: 1 → 2 → 3 → 4 → 5 → 6
-```
+| Compare heads | Take | Result so far |
+| ------------- | ---- | ------------- |
+| 1 < 2 | 1 | `1` |
+| 3 > 2 | 2 | `1 → 2` |
+| 3 < 4 | 3 | `1 → 2 → 3` |
+| ... | ... | ... |
+| final | | `1 → 2 → 3 → 4 → 5 → 6` |
 
 ### Pattern 4: Dummy Head Node
 

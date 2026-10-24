@@ -777,22 +777,22 @@ public class MonotonicQueue {
 
 ::: memory
 
-```
-🧠 INTERVIEW KEY POINTS - MONOTONIC QUEUE:
-
-1. "When to use Monotonic Queue?"
-   → Sliding window min/max problems
-   → Find next greater/smaller element
-   → Stock span problems
-
-2. "Time Complexity?"
-   → O(n) overall
-   → Each element added/removed at most once
-
-3. "Why store indices instead of values?"
-   → To check if element is within window
-   → To know position for result array
-```
+> [!TIP]
+> **🧠 Interview key points — Monotonic Queue**
+>
+>
+> 1. **"When to use Monotonic Queue?"**
+>    - Sliding window min/max problems
+>    - Find next greater/smaller element
+>    - Stock span problems
+>
+> 2. **"Time Complexity?"**
+>    - O(n) overall
+>    - Each element added/removed at most once
+>
+> 3. **"Why store indices instead of values?"**
+>    - To check if element is within window
+>    - To know position for result array
 
 :::
 
@@ -1214,25 +1214,25 @@ B = Black, R = Red
 
 ::: memory
 
-```
-🧠 INTERVIEW KEY POINTS - TREE VARIANTS:
-
-1. "Difference between AVL and Red-Black?"
-   → AVL: More balanced, better for lookups
-   → RB: Less rotations, better for inserts/deletes
-   → Both guarantee O(log n)
-
-2. "Which does Java TreeMap use?"
-   → Red-Black Tree
-
-3. "When is BST O(n)?"
-   → When degenerate (sorted insert)
-   → Solution: Use self-balancing trees
-
-4. "What's balance factor in AVL?"
-   → height(left) - height(right)
-   → Must be -1, 0, or 1
-```
+> [!TIP]
+> **🧠 Interview key points — Tree Variants**
+>
+>
+> 1. **"Difference between AVL and Red-Black?"**
+>    - AVL: More balanced, better for lookups
+>    - RB: Less rotations, better for inserts/deletes
+>    - Both guarantee O(log n)
+>
+> 2. **"Which does Java TreeMap use?"**
+>    - Red-Black Tree
+>
+> 3. **"When is BST O(n)?"**
+>    - When degenerate (sorted insert)
+>    - Solution: Use self-balancing trees
+>
+> 4. **"What's balance factor in AVL?"**
+>    - height(left) - height(right)
+>    - Must be -1, 0, or 1
 
 :::
 

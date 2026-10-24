@@ -253,40 +253,38 @@ public class MyLinkedStack {
 
 ### Problem: Valid Parentheses
 
-```
-REAL-WORLD ORIGIN: Compiler Design (1960s)
+**Real-world origin: compiler design (1960s).**
 
-PROBLEM AT MIT (1962):
-- Compilers need to parse code
-- Code has nested structures: if { while { } }
-- How to verify brackets match correctly?
+**Problem at MIT (1962):**
 
-BAD CODE:
-if (x > 0 {    // Missing )
+- Compilers need to parse code.
+- Code has nested structures: `if { while { } }`.
+- How do we verify that brackets match correctly?
+
+```java
+// BAD CODE
+if (x > 0 {      // Missing )
     while (y) }  // Wrong bracket
 }
-
-COMPILER NEEDS TO DETECT THIS!
-
-SOLUTION THINKING:
-1. "When I see '(', I expect ')' later"
-2. "When I see '{', I expect '}' later"
-3. "Most recent open bracket closes first"
-4. "That's LIFO - use a STACK!"
-
-ALGORITHM:
-- See '(' → push ')'
-- See '{' → push '}'
-- See ')' → pop, check if matches
-- End: stack should be empty
-
-NOW USED IN:
-- Every compiler (GCC, javac, clang)
-- Every IDE (syntax highlighting)
-- Every code editor (bracket matching)
-- HTML validators
-- JSON parsers
 ```
+
+The compiler needs to detect this!
+
+**Solution thinking:**
+
+1. "When I see `(`, I expect `)` later."
+2. "When I see `{`, I expect `}` later."
+3. "The most recent open bracket closes first."
+4. "That's LIFO: use a **stack**!"
+
+**Algorithm:**
+
+- See `(` → push `)`
+- See `{` → push `}`
+- See `)` or `}` → pop, check that it matches
+- At the end the stack should be empty
+
+**Now used in:** every compiler (GCC, javac, clang), every IDE (syntax highlighting), every code editor (bracket matching), HTML validators and JSON parsers.
 
 ---
 
@@ -296,43 +294,45 @@ NOW USED IN:
 This is the single most important connection in all of graph algorithms.
 Understanding it rewires how you think about every traversal problem.
 
+```mermaid
+flowchart TD
+    A((A)) --> B((B))
+    A --> C((C))
+    B --> D((D))
+    B --> E((E))
+    E --> F((F))
+    classDef n fill:#cfe8ff,stroke:#1565c0,color:#111
+    class A,B,C,D,E,F n
 ```
-STACK (LIFO)                          QUEUE (FIFO)
-════════════                          ════════════
-Explore the DEEPEST path first        Explore closest paths first
- ↓ Go deep, then backtrack             → Spread outward level by level
 
-        A                                      A
-       / \                                    / \
-      B   C       DFS visits:               B   C      BFS visits:
-     / \           A→B→D→E                / \          A→B→C
-    D   E          (backtrack)           D   E         →D→E→F
-         \         →C→F                      \         →done
-          F                                   F
+**How to read this diagram.** The same graph is explored two ways. A **stack** (DFS) goes deep first: `A → B → D → E → F` (backtrack) `→ C`. A **queue** (BFS) goes level by level: `A → B → C → D → E → F`.
 
-Stack holds:  [A, C, B, D, E, F]     Queue holds: [A, B, C, D, E, F]
-(push all,    process deepest first   (enqueue neighbors, process FIFO)
- pop = pick deepest unvisited)
+| | **Stack (LIFO) → DFS** | **Queue (FIFO) → BFS** |
+| --- | --- | --- |
+| Idea | Explore the **deepest** path first; go deep, then backtrack | Explore the **closest** nodes first; spread outward level by level |
+| Visit order | A → B → D → E → F → C | A → B → C → D → E → F |
+| Frontier holds | Pushed neighbours; pop = the node pushed **last** (deepest) | Enqueued neighbours; poll = the node enqueued **first** (same level) |
 
-WHY STACK = DFS:
-  - Push unvisited neighbors onto stack
-  - Pop = always picks the node pushed LAST (deepest path)
-  - Natural recursion = implicit stack (call stack = your explicit stack)
+**Why stack = DFS:**
 
-WHY QUEUE = BFS:
-  - Enqueue unvisited neighbors into queue
-  - Poll = always picks the node enqueued FIRST (earliest = same level)
-  - Level ordering = exploring in distance rings from source
-```
+- Push unvisited neighbours onto the stack.
+- Pop always picks the node pushed *last* (the deepest path).
+- Natural recursion is an implicit stack: the call stack is your explicit stack.
+
+**Why queue = BFS:**
+
+- Enqueue unvisited neighbours into the queue.
+- Poll always picks the node enqueued *first* (earliest = same level).
+- Level ordering means exploring in distance rings from the source.
 
 **The Decision Rule:**
 
-```
-NEED SHORTEST PATH (fewest hops)?  → BFS (Queue)
-NEED TO EXPLORE ALL POSSIBILITIES? → DFS (Stack/recursion)
-NEED TOPOLOGICAL ORDER?            → DFS postorder
-NEED LEVEL-BY-LEVEL OUTPUT?        → BFS (Queue)
-```
+| If you need... | Use |
+| -------------- | --- |
+| Shortest path (fewest hops) | BFS (queue) |
+| To explore all possibilities | DFS (stack / recursion) |
+| Topological order | DFS postorder |
+| Level-by-level output | BFS (queue) |
 
 💡 **Analogy — Lost in a Maze:**
 
@@ -991,12 +991,12 @@ The circular buffer (ring buffer) is the canonical implementation; Q4 is the inv
 
 **Step 2 — Two reversals cancel.** Push `1, 2, 3` onto stack S1. S1 top-to-bottom: `[3, 2, 1]`. Now pour S1 into S2 by popping each element and pushing it:
 
-```
-S1: [3, 2, 1] (top → bottom)     S2: empty
-Pop 3 from S1, push to S2 →      S2: [3]
-Pop 2 from S1, push to S2 →      S2: [2, 3]
-Pop 1 from S1, push to S2 →      S2: [1, 2, 3]
-```
+| Action | S1 (top → bottom) | S2 |
+| ------ | ----------------- | -- |
+| Start | `[3, 2, 1]` | empty |
+| Pop 3 from S1, push to S2 | `[2, 1]` | `[3]` |
+| Pop 2 from S1, push to S2 | `[1]` | `[2, 3]` |
+| Pop 1 from S1, push to S2 | empty | `[1, 2, 3]` |
 
 S2's top-to-bottom order is `[1, 2, 3]` — FIFO! The first reversal (push to S1) inverted the order; the second reversal (pour to S2) inverted it back. Two negations = identity.
 

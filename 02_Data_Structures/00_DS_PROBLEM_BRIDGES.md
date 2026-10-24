@@ -181,27 +181,28 @@ The DS-to-pattern-to-problem mapping is a mental scaffold — it breaks down whe
 
 ## 🎓 Recommended Study Order
 
+```mermaid
+flowchart TD
+    A["Arrays (basic) → Sorting → Binary Search<br/>→ Two Pointers → Sliding Window"]
+    B["HashMap / HashSet → Prefix Sum"]
+    C["Stack / Queue → Monotonic Stack"]
+    D["LinkedList → Fast & Slow → Reversal patterns"]
+    E["Trees (BFS + DFS) → Tree DP → LCA"]
+    F["Heap / PriorityQueue → Top-K / Two-Heap"]
+    G["Backtracking (recursion base) → Pruning"]
+    H["Graphs (BFS + DFS) → Dijkstra → Topo Sort<br/>→ Union-Find → Advanced"]
+    I["Dynamic Programming<br/>1D → 2D → Knapsack → String DP → Bitmask DP"]
+    J["Greedy<br/>(proof required for each problem)"]
+    A --> B --> C --> D --> E --> F --> G --> H --> I --> J
+    classDef s1 fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef s2 fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef s3 fill:#ffd9b3,stroke:#e65100,color:#111
+    class A,B,C,D s1
+    class E,F,G,H s2
+    class I,J s3
 ```
-Arrays (basic) → Sorting → Binary Search → Two Pointers → Sliding Window
-      ↓
-HashMap/HashSet → Prefix Sum
-      ↓
-Stack / Queue → Monotonic Stack
-      ↓
-LinkedList → Fast & Slow → Reversal patterns
-      ↓
-Trees (BFS + DFS) → Tree DP → LCA
-      ↓
-Heap / PriorityQueue → Top-K / Two-Heap
-      ↓
-Backtracking (Recursion base) → Pruning
-      ↓
-Graphs (BFS + DFS) → Dijkstra → Topo Sort → Union-Find → Advanced
-      ↓
-Dynamic Programming (1D → 2D → Knapsack → String DP → Bitmask DP)
-      ↓
-Greedy (Proof required for each problem)
-```
+
+**How to read this diagram.** Follow the arrows top to bottom as a suggested study order: green is foundations, blue is core structures and traversals, orange is the optimization-heavy topics.
 
 ---
 
