@@ -117,54 +117,23 @@ Understanding _why_ each system was built — and what it was designed to replac
 
 ### Timeline: From Hierarchical DBs to Learned Indexes
 
-```
-ERA          │ SYSTEM / PAPER                          │ DS MOTIVATION
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-1960s        │ IBM IMS (hierarchical)                   │ First production DB; tree
-             │ CODASYL (network DB)                     │ graph traversal; slow queries
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-1970         │ Codd's Relational Model (IBM)            │ Set-based algebra; query
-             │                                         │ optimization beats navigation
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-1974         │ System R (IBM San Jose)                  │ First SQL implementation;
-             │                                         │ B-Tree indexes prototyped here
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-1979         │ Oracle v2 (Relational Software Inc.)     │ First commercial RDBMS;
-             │                                         │ B-Tree indexing adopted
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-1989         │ PostgreSQL (Stonebraker, UC Berkeley)    │ Postgres → PostgreSQL 1995;
-             │                                         │ object-relational + B-Tree v2
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-1995         │ Java 1.0 (Oak → Java)                   │ HashMap, ArrayList shipped;
-             │                                         │ separate Map/Collection APIs
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-2000s        │ Memcached (2003, Danga Interactive)      │ In-memory hash cache; no
-             │                                         │ persistence; stateless reads
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-2009         │ Redis (Salvatore Sanfilippo / Antirez)   │ Memcached + persistence;
-             │                                         │ multiple data structures
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-2007         │ LevelDB (Google, Jeff Dean et al.)       │ LSM-Tree revived for NVMe;
-             │                                         │ skip list memtable + SSTable
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-2008         │ Apache Cassandra (Facebook → Apache)     │ LSM-Tree + Dynamo ring;
-             │                                         │ wide-partition, tunable AP
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-2010         │ RocksDB (Facebook / Dhruba Borthakur)    │ LevelDB fork; column families;
-             │                                         │ compaction tuning for SSDs
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-2011         │ Riak (Basho Technologies)                │ Dynamo paper in production;
-             │                                         │ consistent hashing + CRDTs
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-2015         │ CockroachDB (Spencer Kimball / Google)   │ Spanner-influenced; global
-             │                                         │ distributed SQL + Raft consensus
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-2020s        │ SageDB (Kraska, MIT / Google Brain)      │ Learned indexes: ML models
-             │                                         │ replace B-Tree index structure
-─────────────┼─────────────────────────────────────────┼─────────────────────────────
-2020s        │ HNSW (Malkov & Brodzia)                  │ Hierarchical navigable small
-             │                                         │ world; graph-based ANN search
-```
+| Era | System / paper | DS motivation |
+| --- | -------------- | ------------- |
+| 1960s | IBM IMS (hierarchical); CODASYL (network DB) | First production DBs: tree and graph traversal; slow ad-hoc queries |
+| 1970 | Codd's Relational Model (IBM) | Set-based algebra; query optimization beats navigation |
+| 1974 | System R (IBM San Jose) | First SQL implementation; B-Tree indexes prototyped here |
+| 1979 | Oracle v2 (Relational Software Inc.) | First commercial RDBMS; B-Tree indexing adopted |
+| 1986 / 1996 | POSTGRES (Stonebraker, UC Berkeley) → PostgreSQL | Object-relational model + B-Tree indexes; renamed PostgreSQL in 1996 |
+| 1996 / 1998 | Java 1.0 → Collections Framework (JDK 1.2) | `Hashtable`/`Vector` first; `HashMap`/`ArrayList` and the unified Collection/Map APIs arrived in 1.2 |
+| 2003 | Memcached (Danga Interactive) | In-memory hash cache; no persistence; stateless reads |
+| 2008 | Apache Cassandra (Facebook → Apache) | LSM-Tree + Dynamo ring; wide partitions, tunable consistency |
+| 2009 | Redis (Salvatore Sanfilippo) | Memcached + persistence; multiple data structures |
+| 2009 | Riak (Basho Technologies) | Dynamo paper in production; consistent hashing + CRDTs |
+| 2011 | LevelDB (Google, Jeff Dean and Sanjay Ghemawat) | LSM-Tree design; skip-list memtable + SSTables |
+| 2012 | RocksDB (Facebook) | LevelDB fork; column families; compaction tuning for SSDs |
+| 2015 | CockroachDB (Spencer Kimball et al.) | Spanner-influenced; global distributed SQL + Raft consensus |
+| 2016 | HNSW (Malkov & Yashunin) | Hierarchical navigable small world; graph-based approximate nearest-neighbour search |
+| 2017+ | Learned indexes (Kraska et al.; later SageDB) | ML models replace or augment the B-Tree index structure |
 
 ### Predecessors and Motivations: Why Each System Exists
 
@@ -238,77 +207,19 @@ Kafka: COMMIT offset to __consumer_offsets topic (compacted hash map: group→to
 
 ---
 
-```
-DATA STRUCTURE      │ WHERE YOU'VE ALREADY USED IT (unknowingly)
-────────────────────┼─────────────────────────────────────────────────────
-HASH TABLE          │ • Redis (entire DB is a hash table!)
-                    │ • Python dict / JavaScript {} (V8 hidden classes)
-                    │ • Database hash indexes (O(1) lookup by key)
-                    │ • Load balancers: consistent hashing for server selection
-                    │ • DNS cache: hostname → IP address mapping
-                    │ • Session storage: sessionId → user data
-                    │ • React reconciliation: key prop = hash for diffing
-────────────────────┼─────────────────────────────────────────────────────
-ARRAY / BUFFER      │ • NumPy ndarray (contiguous memory blocks for ML)
-                    │ • TCP receive buffer (kernel stores incoming bytes)
-                    │ • GPU VRAM: texture buffers, vertex arrays, tensors
-                    │ • Database Buffer Pool: array of page-sized slots
-                    │ • Ring buffers: Kafka partitions (circular array of messages)
-────────────────────┼─────────────────────────────────────────────────────
-LINKED LIST         │ • React Fiber tree (hooks are a linked list!)
-                    │ • LRU cache (doubly-linked list + hash map)
-                    │ • Memory allocators (free list of available blocks)
-                    │ • Undo/Redo stacks in editors (each state -> previous)
-                    │ • Blockchain: each block points to previous block hash
-────────────────────┼─────────────────────────────────────────────────────
-STACK               │ • Call stack (function execution in every language)
-                    │ • Browser history (back/forward navigation)
-                    │ • Compiler: parsing expressions (shunting-yard)
-                    │ • DFS traversal (BFS uses queue, DFS uses stack)
-                    │ • Kubernetes: LIFO pod termination during scale-down
-────────────────────┼─────────────────────────────────────────────────────
-QUEUE               │ • Message queues: Kafka, RabbitMQ, SQS (FIFO processing)
-                    │ • Print spooler: documents queued for printing
-                    │ • BFS in graph traversal (shortest path)
-                    │ • Task schedulers: OS process queue, Celery worker queue
-                    │ • Rate limiting: token bucket (queue of available tokens)
-────────────────────┼─────────────────────────────────────────────────────
-TREE                │ • DOM tree (HTML document structure)
-                    │ • React Fiber tree (virtual DOM is a tree!)
-                    │ • B-Tree: EVERY database index (PostgreSQL, MySQL)
-                    │ • File system: directory tree (inodes + hierarchy)
-                    │ • JSON/XML: hierarchical data = tree structure
-                    │ • AST: compilers parse code into Abstract Syntax Trees
-                    │ • Trie: autocomplete, spell checkers, IP routing tables
-────────────────────┼─────────────────────────────────────────────────────
-HEAP/PRIORITY QUEUE │ • OS scheduler: highest-priority process runs next
-                    │ • Dijkstra's algorithm (min-heap for shortest path)
-                    │ • K8s pod scheduler: priority-based resource allocation
-                    │ • Streaming top-K: "most popular tweets right now"
-                    │ • Huffman coding (compression, used in ZIP/GZIP/JPEG)
-────────────────────┼─────────────────────────────────────────────────────
-GRAPH               │ • Social networks (friend connections = graph edges)
-                    │ • Google Maps (roads = weighted graph, Dijkstra/A*)
-                    │ • Microservice dependency graph (service A calls B, C)
-                    │ • Package managers: dependency resolution (topological sort!)
-                    │ • Git: commit history is a DAG (directed acyclic graph)
-                    │ • Neural networks: computation graph (PyTorch autograd)
-────────────────────┼─────────────────────────────────────────────────────
-BLOOM FILTER        │ • Databases: quick "does this key exist?" before disk read
-                    │ • CDNs: has this URL been cached? (probabilistic check)
-                    │ • Spell checkers: is this word in the dictionary?
-                    │ • Chrome: safe browsing (is this URL malicious?)
-                    │ • Cassandra/HBase: skip SSTable reads if key probably absent
-────────────────────┼─────────────────────────────────────────────────────
-SKIP LIST           │ • Redis sorted sets (ZRANGEBYSCORE = skip list!)
-                    │ • LevelDB / RocksDB: in-memory index structures
-                    │ Probabilistic alternative to balanced BST
-────────────────────┼─────────────────────────────────────────────────────
-LSM-TREE            │ • Cassandra, LevelDB, RocksDB, ScyllaDB
-(Log-Structured     │   Write-optimized: sequential writes only → insane throughput
- Merge-Tree)        │   Read: check memtable → check SSTables (multiple levels)
-                    │   vs B-Tree (PostgreSQL): read-optimized, random I/O for writes
-```
+| Data structure | Where you've already used it (unknowingly) |
+| -------------- | ------------------------------------------ |
+| **Hash table** | Redis (its keyspace is a hash table) <br> Python `dict` / JavaScript objects (V8 hidden classes) <br> Database hash indexes (O(1) lookup by key) <br> Load balancers: consistent hashing for server selection <br> DNS cache: hostname → IP address <br> Session storage: `sessionId` → user data <br> React reconciliation: `key` prop identifies elements when diffing |
+| **Array / buffer** | NumPy `ndarray` (contiguous memory blocks for ML) <br> TCP receive buffer (kernel stores incoming bytes) <br> GPU VRAM: texture buffers, vertex arrays, tensors <br> Database buffer pool: array of page-sized slots <br> Ring buffers: network-card queues, audio buffers, the LMAX Disruptor |
+| **Linked list** | React Fiber hooks (a linked list per component) <br> LRU cache (doubly-linked list + hash map) <br> Memory allocators (free list of available blocks) <br> Undo/redo history in editors (each state links to the previous) <br> Blockchain: each block references the previous block's hash |
+| **Stack** | Call stack (function execution in every language) <br> Browser history (back/forward navigation) <br> Compiler: parsing expressions (shunting-yard) <br> DFS traversal (BFS uses a queue, DFS uses a stack) |
+| **Queue** | Message queues: Kafka, RabbitMQ, SQS (FIFO processing) <br> Print spooler: documents queued for printing <br> BFS in graph traversal (shortest path) <br> Task schedulers: OS run queue, Celery worker queue <br> Rate limiting: sliding-window log (a queue of timestamps) |
+| **Tree** | DOM tree (HTML document structure) <br> React Fiber tree (work-in-progress tree of the UI) <br> B-Tree: the default index in PostgreSQL and MySQL <br> File system: directory tree (inodes + hierarchy) <br> JSON/XML: hierarchical data <br> AST: compilers parse code into abstract syntax trees <br> Trie: autocomplete, spell checkers, IP routing tables |
+| **Heap / priority queue** | OS scheduler: highest-priority process runs next <br> Dijkstra's algorithm (min-heap for shortest path) <br> Kubernetes scheduler: priority-based scheduling queue <br> Streaming top-K: "most popular tweets right now" <br> Huffman coding (compression used in ZIP/GZIP/PNG) |
+| **Graph** | Social networks (friend connections = edges) <br> Google Maps (roads = weighted graph, Dijkstra/A*) <br> Microservice dependency graph (service A calls B, C) <br> Package managers: dependency resolution (topological sort) <br> Git: commit history is a DAG <br> Neural networks: computation graph (PyTorch autograd) |
+| **Bloom filter** | Databases: quick "does this key exist?" before a disk read <br> CDNs: has this URL been cached? (probabilistic check) <br> Spell checkers: is this word in the dictionary? <br> Chrome Safe Browsing (is this URL malicious?) <br> Cassandra/HBase: skip SSTable reads if the key is probably absent |
+| **Skip list** | Redis sorted sets (`ZRANGEBYSCORE` is backed by a skip list) <br> LevelDB / RocksDB: in-memory memtable index <br> A probabilistic alternative to balanced BSTs |
+| **LSM-tree** (log-structured merge-tree) | Cassandra, LevelDB, RocksDB, ScyllaDB <br> Write-optimized: sequential writes only → very high throughput <br> Read: check memtable → check SSTables (multiple levels) <br> vs B-Tree (PostgreSQL): read-optimized, random I/O for writes |
 
 ---
 
@@ -626,42 +537,42 @@ For < 1000 elements: arrays beat everything due to cache efficiency.
 
 # Choosing the Right Data Structure — Decision Flowchart
 
+```mermaid
+flowchart TD
+    START{"START:<br/>what operation is<br/>most frequent?"}
+    START --> A{"O(1) lookup by key?"}
+    A --> A1["Keys are strings →<br/>Hash table (dict / map)"]
+    A --> A2["Need ordering too? →<br/>TreeMap (Red-Black) or Skip list"]
+    A --> A3["Probabilistic OK? →<br/>Bloom filter ('might exist?')"]
+    START --> B{"Sorted data?"}
+    B --> B1["Frequent reads →<br/>Sorted array + binary search"]
+    B --> B2["Frequent inserts/deletes →<br/>BST (AVL / Red-Black) or Skip list"]
+    B --> B3["On disk →<br/>B-Tree (database index)"]
+    START --> C{"FIFO processing?"}
+    C --> C1["Single-threaded →<br/>Queue (array or linked)"]
+    C --> C2["Priority →<br/>Heap (priority queue)"]
+    C --> C3["Distributed →<br/>Message queue (Kafka, SQS)"]
+    START --> D{"LIFO processing?"}
+    D --> D1["Stack<br/>(array-based for cache efficiency)"]
+    START --> E{"Relationships between entities?"}
+    E --> E1["Hierarchical → Tree"]
+    E --> E2["Arbitrary connections →<br/>Graph (adjacency list or matrix)"]
+    E --> E3["Grouping → Union-Find"]
+    START --> F{"Duplicates or counts?"}
+    F --> F1["Count occurrences →<br/>HashMap&lt;item, count&gt;"]
+    F --> F2["Top-K frequent →<br/>Heap + HashMap"]
+    F --> F3["Approximate count →<br/>Count-Min sketch"]
+    START --> G{"Evict old items?"}
+    G --> G1["Least recently used →<br/>LRU (HashMap + doubly linked list)"]
+    G --> G2["Time-based →<br/>TTL map or timer wheel"]
+    G --> G3["Size-limited →<br/>Bounded priority queue"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class START,A,B,C,D,E,F,G ask
+    class A1,A2,A3,B1,B2,B3,C1,C2,C3,D1,E1,E2,E3,F1,F2,F3,G1,G2,G3 ans
 ```
-START: What operation is most frequent?
 
-├── Need O(1) lookup by key?
-│   ├── Keys are strings → Hash Table (dict/map)
-│   ├── Need ordering too? → TreeMap (Red-Black Tree) or Skip List
-│   └── Probabilistic OK? → Bloom Filter (for "might exist?" checks)
-│
-├── Need sorted data?
-│   ├── Frequent reads → Sorted Array + Binary Search
-│   ├── Frequent inserts/deletes → BST (AVL/Red-Black) or Skip List
-│   └── On disk? → B-Tree (database index)
-│
-├── Need FIFO processing?
-│   ├── Single-threaded → Queue (array-based or linked)
-│   ├── Priority? → Heap (Priority Queue)
-│   └── Distributed? → Message queue (Kafka, SQS)
-│
-├── Need LIFO processing?
-│   └── Stack (array-based for cache efficiency)
-│
-├── Need relationships between entities?
-│   ├── Hierarchical? → Tree
-│   ├── Arbitrary connections? → Graph (adjacency list or matrix)
-│   └── Grouping? → Union-Find (disjoint sets)
-│
-├── Need to handle duplicates or counts?
-│   ├── Count occurrences → HashMap<item, count>
-│   ├── Top-K frequent → Heap + HashMap
-│   └── Approximate count → Count-Min Sketch
-│
-└── Need to evict old items?
-    ├── Least recently used → LRU Cache (HashMap + Doubly Linked List)
-    ├── Time-based → TTL Map or Timer Wheel
-    └── Size-limited → Bounded priority queue
-```
+**How to read this diagram.** Pick the blue question that matches your dominant operation, then choose the green structure for your constraint.
 
 ---
 
