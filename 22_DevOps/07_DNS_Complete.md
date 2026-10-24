@@ -500,6 +500,8 @@ flowchart TD
     BGP_NY -->|"Shortest Path (5ms)"| Root_NY
 ```
 
+**How to read this diagram.** A client in Tokyo and a client in New York both send to the same destination IP, 192.5.5.241. Each packet reaches the BGP router in its own region (Japan, USA) and follows the shortest path to the F-Root server in the same region, so both servers sit inside one anycast group. Notice that one address leads to different physical servers depending on where the client is.
+
 **The Superpower:**
 Anycast provides mathematically perfect load balancing and infinite DDoS absorption without using a Load Balancer. If an attacker in Russia launches a 1 Tbps DDoS attack against `192.5.5.241`, the BGP routers physically route the attack traffic ONLY to the Russian root server instances. The Russian servers might melt down, but the rest of the world remains completely unaffected because physics dictates the attack traffic cannot reach New York.
 
@@ -567,6 +569,8 @@ graph TD
         OS_KEY -.->|Verifies| ROOT
     end
 ```
+
+**How to read this diagram.** Read it top to bottom as a chain of signatures: the Root zone signs the .com public key, the .com zone signs the bank.com public key, and the bank.com zone signs the A record. The dotted arrow shows the one anchor of trust, the Root public key hardcoded in your computer, which verifies the Root zone. Notice that trust flows down from a key you already hold, so a forged A record cannot be verified.
 
 If an attacker tries to forge the IP address, they cannot forge the signature without the Private Key. The math fails, the CPU rejects the packet, and the browser displays a hard error, physically preventing you from connecting to the malicious server.
 

@@ -366,9 +366,10 @@ DECOMPOSITION:
 <details><summary>Answer</summary>
 
 If your first CTE aggregates the average _before_ filtering for the hire date, you calculate the wrong average (including all years) or you join massive amounts of unnecessary data. The "Inside-Out" rule dictates that you must filter raw data **first**.
-CTE 1: Filter `Employees` where `hire_date` is in 2023.
-CTE 2: Join with `Departments` and calculate the average.
-Outer Query: `ORDER BY` average and `LIMIT 3`.
+
+- CTE 1: Filter `Employees` where `hire_date` is in 2023.
+- CTE 2: Join with `Departments` and calculate the average.
+- Outer Query: `ORDER BY` average and `LIMIT 3`.
 
 </details>
 

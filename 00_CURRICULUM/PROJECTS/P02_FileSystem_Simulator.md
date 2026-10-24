@@ -489,10 +489,11 @@ Trace through `fs.search("report.txt")`. In which order does DFS pre-order visit
 **Result:** `["/a/b/report.txt", "/tmp/report.txt"]`
 
 **BFS visit sequence:**
-Level 0: `/`
-Level 1: `/a`, `/tmp`
-Level 2: `/a/b`, `/tmp/report.txt` ✓
-Level 3: `/a/b/report.txt` ✓
+
+- Level 0: `/`
+- Level 1: `/a`, `/tmp`
+- Level 2: `/a/b`, `/tmp/report.txt` ✓
+- Level 3: `/a/b/report.txt` ✓
 
 **Result:** `["/tmp/report.txt", "/a/b/report.txt"]` — same set, different order.
 
@@ -526,15 +527,15 @@ Store `Map<String, Permission> acl` on each `Node` (key = username). Modify `rea
 
 ## 📎 Reference Anchors
 
-📎 **Reference Anchor:** [OpenJDK `LinkedHashMap.java`](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/LinkedHashMap.java)
-**Invariant learned:** `LinkedHashMap` maintains insertion order via a doubly-linked list overlay on the hash table, giving O(1) put/get AND preserving the order `listDir` needs.
-**Local rewrite:** Use `LinkedHashMap` for `Node.children` when insertion-order iteration matters; use `TreeMap` if you want alphabetical order without a sort step.
-**Constraint warning:** `TreeMap` gives O(log k) put/get per child lookup vs O(1) for `HashMap`/`LinkedHashMap`; for deep trees with many children this compounds.
+- 📎 **Reference Anchor:** [OpenJDK `LinkedHashMap.java`](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/LinkedHashMap.java)
+- **Invariant learned:** `LinkedHashMap` maintains insertion order via a doubly-linked list overlay on the hash table, giving O(1) put/get AND preserving the order `listDir` needs.
+- **Local rewrite:** Use `LinkedHashMap` for `Node.children` when insertion-order iteration matters; use `TreeMap` if you want alphabetical order without a sort step.
+- **Constraint warning:** `TreeMap` gives O(log k) put/get per child lookup vs O(1) for `HashMap`/`LinkedHashMap`; for deep trees with many children this compounds.
 
-📎 **Reference Anchor:** [cp-algorithms: DFS traversal](https://cp-algorithms.com/graph/depth-first-search.html)
-**Invariant learned:** DFS pre-order visits a node before its children; post-order visits after. For a file-system `delete`, post-order would be natural if you needed to clean up resources leaf-first.
-**Local rewrite:** `dfsSearch` here is pre-order (check name → recurse). A post-order variant would be needed for a bottom-up delete with custom hooks.
-**Constraint warning:** Java's default stack depth is ~500–1000 frames. A file system with path depth > 500 would overflow. In production, convert to an explicit `Deque<Node>` stack.
+- 📎 **Reference Anchor:** [cp-algorithms: DFS traversal](https://cp-algorithms.com/graph/depth-first-search.html)
+- **Invariant learned:** DFS pre-order visits a node before its children; post-order visits after. For a file-system `delete`, post-order would be natural if you needed to clean up resources leaf-first.
+- **Local rewrite:** `dfsSearch` here is pre-order (check name → recurse). A post-order variant would be needed for a bottom-up delete with custom hooks.
+- **Constraint warning:** Java's default stack depth is ~500–1000 frames. A file system with path depth > 500 would overflow. In production, convert to an explicit `Deque<Node>` stack.
 
 ---
 

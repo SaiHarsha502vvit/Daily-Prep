@@ -641,8 +641,9 @@ AUTO-RF vs MANUAL CHANNEL PLANNING:
 The switch receives the Ethernet frame with a VLAN 20 tag. The switch's forwarding logic consults its MAC address table for VLAN 20 — it knows which ports belong to VLAN 20. The corporate server at 192.168.10.50 is on VLAN 10, which means its MAC address is registered in the VLAN 10 CAM table, NOT the VLAN 20 CAM table.
 
 The switch has two choices based on configuration:
-  (a) If the frame's VLAN 20 tag doesn't match any known MAC on VLAN 20, the switch drops the frame (since no CAM entry exists on that VLAN for the destination MAC).
-  (b) If the frame is forwarded within VLAN 20, it reaches only ports assigned to VLAN 20 — not VLAN 10 ports.
+
+- (a) If the frame's VLAN 20 tag doesn't match any known MAC on VLAN 20, the switch drops the frame (since no CAM entry exists on that VLAN for the destination MAC).
+- (b) If the frame is forwarded within VLAN 20, it reaches only ports assigned to VLAN 20 — not VLAN 10 ports.
 
 **Why?** VLANs are Layer 2 broadcast domains. A frame tagged for VLAN 20 can only travel within VLAN 20's broadcast domain. The switch's VLAN membership table is the hard boundary. Even if the AP is physically connected to a trunk port that carries both VLANs, the switch enforces isolation — the VLAN tag tells the switch which broadcast domain the frame belongs to, and it will NOT deliver it to VLAN 10.
 

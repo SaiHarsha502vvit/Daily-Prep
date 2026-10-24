@@ -106,9 +106,9 @@ Also written: ₙCₖ, C_n^k, or the binomial coefficient (n k)
 
 **Deriving C(n,k) from P(n,k):**
 
-P(n,k) = 720 counts all ORDERED arrangements of 3 people from 10.
-But {Alice, Bob, Charlie} is counted 3! = 6 times in P(n,k) — once for each ordering.
-To count UNORDERED sets: divide by k! = 6.
+- P(n,k) = 720 counts all ORDERED arrangements of 3 people from 10.
+- But {Alice, Bob, Charlie} is counted 3! = 6 times in P(n,k) — once for each ordering.
+- To count UNORDERED sets: divide by k! = 6.
 
 ```
 C(10, 3) = P(10, 3) / 3! = 720 / 6 = 120

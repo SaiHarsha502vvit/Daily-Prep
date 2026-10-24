@@ -4,9 +4,9 @@
 
 ## Logic-First, Code-Second: The 5W+H Way
 
-DP = "What are my choices at each step, and what state do I need to remember?"
-Greedy = "Can I make the locally best choice and still get globally best?"
-Backtracking = "Try everything, but prune impossible branches early."
+- DP = "What are my choices at each step, and what state do I need to remember?"
+- Greedy = "Can I make the locally best choice and still get globally best?"
+- Backtracking = "Try everything, but prune impossible branches early."
 
 ---
 

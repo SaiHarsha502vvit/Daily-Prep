@@ -6,10 +6,10 @@
 
 ## Why Everything Looks Gaussian
 
-Measure the heights of 10,000 people. Plot the histogram. It's bell-shaped.
-Measure ping times to a server. Bell-shaped.
-Measure manufacturing error in ball bearings. Bell-shaped.
-Average the face values of 100 dice rolls, repeat 10,000 times. Bell-shaped.
+- Measure the heights of 10,000 people. Plot the histogram. It's bell-shaped.
+- Measure ping times to a server. Bell-shaped.
+- Measure manufacturing error in ball bearings. Bell-shaped.
+- Average the face values of 100 dice rolls, repeat 10,000 times. Bell-shaped.
 
 All these come from the same theorem: the **Central Limit Theorem (CLT)**. When you average (or sum) many independent random variables — regardless of their distribution — the result approaches a Gaussian (Normal) distribution.
 

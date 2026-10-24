@@ -529,6 +529,8 @@ flowchart TD
     end
 ```
 
+**How to read this diagram.** The main flow takes Input Tokens through Embedding + Positional Encoding, Multi-Head Self-Attention, Add & LayerNorm, a Feed-Forward Network and a second Add & LayerNorm, repeated for N layers, to produce Output Representations. The "Self-Attention Detail" box opens up the attention step: Query and Key combine into a score (Q·Kᵀ/√dₖ), the score goes through Softmax, and the result weights the Value. Notice that Value enters only at the final weighted sum.
+
 ---
 
 # PART 6: Training Optimization — Making Networks Learn Faster

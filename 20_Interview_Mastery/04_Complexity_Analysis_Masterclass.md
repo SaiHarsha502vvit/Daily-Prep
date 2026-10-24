@@ -593,13 +593,15 @@ TECHNIQUE 5: MODIFY INPUT (if allowed)
 ## INTERVIEW QUESTIONS
 
 "Why does Java use Quicksort for primitives and TimSort for objects?"
-→ Primitives: no stability needed, Quicksort has better cache behavior
-→ Objects: stability matters (equal objects keep original order)
-→ TimSort exploits existing runs → great on partially sorted data
+
+- → Primitives: no stability needed, Quicksort has better cache behavior
+- → Objects: stability matters (equal objects keep original order)
+- → TimSort exploits existing runs → great on partially sorted data
 
 "When would you use Counting Sort over Comparison Sort?"
-→ When the range of values (k) is O(n) or smaller
-→ e.g., sorting ages (0-150), grades (0-100), ASCII characters (0-127)
+
+- → When the range of values (k) is O(n) or smaller
+- → e.g., sorting ages (0-150), grades (0-100), ASCII characters (0-127)
 
 ---
 

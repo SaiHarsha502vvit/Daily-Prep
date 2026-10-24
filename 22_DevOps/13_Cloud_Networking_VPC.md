@@ -1005,7 +1005,9 @@ resource "aws_network_acl_rule" "block_malicious_ip" {
 <details><summary>Answer</summary>
 
 **Challenge 1:**
+
 Formula: n × (n-1) / 2 = 10 × 9 / 2 = **45 VPC Peering connections**.
+
 Each connection requires: route table entry in both VPCs, SG rules referencing the peer, cross-account IAM if applicable, and DNS settings. That is 90+ configuration items just for routing.
 
 **Challenge 2:**

@@ -1,8 +1,8 @@
 # Assignment: [Title]
 
-**Course:** [Course Code] — [Course Name]
-**Due:** [Week X, Day Y]
-**Weight:** [% of final grade]
+- **Course:** [Course Code] — [Course Name]
+- **Due:** [Week X, Day Y]
+- **Weight:** [% of final grade]
 
 ## Description
 

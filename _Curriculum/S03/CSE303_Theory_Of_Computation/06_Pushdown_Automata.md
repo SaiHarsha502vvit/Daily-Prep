@@ -42,10 +42,10 @@ A transition `(q, a, A) → (r, B)` means:
 - → move to state r
 - → push B onto stack (or ε = don't push)
 
-If you want to pop A and push B: `(q, a, A) → (r, B)` — pops A, pushes B.
-If you want to push B without popping: `(q, a, ε) → (r, B)`.
-If you want to pop A and push nothing: `(q, a, A) → (r, ε)`.
-If you want to replace A with BC (push two): push B first, then C — but stacks push one symbol at a time, so PDAs replace one with a *string* by convention: `(q, a, A) → (r, BC)` means pop A, push C then B (so B is on top).
+- If you want to pop A and push B: `(q, a, A) → (r, B)` — pops A, pushes B.
+- If you want to push B without popping: `(q, a, ε) → (r, B)`.
+- If you want to pop A and push nothing: `(q, a, A) → (r, ε)`.
+- If you want to replace A with BC (push two): push B first, then C — but stacks push one symbol at a time, so PDAs replace one with a *string* by convention: `(q, a, A) → (r, BC)` means pop A, push C then B (so B is on top).
 
 **Acceptance:** A PDA accepts a string if there exists *some* computation path (nondeterminism!) that reaches an accepting state after reading all input.
 

@@ -1,8 +1,8 @@
 # Lab: [Title]
 
-**Course:** [Course Code] — [Course Name]
-**Week:** [X]
-**Duration:** [~90–180 min]
+- **Course:** [Course Code] — [Course Name]
+- **Week:** [X]
+- **Duration:** [~90–180 min]
 
 ## Setup
 

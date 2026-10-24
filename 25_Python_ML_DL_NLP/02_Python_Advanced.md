@@ -453,7 +453,9 @@ If `Thread A` and `Thread B` both try to read the variable `x_list`, they both n
    If Thread A and Thread B execute these instructions simultaneously, the reference count gets corrupted. The V8 Garbage Collector might prematurely delete `x_list` while the threads are still using it, causing an instant `SegFault` crash.
 
 **The Mechanical Execution (The GIL):**
+
 To prevent this, Guido van Rossum invented the **GIL (Global Interpreter Lock)**.
+
 The GIL is a massive, global C-level `mutex` (lock) placed on the entire Python interpreter.
 
 1. Thread A wakes up. It wants to execute a Python line of code.
@@ -463,7 +465,9 @@ The GIL is a massive, global C-level `mutex` (lock) placed on the entire Python 
 5. Thread A is forced to release the GIL, giving Thread B a chance.
 
 **The Result (The CPU-Bound Catastrophe):**
+
 Because of the GIL, **Python can NEVER use more than 1 CPU core to execute Python code.**
+
 If you have a 64-core AWS server, and you write a multi-threaded Python program to calculate prime numbers, 63 cores will sit at 0% utilization, and 1 core will sit at 100%. In fact, multi-threading in Python is often _slower_ than single-threading because the OS wastes CPU cycles constantly context-switching threads that are just fighting over the same lock.
 
 ---
@@ -506,12 +510,17 @@ When you write `tensor.to('cuda')`, you are executing physical hardware physics 
 6. The GPU's thousands of CUDA cores execute the Matrix Multiplication (Forward Pass) on the VRAM data.
 
 **The Production Catastrophe (GPU Starvation):**
+
 An Nvidia H100 GPU costs $30,000. It can process thousands of images per millisecond.
+
 If you write a naive Python `for` loop to load images from the SSD, decode the JPEGs, and send them to the GPU one by one, you will hit **GPU Starvation**.
+
 The CPU (running single-threaded Python) takes 5 milliseconds to decode the JPEG. The GPU takes 0.1 milliseconds to train on it. The GPU spends 98% of its time sitting at 0% utilization waiting for Python. You are burning $30,000.
 
 **The Solution (The DataLoader Architecture):**
+
 To keep the GPU fed, you must use PyTorch's `DataLoader` with `num_workers > 0`.
+
 This entirely abandons Python Threads and uses **OS Multiprocessing**.
 
 1. The main Python process forks 8 entirely separate OS processes. (Each process gets its own memory space and its own independent GIL).

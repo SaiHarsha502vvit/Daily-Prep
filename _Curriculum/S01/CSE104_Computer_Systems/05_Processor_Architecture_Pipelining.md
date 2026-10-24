@@ -37,9 +37,9 @@ In cycle 5: I1 writes back while I2 accesses memory while I3 executes
 5 instructions in flight simultaneously!
 ```
 
-Without pipelining: 5 instructions × 5 cycles each = 25 cycles.
-With pipelining: 5 + 4 = 9 cycles (5 stages + 4 fill cycles).
-For 1000 instructions: 1004 cycles vs 5000 cycles — nearly 5× speedup.
+- Without pipelining: 5 instructions × 5 cycles each = 25 cycles.
+- With pipelining: 5 + 4 = 9 cycles (5 stages + 4 fill cycles).
+- For 1000 instructions: 1004 cycles vs 5000 cycles — nearly 5× speedup.
 
 **Ideal throughput:** One instruction completed per cycle (after pipeline is full).
 

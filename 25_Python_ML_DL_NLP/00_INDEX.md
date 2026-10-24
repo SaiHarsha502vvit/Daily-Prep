@@ -70,6 +70,8 @@ flowchart TD
     G --> MLOPS["13: MLOps & Production"]
 ```
 
+**How to read this diagram.** Follow the arrows from "01: Python Core": it leads to Python Advanced (02) and to NumPy & Pandas (03), then Math for ML (04), ML Fundamentals (05), and from there ML Algorithms (06) and Deep Learning (07). Deep Learning then branches to NLP (08), Frameworks (09), Computer Vision (11) and MLOps (13), NLP leads to LLMs & RAG (10) and on to Reinforcement Learning (14), and ML Algorithms leads to Recommenders (12). Notice that Deep Learning (07) is the hub that most later chapters depend on.
+
 ---
 
 ## 🔗 Cross-References to Other Sections

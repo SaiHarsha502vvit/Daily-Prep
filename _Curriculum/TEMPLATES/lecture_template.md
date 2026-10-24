@@ -1,8 +1,8 @@
 # Lecture: [Title]
 
-**Course:** [Course Code] — [Course Name]
-**Date:** [Week X, Day Y]
-**Duration:** [~90 min]
+- **Course:** [Course Code] — [Course Name]
+- **Date:** [Week X, Day Y]
+- **Duration:** [~90 min]
 
 ## Learning Objectives
 

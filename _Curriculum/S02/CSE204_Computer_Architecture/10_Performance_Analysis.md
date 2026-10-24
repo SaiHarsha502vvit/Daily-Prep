@@ -237,10 +237,10 @@ Memory bandwidth streaming (simple sum): I ≈ 0.25 FLOPS/byte → memory bound
 - Floating-point suite (scientific computation)
 - Companies tune compilers and microarchitectures for SPEC — results should be interpreted cautiously
 
-**PARSEC:** Parallel workloads (multithreaded benchmarks)
-**STREAM:** Memory bandwidth measurement (the definitive test of DRAM throughput)
-**CoreMark:** Embedded CPU benchmark (standardized, hard to game)
-**MLPerf:** ML inference and training benchmarks
+- **PARSEC:** Parallel workloads (multithreaded benchmarks)
+- **STREAM:** Memory bandwidth measurement (the definitive test of DRAM throughput)
+- **CoreMark:** Embedded CPU benchmark (standardized, hard to game)
+- **MLPerf:** ML inference and training benchmarks
 
 **The Heisenbench problem:** Measuring performance changes performance. Hardware performance counters read the cache hierarchy, branch predictor state, etc. — the act of measuring can cause pipeline flushes or TLB invalidations. Always take multiple samples and report statistics.
 

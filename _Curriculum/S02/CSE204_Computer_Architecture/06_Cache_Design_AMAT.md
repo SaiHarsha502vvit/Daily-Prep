@@ -210,9 +210,9 @@ Miss rate
            Fits in L1  Fits in L3
 ```
 
-**When working set < L1 cache size:** Miss rate ≈ compulsory misses only (very low, near 0).
-**When working set > L1 but < L2:** Capacity misses begin (L1 miss rate rises).
-**When working set > L3:** Must go to DRAM frequently; performance drops dramatically.
+- **When working set < L1 cache size:** Miss rate ≈ compulsory misses only (very low, near 0).
+- **When working set > L1 but < L2:** Capacity misses begin (L1 miss rate rises).
+- **When working set > L3:** Must go to DRAM frequently; performance drops dramatically.
 
 **This is why** matrix multiplication performance drops when matrices don't fit in L3:
 - 512×512 int matrix = 512×512×4 = 1MB (fits in L3 on most CPUs, fast)

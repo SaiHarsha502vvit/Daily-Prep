@@ -130,18 +130,18 @@ Case 1: Clause has 1 literal: `(a)` → `(a ∨ y₁ ∨ y₂) ∧ (a ∨ y₁ �
 
 Actually, cleaner: introduce fresh variables and "pad":
 
-Case 1: `(a)` → `(a ∨ y ∨ z)` for fresh y, z. 
-If a is T: satisfied regardless of y, z.
-If a is F: need y or z T, but the clause set doesn't constrain y, z — so we can always satisfy it by setting y = T. This is WRONG — adding fresh variables might allow satisfying when original wasn't.
+- Case 1: `(a)` → `(a ∨ y ∨ z)` for fresh y, z.
+- If a is T: satisfied regardless of y, z.
+- If a is F: need y or z T, but the clause set doesn't constrain y, z — so we can always satisfy it by setting y = T. This is WRONG — adding fresh variables might allow satisfying when original wasn't.
 
 **Correct approach:**
 
 Case 1 literal: `(a)` → `(a ∨ p ∨ q) ∧ (a ∨ p ∨ ¬q) ∧ (a ∨ ¬p ∨ q) ∧ (a ∨ ¬p ∨ ¬q)`. 
 For this to be satisfied, a must be T (otherwise all 4 clauses cover all possibilities for p,q and one will be unsatisfied). ✓
 
-Case 2 literals: `(a ∨ b)` → `(a ∨ b ∨ p) ∧ (a ∨ b ∨ ¬p)`. 
-If a or b is T: both clauses satisfied regardless of p.
-If both F: both become `(F ∨ F ∨ p) ∧ (F ∨ F ∨ ¬p)` → `p ∧ ¬p` = unsatisfiable. ✓
+- Case 2 literals: `(a ∨ b)` → `(a ∨ b ∨ p) ∧ (a ∨ b ∨ ¬p)`.
+- If a or b is T: both clauses satisfied regardless of p.
+- If both F: both become `(F ∨ F ∨ p) ∧ (F ∨ F ∨ ¬p)` → `p ∧ ¬p` = unsatisfiable. ✓
 
 Case k literals (k ≥ 4): `(a₁ ∨ a₂ ∨ ... ∨ aₖ)`. Introduce fresh variables p₁, ..., p_{k-3}:
 
@@ -382,9 +382,9 @@ Total: O(n+m) = polynomial. ✓
 
 **SUBSET SUM ∈ NP:**
 
-Certificate: the subset T ⊆ S.
-Verifier: compute sum of elements in T, check equals t. O(n).
-Certificate length: n bits (which elements included). ✓
+- Certificate: the subset T ⊆ S.
+- Verifier: compute sum of elements in T, check equals t. O(n).
+- Certificate length: n bits (which elements included). ✓
 
 **Pseudo-polynomial DP:**
 

@@ -365,7 +365,9 @@ After pumping i=2: #a = p + (v+y), #b = p². But we need #b = (#a)². New #a = p
 p² = (p + k)² where k = |v|+|y| ≥ 1. So p² = p² + 2pk + k² > p² for k ≥ 1. Contradiction. ✗
 
 **Case 2: v in a-block, y in b-block.**
+
 After pumping i=2: #a = p + |v|, #b = p² + |y|. Need p² + |y| = (p + |v|)² = p² + 2p|v| + |v|².
+
 So |y| = 2p|v| + |v|². But |y| ≤ |vxy| ≤ p, so p² + 2p|v| must ≤ p. This requires 2p|v| ≤ 0, i.e., |v| = 0. If |v| = 0, then |y| must be 0 too (since |v| = 0 and |vy| ≥ 1 means |y| ≥ 1). With |v|=0, |y|=2p·0+0=0, but |y|≥1. Contradiction. ✗
 
 **Case 3: v and y both in b-block.**

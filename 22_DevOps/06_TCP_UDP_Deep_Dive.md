@@ -743,7 +743,9 @@ sudo sysctl -p  # reload
 4. **The User Space Boundary (Context Switch):** Your Node.js app calls `read()` on the socket. This triggers a **System Call** (Context Switch), transitioning the CPU from User Mode to Kernel Mode. The kernel copies the data from the Kernel Socket Buffer into your application's User Space Memory. The CPU transitions back to User Mode, and your app parses the HTTP request.
 
 **The Zero-Copy Optimization (`sendfile`):**
+
 If you are serving a static file (e.g., an image), a naive approach reads the file from Disk → Kernel Space → User Space (your app), then writes it from User Space → Kernel Space → NIC. This requires **four context switches and four data copies**.
+
 By using **Zero-Copy** (`sendfile()` in Linux), your app tells the Kernel: "Take this file on disk and send it directly to this socket." The kernel instructs DMA to copy from Disk to Kernel Space, and then directly from Kernel Space to the NIC. **Zero context switches, zero CPU data copying, and the data never enters User Space.** This is why Nginx and Kafka can saturate a 10Gbps network link using less than 1% CPU.
 
 </details>
@@ -899,11 +901,15 @@ This section is an exhaustive, institutional-grade dissertation on the exact phy
 When you deploy a Kubernetes `Service`, you get a magical virtual IP (ClusterIP). When Microservice A wants to talk to Microservice B, it sends an HTTP request to this ClusterIP. The abstraction promises that Kubernetes magically load-balances this traffic to the underlying Pods.
 
 **The Naked Truth:**
+
 Under the hood, standard Kubernetes uses `kube-proxy` running in `iptables` mode.
+
 `iptables` was written in 1998 as a simple packet-filtering firewall. It is a **sequential list of rules**.
 
 **The Mechanical Execution (The Catastrophe):**
+
 Imagine you have a large cluster with 5,000 Services, and each Service has 10 Pods. That means you have 50,000 backend endpoints.
+
 To route a single packet from Microservice A to Microservice B, the kernel executes the `netfilter` subsystem:
 
 1. The packet enters the Kernel Network Stack.
@@ -926,6 +932,8 @@ flowchart TD
     RN --> SKB[Socket Buffer]
     SKB -->|Context Switch| USER[User Space Application]
 ```
+
+**How to read this diagram.** It follows one packet from the network card through the driver ring buffer (hardware interrupt) and the Linux network stack (SoftIRQ) to the netfilter hook where kube-proxy's iptables rules run. Inside the rule chain it is checked against Rule 1, Rule 2, Rule 3 and so on, up to Rule 5000, before the NAT match sends it to the socket buffer and, via a context switch, to the user-space application. Notice the dotted "Thousands of checks" edge: the match is reached only after every earlier rule has been evaluated in order.
 
 **The Math of Failure:**
 If you deploy a new Pod, `kube-proxy` has to update the `iptables` rules. Updating a single rule in a 50,000-rule list requires taking a massive lock on the entire kernel subsystem, copying the entire list into User Space, modifying it, and copying it back into Kernel Space. This update can take literally **seconds**. During those seconds, new packets are dropped. Your cluster routing completely falls apart at scale.
@@ -1003,8 +1011,11 @@ CUBIC assumes that _Packet Loss = Congestion_.
 4. Your server realizes the packet was dropped. It panics, cuts its sending speed in half, and slowly starts increasing it again.
 
 **The Catastrophe (Bufferbloat):**
+
 In modern networks (especially cellular and home wifi), routers have absolutely massive memory buffers (to prevent dropping packets).
+
 Because CUBIC only slows down when a packet is dropped, it will fill that massive router buffer completely before it realizes there is a problem.
+
 If the router buffer holds 5 seconds worth of packets, your real-time video call now has a **5-second latency delay**. Your packets aren't lost, they are just sitting in memory waiting to be processed. This is **Bufferbloat**.
 
 ### The New World: BBR (Bottleneck Bandwidth and Round-trip propagation time)
@@ -1031,6 +1042,8 @@ graph LR
         B2 -->|Lowest Latency| C2[Client]
     end
 ```
+
+**How to read this diagram.** Two left-to-right paths compare congestion control. With CUBIC the server saturates the link, the router buffer fills completely, and the client sees latency spikes; with BBR the server paces data at the exact capacity, the buffer stays empty, and latency is lowest. Notice that the only difference between the paths is what happens in the middle node, the router buffer.
 
 **The Reality:**
 If you switch a Linux server from CUBIC to BBR (`sysctl net.ipv4.tcp_congestion_control=bbr`), your latency under heavy load drops dramatically, and your throughput on lossy networks (like 4G/5G) increases by up to 1000%. You have aligned your software with the physical reality of the intermediate router hardware.

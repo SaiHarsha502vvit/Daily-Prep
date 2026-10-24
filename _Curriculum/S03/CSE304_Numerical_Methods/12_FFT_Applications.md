@@ -291,10 +291,12 @@ O(N log N). In image processing: matched filter = cross-correlation with templat
 
 **Single frequency at k=1.** The signal is a pure sinusoid at the fundamental frequency.
 
+```
 Verify: x[j] = IDFT(X)[j] = (1/N)Σ X[k]·e^(i2πjk/N).
 = (1/4)[0 + 2·e^(i·πj/2) + 0 + 2·e^(i·3πj/2)]
 = (1/2)[e^(iπj/2) + e^(-iπj/2)]  (since e^(i3πj/2) = e^(-iπj/2) for real signals)
 = cos(πj/2).
+```
 
 j=0: cos(0)=1 ✓, j=1: cos(π/2)=0 ✓, j=2: cos(π)=-1 ✓, j=3: cos(3π/2)=0 ✓.
 

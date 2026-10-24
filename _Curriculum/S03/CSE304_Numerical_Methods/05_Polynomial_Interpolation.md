@@ -434,9 +434,9 @@ s₀(x) = 0·(1-x)³/6 + (-3)(x-0)³/6 + [(0/1 - 0·1/6)(1-x) + (1/1 - (-3)·1/6
        = -x³/2 + 1.5x
 ```
 
-Check: s₀(0) = 0 ✓, s₀(1) = -1/2 + 3/2 = 1 ✓
-s₀'(x) = -3x²/2 + 3/2
-s₀''(x) = -3x; at x=0: M₀=0 ✓; at x=1: M₁=-3 ✓
+- Check: s₀(0) = 0 ✓, s₀(1) = -1/2 + 3/2 = 1 ✓
+- s₀'(x) = -3x²/2 + 3/2
+- s₀''(x) = -3x; at x=0: M₀=0 ✓; at x=1: M₁=-3 ✓
 
 **Second piece s₁(x) on [1,2] (M₁=-3, M₂=0, h=1):**
 ```
@@ -445,9 +445,9 @@ s₁(x) = (-3)(2-x)³/6 + 0·(x-1)³/6 + [(1/1 - (-3)·1/6)(2-x) + (0/1 - 0·1/6
        = -(2-x)³/2 + 1.5(2-x)
 ```
 
-Check: s₁(1) = -(1)³/2 + 1.5 = -0.5+1.5 = 1 ✓, s₁(2) = 0 + 0 = 0 ✓
-s₁'(x) = 3(2-x)²/2 - 1.5
-At x=1: s₁'(1) = 3/2 - 1.5 = 0... 
+- Check: s₁(1) = -(1)³/2 + 1.5 = -0.5+1.5 = 1 ✓, s₁(2) = 0 + 0 = 0 ✓
+- s₁'(x) = 3(2-x)²/2 - 1.5
+- At x=1: s₁'(1) = 3/2 - 1.5 = 0...
 
 Compare with s₀'(1) = -3/2 + 3/2 = 0. Both derivatives = 0 at x=1. ✓ (The spline has zero slope at the middle point by symmetry — the data is symmetric about x=1, and the natural spline respects this.)
 </details>

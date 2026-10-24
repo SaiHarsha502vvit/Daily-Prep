@@ -668,7 +668,9 @@ Decode:
 Initializing the map with `{0: 1}` represents the "empty prefix" before any elements are processed. It acts as the mathematical anchor for subarrays that start precisely at index 0.
 
 For example: `nums = [5, 2]`, `k = 5`.
+
 At index 0, the `runningSum` is 5. We check for `complement = runningSum - k = 0`.
+
 If the map does not contain `{0: 1}`, the count remains 0, and the valid subarray `[5]` is missed entirely. The `{0: 1}` ensures that a running sum exactly equal to `k` registers as 1 valid subarray.
 
 </details>

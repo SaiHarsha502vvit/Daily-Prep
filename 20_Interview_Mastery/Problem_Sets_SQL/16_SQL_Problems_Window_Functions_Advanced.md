@@ -21,9 +21,9 @@ function_name() OVER (
 )
 ```
 
-**PARTITION BY** = GROUP BY but keeps rows.
-**ORDER BY** = Defines row order within each partition.
-**Frame** = Sliding window of rows for the calculation.
+- **PARTITION BY** = GROUP BY but keeps rows.
+- **ORDER BY** = Defines row order within each partition.
+- **Frame** = Sliding window of rows for the calculation.
 
 ### The Big Three Ranking Functions
 

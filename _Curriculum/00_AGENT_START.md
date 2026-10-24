@@ -19,29 +19,30 @@ This repo is the source of truth. Treat it as a living technical curriculum.
 
 ## Key Folders
 
-`01_Getting_Started` — Onboarding, study plans, repo usage
-`02_Data_Structures` — DS internals, variants, production use
-`03_Algorithms` — Sorting, recursion, DP, graphs, greedy
-`04_Patterns_Templates` — Patterns, templates, constraint triggers
-`05_Problem_Solving` — Problems by pattern and topic
-`06_OOP_Design` — OOP, SOLID, design patterns, LLD, system design
-`07_Modern_Java` — Java, JVM, Spring Boot, JPA, security, testing
-`08_SQL` — Joins, windows, CTEs, indexes, analytics, internals
-`09_Career_Reference` — Career guides, behavioral prep, projects
-`10_Enterprise_Systems` — ERP, DDD, finance/order/inventory
-`12_Daily_Practice` — Daily practice plans and problem drills
-`13_Developer_Essentials` — Git, Docker, CI/CD, networking, concurrency
-`14_Mental_Models` — Thinking frameworks, pattern triggers
-`15_React_Frontend` — React, hooks, state, architecture
-`16_JavaScript` — JS language, runtime, browser APIs, async
-`17_TypeScript` — TS type system, generics, practical typing
-`18_CSS_Complete` — CSS layout, architecture, responsive design
-`19_Frontend_Integration` — Browser debugging, build tools, a11y, performance
-`20_Interview_Mastery` — Interview synthesis, problems, scripts
-`25_Python_ML_DL_NLP` — Python, ML, DL, NLP, LLM/RAG, MLOps
-`22_DevOps` — Linux, Docker, Kubernetes, CI/CD, SRE
-`21_SDET_Playwright_Automation` — Playwright + SDET: stage folders, `labs/` (graded hands-on), `framework/`, `challenges/`, `career/`; start at its `README.md`
-`23_Mobile_Dev_And_Testing`, `24_Advanced_API_Testing`, `26_Weekend_SDET_Track` — see each folder's README
+- `01_Getting_Started` — Onboarding, study plans, repo usage
+- `02_Data_Structures` — DS internals, variants, production use
+- `03_Algorithms` — Sorting, recursion, DP, graphs, greedy
+- `04_Patterns_Templates` — Patterns, templates, constraint triggers
+- `05_Problem_Solving` — Problems by pattern and topic
+- `06_OOP_Design` — OOP, SOLID, design patterns, LLD, system design
+- `07_Modern_Java` — Java, JVM, Spring Boot, JPA, security, testing
+- `08_SQL` — Joins, windows, CTEs, indexes, analytics, internals
+- `09_Career_Reference` — Career guides, behavioral prep, projects
+- `10_Enterprise_Systems` — ERP, DDD, finance/order/inventory
+- `12_Daily_Practice` — Daily practice plans and problem drills
+- `13_Developer_Essentials` — Git, Docker, CI/CD, networking, concurrency
+- `14_Mental_Models` — Thinking frameworks, pattern triggers
+- `15_React_Frontend` — React, hooks, state, architecture
+- `16_JavaScript` — JS language, runtime, browser APIs, async
+- `17_TypeScript` — TS type system, generics, practical typing
+- `18_CSS_Complete` — CSS layout, architecture, responsive design
+- `19_Frontend_Integration` — Browser debugging, build tools, a11y, performance
+- `20_Interview_Mastery` — Interview synthesis, problems, scripts
+- `25_Python_ML_DL_NLP` — Python, ML, DL, NLP, LLM/RAG, MLOps
+- `22_DevOps` — Linux, Docker, Kubernetes, CI/CD, SRE
+- `21_SDET_Playwright_Automation` — Playwright + SDET: stage folders, `labs/` (graded hands-on), `framework/`, `challenges/`, `career/`; start at its `README.md`
+- `23_Mobile_Dev_And_Testing`, `24_Advanced_API_Testing`, `26_Weekend_SDET_Track` — see each folder's README
+
 Full file map: `_Curriculum/01_FILE_MAP.md`.
 
 ## Editing Rules

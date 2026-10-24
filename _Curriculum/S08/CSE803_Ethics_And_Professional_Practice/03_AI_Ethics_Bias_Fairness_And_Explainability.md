@@ -23,6 +23,8 @@ flowchart LR
     B -->|"7 deployment"| U["Real use"]
 ```
 
+**How to read this diagram.** Read left to right through the life of a model: World / history, Data collection, Training, Model, Benchmark / sign-off, Real use. The numbers on the arrows (1 to 7) mark the seven places where bias can enter, named in the paragraph below. Notice that bias is not one event at the data stage: the last two doors, evaluation and deployment, come after the model is built.
+
 Historical (the world itself is skewed, so even a perfect sample reproduces it), representation (the sample under-covers a group), measurement (the label or feature is a proxy that works differently across groups), aggregation (one model for groups that behave differently), learning (modelling choices — optimising overall accuracy — trade one group's performance for another's), evaluation (the benchmark is unrepresentative) and deployment (used for something other than what it was validated for). Two real cases, mapped onto the taxonomy:
 
 **Gender Shades (Buolamwini & Gebru, PMLR 81, 2018).** The authors built the Pilot Parliaments Benchmark — 1,270 parliamentarians from three African countries (Rwanda, Senegal, South Africa) and three Nordic ones (Iceland, Finland, Sweden) — labelled by Fitzpatrick skin type, and tested the binary gender classifiers of Microsoft, Face++ and IBM. They first audited the *existing* benchmarks: IJB-A is 79.6% and Adience 86.2% lighter-skinned, and darker-skinned women are 4.4% of IJB-A. That is an **evaluation bias** — a vendor could report excellent benchmark numbers while failing a group the benchmark barely contained. Error rates from the paper's Table 4:

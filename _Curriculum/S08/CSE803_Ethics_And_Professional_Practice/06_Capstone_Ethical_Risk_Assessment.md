@@ -31,7 +31,7 @@ flowchart LR
     style H fill:#fff9c4,stroke:#fbc02d
 ```
 
-The employee controls nothing downstream of the first arrow, and the red box is where data becomes a consequence. Every later section asks what can go wrong along that path.
+**How to read this diagram.** The employee controls nothing downstream of the first arrow, and the red box is where data becomes a consequence. Every later section asks what can go wrong along that path.
 
 ## 6.2 Stakeholder Map, Including People Who Never Use the Product
 

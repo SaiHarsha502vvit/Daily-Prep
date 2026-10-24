@@ -114,9 +114,9 @@ Either way: condition 3 fails. Contradiction → L is NOT regular. □
 
 **Pump i = 2:** xy²z = aᵖ⁺ᵏbaᵖb. Is this in L?
 
-For this to be "ww" form, we'd need a string t such that tt = aᵖ⁺ᵏbaᵖb.
-Length: 2p+k+2. For this to be ww, the length must be even AND the first half must equal the second half.
-Length = 2p+k+2. Even iff k is even.
+- For this to be "ww" form, we'd need a string t such that tt = aᵖ⁺ᵏbaᵖb.
+- Length: 2p+k+2. For this to be ww, the length must be even AND the first half must equal the second half.
+- Length = 2p+k+2. Even iff k is even.
 
 If k is even: t = aᵖ⁺ᵏ/²ba^{p-k/2}? No — the midpoint is position p+k/2+1, which falls within the block of a's in the first half. The second half would start at position p+k/2+1 with 'b', but the first half has 'b' at position p+k+1. These don't align unless p+k/2+1 = p+k+1 → k/2 = k → k=0. But k ≥ 1, contradiction.
 
@@ -136,9 +136,9 @@ Contradiction → L is NOT regular. □
 
 **Pump i = 2:** xy²z = aᵖ⁺ᵏbaᵖ.
 
-Is aᵖ⁺ᵏbaᵖ a palindrome? Reversed: aᵖbaᵖ⁺ᵏ. 
-aᵖ⁺ᵏbaᵖ ≠ aᵖbaᵖ⁺ᵏ (since k ≥ 1: different number of a's on each side).
-NOT a palindrome → ∉ L. ✗
+- Is aᵖ⁺ᵏbaᵖ a palindrome? Reversed: aᵖbaᵖ⁺ᵏ.
+- aᵖ⁺ᵏbaᵖ ≠ aᵖbaᵖ⁺ᵏ (since k ≥ 1: different number of a's on each side).
+- NOT a palindrome → ∉ L. ✗
 
 Contradiction → L_pal is NOT regular. □
 

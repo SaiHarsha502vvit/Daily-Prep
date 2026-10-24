@@ -83,6 +83,8 @@ flowchart TD
     R --> RN["Robotics / Navigation"]
 ```
 
+**How to read this diagram.** Machine Learning splits into three branches. Supervised Learning divides into Classification (discrete output) and Regression (continuous output); Unsupervised Learning into Clustering, Dimensionality Reduction and Anomaly Detection; Reinforcement Learning into Game Playing and Robotics / Navigation. Notice that the top-level split follows the kind of feedback the learner gets, matching the answer-key, explorer and dog-training analogies above.
+
 ## 1.2 Supervised Learning — Learning from Labeled Data
 
 ```
@@ -226,6 +228,8 @@ flowchart LR
     I --> J["10. Monitor"]
     J -.->|"Data drift? Retrain"| B
 ```
+
+**How to read this diagram.** Read left to right through the ten steps of an ML project, from Problem Definition to Monitor. Notice the dotted edge at the end: when monitoring detects data drift, the flow returns to Data Collection to retrain, so the lifecycle is a loop and not a straight line.
 
 ## 2.1 Data Preprocessing
 
@@ -563,6 +567,8 @@ flowchart TD
     UNSUP --> CLU["Clustering<br/>(K-Means, DBSCAN)"]
     UNSUP --> DIM["Dim Reduction<br/>(PCA, t-SNE)"]
 ```
+
+**How to read this diagram.** Start at "Have labeled data?". Yes leads to Supervised and then "Output continuous?": yes gives Regression (Linear/Ridge/Lasso, Random Forest / XGBoost), no gives Classification (Logistic Reg / SVM, Deep Learning). No leads to "Have reward signal?": no gives Unsupervised (Clustering, Dim Reduction), yes gives Reinforcement Learning. Notice the order of the questions: labels first, then reward, and only then the type of output.
 
 ---
 

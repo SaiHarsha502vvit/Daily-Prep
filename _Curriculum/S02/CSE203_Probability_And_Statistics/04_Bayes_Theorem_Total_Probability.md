@@ -85,9 +85,9 @@ P(B | A) = P(A | B) P(B) / [P(A|B)P(B) + P(A|Bᶜ)P(Bᶜ)]
 
 ## The Medical Test Example: Why Base Rate Matters
 
-Disease prevalence: P(disease) = 0.001 (1 in 1000 people has it).
-Test sensitivity: P(positive | disease) = 0.99 (99% true positive rate).
-Test specificity: P(negative | no disease) = 0.95 → P(positive | no disease) = 0.05.
+- Disease prevalence: P(disease) = 0.001 (1 in 1000 people has it).
+- Test sensitivity: P(positive | disease) = 0.99 (99% true positive rate).
+- Test specificity: P(negative | no disease) = 0.95 → P(positive | no disease) = 0.05.
 
 **Question:** You test positive. What is P(disease | positive)?
 

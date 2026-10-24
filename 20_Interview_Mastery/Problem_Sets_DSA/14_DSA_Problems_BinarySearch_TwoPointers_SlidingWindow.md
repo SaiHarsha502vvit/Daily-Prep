@@ -4,9 +4,9 @@
 
 ## Logic-First, Code-Second: The 5W+H Way
 
-Binary Search = "The answer space is sorted or monotonic — cut it in half."
-Two Pointers = "Process from both ends or at different speeds."
-Sliding Window = "Maintain a valid window, grow right, shrink left."
+- Binary Search = "The answer space is sorted or monotonic — cut it in half."
+- Two Pointers = "Process from both ends or at different speeds."
+- Sliding Window = "Maintain a valid window, grow right, shrink left."
 
 ---
 

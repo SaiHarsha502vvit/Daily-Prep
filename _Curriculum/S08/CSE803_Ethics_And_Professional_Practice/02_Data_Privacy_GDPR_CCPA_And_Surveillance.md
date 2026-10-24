@@ -101,6 +101,8 @@ flowchart LR
     style RS fill:#ffe0b2,stroke:#f57c00
 ```
 
+**How to read this diagram.** Follow the erasure request (Art. 17) left to right: verify identity (the one-month clock starts), then test for an exception such as a legal hold or claims. If one applies, restrict and explain in writing; if not, fan out the delete across OLTP, cache, index and warehouse, write a tombstone to the deletion ledger, let backups expire on schedule, and replay the ledger before any restore. Notice the two highlighted nodes: the ledger and the replay step are what keep a deletion from being undone by a backup restore.
+
 Notice the ledger violates its own purpose slightly (you keep an ID to remember you deleted it). That is deliberate and defensible: the ID is opaque, kept to honour the erasure itself, and holds no profile. Where partitioning by time is available, [dropping a partition](../../../08_SQL/32_Partitioning_Sharding_Replication.md) enforces retention in one metadata operation instead of a billion-row `DELETE`, which is why storage-limitation compliance is often an *architecture* decision made at table-design time.
 
 ## 2.5 Obligations That Shape Architecture: Arts. 22, 25, 33, 35

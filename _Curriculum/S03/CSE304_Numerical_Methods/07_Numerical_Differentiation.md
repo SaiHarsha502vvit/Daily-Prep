@@ -360,10 +360,10 @@ D_rich = [4 × D(h/2) - D(h)] / 3 = [4 × 2.71941870 - 2.72281455] / 3
        = 2.71828675
 ```
 
-True value: 2.71828183.
-Error of D(0.1): |2.72281455 - 2.71828183| ≈ 4.5×10⁻³.
-Error of D(0.05): |2.71941870 - 2.71828183| ≈ 1.1×10⁻³.
-Error of Richardson: |2.71828675 - 2.71828183| ≈ 4.9×10⁻⁶.
+- True value: 2.71828183.
+- Error of D(0.1): |2.72281455 - 2.71828183| ≈ 4.5×10⁻³.
+- Error of D(0.05): |2.71941870 - 2.71828183| ≈ 1.1×10⁻³.
+- Error of Richardson: |2.71828675 - 2.71828183| ≈ 4.9×10⁻⁶.
 
 Richardson improved accuracy by ~1000× using the same two evaluations. ✓
 </details>

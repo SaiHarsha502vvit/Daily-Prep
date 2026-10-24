@@ -400,9 +400,9 @@ Read [Ch13](13_SVD_Definition.md) and [Ch14](14_SVD_Applications.md): SVD defini
 
 ### Week 15 — Applications
 
-PCA dimensionality reduction (lives in `25_Python_ML_DL_NLP/06_ML_Algorithms.md` §5).
-Computer graphics transforms.
-Network analysis (PageRank, spectral clustering).
+- PCA dimensionality reduction (lives in `25_Python_ML_DL_NLP/06_ML_Algorithms.md` §5).
+- Computer graphics transforms.
+- Network analysis (PageRank, spectral clustering).
 
 ---
 

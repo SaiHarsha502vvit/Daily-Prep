@@ -1,8 +1,8 @@
 # Project: [Title]
 
-**Course:** [Course Code] — [Course Name]
-**Duration:** [X weeks]
-**Team size:** [Individual / Pair / Team]
+- **Course:** [Course Code] — [Course Name]
+- **Duration:** [X weeks]
+- **Team size:** [Individual / Pair / Team]
 
 ## Specification
 
