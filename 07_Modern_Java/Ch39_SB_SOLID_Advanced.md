@@ -8,22 +8,18 @@
 
 ## Chapter 4: "Clients should not be forced to depend on interfaces they don't use"
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              INTERFACE SEGREGATION PRINCIPLE                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  FAT INTERFACE PROBLEMS:                                                        │
-│  • Implementing classes forced to provide dummy implementations                 │
-│  • Changes to unused methods affect implementers                                │
-│  • Hard to understand what's actually needed                                    │
-│                                                                                 │
-│  SOLUTION: Small, focused interfaces                                            │
-│  • Each interface represents one capability                                     │
-│  • Classes implement only what they need                                        │
-│  • Easier to test and mock                                                      │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**INTERFACE SEGREGATION PRINCIPLE**
+
+```text
+FAT INTERFACE PROBLEMS:
+• Implementing classes forced to provide dummy implementations
+• Changes to unused methods affect implementers
+• Hard to understand what's actually needed
+
+SOLUTION: Small, focused interfaces
+• Each interface represents one capability
+• Classes implement only what they need
+• Easier to test and mock
 ```
 
 ### ❌ VIOLATING ISP - Fat Interface
@@ -265,37 +261,27 @@ It forces High-Level modules to depend on Abstractions, not Concretions. Instead
 
 ## Chapter 5: "Depend on abstractions, not concretions"
 
+**Dependency inversion principle (DIP)**
+
+High-level modules should not depend on low-level modules. BOTH should depend on abstractions.
+
+**❌ Wrong**
+
+```mermaid
+flowchart LR
+  OS["OrderService<br/>(high-level)"] --> MR["MySQLRepository<br/>(low-level)"]
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              DEPENDENCY INVERSION PRINCIPLE                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  HIGH-LEVEL MODULES should not depend on LOW-LEVEL MODULES                      │
-│  BOTH should depend on ABSTRACTIONS                                             │
-│                                                                                 │
-│  ❌ WRONG:                                                                       │
-│  ┌──────────────────┐         ┌──────────────────┐                              │
-│  │  OrderService    │────────►│  MySQLRepository │                              │
-│  │  (High-level)    │         │  (Low-level)     │                              │
-│  └──────────────────┘         └──────────────────┘                              │
-│                                                                                 │
-│  ✅ RIGHT:                                                                       │
-│  ┌──────────────────┐         ┌──────────────────┐                              │
-│  │  OrderService    │────────►│  Repository      │◄─────────┐                   │
-│  │  (High-level)    │         │  (Abstraction)   │          │                   │
-│  └──────────────────┘         └──────────────────┘          │                   │
-│                                        ▲                     │                  │
-│                                        │                     │                  │
-│                               ┌────────┴────────┐           │                   │
-│                               │ MySQLRepository │           │                   │
-│                               │ (Low-level)     │           │                   │
-│                               └─────────────────┘           │                   │
-│                               ┌─────────────────┐           │                   │
-│                               │ PostgresRepo    │───────────┘                   │
-│                               └─────────────────┘                               │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+**✅ Right**
+
+```mermaid
+flowchart LR
+  OS["OrderService<br/>(high-level)"] --> R["Repository<br/>(abstraction)"]
+  MR["MySQLRepository<br/>(low-level)"] -.->|"implements"| R
+  PR["PostgresRepo<br/>(low-level)"] -.->|"implements"| R
 ```
+
+**How to read these diagrams.** In the first, the high-level service points straight at a concrete database class. In the second, the service depends only on the `Repository` abstraction, and the concrete classes implement it, so the dependency direction is inverted.
 
 ### ❌ VIOLATING DIP
 
@@ -1026,38 +1012,34 @@ Interface Segregation Principle (ISP): clients shouldn't depend on methods they 
 
 ## Quick Reference: Spotting SOLID Violations
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              SOLID VIOLATION CODE SMELLS                                        │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  SRP VIOLATIONS:                                                                │
-│  • Class name contains "And" or "Manager"                                       │
-│  • Class has > 500 lines of code                                                │
-│  • Multiple @Autowired fields (> 5-7)                                           │
-│  • Methods using completely different sets of fields                            │
-│                                                                                 │
-│  OCP VIOLATIONS:                                                                │
-│  • switch/if-else chains on type/enum                                           │
-│  • Adding features requires modifying existing classes                          │
-│  • "instanceof" checks scattered in code                                        │
-│                                                                                 │
-│  LSP VIOLATIONS:                                                                │
-│  • throw UnsupportedOperationException in subclass                              │
-│  • Subclass overrides with empty method body                                    │
-│  • Subclass changes method behavior unexpectedly                                │
-│                                                                                 │
-│  ISP VIOLATIONS:                                                                │
-│  • Implementing class has empty/dummy methods                                   │
-│  • Interface has > 10 methods                                                   │
-│  • Unrelated methods grouped in one interface                                   │
-│                                                                                 │
-│  DIP VIOLATIONS:                                                                │
-│  • "new" keyword for service classes                                            │
-│  • Concrete class in constructor parameters                                     │
-│  • Hard-coded class names (e.g., MySQLRepository)                               │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**SOLID VIOLATION CODE SMELLS**
+
+```text
+SRP VIOLATIONS:
+• Class name contains "And" or "Manager"
+• Class has > 500 lines of code
+• Multiple @Autowired fields (> 5-7)
+• Methods using completely different sets of fields
+
+OCP VIOLATIONS:
+• switch/if-else chains on type/enum
+• Adding features requires modifying existing classes
+• "instanceof" checks scattered in code
+
+LSP VIOLATIONS:
+• throw UnsupportedOperationException in subclass
+• Subclass overrides with empty method body
+• Subclass changes method behavior unexpectedly
+
+ISP VIOLATIONS:
+• Implementing class has empty/dummy methods
+• Interface has > 10 methods
+• Unrelated methods grouped in one interface
+
+DIP VIOLATIONS:
+• "new" keyword for service classes
+• Concrete class in constructor parameters
+• Hard-coded class names (e.g., MySQLRepository)
 ```
 
 ---

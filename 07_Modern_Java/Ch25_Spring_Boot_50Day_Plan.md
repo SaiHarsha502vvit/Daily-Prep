@@ -49,6 +49,7 @@ Each day: ~2-3 hours
 - **Spring 5 (WebFlux) — 2017**: Reactive programming. `Mono`/`Flux`. Non-blocking stack.
 - **General Assembly / bootcamps — 2011+**: Structured coding bootcamps. 12-24 week intensive programs.
 - **Spring Academy — 2023**: Pivotal official learning platform. Guided learning paths.
+
 # PHASE 1: FOUNDATIONS (Week 1-3) 🟢
 
 **Goal:** Go from zero to building a complete REST API with database

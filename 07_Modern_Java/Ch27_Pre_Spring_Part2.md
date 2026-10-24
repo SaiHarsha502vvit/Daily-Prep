@@ -165,70 +165,36 @@ spring:
 
 ## Why This Matters
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│  CREATING A DATABASE CONNECTION IS EXPENSIVE!                                    │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  Creating ONE connection:                                                        │
-│  1. DNS lookup for database host                                                 │
-│  2. TCP handshake (3-way)                                                        │
-│  3. TLS handshake (if SSL)                                                       │
-│  4. Database authentication                                                      │
-│  5. Session initialization                                                       │
-│                                                                                  │
-│  TIME: 50-200ms PER CONNECTION                                                   │
-│                                                                                  │
-│  If you create a new connection for every query:                                 │
-│  - 10 queries = 500-2000ms just in connection overhead!                          │
-│                                                                                  │
-│  CONNECTION POOLING: Reuse connections!                                          │
-│  - Connection created once at startup                                            │
-│  - Borrowed for query, returned to pool                                          │
-│  - 10 queries = ~0ms connection overhead                                         │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**CREATING A DATABASE CONNECTION IS EXPENSIVE!**
+
+```text
+Creating ONE connection:
+1. DNS lookup for database host
+2. TCP handshake (3-way)
+3. TLS handshake (if SSL)
+4. Database authentication
+5. Session initialization
+
+TIME: 50-200ms PER CONNECTION
+
+If you create a new connection for every query:
+- 10 queries = 500-2000ms just in connection overhead!
+
+CONNECTION POOLING: Reuse connections!
+- Connection created once at startup
+- Borrowed for query, returned to pool
+- 10 queries = ~0ms connection overhead
 ```
 
 ## F.1 How Connection Pooling Works
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    CONNECTION POOL LIFECYCLE                                     │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  Application Start:                                                              │
-│  ┌────────────────────────────────────────────┐                                  │
-│  │ Connection Pool (HikariCP)                 │                                  │
-│  │                                            │                                  │
-│  │  [Conn1][Conn2][Conn3][Conn4][Conn5]       │ ◄── Minimum idle connections     |
-│  │    ↑      ↑      ↑      ↑      ↑           │      created at startup          │
-│  │   idle   idle   idle   idle   idle         │                                  │
-│  │                                            │                                  │
-│  └────────────────────────────────────────────┘                                  │
-│                                                                                  │
-│  Request comes in:                                                               │
-│  ┌────────────────────────────────────────────┐                                  │
-│  │ Connection Pool                            │                                  │
-│  │                                            │                                  │
-│  │  [    ][Conn2][Conn3][Conn4][Conn5]        │                                  │
-│  │    ↑                                       │                                  │
-│  │   Conn1 borrowed by Thread-1               │                                  │
-│  │                                            │                                  │
-│  └────────────────────────────────────────────┘                                  │
-│                                                                                  │
-│  Query completes:                                                                │
-│  ┌────────────────────────────────────────────┐                                  │
-│  │ Connection Pool                            │                                  │
-│  │                                            │                                  │
-│  │  [Conn1][Conn2][Conn3][Conn4][Conn5]       │ ◄── Conn1 returned to pool       │
-│  │    ↑                                       │      (NOT closed!)               │
-│  │   idle again                               │                                  │
-│  │                                            │                                  │
-│  └────────────────────────────────────────────┘                                  │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
-```
+**Connection pool lifecycle (HikariCP)**
+
+| Stage | Pool state | What happens |
+| --- | --- | --- |
+| Application start | `[Conn1][Conn2][Conn3][Conn4][Conn5]`, all idle | The minimum idle connections are created at startup. |
+| A request comes in | `[ ][Conn2][Conn3][Conn4][Conn5]` | Conn1 is borrowed by Thread-1. |
+| The query completes | `[Conn1][Conn2][Conn3][Conn4][Conn5]`, all idle again | Conn1 is returned to the pool (NOT closed). |
 
 🔬 **Section Challenge — F.1 How Connection Pooling Works**
 
@@ -271,28 +237,24 @@ spring:
 
 ## F.3 Connection Pool Sizing
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    POOL SIZING FORMULA                                           │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  connections = ((core_count * 2) + effective_spindle_count)                      │
-│                                                                                  │
-│  For SSD with 4-core CPU:                                                        │
-│  connections = (4 * 2) + 1 = 9-10 connections                                    │
-│                                                                                  │
-│  IMPORTANT: More connections ≠ Better performance!                               │
-│                                                                                  │
-│  Why?                                                                            │
-│  - Database has limited CPU cores                                                │
-│  - More connections = More context switching                                     │
-│  - Diminishing returns after optimal point                                       │
-│                                                                                  │
-│  RULE OF THUMB:                                                                  │
-│  - Web app: 10-20 connections per instance                                       │
-│  - Batch processing: Higher (dedicated resources)                                │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**POOL SIZING FORMULA**
+
+```text
+connections = ((core_count * 2) + effective_spindle_count)
+
+For SSD with 4-core CPU:
+connections = (4 * 2) + 1 = 9-10 connections
+
+IMPORTANT: More connections ≠ Better performance!
+
+Why?
+- Database has limited CPU cores
+- More connections = More context switching
+- Diminishing returns after optimal point
+
+RULE OF THUMB:
+- Web app: 10-20 connections per instance
+- Batch processing: Higher (dedicated resources)
 ```
 
 🔬 **Section Challenge — F.3 Connection Pool Sizing**
@@ -403,60 +365,34 @@ spring:
 
 ## Why This Matters
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│  CLASS NOT FOUND? NO CLASS DEF FOUND? CLASS CAST EXCEPTION (SAME CLASS!)?        │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  These errors are CLASSLOADER problems!                                          │
-│                                                                                  │
-│  Understanding classloaders helps you:                                           │
-│  - Debug mysterious ClassNotFoundException                                       │
-│  - Understand Spring context hierarchies                                         │
-│  - Debug "duplicate class" issues                                                │
-│  - Understand hot reloading (like Spring DevTools)                               │
-│  - Work with modular applications                                                │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**CLASS NOT FOUND? NO CLASS DEF FOUND? CLASS CAST EXCEPTION (SAME CLASS!)?**
+
+```text
+These errors are CLASSLOADER problems!
+
+Understanding classloaders helps you:
+- Debug mysterious ClassNotFoundException
+- Understand Spring context hierarchies
+- Debug "duplicate class" issues
+- Understand hot reloading (like Spring DevTools)
+- Work with modular applications
 ```
 
 ## G.1 Classloader Hierarchy
 
+```mermaid
+flowchart TD
+  B["Bootstrap ClassLoader (native code)<br/>loads java.lang.*, java.util.* (core Java)"]
+  P["Platform ClassLoader<br/>loads the Java platform modules (extensions before Java 9)"]
+  A["Application ClassLoader<br/>loads your code and dependencies (classpath)"]
+  C1["Custom loader 1 (Web App 1)"]
+  C2["Custom loader 2 (Web App 2)"]
+  B --> P --> A
+  A --> C1
+  A --> C2
 ```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    CLASSLOADER HIERARCHY                                         │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│                    ┌───────────────────┐                                         │
-│                    │ Bootstrap         │ ◄── Loads: java.lang.*, java.util.*     │
-│                    │ ClassLoader       │     (rt.jar - core Java)                │
-│                    │ (native code)     │                                         │
-│                    └─────────┬─────────┘                                         │
-│                              │                                                   │
-│                              ▼                                                   │
-│                    ┌───────────────────┐                                         │
-│                    │ Platform          │ ◄── Loads: Java extensions              │
-│                    │ ClassLoader       │     (jre/lib/ext)                       │
-│                    └─────────┬─────────┘                                         │
-│                              │                                                   │
-│                              ▼                                                   │
-│                    ┌───────────────────┐                                         │
-│                    │ Application       │ ◄── Loads: Your code, dependencies      │
-│                    │ ClassLoader       │     (classpath)                         │
-│                    └─────────┬─────────┘                                         │
-│                              │                                                   │
-│                              ▼                                                   │
-│               ┌──────────────┴──────────────┐                                    │
-│               │                              │                                   │
-│    ┌──────────────────┐          ┌──────────────────┐                            │
-│    │ Custom Loader 1  │          │ Custom Loader 2  │                            │
-│    │ (Web App 1)      │          │ (Web App 2)      │                            │
-│    └──────────────────┘          └──────────────────┘                            │
-│                                                                                  │
-│  PARENT DELEGATION: Child asks parent first before loading itself                │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Each arrow points from a parent loader to its child. **Parent delegation:** a child asks its parent first before loading a class itself.
 
 🔬 **Section Challenge — G.1 Classloader Hierarchy**
 
@@ -561,27 +497,23 @@ user1 = (User) user2;  // ClassCastException!
 
 ## G.4 Spring DevTools Hot Reload
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    HOW SPRING DEVTOOLS WORKS                                     │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  Without DevTools:                                                               │
-│  - Change User.java → Restart entire application → 10-30 seconds                 │
-│                                                                                  │
-│  With DevTools:                                                                  │
-│  - Your code: Loaded by "RestartClassLoader" (custom)                            │
-│  - Dependencies: Loaded by base classloader (not reloaded)                       │
-│                                                                                  │
-│  Change detected:                                                                │
-│  1. Only RestartClassLoader is thrown away                                       │
-│  2. New RestartClassLoader created                                               │
-│  3. Your classes reloaded (fast!)                                                │
-│  4. Dependencies stay loaded (not reloaded)                                      │
-│                                                                                  │
-│  Result: Restart in 1-3 seconds instead of 10-30!                                │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**HOW SPRING DEVTOOLS WORKS**
+
+```text
+Without DevTools:
+- Change User.java → Restart entire application → 10-30 seconds
+
+With DevTools:
+- Your code: Loaded by "RestartClassLoader" (custom)
+- Dependencies: Loaded by base classloader (not reloaded)
+
+Change detected:
+1. Only RestartClassLoader is thrown away
+2. New RestartClassLoader created
+3. Your classes reloaded (fast!)
+4. Dependencies stay loaded (not reloaded)
+
+Result: Restart in 1-3 seconds instead of 10-30!
 ```
 
 ---
@@ -600,79 +532,56 @@ user1 = (User) user2;  // ClassCastException!
 
 ## Why This Matters
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│  BUILD FAILURES? DEPENDENCY CONFLICTS? UNDERSTANDING LIFECYCLES?                 │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  You use Maven/Gradle daily but:                                                 │
-│  - "mvn clean install" - what does each word mean?                               │
-│  - Why does "provided" scope exist?                                              │
-│  - How does transitive dependency resolution work?                               │
-│  - What's the difference between compile and runtime?                            │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**BUILD FAILURES? DEPENDENCY CONFLICTS? UNDERSTANDING LIFECYCLES?**
+
+```text
+You use Maven/Gradle daily but:
+- "mvn clean install" - what does each word mean?
+- Why does "provided" scope exist?
+- How does transitive dependency resolution work?
+- What's the difference between compile and runtime?
 ```
 
 ## H.1 Maven Lifecycle Phases
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    MAVEN BUILD LIFECYCLE                                         │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  mvn [phase]  →  Runs all phases UP TO AND INCLUDING that phase                  │
-│                                                                                  │
-│  Phase           │ What It Does                                                  │
-│  ────────────────┼────────────────────────────────────────────────────────────   │
-│  validate        │ Validate project is correct                                   │
-│  compile         │ Compile source code (src/main/java → target/classes)          │
-│  test            │ Run unit tests (src/test/java)                                │
-│  package         │ Create JAR/WAR file (target/*.jar)                            │
-│  verify          │ Run integration tests                                         │
-│  install         │ Install to local .m2 repository                               │
-│  deploy          │ Upload to remote repository (Nexus, etc.)                     │
-│                                                                                  │
-│  "mvn install" runs: validate → compile → test → package → verify → install      │
-│                                                                                  │
-│  OTHER COMMANDS:                                                                 │
-│  mvn clean       │ Delete target/ directory                                      │
-│  mvn clean install │ Delete target/, then full build                             │
-│  mvn package -DskipTests │ Package without running tests                         │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
-```
+**MAVEN BUILD LIFECYCLE**
+
+`mvn [phase]` runs all phases UP TO AND INCLUDING that phase.
+
+| Phase | What it does |
+| --- | --- |
+| `validate` | Validate the project is correct |
+| `compile` | Compile source code (`src/main/java` → `target/classes`) |
+| `test` | Run unit tests (`src/test/java`) |
+| `package` | Create the JAR/WAR file (`target/*.jar`) |
+| `verify` | Run integration tests |
+| `install` | Install to the local `.m2` repository |
+| `deploy` | Upload to a remote repository (Nexus, etc.) |
+
+`mvn install` runs: validate → compile → test → package → verify → install.
+
+**Other commands**
+
+| Command | Effect |
+| --- | --- |
+| `mvn clean` | Delete the `target/` directory |
+| `mvn clean install` | Delete `target/`, then run the full build |
+| `mvn package -DskipTests` | Package without running tests |
 
 ## H.2 Dependency Scopes
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    MAVEN DEPENDENCY SCOPES                                       │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  Scope      │ Compile │ Test │ Runtime │ Transitive │ Example                    │
-│  ───────────┼─────────┼──────┼─────────┼────────────┼────────────────────────    │
-│  compile    │   ✅    │  ✅  │   ✅    │    ✅      │ spring-boot-starter        │
-│  (default)  │         │      │         │            │                            │
-│             │         │      │         │            │                            │
-│  provided   │   ✅    │  ✅  │   ❌    │    ❌      │ servlet-api (provided    │
-│             │         │      │         │            │ by Tomcat)                 │
-│             │         │      │         │            │                            │
-│  runtime    │   ❌    │  ✅  │   ✅    │    ✅      │ JDBC drivers (mysql-     │
-│             │         │      │         │            │ connector-java)            │
-│             │         │      │         │            │                            │
-│  test       │   ❌    │  ✅  │   ❌    │    ❌      │ JUnit, Mockito           │
-│             │         │      │         │            │                            │
-│  system     │   ✅    │  ✅  │   ✅    │    ❌      │ Local JAR file           │
-│             │         │      │         │            │ (avoid this!)              │
-│                                                                                  │
-│  COMMON CONFUSION:                                                               │
-│  Q: Why is Lombok "provided" in some projects?                                   │
-│  A: It generates code at COMPILE time. At runtime, generated code exists,        │
-│     no need for Lombok JAR. But usually it's "compile" scope for simplicity.     │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
-```
+**MAVEN DEPENDENCY SCOPES**
+
+| Scope | Compile | Test | Runtime | Transitive | Example |
+| --- | --- | --- | --- | --- | --- |
+| `compile` (default) | ✅ | ✅ | ✅ | ✅ | `spring-boot-starter` |
+| `provided` | ✅ | ✅ | ❌ | ❌ | `servlet-api` (provided by Tomcat) |
+| `runtime` | ❌ | ✅ | ✅ | ✅ | JDBC drivers (`mysql-connector-java`) |
+| `test` | ❌ | ✅ | ❌ | ❌ | JUnit, Mockito |
+| `system` | ✅ | ✅ | ✅ | ❌ | Local JAR file (avoid this!) |
+
+> [!NOTE]
+> **Common confusion.** Q: why is Lombok `provided` in some projects? A: it generates code at COMPILE time. At runtime the generated code already exists, so the Lombok JAR isn't needed. It is often left as `compile` scope for simplicity.
 
 🔬 **Section Challenge — H.2 Dependency Scopes**
 
@@ -694,38 +603,37 @@ user1 = (User) user2;  // ClassCastException!
 
 ## H.3 Transitive Dependencies
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    TRANSITIVE DEPENDENCY RESOLUTION                              │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  Your pom.xml:                                                                   │
-│  <dependency>                                                                    │
-│      <groupId>org.springframework.boot</groupId>                                 │
-│      <artifactId>spring-boot-starter-web</artifactId>                            │
-│  </dependency>                                                                   │
-│                                                                                  │
-│  What you actually get:                                                          │
-│                                                                                  │
-│  spring-boot-starter-web                                                         │
-│  ├── spring-boot-starter                                                         │
-│  │   ├── spring-boot                                                             │
-│  │   ├── spring-boot-autoconfigure                                               │
-│  │   └── spring-core                                                             │
-│  ├── spring-boot-starter-json                                                    │
-│  │   ├── jackson-databind                                                        │
-│  │   └── jackson-core                                                            │
-│  ├── spring-boot-starter-tomcat                                                  │
-│  │   └── tomcat-embed-core                                                       │
-│  └── spring-webmvc                                                               │
-│      ├── spring-aop                                                              │
-│      ├── spring-beans                                                            │
-│      └── spring-context                                                          │
-│                                                                                  │
-│  ONE dependency = 20+ JARs downloaded automatically!                             │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
-```
+**TRANSITIVE DEPENDENCY RESOLUTION**
+
+**Your pom.xml:**
+
+**<dependency>**
+
+**<groupId>org.springframework.boot</groupId>**
+
+**<artifactId>spring-boot-starter-web</artifactId>**
+
+**</dependency>**
+
+**What you actually get:**
+
+**spring-boot-starter-web**
+
+- spring-boot-starter
+- spring-boot
+- spring-boot-autoconfigure
+- spring-core
+- spring-boot-starter-json
+- jackson-databind
+- jackson-core
+- spring-boot-starter-tomcat
+- tomcat-embed-core
+- spring-webmvc
+  - spring-aop
+  - spring-beans
+  - spring-context
+
+**ONE dependency = 20+ JARs downloaded automatically!**
 
 ### Viewing Dependencies
 
@@ -739,37 +647,35 @@ mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind
 
 ## H.4 Dependency Conflicts
 
+**Version conflict resolution**
+
+Your project has:
+
+- Library A, which depends on Guava 28.0.
+- Library B, which depends on Guava 30.0.
+
+**Maven's rule: "nearest definition wins"**
+
+```mermaid
+flowchart TD
+  P["your-project"] --> A["library-a"]
+  P --> B["library-b"]
+  A --> G28["guava:28.0 (depth 2)"]
+  B --> G30["guava:30.0 (depth 2)"]
 ```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    VERSION CONFLICT RESOLUTION                                   │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  Your project has:                                                               │
-│  - Library A depends on Guava 28.0                                               │
-│  - Library B depends on Guava 30.0                                               │
-│                                                                                  │
-│  MAVEN'S RULE: "Nearest Definition Wins"                                         │
-│                                                                                  │
-│  your-project                                                                    │
-│  ├── library-a                                                                   │
-│  │   └── guava:28.0    (depth 2)                                                 │
-│  └── library-b                                                                   │
-│      └── guava:30.0    (depth 2)                                                 │
-│                                                                                  │
-│  Same depth? FIRST ONE WINS (order in pom.xml matters!)                          │
-│                                                                                  │
-│  PROBLEM: What if library-a needs Guava 30 features?                             │
-│           → RuntimeException!                                                    │
-│                                                                                  │
-│  SOLUTION: Explicitly declare version in YOUR pom.xml                            │
-│                                                                                  │
-│  <dependency>                                                                    │
-│      <groupId>com.google.guava</groupId>                                         │
-│      <artifactId>guava</artifactId>                                              │
-│      <version>30.0-jre</version>  ◄── Your explicit version wins                 │
-│  </dependency>                                                                   │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+
+**How to read this diagram.** Both Guava versions are at the same depth, so the first one declared in `pom.xml` wins (the order matters).
+
+**Problem:** what if `library-a` needs Guava 30 features? It fails at runtime.
+
+**Solution:** declare the version explicitly in YOUR `pom.xml`. An explicit declaration is the nearest definition, so it wins.
+
+```xml
+<dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>30.0-jre</version>  <!-- Your explicit version wins -->
+</dependency>
 ```
 
 ### Excluding Transitive Dependencies
@@ -811,52 +717,42 @@ mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind
 
 ## Why This Matters
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│  SPRING HIDES ALL HTTP COMPLEXITY - BUT YOU MUST UNDERSTAND IT                   │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  When debugging:                                                                 │
-│  - Why is my request timing out?                                                 │
-│  - Why does the load balancer keep failing health checks?                        │
-│  - Why is CORS failing?                                                          │
-│  - Why am I getting 502 Bad Gateway?                                             │
-│                                                                                  │
-│  You need to understand HTTP at the raw level!                                   │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**SPRING HIDES ALL HTTP COMPLEXITY - BUT YOU MUST UNDERSTAND IT**
+
+```text
+When debugging:
+- Why is my request timing out?
+- Why does the load balancer keep failing health checks?
+- Why is CORS failing?
+- Why am I getting 502 Bad Gateway?
+
+You need to understand HTTP at the raw level!
 ```
 
 ## I.1 HTTP Message Format
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    RAW HTTP REQUEST                                              │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  POST /api/users HTTP/1.1                 ← Request line                         │
-│  Host: api.example.com                    ← Headers start                        │
-│  Content-Type: application/json                                                  │
-│  Authorization: Bearer eyJhbGc...                                                │
-│  Content-Length: 45                                                              │
-│  Accept: application/json                                                        │
-│                                           ← Empty line (CRLF)                    │
-│  {"name":"John","email":"john@test.com"}  ← Body                                 │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**RAW HTTP REQUEST**
 
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    RAW HTTP RESPONSE                                             │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  HTTP/1.1 201 Created                     ← Status line                          │
-│  Content-Type: application/json           ← Headers start                        │
-│  Location: /api/users/123                                                        │
-│  Content-Length: 67                                                              │
-│                                           ← Empty line (CRLF)                    │
-│  {"id":123,"name":"John","email":"john@test.com"}  ← Body                        │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+```text
+POST /api/users HTTP/1.1                 ← Request line
+Host: api.example.com                    ← Headers start
+Content-Type: application/json
+Authorization: Bearer eyJhbGc...
+Content-Length: 45
+Accept: application/json
+                                         ← Empty line (CRLF)
+{"name":"John","email":"john@test.com"}  ← Body
+```
+
+**RAW HTTP RESPONSE**
+
+```text
+HTTP/1.1 201 Created                     ← Status line
+Content-Type: application/json           ← Headers start
+Location: /api/users/123
+Content-Length: 67
+                                         ← Empty line (CRLF)
+{"id":123,"name":"John","email":"john@test.com"}  ← Body
 ```
 
 🔬 **Section Challenge — I.1 HTTP Message Format**
@@ -865,32 +761,26 @@ mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind
 
 ## I.2 HTTP Methods - Semantic Meaning
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    HTTP METHODS DEEP DIVE                                        │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  Method   │ Safe │ Idempotent │ Has Body │ Use Case                             │
-│  ─────────┼──────┼────────────┼──────────┼─────────────────────────────────────  │
-│  GET      │  ✅  │     ✅    │    ❌    │ Retrieve resource                    │
-│  HEAD     │  ✅  │     ✅    │    ❌    │ Like GET but no body (check exists)  │
-│  OPTIONS  │  ✅  │     ✅    │    ❌    │ Get allowed methods (CORS preflight)   │
-│  POST     │  ❌  │     ❌    │    ✅    │ Create resource (not idempotent!)     │
-│  PUT      │  ❌  │     ✅    │    ✅    │ Replace entire resource               │
-│  PATCH    │  ❌  │     ❌    │    ✅    │ Partial update                       │
-│  DELETE   │  ❌  │     ✅    │    ❌*   │ Remove resource                       │
-│                                                                                  │
-│  SAFE: Doesn't modify server state                                               │
-│  IDEMPOTENT: Multiple identical requests = same result                           │
-│                                                                                  │
-│  EXAMPLE:                                                                        │
-│  - POST /orders twice = 2 orders created (NOT idempotent)                        │
-│  - PUT /orders/1 twice = 1 order (same result each time) (idempotent)            │
-│  - DELETE /orders/1 twice = order deleted first time, 404 second time            │
-│                           = same final state (idempotent)                        │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
-```
+**HTTP METHODS DEEP DIVE**
+
+| Method | Safe | Idempotent | Has body | Use case |
+| --- | --- | --- | --- | --- |
+| `GET` | ✅ | ✅ | ❌ | Retrieve a resource |
+| `HEAD` | ✅ | ✅ | ❌ | Like GET but no body (check existence) |
+| `OPTIONS` | ✅ | ✅ | ❌ | Get allowed methods (CORS preflight) |
+| `POST` | ❌ | ❌ | ✅ | Create a resource (not idempotent!) |
+| `PUT` | ❌ | ✅ | ✅ | Replace the entire resource |
+| `PATCH` | ❌ | ❌ | ✅ | Partial update |
+| `DELETE` | ❌ | ✅ | ❌* | Remove a resource |
+
+- **Safe:** doesn't modify server state.
+- **Idempotent:** multiple identical requests = same result.
+
+**Examples**
+
+- `POST /orders` twice = 2 orders created (NOT idempotent).
+- `PUT /orders/1` twice = 1 order, same result each time (idempotent).
+- `DELETE /orders/1` twice = order deleted the first time, `404` the second time. The final state is the same (idempotent).
 
 🔬 **Section Challenge — I.2 HTTP Methods - Semantic Meaning**
 
@@ -904,50 +794,46 @@ mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind
 
 ## I.3 HTTP Status Codes - Complete Reference
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    HTTP STATUS CODES                                             │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  1xx INFORMATIONAL                                                               │
-│  100 Continue        - Server received headers, send body                        │
-│  101 Switching       - Upgrading to WebSocket                                    │
-│                                                                                  │
-│  2xx SUCCESS                                                                     │
-│  200 OK              - Generic success                                           │
-│  201 Created         - Resource created (return Location header!)                │
-│  202 Accepted        - Request accepted, processing async                        │
-│  204 No Content      - Success but no body (DELETE response)                     │
-│                                                                                  │
-│  3xx REDIRECTION                                                                 │
-│  301 Moved Permanently  - URL changed forever (browser caches)                   │
-│  302 Found (Temporary)  - Temporary redirect                                     │
-│  304 Not Modified       - Use cached version (ETags)                             │
-│                                                                                  │
-│  4xx CLIENT ERROR                                                                │
-│  400 Bad Request     - Malformed request (validation failed)                     │
-│  401 Unauthorized    - Not authenticated (no/invalid token)                      │
-│  403 Forbidden       - Authenticated but not authorized                          │
-│  404 Not Found       - Resource doesn't exist                                    │
-│  405 Method Not Allowed - Wrong HTTP method                                      │
-│  409 Conflict        - State conflict (duplicate, version mismatch)              │
-│  415 Unsupported Media Type - Wrong Content-Type                                 │
-│  422 Unprocessable Entity - Semantic errors in body                              │
-│  429 Too Many Requests - Rate limited                                            │
-│                                                                                  │
-│  5xx SERVER ERROR                                                                │
-│  500 Internal Server Error - Generic server error                                │
-│  502 Bad Gateway     - Proxy got bad response from upstream                      │
-│  503 Service Unavailable - Server overloaded or maintenance                      │
-│  504 Gateway Timeout - Proxy timeout waiting for upstream                        │
-│                                                                                  │
-│  SPRING BOOT MAPPINGS:                                                           │
-│  - Validation error (@Valid) → 400                                               │
-│  - NoHandlerFound → 404                                                          │
-│  - MethodNotSupported → 405                                                      │
-│  - Unhandled exception → 500                                                     │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**HTTP STATUS CODES**
+
+```text
+1xx INFORMATIONAL
+100 Continue        - Server received headers, send body
+101 Switching       - Upgrading to WebSocket
+
+2xx SUCCESS
+200 OK              - Generic success
+201 Created         - Resource created (return Location header!)
+202 Accepted        - Request accepted, processing async
+204 No Content      - Success but no body (DELETE response)
+
+3xx REDIRECTION
+301 Moved Permanently  - URL changed forever (browser caches)
+302 Found (Temporary)  - Temporary redirect
+304 Not Modified       - Use cached version (ETags)
+
+4xx CLIENT ERROR
+400 Bad Request     - Malformed request (validation failed)
+401 Unauthorized    - Not authenticated (no/invalid token)
+403 Forbidden       - Authenticated but not authorized
+404 Not Found       - Resource doesn't exist
+405 Method Not Allowed - Wrong HTTP method
+409 Conflict        - State conflict (duplicate, version mismatch)
+415 Unsupported Media Type - Wrong Content-Type
+422 Unprocessable Entity - Semantic errors in body
+429 Too Many Requests - Rate limited
+
+5xx SERVER ERROR
+500 Internal Server Error - Generic server error
+502 Bad Gateway     - Proxy got bad response from upstream
+503 Service Unavailable - Server overloaded or maintenance
+504 Gateway Timeout - Proxy timeout waiting for upstream
+
+SPRING BOOT MAPPINGS:
+- Validation error (@Valid) → 400
+- NoHandlerFound → 404
+- MethodNotSupported → 405
+- Unhandled exception → 500
 ```
 
 🔬 **Section Challenge — I.3 HTTP Status Codes**
@@ -962,32 +848,28 @@ mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind
 
 ## I.4 Keep-Alive and Connection Management
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    HTTP/1.1 KEEP-ALIVE                                           │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  WITHOUT Keep-Alive (HTTP/1.0 default):                                          │
-│                                                                                  │
-│  Request 1: [TCP Connect] → [Request] → [Response] → [TCP Close]                 │
-│  Request 2: [TCP Connect] → [Request] → [Response] → [TCP Close]                 │
-│  Request 3: [TCP Connect] → [Request] → [Response] → [TCP Close]                 │
-│                                                                                  │
-│  3 requests = 3 TCP handshakes = ~150ms overhead!                                │
-│                                                                                  │
-│  WITH Keep-Alive (HTTP/1.1 default):                                             │
-│                                                                                  │
-│  [TCP Connect] → [Request 1] → [Response 1]                                      │
-│               → [Request 2] → [Response 2]                                       │
-│               → [Request 3] → [Response 3] → [TCP Close]                         │
-│                                                                                  │
-│  3 requests = 1 TCP handshake = ~50ms overhead!                                  │
-│                                                                                  │
-│  Headers:                                                                        │
-│  Connection: keep-alive                                                          │
-│  Keep-Alive: timeout=5, max=100                                                  │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**HTTP/1.1 KEEP-ALIVE**
+
+```text
+WITHOUT Keep-Alive (HTTP/1.0 default):
+
+Request 1: [TCP Connect] → [Request] → [Response] → [TCP Close]
+Request 2: [TCP Connect] → [Request] → [Response] → [TCP Close]
+Request 3: [TCP Connect] → [Request] → [Response] → [TCP Close]
+
+3 requests = 3 TCP handshakes = ~150ms overhead!
+
+WITH Keep-Alive (HTTP/1.1 default):
+
+[TCP Connect] → [Request 1] → [Response 1]
+             → [Request 2] → [Response 2]
+             → [Request 3] → [Response 3] → [TCP Close]
+
+3 requests = 1 TCP handshake = ~50ms overhead!
+
+Headers:
+Connection: keep-alive
+Keep-Alive: timeout=5, max=100
 ```
 
 ## I.5 Content Negotiation
@@ -1020,17 +902,13 @@ public User getUser() {
 
 ## Why This Matters
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│  SPRING IS A DESIGN PATTERNS SHOWCASE - KNOW THE PATTERNS!                       │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  When interviewer asks:                                                          │
-│  "What design patterns does Spring use?"                                         │
-│                                                                                  │
-│  Don't say "I don't know" - SPRING USES THEM ALL!                                │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**SPRING IS A DESIGN PATTERNS SHOWCASE - KNOW THE PATTERNS!**
+
+```text
+When interviewer asks:
+"What design patterns does Spring use?"
+
+Don't say "I don't know" - SPRING USES THEM ALL!
 ```
 
 ## J.1 Singleton Pattern
@@ -1272,51 +1150,31 @@ public interface Filter {
 
 ## Why This Matters
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│  EVERY HTTP REQUEST = ONE THREAD (by default)                                    │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  Understanding threading:                                                        │
-│  - Why does Tomcat have 200 max threads?                                         │
-│  - How does @Async work?                                                         │
-│  - What happens with CompletableFuture?                                          │
-│  - Why is ThreadLocal useful?                                                    │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**EVERY HTTP REQUEST = ONE THREAD (by default)**
+
+```text
+Understanding threading:
+- Why does Tomcat have 200 max threads?
+- How does @Async work?
+- What happens with CompletableFuture?
+- Why is ThreadLocal useful?
 ```
 
 ## K.1 Tomcat Thread Pool
 
+**Tomcat request handling**
+
+```mermaid
+flowchart TD
+  R["HTTP request"] --> TP["Tomcat thread pool<br/>[Thread-1] [Thread-2] [Thread-3] ... [Thread-200]<br/>Thread-1 is assigned to this request"]
+  TP --> C["Your controller executes on Thread-1"]
+  C --> S["Response sent, Thread-1 returned to the pool"]
 ```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    TOMCAT REQUEST HANDLING                                       │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  HTTP Request                                                                    │
-│       │                                                                          │
-│       ▼                                                                          │
-│  ┌──────────────────────────────────────────────────────────────────────┐        │
-│  │ Tomcat Thread Pool                                                    │       │
-│  │                                                                        │      │
-│  │  [Thread-1] [Thread-2] [Thread-3] ... [Thread-200]                   │        │
-│  │      │                                                                 │      │
-│  │      └──► Assigned to handle this request                            │        │
-│  └──────────────────────────────────────────────────────────────────────┘        │
-│       │                                                                          │
-│       ▼                                                                          │
-│  Your Controller executes on Thread-1                                            │
-│       │                                                                          │
-│       ▼                                                                          │
-│  Response sent, Thread-1 returned to pool                                        │
-│                                                                                  │
-│                                                                                  │
-│  DEFAULT: max 200 threads                                                        │
-│  RULE: If request takes 100ms, can handle 2000 req/sec                           │
-│        If request takes 1s, can only handle 200 req/sec!                         │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** One pool thread handles a request from start to finish, then goes back to the pool.
+
+> [!NOTE]
+> **Default:** `server.tomcat.threads.max` is 200. **Rule of thumb:** if a request takes 100 ms, one thread handles about 10 requests per second, so 200 threads give about 2,000 requests/second. If a request takes 1 s, the same pool handles only about 200 requests/second.
 
 ```yaml
 
@@ -1495,22 +1353,18 @@ public class RequestLoggingFilter implements Filter {
 
 ## Why This Matters
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│  WHY CAN'T I DO: new T() or T.class or instanceof List<String>?                  │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  Answer: TYPE ERASURE                                                            │
-│                                                                                  │
-│  Generics are a COMPILE-TIME feature only!                                       │
-│  At runtime, generic type information is ERASED                                  │
-│                                                                                  │
-│  This affects:                                                                   │
-│  - How Jackson deserializes generic types                                        │
-│  - How Spring resolves generic beans                                             │
-│  - Why you need TypeReference<T>                                                 │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**WHY CAN'T I DO: new T() or T.class or instanceof List<String>?**
+
+```text
+Answer: TYPE ERASURE
+
+Generics are a COMPILE-TIME feature only!
+At runtime, generic type information is ERASED
+
+This affects:
+- How Jackson deserializes generic types
+- How Spring resolves generic beans
+- Why you need TypeReference<T>
 ```
 
 ## L.1 What Is Type Erasure?
@@ -1645,20 +1499,16 @@ Class<?> entityClass = listType.resolve();  // User.class
 
 ## Why This Matters
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│  ADVANCED: How Tools Modify Your Code at Runtime                                 │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  These tools use bytecode manipulation:                                          │
-│  - Spring Data: Generates repository implementations                             │
-│  - Hibernate: Adds lazy loading logic to entities                                │
-│  - Mockito: Creates mock objects                                                 │
-│  - CGLIB: Proxies for @Transactional                                             │
-│  - JaCoCo: Code coverage                                                         │
-│  - Debuggers: Breakpoints                                                        │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**ADVANCED: How Tools Modify Your Code at Runtime**
+
+```text
+These tools use bytecode manipulation:
+- Spring Data: Generates repository implementations
+- Hibernate: Adds lazy loading logic to entities
+- Mockito: Creates mock objects
+- CGLIB: Proxies for @Transactional
+- JaCoCo: Code coverage
+- Debuggers: Breakpoints
 ```
 
 ## M.1 Java Bytecode Basics
@@ -1806,54 +1656,50 @@ public class MyAgent {
 
 # 📋 QUICK REFERENCE: KEY TAKEAWAYS
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    WHAT YOU SHOULD REMEMBER                                      │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  REFLECTION                                                                      │
-│  • Spring uses reflection for EVERYTHING                                         │
-│  • setAccessible(true) bypasses private                                          │
-│  • Reflection is slow but cached                                                 │
-│                                                                                  │
-│  ANNOTATIONS                                                                     │
-│  • RUNTIME retention = Spring can read it                                        │
-│  • SOURCE retention = Compile-time only (Lombok)                                 │
-│                                                                                  │
-│  PROXIES                                                                         │
-│  • @Transactional creates proxy, not modifies code                               │
-│  • Self-invocation bypasses proxy!                                               │
-│  • Private methods can't be proxied                                              │
-│                                                                                  │
-│  SERVLETS                                                                        │
-│  • Spring MVC = Fancy servlet framework                                          │
-│  • Filter → Interceptor → Controller → Interceptor → Filter                      │
-│                                                                                  │
-│  JACKSON                                                                         │
-│  • @JsonProperty for naming                                                      │
-│  • @JsonIgnore for hiding                                                        │
-│  • @JsonFormat for dates                                                         │
-│                                                                                  │
-│  CONNECTIONS                                                                     │
-│  • Connection creation is EXPENSIVE                                              │
-│  • Pool reuses connections                                                       │
-│  • Don't leak connections (use try-with-resources)                               │
-│                                                                                  │
-│  CLASSLOADING                                                                    │
-│  • Parent delegation: ask parent first                                           │
-│  • Different classloader = different class!                                      │
-│                                                                                  │
-│  BUILD TOOLS                                                                     │
-│  • Lifecycle phases run in order                                                 │
-│  • Scopes control when dependency is available                                   │
-│  • Transitive = dependencies of dependencies                                     │
-│                                                                                  │
-│  TYPE ERASURE                                                                    │
-│  • Generics erased at runtime                                                    │
-│  • Use TypeReference for Jackson                                                 │
-│  • Can't do: new T() or instanceof List<String>                                  │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**WHAT YOU SHOULD REMEMBER**
+
+```text
+REFLECTION
+• Spring uses reflection for EVERYTHING
+• setAccessible(true) bypasses private
+• Reflection is slow but cached
+
+ANNOTATIONS
+• RUNTIME retention = Spring can read it
+• SOURCE retention = Compile-time only (Lombok)
+
+PROXIES
+• @Transactional creates proxy, not modifies code
+• Self-invocation bypasses proxy!
+• Private methods can't be proxied
+
+SERVLETS
+• Spring MVC = Fancy servlet framework
+• Filter → Interceptor → Controller → Interceptor → Filter
+
+JACKSON
+• @JsonProperty for naming
+• @JsonIgnore for hiding
+• @JsonFormat for dates
+
+CONNECTIONS
+• Connection creation is EXPENSIVE
+• Pool reuses connections
+• Don't leak connections (use try-with-resources)
+
+CLASSLOADING
+• Parent delegation: ask parent first
+• Different classloader = different class!
+
+BUILD TOOLS
+• Lifecycle phases run in order
+• Scopes control when dependency is available
+• Transitive = dependencies of dependencies
+
+TYPE ERASURE
+• Generics erased at runtime
+• Use TypeReference for Jackson
+• Can't do: new T() or instanceof List<String>
 ```
 
 ---

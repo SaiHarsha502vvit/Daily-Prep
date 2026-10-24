@@ -8,25 +8,24 @@
 
 Before we touch any code, let's answer the fundamental questions:
 
+```text
+ WHAT = Java Reflection is a way to inspect and manipulate
+        classes, methods, fields AT RUNTIME (not compile time)
+
+ WHY  = Frameworks like Spring can't know YOUR classes at
+        compile time, so they discover them at runtime
+
+ WHEN = Framework building, testing, serialization, plugins,
+        dependency injection, ORM mapping
+
+ WHERE = Spring (@Autowired), Hibernate (@Entity), JUnit (@Test)
+         Jackson (@JsonProperty), Lombok (compile-time version)
+
+ WHO  = Framework builders use it directly
+        Application devs use it indirectly (via annotations)
+
+ HOW  = java.lang.reflect package + java.lang.Class
 ```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  WHAT = Java Reflection is a way to inspect and manipulate       ║
-║         classes, methods, fields AT RUNTIME (not compile time)   ║
-║                                                                  ║
-║  WHY  = Frameworks like Spring can't know YOUR classes at        ║
-║         compile time, so they discover them at runtime           ║
-║                                                                  ║
-║  WHEN = Framework building, testing, serialization, plugins,     ║
-║         dependency injection, ORM mapping                        ║
-║                                                                  ║
-║  WHERE = Spring (@Autowired), Hibernate (@Entity), JUnit (@Test) ║
-║          Jackson (@JsonProperty), Lombok (compile-time version)  ║
-║                                                                  ║
-║  WHO  = Framework builders use it directly                       ║
-║         Application devs use it indirectly (via annotations)     ║
-║                                                                  ║
-║  HOW  = java.lang.reflect package + java.lang.Class              ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 ### Historical Evolution
 
@@ -44,7 +43,6 @@ Before we touch any code, let's answer the fundamental questions:
 - **Spring 2.5 — 2006**: `@Autowired`, `@Component`. XML→annotation DI. Spring Boot 1.0 (2014) extended this.
 - **Java 9 JPMS — 2017**: `--add-opens` needed for reflection in modular apps. `setAccessible()` restricted.
 - **Lombok — 2014**: Compile-time annotation processing. `@Getter`, `@Setter`, `@Builder`.
-```
 
 ---
 
@@ -70,18 +68,16 @@ REFLECTION (Runtime):
 
 ### Real-World Analogy
 
-```
-┌─────────────────────────────────────────────â”
-│ NORMAL CODE = Calling a friend by name      │
-│   "Hey Harsha, come here!"                  │
-│   (You know who you're calling)             │
-│                                             │
-│ REFLECTION = Looking at a phone book        │
-│   "Who has annotation @Available?"          │
-│   "Oh, Harsha, Ravi, Priya are available"   │
-│   "Call all of them!"                       │
-│   (You discover people at runtime)          │
-└─────────────────────────────────────────────┘
+```text
+NORMAL CODE = Calling a friend by name
+  "Hey Harsha, come here!"
+  (You know who you're calling)
+
+REFLECTION = Looking at a phone book
+  "Who has annotation @Available?"
+  "Oh, Harsha, Ravi, Priya are available"
+  "Call all of them!"
+  (You discover people at runtime)
 ```
 
 ---
@@ -129,14 +125,12 @@ clazz.getAnnotations();          // ALL annotations on this class
 // vs. getFields() / getMethods() → only PUBLIC, including inherited
 ```
 
-```
-┌──────────────────────────────────────────────────â”
-│ getDeclared___()  = THIS class only, ALL access   │
-│ get___()          = THIS + parents, PUBLIC only    │
-│                                                    │
-│ Use getDeclared for private field hacking          │
-│ Use get___ for public API discovery                │
-└──────────────────────────────────────────────────┘
+```text
+getDeclared___()  = THIS class only, ALL access
+get___()          = THIS + parents, PUBLIC only
+
+Use getDeclared for private field hacking
+Use get___ for public API discovery
 ```
 
 ---
@@ -298,36 +292,36 @@ Defense: Throw exception from constructor if instance exists, OR use enum single
 
 ## 6. How Spring Uses Reflection — The Full Picture
 
-```
-YOU WRITE:
-┌──────────────────────────────────â”
-│ @Service                          │
-│ public class UserService {        │
-│     @Autowired                    │
-│     private UserRepository repo;  │
-│                                   │
-│     public User findUser(Long id) │
-│     { return repo.findById(id); } │
-│ }                                 │
-└──────────────────────────────────┘
+**You write**
 
-SPRING DOES (via Reflection):
-┌──────────────────────────────────────────────────â”
-│ Step 1: Scan classpath for @Service classes       │
-│   → ClassLoader finds UserService.class           │
-│   → Check: clazz.isAnnotationPresent(Service)     │
-│                                                    │
-│ Step 2: Create instance                            │
-│   → clazz.getDeclaredConstructor().newInstance()   │
-│                                                    │
-│ Step 3: Inject dependencies                        │
-│   → Find fields with @Autowired                    │
-│   → field.setAccessible(true)                      │
-│   → field.set(userService, repoInstance)           │
-│                                                    │
-│ Step 4: Register as bean                           │
-│   → applicationContext.put("userService", instance) │
-└──────────────────────────────────────────────────┘
+```text
+@Service
+public class UserService {
+    @Autowired
+    private UserRepository repo;
+
+    public User findUser(Long id)
+    { return repo.findById(id); }
+}
+```
+
+**SPRING DOES (via Reflection)**
+
+```text
+Step 1: Scan classpath for @Service classes
+  → ClassLoader finds UserService.class
+  → Check: clazz.isAnnotationPresent(Service)
+
+Step 2: Create instance
+  → clazz.getDeclaredConstructor().newInstance()
+
+Step 3: Inject dependencies
+  → Find fields with @Autowired
+  → field.setAccessible(true)
+  → field.set(userService, repoInstance)
+
+Step 4: Register as bean
+  → applicationContext.put("userService", instance)
 ```
 
 ### Simplified Spring Container
@@ -395,16 +389,14 @@ public class MiniSpringContainer {
 
 ### What IS an Annotation?
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║ An annotation is METADATA attached to code elements          ║
-║                                                              ║
-║ By itself, it does NOTHING                                   ║
-║ It's like a sticky note on a book page                       ║
-║                                                              ║
-║ Someone (a framework/processor) must READ the annotation     ║
-║ and take ACTION based on it                                  ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+```text
+An annotation is METADATA attached to code elements
+
+By itself, it does NOTHING
+It's like a sticky note on a book page
+
+Someone (a framework/processor) must READ the annotation
+and take ACTION based on it
 ```
 
 ```
@@ -458,49 +450,35 @@ public @interface LogExecutionTime {
 
 ### @Target — WHERE Can This Annotation Go?
 
-```
-┌─────────────────────────────────────────────────â”
-│ ElementType        │ Can Annotate               │
-│────────────────────│────────────────────────────│
-│ TYPE               │ class, interface, enum      │
-│ FIELD              │ instance variables           │
-│ METHOD             │ methods                      │
-│ PARAMETER          │ method parameters            │
-│ CONSTRUCTOR        │ constructors                 │
-│ LOCAL_VARIABLE     │ local variables              │
-│ ANNOTATION_TYPE    │ other annotations (meta)     │
-│ PACKAGE            │ package declarations          │
-│ TYPE_PARAMETER     │ generic type parameters       │
-│ TYPE_USE           │ any type use (Java 8+)        │
-│ RECORD_COMPONENT   │ record components (Java 16+)  │
-└─────────────────────────────────────────────────┘
-```
+| `ElementType` | Can Annotate |
+| --- | --- |
+| `TYPE` | class, interface, enum |
+| `FIELD` | instance variables |
+| `METHOD` | methods |
+| `PARAMETER` | method parameters |
+| `CONSTRUCTOR` | constructors |
+| `LOCAL_VARIABLE` | local variables |
+| `ANNOTATION_TYPE` | other annotations (meta) |
+| `PACKAGE` | package declarations |
+| `TYPE_PARAMETER` | generic type parameters |
+| `TYPE_USE` | any type use (Java 8+) |
+| `RECORD_COMPONENT` | record components (Java 16+) |
 
 ### @Retention — WHEN Is It Available?
 
-```
-┌──────────────────────────────────────────────────────────â”
-│ RetentionPolicy  │ Available When?    │ Use Case          │
-│──────────────────│────────────────────│───────────────────│
-│ SOURCE           │ Compile time only  │ @Override          │
-│                  │ Gone after compile │ @SuppressWarnings  │
-│──────────────────│────────────────────│───────────────────│
-│ CLASS (default)  │ In .class file     │ Bytecode tools     │
-│                  │ NOT at runtime     │ (rarely used)      │
-│──────────────────│────────────────────│───────────────────│
-│ RUNTIME          │ At runtime via     │ @Autowired         │
-│                  │ Reflection         │ @Entity, @Test     │
-│                  │                    │ MOST frameworks    │
-└──────────────────────────────────────────────────────────┘
-```
+| RetentionPolicy | Available When? | Use Case |
+| --- | --- | --- |
+| SOURCE | Compile time only<br>Gone after compile | @Override<br>@SuppressWarnings |
+| CLASS (default) | In .class file<br>NOT at runtime | Bytecode tools<br>(rarely used) |
+| RUNTIME | At runtime via<br>Reflection | @Autowired<br>@Entity, @Test<br>MOST frameworks |
 
-```
-SOURCE → COMPILE → .class → RUNTIME
-  ↑                 ↑          ↑
-  │                 │          └── RUNTIME annotations live here
-  │                 └── CLASS annotations stop here
-  └── SOURCE annotations stop here
-```
+**SOURCE → COMPILE → .class → RUNTIME**
+
+**↑                 ↑          ↑**
+
+            - RUNTIME annotations live here
+      - CLASS annotations stop here
+- SOURCE annotations stop here
 
 **Rule of Thumb**: If you're creating an annotation for a framework
 to process at runtime → use `RetentionPolicy.RUNTIME`
@@ -855,20 +833,18 @@ SubEntity.class.isAnnotationPresent(Auditable.class);  // true!
 
 ## 13. Reflection Performance & When NOT to Use It
 
-```
-┌─────────────────────────────────────────────────────────────â”
-│              PERFORMANCE COMPARISON                          │
-│                                                             │
-│ Direct call:     user.getName()         →   ~2 ns           │
-│ Reflection:      method.invoke(user)    → ~50 ns            │
-│                                                             │
-│ That's ~25x slower!                                         │
-│                                                             │
-│ BUT: For framework initialization (once at startup),        │
-│      this cost is IRRELEVANT                                │
-│                                                             │
-│ For hot loops (millions of calls), it MATTERS               │
-└─────────────────────────────────────────────────────────────┘
+```text
+             PERFORMANCE COMPARISON
+
+Direct call:     user.getName()         →   ~2 ns
+Reflection:      method.invoke(user)    → ~50 ns
+
+That's ~25x slower!
+
+BUT: For framework initialization (once at startup),
+     this cost is IRRELEVANT
+
+For hot loops (millions of calls), it MATTERS
 ```
 
 ### Performance Optimization Tips
@@ -942,19 +918,17 @@ proxy.findById(1L);
 // findById took 12.34ms
 ```
 
-```
-┌──────────────────────────────────────────────────────────â”
-│ This is EXACTLY how Spring creates:                       │
-│                                                           │
-│ • @Transactional proxies (begin/commit/rollback)          │
-│ • @Cacheable proxies (check cache, return if found)       │
-│ • @Async proxies (submit to thread pool)                  │
-│ • AOP aspects (before/after/around advice)                │
-│                                                           │
-│ JDK Dynamic Proxy → interfaces only                       │
-│ CGLIB Proxy       → classes (subclass approach)           │
-│ Spring default    → CGLIB (since Spring Boot 2.x)         │
-└──────────────────────────────────────────────────────────┘
+```text
+This is EXACTLY how Spring creates:
+
+• @Transactional proxies (begin/commit/rollback)
+• @Cacheable proxies (check cache, return if found)
+• @Async proxies (submit to thread pool)
+• AOP aspects (before/after/around advice)
+
+JDK Dynamic Proxy → interfaces only
+CGLIB Proxy       → classes (subclass approach)
+Spring default    → CGLIB (since Spring Boot 2.x)
 ```
 
 ---
@@ -971,31 +945,27 @@ proxy.findById(1L);
 
 ## 15. Complete Reflection Cheat Sheet
 
-```
-┌────────────────────────────────────────────────────────────────â”
-│ OPERATION              │ CODE                                   │
-│────────────────────────│────────────────────────────────────────│
-│ Get class              │ obj.getClass() / Type.class             │
-│ Get class by name      │ Class.forName("com.example.Type")       │
-│ Create instance        │ clazz.getDeclaredConstructor().newInst()│
-│ Get all fields         │ clazz.getDeclaredFields()               │
-│ Get specific field     │ clazz.getDeclaredField("name")          │
-│ Read field value       │ field.setAccessible(true); field.get(o) │
-│ Write field value      │ field.set(obj, newValue)                │
-│ Get all methods        │ clazz.getDeclaredMethods()              │
-│ Get specific method    │ clazz.getDeclaredMethod("name", args)   │
-│ Invoke method          │ method.invoke(obj, args)                │
-│ Check annotation       │ elem.isAnnotationPresent(Anno.class)    │
-│ Get annotation         │ elem.getAnnotation(Anno.class)          │
-│ Check modifiers        │ Modifier.isPrivate(field.getModifiers())│
-│ Create proxy           │ Proxy.newProxyInstance(cl, ifs, handler) │
-│ Check if interface     │ clazz.isInterface()                     │
-│ Check if enum          │ clazz.isEnum()                          │
-│ Check if array         │ clazz.isArray()                         │
-│ Get generic type       │ field.getGenericType()                  │
-│ Get superclass         │ clazz.getSuperclass()                   │
-└────────────────────────────────────────────────────────────────┘
-```
+| OPERATION | `CODE` |
+| --- | --- |
+| Get class | `obj.getClass() / Type.class` |
+| Get class by name | `Class.forName("com.example.Type")` |
+| Create instance | `clazz.getDeclaredConstructor().newInst()` |
+| Get all fields | `clazz.getDeclaredFields()` |
+| Get specific field | `clazz.getDeclaredField("name")` |
+| Read field value | `field.setAccessible(true); field.get(o)` |
+| Write field value | `field.set(obj, newValue)` |
+| Get all methods | `clazz.getDeclaredMethods()` |
+| Get specific method | `clazz.getDeclaredMethod("name", args)` |
+| Invoke method | `method.invoke(obj, args)` |
+| Check annotation | `elem.isAnnotationPresent(Anno.class)` |
+| Get annotation | `elem.getAnnotation(Anno.class)` |
+| Check modifiers | `Modifier.isPrivate(field.getModifiers())` |
+| Create proxy | `Proxy.newProxyInstance(cl, ifs, handler)` |
+| Check if interface | `clazz.isInterface()` |
+| Check if enum | `clazz.isEnum()` |
+| Check if array | `clazz.isArray()` |
+| Get generic type | `field.getGenericType()` |
+| Get superclass | `clazz.getSuperclass()` |
 
 ---
 

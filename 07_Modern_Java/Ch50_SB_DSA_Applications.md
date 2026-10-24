@@ -9,44 +9,42 @@ _"The algorithm you choose determines your application's success"_
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
+**WHY: Why DSA Knowledge in Spring Boot?**
+
+```text
+• Performance: Wrong data structure = 100x slower operations
+• Scalability: LRU cache, rate limiting, scheduling - all DSA
+• Interviews: DSA + Spring Boot = complete backend developer
+• Debugging: Understand why certain operations are slow
+• Design decisions: Choose HashMap vs TreeMap, ArrayList vs LinkedList
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Why DSA Knowledge in Spring Boot?                                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Performance: Wrong data structure = 100x slower operations                   │
-│  • Scalability: LRU cache, rate limiting, scheduling - all DSA                  │
-│  • Interviews: DSA + Spring Boot = complete backend developer                   │
-│  • Debugging: Understand why certain operations are slow                        │
-│  • Design decisions: Choose HashMap vs TreeMap, ArrayList vs LinkedList         │
-└─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How DSA Applies in Real Applications?                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Caching: HashMap for O(1) lookup, LRU with LinkedHashMap                     │
-│  • Rate limiting: Token bucket, sliding window algorithms                       │
-│  • Search: Binary search for sorted data, tries for autocomplete                │
-│  • Task scheduling: Priority queues, DAG for dependencies                       │
-│  • Connection pooling: Queue for managing database connections                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**HOW: How DSA Applies in Real Applications?**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN: When to Apply DSA in Spring Boot?                                        │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Custom caching: When @Cacheable isn't enough                                 │
-│  • In-memory processing: Large data transformations                             │
-│  • Real-time features: Leaderboards, live search                                │
-│  • Batch operations: Processing millions of records efficiently                 │
-│  • API rate limiting: Custom throttling implementations                         │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+• Caching: HashMap for O(1) lookup, LRU with LinkedHashMap
+• Rate limiting: Token bucket, sliding window algorithms
+• Search: Binary search for sorted data, tries for autocomplete
+• Task scheduling: Priority queues, DAG for dependencies
+• Connection pooling: Queue for managing database connections
+```
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHICH: Which DSA Topics are Most Relevant?                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     HashMap/HashSet, ArrayList/LinkedList, time complexity          │
-│  IMPORTANT:     Trees (for hierarchies), Queues (for async), Sorting            │
-│  ADVANCED:      Graphs (service dependencies), Bloom filters, B-Trees           │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHEN: When to Apply DSA in Spring Boot?**
+
+```text
+• Custom caching: When @Cacheable isn't enough
+• In-memory processing: Large data transformations
+• Real-time features: Leaderboards, live search
+• Batch operations: Processing millions of records efficiently
+• API rate limiting: Custom throttling implementations
+```
+
+**WHICH: Which DSA Topics are Most Relevant?**
+
+```text
+ESSENTIAL:     HashMap/HashSet, ArrayList/LinkedList, time complexity
+IMPORTANT:     Trees (for hierarchies), Queues (for async), Sorting
+ADVANCED:      Graphs (service dependencies), Bloom filters, B-Trees
 ```
 
 ---
@@ -67,72 +65,30 @@ Algorithmic complexity. A SQL `LIKE 'prefix%'` query (even if indexed) requires 
 
 </details>
 
-## Dsa Usage In Spring Boot Applications
+## DSA usage in Spring Boot applications
 
-┬
-DATA STRUCTURE │ WHERE IT'S USED
-┼
-│
-HashMap │ • Caching (in-memory cache)
-│ • Session management
-│ • Request parameter mapping
-│ • API response building
-│
-ArrayList/LinkedList│ • Pagination results
-│ • Batch processing queues
-│ • Order history
-│
-TreeMap/TreeSet │ • Sorted leaderboards
-│ • Scheduled tasks (by time)
-│ • Range queries
-│
-PriorityQueue │ • Task scheduling (priority-based)
-│ • Event processing
-│ • Rate limiting
-│
-Graph │ • Social networks (friends, followers)
-│ • Route optimization
-│ • Dependency resolution
-│ • Recommendation systems
-│
-Trie │ • Auto-complete / Search suggestions
-│ • Spell checking
-│ • IP routing tables
-│
-Bloom Filter │ • Duplicate detection
-│ • Cache optimization
-│ • Spam filtering
-│
-┴
-┬
-ALGORITHM │ WHERE IT'S USED
-┼
-│
-Binary Search │ • Finding items in sorted data
-│ • Rate limit threshold checking
-│ • Log file searching
-│
-Sorting │ • Search results ranking
-│ • Leaderboards
-│ • Report generation
-│
-BFS/DFS │ • Category tree traversal
-│ • Organization hierarchy
-│ • Dependency resolution
-│
-Dijkstra/A\* │ • Route planning
-│ • Network path optimization
-│ • Game pathfinding
-│
-Dynamic Programming │ • Price optimization
-│ • Resource allocation
-│ • String matching
-│
-Sliding Window │ • Rate limiting
-│ • Analytics (rolling averages)
-│ • Stream processing
-│
-┴
+**Data structures**
+
+| Data structure | Where it's used |
+| --- | --- |
+| `HashMap` | Caching (in-memory cache)<br>Session management<br>Request parameter mapping<br>API response building |
+| `ArrayList` / `LinkedList` | Pagination results<br>Batch processing queues<br>Order history |
+| `TreeMap` / `TreeSet` | Sorted leaderboards<br>Scheduled tasks (by time)<br>Range queries |
+| `PriorityQueue` | Task scheduling (priority-based)<br>Event processing<br>Rate limiting |
+| Graph | Social networks (friends, followers)<br>Route optimization<br>Dependency resolution<br>Recommendation systems |
+| Trie | Auto-complete / search suggestions<br>Spell checking<br>IP routing tables |
+| Bloom filter | Duplicate detection<br>Cache optimization<br>Spam filtering |
+
+**Algorithms**
+
+| Algorithm | Where it's used |
+| --- | --- |
+| Binary search | Finding items in sorted data<br>Rate limit threshold checking<br>Log file searching |
+| Sorting | Search results ranking<br>Leaderboards<br>Report generation |
+| BFS / DFS | Category tree traversal<br>Organization hierarchy<br>Dependency resolution |
+| Dijkstra / A* | Route planning<br>Network path optimization<br>Game pathfinding |
+| Dynamic programming | Price optimization<br>Resource allocation<br>String matching |
+| Sliding window | Rate limiting<br>Analytics (rolling averages)<br>Stream processing |
 
 ---
 
@@ -1344,28 +1300,11 @@ Plain recursion can loop until stack overflow. Add `visited` tracking, maximum d
 
 # 📋 DSA + Spring Boot Summary
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DSA IN SPRING BOOT - QUICK REFERENCE                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  FEATURE                 │ DATA STRUCTURE    │ ALGORITHM                        │
-│  ────────────────────────┼───────────────────┼────────────────────────────────  │
-│  Rate Limiting           │ Queue + HashMap   │ Sliding Window                   │
-│  Auto-Complete           │ Trie              │ DFS Traversal                    │
-│  Caching                 │ LinkedHashMap     │ LRU Eviction                     │
-│  Route Planning          │ Graph             │ Dijkstra's/A*                    │
-│  Task Scheduling         │ PriorityQueue     │ Heap Operations                  │
-│  Leaderboard             │ TreeMap + HashMap │ Red-Black Tree Ops               │
-│  Org Hierarchy           │ Tree              │ DFS/BFS Traversal                │
-│  Search Rankings         │ Array/List        │ Merge Sort / Quick Sort          │
-│  Duplicate Detection     │ HashSet/BloomF    │ Hashing                          │
-│  Dependency Resolution   │ Graph             │ Topological Sort                 │
-│  Session Management      │ HashMap           │ O(1) Lookup                      │
-│  Pagination              │ ArrayList         │ Array Slicing                    │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+**DSA IN SPRING BOOT - QUICK REFERENCE**
+
+| FEATURE | DATA STRUCTURE | ALGORITHM |
+| --- | --- | --- |
+| Rate Limiting<br>Auto-Complete<br>Caching<br>Route Planning<br>Task Scheduling<br>Leaderboard<br>Org Hierarchy<br>Search Rankings<br>Duplicate Detection<br>Dependency Resolution<br>Session Management<br>Pagination | Queue + HashMap<br>Trie<br>LinkedHashMap<br>Graph<br>PriorityQueue<br>TreeMap + HashMap<br>Tree<br>Array/List<br>HashSet/BloomF<br>Graph<br>HashMap<br>ArrayList | Sliding Window<br>DFS Traversal<br>LRU Eviction<br>Dijkstra's/A*<br>Heap Operations<br>Red-Black Tree Ops<br>DFS/BFS Traversal<br>Merge Sort / Quick Sort<br>Hashing<br>Topological Sort<br>O(1) Lookup<br>Array Slicing |
 
 ---
 

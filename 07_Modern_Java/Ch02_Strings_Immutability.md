@@ -20,18 +20,17 @@ Immutability Allocation Thrashing. Strings in Java are immutable. Every time you
 
 ## 🎯 The 5W1H
 
+```text
+ WHAT = String is an IMMUTABLE object backed by a char[]/byte[]
+        Once created, its content NEVER changes
+
+ WHY  = Immutability enables: String pool (memory saving),
+        thread safety (no synchronization needed),
+        hashCode caching, security (class names, URLs)
+
+ KEY  = Every "modification" creates a NEW String object
+        "hello".toUpperCase() → NEW String "HELLO"
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT = String is an IMMUTABLE object backed by a char[]/byte[]  ║
-║         Once created, its content NEVER changes                  ║
-║                                                                  ║
-║  WHY  = Immutability enables: String pool (memory saving),       ║
-║         thread safety (no synchronization needed),               ║
-║         hashCode caching, security (class names, URLs)           ║
-║                                                                  ║
-║  KEY  = Every "modification" creates a NEW String object         ║
-║         "hello".toUpperCase() → NEW String "HELLO"               ║
-╚══════════════════════════════════════════════════════════════════╝
 
 ### Historical Evolution
 
@@ -49,29 +48,25 @@ Immutability Allocation Thrashing. Strings in Java are immutable. Every time you
 - **Java 7 string pool move — 2012**: Pool moved from PermGen to heap. `intern()` now viable in more cases.
 - **Compact Strings — Java 9 (2017)**: `char[]` → `byte[]` with LATIN-1 encoding. ~50% heap reduction for ASCII.
 - **`invokedynamic` string concat — Java 9 (2017)**: JSR 292. More efficient than pre-Java 9 `StringBuilder` bytecode.
-```
 
 ---
 
 ## 1. String Pool — How It Works
 
+### JVM Heap
+
+```text
+          STRING POOL
+     (inside the heap since Java 7)
+
+"hello" ─── shared by all references
+"world" ─── only one copy exists
+"java"  ─── reused, not duplicated
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         JVM HEAP                                 │
-│                                                                   │
-│  ┌─────────────────────────────────────────────┐                │
-│  │              STRING POOL                      │                │
-│  │         (inside the heap since Java 7)        │                │
-│  │                                               │                │
-│  │    "hello" ─── shared by all references       │                │
-│  │    "world" ─── only one copy exists           │                │
-│  │    "java"  ─── reused, not duplicated         │                │
-│  │                                               │                │
-│  └─────────────────────────────────────────────┘                │
-│                                                                   │
-│     new String("hello") ─── separate object, NOT in pool        │
-│     new String("hello") ─── ANOTHER separate object             │
-└─────────────────────────────────────────────────────────────────┘
+
+```java
+new String("hello") ─── separate object, NOT in pool
+new String("hello") ─── ANOTHER separate object
 ```
 
 ```java
@@ -220,19 +215,10 @@ Immutability Allocation Thrashing. Strings in Java are immutable. Every time you
 
 ## 4. StringBuilder vs StringBuffer
 
-```
-┌──────────────────┬──────────────────────┬──────────────────────┐
-│                  │ StringBuilder          │ StringBuffer           │
-├──────────────────┼──────────────────────┼──────────────────────┤
-│ Thread-safe?     │ ❌ NO                 │ ✅ YES (synchronized) │
-│ Speed            │ Faster (no locking)   │ Slower (locking)      │
-│ When to use      │ 99% of the time       │ Multi-threaded append │
-│ Java version     │ Java 5+               │ Java 1.0+             │
-├──────────────────┼──────────────────────┼──────────────────────┤
-│ RULE             │ Always use            │ Almost never needed   │
-│                  │ StringBuilder         │                       │
-└──────────────────┴──────────────────────┴──────────────────────┘
-```
+|  | StringBuilder | StringBuffer |
+| --- | --- | --- |
+| Thread-safe?<br>Speed<br>When to use<br>Java version | ❌ NO<br>Faster (no locking)<br>99% of the time<br>Java 5+ | ✅ YES (synchronized)<br>Slower (locking)<br>Multi-threaded append<br>Java 1.0+ |
+| RULE | Always use<br>StringBuilder | Almost never needed |
 
 ```java
 // StringBuilder internals
@@ -390,16 +376,14 @@ Immutability Allocation Thrashing. Strings in Java are immutable. Every time you
 
 ## 8. What Makes a Class Immutable?
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║ RULES FOR IMMUTABILITY:                                          ║
-║                                                                  ║
-║ 1. Declare the class as final (prevent subclassing)              ║
-║ 2. Make all fields private and final                             ║
-║ 3. Don't provide setters                                         ║
-║ 4. Defensive copy mutable objects in constructor AND getters     ║
-║ 5. Don't expose internal mutable state                           ║
-╚══════════════════════════════════════════════════════════════════╝
+**RULES FOR IMMUTABILITY:**
+
+```text
+1. Declare the class as final (prevent subclassing)
+2. Make all fields private and final
+3. Don't provide setters
+4. Defensive copy mutable objects in constructor AND getters
+5. Don't expose internal mutable state
 ```
 
 ```java

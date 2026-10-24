@@ -935,8 +935,10 @@ sequenceDiagram
     Old-->>R: [li#a "Apple", li#b "Banana"]
     R->>New: children of <ul>
     New-->>R: [li#b "Banana", li#a "Apple"]
-    Note over R: same keys, different order → MOVE existing DOM nodes;<br/>preserve each li's state (input drafts, animations, memo caches).<br/>(If you'd used index as key: React sees "li at index 0" changed<br/>text from "Apple" to "Banana", updates DOM textContent —<br/>silently reassigning state to the wrong row.)
+    Note over R: same keys, different order → MOVE existing DOM nodes,<br/>preserve each li's state (input drafts, animations, memo caches).<br/>(If you'd used index as key: React sees "li at index 0" changed<br/>text from "Apple" to "Banana", updates DOM textContent —<br/>silently reassigning state to the wrong row.)
     R->>DOM: reorder existing <li> nodes (no re-mount, no state loss)
+```
+
 ### Hydration: Server HTML → Interactive React
 
 **Trace what happens between "server got the request" and "the user
@@ -1065,7 +1067,7 @@ sequenceDiagram
     Browser->>Delegate: native "click" bubbles to the root listener React installed
     Delegate->>Handler: build SyntheticEvent, find owning component, invoke onClick
     Handler->>Scheduler: setCart(prev => [...prev, item])<br/>(may be several setStates — they are BATCHED into one update)
-    Scheduler-->>Handler: return; render is queued, not yet run
+    Scheduler-->>Handler: return, render is queued, not yet run
     Note over Scheduler: ~1 ms after event
 
     Scheduler->>Render: call your component fn(s) with the new state

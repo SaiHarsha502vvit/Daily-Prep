@@ -401,6 +401,7 @@ EVALUATION METRICS FOR RECOMMENDERS:
 
   Coverage: variety of items recommended (avoids bubble)
   Novelty:  how surprising/non-obvious are recommendations?
+```
 
 ---
 

@@ -93,28 +93,26 @@ List<String> result = names.stream()
 
 ### The Short-Circuiting Principle
 
-```
-┌─────────────────────────────────────────────────────────────────â”
-│  SHORT-CIRCUITING OPERATIONS:                                   │
-│                                                                 │
-│  Terminal:     findFirst(), findAny(), anyMatch(),              │
-│                allMatch(), noneMatch()                          │
-│                                                                 │
-│  Intermediate: limit(), takeWhile() (Java 9+)                   │
-│                                                                 │
-│  These can STOP the entire pipeline early:                      │
-│                                                                 │
-│  // On 10 million records — finds first match, stops            │
-│  users.stream()                                                 │
-│      .filter(u -> u.getAge() > 65)                              │
-│      .findFirst();  // Might check only 100 users               │
-│                                                                 │
-│  // Infinite stream — no problem!                               │
-│  Stream.iterate(1, n -> n + 1)  // infinite: 1, 2, 3, 4...      │
-│      .filter(n -> n % 7 == 0)   // multiples of 7               │
-│      .limit(5)                   // take first 5                │
-│      .forEach(System.out::println);  // 7, 14, 21, 28, 35       │
-└─────────────────────────────────────────────────────────────────┘
+```text
+ SHORT-CIRCUITING OPERATIONS:
+
+ Terminal:     findFirst(), findAny(), anyMatch(),
+               allMatch(), noneMatch()
+
+ Intermediate: limit(), takeWhile() (Java 9+)
+
+ These can STOP the entire pipeline early:
+
+ // On 10 million records — finds first match, stops
+ users.stream()
+     .filter(u -> u.getAge() > 65)
+     .findFirst();  // Might check only 100 users
+
+ // Infinite stream — no problem!
+ Stream.iterate(1, n -> n + 1)  // infinite: 1, 2, 3, 4...
+     .filter(n -> n % 7 == 0)   // multiples of 7
+     .limit(5)                   // take first 5
+     .forEach(System.out::println);  // 7, 14, 21, 28, 35
 ```
 
 ### Follow-Up Trap
@@ -162,28 +160,26 @@ Not until `collect()` (or any terminal operation). `filter()` and `map()` are LA
 
 ### Deep Reasoning
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  THE DVD vs NETFLIX ANALOGY                                      ║
-║                                                                  ║
-║  Collection = DVD collection on your shelf                       ║
-║  → All data IN MEMORY right now                                  ║
-║  → You can pick any DVD (random access)                          ║
-║  → You can count them (size)                                     ║
-║  → You can add/remove DVDs (mutable)                             ║
-║  → Same DVDs, watch as many times as you want (reusable)         ║
-║                                                                  ║
-║  Stream = Netflix                                                ║
-║  → Data comes ON DEMAND (lazy, possibly from database)           ║
-║  → You watch in order (sequential processing)                    ║
-║  → You don't know total count until you watch all                ║
-║  → You can't rewind (consumed once)                              ║
-║  → You describe WHAT you want, Netflix figures out HOW           ║
-║                                                                  ║
-║  KEY DISTINCTION:                                                ║
-║  Collection = data structure (stores data)                       ║
-║  Stream = computation description (processes data)               ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+```text
+ THE DVD vs NETFLIX ANALOGY
+
+ Collection = DVD collection on your shelf
+ → All data IN MEMORY right now
+ → You can pick any DVD (random access)
+ → You can count them (size)
+ → You can add/remove DVDs (mutable)
+ → Same DVDs, watch as many times as you want (reusable)
+
+ Stream = Netflix
+ → Data comes ON DEMAND (lazy, possibly from database)
+ → You watch in order (sequential processing)
+ → You don't know total count until you watch all
+ → You can't rewind (consumed once)
+ → You describe WHAT you want, Netflix figures out HOW
+
+ KEY DISTINCTION:
+ Collection = data structure (stores data)
+ Stream = computation description (processes data)
 ```
 
 ### The "Used Once" Rule — Code Proof
@@ -205,20 +201,18 @@ stream.forEach(System.out::println);
 
 ### Critical Difference Table
 
-```
-┌────────────────────┬───────────────────────┬──────────────────────â”
-│ Feature            │ Collection            │ Stream               │
-├────────────────────┼───────────────────────┼──────────────────────┤
-│ When computed      │ Eagerly (all at once) │ Lazily (on demand)   │
-│ Reusable           │ ✅ Yes                │ âŒ Once only           │
-│ Mutable            │ ✅ add/remove         │ âŒ Immutable pipe      │
-│ Size               │ Known (.size())       │ May be infinite      │
-│ Random access      │ ✅ list.get(i)        │ âŒ Sequential only     │
-│ Can store data     │ ✅ Primary purpose    │ âŒ Passes through      │
-│ External iteration │ ✅ for-each           │ âŒ Internal only       │
-│ Source of data     │ IS the data           │ Wraps a data source  │
-└────────────────────┴───────────────────────┴──────────────────────┘
-```
+**┌────────────────────┬───────────────────────┬──────────────────────â”**
+
+| Feature | Collection | Stream |
+| --- | --- | --- |
+| When computed | Eagerly (all at once) | Lazily (on demand) |
+| Reusable | ✅ Yes | âŒ Once only |
+| Mutable | ✅ add/remove | âŒ Immutable pipe |
+| Size | Known (.size()) | May be infinite |
+| Random access | ✅ list.get(i) | âŒ Sequential only |
+| Can store data | ✅ Primary purpose | âŒ Passes through |
+| External iteration | ✅ for-each | âŒ Internal only |
+| Source of data | IS the data | Wraps a data source |
 
 ---
 
@@ -244,49 +238,45 @@ A `Stream` is a one-time pipeline, not reusable data. Storing it as state means 
 
 ### Deep Reasoning
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  THE RESTAURANT ORDER ANALOGY                                    ║
-║                                                                  ║
-║  Intermediate Operations = Adding items to your order            ║
-║  → "I'd like the salad..." (filter)                              ║
-║  → "...with dressing on the side..." (map)                       ║
-║  → "...and only the first 3..." (limit)                          ║
-║  → Nothing is being prepared yet!                                ║
-║                                                                  ║
-║  Terminal Operation = Saying "That's my order" (submit)          ║
-║  → collect() = "Bring it all on one plate"                       ║
-║  → forEach() = "Feed me one bite at a time"                      ║
-║  → reduce() = "Blend it all into one smoothie"                   ║
-║  → count() = "Just tell me how many items"                       ║
-║  → findFirst() = "Just bring the first one"                      ║
-║                                                                  ║
-║  THE KITCHEN STARTS ONLY WHEN YOU SUBMIT THE ORDER               ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+```text
+ THE RESTAURANT ORDER ANALOGY
+
+ Intermediate Operations = Adding items to your order
+ → "I'd like the salad..." (filter)
+ → "...with dressing on the side..." (map)
+ → "...and only the first 3..." (limit)
+ → Nothing is being prepared yet!
+
+ Terminal Operation = Saying "That's my order" (submit)
+ → collect() = "Bring it all on one plate"
+ → forEach() = "Feed me one bite at a time"
+ → reduce() = "Blend it all into one smoothie"
+ → count() = "Just tell me how many items"
+ → findFirst() = "Just bring the first one"
+
+ THE KITCHEN STARTS ONLY WHEN YOU SUBMIT THE ORDER
 ```
 
 ### Classification
 
-```
-┌─────────────────────────────────────────────────────────────────â”
-│  INTERMEDIATE (returns Stream — lazy, chainable):               │
-│                                                                 │
-│  Stateless (no memory between elements):                        │
-│    filter(), map(), flatMap(), peek(), mapToInt/Long/Double()   │
-│                                                                 │
-│  Stateful (must see all/some elements first):                   │
-│    sorted()  â† must see ALL elements to sort                    │
-│    distinct() â† must remember what it's seen (HashSet)          │
-│    skip(n)   â† must count n elements to skip                    │
-│    limit(n)  â† must count (but short-circuits)                  │
-│                                                                 │
-│  ⚠ï¸ sorted() BREAKS laziness — forces buffering all elements!   │
-│                                                                 │
-│  TERMINAL (returns result — triggers execution):                │
-│    collect(), forEach(), reduce(), count(), min(), max(),       │
-│    toArray(), findFirst(), findAny(),                           │
-│    anyMatch(), allMatch(), noneMatch()                          │
-└─────────────────────────────────────────────────────────────────┘
+```text
+ INTERMEDIATE (returns Stream — lazy, chainable):
+
+ Stateless (no memory between elements):
+   filter(), map(), flatMap(), peek(), mapToInt/Long/Double()
+
+ Stateful (must see all/some elements first):
+   sorted()  â† must see ALL elements to sort
+   distinct() â† must remember what it's seen (HashSet)
+   skip(n)   â† must count n elements to skip
+   limit(n)  â† must count (but short-circuits)
+
+ ⚠ï¸ sorted() BREAKS laziness — forces buffering all elements!
+
+ TERMINAL (returns result — triggers execution):
+   collect(), forEach(), reduce(), count(), min(), max(),
+   toArray(), findFirst(), findAny(),
+   anyMatch(), allMatch(), noneMatch()
 ```
 
 ### The sorted() Trap
@@ -323,27 +313,25 @@ Streams are intrinsically Lazy. Intermediate operations like `map()`, `filter()`
 
 ### Deep Reasoning
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  THE GIFT BOX ANALOGY                                            ║
-║                                                                  ║
-║  You have 3 gift boxes, each containing smaller boxes:           ║
-║                                                                  ║
-║  Box1 → [candy, toy]                                             ║
-║  Box2 → [book]                                                   ║
-║  Box3 → [pen, eraser, ruler]                                     ║
-║                                                                  ║
-║  map() = "Open each box and look inside"                         ║
-║  Result: [ [candy,toy], [book], [pen,eraser,ruler] ]             ║
-║  → You get a Stream<List<Item>> — boxes within boxes!            ║
-║                                                                  ║
-║  flatMap() = "Open each box AND dump everything on the table"    ║
-║  Result: [candy, toy, book, pen, eraser, ruler]                  ║
-║  → You get a Stream<Item> — flat, no nesting!                    ║
-║                                                                  ║
-║  map():     1-to-1 transformation (same structure)               ║
-║  flatMap(): 1-to-many + flatten (removes one nesting level)      ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+```text
+ THE GIFT BOX ANALOGY
+
+ You have 3 gift boxes, each containing smaller boxes:
+
+ Box1 → [candy, toy]
+ Box2 → [book]
+ Box3 → [pen, eraser, ruler]
+
+ map() = "Open each box and look inside"
+ Result: [ [candy,toy], [book], [pen,eraser,ruler] ]
+ → You get a Stream<List<Item>> — boxes within boxes!
+
+ flatMap() = "Open each box AND dump everything on the table"
+ Result: [candy, toy, book, pen, eraser, ruler]
+ → You get a Stream<Item> — flat, no nesting!
+
+ map():     1-to-1 transformation (same structure)
+ flatMap(): 1-to-many + flatten (removes one nesting level)
 ```
 
 ### Code Proof
@@ -379,22 +367,20 @@ customers.stream()
 
 ### When to Use Which
 
-```
-┌─────────────────────────────────────────────────────────────────â”
-│  DECISION:                                                      │
-│                                                                 │
-│  Your function returns ONE thing?     → map()                   │
-│    name → name.toUpperCase()         (String → String)          │
-│    user → user.getAge()              (User → Integer)           │
-│                                                                 │
-│  Your function returns a COLLECTION?  → flatMap()               │
-│    user → user.getOrders()           (User → List<Order>)       │
-│    line → Arrays.asList(line.split(" "))  (String → List)       │
-│    optional → optional.stream()      (Optional → Stream)        │
-│                                                                 │
-│  Your function returns an OPTIONAL?   → flatMap() (Java 9+)     │
-│    Stream<Optional<T>> → flatMap(Optional::stream) → Stream<T>  │
-└─────────────────────────────────────────────────────────────────┘
+```text
+ DECISION:
+
+ Your function returns ONE thing?     → map()
+   name → name.toUpperCase()         (String → String)
+   user → user.getAge()              (User → Integer)
+
+ Your function returns a COLLECTION?  → flatMap()
+   user → user.getOrders()           (User → List<Order>)
+   line → Arrays.asList(line.split(" "))  (String → List)
+   optional → optional.stream()      (Optional → Stream)
+
+ Your function returns an OPTIONAL?   → flatMap() (Java 9+)
+   Stream<Optional<T>> → flatMap(Optional::stream) → Stream<T>
 ```
 
 ---
@@ -417,29 +403,27 @@ customers.stream()
 
 ### Deep Reasoning
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  THE SNOWBALL ROLLING DOWNHILL ANALOGY                           ║
-║                                                                  ║
-║  reduce() is like rolling a snowball downhill:                   ║
-║                                                                  ║
-║  identity (starting snowball) = 0                                ║
-║  accumulator (pick up snow as you roll) = (sum, next) -> sum+n   ║
-║                                                                  ║
-║  Elements: [3, 7, 2, 5]                                          ║
-║                                                                  ║
-║  Step 1: snowball=0, pick up 3  → snowball=3                     ║
-║  Step 2: snowball=3, pick up 7  → snowball=10                    ║
-║  Step 3: snowball=10, pick up 2 → snowball=12                    ║
-║  Step 4: snowball=12, pick up 5 → snowball=17                    ║
-║                                                                  ║
-║  Result: 17                                                      ║
-║                                                                  ║
-║  THREE FORMS:                                                    ║
-║  reduce(BinaryOperator)           → Optional<T>                  ║
-║  reduce(identity, BinaryOperator) → T                            ║
-║  reduce(identity, accumulator, combiner) → U (for parallel)      ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+```text
+ THE SNOWBALL ROLLING DOWNHILL ANALOGY
+
+ reduce() is like rolling a snowball downhill:
+
+ identity (starting snowball) = 0
+ accumulator (pick up snow as you roll) = (sum, next) -> sum+n
+
+ Elements: [3, 7, 2, 5]
+
+ Step 1: snowball=0, pick up 3  → snowball=3
+ Step 2: snowball=3, pick up 7  → snowball=10
+ Step 3: snowball=10, pick up 2 → snowball=12
+ Step 4: snowball=12, pick up 5 → snowball=17
+
+ Result: 17
+
+ THREE FORMS:
+ reduce(BinaryOperator)           → Optional<T>
+ reduce(identity, BinaryOperator) → T
+ reduce(identity, accumulator, combiner) → U (for parallel)
 ```
 
 ### The Three-Argument reduce() — WHY It Exists
@@ -473,25 +457,23 @@ int totalLength = words.stream()
 
 ### reduce() vs collect() — When to Use Which
 
-```
-┌────────────────────────────────────────────────────────────────────â”
-│  reduce() = combine all into ONE value                             │
-│    Sum, product, min, max, concatenation                           │
-│    → Creates NEW object each step (immutable accumulation)         │
-│                                                                    │
-│  collect() = pour all into a MUTABLE CONTAINER                     │
-│    List, Map, Set, StringBuilder, custom object                    │
-│    → MUTATES the container (mutable accumulation)                  │
-│                                                                    │
-│  WHY THE DISTINCTION?                                              │
-│  reduce() with String concat: "a" + "b" → new "ab" + "c" → "abc"   │
-│    → Creates N new String objects = O(n²) for strings!             │
-│                                                                    │
-│  collect() with StringBuilder: sb.append("a").append("b")...       │
-│    → Mutates ONE object = O(n)                                     │
-│                                                                    │
-│  RULE: Building a collection? Use collect(). Single value? reduce()│
-└────────────────────────────────────────────────────────────────────┘
+```text
+ reduce() = combine all into ONE value
+   Sum, product, min, max, concatenation
+   → Creates NEW object each step (immutable accumulation)
+
+ collect() = pour all into a MUTABLE CONTAINER
+   List, Map, Set, StringBuilder, custom object
+   → MUTATES the container (mutable accumulation)
+
+ WHY THE DISTINCTION?
+ reduce() with String concat: "a" + "b" → new "ab" + "c" → "abc"
+   → Creates N new String objects = O(n²) for strings!
+
+ collect() with StringBuilder: sb.append("a").append("b")...
+   → Mutates ONE object = O(n)
+
+ RULE: Building a collection? Use collect(). Single value? reduce()
 ```
 
 ---
@@ -514,26 +496,24 @@ int totalLength = words.stream()
 
 ### Deep Reasoning
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  THE ASSEMBLY LINE WORKER ANALOGY                                ║
-║                                                                  ║
-║  A Collector has 4 jobs (like 4 assembly line workers):          ║
-║                                                                  ║
-║  1. supplier()    → "Bring an empty box"                         ║
-║                      () -> new ArrayList<>()                     ║
-║                                                                  ║
-║  2. accumulator() → "Put each item in the box"                   ║
-║                      (list, item) -> list.add(item)              ║
-║                                                                  ║
-║  3. combiner()    → "Merge two boxes into one" (for parallel)    ║
-║                      (list1, list2) -> { list1.addAll(list2); }  ║
-║                                                                  ║
-║  4. finisher()    → "Seal the box and label it"                  ║
-║                      list -> Collections.unmodifiableList(list)  ║
-║                                                                  ║
-║  + characteristics() → hints: CONCURRENT? UNORDERED? IDENTITY?   ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+```text
+ THE ASSEMBLY LINE WORKER ANALOGY
+
+ A Collector has 4 jobs (like 4 assembly line workers):
+
+ 1. supplier()    → "Bring an empty box"
+                     () -> new ArrayList<>()
+
+ 2. accumulator() → "Put each item in the box"
+                     (list, item) -> list.add(item)
+
+ 3. combiner()    → "Merge two boxes into one" (for parallel)
+                     (list1, list2) -> { list1.addAll(list2); }
+
+ 4. finisher()    → "Seal the box and label it"
+                     list -> Collections.unmodifiableList(list)
+
+ + characteristics() → hints: CONCURRENT? UNORDERED? IDENTITY?
 ```
 
 ### Writing a Custom Collector
@@ -618,25 +598,23 @@ Map<String, Long> countByDept = employees.stream()
 
 ### Deep Reasoning
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  THE COOKING ANALOGY — When More Chefs HURT                      ║
-║                                                                  ║
-║  Sequential: 1 chef makes 100 dishes — predictable, orderly      ║
-║  Parallel: 10 chefs share 1 kitchen — CHAOS potential!           ║
-║                                                                  ║
-║  WHEN 10 CHEFS HELP:                                             ║
-║  → Independent tasks (each chef has own station)                 ║
-║  → CPU-heavy work (chopping, mixing — not waiting)               ║
-║  → Large dataset (100+ dishes, not 5)                            ║
-║                                                                  ║
-║  WHEN 10 CHEFS HURT:                                             ║
-║  → Shared equipment (one oven = one bottle neck = contention)    ║
-║  → Small tasks (overhead of coordinating > time saved)           ║
-║  → IO-bound (everyone waits for the same delivery truck)         ║
-║  → Order matters (dish 1 must finish before dish 2 starts)       ║
-║  → Shared state mutation (two chefs grabbing same salt = bug)    ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+```text
+ THE COOKING ANALOGY — When More Chefs HURT
+
+ Sequential: 1 chef makes 100 dishes — predictable, orderly
+ Parallel: 10 chefs share 1 kitchen — CHAOS potential!
+
+ WHEN 10 CHEFS HELP:
+ → Independent tasks (each chef has own station)
+ → CPU-heavy work (chopping, mixing — not waiting)
+ → Large dataset (100+ dishes, not 5)
+
+ WHEN 10 CHEFS HURT:
+ → Shared equipment (one oven = one bottle neck = contention)
+ → Small tasks (overhead of coordinating > time saved)
+ → IO-bound (everyone waits for the same delivery truck)
+ → Order matters (dish 1 must finish before dish 2 starts)
+ → Shared state mutation (two chefs grabbing same salt = bug)
 ```
 
 ### The 5 Traps of parallelStream()
@@ -676,32 +654,30 @@ list.parallelStream()
 
 ### When parallelStream() Actually Helps
 
-```
-┌─────────────────────────────────────────────────────────────────â”
-│  USE parallelStream() WHEN ALL ARE TRUE:                        │
-│                                                                 │
-│  ✅ Dataset > 10,000 elements (overhead worth it)                │
-│  ✅ CPU-intensive computation per element                        │
-│  ✅ Data source splits cheaply (ArrayList, array, IntStream)     │
-│  ✅ No shared mutable state                                      │
-│  ✅ Order doesn't matter (or you accept ordering overhead)       │
-│  ✅ No blocking IO                                               │
-│                                                                 │
-│  NEVER USE WHEN:                                                │
-│  âŒ < 1000 elements (overhead dominates)                         │
-│  âŒ LinkedList source (can't split efficiently)                  │
-│  âŒ Blocking IO (starves common ForkJoinPool)                    │
-│  âŒ Side effects (println, writing to shared list)               │
-│  âŒ In a web server (common pool shared across ALL requests!)    │
-│                                                                 │
-│  CUSTOM POOL WORKAROUND:                                        │
-│  ForkJoinPool custom = new ForkJoinPool(4);                     │
-│  custom.submit(() ->                                            │
-│      list.parallelStream()                                      │
-│          .map(heavyComputation)                                 │
-│          .collect(toList())                                     │
-│  ).get();                                                       │
-└─────────────────────────────────────────────────────────────────┘
+```text
+ USE parallelStream() WHEN ALL ARE TRUE:
+
+ ✅ Dataset > 10,000 elements (overhead worth it)
+ ✅ CPU-intensive computation per element
+ ✅ Data source splits cheaply (ArrayList, array, IntStream)
+ ✅ No shared mutable state
+ ✅ Order doesn't matter (or you accept ordering overhead)
+ ✅ No blocking IO
+
+ NEVER USE WHEN:
+ âŒ < 1000 elements (overhead dominates)
+ âŒ LinkedList source (can't split efficiently)
+ âŒ Blocking IO (starves common ForkJoinPool)
+ âŒ Side effects (println, writing to shared list)
+ âŒ In a web server (common pool shared across ALL requests!)
+
+ CUSTOM POOL WORKAROUND:
+ ForkJoinPool custom = new ForkJoinPool(4);
+ custom.submit(() ->
+     list.parallelStream()
+         .map(heavyComputation)
+         .collect(toList())
+ ).get();
 ```
 
 ---
@@ -728,34 +704,32 @@ list.parallelStream()
 
 ### Deep Reasoning
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  HOW THE JVM FUSES OPERATIONS                                    ║
-║                                                                  ║
-║  Your code:                                                      ║
-║    .filter(x -> x > 10).map(x -> x * 2).collect(toList())        ║
-║                                                                  ║
-║  Naive execution (3 loops):                                      ║
-║    Loop 1: filter all → temp list                                ║
-║    Loop 2: map all → temp list                                   ║
-║    Loop 3: collect → result                                      ║
-║                                                                  ║
-║  Actual execution (FUSED into 1 loop):                           ║
-║    for (int x : source) {                                        ║
-║        if (x > 10) {           // filter inline                  ║
-║            result.add(x * 2);  // map + collect inline           ║
-║        }                                                         ║
-║    }                                                             ║
-║                                                                  ║
-║  This is called LOOP FUSION:                                     ║
-║  → No intermediate collections created                           ║
-║  → Single pass through data                                      ║
-║  → Better cache locality (process each element completely)       ║
-║                                                                  ║
-║  EXCEPT when a stateful operation (sorted, distinct) appears:    ║
-║  → Pipeline splits into segments at each stateful op             ║
-║  → Each segment fuses internally, but barriers between them      ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+```text
+ HOW THE JVM FUSES OPERATIONS
+
+ Your code:
+   .filter(x -> x > 10).map(x -> x * 2).collect(toList())
+
+ Naive execution (3 loops):
+   Loop 1: filter all → temp list
+   Loop 2: map all → temp list
+   Loop 3: collect → result
+
+ Actual execution (FUSED into 1 loop):
+   for (int x : source) {
+       if (x > 10) {           // filter inline
+           result.add(x * 2);  // map + collect inline
+       }
+   }
+
+ This is called LOOP FUSION:
+ → No intermediate collections created
+ → Single pass through data
+ → Better cache locality (process each element completely)
+
+ EXCEPT when a stateful operation (sorted, distinct) appears:
+ → Pipeline splits into segments at each stateful op
+ → Each segment fuses internally, but barriers between them
 ```
 
 ---
@@ -786,22 +760,20 @@ list.parallelStream()
 
 ### Deep Reasoning
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  THE GIFT BOX vs EMPTY BOX ANALOGY                               ║
-║                                                                  ║
-║  null = Someone handed you NOTHING and said "here's a thing"     ║
-║         You reach for the thing → NPE (you grabbed air)          ║
-║                                                                  ║
-║  Optional = Someone hands you a box.                             ║
-║            → Box might contain a value (Optional.of(value))      ║
-║            → Box might be empty (Optional.empty())               ║
-║            → The BOX ITSELF is never null                        ║
-║            → You MUST check before reaching in                   ║
-║                                                                  ║
-║  Optional FORCES you to handle the absence case.                 ║
-║  null lets you FORGET.                                           ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+```text
+ THE GIFT BOX vs EMPTY BOX ANALOGY
+
+ null = Someone handed you NOTHING and said "here's a thing"
+        You reach for the thing → NPE (you grabbed air)
+
+ Optional = Someone hands you a box.
+           → Box might contain a value (Optional.of(value))
+           → Box might be empty (Optional.empty())
+           → The BOX ITSELF is never null
+           → You MUST check before reaching in
+
+ Optional FORCES you to handle the absence case.
+ null lets you FORGET.
 ```
 
 ### Good Uses vs Anti-Patterns
@@ -856,33 +828,31 @@ return optional.map(transform).orElseThrow();
 
 ### Deep Reasoning
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  THE 4 TYPES — And Why Each Exists                               ║
-║                                                                  ║
-║  1. Static method:    ClassName::staticMethod                    ║
-║     Lambda:           x -> Math.abs(x)                           ║
-║     Reference:        Math::abs                                  ║
-║     Think:            "Call this class's static function"        ║
-║                                                                  ║
-║  2. Instance method (bound):  instance::method                   ║
-║     Lambda:           x -> System.out.println(x)                 ║
-║     Reference:        System.out::println                        ║
-║     Think:            "Call THIS object's method"                ║
-║                                                                  ║
-║  3. Instance method (unbound):  ClassName::instanceMethod        ║
-║     Lambda:           s -> s.toUpperCase()                       ║
-║     Reference:        String::toUpperCase                        ║
-║     Think:            "Call the method ON the stream element"    ║
-║     ⚠ï¸ First param becomes the receiver:                         ║
-║        (s) -> s.toUpperCase() == String::toUpperCase             ║
-║        (a, b) -> a.compareTo(b) == String::compareTo             ║
-║                                                                  ║
-║  4. Constructor:      ClassName::new                             ║
-║     Lambda:           () -> new ArrayList<>()                    ║
-║     Reference:        ArrayList::new                             ║
-║     Think:            "Create a new instance"                    ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+```text
+ THE 4 TYPES — And Why Each Exists
+
+ 1. Static method:    ClassName::staticMethod
+    Lambda:           x -> Math.abs(x)
+    Reference:        Math::abs
+    Think:            "Call this class's static function"
+
+ 2. Instance method (bound):  instance::method
+    Lambda:           x -> System.out.println(x)
+    Reference:        System.out::println
+    Think:            "Call THIS object's method"
+
+ 3. Instance method (unbound):  ClassName::instanceMethod
+    Lambda:           s -> s.toUpperCase()
+    Reference:        String::toUpperCase
+    Think:            "Call the method ON the stream element"
+    ⚠ï¸ First param becomes the receiver:
+       (s) -> s.toUpperCase() == String::toUpperCase
+       (a, b) -> a.compareTo(b) == String::compareTo
+
+ 4. Constructor:      ClassName::new
+    Lambda:           () -> new ArrayList<>()
+    Reference:        ArrayList::new
+    Think:            "Create a new instance"
 ```
 
 ### The "Unbound" Trap — Code Proof

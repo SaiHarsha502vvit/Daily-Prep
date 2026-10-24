@@ -491,13 +491,13 @@ flowchart TD
     Client_Tokyo[Client in Tokyo] -->|Dest IP: 192.5.5.241| BGP_T[BGP Router Japan]
     Client_NY[Client in NY] -->|Dest IP: 192.5.5.241| BGP_NY[BGP Router USA]
 
-    subgraph Anycast "F-Root (IP: 192.5.5.241)"
+    subgraph Anycast["F-Root (IP: 192.5.5.241)"]
         Root_Tokyo[F-Root Server\nTokyo Datacenter]
         Root_NY[F-Root Server\nNew York Datacenter]
     end
 
-    BGP_T -->|Shortest Path (2ms)| Root_Tokyo
-    BGP_NY -->|Shortest Path (5ms)| Root_NY
+    BGP_T -->|"Shortest Path (2ms)"| Root_Tokyo
+    BGP_NY -->|"Shortest Path (5ms)"| Root_NY
 ```
 
 **The Superpower:**

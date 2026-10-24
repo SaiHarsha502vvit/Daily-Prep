@@ -123,3 +123,12 @@ Verification:
 Agents must start from `_Curriculum/00_AGENT_START.md` for all curriculum work. Legacy `AGENTS.md` remains available for on-demand reference but is no longer the mandatory first-read. Folder-level `CONTEXT.md` and `00_CONTEXT/` files remain valid for non-curriculum deep work.
 
 Reason: the old start sequence cost ~165 KB (~67K tokens) per invocation; the lean sequence costs ~10.7 KB (~93% reduction). This makes multi-phase curriculum work financially viable.
+
+## D014 - Diagrams Are Mermaid, Tabular Data Is a Markdown Table
+
+Any ASCII box/arrow diagram becomes a Mermaid block followed by a "**How to read this diagram.**" note; any ASCII or pseudo table becomes a GitHub Markdown table (blank line before, header separator, `|` escaped, same column count per row). File-system trees and tiny diagrams inside code comments may stay as text.
+
+Rules for editing: never replace a code block unless it contains only ASCII art (check for Java/XML keywords first); never pack several rows into one cell with `<br>`; quote Mermaid labels that contain parentheses; do not use `Loop`/`loop` as a node id; keep fences balanced.
+
+Verification: `cd tools/mermaid-check && node check.mjs <folder>` (needs Chromium; in the cloud sandbox launch it with `executablePath: "/opt/pw-browsers/chromium"`), then `python3 tools/update_context.py update` and `check --strict-fences`.
+

@@ -89,38 +89,38 @@ if (amount1.intValue() == amount2.intValue())
 
 ## 🔑 JVM Class Loading Sequence — Why It Matters
 
+**JVM startup sequence (from byte 0 to your `main()` method)**
+
+```mermaid
+flowchart TD
+  P1["Phase 1: Bootstrap ClassLoader<br/>loads the JDK core classes (java.lang.Object, java.lang.String...)<br/>these MUST be loaded first: Object is the parent of all classes"]
+  P2["Phase 2: Platform ClassLoader<br/>loads the JDK platform modules (javax.*, java.sql, ...)"]
+  P3["Phase 3: Application ClassLoader<br/>loads YOUR classes from the classpath / module path"]
+  P1 --> P2 --> P3
 ```
-JVM STARTUP SEQUENCE (from byte 0 to your main() method):
-════════════════════════════════════════════════════════
 
-Phase 1: Bootstrap ClassLoader
-  ← Loads JDK core classes (java.lang.Object, java.lang.String...)
-  ← These MUST be loaded before anything else — Object is the parent of all classes
+**How to read this diagram.** The three class loaders run in this order. Each loaded class then goes through three sub-phases:
 
-Phase 2: Extension/Platform ClassLoader
-  ← Loads JDK extension modules (javax.*, java.sql, etc.)
+1. **Load:** read the `.class` bytes from disk.
+2. **Link:**
+   - **Verify:** check that the bytecode is valid (type safety).
+   - **Prepare:** allocate memory for static fields (set to their defaults).
+   - **Resolve:** convert symbolic method references to direct pointers.
+3. **Initialize:** run static initializers and static field assignments.
 
-Phase 3: Application ClassLoader
-  ← Loads YOUR classes from the classpath/modulepath
+**Why this matters**
 
-For each loaded class, 3 sub-phases:
-  ┌─ LOAD ────── Read .class bytes from disk
-  ├─ LINK ─────┬ Verify: Check bytecode is valid (type safety)
-  │            ├ Prepare: Allocate memory for static fields (set to defaults)
-  │            └ Resolve: Convert symbolic method refs to direct pointers
-  └─ INITIALIZE ─ Run static initializers and static field assignments
+1. A class is loaded ONCE and initialized ONCE, so its static field initializers run once.
+2. This is why the Singleton via the initialization-on-demand holder is thread-safe. The JVM guarantees that class initialization is atomic, so no synchronization is needed:
 
-WHY THIS MATTERS:
-  1. Class is loaded ONCE → initialized ONCE → static fields init runs ONCE
-  2. This is why the Singleton via Initialization-On-Demand Holder is thread-safe:
-     class Singleton {
-         private static class Holder { static final S INSTANCE = new S(); }
-         public static S getInstance() { return Holder.INSTANCE; }
-     }
-     The JVM guarantees class initialization is atomic → no synchronization needed.
-  3. printStackTrace shows "Caused by: ExceptionInInitializerError" when a static
-     initializer throws → the class becomes unusable for the rest of JVM lifetime.
+```java
+class Singleton {
+    private static class Holder { static final Singleton INSTANCE = new Singleton(); }
+    public static Singleton getInstance() { return Holder.INSTANCE; }
+}
 ```
+
+3. `printStackTrace` shows "Caused by: ExceptionInInitializerError" when a static initializer throws. The class then becomes unusable for the rest of the JVM's lifetime.
 
 ---
 
@@ -151,19 +151,12 @@ When you pass a non-static inner class instance (e.g., an AsyncTask or Handler) 
 
 ## 1. Inner Classes — 4 Types
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  TYPE                 │ ACCESS TO OUTER │ USE CASE               ║
-╠═══════════════════════╪═════════════════╪════════════════════════╣
-║  Static Nested Class  │ Only static     │ Helper class, Builder  ║
-║  Non-static Inner     │ Full (incl      │ Tightly coupled logic  ║
-║                       │  outer's this)  │                        ║
-║  Local Inner Class    │ Full + local    │ Complex one-off in     ║
-║                       │  final vars     │  a method body         ║
-║  Anonymous Inner      │ Full + local    │ Quick interface impl   ║
-║                       │  final vars     │  (replaced by lambda)  ║
-╚═══════════════════════╧═════════════════╧════════════════════════╝
-```
+| Type | Access to outer | Use case |
+| --- | --- | --- |
+| Static nested class | Only static members | Helper class, Builder |
+| Non-static inner class | Full (including the outer's `this`) | Tightly coupled logic |
+| Local inner class | Full, plus effectively final local variables | Complex one-off inside a method body |
+| Anonymous inner class | Full, plus effectively final local variables | Quick interface implementation (replaced by a lambda) |
 
 ```java
 public class Outer {
@@ -223,23 +216,10 @@ Outer.Inner inner = outer.new Inner();              // Needs outer instance!
 
 ### Lambda vs Anonymous Inner Class
 
-```
-┌──────────────────────┬──────────────────────┬──────────────────────┐
-│                      │ Lambda                │ Anonymous Inner Class │
-├──────────────────────┼──────────────────────┼──────────────────────┤
-│ Works with           │ Functional interface  │ Any interface/class   │
-│                      │ (exactly 1 method)    │ (any number of        │
-│                      │                       │  methods)             │
-│ Has own 'this'?      │ NO — 'this' = outer  │ YES — 'this' = anon  │
-│ Creates .class file? │ NO (invokedynamic)   │ YES (Outer$1.class)  │
-│ Performance          │ Slightly better       │ Slightly worse        │
-│ Readability          │ More concise          │ More verbose           │
-│ Can have state?      │ NO                   │ YES (fields)          │
-├──────────────────────┼──────────────────────┼──────────────────────┤
-│ RULE                 │ Prefer lambda for     │ Use when multiple     │
-│                      │ functional interfaces │ methods needed        │
-└──────────────────────┴──────────────────────┴──────────────────────┘
-```
+|  | Lambda | Anonymous Inner Class |
+| --- | --- | --- |
+| Works with<br>Has own 'this'?<br>Creates .class file?<br>Performance<br>Readability<br>Can have state? | Functional interface (exactly 1 method)<br>NO — 'this' = outer<br>NO (invokedynamic)<br>Slightly better<br>More concise<br>NO | Any interface/class (any number of methods)<br>YES — 'this' = anon<br>YES (Outer$1.class)<br>Slightly worse<br>More verbose<br>YES (fields) |
+| RULE | Prefer lambda for functional interfaces | Use when multiple methods needed |
 
 ```java
 // Lambda — 'this' refers to ENCLOSING class
@@ -269,21 +249,19 @@ NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure).
 
 ## 2. Initialization Order — The Exact Sequence
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║ CLASS LOADING ORDER (happens ONCE per class):                    ║
-║                                                                   ║
-║ 1. Parent class loaded first (recursively)                       ║
-║ 2. Static fields — in order of appearance                        ║
-║ 3. Static initializer blocks — in order of appearance            ║
-║                                                                   ║
-║ OBJECT CREATION ORDER (happens EACH time 'new' is called):      ║
-║                                                                   ║
-║ 4. Parent instance fields & initializers — in order              ║
-║ 5. Parent constructor body                                       ║
-║ 6. Child instance fields & initializers — in order               ║
-║ 7. Child constructor body                                        ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+CLASS LOADING ORDER (happens ONCE per class):
+
+1. Parent class loaded first (recursively)
+2. Static fields — in order of appearance
+3. Static initializer blocks — in order of appearance
+
+OBJECT CREATION ORDER (happens EACH time 'new' is called):
+
+4. Parent instance fields & initializers — in order
+5. Parent constructor body
+6. Child instance fields & initializers — in order
+7. Child constructor body
 ```
 
 ```java
@@ -424,20 +402,10 @@ Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: 
 
 ## 4. Comparable vs Comparator — Complete Guide
 
-```
-┌───────────────────┬──────────────────────┬──────────────────────┐
-│                   │ Comparable<T>         │ Comparator<T>         │
-├───────────────────┼──────────────────────┼──────────────────────┤
-│ Package           │ java.lang             │ java.util             │
-│ Method            │ compareTo(T other)    │ compare(T a, T b)     │
-│ Where defined     │ Inside the class      │ Outside the class      │
-│ Sorts             │ Natural order (1 way) │ Custom order (many)    │
-│ Collections.sort  │ sort(list)            │ sort(list, comparator) │
-├───────────────────┼──────────────────────┼──────────────────────┤
-│ Think of it as    │ "I know how to        │ "Someone else decides │
-│                   │  sort myself"         │  how to sort me"      │
-└───────────────────┴──────────────────────┴──────────────────────┘
-```
+|  | Comparable<T> | Comparator<T> |
+| --- | --- | --- |
+| Package<br>Method<br>Where defined<br>Sorts<br>Collections.sort | java.lang compareTo(T other)<br>Inside the class<br>Natural order (1 way) sort(list) | java.util compare(T a, T b)<br>Outside the class<br>Custom order (many) sort(list, comparator) |
+| Think of it as | "I know how to sort myself" | "Someone else decides how to sort me" |
 
 ```java
 // Comparable — natural ordering (defined inside the class)
@@ -776,27 +744,19 @@ It's a marker annotation that causes the COMPILER to verify the interface has ex
 
 ## 9. All Built-in Functional Interfaces
 
-```
-╔═════════════════════╤═════════════╤═══════════════╤═══════════════╗
-║ Interface           │ Input       │ Output        │ Method        ║
-╠═════════════════════╪═════════════╪═══════════════╪═══════════════╣
-║ Function<T,R>       │ T           │ R             │ apply(T)      ║
-║ BiFunction<T,U,R>   │ T, U        │ R             │ apply(T,U)    ║
-║ UnaryOperator<T>    │ T           │ T (same type) │ apply(T)      ║
-║ BinaryOperator<T>   │ T, T        │ T (same type) │ apply(T,T)    ║
-╠═════════════════════╪═════════════╪═══════════════╪═══════════════╣
-║ Predicate<T>        │ T           │ boolean       │ test(T)       ║
-║ BiPredicate<T,U>    │ T, U        │ boolean       │ test(T,U)     ║
-╠═════════════════════╪═════════════╪═══════════════╪═══════════════╣
-║ Consumer<T>         │ T           │ void          │ accept(T)     ║
-║ BiConsumer<T,U>     │ T, U        │ void          │ accept(T,U)   ║
-╠═════════════════════╪═════════════╪═══════════════╪═══════════════╣
-║ Supplier<T>         │ none        │ T             │ get()         ║
-╠═════════════════════╪═════════════╪═══════════════╪═══════════════╣
-║ Runnable            │ none        │ void          │ run()         ║
-║ Callable<V>         │ none        │ V (+ throws)  │ call()        ║
-╚═════════════════════╧═════════════╧═══════════════╧═══════════════╝
-```
+| Interface | Input | Output | Method |
+| --- | --- | --- | --- |
+| `Function<T,R>` | `T` | `R` | `apply(T)` |
+| `BiFunction<T,U,R>` | `T, U` | `R` | `apply(T,U)` |
+| `UnaryOperator<T>` | `T` | `T` (same type) | `apply(T)` |
+| `BinaryOperator<T>` | `T, T` | `T` (same type) | `apply(T,T)` |
+| `Predicate<T>` | `T` | `boolean` | `test(T)` |
+| `BiPredicate<T,U>` | `T, U` | `boolean` | `test(T,U)` |
+| `Consumer<T>` | `T` | `void` | `accept(T)` |
+| `BiConsumer<T,U>` | `T, U` | `void` | `accept(T,U)` |
+| `Supplier<T>` | none | `T` | `get()` |
+| `Runnable` | none | `void` | `run()` |
+| `Callable<V>` | none | `V` (and may throw) | `call()` |
 
 ```java
 // Primitive specializations (avoid boxing):
@@ -845,13 +805,11 @@ Converter<String, Integer> toInt = Integer::parseInt;
 
 ## 10. Java Module System (JPMS) — Java 9+
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║ WHAT: Module = a named, self-describing collection of packages   ║
-║ WHY:  Strong encapsulation (hide internal packages),             ║
-║       reliable configuration (explicit dependencies),            ║
-║       smaller runtime (custom JRE with jlink)                    ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+WHAT: Module = a named, self-describing collection of packages
+WHY:  Strong encapsulation (hide internal packages),
+      reliable configuration (explicit dependencies),
+      smaller runtime (custom JRE with jlink)
 ```
 
 ```java
@@ -868,21 +826,20 @@ module com.myapp.core {
 }
 ```
 
+```mermaid
+flowchart TD
+  subgraph M["module com.myapp.core"]
+    API["com.myapp.core.api<br/>(exported)"]
+    INT["com.myapp.core.internal<br/>(not exported: truly private,<br/>even for public classes)"]
+    MODEL["com.myapp.core.model<br/>(opened: reflection access only)"]
+  end
+  OTHER["Other modules"] -->|"can import (exports)"| API
+  M -->|"requires java.sql: explicit dependency"| SQL["java.sql"]
+  OTHER -.->|"not importable"| INT
+  FW["Frameworks (Jackson)"] -->|"opens: reflection"| MODEL
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│ module com.myapp.core                                             │
-│                                                                    │
-│  exports com.myapp.core.api ──────────→ Other modules can import │
-│                                                                    │
-│  ┌──────────────────────────────────┐                             │
-│  │ com.myapp.core.internal          │ ← HIDDEN from other modules│
-│  │ (not exported — truly private)   │    even with public classes │
-│  └──────────────────────────────────┘                             │
-│                                                                    │
-│  requires java.sql ←────────────────── Explicit dependency       │
-│  opens com.myapp.core.model ────────── Reflection access only    │
-└──────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** `exports` makes a package importable by other modules. A package that is not exported stays hidden, even if its classes are `public`. `requires` declares a dependency, and `opens` allows deep reflection on a package without exporting it for normal use.
 
 ```java
 // Key keywords:

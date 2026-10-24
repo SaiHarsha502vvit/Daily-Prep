@@ -45,87 +45,23 @@ HOW: Dependency → what it gives you → common annotations.
 
 ## 1. The Master Map
 
-```
-DEPENDENCY                    │ WHAT IT UNLOCKS
-──────────────────────────────┼──────────────────────────────────
-                              │
-spring-boot-starter           │ @SpringBootApplication
-(core, always included)       │ @Component, @Service, @Repository
-                              │ @Bean, @Configuration
-                              │ @Autowired, @Value
-                              │ @Qualifier, @Primary
-                              │ @Profile, @Conditional*
-                              │ @PostConstruct, @PreDestroy
-                              │
-spring-boot-starter-web       │ @RestController, @Controller
-(REST APIs, MVC)              │ @RequestMapping, @GetMapping
-                              │ @PostMapping, @PutMapping
-                              │ @DeleteMapping, @PatchMapping
-                              │ @PathVariable, @RequestParam
-                              │ @RequestBody, @ResponseBody
-                              │ @ResponseStatus
-                              │ @ExceptionHandler
-                              │ @ControllerAdvice
-                              │ @CrossOrigin
-                              │
-spring-boot-starter-data-jpa  │ @Entity, @Table, @Id
-(database ORM)                │ @GeneratedValue
-                              │ @Column, @Transient
-                              │ @OneToMany, @ManyToOne
-                              │ @ManyToMany, @OneToOne
-                              │ @JoinColumn, @JoinTable
-                              │ @Query (Spring Data)
-                              │ @Transactional
-                              │ @Modifying
-                              │ @EnableJpaRepositories
-                              │
-spring-boot-starter-          │ @Valid, @NotNull, @NotBlank
-validation                    │ @Size, @Min, @Max
-(input validation)            │ @Email, @Pattern
-                              │ @Past, @Future
-                              │ @Positive, @Negative
-                              │ @Validated (class-level)
-                              │
-spring-boot-starter-security  │ @EnableWebSecurity
-(authentication + authz)      │ @PreAuthorize, @PostAuthorize
-                              │ @Secured, @RolesAllowed
-                              │ @EnableMethodSecurity
-                              │ @AuthenticationPrincipal
-                              │ @WithMockUser (test)
-                              │
-spring-boot-starter-test      │ @SpringBootTest
-(testing)                     │ @DataJpaTest, @WebMvcTest
-                              │ @MockBean, @SpyBean
-                              │ @Test (JUnit 5)
-                              │ @BeforeEach, @AfterEach
-                              │ @DisplayName, @Nested
-                              │ @ParameterizedTest
-                              │
-spring-boot-starter-actuator  │ Exposes /actuator/* endpoints
-(monitoring)                  │ @Endpoint, @ReadOperation
-                              │ @WriteOperation
-                              │ (mostly config, few annotations)
-                              │
-──── NON-SPRING LIBRARIES ────┼──────────────────────────────────
-                              │
-lombok                        │ @Data (= @Getter + @Setter +
-(NOT Spring! Code generation) │   @ToString + @EqualsAndHashCode
-                              │   + @RequiredArgsConstructor)
-                              │ @Getter, @Setter
-                              │ @Builder
-                              │ @NoArgsConstructor
-                              │ @AllArgsConstructor
-                              │ @RequiredArgsConstructor
-                              │ @Slf4j (logging)
-                              │ @ToString, @EqualsAndHashCode
-                              │
-mapstruct                     │ @Mapper, @Mapping
-(object mapping)              │ @MappingTarget
-                              │
-springdoc-openapi             │ @Tag, @Operation
-(API documentation)           │ @ApiResponse, @Parameter
-                              │ @Schema
-```
+| DEPENDENCY | WHAT IT UNLOCKS |
+| --- | --- |
+| spring-boot-starter (core, always included) | @SpringBootApplication<br>@Component, @Service, @Repository<br>@Bean, @Configuration<br>@Autowired, @Value<br>@Qualifier, @Primary<br>@Profile, @Conditional*<br>@PostConstruct, @PreDestroy |
+| spring-boot-starter-web (REST APIs, MVC) | @RestController, @Controller<br>@RequestMapping, @GetMapping<br>@PostMapping, @PutMapping<br>@DeleteMapping, @PatchMapping<br>@PathVariable, @RequestParam<br>@RequestBody, @ResponseBody<br>@ResponseStatus<br>@ExceptionHandler<br>@ControllerAdvice<br>@CrossOrigin |
+| spring-boot-starter-data-jpa (database ORM) | @Entity, @Table, @Id<br>@GeneratedValue<br>@Column, @Transient<br>@OneToMany, @ManyToOne<br>@ManyToMany, @OneToOne<br>@JoinColumn, @JoinTable<br>@Query (Spring Data)<br>@Transactional<br>@Modifying<br>@EnableJpaRepositories |
+| spring-boot-starter-validation (input validation) | @Valid, @NotNull, @NotBlank<br>@Size, @Min, @Max<br>@Email, @Pattern<br>@Past, @Future<br>@Positive, @Negative<br>@Validated (class-level) |
+| spring-boot-starter-security (authentication + authz) | @EnableWebSecurity<br>@PreAuthorize, @PostAuthorize<br>@Secured, @RolesAllowed<br>@EnableMethodSecurity<br>@AuthenticationPrincipal<br>@WithMockUser (test) |
+| spring-boot-starter-test (testing) | @SpringBootTest<br>@DataJpaTest, @WebMvcTest<br>@MockBean, @SpyBean<br>@Test (JUnit 5)<br>@BeforeEach, @AfterEach<br>@DisplayName, @Nested<br>@ParameterizedTest |
+| spring-boot-starter-actuator (monitoring) | Exposes /actuator/* endpoints<br>@Endpoint, @ReadOperation<br>@WriteOperation (mostly config, few annotations) |
+
+**Non-Spring libraries**
+
+| DEPENDENCY | WHAT IT UNLOCKS |
+| --- | --- |
+| lombok (NOT Spring! Code generation) | @Data (= @Getter + @Setter +<br>@ToString + @EqualsAndHashCode + @RequiredArgsConstructor)<br>@Getter, @Setter<br>@Builder<br>@NoArgsConstructor<br>@AllArgsConstructor<br>@RequiredArgsConstructor<br>@Slf4j (logging)<br>@ToString, @EqualsAndHashCode |
+| mapstruct (object mapping) | @Mapper, @Mapping<br>@MappingTarget |
+| springdoc-openapi (API documentation) | @Tag, @Operation<br>@ApiResponse, @Parameter<br>@Schema |
 
 ---
 
@@ -190,26 +126,23 @@ Spring Boot Auto-Configuration. The starter POM pulls in the Tomcat binaries and
 
 ## 3. Quick Reference: "I Need To Do X — Which Dependency?"
 
-I WANT TO... │ ADD THIS DEPENDENCY
-───────────────────────────────┼────────────────────────────────
-Create REST APIs │ spring-boot-starter-web
-Connect to SQL database │ spring-boot-starter-data-jpa
-│ + mysql-connector-java (driver)
-Validate input (@NotNull etc) │ spring-boot-starter-validation
-Add login/security │ spring-boot-starter-security
-Write tests │ spring-boot-starter-test
-Monitor app health │ spring-boot-starter-actuator
-Reduce boilerplate code │ lombok (+ IDE plugin!)
-Generate API docs (Swagger) │ springdoc-openapi-starter-\*
-Send/receive messages │ spring-boot-starter-amqp (RMQ)
-│ spring-kafka (Kafka)
-Use Redis cache │ spring-boot-starter-data-redis
-Schedule tasks (@Scheduled) │ spring-boot-starter (built-in)
-│ + @EnableScheduling
-Send emails │ spring-boot-starter-mail
-Upload files to S3 │ aws-sdk-java (not Spring)
-Use WebSockets │ spring-boot-starter-websocket
-Use MongoDB │ spring-boot-starter-data-mongodb
+| I want to... | Add this dependency |
+| --- | --- |
+| Create REST APIs | spring-boot-starter-web |
+| Connect to SQL database | spring-boot-starter-data-jpa<br>+ mysql-connector-java (driver) |
+| Validate input (@NotNull etc) | spring-boot-starter-validation |
+| Add login/security | spring-boot-starter-security |
+| Write tests | spring-boot-starter-test |
+| Monitor app health | spring-boot-starter-actuator |
+| Reduce boilerplate code | lombok (+ IDE plugin!) |
+| Generate API docs (Swagger) | springdoc-openapi-starter-* |
+| Send/receive messages | spring-boot-starter-amqp (RabbitMQ)<br>spring-kafka (Kafka) |
+| Use Redis cache | spring-boot-starter-data-redis |
+| Schedule tasks (@Scheduled) | spring-boot-starter (built-in)<br>+ @EnableScheduling |
+| Send emails | spring-boot-starter-mail |
+| Upload files to S3 | aws-sdk-java (not Spring) |
+| Use WebSockets | spring-boot-starter-websocket |
+| Use MongoDB | spring-boot-starter-data-mongodb |
 
 ---
 

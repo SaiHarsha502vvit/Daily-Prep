@@ -49,6 +49,7 @@ Full file map: `_Curriculum/01_FILE_MAP.md`.
 - Preserve existing content unless the user explicitly asks to remove it.
 - Prefer appending or refining over deleting; avoid cross-domain contamination.
 - Keep section challenges local to the topic.
+- Diagrams are Mermaid (with a "How to read this diagram" note) and tabular data is a Markdown table; see `D014` in `00_CONTEXT/DECISIONS.md`. Open follow-ups are listed in the latest `CHANGE_JOURNAL.md` entry.
 - DSA: constraint-first. SQL: SQL-first. Java/Spring: Java-first. Frontend: frontend-first.
 
 ## Context Update Rule

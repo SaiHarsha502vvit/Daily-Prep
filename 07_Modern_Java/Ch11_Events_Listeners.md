@@ -6,25 +6,24 @@
 
 ## 🎯 The 5W1H Framework for Events
 
+```text
+ WHAT = An event is a MESSAGE that says "something happened"
+        An event object CARRIES DATA about what happened
+
+ WHY  = Decoupling: the thing that HAPPENED doesn't need to
+        know who CARES about it
+
+ WHEN = User clicks button, order is placed, file changes,
+        timer fires, data arrives, state transitions
+
+ WHERE = GUI (Swing/JavaFX), Spring events, message queues,
+         WebSocket, file watchers, custom business logic
+
+ WHO  = Publisher (fires event) → Event (data) → Listener
+        (reacts to event)
+
+ HOW  = Observer pattern / Listener pattern / Pub-Sub
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT = An event is a MESSAGE that says "something happened"     ║
-║         An event object CARRIES DATA about what happened         ║
-║                                                                  ║
-║  WHY  = Decoupling: the thing that HAPPENED doesn't need to      ║
-║         know who CARES about it                                  ║
-║                                                                  ║
-║  WHEN = User clicks button, order is placed, file changes,       ║
-║         timer fires, data arrives, state transitions             ║
-║                                                                  ║
-║  WHERE = GUI (Swing/JavaFX), Spring events, message queues,      ║
-║          WebSocket, file watchers, custom business logic         ║
-║                                                                  ║
-║  WHO  = Publisher (fires event) → Event (data) → Listener        ║
-║         (reacts to event)                                        ║
-║                                                                  ║
-║  HOW  = Observer pattern / Listener pattern / Pub-Sub            ║
-╚══════════════════════════════════════════════════════════════════╝
 
 ### Historical Evolution
 
@@ -42,44 +41,34 @@
 - **`@EventListener` — Spring 4.2 (2014)**: Annotation-based event handling. SpEL condition support.
 - **`@TransactionalEventListener` — Spring 4.2 (2014)**: Events fire after transaction commit/rollback.
 - **Spring Cloud Stream / Kafka — 2016+**: Distributed events across microservices. Event-driven messaging.
-```
 
 ---
 
 ## 1. The Mental Model — Events in Real Life
 
-```
-REAL LIFE:
-┌───────────────────────────────────────────────────-┐
-│ Fire Alarm (EVENT SOURCE)                          │
-│   ↓ fires alarm                                    │
-│ Alarm Sound (EVENT) ← carries data: which floor    │
-│   ↓ heard by                                       │
-│ People (LISTENERS)                                 │
-│   → Person A: evacuates building                   │
-│   → Person B: calls fire department                │
-│   → Person C: grabs fire extinguisher              │
-│                                                    │
-│ The alarm doesn't KNOW who's listening             │
-│ Listeners decide WHAT to do independently          │
-│ New listeners can be added WITHOUT changing alarm  │
-└───────────────────────────────────────────────────-┘
+**Real life**
 
-IN CODE:
-┌───────────────────────────────────────────────────┐
-│ OrderService (EVENT SOURCE)                       │
-│   ↓ publishes OrderPlacedEvent                    │
-│ OrderPlacedEvent (EVENT) ← data: orderId, amount  │
-│   ↓ received by                                   │
-│ Listeners:                                        │
-│   → EmailListener: sends confirmation email       │
-│   → InventoryListener: reduces stock              │
-│   → AnalyticsListener: tracks purchase            │
-│                                                   │
-│ OrderService doesn't know about email/inventory!  │
-│ Adding new listener = ZERO changes to OrderService│
-└───────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  FA["Fire alarm (EVENT SOURCE)"] -->|"fires"| AS["Alarm sound (EVENT)<br/>carries data: which floor"]
+  AS -->|"heard by"| A["Person A (LISTENER): evacuates the building"]
+  AS --> B["Person B (LISTENER): calls the fire department"]
+  AS --> C["Person C (LISTENER): grabs a fire extinguisher"]
 ```
+
+**How to read this diagram.** The alarm doesn't know who is listening. Each listener decides what to do independently, and new listeners can be added without changing the alarm.
+
+**In code**
+
+```mermaid
+flowchart TD
+  OS["OrderService (EVENT SOURCE)"] -->|"publishes"| EV["OrderPlacedEvent (EVENT)<br/>data: orderId, amount"]
+  EV -->|"received by"| E["EmailListener: sends confirmation email"]
+  EV --> I["InventoryListener: reduces stock"]
+  EV --> AN["AnalyticsListener: tracks purchase"]
+```
+
+**How to read this diagram.** `OrderService` doesn't know about email or inventory. Adding a new listener needs zero changes to `OrderService`.
 
 ---
 
@@ -97,24 +86,22 @@ Thread Blocking. By default, Spring `@EventListener` methods execute synchronous
 
 When you see an event object for the first time, ask these 4 questions:
 
-```
-┌──────────────────────────────────────────────────────────┐
-│ QUESTION 1: WHAT happened?                               │
-│   → The event CLASS NAME tells you                       │
-│   → OrderPlacedEvent, ButtonClickEvent, FileChangedEvent │
-│                                                          │
-│ QUESTION 2: WHAT data does it carry?                     │
-│   → Look at the FIELDS of the event class                │
-│   → orderId, timestamp, userId, previousValue, newValue  │
-│                                                          │
-│ QUESTION 3: WHO fired this event?                        │
-│   → Look for getSource() or similar method               │
-│   → Returns the object that created the event            │
-│                                                          │
-│ QUESTION 4: WHEN did it happen?                          │
-│   → Look for timestamp field                             │
-│   → Or check event creation time                         │
-└──────────────────────────────────────────────────────────┘
+```text
+QUESTION 1: WHAT happened?
+  → The event CLASS NAME tells you
+  → OrderPlacedEvent, ButtonClickEvent, FileChangedEvent
+
+QUESTION 2: WHAT data does it carry?
+  → Look at the FIELDS of the event class
+  → orderId, timestamp, userId, previousValue, newValue
+
+QUESTION 3: WHO fired this event?
+  → Look for getSource() or similar method
+  → Returns the object that created the event
+
+QUESTION 4: WHEN did it happen?
+  → Look for timestamp field
+  → Or check event creation time
 ```
 
 ### Example: Dissecting a Java SE Event Object
@@ -259,17 +246,15 @@ public class Main {
 }
 ```
 
+```mermaid
+flowchart LR
+  OS["OrderService<br/>(Publisher)<br/>fires the event"] --> EV["OrderPlacedEvent<br/>(data carrier)<br/>orderId, customerId, amount, timestamp"]
+  EV --> EN["EmailNotifier"]
+  EV --> IU["InventoryUpdater"]
+  EV --> AT["AnalyticsTracker"]
 ```
-The Flow:
-┌─────────────┐     ┌──────────────────┐     ┌──────────────────┐
-│ OrderService │────→│ OrderPlacedEvent │────→│ EmailNotifier     │
-│ (Publisher)  │     │ (Data Carrier)   │────→│ InventoryUpdater  │
-│              │     │                  │────→│ AnalyticsTracker   │
-└─────────────┘     └──────────────────┘     └──────────────────┘
-  Fires event        Carries: orderId,         Each reacts
-                     customerId, amount,       independently
-                     timestamp
-```
+
+**How to read this diagram.** The publisher fires one event that carries the data. Each listener reacts independently.
 
 ---
 
@@ -437,21 +422,17 @@ public class TransactionalHandlers {
 }
 ```
 
+**Spring event flow**
+
+```mermaid
+flowchart TD
+  OS["OrderService"] -->|"publishEvent()"| P["ApplicationEventPublisher"]
+  P --> L1["@EventListener sendEmail()<br/>same thread"]
+  P --> L2["@Async sendSlack()<br/>new thread"]
+  P --> L3["@TransactionalEventListener afterCommit<br/>after TX commit"]
 ```
-Spring Event Flow:
-┌─────────────┐   publishEvent()   ┌──────────────────┐
-│ OrderService │──────────────────→│ ApplicationEvent  │
-│              │                    │ Publisher          │
-└─────────────┘                    └────────┬───────────┘
-                                            │
-                              ┌─────────────┼─────────────┐
-                              ↓             ↓             ↓
-                    ┌─────────────┐ ┌────────────┐ ┌─────────────┐
-                    │ @EventList. │ │ @Async     │ │ @Transact.  │
-                    │ sendEmail() │ │ sendSlack()│ │ afterCommit │
-                    └─────────────┘ └────────────┘ └─────────────┘
-                     Same thread     New thread     After TX commit
-```
+
+**How to read this diagram.** The publisher delivers the event to every matching listener. Where each handler runs depends on its annotation: the caller's thread, a new thread, or after the transaction commits.
 
 ---
 
@@ -494,18 +475,17 @@ public class AppLifecycleListener {
 }
 ```
 
-```
-Spring Boot Startup Event Order:
-┌────────────────────────────────┐
-│ ApplicationStartingEvent       │ ← Before anything
-│ ApplicationEnvironmentPrepared │ ← Environment ready
-│ ApplicationContextInitialized  │ ← Context created
-│ ApplicationPreparedEvent       │ ← Beans defined
-│ ContextRefreshedEvent          │ ← All beans created
-│ ApplicationStartedEvent        │ ← Context refreshed
-│ ApplicationReadyEvent          │ ← READY to serve ✅
-└────────────────────────────────┘
-```
+**Spring Boot startup event order**
+
+| Order | Event | Meaning |
+| --- | --- | --- |
+| 1 | `ApplicationStartingEvent` | Before anything |
+| 2 | `ApplicationEnvironmentPreparedEvent` | Environment ready |
+| 3 | `ApplicationContextInitializedEvent` | Context created |
+| 4 | `ApplicationPreparedEvent` | Bean definitions loaded |
+| 5 | `ContextRefreshedEvent` | All beans created |
+| 6 | `ApplicationStartedEvent` | Context refreshed |
+| 7 | `ApplicationReadyEvent` | READY to serve ✅ |
 
 ---
 
@@ -521,15 +501,13 @@ Thread Blocking. By default, Spring `@EventListener` methods execute synchronous
 
 ## 7. Observer Pattern — The Design Pattern Behind Events
 
-```
-╔══════════════════════════════════════════════════════════════╗
-║ Observer Pattern = the FORMAL name for the event/listener    ║
-║ pattern. Same concept, different vocabulary:                 ║
-║                                                              ║
-║ Publisher  = Subject  = Observable   (fires events)          ║
-║ Listener   = Observer                (reacts to events)      ║
-║ Event      = Notification = Message  (data carrier)          ║
-╚══════════════════════════════════════════════════════════════╝
+```text
+Observer Pattern = the FORMAL name for the event/listener
+pattern. Same concept, different vocabulary:
+
+Publisher  = Subject  = Observable   (fires events)
+Listener   = Observer                (reacts to events)
+Event      = Notification = Message  (data carrier)
 ```
 
 ### Classic Observer Pattern
@@ -667,67 +645,65 @@ profile.setName("Sai");       // Property 'name' changed: Harsha → Sai
 
 ### Understanding the PropertyChangeEvent Object
 
-```
+```text
 PropertyChangeEvent contains:
-┌──────────────────────────────────────────┐
-│ getSource()        → UserProfile object  │ ← WHO fired it
-│ getPropertyName()  → "name"              │ ← WHAT changed
-│ getOldValue()      → "Harsha"            │ ← Previous value
-│ getNewValue()      → "Sai"               │ ← Current value
-│                                          │
-│ This pattern is used in:                 │
-│ • JavaFX bindings                        │
-│ • Swing UI components                    │
-│ • JMX monitoring                         │
-│ • Any reactive data binding              │
-└──────────────────────────────────────────┘
+getSource()        → UserProfile object  │ ← WHO fired it
+getPropertyName()  → "name"              │ ← WHAT changed
+getOldValue()      → "Harsha"            │ ← Previous value
+getNewValue()      → "Sai"               │ ← Current value
+
+This pattern is used in:
+• JavaFX bindings
+• Swing UI components
+• JMX monitoring
+• Any reactive data binding
 ```
 
 ---
 
 ## 9. Event-Driven Architecture — The Big Picture
 
-```
-LAYERED (Traditional):
-┌──────────────┐
-│ Controller   │ → directly calls →  Service  → directly calls →  Repository
-└──────────────┘
-Problem: Tight coupling. Adding email? Change Service code.
+**Layered (traditional)**
 
-EVENT-DRIVEN:
-┌──────────────┐
-│ Controller   │ → calls → Service → publishes event →
-└──────────────┘                            ↓
-                              ┌─────────────┼──────────────┐
-                              ↓             ↓              ↓
-                          EmailHandler  InventoryHandler  AnalyticsHandler
-
-Benefit: Service doesn't know about handlers.
-         Add new handler → ZERO changes to Service.
+```mermaid
+flowchart LR
+  C["Controller"] -->|"directly calls"| S["Service"] -->|"directly calls"| R["Repository"]
 ```
+
+Problem: tight coupling. Adding email means changing the Service code.
+
+**Event-driven**
+
+```mermaid
+flowchart LR
+  C["Controller"] -->|"calls"| S["Service"] -->|"publishes event"| EV(("Event"))
+  EV --> EH["EmailHandler"]
+  EV --> IH["InventoryHandler"]
+  EV --> AH["AnalyticsHandler"]
+```
+
+**How to read these diagrams.** In the layered version each layer calls the next one directly. In the event-driven version the Service only publishes an event and doesn't know about the handlers. Adding a new handler means zero changes to the Service.
 
 ### When to Use Events vs Direct Calls
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│ DIRECT CALL (method invocation)                               │
-│ ✅ Use when: caller NEEDS the result immediately              │
-│ ✅ Use when: operation is core business logic                 │
-│ ✅ Use when: simple, 1-to-1 relationship                     │
-│ Example: orderService.calculateTotal(items)                   │
-│                                                               │
-│ EVENT-DRIVEN                                                   │
-│ ✅ Use when: multiple things react to one action               │
-│ ✅ Use when: reactions are INDEPENDENT of each other           │
-│ ✅ Use when: you want to add reactions WITHOUT changing source │
-│ ✅ Use when: async processing is acceptable                    │
-│ Example: order placed → email + inventory + analytics          │
-│                                                               │
-│ ❌ DON'T use events for:                                     │
-│ • Simple getter/setter calls                                  │
-│ • When you need the result synchronously                      │
-│ • When there's only one listener (just call the method!)      │
-└──────────────────────────────────────────────────────────────┘
+```text
+DIRECT CALL (method invocation)
+✅ Use when: caller NEEDS the result immediately
+✅ Use when: operation is core business logic
+✅ Use when: simple, 1-to-1 relationship
+Example: orderService.calculateTotal(items)
+
+EVENT-DRIVEN
+✅ Use when: multiple things react to one action
+✅ Use when: reactions are INDEPENDENT of each other
+✅ Use when: you want to add reactions WITHOUT changing source
+✅ Use when: async processing is acceptable
+Example: order placed → email + inventory + analytics
+
+❌ DON'T use events for:
+• Simple getter/setter calls
+• When you need the result synchronously
+• When there's only one listener (just call the method!)
 ```
 
 ---
@@ -865,56 +841,51 @@ Not until `collect()` (or any terminal operation). `filter()` and `map()` are LA
 
 When you encounter a new event system (in any framework), follow this checklist:
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│ STEP 1: Find the EVENT CLASS                                   │
-│   → What fields does it have? (that's the data)                │
-│   → Does it extend a base event class?                         │
-│   → Is it immutable? (events should be)                        │
-│                                                                │
-│ STEP 2: Find WHO PUBLISHES it                                  │
-│   → Search for: new EventClassName(                            │
-│   → Or: eventPublisher.publish(                                │
-│   → Or: fireEvent( / notifyObservers(                          │
-│                                                                │
-│ STEP 3: Find WHO LISTENS                                       │
-│   → Search for: @EventListener                                 │
-│   → Or: implements Listener<EventType>                         │
-│   → Or: addEventListener( / subscribe(                         │
-│                                                                │
-│ STEP 4: Trace the FLOW                                         │
-│   → Publisher creates event                                    │
-│   → Event carries data through the system                      │
-│   → Each listener receives and processes independently         │
-│                                                                │
-│ STEP 5: Check ORDERING & THREADING                             │
-│   → Are listeners called synchronously or async?               │
-│   → Is there a guaranteed order?                               │
-│   → What happens if a listener throws an exception?            │
-└────────────────────────────────────────────────────────────────┘
+```text
+STEP 1: Find the EVENT CLASS
+  → What fields does it have? (that's the data)
+  → Does it extend a base event class?
+  → Is it immutable? (events should be)
+
+STEP 2: Find WHO PUBLISHES it
+  → Search for: new EventClassName(
+  → Or: eventPublisher.publish(
+  → Or: fireEvent( / notifyObservers(
+
+STEP 3: Find WHO LISTENS
+  → Search for: @EventListener
+  → Or: implements Listener<EventType>
+  → Or: addEventListener( / subscribe(
+
+STEP 4: Trace the FLOW
+  → Publisher creates event
+  → Event carries data through the system
+  → Each listener receives and processes independently
+
+STEP 5: Check ORDERING & THREADING
+  → Are listeners called synchronously or async?
+  → Is there a guaranteed order?
+  → What happens if a listener throws an exception?
 ```
 
 ---
 
 ## 14. Common Event Patterns Comparison
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ PATTERN         │ COUPLING  │ THREAD    │ USE CASE              │
-│─────────────────│───────────│───────────│───────────────────────│
-│ Direct call     │ Tight     │ Same      │ Core business logic   │
-│ Observer        │ Loose     │ Same      │ In-process notif.     │
-│ Event Bus       │ Very loose│ Same/Async│ In-app decoupling     │
-│ Spring Events   │ Very loose│ Same/@Async│ Spring apps          │
-│ Message Queue   │ Zero      │ Separate  │ Microservices         │
-│ Reactive Stream │ Zero      │ Scheduled │ High-throughput       │
-│─────────────────│───────────│───────────│───────────────────────│
-│                                                                 │
-│ Coupling gets LOOSER as you go down                             │
-│ Complexity gets HIGHER as you go down                           │
-│ Choose the SIMPLEST that meets your needs                       │
-└─────────────────────────────────────────────────────────────────┘
-```
+ Complexity gets HIGHER as you go down Choose the SIMPLEST that meets your needs**
+
+| PATTERN | COUPLING | THREAD | USE CASE |
+| --- | --- | --- | --- |
+| Direct call | Tight | Same | Core business logic |
+| Observer | Loose | Same | In-process notif. |
+| Event Bus | Very loose | Same/Async | In-app decoupling |
+| Spring Events | Very loose | Same/@Async | Spring apps |
+| Message Queue | Zero | Separate | Microservices |
+| Reactive Stream | Zero | Scheduled | High-throughput |
+
+- Coupling gets LOOSER as you go down.
+- Complexity gets HIGHER as you go down.
+- Choose the SIMPLEST pattern that meets your needs.
 
 ---
 

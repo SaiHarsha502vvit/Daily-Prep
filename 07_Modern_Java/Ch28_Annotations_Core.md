@@ -31,44 +31,42 @@
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
+**WHY: Why Learn All These Annotations?**
+
+```text
+• Annotations ARE Spring: Without them, you're writing raw Java
+• Interview questions: "Explain @Transactional propagation"
+• Debug faster: Know what each annotation does under the hood
+• Write less code: @PrePersist beats manual timestamp setting
+• Avoid bugs: Wrong annotation = silent failures in production
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Why Learn All These Annotations?                                          │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Annotations ARE Spring: Without them, you're writing raw Java                │
-│  • Interview questions: "Explain @Transactional propagation"                    │
-│  • Debug faster: Know what each annotation does under the hood                  │
-│  • Write less code: @PrePersist beats manual timestamp setting                  │
-│  • Avoid bugs: Wrong annotation = silent failures in production                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How Annotations Work?                                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Metadata: Annotations are just metadata read at runtime                      │
-│  • Reflection: Spring scans classes and reads annotations                       │
-│  • Proxies: Many annotations create proxies (@Transactional, @Cacheable)        │
-│  • Callbacks: JPA annotations trigger lifecycle methods                         │
-│  • Compile-time: Lombok annotations generate code at compile time               │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**HOW: How Annotations Work?**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN: When to Use Each Annotation Category?                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • JPA Lifecycle: Auto timestamps, UUID generation, soft deletes                │
-│  • Validation: Every DTO that accepts user input                                │
-│  • Transaction: Service methods that modify data                                │
-│  • Security: Protecting endpoints and methods                                   │
-│  • Caching: Expensive operations that return same results                       │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+• Metadata: Annotations are just metadata read at runtime
+• Reflection: Spring scans classes and reads annotations
+• Proxies: Many annotations create proxies (@Transactional, @Cacheable)
+• Callbacks: JPA annotations trigger lifecycle methods
+• Compile-time: Lombok annotations generate code at compile time
+```
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHICH: Which Annotations are Most Critical?                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     @Entity, @RestController, @Service, @Autowired, @Transactional  │
-│  IMPORTANT:     @Valid, @PrePersist, @Cacheable, @Async, @PreAuthorize          │
-│  ADVANCED:      @EntityListeners, @Formula, @ConditionalOnProperty              │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHEN: When to Use Each Annotation Category?**
+
+```text
+• JPA Lifecycle: Auto timestamps, UUID generation, soft deletes
+• Validation: Every DTO that accepts user input
+• Transaction: Service methods that modify data
+• Security: Protecting endpoints and methods
+• Caching: Expensive operations that return same results
+```
+
+**WHICH: Which Annotations are Most Critical?**
+
+```text
+ESSENTIAL:     @Entity, @RestController, @Service, @Autowired, @Transactional
+IMPORTANT:     @Valid, @PrePersist, @Cacheable, @Async, @PreAuthorize
+ADVANCED:      @EntityListeners, @Formula, @ConditionalOnProperty
 ```
 
 ---
@@ -112,51 +110,24 @@
 
 ### Lifecycle Callback Methods
 
+**JPA entity lifecycle callbacks**
+
+| Entity state | Operation | Callbacks, in order |
+| --- | --- | --- |
+| New entity | `em.persist()` | `@PrePersist` (before INSERT) → INSERT → `@PostPersist` (after INSERT, ID available) |
+| Managed entity | Dirty checking at flush | `@PreUpdate` (before UPDATE) → UPDATE → `@PostUpdate` (after UPDATE) |
+| Managed entity | `em.remove()` | `@PreRemove` (before DELETE) → DELETE → `@PostRemove` (after DELETE) |
+| Loading an entity | SELECT | `@PostLoad` (after SELECT: the entity was loaded from the DB) |
+
+```mermaid
+flowchart LR
+  N["New entity"] -->|"em.persist()"| PP["@PrePersist"] --> I["INSERT"] --> PO["@PostPersist"] --> M["Managed entity"]
+  M -->|"dirty checking"| PU["@PreUpdate"] --> U["UPDATE"] --> PU2["@PostUpdate"]
+  M -->|"em.remove()"| PR["@PreRemove"] --> D["DELETE"] --> PR2["@PostRemove"]
+  DB[("Database")] -->|"SELECT"| PL["@PostLoad"] --> M
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                JPA ENTITY LIFECYCLE CALLBACKS                   │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  NEW ENTITY                                                     │
-│      │                                                          │
-│      ▼                                                          │
-│  ┌─────────────┐                                                │
-│  │ @PrePersist │ ──► Before INSERT                              │
-│  └─────────────┘                                                │
-│      │                                                          │
-│      ▼ (em.persist())                                           │
-│  ┌──────────────┐                                               │
-│  │ @PostPersist │ ──► After INSERT (ID available)               │
-│  └──────────────┘                                               │
-│                                                                 │
-│  MANAGED ENTITY                                                 │
-│      │                                                          │
-│      ▼                                                          │
-│  ┌─────────────┐                                                │
-│  │ @PreUpdate  │ ──► Before UPDATE                              │
-│  └─────────────┘                                                │
-│      │                                                          │
-│      ▼ (dirty checking)                                         │
-│  ┌──────────────┐                                               │
-│  │ @PostUpdate  │ ──► After UPDATE                              │
-│  └──────────────┘                                               │
-│                                                                 │
-│  ┌─────────────┐                                                │
-│  │ @PreRemove  │ ──► Before DELETE                              │
-│  └─────────────┘                                                │
-│      │                                                          │
-│      ▼ (em.remove())                                            │
-│  ┌──────────────┐                                               │
-│  │ @PostRemove  │ ──► After DELETE                              │
-│  └──────────────┘                                               │
-│                                                                 │
-│  LOADING ENTITY                                                 │
-│  ┌───────────┐                                                  │
-│  │ @PostLoad │ ──► After SELECT (entity loaded from DB)         │
-│  └───────────┘                                                  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Each operation is bracketed by a "Pre" callback before the SQL and a "Post" callback after it. `@PostLoad` runs after an entity is read from the database.
 
 ### Complete Entity Lifecycle Example
 

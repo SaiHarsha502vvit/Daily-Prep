@@ -30,69 +30,63 @@ _"The gaps that separate amateurs from professionals"_
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
+**WHY: Why These "Essential Missing" Topics?**
+
+```text
+• Production requirements: Caching, async, scheduling are expected
+• API completion: Swagger docs, file uploads are basic features
+• Monitoring: Actuator = production application visibility
+• Performance: Async and caching directly affect response times
+• Interview gaps: "Have you used @Cacheable? @Async?" - common questions
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Why These "Essential Missing" Topics?                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Production requirements: Caching, async, scheduling are expected             │
-│  • API completion: Swagger docs, file uploads are basic features                │
-│  • Monitoring: Actuator = production application visibility                     │
-│  • Performance: Async and caching directly affect response times                │
-│  • Interview gaps: "Have you used @Cacheable? @Async?" - common questions       │
-└─────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How to Implement Each Feature?                                            │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • @Cacheable: Annotate method, configure cache manager (Redis/Caffeine)        │
-│  • @Async: @EnableAsync + return CompletableFuture                              │
-│  • @Scheduled: @EnableScheduling + cron expressions                             │
-│  • Actuator: Add dependency, configure endpoints in properties                  │
-│  • Swagger: springdoc-openapi dependency, annotations optional                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**HOW: How to Implement Each Feature?**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN: When to Use Each Feature?                                                │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Caching: Expensive computations, frequently accessed data                    │
-│  • Async: Email sending, file processing, external API calls                    │
-│  • Scheduling: Report generation, cleanup jobs, data sync                       │
-│  • Actuator: Always in production for monitoring/health checks                  │
-│  • Swagger: APIs consumed by other teams/clients                                │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+• @Cacheable: Annotate method, configure cache manager (Redis/Caffeine)
+• @Async: @EnableAsync + return CompletableFuture
+• @Scheduled: @EnableScheduling + cron expressions
+• Actuator: Add dependency, configure endpoints in properties
+• Swagger: springdoc-openapi dependency, annotations optional
+```
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHICH: Which Topics to Prioritize?                                             │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Caching, @Async, Actuator, Swagger/OpenAPI                      │
-│  IMPORTANT:     Scheduling, file upload, email, internationalization            │
-│  ADVANCED:      WebSocket, Server-Sent Events, rate limiting                    │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHEN: When to Use Each Feature?**
+
+```text
+• Caching: Expensive computations, frequently accessed data
+• Async: Email sending, file processing, external API calls
+• Scheduling: Report generation, cleanup jobs, data sync
+• Actuator: Always in production for monitoring/health checks
+• Swagger: APIs consumed by other teams/clients
+```
+
+**WHICH: Which Topics to Prioritize?**
+
+```text
+ESSENTIAL:     Caching, @Async, Actuator, Swagger/OpenAPI
+IMPORTANT:     Scheduling, file upload, email, internationalization
+ADVANCED:      WebSocket, Server-Sent Events, rate limiting
 ```
 
 ---
 
 # 📌 Table of Contents
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              WHAT THIS PART COVERS                                              │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  1. Caching (@Cacheable, @CacheEvict, Redis)                                    │
-│  2. Async Processing (@Async, @EnableAsync)                                     │
-│  3. Scheduling (@Scheduled, @EnableScheduling)                                  │
-│  4. Spring Boot Actuator (Health, Metrics, Info)                                │
-│  5. API Documentation (Swagger/OpenAPI)                                         │
-│  6. File Upload/Download (Multipart)                                            │
-│  7. Email Sending (JavaMailSender)                                              │
-│  8. Logging (SLF4J, Logback Configuration)                                      │
-│  9. Database Migrations (Flyway)                                                │
-│  10. Docker Deployment                                                          │
-│  11. Environment Configuration                                                  │
-│  12. Messaging Basics (Kafka/RabbitMQ)                                          │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**WHAT THIS PART COVERS**
+
+```text
+1. Caching (@Cacheable, @CacheEvict, Redis)
+2. Async Processing (@Async, @EnableAsync)
+3. Scheduling (@Scheduled, @EnableScheduling)
+4. Spring Boot Actuator (Health, Metrics, Info)
+5. API Documentation (Swagger/OpenAPI)
+6. File Upload/Download (Multipart)
+7. Email Sending (JavaMailSender)
+8. Logging (SLF4J, Logback Configuration)
+9. Database Migrations (Flyway)
+10. Docker Deployment
+11. Environment Configuration
+12. Messaging Basics (Kafka/RabbitMQ)
 ```
 
 ---
@@ -410,27 +404,23 @@ Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: 
 
 ## Chapter 2: @Async Deep Dive
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              ASYNC PROCESSING FLOW                                              │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  SYNCHRONOUS (Default):                                                         │
-│  Request → processA() → processB() → sendEmail() → Response                     │
-│  Total time: 100ms + 50ms + 2000ms = 2150ms                                     │
-│                                                                                 │
-│  ASYNCHRONOUS (With @Async):                                                    │
-│  Request → processA() → processB() → [sendEmail() in background] → Response     │
-│  Total time: 100ms + 50ms = 150ms (email sends in parallel)                     │
-│                                                                                 │
-│  USE CASES:                                                                     │
-│  • Sending emails/notifications                                                 │
-│  • Generating reports                                                           │
-│  • Calling external APIs that aren't needed for response                        │
-│  • Audit logging                                                                │
-│  • Clean-up tasks                                                               │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**ASYNC PROCESSING FLOW**
+
+```text
+SYNCHRONOUS (Default):
+Request → processA() → processB() → sendEmail() → Response
+Total time: 100ms + 50ms + 2000ms = 2150ms
+
+ASYNCHRONOUS (With @Async):
+Request → processA() → processB() → [sendEmail() in background] → Response
+Total time: 100ms + 50ms = 150ms (email sends in parallel)
+
+USE CASES:
+• Sending emails/notifications
+• Generating reports
+• Calling external APIs that aren't needed for response
+• Audit logging
+• Clean-up tasks
 ```
 
 ### Enable and Configure
@@ -751,41 +741,44 @@ public class ScheduledTasks {
 // jobs:
 //   cleanup:
 //     cron: "0 0 3 * * *"  # Override to 3 AM
+```
 
 ### Cron Expression Reference
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              CRON EXPRESSION CHEAT SHEET                                        │
-├─────────────────────────────────────────────────────────────────────────────────┤
+**Cron expression cheat sheet** (Spring uses six fields)
+
+Format: `second minute hour day-of-month month day-of-week`
+
+| Field | Allowed values |
+| --- | --- |
+| second | 0-59 |
+| minute | 0-59 |
+| hour | 0-23 |
+| day of month | 1-31 |
+| month | 1-12 |
+| day of week | 0-7 (0 or 7 = Sunday) |
+
+**Special characters**
+
+| Character | Meaning |
+| --- | --- |
+| `*` | any value |
+| `,` | list (`MON,WED,FRI`) |
+| `-` | range (`1-5`) |
+| `/` | step (`*/15` = every 15) |
+
+**Examples**
+
+| Expression | Meaning |
+| --- | --- |
+| `0 0 * * * *` | Every hour (top of the hour) |
+| `0 */30 * * * *` | Every 30 minutes |
+| `0 0 9-17 * * *` | Every hour, 9 AM to 5 PM |
+| `0 0 0 * * *` | Midnight every day |
+| `0 0 12 * * MON` | Noon every Monday |
+| `0 0 0 1 * *` | Midnight on the first of the month |
+| `0 0 0 L * *` | Midnight on the last day of the month (Spring 5.3+) |
 │                                                                                 │
-│  Format: second minute hour day-of-month month day-of-week                      │
-│                                                                                 │
-│  ┌──────────── second (0-59)                                                    │
-│  │ ┌────────── minute (0-59)                                                    │
-│  │ │ ┌──────── hour (0-23)                                                      │
-│  │ │ │ ┌────── day of month (1-31)                                              │
-│  │ │ │ │ ┌──── month (1-12)                                                     │
-│  │ │ │ │ │ ┌── day of week (0-7, 0 or 7 = Sunday)                               │
-│  │ │ │ │ │ │                                                                    │
-│  * * * * * *                                                                    │
-│                                                                                 │
-│  SPECIAL CHARACTERS:                                                            │
-│  * = any value                                                                  │
-│  , = list (MON,WED,FRI)                                                         │
-│  - = range (1-5)                                                                │
-│  / = step (*/15 = every 15)                                                     │
-│                                                                                 │
-│  EXAMPLES:                                                                      │
-│  "0 0 * * * *"     = Every hour (top of hour)                                   │
-│  "0 */30 * * * *"  = Every 30 minutes                                           │
-│  "0 0 9-17 * * *"  = Every hour, 9 AM - 5 PM                                    │
-│  "0 0 0 * * *"     = Midnight every day                                         │
-│  "0 0 12 * * MON"  = Noon every Monday                                          │
-│  "0 0 0 1 * *"     = Midnight, first of month                                   │
-│  "0 0 0 L * *"     = Midnight, last day of month                                │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
 
 ---
 
@@ -795,29 +788,25 @@ public class ScheduledTasks {
 
 ## Chapter 4: Production-Ready Features
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              ACTUATOR - PRODUCTION MONITORING                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  WHAT ACTUATOR PROVIDES:                                                        │
-│  • /actuator/health - Is app healthy?                                           │
-│  • /actuator/info - App version, git info                                       │
-│  • /actuator/metrics - CPU, memory, requests                                    │
-│  • /actuator/env - Environment properties                                       │
-│  • /actuator/loggers - View/change log levels                                   │
-│  • /actuator/beans - All Spring beans                                           │
-│  • /actuator/mappings - All URL mappings                                        │
-│  • /actuator/threaddump - Thread states                                         │
-│  • /actuator/heapdump - Heap dump (download)                                    │
-│                                                                                 │
-│  USED BY:                                                                       │
-│  • Kubernetes (health probes)                                                   │
-│  • Prometheus (metrics scraping)                                                │
-│  • Load balancers (health checks)                                               │
-│  • DevOps dashboards                                                            │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**ACTUATOR - PRODUCTION MONITORING**
+
+```text
+WHAT ACTUATOR PROVIDES:
+• /actuator/health - Is app healthy?
+• /actuator/info - App version, git info
+• /actuator/metrics - CPU, memory, requests
+• /actuator/env - Environment properties
+• /actuator/loggers - View/change log levels
+• /actuator/beans - All Spring beans
+• /actuator/mappings - All URL mappings
+• /actuator/threaddump - Thread states
+• /actuator/heapdump - Heap dump (download)
+
+USED BY:
+• Kubernetes (health probes)
+• Prometheus (metrics scraping)
+• Load balancers (health checks)
+• DevOps dashboards
 ```
 
 ```xml

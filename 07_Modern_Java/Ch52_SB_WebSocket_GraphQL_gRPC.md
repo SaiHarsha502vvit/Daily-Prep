@@ -1227,13 +1227,12 @@ Error messages, labels, emails — all need translation.
 
 ### Step 1: Create Message Files
 
-```text
-src/main/resources/
- ├── messages.properties              # Default (Usually English)
- ├── messages_hi.properties           # Hindi locale translations
- ├── messages_ja.properties           # Japanese locale translations
- └── messages_te.properties           # Telugu locale translations
-```
+**src/main/resources/**
+
+- messages.properties              # Default (Usually English)
+- messages_hi.properties           # Hindi locale translations
+- messages_ja.properties           # Japanese locale translations
+- messages_te.properties           # Telugu locale translations
 
 ```properties
 # messages.properties (English - default)
@@ -1340,11 +1339,10 @@ One application serves MULTIPLE organizations (tenants):
 
 ### Strategy 2: Shared Database, Separate Schema
 
-```text
-[Shared Database Server]
-   ├── [ Schema A ] ---> Tables: users, orders (Company X)
-   └── [ Schema B ] ---> Tables: users, orders (Company Y)
-```
+**[Shared Database Server]**
+
+- [ Schema A ] ---> Tables: users, orders (Company X)
+- [ Schema B ] ---> Tables: users, orders (Company Y)
 
 ✅ Good isolation, ✅ Moderate cost
 ❌ Schema migrations must run for each tenant

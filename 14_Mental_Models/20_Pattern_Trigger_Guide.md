@@ -98,19 +98,19 @@ flowchart TD
     S1{"Signal: 'Subarray' / 'Substring'"} --> S1A{"Allowed to change order?"}
     S1A -->|Yes| S1B[Becomes 'Subsequence' problem]
     S1A -->|No| S1C{"Is condition monotonic?<br>(e.g., all positive nums)"}
-    S1C -->|Yes| P1[Sliding Window O(n)]
-    S1C -->|No| P2[Prefix Sum + HashMap O(n)]
+    S1C -->|Yes| P1["Sliding Window O(n)"]
+    S1C -->|No| P2["Prefix Sum + HashMap O(n)"]
 
     S2{"Signal: 'Kth Largest'"} --> S2A{"Data is a stream/dynamic?"}
-    S2A -->|Yes| P3[Min/Max Heap O(N log K)]
+    S2A -->|Yes| P3["Min/Max Heap O(N log K)"]
     S2A -->|No| S2B{"Need exact Kth or Top K?"}
-    S2B -->|Exact Kth| P4[QuickSelect O(N) avg]
-    S2B -->|Top K| P5[Min/Max Heap O(N log K)]
+    S2B -->|Exact Kth| P4["QuickSelect O(N) avg"]
+    S2B -->|Top K| P5["Min/Max Heap O(N log K)"]
 
     S3{"Signal: 'Min/Max cost to X'"} --> S3A{"Graph or Grid?"}
     S3A -->|Yes| S3B{"Weighted edges?"}
-    S3B -->|No| P6[BFS O(V+E)]
-    S3B -->|Yes| P7[Dijkstra O(E log V)]
+    S3B -->|No| P6["BFS O(V+E)"]
+    S3B -->|Yes| P7["Dijkstra O(E log V)"]
     S3A -->|No| S3C{"Overlapping subproblems?"}
     S3C -->|Yes| P8[Dynamic Programming]
     S3C -->|No| P9[Greedy]

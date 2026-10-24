@@ -8,29 +8,28 @@
 
 ## 🎯 The 5W1H Framework
 
+```text
+ WHAT = Java has exactly two categories of types:
+        Primitive Types (8 total) and Reference Types
+        (classes, interfaces, arrays, enums, records)
+
+ WHY  = The JVM uses fundamentally different memory models,
+        bytecode instructions, and GC strategies for each.
+        Misunderstanding this causes silent bugs, performance
+        disasters, and broken generic code.
+
+ WHEN = Every time you use Collections, Generics, pass
+        arguments, compare values, or serialize objects
+
+ WHERE = The distinction lives at the JVM bytecode level —
+         iload vs aload, ireturn vs areturn, stack vs heap
+
+ WHO  = Every Java developer, but most never truly understand
+        why ArrayList<int> fails while ArrayList<int[]> works
+
+ HOW  = The JVM specification (§4.3.1) defines the rules.
+        The compiler enforces them. Generics erase them.
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT = Java has exactly two categories of types:               ║
-║         Primitive Types (8 total) and Reference Types           ║
-║         (classes, interfaces, arrays, enums, records)           ║
-║                                                                  ║
-║  WHY  = The JVM uses fundamentally different memory models,      ║
-║         bytecode instructions, and GC strategies for each.      ║
-║         Misunderstanding this causes silent bugs, performance   ║
-║         disasters, and broken generic code.                     ║
-║                                                                  ║
-║  WHEN = Every time you use Collections, Generics, pass          ║
-║         arguments, compare values, or serialize objects          ║
-║                                                                  ║
-║  WHERE = The distinction lives at the JVM bytecode level —      ║
-║          iload vs aload, ireturn vs areturn, stack vs heap      ║
-║                                                                  ║
-║  WHO  = Every Java developer, but most never truly understand   ║
-║         why ArrayList<int> fails while ArrayList<int[]> works    ║
-║                                                                  ║
-║  HOW  = The JVM specification (§4.3.1) defines the rules.       ║
-║         The compiler enforces them. Generics erase them.        ║
-╚══════════════════════════════════════════════════════════════════╝
 
 ### Historical Evolution
 
@@ -48,44 +47,25 @@
 - **Effective Java 1st ed — 2001**: Joshua Bloch codified PECS, equals/hashCode, and immutability.
 - **Java 14 Records (final) / Java 16 — 2021**: Final form. Immutable data carriers replacing POJOs.
 - **Java 21 LTS — 2023**: Virtual threads, record patterns, pattern matching switch (preview).
-```
 
 ---
 
 ## 1. The Two Worlds: Primitives vs Reference Types
 
-```
-THE JAVA TYPE UNIVERSE
-══════════════════════
+**THE JAVA TYPE UNIVERSE — PRIMITIVE TYPES (8 total) — → Live directly on the stack (or inlined into objects) — → Have NO methods, NO inheritance, NO null — → Stored by VALUE (the actual bits) — byte   (8-bit  signed integer)    → -128 to 127 — short  (16-bit signed integer)    → -32,768 to 32,767 — int    (32-bit signed integer)    → ~-2 billion to 2 billion — long   (64-bit signed integer)    → ~±9.2 quintillion — float  (32-bit IEEE 754 float)    → ±3.4e38, 6-7 sig digits — double (64-bit IEEE 754 float)    → ±1.8e308, 15 sig digits — char   (16-bit Unicode codepoint) → '\u0000' to '\uffff' — boolean (1-bit logical)           → true / false**
 
-┌─────────────────────────────────────────────────────────────────┐
-│  PRIMITIVE TYPES (8 total)                                      │
-│  → Live directly on the stack (or inlined into objects)         │
-│  → Have NO methods, NO inheritance, NO null                     │
-│  → Stored by VALUE (the actual bits)                            │
-│                                                                  │
-│  byte   (8-bit  signed integer)    → -128 to 127               │
-│  short  (16-bit signed integer)    → -32,768 to 32,767         │
-│  int    (32-bit signed integer)    → ~-2 billion to 2 billion   │
-│  long   (64-bit signed integer)    → ~±9.2 quintillion          │
-│  float  (32-bit IEEE 754 float)    → ±3.4e38, 6-7 sig digits   │
-│  double (64-bit IEEE 754 float)    → ±1.8e308, 15 sig digits   │
-│  char   (16-bit Unicode codepoint) → '\u0000' to '\uffff'      │
-│  boolean (1-bit logical)           → true / false               │
-│                                                                  │
-├─────────────────────────────────────────────────────────────────┤
-│  REFERENCE TYPES (everything else)                              │
-│  → Live on the heap, accessed via a reference (pointer)        │
-│  → All ultimately extend java.lang.Object                       │
-│  → Can be null (the null reference)                             │
-│  → Stored by REFERENCE (a memory address)                       │
-│                                                                  │
-│  Class instances  → new User(), new String()                    │
-│  Interface types  → Runnable r = () -> {}                       │
-│  Array types      → int[], String[], Object[][]                 │
-│  Enum types       → Status.ACTIVE                               │
-│  Record types     → new Point(1, 2)                             │
-└─────────────────────────────────────────────────────────────────┘
+```text
+REFERENCE TYPES (everything else)
+→ Live on the heap, accessed via a reference (pointer)
+→ All ultimately extend java.lang.Object
+→ Can be null (the null reference)
+→ Stored by REFERENCE (a memory address)
+
+Class instances  → new User(), new String()
+Interface types  → Runnable r = () -> {}
+Array types      → int[], String[], Object[][]
+Enum types       → Status.ACTIVE
+Record types     → new Point(1, 2)
 ```
 
 > **🔥 3+ YOE God-Level Insight: The JVM Memory Architecture of Types**
@@ -106,38 +86,37 @@ THE JAVA TYPE UNIVERSE
 
 This is one of the most misunderstood corners of Java. An `int[]` array variable looks like it holds primitives, but the array itself is absolutely a reference type.
 
-```
-THE ARRAY OBJECT MODEL
-══════════════════════
+**The array object model**
 
+```java
 int[] arr = {1, 2, 3, 4, 5};
-
-Memory layout:
-
-Stack:                  Heap:
-┌──────────┐            ┌────────────────────────────────────────┐
-│ arr      │──────────→ │  Object Header (12-16 bytes)           │
-│ (4 bytes)│            │  ┌─────────────────────────────────┐   │
-│ reference│            │  │ class pointer → int[] class      │  │
-└──────────┘            │  │ GC metadata                      │  │
-                         │  │ identity hashCode                │  │
-                         │  └─────────────────────────────────┘  │
-                         │  length field: 5                       │
-                         │  ┌──────────────────────────────────┐  │
-                         │  │ [0]=1 │ [1]=2 │ [2]=3 │ [3]=4   │  │
-                         │  │ [4]=5 │ (32-bit ints packed)     │  │
-                         │  └──────────────────────────────────┘  │
-                         └────────────────────────────────────────┘
-
-Key facts:
-→ The ARRAY OBJECT lives on the heap (has header, tracked by GC)
-→ The ELEMENTS (1,2,3,4,5) live INSIDE the heap object as raw bits
-→ The VARIABLE arr lives on the stack, holds only the memory address
-→ arr == null is legal (reference can be null)
-→ arr.getClass() returns class [I  ("[I" = JVM name for int[])
-→ arr.getClass().getSuperclass() returns class java.lang.Object
-→ arr.length, arr.clone(), arr.hashCode() all work (Object methods)
 ```
+
+```mermaid
+flowchart LR
+  subgraph STACK["Stack"]
+    REF["arr<br/>(reference, 4 bytes with compressed pointers)"]
+  end
+  subgraph HEAP["Heap: the int[] object"]
+    HDR["Object header (12-16 bytes):<br/>class pointer to int[], GC metadata, identity hash code"]
+    LEN["length field: 5"]
+    DATA["elements: [0]=1 [1]=2 [2]=3 [3]=4 [4]=5<br/>(32-bit ints packed)"]
+    HDR --- LEN --- DATA
+  end
+  REF --> HDR
+```
+
+**How to read this diagram.** The variable `arr` lives on the stack and holds only a reference. The array object, with its header, length and raw elements, lives on the heap.
+
+**Key facts**
+
+- The array object lives on the heap (it has a header and is tracked by the GC).
+- The elements (1, 2, 3, 4, 5) live inside the heap object as raw bits.
+- The variable `arr` lives on the stack and holds only the memory address.
+- `arr == null` is legal (a reference can be null).
+- `arr.getClass()` returns `class [I` (`[I` is the JVM name for `int[]`).
+- `arr.getClass().getSuperclass()` returns `class java.lang.Object`.
+- `arr.length`, `arr.clone()` and `arr.hashCode()` all work.
 
 > **🔥 3+ YOE God-Level Insight: The JVM Specification Definition**
 >
@@ -174,10 +153,9 @@ ArrayList<Integer> list = new ArrayList<>();
 
 ### Why Generics Require Reference Types
 
-```
-JAVA GENERICS FUNDAMENTALS — TYPE ERASURE
-══════════════════════════════════════════
+**Java generics fundamentals — type erasure**
 
+```text
 What you write:            What the compiler PRODUCES (bytecode):
 ─────────────────          ──────────────────────────────────────
 ArrayList<String>    →     ArrayList  (raw type)
@@ -263,10 +241,9 @@ List<String> mutable = new ArrayList<>(Arrays.asList(strArr));
 mutable.add("d");      // ✅ Now this works
 ```
 
-```
-ARRAYS.asLIST() MENTAL MODEL
-══════════════════════════════
+**ARRAYS.asLIST() MENTAL MODEL**
 
+```text
 Scenario 1: String[] (reference type array)
   String[] arr = {"a", "b", "c"};
   Arrays.asList(arr)
@@ -369,10 +346,9 @@ System.out.println(System.nanoTime() - start); // ~35ms
 // 185x faster. Zero GC pressure.
 ```
 
-```
-AUTOBOXING PERFORMANCE COST
-════════════════════════════
+**Autoboxing performance cost**
 
+```text
 Each boxing operation:
 1. Calls Integer.valueOf(int)
 2. Checks Integer cache (see below)
@@ -468,10 +444,9 @@ integers.add(42);        // ✅ Can add Integers (safe)
 Object o = integers.get(0); // Only Object guaranteed at read time
 ```
 
-```
-PECS RULE: Producer Extends, Consumer Super
-════════════════════════════════════════════
+**PECS RULE: Producer Extends, Consumer Super**
 
+```text
 ? extends T  = you READ from it (producer of T values)
                → list produces T, you consume T
                → safe to read; unsafe to write (type unknown)
@@ -538,10 +513,9 @@ public Comparable findMax(List list) {       // T → Comparable (upper bound)
 }
 ```
 
-```
-TYPE ERASURE RULES
-══════════════════
+**Type erasure rules**
 
+```text
 Rule 1: Unbounded T → Object
   List<T>      → List (raw)
   T element    → Object element
@@ -616,10 +590,9 @@ Integer i = null;
 int x = i;        // ❌ NullPointerException (calls i.intValue() on null)
 ```
 
-```
-WHY NULL EXISTS — The Billion Dollar Mistake
-══════════════════════════════════════════════
+**WHY NULL EXISTS — The Billion Dollar Mistake**
 
+```text
 Null was designed to represent "absence of a reference" —
 a reference variable that points to nothing.
 
@@ -647,10 +620,9 @@ Java 14+: Helpful NullPointerException messages
 
 ## 9. Quick Reference — Type System Decision Cheat Sheet
 
-```
-CHOOSING THE RIGHT TYPE
-════════════════════════
+**Choosing the right type**
 
+```text
 Storing a fixed set of numbers for computation?
 → Use int[] / long[] / double[]
 → Reason: contiguous memory, zero boxing overhead, maximum cache efficiency
@@ -672,9 +644,11 @@ Working with Collection APIs that take generic types?
 Need the absolute fastest numeric processing?
 → Use primitive arrays (int[], long[])
 → Or Java 9+ jdk.incubator.vector / Panama APIs for SIMD operations
+```
 
-COMPARING VALUES
-════════════════
+**Comparing values**
+
+```text
 Primitives: always use ==  (compares actual values)
   int a = 5; int b = 5; a == b → true ✅
 

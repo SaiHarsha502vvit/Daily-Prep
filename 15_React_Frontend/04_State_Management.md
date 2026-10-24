@@ -245,7 +245,7 @@ sequenceDiagram
     Reducer-->>Store: return NEW state object (never mutates the old one)
     Note over Store: Object identity of state.cart changes —<br/>this is the signal downstream subscribers watch for.
     Store->>Sel: notify every subscribed selector
-    Sel->>Sel: run selector(newState); shallow-compare to previous result
+    Sel->>Sel: run selector(newState), shallow-compare to previous result
     Sel->>Cmp: if the selector's return value changed → trigger re-render
     Cmp-->>User: UI shows the updated cart
 ```
