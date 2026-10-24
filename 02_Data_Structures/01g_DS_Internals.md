@@ -1908,31 +1908,33 @@ while (!stack.isEmpty()) { Node n = stack.pop(); visit(n); for (Node c : n.child
 
 ### Decision Tree
 
+```mermaid
+flowchart TD
+    Q0{"ordering required (sorted iteration, range queries)?"}
+    Q1{"key lookup by exact equality?"}
+    Q2{"thread-safe?"}
+    Q3{"frequent insert/delete at arbitrary position?"}
+    Q4{"key is a primitive int?"}
+    Q5{"LRU cache needed?"}
+    Q0 -- YES --> A1["TreeMap / TreeSet (or ConcurrentSkipListMap for thread-safety)"]
+    Q0 -- NO --> Q1
+    Q1 -- YES --> Q2
+    Q1 -- NO --> A2["consider List (ArrayList or LinkedList)"]
+    Q2 -- YES --> A3["ConcurrentHashMap / ConcurrentSkipListMap / ConcurrentLinkedQueue"]
+    Q2 -- NO --> A4["HashMap / TreeMap"]
+    Q3 -- YES --> A5["LinkedList (or ArrayDeque for stack/queue semantics)"]
+    Q3 -- NO --> A6["ArrayList"]
+    Q4 -- YES --> A7["IntIntMap (fastutil) or int[] + Arrays.binarySearch"]
+    Q4 -- NO --> A8["HashMap&lt;Integer, V&gt;"]
+    Q5 -- YES --> A9["LinkedHashMap (access-order = true)"]
+    Q5 -- NO --> A10["HashMap"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3,Q4,Q5 ask
+    class A1,A2,A3,A4,A5,A6,A7,A8,A9,A10 ans
 ```
-ordering required (sorted iteration, range queries)?
-  → NO → continue
-  → YES → TreeMap / TreeSet (or ConcurrentSkipListMap for thread-safety)
 
-key lookup by exact equality?
-  → NO → consider List (ArrayList or LinkedList)
-  → YES → continue
-
-thread-safe?
-  → YES → ConcurrentHashMap / ConcurrentSkipListMap / ConcurrentLinkedQueue
-  → NO → HashMap / TreeMap
-
-frequent insert/delete at arbitrary position?
-  → YES → LinkedList (or ArrayDeque for stack/queue semantics)
-  → NO → ArrayList
-
-key is a primitive int?
-  → YES → IntIntMap (fastutil) or int[] + Arrays.binarySearch
-  → NO → HashMap<Integer, V>
-
-LRU cache needed?
-  → YES → LinkedHashMap (access-order = true)
-  → NO → HashMap
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 ### Decision Table
 

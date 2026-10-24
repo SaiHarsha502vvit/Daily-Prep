@@ -987,17 +987,16 @@ public int maxProduct(int[] arr) {
 
 ### 🧠 Pattern Fingerprint — Sub Arrays
 
-```
-SEE THESE WORDS → USE THIS:
-┌─────────────────────────────────────────────────────────┐
-│ "contiguous" + "max/min sum"       → Kadane's O(n)     │
-│ "subarray sum equals K"            → Prefix Sum + Map   │
-│ "smallest/min window" + "sum ≥ K" → Sliding Window     │
-│ "fixed window size K"              → Fixed S.Window     │
-│ "all subarrays"                    → 2 nested loops     │
-│ "product" instead of sum           → Track max + min    │
-└─────────────────────────────────────────────────────────┘
-```
+**See these words → use this technique:**
+
+| If the problem says... | Use |
+| ---------------------- | --- |
+| "contiguous" + "max/min sum" | Kadane's O(n) |
+| "subarray sum equals K" | Prefix Sum + Map |
+| "smallest/min window" + "sum ≥ K" | Sliding Window |
+| "fixed window size K" | Fixed S.Window |
+| "all subarrays" | 2 nested loops |
+| "product" instead of sum | Track max + min |
 
 ### 📅 Revisit Tracker
 
@@ -1167,16 +1166,15 @@ public int lcs(String s1, String s2) {
 
 ### 🧠 Pattern Fingerprint — Sub Sequences
 
-```
-SEE THESE WORDS → USE THIS:
-┌──────────────────────────────────────────────────────────┐
-│ "all subsequences / subsets"          → Recursion 2ⁿ   │
-│ "longest increasing subsequence"      → DP + BinSearch  │
-│ "longest common subsequence"          → 2D DP            │
-│ "not necessarily contiguous"          → SUBSEQUENCE!     │
-│ "count subsequences with sum"         → Recursion / DP  │
-└──────────────────────────────────────────────────────────┘
-```
+**See these words → use this technique:**
+
+| If the problem says... | Use |
+| ---------------------- | --- |
+| "all subsequences / subsets" | Recursion 2ⁿ |
+| "longest increasing subsequence" | DP + BinSearch |
+| "longest common subsequence" | 2D DP |
+| "not necessarily contiguous" | SUBSEQUENCE! |
+| "count subsequences with sum" | Recursion / DP |
 
 ### 📅 Revisit Tracker
 
@@ -1561,16 +1559,15 @@ for (int x : arr) if (x % 2 != 0) oddLcm = lcm((int)oddLcm, x);
 
 ### 🧠 Pattern Fingerprint — Frequency
 
-```
-SEE THESE WORDS → USE THIS:
-┌──────────────────────────────────────────────────────────┐
-│ "most/least frequent"            → HashMap + track max  │
-│ "count occurrences"              → HashMap freq          │
-│ "find duplicate"                 → HashSet or sorting    │
-│ "common elements two arrays"     → HashSet O(n+m)       │
-│ "O(1) lookup by value"           → HashMap               │
-└──────────────────────────────────────────────────────────┘
-```
+**See these words → use this technique:**
+
+| If the problem says... | Use |
+| ---------------------- | --- |
+| "most/least frequent" | HashMap + track max |
+| "count occurrences" | HashMap freq |
+| "find duplicate" | HashSet or sorting |
+| "common elements two arrays" | HashSet O(n+m) |
+| "O(1) lookup by value" | HashMap |
 
 ### 📅 Revisit Tracker
 

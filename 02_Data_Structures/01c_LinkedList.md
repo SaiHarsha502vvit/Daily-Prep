@@ -979,19 +979,18 @@ Before deploying linked list code to production:
 
 ## 🧠 Pattern Fingerprint — LinkedList
 
-```
-SEE THESE WORDS → USE THIS PATTERN:
-┌──────────────────────────────────────────────────────────────┐
-│ "middle of linked list"           → Fast/Slow (O(n) 1 pass) │
-│ "detect cycle"                    → Fast/Slow — Floyd's      │
-│ "cycle start / entry point"       → Floyd's 2-phase math     │
-│ "nth node from end"               → Gap of N (Fast/Slow)     │
-│ "reverse linked list"             → 3 pointer iterative      │
-│ "merge two sorted lists"          → Dummy head pointer       │
-│ "palindrome linked list"          → Reverse half + compare   │
-│ "head may change"                 → Use dummy head node      │
-└──────────────────────────────────────────────────────────────┘
-```
+**See these words → use this pattern:**
+
+| If the problem says... | Use |
+| ---------------------- | --- |
+| "middle of linked list" | Fast/Slow (O(n) 1 pass) |
+| "detect cycle" | Fast/Slow — Floyd's |
+| "cycle start / entry point" | Floyd's 2-phase math |
+| "nth node from end" | Gap of N (Fast/Slow) |
+| "reverse linked list" | 3 pointer iterative |
+| "merge two sorted lists" | Dummy head pointer |
+| "palindrome linked list" | Reverse half + compare |
+| "head may change" | Use dummy head node |
 
 ### 🚀 GO LEARN — When You Need More
 
@@ -1329,23 +1328,27 @@ If **any** constraint fails, prefer an array:
 
 ### Decision Tree
 
+```mermaid
+flowchart TD
+    Q0{"hot loop over all elements (≥ 80% of CPU time)?"}
+    Q1{"insert/delete at known position dominates?"}
+    Q2{"memory budget tight (≤ 4 bytes/element overhead)?"}
+    Q3{"single-direction traversal sufficient?"}
+    Q0 -- YES --> A1["Array (cache locality wins)"]
+    Q0 -- NO --> Q1
+    Q1 -- YES --> A2["LinkedList (O(1) at known node)"]
+    Q1 -- NO --> Q2
+    Q2 -- YES --> A3["Array (LL needs 16 bytes/node header + 8 bytes/pointer = 24 bytes/element)"]
+    Q2 -- NO --> A4["either; choose by access pattern"]
+    Q3 -- YES --> A5["Singly Linked List (half the memory of doubly)"]
+    Q3 -- NO --> A6["Doubly Linked List (O(1) remove given the node reference)"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3 ask
+    class A1,A2,A3,A4,A5,A6 ans
 ```
-hot loop over all elements (≥ 80% of CPU time)?
-  → YES → Array (cache locality wins)
-  → NO → continue
 
-insert/delete at known position dominates?
-  → YES → LinkedList (O(1) at known node)
-  → NO → continue
-
-memory budget tight (≤ 4 bytes/element overhead)?
-  → YES → Array (LL needs 16 bytes/node header + 8 bytes/pointer = 24 bytes/element)
-  → NO → either; choose by access pattern
-
-single-direction traversal sufficient?
-  → YES → Singly Linked List (half the memory of doubly)
-  → NO → Doubly Linked List (O(1) remove given the node reference)
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 ### Worked Example — ArrayList vs LinkedList in Hot Loops
 

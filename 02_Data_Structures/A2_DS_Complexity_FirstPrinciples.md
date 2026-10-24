@@ -159,22 +159,13 @@ If Φ(D_0) = 0 and Φ(D_i) ≥ 0 for all i, then:
 2. Non-negative in all states
 3. Decrease by at most the actual cost of expensive ops (so the amortized cost bound is tight)
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│  Decision guide: which method?                                       │
-│                                                                      │
-│  Can you sum total costs directly? (geometric series, known freq)    │
-│    → Aggregate method                                               │
-│                                                                      │
-│  Can you assign per-element credits that cover future work?          │
-│    → Accounting method                                              │
-│                                                                      │
-│  Can you define a global "energy" of the structure that:            │
-│    - Increases on cheap operations (storing work for the future)    │
-│    - Decreases on expensive operations (spending stored energy)     │
-│    → Potential method                                               │
-└──────────────────────────────────────────────────────────────────────┘
-```
+**Decision guide: which method?**
+
+| Question | Method |
+| -------- | ------ |
+| Can you sum the total costs directly (geometric series, known frequencies)? | **Aggregate** method |
+| Can you assign per-element credits that cover future work? | **Accounting** method |
+| Can you define a global "energy" of the structure that increases on cheap operations (storing work for the future) and decreases on expensive operations (spending stored energy)? | **Potential** method |
 
 ---
 
@@ -687,19 +678,14 @@ Many production implementations address this:
 
 ### 7.4 Space-Time Tradeoffs
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│  More space → Less time:                                            │
-│  • Hash table: O(1) time, O(n) space (with O(n/m) load factor)     │
-│  • Memoization: O(n) space, O(n) time instead of O(2^n)             │
-│  • Bitmap index: O(n/8) space, O(1) bit-test instead of O(n) scan   │
-│                                                                      │
-│  Less space → More time:                                            │
-│  • Trie (compact): O(Σ|key|) space, O(|key|) lookup                 │
-│  • Bloom filter: O(n/m) space, O(k) lookup, probabilistic           │
-│  • Bit-sampled array: O(1) extra space, O(n) worst-case search      │
-└──────────────────────────────────────────────────────────────────────┘
-```
+| Trade-off | Example | Space / time |
+| --------- | ------- | ------------ |
+| **More space → less time** | Hash table | O(1) time, O(n) space (load factor n/m) |
+| | Memoization | O(n) space, O(n) time instead of O(2ⁿ) |
+| | Bitmap index | O(n/8) space, O(1) bit-test instead of an O(n) scan |
+| **Less space → more time** | Trie (compact) | O(Σ\|key\|) space, O(\|key\|) lookup |
+| | Bloom filter | Space proportional to a small number of bits per element, O(k) lookup, probabilistic |
+| | Bit-sampled array | O(1) extra space, O(n) worst-case search |
 
 ### 7.5 Recursive Data Structures — Call Stack Space
 

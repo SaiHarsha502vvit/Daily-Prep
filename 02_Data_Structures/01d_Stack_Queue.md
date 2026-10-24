@@ -468,15 +468,21 @@ flowchart LR
 
 **Solution — Print Queue:** Jobs added to back, printer takes from front. First submitted = first printed.
 
+**Print queue:**
+
+```mermaid
+flowchart LR
+    P(["Printing now"]) --> J1["Job1<br/>front"] --> J2["Job2"] --> J3["Job3"] --> J4["Job4<br/>back"]
+    NEW(["New jobs join here"]) --> J4
+    classDef cur fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef job fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef io fill:#fff3b0,stroke:#b58900,color:#111
+    class J1 cur
+    class J2,J3,J4 job
+    class P,NEW io
 ```
-PRINT QUEUE:
-┌────────────────────────────────────────┐
-│ Front                            Back  │
-│ [Job1] → [Job2] → [Job3] → [Job4]      │
-│   ↑                              ↑     │
-│ Printing                    New jobs   │
-└────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The job at the front is being printed; new jobs are added at the back (FIFO).
 
 ✅ **Now used in:** OS task scheduling, web server request handling, message queues (Kafka, RabbitMQ), BFS algorithm
 
@@ -877,18 +883,17 @@ For comparison, `fibonacci(5)` also has max depth 6, but makes **exponentially m
 
 ## 🧠 Pattern Fingerprint — Stack & Queue
 
-```
-SEE THESE WORDS → USE THIS:
-┌──────────────────────────────────────────────────────────────┐
-│ "matching brackets / nesting"     → Stack (LIFO natural)    │
-│ "next greater / smaller element"  → Monotonic Stack O(n)    │
-│ "largest rectangle in histogram"  → Monotonic Stack         │
-│ "BFS / level-by-level traversal"  → Queue                   │
-│ "sliding window maximum"          → Monotonic Deque O(n)    │
-│ "undo / redo"                     → Two Stacks              │
-│ "evaluate expression"             → Two Stacks (ops+vals)   │
-└──────────────────────────────────────────────────────────────┘
-```
+**See these words → use this technique:**
+
+| If the problem says... | Use |
+| ---------------------- | --- |
+| "matching brackets / nesting" | Stack (LIFO natural) |
+| "next greater / smaller element" | Monotonic Stack O(n) |
+| "largest rectangle in histogram" | Monotonic Stack |
+| "BFS / level-by-level traversal" | Queue |
+| "sliding window maximum" | Monotonic Deque O(n) |
+| "undo / redo" | Two Stacks |
+| "evaluate expression" | Two Stacks (ops+vals) |
 
 ### 🚀 GO LEARN — When You Need More
 
@@ -1213,31 +1218,33 @@ for (int i = 0; i < n; i++) {
 
 ### Decision Tree
 
+```mermaid
+flowchart TD
+    Q0{"problem requires LIFO order?"}
+    Q1{"problem requires FIFO order?"}
+    Q2{"bounded capacity (fixed size)?"}
+    Q3{"priority-based ordering (smallest/largest first)?"}
+    Q4{"thread-safe required?"}
+    Q5{"need to remove arbitrary element?"}
+    Q0 -- YES --> A1["Stack"]
+    Q0 -- NO --> Q1
+    Q1 -- YES --> Q2
+    Q1 -- NO --> A2["consider Deque (double-ended)"]
+    Q2 -- YES --> A3["ArrayDeque or bounded ArrayBlockingQueue"]
+    Q2 -- NO --> A4["linked-list-based Queue (no overflow risk)"]
+    Q3 -- YES --> A5["PriorityQueue (binary heap) — see 01f_Trees_Heaps.md"]
+    Q3 -- NO --> Q4
+    Q4 -- YES --> A6["ArrayBlockingQueue, ConcurrentLinkedQueue, LinkedBlockingDeque"]
+    Q4 -- NO --> A7["ArrayDeque (faster, no synchronization overhead)"]
+    Q5 -- YES --> A8["Deque or PriorityQueue (not Stack or Queue)"]
+    Q5 -- NO --> A9["Stack or Queue"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3,Q4,Q5 ask
+    class A1,A2,A3,A4,A5,A6,A7,A8,A9 ans
 ```
-problem requires LIFO order?
-  → YES → Stack
-  → NO → continue
 
-problem requires FIFO order?
-  → YES → continue
-  → NO → consider Deque (double-ended)
-
-bounded capacity (fixed size)?
-  → YES → ArrayDeque or bounded ArrayBlockingQueue
-  → NO → linked-list-based Queue (no overflow risk)
-
-priority-based ordering (smallest/largest first)?
-  → YES → PriorityQueue (binary heap) — see 01f_Trees_Heaps.md
-  → NO → continue
-
-thread-safe required?
-  → YES → ArrayBlockingQueue, ConcurrentLinkedQueue, LinkedBlockingDeque
-  → NO → ArrayDeque (faster, no synchronization overhead)
-
-need to remove arbitrary element?
-  → YES → Deque or PriorityQueue (not Stack or Queue)
-  → NO → Stack or Queue
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 ### Decision Table
 

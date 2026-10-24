@@ -534,13 +534,13 @@ A queue where you can add/remove from BOTH ends in O(1)!
 ```mermaid
 flowchart LR
     AF(["addFirst"]) --> A
-    RF(["removeFirst"]) <-- A
+    A -.-> RF(["removeFirst"])
     subgraph DQ["Deque"]
         direction LR
         A["A"] --- B["B"] --- C["C"] --- D["D"] --- E["E"]
     end
     E --> AL(["addLast"])
-    E --> RL(["removeLast"])
+    E -.-> RL(["removeLast"])
     classDef cell fill:#cfe8ff,stroke:#1565c0,color:#111
     classDef op fill:#fff3b0,stroke:#b58900,color:#111
     class A,B,C,D,E cell
@@ -838,6 +838,8 @@ flowchart TD
     class FU,CO,PE,BA good
     class DE bad
 ```
+
+**How to read this diagram.** The five types branch off the general binary tree; green types have well-behaved height, the red degenerate type does not.
 
 | Type | Rule | Example |
 | ---- | ---- | ------- |
@@ -1887,47 +1889,54 @@ Compare to B-tree: ~1-2× write amplification (single write per update, sometime
 
 ### Self-Balancing BST Choice
 
+```mermaid
+flowchart TD
+    Q0{"Read-heavy workload (&gt; 80% lookups)?"}
+    Q1{"Need worst-case O(log n) guarantees (real-time systems)?"}
+    Q2{"Concurrent access required?"}
+    Q3{"Access pattern is sequential or bursty (recent items accessed again)?"}
+    Q4{"Want simplest implementation?"}
+    Q0 -- YES --> A1["AVL tree (tighter balance, faster lookups)"]
+    Q0 -- NO --> Q1
+    Q1 -- YES --> A2["AVL or Red-Black"]
+    Q1 -- NO --> A3["consider Treap or Splay"]
+    Q2 -- YES --> A4["ConcurrentSkipListMap (lock-free skip list)"]
+    Q2 -- NO --> Q3
+    Q3 -- YES --> A5["Splay tree (amortized O(1) for re-access)"]
+    Q3 -- NO --> Q4
+    Q4 -- YES --> A6["Treap (just BST + heap on random priorities)"]
+    Q4 -- NO --> A7["use library impl (Java TreeMap, etc.)"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3,Q4 ask
+    class A1,A2,A3,A4,A5,A6,A7 ans
 ```
-Read-heavy workload (> 80% lookups)?
-  → YES → AVL tree (tighter balance, faster lookups)
-  → NO → continue
 
-Need worst-case O(log n) guarantees (real-time systems)?
-  → YES → AVL or Red-Black
-  → NO → consider Treap or Splay
-
-Concurrent access required?
-  → YES → ConcurrentSkipListMap (lock-free skip list)
-  → NO → continue
-
-Access pattern is sequential or bursty (recent items accessed again)?
-  → YES → Splay tree (amortized O(1) for re-access)
-  → NO → continue
-
-Want simplest implementation?
-  → YES → Treap (just BST + heap on random priorities)
-  → NO → use library impl (Java TreeMap, etc.)
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 ### Bloom Filter vs HashSet for Membership
 
+```mermaid
+flowchart TD
+    Q0{"Need to support delete?"}
+    Q1{"Memory budget tight (10⁶ elements, ≤ 2 MB)?"}
+    Q2{"False positives acceptable (e.g., pre-filter before DB query)?"}
+    Q3{"Disk-based membership?"}
+    Q0 -- YES --> A1["HashSet (Bloom filter doesn't support delete, unless Counting Bloom Filter)"]
+    Q0 -- NO --> A2["consider Bloom filter for memory efficiency"]
+    Q1 -- YES --> A3["Bloom filter (1.2 MB for 1% FP)"]
+    Q1 -- NO --> A4["HashSet (~48 MB for 10⁶ entries)"]
+    Q2 -- YES --> A5["Bloom filter"]
+    Q2 -- NO --> A6["HashSet"]
+    Q3 -- YES --> A7["Disk-based Bloom filter (e.g., RocksDB Bloom filter)"]
+    Q3 -- NO --> A8["in-memory HashSet"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3 ask
+    class A1,A2,A3,A4,A5,A6,A7,A8 ans
 ```
-Need to support delete?
-  → YES → HashSet (Bloom filter doesn't support delete, unless Counting Bloom Filter)
-  → NO → consider Bloom filter for memory efficiency
 
-Memory budget tight (10⁶ elements, ≤ 2 MB)?
-  → YES → Bloom filter (1.2 MB for 1% FP)
-  → NO → HashSet (~48 MB for 10⁶ entries)
-
-False positives acceptable (e.g., pre-filter before DB query)?
-  → YES → Bloom filter
-  → NO → HashSet
-
-Disk-based membership?
-  → YES → Disk-based Bloom filter (e.g., RocksDB Bloom filter)
-  → NO → in-memory HashSet
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 ### B-Tree vs LSM-Tree for Storage
 

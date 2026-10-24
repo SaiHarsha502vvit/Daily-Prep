@@ -1189,35 +1189,36 @@ The body has decision guidance; this section formalizes it as a decision tree fo
 
 ### Decision Tree
 
+```mermaid
+flowchart TD
+    Q0{"need to store key-value pairs?"}
+    Q1{"need ordering (sorted iteration, range queries)?"}
+    Q2{"thread-safe required?"}
+    Q3{"key is a primitive int?"}
+    Q4{"frequent iteration + insertion-order preservation?"}
+    Q5{"LRU cache needed?"}
+    Q6{"need min/max at head?"}
+    Q0 -- YES --> Q1
+    Q0 -- NO --> A1["List (ArrayList default, LinkedList if frequent insert/delete at known positions)"]
+    Q1 -- YES --> Q2
+    Q1 -- NO --> A2["HashMap (or ConcurrentHashMap for thread-safety)"]
+    Q2 -- YES --> A3["ConcurrentHashMap (lock striping) or ConcurrentSkipListMap (sorted + concurrent)"]
+    Q2 -- NO --> Q3
+    Q3 -- YES --> A4["IntIntMap (fastutil/Trove) — saves 24 bytes per entry vs Integer boxing"]
+    Q3 -- NO --> A5["HashMap&lt;Integer, V&gt;"]
+    Q4 -- YES --> A6["LinkedHashMap"]
+    Q4 -- NO --> A7["HashMap"]
+    Q5 -- YES --> A8["LinkedHashMap (access-order = true) + removeEldestEntry override"]
+    Q5 -- NO --> A9["HashMap"]
+    Q6 -- YES --> A10["PriorityQueue (binary heap)"]
+    Q6 -- NO --> A11["List/Map"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3,Q4,Q5,Q6 ask
+    class A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11 ans
 ```
-need to store key-value pairs?
-  → NO → List (ArrayList default, LinkedList if frequent insert/delete at known positions)
-  → YES → continue
 
-need ordering (sorted iteration, range queries)?
-  → YES → continue
-  → NO → HashMap (or ConcurrentHashMap for thread-safety)
-
-thread-safe required?
-  → YES → ConcurrentHashMap (lock striping) or ConcurrentSkipListMap (sorted + concurrent)
-  → NO → continue
-
-key is a primitive int?
-  → YES → IntIntMap (fastutil/Trove) — saves 24 bytes per entry vs Integer boxing
-  → NO → HashMap<Integer, V>
-
-frequent iteration + insertion-order preservation?
-  → YES → LinkedHashMap
-  → NO → HashMap
-
-LRU cache needed?
-  → YES → LinkedHashMap (access-order = true) + removeEldestEntry override
-  → NO → HashMap
-
-need min/max at head?
-  → YES → PriorityQueue (binary heap)
-  → NO → List/Map
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 ### Decision Table
 

@@ -549,38 +549,55 @@ The combination means the DoS attack surface is much smaller today — but not z
 
 ### Problem: LRU Cache
 
+**Real-world origin: web browser cache (1990s).**
+
+**Problem at Netscape (1994):**
+
+- The browser loads images from the internet.
+- Loading the same image again is slow.
+- Store recently viewed images in memory.
+- Memory is limited (16 MB in 1994!).
+
+**Questions:**
+
+1. How do we quickly check if an image is cached? → **HashMap**
+2. Which image do we remove when full? → **Least Recently Used**
+3. How do we track "recently used"? → **Linked list**
+
+**Solution: HashMap + doubly linked list**
+
+```mermaid
+flowchart LR
+    subgraph MAP["HashMap: url to Node"]
+        direction TB
+        u1["url A"]
+        u2["url B"]
+        u3["url C"]
+    end
+    subgraph LST["Doubly linked list: most recent to least recent"]
+        direction LR
+        N1["Node A<br/>most recent"] <--> N2["Node B"] <--> N3["Node C<br/>least recent (tail)"]
+    end
+    u1 --> N1
+    u2 --> N2
+    u3 --> N3
+    classDef m fill:#fff3b0,stroke:#b58900,color:#111
+    classDef n fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef tail fill:#ffc9c9,stroke:#c62828,color:#111
+    class u1,u2,u3 m
+    class N1,N2 n
+    class N3 tail
 ```
-REAL-WORLD ORIGIN: Web Browser Cache (1990s)
 
-PROBLEM AT NETSCAPE (1994):
-- Browser loads images from internet
-- Loading same image again = slow
-- Store recently viewed images in memory
-- Memory is limited (16MB in 1994!)
+**How to read this diagram.** The map jumps straight to a node by key (O(1)); the list keeps nodes ordered by recency, so moving a node to the front is O(1) and the tail (red) is always the next eviction.
 
-QUESTIONS:
-1. How to quickly check if image is cached? → HashMap
-2. Which image to remove when full? → Least Recently Used
-3. How to track "recently used"? → Linked List
+| Step | Cost |
+| ---- | ---- |
+| Look up the image in the HashMap | O(1) |
+| Move its node to the front of the list | O(1) |
+| Cache full? Remove the tail (LRU) | O(1) |
 
-SOLUTION - HashMap + Doubly Linked List:
-┌─────────────────────────────────────────────┐
-│  HashMap: url → Node                        │
-│  LinkedList: Most Recent ←→ ... ←→ Least    │
-│                                             │
-│  Access image:                              │
-│  1. O(1) lookup in HashMap                  │
-│  2. O(1) move to front of list              │
-│                                             │
-│  Cache full? Remove tail (LRU)              │
-└─────────────────────────────────────────────┘
-
-IMPACT:
-- Every browser uses this
-- Every database uses this
-- Every CDN (Cloudflare, Akamai) uses this
-- Redis, Memcached are based on this
-```
+**Impact:** every browser, every database, every CDN (Cloudflare, Akamai) uses variants of this idea; Redis and Memcached eviction are built on the same principle.
 
 ---
 
@@ -727,19 +744,18 @@ Both objects land in DIFFERENT buckets (different hashCodes → different bucket
 
 ## 🧠 Pattern Fingerprint — HashMap
 
-```
-SEE THESE WORDS → USE THIS:
-┌──────────────────────────────────────────────────────────────┐
-│ "find pair that sums to target"      → HashMap complement  │
-│ "count frequency / occurrences"      → HashMap freq count  │
-│ "group by key / group anagrams"      → HashMap<K, List<V>> │
-│ "subarray sum equals K"              → Prefix Sum + HashMap │
-│ "O(1) lookup by arbitrary key"       → HashMap             │
-│ "sorted keys needed"                 → TreeMap O(log n)    │
-│ "insertion order needed"             → LinkedHashMap       │
-│ "LRU / eviction cache"               → LinkedHashMap / DLL │
-└──────────────────────────────────────────────────────────────┘
-```
+**See these words → use this technique:**
+
+| If the problem says... | Use |
+| ---------------------- | --- |
+| "find pair that sums to target" | HashMap complement |
+| "count frequency / occurrences" | HashMap freq count |
+| "group by key / group anagrams" | HashMap<K, List<V>> |
+| "subarray sum equals K" | Prefix Sum + HashMap |
+| "O(1) lookup by arbitrary key" | HashMap |
+| "sorted keys needed" | TreeMap O(log n) |
+| "insertion order needed" | LinkedHashMap |
+| "LRU / eviction cache" | LinkedHashMap / DLL |
 
 ### 🚀 GO LEARN — When You Need More
 
@@ -914,27 +930,30 @@ for (String s : strs) {
 
 ### Decision Tree
 
+```mermaid
+flowchart TD
+    Q0{"lookup by exact key equality?"}
+    Q1{"ordering of keys required (range queries, sorted iteration)?"}
+    Q2{"need worst-case O(1) lookup (not amortized)?"}
+    Q3{"memory budget tight (each entry ≤ 16 bytes overhead)?"}
+    Q4{"need thread-safe?"}
+    Q0 -- YES --> Q1
+    Q0 -- NO --> A1["consider sorted array + binary search (O(log n))"]
+    Q1 -- YES --> A2["TreeMap (O(log n)) or sorted array (O(log n) lookup, O(1) range)"]
+    Q1 -- NO --> Q2
+    Q2 -- YES --> A3["perfect hash (if static keys) or cuckoo hash"]
+    Q2 -- NO --> A4["HashMap (amortized O(1))"]
+    Q3 -- YES --> A5["open-addressing hash (e.g., `IntIntOpenHashMap` in fastutil)"]
+    Q3 -- NO --> A6["chained HashMap (Java default)"]
+    Q4 -- YES --> A7["ConcurrentHashMap"]
+    Q4 -- NO --> A8["HashMap"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3,Q4 ask
+    class A1,A2,A3,A4,A5,A6,A7,A8 ans
 ```
-lookup by exact key equality?
-  → NO → consider sorted array + binary search (O(log n))
-  → YES → continue
 
-ordering of keys required (range queries, sorted iteration)?
-  → YES → TreeMap (O(log n)) or sorted array (O(log n) lookup, O(1) range)
-  → NO → continue
-
-need worst-case O(1) lookup (not amortized)?
-  → YES → perfect hash (if static keys) or cuckoo hash
-  → NO → HashMap (amortized O(1))
-
-memory budget tight (each entry ≤ 16 bytes overhead)?
-  → YES → open-addressing hash (e.g., `IntIntOpenHashMap` in fastutil)
-  → NO → chained HashMap (Java default)
-
-need thread-safe?
-  → YES → ConcurrentHashMap
-  → NO → HashMap
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 ### Decision Table
 

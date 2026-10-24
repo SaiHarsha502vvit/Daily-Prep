@@ -252,29 +252,14 @@ flowchart LR
 
 ::: example
 
-```
-REAL-WORLD APPLICATIONS:
+**Real-world applications**
 
-1. UNDO FUNCTIONALITY (Simple):
-   Action1 → Action2 → Action3 → null
-   │
-   └── Pop from end to undo
-
-2. BROWSER FORWARD HISTORY:
-   Page1 → Page2 → Page3 → null
-   │
-   └── Click "Forward" = move to next
-
-3. MUSIC PLAYLIST (Forward only):
-   Song1 → Song2 → Song3 → null
-   │
-   └── "Next Track" = go to next node
-
-4. TRAIN CARS:
-   Engine → Car1 → Car2 → Caboose → null
-   │
-   └── Each car connects to next
-```
+| # | Application | Chain | How it uses the list |
+| - | ----------- | ----- | -------------------- |
+| 1 | Undo functionality (simple) | `Action1 → Action2 → Action3 → null` | Pop from the end to undo |
+| 2 | Browser forward history | `Page1 → Page2 → Page3 → null` | Click "Forward" = move to next |
+| 3 | Music playlist (forward only) | `Song1 → Song2 → Song3 → null` | "Next Track" = go to next node |
+| 4 | Train cars | `Engine → Car1 → Car2 → Caboose → null` | Each car connects to the next |
 
 :::
 
@@ -630,34 +615,15 @@ flowchart LR
 
 ::: example
 
-```
-REAL-WORLD APPLICATIONS:
+**Real-world applications**
 
-1. BROWSER HISTORY (Back & Forward):
-   null ← Page1 ↔ Page2 ↔ Page3 → null
-           │
-           └── "Back" = go to prev
-               "Forward" = go to next
-
-2. MUSIC PLAYER (Previous & Next):
-   null ← Song1 ↔ Song2 ↔ Song3 → null
-           │
-           └── Previous Track / Next Track
-
-3. TEXT EDITOR UNDO/REDO:
-   null ← Edit1 ↔ Edit2 ↔ Edit3 → null
-           │
-           └── Undo = go prev
-               Redo = go next
-
-4. LRU CACHE (Move to front):
-   head ↔ Recent1 ↔ Recent2 ↔ LeastRecent → tail
-   │
-   └── Access item = move to head in O(1)
-
-5. IMAGE VIEWER (Swipe left/right):
-   null ← Img1 ↔ Img2 ↔ Img3 → null
-```
+| # | Application | Chain | How it uses the list |
+| - | ----------- | ----- | -------------------- |
+| 1 | Browser history (back & forward) | `null ← Page1 ↔ Page2 ↔ Page3 → null` | "Back" = go to `prev`, "Forward" = go to `next` |
+| 2 | Music player (previous & next) | `null ← Song1 ↔ Song2 ↔ Song3 → null` | Previous track / next track |
+| 3 | Text-editor undo/redo | `null ← Edit1 ↔ Edit2 ↔ Edit3 → null` | Undo = go to `prev`, redo = go to `next` |
+| 4 | LRU cache (move to front) | `head ↔ Recent1 ↔ Recent2 ↔ LeastRecent ↔ tail` | Access an item = move it to the head in O(1) |
+| 5 | Image viewer (swipe left/right) | `null ← Img1 ↔ Img2 ↔ Img3 → null` | Swipe = follow `prev` / `next` |
 
 :::
 
@@ -1110,41 +1076,34 @@ No "end" - goes round and round.
 
 ::: example
 
+**Real-world applications**
+
+```mermaid
+flowchart LR
+    subgraph RR["1. OS round-robin CPU scheduling"]
+        direction LR
+        P1["Process 1"] --> P2["Process 2"] --> P3["Process 3"] --> P1
+    end
+    subgraph GT["2. Multiplayer game turns"]
+        direction LR
+        A["Alice"] --> B["Bob"] --> C["Charlie"] --> D["Diana"] --> A
+    end
+    subgraph MP["3. Music player on repeat"]
+        direction LR
+        S1["Song 1"] --> S2["Song 2"] --> S3["Song 3"] --> S1
+    end
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class P1,P2,P3,A,B,C,D,S1,S2,S3 node
 ```
-REAL-WORLD APPLICATIONS:
 
-1. OPERATING SYSTEM - ROUND ROBIN CPU SCHEDULING:
-   ┌──────────────────────────────────────────┐
-   │                                          │
-   │    Process1 → Process2 → Process3 ───────┤
-   │       ▲                                  │
-   │       │                                  │
-   │       └──────────────────────────────────┘
-   │
-   └── Each process gets CPU time, then goes to end
+**How to read this diagram.** In each ring the last element links back to the first, so the cycle repeats forever.
 
-2. MULTIPLAYER GAME TURNS:
-   ┌──────────────────────────────────────────┐
-   │                                          │
-   │    Alice → Bob → Charlie → Diana ────────┤
-   │       ▲                                  │
-   │       └──────────────────────────────────┘
-   │
-   └── After Diana's turn, it's Alice's turn again
-
-3. MUSIC PLAYER ON REPEAT:
-   ┌──────────────────────────────────────────┐
-   │                                          │
-   │    Song1 → Song2 → Song3 ────────────────┤
-   │       ▲                                  │
-   │       └──────────────────────────────────┘
-   │
-   └── After last song, goes back to first
-
-4. JOSEPHUS PROBLEM (Classical):
-   n people in circle, every k-th person eliminated
-   Who survives? (Famous interview problem!)
-```
+| # | Application | Behaviour |
+| - | ----------- | --------- |
+| 1 | OS round-robin scheduling | Each process gets CPU time, then goes to the end of the ring |
+| 2 | Multiplayer game turns | After Diana's turn, it is Alice's turn again |
+| 3 | Music player on repeat | After the last song, play the first |
+| 4 | Josephus problem (classic) | `n` people in a circle, every `k`-th person eliminated: who survives? (a famous interview problem) |
 
 :::
 
@@ -1366,21 +1325,13 @@ KEY: A.prev = C, C.next = A (circular in BOTH directions!)
 
 ::: example
 
-```
-REAL-WORLD APPLICATIONS:
+**Real-world applications**
 
-1. FIBONACCI HEAP (Advanced Data Structure):
-   - Uses circular doubly linked lists
-   - O(1) amortized insert and decrease-key
-
-2. ADVANCED CACHE IMPLEMENTATIONS:
-   - Can move elements efficiently
-   - Access patterns in both directions
-
-3. IMAGE CAROUSEL WITH BOTH DIRECTIONS:
-   - Swipe left OR right
-   - Wrap around in either direction
-```
+| # | Application | Why a circular doubly linked list |
+| - | ----------- | --------------------------------- |
+| 1 | Fibonacci heap (advanced data structure) | Root lists and child lists are circular doubly linked lists; O(1) amortized insert and decrease-key |
+| 2 | Advanced cache implementations | Elements can be moved efficiently; access patterns go in both directions |
+| 3 | Image carousel in both directions | Swipe left or right, and wrap around in either direction |
 
 :::
 
@@ -1669,32 +1620,21 @@ This is why Redis uses skip list for sorted sets!
 
 ::: example
 
-```
-REAL-WORLD APPLICATIONS:
+**Real-world applications**
 
-1. REDIS SORTED SETS:
-   - Redis uses skip lists for ZSET
-   - O(log n) range queries
-   - O(log n) rank operations
+| # | Application | Why a skip list |
+| - | ----------- | --------------- |
+| 1 | Redis sorted sets (`ZSET`) | O(log n) range queries and rank operations |
+| 2 | LevelDB / RocksDB | In-memory memtable index for the key-value store |
+| 3 | Lucene (search engine) | Posting lists with skip pointers |
+| 4 | Concurrent data structures | Java's `ConcurrentSkipListMap` is easier to make thread-safe than a balanced tree |
 
-2. LEVELDB / ROCKSDB:
-   - Key-value databases
-   - In-memory index structure
+**Why Redis chose a skip list over a balanced tree:**
 
-3. LUCENE (Search Engine):
-   - Posting lists with skip pointers
-
-4. CONCURRENT DATA STRUCTURES:
-   - ConcurrentSkipListMap in Java
-   - Easier to make thread-safe than trees
-
-WHY REDIS CHOSE SKIP LIST OVER BALANCED TREE:
 - Simpler to implement
 - Easier to debug
-- Better for range queries
-- Easier to make concurrent
-- Memory locality can be better
-```
+- Range operations are simple (walk the bottom level)
+- Memory per node is tunable (probability `p`), and often smaller than a balanced tree's
 
 :::
 
@@ -2085,19 +2025,24 @@ Need both ends? (add/remove at both head and tail)
 
 ### PriorityQueue vs TreeSet vs TreeMap
 
+```mermaid
+flowchart TD
+    Q0{"Need min/max at head only (always extract extreme)?"}
+    Q1{"Need sorted iteration of all elements?"}
+    Q2{"Need key-value mapping with sorted keys?"}
+    Q0 -- YES --> A1["PriorityQueue (binary heap) — O(1) peek, O(log n) extract"]
+    Q0 -- NO --> Q1
+    Q1 -- YES --> A2["TreeSet — O(log n) insert/remove, O(n) sorted iteration"]
+    Q1 -- NO --> A3["consider HashSet (O(1) lookup, no order)"]
+    Q2 -- YES --> A4["TreeMap — O(log n) operations"]
+    Q2 -- NO --> A5["HashMap"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2 ask
+    class A1,A2,A3,A4,A5 ans
 ```
-Need min/max at head only (always extract extreme)?
-  → YES → PriorityQueue (binary heap) — O(1) peek, O(log n) extract
-  → NO → continue
 
-Need sorted iteration of all elements?
-  → YES → TreeSet — O(log n) insert/remove, O(n) sorted iteration
-  → NO → consider HashSet (O(1) lookup, no order)
-
-Need key-value mapping with sorted keys?
-  → YES → TreeMap — O(log n) operations
-  → NO → HashMap
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 **Variant selection rationale:**
 
@@ -2111,23 +2056,27 @@ Need key-value mapping with sorted keys?
 
 ### MultiMap vs Map<K, List<V>> vs Nested Collection
 
+```mermaid
+flowchart TD
+    Q0{"Need multiple values per key?"}
+    Q1{"Thread-safe MultiMap?"}
+    Q2{"Value collection type matters?"}
+    Q3{"Memory budget tight?"}
+    Q0 -- YES --> Q1
+    Q0 -- NO --> A1["HashMap (default)"]
+    Q1 -- YES --> A2["Guava `Multimap` with thread-safe backing (e.g., `synchronized`)"]
+    Q1 -- NO --> Q2
+    Q2 -- YES --> A3["Map&lt;K, List&lt;V&gt;&gt; or Map&lt;K, Set&lt;V&gt;&gt; (explicit, more control)"]
+    Q2 -- NO --> A4["Guava `Multimap` or Apache Commons `MultiValuedMap`"]
+    Q3 -- YES --> A5["Map&lt;K, List&lt;V&gt;&gt; with shared empty-list sentinel"]
+    Q3 -- NO --> A6["Guava `Multimap` (cleaner API, more features)"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3 ask
+    class A1,A2,A3,A4,A5,A6 ans
 ```
-Need multiple values per key?
-  → YES → continue
-  → NO → HashMap (default)
 
-Thread-safe MultiMap?
-  → YES → Guava `Multimap` with thread-safe backing (e.g., `synchronized`)
-  → NO → continue
-
-Value collection type matters?
-  → YES → Map<K, List<V>> or Map<K, Set<V>> (explicit, more control)
-  → NO → Guava `Multimap` or Apache Commons `MultiValuedMap`
-
-Memory budget tight?
-  → YES → Map<K, List<V>> with shared empty-list sentinel
-  → NO → Guava `Multimap` (cleaner API, more features)
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 **Variant selection rationale:**
 

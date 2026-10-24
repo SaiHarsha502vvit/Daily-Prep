@@ -883,21 +883,20 @@ PriorityQueue<int[]> pq = new PriorityQueue<>((a,b) -> a[0]-b[0]);
 
 ## 🧠 Pattern Fingerprint — Trees & Heaps
 
-```
-SEE THESE WORDS → USE THIS:
-┌──────────────────────────────────────────────────────────────┐
-│ "height / depth of tree"            → DFS postorder         │
-│ "path sum / root to leaf"           → DFS preorder          │
-│ "level order / level by level"      → BFS Queue             │
-│ "validate BST"                      → DFS with [min,max]    │
-│ "lowest common ancestor"            → DFS LCA               │
-│ "kth largest / smallest"            → Min-Heap size k       │
-│ "top K frequent elements"           → Freq map + Heap       │
-│ "merge K sorted lists"              → Min-Heap              │
-│ "sorted order from BST"             → Inorder traversal     │
-│ "serialize / deserialize tree"      → Preorder + null marks │
-└──────────────────────────────────────────────────────────────┘
-```
+**See these words → use this technique:**
+
+| If the problem says... | Use |
+| ---------------------- | --- |
+| "height / depth of tree" | DFS postorder |
+| "path sum / root to leaf" | DFS preorder |
+| "level order / level by level" | BFS Queue |
+| "validate BST" | DFS with [min,max] |
+| "lowest common ancestor" | DFS LCA |
+| "kth largest / smallest" | Min-Heap size k |
+| "top K frequent elements" | Freq map + Heap |
+| "merge K sorted lists" | Min-Heap |
+| "sorted order from BST" | Inorder traversal |
+| "serialize / deserialize tree" | Preorder + null marks |
 
 ### 🚀 GO LEARN — When You Need More
 
@@ -1179,31 +1178,33 @@ int min = pq.poll();  // root removal + sift-down: O(log n)
 
 ### Decision Tree
 
+```mermaid
+flowchart TD
+    Q0{"ordering of keys required (sorted iteration, range queries)?"}
+    Q1{"range queries (find all k in [a, b])?"}
+    Q2{"min/max at head?"}
+    Q3{"need to find nearest neighbor (predecessor/successor)?"}
+    Q4{"disk-resident or very large (n &gt; memory)?"}
+    Q5{"frequent insertions, occasional lookups?"}
+    Q0 -- YES --> Q1
+    Q0 -- NO --> A1["HashMap (O(1) avg lookup, no ordering)"]
+    Q1 -- YES --> A2["B-Tree (databases) or balanced BST (in-memory)"]
+    Q1 -- NO --> Q2
+    Q2 -- YES --> A3["Heap (O(1) peek, O(log n) insert/remove)"]
+    Q2 -- NO --> Q3
+    Q3 -- YES --> A4["BST or TreeMap"]
+    Q3 -- NO --> A5["HashMap suffices"]
+    Q4 -- YES --> A6["B-Tree (one disk read per level)"]
+    Q4 -- NO --> A7["in-memory BST"]
+    Q5 -- YES --> A8["Red-Black (looser balance, faster inserts)"]
+    Q5 -- NO --> A9["AVL (tighter balance, faster lookups)"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3,Q4,Q5 ask
+    class A1,A2,A3,A4,A5,A6,A7,A8,A9 ans
 ```
-ordering of keys required (sorted iteration, range queries)?
-  → NO → HashMap (O(1) avg lookup, no ordering)
-  → YES → continue
 
-range queries (find all k in [a, b])?
-  → YES → B-Tree (databases) or balanced BST (in-memory)
-  → NO → continue
-
-min/max at head?
-  → YES → Heap (O(1) peek, O(log n) insert/remove)
-  → NO → continue
-
-need to find nearest neighbor (predecessor/successor)?
-  → YES → BST or TreeMap
-  → NO → HashMap suffices
-
-disk-resident or very large (n > memory)?
-  → YES → B-Tree (one disk read per level)
-  → NO → in-memory BST
-
-frequent insertions, occasional lookups?
-  → YES → Red-Black (looser balance, faster inserts)
-  → NO → AVL (tighter balance, faster lookups)
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 ### Decision Table
 
