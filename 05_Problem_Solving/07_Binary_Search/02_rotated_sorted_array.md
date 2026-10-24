@@ -9,27 +9,23 @@
 **LeetCode 33** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/search-in-rotated-sorted-array/](https://leetcode.com/problems/search-in-rotated-sorted-array/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  SEARCH IN ROTATED SORTED ARRAY                                           ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Array was sorted then rotated at unknown pivot.                          ║
-║  No duplicates. Search for target.                                        ║
-║                                                                           ║
-║  Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 0                          ║
-║  Output: 4                                                                ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  Original: [0, 1, 2, 4, 5, 6, 7]                                          ║
-║  Rotated:  [4, 5, 6, 7, 0, 1, 2]                                          ║
-║             ↑        ↑                                                    ║
-║           sorted   sorted                                                 ║
-║                                                                           ║
-║  KEY: One half is ALWAYS sorted                                           ║
-║  Check if target is in sorted half, then decide direction                 ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**SEARCH IN ROTATED SORTED ARRAY**
+
+```text
+Array was sorted then rotated at unknown pivot.
+No duplicates. Search for target.
+
+Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 0
+Output: 4
+
+Visual:
+Original: [0, 1, 2, 4, 5, 6, 7]
+Rotated:  [4, 5, 6, 7, 0, 1, 2]
+           ↑        ↑
+         sorted   sorted
+
+KEY: One half is ALWAYS sorted
+Check if target is in sorted half, then decide direction
 ```
 
 ```java

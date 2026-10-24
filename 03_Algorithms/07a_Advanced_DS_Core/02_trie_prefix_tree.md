@@ -6,162 +6,133 @@
 
 ## Concept and Structure
 
+**Trie (Prefix Tree) - Complete Understanding**
+
+### What IS a Trie?
+
+TRIE = Tree for Retrieval (pronounced "try")  
+A tree-like data structure where each path from root to a node represents  
+a PREFIX of strings stored in it. Each node represents ONE CHARACTER.
+
+INVENTED: 1959 by René de la Briandais  
+REFINED: 1960 by Edward Fredkin (who named it "trie")
+
+### What Problem Does Trie Solve?
+
+**Problem 1: Fast prefix-based searching**
+
+- Given 1 million words, find all words starting with "pre"  
+  - HashMap: Must check ALL 1 million keys → O(n × m)
+- Trie: Go to 'p'→'r'→'e', then collect all children → O(m + k)  
+  where k = number of matches
+
+**Problem 2: Autocomplete suggestions**
+
+- User types "app", show: "apple", "application", "approach"  
+  - Database search is SLOW for this
+- Trie: Navigate to "app" node, DFS to find all completions
+
+**Problem 3: Spell checking**
+
+- Is "acknowledgement" spelled correctly?  
+  - Dictionary lookup in O(word_length) not O(dictionary_size)
+
+**Problem 4: IP Routing (Longest Prefix Matching)**
+
+- Router needs to find which interface to send packet  
+  - Match IP address against routing table prefixes
+
+**WHY USE TRIE OVER OTHER DATA STRUCTURES?**
+
+| VS HASHMAP: |  |  |  |  |
+| --- | --- | --- | --- | --- |
+|  | Operation | HashMap | Trie |  |
+|  | Search exact<br>Search prefix<br>Hash collisions<br>Ordered results<br>Space efficiency | O(m) avg<br>O(n × m) 😢<br>YES<br>NO<br>Better | O(m)<br>O(prefix_len) 🎉<br>NO<br>YES (lexicographic)<br>Worse (but can compress) |  |
+| VS BINARY SEARCH TREE (BST): - BST: O(m × log n) to search (compare strings at each node) - Trie: O(m) regardless of how many strings stored |  |  |  |  |
+| THE KEY INSIGHT:<br>Trie time complexity depends on WORD LENGTH, not NUMBER OF WORDS! |  |  |  |  |
+
+### When to USE Trie?
+
+**✅ USE Trie When**:
+
+- Need prefix-based operations (autocomplete, spell check)
+- Need lexicographically sorted results
+- Searching same prefixes repeatedly
+- Building word games (Scrabble, Boggle)
+- IP routing tables
+- Phone directory (search by prefix)
+
+**❌ Don't USE Trie When**:
+
+- Only need exact match (HashMap is simpler)
+- Memory is very limited (Tries use more space)
+- Strings are very long with little common prefixes
+- Data changes frequently and memory matters
+
+### HOW Does Trie Work? (Visual Explanation)
+
+Storing: ["cat", "car", "card", "care", "dog"]
+
+```mermaid
+flowchart TD
+  root(("root")) --> c(("c"))
+  root --> d(("d"))
+  c --> a(("a"))
+  d --> o(("o"))
+  o --> g(("g ✓"))
+  a --> t(("t ✓"))
+  a --> r(("r ✓"))
+  r --> rd(("d ✓"))
+  r --> re(("e ✓"))
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                     TRIE (PREFIX TREE) - COMPLETE UNDERSTANDING              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS A TRIE?                                                             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ TRIE = Tree for Retrieval (pronounced "try")                                │
-│ A tree-like data structure where each path from root to a node represents   │
-│ a PREFIX of strings stored in it. Each node represents ONE CHARACTER.       │
-│                                                                             │
-│ INVENTED: 1959 by René de la Briandais                                      │
-│ REFINED: 1960 by Edward Fredkin (who named it "trie")                       │
-└─────────────────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** The trie stores `cat`, `car`, `card`, `care`, `dog`. Each node is one character, each edge is a transition to the next character, and ✓ marks the end of a valid word. Note that `r ✓` ends `car` and also continues to `card` and `care`.
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES TRIE SOLVE?                                               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ PROBLEM 1: Fast prefix-based searching                                      │
-│   - Given 1 million words, find all words starting with "pre"               │
-│   - HashMap: Must check ALL 1 million keys → O(n × m)                       │
-│   - Trie: Go to 'p'→'r'→'e', then collect all children → O(m + k)           │
-│     where k = number of matches                                             │
-│                                                                             │
-│ PROBLEM 2: Autocomplete suggestions                                         │
-│   - User types "app", show: "apple", "application", "approach"              │
-│   - Database search is SLOW for this                                        │
-│   - Trie: Navigate to "app" node, DFS to find all completions               │
-│                                                                             │
-│ PROBLEM 3: Spell checking                                                   │
-│   - Is "acknowledgement" spelled correctly?                                 │
-│   - Dictionary lookup in O(word_length) not O(dictionary_size)              │
-│                                                                             │
-│ PROBLEM 4: IP Routing (Longest Prefix Matching)                             │
-│   - Router needs to find which interface to send packet                     │
-│   - Match IP address against routing table prefixes                         │
-└─────────────────────────────────────────────────────────────────────────────┘
+**Memory layout:** the root has `children[26]` (for a-z). Most entries are null, so only the paths in use are allocated.
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHY USE TRIE OVER OTHER DATA STRUCTURES?                                    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ VS HASHMAP:                                                                 │
-│ ┌──────────────────┬───────────────────┬──────────────────────────────────┐ │
-│ │ Operation        │ HashMap           │ Trie                             │ │
-│ ├──────────────────┼───────────────────┼──────────────────────────────────┤ │
-│ │ Search exact     │ O(m) avg          │ O(m)                             │ │
-│ │ Search prefix    │ O(n × m) 😢       │ O(prefix_len) 🎉                 │   │
-│ │ Hash collisions  │ YES               │ NO                               │ │
-│ │ Ordered results  │ NO                │ YES (lexicographic)              │ │
-│ │ Space efficiency │ Better            │ Worse (but can compress)         │ │
-│ └──────────────────┴───────────────────┴──────────────────────────────────┘ │
-│                                                                             │
-│ VS BINARY SEARCH TREE (BST):                                                │
-│ - BST: O(m × log n) to search (compare strings at each node)                │
-│ - Trie: O(m) regardless of how many strings stored                          │
-│                                                                             │
-│ THE KEY INSIGHT:                                                            │
-│ Trie time complexity depends on WORD LENGTH, not NUMBER OF WORDS!           │
-└─────────────────────────────────────────────────────────────────────────────┘
+| Operation | Walk | Result |
+| --- | --- | --- |
+| Search `car` | root → c → a → r | Found, and it is an end of word ✓ |
+| Search `ca` | root → c → a | Node exists, but it is not an end of word ✗ |
+| Insert `cow` | root → c → o (new) → w (new, mark end) | Two new nodes |
+| Prefix `car` | root → c → a → r, then DFS | Collects `car`, `card`, `care` |
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE TRIE?                                                           │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ ✅ USE TRIE WHEN:                                                            │
-│    • Need prefix-based operations (autocomplete, spell check)               │
-│    • Need lexicographically sorted results                                  │
-│    • Searching same prefixes repeatedly                                     │
-│    • Building word games (Scrabble, Boggle)                                 │
-│    • IP routing tables                                                      │
-│    • Phone directory (search by prefix)                                     │
-│                                                                             │
-│ ❌ DON'T USE TRIE WHEN:                                                      │
-│    • Only need exact match (HashMap is simpler)                             │
-│    • Memory is very limited (Tries use more space)                          │
-│    • Strings are very long with little common prefixes                      │
-│    • Data changes frequently and memory matters                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+### Difficulties & Edge Cases
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ HOW DOES TRIE WORK? (VISUAL EXPLANATION)                                    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ Storing: ["cat", "car", "card", "care", "dog"]                              │
-│                                                                             │
-│             (root)                   STRUCTURE:                             │
-│            /      \                  - Each node = one character            │
-│          c          d                - Edge = transition to next char       │
-│          |          |                - * = marks end of valid word          │
-│          a          o                                                       │
-│         /|\         |                MEMORY LAYOUT:                         │
-│        t r e        g*               - Root has children[26] (for a-z)      │
-│        * |*                          - Most children are null               │
-│          d                           - Only used paths allocated            │
-│          *                                                                  │
-│                                                                             │
-│ SEARCH "car":                        INSERT "cow":                          │
-│ root→c→a→r (found, is end? YES ✓)   root→c→o(new)→w(new, mark end)          │
-│                                                                             │
-│ SEARCH "ca":                         PREFIX "car":                          │
-│ root→c→a (found, is end? NO ✗)      root→c→a→r, then DFS: card, care        │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+**1. Space Consumption**:
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ DIFFICULTIES & EDGE CASES                                                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 1. SPACE CONSUMPTION:                                                       │
-│    - Each node has 26 pointers (for a-z) = 26 × 8 bytes = 208 bytes/node    │
-│    - Solution: Use HashMap<Character, Node> instead of array                │
-│    - Solution: Compressed Trie (merge single-child chains)                  │
-│                                                                             │
-│ 2. DELETION COMPLEXITY:                                                     │
-│    - Can't just remove node; might break other words                        │
-│    - "card" and "car": deleting "car" shouldn't delete 'c','a','r'          │
-│    - Solution: Only unmark isEndOfWord if other words use same path         │
-│                                                                             │
-│ 3. UNICODE/SPECIAL CHARACTERS:                                              │
-│    - 26-size array only works for lowercase English                         │
-│    - Solution: Use HashMap<Character, Node> for flexibility                 │
-│                                                                             │
-│ 4. CASE SENSITIVITY:                                                        │
-│    - "Cat" vs "cat" - are they same?                                        │
-│    - Solution: Convert to lowercase before operations                       │
-│                                                                             │
-│ 5. EMPTY STRING:                                                            │
-│    - Is "" a valid word? Handle root.isEndOfWord                            │
-└─────────────────────────────────────────────────────────────────────────────┘
+- Each node has 26 pointers (for a-z) = 26 × 8 bytes = 208 bytes/node  
+  - Solution: Use HashMap<Character, Node> instead of array
+- Solution: Compressed Trie (merge single-child chains)
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ EXPECTED OUTPUTS & COMPLEXITY                                               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ OPERATION        │ TIME           │ SPACE           │ OUTPUT                │
-│ ─────────────────┼────────────────┼─────────────────┼────────────────────── │
-│ Insert(word)     │ O(m)           │ O(m) worst      │ void (modifies trie)  │
-│ Search(word)     │ O(m)           │ O(1)            │ boolean (exists?)     │
-│ StartsWith(pre)  │ O(p)           │ O(1)            │ boolean (prefix?)     │
-│ Autocomplete     │ O(p + k)       │ O(k)            │ List<String> matches  │
-│ Delete(word)     │ O(m)           │ O(m) stack      │ boolean (deleted?)    │
-│                                                                             │
-│ m = word length, p = prefix length, k = number of matches                   │
-│                                                                             │
-│ SPACE COMPLEXITY OF ENTIRE TRIE:                                            │
-│ - Worst case: O(ALPHABET_SIZE × m × n) where n = number of words            │
-│ - Best case: O(total characters) when words share prefixes                  │
-│                                                                             │
-│ EXAMPLE OUTPUT:                                                             │
-│ trie.insert("apple");                                                       │
-│ trie.search("apple");   → true                                              │
-│ trie.search("app");     → false ("app" not marked as word)                  │
-│ trie.startsWith("app"); → true  (prefix exists)                             │
-│ trie.autocomplete("app"); → ["apple", "application", ...]                   │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+**2. Deletion Complexity**:
+
+- Can't just remove node; might break other words  
+  - "card" and "car": deleting "car" shouldn't delete 'c','a','r'
+- Solution: Only unmark isEndOfWord if other words use same path
+
+**3. Unicode/special Characters**:
+
+- 26-size array only works for lowercase English  
+  - Solution: Use HashMap<Character, Node> for flexibility
+
+**4. Case Sensitivity**:
+
+- "Cat" vs "cat" - are they same?  
+  - Solution: Convert to lowercase before operations
+
+**5. Empty String**:
+
+- Is "" a valid word? Handle root.isEndOfWord
+
+**EXPECTED OUTPUTS & COMPLEXITY**
+
+| OPERATION | TIME | SPACE | OUTPUT |
+| --- | --- | --- | --- |
+| Insert(word)<br>Search(word)<br>StartsWith(pre)<br>Autocomplete<br>Delete(word) | O(m)<br>O(m)<br>O(p)<br>O(p + k)<br>O(m) | O(m) worst<br>O(1)<br>O(1)<br>O(k)<br>O(m) stack | void (modifies trie) boolean (exists?) boolean (prefix?)<br>List<String> matches boolean (deleted?) |
+| m = word length, p = prefix length, k = number of matches |  |  |  |
+| SPACE COMPLEXITY OF ENTIRE TRIE: - Worst case: O(ALPHABET_SIZE × m × n) where n = number of words - Best case: O(total characters) when words share prefixes |  |  |  |
+| EXAMPLE OUTPUT: trie.insert("apple"); trie.search("apple");   → true trie.search("app");     → false ("app" not marked as word) trie.startsWith("app"); → true  (prefix exists) trie.autocomplete("app"); → ["apple", "application", ...] |  |  |  |
 
 ## Implementation
 

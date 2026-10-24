@@ -4,11 +4,14 @@
 > Page 1 of 3 in **Heap**
 
 
-HEAP / PRIORITY QUEUE MASTERY GUIDE
-From Theory to Hard Problems — MIT/KTH Academic Style
-Part 0: Theory & Internals │ Part 1: Easy (5 problems)
-Part 2: Medium (10 problems) │ Part 3: Hard (5 problems)
-Part 4: Cheat Sheet & Decision Tree │
+> **Heap / Priority Queue mastery guide**: from theory to hard problems, in an academic style.
+>
+> - Part 0: theory and internals
+> - Part 1: easy (5 problems)
+> - Part 2: medium (10 problems)
+> - Part 3: hard (5 problems)
+> - Part 4: cheat sheet and decision tree
+
 
 ---
 

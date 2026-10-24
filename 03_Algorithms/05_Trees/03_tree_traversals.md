@@ -6,93 +6,98 @@
 
 ## The Three DFS Traversals
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                  TREE TRAVERSALS - WHEN & WHY TO USE EACH                    ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**Tree Traversals - When & WHY to USE Each**
 
 REMEMBER BY: When do you PROCESS the current node?
 
-PREORDER:  Process → Left → Right   (Process BEFORE children)
-INORDER:   Left → Process → Right   (Process BETWEEN children)
-POSTORDER: Left → Right → Process   (Process AFTER children)
+| Traversal | Order | When the current node is processed |
+| --- | --- | --- |
+| Preorder | Process → Left → Right | **Before** its children |
+| Inorder | Left → Process → Right | **Between** its children |
+| Postorder | Left → Right → Process | **After** its children |
 
-EXAMPLE TREE:
-        [1]
-       /   \
-     [2]   [3]
-    /  \
-  [4]  [5]
+**Example tree**
 
-PREORDER:  1 → 2 → 4 → 5 → 3  (Root first, then subtrees)
-INORDER:   4 → 2 → 5 → 1 → 3  (Left, root, right - SORTED for BST!)
-POSTORDER: 4 → 5 → 2 → 3 → 1  (Children first, then root)
+```mermaid
+flowchart TD
+  n1((1)) --> n2((2))
+  n1 --> n3((3))
+  n2 --> n4((4))
+  n2 --> n5((5))
+```
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE EACH TRAVERSAL?                                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ PREORDER (Root → Left → Right):                                              │
-│ ┌────────────────────────────────────────────────────────────────┐           │
-│ │ USE FOR: Copying/cloning a tree                                │           │
-│ │          Serializing tree to file/string                       │           │
-│ │          Creating prefix expressions                            │          │
-│ │          Getting directory structure (ls -R)                    │          │
-│ │                                                                  │         │
-│ │ WHY: You need to create parent BEFORE children                 │           │
-│ │      (Can't have children without parent first!)               │           │
-│ └────────────────────────────────────────────────────────────────┘           │
-│                                                                              │
-│ INORDER (Left → Root → Right):                                               │
-│ ┌────────────────────────────────────────────────────────────────┐           │
-│ │ USE FOR: Getting sorted elements from BST                      │           │
-│ │          Validating if tree is BST                             │           │
-│ │          Finding kth smallest/largest element                  │           │
-│ │          Creating infix expressions                             │          │
-│ │                                                                  │         │
-│ │ WHY: For BST, left < root < right, so this gives sorted order  │           │
-│ │      It's the "natural" reading order (left to right)          │           │
-│ └────────────────────────────────────────────────────────────────┘           │
-│                                                                              │
-│ POSTORDER (Left → Right → Root):                                             │
-│ ┌────────────────────────────────────────────────────────────────┐           │
-│ │ USE FOR: Deleting a tree (must delete children before parent)  │           │
-│ │          Calculating folder sizes (need children sizes first)  │           │
-│ │          Evaluating expression trees                            │          │
-│ │          Finding height of tree                                 │          │
-│ │          Garbage collection algorithms                          │          │
-│ │                                                                  │         │
-│ │ WHY: You need children's result before you can compute parent's│           │
-│ │      (Can't calculate total until you have subtotals!)         │           │
-│ └────────────────────────────────────────────────────────────────┘           │
-│                                                                              │
-│ LEVEL ORDER (BFS):                                                           │
-│ ┌────────────────────────────────────────────────────────────────┐           │
-│ │ USE FOR: Finding shortest path in unweighted tree              │           │
-│ │          Printing tree level by level                          │           │
-│ │          Finding nodes at specific depth                        │          │
-│ │          Connecting nodes at same level                         │          │
-│ │          Zigzag traversal                                       │          │
-│ │                                                                  │         │
-│ │ WHY: Processes nodes by distance from root - perfect for       │           │
-│ │      "nearest" or "level" based questions                       │          │
-│ └────────────────────────────────────────────────────────────────┘           │
-└──────────────────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** Node 1 is the root. Node 2 has children 4 and 5, and node 3 is a leaf.
+
+| Traversal | Result | Note |
+| --- | --- | --- |
+| Preorder | 1 → 2 → 4 → 5 → 3 | Root first, then the subtrees |
+| Inorder | 4 → 2 → 5 → 1 → 3 | Left, root, right. Sorted order for a BST |
+| Postorder | 4 → 5 → 2 → 3 → 1 | Children first, then the root |
+
+### When to USE Each Traversal?
+
+PREORDER (Root → Left → Right):
+
+```text
+USE FOR: Copying/cloning a tree
+         Serializing tree to file/string
+         Creating prefix expressions
+         Getting directory structure (ls -R)
+
+WHY: You need to create parent BEFORE children
+     (Can't have children without parent first!)
+```
+
+INORDER (Left → Root → Right):
+
+```text
+USE FOR: Getting sorted elements from BST
+         Validating if tree is BST
+         Finding kth smallest/largest element
+         Creating infix expressions
+
+WHY: For BST, left < root < right, so this gives sorted order
+     It's the "natural" reading order (left to right)
+```
+
+POSTORDER (Left → Right → Root):
+
+```text
+USE FOR: Deleting a tree (must delete children before parent)
+         Calculating folder sizes (need children sizes first)
+         Evaluating expression trees
+         Finding height of tree
+         Garbage collection algorithms
+
+WHY: You need children's result before you can compute parent's
+     (Can't calculate total until you have subtotals!)
+```
+
+**Level Order (BFS)**:
+
+```text
+USE FOR: Finding shortest path in unweighted tree
+         Printing tree level by level
+         Finding nodes at specific depth
+         Connecting nodes at same level
+         Zigzag traversal
+
+WHY: Processes nodes by distance from root - perfect for
+     "nearest" or "level" based questions
+```
 
 QUICK DECISION TABLE:
-┌─────────────────────────────────────┬───────────────────┐
-│ Problem Type                        │ Use Traversal     │
-├─────────────────────────────────────┼───────────────────┤
-│ Get sorted elements (BST)           │ INORDER           │
-│ Copy/clone tree                     │ PREORDER          │
-│ Delete tree safely                  │ POSTORDER         │
-│ Calculate subtree values            │ POSTORDER         │
-│ Find by level/depth                 │ LEVEL ORDER (BFS) │
-│ Serialize tree                      │ PREORDER + marker │
-│ Check if valid BST                  │ INORDER           │
-│ Expression evaluation               │ POSTORDER         │
-└─────────────────────────────────────┴───────────────────┘
-```
+
+| Problem Type | Use Traversal |
+| --- | --- |
+| Get sorted elements (BST) | INORDER |
+| Copy/clone tree | PREORDER |
+| Delete tree safely | POSTORDER |
+| Calculate subtree values | POSTORDER |
+| Find by level/depth | LEVEL ORDER (BFS) |
+| Serialize tree | PREORDER + marker |
+| Check if valid BST | INORDER |
+| Expression evaluation | POSTORDER |
 
 ## Traversal Code
 

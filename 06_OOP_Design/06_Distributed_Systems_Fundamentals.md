@@ -594,31 +594,25 @@ The etcd team (core of Kubernetes) evaluated Paxos before choosing Raft and conc
 | CRITICAL RISK | Coordinator crash<br>→ nodes wait forever<br>→ need timeouts + recovery protocols | Compensation failure (refund fails after ship — need retry/idempotency) |
 | LATENCY | High (3 round-trips total coordination) | Lower per step, but more steps overall |
 
-```
-  EVENTUAL CONSISTENCY AS THIRD ALTERNATIVE:
-  ══════════════════════════════════════════════════
+**Eventual consistency as a third alternative.** Don't coordinate at all: each service updates itself.
 
-  Don't coordinate at all. Each service updates itself.
+Example: place order → write to the Orders DB → emit an `order.placed` event. The payment service consumes the event and processes the payment asynchronously. The inventory service consumes the event and reserves stock asynchronously.
 
-  Example: Place order → write to Orders DB → emit "order.placed" event
-           Payment service consumes event → processes payment asynchronously
-           Inventory service consumes event → reserves stock asynchronously
+| Trade-off | |
+| --- | --- |
+| ➕ | Highest throughput and lowest latency (no coordination overhead) |
+| ➕ | Individual services can fail and recover independently |
+| ➖ | Consistency is deferred: the user may see "order confirmed" before payment clears |
+| ➖ | Requires idempotency everywhere (a retry means duplicate processing) |
+| ➖ | Requires a saga or outbox pattern to guarantee event delivery |
 
-  Trade-offs:
-  + Highest throughput, lowest latency (no coordination overhead)
-  + Individual services can fail and recover independently
-  - Consistency is deferred — user may see "order confirmed" before payment clears
-  - Requires idempotency everywhere (retry = duplicate processing)
-  - Requires saga/outbox pattern to guarantee event delivery
+**Hybrid: the outbox pattern** (widely used in event-driven systems)
 
-  HYBRID: Outbox Pattern (used at Amazon, Stripe)
-  ════════════════════════════════════════════════
-  Service writes to local DB: order + "outbox:order.placed" atomically
-  Background process polls outbox → publishes to message broker
-  Consumers: "exactly-once" delivery via deduplication
+1. The service writes to its local DB: the order plus an `outbox:order.placed` row, atomically.
+2. A background process polls the outbox and publishes to the message broker.
+3. Consumers get effectively-once processing through deduplication (the broker itself delivers at least once).
 
-  This gives you transactional guarantees WITH eventual consistency performance.
-```
+This gives you transactional guarantees with eventual-consistency performance.
 
 > **Navigation**: [< Previous](05_SD_Interview_Problems.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_LLD_Solved_Problems.md)
 

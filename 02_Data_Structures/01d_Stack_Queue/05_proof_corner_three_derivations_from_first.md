@@ -541,6 +541,7 @@ Despite nested-looking loops, the total work is O(n) because each element enters
 > These are the exact failure modes that bite production systems and trip up interviewers.
 
 ### 1. Stack Overflow — Unbounded Recursive Depth
+
 **What breaks**: Using an implicit call stack (DFS, parser, expression evaluator) on deep inputs. JVM default stack size ≈ 512KB–1MB → ~10,000 frames → `StackOverflowError` with no useful stack trace.
 **Trigger constraint**: Any graph with depth > 10K nodes, any JSON/XML with > 10K nesting levels.
 **Fix**: Convert to an explicit `ArrayDeque` stack (heap-allocated, no depth limit).
@@ -552,6 +553,7 @@ while (!stack.isEmpty()) { Node n = stack.pop(); ... }
 ```
 
 ### 2. Java's `Stack` Class — Wrong Tool
+
 **What breaks**: Using `java.util.Stack` in production code.
 **Why**: `Stack` extends `Vector`, which is fully `synchronized`. Every push/pop acquires a lock — 3–5× slower than `ArrayDeque` in single-threaded use.
 **Fix**: Always use `Deque<T> stack = new ArrayDeque<>()` instead. For thread-safe use: `ConcurrentLinkedDeque` or `LinkedBlockingDeque`.
@@ -561,6 +563,7 @@ while (!stack.isEmpty()) { Node n = stack.pop(); ... }
 **Constraint warning**: `ArrayDeque` does not allow null elements — it uses null as a sentinel internally. Use `null`-safe wrappers if nulls are required.
 
 ### 3. Monotonic Stack — Forgetting the Remaining Elements
+
 **What breaks**: Processing only the elements that caused a pop during the main loop, forgetting that elements still in the stack after the loop represent "no right boundary found."
 ```java
 // BUG — stack still has elements after the loop:
@@ -575,11 +578,13 @@ while (!stack.isEmpty()) result[stack.pop()] = -1; // no right boundary
 **Invariant**: After the main loop, every index still in the stack has no greater element to its right → answer is -1 (or n, or ∞, depending on the problem).
 
 ### 4. Unbounded Queue → OutOfMemoryError
+
 **What breaks**: Using a `LinkedBlockingQueue` with no capacity limit (the default constructor in `LinkedBlockingQueue` is `Integer.MAX_VALUE` capacity) in a producer-consumer system where the producer is faster than the consumer. The queue grows without bound until OOM.
 **Fix**: Always specify capacity: `new LinkedBlockingQueue<>(1000)`. This creates natural backpressure — the producer blocks when the queue is full.
 **Production war story**: Java's `Executors.newFixedThreadPool()` uses an unbounded `LinkedBlockingQueue` for task queuing. If tasks are submitted faster than they complete, memory grows unboundedly. Use `ThreadPoolExecutor` with a bounded queue and a `RejectedExecutionHandler`.
 
 ### 5. Deque Used as Both Stack and Queue — Wrong-End Operations
+
 **What breaks**: Using `addFirst`/`removeFirst` for one role and `addLast`/`removeFirst` for another in the same `ArrayDeque` — correct Java API but easy to confuse which end is which.
 **Fix**: Use named roles explicitly: `push`/`pop` for stack semantics (both operate on head), `offer`/`poll` for queue semantics (offer at tail, poll from head).
 

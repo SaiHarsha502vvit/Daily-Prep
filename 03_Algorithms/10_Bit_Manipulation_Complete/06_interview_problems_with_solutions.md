@@ -510,18 +510,22 @@ int singleNumber(int[] nums) {
 ## When Bit Manipulation Breaks
 
 ### 1. Operator Precedence — Bitwise vs Comparison
+
 **What breaks**: `if (n & 1 == 0)` evaluates as `if (n & (1 == 0))` = `if (n & 0)` = always false. Comparison operators have HIGHER precedence than bitwise `&`, `|`, `^` in Java.
 **Fix**: Always parenthesize: `if ((n & 1) == 0)`. This is the #1 silent bug in bit manipulation.
 
 ### 2. Signed Right Shift on Negative Numbers
+
 **What breaks**: `n >>= 1` on negative n fills with 1 (arithmetic shift). `while (n != 0) { n >>= 1; }` is an infinite loop for any negative n.
 **Fix**: Use `n >>>= 1` (unsigned shift) for bit-counting loops.
 
 ### 3. Integer Overflow in Left Shift
+
 **What breaks**: `1 << 31` = `Integer.MIN_VALUE` in Java (−2147483648), not 2³¹ = 2147483648. `1 << 32` = 1 (shift amount is mod 32). Both are silent — no exception.
 **Fix**: Use `1L << n` when you need bit positions beyond 30.
 
 ### 4. XOR Swap Aliasing
+
 **What breaks**: `a ^= b; b ^= a; a ^= b;` when a and b are the SAME variable. `a ^= a` sets it to 0; all three operations produce 0.
 **Fix**: Guard with `if (a != b)` or use a temp variable.
 

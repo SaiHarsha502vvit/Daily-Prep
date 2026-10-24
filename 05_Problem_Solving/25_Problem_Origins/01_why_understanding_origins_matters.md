@@ -261,42 +261,30 @@ THE SAME IDEA APPEARS IN:
 
 #### 📜 The Origin Story (1970s - Network Protocols)
 
-```
-SETTING: ARPANET (Precursor to Internet)
+**Setting:** ARPANET, the precursor to the Internet.
 
-PROBLEM:
-- Computer A sending data to Computer B
-- Network is unreliable
-- Some packets get lost
-- Need to resend lost packets
-- But can't wait for acknowledgment of every packet (too slow)
+**Problem**
 
-NAIVE APPROACH:
-Send packet 1 → Wait for ACK → Send packet 2 → Wait for ACK
-Very slow! One packet at a time.
+- Computer A is sending data to Computer B.
+- The network is unreliable: some packets get lost and must be resent.
+- But waiting for an acknowledgment of every packet is too slow.
 
-THE INSIGHT BY VINT CERF (Father of Internet):
-"What if we send multiple packets without waiting?"
+**Naive approach:** send packet 1 → wait for the ACK → send packet 2 → wait for the ACK. Very slow, because only one packet is in flight at a time.
 
-SLIDING WINDOW PROTOCOL:
-┌─────────────────────────────────────┐
-│ Packets: [1] [2] [3] [4] [5] [6]... │
-│              └─────────┘            │
-│              WINDOW (size 3)        │
-│                                     │
-│ Send 1, 2, 3 at once                │
-│ Get ACK for 1 → slide window        │
-│              [2] [3] [4]            │
-│ Get ACK for 2 → slide window        │
-│                  [3] [4] [5]        │
-└─────────────────────────────────────┘
+**The insight (Vint Cerf and Bob Kahn's early TCP design):** "What if we send multiple packets without waiting?"
 
-IMPACT:
-- TCP/IP uses this (your internet!)
-- 100x faster data transfer
-- Every network uses sliding window
-- THIS IS LITERALLY HOW INTERNET WORKS
-```
+**Sliding window protocol** (window size 3):
+
+| Event | Window |
+| --- | --- |
+| Send packets 1, 2, 3 at once | `[1] [2] [3]` |
+| Get ACK for 1 → slide the window | `[2] [3] [4]` |
+| Get ACK for 2 → slide the window | `[3] [4] [5]` |
+
+**Impact**
+
+- TCP uses a sliding window for flow control, so it is behind most of the traffic on the Internet.
+- Keeping several packets in flight keeps the link busy instead of idle while waiting for ACKs.
 
 #### 🖥️ LeetCode Application
 

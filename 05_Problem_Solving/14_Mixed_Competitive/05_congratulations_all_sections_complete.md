@@ -6,32 +6,29 @@
 
 **📊 PRACTICE PROBLEMS SUMMARY**
 
-```text
-SECTION 1-3: Basic Math, Strings, Arrays     (~30 problems)
-SECTION 4: Sliding Window Patterns           (12 problems)
-SECTION 5: Two Pointers Advanced             (17 problems)
-SECTION 6: Binary Search Patterns            (13 problems)
-SECTION 7: Stack & Queue Problems            (26 problems)
-SECTION 8: Tree Problems (BFS/DFS)           (32 problems)
-SECTION 9: Graph Algorithms                  (23 problems)
-SECTION 10: Dynamic Programming              (17 problems)
-SECTION 11: Backtracking Problems            (13 problems)
-SECTION 12: Greedy Algorithms                (13 problems)
-SECTION 13: HackerEarth & Codeforces         (14 problems)
+| Section | Topic | Problems (approx.) |
+| --- | --- | --- |
+| 1-3 | Basic Math, Strings, Arrays | ~30 |
+| 4 | Sliding Window Patterns | 12 |
+| 5 | Two Pointers Advanced | 17 |
+| 6 | Binary Search Patterns | 13 |
+| 7 | Stack & Queue Problems | 26 |
+| 8 | Tree Problems (BFS/DFS) | 32 |
+| 9 | Graph Algorithms | 23 |
+| 10 | Dynamic Programming | 17 |
+| 11 | Backtracking Problems | 13 |
+| 12 | Greedy Algorithms | 13 |
+| 13 | HackerEarth & Codeforces | 14 |
+| | **Total** | **~210** |
 
-═══════════════════════════════════════════════════════════
-TOTAL: ~210+ PROBLEMS WITH SOLUTIONS & VISUALIZATIONS
-═══════════════════════════════════════════════════════════
+**All problems include:**
 
-🎯 All problems include:
-• ASCII box visualizations
-• Step-by-step explanations
-• Optimized Java solutions
-• Time/Space complexity
-• LeetCode links (free) or full descriptions (premium)
+- Step-by-step explanations and visualizations
+- Optimized Java solutions
+- Time and space complexity
+- LeetCode links (free problems) or full descriptions (premium problems)
 
 💪 Keep practicing and good luck! 💪
-```
 
 ---
 

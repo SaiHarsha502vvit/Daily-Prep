@@ -17,10 +17,13 @@ Advanced BFS, Dijkstra on grid, Union-Find, 3D heap BFS
 
 **Problem**: Given an `n × n` binary grid, return the length of the shortest clear path from top-left `(0,0)` to bottom-right `(n-1,n-1)`. A clear path only uses cells with value 0 and moves 8-directionally (including diagonals). Return -1 if no path exists. Path length = number of cells visited.
 
-|  | 0 | 0 | 0 | Shortest path: (0,0) → (1,1) → (2,2) |
-| --- | --- | --- | --- | --- |
-| ├───┼───┼───┤   Length = 3 (count cells, not edges) | 1 | 1 | 0 |  |
-| ├───┼───┼───┤   The diagonal shortcut through center | 1 | 1 | 0 | is faster than going around. |
+| | c0 | c1 | c2 |
+| --- | --- | --- | --- |
+| **r0** | 0 | 0 | 0 |
+| **r1** | 1 | 1 | 0 |
+| **r2** | 1 | 1 | 0 |
+
+The centre cell `(1,1)` is blocked, so the diagonal shortcut is not available. The shortest clear path is `(0,0) → (0,1) → (1,2) → (2,2)`: **4 cells** (count cells, not edges). The diagonal step from `(0,1)` to `(1,2)` saves one move compared with going around.
 
 **Key Insight**: Shortest path in an unweighted graph = BFS. The twist: 8 directions instead of 4. BFS guarantees the first time we reach `(n-1, n-1)` is via the shortest path.
 
@@ -87,11 +90,19 @@ class Solution {
 
 **Problem**: Given an `n × n` binary grid, you may change at most one `0` to `1`. Return the size of the largest island.
 
-|  | 1 | 0 | 1 | Islands: top-left (size 1, id=2), top-right (size 1, id=3), |
-| --- | --- | --- | --- | --- |
-| ├───┼───┼───┤             bottom (size 3, id=4) | 0 | 0 | 1 |  |
-| ├───┼───┼───┤   Flip (0,1) to 1: connects id=2 (size 1) + id=3 (size 1) | 1 | 1 | 1 | + 1 (the flipped cell) = 3 |
-| └───┴───┴───┘   Flip (1,0) to 1: connects id=2 (1) + id=4 (3) + 1 = 5 ← answer |  |  |  |  |
+| | c0 | c1 | c2 |
+| --- | --- | --- | --- |
+| **r0** | 1 | 0 | 1 |
+| **r1** | 0 | 0 | 1 |
+| **r2** | 1 | 1 | 1 |
+
+Islands: the top-left cell is one island (size 1, id 2). The cells `(0,2)`, `(1,2)`, `(2,2)`, `(2,1)`, `(2,0)` are connected, so they form a single island (size 5, id 3).
+
+| Flip | Neighbouring islands | New size |
+| --- | --- | --- |
+| `(0,1)` | id 2 (size 1) + id 3 (size 5) | 1 + 5 + 1 = **7** ← answer |
+| `(1,0)` | id 2 (size 1) + id 3 (size 5) | 1 + 5 + 1 = 7 |
+| `(1,1)` | id 3 only (reached twice, counted once) | 5 + 1 = 6 |
 
 **Key Insight**: Two-pass approach:
 
@@ -178,11 +189,15 @@ class Solution {
 
 **Problem**: An `n × n` grid where `grid[i][j]` = elevation. At time `t`, you can visit any cell with elevation ≤ `t`. You can move 4-directionally between adjacent cells if both have elevation ≤ `t`. Find the minimum `t` such that you can travel from `(0,0)` to `(n-1,n-1)`.
 
-|  | 0 | 1 | 2 | At t=0: only (0,0) accessible |
-| --- | --- | --- | --- | --- |
-| ├───┼───┼───┤   At t=3: path (0,0)→(1,0)→(2,0)→(2,1)→(2,2) | 3 | 8 | 4 | max elevation on path = 3+... wait |
-| ├───┼───┼───┤   Answer = max elevation on the path we choose, | 5 | 6 | 7 | minimized over all possible paths. |
-| └───┴───┴───┘   = minimax path problem! |  |  |  |  |
+| | c0 | c1 | c2 |
+| --- | --- | --- | --- |
+| **r0** | 0 | 1 | 2 |
+| **r1** | 3 | 8 | 4 |
+| **r2** | 5 | 6 | 7 |
+
+- At `t = 0` only `(0,0)` is reachable.
+- Every path ends at `(2,2)`, whose elevation is 7, so the answer is at least 7. At `t = 7` the path `(0,0) → (0,1) → (0,2) → (1,2) → (2,2)` (elevations 0, 1, 2, 4, 7) is open, so the answer is **7**.
+- In general the answer is the maximum elevation on the path we choose, minimised over all possible paths. That is a **minimax path problem**.
 
 **Key Insight**: We need the path from `(0,0)` to `(n-1,n-1)` that minimizes the maximum elevation along the path. This is a **minimax path problem**, solvable with a min-heap BFS (essentially Dijkstra where "distance" = max elevation so far).
 
@@ -288,19 +303,22 @@ class Solution {
 
 **Problem**: Given a 2D elevation map, compute the volume of water it can trap after raining. Water can flow 4-directionally.
 
-```
-Elevation map:               Water trapped:
-```
-
-| ┌───┬───┬───┬───┬───┐      The border forms a "wall". | 1 | 4 | 3 | 1 | 3 | Water fills up to the minimum |
+| | c0 | c1 | c2 | c3 | c4 | c5 |
 | --- | --- | --- | --- | --- | --- | --- |
-| ├───┼───┼───┼───┼───┤      border height, then overflows. | 3<br>2 | 2<br>3 | 1<br>3 | 3<br>2 | 2<br>3 | Total water = 4<br>Cell (1,1)h=2: water to level 3, traps 1 |
-| └───┴───┴───┴───┴───┘      Cell (1,2)h=1: water to level 3, traps 2 |  |  |  |  |  |  |
+| **r0** | 1 | 4 | 3 | 1 | 3 | 2 |
+| **r1** | 3 | 2 | 1 | 3 | 2 | 4 |
+| **r2** | 2 | 3 | 3 | 2 | 3 | 1 |
 
-```
-                             Cell (2,1)h=3: no trapping (already at 3)
-                             ...
-```
+The border forms a wall. Water in an interior cell rises to the lowest point of the wall around it, then overflows. The interior cells are:
+
+| Cell | Height | Water level | Water trapped |
+| --- | --- | --- | --- |
+| `(1,1)` | 2 | 3 | 1 |
+| `(1,2)` | 1 | 3 | 2 |
+| `(1,3)` | 3 | 3 | 0 |
+| `(1,4)` | 2 | 3 | 1 |
+
+Total water = 1 + 2 + 0 + 1 = **4**.
 
 **Key Insight**: This is the 2D generalization of "Trapping Rain Water I" (which uses two-pointer on 1D). The key principle: **water at any cell is determined by the minimum height of the "wall" surrounding it.** We process from the borders inward using a min-heap, always processing the lowest wall first. This ensures we never overestimate water level.
 

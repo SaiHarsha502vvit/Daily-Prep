@@ -11,28 +11,16 @@
 
 **LeetCode 232** 🔗 https://leetcode.com/problems/implement-queue-using-stacks/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  IMPLEMENT QUEUE USING STACKS                                  │
-├────────────────────────────────────────────────────────────────┤
-│  Use 2 stacks: inputStack and outputStack                      │
-│                                                                │
-│  push(1), push(2), push(3):                                    │
-│  ┌──────────────┐    ┌──────────────┐                          │
-│  │ inputStack   │    │ outputStack  │                          │
-│  │    [1,2,3]   │    │    []        │                          │
-│  └──────────────┘    └──────────────┘                          │
-│                                                                │
-│  pop() → need front (1):                                       │
-│  Transfer input→output:                                        │
-│  ┌──────────────┐    ┌──────────────┐                          │
-│  │ inputStack   │    │ outputStack  │                          │
-│  │    []        │    │   [3,2,1]    │ ← pop returns 1          │
-│  └──────────────┘    └──────────────┘                          │
-│                                                                │
-│  Now outputStack has correct order for FIFO                    │
-└────────────────────────────────────────────────────────────────┘
-```
+**Implement a queue using stacks**
+
+Use two stacks, `inputStack` and `outputStack`.
+
+| Operation | `inputStack` | `outputStack` | Note |
+| --- | --- | --- | --- |
+| `push(1)`, `push(2)`, `push(3)` | `[1, 2, 3]` | `[]` | New elements go to `inputStack` |
+| `pop()`: we need the front (1), so transfer input → output | `[]` | `[3, 2, 1]` | `pop` returns 1 from the top of `outputStack` |
+
+Now `outputStack` has the elements in the correct order for FIFO.
 
 **Solution:**
 
@@ -131,31 +119,26 @@ class MyStack {
 
 **LeetCode 239** 🔗 https://leetcode.com/problems/sliding-window-maximum/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SLIDING WINDOW MAXIMUM - Max in each window of size k         │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3                      │
-│                                                                │
-│  Use Monotonic Decreasing Deque (store indices):               │
-│  ┌────────────────────────────────────────────────────────────┐│
-│  │ Window      │ Deque (indices)  │ Max │                     ││
-│  ├─────────────┼──────────────────┼─────┤                     ││
-│  │ [1,3,-1]    │ [1,2]→vals[3,-1] │  3  │                     ││
-│  │ [3,-1,-3]   │ [1,2,3]→[3,-1,-3]│  3  │                     ││
-│  │ [-1,-3,5]   │ [4]→[5]          │  5  │                     ││
-│  │ [-3,5,3]    │ [4,5]→[5,3]      │  5  │                     ││
-│  │ [5,3,6]     │ [6]→[6]          │  6  │                     ││
-│  │ [3,6,7]     │ [7]→[7]          │  7  │                     ││
-│  └────────────────────────────────────────────────────────────┘│
-│                                                                │
-│  Output: [3, 3, 5, 5, 6, 7]                                    │
-│                                                                │
-│  Why Monotonic Decreasing?                                     │
-│  - Front always has maximum                                    │
-│  - Smaller elements behind larger can never be max             │
-└────────────────────────────────────────────────────────────────┘
-```
+### SLIDING WINDOW MAXIMUM - Max in each window of size k
+
+nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3
+
+Use Monotonic Decreasing Deque (store indices):
+
+| Window | Deque (indices) | Max |  |
+| --- | --- | --- | --- |
+| [1,3,-1] | [1,2]→vals[3,-1] | 3 |  |
+| [3,-1,-3] | [1,2,3]→[3,-1,-3] | 3 |  |
+| [-1,-3,5] | [4]→[5] | 5 |  |
+| [-3,5,3] | [4,5]→[5,3] | 5 |  |
+| [5,3,6] | [6]→[6] | 6 |  |
+| [3,6,7] | [7]→[7] | 7 |  |
+
+Output: [3, 3, 5, 5, 6, 7]
+
+Why Monotonic Decreasing?
+- Front always has maximum
+- Smaller elements behind larger can never be max
 
 **Solution:**
 
@@ -251,43 +234,23 @@ public int shortestSubarray(int[] nums, int k) {
 
 ## Problem 94: 🔒 Design Circular Queue (LeetCode 622)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  DESIGN CIRCULAR QUEUE                                         │
-├────────────────────────────────────────────────────────────────┤
-│  Design your implementation of the circular queue.             │
-│                                                                │
-│  Circular Queue visualization (capacity=5):                    │
-│       ┌───┬───┬───┬───┬───┐                                    │
-│       │ 1 │ 2 │ 3 │   │   │                                    │
-│       └───┴───┴───┴───┴───┘                                    │
-│         ↑           ↑                                          │
-│       front       rear                                         │
-│                                                                │
-│  After enQueue(4), enQueue(5):                                 │
-│       ┌───┬───┬───┬───┬───┐                                    │
-│       │ 1 │ 2 │ 3 │ 4 │ 5 │  (Full!)                           │
-│       └───┴───┴───┴───┴───┘                                    │
-│         ↑               ↑                                      │
-│       front           rear                                     │
-│                                                                │
-│  deQueue() twice, then enQueue(6):                             │
-│       ┌───┬───┬───┬───┬───┐                                    │
-│       │ 6 │   │ 3 │ 4 │ 5 │  (Wraps around!)                   │
-│       └───┴───┴───┴───┴───┘                                    │
-│         ↑   ↑                                                  │
-│       rear front                                               │
-│                                                                │
-│  Operations:                                                   │
-│  - MyCircularQueue(k): Initialize with size k                  │
-│  - enQueue(value): Insert element, return success              │
-│  - deQueue(): Delete front element, return success             │
-│  - Front(): Get front item                                     │
-│  - Rear(): Get rear item                                       │
-│  - isEmpty(): Check if empty                                   │
-│  - isFull(): Check if full                                     │
-└────────────────────────────────────────────────────────────────┘
-```
+**Design circular queue.** Design your own implementation of a circular queue (capacity 5).
+
+| Step | Slot 0 | Slot 1 | Slot 2 | Slot 3 | Slot 4 | `front` | `rear` | Note |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Start | 1 | 2 | 3 | | | 0 | 2 | |
+| After `enQueue(4)`, `enQueue(5)` | 1 | 2 | 3 | 4 | 5 | 0 | 4 | Full |
+| After `deQueue()` twice, then `enQueue(6)` | 6 | | 3 | 4 | 5 | 2 | 0 | `rear` wraps around |
+
+Operations:
+
+- `MyCircularQueue(k)`: initialise with size `k`
+- `enQueue(value)`: insert an element, return success
+- `deQueue()`: delete the front element, return success
+- `Front()`: get the front item
+- `Rear()`: get the rear item
+- `isEmpty()`: check if empty
+- `isFull()`: check if full
 
 **Solution:**
 

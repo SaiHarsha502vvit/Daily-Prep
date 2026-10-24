@@ -284,13 +284,16 @@ These problems are less commonly seen in "Top 100" lists but teach deep graph in
 ### When It Breaks -- Graph Patterns
 
 #### 1. Flood Fill — Modifying Grid During BFS Causes Re-Visit
+
 **What breaks**: Flood fill that marks cells as visited by changing their value (e.g., `grid[r][c] = 2`) but then checks `grid[r][c] != original` — if the original value was the same as the "visited" marker, all cells are skipped.
 **Fix**: Use a separate `boolean[][] visited` matrix. Don't encode visited state into the grid value unless you're certain the marker value can't appear in valid input.
 
 #### 2. Multi-Source BFS — Wrong Initial Distance
+
 **What breaks**: Seeding all source nodes with `dist = 1` instead of `dist = 0`. All computed distances are off by 1. The source nodes themselves should have distance 0 to themselves.
 
 #### 3. Topological Sort — Processing in Wrong Order Breaks Dependency
+
 **What breaks**: In topological sort for course scheduling, adding a course to the result before removing its edges. Subsequent in-degree decrements use a stale queue, possibly re-adding already-added courses or missing others.
 **Fix**: Kahn's algorithm: poll from queue → add to result → decrement in-degrees of neighbors → enqueue any new in-degree-0 nodes. The order is strict.
 

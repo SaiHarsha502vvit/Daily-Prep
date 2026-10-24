@@ -279,31 +279,29 @@ int fib(int n) {
 
 "What's a stable sort and when does it matter?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  Stable: Equal elements keep their ORIGINAL order.               ║
-║  Unstable: Equal elements can be rearranged.                     ║
-║                                                                  ║
-║  THE SPREADSHEET ANALOGY:                                        ║
-║                                                                  ║
-║  You have records sorted by NAME:                                ║
-║  [Alice-A, Alice-B, Bob-A, Charlie-A]                            ║
-║                                                                  ║
-║  Now sort by DEPARTMENT (all Alice entries same dept):           ║
-║  Stable:   [Alice-A, Alice-B, Bob-A, Charlie-A]                  ║
-║             ↑ Original name order preserved within department    ║
-║  Unstable: [Alice-B, Alice-A, Bob-A, Charlie-A]                  ║
-║             ↑ Alice's might swap — previous sort lost!           ║
-║                                                                  ║
-║  WHEN IT MATTERS:                                                ║
-║  • Multi-column sorting (sort by city, then by name)             ║
-║  • Database ORDER BY with ties                                   ║
-║  • UI tables where user sorts by multiple columns                ║
-║  • Any time relative order of "equal" elements has meaning       ║
-║                                                                  ║
-║  STABLE: Merge sort, Insertion sort, TimSort, Bubble sort        ║
-║  UNSTABLE: Quicksort, Heap sort, Selection sort                  ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+Stable: Equal elements keep their ORIGINAL order.
+Unstable: Equal elements can be rearranged.
+
+THE SPREADSHEET ANALOGY:
+
+You have records sorted by NAME:
+[Alice-A, Alice-B, Bob-A, Charlie-A]
+
+Now sort by DEPARTMENT (all Alice entries same dept):
+Stable:   [Alice-A, Alice-B, Bob-A, Charlie-A]
+           ↑ Original name order preserved within department
+Unstable: [Alice-B, Alice-A, Bob-A, Charlie-A]
+           ↑ Alice's might swap — previous sort lost!
+
+WHEN IT MATTERS:
+• Multi-column sorting (sort by city, then by name)
+• Database ORDER BY with ties
+• UI tables where user sorts by multiple columns
+• Any time relative order of "equal" elements has meaning
+
+STABLE: Merge sort, Insertion sort, TimSort, Bubble sort
+UNSTABLE: Quicksort, Heap sort, Selection sort
 ```
 
 ---

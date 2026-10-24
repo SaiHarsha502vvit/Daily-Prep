@@ -10,27 +10,14 @@ Knowing that a HashMap has O(1) average lookup tells you nothing about why Redis
 
 ## The Right Tool for the Workload Mental Model
 
-```
-Workload Type          → Production DS Invariant to Bet On
-───────────────────────┼────────────────────────────────────────────────────
-Write-heavy (>50%      → LSM-Tree (sequential flush, no random page splits)
-  inserts/updates)     → Systems: Cassandra, ScyllaDB, RocksDB, DynamoDB
-                       │
-Read-heavy (>80%       → B-Tree (stable O(log n), no read amplification)
-  selects, point queries)→ Systems: PostgreSQL, MySQL InnoDB, Oracle
-                       │
-O(1) key lookup +      → Hash Table (dict/map, constant-time slot access)
-  ephemeral data       → Systems: Redis, Memcached, in-memory caches
-                       │
-Ordered traversal,     → Skip List (sorted by score, range query support)
-  range queries        → Systems: Redis Sorted Sets, LevelDB memtable
-                       │
-Full-text or vector    → Inverted Index / B-Tree variant (GIN, GIST, HNSW)
-  search               → Systems: Elasticsearch, PostgreSQL FTS, Pinecone
-                       │
-Time-series append,    → Append-only log + partition ring (Kafka, audit logs)
-  replay support       → Systems: Kafka, AWS Kinesis, Apache Pulsar
-```
+| Workload type | Production DS to bet on | Example systems |
+| --- | --- | --- |
+| Write-heavy (lots of inserts and updates) | LSM-tree: sequential flush, no random page splits | Cassandra, ScyllaDB, RocksDB |
+| Read-heavy (selects, point queries) | B-tree: stable O(log n), no read amplification | PostgreSQL, MySQL InnoDB, Oracle |
+| O(1) key lookup, ephemeral data | Hash table: constant-time slot access | Redis, Memcached, in-memory caches |
+| Ordered traversal, range queries | Skip list: sorted by score, supports range queries | Redis sorted sets, LevelDB memtable |
+| Full-text or vector search | Inverted index / B-tree variant (GIN, GiST, HNSW) | Elasticsearch, PostgreSQL full-text search, Pinecone |
+| Time-series append, replay support | Append-only log plus partition ring | Kafka, AWS Kinesis, Apache Pulsar |
 
 ## Key Production Invariants
 

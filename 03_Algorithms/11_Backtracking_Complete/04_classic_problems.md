@@ -644,14 +644,17 @@ All three share: CHOOSE → EXPLORE → UNCHOOSE
 ## When Backtracking Breaks
 
 ### 1. Forgetting to Unchoose — State Leaks Between Branches
+
 **What breaks**: Adding an element to `currentPath` and recursing, but forgetting `currentPath.remove(currentPath.size()-1)` before the next branch. Result: subsequent branches inherit polluted state → wrong subsets/permutations.
 **Fix**: The choose/recurse/unchoose triple is atomic. Write all three before testing. Alternatively, pass a new list copy to each recursive call (cleaner but uses O(n) extra space per level).
 
 ### 2. Generating Duplicates from Duplicate Input
+
 **What breaks**: Subsets of `[1,1,2]` without deduplication produces `{1,2}` twice (once for each `1`). The backtracking tree visits both `1`s identically.
 **Fix**: Sort the input. Skip `nums[i]` if `i > start && nums[i] == nums[i-1]` within the same recursion level.
 
 ### 3. Pruning Too Late — Exponential Work Before Pruning
+
 **What breaks**: Generating a complete candidate and then checking validity at the leaf. For N-Queens, this means generating all N! arrangements and filtering — O(N! × N) instead of O(N!/(N/3)!) with diagonal pruning.
 **Fix**: Check constraints incrementally at each step (is this column/diagonal safe?) and prune the whole branch early.
 

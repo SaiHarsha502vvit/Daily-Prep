@@ -63,14 +63,13 @@ the SAME problem until reaching a simple case it can solve directly.
 - Parameters (separate copy)
 - Return address (where to go back)
 
-**factorial(1) │ ← TOP (currently executing) — n=1, return→2**
+Example: the call stack while `factorial(3)` is computing, top of the stack first.
 
-```text
-factorial(2) │ (waiting for result from above)
-n=2, return→5
-factorial(3) │ (waiting)
-n=3, return→10
-```
+| Frame (top → bottom) | State | Returns to |
+| --- | --- | --- |
+| `factorial(1)` | **Currently executing** (`n = 1`) | `factorial(2)` |
+| `factorial(2)` | Waiting for the result from the frame above (`n = 2`) | `factorial(3)` |
+| `factorial(3)` | Waiting (`n = 3`) | the original caller |
 
 Each frame WAITS until the frame above returns, then continues.
 
@@ -192,6 +191,7 @@ public int recursiveFunction(parameters) {
     return combine(subResult, currentData);
 }
 ```
+
 ### Classic Example: Factorial
 
 ```java

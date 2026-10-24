@@ -9,24 +9,23 @@
 **LeetCode 209** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/minimum-size-subarray-sum/](https://leetcode.com/problems/minimum-size-subarray-sum/)
 
-```
-MINIMUM SIZE SUBARRAY SUM
-──────────────────────────────────────────────────
+**Minimum size subarray sum**
 
-Find minimal length of contiguous subarray with sum >= target.
+Find the minimal length of a contiguous subarray with sum >= target.
 
-Input: target = 7, nums = [2,3,1,2,4,3]
-Output: 2
-Explanation: [4,3] has sum=7 with length 2
+- **Input:** `target = 7`, `nums = [2,3,1,2,4,3]`
+- **Output:** `2`
+- **Explanation:** `[4,3]` has sum 7 with length 2.
 
-Visual:
-[2,3,1,2,4,3]
- └────────┘ sum=12, len=5
-   └──────┘ sum=10, len=4
-     └────┘ sum=7, len=3
-         └─┘ sum=7, len=2 ← MIN
+The window grows on the right and shrinks from the left while its sum stays >= 7:
 
-```
+| Step | Window | Sum | Length | Note |
+| --- | --- | --- | --- | --- |
+| `right = 3` | `[2,3,1,2]` | 8 | 4 | First valid window; shrink |
+| `right = 4` | `[3,1,2,4]` | 10 | 4 | Valid; shrink |
+| after shrinking | `[1,2,4]` | 7 | 3 | Still valid; shrink more |
+| `right = 5` | `[2,4,3]` | 9 | 3 | Valid; shrink |
+| after shrinking | `[4,3]` | 7 | 2 | **Minimum** |
 
 ```java
 public int minSubArrayLen(int target, int[] nums) {
@@ -201,25 +200,13 @@ public int characterReplacement(String s, int k) {
 **LeetCode 1004** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/max-consecutive-ones-iii/](https://leetcode.com/problems/max-consecutive-ones-iii/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MAX CONSECUTIVE ONES III                                                 ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Binary array. Flip at most k 0's. Return max consecutive 1's.            ║
-║                                                                           ║
-║  Input: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2                             ║
-║  Output: 6                                                                ║
-║  Explanation: [1,1,1,0,0,1,1,1,1,1,1]                                     ║
-║                        ↑ ↑ flipped                                        ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  [1,1,1,0,0,0,1,1,1,1,0]                                                  ║
-║           └─────────────┘ window with 2 zeros                             ║
-║           flip 2 zeros = 6 ones                                           ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
+**MAX CONSECUTIVE ONES III**
+
+Given a binary array, flip at most `k` zeros and return the maximum number of consecutive 1s.
+
+- **Input:** `nums = [1,1,1,0,0,0,1,1,1,1,0]`, `k = 2`
+- **Output:** `6`
+- **Explanation:** the window `nums[5..10] = [0,1,1,1,1,0]` contains exactly 2 zeros. Flipping both gives six consecutive 1s.
 
 ```java
 public int longestOnes(int[] nums, int k) {

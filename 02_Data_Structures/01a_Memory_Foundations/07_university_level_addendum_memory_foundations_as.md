@@ -226,6 +226,7 @@ This is why `Integer[]` is *never* used in performance-critical code; `int[]` is
 > These are the memory-layer failures that are hardest to diagnose — they show up as performance regressions, GC pauses, or Heisenbugs, not as exceptions.
 
 ### 1. False Sharing — Cache-Line Contention in Multithreaded Code
+
 **What breaks**: Two threads write to different fields that live in the same 64-byte cache line. Every write by Thread A invalidates Thread B's cached copy — forcing a cross-core memory bus round-trip (~200–300ns) instead of an L1 hit (~1ns).
 ```java
 // BUG — counter0 and counter1 share one cache line:
@@ -239,21 +240,25 @@ class Counters { long counter0; long counter1; }
 **Constraint warning**: `@Contended` is an internal JVM annotation not part of the public API. In production, prefer `LongAdder`/`LongAccumulator` which handle padding internally.
 
 ### 2. Escape Analysis Defeat → Heap Allocation Where Stack Was Expected
+
 **What breaks**: JVM escape analysis can stack-allocate short-lived objects (no GC overhead), but only if the object stays local. Passing it to a non-inlined method, storing in an array, or returning it forces heap allocation.
 **Symptom**: GC pause frequency increases with an allocation-heavy inner loop. `-XX:+PrintEscapeAnalysis` reveals heap-allocated objects that look local.
 **Fix**: Keep hot-path objects fully within the method scope. For repeated small allocations in tight loops, use primitive arrays instead of object arrays.
 
 ### 3. Off-Heap Memory Leak with `DirectByteBuffer`
+
 **What breaks**: `ByteBuffer.allocateDirect(n)` allocates outside the Java heap. It is freed by a finalizer — but only when the `ByteBuffer` object itself is GC'd. A long-lived reference (e.g., in a static field or cache) prevents the off-heap memory from ever being released.
 **Symptom**: `OutOfMemoryError: Direct buffer memory` while heap usage looks normal.
 **Fix**: Explicitly call `((sun.nio.ch.DirectBuffer) buf).cleaner().clean()`, or use Java 9+ `Cleaner` API. Always close `FileChannel` and `SocketChannel` which hold `DirectByteBuffer`s internally.
 
 ### 4. Autoboxing in Hot Loops → GC Pressure
+
 **What breaks**: Using `Integer`, `Long`, `Double` in arithmetic-heavy inner loops. Every `Integer x = a + b` allocates a new object on the heap. At 10M iterations, that's 10M object allocations → GC pause.
 **Benchmark**: Summing 10M integers via `Integer` ≈ 200ms; via `int` ≈ 5ms — 40× difference from boxing alone.
 **Fix**: Use primitive arrays (`int[]`, `long[]`), `IntStream`, or specialized collections (`IntArrayList` in Eclipse Collections). Never use `Integer[]` in performance-critical numeric code.
 
 ### 5. Stack Depth Exhaustion
+
 **What breaks**: Default JVM thread stack = 512KB–1MB. At ~1KB per frame, that allows ~500–1000 recursive frames. Deep tree traversal, parsing, or divide-and-conquer without tail-call elimination exceeds this.
 **Symptom**: `StackOverflowError` with no useful stack trace (the trace itself overflows).
 **Fix**: Convert to iterative with an explicit `ArrayDeque` stack. Or increase per-thread stack: `-Xss2m` (but this applies to all threads — costs 2MB × thread count in memory).

@@ -142,14 +142,17 @@ Know how to build LPS and explain the skip logic.
 ## When It Breaks -- String Algorithms
 
 ### 1. KMP — Wrong Failure Function Computation
+
 **What breaks**: Computing `fail[]` (partial match table) with off-by-one: starting at `fail[0] = -1` vs `fail[0] = 0` differs by convention. Code from two different KMP implementations can have inconsistent base cases, causing wrong shifts.
 **Fix**: Commit to one convention. Common: `fail[0] = 0` where `fail[i]` = length of longest proper prefix of `pat[0..i]` that is also a suffix. Verify by hand on `"ABACABA"`.
 
 ### 2. Rolling Hash — Collision Giving Wrong Results
+
 **What breaks**: Rabin-Karp compares hash values first, then the actual string only on match. If the hash modulus is small, many collisions occur. Rabin-Karp with `mod = 10⁹+7` has collision probability ≈ 1/10⁹ per comparison — negligible. Using `mod = 1000` causes ~1/1000 false positives and wrong match results.
 **Fix**: Use a large prime (10⁹+7 or 10¹⁸+9). For competitive programming, use double hashing (two different primes) to reduce collision probability to 1/(mod1 × mod2).
 
 ### 3. Trie — Not Marking End of Word
+
 **What breaks**: Inserting `"app"` and `"apple"`. Searching for `"app"` without an `isEnd` flag returns `false` (because the node for 'p' exists but isn't marked as a word ending) — the trie finds the prefix but can't distinguish prefix from complete word.
 **Fix**: Always set `node.isEnd = true` after the last character of each inserted word.
 

@@ -12,22 +12,18 @@
 
 **LeetCode 55** 🔗 https://leetcode.com/problems/jump-game/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  JUMP GAME - Can reach last index?                             │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [2, 3, 1, 1, 4]                                        │
-│                                                                │
-│  Index:  0   1   2   3   4                                     │
-│  Value:  2   3   1   1   4                                     │
-│          └───┴───┘               From 0, can jump to 1 or 2    │
-│              └───┴───┴───┘       From 1, can reach 4!          │
-│                                                                │
-│  Output: true                                                  │
-│                                                                │
-│  Greedy: Track max reachable index                             │
-└────────────────────────────────────────────────────────────────┘
-```
+**Jump Game: can you reach the last index?**
+
+`nums = [2, 3, 1, 1, 4]`.
+
+| Index | 0 | 1 | 2 | 3 | 4 |
+| --- | --- | --- | --- | --- | --- |
+| Value | 2 | 3 | 1 | 1 | 4 |
+
+- From index 0 you can jump to index 1 or 2.
+- From index 1 you can reach index 4 (the last index).
+
+Output: **true**. Greedy idea: track the maximum reachable index.
 
 **Solution:**
 
@@ -196,7 +192,8 @@ public int candy(int[] ratings) {
 **Greedy insight:** If you start at station `i` and run out of gas at station `j`, you CANNOT start at any station between `i` and `j`. Why? If starting at `i` fails at `j`, starting at any `k` between `i` and `j` means you SKIP the gas from stations `i` to `k-1`. Since those stations weren't enough to get you to `j+1` even WITH their gas contribution, having LESS gas from `k` onward certainly fails. **The algorithm:** Scan once. Track `total = sum(gas[i] - cost[i])` and `tank = current tank running balance`. If `tank < 0`, reset: set `start = i+1`, reset `tank = 0`. After full scan: if `total >= 0`, `start` is the answer (guaranteed unique). If `total < 0`, no solution. **Who finds the start:** The O(n) single-pass scan, resetting whenever we'd go negative. The key guarantee: if a solution exists, the last reset point is always the valid start. **This is greedy** because we make a local decision ("this station can't be the start") that permanently eliminates it without backtracking.
 
 </details>
-<details><summary>Answer</summary>
+
+<details><summary>More detail</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
 

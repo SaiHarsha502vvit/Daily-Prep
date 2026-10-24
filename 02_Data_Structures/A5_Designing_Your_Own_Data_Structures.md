@@ -712,14 +712,17 @@ You met the contract with a structure of **exactly n cells** (no extra space, un
 A structure you designed yourself has no community of users to find its bugs. You must be that community. Run all five stages.
 
 ### Stage 1: Invariant audit
+
 Write `checkInvariants()` (§4.2) and call it after **every** operation in tests. Most design bugs are invariant violations, and they surface immediately under this discipline while being nearly invisible without it.
 
 ### Stage 2: Correctness proof by induction
+
 - **Base case:** the empty structure satisfies all invariants.
 - **Inductive step:** for each operation, assume invariants hold before; show they hold after.
 - An operation you cannot argue this for is an operation you do not understand yet.
 
 ### Stage 3: Complexity proof
+
 Choose the appropriate method from [A2](A2_DS_Complexity_FirstPrinciples.md):
 - **Aggregate:** bound the total cost of n operations, divide by n.
 - **Accounting:** assign each operation a charge; show credits never go negative.
@@ -728,6 +731,7 @@ Choose the appropriate method from [A2](A2_DS_Complexity_FirstPrinciples.md):
 State which case you proved — worst, average, or amortized — and, if average, **state the distributional assumption explicitly**. An unstated assumption is where "fast in benchmarks, slow in production" is born.
 
 ### Stage 4: Adversarial attack
+
 Deliberately construct the worst input for *your specific design*:
 
 | Design element | Adversarial input |
@@ -741,6 +745,7 @@ Deliberately construct the worst input for *your specific design*:
 If you cannot construct one, either your structure is genuinely robust or you have not attacked hard enough. Assume the latter first.
 
 ### Stage 5: Differential (model-based) testing
+
 Implement the same contract with a deliberately stupid, obviously-correct reference (e.g. a plain array with O(n) scans). Then run millions of random operation sequences against both and compare every result.
 
 ```java

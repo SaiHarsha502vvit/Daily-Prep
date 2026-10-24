@@ -8,25 +8,20 @@
 
 **Difficulty:** Easy | **Category:** Sliding Window
 
-```
-MAXIMUM SUM SUBARRAY OF SIZE K
-──────────────────────────────────────────────────
+**Maximum sum subarray of size K**
 
-Given array and integer k, find maximum sum of any contiguous subarray
-of size k.
+Given an array and an integer `k`, find the maximum sum of any contiguous subarray of size `k`.
 
-Input: arr = [2, 1, 5, 1, 3, 2], k = 3
-Output: 9
-Explanation: Subarray [5, 1, 3] has maximum sum = 9
+- **Input:** `arr = [2, 1, 5, 1, 3, 2]`, `k = 3`
+- **Output:** `9`
+- **Explanation:** the subarray `[5, 1, 3]` has the maximum sum, 9.
 
-Visual:
-[2, 1, 5, 1, 3, 2]
- └──┘  sum=8
-    └──┘  sum=7
-       └──┘  sum=9 ← MAX
-          └──┘  sum=6
-
-```
+| Window | Elements | Sum |
+| --- | --- | --- |
+| `arr[0..2]` | `[2, 1, 5]` | 8 |
+| `arr[1..3]` | `[1, 5, 1]` | 7 |
+| `arr[2..4]` | `[5, 1, 3]` | **9** ← max |
+| `arr[3..5]` | `[1, 3, 2]` | 6 |
 
 ```java
 public int maxSumSubarray(int[] arr, int k) {

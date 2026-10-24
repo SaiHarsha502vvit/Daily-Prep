@@ -41,11 +41,7 @@ void dfs(int v, int parent) {
 // Answer: Math.max(dp[root][0], dp[root][1])
 ```
 
-**TREE DIAMETER:**
-
-```text
-──────────────
-```
+**Tree diameter**
 
 ```java
 // Longest path in tree
@@ -73,10 +69,7 @@ int dfs(int v, int parent) {
 }
 ```
 
-```text
-REROOTING TECHNIQUE (for all-roots DP):
-─────────────────────────────────────────
-```
+**REROOTING TECHNIQUE (for all-roots DP)**
 
 ```java
 // Compute answer for all possible roots in O(n)
@@ -127,44 +120,38 @@ void dfs2(int v, int parent) {
 }
 ```
 
-```text
-```
 
 ## ⚡ DP Optimizations — Convex Hull Trick
 
 **CONVEX HULL TRICK (CHT)**
 
-```text
-WHEN TO USE: Recurrence of form dp[i] = min(dp[j] + b[j] _ a[i]) for j < i
-Reduces O(n²) to O(n) or O(n log n)
+> [!TIP]
+> **When to use:** a recurrence of the form `dp[i] = min over j < i of (dp[j] + b[j] * a[i])`. The convex hull trick reduces O(n²) to O(n) or O(n log n).
 
-CONDITIONS:
-• Slopes b[j] are monotonic
-• Query values a[i] are monotonic
-• Want minimum (or can convert to minimum)
+**Conditions**
 
-INTUITION:
-───────────
-Each j gives a line: y = b[j] _ x + dp[j]
-Query for x = a[i]: find line with minimum y
-Maintain lower convex hull of lines
+- The slopes `b[j]` are monotonic.
+- The query values `a[i]` are monotonic.
+- You want the minimum (or can convert to a minimum).
 
-VISUALIZATION:
-y │
-│ ╱ line 3 (b=4)
-│ ╱
-│╱ ╱ line 2 (b=2)
-│ ╱
-│ ╱ ╱ line 1 (b=1)
-│ ╱ ╱
-│ ╱ ╱
-│╱──╱───────────────── x
-╱╲
-╱ ╲ Convex hull (only these lines can be optimal)
+**Intuition**
 
-IMPLEMENTATION (monotonic slopes and queries):
-─────────────────────────────────────────────
+- Each `j` gives a line `y = b[j] * x + dp[j]`.
+- A query at `x = a[i]` asks for the line with the minimum `y`.
+- Maintain the **lower convex hull** of the lines: a line that is never the minimum for any `x` can be discarded.
+
+```mermaid
+flowchart LR
+  A["Add line j<br/>y = b[j]·x + dp[j]"] --> B{"Is the previous line<br/>now useless?"}
+  B -->|"Yes"| C["Pop it from the hull"]
+  C --> B
+  B -->|"No"| D["Push line j"]
+  D --> E["Query x = a[i]:<br/>advance the front while the next line is smaller"]
 ```
+
+**How to read this diagram.** Lines are added in slope order. Any line made redundant by the new one is popped (this keeps only the lower hull). A query then moves along the hull to the best line, and because queries are monotonic the front pointer never moves back.
+
+**Implementation (monotonic slopes and queries)**
 
 ```java
 class ConvexHullTrick {
@@ -259,10 +246,7 @@ void compute(int level, int lo, int hi, int optLo, int optHi) {
 // Call: compute(i, 1, n, 0, n) for each level i
 ```
 
-```text
-EXAMPLE: Partition array into k subarrays, minimize max sum
-──────────────────────────────────────────────────────────
-```
+**EXAMPLE: Partition array into k subarrays, minimize max sum**
 
 ```java
 long solve(int[] arr, int k) {
@@ -286,79 +270,58 @@ long cost(int l, int r) {
 }
 ```
 
-```text
-```
 
 ## 📌 Broken Profile DP (plug DP)
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ BROKEN PROFILE DP - GRID TILING                                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ WHEN TO USE: Tiling problems on small grids (width ≤ 20)                        │
-│ • Count ways to tile grid with dominoes                                         │
-│ • Place non-attacking pieces                                                    │
-│ • Grid coloring with adjacent constraints                                       │
-│                                                                                 │
-│                                                                                 │
-│ CONCEPT: Track "profile" (pattern of filled cells at boundary)                  │
-│ ─────────────────────────────────────────────────────────────                   │
-│                                                                                 │
-│ Grid (3×4): Profile after processing cell (1,2):                                │
-│ ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐                                             │
-│ │ ✓ │ ✓ │ ✓ │ │ │ ✓ │ ✓ │ ✓ │ │                                                 │
-│ ├───┼───┼───┼───┤ ├───┼───╔═══╗───┤                                             │
-│ │ ✓ │ ✓ │▐▌ │ │ ← here │ ✓ │ ✓ ║ ? ║ │ ← profile = mask of '?'                  │
-│ ├───┼───┼───┼───┤ ├───┼───╚═══╝───┤ cells just below boundary                   │
-│ │ │ │ │ │ │ │ │ │ │                                                             │
-│ └───┴───┴───┴───┘ └───┴───┴───┴───┘                                             │
-│                                                                                 │
-│ Profile = bitmask of m bits (grid width)                                        │
-│ Bit i set = cell above current in column i is filled                            │
-│                                                                                 │
-│                                                                                 │
-│ DOMINO TILING (count ways to tile n×m grid with 1×2 dominoes):                  │
-│ ──────────────────────────────────────────────────────────────                  │
-```
+### Broken profile DP: grid tiling
+
+> [!TIP]
+> **When to use:** tiling problems on small grids (width ≤ 20), such as counting ways to tile a grid with dominoes, placing non-attacking pieces, or grid colouring with adjacent constraints.
+
+**Concept.** Track the *profile*: the pattern of already-filled cells along the boundary between the cells that are processed and the cells that are not.
+
+Take a grid with `n` rows and `m` columns, and process it cell by cell, column by column, top to bottom. At any moment the profile is a bitmask of `n` bits:
+
+- **Bit `r` set:** the cell in row `r` at the current frontier is already filled (by a domino that was placed earlier).
+- **Bit `r` clear:** that cell is still empty.
+
+**Transitions when processing cell `(row, col)`**
+
+| State of the cell | Choice | New mask |
+| --- | --- | --- |
+| Already filled (bit set) | Nothing to place; clear the bit and move on | `mask ^ bit` |
+| Empty | Place a **horizontal** domino (fills this cell and the one to the right; needs `col + 1 < m`) | `mask \| bit` |
+| Empty | Place a **vertical** domino (fills this cell and the one below; needs the cell below to be empty) | `mask \| (bit << 1)` |
+
+**Domino tiling:** count the ways to tile an `n × m` grid with `1 × 2` dominoes.
 
 ```java
-// Count ways to tile n×m grid with dominoes
+// Count ways to tile an n × m grid with 1 × 2 dominoes
 long dominoTiling(int n, int m) {
-    if (n > m) { int t = n; n = m; m = t; }  // Ensure m >= n for efficiency
+    if (n > m) { int t = n; n = m; m = t; }  // Keep the mask narrow: n <= m
 
     long[] dp = new long[1 << n];
-    dp[(1 << n) - 1] = 1;  // All filled = valid starting state
+    dp[0] = 1;  // Nothing pre-filled before the first cell
 
     for (int col = 0; col < m; col++) {
         for (int row = 0; row < n; row++) {
             long[] newDp = new long[1 << n];
+            int bit = 1 << row;
 
             for (int mask = 0; mask < (1 << n); mask++) {
                 if (dp[mask] == 0) continue;
 
-                int bit = 1 << row;
-
                 if ((mask & bit) != 0) {
-                    // Cell above is filled, current must get filled from left
-                    // Or we can place vertical domino up (cell above filled by it)
-                    // Actually, if bit set, it means above cell "extends" here
-                    // So we set this cell's bit to 0 (used the extension)
+                    // Already filled by an earlier domino: consume the marker
                     newDp[mask ^ bit] += dp[mask];
                 } else {
-                    // Cell above not filled, we must fill current cell
-
-                    // Option 1: Horizontal domino to the right
-                    // (only if not last column)
+                    // Option 1: horizontal domino into the next column
                     if (col + 1 < m) {
-                        // This will "extend" to next column
                         newDp[mask | bit] += dp[mask];
                     }
-
-                    // Option 2: Vertical domino downward
-                    // (only if not last row, and cell below not already claimed)
+                    // Option 2: vertical domino downward (cell below must be empty)
                     if (row + 1 < n && (mask & (bit << 1)) == 0) {
-                        newDp[mask] += dp[mask];  // Fill both, no extension
+                        newDp[mask | (bit << 1)] += dp[mask];
                     }
                 }
             }
@@ -367,44 +330,35 @@ long dominoTiling(int n, int m) {
         }
     }
 
-    return dp[0];  // Final state: nothing extends beyond grid
+    return dp[0];  // Final state: nothing sticks out beyond the grid
 }
+// Checked: 2×2 → 2, 2×3 → 3, 3×4 → 11, 4×4 → 36, 8×8 → 12,988,816, 3×3 → 0
 ```
 
-```text
-Time: O(m × n × 2^n)
-Space: O(2^n)
-Practical for n ≤ 15-20
-```
+**Complexity**
+
+- Time: O(m × n × 2ⁿ)
+- Space: O(2ⁿ)
+- Practical for n ≤ 15-20
 
 ## 🎨 DP Pattern Quick Reference
 
-DP PATTERNS QUICK REFERENCE
-
-```text
-──────────────────────────────────────────────────
-```
-
-## Pattern │ Signal │ Time │ Space
-
-```text
+| Pattern | Signal | Time | Space |
+| --- | --- | --- | --- |
 | Linear DP | One sequence | O(n) | O(1) to O(n) |
 | Two-sequence DP | Compare two strings | O(nm) | O(m) with rolling |
-| Interval DP | Range [i,j] optimal | O(n³) | O(n²) |
+| Interval DP | Range `[i,j]` optimal | O(n³) | O(n²) |
 | Tree DP | Tree structure | O(n) | O(n) |
 | Bitmask DP | n ≤ 20, subsets | O(2ⁿ × n) | O(2ⁿ) |
-| Digit DP | Count in range [L,R] | O(d × s) | O(d × s) |
-| Broken Profile | Grid, width ≤ 20 | O(nm × 2ᵐ)| O(2ᵐ) |
-| D&C Optimization | Monotonic opt split | O(nm log n)| O(nm) |
-| Convex Hull Trick| Linear transition | O(n) | O(n) |
-| Knuth Optimization|Quadratic → near-linear | O(n²) | O(n²) |
+| Digit DP | Count in range `[L,R]` | O(d × s) | O(d × s) |
+| Broken profile | Grid, width ≤ 20 | O(nm × 2ᵐ) | O(2ᵐ) |
+| D&C optimization | Monotonic opt split | O(nm log n) | O(nm) |
+| Convex hull trick | Linear transition | O(n) with sorted slopes | O(n) |
+| Knuth optimization | Interval DP with a monotone split | O(n²) instead of O(n³) | O(n²) |
 
 ---
 
 _DP is not about memorizing solutions - it's about SEEING the substructure!_
-```
-
-
 ---
 
 ## PRACTICE PROBLEMS — Dynamic Programming (Progressive)

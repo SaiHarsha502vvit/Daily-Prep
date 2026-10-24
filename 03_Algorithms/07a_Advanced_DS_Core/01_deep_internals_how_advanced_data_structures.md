@@ -35,6 +35,7 @@ MEMORY LAYOUT (64-bit JVM, compressed oops):
 | 12 | 4 | children (ref) | → Object[] array |
 | 16 | 1 | isEndOfWord | true/false |
 | 17 | 7 | padding | alignment to 8 bytes |
+
 TrieNode object: 24 bytes
 PLUS the children array:
 
@@ -44,6 +45,7 @@ PLUS the children array:
 | 8 | 4 | Class Pointer |
 | 12 | 4 | Array length = 26 |
 | 16 | 104 | 26 × 4 bytes (references to child TrieNode) |
+
 children[] array: 120 bytes
 
 **Total Per Node**: 24 + 120 = 144 bytes!
@@ -59,21 +61,20 @@ class TrieNode {
 }
 ```
 
-For sparse nodes (few children): Much smaller!
-Average children ≈ 3-4, so ~160 bytes vs 144 bytes but more flexible
-COMPRESSED TRIE (Patricia/Radix Tree):
-Instead of storing single characters, store strings:
-Standard Trie: Patricia Trie:
-root root
-a "app"
-/ \
-p "le" "lication"
-p
-/ \
-l l
-e i
-c...
-Patricia: Fewer nodes, less memory, similar time complexity
+For sparse nodes (few children) this is much smaller. With about 3-4 children on average, a `HashMap` node costs roughly as much as the 144-byte array node, but it only grows with the children actually present, so it is more flexible.
+
+**Compressed trie (Patricia / radix tree).** Instead of one character per edge, store whole strings on the edges. For the words `app`, `apple` and `application`:
+
+```mermaid
+flowchart TD
+  root(("root")) -->|"app"| app(("app"))
+  app -->|"le"| apple(("apple"))
+  app -->|"lication"| application(("application"))
+```
+
+**How to read this diagram.** A standard trie would need one node per letter (`a`, `p`, `p`, `l`, `e`, ...). The compressed trie keeps a single edge labelled `app`, and branches only where the words differ: `le` and `lication`.
+
+Patricia: fewer nodes, less memory, similar time complexity.
 
 ## 🧠 Segment Tree Memory Layout
 
@@ -93,19 +94,29 @@ Parent: i / 2
 
 **Example**: Array [1, 3, 5, 7, 9, 11] - Sum Segment Tree
 
-**Logical Tree**:
-[36] (sum of all: index 1)
-/ \
-[9] [27] (index 2, 3)
-/ \ / \
-[4] [5] [16] [11] (index 4, 5, 6, 7)
-/ \ / \
-[1] [3] [5] [7] [9] [11] (index 8-13, leaves)
-ARRAY STORAGE (1-indexed):
+**Logical tree** (node number in brackets, 1-indexed):
 
-| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |11 |12 |13 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| -- | 36 | 9 | 27 | 4 | 5 | 16 | 11 | 1 | 3 | 5 | 7 | 9 | 11 |
+```mermaid
+flowchart TD
+  n1["[1] sum 0-5 = 36"] --> n2["[2] sum 0-2 = 9"]
+  n1 --> n3["[3] sum 3-5 = 27"]
+  n2 --> n4["[4] sum 0-1 = 4"]
+  n2 --> n5["[5] a2 = 5"]
+  n3 --> n6["[6] sum 3-4 = 16"]
+  n3 --> n7["[7] a5 = 11"]
+  n4 --> n8["[8] a0 = 1"]
+  n4 --> n9["[9] a1 = 3"]
+  n6 --> n12["[12] a3 = 7"]
+  n6 --> n13["[13] a4 = 9"]
+```
+
+**How to read this diagram.** Each node covers a range of the array `[1, 3, 5, 7, 9, 11]` (0-indexed as a0…a5). A node's children are `2i` and `2i+1`. Because n = 6 is not a power of two, the leaves sit at different depths, and heap positions 10 and 11 stay unused.
+
+**Array storage (1-indexed):**
+
+| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Value | unused | 36 | 9 | 27 | 4 | 5 | 16 | 11 | 1 | 3 | unused | unused | 7 | 9 |
 
 **Memory**: 4n × 4 bytes (int) = 16n bytes
 For n = 1,000,000: 16 MB
@@ -150,6 +161,7 @@ i & -i = 1100 & 0100 = 0100 = 4 = LSB
 | 6 | 0110 | 1010 | 0010 = 2 | Covers indices 5-6 |
 | 7 | 0111 | 1001 | 0001 = 1 | Covers index 7 only |
 | 8 | 1000 | 1000 | 1000 = 8 | Covers indices 1-8 |
+
 BIT[i] stores sum of elements from (i - LSB(i) + 1) to i
 
 **Visual**:
@@ -259,98 +271,94 @@ flowchart TD
 
 ## 🧠 Skip List — Probabilistic Memory Layout
 
+### Skip List - HOW Redis Implements Sorted Sets
+
+**Skip List Structure**:
+
+| Level | Nodes (left to right) |
+| --- | --- |
+| 4 | head → nil |
+| 3 | head → 25 → nil |
+| 2 | head → 10 → 25 → 75 → nil |
+| 1 | head → 5 → 10 → 15 → 25 → 30 → 50 → 65 → 75 → 80 → nil |
+| 0 | head → 5 → 7 → 10 → 15 → 25 → 30 → 50 → 65 → 75 → 80 → 90 → nil |
+
+**Node Memory Layout**:
+
+```java
+class SkipListNode {
+    int value;
+    SkipListNode[] forward;  // Array of pointers to next nodes
+}
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SKIP LIST - HOW REDIS IMPLEMENTS SORTED SETS                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  SKIP LIST STRUCTURE:                                                           │
-│                                                                                 │
-│  Level 4:  head ─────────────────────────────────────────────────→ nil          │
-│  Level 3:  head ──────────────────→ 25 ──────────────────────────→ nil          │
-│  Level 2:  head ───────→ 10 ─────→ 25 ───────────────→ 75 ───────→ nil          │
-│  Level 1:  head → 5 ──→ 10 → 15 → 25 → 30 → 50 → 65 → 75 → 80 ──→ nil           │
-│  Level 0:  head → 5 → 7 → 10 → 15 → 25 → 30 → 50 → 65 → 75 → 80 → 90 → nil      │
-│                                                                                 │
-│                                                                                 │
-│  NODE MEMORY LAYOUT:                                                            │
-│  class SkipListNode {                                                           │
-│      int value;                                                                 │
-│      SkipListNode[] forward;  // Array of pointers to next nodes                │
-│  }                                                                              │
-│                                                                                 │
-│  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │ SKIP LIST NODE (value = 25, level = 3):                                 │    │
-│  │                                                                          │   │
-│  │ ┌──────────────┬──────────────────────────────────────────────────────┐ │    │
-│  │ │ value: 25    │ forward[]: [ptr_to_30, ptr_to_30, ptr_to_75, nil]    │ │    │
-│  │ │ (4 bytes)    │ (array of 4 pointers, 32 bytes on 64-bit)            │ │    │
-│  │ └──────────────┴──────────────────────────────────────────────────────┘ │    │
-│  │                                                                          │   │
-│  │ Object overhead: ~16 bytes                                              │    │
-│  │ Array overhead:  ~16 bytes                                              │    │
-│  │ Total: ~68 bytes for this node                                         │     │
-│  └─────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                 │
-│                                                                                 │
-│  LEVEL DISTRIBUTION (probability p = 0.5):                                      │
-│  ─────────────────────────────────────────                                      │
-│  • 50% of nodes: level 1                                                        │
-│  • 25% of nodes: level 2                                                        │
-│  • 12.5% of nodes: level 3                                                      │
-│  • ...                                                                          │
-│                                                                                 │
-│  EXPECTED MEMORY per node: ~1 + 0.5 + 0.25 + ... = 2 pointers average           │
-│  Much better than balanced BST!                                                 │
-│                                                                                 │
-│                                                                                 │
-│  SEARCH for 65:                                                                 │
-│  ┌────────────────────────────────────────────────────────────────────────────┐ │
-│  │ Start at head, level 4                                                    │  │
-│  │ Level 4: head → nil (no nodes), go DOWN                                   │  │
-│  │ Level 3: head → 25 (25 < 65), MOVE RIGHT, 25 → nil, go DOWN              │   │
-│  │ Level 2: 25 → 75 (75 > 65), go DOWN                                      │   │
-│  │ Level 1: 25 → 30 → 50 → 65, FOUND!                                       │   │
-│  │                                                                           │  │
-│  │ Comparisons: 25, 75, 30, 50, 65 = 5 comparisons                         │    │
-│  │ vs Linear: 9 comparisons                                                  │  │
-│  │ vs Binary Search: log₂(11) ≈ 4 comparisons (similar!)                   │    │
-│  └────────────────────────────────────────────────────────────────────────────┘ │
-│                                                                                 │
-│  WHY SKIP LIST OVER BALANCED BST?                                               │
-│  ─────────────────────────────────                                              │
-│  1. Simpler implementation (no rotations!)                                      │
-│  2. Easier concurrent access (lock individual levels)                           │
-│  3. Range queries are natural (just follow level 0)                             │
-│  4. Redis, LevelDB use it for sorted sets                                       │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+**Skip list node (value = 25, top level = 3):**
+
+| Field | Contents |
+| --- | --- |
+| `value` | 25 (4 bytes) |
+| `forward[]` | `[ptr_to_30, ptr_to_30, ptr_to_75, nil]`: one pointer per level, 4 slots |
+| Overhead | an object header for the node plus an array header for `forward[]` (about 16 bytes each on a typical 64-bit JVM) |
+
+In total a node like this takes roughly 60-70 bytes. Taller nodes cost more, shorter nodes cost less.
+
+**Level distribution** (probability p = 0.5):
+
+- 50% of nodes: level 1
+- 25% of nodes: level 2
+- 12.5% of nodes: level 3
+- ...
+
+**Expected memory per node:** 1 + 0.5 + 0.25 + ... = 2 pointers on average, the same as a balanced BST node.
+
+SEARCH for 65:
+
+```text
+Start at head, level 4
+Level 4: head → nil (no nodes), go DOWN
+Level 3: head → 25 (25 < 65), MOVE RIGHT, 25 → nil, go DOWN
+Level 2: 25 → 75 (75 > 65), go DOWN
+Level 1: 25 → 30 → 50 → 65, FOUND!
+
+Comparisons: 25, 75, 30, 50, 65 = 5 comparisons
+vs Linear: 9 comparisons
+vs Binary Search: log₂(11) ≈ 4 comparisons (similar!)
 ```
+
+WHY SKIP LIST OVER BALANCED BST?  
+1. Simpler implementation (no rotations!)
+2. Easier concurrent access (lock individual levels)
+3. Range queries are natural (just follow level 0)
+4. Redis, LevelDB use it for sorted sets
 
 ## 📊 Bloom Filter — Bit Array Internals
 
 ## Bloom Filter - Probabilistic Membership
 
-**Memory Layout**:
-Bit array (m = 32 bits for example):
-Index: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ...
-Bits: 0 0 1 0 1 0 0 1 0 0 1 0 0 0 1 0 ...
-Storage: In Java, long[] with 64 bits each
-m = 1M bits = 125 KB
-m = 1B bits = 125 MB
-HASH FUNCTIONS (k = 3 in this example):
-h1(x) = hash(x) % m
-h2(x) = hash(x + seed1) % m
-h3(x) = hash(x + seed2) % m
-Or use double hashing: hi(x) = (h1(x) + i \* h2(x)) % m
-INSERT "apple":
-h1("apple") = 2, h2("apple") = 7, h3("apple") = 14
-Before: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-After: 0 0 1 0 0 0 0 1 0 0 0 0 0 0 1 0
-↑ ↑ ↑
-h1 h2 h3
-CHECK "apple": Look at positions 2, 7, 14 → all 1s → "PROBABLY IN SET"
-CHECK "grape": h1=3, h2=5, h3=10 → position 3 is 0 → "DEFINITELY NOT IN SET"
+**Memory layout.** A Bloom filter is a bit array (`m = 32` bits in this example). In Java it is stored in a `long[]` with 64 bits per element: `m = 1M` bits takes 125 KB, and `m = 1B` bits takes 125 MB.
+
+| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Bits | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 |
+
+**Hash functions** (`k = 3` in this example):
+
+- `h1(x) = hash(x) % m`
+- `h2(x) = hash(x + seed1) % m`
+- `h3(x) = hash(x + seed2) % m`
+- Or use double hashing: `hi(x) = (h1(x) + i * h2(x)) % m`
+
+**Insert `"apple"`:** `h1 = 2`, `h2 = 7`, `h3 = 14`, so bits 2, 7 and 14 are set.
+
+| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Before | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| After | 0 | 0 | **1** | 0 | 0 | 0 | 0 | **1** | 0 | 0 | 0 | 0 | 0 | 0 | **1** | 0 |
+
+**Check `"apple"`:** positions 2, 7 and 14 are all 1, so the answer is "probably in the set".
+
+**Check `"grape"`:** `h1 = 3`, `h2 = 5`, `h3 = 10`. Position 3 is 0, so the answer is "definitely not in the set".
+
 
 **False Positive Probability**:
 After inserting n elements with k hash functions into m bits:

@@ -4,6 +4,18 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - Diagrams to Mermaid and Tables to Markdown in 02-06
+
+Scope: `02_Data_Structures`, `03_Algorithms`, `04_Patterns_Templates`, `05_Problem_Solving`, `06_OOP_Design` (267 files). `07_Modern_Java` is out of scope here (its functional-programming pages were already clean; its other ASCII blocks remain).
+
+- **Diagrams.** Mermaid blocks in these folders went from 153 to 283 (flowcharts, sequence diagrams, class and state diagrams). Each new diagram is followed by a "How to read this diagram" explanation. Where a diagram could not be a graph (grids, memory layouts, step traces, window slides), it became a Markdown table.
+- **Tables.** ASCII box tables, banner boxes and `|`-separated pseudo-tables became GitHub Markdown tables; 13 broken Markdown tables were repaired, and three tables with unescaped `|` inside code spans were fixed.
+- **Errors found in the old figures and fixed.** Counting-sort and union-find figures (04); segment-tree heap indices, the trie that dropped `care`, the quadtree quadrant for `(1,4)`, Java array header sizes, and the complexity-hierarchy figure that put NP-hard inside PSPACE (03); the 8-direction shortest path (the centre cell was blocked, so the answer is 4 cells), the largest-island example (island sizes were wrong; the answer is 7), the trapping-rain-water-II total (3, not 4), the rising-water walkthrough, the minimum-window and flip-zeros traces (05); a domino-tiling broken-profile DP whose code returned 0 for 2x2 (now correct and checked against 2x2=2, 3x4=11, 8x8=12,988,816); monotonic-stack orientation labels. Invented benchmark numbers (DP cache and modulo timings, "ArrayDeque is 2-3x faster") were replaced with qualitative guidance.
+- **Pages rebuilt where the ASCII had been split across several fences:** `03c_Recursion_Advanced/04` (mutual recursion, CPS, Y-combinator; all code compiled and run on Java 21), `02c_Divide_And_Conquer`, `06c/04_np_hard_and_np_complete`, `08b/04` (study plan is now week tables, with calendar dates removed because the weekdays did not match), `24_Common_Mistakes` ("MISTAKE" fences became headed Java blocks), `06_OOP_Design/08/04_builder_vs_telescoping`.
+- Leftover ASCII is intentional: file-system trees, small index diagrams inside Java comments, and math underlines in proofs.
+
+Verification: all 283 Mermaid blocks render in Chromium, 0 broken file links or anchors in 489 files, balanced code fences and `<details>`, one H1 per page, every table row has the header's column count.
+
 ## 2026-10-24 - 06_OOP_Design Repair, Fact Check, Book Audit and Upgrade
 
 - **Fact check.** Rewrote every "Historical Evolution" and "Production Reality" block in 01-08 against attributable sources. Removed invented or wrong claims: a fabricated 2014 parking-app incident, a 2019 Tokyo elevator story, "Christian 1972" LOOK attribution (Denning 1967 and Teorey and Pinkerton 1972 are the real references), a 2020 Twitter fan-out incident, Stripe "3D key", Prime Day 2018 "$99M", "Paxos tolerates Byzantine failures", CAP "1999 / Fischer", the Cloudflare 2019 regex description, the Facebook 2019/2021 outage mix-up, the Cisco IOS 2018 bug class, the Boeing MCAS SOLID mapping, and arithmetic errors (a 2-hour outage against a 99.99% budget). Knight Capital, Healthcare.gov, S3 2017, Cloudflare 2019 and Therac-25 now follow primary reports. Unsourced scenarios are labelled illustrative.

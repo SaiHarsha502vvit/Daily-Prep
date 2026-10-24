@@ -426,18 +426,22 @@ class RateLimiter:
 ## When Problem-Solving Breaks (Anti-Pattern Wall)
 
 ### Anti-Pattern 1: Skipping the Invariant — Jumping Straight to Code
+
 **What breaks**: Writing code for "find the median of a stream" without first identifying the invariant: "max-heap of lower half, min-heap of upper half; sizes differ by at most 1." Without the invariant, the code diverges at edge cases (odd/even size, duplicate values, first element).
 **Fix**: State the invariant first, prove it holds at init/every step/termination, then write code that enforces it.
 
 ### Anti-Pattern 2: Ignoring the Amortized vs Worst-Case Distinction
+
 **What breaks**: Claiming `ArrayList.add()` is O(1) and then failing the follow-up: "what's the worst case for a single add?" The answer is O(n) for the resize case. Interviewers at top companies specifically probe this distinction.
 **Fix**: Always state BOTH. "O(1) amortized, O(n) worst case for a single operation." Then justify: n appends total cost O(n) (geometric series argument).
 
 ### Anti-Pattern 3: Choosing HashMap When Order Matters
+
 **What breaks**: Using `HashMap` to count character frequencies, then iterating to reconstruct the string in frequency order — `HashMap` iteration order is not defined (and changes between JDK versions / load factors). The test passes locally and fails in CI with a different seed.
 **Fix**: When insertion order matters → `LinkedHashMap`. When sorted order matters → `TreeMap`. When order truly doesn't matter → `HashMap`.
 
 ### Anti-Pattern 4: Recursive DFS Without Cycle Guard on a Graph
+
 **What breaks**: DFS on a directed graph without a `visited` set causes infinite recursion on cycles. Every graph problem must begin with: "Is this a tree (no cycles) or a general graph (may have cycles)?" The answer determines whether you need a `visited` set.
 **Fix**: Always pass a `Set<Integer> visited` into DFS for general graphs. For trees, the parent-tracking trick suffices (`if (v == parent) continue`).
 

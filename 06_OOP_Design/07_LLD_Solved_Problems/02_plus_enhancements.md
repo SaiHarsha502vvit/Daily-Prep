@@ -281,14 +281,12 @@ Why a queue works:
 | Elevator | Strategy (SchedulingStrategy: LOOK/SCAN)<br>State (ElevatorState: IDLE/MOVING_*)<br>Template Method (move sequence) | OCP: new algorithm = new class, controller unchanged<br>DIP: ElevatorController depends on abstract<br>SchedulingStrategy, not concrete LOOKStrategy |
 | Logger/Logging | Chain of Responsibility (DEBUG→INFO→ERR)<br>Strategy (LogAppender: console/file/DB)<br>Singleton (Logger, but DI preferred)<br>Builder (LoggerConfig for fluent build) | SRP: Logger chains don't know about each other's details<br>ISP: LogAppender has one method: append(String) |
 
-```
-  RECURRING PATTERN ACROSS ALL 5 PROBLEMS:
-  ══════════════════════════════════════
-  1. Every problem uses AT LEAST 2 GoF patterns (Strategy appears in 4/5)
-  2. Every problem satisfies SRP (one class = one responsibility)
-  3. Every problem is OCP (new behavior = new class, never modify existing)
-  4. Every problem is DIP-compliant (high-level modules depend on abstractions)
-```
+**Recurring pattern across all 5 problems**
+
+1. Every problem uses AT LEAST 2 GoF patterns (Strategy appears in 4 of 5).
+2. Every problem satisfies SRP (one class = one responsibility).
+3. Every problem is OCP-friendly (new behavior = new class, never modify existing code).
+4. Every problem is DIP-compliant (high-level modules depend on abstractions).
 
 ## Breadth Comparison 2: Concurrency Control Strategies Table
 
@@ -303,28 +301,16 @@ Why a queue works:
 | volatile (fields) | Read/write visibility (no lock) | Flags, caches (no compound operations) | NOT atomic for compound operations (volatile++ is NOT thread-safe!) |
 | StampedLock (Java 8+) | Optimistic read with validate | Read-heavy with rare writes (cache) | Must validate stamp after read or retry |
 
-```
-  DECISION GUIDE FOR LLD PROBLEMS:
-  ════════════════════════════════════
+**Decision guide for LLD problems**
 
-  Need to protect simple counter (active tickets count)?
-  → AtomicInteger / AtomicLong (no lock needed)
-
-  Need to protect a data structure (available spots)?
-  → synchronized block OR ConcurrentHashMap + computeIfAbsent
-
-  Need try-lock with timeout (deadlock recovery)?
-  → ReentrantLock with tryLock(timeout, unit)
-
-  Need many readers, rare writers (parking lot availability)?
-  → ReadWriteLock (multiple readers, exclusive writer)
-
-  Need distributed lock across machines?
-  → Redis SETNX + TTL (Redisson RLock)
-
-  Need DB-level lock?
-  → SELECT ... FOR UPDATE (pessimistic) or version column (optimistic)
-```
+| Need | Use |
+| --- | --- |
+| Protect a simple counter (active tickets count) | `AtomicInteger` / `AtomicLong` (no lock needed) |
+| Protect a data structure (available spots) | `synchronized` block, or `ConcurrentHashMap` + `computeIfAbsent` |
+| Try-lock with timeout (deadlock recovery) | `ReentrantLock` with `tryLock(timeout, unit)` |
+| Many readers, rare writers (parking lot availability) | `ReadWriteLock` (multiple readers, exclusive writer) |
+| Distributed lock across machines | Redis `SETNX` + TTL (Redisson `RLock`) |
+| DB-level lock | `SELECT ... FOR UPDATE` (pessimistic) or a version column (optimistic) |
 
 **Navigation**: [< Previous](../06_Distributed_Systems_Fundamentals.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](../08_Design_Patterns_Java.md)
 

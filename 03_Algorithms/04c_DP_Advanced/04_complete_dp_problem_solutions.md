@@ -432,13 +432,19 @@ MISTAKE 6: Redundant states
 > - **Divide & Conquer DP Optimization** (when opt[i] is monotone)
 > - **Broken Profile DP** (tiling/grid problems with bitmask rows)
 
-### ADVANCED DYNAMIC PROGRAMMING - COMPETITIVE PROGRAMMING LEVEL ╠══════════════════════════════════════════════════════════════════════════════════╣  This section covers advanced DP patterns used in: • Competitive programming (Codeforces, ICPC, IOI) • Technical interviews at top companies • Real-world optimization problems
+### Advanced dynamic programming: competitive programming level
+
+This section covers advanced DP patterns used in:
+
+- Competitive programming (Codeforces, ICPC, IOI)
+- Technical interviews at top companies
+- Real-world optimization problems
 
 ## DIGIT DP - COUNTING NUMBERS WITH PROPERTIES
 
 ### Digit dp - the pattern
 
-**Problem type:** Count numbers in range [L, R] with some digit property Examples:
+**Problem type:** count numbers in the range `[L, R]` with some digit property. Examples:
 
 - Count numbers with digit sum = K
 - Count numbers without repeated digits
@@ -450,8 +456,7 @@ MISTAKE 6: Redundant states
 - Tight bound (are we still bounded by limit?)
 - Problem-specific state (sum, remainder, etc.)
 
-**Template:** ───────────
-
+**Template**
 
 ```java
 // Count numbers from 0 to N with digit sum = targetSum
@@ -487,10 +492,7 @@ long solve(String N, int pos, int sum, boolean tight, int target) {
 // For range [L, R]: answer = count(R) - count(L-1)
 ```
 
-```text
-EXAMPLE: Count numbers 1 to N with no repeated adjacent digits
-─────────────────────────────────────────────────────────────
-```
+**EXAMPLE: Count numbers 1 to N with no repeated adjacent digits**
 
 ```java
 Long[][][] memo;  // [pos][prevDigit][tight]
@@ -520,8 +522,6 @@ long solve(String N, int pos, int prev, boolean tight) {
 }
 ```
 
-```text
-```
 
 ---
 

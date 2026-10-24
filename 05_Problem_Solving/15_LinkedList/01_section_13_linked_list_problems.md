@@ -4,29 +4,26 @@
 > Page 1 of 6 in **LinkedList**
 
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                   LINKED LIST PATTERNS                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  SINGLY LINKED LIST:                                            │
-│  head → [1|•] → [2|•] → [3|•] → [4|•] → null                    │
-│          val next  val next  val next  val next                 │
-│                                                                 │
-│  DOUBLY LINKED LIST:                                            │
-│  null ← [•|1|•] ⇄ [•|2|•] ⇄ [•|3|•] ⇄ [•|4|•] → null            │
-│          prev val next                                          │
-│                                                                 │
-│  CIRCULAR:                                                      │
-│  ┌→ [1|•] → [2|•] → [3|•] → [4|•] ─┐                            │
-│  └───────────────────────────────────┘                          │
-│                                                                 │
-│  THREE CORE TECHNIQUES:                                         │
-│  1. Runner (slow/fast)  — cycle, middle, kth from end           │
-│  2. Dummy Head          — simplify head-changing operations     │
-│  3. Reverse-as-you-go   — in-place O(1) space reversal          │
-└─────────────────────────────────────────────────────────────────┘
-```
+### Linked List Patterns
+
+**Singly Linked List**:
+
+head → [1|•] → [2|•] → [3|•] → [4|•] → null  
+val next  val next  val next  val next
+
+**Doubly Linked List**:
+
+null ← [•|1|•] ⇄ [•|2|•] ⇄ [•|3|•] ⇄ [•|4|•] → null  
+prev val next
+
+**Circular**:
+
+
+**Three Core Techniques**:
+
+1. Runner (slow/fast)  — cycle, middle, kth from end
+2. Dummy Head          — simplify head-changing operations
+3. Reverse-as-you-go   — in-place O(1) space reversal
 
 ---
 

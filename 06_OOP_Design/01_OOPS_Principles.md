@@ -378,13 +378,16 @@ classDiagram
 
 > [!WARNING]
 > **Production failure mode: the deep inheritance chain** (an illustrative composite, not a report of one codebase).
-> ```text
-> Entity (base)
->   └── PersistentObject   (adds save/load)
->         └── UserObject   (adds userId)
->               └── AdminUserObject      (adds admin flags)
->                     └── SuperAdminUserObject   (adds super flags)
+> ```mermaid
+> flowchart TD
+>   e["Entity (base)"] --> p["PersistentObject: adds save/load"]
+>   p --> u["UserObject: adds userId"]
+>   u --> a["AdminUserObject: adds admin flags"]
+>   a --> s["SuperAdminUserObject: adds super flags"]
 > ```
+>
+> **How to read this diagram.** Each arrow is an `extends` relationship. A change at the top ripples through every class below it.
+>
 > Problems at scale: changing `Entity.toString()` means retesting five classes; `PersistentObject.getId()` returning null in a unit test produces a four-level stack trace; a developer adds a method to `AdminUserObject` and forgets `SuperAdminUserObject`; and the question "is a super admin really an entity?" shows the chain is fragile.
 > **Fix:** replace the chain with composition, for example small records such as `Auditable(id, createdAt, updatedAt)` and `Adminable(roles, permissions)` held as fields of `User`.
 

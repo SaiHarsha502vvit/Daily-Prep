@@ -6,27 +6,25 @@
 
 ## Problem 155: Find the Town Judge (HackerEarth-style)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  FIND THE TOWN JUDGE                                           │
-├────────────────────────────────────────────────────────────────┤
-│  In a town of n people, one might be the judge.                │
-│  The judge:                                                    │
-│  1. Trusts nobody                                              │
-│  2. Everybody else trusts the judge                            │
-│                                                                │
-│  trust = [[1,2], [3,2]]  (a trusts b)                          │
-│  n = 3                                                         │
-│                                                                │
-│     1 ───→ 2 ←─── 3                                            │
-│                                                                │
-│  Person 2: in-degree = 2 (n-1), out-degree = 0                 │
-│  Output: 2                                                     │
-│                                                                │
-│  Constraints:                                                  │
-│  - 1 <= n <= 1000                                              │
-│  - 0 <= trust.length <= 10^4                                   │
-└────────────────────────────────────────────────────────────────┘
+**FIND THE TOWN JUDGE**
+
+```text
+In a town of n people, one might be the judge.
+The judge:
+1. Trusts nobody
+2. Everybody else trusts the judge
+
+trust = [[1,2], [3,2]]  (a trusts b)
+n = 3
+
+   1 ───→ 2 ←─── 3
+
+Person 2: in-degree = 2 (n-1), out-degree = 0
+Output: 2
+
+Constraints:
+- 1 <= n <= 1000
+- 0 <= trust.length <= 10^4
 ```
 
 **Solution:**
@@ -56,25 +54,23 @@ public int findJudge(int n, int[][] trust) {
 
 **MINIMUM SPANNING TREE - Kruskal's Algorithm**
 
-```text
-Connect all nodes with minimum total edge weight
-n = 4, edges = [[1,2,1], [1,3,4], [2,3,2], [3,4,3]]
+Connect all nodes with the minimum total edge weight.
 
-     1 ──(1)── 2
-      \       /
-     (4)   (2)
-        \ /
-         3
-         │
-        (3)
-         │
-         4
+`n = 4`, `edges = [[1,2,1], [1,3,4], [2,3,2], [3,4,3]]`
 
-MST edges: [1,2,1], [2,3,2], [3,4,3]
-Total weight = 1 + 2 + 3 = 6
-
-Kruskal's: Sort edges, add if doesn't create cycle
+```mermaid
+flowchart LR
+  n1((1)) ---|"1"| n2((2))
+  n1 ---|"4"| n3((3))
+  n2 ---|"2"| n3
+  n3 ---|"3"| n4((4))
 ```
+
+**How to read this diagram.** Each edge is labelled with its weight.
+
+- MST edges: `[1,2,1]`, `[2,3,2]`, `[3,4,3]`.
+- Total weight = 1 + 2 + 3 = **6**.
+- Kruskal's: sort the edges and add each one if it does not create a cycle.
 
 **Solution:**
 
@@ -121,16 +117,24 @@ private int find(int[] parent, int x) {
 
 **DETECT CYCLE IN UNDIRECTED GRAPH**
 
-```text
-Has Cycle:               No Cycle:
-   0 ─── 1                  0 ─── 1
-   │     │                  │
-   │     │                  │
-   3 ─── 2                  2 ─── 3
-
-DFS: If we visit a node that's already visited and
-it's not the parent → cycle detected
+```mermaid
+flowchart LR
+  subgraph C["Has a cycle"]
+    c0((0)) --- c1((1))
+    c1 --- c2((2))
+    c2 --- c3((3))
+    c3 --- c0
+  end
+  subgraph NC["No cycle"]
+    d0((0)) --- d1((1))
+    d0 --- d2((2))
+    d2 --- d3((3))
+  end
 ```
+
+**How to read this diagram.** The left graph is a square, so it contains a cycle. The right graph is a tree.
+
+DFS: if we visit a node that is already visited and it is not the parent, a cycle is detected.
 
 **Solution:**
 
@@ -181,30 +185,29 @@ private boolean dfs(List<List<Integer>> graph, boolean[] visited,
 
 ## Problem 158: Strongly Connected Components (Codeforces-style)
 
+**STRONGLY CONNECTED COMPONENTS (Kosaraju's Algorithm)**
+
+A strongly connected component (SCC) of a directed graph is a maximal set of vertices where every vertex is reachable from every other vertex.
+
+```mermaid
+flowchart LR
+  n0((0)) --> n1((1))
+  n1 --> n2((2))
+  n2 --> n0
+  n2 --> n3((3))
+  n3 <--> n4((4))
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  STRONGLY CONNECTED COMPONENTS (Kosaraju's Algorithm)          │
-├────────────────────────────────────────────────────────────────┤
-│  A directed graph's SCC is a maximal set of vertices where     │
-│  every vertex is reachable from every other vertex.            │
-│                                                                │
-│       0 ───→ 1                                                 │
-│       ↑     ↙                                                  │
-│       │   ↙                                                    │
-│       2 ←───────                                               │
-│       │                                                        │
-│       ↓                                                        │
-│       3 ←──→ 4                                                 │
-│                                                                │
-│  SCC 1: {0, 1, 2}  (form a cycle)                              │
-│  SCC 2: {3, 4}     (form a cycle)                              │
-│                                                                │
-│  Kosaraju's Algorithm:                                         │
-│  1. DFS to get finish order                                    │
-│  2. Transpose graph                                            │
-│  3. DFS in reverse finish order on transposed graph            │
-└────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Vertices 0, 1 and 2 form a cycle, and 3 and 4 point to each other, so there are two SCCs.
+
+- SCC 1: `{0, 1, 2}`
+- SCC 2: `{3, 4}`
+
+**Kosaraju's algorithm**
+
+1. DFS to get the finish order.
+2. Transpose the graph.
+3. DFS in reverse finish order on the transposed graph.
 
 **Solution:**
 
@@ -282,7 +285,8 @@ private void dfs2(List<List<Integer>> graph, boolean[] visited, int node) {
 **Who processes the stale entry:** Your code. When dequeuing a node, check if the dequeued distance equals the current known best: `if (dist > d[node]) continue;`. This skips stale (outdated) entries. The lazy deletion pattern inserts multiple entries for the same node; the first (smallest distance) dequeue processes the correct one, subsequent are skipped. **When lazy deletion causes correctness issues:** Never — if you add the `dist > d[node]` check. Without this check, stale entries are processed and may update `d[neighbor]` with WORSE distances. The neighbors' distances would be correct only if you always take min, but processing stale entries wastes time. **Memory tradeoff vs `TreeSet`:** `PriorityQueue` (lazy deletion): O(E) total entries (one per edge relaxation). Can't decrease-key, so you insert duplicates. Memory = O(E). `TreeSet` (or Fibonacci heap): supports true decrease-key. O(V) entries (exactly one per vertex). Memory = O(V). For sparse graphs (E ≈ V): both are similar. For dense graphs: lazy PQ has O(E) entries = O(V²). `TreeSet` stays O(V). **Standard interview approach:** Use `PriorityQueue` with lazy deletion. It's simpler to implement and O((V+E)logE) which simplifies to O((V+E)logV) for most graphs.
 
 </details>
-<details><summary>Answer</summary>
+
+<details><summary>More detail</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
 
@@ -337,7 +341,8 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 **(A) Shortest route (GPS navigation) → Dijkstra's Algorithm (or A\*).** Road weights = travel time/distance. Dijkstra finds shortest path by total weight. A* improves Dijkstra with a heuristic (straight-line distance to destination) to explore fewer nodes. Production GPS uses bidirectional Dijkstra or Contraction Hierarchies for sub-millisecond routing on 100M+ node road graphs. **(B) Detect driver driving in circles → Cycle Detection (DFS/Floyd's).** Model the route as a directed graph: each intersection = node, each turn = directed edge. DFS with a 3-color marker detects if the driver revisits a node in the current path. Floyd's tortoise-hare is used on the coordinates sequence if modeled as a linked list. **(C) Find all reachable restaurants within 2km → BFS with distance cutoff.** Start from driver's location, BFS through road network. Stop expanding neighbors when distance exceeds 2km. All nodes visited = reachable restaurants. This is a BFS "level-limited" search. Multi-source BFS (start from ALL restaurants simultaneously) can find which driver is closest to each restaurant. **Who selects:** The software architect, based on: Is the graph weighted? (Dijkstra). Is it directional? (directed DFS). Is the search space bounded? (BFS cutoff). Does it need to scale to millions of nodes? (A*, Contraction Hierarchies).
 
 </details>
-<details><summary>Answer</summary>
+
+<details><summary>More detail</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
 

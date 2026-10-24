@@ -96,14 +96,13 @@ A **loop invariant** is a property that:
 
 This is mathematical induction on the iteration number. The invariant is the inductive hypothesis.
 
-**Structure of a loop invariant proof: — INITIALIZATION  │  Before first iteration begins, — │  the invariant holds.**
+**Structure of a loop invariant proof**
 
-```text
-MAINTENANCE     │  If it holds at start of iter i,
-                │  it holds at start of iter i+1.
-TERMINATION     │  When loop ends, invariant gives
-                │  us the answer we want.
-```
+| Step | What you show |
+| --- | --- |
+| Initialization | Before the first iteration begins, the invariant holds. |
+| Maintenance | If it holds at the start of iteration `i`, it holds at the start of iteration `i+1`. |
+| Termination | When the loop ends, the invariant gives us the answer we want. |
 
 ### The Mental Model: What Does the Invariant SAY?
 
@@ -438,17 +437,15 @@ Most companies don't ask for formal proofs, but they do ask **"why does your alg
 
 ## Summary: The Proof Toolbox
 
-```
-Algorithm type          │ Proof technique
-────────────────────────┼────────────────────────────────────────────
-Loop / iterative        │ Loop invariant (init + maintenance + termination)
-Recursive               │ Strong induction on input size
-Divide and conquer      │ Structural induction on problem size
-Greedy                  │ Exchange argument (swap greedy for optimal, no worse)
-DP recurrence valid     │ Optimal substructure (cut and paste)
-DP vs greedy decision   │ Try exchange argument; if it fails, use DP
-Algorithm is wrong      │ Construct counterexample (break the invariant)
-```
+| Algorithm type | Proof technique |
+| --- | --- |
+| Loop / iterative | Loop invariant (init + maintenance + termination) |
+| Recursive | Strong induction on input size |
+| Divide and conquer | Structural induction on problem size |
+| Greedy | Exchange argument (swap greedy for optimal, no worse) |
+| DP recurrence valid | Optimal substructure (cut and paste) |
+| DP vs greedy decision | Try exchange argument; if it fails, use DP |
+| Algorithm is wrong | Construct counterexample (break the invariant) |
 
 ---
 

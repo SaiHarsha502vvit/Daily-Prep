@@ -6,10 +6,7 @@
 
 **BACKTRACKING OPTIMIZATION TECHNIQUES**
 
-```text
-TECHNIQUE 1: PRUNING - Cut branches that can't lead to solution
-─────────────────────────────────────────────────────────────────
-```
+**TECHNIQUE 1: PRUNING - Cut branches that can't lead to solution**
 
 ```java
 // N-Queens with intelligent pruning
@@ -47,10 +44,7 @@ class NQueens {
 // 8-Queens: Only ~2,000 nodes visited instead of 8^8 = 16 million
 ```
 
-```text
-TECHNIQUE 2: BRANCH AND BOUND - Track best solution
-───────────────────────────────────────────────────────
-```
+**TECHNIQUE 2: BRANCH AND BOUND - Track best solution**
 
 ```java
 // Traveling Salesman with Branch and Bound
@@ -110,11 +104,7 @@ class TSPBranchAndBound {
 }
 ```
 
-**TECHNIQUE 3: SYMMETRY BREAKING**
-
-```text
-─────────────────────────────
-```
+**Technique 3: symmetry breaking**
 
 ```java
 // Permutations without duplicates using symmetry breaking
@@ -137,10 +127,7 @@ void permuteUnique(int[] nums, int start, List<List<Integer>> result) {
 }
 ```
 
-```text
-TECHNIQUE 4: CONSTRAINT PROPAGATION (Sudoku)
-────────────────────────────────────────────
-```
+**TECHNIQUE 4: CONSTRAINT PROPAGATION (Sudoku)**
 
 ```java
 class SudokuSolver {
@@ -193,17 +180,12 @@ class SudokuSolver {
 }
 ```
 
-```text
-```
 
 ## DIVIDE AND CONQUER - ADVANCED PATTERNS
 
 **ADVANCED DIVIDE AND CONQUER PATTERNS**
 
-```text
-PATTERN 1: CLOSEST PAIR OF POINTS (2D)
-──────────────────────────────────────
-```
+**Pattern 1: closest pair of points (2d)**
 
 **PATTERN 2: KARATSUBA MULTIPLICATION**
 
@@ -242,11 +224,7 @@ BigInteger karatsuba(BigInteger x, BigInteger y) {
 // Only 3 multiplications instead of 4!
 ```
 
-**PATTERN 3: STRASSEN'S MATRIX MULTIPLICATION**
-
-```text
-───────────────────────────────────────────
-```
+**Pattern 3: strassen's matrix multiplication**
 
 ```java
 // O(n^2.807) instead of O(n³) for matrix multiplication
@@ -288,8 +266,6 @@ int[][] strassen(int[][] A, int[][] B) {
 }
 ```
 
-```text
-```
 
 ## 🔁 Recursion With State — Functional Approach
 
@@ -338,8 +314,6 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 });
 ```
 
-```text
-```
 
 🔬 **Section Challenge — 🔁 Recursion With State — Functional Approach**
 
@@ -354,59 +328,48 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 
 ## RECURSION PERFORMANCE COMPARISON
 
-```
+### Performance: Recursive vs Iterative
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ PERFORMANCE: RECURSIVE VS ITERATIVE                                             │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ BENCHMARK DATA (Java 17, Intel i7, 1M iterations averaged):                     │
-│                                                                                 │
-│ ┌───────────────────────────────┬────────────────┬────────────────┬──────────┐  │
-│ │ Problem │ Recursive (ns) │ Iterative (ns) │ Ratio │                           │
-│ ├───────────────────────────────┼────────────────┼────────────────┼──────────┤  │
-│ │ Factorial(20) │ 85 │ 12 │ 7.1x │                                              │
-│ │ Fibonacci(30) naive │ 8,500,000 │ 15 │ 566,000x │                             │
-│ │ Fibonacci(30) memoized │ 120 │ 15 │ 8x │                                      │
-│ │ Binary Search(1M elements) │ 180 │ 120 │ 1.5x │                               │
-│ │ Tree Inorder(1K nodes) │ 45,000 │ 52,000 │ 0.87x │                            │
-│ │ QuickSort(10K elements) │ 850,000 │ 820,000 │ 1.04x │                         │
-│ │ Permutations(10 elements) │ 3,200,000 │ 3,100,000 │ 1.03x │                   │
-│ └───────────────────────────────┴────────────────┴────────────────┴──────────┘  │
-│                                                                                 │
-│ KEY INSIGHTS:                                                                   │
-│ • Simple recursion (factorial): 7x slower due to call overhead                  │
-│ • Naive exponential recursion: Catastrophically slow                            │
-│ • Memoized recursion: Competitive with iteration                                │
-│ • Tree traversal: Recursion can be FASTER (simpler code → JIT optimizes)        │
-│ • Complex algorithms (sort, permute): Nearly identical performance              │
-│                                                                                 │
-│                                                                                 │
-│ MEMORY USAGE:                                                                   │
-│ ──────────────                                                                  │
-│ ┌───────────────────────────────┬────────────────┬────────────────┐             │
-│ │ Problem │ Recursive │ Iterative │                                             │
-│ ├───────────────────────────────┼────────────────┼────────────────┤             │
-│ │ Factorial(1000) │ 32 KB stack │ 8 bytes │                                     │
-│ │ Factorial(100000) │ OVERFLOW! │ 8 bytes │                                     │
-│ │ Tree Traversal (depth 20) │ 640 bytes │ 640 bytes*│                          │
-│ │ Tree Traversal (depth 10000) │ OVERFLOW! │ 320 KB heap │                      │
-│ └───────────────────────────────┴────────────────┴────────────────┘             │
-│* Iterative tree traversal uses heap-allocated stack                            │
-│                                                                                 │
-│                                                                                 │
-│ WHEN TO CHOOSE EACH:                                                            │
-│ ─────────────────────                                                           │
-│ RECURSION: ITERATION:                                                           │
-│ • Tree/graph structures • Simple counting/accumulation                          │
-│ • Depth ≤ 1000-10000 • Depth could be > 10000                                   │
-│ • Code clarity matters • Memory critical                                        │
-│ • Backtracking needed • Tail recursion patterns                                 │
-│ • D&C algorithms • Linear data structures                                       │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+BENCHMARK DATA (Java 17, Intel i7, 1M iterations averaged):
 
-```
+| Problem | Recursive (ns) | Iterative (ns) | Ratio |
+| --- | --- | --- | --- |
+| Factorial(20) | 85 | 12 | 7.1x |
+| Fibonacci(30) naive | 8,500,000 | 15 | 566,000x |
+| Fibonacci(30) memoized | 120 | 15 | 8x |
+| Binary Search(1M elements) | 180 | 120 | 1.5x |
+| Tree Inorder(1K nodes) | 45,000 | 52,000 | 0.87x |
+| QuickSort(10K elements) | 850,000 | 820,000 | 1.04x |
+| Permutations(10 elements) | 3,200,000 | 3,100,000 | 1.03x |
+
+**KEY Insights**:
+
+- Simple recursion (factorial): 7x slower due to call overhead
+- Naive exponential recursion: Catastrophically slow
+- Memoized recursion: Competitive with iteration
+- Tree traversal: Recursion can be FASTER (simpler code → JIT optimizes)
+- Complex algorithms (sort, permute): Nearly identical performance
+
+**Memory Usage**:
+
+| Problem | Recursive | Iterative |
+| --- | --- | --- |
+| Factorial(1000) | 32 KB stack | 8 bytes |
+| Factorial(100000) | OVERFLOW! | 8 bytes |
+| Tree Traversal (depth 20) | 640 bytes | 640 bytes* |
+| Tree Traversal (depth 10000) | OVERFLOW! | 320 KB heap |
+
+* Iterative tree traversal uses heap-allocated stack
+
+**When to Choose Each**:
+
+**Recursion: Iteration**:
+
+- Tree/graph structures • Simple counting/accumulation
+- Depth ≤ 1000-10000 • Depth could be > 10000
+- Code clarity matters • Memory critical
+- Backtracking needed • Tail recursion patterns
+- D&C algorithms • Linear data structures
 
 🔬 **Section Challenge — RECURSION PERFORMANCE COMPARISON**
 
@@ -421,61 +384,24 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 
 ## COMPLETE RECURSION PROBLEM TAXONOMY
 
-```
+### Recursion Problem Classification
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ RECURSION PROBLEM CLASSIFICATION                                                │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ ┌─────────────────────────────────────────────────────────────────────────┐     │
-│ │ RECURSION PROBLEM TYPES │                                                     │
-│ ├────────────────┬────────────────────────────────────────────────────────┤     │
-│ │ │ │                                                                           │
-│ │ LINEAR │ Only ONE recursive call per invocation │                             │
-│ │ RECURSION │ • Factorial, Sum, Array traversal │                               │
-│ │ O(n) calls │ • Can always convert to simple iteration │                       │
-│ │ │ │                                                                           │
-│ ├────────────────┼────────────────────────────────────────────────────────┤     │
-│ │ │ │                                                                           │
-│ │ BINARY │ TWO recursive calls per invocation │                                 │
-│ │ RECURSION │ • Fibonacci, Merge Sort, Binary Tree traversal │                  │
-│ │ O(2ⁿ) naive │ • Often needs memoization for efficiency │                      │
-│ │ O(n) with │ │                                                                 │
-│ │ memo │ │                                                                      │
-│ │ │ │                                                                           │
-│ ├────────────────┼────────────────────────────────────────────────────────┤     │
-│ │ │ │                                                                           │
-│ │ MULTIPLE │ k recursive calls per invocation │                                 │
-│ │ RECURSION │ • N-ary tree, Graph traversal │                                   │
-│ │ O(kⁿ) nodes │ • Combinations, permutations │                                  │
-│ │ │ │                                                                           │
-│ ├────────────────┼────────────────────────────────────────────────────────┤     │
-│ │ │ │                                                                           │
-│ │ MUTUAL │ Two+ functions call each other │                                     │
-│ │ RECURSION │ • isEven/isOdd, Parser (expr/term/factor) │                       │
-│ │ │ • State machines │                                                          │
-│ │ │ │                                                                           │
-│ ├────────────────┼────────────────────────────────────────────────────────┤     │
-│ │ │ │                                                                           │
-│ │ TAIL │ Recursive call is LAST operation │                                     │
-│ │ RECURSION │ • Accumulator patterns │                                          │
-│ │ O(1) space │ • Can be optimized to iteration (not in Java!) │                 │
-│ │ if optimized │ │                                                              │
-│ │ │ │                                                                           │
-│ └────────────────┴────────────────────────────────────────────────────────┘     │
-│                                                                                 │
-│                                                                                 │
-│ SOLVING STRATEGY BY TYPE:                                                       │
-│ ────────────────────────                                                        │
-│ LINEAR: Convert to loop if n large, or use as-is for small n                    │
-│ BINARY: Add memoization if subproblems overlap (DP!)                            │
-│ MULTIPLE: Use pruning/backtracking, careful about complexity                    │
-│ MUTUAL: Draw call graph to understand flow                                      │
-│ TAIL: In Java, manually convert to loop for large n                             │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**RECURSION PROBLEM TYPES**
 
-```
+| LINEAR<br>RECURSION<br>O(n) calls | Only ONE recursive call per invocation<br>• Factorial, Sum, Array traversal<br>• Can always convert to simple iteration |
+| --- | --- |
+| BINARY<br>RECURSION<br>O(2ⁿ) naive<br>O(n) with memo | TWO recursive calls per invocation<br>• Fibonacci, Merge Sort, Binary Tree traversal<br>• Often needs memoization for efficiency |
+| MULTIPLE<br>RECURSION<br>O(kⁿ) nodes | k recursive calls per invocation<br>• N-ary tree, Graph traversal<br>• Combinations, permutations |
+| MUTUAL<br>RECURSION | Two+ functions call each other<br>• isEven/isOdd, Parser (expr/term/factor)<br>• State machines |
+| TAIL<br>RECURSION<br>O(1) space if optimized | Recursive call is LAST operation<br>• Accumulator patterns<br>• Can be optimized to iteration (not in Java!) |
+
+**Solving Strategy by Type**:
+
+LINEAR: Convert to loop if n large, or use as-is for small n  
+BINARY: Add memoization if subproblems overlap (DP!)  
+MULTIPLE: Use pruning/backtracking, careful about complexity  
+MUTUAL: Draw call graph to understand flow  
+TAIL: In Java, manually convert to loop for large n
 
 🔬 **Section Challenge — COMPLETE RECURSION PROBLEM TAXONOMY**
 

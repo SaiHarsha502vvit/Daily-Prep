@@ -72,6 +72,7 @@ onStack[u] = true;
 }
 
 ```
+
 ## 6. MINIMUM SPANNING TREE (MST)
 
 ```java
@@ -180,6 +181,7 @@ public int primMST(int n, int[][] edges) {
     return count == n ? mstWeight : -1;
 }
 ```
+
 ## 7. ARTICULATION POINTS AND BRIDGES
 
 ```java
@@ -401,85 +403,72 @@ public boolean hasHamiltonianPath(int n, int[][] edges) {
 
 ## ALGORITHM COMPLEXITY COMPARISON
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    TREE & GRAPH ALGORITHMS - COMPLEXITY SUMMARY                  │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  TREE TRAVERSALS:                                                                │
-│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐ │
-│  │ Algorithm              │ Time       │ Space     │ Notes                     │ │
-│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤ │
-│  │ Preorder/Inorder/Post  │ O(n)       │ O(h)      │ Recursive or iterative   │  │
-│  │ Level Order (BFS)      │ O(n)       │ O(w)      │ w = max width            │  │
-│  │ Morris Traversal       │ O(n)       │ O(1)      │ Modifies tree temporarily │ │
-│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘ │
-│                                                                                  │
-│  BST OPERATIONS:                                                                 │
-│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐ │
-│  │ Operation              │ Average    │ Worst     │ Notes                     │ │
-│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤ │
-│  │ Search                 │ O(log n)   │ O(n)      │ Worst = skewed tree      │  │
-│  │ Insert                 │ O(log n)   │ O(n)      │ Maintain balance!        │  │
-│  │ Delete                 │ O(log n)   │ O(n)      │ Three cases             │   │
-│  │ Find min/max           │ O(log n)   │ O(n)      │ Follow left/right       │   │
-│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘ │
-│                                                                                  │
-│  BALANCED TREES (AVL, Red-Black):                                                │
-│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐ │
-│  │ Operation              │ Time       │ Space     │ Notes                     │ │
-│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤ │
-│  │ All operations         │ O(log n)   │ O(log n)  │ Guaranteed balanced      │  │
-│  │ Rebalancing            │ O(1)       │ O(1)      │ Max 2 rotations (AVL)   │   │
-│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘ │
-│                                                                                  │
-│  GRAPH TRAVERSALS:                                                               │
-│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐ │
-│  │ Algorithm              │ Time       │ Space     │ Notes                     │ │
-│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤ │
-│  │ BFS                    │ O(V + E)   │ O(V)      │ Level-by-level          │   │
-│  │ DFS                    │ O(V + E)   │ O(V)      │ Depth-first             │   │
-│  │ Topological Sort       │ O(V + E)   │ O(V)      │ DAG only                │   │
-│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘ │
-│                                                                                  │
-│  SHORTEST PATH:                                                                  │
-│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐ │
-│  │ Algorithm              │ Time       │ Space     │ Notes                     │ │
-│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤ │
-│  │ BFS (unweighted)       │ O(V + E)   │ O(V)      │ Best for unweighted     │   │
-│  │ Dijkstra (binary heap) │ O(E log V) │ O(V)      │ Non-negative weights    │   │
-│  │ Dijkstra (Fib heap)    │ O(E+V logV)│ O(V)      │ Rarely implemented      │   │
-│  │ Bellman-Ford           │ O(V × E)   │ O(V)      │ Handles negative        │   │
-│  │ SPFA                   │ O(V × E)   │ O(V)      │ Avg O(kE), k small     │    │
-│  │ Floyd-Warshall         │ O(V³)      │ O(V²)     │ All pairs              │    │
-│  │ Johnson                │ O(VE logV) │ O(V²)     │ All pairs, sparse      │    │
-│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘ │
-│                                                                                  │
-│  MST:                                                                            │
-│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐ │
-│  │ Algorithm              │ Time       │ Space     │ Notes                     │ │
-│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤ │
-│  │ Kruskal                │ O(E log E) │ O(V)      │ Sort + Union-Find       │   │
-│  │ Prim (binary heap)     │ O(E log V) │ O(V)      │ Dense: use matrix       │   │
-│  │ Prim (Fib heap)        │ O(E+V logV)│ O(V)      │ Better for dense        │   │
-│  │ Borůvka                │ O(E log V) │ O(V)      │ Parallelizable          │   │
-│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘ │
-│                                                                                  │
-│  ADVANCED:                                                                       │
-│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐ │
-│  │ Algorithm              │ Time       │ Space     │ Notes                     │ │
-│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤ │
-│  │ SCC (Tarjan/Kosaraju)  │ O(V + E)   │ O(V)      │ Directed graphs         │   │
-│  │ Articulation Points    │ O(V + E)   │ O(V)      │ Cut vertices            │   │
-│  │ Bridges                │ O(V + E)   │ O(V)      │ Cut edges               │   │
-│  │ LCA (preprocessing)    │ O(n log n) │ O(n log n)│ Binary lifting          │   │
-│  │ LCA (query)            │ O(log n)   │ -         │ After preprocessing     │   │
-│  │ Euler Path             │ O(E)       │ O(V + E)  │ Hierholzer              │   │
-│  │ Hamiltonian Path       │ O(n² 2^n)  │ O(n 2^n)  │ DP + bitmask           │    │
-│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘ │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
-```
+### Tree & Graph Algorithms - Complexity Summary
+
+**Tree Traversals**:
+
+| Algorithm | Time | Space | Notes |
+| --- | --- | --- | --- |
+| Preorder/Inorder/Post | O(n) | O(h) | Recursive or iterative |
+| Level Order (BFS) | O(n) | O(w) | w = max width |
+| Morris Traversal | O(n) | O(1) | Modifies tree temporarily |
+
+**BST Operations**:
+
+| Operation | Average | Worst | Notes |
+| --- | --- | --- | --- |
+| Search | O(log n) | O(n) | Worst = skewed tree |
+| Insert | O(log n) | O(n) | Maintain balance! |
+| Delete | O(log n) | O(n) | Three cases |
+| Find min/max | O(log n) | O(n) | Follow left/right |
+
+BALANCED TREES (AVL, Red-Black):
+
+| Operation | Time | Space | Notes |
+| --- | --- | --- | --- |
+| All operations | O(log n) | O(log n) | Guaranteed balanced |
+| Rebalancing | O(1) | O(1) | Max 2 rotations (AVL) |
+
+**Graph Traversals**:
+
+| Algorithm | Time | Space | Notes |
+| --- | --- | --- | --- |
+| BFS | O(V + E) | O(V) | Level-by-level |
+| DFS | O(V + E) | O(V) | Depth-first |
+| Topological Sort | O(V + E) | O(V) | DAG only |
+
+**Shortest Path**:
+
+| Algorithm | Time | Space | Notes |
+| --- | --- | --- | --- |
+| BFS (unweighted) | O(V + E) | O(V) | Best for unweighted |
+| Dijkstra (binary heap) | O(E log V) | O(V) | Non-negative weights |
+| Dijkstra (Fib heap) | O(E+V logV) | O(V) | Rarely implemented |
+| Bellman-Ford | O(V × E) | O(V) | Handles negative |
+| SPFA | O(V × E) | O(V) | Avg O(kE), k small |
+| Floyd-Warshall | O(V³) | O(V²) | All pairs |
+| Johnson | O(VE logV) | O(V²) | All pairs, sparse |
+
+**MST**:
+
+| Algorithm | Time | Space | Notes |
+| --- | --- | --- | --- |
+| Kruskal | O(E log E) | O(V) | Sort + Union-Find |
+| Prim (binary heap) | O(E log V) | O(V) | Dense: use matrix |
+| Prim (Fib heap) | O(E+V logV) | O(V) | Better for dense |
+| Borůvka | O(E log V) | O(V) | Parallelizable |
+
+**Advanced**:
+
+| Algorithm | Time | Space | Notes |
+| --- | --- | --- | --- |
+| SCC (Tarjan/Kosaraju) | O(V + E) | O(V) | Directed graphs |
+| Articulation Points | O(V + E) | O(V) | Cut vertices |
+| Bridges | O(V + E) | O(V) | Cut edges |
+| LCA (preprocessing) | O(n log n) | O(n log n) | Binary lifting |
+| LCA (query) | O(log n) | - | After preprocessing |
+| Euler Path | O(E) | O(V + E) | Hierholzer |
+| Hamiltonian Path | O(n² 2^n) | O(n 2^n) | DP + bitmask |
 
 ## INTERVIEW PROBLEM PATTERNS
 

@@ -228,6 +228,7 @@ For linear growth (`+1` per resize), the same proof gives `O(n)` per append — 
 > Every one of these has caused a real production bug. Know the failure mode before you need to debug it.
 
 ### 1. Integer Overflow in Binary Search Mid Calculation
+
 **What breaks**: `int mid = (lo + hi) / 2` overflows when `lo + hi > Integer.MAX_VALUE` (≈ 2.1 billion). The sum wraps to a negative number → mid is negative → `ArrayIndexOutOfBoundsException`.
 **History**: This bug lived in textbooks since 1946 and was in Java's `Arrays.binarySearch()` from 1997 until Joshua Bloch reported it at Google in 2006.
 **Fix**: `int mid = lo + (hi - lo) / 2;` — equivalent result, no overflow.
@@ -237,6 +238,7 @@ For linear growth (`+1` per resize), the same proof gives `O(n)` per append — 
 **Invariant learned**: The invariant `lo ≤ target_index ≤ hi` must hold at every step. The correct mid formula preserves this by staying within the [lo, hi] range even at Integer boundary values.
 
 ### 2. Off-By-One in Two-Pointer Shrink Condition
+
 **What breaks**: Using `<` instead of `<=` (or vice versa) in sliding-window or two-pointer shrink condition. Classic example in longest substring without repeating characters:
 ```java
 // BUG — uses < instead of >:
@@ -248,6 +250,7 @@ while (charCount.get(s.charAt(right)) < 1) { // should be > 1
 **Fix**: Write the invariant explicitly first: "the window is valid when all char counts ≤ 1." Shrink when any count > 1.
 
 ### 3. 2D Array Row-Major vs Column-Major Access Pattern
+
 **What breaks**: Iterating a 2D array in the wrong order causes cache misses on every element.
 ```java
 // SLOW — column-major access on a row-major array:
@@ -263,6 +266,7 @@ for (int row = 0; row < N; row++)
 **Impact**: For a 1000×1000 `int[][]`, the slow version can be 5–10× slower due to cache misses. Java 2D arrays are arrays of references to row arrays (row-major), so row-sequential access is always cache-friendly.
 
 ### 4. Sorting Parallel Arrays Destroys Correlation
+
 **What breaks**: When two arrays represent related data (e.g., `names[]` and `scores[]`), sorting one array by value breaks the index correspondence with the other.
 ```java
 Arrays.sort(scores);  // now scores[0] is the lowest score,
@@ -272,6 +276,7 @@ Arrays.sort(scores);  // now scores[0] is the lowest score,
 **Fix**: Use an array of objects (`record Person(String name, int score)`) or sort indices instead: `Integer[] idx = ...; Arrays.sort(idx, (a,b) -> scores[a] - scores[b]);`
 
 ### 5. `Arrays.asList()` Returns a Fixed-Size List
+
 **What breaks**: `Arrays.asList(1, 2, 3)` returns a fixed-size list backed by the array. Calling `.add()` or `.remove()` throws `UnsupportedOperationException`.
 **Root cause**: `Arrays.asList()` returns `Arrays.ArrayList` — not `java.util.ArrayList`. It wraps the array without copying.
 **Fix**: `new ArrayList<>(Arrays.asList(...))` creates a mutable copy. Or `List.of(...)` (Java 9+) for an immutable list with a clearer contract.

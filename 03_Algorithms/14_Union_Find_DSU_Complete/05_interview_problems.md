@@ -363,13 +363,16 @@ Space: O(n) for parent and rank arrays
 ## When Union-Find Breaks
 
 ### 1. Calling `union()` Without Path Compression in `find()` — O(n) Degeneration
+
 **What breaks**: Union by rank without path compression keeps trees shallow, but without either optimization, a chain of unions produces a bamboo (linear chain) with O(n) `find()`. Without both optimizations together, worst case is O(log n) not O(α(n)).
 **Fix**: Always implement BOTH — path compression in `find()` AND union by rank/size in `union()`.
 
 ### 2. Using `parent[x] == x` to Check for Roots After Merging
+
 **What breaks**: After `union(x, y)`, if y becomes the root of x, then `parent[x] = y`. Checking `parent[x] == x` returns false, which you might interpret as "x is not in the set" — but x IS in the set, it's just not a root. The root check is `find(x) == x`, not `parent[x] == x`.
 
 ### 3. Forgetting to Initialize All Nodes
+
 **What breaks**: Calling `union(3, 7)` before initializing all nodes 0..n-1 leaves `parent[5]`, `parent[6]`, etc. as 0 (Java default) instead of pointing to themselves. Subsequent `find(5)` follows the chain `5 → 0 → 0` (a loop!) and diverges.
 **Fix**: Always `for (int i = 0; i < n; i++) parent[i] = i;` before any `union()` or `find()` calls.
 

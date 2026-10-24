@@ -4,95 +4,92 @@
 > Page 4 of 4 in **Design Patterns in Java — Gang of Four & Beyond**
 
 
+## The problem: constructor telescoping
+
+A `User` has 3 required fields and 5 optional ones. If every combination of optionals had its own constructor, you would need 2⁵ = 32 constructors. Even the strict telescoping form (each constructor adds one more optional) leaves call sites that are hard to read:
+
+```java
+User("John")                         // which optionals?
+User("John", null)                   // which one is null?
+User("John", null, null)             // confusing
+User("John", null, null, null)       // which one is the address?
+User("John", null, null, null, null) // impossible to read
 ```
-  THE PROBLEM: CONSTRUCTOR TELESCOPING
-  ══════════════════════════════════════════
 
-  User has 3 required + 5 optional fields:
-
-  // Without telescoping: 2^5 = 32 constructors needed!
-  User("John")                         ← which optionals?
-  User("John", null)                   ← which is null?
-  User("John", null, null)             ← confusing
-  User("John", null, null, null)       ← which is address?
-  User("John", null, null, null, null) ← impossible to read
-
-  // Telescoping pattern: each constructor adds one optional
-  public User(String firstName) {
-      this(firstName, null, null, null, null, null);
-  }
-  public User(String firstName, String lastName) {
-      this(firstName, lastName, null, null, null, null);
-  }
-  public User(String firstName, String lastName, String email) {
-      this(firstName, lastName, email, null, null, null);
-  }
-  // ... 32 variations
-
-  MAINTENANCE COST: Adding one more optional field requires
-  adding 16 new constructors (half of 32).
-
-  THE BUILDER SOLUTION:
-  ════════════════════════
-
-  User user = new User.Builder("John", "Doe", "john@example.com")
-      .phone("1234567890")
-      .address("123 Main St")
-      .age(30)
-      .build();
-
-  COMPARISON TABLE:
-  ════════════════════════
+```java
+// Telescoping pattern: each constructor adds one optional
+public User(String firstName) {
+    this(firstName, null, null, null, null, null);
+}
+public User(String firstName, String lastName) {
+    this(firstName, lastName, null, null, null, null);
+}
+public User(String firstName, String lastName, String email) {
+    this(firstName, lastName, email, null, null, null);
+}
+// ... and so on
 ```
+
+**Maintenance cost:** every new optional field forces you to touch or add constructors, and if you support arbitrary combinations the count doubles with each new field.
+
+## The Builder solution
+
+```java
+User user = new User.Builder("John", "Doe", "john@example.com")
+    .phone("1234567890")
+    .address("123 Main St")
+    .age(30)
+    .build();
+```
+
+### Comparison table
 
 | DIMENSION | BUILDER | TELESCOPING |
 | --- | --- | --- |
-| N optional params (where N = 5) | 1 class + 1 Builder inner | 2^N constructors required! |
+| N optional params (where N = 5) | 1 class + 1 Builder inner | Up to 2^N constructors to cover every combination |
 | Readability at call site | YES: Clear names .phone("123") | NO: positional args<br>User("John", null, "john@", null, 30) |
 | Immutability | YES: final fields set in constructor | NO: mutable during construction |
 | Validation | YES: Centralized in build() | NO: scattered across ctors |
-| Adding optional param | 2 lines: setter + field | 16 constructor variants modified! |
+| Adding optional param | 2 lines: setter + field | Many constructor variants to add or modify |
 | IDE auto-complete | YES: Builder methods named | NO: positional, no name hints |
-| Lombok @Builder (zero-boilerplate) | YES: One annotation generates all | NO: manual all 32 constructors |
+| Lombok @Builder (zero-boilerplate) | YES: One annotation generates all | NO: every constructor written by hand |
 
+## Builder + fluent interface
+
+The key insight: Builder methods **return the builder**, not `void`.
+
+```java
+return this;  // enables method chaining
 ```
-  BUILDER + FLUENT INTERFACE:
-  ══════════════════════════
 
-  The key insight: Builder methods RETURN THE BUILDER, not void.
+This is called the **fluent interface** pattern. It is used in `StringBuilder`, the Stream API, JUnit assertions and `HttpClient`.
 
-  return this;  // enables method chaining
+## Builder + validation
 
-  This is called the FLUENT INTERFACE pattern.
-  Used in: StringBuilder, Stream API, JUnit assertions, HttpClient.
-
-  BUILDER + VALIDATION:
-  ══════════════════════════
-
-  public User build() {
-      if (firstName == null || firstName.isBlank()) {
-          throw new IllegalStateException("firstName required");
-      }
-      if (age != null && age < 0) {
-          throw new IllegalStateException("age must be positive");
-      }
-      // Cross-field validation
-      if (phone != null && !phone.matches("\\d{10}")) {
-          throw new IllegalStateException("Invalid phone");
-      }
-      return new User(this);
-  }
-
-  Validation happens ONCE at build(), never scattered.
-  Impossible with telescoping: each constructor would need its own validation.
-
-  WHEN NOT TO USE BUILDER:
-  ─────────────────────────
-  1. 1-2 required fields, no optionals → plain constructor is fine
-  2. All parameters required → no benefit
-  3. Simple DTO with Jackson/JSON → @Data + @Builder for Jackson integration
-  4. Performance-critical (GC pressure from Builder allocation) → consider static factory
+```java
+public User build() {
+    if (firstName == null || firstName.isBlank()) {
+        throw new IllegalStateException("firstName required");
+    }
+    if (age != null && age < 0) {
+        throw new IllegalStateException("age must be positive");
+    }
+    // Cross-field validation
+    if (phone != null && !phone.matches("\\d{10}")) {
+        throw new IllegalStateException("Invalid phone");
+    }
+    return new User(this);
+}
 ```
+
+Validation happens **once**, in `build()`, never scattered. That is impossible with telescoping, where each constructor would need its own validation.
+
+## When not to use Builder
+
+1. 1-2 required fields and no optionals: a plain constructor is fine.
+2. All parameters are required: there is no benefit.
+3. A simple DTO with Jackson/JSON: use `@Data` + `@Builder` for Jackson integration.
+4. Performance-critical code (GC pressure from Builder allocation): consider a static factory.
 
 ## Breadth Comparison 1: Creational Pattern Selection Table
 
@@ -105,18 +102,18 @@
 | Singleton (use DI) | One instance, globally accessible (Registry) | Global state; hides deps; untestable | Framework globals (log, config); but prefer DI + Spring @Component over self-managed getInstance() |
 | Object Pool (not GoF) | Reuse expensive objects | Must manage pool lifecycle; memory if pool too large | DB connections, thread pools, string pool (reuse String literals) |
 
-```
-  QUICK DECISION GUIDE:
-  ══════════════════════════
-  Need ONE of something, global access?  → Singleton (or DI)
-  Create by type parameter?              → Factory Method
-  Create families of related objects?    → Abstract Factory
-  Create complex objects step-by-step?   → Builder
-  Create copies of existing objects?     → Prototype
-  Reuse expensive resources?             → Object Pool
+### Quick decision guide
 
-  MOST USED IN PRODUCTION: Builder (#1), Factory (#2), DI/Singleton (#3)
-```
+| Need | Pattern |
+| --- | --- |
+| ONE of something, with global access | Singleton (or DI) |
+| Create by type parameter | Factory Method |
+| Create families of related objects | Abstract Factory |
+| Create complex objects step by step | Builder |
+| Create copies of existing objects | Prototype |
+| Reuse expensive resources | Object Pool |
+
+Most used in production: **Builder (#1), Factory (#2), DI/Singleton (#3)**. This ranking is a rule of thumb and varies by codebase.
 
 ## Breadth Comparison 2: Structural Pattern Comparison — Adapter vs Decorator vs Proxy vs Facade
 

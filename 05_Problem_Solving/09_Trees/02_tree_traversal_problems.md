@@ -159,26 +159,26 @@ public List<Integer> postorderTraversal(TreeNode root) {
 
 **LeetCode 102** 🔗 https://leetcode.com/problems/binary-tree-level-order-traversal/
 
+### Level Order Traversal (BFS)
+
+```mermaid
+flowchart TD
+  t3((3)) --> t9((9))
+  t3 --> t20((20))
+  t20 --> t15((15))
+  t20 --> t7((7))
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  LEVEL ORDER TRAVERSAL (BFS)                                   │
-├────────────────────────────────────────────────────────────────┤
-│        3         Level 0: [3]                                  │
-│       / \        Level 1: [9, 20]                              │
-│      9  20       Level 2: [15, 7]                              │
-│        /  \                                                    │
-│       15   7     Output: [[3], [9,20], [15,7]]                 │
-│                                                                │
-│  BFS with Queue:                                               │
-│  ┌───────────────────────────────────────────────────────────┐ │
-│  │ Step │ Queue              │ Level Output                  │ │
-│  ├──────┼────────────────────┼───────────────────────────────┤ │
-│  │  1   │ [3]                │ Process: [3]                  │ │
-│  │  2   │ [9, 20]            │ Process: [9, 20]              │ │
-│  │  3   │ [15, 7]            │ Process: [15, 7]              │ │
-│  └───────────────────────────────────────────────────────────┘ │
-└────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Level 0 is `[3]`, level 1 is `[9, 20]` and level 2 is `[15, 7]`. Output: `[[3], [9,20], [15,7]]`.
+
+
+BFS with Queue:
+
+| Step | Queue | Level Output |
+| --- | --- | --- |
+| 1 | [3] | Process: [3] |
+| 2 | [9, 20] | Process: [9, 20] |
+| 3 | [15, 7] | Process: [15, 7] |
 
 **Solution:**
 

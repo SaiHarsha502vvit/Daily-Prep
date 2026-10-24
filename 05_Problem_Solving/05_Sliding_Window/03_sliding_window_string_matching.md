@@ -55,20 +55,17 @@ public boolean checkInclusion(String s1, String s2) {
 
 **MINIMUM WINDOW SUBSTRING**
 
-```text
-Find minimum window in s that contains all characters of t.
+Find the minimum window in `s` that contains all characters of `t`.
 
-Input: s = "ADOBECODEBANC", t = "ABC"
-Output: "BANC"
+- **Input:** `s = "ADOBECODEBANC"`, `t = "ABC"`
+- **Output:** `"BANC"`
 
-Visual:
-ADOBECODEBANC
-A   ─┘    (has A, need B,C)
-ADOBEC    (has A,B,C - valid, len=6)
- DOBEC    (no A - invalid)
-...
-       BANC  (has A,B,C - valid, len=4) ← MIN
-```
+| Window | Has A, B, C? | Length | Action |
+| --- | --- | --- | --- |
+| `ADOBEC` | Yes | 6 | Valid; shrink from the left |
+| `DOBEC` | No (lost A) | 5 | Invalid; expand right |
+| `ODEBANC` | Yes | 7 | Valid; shrink from the left |
+| `BANC` | Yes | 4 | **Minimum**; shrinking more loses B |
 
 ```java
 public String minWindow(String s, String t) {

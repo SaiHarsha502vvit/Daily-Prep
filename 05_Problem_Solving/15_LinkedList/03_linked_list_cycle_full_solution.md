@@ -6,22 +6,31 @@
 
 **LeetCode 141** 🔗 <https://leetcode.com/problems/linked-list-cycle/>
 
+**Problem (formal).** Given the head of a singly linked list, determine whether the list contains a cycle. A cycle exists if some node `vⱼ.next = vᵢ` where `i ≤ j`.
+
+- **Input:** the head of a singly linked list.
+- **Output:** `true` if a cycle exists, `false` otherwise.
+
+**Examples**
+
+```mermaid
+flowchart LR
+  a3["3"] --> a2["2"] --> a0["0"] --> am4["-4"]
+  am4 --> a2
 ```
-PROBLEM (formal):
-  Given head of a singly linked list, determine if the list contains a cycle.
-  A cycle exists if some node vⱼ.next = vᵢ where i ≤ j.
 
-INPUT:  head of a singly linked list
-OUTPUT: true if cycle exists, false otherwise
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
 
-EXAMPLES:
-  [3] → [2] → [0] → [-4] ─┐        Input: head = [3,2,0,-4], pos = 1
-       ↑                     │       Output: true
-       └─────────────────────┘
+**Input:** `head = [3,2,0,-4]`, `pos = 1`. **Output:** `true`. The tail (`-4`) points back to the node at index 1 (`2`).
 
-  [1] → [2] → null                   Input: head = [1,2], pos = -1
-                                      Output: false
+```mermaid
+flowchart LR
+  b1["1"] --> b2["2"] --> bn["null"]
 ```
+
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
+
+**Input:** `head = [1,2]`, `pos = -1`. **Output:** `false`. The list ends at `null`.
 
 **OBSERVATION 1:** If we use two pointers at different speeds, in a cycle they MUST eventually meet (like runners on a circular track).
 

@@ -366,18 +366,23 @@ Sizing is engineerable, not guesswork: false-positive rate ≈ `(1 − e^(−kn/
 Ten stories, five recurring shapes. These are what you should actually retain.
 
 ### Pattern A — Hidden quadratics (Stories 1, 5)
+
 An O(n) operation inside an O(n) loop, or a per-item fan-out that scales with a second dimension. **Invisible in review, catastrophic at scale.** Diagnostic question: *what is the complexity of every call inside this loop?*
 
 ### Pattern B — Exactness is unaffordable (Stories 2, 10)
+
 When exact answers provably need too much space, relax exactness — and **choose the error direction deliberately**. Diagnostic question: *does the consumer of this answer actually need it exact, and which way may it be wrong?*
 
 ### Pattern C — Synchronized independent actors (Stories 3, 6, 9)
+
 Many clients sharing a deadline (cache expiry, window boundary, retry schedule) create load spikes that no individual actor intends. **Randomization/jitter is the cure.** Diagnostic question: *do many independent parties act on the same clock here?*
 
 ### Pattern D — Skewed distributions break uniform strategies (Stories 4, 5)
+
 Power laws — celebrity accounts, hot keys, whale tenants — defeat designs that assume uniformity. **Special-case the head; keep the simple strategy for the tail.** Diagnostic question: *what does the 99.9th percentile of this distribution look like?*
 
 ### Pattern E — Monotonic predicates unlock binary search (Story 8)
+
 Any "where in this large space" question with a monotone test collapses from linear to logarithmic. Diagnostic question: *is there a yes/no test whose answer flips exactly once across this space?*
 
 ---

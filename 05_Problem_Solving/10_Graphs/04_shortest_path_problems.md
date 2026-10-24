@@ -16,22 +16,16 @@
 
 **LeetCode 542** 🔗 https://leetcode.com/problems/01-matrix/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  01 MATRIX - Distance to nearest 0 for each cell               │
-├────────────────────────────────────────────────────────────────┤
-│  Input:                  Output:                               │
-│  ┌───┬───┬───┐           ┌───┬───┬───┐                         │
-│  │ 0 │ 0 │ 0 │           │ 0 │ 0 │ 0 │                         │
-│  ├───┼───┼───┤           ├───┼───┼───┤                         │
-│  │ 0 │ 1 │ 0 │     →     │ 0 │ 1 │ 0 │                         │
-│  ├───┼───┼───┤           ├───┼───┼───┤                         │
-│  │ 1 │ 1 │ 1 │           │ 1 │ 2 │ 1 │                         │
-│  └───┴───┴───┘           └───┴───┴───┘                         │
-│                                                                │
-│  Multi-source BFS from all 0s simultaneously                   │
-└────────────────────────────────────────────────────────────────┘
-```
+### 01 MATRIX - Distance to nearest 0 for each cell
+
+Input:                  Output:
+
+| 0 | 0 | 0 |  | 0 | 0 | 0 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0 | 1 | 0 | → | 0 | 1 | 0 |
+| 1 | 1 | 1 |  | 1 | 2 | 1 |
+
+Multi-source BFS from all 0s simultaneously
 
 **Solution:**
 
@@ -78,28 +72,28 @@ public int[][] updateMatrix(int[][] mat) {
 
 **LeetCode 1091** 🔗 https://leetcode.com/problems/shortest-path-in-binary-matrix/
 
+### Shortest Path in Binary Matrix
+
+Find shortest clear path from top-left to bottom-right  
+Can move in 8 directions (including diagonals)  
+0 = clear, 1 = blocked
+
+```java
+grid = [[0,0,0],
+        [1,1,0],
+        [1,1,0]]
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  SHORTEST PATH IN BINARY MATRIX                                │
-├────────────────────────────────────────────────────────────────┤
-│  Find shortest clear path from top-left to bottom-right        │
-│  Can move in 8 directions (including diagonals)                │
-│  0 = clear, 1 = blocked                                        │
-│                                                                │
-│  grid = [[0,0,0],                                              │
-│          [1,1,0],                                              │
-│          [1,1,0]]                                              │
-│                                                                │
-│  Path: (0,0)→(0,1)→(0,2)→(1,2)→(2,2)                           │
-│  ┌───┬───┬───┐                                                 │
-│  │ S │ * │ * │                                                 │
-│  ├───┼───┼───┤   Length = 4                                    │
-│  │ █ │ █ │ * │                                                 │
-│  ├───┼───┼───┤                                                 │
-│  │ █ │ █ │ E │                                                 │
-│  └───┴───┴───┘                                                 │
-└────────────────────────────────────────────────────────────────┘
-```
+
+Path: (0,0) → (0,1) → (0,2) → (1,2) → (2,2). That is **5 cells** (4 moves), and LeetCode counts the cells, so the answer is 5.
+
+| | c0 | c1 | c2 |
+| --- | --- | --- | --- |
+| **r0** | S | * | * |
+| **r1** | █ | █ | * |
+| **r2** | █ | █ | E |
+
+(`S` = start, `E` = end, `*` = path, `█` = blocked.)
+
 
 **Solution:**
 
@@ -144,27 +138,29 @@ public int shortestPathBinaryMatrix(int[][] grid) {
 
 **LeetCode 743** 🔗 https://leetcode.com/problems/network-delay-time/
 
+**NETWORK DELAY TIME - Dijkstra's Algorithm**
+
+`times = [[2,1,1],[2,3,1],[3,4,1]]`, `n = 4`, `k = 2`
+
+```mermaid
+flowchart LR
+  n2((2)) -->|"1"| n1((1))
+  n2 -->|"1"| n3((3))
+  n3 -->|"1"| n4((4))
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  NETWORK DELAY TIME - Dijkstra's Algorithm                     │
-├────────────────────────────────────────────────────────────────┤
-│  times = [[2,1,1],[2,3,1],[3,4,1]], n=4, k=2                   │
-│                                                                │
-│       1 ←──(1)── 2                                             │
-│                  │                                             │
-│                 (1)                                            │
-│                  ↓                                             │
-│                  3 ──(1)──→ 4                                  │
-│                                                                │
-│  Start from node 2:                                            │
-│  - Node 2: time 0                                              │
-│  - Node 1: time 1 (via 2→1)                                    │
-│  - Node 3: time 1 (via 2→3)                                    │
-│  - Node 4: time 2 (via 2→3→4)                                  │
-│                                                                │
-│  All nodes reached, max time = 2                               │
-└────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Each arrow is a directed edge `u → v` labelled with its travel time.
+
+Start from node 2:
+
+| Node | Time | Path |
+| --- | --- | --- |
+| 2 | 0 | start |
+| 1 | 1 | 2 → 1 |
+| 3 | 1 | 2 → 3 |
+| 4 | 2 | 2 → 3 → 4 |
+
+All nodes are reached, and the maximum time is **2**.
 
 **Solution:**
 
@@ -220,33 +216,27 @@ public int networkDelayTime(int[][] times, int n, int k) {
 
 **LeetCode 787** 🔗 https://leetcode.com/problems/cheapest-flights-within-k-stops/
 
+**Cheapest flights within K stops**
+
+`n = 4`, `flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]]`, `src = 0`, `dst = 3`, `k = 1`.
+
+```mermaid
+flowchart LR
+  f0((0)) -->|100| f1((1))
+  f1 -->|100| f2((2))
+  f2 -->|100| f0
+  f1 -->|600| f3((3))
+  f2 -->|200| f3
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  CHEAPEST FLIGHTS WITHIN K STOPS                               │
-├────────────────────────────────────────────────────────────────┤
-│  n = 4, flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,600],    │
-│                    [2,3,200]]                                  │
-│  src = 0, dst = 3, k = 1                                       │
-│                                                                │
-│       ┌────(100)────┐                                          │
-│       ↓             │                                          │
-│       1 ──(600)──→ 3                                           │
-│       │             ↑                                          │
-│     (100)         (200)                                        │
-│       ↓             │                                          │
-│       2 ────────────┘                                          │
-│       │                                                        │
-│     (100)                                                      │
-│       ↓                                                        │
-│       0                                                        │
-│                                                                │
-│  With at most 1 stop:                                          │
-│  - 0→1→3 = 700 (1 stop)                                        │
-│  - 0→1→2→3 = 400 but has 2 stops ✗                             │
-│                                                                │
-│  Output: 700                                                   │
-└────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Each arrow is a flight and its label is the price.
+
+With at most 1 stop (at most 2 flights):
+
+- 0 → 1 → 3 costs 700 and has 1 stop ✓.
+- 0 → 1 → 2 → 3 costs 400 but has 2 stops ✗.
+
+Output: **700**.
 
 **Solution (Modified Dijkstra):**
 

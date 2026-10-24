@@ -57,7 +57,7 @@ The body already lists some edge cases; this section formalizes them with exampl
 
 | # | Edge Case | Example | What Can Break |
 |---|---|---|---|
-| 1 | **Empty matrix** (`m = 0 || n = 0`) | `new int[0][5]` | Loop never enters; Kadane's returns 0; spiral returns empty list |
+| 1 | **Empty matrix** (`m = 0 \|\| n = 0`) | `new int[0][5]` | Loop never enters; Kadane's returns 0; spiral returns empty list |
 | 2 | **Single cell** (`m = n = 1`) | `[[42]]` | All algorithms should return the cell's value |
 | 3 | **Single row** (`m = 1, n > 1`) | `[[1, 2, 3]]` | Spiral returns [1, 2, 3] in order; rotate returns same row |
 | 4 | **Single column** (`m > 1, n = 1`) | `[[1], [2], [3]]` | Spiral returns [1, 2, 3] in order; rotate returns same column |

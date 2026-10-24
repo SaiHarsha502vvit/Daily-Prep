@@ -136,29 +136,24 @@ Steps:
 2. SWAP one element from OPT with the greedy choice
 3. Show the result is AT LEAST AS GOOD as OPT
 4. Conclude: greedy choice can always be in an optimal solution
-   FULL PROOF — Activity Selection Exchange Argument:
-   Greedy picks activity 'g' with EARLIEST finish time.
-   Suppose OPT starts with activity 'o' instead (ends later than g).
-   g
-   o
-   rest of OPT
-   SWAP 'o' with 'g' in OPT:
-   g
-   rest of OPT──── (still compatible! g ends EARLIER)
-   Result: Same number of activities, no conflicts.
-   → OPT with 'g' is at least as good as OPT with 'o'. ∎
-   METHOD 2: GREEDY STAYS AHEAD
-   Show: After each step k, greedy's partial solution ≥ any alternative's.
-   "Greedy is always at least as far ahead as any other strategy."
-   Example: Greedy coin change for US coins.
-   After choosing each coin, the remaining amount is always smaller
-   than any other strategy's remaining amount.
-   METHOD 3: STRUCTURAL / MATROID THEORY
-   If the problem has MATROID structure (independence system where
-   "subsets of valid sets are valid"), greedy is GUARANTEED optimal.
-   Examples: MST (graphic matroid), scheduling on uniform machines.
-   For interviews: Pattern recognition. "This looks like Activity
-   Selection / Huffman / Interval Partitioning → greedy works."
+**Full proof: activity selection exchange argument**
+
+Greedy picks activity `g`, the one with the **earliest finish time**. Suppose an optimal solution OPT starts with a different activity `o` that finishes later than `g`.
+
+| Schedule | First activity | Remaining activities |
+| --- | --- | --- |
+| OPT | `o` | rest of OPT |
+| OPT after the swap | `g` | rest of OPT (still compatible, because `g` ends **earlier** than `o`) |
+
+Result: the same number of activities and no conflicts, so OPT with `g` is at least as good as OPT with `o`. ∎
+
+**Method 2: greedy stays ahead.** Show that after each step `k`, greedy's partial solution is at least as good as any alternative's. "Greedy is always at least as far ahead as any other strategy."
+
+Example: greedy coin change for US coins. After choosing each coin, the remaining amount is never larger than under any other strategy.
+
+**Method 3: structural / matroid theory.** If the problem has matroid structure (an independence system where subsets of valid sets are valid and the exchange property holds), greedy is **guaranteed** to find an optimal solution. Example: minimum spanning tree (the graphic matroid).
+
+For interviews, rely on pattern recognition: "This looks like activity selection, Huffman coding or interval partitioning, so greedy works."
 
 🔬 **Section Challenge — How To Prove Greedy Works: Three Methods**
 

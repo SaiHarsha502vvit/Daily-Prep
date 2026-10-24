@@ -465,22 +465,20 @@ Fix: **Randomize the hash seed per process startup.** Python 3.3+, Java 7u6+, Ru
 
 ## Summary
 
-```
-Concept                        │ Key Fact
-───────────────────────────────┼──────────────────────────────────────────────
-Las Vegas                      │ Always correct, random runtime
-Monte Carlo                    │ Always fast, sometimes wrong (probability ε)
-Markov's inequality            │ Pr[X ≥ t] ≤ E[X]/t — LV → MC conversion
-Linearity of expectation       │ E[X+Y] = E[X]+E[Y], even if dependent
-Indicator random variables     │ E[Σ Iᵢ] = Σ Pr[Aᵢ] — decompose complex expectations
-Randomized quicksort           │ O(n log n) expected comparisons, provably
-Proof key: Pr[i,j compared]    │ 2/(j-i+1) — both elegant and exact
-Universal hashing              │ Pr[h(x)=h(y)] ≤ 1/m for random h from family H
-Skip list expected height      │ O(log n) — n·(1/2)ᵏ < 1 when k > log n
-Bloom filter false positive    │ ≈ (1 - e^{-kn/m})^k, minimized by k=(m/n)ln2
-Randomization vs adversary     │ Enemy can't predict random choices → no worst case
-Yao minimax                    │ Best rand algo = best det algo on best distribution
-```
+| Concept | Key Fact |
+| --- | --- |
+| Las Vegas | Always correct, random runtime |
+| Monte Carlo | Always fast, sometimes wrong (probability ε) |
+| Markov's inequality | Pr[X ≥ t] ≤ E[X]/t — LV → MC conversion |
+| Linearity of expectation | E[X+Y] = E[X]+E[Y], even if dependent |
+| Indicator random variables | E[Σ Iᵢ] = Σ Pr[Aᵢ] — decompose complex expectations |
+| Randomized quicksort | O(n log n) expected comparisons, provably |
+| Proof key: Pr[i,j compared] | 2/(j-i+1) — both elegant and exact |
+| Universal hashing | Pr[h(x)=h(y)] ≤ 1/m for random h from family H |
+| Skip list expected height | O(log n) — n·(1/2)ᵏ < 1 when k > log n |
+| Bloom filter false positive | ≈ (1 - e^{-kn/m})^k, minimized by k=(m/n)ln2 |
+| Randomization vs adversary | Enemy can't predict random choices → no worst case |
+| Yao minimax | Best rand algo = best det algo on best distribution |
 
 ---
 

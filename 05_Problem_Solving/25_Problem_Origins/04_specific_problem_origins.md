@@ -53,7 +53,8 @@ THIS BECAME:
 **Who picks:** The interviewer's constraint or the problem variant. **Approach A (HashMap):** Add each element's value → index to map. For each element, check if `target - nums[i]` is in map. O(n) time, O(n) space. Returns actual indices. Works on any array (sorted or not). **Approach B (Two-Pointer):** Sort the array. Use `lo` and `hi` pointers. If `arr[lo] + arr[hi] == target`, found. If sum < target, `lo++`. If sum > target, `hi--`. O(n log n) sort + O(n) scan = O(n log n) total. O(1) extra space. **When approach B FAILS:** When you need to return the ORIGINAL indices (not values). Sorting destroys the original indices. You'd need to store index mappings, negating the space benefit. **When approach B is PREFERRED:** LC 167 (Two Sum II — Input Array Is Sorted): already sorted, no extra space needed. Any problem where you only need values, not indices. **Key constraint:** "Return indices" → HashMap approach. "Return values only" on sorted array → two-pointer. The two-pointer technique generalizes to 3Sum, 4Sum by adding outer loops.
 
 </details>
-<details><summary>Answer</summary>
+
+<details><summary>More detail</summary>
 
 The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
 

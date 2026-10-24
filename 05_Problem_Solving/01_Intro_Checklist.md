@@ -221,24 +221,25 @@ The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3S
 
 ### Problem 3: Longest Substring Without Repeating Characters
 
-```
-PROBLEM: Longest Substring Without Repeating Characters
-──────────────────────────────────────────────────
+**Problem:** Longest Substring Without Repeating Characters
 
-Input: "abcabcbb"
-Output: 3 ("abc")
+- **Input:** `"abcabcbb"`
+- **Output:** `3` (`"abc"`)
 
-Visual:
-a b c a b c b b
-↑─────↑
-└─────┘ "abc" length 3
+When we see a repeat, shrink the window from the left.
 
-  ↑───────↑
-  └───────┘ "bca" length 3
+| `right` | Char | Window after the step | Length |
+| --- | --- | --- | --- |
+| 0 | a | `a` | 1 |
+| 1 | b | `ab` | 2 |
+| 2 | c | `abc` | 3 |
+| 3 | a | `bca` (dropped the old `a`) | 3 |
+| 4 | b | `cab` (dropped the old `b`) | 3 |
+| 5 | c | `abc` (dropped the old `c`) | 3 |
+| 6 | b | `cb` (dropped through the old `b`) | 2 |
+| 7 | b | `b` | 1 |
 
-When we see repeat, shrink window from left
-
-```
+The maximum length is 3.
 
 **Try it yourself first!**
 
@@ -277,27 +278,17 @@ public int lengthOfLongestSubstring(String s) {
 
 ### Problem 4: Maximum Sum of Subarray of Size K
 
-```
-PROBLEM: Maximum Sum Subarray of Size K
-──────────────────────────────────────────────────
+**Problem:** Maximum Sum Subarray of Size K
 
-Input: arr = [2, 1, 5, 1, 3, 2], k = 3
-Output: 9 (subarray [5, 1, 3])
+- **Input:** `arr = [2, 1, 5, 1, 3, 2]`, `k = 3`
+- **Output:** `9` (subarray `[5, 1, 3]`)
 
-Visual:
-┌─────────┐
-2  1  5  1  3  2     sum = 8
-└─────────┘
-
-   ┌─────────┐
-2  1  5  1  3  2     sum = 7
-   └─────────┘
-
-      ┌─────────┐
-2  1  5  1  3  2     sum = 9 ⭐ MAX
-      └─────────┘
-
-```
+| Window | Sum |
+| --- | --- |
+| `[2, 1, 5]` | 8 |
+| `[1, 5, 1]` | 7 |
+| `[5, 1, 3]` | **9** ⭐ max |
+| `[1, 3, 2]` | 6 |
 
 **Try it yourself first!**
 
@@ -350,29 +341,25 @@ Should shrink `while(valid)` to find the minimum window — this is correct! But
 
 ### Problem 5: Search in Rotated Sorted Array
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Search in Rotated Sorted Array                                  ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Array was sorted, then rotated at some pivot.                            ║
-║  Find target in O(log N).                                                 ║
-║                                                                           ║
-║  Original: [0, 1, 2, 4, 5, 6, 7]                                          ║
-║  Rotated:  [4, 5, 6, 7, 0, 1, 2]  (rotated at pivot 4)                    ║
-║  Target: 0                                                                ║
-║  Output: 4 (index of 0)                                                   ║
-║                                                                           ║
-║  Key insight: One half is ALWAYS sorted!                                  ║
-║                                                                           ║
-║  [4, 5, 6, 7, 0, 1, 2]                                                    ║
-║   ↑        ↑        ↑                                                     ║
-║  low      mid     high                                                    ║
-║                                                                           ║
-║  Left half [4,5,6,7] is sorted (arr[low] <= arr[mid])                     ║
-║  Check if target is in sorted half, else search other half                ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Search in Rotated Sorted Array**
+
+```text
+Array was sorted, then rotated at some pivot.
+Find target in O(log N).
+
+Original: [0, 1, 2, 4, 5, 6, 7]
+Rotated:  [4, 5, 6, 7, 0, 1, 2]  (rotated at pivot 4)
+Target: 0
+Output: 4 (index of 0)
+
+Key insight: One half is ALWAYS sorted!
+
+[4, 5, 6, 7, 0, 1, 2]
+ ↑        ↑        ↑
+low      mid     high
+
+Left half [4,5,6,7] is sorted (arr[low] <= arr[mid])
+Check if target is in sorted half, else search other half
 ```
 
 **Try it yourself first!**
@@ -584,24 +571,20 @@ public int[] productExceptSelf(int[] nums) {
 
 ### Problem 9: Valid Palindrome
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Valid Palindrome                                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Check if string is palindrome (considering only alphanumeric, ignore     ║
-║  case).                                                                   ║
-║                                                                           ║
-║  Input: "A man, a plan, a canal: Panama"                                  ║
-║  Output: true                                                             ║
-║                                                                           ║
-║  After cleaning: "amanaplanacanalpanama"                                  ║
-║                   ↑                   ↑                                   ║
-║                  left              right                                  ║
-║                                                                           ║
-║  Two pointers from both ends, skip non-alphanumeric                       ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Valid Palindrome**
+
+```text
+Check if string is palindrome (considering only alphanumeric, ignore
+case).
+
+Input: "A man, a plan, a canal: Panama"
+Output: true
+
+After cleaning: "amanaplanacanalpanama"
+                 ↑                   ↑
+                left              right
+
+Two pointers from both ends, skip non-alphanumeric
 ```
 
 **Try it yourself first!**

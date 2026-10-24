@@ -6,97 +6,66 @@
 
 ## Basic Concepts
 
+**Complexity classes**
+
+| Class | Meaning | Examples |
+| --- | --- | --- |
+| **P** (polynomial) | Problems solvable in polynomial time | Sorting, searching, shortest path |
+| **NP** (nondeterministic polynomial) | Solutions verifiable in polynomial time | SAT, Traveling Salesman (decision version), graph coloring |
+| **NP-Complete** | The hardest problems in NP. If any NP-Complete problem is solved in P, then P = NP | SAT, 3-SAT, Vertex Cover, Hamiltonian Cycle |
+| **NP-Hard** | At least as hard as NP-Complete. May not be in NP (a solution may not be verifiable in polynomial time) | Halting Problem, TSP optimization |
+
+```mermaid
+flowchart TB
+  subgraph NPH["NP-Hard"]
+    subgraph NPS["NP"]
+      subgraph PS["P"]
+        p1["Sorting, shortest path"]
+      end
+      subgraph NPC["NP-Complete"]
+        c1["SAT, 3-SAT, Vertex Cover"]
+      end
+    end
+    h1["Outside NP: Halting Problem, TSP optimization"]
+  end
 ```
-COMPLEXITY CLASSES:
 
-P (Polynomial):
-  - Problems solvable in polynomial time
-  - Examples: Sorting, Searching, Shortest Path
-
-NP (Nondeterministic Polynomial):
-  - Solutions verifiable in polynomial time
-  - Examples: SAT, Traveling Salesman, Graph Coloring
-
-NP-Complete:
-  - Hardest problems in NP
-  - If any NP-Complete solved in P → P = NP
-  - Examples: SAT, 3-SAT, Vertex Cover, Hamiltonian Cycle
-
-NP-Hard:
-  - At least as hard as NP-Complete
-  - May not be in NP (not verifiable in poly time)
-  - Examples: Halting Problem, TSP Optimization
-
-┌─────────────────────────────────────────┐
-│                 NP-Hard                 │
-│         ┌───────────────────┐           │
-│         │   NP-Complete     │           │
-│    ┌────┼──────┐            │           │
-│    │ P  │      │    NP      │           │
-│    │    │      │            │           │
-│    └────┼──────┘            │           │
-│         └───────────────────┘           │
-└─────────────────────────────────────────┘
-        (If P ≠ NP, which is believed)
-```
+**How to read this diagram.** P sits inside NP, and NP-Complete is the part of NP that is also NP-Hard. NP-Hard extends beyond NP. This picture assumes P ≠ NP, which is believed but unproven.
 
 ## Cook's Theorem
 
-```
-COOK'S THEOREM (1971):
-SAT (Boolean Satisfiability) is NP-Complete.
+**Cook's theorem (1971):** SAT (Boolean satisfiability) is NP-Complete.
 
-SIGNIFICANCE:
-- First problem proven to be NP-Complete
-- All other NP-Complete proofs reduce FROM SAT
+**Significance**
 
-SAT PROBLEM:
-Given a Boolean formula, is there an assignment
-of TRUE/FALSE to variables that makes it TRUE?
+- It was the first problem proven to be NP-Complete.
+- All other NP-Complete proofs reduce *from* SAT (directly or through a chain).
 
-Example: (x₁ ∨ ¬x₂) ∧ (¬x₁ ∨ x₃) ∧ (x₂ ∨ x₃)
-Solution: x₁=TRUE, x₂=FALSE, x₃=TRUE
+**SAT problem.** Given a Boolean formula, is there an assignment of TRUE/FALSE to the variables that makes it TRUE?
 
-3-SAT:
-Each clause has exactly 3 literals.
-Also NP-Complete.
+- Example: `(x₁ ∨ ¬x₂) ∧ (¬x₁ ∨ x₃) ∧ (x₂ ∨ x₃)`
+- Solution: `x₁ = TRUE`, `x₂ = FALSE`, `x₃ = TRUE`
 
-PROVING NP-COMPLETENESS:
-1. Show problem is in NP (solution verifiable in poly time)
-2. Reduce known NP-Complete problem TO your problem
-3. The reduction must be polynomial time
-```
+**3-SAT:** each clause has exactly 3 literals. It is also NP-Complete.
+
+**Proving NP-completeness**
+
+1. Show the problem is in NP (a solution is verifiable in polynomial time).
+2. Reduce a known NP-Complete problem *to* your problem.
+3. The reduction must run in polynomial time.
 
 ## Famous NP-Complete Problems
 
-```
-1. SATISFIABILITY (SAT)
-   Input: Boolean formula
-   Question: Is there a satisfying assignment?
+| # | Problem | Input | Question |
+| --- | --- | --- | --- |
+| 1 | Satisfiability (SAT) | A Boolean formula | Is there a satisfying assignment? |
+| 2 | Vertex Cover | Graph `G`, integer `k` | Is there a set of at most `k` vertices covering all edges? |
+| 3 | Clique | Graph `G`, integer `k` | Is there a complete subgraph of size `k`? |
+| 4 | Hamiltonian Cycle | Graph `G` | Is there a cycle visiting every vertex exactly once? |
+| 5 | Subset Sum | A set of integers, target sum `S` | Is there a subset summing to `S`? |
+| 6 | Graph Coloring | Graph `G`, integer `k` | Can the vertices be colored with `k` colors so that no adjacent vertices share a color? |
 
-2. VERTEX COVER
-   Input: Graph G, integer k
-   Question: Is there a set of ≤k vertices covering all edges?
-
-3. CLIQUE
-   Input: Graph G, integer k
-   Question: Is there a complete subgraph of size k?
-
-4. HAMILTONIAN CYCLE
-   Input: Graph G
-   Question: Is there a cycle visiting all vertices exactly once?
-
-5. SUBSET SUM
-   Input: Set of integers, target sum S
-   Question: Is there a subset summing to S?
-
-6. GRAPH COLORING
-   Input: Graph G, integer k
-   Question: Can vertices be colored with k colors (no adjacent same)?
-
-REDUCTION CHAIN:
-SAT → 3-SAT → CLIQUE → VERTEX COVER → HAMILTONIAN → TSP
-```
+**Reduction chain:** SAT → 3-SAT → Clique → Vertex Cover → Hamiltonian Cycle → TSP
 
 ---
 

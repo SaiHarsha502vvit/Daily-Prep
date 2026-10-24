@@ -314,10 +314,12 @@ private static void dfsIsland(int[][] grid, int r, int c,
 
 **Common edge cases:**
 
-| | | |
-| --- | --- | --- |
-| Empty matrix | Single cell | All cells are the same value |
-| No valid path exists | Target not found | Wrap-around boundaries |
+- Empty matrix
+- Single cell
+- All cells are the same value
+- No valid path exists
+- Target not found
+- Wrap-around boundaries
 
 ---
 

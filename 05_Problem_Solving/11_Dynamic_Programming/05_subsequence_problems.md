@@ -168,29 +168,25 @@ public int longestPalindromeSubseq(String s) {
 
 **LeetCode 309** 🔗 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
 
+**Best time to buy and sell stock with cooldown**
+
+`prices = [1, 2, 3, 0, 2]`. After selling, you must wait one day before buying again.
+
+```mermaid
+stateDiagram-v2
+  [*] --> REST
+  REST --> HOLD : buy
+  HOLD --> COOLDOWN : sell
+  COOLDOWN --> REST : wait one day
+  REST --> REST : do nothing
+  HOLD --> HOLD : do nothing
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  STOCK WITH COOLDOWN                                           │
-├────────────────────────────────────────────────────────────────┤
-│  prices = [1, 2, 3, 0, 2]                                      │
-│  After sell, must wait 1 day before buying again               │
-│                                                                │
-│  States:                                                       │
-│  ┌─────────┐    buy    ┌─────────┐                             │
-│  │  REST   │ ────────→ │  HOLD   │                             │
-│  └─────────┘           └─────────┘                             │
-│       ↑                     │                                  │
-│       │                    sell                                │
-│       │                     │                                  │
-│       │    ┌─────────┐      │                                  │
-│       └────│ COOLDOWN│ ←────┘                                  │
-│            └─────────┘                                         │
-│                                                                │
-│  rest[i] = max(rest[i-1], cool[i-1])                           │
-│  hold[i] = max(hold[i-1], rest[i-1] - price)                   │
-│  cool[i] = hold[i-1] + price                                   │
-└────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** On each day you are in one of three states. Buying moves you from REST to HOLD, selling moves you from HOLD to COOLDOWN, and the cooldown day always leads back to REST.
+
+- `rest[i] = max(rest[i-1], cool[i-1])`
+- `hold[i] = max(hold[i-1], rest[i-1] - price)`
+- `cool[i] = hold[i-1] + price`
 
 **Solution:**
 

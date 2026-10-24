@@ -392,16 +392,19 @@ Total operations = 2n → O(n)
 ## When Monotonic Stack/Queue Breaks
 
 ### 1. Wrong Monotonic Direction — Increasing vs Decreasing
+
 **What breaks**: "Next Greater Element" requires a *decreasing* monotonic stack (pop when arr[i] > stack.top). Using an *increasing* stack instead produces "Next Smaller Element." The direction is load-bearing and the bug is silent — results look plausible but are systematically wrong.
 **Mnemonic**: "What do I pop for?" If you pop when you find something BIGGER → the popped elements needed BIGGER → you're finding next greater. If you pop when you find something SMALLER → finding next smaller.
 
 ### 2. Sliding Window Max — Queue Direction and Window Expiry
+
 **What breaks**: Monotonic deque for sliding window max must:
   a. Pop from FRONT when `deque.peekFirst() < i - k` (element left the window).
   b. Pop from BACK when `arr[i] >= arr[deque.peekLast()]` (new element dominates older smaller ones).
 Swapping a or b causes wrong answers — missing expired elements or keeping dominated elements.
 
 ### 3. Storing Values Instead of Indices
+
 **What breaks**: Storing `arr[i]` in the deque instead of `i`. When you need to check if an element is outside the sliding window (`deque.peekFirst() < i - k`), you can't — you stored the value, not the index.
 **Fix**: Always store indices in the deque. Access the value via `arr[deque.peekFirst()]`.
 

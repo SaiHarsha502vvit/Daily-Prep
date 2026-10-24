@@ -447,32 +447,23 @@ class Solution {
 
 **WHEN TO USE A HEAP — DECISION FLOWCHART**
 
-**Need to repeatedly find min/max of a dynamic collection?**
+```mermaid
+flowchart TD
+  Q{"Need to repeatedly find the min or max of a dynamic collection?"}
+  Q -->|Yes| H["Use a heap (PriorityQueue)"]
+  H --> B1["Need BOTH min and max? Two heaps or a TreeMap"]
+  H --> B2["Need fast delete(obj)? TreeMap (a heap's remove is O(n))"]
+  H --> B3["Need the median? Two-heaps pattern"]
+  Q -->|No| N["Check the specific situation"]
+  N --> K["Top K elements: min-heap of size K, O(n log k) when K is small and N large; just sort, O(n log n), when K is close to N; a heap if the data is streaming"]
+  N --> M["Merging K sorted sequences: min-heap of the K heads"]
+  N --> G["Greedy, always pick the best available: sort once if priority is fixed; heap if priorities change or items are reinserted"]
+  N --> W["Sliding-window min or max: monotonic deque for O(n); heap with lazy deletion if O(n log n) is fine"]
+  N --> D["Dijkstra or Prim: min-heap for edge relaxation"]
+```
 
-- YES ─→ Use a Heap (PriorityQueue)
+**How to read this diagram.** Start with the question. Yes leads to a heap and its refinements; No leads to the situations where a heap is still, or is not, the right tool.
 
-- Need BOTH min and max? ─→ Two heaps or TreeMap
-- Need fast delete(obj)?  ─→ TreeMap (not heap — O(n) remove!)
-- Need median?           ─→ Two heaps pattern
-
-- NO
-
-  - Need top K elements? ─────────────────────────────────────
-- K is small, N is large? ─→ Min-heap of size K: O(n log k)
-- K ≈ N?                  ─→ Just sort: O(n log n)
-- Online/streaming?       ─→ Heap (can't sort unseen data)
-
-  - Merging K sorted sequences?  ─→ Min-heap of K heads
-
-  - Greedy: always pick best available?
-- Fixed priority? ─→ Sort once
-- Dynamic priority / reinsertions? ─→ Heap
-
-  - Sliding window min/max?
-- O(n) needed?   ─→ Monotonic Deque (not heap!)
-- O(n log n) OK? ─→ Heap with lazy deletion
-
-  - Dijkstra / Prim?    ─→ Min-heap for edge relaxation
 
 ### Problem Pattern Quick Reference
 

@@ -107,22 +107,16 @@ Time: O(n log n) for sort + O(n) scan = O(n log n)
 **LeetCode 167** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/)
 
-TWO SUM II - SORTED ARRAY
+**Two Sum II: sorted array.** The array is sorted. Find two numbers that add to `target` and return their 1-indexed positions.
 
-Array is SORTED. Find two numbers that add to target.
-Return 1-indexed positions.
+Input: `numbers = [2, 7, 11, 15]`, `target = 9`. Output: `[1, 2]`.
 
-Input: numbers = [2, 7, 11, 15], target = 9
-Output: [1, 2]
+| Step | `L` | `R` | Sum | Decision |
+| --- | --- | --- | --- | --- |
+| 1 | 0 (2) | 3 (15) | 17 > 9 | Move `R` left |
+| 2 | 0 (2) | 2 (11) | 13 > 9 | Move `R` left |
+| 3 | 0 (2) | 1 (7) | 9 = target ✓ | Found |
 
-Visual:
-[2, 7, 11, 15]
-↑ ↑
-L R sum=17 > 9, move R left
-↑ ↑
-L R sum=13 > 9, move R left
-↑ ↑
-L R sum=9 = target ✓
 
 ```java
 public int[] twoSum(int[] numbers, int target) {
@@ -149,26 +143,22 @@ public int[] twoSum(int[] numbers, int target) {
 **LeetCode 15** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/3sum/](https://leetcode.com/problems/3sum/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  3SUM                                                                     ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find all unique triplets that sum to zero.                               ║
-║                                                                           ║
-║  Input: nums = [-1, 0, 1, 2, -1, -4]                                      ║
-║  Output: [[-1, -1, 2], [-1, 0, 1]]                                        ║
-║                                                                           ║
-║  Algorithm:                                                               ║
-║  1. Sort the array                                                        ║
-║  2. Fix one element, use two pointers for remaining                       ║
-║  3. Skip duplicates to avoid duplicate triplets                           ║
-║                                                                           ║
-║  Sorted: [-4, -1, -1, 0, 1, 2]                                            ║
-║           ↑   ↑            ↑                                              ║
-║           i   L            R                                              ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**3SUM**
+
+```text
+Find all unique triplets that sum to zero.
+
+Input: nums = [-1, 0, 1, 2, -1, -4]
+Output: [[-1, -1, 2], [-1, 0, 1]]
+
+Algorithm:
+1. Sort the array
+2. Fix one element, use two pointers for remaining
+3. Skip duplicates to avoid duplicate triplets
+
+Sorted: [-4, -1, -1, 0, 1, 2]
+         ↑   ↑            ↑
+         i   L            R
 ```
 
 ```java
@@ -433,24 +423,20 @@ public int triangleNumber(int[] nums) {
 **LeetCode 26** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/remove-duplicates-from-sorted-array/](https://leetcode.com/problems/remove-duplicates-from-sorted-array/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  REMOVE DUPLICATES FROM SORTED ARRAY                                      ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Remove duplicates in-place. Return new length.                           ║
-║                                                                           ║
-║  Input: nums = [1, 1, 2]                                                  ║
-║  Output: 2, nums = [1, 2, _]                                              ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  [1, 1, 2]                                                                ║
-║   ↑  ↑       slow=0, fast=1, same value, skip                             ║
-║   ↑     ↑    slow=0, fast=2, different! copy                              ║
-║      ↑  ↑    slow=1, nums[1]=2                                            ║
-║  Result: [1, 2, _], length = 2                                            ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**REMOVE DUPLICATES FROM SORTED ARRAY**
+
+```text
+Remove duplicates in-place. Return new length.
+
+Input: nums = [1, 1, 2]
+Output: 2, nums = [1, 2, _]
+
+Visual:
+[1, 1, 2]
+ ↑  ↑       slow=0, fast=1, same value, skip
+ ↑     ↑    slow=0, fast=2, different! copy
+    ↑  ↑    slow=1, nums[1]=2
+Result: [1, 2, _], length = 2
 ```
 
 ```java
@@ -540,28 +526,24 @@ public int removeElement(int[] nums, int val) {
 **LeetCode 75** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/sort-colors/](https://leetcode.com/problems/sort-colors/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  SORT COLORS (Dutch National Flag Problem)                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Sort array with only 0s, 1s, and 2s in-place.                            ║
-║  One-pass algorithm with constant space.                                  ║
-║                                                                           ║
-║  Input: nums = [2, 0, 2, 1, 1, 0]                                         ║
-║  Output: [0, 0, 1, 1, 2, 2]                                               ║
-║                                                                           ║
-║  Three Pointers:                                                          ║
-║  - low: boundary for 0s (everything before low is 0)                      ║
-║  - mid: current element being examined                                    ║
-║  - high: boundary for 2s (everything after high is 2)                     ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  [0, 0, 0, | 1, 1, 1, | ?, ?, ? | 2, 2, 2]                                ║
-║            ↑          ↑         ↑                                         ║
-║           low        mid       high                                       ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**SORT COLORS (Dutch National Flag Problem)**
+
+```text
+Sort array with only 0s, 1s, and 2s in-place.
+One-pass algorithm with constant space.
+
+Input: nums = [2, 0, 2, 1, 1, 0]
+Output: [0, 0, 1, 1, 2, 2]
+
+Three Pointers:
+- low: boundary for 0s (everything before low is 0)
+- mid: current element being examined
+- high: boundary for 2s (everything after high is 2)
+
+Visual:
+[0, 0, 0, | 1, 1, 1, | ?, ?, ? | 2, 2, 2]
+          ↑          ↑         ↑
+         low        mid       high
 ```
 
 ```java

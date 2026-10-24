@@ -157,13 +157,15 @@ A B-tree of order $m$ (maximum children per node):
 
 #### Visualizing a B-Tree Node (Order 4)
 
-```text
-┌───────────────────────────────────────────┐
-│               [ 15 | 30 | 45 ]            │
-└──────┬───────────┬────────┬─────────┬─────┘
-       │           │        │         │
-    < 15       15-29      30-44      > 45
+```mermaid
+flowchart TD
+  n["15 | 30 | 45"] -->|"keys below 15"| c1["child 1"]
+  n -->|"15 to 29"| c2["child 2"]
+  n -->|"30 to 44"| c3["child 3"]
+  n -->|"45 and above"| c4["child 4"]
 ```
+
+**How to read this diagram.** A node with three keys has four children. Each child holds the keys that fall in the range between neighbouring keys.
 
 ---
 

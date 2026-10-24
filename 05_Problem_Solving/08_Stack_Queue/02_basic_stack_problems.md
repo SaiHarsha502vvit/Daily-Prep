@@ -11,27 +11,22 @@
 
 **LeetCode 20** 🔗 https://leetcode.com/problems/valid-parentheses/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  VALID PARENTHESES - Check if brackets are balanced            │
-├────────────────────────────────────────────────────────────────┤
-│  Input: "({[]})"                                               │
-│                                                                │
-│  Processing with Stack:                                        │
-│  ┌───────┬─────────┬───────────────┐                           │
-│  │ Char  │ Action  │ Stack State   │                           │
-│  ├───────┼─────────┼───────────────┤                           │
-│  │   (   │  push ) │ [)]           │                           │
-│  │   {   │  push } │ [), }]        │                           │
-│  │   [   │  push ] │ [), }, ]]     │                           │
-│  │   ]   │  pop    │ [), }]  ✓    │                            │
-│  │   }   │  pop    │ [)]      ✓   │                            │
-│  │   )   │  pop    │ []       ✓   │                            │
-│  └───────┴─────────┴───────────────┘                           │
-│                                                                │
-│  Stack empty at end → Valid! ✓                                 │
-└────────────────────────────────────────────────────────────────┘
-```
+### VALID PARENTHESES - Check if brackets are balanced
+
+Input: "({[]})"
+
+Processing with Stack:
+
+| Char | Action | Stack State |
+| --- | --- | --- |
+| ( | push ) | [)] |
+| { | push } | [), }] |
+| [ | push ] | [), }, ]] |
+| ] | pop | [), }]  ✓ |
+| } | pop | [)]      ✓ |
+| ) | pop | []       ✓ |
+
+Stack empty at end → Valid! ✓
 
 **Examples:**
 
@@ -71,29 +66,24 @@ public boolean isValid(String s) {
 
 **LeetCode 155** 🔗 https://leetcode.com/problems/min-stack/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MIN STACK - Stack that supports getMin() in O(1)              │
-├────────────────────────────────────────────────────────────────┤
-│  Operations: push(5), push(2), push(7), push(1)                │
-│                                                                │
-│  Approach 1: Two Stacks                                        │
-│  ┌─────────────┬──────────────┐                                │
-│  │ Main Stack  │  Min Stack   │                                │
-│  ├─────────────┼──────────────┤                                │
-│  │     1       │      1       │ ← top                          │
-│  │     7       │      2       │                                │
-│  │     2       │      2       │                                │
-│  │     5       │      5       │                                │
-│  └─────────────┴──────────────┘                                │
-│                                                                │
-│  getMin() → peek min stack → 1                                 │
-│                                                                │
-│  Approach 2: Single Stack with Pairs                           │
-│  Stack: [(5,5), (2,2), (7,2), (1,1)]                           │
-│          (val, minSoFar)                                       │
-└────────────────────────────────────────────────────────────────┘
-```
+### MIN STACK - Stack that supports getMin() in O(1)
+
+Operations: push(5), push(2), push(7), push(1)
+
+Approach 1: Two Stacks
+
+| Main Stack | Min Stack |  |
+| --- | --- | --- |
+| 1 | 1 | ← top |
+| 7 | 2 |  |
+| 2 | 2 |  |
+| 5 | 5 |  |
+
+getMin() → peek min stack → 1
+
+Approach 2: Single Stack with Pairs  
+Stack: [(5,5), (2,2), (7,2), (1,1)]  
+(val, minSoFar)
 
 **Operations:**
 
@@ -249,29 +239,24 @@ class MaxStack {
 
 **LeetCode 394** 🔗 https://leetcode.com/problems/decode-string/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  DECODE STRING - Expand encoded string                         │
-├────────────────────────────────────────────────────────────────┤
-│  Input: "3[a2[c]]"                                             │
-│                                                                │
-│  Process with Stack:                                           │
-│  ┌──────┬────────────┬───────────────────────────────────────┐ │
-│  │ Char │  Action    │  Stack / Result                       │ │
-│  ├──────┼────────────┼───────────────────────────────────────┤ │
-│  │  3   │ build num  │ num=3                                 │ │
-│  │  [   │ push       │ [(3, "")]                             │ │
-│  │  a   │ build str  │ currentStr="a"                        │ │
-│  │  2   │ build num  │ num=2                                 │ │
-│  │  [   │ push       │ [(3,""), (2,"a")]                     │ │
-│  │  c   │ build str  │ currentStr="c"                        │ │
-│  │  ]   │ pop & rep  │ [(3,"")] → "a" + "cc" = "acc"         │ │
-│  │  ]   │ pop & rep  │ [] → "" + "accaccacc"                 │ │
-│  └──────┴────────────┴───────────────────────────────────────┘ │
-│                                                                │
-│  Output: "accaccacc"                                           │
-└────────────────────────────────────────────────────────────────┘
-```
+### DECODE STRING - Expand encoded string
+
+Input: "3[a2[c]]"
+
+Process with Stack:
+
+| Char | Action | Stack / Result |
+| --- | --- | --- |
+| 3 | build num | num=3 |
+| [ | push | [(3, "")] |
+| a | build str | currentStr="a" |
+| 2 | build num | num=2 |
+| [ | push | [(3,""), (2,"a")] |
+| c | build str | currentStr="c" |
+| ] | pop & rep | [(3,"")] → "a" + "cc" = "acc" |
+| ] | pop & rep | [] → "" + "accaccacc" |
+
+Output: "accaccacc"
 
 **Examples:**
 
@@ -318,28 +303,23 @@ public String decodeString(String s) {
 
 **LeetCode 150** 🔗 https://leetcode.com/problems/evaluate-reverse-polish-notation/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  REVERSE POLISH NOTATION (Postfix Expression)                  │
-├────────────────────────────────────────────────────────────────┤
-│  Input: ["2","1","+","3","*"]                                  │
-│                                                                │
-│  Infix equivalent: ((2 + 1) * 3) = 9                           │
-│                                                                │
-│  Stack Processing:                                             │
-│  ┌────────┬──────────────────┬─────────────┐                   │
-│  │ Token  │ Action           │ Stack       │                   │
-│  ├────────┼──────────────────┼─────────────┤                   │
-│  │   2    │ push             │ [2]         │                   │
-│  │   1    │ push             │ [2, 1]      │                   │
-│  │   +    │ pop 1,2 → 2+1=3  │ [3]         │                   │
-│  │   3    │ push             │ [3, 3]      │                   │
-│  │   *    │ pop 3,3 → 3*3=9  │ [9]         │                   │
-│  └────────┴──────────────────┴─────────────┘                   │
-│                                                                │
-│  Result: 9                                                     │
-└────────────────────────────────────────────────────────────────┘
-```
+### REVERSE POLISH NOTATION (Postfix Expression)
+
+Input: ["2","1","+","3","*"]
+
+Infix equivalent: ((2 + 1) * 3) = 9
+
+Stack Processing:
+
+| Token | Action | Stack |
+| --- | --- | --- |
+| 2 | push | [2] |
+| 1 | push | [2, 1] |
+| + | pop 1,2 → 2+1=3 | [3] |
+| 3 | push | [3, 3] |
+| * | pop 3,3 → 3*3=9 | [9] |
+
+Result: 9
 
 **Examples:**
 

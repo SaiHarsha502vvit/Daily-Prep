@@ -664,20 +664,25 @@ The `@Override` annotation is a developer tool that leverages the compiler as a 
 | OOP PRINCIPLE<br>ALIGNMENT | Favor composition over inheritance (GoF) | Inversion of Control (frameworks) |
 | KEY LIMITATION | Must expose strategy interface to context | Single inheritance limits flexibility |
 
-```
-  DECISION TREE:
-  ══════════════
-  Does the algorithm have a FIXED skeleton with variable steps?
-  YES → Template Method (framework hooks: beforeProcess, afterProcess)
-  NO  → Does behavior need to change at runtime?
-        YES → Strategy (swap discount from 10% to 20% per user segment)
-        NO  → Does behavior vary by type?
-              YES → Template Method (CSVImporter vs JSONImporter share read→parse→save)
-              NO  → Neither — use simple conditional logic
+**Decision tree: Strategy vs Template Method**
 
-  MODERN JAVA TREND: Favor Strategy (composition) over Template Method.
-  Lambda expressions (Java 8+) make Strategy even lighter:
-  cart.setDiscountStrategy(price -> price * 0.9);  // inline Strategy
+```mermaid
+flowchart TD
+  q1{"Does the algorithm have a FIXED skeleton with variable steps?"}
+  q1 -->|"Yes"| tm1["Template Method<br/>(framework hooks: beforeProcess, afterProcess)"]
+  q1 -->|"No"| q2{"Does behavior need to change at runtime?"}
+  q2 -->|"Yes"| st["Strategy<br/>(swap discount from 10% to 20% per user segment)"]
+  q2 -->|"No"| q3{"Does behavior vary by type?"}
+  q3 -->|"Yes"| tm2["Template Method<br/>(CSVImporter vs JSONImporter share read → parse → save)"]
+  q3 -->|"No"| nn["Neither: use simple conditional logic"]
+```
+
+**How to read this diagram.** Start at the top question and follow Yes/No down to a pattern.
+
+**Modern Java trend:** favor Strategy (composition) over Template Method. Lambda expressions (Java 8+) make Strategy even lighter:
+
+```java
+cart.setDiscountStrategy(price -> price * 0.9);  // inline Strategy
 ```
 
 ### Breadth Comparison 1: Design Pattern Selection Table (10+ Scenarios)
@@ -709,26 +714,16 @@ The `@Override` annotation is a developer tool that leverages the compiler as a 
 | ISP | Interface with 20 methods, clients only use 2-3<br>"implements HugeInterface, but only override print()"<br>Clients forced to implement methods they don't need | SEGREGATE into small interfaces<br>Printable / Scannable /Faxable instead of<br>AllInOneInterface |
 | DIP | High-level module depends on low-level concrete classes<br>"Changing MySQL requires rewriting<br>OrderService"<br>Constructor does `new` of concrete class (tight coupling) | DEPEND ON ABSTRACTIONS<br>OrderService depends on<br>PaymentGateway interface, not StripePaymentGateway.<br>Inject via constructor/Spring<br>@Autowired PaymentGateway |
 
-```
-  VIOLATION CASCADE DETECTION:
-  ═══════════════════════════
-  You identify ONE violation → ask: "What else broke?"
+**Violation cascade detection.** When you identify ONE violation, ask: "What else broke?"
 
-  SRP → OCP: If class has multiple reasons to change,
-           adding new types requires modifying the class (violates OCP)
+| Chain | Why |
+| --- | --- |
+| SRP → OCP | If a class has multiple reasons to change, adding new types requires modifying the class (violates OCP). |
+| LSP → OCP | If subtypes break contracts, you add `instanceof` checks to work around it (violates OCP). |
+| ISP → DIP | Fat interfaces force clients to depend on methods they don't use, so they depend on more than they need (violates DIP). |
+| OCP → DIP | Modifying high-level code to handle new cases adds dependencies on low-level details (violates DIP). |
 
-  LSP → OCP: If subtypes break contracts, you add instanceof checks
-             to work around it (violates OCP)
-
-  ISP → DIP: Fat interfaces force clients to depend on methods
-             they don't use (violates DIP — depends on more than needed)
-
-  OCP → DIP: Open for modification = violating DIP by adding dependencies
-             on low-level details in high-level code
-
-  THE CASCADE PATTERN: Every SOLID violation tends to create another.
-  Fixing SRP often fixes OCP. Fixing DIP often fixes ISP.
-```
+**The cascade pattern:** every SOLID violation tends to create another. Fixing SRP often fixes OCP. Fixing DIP often fixes ISP.
 
 [← Back to Semester 2 Guide](../00_CURRICULUM/SEMESTER_2_GUIDE.md)
 

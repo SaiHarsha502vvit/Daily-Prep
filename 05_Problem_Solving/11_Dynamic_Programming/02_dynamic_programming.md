@@ -11,28 +11,15 @@
 
 **LeetCode 70** 🔗 https://leetcode.com/problems/climbing-stairs/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  CLIMBING STAIRS - Ways to reach top (1 or 2 steps)            │
-├────────────────────────────────────────────────────────────────┤
-│  n = 4 stairs                                                  │
-│                                                                │
-│  Ways:     ┌───┐                                               │
-│  1+1+1+1   │ 4 │ ← Goal                                        │
-│  1+1+2     ├───┤                                               │
-│  1+2+1     │ 3 │                                               │
-│  2+1+1     ├───┤                                               │
-│  2+2       │ 2 │                                               │
-│            ├───┤                                               │
-│            │ 1 │                                               │
-│            ├───┤                                               │
-│            │ 0 │ ← Start                                       │
-│            └───┘                                               │
-│                                                                │
-│  dp[i] = dp[i-1] + dp[i-2] (Fibonacci!)                        │
-│  Output: 5 ways                                                │
-└────────────────────────────────────────────────────────────────┘
-```
+**Climbing stairs: ways to reach the top (1 or 2 steps at a time)**
+
+For `n = 4` stairs, the ways are `1+1+1+1`, `1+1+2`, `1+2+1`, `2+1+1` and `2+2`.
+
+| Stair `i` | 0 (start) | 1 | 2 | 3 | 4 (goal) |
+| --- | --- | --- | --- | --- | --- |
+| `dp[i]` (ways to reach it) | 1 | 1 | 2 | 3 | 5 |
+
+`dp[i] = dp[i-1] + dp[i-2]` (it is the Fibonacci sequence). Output: **5** ways.
 
 **Solution:**
 
@@ -60,19 +47,16 @@ public int climbStairs(int n) {
 
 **HOUSE ROBBER - Max money without robbing adjacent houses**
 
-```text
-nums = [2, 7, 9, 3, 1]
+`nums = [2, 7, 9, 3, 1]`
 
-Houses:  [2]  [7]  [9]  [3]  [1]
-          │    │    │    │    │
-          0    1    2    3    4
+| House | 0 | 1 | 2 | 3 | 4 |
+| --- | --- | --- | --- | --- | --- |
+| **Money** | 2 | 7 | 9 | 3 | 1 |
 
-Rob house 0, 2, 4: 2 + 9 + 1 = 12 ✓
-Rob house 1, 3: 7 + 3 = 10
+- Rob houses 0, 2 and 4: 2 + 9 + 1 = **12** ✓
+- Rob houses 1 and 3: 7 + 3 = 10
 
-dp[i] = max(dp[i-1], dp[i-2] + nums[i])
-"Skip current" or "Rob current + skip previous"
-```
+`dp[i] = max(dp[i-1], dp[i-2] + nums[i])`: either skip the current house, or rob it and skip the previous one.
 
 **Solution:**
 
@@ -98,24 +82,18 @@ public int rob(int[] nums) {
 
 **LeetCode 213** 🔗 https://leetcode.com/problems/house-robber-ii/
 
+### HOUSE ROBBER II - Houses in circle
+
+nums = [2, 3, 2]
+
+```text
+2    ○    3     First and last are adjacent!
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  HOUSE ROBBER II - Houses in circle                            │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [2, 3, 2]                                              │
-│                                                                │
-│      ┌─── 2 ───┐                                               │
-│      │         │                                               │
-│      2    ○    3     First and last are adjacent!              │
-│      │         │                                               │
-│      └─────────┘                                               │
-│                                                                │
-│  Can't rob both first and last house.                          │
-│  Solution: max(rob[0..n-2], rob[1..n-1])                       │
-│                                                                │
-│  Output: 3 (rob house 1 only)                                  │
-└────────────────────────────────────────────────────────────────┘
-```
+
+Can't rob both first and last house.  
+Solution: max(rob[0..n-2], rob[1..n-1])
+
+Output: 3 (rob house 1 only)
 
 **Solution:**
 
@@ -148,25 +126,23 @@ private int robRange(int[] nums, int start, int end) {
 
 **LeetCode 53** 🔗 https://leetcode.com/problems/maximum-subarray/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MAXIMUM SUBARRAY - Kadane's Algorithm                         │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]                        │
-│                                                                │
-│  At each position, decide:                                     │
-│  - Start new subarray here?                                    │
-│  - Or extend previous subarray?                                │
-│                                                                │
-│  dp[i] = max(nums[i], dp[i-1] + nums[i])                       │
-│                                                                │
-│  Index:  0   1   2   3   4   5   6   7   8                     │
-│  nums:  -2   1  -3   4  -1   2   1  -5   4                     │
-│  dp:    -2   1  -2   4   3   5   6   1   5                     │
-│                      └───────────┘                             │
-│                      Max subarray: [4,-1,2,1] = 6              │
-└────────────────────────────────────────────────────────────────┘
-```
+**MAXIMUM SUBARRAY - Kadane's Algorithm**
+
+`nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]`
+
+At each position, decide:
+
+- Start a new subarray here?
+- Or extend the previous subarray?
+
+`dp[i] = max(nums[i], dp[i-1] + nums[i])`
+
+| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| **nums** | -2 | 1 | -3 | 4 | -1 | 2 | 1 | -5 | 4 |
+| **dp** | -2 | 1 | -2 | 4 | 3 | 5 | **6** | 1 | 5 |
+
+The maximum subarray is `[4,-1,2,1]` with sum **6** (indices 3 to 6).
 
 **Solution:**
 

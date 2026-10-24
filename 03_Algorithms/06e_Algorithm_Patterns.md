@@ -92,27 +92,22 @@ P (Polynomial Time):
 - Example: Halting Problem (undecidable!)
   VISUAL RELATIONSHIP (if P ≠ NP):
 
-```text
-NP-Hard
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                 │
-│  ┌────────────────────────────── NP ─────────────────────────────────────────┐  │
-│  │                                                                           │  │
-│  │  ┌────────────── P ──────────────┐   ┌──────── NP-Complete ────────────┐ │  │
-│  │  │                               │   │ • SAT                            │ │  │
-│  │  │                               │   │ • 3-SAT                          │ │  │
-│  │  └───────────────────────────────┘   │ • Vertex Cover                   │ │  │
-│  │                                      │ • Hamiltonian Path               │ │  │
-│  │                                      │ • Traveling Salesman             │ │  │
-│  │                                      │ • Graph Coloring                 │ │  │
-│  │                                      │ • Subset Sum                     │ │  │
-│  │                                      └───────────────────────────────────┘ │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                 │
-│  NP-Hard may also contain problems outside NP (e.g., Halting Problem).         │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+  subgraph NPH["NP-Hard"]
+    subgraph NPS["NP"]
+      subgraph PS["P"]
+        p1["Sorting, shortest path, ..."]
+      end
+      subgraph NPC["NP-Complete"]
+        c1["SAT, 3-SAT, Vertex Cover, Hamiltonian Path,<br/>Traveling Salesman (decision), Graph Coloring, Subset Sum"]
+      end
+    end
+    h1["Problems outside NP, e.g. the Halting Problem"]
+  end
 ```
+
+**How to read this diagram.** Each box sits inside the larger class. It assumes P ≠ NP, so P and NP-Complete are disjoint inside NP. NP-Hard also contains problems that are not in NP at all, such as the Halting Problem.
 
 PROVING NP-COMPLETENESS:
 To show problem X is NP-Complete:
@@ -277,31 +272,22 @@ private boolean millerRabinTest(long n, long d, int r, long a) {
 
 ## 📝 Advanced String Algorithms
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ STRING MATCHING ALGORITHMS - COMPLETE COMPARISON                                │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ ALGORITHM COMPARISON:                                                           │
-│ ┌─────────────────────┬────────────────┬────────────────┬──────────────────┐    │
-│ │ Algorithm │ Preprocessing │ Search Time │ Space │                             │
-│ ├─────────────────────┼────────────────┼────────────────┼──────────────────┤    │
-│ │ Naive │ O(1) │ O(nm) │ O(1) │                                                 │
-│ │ KMP │ O(m) │ O(n) │ O(m) │                                                    │
-│ │ Boyer-Moore │ O(m + σ) │ O(nm) worst │ O(m + σ) │                             │
-│ │ │ │ O(n/m) best │ │                                                           │
-│ │ Rabin-Karp │ O(m) │ O(nm) worst │ O(1) │                                      │
-│ │ │ │ O(n+m) expected│ │                                                        │
-│ │ Z-Algorithm │ O(m) │ O(n) │ O(n+m) │                                          │
-│ │ Suffix Array │ O(n log n) │ O(m log n) │ O(n) │                               │
-│ │ Suffix Tree │ O(n) │ O(m) │ O(n) │                                            │
-│ │ Aho-Corasick │ O(Σ|patterns|) │ O(n+matches) │ O(Σ|patterns|·σ) │             │
-│ └─────────────────────┴────────────────┴────────────────┴──────────────────┘    │
-│                                                                                 │
-│ n = text length, m = pattern length, σ = alphabet size                          │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### String Matching Algorithms - Complete Comparison
+
+**Algorithm Comparison**:
+
+| Algorithm | Preprocessing | Search Time | Space |
+| --- | --- | --- | --- |
+| Naive | O(1) | O(nm) | O(1) |
+| KMP | O(m) | O(n) | O(m) |
+| Boyer-Moore | O(m + σ) | O(nm) worst<br>O(n/m) best | O(m + σ) |
+| Rabin-Karp | O(m) | O(nm) worst<br>O(n+m) expected | O(1) |
+| Z-Algorithm | O(m) | O(n) | O(n+m) |
+| Suffix Array | O(n log n) | O(m log n) | O(n) |
+| Suffix Tree | O(n) | O(m) | O(n) |
+| Aho-Corasick | O(Σ\|patterns\|) | O(n+matches) | O(Σ\|patterns\|·σ) |
+
+n = text length, m = pattern length, σ = alphabet size
 
 ```java
 // Z-ALGORITHM: Find all occurrences of pattern in text
@@ -409,27 +395,20 @@ class AhoCorasick {
 
 ## 🌐 Network Flow Algorithms
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ MAXIMUM FLOW - COMPLETE GUIDE                                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ PROBLEM: Find maximum flow from source s to sink t in a directed graph          │
-│ with edge capacities                                                            │
-│                                                                                 │
-│ ALGORITHM COMPARISON:                                                           │
-│ ┌─────────────────────┬────────────────────────┬────────────────────────────┐   │
-│ │ Algorithm │ Time Complexity │ Notes │                                         │
-│ ├─────────────────────┼────────────────────────┼────────────────────────────┤   │
-│ │ Ford-Fulkerson │ O(E × maxFlow) │ Uses DFS, may not terminate│                │
-│ │ Edmonds-Karp │ O(V × E²) │ Uses BFS for augmenting │                          │
-│ │ Dinic │ O(V² × E) │ Level graph + blocking flow│                              │
-│ │ Push-Relabel │ O(V² × E) │ Different approach │                               │
-│ │ Dinic (unit cap) │ O(E × √V) │ For unit capacity graphs │                     │
-│ └─────────────────────┴────────────────────────┴────────────────────────────┘   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### Maximum Flow - Complete Guide
+
+PROBLEM: Find maximum flow from source s to sink t in a directed graph  
+with edge capacities
+
+**Algorithm Comparison**:
+
+| Algorithm | Time Complexity | Notes |
+| --- | --- | --- |
+| Ford-Fulkerson | O(E × maxFlow) | Uses DFS, may not terminate |
+| Edmonds-Karp | O(V × E²) | Uses BFS for augmenting |
+| Dinic | O(V² × E) | Level graph + blocking flow |
+| Push-Relabel | O(V² × E) | Different approach |
+| Dinic (unit cap) | O(E × √V) | For unit capacity graphs |
 
 ```java
 // DINIC'S ALGORITHM - O(V²E)
@@ -510,8 +489,6 @@ class Dinic {
 
 **COMPUTATIONAL GEOMETRY - ESSENTIAL ALGORITHMS**
 
-```text
-```
 
 ```java
 // CONVEX HULL - Graham Scan O(n log n)
@@ -593,56 +570,53 @@ boolean onSegment(int[] a, int[] b, int[] c) {
 
 ## 📋 Algorithm Design Paradigms — Summary
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE WHICH PARADIGM                                                      │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ DIVIDE AND CONQUER:                                                             │
-│ • Problem can be split into independent subproblems                             │
-│ • Subproblems are similar to original                                           │
-│ • Examples: Merge Sort, Quick Sort, Binary Search, Strassen's Matrix            │
-│                                                                                 │
-│ DYNAMIC PROGRAMMING:                                                            │
-│ • Optimal substructure: optimal solution uses optimal subsolutions              │
-│ • Overlapping subproblems: same subproblems solved multiple times               │
-│ • Examples: Fibonacci, Knapsack, LCS, Edit Distance, Matrix Chain               │
-│                                                                                 │
-│ GREEDY:                                                                         │
-│ • Local optimal choice leads to global optimal                                  │
-│ • No need to reconsider past choices                                            │
-│ • Examples: Huffman, Activity Selection, Dijkstra, MST (Prim, Kruskal)          │
-│                                                                                 │
-│ BACKTRACKING:                                                                   │
-│ • Find all (or some) solutions                                                  │
-│ • Build solution incrementally, abandon if invalid                              │
-│ • Examples: N-Queens, Sudoku, Subset Sum, Permutations                          │
-│                                                                                 │
-│ BRANCH AND BOUND:                                                               │
-│ • Optimization problems                                                         │
-│ • Use bounds to prune search space                                              │
-│ • Examples: TSP, Integer Linear Programming, 0/1 Knapsack                       │
-│                                                                                 │
-│                                                                                 │
-│ COMPLEXITY CHEAT SHEET:                                                         │
-│ ┌──────────────────────┬────────────────────────────────────────────────────┐   │
-│ │ If you see... │ Think about... │                                              │
-│ ├──────────────────────┼────────────────────────────────────────────────────┤   │
-│ │ Sorted array │ Binary search O(log n) │                                       │
-│ │ Find all subsets │ 2^n solutions (exponential) │                              │
-│ │ Find all permutations│ n! solutions (factorial) │                             │
-│ │ Shortest path │ BFS (unweighted), Dijkstra (weighted) │                       │
-│ │ Connected components │ DFS/BFS/Union-Find │                                   │
-│ │ Optimal order │ DP on intervals │                                             │
-│ │ Maximum/Minimum │ DP, Greedy, or Binary search on answer │                    │
-│ │ Graph with cycles │ May need to detect or handle cycles │                     │
-│ │ String matching │ KMP, Z-algorithm, Rolling hash │                            │
-│ │ Range queries │ Segment Tree, Fenwick Tree │                                  │
-│ │ Multiple patterns │ Trie, Aho-Corasick │                                      │
-│ └──────────────────────┴────────────────────────────────────────────────────┘   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### When to USE Which Paradigm
+
+**Divide and Conquer**:
+
+- Problem can be split into independent subproblems
+- Subproblems are similar to original
+- Examples: Merge Sort, Quick Sort, Binary Search, Strassen's Matrix
+
+**Dynamic Programming**:
+
+- Optimal substructure: optimal solution uses optimal subsolutions
+- Overlapping subproblems: same subproblems solved multiple times
+- Examples: Fibonacci, Knapsack, LCS, Edit Distance, Matrix Chain
+
+**Greedy**:
+
+- Local optimal choice leads to global optimal
+- No need to reconsider past choices
+- Examples: Huffman, Activity Selection, Dijkstra, MST (Prim, Kruskal)
+
+**Backtracking**:
+
+- Find all (or some) solutions
+- Build solution incrementally, abandon if invalid
+- Examples: N-Queens, Sudoku, Subset Sum, Permutations
+
+**Branch and Bound**:
+
+- Optimization problems
+- Use bounds to prune search space
+- Examples: TSP, Integer Linear Programming, 0/1 Knapsack
+
+**Complexity Cheat Sheet**:
+
+| If you see... | Think about... |
+| --- | --- |
+| Sorted array | Binary search O(log n) |
+| Find all subsets | 2^n solutions (exponential) |
+| Find all permutations | n! solutions (factorial) |
+| Shortest path | BFS (unweighted), Dijkstra (weighted) |
+| Connected components | DFS/BFS/Union-Find |
+| Optimal order | DP on intervals |
+| Maximum/Minimum | DP, Greedy, or Binary search on answer |
+| Graph with cycles | May need to detect or handle cycles |
+| String matching | KMP, Z-algorithm, Rolling hash |
+| Range queries | Segment Tree, Fenwick Tree |
+| Multiple patterns | Trie, Aho-Corasick |
 
 ---
 

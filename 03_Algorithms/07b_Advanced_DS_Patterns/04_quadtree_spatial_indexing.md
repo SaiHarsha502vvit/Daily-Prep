@@ -4,37 +4,21 @@
 > Page 4 of 5 in **Fenwick & Segment Trees — Advanced Data Structure Patterns**
 
 
-```
-QUADTREE: Tree where each node has exactly 4 children
-          Used for: 2D spatial indexing, collision detection, image compression
+**Quadtree:** a tree where each node has exactly 4 children. Used for 2D spatial indexing, collision detection and image compression.
 
-STRUCTURE:
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│    ┌─────────────┬─────────────┐                                │
-│    │             │             │                                │
-│    │     NW      │     NE      │                                │
-│    │             │             │                                │
-│    ├─────────────┼─────────────┤                                │
-│    │             │             │                                │
-│    │     SW      │     SE      │                                │
-│    │             │             │                                │
-│    └─────────────┴─────────────┘                                │
-│                                                                 │
-│  Each quadrant can be subdivided further if needed              │
-│                                                                 │
-│  Example: Storing points (3,7), (5,2), (8,8), (1,4)             │
-│                                                                 │
-│    10┌─────────────┬─────────────┐                              │
-│      │    (3,7)    │    (8,8)    │                              │
-│    5 │    (1,4)    │             │                              │
-│      ├─────────────┼─────────────┤                              │
-│      │             │    (5,2)    │                              │
-│    0 │             │             │                              │
-│      └─────────────┴─────────────┘                              │
-│      0      5      10                                           │
-└─────────────────────────────────────────────────────────────────┘
-```
+**Structure.** Each region is split into four quadrants, and any quadrant can be subdivided further if needed:
+
+| | West | East |
+| --- | --- | --- |
+| **North** | NW | NE |
+| **South** | SW | SE |
+
+**Example:** storing the points (3,7), (5,2), (8,8) and (1,4) in a 10 × 10 area, with the split at x = 5 and y = 5:
+
+| | x < 5 (west) | x ≥ 5 (east) |
+| --- | --- | --- |
+| **y ≥ 5 (north)** | NW: (3,7) | NE: (8,8) |
+| **y < 5 (south)** | SW: (1,4) | SE: (5,2) |
 
 ```java
 class QuadTree {

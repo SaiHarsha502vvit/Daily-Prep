@@ -87,52 +87,39 @@ A **pilot’s checklist**.
 
 ## 📌 1. Off — By — One Errors
 
-> OFF-BY-ONE ERRORS
->
-> MISTAKE 1: Wrong loop bound
-> ─────────────────────────────
->
-> ✗ WRONG:
-> for (int i = 0; i <= arr.length; i++) // Goes ONE past end!
-> System.out.println(arr[i]); // CRASH at last iteration
->
-> Array: [1, 2, 3, 4, 5]
-> Index: 0 1 2 3 4 5 ← Does not exist!
-> ↑
-> Crash here
->
-> ✓ CORRECT:
-> for (int i = 0; i < arr.length; i++) // Stops at last valid index
-> System.out.println(arr[i]);
->
-> ═══════════════════════════════════════════════════════════════════════
->
-> MISTAKE 2: Substring wrong end index
-> ────────────────────────────────────
->
-> String s = "hello"; // indices 0-4, length 5
->
-> ✗ WRONG (to get "ell"):
-> s.substring(1, 3) // Returns "el" (end is exclusive!)
->
-> ✓ CORRECT:
-> s.substring(1, 4) // Returns "ell" (end is exclusive, so 1,2,3)
->
-> Visual:
-> String: h e l l o
-> Index: 0 1 2 3 4
-> [start, end) ← end is EXCLUSIVE
->
-> ═══════════════════════════════════════════════════════════════════════
->
-> MISTAKE 3: Wrong mid calculation
-> ─────────────────────────────────
->
-> ✗ WRONG (can overflow for large arrays):
-> int mid = (low + high) / 2; // If low + high > Integer.MAX_VALUE
->
-> ✓ CORRECT:
-> int mid = low + (high - low) / 2; // Never overflows
+**Mistake 1: wrong loop bound**
+
+```java
+// WRONG
+for (int i = 0; i <= arr.length; i++)   // Goes ONE past the end!
+    System.out.println(arr[i]);         // CRASH at the last iteration
+
+// CORRECT
+for (int i = 0; i < arr.length; i++)    // Stops at the last valid index
+    System.out.println(arr[i]);
+```
+
+For `arr = [1, 2, 3, 4, 5]` the valid indices are 0 to 4. Index 5 does not exist, so `i <= arr.length` crashes on the last iteration.
+
+**Mistake 2: wrong substring end index**
+
+`String s = "hello";` has indices 0-4 and length 5. `substring(start, end)` covers `[start, end)`, so `end` is **exclusive**.
+
+| Index | 0 | 1 | 2 | 3 | 4 |
+| --- | --- | --- | --- | --- | --- |
+| Char | h | e | l | l | o |
+
+```java
+s.substring(1, 3)   // WRONG, to get "ell": returns "el" (end is exclusive)
+s.substring(1, 4)   // CORRECT: returns "ell" (indices 1, 2, 3)
+```
+
+**Mistake 3: wrong mid calculation**
+
+```java
+int mid = (low + high) / 2;            // WRONG: low + high can exceed Integer.MAX_VALUE
+int mid = low + (high - low) / 2;      // CORRECT: never overflows
+```
 
 ### Quick Reference: < vs <=
 
@@ -156,56 +143,53 @@ while (left < right)              // CORRECT: < (stop when they meet)
 
 **ARRAY INDEX OUT OF BOUNDS**
 
-```text
-MISTAKE 1: Accessing negative index
-────────────────────────────────────
+**Mistake 1: Accessing negative index**
 
+```java
 int[] arr = {1, 2, 3};
 int x = arr[-1];  // CRASH! ArrayIndexOutOfBoundsException
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 2: Accessing arr[i-1] without check**
 
-MISTAKE 2: Accessing arr[i-1] without check
-────────────────────────────────────────────
-
-✗ WRONG:
+```java
+// ✗ WRONG:
 for (int i = 0; i < arr.length; i++) {
     if (arr[i] != arr[i-1]) ...  // When i=0, arr[i-1] = arr[-1]!
 }
 
-✓ CORRECT:
+// ✓ CORRECT:
 for (int i = 1; i < arr.length; i++) {  // Start from 1
     if (arr[i] != arr[i-1]) ...
 }
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 3: Accessing arr[i+1] without check**
 
-MISTAKE 3: Accessing arr[i+1] without check
-────────────────────────────────────────────
-
-✗ WRONG:
+```java
+// ✗ WRONG:
 for (int i = 0; i < arr.length; i++) {
     if (arr[i] < arr[i+1]) ...  // When i=last, arr[i+1] crashes!
 }
 
-✓ CORRECT:
+// ✓ CORRECT:
 for (int i = 0; i < arr.length - 1; i++) {  // Stop one early
     if (arr[i] < arr[i+1]) ...
 }
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 4: Empty array access**
 
-MISTAKE 4: Empty array access
-─────────────────────────────
-
-✗ WRONG:
+```java
+// ✗ WRONG:
 int first = arr[0];  // CRASH if arr is empty!
 
-✓ CORRECT:
+// ✓ CORRECT:
 if (arr.length > 0) {
     int first = arr[0];
 }
 ```
+
 
 ---
 
@@ -213,56 +197,56 @@ if (arr.length > 0) {
 
 **INTEGER OVERFLOW**
 
-```text
-Java int range: -2,147,483,648 to 2,147,483,647 (about ±2 billion)
+```java
+// Java int range: -2,147,483,648 to 2,147,483,647 (about ±2 billion)
+```
 
-MISTAKE 1: Factorial overflow
-─────────────────────────────
+**Mistake 1: Factorial overflow**
 
-13! = 6,227,020,800 > Integer.MAX_VALUE
+```java
+// 13! = 6,227,020,800 > Integer.MAX_VALUE
 
-✗ WRONG:
+// ✗ WRONG:
 int factorial = 1;
 for (int i = 1; i <= n; i++) {
     factorial *= i;  // Overflows at n=13
 }
 
-✓ CORRECT (use long):
+// ✓ CORRECT (use long):
 long factorial = 1L;
 for (int i = 1; i <= n; i++) {
     factorial *= i;  // Works up to n=20
 }
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 2: Sum overflow**
 
-MISTAKE 2: Sum overflow
-───────────────────────
+```java
+// Array: [1,000,000,000, 1,000,000,000, 1,000,000,000]
+// Sum: 3,000,000,000 > Integer.MAX_VALUE
 
-Array: [1,000,000,000, 1,000,000,000, 1,000,000,000]
-Sum: 3,000,000,000 > Integer.MAX_VALUE
-
-✗ WRONG:
+// ✗ WRONG:
 int sum = 0;
 for (int num : arr) sum += num;  // Overflow!
 
-✓ CORRECT:
+// ✓ CORRECT:
 long sum = 0L;
 for (int num : arr) sum += num;  // Safe
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 3: Multiplication overflow**
 
-MISTAKE 3: Multiplication overflow
-──────────────────────────────────
-
-✗ WRONG:
+```java
+// ✗ WRONG:
 int area = width * height;  // Can overflow for large rectangles
 
-✓ CORRECT:
+// ✓ CORRECT:
 long area = (long) width * height;  // Cast BEFORE multiplication
 
-⚠️ Note: long area = (long)(width * height) is WRONG!
+// ⚠️ Note: long area = (long)(width * height) is WRONG!
    The overflow happens in (width * height) BEFORE the cast.
 ```
+
 
 ---
 
@@ -280,50 +264,41 @@ long area = (long) width * height;  // Cast BEFORE multiplication
 
 ## 📝 4. String Comparison Mistakes
 
-```
-                  STRING COMPARISON MISTAKES
-──────────────────────────────────────────────────
+**Mistake: using `==` instead of `.equals()`**
 
-MISTAKE: Using == instead of .equals()
-────────────────────────────────────────
-
-✗ WRONG:
+```java
+// ✗ WRONG:
 String s1 = "hello";
 String s2 = new String("hello");
 if (s1 == s2) { ... }  // FALSE! Compares references, not content
+```
 
-Visual:
-┌─────────┐         ┌─────────┐
-│   s1    │         │   s2    │
-│ (ref A) │         │ (ref B) │
-└────┬────┘         └────┬────┘
-     │                   │
-     ↓                   ↓
-┌─────────┐         ┌─────────┐
-│ "hello" │         │ "hello" │  ← Same CONTENT, different OBJECTS
-└─────────┘         └─────────┘
+```mermaid
+flowchart TD
+  s1["s1 (ref A)"] --> o1["'hello' (object 1)"]
+  s2["s2 (ref B)"] --> o2["'hello' (object 2)"]
+```
 
-s1 == s2 checks: Are they the SAME object? → NO (different refs)
-s1.equals(s2): Are the CONTENTS equal? → YES
+**How to read this diagram.** Both variables hold the same *content* but point to different *objects*. `s1 == s2` asks "are they the same object?" and the answer is no. `s1.equals(s2)` asks "are the contents equal?" and the answer is yes.
 
-✓ CORRECT:
+```java
+// ✓ CORRECT:
 if (s1.equals(s2)) { ... }  // TRUE! Compares content
 
-✓ Also correct (null-safe):
+// ✓ Also correct (null-safe):
 if ("hello".equals(s1)) { ... }  // Won't crash if s1 is null
+```
 
-═══════════════════════════════════════════════════════════════════════
-
-EXCEPTION: String literals from pool
-────────────────────────────────────
+```java
+// EXCEPTION: String literals from pool
 
 String s1 = "hello";
 String s2 = "hello";
 s1 == s2;  // TRUE! (Both point to same string in pool)
 
 But DON'T rely on this! Always use .equals() to be safe.
-
 ```
+
 
 ---
 
@@ -341,68 +316,62 @@ But DON'T rely on this! Always use .equals() to be safe.
 
 ## 📌 5. Scanner Input Mistakes
 
+**SCANNER INPUT MISTAKES**
+
+**Mistake 1: nextInt() leaves newline**
+
+```java
+// Input: "5\nhello"
+
+// ✗ WRONG:
+int n = scanner.nextInt();     // Reads "5", leaves "\n"
+String s = scanner.nextLine(); // Reads empty "\n", NOT "hello"!
+
+// Buffer state:
+// Before: "5\nhello"
+         ↑
+After nextInt(): "5\nhello"
+                   ↑ (still at newline!)
+After nextLine(): "5\nhello"
+                     ↑ (consumed just the newline)
+
+// ✓ CORRECT:
+int n = scanner.nextInt();
+scanner.nextLine();  // Consume leftover newline
+String s = scanner.nextLine();  // Now reads "hello"
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    SCANNER INPUT MISTAKES                                 ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  MISTAKE 1: nextInt() leaves newline                                      ║
-║  ────────────────────────────────────                                     ║
-║                                                                           ║
-║  Input: "5\nhello"                                                        ║
-║                                                                           ║
-║  ✗ WRONG:                                                                 ║
-║  int n = scanner.nextInt();     // Reads "5", leaves "\n"                 ║
-║  String s = scanner.nextLine(); // Reads empty "\n", NOT "hello"!         ║
-║                                                                           ║
-║  Buffer state:                                                            ║
-║  Before: "5\nhello"                                                       ║
-║           ↑                                                               ║
-║  After nextInt(): "5\nhello"                                              ║
-║                     ↑ (still at newline!)                                 ║
-║  After nextLine(): "5\nhello"                                             ║
-║                       ↑ (consumed just the newline)                       ║
-║                                                                           ║
-║  ✓ CORRECT:                                                               ║
-║  int n = scanner.nextInt();                                               ║
-║  scanner.nextLine();  // Consume leftover newline                         ║
-║  String s = scanner.nextLine();  // Now reads "hello"                     ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  MISTAKE 2: Not closing Scanner                                           ║
-║  ──────────────────────────────                                           ║
-║                                                                           ║
-║  ✗ WARNING: Resource leak                                                 ║
-║  Scanner sc = new Scanner(System.in);                                     ║
-║  // ... use scanner ...                                                   ║
-║  // Forgot to close!                                                      ║
-║                                                                           ║
-║  ✓ BETTER (try-with-resources):                                           ║
-║  try (Scanner sc = new Scanner(System.in)) {                              ║
-║      // ... use scanner ...                                               ║
-║  }  // Automatically closed                                               ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  MISTAKE 3: hasNext() confusion                                           ║
-║  ──────────────────────────────                                           ║
-║                                                                           ║
-║  // Reading until no more input:                                          ║
-║  while (scanner.hasNext()) {      // hasNext() for any token              ║
-║      String word = scanner.next();                                        ║
-║  }                                                                        ║
-║                                                                           ║
-║  while (scanner.hasNextInt()) {   // hasNextInt() for integers            ║
-║      int num = scanner.nextInt();                                         ║
-║  }                                                                        ║
-║                                                                           ║
-║  while (scanner.hasNextLine()) {  // hasNextLine() for lines              ║
-║      String line = scanner.nextLine();                                    ║
-║  }                                                                        ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+
+**Mistake 2: Not closing Scanner**
+
+```java
+// ✗ WARNING: Resource leak
+Scanner sc = new Scanner(System.in);
+// ... use scanner ...
+// Forgot to close!
+
+// ✓ BETTER (try-with-resources):
+try (Scanner sc = new Scanner(System.in)) {
+    // ... use scanner ...
+}  // Automatically closed
 ```
+
+**Mistake 3: hasNext() confusion**
+
+```java
+// Reading until no more input:
+while (scanner.hasNext()) {      // hasNext() for any token
+    String word = scanner.next();
+}
+
+while (scanner.hasNextInt()) {   // hasNextInt() for integers
+    int num = scanner.nextInt();
+}
+
+while (scanner.hasNextLine()) {  // hasNextLine() for lines
+    String line = scanner.nextLine();
+}
+```
+
 
 ---
 
@@ -431,74 +400,65 @@ For input `"5\nhello"`, what does `s` contain and why? State exactly **who** con
 
 ## 🏛️ 6. Loop Mistakes
 
-```
-                  LOOP MISTAKES
-──────────────────────────────────────────────────
+**Mistake 1: Infinite loop**
 
-MISTAKE 1: Infinite loop
-────────────────────────
-
-✗ WRONG:
+```java
+// ✗ WRONG:
 int i = 0;
 while (i < 10) {
     System.out.println(i);
     // Forgot i++! Loop runs forever
 }
 
-✗ ALSO WRONG:
+// ✗ ALSO WRONG:
 for (int i = 0; i < 10; ) {  // Missing increment!
     System.out.println(i);
 }
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 2: Modifying loop variable inside loop**
 
-MISTAKE 2: Modifying loop variable inside loop
-──────────────────────────────────────────────
-
-✗ CONFUSING:
+```java
+// ✗ CONFUSING:
 for (int i = 0; i < 10; i++) {
     if (someCondition) i++;  // Now iteration is skipped!
 }
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 3: Wrong loop type**
 
-MISTAKE 3: Wrong loop type
-──────────────────────────
-
-✗ WRONG (modifying while iterating):
+```java
+// ✗ WRONG (modifying while iterating):
 for (int num : list) {
     if (num < 0) list.remove(num);  // ConcurrentModificationException!
 }
 
-✓ CORRECT (use iterator or index-based):
+// ✓ CORRECT (use iterator or index-based):
 Iterator<Integer> it = list.iterator();
 while (it.hasNext()) {
     if (it.next() < 0) it.remove();  // Safe removal
 }
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 4: Off-by-one in nested loops**
 
-MISTAKE 4: Off-by-one in nested loops
-─────────────────────────────────────
+For the upper triangle of a 4 × 4 matrix (excluding the diagonal), each row starts one column further right:
 
-For upper triangle of matrix (excluding diagonal):
-┌───┬───┬───┬───┐
-│ X │ ✓ │ ✓ │ ✓ │   i=0: j from 1 to 3
-├───┼───┼───┼───┤
-│   │ X │ ✓ │ ✓ │   i=1: j from 2 to 3
-├───┼───┼───┼───┤
-│   │   │ X │ ✓ │   i=2: j from 3 to 3
-├───┼───┼───┼───┤
-│   │   │   │ X │   i=3: j from 4 to 3 (no iterations)
-└───┴───┴───┴───┘
+| Row | `j` range | Iterations |
+| --- | --- | --- |
+| `i=0` | 1 to 3 | 3 |
+| `i=1` | 2 to 3 | 2 |
+| `i=2` | 3 to 3 | 1 |
+| `i=3` | 4 to 3 | none |
 
+```java
 for (int i = 0; i < n; i++) {
     for (int j = i + 1; j < n; j++) {  // j starts at i+1
         // Process upper triangle
     }
 }
-
 ```
+
 
 ---
 
@@ -567,58 +527,55 @@ arr = [5, 4, 3, 2, 1]  (reverse sorted)
 
 **LOGIC MISTAKES**
 
-```text
-MISTAKE 1: Wrong boolean logic
-──────────────────────────────
+**Mistake 1: Wrong boolean logic**
 
-De Morgan's Laws:
-!(A && B) = !A || !B
-!(A || B) = !A && !B
+```java
+// De Morgan's Laws:
+// !(A && B) = !A || !B
+// !(A || B) = !A && !B
 
-✗ WRONG:
+// ✗ WRONG:
 if (!(x > 5 && x < 10))  // Confusing
 
-✓ CLEARER:
+// ✓ CLEARER:
 if (x <= 5 || x >= 10)  // Same logic, easier to read
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 2: && vs || confusion**
 
-MISTAKE 2: && vs || confusion
-─────────────────────────────
+```java
+// "x is between 5 and 10" (inclusive):
 
-"x is between 5 and 10" (inclusive):
-
-✗ WRONG:
+// ✗ WRONG:
 if (x >= 5 || x <= 10)  // Always true for any x!
 
-✓ CORRECT:
+// ✓ CORRECT:
 if (x >= 5 && x <= 10)  // Both conditions must be true
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 3: Assignment vs comparison**
 
-MISTAKE 3: Assignment vs comparison
-────────────────────────────────────
-
-✗ WRONG:
+```java
+// ✗ WRONG:
 if (x = 5) { ... }  // Assignment! Always "true" in some languages
                     // Java: Compile error (thankfully!)
 
-✓ CORRECT:
+// ✓ CORRECT:
 if (x == 5) { ... }  // Comparison
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 4: Short-circuit evaluation**
 
-MISTAKE 4: Short-circuit evaluation
-────────────────────────────────────
-
-✗ DANGEROUS:
+```java
+// ✗ DANGEROUS:
 if (arr[i] != null && arr.length > i) { ... }
 // If arr[i] throws exception, arr.length is never checked!
 
-✓ CORRECT ORDER:
+// ✓ CORRECT ORDER:
 if (i < arr.length && arr[i] != null) { ... }
 // Check bounds FIRST, then access
 ```
+
 
 ---
 
@@ -626,11 +583,10 @@ if (i < arr.length && arr[i] != null) { ... }
 
 **RETURN STATEMENT MISTAKES**
 
-```text
-MISTAKE 1: Missing return statement
-────────────────────────────────────
+**Mistake 1: Missing return statement**
 
-✗ WRONG (compile error):
+```java
+// ✗ WRONG (compile error):
 public int findMax(int[] arr) {
     int max = arr[0];
     for (int num : arr) {
@@ -639,7 +595,7 @@ public int findMax(int[] arr) {
     // Forgot return! Compile error: "missing return statement"
 }
 
-✓ CORRECT:
+// ✓ CORRECT:
 public int findMax(int[] arr) {
     int max = arr[0];
     for (int num : arr) {
@@ -647,13 +603,12 @@ public int findMax(int[] arr) {
     }
     return max;  // Don't forget!
 }
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 2: Return inside loop (early exit)**
 
-MISTAKE 2: Return inside loop (early exit)
-───────────────────────────────────────────
-
-✗ WRONG (returns on first iteration):
+```java
+// ✗ WRONG (returns on first iteration):
 public int sum(int[] arr) {
     int sum = 0;
     for (int num : arr) {
@@ -663,7 +618,7 @@ public int sum(int[] arr) {
     return sum;
 }
 
-✓ CORRECT:
+// ✓ CORRECT:
 public int sum(int[] arr) {
     int sum = 0;
     for (int num : arr) {
@@ -671,63 +626,57 @@ public int sum(int[] arr) {
     }
     return sum;  // Return AFTER loop
 }
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 3: Wrong return type**
 
-MISTAKE 3: Wrong return type
-────────────────────────────
-
-✗ WRONG:
+```java
+// ✗ WRONG:
 public int divide(int a, int b) {
     return a / b;  // Integer division! 5/2 = 2, not 2.5
 }
 
-✓ CORRECT (if you need decimal):
+// ✓ CORRECT (if you need decimal):
 public double divide(int a, int b) {
     return (double) a / b;  // Cast to double first
 }
 ```
 
+
 ---
 
 ## 📌 10. Variable Initialization Mistakes
 
-```
-                  VARIABLE INITIALIZATION MISTAKES
-──────────────────────────────────────────────────
+**Mistake 1: Wrong initial value for min/max**
 
-MISTAKE 1: Wrong initial value for min/max
-───────────────────────────────────────────
-
-✗ WRONG:
+```java
+// ✗ WRONG:
 int max = 0;  // What if all numbers are negative?
 for (int num : arr) {
     if (num > max) max = num;
 }
 // arr = [-5, -3, -1] → max = 0 (wrong! should be -1)
 
-✓ CORRECT OPTIONS:
+// ✓ CORRECT OPTIONS:
 int max = Integer.MIN_VALUE;  // Smallest possible value
 int max = arr[0];             // First element (if array not empty)
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 2: Wrong initial value for sum with subtraction**
 
-MISTAKE 2: Wrong initial value for sum with subtraction
-──────────────────────────────────────────────────────────
-
-For finding minimum sum:
-✗ WRONG:
+```java
+// For finding minimum sum:
+// ✗ WRONG:
 int minSum = 0;  // What if all sums are positive?
 
-✓ CORRECT:
+// ✓ CORRECT:
 int minSum = Integer.MAX_VALUE;  // Largest possible value
+```
 
-═══════════════════════════════════════════════════════════════════════
+**Mistake 3: Not resetting variables in nested loops**
 
-MISTAKE 3: Not resetting variables in nested loops
-──────────────────────────────────────────────────
-
-✗ WRONG:
+```java
+// ✗ WRONG:
 int count = 0;
 for (int i = 0; i < n; i++) {
     // Forgot to reset count!
@@ -737,7 +686,7 @@ for (int i = 0; i < n; i++) {
     System.out.println(count);  // Keeps accumulating!
 }
 
-✓ CORRECT:
+// ✓ CORRECT:
 for (int i = 0; i < n; i++) {
     int count = 0;  // Reset for each outer iteration
     for (int j = 0; j < m; j++) {
@@ -745,20 +694,19 @@ for (int i = 0; i < n; i++) {
     }
     System.out.println(count);
 }
-
-═══════════════════════════════════════════════════════════════════════
-
-REFERENCE TABLE:
-┌────────────────────────────────────────────────────────────────────┐
-│ Finding Maximum  → Initialize with Integer.MIN_VALUE or arr[0]     │
-│ Finding Minimum  → Initialize with Integer.MAX_VALUE or arr[0]     │
-│ Counting         → Initialize with 0                               │
-│ Sum              → Initialize with 0                               │
-│ Product          → Initialize with 1                               │
-│ Boolean flag     → Initialize with true or false (think carefully!)│
-└────────────────────────────────────────────────────────────────────┘
-
 ```
+
+**Reference table**
+
+| Goal | Initialize with |
+| --- | --- |
+| Finding the maximum | `Integer.MIN_VALUE` or `arr[0]` |
+| Finding the minimum | `Integer.MAX_VALUE` or `arr[0]` |
+| Counting | `0` |
+| Sum | `0` |
+| Product | `1` |
+| Boolean flag | `true` or `false` (think carefully!) |
+
 
 ---
 

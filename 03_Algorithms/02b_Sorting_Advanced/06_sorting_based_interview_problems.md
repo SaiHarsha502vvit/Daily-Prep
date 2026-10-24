@@ -284,63 +284,54 @@ WHY JAVA USES TIMSORT FOR OBJECTS:
 
 ## 🧠 External Sorting — When Data Doesn't Fit in Memory
 
+### External Merge Sort - Sorting 1TB of Data
+
+PROBLEM: Need to sort 1 TB of data, but only have 8 GB RAM
+
+SOLUTION: External Merge Sort
+
+**Phase 1: Create Sorted Runs**
+
+1. Read 8 GB chunk from disk
+2. Sort in memory (QuickSort)
+3. Write sorted chunk to temp file
+4. Repeat until all data processed
+
+Result: 128 sorted files of 8 GB each
+
+**Phase 2: K-way Merge**
+
+Can't merge all 128 files at once (need buffer for each)
+
+With 8 GB RAM and 64 MB buffers:
+- Can merge ~120 files at once
+- But 128 > 120, so need multiple passes
+
+**Merge Strategy**:
+
+```text
+Pass 1: Merge files 1-120 → temp1
+        Merge files 121-128 → temp2
+
+Pass 2: Merge temp1 + temp2 → final output
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    EXTERNAL MERGE SORT - SORTING 1TB OF DATA                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  PROBLEM: Need to sort 1 TB of data, but only have 8 GB RAM                     │
-│                                                                                 │
-│  SOLUTION: External Merge Sort                                                  │
-│                                                                                 │
-│  PHASE 1: CREATE SORTED RUNS                                                    │
-│  ────────────────────────────                                                   │
-│  1. Read 8 GB chunk from disk                                                   │
-│  2. Sort in memory (QuickSort)                                                  │
-│  3. Write sorted chunk to temp file                                             │
-│  4. Repeat until all data processed                                             │
-│                                                                                 │
-│  Result: 128 sorted files of 8 GB each                                          │
-│                                                                                 │
-│                                                                                 │
-│  PHASE 2: K-WAY MERGE                                                           │
-│  ────────────────────                                                           │
-│  Can't merge all 128 files at once (need buffer for each)                       │
-│                                                                                 │
-│  With 8 GB RAM and 64 MB buffers:                                               │
-│  • Can merge ~120 files at once                                                 │
-│  • But 128 > 120, so need multiple passes                                       │
-│                                                                                 │
-│  MERGE STRATEGY:                                                                │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │                                                                           │  │
-│  │  Pass 1: Merge files 1-120 → temp1                                       │   │
-│  │          Merge files 121-128 → temp2                                     │   │
-│  │                                                                           │  │
-│  │  Pass 2: Merge temp1 + temp2 → final output                              │   │
-│  │                                                                           │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                 │
-│  K-WAY MERGE WITH MIN-HEAP:                                                     │
-│  ──────────────────────────                                                     │
-│  1. Put first element from each file in min-heap                                │
-│  2. Extract min, write to output                                                │
-│  3. Read next element from same file, add to heap                               │
-│  4. Repeat until all files exhausted                                            │
-│                                                                                 │
-│  Time per element: O(log k) where k = number of files                           │
-│  Total: O(n log k)                                                              │
-│                                                                                 │
-│                                                                                 │
-│  REAL-WORLD EXAMPLE: GOOGLE MAPREDUCE SORTING                                   │
-│  ─────────────────────────────────────────────                                  │
-│  • 2008 record: Sorted 1 PB (1000 TB) in 6 hours                                │
-│  • Used 4000 machines                                                           │
-│  • Each machine sorted ~250 GB locally                                          │
-│  • Then merged across network                                                   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**K-way Merge with Min-heap**:
+
+1. Put first element from each file in min-heap
+2. Extract min, write to output
+3. Read next element from same file, add to heap
+4. Repeat until all files exhausted
+
+Time per element: O(log k) where k = number of files  
+Total: O(n log k)
+
+**Real-world Example: Google Mapreduce Sorting**
+
+- 2008 record: Sorted 1 PB (1000 TB) in 6 hours
+- Used 4000 machines
+- Each machine sorted ~250 GB locally
+- Then merged across network
 
 🔬 **Section Challenge — 🧠 External Sorting — When Data Doesn't Fit in Memory**
 
@@ -356,63 +347,50 @@ Fix it with multi-pass merging: merge a safe fan-in like 128 or 512 runs at a ti
 
 ## 🔄 Parallel Sorting — Using Multiple CPU Cores
 
+### Parallel Sorting - Multi-core Performance
+
+JAVA 8+: Arrays.parallelSort()  
+Uses Fork/Join framework to parallelize merge sort
+
+int[] arr = new int[10_000_000];  
+// Fill with random numbers  
+Arrays.parallelSort(arr);  // Uses all CPU cores!
+
+**HOW IT Works**:
+
+1. Split array into chunks (one per core)
+2. Sort each chunk in parallel (using QuickSort)
+3. Merge sorted chunks (can also be parallelized)
+
+```text
+Original Array: [##############################]
+
+Split:    [########] [########] [########] [########]
+           Core 1     Core 2     Core 3     Core 4
+              ↓          ↓          ↓          ↓
+Sort:     [sorted]   [sorted]   [sorted]   [sorted]
+              ↘          ↙          ↘          ↙
+Merge L1:      [merged]              [merged]
+                   ↘                    ↙
+Merge L2:              [FINAL SORTED]
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    PARALLEL SORTING - MULTI-CORE PERFORMANCE                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  JAVA 8+: Arrays.parallelSort()                                                 │
-│  ────────────────────────────                                                   │
-│  Uses Fork/Join framework to parallelize merge sort                             │
-│                                                                                 │
-│  int[] arr = new int[10_000_000];                                               │
-│  // Fill with random numbers                                                    │
-│  Arrays.parallelSort(arr);  // Uses all CPU cores!                              │
-│                                                                                 │
-│                                                                                 │
-│  HOW IT WORKS:                                                                  │
-│  ────────────                                                                   │
-│  1. Split array into chunks (one per core)                                      │
-│  2. Sort each chunk in parallel (using QuickSort)                               │
-│  3. Merge sorted chunks (can also be parallelized)                              │
-│                                                                                 │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │                                                                           │  │
-│  │  Original Array: [##############################]                         │  │
-│  │                                                                           │  │
-│  │  Split:    [########] [########] [########] [########]                   │   │
-│  │             Core 1     Core 2     Core 3     Core 4                      │   │
-│  │                ↓          ↓          ↓          ↓                        │   │
-│  │  Sort:     [sorted]   [sorted]   [sorted]   [sorted]                    │    │
-│  │                ↘          ↙          ↘          ↙                        │   │
-│  │  Merge L1:      [merged]              [merged]                           │   │
-│  │                     ↘                    ↙                                │  │
-│  │  Merge L2:              [FINAL SORTED]                                   │   │
-│  │                                                                           │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                 │
-│                                                                                 │
-│  SPEEDUP:                                                                       │
-│  ────────                                                                       │
-│  • 4 cores: ~3.5x faster (not 4x due to merge overhead)                         │
-│  • 8 cores: ~6x faster                                                          │
-│  • 16 cores: ~10x faster (diminishing returns)                                  │
-│                                                                                 │
-│  THRESHOLD: parallelSort only kicks in for arrays > 8192 elements               │
-│  Below that, sequential sort is faster (no parallel overhead)                   │
-│                                                                                 │
-│                                                                                 │
-│  BENCHMARK (10 million integers, 8-core CPU):                                   │
-│  ┌───────────────────┬───────────────┬──────────────────────────────────────┐   │
-│  │ Method            │ Time          │ Speedup                              │   │
-│  ├───────────────────┼───────────────┼──────────────────────────────────────┤   │
-│  │ Arrays.sort()     │ 950 ms        │ 1x (baseline)                        │   │
-│  │ parallelSort()    │ 180 ms        │ 5.3x                                 │   │
-│  │ Custom parallel   │ 160 ms        │ 5.9x (optimized)                     │   │
-│  └───────────────────┴───────────────┴──────────────────────────────────────┘   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**Speedup**:
+
+- 4 cores: ~3.5x faster (not 4x due to merge overhead)
+- 8 cores: ~6x faster
+- 16 cores: ~10x faster (diminishing returns)
+
+THRESHOLD: parallelSort only kicks in for arrays > 8192 elements  
+Below that, sequential sort is faster (no parallel overhead)
+
+BENCHMARK (10 million integers, 8-core CPU):
+
+| Method | Time | Speedup |
+| --- | --- | --- |
+| Arrays.sort() | 950 ms | 1x (baseline) |
+| parallelSort() | 180 ms | 5.3x |
+| Custom parallel | 160 ms | 5.9x (optimized) |
 
 🔬 **Section Challenge — 🔄 Parallel Sorting — Using Multiple CPU Cores**
 
@@ -653,14 +631,17 @@ Sort the unique values, map each value to its compressed rank, and answer counts
 ## When Advanced Sorting Breaks
 
 ### 1. Radix Sort — Incorrect Number of Passes or Base
+
 **What breaks**: LSD Radix Sort on numbers with d digits in base B requires exactly d passes. Miscounting d (e.g., using `Math.log10(max)` which returns `log10(0) = -Infinity` for max=0) causes either too few passes (wrong result) or too many (wasted time).
 **Fix**: `int d = max == 0 ? 1 : (int) Math.log10(max) + 1`. Handle max=0 explicitly.
 
 ### 2. Counting Sort — Array Size Proportional to Max Value
+
 **What breaks**: `int[] count = new int[max+1]` with max = 10⁹ allocates 4 GB — an OOM crash. Counting sort is only practical when max ≤ ~10⁶.
 **Signal**: If the value range >> n, use comparison sort (O(n log n)) not counting sort (O(n + max)).
 
 ### 3. External Sort — Wrong Chunk Size / Missing Merge Pass
+
 **What breaks**: K-way external merge of sorted chunks with a heap: if chunks are larger than available RAM, the initial sort pass itself OOMs. Or if the chunk count k is too large, the k-way merge heap is still too large for memory.
 **Fix**: Chunk size = available RAM / 2 (leave room for the merge buffer). If k chunks don't fit in one merge pass, do multi-level merging: merge groups of sqrt(k) chunks first.
 

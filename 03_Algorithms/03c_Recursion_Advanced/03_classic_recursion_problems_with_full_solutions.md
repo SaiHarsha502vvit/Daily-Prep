@@ -239,24 +239,23 @@ private void helper(String num, int target, int index,
 
 ### Time Complexity Patterns
 
-**RECURSION TYPE              │ RECURRENCE       │ TIME**
+| Recursion type | Recurrence | Time |
+| --- | --- | --- |
+| Linear (1 call, n → n−1) | T(n) = T(n−1) + 1 | O(n) |
+| Linear (1 call, n → n/2) | T(n) = T(n/2) + 1 | O(log n) |
+| Binary (2 calls, n → n−1) | T(n) = 2T(n−1) + 1 | O(2ⁿ) |
+| Binary (2 calls, n → n/2) | T(n) = 2T(n/2) + n | O(n log n) |
+| Tree traversal | T(n) = 2T(n/2) + 1 | O(n) |
+| Subsets | T(n) = 2T(n−1) + 1 | O(2ⁿ) |
+| Permutations | T(n) = n·T(n−1) | O(n!) |
+| Fibonacci (naive) | T(n) = T(n−1) + T(n−2) | O(φⁿ) ≈ O(1.618ⁿ) |
 
-```text
-Linear (1 call, n→n-1)      │ T(n) = T(n-1)+1  │ O(n)
-Linear (1 call, n→n/2)      │ T(n) = T(n/2)+1  │ O(log n)
-Binary (2 calls, n→n-1)     │ T(n) = 2T(n-1)+1 │ O(2^n)
-Binary (2 calls, n→n/2)     │ T(n) = 2T(n/2)+n │ O(n log n)
-Tree traversal              │ T(n) = 2T(n/2)+1 │ O(n)
-Subsets                     │ T(n) = 2T(n-1)+1 │ O(2^n)
-Permutations                │ T(n) = n*T(n-1)  │ O(n!)
-Fibonacci (naive)           │ T(n) = T(n-1)+T(n-2) │ O(φ^n) ≈ O(1.618^n)
+**Space complexity**
 
-SPACE COMPLEXITY:
-- Usually O(max recursion depth)
-- For trees: O(height) = O(log n) balanced, O(n) skewed
-- For subsets/permutations: O(n) for the path being built
-- Plus any data structures passed/returned
-```
+- Usually O(max recursion depth).
+- For trees: O(height), which is O(log n) when balanced and O(n) when skewed.
+- For subsets and permutations: O(n) for the path being built.
+- Plus any data structures passed or returned.
 
 ### Counting Recursive Calls
 

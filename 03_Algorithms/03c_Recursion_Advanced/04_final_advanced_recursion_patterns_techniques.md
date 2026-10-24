@@ -4,38 +4,30 @@
 > Page 4 of 5 in **Advanced Recursion Patterns**
 
 
-**ADVANCED RECURSION - BEYOND THE BASICS**
+## Advanced recursion: beyond the basics
 
-```text
-This section covers advanced patterns used in competitive programming and
-system-level programming:
-• Mutual recursion
-• Indirect recursion
-• Continuation Passing Style (CPS)
-• Y-Combinator (anonymous recursion)
-• Recursion with immutable state
-• Advanced backtracking optimizations
-```
+This section covers advanced patterns used in competitive programming and system-level programming:
+
+- Mutual recursion
+- Indirect recursion
+- Continuation-passing style (CPS)
+- Y-combinator-style (anonymous) recursion
+- Recursion with immutable state
+- Advanced backtracking optimizations
 
 ## 🔁 Mutual Recursion
 
+**Concept:** two or more functions call each other in a cycle.
+
+```mermaid
+flowchart LR
+  E["isEven(n)"] -->|"isOdd(n - 1)"| O["isOdd(n)"]
+  O -->|"isEven(n - 1)"| E
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    MUTUAL RECURSION - TWO FUNCTIONS CALL EACH OTHER             │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  CONCEPT: Two or more functions that call each other in a cycle.                │
-│                                                                                 │
-│       ┌───────────┐                    ┌───────────┐                            │
-│       │  isEven   │ ────────────────→  │  isOdd    │                            │
-│       └───────────┘                    └───────────┘                            │
-│             ↑                                │                                  │
-│             └────────────────────────────────┘                                  │
-│                                                                                 │
-│                                                                                 │
-│  EXAMPLE: Check if a number is even or odd using mutual recursion               │
-│  ────────────────────────────────────────────────────────                       │
-```
+
+**How to read this diagram.** Each function hands the smaller problem (`n - 1`) to the other, so the calls alternate until a base case (`n == 0`) stops the cycle.
+
+**Example:** check whether a number is even or odd using mutual recursion.
 
 ```java
 // Mutually recursive functions
@@ -53,10 +45,7 @@ boolean isOdd(int n) {
 // isEven(4) → isOdd(3) → isEven(2) → isOdd(1) → isEven(0) → true
 ```
 
-```text
-REAL-WORLD USE: Expression Parsing
-──────────────────────────────────
-```
+**Real-world use: expression parsing**
 
 ```java
 // Recursive descent parser for expressions
@@ -104,22 +93,23 @@ class Parser {
 }
 ```
 
+**Call graph for parsing `(2+3)*4`**
+
+```mermaid
+flowchart TD
+  e1["parseExpr()"] --> t1["parseTerm()"]
+  t1 --> f1["parseFactor(): sees '('"]
+  f1 -->|"mutual call"| e2["parseExpr()"]
+  e2 --> t2["parseTerm()"]
+  t2 --> f2["parseFactor() returns 2"]
+  e2 --> t3["parseTerm()"]
+  t3 --> f3["parseFactor() returns 3"]
+  e2 -.->|"returns 5"| f1
+  t1 --> f4["parseFactor() returns 4"]
+  t1 -.->|"returns 5 * 4 = 20"| e1
 ```
-│                                                                                 │
-│  CALL GRAPH for parsing "(2+3)*4":                                              │
-│  parseExpr()                                                                    │
-│  └→ parseTerm()                                                                 │
-│     └→ parseFactor() [sees '(']                                                 │
-│        └→ parseExpr()              ← MUTUAL CALL                                │
-│           └→ parseTerm()                                                        │
-│              └→ parseFactor() → 2                                               │
-│              └→ parseFactor() → 3                                               │
-│           └→ returns 5                                                          │
-│        └→ parseFactor() → 4                                                     │
-│     └→ returns 20                                                               │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The outer `parseFactor` sees `(` and calls `parseExpr` again: that is the mutual call. The inner expression returns 5 (`2+3`), and the outer `parseTerm` then multiplies it by 4 to return 20.
 
 🔬 **Section Challenge — 🔁 Mutual Recursion**
 
@@ -131,21 +121,19 @@ class Parser {
 
 </details>
 
-
 ## 📌 Continuation Passing Style (cps)
 
-**CONTINUATION PASSING STYLE (CPS)**
+**Concept:** instead of returning a value, pass a function (the *continuation*) that handles the result. Every call becomes a tail call.
 
-```text
-CONCEPT: Instead of returning a value, pass a function that handles the
-result. Every call becomes a tail call!
+| Style | How the result travels |
+| --- | --- |
+| Traditional | `return value` goes back to the caller |
+| CPS | `continuation(value)` is called, and nothing is returned |
 
-TRADITIONAL: CPS:
-return value ← caller continuation(value) → no return
+> [!NOTE]
+> Java does not perform tail-call optimization, so CPS in Java does **not** save stack space. The pattern matters because it makes control flow explicit and is the basis of callback-style and functional code.
 
-EXAMPLE: Factorial in CPS
-───────────────────────────
-```
+**Example: factorial in CPS**
 
 ```java
 // Traditional recursive factorial
@@ -173,25 +161,26 @@ void factorialCPS(int n, Continuation<Integer> k) {
 factorialCPS(5, result -> System.out.println(result));  // Prints 120
 ```
 
+**Trace of `factorialCPS(4, print)`**
+
+```mermaid
+sequenceDiagram
+  participant C4 as factorialCPS(4, k0)
+  participant C3 as factorialCPS(3, k1)
+  participant C2 as factorialCPS(2, k2)
+  participant C1 as factorialCPS(1, k3)
+  C4->>C3: k1 = r → k0(4 * r)
+  C3->>C2: k2 = r → k1(3 * r)
+  C2->>C1: k3 = r → k2(2 * r)
+  C1-->>C2: k3.accept(1)
+  C2-->>C3: k2.accept(2), which is 2 * 1
+  C3-->>C4: k1.accept(6), which is 3 * 2
+  C4-->>C4: k0.accept(24), which is 4 * 6, then print(24)
 ```
-│                                                                                 │
-│                                                                                 │
-│  TRACE OF factorialCPS(4, print):                                               │
-│  ────────────────────────────────                                               │
-│  factorialCPS(4, k₀) where k₀ = print                                          │
-│  └→ factorialCPS(3, k₁) where k₁ = r → k₀(4 * r)                              │
-│     └→ factorialCPS(2, k₂) where k₂ = r → k₁(3 * r)                           │
-│        └→ factorialCPS(1, k₃) where k₃ = r → k₂(2 * r)                        │
-│           └→ k₃.accept(1)                                                      │
-│        └→ k₂.accept(2)       // 2 * 1                                          │
-│     └→ k₁.accept(6)          // 3 * 2                                          │
-│  └→ k₀.accept(24)            // 4 * 6                                          │
-│     └→ print(24)                                                                │
-│                                                                                 │
-│                                                                                 │
-│  FIBONACCI IN CPS:                                                              │
-│  ─────────────────                                                              │
-```
+
+**How to read this diagram.** Each call wraps the caller's continuation in a new one (`k1`, `k2`, `k3`). At the base case, `k3.accept(1)` starts the chain, and each continuation multiplies in its own `n` before passing the result on to the next, until `k0` prints 24.
+
+**Fibonacci in CPS**
 
 ```java
 void fibCPS(int n, Continuation<Integer> k) {
@@ -207,29 +196,21 @@ void fibCPS(int n, Continuation<Integer> k) {
 }
 ```
 
-```text
-WHY USE CPS?
-• All calls become tail calls → can be optimized in functional languages
-• Explicit control flow → useful for async programming
-• Foundation of async/await patterns
-```
+**Why use CPS?**
+
+- All calls become tail calls, which functional languages with tail-call optimization can turn into loops.
+- Explicit control flow is useful for asynchronous programming.
+- Callbacks and `async`/`await` are closely related to continuations.
 
 ## 🔁 Y — Combinator — Anonymous Recursion
 
-**Y-COMBINATOR - RECURSION WITHOUT NAMING**
+**Problem:** how do you write a recursive function without naming it? (Lambda calculus has no assignment.)
 
-```text
-PROBLEM: How do you write a recursive function without naming it?
-(Lambda calculus has no assignment!)
+**Solution:** the Y-combinator, a higher-order function that enables recursion. Its mathematical definition is:
 
-SOLUTION: Y-Combinator - a higher-order function that enables recursion
+`Y = λf. (λx. f(x x)) (λx. f(x x))`
 
-MATHEMATICAL DEFINITION:
-Y = λf. (λx. f(x x)) (λx. f(x x))
-
-JAVA IMPLEMENTATION:
-─────────────────────
-```
+**Java implementation.** Java's lambdas cannot refer to themselves by name, so the version below passes the function to itself explicitly. This is the *self-application* idea behind the Y-combinator rather than the untyped lambda-calculus formula.
 
 ```java
 // Function that takes itself and returns a function
@@ -237,7 +218,7 @@ interface RecursiveFunction<T, R> {
     R apply(RecursiveFunction<T, R> self, T input);
 }
 
-// Y-combinator implementation
+// Self-application helper in the spirit of the Y-combinator
 static <T, R> Function<T, R> Y(RecursiveFunction<T, R> f) {
     return x -> f.apply(f, x);
 }
@@ -259,11 +240,7 @@ Function<Integer, Integer> fib = Y((self, n) -> {
 System.out.println(fib.apply(10));  // 55
 ```
 
-**SIMPLER JAVA 8 VERSION:**
-
-```text
-────────────────────────
-```
+**Simpler version: an anonymous class** (the diamond `new Function<>() {...}` needs Java 9 or later)
 
 ```java
 // Using Java's Function interface directly
@@ -276,12 +253,11 @@ Function<Integer, Integer> factorial = new Function<>() {
 };
 ```
 
-```text
-WHY CARE ABOUT Y-COMBINATOR?
-• Foundation of lambda calculus and functional programming
-• Proves recursion can be derived from simpler constructs
-• Asked in advanced interviews about programming theory
-```
+**Why care about the Y-combinator?**
+
+- It is a foundation of lambda calculus and functional programming.
+- It shows that recursion can be derived from simpler constructs.
+- It is asked about in advanced interviews on programming theory.
 
 🔬 **Section Challenge — 🔁 Y — Combinator — Anonymous Recursion**
 

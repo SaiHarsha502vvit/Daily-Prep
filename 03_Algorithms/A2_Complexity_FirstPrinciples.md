@@ -569,18 +569,16 @@ Fix: `"".join(words)` — builds the string once in O(n).
 
 ## Summary
 
-```
-Tool                    │ Use when
-────────────────────────┼──────────────────────────────────────────────
-O / Ω / Θ              │ Describe worst/best/tight growth rates
-Substitution method     │ You can guess the form; verify by induction
-Recursion tree          │ Visualize multi-level work; sum geometric series
-Master Theorem          │ T(n) = aT(n/b) + f(n); match one of 3 cases
-Aggregate amortized     │ Total work / n operations is tight
-Accounting amortized    │ Per-element credits fund future expensive ops
-Potential amortized     │ Global "energy" function models work savings
-Space analysis          │ Count stack depth (recursion) + heap allocations
-```
+| Tool | Use when |
+| --- | --- |
+| O / Ω / Θ | Describe worst/best/tight growth rates |
+| Substitution method | You can guess the form; verify by induction |
+| Recursion tree | Visualize multi-level work; sum geometric series |
+| Master Theorem | T(n) = aT(n/b) + f(n); match one of 3 cases |
+| Aggregate amortized | Total work / n operations is tight |
+| Accounting amortized | Per-element credits fund future expensive ops |
+| Potential amortized | Global "energy" function models work savings |
+| Space analysis | Count stack depth (recursion) + heap allocations |
 
 ---
 

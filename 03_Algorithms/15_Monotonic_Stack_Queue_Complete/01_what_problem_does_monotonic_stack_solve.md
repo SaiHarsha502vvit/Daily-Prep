@@ -4,25 +4,25 @@
 > Page 1 of 3 in **Monotonic Stack & Queue Complete Guide**
 
 
-**Core Problem**: For each element in an array, find the NEXT (or PREVIOUS)
-element that is GREATER (or SMALLER). This appears EVERYWHERE.
-BRUTE FORCE vs MONOTONIC STACK
-Array: [73, 74, 75, 71, 69, 72, 76, 73]
-Question: "How many days until a warmer temperature?"
+**Core problem:** for each element in an array, find the NEXT (or PREVIOUS) element that is GREATER (or SMALLER). This appears everywhere.
 
-**Brute Force**: For each day, scan forward until warmer found.
-Day 0 (73): check 74 → warmer! → 1 day
-Day 1 (74): check 75 → warmer! → 1 day
-Day 2 (75): check 71,69,72,76 → 76 warmer! → 4 days
-Day 3 (71): check 69,72 → 72 warmer! → 2 days
-...
-For each element, scan up to n elements: O(n²)
-n=100K → 10 BILLION operations → ~10 seconds ❌
+**Brute force vs monotonic stack**
 
-**Monotonic Stack**: Process each element ONCE. When an element arrives,
-pop all smaller elements (they found their answer = current element).
-Each element pushed once, popped once: TOTAL = O(n)
-n=100K → 200K operations → <1 millisecond ✅
+Array: `[73, 74, 75, 71, 69, 72, 76, 73]`. Question: "How many days until a warmer temperature?"
+
+**Brute force:** for each day, scan forward until a warmer day is found.
+
+| Day | Temperature | Scan | Answer |
+| --- | --- | --- | --- |
+| 0 | 73 | check 74, warmer | 1 day |
+| 1 | 74 | check 75, warmer | 1 day |
+| 2 | 75 | check 71, 69, 72, 76; 76 is warmer | 4 days |
+| 3 | 71 | check 69, 72; 72 is warmer | 2 days |
+| ... | ... | ... | ... |
+
+Each element may scan up to n others, so the cost is O(n²). For n = 100,000 that is on the order of billions of comparisons, which takes seconds. ❌
+
+**Monotonic stack:** process each element ONCE. When an element arrives, pop every smaller element on the stack (they have found their answer: the current element). Each element is pushed once and popped once, so the total is O(n). For n = 100,000 that is about 200,000 operations, a few milliseconds at most. ✅
 
 💡 **WHY O(n)? THE KEY INSIGHT:**
 Each element enters the stack exactly ONCE.
@@ -160,112 +160,105 @@ public int[] prevSmaller(int[] arr) {
 }
 ```
 
-```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ BENCHMARK: BRUTE FORCE vs MONOTONIC STACK                                    │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ Next Greater Element for n elements:                                         │
-│                                                                              │
-│ ┌─────────────┬───────────────┬───────────────────────────────────────┐      │
-│ │ n           │ Brute O(n²)  │ Monotonic Stack O(n)                  │       │
-│ ├─────────────┼───────────────┼───────────────────────────────────────┤      │
-│ │ 100         │ 0.01 ms      │ 0.001 ms                              │       │
-│ │ 1,000       │ 1 ms         │ 0.01 ms                               │       │
-│ │ 10,000      │ 100 ms       │ 0.1 ms                                │       │
-│ │ 100,000     │ 10 sec       │ 1 ms           (10,000x faster!)     │        │
-│ │ 1,000,000   │ 17 min       │ 10 ms          (100,000x faster!)    │        │
-│ │ 10,000,000  │ ~28 hours    │ 100 ms         (1,000,000x faster!)  │        │
-│ └─────────────┴───────────────┴───────────────────────────────────────┘      │
-│                                                                              │
-│ INTERVIEW CONSTRAINTS:                                                       │
-│   n ≤ 10⁵ → must be O(n) or O(n log n) → monotonic stack is key              │
-│   If you see "next greater" + n ≤ 10⁵ → monotonic stack, not brute force.    │
-│                                                                              │
-│ CPU INSIGHT:                                                                 │
-│ • Stack operations are cache-friendly (top of stack stays in L1 cache)       │
-│ • Sequential array scan → CPU prefetcher predicts next access                │
-│ • Much faster in practice than even O(n log n) sort-based approaches         │
-└──────────────────────────────────────────────────────────────────────────────┘
+### BENCHMARK: BRUTE FORCE vs MONOTONIC STACK
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⚠️  COMMON MISTAKES & HOW TO AVOID THEM                                      │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ MISTAKE 1: Increasing vs Decreasing confusion                                │
-│   "Next Greater" → you want bigger to pop smaller → DECREASING stack         │
-│   "Next Smaller" → you want smaller to pop bigger → INCREASING stack         │
-│   Fix: Think "what do I KEEP in the stack?" Keep what HASN'T found answer.   │
-│                                                                              │
-│ MISTAKE 2: Storing values instead of INDICES                                 │
-│   If you store values, you can't fill the result array!                      │
-│   Fix: ALWAYS push INDICES. Access values via arr[stack.peek()].             │
-│                                                                              │
-│ MISTAKE 3: Off-by-one in "Previous" problems                                 │
-│   For previous smaller/greater, the answer is stack.peek() BEFORE pushing.   │
-│   Don't confuse with "next" problems where answer is found during popping.   │
-│                                                                              │
-│ MISTAKE 4: Forgetting circular array case                                    │
-│   "Next Greater Element II" uses circular array.                             │
-│   Fix: Process the array TWICE (i = 0 to 2n-1, index = i % n).               │
-│   Only push during first pass.                                               │
-│                                                                              │
-│ MISTAKE 5: Using wrong comparison (< vs <=)                                  │
-│   For "strictly greater": use <  (pop when stack value < current)            │
-│   For "greater or equal": use <= (pop when stack value <= current)           │
-│   This matters in "Number of Visible People in a Queue" and similar.         │
-│                                                                              │
-│ MISTAKE 6: Not using Deque for Sliding Window problems                       │
-│   Sliding window needs removal from BOTH ends → use Deque, not Stack.        │
-│   Remove from front: expired elements (out of window).                       │
-│   Remove from back: elements that can no longer be answer (smaller/bigger).  │
-└──────────────────────────────────────────────────────────────────────────────┘
+Next Greater Element for n elements:
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ DIFFICULTIES IN LEARNING MONOTONIC STACK                                     │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 1. "HOW CAN A WHILE LOOP INSIDE A FOR LOOP BE O(n)?"                         │
-│    Each element is pushed exactly once and popped at most once.              │
-│    Total pushes = n, total pops ≤ n. Total work = 2n = O(n).                 │
-│    The while loop doesn't always run! It fires only when popping happens.    │
-│                                                                              │
-│ 2. "WHEN DO I USE STACK vs DEQUE?"                                           │
-│    Stack: "Next/Previous Greater/Smaller" — only need one end.               │
-│    Deque: "Sliding Window Max/Min" — need to expire old elements from front  │
-│    Rule: If there's a WINDOW SIZE → Deque. Otherwise → Stack.                │
-│                                                                              │
-│ 3. "LARGEST RECTANGLE IN HISTOGRAM IS CONFUSING"                             │
-│    Key insight: For each bar, the rectangle width extends to the             │
-│    previous smaller bar (left boundary) and next smaller bar (right).        │
-│    Use increasing stack: when shorter bar arrives, popped bar knows its      │
-│    right boundary (current) and left boundary (new stack top).               │
-│    Practice: draw the histogram and trace the stack step by step.            │
-│                                                                              │
-│ 4. "SUM OF SUBARRAY MINIMUMS SEEMS IMPOSSIBLY HARD"                          │
-│    Break it down: for each element, find how many subarrays it's minimum of  │
-│    That count = (distance to prev smaller) × (distance to next smaller).     │
-│    Use monotonic stack to find both distances. Then sum: val × count.        │
-└──────────────────────────────────────────────────────────────────────────────┘
+| n | Brute O(n²) | Monotonic Stack O(n) |
+| --- | --- | --- |
+| 100 | 0.01 ms | 0.001 ms |
+| 1,000 | 1 ms | 0.01 ms |
+| 10,000 | 100 ms | 0.1 ms |
+| 100,000 | 10 sec | 1 ms           (10,000x faster!) |
+| 1,000,000 | 17 min | 10 ms          (100,000x faster!) |
+| 10,000,000 | ~28 hours | 100 ms         (1,000,000x faster!) |
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ EXPECTED OUTPUTS OF MASTERING MONOTONIC STACK ⭐                            │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ✅ INSTANT RECOGNITION: See "next greater" → Monotonic Stack                  │
-│ ✅ Can write NGE/NSE/PGE/PSE templates from memory                            │
-│ ✅ Can solve Largest Rectangle in Histogram in 10 minutes                     │
-│ ✅ Understand amortized O(n) proof (push once, pop once)                      │
-│ ✅ Know when to use Stack vs Deque (window → Deque)                           │
-│ ✅ Handle circular arrays (process 2n with i%n)                               │
-│ ✅ Solve contribution-counting problems (Sum of Subarray Mins/Maxs)           │
-│                                                                              │
-│ THE TRANSFORMATION:                                                          │
-│ FROM: "I'll check every pair — O(n²) is fine for now"                        │
-│   TO: "Monotonic stack gives me next greater/smaller in O(n).                │
-│        I keep a [decreasing/increasing] stack and process linearly."         │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+**Interview Constraints**:
+
+n ≤ 10⁵ → must be O(n) or O(n log n) → monotonic stack is key  
+If you see "next greater" + n ≤ 10⁵ → monotonic stack, not brute force.
+
+**CPU Insight**:
+
+- Stack operations are cache-friendly (top of stack stays in L1 cache)
+- Sequential array scan → CPU prefetcher predicts next access
+- Much faster in practice than even O(n log n) sort-based approaches
+
+### ⚠️  Common Mistakes & HOW to Avoid Them
+
+**Mistake 1: Increasing vs Decreasing confusion**
+
+"Next Greater" → you want bigger to pop smaller → DECREASING stack  
+"Next Smaller" → you want smaller to pop bigger → INCREASING stack  
+Fix: Think "what do I KEEP in the stack?" Keep what HASN'T found answer.
+
+**Mistake 2: Storing values instead of INDICES**
+
+If you store values, you can't fill the result array!  
+Fix: ALWAYS push INDICES. Access values via arr[stack.peek()].
+
+**Mistake 3: Off-by-one in "Previous" problems**
+
+For previous smaller/greater, the answer is stack.peek() BEFORE pushing.  
+Don't confuse with "next" problems where answer is found during popping.
+
+**Mistake 4: Forgetting circular array case**
+
+"Next Greater Element II" uses circular array.  
+Fix: Process the array TWICE (i = 0 to 2n-1, index = i % n).  
+Only push during first pass.
+
+**Mistake 5: Using wrong comparison (< vs <=)**
+
+For "strictly greater": use <  (pop when stack value < current)  
+For "greater or equal": use <= (pop when stack value <= current)  
+This matters in "Number of Visible People in a Queue" and similar.
+
+**Mistake 6: Not using Deque for Sliding Window problems**
+
+Sliding window needs removal from BOTH ends → use Deque, not Stack.  
+Remove from front: expired elements (out of window).  
+Remove from back: elements that can no longer be answer (smaller/bigger).
+
+### Difficulties in Learning Monotonic Stack
+
+1. "HOW CAN A WHILE LOOP INSIDE A FOR LOOP BE O(n)?"
+Each element is pushed exactly once and popped at most once.  
+Total pushes = n, total pops ≤ n. Total work = 2n = O(n).  
+The while loop doesn't always run! It fires only when popping happens.
+
+2. "WHEN DO I USE STACK vs DEQUE?"
+Stack: "Next/Previous Greater/Smaller" — only need one end.  
+Deque: "Sliding Window Max/Min" — need to expire old elements from front  
+Rule: If there's a WINDOW SIZE → Deque. Otherwise → Stack.
+
+3. "LARGEST RECTANGLE IN HISTOGRAM IS CONFUSING"
+Key insight: For each bar, the rectangle width extends to the  
+previous smaller bar (left boundary) and next smaller bar (right).  
+Use increasing stack: when shorter bar arrives, popped bar knows its  
+right boundary (current) and left boundary (new stack top).  
+Practice: draw the histogram and trace the stack step by step.
+
+4. "SUM OF SUBARRAY MINIMUMS SEEMS IMPOSSIBLY HARD"
+Break it down: for each element, find how many subarrays it's minimum of  
+That count = (distance to prev smaller) × (distance to next smaller).  
+Use monotonic stack to find both distances. Then sum: val × count.
+
+### ⭐ Expected Outputs of Mastering Monotonic Stack ⭐
+
+- ✅ INSTANT RECOGNITION: See "next greater" → Monotonic Stack
+- ✅ Can write NGE/NSE/PGE/PSE templates from memory
+- ✅ Can solve Largest Rectangle in Histogram in 10 minutes
+- ✅ Understand amortized O(n) proof (push once, pop once)
+- ✅ Know when to use Stack vs Deque (window → Deque)
+- ✅ Handle circular arrays (process 2n with i%n)
+- ✅ Solve contribution-counting problems (Sum of Subarray Mins/Maxs)
+
+**The Transformation**:
+
+FROM: "I'll check every pair — O(n²) is fine for now"  
+TO: "Monotonic stack gives me next greater/smaller in O(n).  
+I keep a [decreasing/increasing] stack and process linearly."
 
 📖 **Related mental models:**
 
@@ -295,27 +288,11 @@ WHY USE THEM?
 
 ### Visual Comparison
 
-```
-Regular Stack:              Monotonic Decreasing Stack:
-┌─────┐                     ┌─────┐
-│  3  │ ← top               │  7  │ ← top (smallest)
-├─────┤                     ├─────┤
-│  7  │                     │  5  │
-├─────┤                     ├─────┤
-│  2  │                     │  3  │
-├─────┤                     └─────┘   (largest at bottom)
-│  5                              │
-└─────┘  (random order)
-
-Monotonic Increasing Stack:
-┌─────┐
-│  2  │ ← top (largest)
-├─────┤
-│  4  │
-├─────┤
-│  7  │
-└─────┘   (smallest at bottom)
-```
+| Stack type | Contents, bottom → top | Rule |
+| --- | --- | --- |
+| Regular stack | `5, 2, 7, 3` | No order: elements are in arrival order |
+| Monotonic **decreasing** stack | `7, 5, 3` | Values decrease toward the top: the largest is at the bottom and the smallest is on top |
+| Monotonic **increasing** stack | `2, 4, 7` | Values increase toward the top: the smallest is at the bottom and the largest is on top |
 
 ### The Key Insight
 

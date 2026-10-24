@@ -75,10 +75,16 @@ class Solution {
 
 **Problem**: Given a 2D grid where `1` = land, `0` = water, find the perimeter of the island. There is exactly one island (no lakes).
 
-|  | 0 | 1 | 0 | 0 | Land cells: 7 |
-| --- | --- | --- | --- | --- | --- |
-| ├───┼───┼───┼───┤    Each land cell contributes 4 edges | 1<br>0 | 1<br>1 | 1<br>0 | 0<br>0 | Subtract 2 for each internal adjacency (shared edge)<br>Perimeter = 4 * landCells - 2 * internalEdges |
-| ├───┼───┼───┼───┤                = 4 * 7 - 2 * 6 = 28 - 12 = 16 ✓ | 1 | 1 | 0 | 0 |  |
+| | c0 | c1 | c2 | c3 |
+| --- | --- | --- | --- | --- |
+| **r0** | 0 | 1 | 0 | 0 |
+| **r1** | 1 | 1 | 1 | 0 |
+| **r2** | 0 | 1 | 0 | 0 |
+| **r3** | 1 | 1 | 0 | 0 |
+
+- Land cells: 7. Each land cell starts with 4 edges.
+- Subtract 2 for every internal adjacency (a shared edge removes one edge from each cell). Here there are 6 adjacencies.
+- Perimeter = 4 × 7 − 2 × 6 = 28 − 12 = **16** ✓
 
 **Key Insight**: No DFS/BFS needed! Every land cell starts with 4 edges. Each shared edge between two adjacent land cells removes 2 from the perimeter (one for each cell). Count land cells and right/down adjacencies.
 
@@ -125,19 +131,21 @@ class Solution {
 
 **Problem**: Reshape a matrix from `m × n` to `r × c` (if valid). Fill new matrix row by row from original matrix read row by row.
 
-```
-Original (2×4):        Reshaped (4×2):
-┌───┬───┬───┬───┐     ┌───┬───┐
-│ 1 │ 2 │ 3 │ 4 │     │ 1 │ 2 │
-├───┼───┼───┼───┤     ├───┼───┤
-│ 5 │ 6 │ 7 │ 8 │     │ 3 │ 4 │
-└───┴───┴───┴───┘     ├───┼───┤
-                       │ 5 │ 6 │
-1D view: [1,2,3,4, ├───┼───┤
-          5,6,7,8]     │ 7 │ 8 │
-                       └───┴───┘
-Map 1D index i → 2D: (i / numCols, i % numCols)
-```
+**Original (2×4)**
+
+| 1 | 2 | 3 | 4 |
+| --- | --- | --- | --- |
+| 5 | 6 | 7 | 8 |
+
+**Reshaped (4×2)**
+
+| 1 | 2 |
+| --- | --- |
+| 3 | 4 |
+| 5 | 6 |
+| 7 | 8 |
+
+1D view: `[1, 2, 3, 4, 5, 6, 7, 8]`. Map a 1D index `i` to 2D with `(i / numCols, i % numCols)`.
 
 **Key Insight**: Think of the matrix as a 1D array of `m*n` elements. Element at 1D index `i` maps to `(i / cols, i % cols)` in any reshaping. If `m*n != r*c`, reshape is impossible.
 
@@ -176,18 +184,20 @@ class Solution {
 
 **Problem**: Given a matrix, return its transpose. The transpose of a matrix swaps rows and columns: `result[j][i] = matrix[i][j]`.
 
-```
-Original (2×3):        Transposed (3×2):
-┌───┬───┬───┐          ┌───┬───┐
-│ 1 │ 2 │ 3 │          │ 1 │ 4 │
-├───┼───┼───┤   →     ├───┼────┤
-│ 4 │ 5 │ 6 │          │ 2 │ 5 │
-└───┴───┴───┘          ├───┼───┤
-                        │ 3 │ 6 │
-                        └───┴───┘
+**Original (2×3)**
 
-(i,j) in original → (j,i) in transpose
-```
+| 1 | 2 | 3 |
+| --- | --- | --- |
+| 4 | 5 | 6 |
+
+**Transposed (3×2)**
+
+| 1 | 4 |
+| --- | --- |
+| 2 | 5 |
+| 3 | 6 |
+
+Element `(i, j)` in the original goes to `(j, i)` in the transpose.
 
 **Key Insight**: The transpose of an `m × n` matrix is an `n × m` matrix. For non-square matrices, this cannot be done in-place.
 
@@ -234,14 +244,14 @@ Core grid patterns: BFS, DFS, simulation, backtracking, state encoding
 
 **Problem**: Given a 2D grid of `'1'` (land) and `'0'` (water), count the number of islands. An island is surrounded by water and formed by connecting adjacent (4-directional) lands.
 
-```
-Grid:                          Islands = 3
-```
-
-| 1<br>├───┼───┼───┼───┼───┤        Island 2: top-right 1<br>1 | 1<br>1 | 0<br>0 | 0<br>0 | 0<br>0 | Island 1: top-left 1,1<br>Island 3: bottom-right 1 |
+| | c0 | c1 | c2 | c3 | c4 |
 | --- | --- | --- | --- | --- | --- |
-| 0 | 0 | 1 | 0 | 0 |  |
-| 0 | 0 | 0 | 1 | 1 |  |
+| **r0** | 1 | 1 | 0 | 0 | 0 |
+| **r1** | 1 | 1 | 0 | 0 | 0 |
+| **r2** | 0 | 0 | 1 | 0 | 0 |
+| **r3** | 0 | 0 | 0 | 1 | 1 |
+
+Islands = **3**: the top-left 2 × 2 block, the single cell at `(2,2)`, and the pair at `(3,3)`–`(3,4)`.
 
 **Key Insight**: Each island is a connected component. When we find an unvisited land cell, that's a new island. DFS/BFS marks the entire component as visited, so it won't be counted again.
 
@@ -296,17 +306,14 @@ class Solution {
 
 **Problem**: In a grid, `0` = empty, `1` = fresh orange, `2` = rotten orange. Every minute, fresh oranges adjacent (4-dir) to rotten ones become rotten. Return the minimum minutes until no fresh orange remains, or -1 if impossible.
 
-```
 Minute 0:         Minute 1:         Minute 2:         Minute 3:         Minute 4:
-┌───┬───┬───┐    ┌───┬───┬───┐    ┌───┬───┬───┐    ┌───┬───┬───┐    ┌───┬───┬───┐
-│ 2 │ 1 │ 1 │    │ 2 │ 2 │ 1 │    │ 2 │ 2 │ 2 │    │ 2 │ 2 │ 2 │    │ 2 │ 2 │ 2 │
-├───┼───┼───┤    ├───┼───┼───┤    ├───┼───┼───┤    ├───┼───┼───┤    ├───┼───┼───┤
-│ 1 │ 1 │ 0 │ →  │ 2 │ 1 │ 0 │ →  │ 2 │ 2 │ 0 │ →  │ 2 │ 2 │ 0 │ →  │ 2 │ 2 │ 0 │
-├───┼───┼───┤    ├───┼───┼───┤    ├───┼───┼───┤    ├───┼───┼───┤    ├───┼───┼───┤
-│ 0 │ 1 │ 1 │    │ 0 │ 1 │ 1 │    │ 0 │ 1 │ 1 │    │ 0 │ 2 │ 1 │    │ 0 │ 2 │ 2 │
-└───┴───┴───┘    └───┴───┴───┘    └───┴───┴───┘    └───┴───┴───┘    └───┴───┴───┘
-                                                                       Answer = 4
-```
+
+| 2 | 1 | 1 |  | 2 | 2 | 1 |  | 2 | 2 | 2 |  | 2 | 2 | 2 |  | 2 | 2 | 2 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 1 | 0 | → | 2 | 1 | 0 | → | 2 | 2 | 0 | → | 2 | 2 | 0 | → | 2 | 2 | 0 |
+| 0 | 1 | 1 |  | 0 | 1 | 1 |  | 0 | 1 | 1 |  | 0 | 2 | 1 |  | 0 | 2 | 2 |
+
+Answer = 4
 
 **Key Insight**: This is multi-source BFS. All rotten oranges at time 0 spread simultaneously — exactly like BFS level-by-level, where each level = one minute. We start BFS from ALL rotten oranges at once.
 
@@ -376,16 +383,9 @@ class Solution {
 
 **Problem**: Given a binary matrix, find the distance of the nearest 0 for each cell. Distance = 4-directional steps.
 
-```
-Input:           Output:
-┌───┬───┬───┐   ┌───┬───┬───┐
-│ 0 │ 0 │ 0 │   │ 0 │ 0 │ 0 │
-├───┼───┼───┤   ├───┼───┼───┤
-│ 0 │ 1 │ 0 │   │ 0 │ 1 │ 0 │
-├───┼───┼───┤   ├───┼───┼───┤
-│ 1 │ 1 │ 1 │   │ 1 │ 2 │ 1 │
-└───┴───┴───┘   └───┴───┴───┘
-```
+| Input | Output (distance to the nearest 0) |
+| --- | --- |
+| `0 0 0`<br>`0 1 0`<br>`1 1 1` | `0 0 0`<br>`0 1 0`<br>`1 2 1` |
 
 **Key Insight**: Instead of BFS from each 1 to find the nearest 0 (O(m²n²)), reverse the problem: BFS from ALL 0s simultaneously. Each BFS level marks cells at distance 1, then 2, then 3, etc.
 
@@ -448,15 +448,13 @@ class Solution {
 
 **Problem**: Given an `m × n` matrix, return all elements in spiral order.
 
-```
-┌───┬───┬───┬───┐
-│ 1 │ 2 │ 3 │ 4 │  →  Output: [1,2,3,4,8,12,11,10,9,5,6,7]
-├───┼───┼───┼───┤
-│ 5 │ 6 │ 7 │ 8 │      → → → ↓
-├───┼───┼───┼───┤      ↑ → → ↓
-│ 9 │10 │11 │12 │      ↑ ← ← ←
-└───┴───┴───┴───┘
-```
+| | c0 | c1 | c2 | c3 |
+| --- | --- | --- | --- | --- |
+| **r0** | 1 | 2 | 3 | 4 |
+| **r1** | 5 | 6 | 7 | 8 |
+| **r2** | 9 | 10 | 11 | 12 |
+
+Spiral order: go right along the top row, down the right column, left along the bottom row, then up the left column, and repeat on the inner layer. Output: `[1,2,3,4,8,12,11,10,9,5,6,7]`.
 
 **Key Insight**: Maintain four boundaries: `top`, `bottom`, `left`, `right`. Traverse top row → right column → bottom row → left column, shrinking boundaries after each pass. Stop when boundaries cross.
 
@@ -523,17 +521,11 @@ class Solution {
 
 **Problem**: Rotate an `n × n` matrix 90 degrees clockwise **in-place**.
 
-```
 Original:        Step 1 - Transpose:   Step 2 - Reverse rows:
-┌───┬───┬───┐   ┌───┬───┬───┐        ┌───┬───┬───┐
-│ 1 │ 2 │ 3 │   │ 1 │ 4 │ 7 │        │ 7 │ 4 │ 1 │
-├───┼───┼───┤ → ├───┼───┼───┤   →   ├───┼───┼────┤
-│ 4 │ 5 │ 6 │   │ 2 │ 5 │ 8 │        │ 8 │ 5 │ 2 │
-├───┼───┼───┤   ├───┼───┼───┤        ├───┼───┼───┤
-│ 7 │ 8 │ 9 │   │ 3 │ 6 │ 9 │        │ 9 │ 6 │ 3 │
-└───┴───┴───┘   └───┴───┴───┘        └───┴───┴───┘
-                                       90° CW ✓
-```
+
+| Original | Step 1: transpose | Step 2: reverse each row |
+| --- | --- | --- |
+| `1 2 3`<br>`4 5 6`<br>`7 8 9` | `1 4 7`<br>`2 5 8`<br>`3 6 9` | `7 4 1`<br>`8 5 2`<br>`9 6 3` (90° clockwise ✓) |
 
 **Key Insight**: 90° clockwise = transpose (swap `(i,j)` ↔ `(j,i)`) + reverse each row. Both operations are in-place with O(1) extra space.
 
@@ -586,16 +578,11 @@ class Solution {
 
 **Problem**: Given an `m × n` matrix, if any element is 0, set its entire row and column to 0. Do it **in-place**.
 
-```
-Input:           Output:
-┌───┬───┬───┐   ┌───┬───┬───┐
-│ 1 │ 1 │ 1 │   │ 1 │ 0 │ 1 │   The 0 at (1,1) zeroes all of row 1
-├───┼───┼───┤   ├───┼───┼───┤   and all of column 1.
-│ 1 │ 0 │ 1 │   │ 0 │ 0 │ 0 │
-├───┼───┼───┤   ├───┼───┼───┤
-│ 1 │ 1 │ 1 │   │ 1 │ 0 │ 1 │
-└───┴───┴───┘   └───┴───┴───┘
-```
+| Input | Output |
+| --- | --- |
+| `1 1 1`<br>`1 0 1`<br>`1 1 1` | `1 0 1`<br>`0 0 0`<br>`1 0 1` |
+
+The `0` at `(1,1)` zeroes all of row 1 and all of column 1.
 
 **Key Insight**: O(m+n) approach: use separate arrays to track which rows/cols to zero. O(1) approach: use the **first row and first column** of the matrix itself as markers! A special flag tracks whether the first row/col themselves need zeroing.
 
@@ -661,15 +648,13 @@ class Solution {
 
 **Problem**: Given an `m × n` board of characters and a `word`, return `true` if the word exists in the grid. The word can be constructed from 4-directionally adjacent cells. Each cell may be used at most once per word.
 
-```
-Board:                  word = "ABCCED" → true
-```
+| | c0 | c1 | c2 | c3 |
+| --- | --- | --- | --- | --- |
+| **r0** | A | B | C | E |
+| **r1** | S | F | C | S |
+| **r2** | A | D | E | E |
 
-| ┌───┬───┬───┬───┐      A → B → C | A | B | C | E |  |
-| --- | --- | --- | --- | --- | --- |
-| ├───┼───┼───┼───┤            C ← E → D (nope, "ABCCED"): | S | F | C | S | actually: A→B→C→C→E→D |
-| ├───┼───┼───┼───┤                          ↓ | A | D | E | E | path: (0,0)→(0,1)→(0,2)→(1,2)→(1,3)... wait |
-| └───┴───┴───┴───┘            (0,0)A→(0,1)B→(0,2)C→(1,2)C→(2,2)E→(2,1)D ✓ |  |  |  |  |  |
+For `word = "ABCCED"` the answer is `true`, via the path `(0,0)A → (0,1)B → (0,2)C → (1,2)C → (2,2)E → (2,1)D`.
 
 **Key Insight**: This is a constrained DFS with backtracking. For each starting cell that matches `word[0]`, attempt to extend the path. Mark cells as visited along the path, but **unmark on backtrack** (this is the backtracking part).
 
@@ -728,18 +713,11 @@ class Solution {
 
 **Problem**: Given a board with `'X'` and `'O'`, capture all regions of `'O'` that are **completely surrounded** by `'X'`. A region is NOT captured if any of its `'O'` cells is on the border.
 
-```
-Input:                   Output:
-┌───┬───┬───┬───┐      ┌───┬───┬───┬───┐
-│ X │ X │ X │ X │      │ X │ X │ X │ X │
-├───┼───┼───┼───┤      ├───┼───┼───┼───┤
-│ X │ O │ O │ X │  →   │ X │ X │ X │ X │  ← Inner O's captured
-├───┼───┼───┼───┤      ├───┼───┼───┼───┤
-│ X │ X │ O │ X │      │ X │ X │ X │ X │
-├───┼───┼───┼───┤      ├───┼───┼───┼───┤
-│ X │ O │ X │ X │      │ X │ O │ X │ X │  ← Border O survives
-└───┴───┴───┴───┘      └───┴───┴───┴───┘
-```
+| Input | Output |
+| --- | --- |
+| `X X X X`<br>`X O O X`<br>`X X O X`<br>`X O X X` | `X X X X`<br>`X X X X`<br>`X X X X`<br>`X O X X` |
+
+The inner `O`s at `(1,1)`, `(1,2)` and `(2,2)` are captured. The `O` at `(3,1)` touches the border, so it survives.
 
 **Key Insight**: Instead of finding surrounded regions (hard), find **unsurrounded** regions (connected to border). Mark them safe. Everything else gets captured. This is the "reverse thinking" pattern.
 

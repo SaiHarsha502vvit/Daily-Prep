@@ -296,7 +296,8 @@ public static int rangeXor(int[] px, int l, int r) {
 **Who tracks previous XOR values:** The HashMap `Map<Integer, Integer>` mapping `(prefix XOR value → count of times seen)`. At each index i, we look up `prefix[i] ^ k` in the map. If found, all previous positions where prefix XOR = `prefix[i] ^ k` form subarrays with XOR = k (because `(prefix[i]) ^ (prefix[j]) = k` → `xor(j+1..i) = k`). **When `prefix[i] ^ k` not in map:** The count is 0 — no subarray ending at i has XOR equal to k. **What `map.put(0, 1)` represents:** The empty prefix before index 0. If `prefix[i] = k` (entire subarray from 0 to i XORs to k), we need `map.get(prefix[i] ^ k) = map.get(0) = 1`. Without this, subarrays starting at index 0 are missed. Same logic as prefix-sum HashMap initialization. **Key pattern:** Any prefix + HashMap problem requires `map.put(identity_element, 1)` where identity = 0 for sum, 0 for XOR.
 
 </details>
-<details><summary>Answer</summary>
+
+<details><summary>More detail</summary>
 
 Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
 
@@ -387,7 +388,8 @@ public final class SubarraysDivByK {
 **Who proves the `+`:** Inclusion-exclusion principle. `S[r2][c2]` includes the entire rectangle from (0,0) to (r2,c2). `S[r1-1][c2]` subtracts top rows. `S[r2][c1-1]` subtracts left columns. But the top-left rectangle `S[r1-1][c1-1]` was SUBTRACTED TWICE (once by each of the two subtract terms). So we ADD it back once. **When `+` term is zero:** When `r1=0` or `c1=0` (query starts at the first row or column). `S[-1][*] = 0` by the sentinel convention. So `S[r1-1][c1-1] = S[-1][*] = 0`. The `+0` term contributes nothing. **What happens with `-` instead of `+`:** You subtract `S[r1-1][c1-1]` three times total instead of one. The top-left rectangle sum is OVER-subtracted. The query returns a value that's `2 * S[r1-1][c1-1]` too small. This is the most common bug in 2D prefix sum (LC 304 Number of Submatrix That Sum to Target). The `+ - - +` sign pattern MUST be memorized.
 
 </details>
-<details><summary>Answer</summary>
+
+<details><summary>More detail</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
 
@@ -425,7 +427,8 @@ public static long[][] build2DPrefix(int[][] mat) {
 **Who decides extra row/column:** The sentinel convention. `S` has dimensions `[R+1][C+1]`. `S[0][*] = 0` (row sentinel), `S[*][0] = 0` (column sentinel). This avoids bounds checking for `r1=0` or `c1=0` queries. **Incorrect build order:** If you do row-only prefix first (`S[i][j] += S[i][j-1]`) then column-only (`S[i][j] += S[i-1][j]`), it works correctly. But if you try to do BOTH in one pass: `S[i][j] += S[i-1][j] + S[i][j-1] - S[i-1][j-1]` during build, it's the standard approach. **Correct build:** Standard 2D prefix build iterates `i` then `j`. For each cell: `S[i][j] = arr[i-1][j-1] + S[i-1][j] + S[i][j-1] - S[i-1][j-1]`. The subtraction prevents double-counting the top-left corner (same inclusion-exclusion as the query). Do NOT use two separate passes — the single-pass formula is O(RC) and correct. **Off-by-one trap:** `arr[i-1][j-1]` because `arr` is 0-indexed while `S` is 1-indexed with sentinel. Always map carefully.
 
 </details>
-<details><summary>Answer</summary>
+
+<details><summary>More detail</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
 
@@ -475,7 +478,8 @@ This pattern ($|A \cup B| = |A| + |B| - |A \cap B|$, or in our case $\text{Total
 **Who validates bounds:** The caller or the query function itself. Constraints like `0 <= r1 <= r2 < R` are guaranteed by most LeetCode problems (they're stated in constraints). In production code, you MUST validate: `if (r1 > r2 || c1 > c2) return 0;` (empty rectangle). If `r1 < 0`, clamp to 0. **When to clamp vs. throw:** Clamping to 0 is correct for sum queries — an invalid or empty rectangle has sum 0. Throwing is appropriate for application-level bugs (the caller passed bad coordinates). In competitive programming: always clamp; invalid queries are undefined per problem statement. **Total time complexity:** Build phase: O(R×C) — one pass over all cells. Each query: O(1) — four array accesses + arithmetic. For Q queries after build: O(R×C + Q). Compare to naive: O(R×C) build + O(R×C) per query = O(R×C + Q×R×C). With large Q and many queries, 2D prefix reduces Q×R×C to just Q — massive speedup.
 
 </details>
-<details><summary>Answer</summary>
+
+<details><summary>More detail</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
 

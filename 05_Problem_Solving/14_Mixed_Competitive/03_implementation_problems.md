@@ -6,25 +6,18 @@
 
 ## Problem 209: Spiral Matrix (Codeforces Style)
 
+### SPIRAL MATRIX - Print matrix in spiral order
+
+```java
+matrix = [[1,2,3],
+          [4,5,6],
+          [7,8,9]]
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  SPIRAL MATRIX - Print matrix in spiral order                  │
-├────────────────────────────────────────────────────────────────┤
-│  matrix = [[1,2,3],                                            │
-│            [4,5,6],                                            │
-│            [7,8,9]]                                            │
-│                                                                │
-│  ┌───┬───┬───┐                                                 │
-│  │ 1 → 2 → 3 │                                                 │
-│  ├───┼───┼─↓─┤                                                 │
-│  │ 4 → 5 │ 6 │                                                 │
-│  ├─↑─┼───┼─↓─┤                                                 │
-│  │ 7 ← 8 ← 9 │                                                 │
-│  └───┴───┴───┘                                                 │
-│                                                                │
-│  Output: [1,2,3,6,9,8,7,4,5]                                   │
-└────────────────────────────────────────────────────────────────┘
-```
+
+Walk the border clockwise, then repeat on the inner layer: `1 → 2 → 3` (top row), `6 → 9` (right column), `8 → 7` (bottom row, right to left), `4` (left column, upward), then `5` (the centre).
+
+
+Output: [1,2,3,6,9,8,7,4,5]
 
 **Solution:**
 

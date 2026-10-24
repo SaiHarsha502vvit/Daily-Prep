@@ -55,34 +55,28 @@ public String isBalanced(String s) {
 
 ## Problem 101: Maximum Element (HackerEarth/HackerRank)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MAXIMUM ELEMENT - Stack with max queries                      │
-├────────────────────────────────────────────────────────────────┤
-│  Support these operations:                                     │
-│  1 x : Push x onto the stack                                   │
-│  2   : Pop the top element                                     │
-│  3   : Print the maximum element in the stack                  │
-│                                                                │
-│  Example:                                                      │
-│  Operations: 1 97, 2, 1 20, 2, 1 26, 1 20, 2, 3, 1 91, 3       │
-│                                                                │
-│  ┌────────┬────────────────┬────────────┬──────────┐           │
-│  │ Query  │ Action         │ Stack      │ Output   │           │
-│  ├────────┼────────────────┼────────────┼──────────┤           │
-│  │ 1 97   │ push 97        │ [97]       │ -        │           │
-│  │ 2      │ pop            │ []         │ -        │           │
-│  │ 1 20   │ push 20        │ [20]       │ -        │           │
-│  │ 2      │ pop            │ []         │ -        │           │
-│  │ 1 26   │ push 26        │ [26]       │ -        │           │
-│  │ 1 20   │ push 20        │ [26,20]    │ -        │           │
-│  │ 2      │ pop            │ [26]       │ -        │           │
-│  │ 3      │ print max      │ [26]       │ 26       │           │
-│  │ 1 91   │ push 91        │ [26,91]    │ -        │           │
-│  │ 3      │ print max      │ [26,91]    │ 91       │           │
-│  └────────┴────────────────┴────────────┴──────────┘           │
-└────────────────────────────────────────────────────────────────┘
-```
+### MAXIMUM ELEMENT - Stack with max queries
+
+Support these operations:  
+1 x : Push x onto the stack  
+2   : Pop the top element  
+3   : Print the maximum element in the stack
+
+Example:  
+Operations: 1 97, 2, 1 20, 2, 1 26, 1 20, 2, 3, 1 91, 3
+
+| Query | Action | Stack | Output |
+| --- | --- | --- | --- |
+| 1 97 | push 97 | [97] | - |
+| 2 | pop | [] | - |
+| 1 20 | push 20 | [20] | - |
+| 2 | pop | [] | - |
+| 1 26 | push 26 | [26] | - |
+| 1 20 | push 20 | [26,20] | - |
+| 2 | pop | [26] | - |
+| 3 | print max | [26] | 26 |
+| 1 91 | push 91 | [26,91] | - |
+| 3 | print max | [26,91] | 91 |
 
 **Solution:**
 
@@ -114,32 +108,26 @@ public void processQueries(int[][] queries) {
 
 ## Problem 102: Nearest Smaller Element (Codeforces-style)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  NEAREST SMALLER ELEMENT                                       │
-├────────────────────────────────────────────────────────────────┤
-│  For each element, find the nearest smaller element to its     │
-│  left. If none exists, output -1.                              │
-│                                                                │
-│  Input: [4, 5, 2, 10, 8]                                       │
-│                                                                │
-│  ┌───────┬─────────┬───────────────────────┬─────────┐         │
-│  │ Index │ Element │ Elements to Left      │ Answer  │         │
-│  ├───────┼─────────┼───────────────────────┼─────────┤         │
-│  │   0   │    4    │ none                  │   -1    │         │
-│  │   1   │    5    │ 4                     │    4    │         │
-│  │   2   │    2    │ 4,5 (none smaller)    │   -1    │         │
-│  │   3   │   10    │ 4,5,2 → nearest is 2  │    2    │         │
-│  │   4   │    8    │ 4,5,2,10 → nearest 2  │    2    │         │
-│  └───────┴─────────┴───────────────────────┴─────────┘         │
-│                                                                │
-│  Output: [-1, 4, -1, 2, 2]                                     │
-│                                                                │
-│  Constraints:                                                  │
-│  - 1 <= n <= 10^5                                              │
-│  - 1 <= a[i] <= 10^9                                           │
-└────────────────────────────────────────────────────────────────┘
-```
+### Nearest Smaller Element
+
+For each element, find the nearest smaller element to its  
+left. If none exists, output -1.
+
+Input: [4, 5, 2, 10, 8]
+
+| Index | Element | Elements to Left | Answer |
+| --- | --- | --- | --- |
+| 0 | 4 | none | -1 |
+| 1 | 5 | 4 | 4 |
+| 2 | 2 | 4,5 (none smaller) | -1 |
+| 3 | 10 | 4,5,2 → nearest is 2 | 2 |
+| 4 | 8 | 4,5,2,10 → nearest 2 | 2 |
+
+Output: [-1, 4, -1, 2, 2]
+
+Constraints:
+- 1 <= n <= 10^5
+- 1 <= a[i] <= 10^9
 
 **Solution:**
 
@@ -167,31 +155,26 @@ public int[] nearestSmallerElement(int[] arr) {
 
 ## Problem 103: Prefix to Postfix Conversion (HackerEarth)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  PREFIX TO POSTFIX CONVERSION                                  │
-├────────────────────────────────────────────────────────────────┤
-│  Convert prefix expression to postfix using stack              │
-│                                                                │
-│  Prefix:  *+AB-CD   (operator before operands)                 │
-│  Postfix: AB+CD-*   (operator after operands)                  │
-│                                                                │
-│  Algorithm: Read from RIGHT to LEFT                            │
-│  ┌───────┬──────────────────────────────┬─────────────────────┐│
-│  │ Char  │ Action                       │ Stack               ││
-│  ├───────┼──────────────────────────────┼─────────────────────┤│
-│  │   D   │ push                         │ [D]                 ││
-│  │   C   │ push                         │ [D, C]              ││
-│  │   -   │ pop C,D → "CD-" push         │ [D, CD-]            ││
-│  │   B   │ push                         │ [D, CD-, B]         ││
-│  │   A   │ push                         │ [D, CD-, B, A]      ││
-│  │   +   │ pop A,B → "AB+" push         │ [D, CD-, AB+]       ││
-│  │   *   │ pop AB+,CD- → "AB+CD-*"      │ [AB+CD-*]           ││
-│  └───────┴──────────────────────────────┴─────────────────────┘│
-│                                                                │
-│  Result: "AB+CD-*"                                             │
-└────────────────────────────────────────────────────────────────┘
-```
+### Prefix to Postfix Conversion
+
+Convert prefix expression to postfix using stack
+
+Prefix:  *+AB-CD   (operator before operands)  
+Postfix: AB+CD-*   (operator after operands)
+
+Algorithm: Read from RIGHT to LEFT
+
+| Char | Action | Stack |
+| --- | --- | --- |
+| D | push | [D] |
+| C | push | [D, C] |
+| - | pop C,D → "CD-" push | [D, CD-] |
+| B | push | [D, CD-, B] |
+| A | push | [D, CD-, B, A] |
+| + | pop A,B → "AB+" push | [D, CD-, AB+] |
+| * | pop AB+,CD- → "AB+CD-*" | [AB+CD-*] |
+
+Result: "AB+CD-*"
 
 **Solution:**
 

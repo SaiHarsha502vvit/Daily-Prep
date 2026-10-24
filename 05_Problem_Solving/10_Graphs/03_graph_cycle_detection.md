@@ -14,25 +14,23 @@
 
 **LeetCode 207** 🔗 https://leetcode.com/problems/course-schedule/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  COURSE SCHEDULE - Detect cycle in directed graph              │
-├────────────────────────────────────────────────────────────────┤
-│  numCourses = 4                                                │
-│  prerequisites = [[1,0], [2,0], [3,1], [3,2]]                  │
-│  [a,b] means: to take course a, you must first take course b   │
-│                                                                │
-│       0                                                        │
-│      / \                                                       │
-│     ↓   ↓                                                      │
-│     1   2        No cycle → Can finish all courses ✓           │
-│      \ /                                                       │
-│       ↓                                                        │
-│       3                                                        │
-│                                                                │
-│  With cycle: [[1,0], [0,1]]                                    │
-│       0 ↔ 1      Cycle! → Cannot finish ✗                      │
-└────────────────────────────────────────────────────────────────┘
+**COURSE SCHEDULE - Detect cycle in directed graph**
+
+```text
+numCourses = 4
+prerequisites = [[1,0], [2,0], [3,1], [3,2]]
+[a,b] means: to take course a, you must first take course b
+
+     0
+    / \
+   ↓   ↓
+   1   2        No cycle → Can finish all courses ✓
+    \ /
+     ↓
+     3
+
+With cycle: [[1,0], [0,1]]
+     0 ↔ 1      Cycle! → Cannot finish ✗
 ```
 
 **Solution (DFS with colors):**
@@ -151,28 +149,39 @@ public int[] findOrder(int numCourses, int[][] prerequisites) {
 
 **GRAPH VALID TREE**
 
-```text
 A valid tree has:
-1. No cycles
-2. All nodes connected (single connected component)
-3. Exactly n-1 edges for n nodes
 
-Example 1: n=5, edges=[[0,1],[0,2],[0,3],[1,4]]
-     0
-    /|\
-   1 2 3    Valid tree ✓
-   |
-   4
+1. No cycles.
+2. All nodes connected (a single connected component).
+3. Exactly `n - 1` edges for `n` nodes.
 
-Example 2: n=5, edges=[[0,1],[1,2],[2,3],[1,3],[1,4]]
-   0─1─4
-     │\
-     2─3    Has cycle (1-2-3-1) ✗
+**Example 1:** `n = 5`, `edges = [[0,1],[0,2],[0,3],[1,4]]`. This is a valid tree ✓.
 
-Constraints:
-- 1 <= n <= 2000
-- 0 <= edges.length <= 5000
+```mermaid
+flowchart TD
+  r0((0)) --- r1((1))
+  r0 --- r2((2))
+  r0 --- r3((3))
+  r1 --- r4((4))
 ```
+
+**Example 2:** `n = 5`, `edges = [[0,1],[1,2],[2,3],[1,3],[1,4]]`. It has a cycle (1-2-3-1) ✗, and 5 edges instead of 4.
+
+```mermaid
+flowchart TD
+  s0((0)) --- s1((1))
+  s1 --- s4((4))
+  s1 --- s2((2))
+  s2 --- s3((3))
+  s1 --- s3
+```
+
+**How to read these diagrams.** The first graph has 4 edges, no cycle and one component, so it is a tree. The second contains the cycle 1 → 2 → 3 → 1.
+
+**Constraints**
+
+- `1 <= n <= 2000`
+- `0 <= edges.length <= 5000`
 
 **Solution (Union-Find):**
 
@@ -216,7 +225,8 @@ private int find(int[] parent, int x) {
 **Who uses parent tracking (undirected):** DFS with `dfs(node, parent)`. A cycle exists if a neighbor is VISITED AND is NOT the parent. The parent check prevents treating the edge you came from as a "back edge." **Who uses 3-color (directed):** DFS with `state[node] = 0/1/2`. A cycle exists if we reach a GRAY (state=1) node — a node currently on the DFS path. **False positive on directed graph:** Consider `A→B` and `C→B` (two separate directed paths to B). If you apply the undirected algorithm (with parent tracking) to this as if it's undirected, you'd see B visited from both A and C, and might flag it as a cycle (B already visited, C is not A's parent). But there is NO directed cycle. Directed graphs require the GRAY-node check to detect back edges (true directed cycles). **A directed graph's back edge:** An edge from a node to one of its current DFS ancestors. NOT all "already visited" edges are cycles in directed graphs — cross edges and forward edges don't create cycles. Only back edges do. This is why gray (currently on stack) is the cycle indicator, not black (fully processed).
 
 </details>
-<details><summary>Answer</summary>
+
+<details><summary>More detail</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
 

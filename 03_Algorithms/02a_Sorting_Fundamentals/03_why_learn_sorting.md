@@ -4,142 +4,127 @@
 > Page 3 of 4 in **Sorting Fundamentals**
 
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    SORTING - COMPLETE UNDERSTANDING                          ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**Sorting - Complete Understanding**
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS SORTING?                                                             │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ Sorting is arranging elements in a specific order (ascending/descending)     │
-│ based on some comparison criteria.                                           │
-│                                                                              │
-│ HISTORY: Sorting algorithms are among the oldest in CS (1940s-1960s)         │
-│ • Bubble Sort: Analyzed 1956                                                 │
-│ • Merge Sort: John von Neumann, 1945                                         │
-│ • Quick Sort: Tony Hoare, 1959                                               │
-│ • Heap Sort: J.W.J. Williams, 1964                                           │
-│                                                                              │
-│ FUN FACT: About 25-50% of all computing time is spent on sorting!            │
-└──────────────────────────────────────────────────────────────────────────────┘
+### What IS Sorting?
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES SORTING SOLVE?                                             │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ CORE PROBLEM: Unordered data is SLOW to search and process                   │
-│                                                                              │
-│ UNSORTED: Find element → O(n) linear search                                  │
-│ SORTED:   Find element → O(log n) binary search   [1000x faster for 1M items]│
-│                                                                              │
-│ REAL-WORLD EXAMPLES:                                                         │
-│ • Dictionary: Words sorted alphabetically → easy to find                     │
-│ • Contacts: Sorted by name → quick lookup                                    │
-│ • Leaderboards: Sorted by score → show rankings                              │
-│ • File explorer: Sorted by name/date/size → easy browsing                    │
-│ • Database indexes: Sorted for fast queries                                  │
-│ • E-commerce: Sort by price/rating/relevance                                 │
-│                                                                              │
-│ ENABLES OTHER ALGORITHMS:                                                    │
-│ • Binary Search (needs sorted data)                                          │
-│ • Two Pointer techniques (often need sorted)                                 │
-│ • Finding duplicates efficiently                                             │
-│ • Merge operations (sorted inputs merge faster)                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+Sorting is arranging elements in a specific order (ascending/descending)  
+based on some comparison criteria.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY SO MANY SORTING ALGORITHMS?                                              │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ Because NO SINGLE ALGORITHM IS BEST FOR ALL CASES!                           │
-│                                                                              │
-│ TRADEOFFS BETWEEN:                                                           │
-│ • Time complexity (how fast?)                                                │
-│ • Space complexity (how much extra memory?)                                  │
-│ • Stability (do equal elements keep their order?)                            │
-│ • Cache efficiency (memory access patterns)                                  │
-│ • Parallelizability (can it use multiple CPUs?)                              │
-│ • Adaptivity (does it benefit from partially sorted data?)                   │
-│                                                                              │
-│ EXAMPLE: Why not always use QuickSort (fastest average)?                     │
-│ • O(n²) worst case (bad for security-critical code)                          │
-│ • Not stable (can't use for multi-key sorting)                               │
-│ • Recursive (stack overflow for very large arrays)                           │
-└──────────────────────────────────────────────────────────────────────────────┘
+HISTORY: Sorting algorithms are among the oldest in CS (1940s-1960s)
+- Bubble Sort: Analyzed 1956
+- Merge Sort: John von Neumann, 1945
+- Quick Sort: Tony Hoare, 1959
+- Heap Sort: J.W.J. Williams, 1964
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE WHICH SORTING ALGORITHM?                                         │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ┌────────────────────────────────────┬─────────────────────────────────────┐ │
-│ │ Situation                          │ Best Algorithm                      │ │
-│ ├────────────────────────────────────┼─────────────────────────────────────┤ │
-│ │ Small array (n < 50)               │ Insertion Sort                      │ │
-│ │ Nearly sorted data                 │ Insertion Sort (O(n))               │ │
-│ │ General purpose, average case      │ Quick Sort                          │ │
-│ │ Guaranteed O(n log n)              │ Merge Sort or Heap Sort             │ │
-│ │ Need stability                     │ Merge Sort                          │ │
-│ │ Limited memory                     │ Heap Sort (in-place)                │ │
-│ │ Linked list data                   │ Merge Sort (no random access)       │ │
-│ │ Integers in small range            │ Counting Sort (O(n+k))              │ │
-│ │ Sorting by digits/characters       │ Radix Sort                          │ │
-│ │ Uniformly distributed data         │ Bucket Sort                         │ │
-│ │ External sorting (disk)            │ Merge Sort                          │ │
-│ │ Parallel processing                │ Merge Sort (easily parallelizable)  │ │
-│ └────────────────────────────────────┴─────────────────────────────────────┘ │
-│                                                                              │
-│ JAVA'S CHOICE: Arrays.sort() uses:                                           │
-│ • Dual-Pivot Quick Sort for primitives (fast)                                │
-│ • TimSort for objects (stable merge+insertion hybrid)                        │
-└──────────────────────────────────────────────────────────────────────────────┘
+FUN FACT: About 25-50% of all computing time is spent on sorting!
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ DIFFICULTIES & COMMON MISTAKES                                               │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. CONFUSING STABLE VS UNSTABLE:                                             │
-│    Stable: Equal elements keep original relative order                       │
-│    [3a, 1, 3b] → [1, 3a, 3b] (stable) vs [1, 3b, 3a] (unstable)              │
-│    Matters when sorting by multiple keys!                                    │
-│                                                                              │
-│ 2. OFF-BY-ONE ERRORS IN LOOPS:                                               │
-│    for (i = 0; i < n - 1; i++)  ← Not i < n for bubble sort!                 │
-│                                                                              │
-│ 3. WRONG PIVOT SELECTION (QuickSort):                                        │
-│    Always first element + sorted input = O(n²) disaster                      │
-│    Solution: Median-of-three or random pivot                                 │
-│                                                                              │
-│ 4. FORGETTING EDGE CASES:                                                    │
-│    Empty array, single element, all same elements                            │
-│                                                                              │
-│ 5. STACK OVERFLOW (recursive sorts):                                         │
-│    Very large arrays can crash recursive implementations                     │
-│    Solution: Use iterative version or tail recursion                         │
-│                                                                              │
-│ 6. MODIFYING DURING ITERATION:                                               │
-│    Changing indices incorrectly during swaps                                 │
-└──────────────────────────────────────────────────────────────────────────────┘
+### What Problem Does Sorting Solve?
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ COMPLEXITY COMPARISON TABLE                                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ┌─────────────────┬───────────┬───────────┬───────────┬───────┬───────────┐  │
-│ │ Algorithm       │ Best      │ Average   │ Worst     │ Space │ Stable?   │  │
-│ ├─────────────────┼───────────┼───────────┼───────────┼───────┼───────────┤  │
-│ │ Bubble Sort     │ O(n)      │ O(n²)     │ O(n²)     │ O(1)  │ Yes       │  │
-│ │ Selection Sort  │ O(n²)     │ O(n²)     │ O(n²)     │ O(1)  │ No        │  │
-│ │ Insertion Sort  │ O(n)      │ O(n²)     │ O(n²)     │ O(1)  │ Yes       │  │
-│ │ Merge Sort      │ O(n log n)│ O(n log n)│ O(n log n)│ O(n)  │ Yes       │  │
-│ │ Quick Sort      │ O(n log n)│ O(n log n)│ O(n²)     │ O(log n)│ No      │  │
-│ │ Heap Sort       │ O(n log n)│ O(n log n)│ O(n log n)│ O(1)  │ No        │  │
-│ │ Counting Sort   │ O(n+k)    │ O(n+k)    │ O(n+k)    │ O(k)  │ Yes       │  │
-│ │ Radix Sort      │ O(nk)     │ O(nk)     │ O(nk)     │ O(n+k)│ Yes       │  │
-│ │ Bucket Sort     │ O(n+k)    │ O(n+k)    │ O(n²)     │ O(n)  │ Yes       │  │
-│ │ Tim Sort        │ O(n)      │ O(n log n)│ O(n log n)│ O(n)  │ Yes       │  │
-│ └─────────────────┴───────────┴───────────┴───────────┴───────┴───────────┘  │
-│                                                                              │
-│ n = number of elements, k = range of input (for counting/radix)              │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+CORE PROBLEM: Unordered data is SLOW to search and process
+
+UNSORTED: Find element → O(n) linear search  
+SORTED:   Find element → O(log n) binary search   [1000x faster for 1M items]
+
+**Real-world Examples**:
+
+- Dictionary: Words sorted alphabetically → easy to find
+- Contacts: Sorted by name → quick lookup
+- Leaderboards: Sorted by score → show rankings
+- File explorer: Sorted by name/date/size → easy browsing
+- Database indexes: Sorted for fast queries
+- E-commerce: Sort by price/rating/relevance
+
+**Enables Other Algorithms**:
+
+- Binary Search (needs sorted data)
+- Two Pointer techniques (often need sorted)
+- Finding duplicates efficiently
+- Merge operations (sorted inputs merge faster)
+
+### WHY SO Many Sorting Algorithms?
+
+Because NO SINGLE ALGORITHM IS BEST FOR ALL CASES!
+
+**Tradeoffs Between**:
+
+- Time complexity (how fast?)
+- Space complexity (how much extra memory?)
+- Stability (do equal elements keep their order?)
+- Cache efficiency (memory access patterns)
+- Parallelizability (can it use multiple CPUs?)
+- Adaptivity (does it benefit from partially sorted data?)
+
+EXAMPLE: Why not always use QuickSort (fastest average)?
+- O(n²) worst case (bad for security-critical code)
+- Not stable (can't use for multi-key sorting)
+- Recursive (stack overflow for very large arrays)
+
+### When to USE Which Sorting Algorithm?
+
+| Situation | Best Algorithm |
+| --- | --- |
+| Small array (n < 50) | Insertion Sort |
+| Nearly sorted data | Insertion Sort (O(n)) |
+| General purpose, average case | Quick Sort |
+| Guaranteed O(n log n) | Merge Sort or Heap Sort |
+| Need stability | Merge Sort |
+| Limited memory | Heap Sort (in-place) |
+| Linked list data | Merge Sort (no random access) |
+| Integers in small range | Counting Sort (O(n+k)) |
+| Sorting by digits/characters | Radix Sort |
+| Uniformly distributed data | Bucket Sort |
+| External sorting (disk) | Merge Sort |
+| Parallel processing | Merge Sort (easily parallelizable) |
+
+JAVA'S CHOICE: Arrays.sort() uses:
+- Dual-Pivot Quick Sort for primitives (fast)
+- TimSort for objects (stable merge+insertion hybrid)
+
+### Difficulties & Common Mistakes
+
+**1. Confusing Stable vs Unstable**:
+
+Stable: Equal elements keep original relative order  
+[3a, 1, 3b] → [1, 3a, 3b] (stable) vs [1, 3b, 3a] (unstable)  
+Matters when sorting by multiple keys!
+
+**2. Off-by-one Errors in Loops**:
+
+for (i = 0; i < n - 1; i++)  ← Not i < n for bubble sort!
+
+3. WRONG PIVOT SELECTION (QuickSort):
+Always first element + sorted input = O(n²) disaster  
+Solution: Median-of-three or random pivot
+
+**4. Forgetting Edge Cases**:
+
+Empty array, single element, all same elements
+
+5. STACK OVERFLOW (recursive sorts):
+Very large arrays can crash recursive implementations  
+Solution: Use iterative version or tail recursion
+
+**6. Modifying During Iteration**:
+
+Changing indices incorrectly during swaps
+
+### Complexity Comparison Table
+
+| Algorithm | Best | Average | Worst | Space | Stable? |
+| --- | --- | --- | --- | --- | --- |
+| Bubble Sort | O(n) | O(n²) | O(n²) | O(1) | Yes |
+| Selection Sort | O(n²) | O(n²) | O(n²) | O(1) | No |
+| Insertion Sort | O(n) | O(n²) | O(n²) | O(1) | Yes |
+| Merge Sort | O(n log n) | O(n log n) | O(n log n) | O(n) | Yes |
+| Quick Sort | O(n log n) | O(n log n) | O(n²) | O(log n) | No |
+| Heap Sort | O(n log n) | O(n log n) | O(n log n) | O(1) | No |
+| Counting Sort | O(n+k) | O(n+k) | O(n+k) | O(k) | Yes |
+| Radix Sort | O(nk) | O(nk) | O(nk) | O(n+k) | Yes |
+| Bucket Sort | O(n+k) | O(n+k) | O(n²) | O(n) | Yes |
+| Tim Sort | O(n) | O(n log n) | O(n log n) | O(n) | Yes |
+
+n = number of elements, k = range of input (for counting/radix)
 
 ---
 

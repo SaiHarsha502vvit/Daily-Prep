@@ -97,18 +97,13 @@ class Solution {
 
 All updates happen **simultaneously**.
 
-```
 Input:           Output:
-┌───┬───┬───┐   ┌───┬───┬───┐
-│ 0 │ 1 │ 0 │   │ 0 │ 0 │ 0 │
-├───┼───┼───┤   ├───┼───┼───┤
-│ 0 │ 0 │ 1 │   │ 1 │ 0 │ 1 │
-├───┼───┼───┤   ├───┼───┼───┤
-│ 1 │ 1 │ 1 │   │ 0 │ 1 │ 1 │
-├───┼───┼───┤   ├───┼───┼───┤
-│ 0 │ 0 │ 0 │   │ 0 │ 1 │ 0 │
-└───┴───┴───┘   └───┴───┴───┘
-```
+
+| 0 | 1 | 0 |  | 0 | 0 | 0 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0 | 0 | 1 |  | 1 | 0 | 1 |
+| 1 | 1 | 1 |  | 0 | 1 | 1 |
+| 0 | 0 | 0 |  | 0 | 1 | 0 |
 
 **Key Insight**: We need simultaneous update but want O(1) space. Solution: encode BOTH old and new state in the same cell using intermediate states:
 

@@ -107,27 +107,19 @@ Integer.MIN_VALUE = -2147483648 (0x80000000)
 
 ### Visual Truth Tables
 
-```
-AND (&) - Both must be 1        OR (|) - At least one is 1
-┌───┬───┬───────┐               ┌───┬───┬───────┐
-│ A │ B │ A & B │               │ A │ B │ A | B │
-├───┼───┼───────┤               ├───┼───┼───────┤
-│ 0 │ 0 │   0   │               │ 0 │ 0 │   0   │
-│ 0 │ 1 │   0   │               │ 0 │ 1 │   1   │
-│ 1 │ 0 │   0   │               │ 1 │ 0 │   1   │
-│ 1 │ 1 │   1   │               │ 1 │ 1 │   1   │
-└───┴───┴───────┘               └───┴───┴───────┘
+| A | B | A & B (AND: both must be 1) | A \| B (OR: at least one is 1) | A ^ B (XOR: exactly one is 1) |
+| --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | 0 | 0 |
+| 0 | 1 | 0 | 1 | 1 |
+| 1 | 0 | 0 | 1 | 1 |
+| 1 | 1 | 1 | 1 | 0 |
 
-XOR (^) - Exactly one is 1      NOT (~) - Flip the bit
-┌───┬───┬───────┐               ┌───┬───────┐
-│ A │ B │ A ^ B │               │ A │  ~A   │
-├───┼───┼───────┤               ├───┼───────┤
-│ 0 │ 0 │   0   │               │ 0 │   1   │
-│ 0 │ 1 │   1   │               │ 1 │   0   │
-│ 1 │ 0 │   1   │               └───┴───────┘
-│ 1 │ 1 │   0                               │
-└───┴───┴───────────────────────────────────┘
-```
+**NOT (`~`): flip the bit**
+
+| A | ~A |
+| --- | --- |
+| 0 | 1 |
+| 1 | 0 |
 
 ### Practical Examples
 
@@ -175,36 +167,26 @@ public class BitwiseDemo {
 
 ### Left Shift vs Right Shift Visualization
 
-```
-LEFT SHIFT (<<) - Multiply by 2^n
-┌─────────────────────────────────────────┐
-│  5 << 1  =  10                          │
-│                                         │
-│  Before: 0 0 0 0 0 1 0 1  (5)           │
-│                    ↓ ↓ ↓                │
-│  After:  0 0 0 0 1 0 1 0  (10)          │
-│                                         │
-│  Bits shift LEFT, 0s fill from right    │
-└─────────────────────────────────────────┘
+**Left shift (`<<`): multiply by 2ⁿ.** `5 << 1 = 10`.
 
-RIGHT SHIFT (>>) - Divide by 2^n
-┌─────────────────────────────────────────┐
-│  20 >> 2  =  5                          │
-│                                         │
-│  Before: 0 0 0 1 0 1 0 0  (20)          │
-│            ↓ ↓ ↓ ↓                      │
-│  After:  0 0 0 0 0 1 0 1  (5)           │
-│                                         │
-│  Bits shift RIGHT, sign bit fills left  │
-└─────────────────────────────────────────┘
+| | Bits | Value |
+| --- | --- | --- |
+| Before | `0 0 0 0 0 1 0 1` | 5 |
+| After | `0 0 0 0 1 0 1 0` | 10 |
 
-UNSIGNED RIGHT SHIFT (>>>) - Always fills with 0s
-┌─────────────────────────────────────────┐
-│  Used for negative numbers              │
-│  -8 >>> 2 = 1073741822                  │
-│  (Treats as unsigned, fills 0s)         │
-└─────────────────────────────────────────┘
-```
+Bits shift left and zeros fill in from the right.
+
+**Right shift (`>>`): divide by 2ⁿ.** `20 >> 2 = 5`.
+
+| | Bits | Value |
+| --- | --- | --- |
+| Before | `0 0 0 1 0 1 0 0` | 20 |
+| After | `0 0 0 0 0 1 0 1` | 5 |
+
+Bits shift right and the sign bit fills in on the left.
+
+**Unsigned right shift (`>>>`): always fills with 0s.** For a negative `int`, the bits are treated as unsigned: `-8 >>> 2 = 1073741822`.
+
 
 ---
 
