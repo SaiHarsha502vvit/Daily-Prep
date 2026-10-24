@@ -193,7 +193,7 @@ JavaScript / TypeScript
 
 ## 📋 Assessment
 
-- 🎓 [Exam Bank](EXAM_BANK.md) — Midterm 1 (DSA), Final 1 (Systems & Design) and Midterm 2 (Full-Stack), each with answer keys. The Semester 3 final and the Semester 4 exams are being added — see the note at the top of the file.
+- 🎓 [Exam Bank](EXAM_BANK.md) — exams for all four semesters, each with answer keys citing the repo chapter: Midterm 1 (DSA, Semester 1), Final 1 (Systems & Design, Semester 2), Midterm 2 (Full-Stack, Week 8) and Final 2 (Full-Stack & DevOps, Week 16) in Semester 3, and Midterm 3 (Python/ML & Testing Fundamentals, Week 8) and Final 3 (SDET & Enterprise Systems, Week 16) in Semester 4.
 
 ## 🚀 Start Here
 

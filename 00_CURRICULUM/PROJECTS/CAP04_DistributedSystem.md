@@ -20,7 +20,7 @@ _Design "PulseNews" — a social news feed platform where 10 million users can p
 **Users:** 10M total, 1M Daily Active Users (DAU)  
 **Writes:** Each user posts 1 article/day avg = 1M writes/day = ~12 writes/second avg, peak ~50k writes/second  
 **Reads:** Each DAU refreshes feed 20 times/day = 20M reads/day = ~230 reads/second avg, peak ~100k reads/second  
-**Storage:** Article avg 2KB × 1M/day × 365 days × 5 years = ~3.6TB/year
+**Storage:** Article avg 2KB × 1M/day = 2 GB/day ≈ 0.73 TB/year ≈ 3.65 TB over 5 years (articles only; replication ×3 and indexes multiply this)
 
 ---
 
@@ -110,8 +110,8 @@ CREATE TABLE articles (
 
 **Solution: Hybrid Fan-Out**
 
-1. Regular users (<10k followers): Fan-out-on-write. When they post, FanoutService writes to all followers' Redis sorted sets.
-2. Celebrities (>10k followers): Fan-out-on-read. Their articles are fetched directly and merged with the pre-computed feed at read time.
+1. Regular users (≤10k followers): Fan-out-on-write. When they post, FanoutService writes to all followers' Redis sorted sets.
+2. Celebrities (>10k followers; exactly 10,000 counts as regular): Fan-out-on-read. Their articles are fetched directly and merged with the pre-computed feed at read time.
 
 ---
 
