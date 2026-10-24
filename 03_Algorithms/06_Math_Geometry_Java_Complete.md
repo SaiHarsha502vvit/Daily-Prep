@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← Game Theory — Nim, Grundy Numbers…](24_Game_Theory_Nim_Sprague_Grundy.md) | [Chapter index](00_INDEX.md) | [Advanced Data Structures →](07a_Advanced_DS_Core.md)
 
 # Chapter 06 - Math & Geometry (Java Complete Guide)
 
@@ -53,6 +53,25 @@ Checking whether you must **turn left or right** at a corner: the cross product 
 ### Historical Evolution
 
 Computational geometry's foundational algorithms trace to early cartography and surveying. The **Shoelace formula** (used for polygon area) was described by **Albrecht Ludwig Friedrich Meister (1769)** and **Gauss (1795)**, and computes the area of any simple polygon in $O(n)$. The formula's name derives from the visual pattern of cross-products forming a zig-zag like a shoelace when drawn on paper. **Pick's Theorem** (area = interior + boundary/2 - 1 for lattice polygons) was published by **Georg Pick in 1899**, predating computers by nearly a century yet directly applicable to integer-coordinate polygon area problems in computational geometry. The **cross product / CCW test** is the sign of a 2×2 determinant (twice the signed area of a triangle); the vector cross product in its modern form comes from **Gibbs and Heaviside (1880s)**. **Convex Hull algorithms** evolved from gift-wrapping (Jarvis 1973) and Graham scan (1972) to the **Quickhull (Barber, Dobkin, Huhdanpaa 1996)** algorithm, now implemented in virtually every GIS and game physics engine. Modern practice (post-2010) applies these theorems in autonomous vehicle path planning, computer graphics (collision detection via Separating Axis Theorem), and CAD systems.
+
+
+### 5. Check yourself
+
+**Q1.** What does the sign of the cross product `(b−a) × (c−a)` tell you?
+
+<details><summary>Answer</summary>
+
+The orientation of `a, b, c`: positive means a counter-clockwise turn, negative clockwise, zero collinear.
+
+</details>
+
+**Q2.** Area of the triangle `(0,0), (4,0), (0,3)`?
+
+<details><summary>Answer</summary>
+
+**6**.
+
+</details>
 
 ---
 
@@ -288,7 +307,6 @@ BigInteger result = BigInteger.valueOf(3).modPow(BigInteger.valueOf(100), BigInt
 | **Where it runs in production** | GIS and mapping, collision detection, CAD, computer graphics, delivery-zone geometry |
 | **Failure modes** | Overflow in cross products; epsilon comparison mistakes; degenerate (collinear) cases |
 | **Testing and verification** | Test collinear, duplicate and very large coordinates |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

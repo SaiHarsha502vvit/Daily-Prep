@@ -1,6 +1,6 @@
 # 🧩 Top-K & Two Heaps — Pattern Guide
 
-**Navigation**: [< Previous](30_Shortest_Path_Pattern.md) | [Back to Index](00_INDEX.md) | [Next >](00_PATTERN_MASTER_GUIDE.md)
+> **Navigation**: [← Shortest Paths (BFS, 0-1 BFS…](30_Shortest_Path_Pattern.md) | [Chapter index](00_INDEX.md) | [Intervals →](21_Intervals_Pattern.md)
 
 **Pattern 31** | [Prev](30_Shortest_Path_Pattern.md) | [Index](00_INDEX.md)
 
@@ -48,6 +48,33 @@ A **leaderboard that only shows the top 10**: when a new score arrives, compare 
 > [!NOTE]
 > **Quick check:** Why a min-heap for the K largest? *Its root is the smallest of the K kept, so it is the element to evict.*
 
+
+### 5. Check yourself
+
+**Q1.** K-th largest of `[3,2,1,5,6,4]` with `k = 2`?
+
+<details><summary>Answer</summary>
+
+**5**.
+
+</details>
+
+**Q2.** Running median after each of `5, 15, 1, 3`?
+
+<details><summary>Answer</summary>
+
+5, 10, 5, 4.
+
+</details>
+
+**Q3.** Why a min-heap for the K largest?
+
+<details><summary>Answer</summary>
+
+The root is the smallest of the K kept, so it is the first to be evicted when a larger value arrives.
+
+</details>
+
 ---
 
 ## ⚡ At a Glance
@@ -78,7 +105,7 @@ flowchart LR
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** The binary heap is due to J. W. J. Williams (1964). C. A. R. Hoare's FIND (quickselect, 1961) selects the K-th element in expected linear time; Blum, Floyd, Pratt, Rivest and Tarjan (1973) proved worst-case linear selection (*median of medians*). For streams, Misra and Gries (1982) and Metwally et al. (Space-Saving, 2005) track frequent items with bounded memory; Cormode and Muthukrishnan's Count-Min Sketch appeared in 2005.
 
@@ -173,7 +200,6 @@ static int[] topKFrequent(int[] a, int k) {
 | **Where it runs in production** | Trending topics, leaderboards, anomaly detection (median/percentile tracking), scheduling by priority, k-way merges in databases |
 | **Failure modes** | Using a max-heap of size n; comparator that is inconsistent with ties; not rebalancing both heaps; integer overflow when averaging two ints |
 | **Testing and verification** | K-th largest vs full sort (2 000 cases), running median vs sorted-list median after every insert, top-K frequent vs sort-by-count with deterministic tie-breaks |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -1,6 +1,6 @@
 # 🧮 Matrix Exponentiation & Linear Recurrences — Complete Guide
 
-> **Navigation**: [← Number Theory Advanced](08b_NumberTheory_Advanced.md) | [Back to Index](00_INDEX.md) | [Next: Game Theory →](24_Game_Theory_Nim_Sprague_Grundy.md) | [Learning Path](00_LEARNING_PATH.md)
+> **Navigation**: [← NumberTheory Advanced](08b_NumberTheory_Advanced.md) | [Chapter index](00_INDEX.md) | [FFT, NTT & Fast Polynomial… →](26_FFT_NTT_Polynomial_Multiplication.md)
 
 ## 🔗 Bridge — Where This Chapter Fits
 

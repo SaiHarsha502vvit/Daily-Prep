@@ -1,6 +1,6 @@
 # 🧩 Union-Find (Disjoint Set Union) — Pattern Guide
 
-**Navigation**: [< Previous](26_Prefix_Sum_And_Difference_Array.md) | [Back to Index](00_INDEX.md) | [Next >](28_Topological_Sort_Pattern.md)
+> **Navigation**: [← Prefix Sum & Difference Array](26_Prefix_Sum_And_Difference_Array.md) | [Chapter index](00_INDEX.md) | [Topological Sort →](28_Topological_Sort_Pattern.md)
 
 **Pattern 27** | [Prev](26_Prefix_Sum_And_Difference_Array.md) | [Index](00_INDEX.md)
 
@@ -48,6 +48,33 @@ Keep every item in a labelled group; merging two groups and asking "same group?"
 > [!NOTE]
 > **Quick check:** Why compress paths? *So repeated finds on the same deep chain become near-constant time.*
 
+
+### 5. Check yourself
+
+**Q1.** Five nodes: `union(0,1)`, `union(1,2)`, `union(3,4)`. How many components?
+
+<details><summary>Answer</summary>
+
+**2** (`{0,1,2}` and `{3,4}`).
+
+</details>
+
+**Q2.** What does `union(0,2)` return afterwards, and what does that mean?
+
+<details><summary>Answer</summary>
+
+`false`: they are already connected, so that edge would close a cycle.
+
+</details>
+
+**Q3.** What do path compression and union by size achieve together?
+
+<details><summary>Answer</summary>
+
+Nearly constant amortised time per operation, `O(α(n))`.
+
+</details>
+
 ---
 
 ## ⚡ At a Glance
@@ -79,7 +106,7 @@ flowchart TD
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** Bernard Galler and Michael Fischer described the forest-of-trees equivalence algorithm in 1964 (*An improved equivalence algorithm*). Hopcroft and Ullman (1973) analysed it with a `log* n` bound and Robert Tarjan (1975) proved the tight inverse-Ackermann bound.
 
@@ -186,7 +213,6 @@ flowchart LR
 | **Where it runs in production** | Kruskal minimum spanning tree, network connectivity monitoring, image segmentation, clustering, equivalence classes in compilers (type unification) |
 | **Failure modes** | Forgetting to call `find` before comparing; recursion depth on unbalanced trees (use the iterative `find`); assuming it supports deletions |
 | **Testing and verification** | Compare component counts and pairwise connectivity with a Floyd–Warshall reachability matrix on 1 000 random graphs |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

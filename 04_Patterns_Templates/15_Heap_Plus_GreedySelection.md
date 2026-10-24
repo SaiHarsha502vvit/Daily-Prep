@@ -1,8 +1,8 @@
 # 🧩 Heap + Greedy Selection — Pattern Guide
 
-**Navigation**: [< Previous](14_Graph_Plus_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_DP_Pattern_Recognition.md)
+> **Navigation**: [← Graph + Traversal](14_Graph_Plus_Traversal.md) | [Chapter index](00_INDEX.md) | [DP Pattern Recognition →](16_DP_Pattern_Recognition.md)
 
-# Heap + Greedy Selection — Combined Pattern Guide
+## Heap + Greedy Selection — Combined Pattern Guide
 
 **WHY this combination?** Heaps give O(log n) access to the min/max element. Combined with greedy strategy (always pick the best available), they solve "Top K", "merge K sorted", and scheduling problems efficiently.
 
@@ -49,9 +49,36 @@ An **emergency-room triage desk**: whoever is most urgent is served next, no mat
 > [!NOTE]
 > **Quick check:** Why a min-heap for the K largest? *Its root is the weakest of the K kept, the one to evict.*
 
+
+### 5. Check yourself
+
+**Q1.** Which heap do you use to keep the K largest elements?
+
+<details><summary>Answer</summary>
+
+A min-heap of size K; its root is the smallest of the K and the one to evict.
+
+</details>
+
+**Q2.** Merge 3 sorted lists with `n` elements in total. What is the cost with a heap?
+
+<details><summary>Answer</summary>
+
+`O(n log 3) = O(n log k)` for `k` lists.
+
+</details>
+
+**Q3.** Running median of `5, 15, 1, 3`?
+
+<details><summary>Answer</summary>
+
+After each insert: 5, 10, 5, **4**.
+
+</details>
+
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** J. W. J. Williams published the binary heap with heapsort in 1964 (ACM Algorithm 232); Robert Floyd's *Treesort 3* (ACM Algorithm 245, 1964) added the linear-time bottom-up heap construction. The greedy algorithms that use heaps are older: Huffman coding (1952), Kruskal (1956), Prim (1957, after Jarník 1930) and Dijkstra (1959).
 
@@ -68,17 +95,10 @@ An **emergency-room triage desk**: whoever is most urgent is served next, no mat
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -105,13 +125,13 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Heaps and Greedy Correctness
+## 🧠 Deep Intuition — Heaps and Greedy Correctness
 
-#### Why Heaps Give O(log n) Insert/Extract
+### Why Heaps Give O(log n) Insert/Extract
 
 A heap is a **complete binary tree** stored in an array. "Complete" means every level is fully filled except possibly the last, which is filled left-to-right. The heap property (min-heap: parent ≤ children; max-heap: parent ≥ children) means the root always holds the extreme value. Insert and extract require "bubbling" up or down through the tree height, which is O(log n) since a complete binary tree has height ⌊log₂ n⌋.
 
-#### Why Min-Heap for K-Largest (The Counterintuitive Trick)
+### Why Min-Heap for K-Largest (The Counterintuitive Trick)
 
 This confuses everyone at first. To find the K largest elements, you maintain a **min-heap of size K**. Why? Because the min-heap's top is the smallest of the K elements you've kept. When a new element arrives:
 
@@ -120,7 +140,7 @@ This confuses everyone at first. To find the K largest elements, you maintain a 
 
 At the end, the heap contains exactly the K largest elements, and `heap.peek()` is the Kth largest. The alternative (max-heap of everything) uses O(n) space and O(n log n) time to build, while this approach uses only O(k) space and O(n log k) time.
 
-#### When Is Greedy Correct?
+### When Is Greedy Correct?
 
 Greedy algorithms make the locally optimal choice at each step, hoping to reach the globally optimal solution. They're correct when two conditions hold:
 
@@ -342,17 +362,10 @@ COMMON MISTAKES:
 
 ---
 
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+## 📋 Practice Problems
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 | #   | Problem                                                                                                                 | Key Insight                                    |
 | --- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
@@ -376,7 +389,7 @@ COMMON MISTAKES:
 | 13  | [Swim in Rising Water](https://leetcode.com/problems/swim-in-rising-water/)                     | Min-heap BFS (Dijkstra on grid)      |
 | 14  | [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/)                 | Monotonic deque (heap is O(n log n)) |
 
-### Additional — Greedy Problems from Excel
+### Additional — Greedy Problems
 
 | #   | Problem                                                                                                                         | Key Insight                       |
 | --- | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
@@ -455,7 +468,6 @@ COMMON MISTAKES:
 | **Where it runs in production** | Schedulers, top-N dashboards, event simulation, k-way merge in databases |
 | **Failure modes** | Using a max-heap of size n (wasted memory); comparator inconsistencies; stale entries after priority changes |
 | **Testing and verification** | Compare with full sort; test K = 1, K = n, duplicates and empty input |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

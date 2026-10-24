@@ -1,6 +1,6 @@
 # A5. Designing Your Own Algorithms — The Invention Method
 
-**Navigation**: [← A4: Randomized Algorithms](A4_Randomized_Algorithms.md) | [📚 Algorithms Index](00_INDEX.md) | [← DS A5: Designing Your Own Data Structures](../02_Data_Structures/A5_Designing_Your_Own_Data_Structures.md)
+> **Navigation**: [← A4. Randomized Algorithms](A4_Randomized_Algorithms.md) | [Chapter index](00_INDEX.md)
 
 > **MIT 6.046 Design & Analysis / KTH DD2440 Advanced Algorithms / ETH Algorithm Design level**
 >
@@ -549,7 +549,6 @@ for (T item : stream) {
 | **Where it runs in production** | Library and system design, optimisation of hot paths, research prototypes |
 | **Failure modes** | Over-engineering; skipping the reference test; ignoring adversarial inputs |
 | **Testing and verification** | Property-based tests and fuzzing against the reference |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

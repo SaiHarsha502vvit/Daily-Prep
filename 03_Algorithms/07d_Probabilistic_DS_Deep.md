@@ -1,10 +1,10 @@
-**Navigation**: [Back to Index](00_INDEX.md) | [Previous Chapter <](07c_Advanced_Trees_Deep.md) | [Next Chapter >](07e_Advanced_Algorithm_Engineering_Deep.md)
+> **Navigation**: [← Advanced Trees: Deep Dive (System…](07c_Advanced_Trees_Deep.md) | [Chapter index](00_INDEX.md) | [Advanced Algorithm Engineering… →](07e_Advanced_Algorithm_Engineering_Deep.md)
 
 ---
 
 # 🎲 Probabilistic & Distributed Data Structures: Deep Dive
 
-### Historical Evolution
+## Historical Evolution
 
 Probabilistic data structures emerged as a pragmatic solution when exact answers require infeasible amounts of memory. **Bloom Filters** were invented by **Burton Howard Bloom in 1970** while at the Computer Usage Company, published in the Communications of the ACM as "Space/Time Trade-offs in Hash Coding with Allowable Errors" — Bloom's original paper showed that for membership queries, trading a small false positive rate for massive space savings was often the correct engineering tradeoff. Bloom's original application was a hyphenation program that had to look words up in a large dictionary; modern applications include web cache proxies (Akamai, Chrome Safe Browsing), database Bloom filters (Cassandra, PostgreSQL), and blockchain SPV nodes. **Count-Min Sketch** was introduced by **Cormode and Muthukrishnan in 2005** as a probabilistic counter for heavy hitter detection and range query estimation. **HyperLogLog** was published by **Flajolet, Fusy, Gandouet and Meunier in 2007** for cardinality estimation in a few kilobytes with a standard error of about $1.04/\sqrt{m}$ for $m$ registers (≈0.8% with 16,384 registers); Google later published the HyperLogLog++ refinement. **Consistent Hashing** was introduced by **Karger et al. at MIT in 1997** for Akamai's content delivery network, minimizing reorganization when servers are added/removed. Modern practice (post-2010): Cassandra uses Bloom filters to skip SSTables, Redis HLL counts unique visitors at scale, and consistent hashing is the foundation of distributed caches (Memcached) and NoSQL databases (DynamoDB).
 
@@ -51,6 +51,25 @@ A **rough headcount at a stadium**: you do not scan every seat, you sample cleve
 > [!NOTE]
 > **Quick check:** Can a Bloom filter return a false negative? *No.*
 
+
+### 5. Check yourself
+
+**Q1.** Can a Bloom filter return a false negative?
+
+<details><summary>Answer</summary>
+
+No. It can return false positives but never false negatives (when no deletions are made).
+
+</details>
+
+**Q2.** Does a Count-Min sketch over- or under-estimate counts?
+
+<details><summary>Answer</summary>
+
+It only over-estimates (collisions add counts); the minimum across rows gives the tightest estimate.
+
+</details>
+
 ---
 
 
@@ -58,7 +77,7 @@ A **rough headcount at a stadium**: you do not scan every seat, you sample cleve
 
 ---
 
-# ⚖️ PART 1: The Big Data Dilemma
+## ⚖️ PART 1: The Big Data Dilemma
 
 When designing systems for billions of events (Google, Netflix, Twitter), standard deterministic data structures (HashMaps, HashSets) mathematically fail.
 
@@ -67,7 +86,7 @@ When designing systems for billions of events (Google, Netflix, Twitter), standa
 
 ---
 
-# 🌸 PART 2: Bloom Filters (The Database Shield)
+## 🌸 PART 2: Bloom Filters (The Database Shield)
 
 A **Bloom Filter** answers one specific question: _"Have I seen this element before?"_
 
@@ -112,7 +131,7 @@ $$ p \approx \left( 1 - e^{-kn/m} \right)^k $$
 
 ---
 
-# 📊 PART 3: Count-Min Sketch (The Heavy Hitters)
+## 📊 PART 3: Count-Min Sketch (The Heavy Hitters)
 
 A `HashMap<String, Integer>` is used to count frequencies. But what if you are Twitter, tracking hashtag trends across 10 Billion tweets a day? You cannot store every unique string.
 
@@ -139,7 +158,7 @@ Each row increments the cell chosen by its own hash function (bold = incremented
 
 ---
 
-# 🧮 PART 4: HyperLogLog (Cardinality Estimation)
+## 🧮 PART 4: HyperLogLog (Cardinality Estimation)
 
 How does Reddit count the number of _Unique Viewers_ on a post?
 Counting unique items (Cardinality) normally requires saving every single user ID in a Set.
@@ -157,7 +176,7 @@ HLL hashes every incoming item into a binary string. It looks for the **longest 
 
 ---
 
-# ⭕ PART 5: Consistent Hashing (Distributed Routing)
+## ⭕ PART 5: Consistent Hashing (Distributed Routing)
 
 Unlike the probabilistic structures above, **Consistent Hashing** is a deterministic technique used to distribute data seamlessly across $N$ servers.
 
@@ -200,7 +219,7 @@ To prevent uneven data distribution, each physical server is hashed multiple tim
 
 ---
 
-# 🪤 PART 6: Cuckoo Filters and Quotient Filters
+## 🪤 PART 6: Cuckoo Filters and Quotient Filters
 
 Bloom Filters are brilliant, but they have one painful weakness:
 
@@ -208,7 +227,7 @@ Bloom Filters are brilliant, but they have one painful weakness:
 
 You can use a Counting Bloom Filter, but that replaces bits with counters and increases memory. Cuckoo Filters and Quotient Filters attack the same membership problem with different engineering tradeoffs.
 
-## 6.1 Cuckoo Filter
+### 6.1 Cuckoo Filter
 
 A Cuckoo Filter stores short **fingerprints** of keys inside buckets.
 
@@ -237,7 +256,7 @@ Good fit:
 - "Probably seen" checks with deletes
 - Systems where a standard Bloom Filter would accumulate stale positives forever
 
-## 6.2 Quotient Filter
+### 6.2 Quotient Filter
 
 A Quotient Filter stores hashed fingerprints in a compact table and keeps enough metadata to reconstruct clusters.
 
@@ -260,7 +279,7 @@ It is cache-friendly because entries live in a contiguous array, unlike pointer-
 
 ---
 
-# 🧬 PART 7: MinHash and SimHash - Similarity at Scale
+## 🧬 PART 7: MinHash and SimHash - Similarity at Scale
 
 Sometimes the question is not "have I seen this exact item?"
 
@@ -268,7 +287,7 @@ The better question is:
 
 > "Have I seen something almost the same?"
 
-## 7.1 MinHash for Jaccard Similarity
+### 7.1 MinHash for Jaccard Similarity
 
 Jaccard similarity:
 
@@ -292,7 +311,7 @@ Production examples:
 - Similar user behavior
 - Recommendation candidate generation
 
-## 7.2 Locality Sensitive Hashing (LSH)
+### 7.2 Locality Sensitive Hashing (LSH)
 
 MinHash signatures are still vectors. LSH turns them into candidate buckets.
 
@@ -310,7 +329,7 @@ If two items match in any band, compare them more carefully.
 
 LSH is not the final answer. It is a **candidate generator** that avoids comparing everything with everything.
 
-## 7.3 SimHash for Hamming Distance
+### 7.3 SimHash for Hamming Distance
 
 SimHash is used when similarity can be modeled through weighted features.
 
@@ -331,11 +350,11 @@ Good fit:
 
 ---
 
-# 📈 PART 8: Streaming Top-K and Heavy Hitters
+## 📈 PART 8: Streaming Top-K and Heavy Hitters
 
 Count-Min Sketch estimates frequencies, but sometimes you need the actual top keys.
 
-## 8.1 Misra-Gries Algorithm
+### 8.1 Misra-Gries Algorithm
 
 Misra-Gries keeps at most `k - 1` counters.
 
@@ -355,7 +374,7 @@ Guarantee: any item occurring more than `N/k` times will remain as a candidate.
 
 This is the deterministic foundation behind many "find all elements appearing more than n/3" interview problems.
 
-## 8.2 Space-Saving Algorithm
+### 8.2 Space-Saving Algorithm
 
 Space-Saving keeps `k` counters. When a new item arrives and all counters are full:
 
@@ -366,7 +385,7 @@ Space-Saving keeps `k` counters. When a new item arrives and all counters are fu
 
 It tracks heavy hitters more aggressively than Misra-Gries in many real streams.
 
-## 8.3 Sliding Windows and Decay
+### 8.3 Sliding Windows and Decay
 
 A global counter may be useless if old traffic dominates.
 
@@ -383,13 +402,13 @@ The hard part is not the sketch. The hard part is defining what "now" means.
 
 ---
 
-# 🔁 PART 9: CRDTs - Distributed Data Structures Without Coordination
+## 🔁 PART 9: CRDTs - Distributed Data Structures Without Coordination
 
 CRDT means **Conflict-free Replicated Data Type**.
 
 It is not probabilistic, but it belongs in this chapter because it is a scale structure: it trades strict immediate coordination for deterministic merge rules.
 
-## 9.1 The Core Rule
+### 9.1 The Core Rule
 
 A CRDT must make concurrent updates merge safely:
 
@@ -401,7 +420,7 @@ merge(a, a) == a                        // idempotent
 
 These properties mean replicas can receive updates in different orders and still converge.
 
-## 9.2 Common CRDTs
+### 9.2 Common CRDTs
 
 | CRDT         | What It Does                | Merge Rule                                |
 | ------------ | --------------------------- | ----------------------------------------- |
@@ -411,7 +430,7 @@ These properties mean replicas can receive updates in different orders and still
 | OR-Set       | Add/remove set              | Unique tags per add; remove observed tags |
 | LWW Register | Last-write-wins value       | Highest timestamp wins                    |
 
-## 9.3 When CRDTs Are Worth It
+### 9.3 When CRDTs Are Worth It
 
 Use CRDTs when:
 
@@ -430,11 +449,11 @@ CRDTs are not magic consistency. They are a carefully designed answer to: **"Wha
 
 ---
 
-# 🧮 PART 10: Sizing Formulas and Accuracy Contracts
+## 🧮 PART 10: Sizing Formulas and Accuracy Contracts
 
 Probabilistic structures must be designed from an explicit error budget.
 
-## 10.1 Bloom Filter Sizing
+### 10.1 Bloom Filter Sizing
 
 Given:
 
@@ -462,7 +481,7 @@ k ≈ 6.64 -> 7 hash functions
 
 That is the deep reason Bloom Filters show up everywhere: millions of keys can be screened with megabytes, not gigabytes.
 
-## 10.2 HyperLogLog Error
+### 10.2 HyperLogLog Error
 
 HyperLogLog standard error is approximately:
 
@@ -474,7 +493,7 @@ where `m` is the number of registers.
 
 More registers means lower error and more memory. There is no free lunch, just a very good exchange rate.
 
-## 10.3 Count-Min Sketch Error Shape
+### 10.3 Count-Min Sketch Error Shape
 
 Count-Min Sketch has two knobs:
 
@@ -497,7 +516,7 @@ Approximation is safe only when the business contract understands the approximat
 
 ---
 
-# 🧯 PART 11: Production Pitfalls
+## 🧯 PART 11: Production Pitfalls
 
 | Pitfall                                   | Why It Hurts                 | Fix                                               |
 | ----------------------------------------- | ---------------------------- | ------------------------------------------------- |
@@ -509,7 +528,7 @@ Approximation is safe only when the business contract understands the approximat
 | Sketch never reset                        | Old traffic dominates        | Add windows or decay                              |
 | CRDT timestamp from unsynced clocks       | Wrong value wins             | Prefer logical clocks/tags where possible         |
 
-## 11.1 The Senior Rule
+### 11.1 The Senior Rule
 
 Do not say:
 
@@ -523,7 +542,7 @@ That sentence is the difference between trivia and engineering.
 
 ---
 
-# 🧠 SUMMARY: The "Scale into Infinity" Cheat Sheet
+## 🧠 SUMMARY: The "Scale into Infinity" Cheat Sheet
 
 | Data Structure / Algo          | The Question it Answers          | Space Complexity               | Real World Use Case                                |
 | ------------------------------ | -------------------------------- | ------------------------------ | -------------------------------------------------- |
@@ -540,7 +559,7 @@ That sentence is the difference between trivia and engineering.
 
 ---
 
-## Proof Corner -- Skip List Expected Search Time
+### Proof Corner -- Skip List Expected Search Time
 
 **Claim**: A skip list with n elements and level promotion probability p = 0.5 supports expected O(log n) search time.
 
@@ -554,7 +573,7 @@ This is equivalent to a random walk: we start at the bottom level and count step
 
 ---
 
-## Section Challenge -- Probabilistic Data Structures
+### Section Challenge -- Probabilistic Data Structures
 
 **Problem 1 (6 min)**: A Bloom filter with m=1000 bits and k=7 hash functions has n=100 elements inserted. Estimate the false positive probability.
 
@@ -570,7 +589,7 @@ This matches the rule of thumb: m/n = 10 bits per element gives FP rate ~1% with
 
 ---
 
-## Reference Anchor
+### Reference Anchor
 
 **java.util.concurrent.ConcurrentSkipListMap -- production skip list**:
 ```java
@@ -595,7 +614,7 @@ String result = skipMap.get(3); // O(log n) expected
 
 ---
 
-## Brute Force to Optimal -- Probabilistic DS Tradeoffs
+### Brute Force to Optimal -- Probabilistic DS Tradeoffs
 
 | Problem | Exact (no error) | Space | Probabilistic | Space | Error bound |
 |---------|-----------------|-------|---------------|-------|-------------|
@@ -616,7 +635,6 @@ String result = skipMap.get(3); // O(log n) expected
 | **Where it runs in production** | Databases (Cassandra, HBase), CDNs, analytics (Redis HLL), distributed caches and load balancers |
 | **Failure modes** | Undersized filters saturating; not accounting for growth; using non-independent hash functions |
 | **Testing and verification** | Measure the empirical false-positive rate against the target on random data |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

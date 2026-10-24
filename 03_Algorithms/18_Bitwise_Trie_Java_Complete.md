@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](17_DSA_Java_Implementation_Mastery.md) | [Back to Index](00_INDEX.md) | [Next >](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)
+> **Navigation**: [← Union-Find / Disjoint Set Union…](14_Union_Find_DSU_Complete.md) | [Chapter index](00_INDEX.md) | [TREES →](05_Trees.md)
 
 # Chapter 18 - Bitwise Trie Java Complete Guide
 
@@ -53,6 +53,25 @@ Playing **"opposites attract"** at each digit: to make the difference as big as 
 ### Historical Evolution
 
 The Bitwise Trie (binary trie for XOR problems) traces its roots to **information theory and prefix coding**. **David Huffman (1952)** invented Huffman coding at MIT as a student in a term-paper assignment for an information-theory course, introducing the idea of building an optimal binary tree based on bit-level character frequencies — the Huffman tree is itself a binary trie where each path represents a bit sequence. **Tries (retrieval trees)** were independently invented by **René de la Briandais (1959)** and **Edward Fredkin (1960)** as a more efficient alternative to binary search trees for string retrieval; Fredkin coined the "trie" name (from "retrieval"). Binary (bitwise) tries are standard in IP routing (longest-prefix match), where a lookup costs $O(W)$ for $W$-bit addresses; the maximum-XOR query uses the same $O(W)$ walk and became a well-known competitive-programming technique. **IPv6 routing** further drove bitwise trie optimization for longest prefix match. Modern practice (post-2010): bitwise tries power network router longest-prefix-match tables, and maximum-XOR pair problems in competitive programming — the same 32-bit routing logic repurposed for algorithmic interview questions.
+
+
+### 5. Check yourself
+
+**Q1.** Maximum XOR of two numbers in `[3,10,5,25,2,8]`?
+
+<details><summary>Answer</summary>
+
+**28** (`5 XOR 25`).
+
+</details>
+
+**Q2.** Why insert numbers bit by bit from the most significant bit?
+
+<details><summary>Answer</summary>
+
+A higher bit dominates all lower bits, so choosing the opposite bit at each level greedily maximises the XOR.
+
+</details>
 
 ---
 
@@ -557,17 +576,6 @@ The bitwise trie supports several variants beyond max XOR, each exploiting diffe
 Select **max XOR trie** when the problem asks for maximum XOR of any pair or pair with a query value. Select **array-based** when space is severely constrained and n is small. Default to the **bitwise trie** for any problem where you need to pick optimal bit branches for XOR objectives.
 
 
-🔬 **Section Challenge — 12. Summary**
-
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-
 ---
 
 ## Proof Corner -- Trie O(L) per Operation
@@ -634,7 +642,6 @@ SortedMap<String, Integer> prefix = trie.prefixMap("he"); // all keys starting w
 | **Where it runs in production** | Maximum-XOR queries, IP routing (tries), compression |
 | **Failure modes** | Wrong bit width; memory growth for large inputs; offline queries needing deletes |
 | **Testing and verification** | Brute-force O(n²) comparison on small arrays |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

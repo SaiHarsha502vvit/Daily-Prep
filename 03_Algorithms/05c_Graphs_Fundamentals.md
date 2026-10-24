@@ -1,4 +1,6 @@
-**Navigation**: [< Previous Chapter](05b_Graphs_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05d_Graphs_Advanced_Algos.md)
+# Graphs Fundamentals
+
+> **Navigation**: [← GRAPHS](05b_Graphs_Internals.md) | [Chapter index](00_INDEX.md) | [Graphs Advanced Algos →](05d_Graphs_Advanced_Algos.md)
 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — BFS/DFS decision framework and cycle detection
 
 ---
@@ -68,7 +70,7 @@ DFS = "Exists? / Cycles / Components"   → Stack/Recursion → O(V+E)
 
 ---
 
-# 🕸️ Part 5: Graph Fundamentals
+## 🕸️ Part 5: Graph Fundamentals
 
 ## 🔗 Bridge — Where This Chapter Fits
 
@@ -110,6 +112,25 @@ Exploring a **maze**: BFS sends scouts to every corridor one step at a time; DFS
 
 > [!NOTE]
 > **Quick check:** Which traversal finds shortest paths in an unweighted graph? *BFS.*
+
+
+### 5. Check yourself
+
+**Q1.** Why can recursive DFS fail on a large graph?
+
+<details><summary>Answer</summary>
+
+The recursion depth can reach `V`, causing a stack overflow; use an explicit stack.
+
+</details>
+
+**Q2.** What must be true for a topological order to exist?
+
+<details><summary>Answer</summary>
+
+The graph must be directed and acyclic (a DAG).
+
+</details>
 
 ---
 
@@ -334,9 +355,9 @@ CONNECTED: All nodes reachable from any node
 
 </details>
 
-# 🕸️ Part 6: Graph Traversals
+## 🕸️ Part 6: Graph Traversals
 
-## The Big Idea First — BFS, DFS, and Dijkstra Are *One* Algorithm
+### The Big Idea First — BFS, DFS, and Dijkstra Are *One* Algorithm
 
 Before the comparison tables, internalize the thing they never tell you: **BFS, DFS, and Dijkstra are the same algorithm with one knob changed.** Every graph search is this skeleton:
 
@@ -361,11 +382,11 @@ The *only* difference between the three famous searches is **which node you pull
 
 That is the whole secret. BFS isn't a different beast from DFS — swap the queue for a stack and the *identical code* changes its personality completely. Dijkstra isn't a different beast either — it's BFS where "closest" means "least total weight" instead of "fewest edges," which is why it needs a priority queue instead of a plain queue. Once you see the skeleton, you stop memorizing three algorithms and remember one with a knob.
 
-### Why FIFO ⟹ shortest path (the intuition behind the proof above)
+#### Why FIFO ⟹ shortest path (the intuition behind the proof above)
 
 Picture dropping a stone in water. The ripple reaches all points 1 step away, *then* all points 2 steps away, never skipping. A FIFO queue enforces exactly this: a node at distance d is enqueued before any node at distance d+1 (its neighbors), and FIFO drains them in that order. So the **first time** you reach a node is necessarily by a shortest route — there is no later, shorter path waiting, because shorter paths were already drained. That "first arrival is optimal arrival" is the entire content of the formal induction in the Proof Corner; the queue *is* the proof, mechanized.
 
-### When DFS gives you a *wrong* answer (not just a slow one)
+#### When DFS gives you a *wrong* answer (not just a slow one)
 
 The trap: people use DFS for shortest path because it's the recursion they know. DFS finds *a* path, committing to the first branch it sees and only widening on backtrack — so the path it returns can be arbitrarily longer than optimal. Concretely:
 
@@ -376,13 +397,13 @@ start ─────────────→ target     (the real answer: le
 
 If you `return` on first reaching `target` in DFS, you report 4. BFS reports 1 because it exhausts distance-1 before ever touching distance-2. **Shortest-path-by-DFS is a correctness bug, not a performance one** — it returns confidently wrong numbers. (DFS is *correct* for "does a path exist?", cycle detection, topological order, and connected components — anywhere the *length* doesn't matter.)
 
-### Why Dijkstra needs non-negative weights (the one-line reason)
+#### Why Dijkstra needs non-negative weights (the one-line reason)
 
 Dijkstra "finalizes" a node the moment it pulls it off the heap, trusting that no cheaper route can exist later. That trust is only valid if every remaining edge can *only add* cost. A single negative edge can swoop in after finalization and undercut the committed distance — breaking the invariant. That's the entire reason negative weights force you to Bellman-Ford (which never finalizes; it relaxes every edge n−1 times). Hold this: **"finalize on extract" is safe iff edges are non-negative.**
 
 ---
 
-## DFS vs BFS - When to Use Which
+### DFS vs BFS - When to Use Which
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -442,7 +463,7 @@ Dijkstra "finalizes" a node the moment it pulls it off the heap, trusting that n
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## DFS (Depth-First Search)
+### DFS (Depth-First Search)
 
 ```
 GO DEEP first, then backtrack!
@@ -518,15 +539,7 @@ lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi
 
 </details>
 
-**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-
-<details><summary>Answer</summary>
-
-Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-
-</details>
-
-## BFS (Breadth-First Search)
+### BFS (Breadth-First Search)
 
 ```
 GO WIDE first! Visit all neighbors before going deeper.
@@ -612,17 +625,9 @@ lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi
 
 </details>
 
-**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+## 📌 Part 7: Cycle Detection
 
-<details><summary>Answer</summary>
-
-Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-
-</details>
-
-# 📌 Part 7: Cycle Detection
-
-## In Undirected Graph
+### In Undirected Graph
 
 ```java
 // DFS approach
@@ -667,7 +672,7 @@ private boolean dfsHasCycle(int node, int parent,
 
 </details>
 
-## In Directed Graph
+### In Directed Graph
 
 ```java
 // Using colors: WHITE (unvisited), GRAY (in progress), BLACK (done)
@@ -716,7 +721,7 @@ private boolean dfsHasCycleDirected(int node, List<List<Integer>> graph, int[] c
 
 </details>
 
-# 🔄 Part 8: Topological Sort
+## 🔄 Part 8: Topological Sort
 
 ```
 ORDER TASKS RESPECTING DEPENDENCIES
@@ -774,9 +779,9 @@ public List<Integer> topologicalSort(int numCourses, int[][] prerequisites) {
 
 ---
 
-# 📌 Part 9: Shortest Path Algorithms
+## 📌 Part 9: Shortest Path Algorithms
 
-## Dijkstra's Algorithm
+### Dijkstra's Algorithm
 
 ```
 SHORTEST PATH from source to all nodes (weighted, non-negative)
@@ -838,9 +843,9 @@ public int[] dijkstra(int n, List<int[]>[] graph, int source) {
 
 ---
 
-# 💪 Part 10: Practice Problems
+## 💪 Part 10: Practice Problems
 
-## Trees
+### Trees
 
 ```
 EASY:
@@ -860,7 +865,7 @@ HARD:
 2. Serialize and deserialize binary tree
 ```
 
-## Graphs
+### Graphs
 
 ```
 EASY:
@@ -902,9 +907,9 @@ HARD:
 
 ---
 
-## Brute Force → Optimal: Graph Patterns
+### Brute Force → Optimal: Graph Patterns
 
-### Problem: Shortest Path in Unweighted Graph
+#### Problem: Shortest Path in Unweighted Graph
 
 **Brute Force — O(V! ) DFS exploring all paths:**
 Finding the shortest path by DFS without tracking visited nodes causes exponential blowup — the algorithm may revisit nodes and cycle indefinitely.
@@ -931,7 +936,7 @@ int[] bfs(List<List<Integer>> adj, int src) {
 **Why BFS guarantees shortest path**: BFS explores layer by layer — all nodes at distance k before any node at distance k+1. The first time a node is reached, the path length equals the layer depth and is provably minimal (no negative weights possible in hop count).
 **Pattern signal**: Unweighted graph + shortest path → BFS. Weighted graph + non-negative weights → Dijkstra. Weighted + possibly negative → Bellman-Ford.
 
-### Problem: Number of Connected Components
+#### Problem: Number of Connected Components
 
 **Brute Force — O(V²) adjacency-matrix scan:**
 For each pair (u,v), check if there's a path — O(V) DFS per pair = O(V²) per query.
@@ -950,7 +955,6 @@ Process each edge once: `union(u, v)`. Count distinct roots at the end. For the 
 | **Where it runs in production** | Web crawlers, dependency resolution, network reachability, flood-fill, social-network analysis |
 | **Failure modes** | Forgetting the visited set (infinite loops); DFS recursion overflow; marking visited too late in BFS (duplicate queue entries) |
 | **Testing and verification** | Test cycles, disconnected graphs, self-loops, and deep chains (10⁵ nodes) |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

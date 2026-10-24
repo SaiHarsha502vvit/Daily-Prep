@@ -1,6 +1,6 @@
 # 🌉 DS → Patterns → Problems Bridge Map
 
-### 5W1H: Using the Data Structure Bridge Map
+## 5W1H: Using the Data Structure Bridge Map
 
 > [!NOTE]
 > **WHAT:** A mapping index connecting core Data Structures to the algorithmic patterns they unlock and the specific problems used to master them.
@@ -72,9 +72,9 @@ A **map of a transit system**: the stations are data structures, the lines are p
 | Array Concept                 | Pattern Unlocked     | Learn Pattern Here                                                                         | Practice Problems                                           |
 | ----------------------------- | -------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
 | Contiguous subarray           | Sliding Window       | [01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md)                      | [SW PS](../05_Problem_Solving/05_Sliding_Window.md)         |
-| Contiguous subarray           | Two Pointers         | [07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md)        | [2P PS](../05_Problem_Solving/03_TwoPointers.md)            |
-| Sub-sequence (not contiguous) | DP (LCS, LIS)        | [04b_DP_Fundamentals.md](../03_Algorithms/04b_DP_Fundamentals.md)                          | [DP PS](../05_Problem_Solving/07_DP.md)                     |
-| Sorted position               | Binary Search        | [06_Binary_Search_Patterns.md](../04_Patterns_Templates/06_Binary_Search_Patterns.md)      | [BS PS](../05_Problem_Solving/07_Binary_Search_Patterns.md) |
+| Contiguous subarray           | Two Pointers         | [07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md)        | [2P PS](../05_Problem_Solving/06_Two_Pointers.md)            |
+| Sub-sequence (not contiguous) | DP (LCS, LIS)        | [04b_DP_Fundamentals.md](../03_Algorithms/04b_DP_Fundamentals.md)                          | [DP PS](../05_Problem_Solving/11_Dynamic_Programming.md)                     |
+| Sorted position               | Binary Search        | [06_Binary_Search_Patterns.md](../04_Patterns_Templates/06_Binary_Search_Patterns.md)      | [BS PS](../05_Problem_Solving/07_Binary_Search.md) |
 | Frequency count               | HashMap              | [10_HashMap_Plus_Counting.md](../04_Patterns_Templates/10_HashMap_Plus_Counting.md)        | [HashMap PS](../05_Problem_Solving/17_HashMap_Hashing.md)   |
 | Sort + scan                   | Greedy               | [12_Greedy_Algorithms_Complete.md](../03_Algorithms/12_Greedy_Algorithms_Complete.md)      | [Greedy PS](../05_Problem_Solving/13_Greedy.md)             |
 | Prefix sum                    | Prefix Sum + HashMap | [19_Prefix_Sum...md](../03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) | [Arrays PS](../05_Problem_Solving/04_Arrays.md)             |
@@ -98,7 +98,7 @@ A **map of a transit system**: the stations are data structures, the lines are p
 | ----------------------- | ---------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
 | Level-by-level          | BFS (Queue)            | [13_Tree_Plus_DFS_BFS.md](../04_Patterns_Templates/13_Tree_Plus_DFS_BFS.md)                 | [Trees PS](../05_Problem_Solving/09_Trees.md)               |
 | Root-to-leaf            | DFS (pre/in/postorder) | [13_Tree_Plus_DFS_BFS.md](../04_Patterns_Templates/13_Tree_Plus_DFS_BFS.md)                 | [Trees PS](../05_Problem_Solving/09_Trees.md)               |
-| Overlapping subproblems | DP on trees            | [04b_DP_Fundamentals.md](../03_Algorithms/04b_DP_Fundamentals.md)                           | [DP PS](../05_Problem_Solving/07_DP.md)                     |
+| Overlapping subproblems | DP on trees            | [04b_DP_Fundamentals.md](../03_Algorithms/04b_DP_Fundamentals.md)                           | [DP PS](../05_Problem_Solving/11_Dynamic_Programming.md)                     |
 | Choose/Explore paths    | Backtracking           | [17_Backtracking_Plus_Pruning.md](../04_Patterns_Templates/17_Backtracking_Plus_Pruning.md) | [Backtracking PS](../05_Problem_Solving/12_Backtracking.md) |
 
 ---
@@ -259,11 +259,11 @@ In Failure Mode 1 (Trie vs HashMap), the HashMap wins for small bounded vocabula
 
 ---
 
-# 🎓 University-Level Addendum — Problem Bridges as Formal Theory
+## 🎓 University-Level Addendum — Problem Bridges as Formal Theory
 
 > **Purpose:** This addendum elevates the chapter to MIT/KTH/ETH rigor. The body has comprehensive bridge mapping (DS → Patterns → Problems → Production); this addendum provides the **constraint-first framing** for each bridge — formal constraint triple → DS-choice → algorithm → solution → edge cases — turning every bridge into an exam-style problem that prepares a student for the algorithmic reasoning required at university level.
 
-## The Constraint-First Bridge Template
+### The Constraint-First Bridge Template
 
 Every bridge in this file should be readable through this 5-part template. The template is the formalization of D004 (DSA constraint-first methodology) applied to bridges.
 
@@ -277,9 +277,9 @@ Every bridge in this file should be readable through this 5-part template. The t
 
 The template is the same for every bridge below; only the specifics differ. Master the template once and every bridge is mechanical.
 
-## Bridge Re-Analysis — Constraint-First Framing
+### Bridge Re-Analysis — Constraint-First Framing
 
-### Bridge 1: Array → Sliding Window → Two Pointers → Three-Pattern Synthesis
+#### Bridge 1: Array → Sliding Window → Two Pointers → Three-Pattern Synthesis
 
 **Constraint triple:** n ≤ 10⁶, time = 1 s, memory = O(n).
 
@@ -308,7 +308,7 @@ while right < n:
 
 **Why this bridge is the foundation:** Sliding window is the "two-pointer reduction" of brute force. Brute force: O(n·k) enumerate all windows. Sliding window: O(n) amortized (each element enters and exits the window once). The reduction is enabled by the constraint that windows are contiguous and properties are monotonic.
 
-### Bridge 2: Linked List → Slow-Fast Pointer → Cycle Detection → Reverse
+#### Bridge 2: Linked List → Slow-Fast Pointer → Cycle Detection → Reverse
 
 **Constraint triple:** n ≤ 10⁶, time = O(n), memory = O(1).
 
@@ -347,7 +347,7 @@ head = prev
 
 **Proof sketch (cycle detection correctness):** If cycle exists, fast catches slow because fast moves 2 steps per slow's 1 step, so the gap closes by 1 per iteration. Inside the cycle, after at most C iterations, they meet.
 
-### Bridge 3: Stack/Queue → Monotonic Stack → Next Greater Element → Histogram
+#### Bridge 3: Stack/Queue → Monotonic Stack → Next Greater Element → Histogram
 
 **Constraint triple:** n ≤ 10⁶, time = O(n), memory = O(n).
 
@@ -376,7 +376,7 @@ return result
 
 **Complexity proof:** Each index is pushed once and popped at most once → 2n operations → O(n). The nested-looking loop is amortized O(1) per iteration.
 
-### Bridge 4: Hash Table → Two-Sum → LRU Cache → Distributed Cache
+#### Bridge 4: Hash Table → Two-Sum → LRU Cache → Distributed Cache
 
 **Constraint triple:** n ≤ 10⁷, time = O(n) per query, memory = O(n).
 
@@ -420,7 +420,7 @@ class LRUCache<K, V>:
 
 **The LRU cache is the canonical "hash + linked list" combination** — it shows how two DS combine to give a property neither has alone (O(1) lookup + LRU eviction).
 
-### Bridge 5: Tree → BST Iterator → Traversal Orders → Range Queries
+#### Bridge 5: Tree → BST Iterator → Traversal Orders → Range Queries
 
 **Constraint triple:** n ≤ 10⁶, time = O(n) total for traversal, memory = O(h) for stack-based iterator (h = tree height).
 
@@ -457,7 +457,7 @@ class BSTIterator:
 
 **Range queries** (`count nodes in [a, b]`): Use TreeMap's `subMap(a, b+1)` for O(log n + k) where k is result count. Compare to brute force O(n).
 
-### Bridge 6: Heap → Top-K → K-Way Merge → Dijkstra
+#### Bridge 6: Heap → Top-K → K-Way Merge → Dijkstra
 
 **Constraint triple:** n ≤ 10⁹, k ≤ 10⁴, time = O(n log k), memory = O(k).
 
@@ -488,7 +488,7 @@ return heap.toArray()  // top-K in arbitrary order
 
 **Dijkstra's shortest path:** Use min-heap of (distance, node) pairs. Extract closest unvisited node, update neighbors, repeat. O((V + E) log V).
 
-### Bridge 7: Trie → Autocomplete → IP Routing → String Search
+#### Bridge 7: Trie → Autocomplete → IP Routing → String Search
 
 **Constraint triple:** vocabulary ≤ 10⁶ strings, average length ≤ 20 chars, query latency ≤ 1 ms.
 
@@ -538,7 +538,7 @@ autocomplete(prefix):
 
 **Production use:** IP routing tables use compressed tries (radix trees) for longest-prefix matching; autocomplete in IDEs; spell-checkers.
 
-### Bridge 8: Union-Find → Connected Components → Kruskal's MST → Percolation
+#### Bridge 8: Union-Find → Connected Components → Kruskal's MST → Percolation
 
 **Constraint triple:** n ≤ 10⁶ operations, time = O(n α(n)) amortized, memory = O(n).
 
@@ -574,7 +574,7 @@ union(x, y):
 
 **Amortized complexity:** Tarjan's inverse-Ackermann proof: m operations on n elements is O(m α(n)) where α is the inverse Ackermann function, which is < 5 for any practical n.
 
-### Bridge 9: Segment Tree → Range Sum Query → Range Update → Persistent DS
+#### Bridge 9: Segment Tree → Range Sum Query → Range Update → Persistent DS
 
 **Constraint triple:** n ≤ 10⁶, q ≤ 10⁵ queries, time = O(log n) per query.
 
@@ -623,7 +623,7 @@ class SegmentTree:
 
 **Use case:** Range Sum Query - Mutable (LC 307); competitive programming range queries; persistent data structures.
 
-### Bridge 10: Graph → BFS → DFS → Shortest Path
+#### Bridge 10: Graph → BFS → DFS → Shortest Path
 
 **Constraint triple:** V + E ≤ 10⁶, time = O(V + E), memory = O(V).
 
@@ -654,11 +654,11 @@ while queue not empty:
 
 **Production use:** Social network "degrees of separation"; web crawler URL discovery; shortest path in maps.
 
-## When Bridges Break — Failure Modes Across DS
+### When Bridges Break — Failure Modes Across DS
 
 The bridges above share failure modes that emerge from the *combination* of DS + algorithm. The most common:
 
-### Cross-DS Failure 1 — Off-By-One in Sliding Window
+#### Cross-DS Failure 1 — Off-By-One in Sliding Window
 
 **Symptom:** Window misses or duplicates elements at boundaries.
 
@@ -667,7 +667,7 @@ The bridges above share failure modes that emerge from the *combination* of DS +
 > [!TIP]
 > **Defense:** Test with k = 1 (window of size 1); test with k = n (window is the entire array).
 
-### Cross-DS Failure 2 — HashMap Iteration Order Surprise
+#### Cross-DS Failure 2 — HashMap Iteration Order Surprise
 
 **Symptom:** Tests pass in some JVM versions, fail in others.
 
@@ -676,7 +676,7 @@ The bridges above share failure modes that emerge from the *combination* of DS +
 > [!TIP]
 > **Defense:** Use LinkedHashMap (insertion order) or TreeMap (sorted order) when order matters.
 
-### Cross-DS Failure 3 — Recursive DFS Stack Overflow
+#### Cross-DS Failure 3 — Recursive DFS Stack Overflow
 
 **Symptom:** `StackOverflowError` on deep graph traversal.
 
@@ -685,7 +685,7 @@ The bridges above share failure modes that emerge from the *combination* of DS +
 > [!TIP]
 > **Defense:** Convert recursion to iteration using explicit stack (see `01d_Stack_Queue.md` recursion-to-iterative section).
 
-### Cross-DS Failure 4 — PriorityQueue Non-Determinism
+#### Cross-DS Failure 4 — PriorityQueue Non-Determinism
 
 **Symptom:** Dijkstra returns different paths for same graph.
 
@@ -694,7 +694,7 @@ The bridges above share failure modes that emerge from the *combination* of DS +
 > [!TIP]
 > **Defense:** Always include a tie-breaker (node ID or insertion order).
 
-### Cross-DS Failure 5 — Trie Memory Blowup
+#### Cross-DS Failure 5 — Trie Memory Blowup
 
 **Symptom:** 10⁶ strings × 256 children per node = OOM.
 
@@ -703,7 +703,7 @@ The bridges above share failure modes that emerge from the *combination* of DS +
 > [!TIP]
 > **Defense:** Use HashMap-based children (sparse); or use a sorted array of children (compact); or use double-array trie (DAWG) for memory efficiency.
 
-### Cross-DS Failure 6 — Union-Find Path Compression Recursion
+#### Cross-DS Failure 6 — Union-Find Path Compression Recursion
 
 **Symptom:** `StackOverflowError` on deeply nested union chains.
 
@@ -718,7 +718,7 @@ find(x):
     return x
 ```
 
-## Cross-References
+### Cross-References
 
 - **`02_PROBLEM_SETS.md`** — exam-style problems for each bridge (constraint-first, invariant reasoning, edge-case enumeration).
 - **`01a_Memory_Foundations.md`** — memory layout and cache behavior that underpins array/heap performance.

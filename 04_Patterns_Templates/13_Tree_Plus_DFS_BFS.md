@@ -1,8 +1,8 @@
 # 🧩 Tree + DFS/BFS — Pattern Guide
 
-**Navigation**: [< Previous](12_LinkedList_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Graph_Plus_Traversal.md)
+> **Navigation**: [← Linked List + Two Pointers](12_LinkedList_Plus_TwoPointers.md) | [Chapter index](00_INDEX.md) | [Graph + Traversal →](14_Graph_Plus_Traversal.md)
 
-# Tree + DFS/BFS — Combined Pattern Guide
+## Tree + DFS/BFS — Combined Pattern Guide
 
 **WHY this combination?** Trees are hierarchical. DFS explores depth-first (recursion/stack) — ideal for path problems. BFS explores level-by-level (queue) — ideal for shortest path and level-order problems.
 
@@ -49,9 +49,36 @@ An **organisation chart**: some questions are answered by asking each manager to
 > [!NOTE]
 > **Quick check:** Why compare against bounds instead of only the parent? *A deep node must respect every ancestor's bound.*
 
+
+### 5. Check yourself
+
+**Q1.** Which traversal visits a BST in sorted order?
+
+<details><summary>Answer</summary>
+
+In-order (left, node, right).
+
+</details>
+
+**Q2.** What are the time and extra space of recursive tree DFS?
+
+<details><summary>Answer</summary>
+
+`O(n)` time and `O(h)` stack space, where `h` is the height (up to `n` for a skewed tree).
+
+</details>
+
+**Q3.** Why validate a BST with `(lo, hi)` bounds instead of comparing only to the parent?
+
+<details><summary>Answer</summary>
+
+A node must respect every ancestor's bound, not just its parent's.
+
+</details>
+
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** Breadth-first search appears in Konrad Zuse's 1945 PhD thesis (unpublished until 1972), was published by Edward F. Moore in 1959 (*The shortest path through a maze*) and independently by C. Y. Lee in 1961 for circuit routing. Depth-first search as a maze strategy goes back to Trémaux (19th century); Hopcroft and Tarjan (1973) and Tarjan (1972) showed how DFS yields linear-time graph algorithms.
 
@@ -68,17 +95,10 @@ An **organisation chart**: some questions are answered by asking each manager to
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -103,7 +123,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — DFS vs BFS Are Fundamentally Different Questions
+## 🧠 Deep Intuition — DFS vs BFS Are Fundamentally Different Questions
 
 Choosing between DFS and BFS isn't arbitrary — each algorithm answers a fundamentally different question:
 
@@ -111,11 +131,11 @@ Choosing between DFS and BFS isn't arbitrary — each algorithm answers a fundam
 
 - **BFS** asks: "What's at each level?" This naturally models problems about **level-order processing** (print levels, zigzag, right-side view), **shortest distance** (minimum depth, nearest leaf), and **connecting nodes at the same depth** (next pointers).
 
-#### Why Inorder Traversal of a BST Gives Sorted Output
+### Why Inorder Traversal of a BST Gives Sorted Output
 
 A BST has the invariant: `all left subtree values < root < all right subtree values`. Inorder traversal visits left → root → right. By induction: the left subtree's inorder is sorted (all values < root), then root (bigger than all left), then right subtree's inorder (all values > root). The concatenation is sorted. This is why BST validation can be done by checking if inorder traversal is strictly increasing.
 
-#### Space Complexity: DFS vs BFS — The Critical Trade-off
+### Space Complexity: DFS vs BFS — The Critical Trade-off
 
 - **DFS space = O(h)** where h = tree height. For a balanced tree, h = log n. For a skewed tree (like a linked list), h = n.
 - **BFS space = O(w)** where w = maximum width. For a complete binary tree, the last level has n/2 nodes, so BFS uses O(n/2) space.
@@ -340,17 +360,10 @@ COMMON MISTAKES:
 
 ---
 
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+## 📋 Practice Problems
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 | 1 | [Maximum Depth](https://leetcode.com/problems/maximum-depth-of-binary-tree/) | — | DFS: 1 + max(left, right) |
 | 2 | [Diameter of Binary Tree](https://leetcode.com/problems/diameter-of-binary-tree/) | — | DFS: track leftH + rightH at each node |
@@ -484,7 +497,6 @@ COMMON MISTAKES:
 | **Where it runs in production** | File-system walks, DOM traversal, expression-tree evaluation, org-chart roll-ups |
 | **Failure modes** | Stack overflow on deep trees; mixing up traversal order; ignoring null children |
 | **Testing and verification** | Build random trees; compare recursive and iterative results; test skewed and single-node trees |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

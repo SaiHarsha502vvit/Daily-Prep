@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](03b_Recursion_Fundamentals.md)
+> **Navigation**: [← Divide and Conquer](02c_Divide_And_Conquer.md) | [Chapter index](00_INDEX.md) | [Recursion Fundamentals →](03b_Recursion_Fundamentals.md)
 🧠 **Mental Model**: See [Recursion Tree Thinking](../14_Mental_Models/01_Recursion_Tree_Thinking.md) — call stack visualization and trust-the-recursion framework
 
 ---
@@ -62,6 +62,25 @@ A **stack of sticky notes** where each pending task is written on a new note; yo
 >
 > **HOW:** By tracing the physical call stack, visualizing frame pointers, and understanding tail-call optimization (TCO) and memoization.
 
+### 5. Check yourself
+
+**Q1.** What is the maximum call-stack depth of a naive `fib(n)`?
+
+<details><summary>Answer</summary>
+
+`n` (the left-most chain of calls), even though the total number of calls is exponential.
+
+</details>
+
+**Q2.** What happens if the base case is unreachable?
+
+<details><summary>Answer</summary>
+
+Calls never stop and the JVM throws `StackOverflowError`.
+
+</details>
+
+
 ## Understanding Recursion from Brain's Perspective
 
 ---
@@ -76,22 +95,7 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 
 </details>
 
-**Challenge 2 (Bug Hunt):**
-
-```java
-void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
-fib(50) // takes forever
-```
-
-Why and what are the 3 fixes?
-
-<details><summary>Answer</summary>
-
-Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-
-</details>
-
-# 🔬 PART 0: Deep Internals — How Recursion Actually Works at CPU/Memory Level
+## 🔬 PART 0: Deep Internals — How Recursion Actually Works at CPU/Memory Level
 
 **🎯 Chapter Goal:** Understand what _physically_ happens when you call a recursive function.
 
@@ -103,7 +107,7 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 - Why stack overflow happens
 - Performance implications
 
-## 📦 The Call Stack — Physical Memory View
+### 📦 The Call Stack — Physical Memory View
 
 Every recursive call creates a new **stack frame** in memory. Consider this simple recursive function:
 
@@ -173,19 +177,9 @@ HIGH ADDRESSES
 
 💡 **Key Insight:** Total stack size for `sum(4)` = 5 frames × ~32 bytes = **~160 bytes**
 
-🔬 **Section Challenge — 📦 The Call Stack — Physical Memory View**
+### ⚙️ CPU Instructions for Each Recursive Call
 
-**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-
-<details><summary>Answer</summary>
-
-In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-
-</details>
-
-## ⚙️ CPU Instructions for Each Recursive Call
-
-### Java Bytecode for `sum(n)`
+#### Java Bytecode for `sum(n)`
 
 ```
 0: iload_1        // Load n onto operand stack
@@ -201,7 +195,7 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 14: ireturn       // Return sum
 ```
 
-### JIT-Compiled x86-64 Assembly (simplified)
+#### JIT-Compiled x86-64 Assembly (simplified)
 
 ```asm
 sum:
@@ -231,7 +225,7 @@ sum:
     ret                          ; Return to caller
 ```
 
-### CPU Cycles per Recursive Call
+#### CPU Cycles per Recursive Call
 
 | Operation           | Cycles     | Notes                     |
 | ------------------- | ---------- | ------------------------- |
@@ -248,16 +242,16 @@ sum:
 ⚠️ **Performance Impact:** For `sum(1000)` → **~20,000–40,000 cycles** just in call overhead!
 Compare with iterative: **~3,000 cycles** (mostly loop overhead + adds)
 
-## 💥 Stack Overflow — Why It Happens
+### 💥 Stack Overflow — Why It Happens
 
-### Java Stack Sizes
+#### Java Stack Sizes
 
 | Setting              | Value                             |
 | -------------------- | --------------------------------- |
 | Default thread stack | ~512 KB – 1 MB (varies by JVM/OS) |
 | Configure via        | `java -Xss2m` (set to 2 MB)       |
 
-### Maximum Recursion Depth
+#### Maximum Recursion Depth
 
 - Frame size ≈ **32–64 bytes** (depends on locals, parameters)
 - Stack size = **1 MB** = 1,000,000 bytes
@@ -293,7 +287,7 @@ Here's what it looks like when the stack is about to overflow:
 
 🚨 **When SP crosses into the guard page → `StackOverflowError` is thrown**
 
-### Solutions to Stack Overflow
+#### Solutions to Stack Overflow
 
 | #   | Solution                                | Notes                                     |
 | --- | --------------------------------------- | ----------------------------------------- |
@@ -302,19 +296,9 @@ Here's what it looks like when the stack is about to overflow:
 | 3   | **Use tail recursion**                  | If language supports it — _Java does NOT_ |
 | 4   | **Trampoline pattern**                  | Manual tail call optimization             |
 
-🔬 **Section Challenge — 💥 Stack Overflow — Why It Happens**
+### 🔄 Converting Recursion to Iteration
 
-**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-
-<details><summary>Answer</summary>
-
-In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-
-</details>
-
-## 🔄 Converting Recursion to Iteration
-
-### Pattern 1: Simple Accumulation (Tail-like)
+#### Pattern 1: Simple Accumulation (Tail-like)
 
 ```java
 // Recursive
@@ -333,7 +317,7 @@ int sumIterative(int n) {
 }
 ```
 
-### Pattern 2: Tree Traversal (Need Explicit Stack)
+#### Pattern 2: Tree Traversal (Need Explicit Stack)
 
 ```java
 // Recursive inorder
@@ -364,7 +348,7 @@ void inorderIterative(TreeNode root) {
 }
 ```
 
-### Pattern 3: Backtracking (Need to Track State)
+#### Pattern 3: Backtracking (Need to Track State)
 
 ```java
 // Recursive permutations
@@ -387,28 +371,9 @@ void permute(int[] nums, List<Integer> curr, boolean[] used) {
 
 💡 **Note:** For backtracking problems, recursion is generally **cleaner** than iterative. Iterative permutations require manually tracking: current permutation, next index to try, and used set.
 
-🔬 **Section Challenge — 🔄 Converting Recursion to Iteration**
+### 🚀 Tail Recursion — The Optimization That Java Doesn't Have
 
-**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-
-**Challenge 2 (Bug Hunt):**
-
-```java
-void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
-fib(50) // takes forever
-```
-
-Why and what are the 3 fixes?
-
-<details><summary>Answer</summary>
-
-Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-
-</details>
-
-## 🚀 Tail Recursion — The Optimization That Java Doesn't Have
-
-### What Is Tail Recursion?
+#### What Is Tail Recursion?
 
 A recursive call is in **"tail position"** if it's the **LAST thing** the function does before returning. No work happens after the recursive call returns.
 
@@ -426,7 +391,7 @@ int sumTail(int n, int acc) {
 }
 ```
 
-### Why TCO Matters
+#### Why TCO Matters
 
 With TCO, the compiler can **reuse the same stack frame**:
 
@@ -444,14 +409,14 @@ sumTail(0, 10):    return 10
 
 ✅ **CONSTANT STACK SPACE!** No stack overflow possible!
 
-### Why Java Does NOT Support TCO
+#### Why Java Does NOT Support TCO
 
 1. JVM security model relies on stack frames for access checks
 2. Profiling and debugging need complete stack traces
 3. Exception handling expects proper stack unwinding
 4. Not a priority for JVM development
 
-### Workaround: Trampoline Pattern
+#### Workaround: Trampoline Pattern
 
 ```java
 // Trampoline - manual TCO in Java
@@ -498,28 +463,9 @@ int result = sumTrampoline(100000, 0).get();  // No stack overflow!
 | **Kotlin**          | With `tailrec` modifier               |
 | **JavaScript**      | ES6 spec, but limited browser support |
 
-🔬 **Section Challenge — 🚀 Tail Recursion — The Optimization That Java Doesn't Have**
+### 🧠 Memoization — Caching Recursive Results
 
-**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-
-**Challenge 2 (Bug Hunt):**
-
-```java
-void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
-fib(50) // takes forever
-```
-
-Why and what are the 3 fixes?
-
-<details><summary>Answer</summary>
-
-Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-
-</details>
-
-## 🧠 Memoization — Caching Recursive Results
-
-### The Problem: Recursive Fibonacci
+#### The Problem: Recursive Fibonacci
 
 ```java
 int fib(int n) {
@@ -556,7 +502,7 @@ The call tree for `fib(5)` shows **massive redundancy**:
 - `fib(40)` takes ~1 second
 - `fib(50)` takes ~2 minutes
 
-### The Solution: Memoization
+#### The Solution: Memoization
 
 ```java
 int[] memo = new int[n + 1];
@@ -587,7 +533,7 @@ fib(1)  fib(0)
 ✅ Each `fib(k)` computed exactly **ONCE!**
 **Time: O(n)** · **Space: O(n)**
 
-### Memory Layout with Memoization
+#### Memory Layout with Memoization
 
 ```
 HEAP:
@@ -620,7 +566,7 @@ STACK (much shorter!):
 
 ---
 
-## Proof Corner — Recursion Termination and Correctness
+### Proof Corner — Recursion Termination and Correctness
 
 **Termination via well-ordering**: A recursive algorithm terminates if there exists a *well-ordered measure* (a non-negative integer or lexicographic pair) that strictly decreases at every recursive call.
 
@@ -648,7 +594,7 @@ At the start of each call `dfs(node)`, the set `visited` contains exactly the no
 
 ---
 
-## When It Breaks — Recursion Internals
+### When It Breaks — Recursion Internals
 
 **1. Missing or unreachable base case** — the most common bug. `fib(n)` without a `n <= 1` check calls `fib(-1)`, `fib(-2)`, ... infinitely. Symptom: StackOverflowError with a very long repeated stack trace.
 
@@ -662,7 +608,7 @@ At the start of each call `dfs(node)`, the set `visited` contains exactly the no
 
 ---
 
-## Reference Anchor
+### Reference Anchor
 
 **JDK — recursion and the JVM call stack**:
 ```java
@@ -695,7 +641,7 @@ long fib(int n) {
 
 ---
 
-## Brute Force to Optimal
+### Brute Force to Optimal
 
 | Problem | Brute Force | Time | Optimal (Memoized) | Time |
 |---------|-------------|------|--------------------|------|
@@ -720,7 +666,6 @@ long fib(int n) {
 | **Where it runs in production** | Parsers, tree/file-system walkers, expression evaluators; production incidents from deep recursion on adversarial input |
 | **Failure modes** | Unbounded recursion depth on user-controlled data; hidden recursion in serializers; no depth guard |
 | **Testing and verification** | Test with depth 10⁵ inputs; set explicit depth limits; run with a small `-Xss` in tests |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

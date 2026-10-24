@@ -1,4 +1,6 @@
-**Navigation**: [< Previous](18_Bitwise_Trie_Java_Complete.md) | [Back to Index](00_INDEX.md) | [Next >](20_DSA_Patterns_PDF_Java_Coverage_Map.md)
+# Prefix Sum Prefix XOR 2D Prefix Java Complete
+
+> **Navigation**: [← Monotonic Stack & Queue](15_Monotonic_Stack_Queue_Complete.md) | [Chapter index](00_INDEX.md) | [Bit Manipulation →](10_Bit_Manipulation_Complete.md)
 
 ---
 
@@ -67,7 +69,7 @@ for (int i = 1; i <= m; i++)
 ```
 
 
-# Chapter 19 - Prefix Sum, Prefix XOR, and 2D Prefix Java Complete Guide
+## Chapter 19 - Prefix Sum, Prefix XOR, and 2D Prefix Java Complete Guide
 
 Purpose: Build one unified Java playbook for all prefix-family interview problems: 1D sum, XOR, modular prefix, 2D matrix prefix, and difference arrays.
 
@@ -121,6 +123,25 @@ A **running odometer**: distance between two points is the difference of two odo
 
 Prefix sum as a systematic technique predates computers — the method of **differences**, developed by **Brook Taylor in 1715** in his work on finite differences, established the mathematical foundation: if you know consecutive differences, you can reconstruct the original sequence by accumulation, and compute range sums as the difference of two accumulated values. In computer science, **prefix computation** was formalized as a fundamental parallel primitive by **Kogge and Stone (1973)** in their paper on parallel prefix (scan) algorithms, proving that prefix sums across $n$ elements could be computed in $O(\log n)$ time on $n$ processors. **Blelloch's 1990 report "Prefix sums and their applications"** established the scan as a core primitive of parallel algorithms, with uses in sorting, lexical analysis and polynomial evaluation. The **2D prefix sum** technique (integral image in computer vision) was introduced as the *summed-area table* by **Crow (1984)** and popularised as the "integral image" by **Viola and Jones (2001)** in their face-detection paper — a 2D prefix sum enabling $O(1)$ rectangular sum queries, widely used in computer vision. Modern practice (post-2010): prefix sums are in every database query engine (GROUP BY optimization), image processing (integral images in OpenCV, Photoshop), competitive programming (subarray sum problems), and signal processing.
 
+
+### 5. Check yourself
+
+**Q1.** 2D prefix sums: how do you get the sum of rectangle `(r1,c1)–(r2,c2)`?
+
+<details><summary>Answer</summary>
+
+`P[r2+1][c2+1] − P[r1][c2+1] − P[r2+1][c1] + P[r1][c1]` (inclusion–exclusion).
+
+</details>
+
+**Q2.** What makes prefix XOR work like prefix sums?
+
+<details><summary>Answer</summary>
+
+XOR is its own inverse, so `xor(l..r) = P[r+1] ^ P[l]`.
+
+</details>
+
 ---
 
 ## 1. Prefix Family - One Core Idea
@@ -143,16 +164,6 @@ For XOR:
 - `rangeXor(l, r) = px[r + 1] ^ px[l]`
 
 ---
-
-🔬 **Section Challenge — 1. Prefix Family - One Core Idea**
-
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
 
 ## 2. 1D Prefix Sum (Java)
 
@@ -288,14 +299,6 @@ public static int rangeXor(int[] px, int l, int r) {
 <details><summary>Answer</summary>
 
 Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-
-<details><summary>Answer</summary>
-
-Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
 
 </details>
 
@@ -660,7 +663,6 @@ Select **prefix sum + two-pointer** when array is non-negative and you need slid
 | **Where it runs in production** | Analytics dashboards, image processing (integral images), game maps, financial running totals |
 | **Failure modes** | Off-by-one with the leading zero; overflow in large sums; mutating the base array after building |
 | **Testing and verification** | Randomised comparison with direct summation |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

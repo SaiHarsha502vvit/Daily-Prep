@@ -1,8 +1,8 @@
 # 🧩 Array + Sliding Window — Pattern Guide
 
-**Navigation**: [< Previous](08_Array_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_HashMap_Plus_Counting.md)
+> **Navigation**: [← Array + Two Pointers](08_Array_Plus_TwoPointers.md) | [Chapter index](00_INDEX.md) | [HashMap + Counting →](10_HashMap_Plus_Counting.md)
 
-# Array + Sliding Window — Combined Pattern Guide
+## Array + Sliding Window — Combined Pattern Guide
 
 ### 🧠 Deep Intuition — Why Sliding Window Is O(n)
 
@@ -47,9 +47,36 @@ A **zoom lens**: wide when you need to see enough, narrow when you want the tigh
 > [!NOTE]
 > **Quick check:** Why does `right − left + 1` count windows ending at `right`? *Every start from `left` to `right` yields a valid window.*
 
+
+### 5. Check yourself
+
+**Q1.** Count subarrays with sum < 7 in `[2,3,1,2,4]`.
+
+<details><summary>Answer</summary>
+
+**11**. Window method: for each `right`, shrink `left` until sum < 7 and add `right − left + 1`: 1, 2, 3, 3, 2 → total 11.
+
+</details>
+
+**Q2.** Why does `right − left + 1` count the valid windows ending at `right`?
+
+<details><summary>Answer</summary>
+
+Every start from `left` to `right` gives a window inside a valid window, which is also valid.
+
+</details>
+
+**Q3.** When is a prefix sum better than a sliding window?
+
+<details><summary>Answer</summary>
+
+When values can be negative or the condition is not monotone as the window grows.
+
+</details>
+
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 *Shares its roots with [Sliding Window](01_Sliding_Window.md).*
 
@@ -69,17 +96,10 @@ A **zoom lens**: wide when you need to see enough, narrow when you want the tigh
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -95,7 +115,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 **WHY this combination?** When you need to find optimal **contiguous subarrays** or **substrings**, the sliding window maintains a running computation as it moves across the array. Reduces O(n²) brute force → O(n).
 
-### ⚠️ Constraint Lens
+## ⚠️ Constraint Lens
 
 | Given Constraints                             | Do This                                   |
 | --------------------------------------------- | ----------------------------------------- |
@@ -108,11 +128,11 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Why Sliding Window Is O(n)
+## 🧠 Deep Intuition — Why Sliding Window Is O(n)
 
 The brute force for "best contiguous subarray" problems checks all O(n²) subarrays (each starting point × each ending point) and evaluates each one. Sliding window reduces this to O(n) by making a crucial observation: **you don't need to recompute the entire subarray when you shift by one position.**
 
-#### The Amortized Analysis — Why It's Truly O(n)
+### The Amortized Analysis — Why It's Truly O(n)
 
 Despite the nested `while (shrink)` loop inside the `for` loop, sliding window is NOT O(n²). Here's the rigorous argument:
 
@@ -122,7 +142,7 @@ Despite the nested `while (shrink)` loop inside the `for` loop, sliding window i
 
 Think of it this way: each element enters the window exactly once (when `right` reaches it) and leaves the window at most once (when `left` passes it). Total operations = 2n.
 
-#### Why Sliding Window FAILS With Negative Numbers
+### Why Sliding Window FAILS With Negative Numbers
 
 Sliding window for sum problems relies on a **monotonicity assumption**: expanding the window (moving `right`) always increases the sum, and shrinking (moving `left`) always decreases it. With negative numbers, adding an element might _decrease_ the sum, which breaks the invariant that "if the current window exceeds the target, we should shrink."
 
@@ -358,7 +378,10 @@ WHY fixed window? Size is given (k=3), so just slide it.
 
 ---
 
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+## 📋 Practice Problems
+
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 | #   | Problem                                                                                                 | Companies  | Key Insight                    |
 | --- | ------------------------------------------------------------------------------------------------------- | ---------- | ------------------------------ |
@@ -445,7 +468,6 @@ WHY fixed window? Size is given (k=3), so just slide it.
 | **Where it runs in production** | Latency percentiles over recent requests, sensor smoothing, text search with constraints |
 | **Failure modes** | Mixing update order (record before shrink vs after); using it with negative numbers |
 | **Testing and verification** | Brute-force counting on random inputs; verify for each of the four shapes |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -14,6 +14,8 @@ Teach data structures from memory model to operations, variants, Java collection
 - Bridge to Java implementation details when useful.
 - Catalog chapters may include a "🎓 University Proof Corner" near the top — a 1-3 page compression of 1-3 proofs from the `A*_DS` chapters, with MIT/KTH/RWTH/TUM attribution and a "Full proofs: [link]" footer. See `00_CONTEXT/DECISIONS.md` D015.
 
+- Chapters longer than ~800 lines are **hubs**: the chapter file keeps the bridge, study-partner explainer, at-a-glance diagram and Enterprise Lens and lists topic pages in a folder named after the chapter. Keep one H1 per page and regenerate previous/next links in reading order when pages are added.
+
 ## Boundaries
 
 - Algorithm patterns belong mostly in `03_Algorithms` and `04_Patterns_Templates`. Use this folder when the data structure itself is the main lesson.

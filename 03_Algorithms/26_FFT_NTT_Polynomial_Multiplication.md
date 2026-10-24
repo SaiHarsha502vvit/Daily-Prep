@@ -1,6 +1,6 @@
 # 🌊 FFT, NTT & Fast Polynomial Multiplication — Complete Guide
 
-> **Navigation**: [← Online, Approximation & LP](25_Online_Approximation_And_Linear_Programming.md) | [Back to Index](00_INDEX.md) | [Next: Combinatorics & Counting →](27_Combinatorics_Counting_Toolkit.md)
+> **Navigation**: [← Matrix Exponentiation & Linear…](23_Matrix_Exponentiation_And_Linear_Recurrences.md) | [Chapter index](00_INDEX.md) | [Combinatorics & Counting Toolkit… →](27_Combinatorics_Counting_Toolkit.md)
 
 ## 🔗 Bridge — Where This Chapter Fits
 

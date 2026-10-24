@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04b_DP_Fundamentals.md)
+> **Navigation**: [← Advanced Recursion Patterns](03c_Recursion_Advanced.md) | [Chapter index](00_INDEX.md) | [DP Fundamentals →](04b_DP_Fundamentals.md)
 🧠 **Mental Model**: See [DP State Thinking](../14_Mental_Models/02_DP_State_Thinking.md) — state definition, transitions, and tabulation strategy
 
 ---
@@ -62,28 +62,28 @@ Filling a **spreadsheet** row by row where each cell only looks at cells above/l
 >
 > **HOW:** By analyzing DP arrays in physical memory, observing branch prediction costs, and employing space optimization techniques like rolling arrays.
 
-## From Recursion to Optimal Solutions
+### 5. Check yourself
 
----
-
-🔬 **Section Challenge — From Recursion to Optimal Solutions**
-
-**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-
-**Challenge 2 (Bug Hunt):**
-
-```java
-void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
-fib(50) // takes forever
-```
-
-Why and what are the 3 fixes?
+**Q1.** What two properties make a problem suitable for DP?
 
 <details><summary>Answer</summary>
 
-Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+Optimal substructure and overlapping subproblems.
 
 </details>
+
+**Q2.** How does DP differ from plain divide and conquer?
+
+<details><summary>Answer</summary>
+
+Subproblems overlap in DP, so their answers are stored and reused; in divide and conquer they are independent.
+
+</details>
+
+
+## From Recursion to Optimal Solutions
+
+---
 
 ## How to Derive a DP From Scratch — The Part Nobody Teaches
 
@@ -154,11 +154,11 @@ In every row the win is the same move: throw away the *history of how you got he
 
 ---
 
-# 🔬 PART 0: DEEP INTERNALS - HOW DP ACTUALLY WORKS AT CPU/MEMORY LEVEL
+## 🔬 PART 0: DEEP INTERNALS - HOW DP ACTUALLY WORKS AT CPU/MEMORY LEVEL
 
 ### DYNAMIC PROGRAMMING AT THE HARDWARE LEVEL - THE COMPLETE PICTURE ╠══════════════════════════════════════════════════════════════════════════════════╣  Understanding what PHYSICALLY happens when you run a DP algorithm: • Memory layout of DP tables • Cache behavior differences between 1D, 2D, and rolling arrays • Why certain DP approaches are faster despite same Big-O • Memory allocation overhead • Branch prediction in DP transitions
 
-## DP TABLE MEMORY LAYOUT
+### DP TABLE MEMORY LAYOUT
 
 #### Dp table in physical memory
 
@@ -209,7 +209,7 @@ Total ≈ 20 + 8m + m × (20 + 4n) = 20 + 28m + 4mn bytes
 - Row access (dp[i][0] to dp[i][n-1]) → GOOD (contiguous in memory)
 - Column access (dp[0][j] to dp[m-1][j]) → BAD (jumps between arrays!)
 
-## CACHE BEHAVIOR IN DP - CRITICAL FOR PERFORMANCE
+### CACHE BEHAVIOR IN DP - CRITICAL FOR PERFORMANCE
 
 #### Dp iteration order and cache performance
 
@@ -273,7 +273,7 @@ BENCHMARK (LCS of two 1000-char strings):
 
 **Rule:** In Java, always iterate rows in outer loop, columns in inner loop!
 
-## SPACE OPTIMIZATION - ROLLING ARRAY TECHNIQUE
+### SPACE OPTIMIZATION - ROLLING ARRAY TECHNIQUE
 
 #### ROLLING ARRAY - FROM O(mn) TO O(n) SPACE
 
@@ -372,7 +372,7 @@ return dp[n];
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🖥️ Memoization vs Tabulation — CPU Perspective
+### 🖥️ Memoization vs Tabulation — CPU Perspective
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -442,7 +442,7 @@ return dp[n];
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🧠 State Representation — Memory Efficiency
+### 🧠 State Representation — Memory Efficiency
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -531,7 +531,7 @@ int decodeSpd(int state) { return state % 10; }
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 📌 DP Transition Cost Analysis
+### 📌 DP Transition Cost Analysis
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -592,7 +592,7 @@ for (int i = 2; i <= n; i++) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🧠 Memory Allocation Patterns
+### 🧠 Memory Allocation Patterns
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -665,15 +665,15 @@ int[] dp = new int[n + 1];
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🔍 Reconstructing the Solution (Traceback)
+### 🔍 Reconstructing the Solution (Traceback)
 
 In _The Algorithm Design Manual_, Skiena points out a common pitfall: Dynamic Programming natively computes the _value_ of the optimal solution (e.g., "The longest path is 15"), but often the interviewer actually wants the _path itself_ (e.g., "The items to pick are A, C, and F").
 
 To reconstruct the solution, you must walk backward through your DP table, tracing the sequence of optimal decisions.
 
-### Two Ways to Traceback
+#### Two Ways to Traceback
 
-#### 1. The "Parent Pointer" Array (Explicit Tracking)
+##### 1. The "Parent Pointer" Array (Explicit Tracking)
 
 Store the optimal decision at each step in a separate array/table.
 
@@ -702,7 +702,7 @@ while (curr != -1) {
 Collections.reverse(path);
 ```
 
-#### 2. Re-evaluating the Recurrence (Implicit Tracking - Preferred)
+##### 2. Re-evaluating the Recurrence (Implicit Tracking - Preferred)
 
 You don't need a `parent` array! The DP table already contains all the information needed to deduce _which_ choice was optimal. You just check which subproblem + transition equals the current cell's value.
 
@@ -735,7 +735,7 @@ while (i > 0 && w > 0) {
 
 ---
 
-## 📎 Reference Anchor
+### 📎 Reference Anchor
 
 **Apache Commons Text `LevenshteinDistance` — production DP**
 - `LevenshteinDistance`: [LevenshteinDistance.java](https://github.com/apache/commons-text/blob/master/src/main/java/org/apache/commons/text/similarity/LevenshteinDistance.java) — bottom-up 2-row DP (space-optimized from O(m×n) to O(min(m,n))). **Invariant**: `dp[j]` = edit distance between first `i` chars of s1 and first `j` chars of s2. Rolling array: only current row and previous row needed.
@@ -745,25 +745,25 @@ while (i > 0 && w > 0) {
 
 ---
 
-## When DP Internals Break
+### When DP Internals Break
 
-### 1. Traceback on Rolled Array — Lost Data
+#### 1. Traceback on Rolled Array — Lost Data
 **What breaks**: Using a 1D rolling array for space optimization but then trying to traceback the solution. The previous rows are overwritten and the path cannot be reconstructed.
 **Fix**: If solution reconstruction is needed, keep the full 2D table (or store a separate `choice[i][j]` matrix). Only use rolling array if you only need the optimal VALUE, not the path.
 
-### 2. Integer Overflow in DP Value Accumulation
+#### 2. Integer Overflow in DP Value Accumulation
 **What breaks**: Counting paths in a grid: `dp[i][j] = dp[i-1][j] + dp[i][j-1]`. For a 20×20 grid, dp[20][20] can exceed `Integer.MAX_VALUE`. Silent overflow produces negative values.
 **Fix**: Use `long[][]` for counting problems. Or take values mod 10⁹+7 if only the modular count is needed (common in competitive programming).
 
-### 3. Using HashMap for Memoization with Arrays as Keys
+#### 3. Using HashMap for Memoization with Arrays as Keys
 **What breaks**: `HashMap<int[], Integer> memo` uses reference equality for `int[]` keys. Two arrays `{1,2,3}` and `{1,2,3}` (different objects, same values) are different keys. The cache is never hit.
 **Fix**: Convert array state to a canonical String key: `Arrays.toString(state)`. Or encode to a single int if bounds allow.
 
 ---
 
-## Brute Force → Optimal: DP Warm-Up
+### Brute Force → Optimal: DP Warm-Up
 
-### Problem: Longest Increasing Subsequence (LIS)
+#### Problem: Longest Increasing Subsequence (LIS)
 
 **Brute Force — O(2ⁿ) all subsequences:**
 Generate all 2ⁿ subsequences, check each for being increasing, track max length.
@@ -784,7 +784,7 @@ Maintain a `tails[]` array where `tails[k]` = smallest tail element of all IS of
 
 ---
 
-## Proof Corner -- Optimal Substructure for LCS
+### Proof Corner -- Optimal Substructure for LCS
 
 **Claim**: Let LCS(i,j) = length of the longest common subsequence of A[0..i-1] and B[0..j-1].
 
@@ -804,7 +804,7 @@ Case 2: A[i-1] != B[j-1]. The optimal LCS either excludes A[i-1] (giving LCS(i-1
 
 ---
 
-## When It Breaks -- DP Internals
+### When It Breaks -- DP Internals
 
 **1. Backward vs forward loop for 0/1 Knapsack** -- the most common DP bug. 1D rolling array needs `w` from W down to weight[i]. Scanning forward re-uses item i in the same pass (accidentally solving unbounded knapsack). Debug: add item with weight=2, value=10, capacity=6. 0/1 answer=10; unbounded answer=30.
 
@@ -826,7 +826,6 @@ Case 2: A[i-1] != B[j-1]. The optimal LCS either excludes A[i-1] (giving LCS(i-1
 | **Where it runs in production** | Sequence alignment (bioinformatics), diff tools, spell checkers, route planning |
 | **Failure modes** | Out-of-memory from full tables; incorrect rolling-array overwrite order; integer overflow in counts |
 | **Testing and verification** | Compare space-optimised and full-table versions on random inputs |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

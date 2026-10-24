@@ -1,6 +1,6 @@
 # A2. Complexity Analysis from First Principles
 
-**Navigation**: [← A1: Correctness Proofs](A1_Correctness_Proofs.md) | [📚 Index](00_INDEX.md) | [A3: Lower Bounds & NP →](A3_Lower_Bounds_And_NP.md)
+> **Navigation**: [← A1. Algorithm Correctness…](A1_Correctness_Proofs.md) | [Chapter index](00_INDEX.md) | [A3. Lower Bounds and… →](A3_Lower_Bounds_And_NP.md)
 
 > **MIT 6.006 L2–L4 / RWTH Aachen Algo I / TU Munich IN0007 foundation**
 >
@@ -48,6 +48,25 @@ A **taxi meter**: the fare grows with distance (input size), and the meter formu
 
 > [!NOTE]
 > **Quick check:** Solve `T(n) = T(n/2) + 1`. *Θ(log n): binary search.*
+
+
+### 5. Check yourself
+
+**Q1.** Solve `T(n) = 2T(n/2) + n`.
+
+<details><summary>Answer</summary>
+
+`Θ(n log n)` (Master theorem, case 2): `log n` levels, each doing `n` work.
+
+</details>
+
+**Q2.** A dynamic array doubles when full. What is the amortised cost of an append?
+
+<details><summary>Answer</summary>
+
+`O(1)`: the total copying over `n` appends is below `2n`.
+
+</details>
 
 ---
 
@@ -769,7 +788,6 @@ int idx = Arrays.binarySearch(sortedArr, key);
 | **Where it runs in production** | Capacity planning, SLO budgeting, choosing between O(n log n) and O(n²) paths for a data pipeline |
 | **Failure modes** | Ignoring constants and cache effects; quoting amortized bounds for latency-critical paths; forgetting space (recursion depth) |
 | **Testing and verification** | Empirical complexity check: time at n, 2n, 4n, 8n and confirm the growth ratio |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

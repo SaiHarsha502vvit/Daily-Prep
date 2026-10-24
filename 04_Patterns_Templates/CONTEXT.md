@@ -16,6 +16,8 @@ Own reusable coding patterns, templates, trigger maps, and constraint-based sele
 - Keep templates practical and language-friendly.
 - When linking open-source implementations, extract the invariant and translate it to the local pattern; do not paste large source code.
 
+- Chapters longer than ~800 lines are **hubs** with topic pages in a folder named after the chapter. Shared procedures (for example the pattern mis-selection debug workflow) live once in the Master Guide and are linked, not copied. Company tags in practice tables are community-reported and unverified.
+
 ## Boundaries
 
 Full theory chapters belong in `03_Algorithms` or `02_Data_Structures`. This folder should help choose and apply patterns quickly.

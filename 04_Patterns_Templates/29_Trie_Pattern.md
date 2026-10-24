@@ -1,6 +1,6 @@
 # 🧩 Trie (Prefix Tree) — Pattern Guide
 
-**Navigation**: [< Previous](28_Topological_Sort_Pattern.md) | [Back to Index](00_INDEX.md) | [Next >](30_Shortest_Path_Pattern.md)
+> **Navigation**: [← Topological Sort](28_Topological_Sort_Pattern.md) | [Chapter index](00_INDEX.md) | [Shortest Paths (BFS, 0-1 BFS… →](30_Shortest_Path_Pattern.md)
 
 **Pattern 29** | [Prev](28_Topological_Sort_Pattern.md) | [Index](00_INDEX.md)
 
@@ -48,6 +48,33 @@ A **dictionary's thumb index**: first letter, then second letter, narrowing down
 > [!NOTE]
 > **Quick check:** Why can a trie answer prefix queries faster than a hash set? *It follows only `L` links; a hash set stores whole words and cannot enumerate by prefix.*
 
+
+### 5. Check yourself
+
+**Q1.** Insert `car` and `cat`. How many trie nodes exist (excluding the root)?
+
+<details><summary>Answer</summary>
+
+**4**: `c`, `a`, `r`, `t`.
+
+</details>
+
+**Q2.** What is the difference between `contains` and `startsWith`?
+
+<details><summary>Answer</summary>
+
+`contains` also requires the end-of-word flag; `startsWith` only requires that the path exists.
+
+</details>
+
+**Q3.** What dominates memory in a trie with 26-slot children?
+
+<details><summary>Answer</summary>
+
+The child arrays: each node holds 26 references even when most are empty.
+
+</details>
+
 ---
 
 ## ⚡ At a Glance
@@ -79,7 +106,7 @@ flowchart TD
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** René de la Briandais described the structure in 1959 and Edward Fredkin coined the name *trie* (from re*trie*val) in 1960. Donald Morrison's PATRICIA tree (1968) compressed single-child chains; radix trees later became the basis of IP routing tables. Aho and Corasick (1975) added failure links for multi-pattern matching.
 
@@ -168,7 +195,6 @@ Build a trie of the dictionary, then DFS from each cell while walking the trie. 
 | **Where it runs in production** | Autocomplete and spell-check, IP routing (longest-prefix match with radix tries), dictionary word games, URL routers, T9 predictors |
 | **Failure modes** | Memory blow-up with 26-slot arrays for sparse data; forgetting the end flag so prefixes are mistaken for words; case/Unicode assumptions |
 | **Testing and verification** | Compare `contains`, `startsWith` and `countWithPrefix` with brute-force string operations on 500 random word sets over a small alphabet |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

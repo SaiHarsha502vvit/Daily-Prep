@@ -146,7 +146,6 @@ All snippets compile, and the checks run for this page were: substitution holds 
 | **Where it runs in production** | Business-rule engines, pricing and tax calculators, validation, report generation, anything that must be unit-tested without mocks |
 | **Failure modes** | Hidden effects (logging, clock, random, static caches) inside "pure" code; memoising a function that reads mutable state; exceptions used for control flow |
 | **Testing and verification** | Test pure functions with plain inputs/outputs (no mocks); property-test that calling twice gives equal results; run in parallel to expose hidden shared state |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

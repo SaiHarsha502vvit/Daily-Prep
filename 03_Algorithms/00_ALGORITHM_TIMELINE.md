@@ -8,13 +8,13 @@ This file answers: "When was this invented, by whom, and what problem forced it 
 
 ## Table of Contents
 
-1. [Pre-Computer Era (1700s–1930s)](#1-pre-computer-era)
-2. [Birth of Algorithms (1940s–1950s)](#2-birth-of-algorithms)
-3. [The Classical Era (1960s)](#3-the-classical-era)
-4. [Golden Age (1970s)](#4-golden-age)
-5. [Consolidation (1980s)](#5-consolidation)
-6. [The Internet Era (1990s–2000s)](#6-the-internet-era)
-7. [Modern Era (2010s–present)](#7-modern-era)
+1. [Pre-Computer Era (1700s–1930s)](#1-pre-computer-era-1700s1930s)
+2. [Birth of Algorithms (1940s–1950s)](#2-birth-of-algorithms-1940s1950s)
+3. [The Classical Era (1960s)](#3-the-classical-era-1960s)
+4. [Golden Age (1970s)](#4-golden-age-1970s)
+5. [Consolidation (1980s)](#5-consolidation-1980s)
+6. [The Internet Era (1990s–2000s)](#6-the-internet-era-1990s2000s)
+7. [Modern Era (2010s–present)](#7-modern-era-2010spresent)
 8. [Quick Reference by Algorithm](#8-quick-reference-by-algorithm)
 
 ---

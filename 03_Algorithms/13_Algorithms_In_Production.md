@@ -1,4 +1,4 @@
-> **Navigation**: [← Greedy/BitManip](06a_Greedy_BitManip.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [← Advanced Algorithms: Complete…](06a_Greedy_BitManip.md) | [Chapter index](00_INDEX.md) | [21. Algorithm War Stories — How… →](21_Algorithm_War_Stories.md)
 
 # 🌍 Algorithms in the Real World — Where They Run Today
 
@@ -357,7 +357,6 @@ public class AlgorithmBenchmark {
 | **Where it runs in production** | Everywhere: maps, feeds, payments, messaging, search, storage |
 | **Failure modes** | Choosing an average-case algorithm for a p99 requirement; no fallback for pathological input |
 | **Testing and verification** | Load tests with adversarial data; regression benchmarks in CI |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

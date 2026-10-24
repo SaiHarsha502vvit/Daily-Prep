@@ -1,3 +1,7 @@
+# DSA Java Implementation Mastery
+
+> **Navigation**: [← DSA Deep Reasoning](16_DSA_Deep_Reasoning.md) | [Chapter index](00_INDEX.md) | [Complete Pattern Programs - From… →](09_Pattern_Programs_Complete.md)
+
 ﻿
 
 ---
@@ -72,7 +76,7 @@ Use induction: if holds for n iterations and is established at start, holds for 
 | Range min/max | Scan range each query | O(n) per query | Sparse table (static) or SegTree | O(1) or O(log n) |
 **Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](00_INDEX.md) | [Next >](18_Bitwise_Trie_Java_Complete.md)
 
-# Chapter 17 — DSA Java Implementation Mastery: The Language-Specific Reasoning
+## Chapter 17 — DSA Java Implementation Mastery: The Language-Specific Reasoning
 
 **"Knowing an algorithm is one thing. Implementing it in Java with the right collections, the right Comparator, the right edge-case handling — that's what separates the whiteboard from the real solution. This chapter fills the gap between algorithm theory and Java implementation."**
 
@@ -124,16 +128,16 @@ Knowing the **quirks of a tool** so you do not cut yourself while using it corre
 
 ## Table of Contents
 
-1. [Java Collections for DSA: Which Structure for Which Problem](#1-collections-for-dsa)
-2. [PriorityQueue Deep Reasoning: The Gotchas That Bite](#2-priorityqueue-gotchas)
-3. [TreeMap & TreeSet: Your BST in Disguise](#3-treemap-treeset)
-4. [Comparator Mastery: Sorting Logic That Doesn't Break](#4-comparator-mastery)
-5. [Arrays.sort vs Collections.sort: Internal Differences That Matter](#5-sort-internals)
-6. [HashMap for DSA: Beyond Key-Value](#6-hashmap-for-dsa)
-7. [Stack, Queue, Deque: The Java Way](#7-stack-queue-deque)
-8. [String Manipulation for DSA: StringBuilder Reasoning](#8-string-manipulation)
-9. [Bit Manipulation with Java Specifics](#9-bit-manipulation)
-10. [Common Java DSA Anti-Patterns & Fixes](#10-anti-patterns)
+1. Java Collections for DSA: Which Structure for Which Problem
+2. [PriorityQueue Deep Reasoning: The Gotchas That Bite](#2-priorityqueue-deep-reasoning-the-gotchas-that-bite)
+3. [TreeMap & TreeSet: Your BST in Disguise](#3-treemap--treeset-your-bst-in-disguise)
+4. [Comparator Mastery: Sorting Logic That Doesn't Break](#4-comparator-mastery-sorting-logic-that-doesnt-break)
+5. Arrays.sort vs Collections.sort: Internal Differences That Matter
+6. [HashMap for DSA: Beyond Key-Value](#6-hashmap-for-dsa-beyond-key-value)
+7. [Stack, Queue, Deque: The Java Way](#7-stack-queue-deque-the-java-way)
+8. [String Manipulation for DSA: StringBuilder Reasoning](#8-string-manipulation-for-dsa-stringbuilder-reasoning)
+9. [Bit Manipulation with Java Specifics](#9-bit-manipulation-with-java-specifics)
+10. [Common Java DSA Anti-Patterns & Fixes](#10-common-java-dsa-anti-patterns--fixes)
 
 ---
 
@@ -600,24 +604,6 @@ public int subarraySum(int[] nums, int k) {
 
 ---
 
-🔬 **Section Challenge — 6. HashMap for DSA: Beyond Key-Value**
-
-**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-
-<details><summary>Answer</summary>
-
-Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-
-<details><summary>Answer</summary>
-
-Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-
-</details>
-
 ## 7. Stack, Queue, Deque: The Java Way
 
 ### Deep Reasoning
@@ -713,16 +699,6 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 ```
 
 ---
-
-🔬 **Section Challenge — 7. Stack, Queue, Deque: The Java Way**
-
-**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-
-<details><summary>Answer</summary>
-
-In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-
-</details>
 
 ## 8. String Manipulation for DSA: StringBuilder Reasoning
 
@@ -941,7 +917,6 @@ Map<String, Integer> map = new HashMap<>(capacity, 0.75f);  // Avoid rehashing
 | **Where it runs in production** | Any JVM codebase: services, data pipelines, Android |
 | **Failure modes** | Overflow, autoboxing in hot loops, mutable keys in hash maps, comparator contract violations |
 | **Testing and verification** | Test extreme values (`Integer.MIN_VALUE`, `MAX_VALUE`) and run with assertions enabled |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

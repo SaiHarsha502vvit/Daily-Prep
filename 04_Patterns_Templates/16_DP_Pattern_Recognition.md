@@ -1,8 +1,8 @@
 # 🧩 DP Pattern Recognition — Pattern Guide
 
-**Navigation**: [< Previous](15_Heap_Plus_GreedySelection.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Backtracking_Plus_Pruning.md)
+> **Navigation**: [← Heap + Greedy Selection](15_Heap_Plus_GreedySelection.md) | [Chapter index](00_INDEX.md) | [Backtracking + Pruning →](17_Backtracking_Plus_Pruning.md)
 
-# DP Pattern Recognition — Combined Pattern Guide
+## DP Pattern Recognition — Combined Pattern Guide
 
 **WHY this matters?** DP problems look overwhelming because there are hundreds of them. But they ALL fall into ~8 pattern families. Recognize the family → apply the template → solve.
 
@@ -49,9 +49,36 @@ A **spreadsheet**: each cell is computed once from cells you already filled.
 > [!NOTE]
 > **Quick check:** What is the single most important sentence in a DP solution? *The definition of the state.*
 
+
+### 5. Check yourself
+
+**Q1.** House Robber on `[2,7,9,3,1]`?
+
+<details><summary>Answer</summary>
+
+**12** (rob 2, 9, 1). `dp = [2, 7, 11, 11, 12]`.
+
+</details>
+
+**Q2.** What is the single most important sentence in a DP solution?
+
+<details><summary>Answer</summary>
+
+The definition of the state, e.g. `dp[i][j]` = length of the LCS of the first `i` and `j` characters.
+
+</details>
+
+**Q3.** Memoised Fibonacci: time and space?
+
+<details><summary>Answer</summary>
+
+`O(n)` time and `O(n)` space (or `O(1)` space with two variables).
+
+</details>
+
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** Richard Bellman developed dynamic programming at RAND in the early 1950s (his book *Dynamic Programming* appeared in 1957). Later landmark applications: Viterbi (1967, decoding convolutional codes, later central to hidden Markov models) and Needleman–Wunsch (1970, sequence alignment).
 
@@ -68,17 +95,10 @@ A **spreadsheet**: each cell is computed once from cells you already filled.
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -107,7 +127,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — What Makes a Problem DP?
+## 🧠 Deep Intuition — What Makes a Problem DP?
 
 Two conditions must BOTH be present for DP to be applicable:
 
@@ -117,7 +137,7 @@ Two conditions must BOTH be present for DP to be applicable:
 
 If a problem has optimal substructure but NO overlapping subproblems, use **greedy** or **divide-and-conquer** instead (e.g., merge sort has optimal substructure but each subarray is only solved once).
 
-#### The DP Thinking Framework — 4 Steps
+### The DP Thinking Framework — 4 Steps
 
 Every DP solution follows the same mental process:
 
@@ -126,7 +146,7 @@ Every DP solution follows the same mental process:
 3. **Identify base cases**: What are the trivially known values? `dp[0]`, `dp[1]`, or empty string/array cases.
 4. **Determine build order**: Fill dp table so that dependencies are computed first. This is why bottom-up fills left-to-right (linear DP) or row-by-row (grid DP).
 
-#### Top-Down vs Bottom-Up — When to Use Which
+### Top-Down vs Bottom-Up — When to Use Which
 
 - **Top-down (memoization)**: Write the natural recursive solution, add a cache. Easier to think about, only computes needed states. Use when the state space is large but sparsely visited.
 - **Bottom-up (tabulation)**: Fill the table iteratively. Slightly faster (no recursion overhead), easier to optimize space (rolling array). Use when all states are needed.
@@ -311,16 +331,6 @@ Time: O(m×n) | Space: O(m×n), optimizable to O(min(m,n))
 
 ---
 
-🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Longest Common Subsequence (Two-Sequence DP)**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
-
 ## 🔬 FULL WALKTHROUGH 3: 0/1 Knapsack (The Classic)
 
 ```
@@ -393,17 +403,10 @@ COMMON MISTAKES:
 
 ---
 
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+## 📋 Practice Problems
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 ### Easy
 
@@ -531,7 +534,6 @@ COMMON MISTAKES:
 | **Where it runs in production** | Resource allocation, text diffing, route planning, speech and sequence decoding |
 | **Failure modes** | Vague state definition; wrong iteration order; forgetting base cases |
 | **Testing and verification** | Always compare to the brute-force recursion on small inputs |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

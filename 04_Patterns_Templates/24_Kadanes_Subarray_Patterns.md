@@ -1,14 +1,14 @@
 # 🧩 Kadane and Subarray Patterns — Pattern Guide
 
-**Navigation**: [< Previous](23_Knapsack_Family.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](25_Constraint_Based_Pattern_Selection.md)
+> **Navigation**: [← Knapsack Family](23_Knapsack_Family.md) | [Chapter index](00_INDEX.md) | [Array + Two Pointers →](08_Array_Plus_TwoPointers.md)
 
-# Kadane's Algorithm & Subarray Patterns — Complete Guide
+## Kadane's Algorithm & Subarray Patterns — Complete Guide
 
 **WHY this pattern?** The family of "contiguous subarray optimization" problems is one of the most frequently tested categories in interviews. Kadane's Algorithm is the foundational O(N) technique that underpins all of them. Understanding **why** it works — not just how — separates 3+ YOE engineers from juniors.
 
 > 📖 **Cross-Reference Navigator:**
 >
-> - 🧠 **How to Think:** [Array & String Thinking — Part 4: Prefix/Kadane](../14_Mental_Models/04_Array_String_Thinking.md#part-4-prefix-sum--kadane) | [Optimization Pipeline — Kadane Example](../14_Mental_Models/14_Optimization_Pipeline.md#example-2-maximum-subarray-sum-lc-53) | [Greedy vs DP](../14_Mental_Models/11_Greedy_vs_DP_Decision.md)
+> - 🧠 **How to Think:** [Array & String Thinking — Part 4: Prefix/Kadane](../14_Mental_Models/04_Array_String_Thinking.md) | [Optimization Pipeline — Kadane Example](../14_Mental_Models/14_Optimization_Pipeline.md#example-2-maximum-subarray-sum-lc-53) | [Greedy vs DP](../14_Mental_Models/11_Greedy_vs_DP_Decision.md)
 > - 📐 **Related Patterns:** [Prefix Sum/XOR](../03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) | [Sliding Window](09_Array_Plus_SlidingWindow.md) | [DP Patterns](16_DP_Pattern_Recognition.md)
 > - 📚 **Theory:** [Arrays DS](../02_Data_Structures/01b_Arrays.md)
 
@@ -55,9 +55,36 @@ A **hiker deciding whether to keep following the trail** or restart from here, d
 > [!NOTE]
 > **Quick check:** What breaks if you initialise `best_here` to 0? *All-negative arrays wrongly return 0.*
 
+
+### 5. Check yourself
+
+**Q1.** Maximum subarray of `[-2,1,-3,4,-1,2,1,-5,4]`?
+
+<details><summary>Answer</summary>
+
+**6** (`[4,-1,2,1]`).
+
+</details>
+
+**Q2.** Result for the all-negative array `[-3,-1,-2]`?
+
+<details><summary>Answer</summary>
+
+**−1**, not 0, because the subarray must be non-empty; initialise from the first element.
+
+</details>
+
+**Q3.** Maximum product subarray of `[2,3,-2,4]`?
+
+<details><summary>Answer</summary>
+
+**6** (`[2,3]`); track both the maximum and minimum running product because a negative flips them.
+
+</details>
+
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** Ulf Grenander posed the maximum-subarray problem around 1977 (pattern analysis in digital images). Michael Shamos found an `O(n log n)` divide-and-conquer solution, and **Jay Kadane** (Carnegie Mellon) then described the linear-time scan; Jon Bentley recounts the story in his *Programming Pearls* column "Algorithm Design Techniques" (CACM, September 1984).
 
@@ -74,17 +101,10 @@ A **hiker deciding whether to keep following the trail** or restart from here, d
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -565,7 +585,6 @@ Subarray problem?
 | **Where it runs in production** | Profit/loss streaks, signal peaks, anomaly windows in time series |
 | **Failure modes** | Zero initialisation; overflow on large sums; forgetting circular edge cases |
 | **Testing and verification** | Brute-force `O(n²)` on random arrays including all-negative and single-element inputs |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

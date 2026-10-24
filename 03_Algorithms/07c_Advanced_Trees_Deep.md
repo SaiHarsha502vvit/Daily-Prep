@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](00_INDEX.md) | [Previous Chapter <](07b_Advanced_DS_Patterns.md) | [Next Chapter >](07d_Probabilistic_DS_Deep.md)
+> **Navigation**: [← Fenwick & Segment Trees…](07b_Advanced_DS_Patterns.md) | [Chapter index](00_INDEX.md) | [Probabilistic & Distributed Data… →](07d_Probabilistic_DS_Deep.md)
 
 ---
 
@@ -49,10 +49,29 @@ A **library with sections, shelves and a catalog**: a B-tree is the multi-level 
 > [!NOTE]
 > **Quick check:** Why do databases prefer B+ trees to binary trees? *High fan-out means fewer disk page reads.*
 
+
+### 5. Check yourself
+
+**Q1.** In a Merkle tree, how many hashes change when one leaf changes?
+
+<details><summary>Answer</summary>
+
+`O(log n)`: the hashes on the path from that leaf to the root.
+
+</details>
+
+**Q2.** Why do LSM trees favour writes?
+
+<details><summary>Answer</summary>
+
+Writes are buffered in memory and flushed as sequential sorted runs, avoiding random in-place updates.
+
+</details>
+
 ---
 
 
-# 📚 PART 1: The Mathematics of Balancing
+## 📚 PART 1: The Mathematics of Balancing
 
 Standard Binary Search Trees (BST) degenerate into $O(N)$ linked lists when elements are inserted consecutively. **Self-balancing trees** maintain a height of $O(\log N)$ by imposing structural invariants.
 
@@ -71,13 +90,13 @@ _Engineering Tradeoff:_ AVL provides faster lookups due to shallower depth. Red-
 
 ---
 
-# 🔴⚫ PART 2: Red-Black Trees (The Kernel's Choice)
+## 🔴⚫ PART 2: Red-Black Trees (The Kernel's Choice)
 
 Red-Black trees are the backbone of `java.util.TreeMap`, `java.util.TreeSet`, `std::map` in C++, and the Linux Completely Fair Scheduler (CFS).
 
 In Java 8+, `HashMap` bins will **Treeify** — converting a linked-list bucket into a Red-Black tree when the bin exceeds 8 elements (and total array size > 64) to defend against Hash Collision DoS attacks.
 
-## 2.1 The 5 Sacred Invariants
+### 2.1 The 5 Sacred Invariants
 
 1. **Node Color:** Every node is either RED or BLACK.
 2. **Root Property:** The root is ALWAYS BLACK.
@@ -85,7 +104,7 @@ In Java 8+, `HashMap` bins will **Treeify** — converting a linked-list bucket 
 4. **Red Sequence Rule:** If a node is RED, both its children MUST be BLACK (No two consecutive red nodes on any path).
 5. **Black Height Rule:** Every simple path from a given node to any of its descendant leaves contains the _same number of BLACK nodes_.
 
-## 2.2 Rotations & Deletion Complexity
+### 2.2 Rotations & Deletion Complexity
 
 Insertions use the **Uncle's Color** to determine whether to perform a _Color Flip_ or a _Rotation_.
 
@@ -116,7 +135,7 @@ flowchart LR
 
 **How to read this diagram.** The right child `Y` is lifted above `X`; `Y`'s old left subtree `B` becomes `X`'s right subtree. In-order order `A X B Y C` is unchanged. Only a constant number of pointers change: **O(1)**.
 
-## 2.3 Concurrency: The SkipList Alternative
+### 2.3 Concurrency: The SkipList Alternative
 
 Because rotating a Red-Black tree demands locking multiple nodes (parent, child, uncle, grandparent), they are terrible for highly concurrent writes.
 
@@ -124,19 +143,19 @@ Because rotating a Red-Black tree demands locking multiple nodes (parent, child,
 
 ---
 
-# 📖 PART 3: B-Trees & Disk Paging
+## 📖 PART 3: B-Trees & Disk Paging
 
 While Red-Black trees dominate RAM, storage memory (HDD/SSD) is read in **Pages/Blocks** (typically 4KB to 16KB).
 A standard binary tree might require 20 random pointer jumps (20 page faults) for 1 million records. **B-Trees flatten the tree** to radically reduce depth, maximizing data fetched per I/O read.
 
-## 3.1 B-Tree Internal Architecture
+### 3.1 B-Tree Internal Architecture
 
 A B-tree of order $m$ (maximum children per node):
 
 - A node with $k$ children contains exactly $k-1$ keys.
 - **Node Splitting:** When a node exceeds $m-1$ keys during insertion, it undergoes a **Split**. The node divides in half, and the strictly _median key_ is pushed up to the parent.
 
-### Visualizing a B-Tree Node (Order 4)
+#### Visualizing a B-Tree Node (Order 4)
 
 ```text
 ┌───────────────────────────────────────────┐
@@ -148,7 +167,7 @@ A B-tree of order $m$ (maximum children per node):
 
 ---
 
-# 🚀 PART 4: B+ Trees (Relational SQL Engines)
+## 🚀 PART 4: B+ Trees (Relational SQL Engines)
 
 In modern databases (MySQL InnoDB, PostgreSQL), **B+ Trees** universally replace standard B-Trees.
 
@@ -188,7 +207,7 @@ Let's calculate capacity using a standard **4KB Disk Page**.
 
 ---
 
-# ☄️ PART 5: LSM Trees (NoSQL & Big Data)
+## ☄️ PART 5: LSM Trees (NoSQL & Big Data)
 
 B+ Trees suffer under heavy, concurrent pure-write workloads because updating scattered nodes causes **Random Disk I/O**. Modern Distributed systems (Cassandra, Kafka, RocksDB, LevelDB) bypass B+ Trees using **Log-Structured Merge-Trees (LSM)**.
 
@@ -220,7 +239,7 @@ flowchart TD
 
 ---
 
-# 🎲 PART 6: Treaps (Cartesian Trees)
+## 🎲 PART 6: Treaps (Cartesian Trees)
 
 A **Treap** (Tree + Heap) achieves self-balancing without complex rotation invariants (like Red-Black) by relying on **Probability**.
 
@@ -235,7 +254,7 @@ By assigning random priorities upon insertion, the Treap simulates constructing 
 
 ---
 
-# 🔄 PART 7: Splay Trees (The Cache Optimizer)
+## 🔄 PART 7: Splay Trees (The Cache Optimizer)
 
 A Splay Tree ignores height limits. Instead, it moves the **most recently accessed element** directly to the root via **Splaying**.
 
@@ -248,7 +267,7 @@ When a node is queried, it is rotated upward using paired operations. By moving 
 
 ---
 
-# 🗺️ PART 8: Spatial Trees (R-Trees & QuadTrees)
+## 🗺️ PART 8: Spatial Trees (R-Trees & QuadTrees)
 
 How does Uber find the closest drivers in $O(\log N)$ time across a 2D map? Searching a 1D B-Tree is impossible for geographic coordinates (Latitude, Longitude).
 
@@ -275,7 +294,7 @@ flowchart TD
 
 ---
 
-# 🔐 PART 9: Merkle Trees (The Cryptographic Trust)
+## 🔐 PART 9: Merkle Trees (The Cryptographic Trust)
 
 A **Merkle Tree (Hash Tree)** flips the concept of a tree upside down: it's not used to _find_ data, it's used to **verify the mathematical integrity** of enormous datasets in distributed systems.
 
@@ -311,7 +330,7 @@ flowchart TD
 
 ---
 
-# 🧩 PART 10: Tree Augmentation - Making Trees Answer Richer Questions
+## 🧩 PART 10: Tree Augmentation - Making Trees Answer Richer Questions
 
 A normal balanced tree answers: **"Is this key present?"** or **"What is the next key?"**
 
@@ -319,7 +338,7 @@ An augmented tree answers: **"How many keys are smaller?"**, **"Which interval o
 
 The trick is simple but powerful: every node stores extra metadata that can be recomputed from its children after every rotation.
 
-## 10.1 Order Statistic Tree
+### 10.1 Order Statistic Tree
 
 Store `size` at every node:
 
@@ -335,7 +354,7 @@ Now the tree supports:
 | `select(k)`        | Find kth smallest key         | `O(log N)` |
 | `countRange(L, R)` | Count keys in `[L, R]`        | `O(log N)` |
 
-### `select(k)` Logic
+#### `select(k)` Logic
 
 ```text
 at node:
@@ -348,7 +367,7 @@ at node:
 
 This is the mental model behind leaderboard ranks, percentile queries, online median structures, and "kth smallest in a dynamic set" problems.
 
-## 10.2 Interval Tree
+### 10.2 Interval Tree
 
 Store intervals like `[start, end]`, ordered by `start`, and add one field:
 
@@ -372,7 +391,7 @@ Production examples:
 - Firewall / IP range rules
 - IDE syntax highlighting ranges
 
-## 10.3 Rotation-Safe Metadata Rule
+### 10.3 Rotation-Safe Metadata Rule
 
 Every augmented tree lives or dies by this rule:
 
@@ -392,11 +411,11 @@ Do not recompute the whole tree. That destroys the point of balancing. Local poi
 
 ---
 
-# 🧪 PART 11: Red-Black Tree Insert/Delete - The Real Case Map
+## 🧪 PART 11: Red-Black Tree Insert/Delete - The Real Case Map
 
 Interview explanations often stop at the five invariants. Real mastery starts when you can reason about the fix-up cases.
 
-## 11.1 Insert Fix-Up
+### 11.1 Insert Fix-Up
 
 New nodes are inserted as **RED** because adding a red node does not immediately change black-height.
 
@@ -424,7 +443,7 @@ Now it is a line case.
 
 The beautiful thing: insertion needs at most two rotations after the recolor chain stops.
 
-## 11.2 Delete Fix-Up and "Double Black"
+### 11.2 Delete Fix-Up and "Double Black"
 
 Deletion is harder because removing a BLACK node reduces black-height on one path.
 
@@ -441,7 +460,7 @@ Instead of thinking "the null child is broken", think:
 
 The "far child" is the child farther from the double-black node. If the double-black node is on the left, sibling's far child is sibling.right.
 
-## 11.3 Why Java Uses Red-Black, Not AVL, for `TreeMap`
+### 11.3 Why Java Uses Red-Black, Not AVL, for `TreeMap`
 
 `TreeMap` is a general-purpose mutable map. Java optimizes for predictable overall behavior, not the absolute shallowest possible tree.
 
@@ -460,7 +479,7 @@ Rule of thumb:
 
 ---
 
-# 🏭 PART 12: B+ Tree vs LSM Tree - The Storage Engine Tradeoff
+## 🏭 PART 12: B+ Tree vs LSM Tree - The Storage Engine Tradeoff
 
 Both structures are "sorted index" designs, but they optimize different physical realities.
 
@@ -474,7 +493,7 @@ Both structures are "sorted index" designs, but they optimize different physical
 | Space amplification | Usually lower               | Higher during compaction/tombstones               |
 | Best fit            | OLTP relational indexes     | Write-heavy logs, time-series, distributed stores |
 
-## 12.1 The Three Amplifications
+### 12.1 The Three Amplifications
 
 Storage engines are judged by three brutal metrics:
 
@@ -486,7 +505,7 @@ Storage engines are judged by three brutal metrics:
 
 You cannot minimize all three at once. A database engine is basically a negotiated treaty between these costs.
 
-## 12.2 Tombstones Are Not Free
+### 12.2 Tombstones Are Not Free
 
 In an LSM tree, delete usually means:
 
@@ -503,7 +522,7 @@ Failure modes:
 - A delayed compaction backlog can make "deleted" data occupy disk for a long time.
 - Wrong TTL/compaction settings can resurrect old data in distributed repair scenarios.
 
-## 12.3 Hot Key and Page Split Thinking
+### 12.3 Hot Key and Page Split Thinking
 
 B+ trees dislike random page splits under heavy write pressure.
 LSM trees dislike read paths that fan out across too many sorted files.
@@ -520,7 +539,7 @@ This is why "which database is better?" is the wrong question. The better questi
 
 ---
 
-# 🧱 PART 13: Persistent Trees - Keeping Every Version
+## 🧱 PART 13: Persistent Trees - Keeping Every Version
 
 A persistent data structure preserves old versions after updates.
 
@@ -533,7 +552,7 @@ old root -> copies only O(log N) nodes along the update path
 unchanged subtrees are shared between versions
 ```
 
-## 13.1 Persistent Segment Tree
+### 13.1 Persistent Segment Tree
 
 Useful for:
 
@@ -556,7 +575,7 @@ Important mental model:
 
 > Persistence does not copy the whole tree. It copies the path of change and shares everything else.
 
-## 13.2 Copy-on-Write vs Full Copy
+### 13.2 Copy-on-Write vs Full Copy
 
 | Strategy           | Memory                        | Speed                     | When                |
 | ------------------ | ----------------------------- | ------------------------- | ------------------- |
@@ -568,7 +587,7 @@ Persistent trees are the DSA version of immutable architecture.
 
 ---
 
-# 🧨 PART 14: Production Failure Modes and Debugging Smells
+## 🧨 PART 14: Production Failure Modes and Debugging Smells
 
 Advanced trees fail in ways that look "impossible" unless you know the invariants.
 
@@ -582,7 +601,7 @@ Advanced trees fail in ways that look "impossible" unless you know the invariant
 | Spatial query returns too many candidates | Loose bounding rectangles                      | R-Tree              |
 | Merkle sync never settles                 | Non-deterministic serialization before hashing | Merkle Tree         |
 
-## 14.1 Comparator Contract Trap
+### 14.1 Comparator Contract Trap
 
 For Java ordered structures:
 
@@ -609,7 +628,7 @@ Comparator<User> byScoreThenId =
 
 The comparator is not just sorting decoration. In a tree map/set, it defines identity.
 
-## 14.2 Interview Ladder
+### 14.2 Interview Ladder
 
 Practice these in order:
 
@@ -626,7 +645,7 @@ Practice these in order:
 
 ---
 
-# 🧠 SUMMARY & SYSTEM DESIGN CHEAT SHEET
+## 🧠 SUMMARY & SYSTEM DESIGN CHEAT SHEET
 
 | Structure                | Production Use Case                     | The Core Engineering "Trick"                                                            |
 | ------------------------ | --------------------------------------- | --------------------------------------------------------------------------------------- |
@@ -645,7 +664,7 @@ Practice these in order:
 
 ---
 
-## Proof Corner -- B-Tree Minimum Degree and Height
+### Proof Corner -- B-Tree Minimum Degree and Height
 
 **Claim**: A B-tree of minimum degree t and n keys has height at most log_t((n+1)/2).
 
@@ -657,7 +676,7 @@ Practice these in order:
 
 ---
 
-## Section Challenge -- Advanced Trees
+### Section Challenge -- Advanced Trees
 
 **Problem 1 (8 min)**: An AVL tree has height at most 1.44 log_2 n. Prove the minimum number of nodes in an AVL tree of height h.
 
@@ -675,7 +694,7 @@ This is similar to Fibonacci: N(h) = Fib(h+3) - 1 where Fib is the Fibonacci seq
 
 ---
 
-## Reference Anchor
+### Reference Anchor
 
 **java.util.TreeMap -- Red-Black tree in production**:
 ```java
@@ -697,7 +716,7 @@ System.out.println(tm.subMap(3, 7));  // {3=three, 5=five} -- [3,7) range
 
 ---
 
-## Brute Force to Optimal -- Tree Structure Selection
+### Brute Force to Optimal -- Tree Structure Selection
 
 | Use case | Brute Force | Problem | Optimal tree | Gain |
 |----------|-------------|---------|-------------|------|
@@ -716,7 +735,6 @@ System.out.println(tm.subMap(3, 7));  // {3=three, 5=five} -- [3,7) range
 | **Where it runs in production** | Database indexes (PostgreSQL, MySQL), storage engines (RocksDB), file systems, Git and blockchain (Merkle) |
 | **Failure modes** | Cascading splits under hot keys; write amplification; wrong fill factors |
 | **Testing and verification** | Fuzz insert/delete sequences and validate invariants (balance, ordering, node occupancy) after each op |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

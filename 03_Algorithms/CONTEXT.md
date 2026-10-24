@@ -16,6 +16,8 @@ Teach algorithmic thinking, complexity, searching, recursion, DP, graphs, greedy
 - Prefer deep reasoning over template dumping.
 - Catalog chapters may include a "🎓 University Proof Corner" near the top — a 1-3 page compression of 1-3 proofs from the `A*` chapters, with MIT/KTH/RWTH/TUM attribution and a "Full proofs: [link]" footer. See `00_CONTEXT/DECISIONS.md` D015.
 
+- Chapters longer than ~800 lines are **hubs**: the chapter file keeps the bridge, study-partner explainer, at-a-glance diagram and Enterprise Lens and lists topic pages in a folder named after the chapter. Keep one H1 per page; do not paste the same challenge or answer block into several sections.
+
 ## Boundaries
 
 - Reusable interview templates belong in `04_Patterns_Templates`. Problem drills belong in `05_Problem_Solving`. Java-specific implementation gotchas belong in `07_Modern_Java` unless the algorithm lesson requires them.

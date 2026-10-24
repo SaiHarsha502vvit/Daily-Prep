@@ -1,6 +1,6 @@
 # 📐 Online, Approximation & Linear-Programming Algorithms — Complete Guide
 
-> **Navigation**: [← Game Theory](24_Game_Theory_Nim_Sprague_Grundy.md) | [Back to Index](00_INDEX.md) | [Next: FFT & NTT →](26_FFT_NTT_Polynomial_Multiplication.md) | [Learning Path](00_LEARNING_PATH.md)
+> **Navigation**: [← PART FINAL: MODERN ALGORITHMS AND…](06e_Algorithm_Patterns.md) | [Chapter index](00_INDEX.md) | [Advanced Algorithms: Complete… →](06a_Greedy_BitManip.md)
 
 ## 🔗 Bridge — Where This Chapter Fits
 

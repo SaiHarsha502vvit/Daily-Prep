@@ -1,6 +1,6 @@
 # 🧩 Monoids, Functors & Monads
 
-> **Navigation**: [← Pure State & Property Testing](Ch06f_FP_Pure_State_And_Property_Testing.md) | [Back to Index](00_INDEX.md) | [Next: Modern Java 9–21 →](Ch07_Modern_Java_9to21.md)
+> **Navigation**: [← Pure State & Property Testing](Ch06f_FP_Pure_State_And_Property_Testing.md) | [Back to Index](00_INDEX.md) | [Next: Parser Combinators →](Ch06h_FP_Parser_Combinators.md)
 
 ---
 
@@ -169,7 +169,6 @@ Checked: integer, string and list monoids satisfy both laws on sample values; su
 | **Where it runs in production** | MapReduce/Spark aggregations, metrics counters, CRDTs (merge operations are commutative monoids), stream reductions (`Stream.reduce` needs an associative operator), middleware chains |
 | **Failure modes** | Using a non-associative operator in `parallelStream().reduce` (silently non-deterministic); forgetting the identity (empty input crashes); calling every container a "monad" without checking the laws |
 | **Testing and verification** | Law tests: associativity and identity on sample values for every monoid you define; functor and monad laws for each container; compare `foldMap` with `foldMapBalanced` |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 
@@ -189,4 +188,4 @@ Checked: integer, string and list monoids satisfy both laws on sample values; su
 
 ---
 
-[← Pure State & Property Testing](Ch06f_FP_Pure_State_And_Property_Testing.md) | [Index](00_INDEX.md) | [Modern Java 9–21 →](Ch07_Modern_Java_9to21.md)
+[← Pure State & Property Testing](Ch06f_FP_Pure_State_And_Property_Testing.md) | [Index](00_INDEX.md) | [Parser Combinators →](Ch06h_FP_Parser_Combinators.md)

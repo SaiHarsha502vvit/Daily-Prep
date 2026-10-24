@@ -1,6 +1,6 @@
 # 🧩 Constraint-Based Pattern Selection — Pattern Guide
 
-**Navigation**: [< Previous](24_Kadanes_Subarray_Patterns.md) | [Back to Index](00_INDEX.md) | [Next: Prefix Sum >](26_Prefix_Sum_And_Difference_Array.md) | [Pattern Master Guide](00_PATTERN_MASTER_GUIDE.md) | [Competitive Coding Thinking](../14_Mental_Models/21_Competitive_Coding_Deep_Thinking.md)
+> **Navigation**: [← Bit Manipulation + Tricks](20_BitManipulation_Plus_Tricks.md) | [Chapter index](00_INDEX.md)
 
 ---
 
@@ -45,9 +45,36 @@ A **capacity plan** for a bridge: you check the load limits first, then choose t
 > [!NOTE]
 > **Quick check:** Why does `n = 2·10⁵` exclude `O(n²)`? *That is 4·10¹⁰ operations, far beyond ~10⁸ per second.*
 
+
+### 5. Check yourself
+
+**Q1.** `n ≤ 20`: what complexity class is acceptable?
+
+<details><summary>Answer</summary>
+
+Exponential, `O(2ⁿ)` or `O(n!)` for very small `n`: bitmask DP or backtracking.
+
+</details>
+
+**Q2.** `n = 10⁶` with a one-second limit?
+
+<details><summary>Answer</summary>
+
+`O(n log n)` or `O(n)`.
+
+</details>
+
+**Q3.** `n ≤ 5000`?
+
+<details><summary>Answer</summary>
+
+`O(n²)` is fine (about 25 million steps).
+
+</details>
+
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** The habit of reading input limits to guess the intended complexity is contest folklore, written down in books such as Skiena's *The Algorithm Design Manual* and Laaksonen's *Competitive Programmer's Handbook*. The notation behind it — `O`, `Ω`, `Θ` — was popularised for computer science by Knuth's 1976 note *Big Omicron and Big Omega and Big Theta*; Pólya (1945) supplied the general advice to restate the problem and use its data and conditions.
 
@@ -63,17 +90,10 @@ A **capacity plan** for a bridge: you check the load limits first, then choose t
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -87,9 +107,9 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 ---
 
-# Constraint-Based Pattern Selection
+## Constraint-Based Pattern Selection
 
-## If the Constraints Look Like This, Think Like That
+### If the Constraints Look Like This, Think Like That
 
 Keywords are useful, but constraints decide the final algorithm.
 
@@ -111,7 +131,7 @@ For the rewrite workflow, pair it with [Brute Force to Optimal Playbook](../14_M
 
 ---
 
-# PART 0: Open-Source Reference Anchors
+## PART 0: Open-Source Reference Anchors
 
 Open-source implementations are useful when they reveal the invariant behind a data structure. Do not paste a large implementation into your notes. Link it, explain what design choice matters, then rewrite the idea in your own contest/interview style.
 
@@ -138,7 +158,7 @@ If the repo code is short, still translate names, indexing, overflow, and langua
 
 ---
 
-# PART 1: Input Size Budget
+## PART 1: Input Size Budget
 
 The first constraint is `N`.
 
@@ -161,7 +181,7 @@ Constraints do not merely limit code. They reveal the intended shape.
 
 ---
 
-# PART 2: Subarray / Substring Decision Table
+## PART 2: Subarray / Substring Decision Table
 
 The word `subarray` only tells you the answer is contiguous. It does not automatically mean sliding window.
 
@@ -180,7 +200,7 @@ The word `subarray` only tells you the answer is contiguous. It does not automat
 | divisible by `K`           | any                      | prefix remainder count                | same remainder means divisible range   |
 | xor exactly `K`            | any                      | prefix xor + hashmap                  | `px[i] xor px[j] = K`                  |
 
-## The Negative Number Trap
+### The Negative Number Trap
 
 Sliding window sum logic usually assumes:
 
@@ -208,7 +228,7 @@ For count of exact `K`, store old prefix frequencies in a hashmap.
 
 ---
 
-# PART 3: Range Query Decision Table
+## PART 3: Range Query Decision Table
 
 | Query Type                          | Updates?     | Best Tool                              |
 | ----------------------------------- | ------------ | -------------------------------------- |
@@ -234,7 +254,7 @@ Offline queries -> consider sorting/reordering.
 
 ---
 
-# PART 4: Sorted / Pair / Search Decision Table
+## PART 4: Sorted / Pair / Search Decision Table
 
 | Situation                           | Pattern                                                   |
 | ----------------------------------- | --------------------------------------------------------- |
@@ -258,7 +278,7 @@ If yes, binary search on answer is alive.
 
 ---
 
-# PART 5: Graph Constraint Decision Table
+## PART 5: Graph Constraint Decision Table
 
 | Graph Clue                          | Best Tool      | Why                                 |
 | ----------------------------------- | -------------- | ----------------------------------- |
@@ -283,7 +303,7 @@ BFS does not work with weighted edges unless all weights are equal.
 
 ---
 
-# PART 6: DP Constraint Decision Table
+## PART 6: DP Constraint Decision Table
 
 | Clue                           | State Shape                  |
 | ------------------------------ | ---------------------------- |
@@ -307,7 +327,7 @@ If choices affect future and overlap repeats -> DP.
 
 ---
 
-# PART 7: String Constraint Decision Table
+## PART 7: String Constraint Decision Table
 
 | String Clue                               | Pattern                                                |
 | ----------------------------------------- | ------------------------------------------------------ |
@@ -330,7 +350,7 @@ The pattern changes completely.
 
 ---
 
-# PART 8: Math and Counting Decision Table
+## PART 8: Math and Counting Decision Table
 
 | Clue                             | Tool                          |
 | -------------------------------- | ----------------------------- |
@@ -353,7 +373,7 @@ If values are up to 1e9 and you add/multiply/count pairs, use long.
 
 ---
 
-# PART 9: Pattern Anti-Traps
+## PART 9: Pattern Anti-Traps
 
 | Tempting Pattern          | Fails When                            | Use Instead                       |
 | ------------------------- | ------------------------------------- | --------------------------------- |
@@ -370,7 +390,7 @@ If values are up to 1e9 and you add/multiply/count pairs, use long.
 
 ---
 
-# PART 10: 30-Second Constraint Checklist
+## PART 10: 30-Second Constraint Checklist
 
 Before choosing a pattern, answer:
 
@@ -397,7 +417,6 @@ If any answer changes, the pattern may change.
 | **Where it runs in production** | Design reviews, capacity planning, performance budgeting |
 | **Failure modes** | Ignoring constants and memory; choosing by keyword; forgetting update patterns (static vs dynamic) |
 | **Testing and verification** | Practise the table on past problems: write constraint → chosen pattern → justification |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

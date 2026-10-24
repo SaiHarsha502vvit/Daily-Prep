@@ -1,8 +1,8 @@
 # 🧩 String + Advanced — Pattern Guide
 
-**Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
+> **Navigation**: [← Backtracking + Pruning](17_Backtracking_Plus_Pruning.md) | [Chapter index](00_INDEX.md) | [Matrix + Grid Traversal →](19_Matrix_Plus_Grid_Traversal.md)
 
-# String + Advanced Tricks — Combined Pattern Guide
+## String + Advanced Tricks — Combined Pattern Guide
 
 **WHY this combination?** Strings combine array access, hashing, sliding window, DP, and specialized algorithms (KMP, Rabin-Karp). Most "string" problems are actually pattern problems in disguise.
 
@@ -49,9 +49,36 @@ A **library catalogue**: books are filed by a canonical key so equivalent ones l
 > [!NOTE]
 > **Quick check:** Why is expanding around the centre `O(n²)`, not `O(n³)`? *Each expansion step is `O(1)`; there are `O(n)` centres and `O(n)` steps.*
 
+
+### 5. Check yourself
+
+**Q1.** What canonical key groups `eat`, `tea` and `ate` as anagrams?
+
+<details><summary>Answer</summary>
+
+The sorted letters `"aet"` (or a 26-count signature).
+
+</details>
+
+**Q2.** Longest palindromic substring of `"babad"`?
+
+<details><summary>Answer</summary>
+
+`"bab"` or `"aba"` (length 3).
+
+</details>
+
+**Q3.** How many centres does expand-around-centre try for length `n`?
+
+<details><summary>Answer</summary>
+
+`2n − 1` (n single-character centres and n−1 between-character centres).
+
+</details>
+
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** Key string-matching papers: Morris–Pratt (1970 report) and Knuth–Morris–Pratt (published 1977), Boyer–Moore (1977), Aho–Corasick (1975), Karp–Rabin (1981 report; published 1987). Tries were described by de la Briandais (1959) and named by Edward Fredkin (1960).
 
@@ -70,17 +97,10 @@ A **library catalogue**: books are filed by a canonical key so equivalent ones l
 
 ---
 
-### Production Reality
+## Production Reality
 
-**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
-
-When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
-
-1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
-2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
-3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
-4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
-5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+> [!TIP]
+> **Solution fails or is too slow?** Run the five-step [Pattern Mis-Selection Debug Workflow](00_PATTERN_MASTER_GUIDE.md#pattern-mis-selection-debug-workflow) before changing code: the bug is often the pattern, not the implementation.
 
 **Pattern-Specific Failure Modes:**
 
@@ -106,7 +126,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-### 🧠 Deep Intuition — Strings Are Disguised Pattern Problems
+## 🧠 Deep Intuition — Strings Are Disguised Pattern Problems
 
 Most string problems aren't really "string" problems — they're array, hash, or DP problems wearing a string costume. The key is to **identify the underlying pattern**:
 
@@ -117,11 +137,11 @@ Most string problems aren't really "string" problems — they're array, hash, or
 
 The string-specific part is usually just the data representation, not the algorithm.
 
-#### Why String Immutability Matters in Java
+### Why String Immutability Matters in Java
 
 In Java, strings are immutable — every concatenation creates a new String object. `s += c` inside a loop creates O(n) new strings of increasing size, resulting in **O(n²) total time** for what looks like an O(n) loop. Always use `StringBuilder` for building strings incrementally — it uses an internal array and amortizes to O(n) total time.
 
-#### The `int[26]` Trick — Why It's Faster Than HashMap
+### The `int[26]` Trick — Why It's Faster Than HashMap
 
 For problems involving only lowercase letters, `int[26]` (indexed by `c - 'a'`) is strictly better than `HashMap<Character, Integer>`:
 
@@ -285,16 +305,6 @@ COMMON MISTAKES:
 
 ---
 
-🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
-
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-
-<details><summary>Answer</summary>
-
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-
-</details>
-
 ---
 
 ## 🌲 ADVANCED STRING DATA STRUCTURES: TRIES (Prefix Trees)
@@ -452,7 +462,10 @@ _Why Z over KMP?_ Both are O(N+M). Z-algorithm is often conceptually easier to u
 
 ---
 
-## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+## 📋 Practice Problems
+
+> [!NOTE]
+> The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
 | #   | Problem                                                                                                   | Companies          | Key Insight             |
 | --- | --------------------------------------------------------------------------------------------------------- | ------------------ | ----------------------- |
@@ -538,7 +551,6 @@ _Why Z over KMP?_ Both are O(N+M). Z-algorithm is often conceptually easier to u
 | **Where it runs in production** | Search boxes, spell checkers, log parsing, bioinformatics, plagiarism detection |
 | **Failure modes** | Unicode surprises (code points vs chars); building strings in a loop with `+=`; hash collisions in rolling hashes |
 | **Testing and verification** | Compare to naive matching on random strings with small alphabets (many collisions) |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

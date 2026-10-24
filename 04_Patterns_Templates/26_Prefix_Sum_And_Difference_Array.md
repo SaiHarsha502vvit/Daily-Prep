@@ -1,6 +1,6 @@
 # 🧩 Prefix Sum & Difference Array — Pattern Guide
 
-**Navigation**: [< Previous](25_Constraint_Based_Pattern_Selection.md) | [Back to Index](00_INDEX.md) | [Next >](27_Union_Find_Pattern.md)
+> **Navigation**: [← Two Pointers](07_Two_Pointers_Complete.md) | [Chapter index](00_INDEX.md) | [Union-Find (Disjoint Set Union) →](27_Union_Find_Pattern.md)
 
 **Pattern 26** | [Prev](25_Constraint_Based_Pattern_Selection.md) | [Index](00_INDEX.md)
 
@@ -48,6 +48,33 @@ A **bank statement with a running balance**: the amount spent between two dates 
 > [!NOTE]
 > **Quick check:** Why seed the hash map with prefix `0 → 1`? *So subarrays that start at index 0 are counted.*
 
+
+### 5. Check yourself
+
+**Q1.** Build the prefix array of `[3,1,4,1,5]` and sum indices 1..3.
+
+<details><summary>Answer</summary>
+
+`[0,3,4,8,9,14]`; sum = `prefix[4] − prefix[1] = 9 − 3 = 6`.
+
+</details>
+
+**Q2.** How many subarrays of `[1,2,1,2,1]` sum to 3?
+
+<details><summary>Answer</summary>
+
+**4**. Prefixes `0,1,3,4,6,7` have four pairs that differ by 3.
+
+</details>
+
+**Q3.** How do you add `x` to every element of `a[l..r]` in `O(1)`?
+
+<details><summary>Answer</summary>
+
+Difference array: `d[l] += x; d[r+1] -= x`, then take one prefix sum at the end.
+
+</details>
+
 ---
 
 ## ⚡ At a Glance
@@ -79,7 +106,7 @@ flowchart LR
 
 ---
 
-### Historical Evolution
+## Historical Evolution
 
 **Inventor / Originator:** Cumulative sums are old statistics (cumulative distributions); the parallel **prefix computation** was studied by Ladner and Fischer (1980) and popularised by Blelloch (*Prefix Sums and Their Applications*, 1990). The 2D version in graphics is the **summed-area table** (Franklin Crow, 1984). Peter Fenwick's 1994 paper introduced the binary indexed tree for dynamic prefix sums.
 
@@ -199,7 +226,6 @@ flowchart LR
 | **Where it runs in production** | Analytics dashboards (range totals), image processing (summed-area tables), batch range updates (booking and capacity systems), histogram and heat-map aggregation |
 | **Failure modes** | Off-by-one between inclusive and exclusive bounds; `int` overflow on large sums (use `long`); using prefix sums when updates interleave with queries (needs a Fenwick or segment tree) |
 | **Testing and verification** | Compare against nested-loop sums on random arrays (2 000 cases including negatives); test empty ranges, single elements, and `k` not present |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -5,6 +5,11 @@
 > [!IMPORTANT]
 > **New here? Start with the [Learning Path](00_LEARNING_PATH.md).** It gives the gap-free reading order, the abstraction ladder, the dependency graph and the coverage matrix. This page is the flat catalog.
 
+> [!NOTE]
+> **Chapter hubs and topic pages.** Long chapters are split: the chapter file (the *hub*) keeps the bridge, study-partner explainer, at-a-glance diagram and Enterprise Lens, and lists its **topic pages** in a table (in a folder with the same name as the chapter). Read the pages in order the first time; use the hub table to jump back later. Previous/next links follow the reading order of this index.
+
+**Review checklist for every chapter:** state time **and** space complexity · state the invariant · list edge cases (empty, one element, duplicates, extremes) · say what happens at 10× data.
+
 ## 💬 How the Chapters Are Built
 
 Every chapter follows the same enterprise-grade layout so you always know where to look:
@@ -12,7 +17,7 @@ Every chapter follows the same enterprise-grade layout so you always know where 
 | Block | What you get |
 | ----- | ------------ |
 | 🔗 **Bridge** | What it builds on, what you will learn, what it leads to, and the abstraction level |
-| 💬 **Study-partner explainer** | Bottom line, textbook core, real-world analogy, step-by-step walkthrough, quick check |
+| 💬 **Study-partner explainer** | Bottom line, textbook core, real-world analogy, step-by-step walkthrough, quick check, and a **Check yourself** set with worked answers |
 | ⚡ **At a glance** | Colour-styled Mermaid diagram and a complexity / decision table |
 | Core content | Brute force → bottleneck → idea → invariant → proof sketch → code → complexity |
 | 🏢 **Enterprise lens** | Production uses, failure modes, testing strategy, performance notes |

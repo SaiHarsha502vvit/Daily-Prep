@@ -1,4 +1,4 @@
-**Navigation**: [← Sorting Advanced](02b_Sorting_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Recursion Internals →](03a_Recursion_Internals.md)
+> **Navigation**: [← Searching & Binary Search](22_Searching_And_Binary_Search_Complete.md) | [Chapter index](00_INDEX.md) | [Recursion: Complete Mental Model… →](03a_Recursion_Internals.md)
 
 ---
 
@@ -50,6 +50,25 @@ Break a big problem into smaller copies of itself, solve each, and combine the a
 
 > [!NOTE]
 > **Quick check:** When should you prefer DP over D&C? *When subproblems overlap.*
+
+
+### 5. Check yourself
+
+**Q1.** Solve `T(n) = T(n/2) + O(1)`.
+
+<details><summary>Answer</summary>
+
+`O(log n)` (binary search).
+
+</details>
+
+**Q2.** Karatsuba multiplies with 3 recursive products instead of 4. What does that give?
+
+<details><summary>Answer</summary>
+
+`O(n^{log₂3}) ≈ O(n^1.585)` instead of `O(n²)`.
+
+</details>
 
 ---
 
@@ -922,7 +941,6 @@ T(n) = Θ(n¹ · (1 + ∫₁ⁿ u / u² du))
 | **Where it runs in production** | MapReduce-style processing, parallel merge sort, FFT-based signal processing, divide-and-conquer in image and geometry pipelines |
 | **Failure modes** | Unbalanced splits degrading to O(n²); copying subarrays at every level; recursion depth overflow |
 | **Testing and verification** | Test base cases (n = 0, 1, 2) and compare against the brute-force result on random inputs |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

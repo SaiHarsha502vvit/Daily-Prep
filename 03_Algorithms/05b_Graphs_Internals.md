@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05c_Graphs_Fundamentals.md)
+> **Navigation**: [← TREES](05_Trees.md) | [Chapter index](00_INDEX.md) | [Graphs Fundamentals →](05c_Graphs_Fundamentals.md)
 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — traversal intuition and pattern recognition
 
 ---
@@ -69,6 +69,25 @@ A **phone book of friends** (list per person) versus a **huge grid** of everyone
 >
 > **HOW:** By comparing memory overhead of Object-based adjacency lists vs flat 2D arrays, and selecting ArrayDeque over LinkedList for cache- friendly BFS/DFS queues.
 
+
+### 5. Check yourself
+
+**Q1.** Space of an adjacency list versus an adjacency matrix?
+
+<details><summary>Answer</summary>
+
+`O(V + E)` versus `O(V²)`.
+
+</details>
+
+**Q2.** Cost of BFS on a graph stored as adjacency lists?
+
+<details><summary>Answer</summary>
+
+`O(V + E)`.
+
+</details>
+
 ---
 
 ## 🎓 University Proof Corner
@@ -110,24 +129,6 @@ Adjacency matrix: O(V²) regardless of E — wastes O(V²−E) space on sparse g
 **Constraint warning**: `HashMap`-backed adjacency lists (the default in JGraphT for `SimpleGraph`) do NOT guarantee iteration order of neighbors. If BFS/DFS results must be deterministic (e.g., in tests), use `LinkedHashMap`-backed graphs or explicitly sort the neighbor list.
 
 ---
-
-🔬 **Section Challenge — From Fundamentals to Advanced Graph Algorithms**
-
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-
-<details><summary>Answer</summary>
-
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-
-</details>
-
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-
-</details>
 
 ### Historical Evolution
 
@@ -216,24 +217,6 @@ Graph theory as a mathematical discipline traces its formal origin to **Leonhard
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
-🔬 **Section Challenge — 🧠 Graph Representation — Memory Deep Dive**
-
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-
-<details><summary>Answer</summary>
-
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-
-</details>
-
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-
-</details>
 
 ## 📌 Edge List Representation
 
@@ -573,7 +556,6 @@ Build DSU once from all edges, then answer `connected(src, dst)` in O(1) per que
 | **Where it runs in production** | Social/road/dependency graphs, build systems, recommendation graphs; CSR formats in graph databases and analytics engines |
 | **Failure modes** | Using a matrix for a million-node sparse graph (memory blow-up); boxing overhead; undirected edges added once instead of twice |
 | **Testing and verification** | Unit-test with isolated nodes, self-loops, parallel edges, disconnected components |
-| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 
