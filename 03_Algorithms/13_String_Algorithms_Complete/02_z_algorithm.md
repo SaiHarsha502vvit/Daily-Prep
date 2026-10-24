@@ -101,27 +101,23 @@ Final Z = [-, 1, 0, 3, 1, 0, 2, 2, 1]
 
 ## Z-Algorithm vs KMP
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              Z-ALGORITHM vs KMP                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Both: O(n + m) time, O(m) space                                │
-│                                                                 │
-│  Z-Algorithm:                                                   │
-│  ✓ Conceptually simpler                                         │
-│  ✓ More intuitive (direct prefix matching)                      │
-│  ✓ Useful for many string problems                              │
-│  ✗ Requires concatenation (extra space for search)              │
-│                                                                 │
-│  KMP:                                                           │
-│  ✓ True O(m) space (no concatenation)                           │
-│  ✓ Better for streaming (online algorithm)                      │
-│  ✗ LPS logic more complex                                       │
-│                                                                 │
-│  Interview tip: Know both, use whichever feels natural          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**Z-ALGORITHM vs KMP**
+
+```text
+Both: O(n + m) time, O(m) space
+
+Z-Algorithm:
+✓ Conceptually simpler
+✓ More intuitive (direct prefix matching)
+✓ Useful for many string problems
+✗ Requires concatenation (extra space for search)
+
+KMP:
+✓ True O(m) space (no concatenation)
+✓ Better for streaming (online algorithm)
+✗ LPS logic more complex
+
+Interview tip: Know both, use whichever feels natural
 ```
 
 ## Z-Array Applications

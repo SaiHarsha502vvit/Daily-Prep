@@ -224,21 +224,19 @@ class BookingService {
 
 #### Race Condition Solution
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  Timeline of concurrent booking:                                                 ║
-║                                                                                  ║
-║  User A selects seat A1 at t=0    →  lockSeats("A1") → SUCCESS (locked for A)    ║
-║  User B selects seat A1 at t=1    →  lockSeats("A1") → FAIL (already LOCKED)     ║
-║                                                                                  ║
-║  User A pays at t=3              →  confirmBooking → BOOKED                      ║
-║  OR User A doesn't pay by t=5   →  auto-release → AVAILABLE again                ║
-║                                                                                  ║
-║  DATABASE-LEVEL: Use SELECT ... FOR UPDATE (pessimistic lock)                    ║
-║  OR optimistic lock with version column:                                         ║
-║  UPDATE seat_status SET status='LOCKED', version=version+1                       ║
-║  WHERE seat_id='A1' AND status='AVAILABLE' AND version=current_version           ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+```text
+Timeline of concurrent booking:
+
+User A selects seat A1 at t=0    →  lockSeats("A1") → SUCCESS (locked for A)
+User B selects seat A1 at t=1    →  lockSeats("A1") → FAIL (already LOCKED)
+
+User A pays at t=3              →  confirmBooking → BOOKED
+OR User A doesn't pay by t=5   →  auto-release → AVAILABLE again
+
+DATABASE-LEVEL: Use SELECT ... FOR UPDATE (pessimistic lock)
+OR optimistic lock with version column:
+UPDATE seat_status SET status='LOCKED', version=version+1
+WHERE seat_id='A1' AND status='AVAILABLE' AND version=current_version
 ```
 
 ---

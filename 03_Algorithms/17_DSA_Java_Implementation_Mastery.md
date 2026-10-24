@@ -178,27 +178,22 @@ Need fast insert/delete at ends? → LinkedList (rare!)
 
 ### Decision Matrix
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│  Problem Pattern          │  Java Structure  │  WHY              │
-│ ─────────────────────────┼──────────────────┼──────────────────  │
-│  Two Sum (pair lookup)    │  HashMap         │  O(1) complement  │
-│  Sliding Window max       │  ArrayDeque      │  Monotonic deque  │
-│  Top-K elements           │  PriorityQueue   │  Min-heap of K    │
-│  LRU Cache                │  LinkedHashMap   │  Access order +   │
-│                           │                  │  removeEldest     │
-│  Intervals / sweep line   │  TreeMap         │  Sorted + floorKey│
-│  Graph BFS                │  ArrayDeque      │  FIFO queue       │
-│  DFS (iterative)          │  ArrayDeque      │  LIFO stack       │
-│  Frequency count          │  HashMap         │  Key→count        │
-│  Union-Find               │  int[]           │  Parent array     │
-│  Trie                     │  TrieNode class  │  Custom node      │
-│  Prefix sum               │  int[]           │  Array accumulate │
-│  Matrix traversal         │  int[][]         │  2D array         │
-│  Sorted unique elements   │  TreeSet         │  BST under hood   │
-│  Median stream            │  Two PQs         │  Max-heap + min   │
-└──────────────────────────────────────────────────────────────────┘
-```
+| Problem Pattern | Java Structure | WHY |
+| --- | --- | --- |
+| Two Sum (pair lookup) | HashMap | O(1) complement |
+| Sliding Window max | ArrayDeque | Monotonic deque |
+| Top-K elements | PriorityQueue | Min-heap of K |
+| LRU Cache | LinkedHashMap | Access order + removeEldest |
+| Intervals / sweep line | TreeMap | Sorted + floorKey |
+| Graph BFS | ArrayDeque | FIFO queue |
+| DFS (iterative) | ArrayDeque | LIFO stack |
+| Frequency count | HashMap | Key→count |
+| Union-Find | int[] | Parent array |
+| Trie | TrieNode class | Custom node |
+| Prefix sum | int[] | Array accumulate |
+| Matrix traversal | int[][] | 2D array |
+| Sorted unique elements | TreeSet | BST under hood |
+| Median stream | Two PQs | Max-heap + min |
 
 ---
 
@@ -293,26 +288,24 @@ PriorityQueue<int[]> safe = new PriorityQueue<>(
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  HashMap = Unordered filing cabinet (find by name: O(1))         ║
-║  TreeMap = Sorted dictionary (find by name AND range: O(log n))  ║
-║                                                                  ║
-║  TreeMap (Red-Black BST) UNIQUE abilities:                       ║
-║                                                                  ║
-║  floorKey(k)   → Largest key ≤ k  (or null)                      ║
-║  ceilingKey(k) → Smallest key ≥ k (or null)                      ║
-║  lowerKey(k)   → Largest key < k  (strict)                       ║
-║  higherKey(k)  → Smallest key > k (strict)                       ║
-║  firstKey()    → Smallest key                                    ║
-║  lastKey()     → Largest key                                     ║
-║  subMap(lo,hi) → View of keys in range [lo, hi)                  ║
-║  headMap(k)    → View of keys < k                                ║
-║  tailMap(k)    → View of keys ≥ k                                ║
-║                                                                  ║
-║  USE WHEN: You need SORTED ORDER or RANGE QUERIES                ║
-║  COST: O(log n) per operation instead of O(1) for HashMap        ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+HashMap = Unordered filing cabinet (find by name: O(1))
+TreeMap = Sorted dictionary (find by name AND range: O(log n))
+
+TreeMap (Red-Black BST) UNIQUE abilities:
+
+floorKey(k)   → Largest key ≤ k  (or null)
+ceilingKey(k) → Smallest key ≥ k (or null)
+lowerKey(k)   → Largest key < k  (strict)
+higherKey(k)  → Smallest key > k (strict)
+firstKey()    → Smallest key
+lastKey()     → Largest key
+subMap(lo,hi) → View of keys in range [lo, hi)
+headMap(k)    → View of keys < k
+tailMap(k)    → View of keys ≥ k
+
+USE WHEN: You need SORTED ORDER or RANGE QUERIES
+COST: O(log n) per operation instead of O(1) for HashMap
 ```
 
 ### Code — Real DSA Problems Solved by TreeMap
@@ -384,27 +377,25 @@ int closest = (target - floor <= ceiling - target) ? floor : ceiling;
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  SORTING RULES FOR DSA:                                          ║
-║                                                                  ║
-║  Comparator returns:                                             ║
-║    negative → first comes BEFORE second                          ║
-║    zero     → equal (order doesn't matter)                       ║
-║    positive → first comes AFTER second                           ║
-║                                                                  ║
-║  DANGER ZONE:                                                    ║
-║  (a, b) -> a - b  ← OVERFLOW when a=MAX, b=negative!             ║
-║  (a, b) -> Integer.compare(a, b)  ← SAFE always!                 ║
-║                                                                  ║
-║  The Comparator Composition Toolkit:                             ║
-║  Comparator.comparingInt(x -> x[0])                              ║
-║    .thenComparingInt(x -> x[1])                                  ║
-║    .reversed()                                                   ║
-║                                                                  ║
-║  READ IT AS ENGLISH:                                             ║
-║  "Compare by first element, then by second, then reverse"        ║
-╚══════════════════════════════════════════════════════════════════╝
+**SORTING RULES FOR DSA:**
+
+```text
+Comparator returns:
+  negative → first comes BEFORE second
+  zero     → equal (order doesn't matter)
+  positive → first comes AFTER second
+
+DANGER ZONE:
+(a, b) -> a - b  ← OVERFLOW when a=MAX, b=negative!
+(a, b) -> Integer.compare(a, b)  ← SAFE always!
+
+The Comparator Composition Toolkit:
+Comparator.comparingInt(x -> x[0])
+  .thenComparingInt(x -> x[1])
+  .reversed()
+
+READ IT AS ENGLISH:
+"Compare by first element, then by second, then reverse"
 ```
 
 ### Code — Comparator Patterns for DSA
@@ -476,30 +467,28 @@ Use `Integer.compare(a.priority, b.priority)` or `Comparator.comparingInt(Task::
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  TWO DIFFERENT ALGORITHMS:                                       ║
-║                                                                  ║
-║  Arrays.sort(int[]):                                             ║
-║  → Dual-Pivot Quicksort (by Vladimir Yaroslavskiy)               ║
-║  → In-place, O(1) space                                          ║
-║  → Average O(n log n), worst case O(n²) for adversarial input    ║
-║  → Switches to insertion sort for small arrays (< 47 elements)   ║
-║  → Used for: int[], long[], double[], char[] etc.                ║
-║                                                                  ║
-║  Arrays.sort(Object[]) / Collections.sort():                     ║
-║  → TimSort (by Tim Peters, from Python)                          ║
-║  → Stable! (equal elements keep original order)                  ║
-║  → O(n log n) worst case guaranteed                              ║
-║  → O(n) extra space (merge sort based)                           ║
-║  → Exploits existing runs (partially sorted = faster!)           ║
-║  → Used for: Object[], List<T>                                   ║
-║                                                                  ║
-║  WHY DIFFERENT?                                                  ║
-║  → Primitives have no identity → stability doesn't matter        ║
-║  → Objects have identity → stability matters for user            ║
-║  → Quicksort is faster on primitives (better cache behavior)     ║
-╚══════════════════════════════════════════════════════════════════╝
+**TWO DIFFERENT ALGORITHMS:**
+
+```text
+Arrays.sort(int[]):
+→ Dual-Pivot Quicksort (by Vladimir Yaroslavskiy)
+→ In-place, O(1) space
+→ Average O(n log n), worst case O(n²) for adversarial input
+→ Switches to insertion sort for small arrays (< 47 elements)
+→ Used for: int[], long[], double[], char[] etc.
+
+Arrays.sort(Object[]) / Collections.sort():
+→ TimSort (by Tim Peters, from Python)
+→ Stable! (equal elements keep original order)
+→ O(n log n) worst case guaranteed
+→ O(n) extra space (merge sort based)
+→ Exploits existing runs (partially sorted = faster!)
+→ Used for: Object[], List<T>
+
+WHY DIFFERENT?
+→ Primitives have no identity → stability doesn't matter
+→ Objects have identity → stability matters for user
+→ Quicksort is faster on primitives (better cache behavior)
 ```
 
 ### When This Matters in DSA
@@ -607,44 +596,31 @@ public int subarraySum(int[] nums, int k) {
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  DON'T USE java.util.Stack! (It's legacy, synchronized, slow)    ║
-║                                                                  ║
-║  For Stack (LIFO):  ArrayDeque<> (push/pop/peek)                 ║
-║  For Queue (FIFO):  ArrayDeque<> (offer/poll/peek)               ║
-║  For Deque (both):  ArrayDeque<> (offerFirst, offerLast, etc.)   ║
-║                                                                  ║
-║  WHY ArrayDeque over LinkedList for Queue?                       ║
-║  → ArrayDeque: array-backed, cache-friendly, no node objects     ║
-║  → LinkedList: pointer-chasing, cache-misses, extra 24 bytes/node║
-║  → ArrayDeque is 3-5x faster than LinkedList for queue ops!      ║
-║                                                                  ║
-║  WHEN to use LinkedList?                                         ║
-║  → Almost never in DSA. Only when you need:                      ║
-║    • Iterator.remove() in the middle (O(1) with iterator)        ║
-║    • Null elements (ArrayDeque can't store null)                 ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+DON'T USE java.util.Stack! (It's legacy, synchronized, slow)
+
+For Stack (LIFO):  ArrayDeque<> (push/pop/peek)
+For Queue (FIFO):  ArrayDeque<> (offer/poll/peek)
+For Deque (both):  ArrayDeque<> (offerFirst, offerLast, etc.)
+
+WHY ArrayDeque over LinkedList for Queue?
+→ ArrayDeque: array-backed, cache-friendly, no node objects
+→ LinkedList: pointer-chasing, cache-misses, extra 24 bytes/node
+→ ArrayDeque is 3-5x faster than LinkedList for queue ops!
+
+WHEN to use LinkedList?
+→ Almost never in DSA. Only when you need:
+  • Iterator.remove() in the middle (O(1) with iterator)
+  • Null elements (ArrayDeque can't store null)
 ```
 
 ### Stack/Queue Method Mapping
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│  Operation     │ Stack (LIFO)        │ Queue (FIFO)              │
-│ ───────────────┼─────────────────────┼────────────────────────   │
-│  Add element   │ push(e) / addFirst  │ offer(e) / addLast        │
-│  Remove top    │ pop() / removeFirst │ poll() / removeFirst      │
-│  Peek top      │ peek() / peekFirst  │ peek() / peekFirst        │
-│  Empty check   │ isEmpty()           │ isEmpty()                 │
-│                                                                  │
-│  ⚠️ Both Stack and Queue use ArrayDeque — same class!            │
-│  The difference is just WHICH end you operate on.                │
-│                                                                  │
-│  Deque as Stack: push/pop (both operate on FIRST end)            │
-│  Deque as Queue: offer (LAST end) / poll (FIRST end)             │
-└──────────────────────────────────────────────────────────────────┘
-```
+| Operation | Stack (LIFO) | Queue (FIFO) |
+| --- | --- | --- |
+| Add element<br>Remove top<br>Peek top<br>Empty check | push(e) / addFirst pop() / removeFirst peek() / peekFirst isEmpty() | offer(e) / addLast poll() / removeFirst peek() / peekFirst isEmpty() |
+| ⚠️ Both Stack and Queue use ArrayDeque — same class!<br>The difference is just WHICH end you operate on. |  |  |
+| Deque as Stack: push/pop (both operate on FIRST end)<br>Deque as Queue: offer (LAST end) / poll (FIRST end) |  |  |
 
 ### Monotonic Stack Pattern
 
@@ -703,29 +679,27 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHY StringBuilder MATTERS IN DSA                                ║
-║                                                                  ║
-║  String concatenation in a loop:                                 ║
-║  String s = "";                                                  ║
-║  for (int i = 0; i < N; i++) {                                   ║
-║      s += "a";  // Creates N new String objects!                 ║
-║  }                                                               ║
-║  Time: O(N²) — because each += copies the entire string          ║
-║  "a" → "aa" → "aaa" → "aaaa" → ... (copy 1+2+3+...+N bytes)      ║
-║                                                                  ║
-║  StringBuilder:                                                  ║
-║  StringBuilder sb = new StringBuilder();                         ║
-║  for (int i = 0; i < N; i++) {                                   ║
-║      sb.append("a");  // Appends to internal char array          ║
-║  }                                                               ║
-║  String result = sb.toString();                                  ║
-║  Time: O(N) — amortized O(1) per append (like ArrayList)         ║
-║                                                                  ║
-║  For N=10,000: String concat = 50ms, StringBuilder = 0.1ms       ║
-║  500x difference!                                                ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+WHY StringBuilder MATTERS IN DSA
+
+String concatenation in a loop:
+String s = "";
+for (int i = 0; i < N; i++) {
+    s += "a";  // Creates N new String objects!
+}
+Time: O(N²) — because each += copies the entire string
+"a" → "aa" → "aaa" → "aaaa" → ... (copy 1+2+3+...+N bytes)
+
+StringBuilder:
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i < N; i++) {
+    sb.append("a");  // Appends to internal char array
+}
+String result = sb.toString();
+Time: O(N) — amortized O(1) per append (like ArrayList)
+
+For N=10,000: String concat = 50ms, StringBuilder = 0.1ms
+500x difference!
 ```
 
 ### Essential String DSA Methods

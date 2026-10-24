@@ -12,20 +12,18 @@
 
 **LeetCode 763** 🔗 https://leetcode.com/problems/partition-labels/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  PARTITION LABELS - Max partitions with unique chars           │
-├────────────────────────────────────────────────────────────────┤
-│  s = "ababcbacadefegdehijhklij"                                │
-│                                                                │
-│  Partition such that each letter appears in at most one part:  │
-│  "ababcbaca" | "defegde" | "hijhklij"                          │
-│       9           7           8                                │
-│                                                                │
-│  Output: [9, 7, 8]                                             │
-│                                                                │
-│  Greedy: Track last occurrence of each char                    │
-└────────────────────────────────────────────────────────────────┘
+**PARTITION LABELS - Max partitions with unique chars**
+
+```text
+s = "ababcbacadefegdehijhklij"
+
+Partition such that each letter appears in at most one part:
+"ababcbaca" | "defegde" | "hijhklij"
+     9           7           8
+
+Output: [9, 7, 8]
+
+Greedy: Track last occurrence of each char
 ```
 
 **Solution:**
@@ -60,22 +58,20 @@ public List<Integer> partitionLabels(String s) {
 
 **LeetCode 621** 🔗 https://leetcode.com/problems/task-scheduler/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  TASK SCHEDULER - Min time with cooldown                       │
-├────────────────────────────────────────────────────────────────┤
-│  tasks = ["A","A","A","B","B","B"], n = 2                      │
-│                                                                │
-│  Must wait n intervals before same task again                  │
-│                                                                │
-│  A → _ → _ → A → _ → _ → A                                     │
-│  A → B → _ → A → B → _ → A → B                                 │
-│  A → B → idle → A → B → idle → A → B                           │
-│                                                                │
-│  Output: 8 intervals                                           │
-│                                                                │
-│  Formula: (maxFreq - 1) * (n + 1) + countMaxFreq               │
-└────────────────────────────────────────────────────────────────┘
+**TASK SCHEDULER - Min time with cooldown**
+
+```text
+tasks = ["A","A","A","B","B","B"], n = 2
+
+Must wait n intervals before same task again
+
+A → _ → _ → A → _ → _ → A
+A → B → _ → A → B → _ → A → B
+A → B → idle → A → B → idle → A → B
+
+Output: 8 intervals
+
+Formula: (maxFreq - 1) * (n + 1) + countMaxFreq
 ```
 
 **Solution:**
@@ -129,20 +125,18 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 
 **LeetCode 53** 🔗 https://leetcode.com/problems/maximum-subarray/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MAXIMUM SUBARRAY - Kadane's as Greedy                         │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]                        │
-│                                                                │
-│  Greedy choice: At each position, decide to:                   │
-│  - Extend previous subarray, OR                                │
-│  - Start fresh from current element                            │
-│                                                                │
-│  If previous sum is negative, start fresh!                     │
-│                                                                │
-│  Max subarray: [4, -1, 2, 1] = 6                               │
-└────────────────────────────────────────────────────────────────┘
+**MAXIMUM SUBARRAY - Kadane's as Greedy**
+
+```text
+nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+
+Greedy choice: At each position, decide to:
+- Extend previous subarray, OR
+- Start fresh from current element
+
+If previous sum is negative, start fresh!
+
+Max subarray: [4, -1, 2, 1] = 6
 ```
 
 **Solution:**
@@ -168,24 +162,22 @@ public int maxSubArray(int[] nums) {
 
 **LeetCode 122** 🔗 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  STOCK II - Multiple transactions allowed                      │
-├────────────────────────────────────────────────────────────────┤
-│  prices = [7, 1, 5, 3, 6, 4]                                   │
-│                                                                │
-│      7                                                         │
-│       \    5       6                                           │
-│        \  /\      /\                                           │
-│         1   \   /    4                                         │
-│              3                                                 │
-│                                                                │
-│  Buy at 1, sell at 5: profit = 4                               │
-│  Buy at 3, sell at 6: profit = 3                               │
-│  Total: 7                                                      │
-│                                                                │
-│  Greedy: Collect ALL positive differences                      │
-└────────────────────────────────────────────────────────────────┘
+**STOCK II - Multiple transactions allowed**
+
+```text
+prices = [7, 1, 5, 3, 6, 4]
+
+    7
+     \    5       6
+      \  /\      /\
+       1   \   /    4
+            3
+
+Buy at 1, sell at 5: profit = 4
+Buy at 3, sell at 6: profit = 3
+Total: 7
+
+Greedy: Collect ALL positive differences
 ```
 
 **Solution:**

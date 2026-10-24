@@ -375,20 +375,16 @@ Both are O(N) time, but two-pointer is O(1) space vs prefix array's O(N). In mem
 
 ## 🛡️ EDGE CASES TO WATCH
 
-```
-┌────────────────────────┬───────────────────────────────────────────┐
-│ Edge Case              │ What Happens                              │
-├────────────────────────┼───────────────────────────────────────────┤
-│ Empty array []         │ Return immediately, no pointers to set    │
-│ Single element [5]     │ No pair exists, return -1 / false         │
-│ Two elements [1,5]     │ Only one pair to check                    │
-│ All same values [3,3,3]│ All sums equal, handle duplicates!        │
-│ Already sorted         │ Two pointer works perfectly               │
-│ Target impossible      │ L crosses R without finding → return []   │
-│ Negative numbers       │ Two pointers still works on sorted array  │
-│ Overflow (a[L]+a[R])   │ Use long for sum if values near INT_MAX   │
-└────────────────────────┴───────────────────────────────────────────┘
-```
+| Edge Case | What Happens |
+| --- | --- |
+| Empty array [] | Return immediately, no pointers to set |
+| Single element [5] | No pair exists, return -1 / false |
+| Two elements [1,5] | Only one pair to check |
+| All same values [3,3,3] | All sums equal, handle duplicates! |
+| Already sorted | Two pointer works perfectly |
+| Target impossible | L crosses R without finding → return [] |
+| Negative numbers | Two pointers still works on sorted array |
+| Overflow (a[L]+a[R]) | Use long for sum if values near INT_MAX |
 
 ---
 

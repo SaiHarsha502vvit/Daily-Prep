@@ -51,16 +51,16 @@ You wouldn't — and here's why. DP for "enumerate all" requires storing ALL pat
 **Signal**: "Generate ALL valid combinations/permutations/subsets"
 If the problem says "find ALL", "list ALL", "generate ALL" → Backtracking.
 DP finds the COUNT or BEST. Backtracking finds the ACTUAL solutions.
-┬─────────────────┬
+
 | Find... | Use | Why |
-┼─────────────────┼
+| --- | --- | --- |
 | Count of valid combos | DP | Don't need actual combos |
 | Best/min/max value | DP or Greedy | One answer needed |
 | ALL valid combos | BACKTRACKING | Must enumerate |
 | ANY one valid answer | Backtracking | Stop at first found |
 | Is a valid answer | Constraint prop | Sudoku, N-Queens |
 | possible? | + Backtracking | |
-┴─────────────────┴
+
 REAL-WORLD BACKTRACKING:
 
 - Sudoku solvers: Try a number, check constraints, undo if stuck

@@ -6,12 +6,10 @@
 
 ## 8. Strategy — Swap Algorithms at Runtime
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Multiple ways to do something — want to swap easily.       ║
-║  ANALOGY: Different routes to work — GPS selects based on traffic.   ║
-║  USE: Sorting, validation, pricing, authentication strategies.       ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Multiple ways to do something — want to swap easily.
+ANALOGY: Different routes to work — GPS selects based on traffic.
+USE: Sorting, validation, pricing, authentication strategies.
 ```
 
 ```java
@@ -66,13 +64,11 @@ cart.setDiscountStrategy(price -> price * 0.9); // 10% off inline
 
 ## 9. Observer — Notify When State Changes
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Object changes → multiple others need to know.             ║
-║  ANALOGY: YouTube subscription — when channel uploads, you get       ║
-║           notified (along with all other subscribers).               ║
-║  USE: Event systems, UI updates, pub/sub, reactive programming.      ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Object changes → multiple others need to know.
+ANALOGY: YouTube subscription — when channel uploads, you get
+         notified (along with all other subscribers).
+USE: Event systems, UI updates, pub/sub, reactive programming.
 ```
 
 ```java
@@ -133,13 +129,11 @@ orderService.placeOrder(new Order(/*...*/));
 
 ## 10. Template Method — Define Algorithm Skeleton
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Same algorithm steps, different implementation details.    ║
-║  ANALOGY: A recipe — same steps (prep, cook, serve) but              ║
-║           ingredients/method differ for each dish.                   ║
-║  USE: Frameworks (Spring's JdbcTemplate), data processing pipes      ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Same algorithm steps, different implementation details.
+ANALOGY: A recipe — same steps (prep, cook, serve) but
+         ingredients/method differ for each dish.
+USE: Frameworks (Spring's JdbcTemplate), data processing pipes
 ```
 
 ```java
@@ -204,12 +198,10 @@ importer.importData(); // runs the whole pipeline
 
 ## 11. Chain of Responsibility — Pass Request Along a Chain
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Multiple handlers, unknown which one handles request.      ║
-║  ANALOGY: Customer support escalation — Level 1 → 2 → Manager.       ║
-║  USE: Middleware, validation chains, logging, servlet filters.       ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Multiple handlers, unknown which one handles request.
+ANALOGY: Customer support escalation — Level 1 → 2 → Manager.
+USE: Middleware, validation chains, logging, servlet filters.
 ```
 
 ```java
@@ -286,47 +278,43 @@ chain.handle(request);
 
 ## Patterns in Spring Boot — Where You Already Use Them
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PATTERN               │  WHERE IT APPEARS IN SPRING                 ║
-╠════════════════════════╪═════════════════════════════════════════════╣
-║  Singleton             │  @Component, @Service, @Bean (default)      ║
-║  Factory               │  BeanFactory, FactoryBean                   ║
-║  Builder               │  ResponseEntity.ok().body(data).build()     ║
-║  Proxy                 │  @Transactional, @Cacheable, @Async         ║
-║  Template Method       │  JdbcTemplate, RestTemplate                 ║
-║  Observer              │  ApplicationEvent + @EventListener          ║
-║  Strategy              │  AuthenticationProvider implementations     ║
-║  Decorator             │  HttpServletRequestWrapper                  ║
-║  Adapter               │  HandlerAdapter in MVC                      ║
-║  Chain of Resp         │  Security Filter Chain                      ║
-║  Facade                │  Spring Data JPA Repository                 ║
-║  Composite             │  CompositeCacheManager                      ║
-╚══════════════════════════════════════════════════════════════════════╝
+**PATTERN               │  WHERE IT APPEARS IN SPRING**
+
+```text
+Singleton             │  @Component, @Service, @Bean (default)
+Factory               │  BeanFactory, FactoryBean
+Builder               │  ResponseEntity.ok().body(data).build()
+Proxy                 │  @Transactional, @Cacheable, @Async
+Template Method       │  JdbcTemplate, RestTemplate
+Observer              │  ApplicationEvent + @EventListener
+Strategy              │  AuthenticationProvider implementations
+Decorator             │  HttpServletRequestWrapper
+Adapter               │  HandlerAdapter in MVC
+Chain of Resp         │  Security Filter Chain
+Facade                │  Spring Data JPA Repository
+Composite             │  CompositeCacheManager
 ```
 
 ---
 
 ## Pattern Selection Guide
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHEN YOU NEED TO...              │  USE THIS PATTERN                ║
-╠═══════════════════════════════════╪══════════════════════════════════╣
-║  Create objects flexibly          │  Factory / Abstract Factory      ║
-║  Build complex objects step by    │  Builder                         ║
-║  step                             │                                  ║
-║  Ensure one instance              │  Singleton                       ║
-║  Make incompatible code work      │  Adapter                         ║
-║  Add behavior without modifying   │  Decorator                       ║
-║  Simplify a complex subsystem     │  Facade                          ║
-║  Control access or add caching    │  Proxy                           ║
-║  Swap algorithms at runtime       │  Strategy                        ║
-║  Notify subscribers of changes    │  Observer                        ║
-║  Define algorithm skeleton        │  Template Method                 ║
-║  Process through multiple steps   │  Chain of Responsibility         ║
-║  Represent tree structures        │  Composite                       ║
-╚══════════════════════════════════════════════════════════════════════╝
+**WHEN YOU NEED TO...              │  USE THIS PATTERN**
+
+```text
+Create objects flexibly          │  Factory / Abstract Factory
+Build complex objects step by    │  Builder
+step                             │
+Ensure one instance              │  Singleton
+Make incompatible code work      │  Adapter
+Add behavior without modifying   │  Decorator
+Simplify a complex subsystem     │  Facade
+Control access or add caching    │  Proxy
+Swap algorithms at runtime       │  Strategy
+Notify subscribers of changes    │  Observer
+Define algorithm skeleton        │  Template Method
+Process through multiple steps   │  Chain of Responsibility
+Represent tree structures        │  Composite
 ```
 
 ---
@@ -372,22 +360,20 @@ A: Global state, hard to test (use DI instead), hides dependencies,
 
 ## Mental Model: Patterns as Communication
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  Design patterns are a SHARED VOCABULARY between developers.         ║
-║                                                                      ║
-║  Without patterns:                                                   ║
-║  "I made a class that wraps another class and adds logging           ║
-║   before calling the original method and..."                         ║
-║                                                                      ║
-║  With patterns:                                                      ║
-║  "I used a Decorator for logging."                                   ║
-║  → Everyone immediately understands the architecture.                ║
-║                                                                      ║
-║  ⚠️ WARNING: Don't force patterns where they're not needed.          ║
-║  The cure shouldn't be worse than the disease.                       ║
-║  Simple problems deserve simple solutions.                           ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+Design patterns are a SHARED VOCABULARY between developers.
+
+Without patterns:
+"I made a class that wraps another class and adds logging
+ before calling the original method and..."
+
+With patterns:
+"I used a Decorator for logging."
+→ Everyone immediately understands the architecture.
+
+⚠️ WARNING: Don't force patterns where they're not needed.
+The cure shouldn't be worse than the disease.
+Simple problems deserve simple solutions.
 ```
 
 ## PLUS Enhancements

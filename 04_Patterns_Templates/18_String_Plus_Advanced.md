@@ -155,7 +155,7 @@ Use `int[128]` when the problem involves ASCII characters (uppercase, digits, et
 
 ## 🧠 PATTERN DECODER FOR STRING PROBLEMS
 
-```
+```text
 String problem?
 ├── "Parentheses" → Stack
 ├── "Anagram/permutation" → HashMap frequency / sorted key

@@ -1,6 +1,6 @@
-# ═══════════════════════════════════════════════════════════
+# Part 2 — Number Patterns (15 patterns)
 
-> **Navigation**: [← ═══════════════════════════════════════════════════════════](01_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [═══════════════════════════════════════════════════════════ →](03_section.md)
+> **Navigation**: [← Part 1 — Basic Star Patterns (15 patterns)](01_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [Part 3 — Character Patterns (10 patterns) →](03_section.md)
 > Page 2 of 6 in **Complete Pattern Programs - From Zero to Hero**
 
 
@@ -497,4 +497,4 @@ public static void numberBox(int n) {
 
 ---
 
-[← ═══════════════════════════════════════════════════════════](01_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [═══════════════════════════════════════════════════════════ →](03_section.md)
+[← Part 1 — Basic Star Patterns (15 patterns)](01_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [Part 3 — Character Patterns (10 patterns) →](03_section.md)

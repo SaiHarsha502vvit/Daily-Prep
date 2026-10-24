@@ -314,16 +314,16 @@ Time: O(log n) for a balanced tree.
 
 **Solution — Tree Structure:**
 
-```
+```text
 /
 ├── home/
-│   ├── alice/
-│   │   ├── documents/
-│   │   └── photos/
-│   └── bob/
+  ├── alice/
+  │   ├── documents/
+  │   └── photos/
+  └── bob/
 ├── usr/
-│   ├── bin/
-│   └── lib/
+  ├── bin/
+  └── lib/
 └── etc/
 ```
 

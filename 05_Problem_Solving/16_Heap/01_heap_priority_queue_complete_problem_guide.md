@@ -116,34 +116,32 @@ minHeap.contains(obj);   // O(n)
 
 ### Common Mistakes (MUST KNOW)
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                     ⚠️  COMMON HEAP MISTAKES  ⚠️                            ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║ 1. Java PQ is MIN-HEAP by default                                            ║
-║    → If you need max, use Comparator.reverseOrder() or (a,b) -> b - a        ║
-║                                                                              ║
-║ 2. Forgetting custom comparator for max-heap objects                         ║
-║    → new PriorityQueue<int[]>((a,b) -> b[0] - a[0]) for max on first elem    ║
-║                                                                              ║
-║ 3. PQ.remove(obj) is O(n), not O(log n)!                                     ║
-║    → It does a linear scan to find the element first                         ║
-║    → If you need fast removal, consider TreeMap or lazy deletion             ║
-║                                                                              ║
-║ 4. Iterator order is NOT sorted!                                             ║
-║    → for (int x : pq) does NOT give elements in heap order                   ║
-║    → You must poll() repeatedly to get sorted order                          ║
-║                                                                              ║
-║ 5. Integer overflow in comparators: (a, b) -> a - b can overflow!            ║
-║    → Use Integer.compare(a, b) instead for safety                            ║
-║                                                                              ║
-║ 6. Using heap when a simpler approach works                                  ║
-║    → "Top K" with fixed small K? Sorting may be simpler and same O(n lg n)   ║
-║    → "Sliding window max"? Monotonic deque is O(n) vs heap O(n log n)        ║
-║                                                                              ║
-║ 7. Not recognizing the two-heap pattern for median problems                  ║
-║    → maxHeap for lower half + minHeap for upper half = O(log n) median       ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**⚠️  COMMON HEAP MISTAKES  ⚠️**
+
+```text
+1. Java PQ is MIN-HEAP by default
+   → If you need max, use Comparator.reverseOrder() or (a,b) -> b - a
+
+2. Forgetting custom comparator for max-heap objects
+   → new PriorityQueue<int[]>((a,b) -> b[0] - a[0]) for max on first elem
+
+3. PQ.remove(obj) is O(n), not O(log n)!
+   → It does a linear scan to find the element first
+   → If you need fast removal, consider TreeMap or lazy deletion
+
+4. Iterator order is NOT sorted!
+   → for (int x : pq) does NOT give elements in heap order
+   → You must poll() repeatedly to get sorted order
+
+5. Integer overflow in comparators: (a, b) -> a - b can overflow!
+   → Use Integer.compare(a, b) instead for safety
+
+6. Using heap when a simpler approach works
+   → "Top K" with fixed small K? Sorting may be simpler and same O(n lg n)
+   → "Sliding window max"? Monotonic deque is O(n) vs heap O(n log n)
+
+7. Not recognizing the two-heap pattern for median problems
+   → maxHeap for lower half + minHeap for upper half = O(log n) median
 ```
 
 ---

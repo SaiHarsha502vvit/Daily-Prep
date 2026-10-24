@@ -157,7 +157,7 @@ Both have the same time complexity. Top-down is better for **thinking**; bottom-
 
 ## 🧠 THE DP DECISION TREE
 
-```
+```text
 Does the problem have:
 ├── Optimal substructure? (optimal solution uses optimal sub-solutions)
 ├── Overlapping subproblems? (same sub-problem solved multiple times)

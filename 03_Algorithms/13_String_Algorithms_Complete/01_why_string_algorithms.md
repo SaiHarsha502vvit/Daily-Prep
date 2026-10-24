@@ -6,19 +6,17 @@
 
 ## Real-World Applications
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│           WHERE STRING ALGORITHMS ARE USED                      │
-├─────────────────────────────────────────────────────────────────┤
-│  • Text Editors (Find & Replace)                                │
-│  • Search Engines (Pattern matching)                            │
-│  • DNA Sequencing (Substring search)                            │
-│  • Plagiarism Detection (Similarity)                            │
-│  • Antivirus (Signature matching)                               │
-│  • Network Intrusion Detection                                  │
-│  • Spell Checkers                                               │
-│  • Data Compression                                             │
-└─────────────────────────────────────────────────────────────────┘
+**WHERE STRING ALGORITHMS ARE USED**
+
+```text
+• Text Editors (Find & Replace)
+• Search Engines (Pattern matching)
+• DNA Sequencing (Substring search)
+• Plagiarism Detection (Similarity)
+• Antivirus (Signature matching)
+• Network Intrusion Detection
+• Spell Checkers
+• Data Compression
 ```
 
 ## The Pattern Matching Problem
@@ -214,21 +212,19 @@ Step 4: Full match found at index 5!
 
 ### Time Complexity Analysis
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              KMP COMPLEXITY                                     │
-├─────────────────────────────────────────────────────────────────┤
-│  LPS Construction: O(m) where m = pattern length                │
-│  Search: O(n) where n = text length                             │
-│  Total: O(n + m)                                                │
-│                                                                 │
-│  Space: O(m) for LPS array                                      │
-│                                                                 │
-│  Why O(n)?                                                      │
-│  - i never decreases (always moves forward in text)             │
-│  - j can decrease but total decreases ≤ total increases         │
-│  - Each char in text visited at most twice                      │
-└─────────────────────────────────────────────────────────────────┘
+**KMP COMPLEXITY**
+
+```text
+LPS Construction: O(m) where m = pattern length
+Search: O(n) where n = text length
+Total: O(n + m)
+
+Space: O(m) for LPS array
+
+Why O(n)?
+- i never decreases (always moves forward in text)
+- j can decrease but total decreases ≤ total increases
+- Each char in text visited at most twice
 ```
 
 ### Why LPS Is a Skip Distance, Not Just a "Prefix-Suffix" Property — and Why the Mismatch Update Is Safe

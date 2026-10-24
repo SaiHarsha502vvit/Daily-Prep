@@ -341,22 +341,18 @@ class UnionFind {
 
 ### What is Union-Find?
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║              UNION-FIND IN ONE SENTENCE                       ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  "Track which elements belong to the same group,              ║
-║   supporting UNION (merge groups) and FIND (check group)."    ║
-║                                                               ║
-║  Time Complexity with optimizations:                          ║
-║  • Find: O(α(n)) ≈ O(1) amortized                             ║
-║  • Union: O(α(n)) ≈ O(1) amortized                            ║
-║                                                               ║
-║  α(n) = Inverse Ackermann function, grows EXTREMELY slowly    ║
-║  For all practical n, α(n) ≤ 4                                ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
+**UNION-FIND IN ONE SENTENCE**
+
+```text
+"Track which elements belong to the same group,
+ supporting UNION (merge groups) and FIND (check group)."
+
+Time Complexity with optimizations:
+• Find: O(α(n)) ≈ O(1) amortized
+• Union: O(α(n)) ≈ O(1) amortized
+
+α(n) = Inverse Ackermann function, grows EXTREMELY slowly
+For all practical n, α(n) ≤ 4
 ```
 
 ### Visual: How Union-Find Works
@@ -389,23 +385,19 @@ Now: find(1) → 0, find(3) → 0
 
 ### Two Key Operations
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              THE TWO OPERATIONS                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  1. FIND(x)                                                     │
-│     • Returns the "representative" (root) of x's group          │
-│     • If find(a) == find(b), then a and b are connected         │
-│                                                                 │
-│  2. UNION(x, y)                                                 │
-│     • Merges the groups containing x and y                      │
-│     • After union, find(x) == find(y)                           │
-│                                                                 │
-│  Helper: CONNECTED(x, y)                                        │
-│     • Returns find(x) == find(y)                                │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**THE TWO OPERATIONS**
+
+```text
+1. FIND(x)
+   • Returns the "representative" (root) of x's group
+   • If find(a) == find(b), then a and b are connected
+
+2. UNION(x, y)
+   • Merges the groups containing x and y
+   • After union, find(x) == find(y)
+
+Helper: CONNECTED(x, y)
+   • Returns find(x) == find(y)
 ```
 
 ---
@@ -477,29 +469,25 @@ This is why we need optimizations.
 
 ### The Optimization
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              PATH COMPRESSION                                   │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Idea: When we find the root, make all nodes on the path        │
-│        point DIRECTLY to the root.                              │
-│                                                                 │
-│  Before find(0):          After find(0):                        │
-│                                                                 │
-│       4                        4                                │
-│       |                      / | \                              │
-│       3                     3  2  1                             │
-│       |                         |                               │
-│       2                         0                               │
-│       |                                                         │
-│       1                                                         │
-│       |                                                         │
-│       0                                                         │
-│                                                                 │
-│  Next find(0) is O(1)!                                          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**PATH COMPRESSION**
+
+```text
+Idea: When we find the root, make all nodes on the path
+      point DIRECTLY to the root.
+
+Before find(0):          After find(0):
+
+     4                        4
+     |                      / | \
+     3                     3  2  1
+     |                         |
+     2                         0
+     |
+     1
+     |
+     0
+
+Next find(0) is O(1)!
 ```
 
 ### Implementation with Path Compression

@@ -483,49 +483,45 @@ public boolean hasHamiltonianPath(int n, int[][] edges) {
 
 ## INTERVIEW PROBLEM PATTERNS
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    WHEN TO USE WHICH ALGORITHM                                   │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  "Find shortest path..."                                                         │
-│  • Unweighted → BFS                                                              │
-│  • Positive weights → Dijkstra                                                   │
-│  • Negative weights → Bellman-Ford                                               │
-│  • All pairs → Floyd-Warshall (dense) or Johnson (sparse)                        │
-│                                                                                  │
-│  "Find connected components..."                                                  │
-│  • Undirected → BFS/DFS or Union-Find                                            │
-│  • Directed (SCC) → Tarjan or Kosaraju                                           │
-│                                                                                  │
-│  "Detect cycle..."                                                               │
-│  • Undirected → DFS with parent tracking or Union-Find                           │
-│  • Directed → DFS with colors (white/gray/black)                                 │
-│                                                                                  │
-│  "Ordering with dependencies..."                                                 │
-│  • Topological Sort (Kahn's BFS or DFS postorder)                                │
-│                                                                                  │
-│  "Minimum cost to connect all..."                                                │
-│  • MST: Kruskal or Prim                                                          │
-│                                                                                  │
-│  "Find LCA..."                                                                   │
-│  • Single query → O(n) recursive                                                 │
-│  • Multiple queries → Binary lifting O(log n) per query                          │
-│                                                                                  │
-│  "Count paths..."                                                                │
-│  • DAG → Topological sort + DP                                                   │
-│  • General → DFS with memoization                                                │
-│                                                                                  │
-│  "Network flow / max matching..."                                                │
-│  • Ford-Fulkerson / Edmonds-Karp / Dinic                                         │
-│                                                                                  │
-│  TREE-SPECIFIC:                                                                  │
-│  • Validate BST → Inorder (should be sorted) or range checking                   │
-│  • Serialize/Deserialize → Preorder + null markers                               │
-│  • Tree DP → Postorder traversal                                                 │
-│  • Path problems → LCA + path sum                                                │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**WHEN TO USE WHICH ALGORITHM**
+
+```text
+"Find shortest path..."
+• Unweighted → BFS
+• Positive weights → Dijkstra
+• Negative weights → Bellman-Ford
+• All pairs → Floyd-Warshall (dense) or Johnson (sparse)
+
+"Find connected components..."
+• Undirected → BFS/DFS or Union-Find
+• Directed (SCC) → Tarjan or Kosaraju
+
+"Detect cycle..."
+• Undirected → DFS with parent tracking or Union-Find
+• Directed → DFS with colors (white/gray/black)
+
+"Ordering with dependencies..."
+• Topological Sort (Kahn's BFS or DFS postorder)
+
+"Minimum cost to connect all..."
+• MST: Kruskal or Prim
+
+"Find LCA..."
+• Single query → O(n) recursive
+• Multiple queries → Binary lifting O(log n) per query
+
+"Count paths..."
+• DAG → Topological sort + DP
+• General → DFS with memoization
+
+"Network flow / max matching..."
+• Ford-Fulkerson / Edmonds-Karp / Dinic
+
+TREE-SPECIFIC:
+• Validate BST → Inorder (should be sorted) or range checking
+• Serialize/Deserialize → Preorder + null markers
+• Tree DP → Postorder traversal
+• Path problems → LCA + path sum
 ```
 
 ---

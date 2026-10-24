@@ -123,25 +123,21 @@ Each swap places at least one value permanently at its home index, so there are 
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                  CYCLIC SORT PATTERN                            │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  WHEN YOU SEE: "Find the missing/duplicate number in range      │
-│  [1..n] using O(1) extra space"  →  CYCLIC SORT.                │
-│                                                                 │
-│  CORE IDEA: Numbers in range [1..n] or [0..n] should each       │
-│  sit at their "correct" index. Place each number at its home    │
-│  index, then scan for mismatches.                               │
-│                                                                 │
-│  TEMPLATE:                                                      │
-│    1. While nums[i] isn't at correct position → SWAP to home    │
-│    2. Scan array: where nums[i] ≠ expected → that's answer      │
-│                                                                 │
-│  TIME: O(n)  |  SPACE: O(1)  ← the magic of this pattern        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**CYCLIC SORT PATTERN**
+
+```text
+WHEN YOU SEE: "Find the missing/duplicate number in range
+[1..n] using O(1) extra space"  →  CYCLIC SORT.
+
+CORE IDEA: Numbers in range [1..n] or [0..n] should each
+sit at their "correct" index. Place each number at its home
+index, then scan for mismatches.
+
+TEMPLATE:
+  1. While nums[i] isn't at correct position → SWAP to home
+  2. Scan array: where nums[i] ≠ expected → that's answer
+
+TIME: O(n)  |  SPACE: O(1)  ← the magic of this pattern
 ```
 
 ---
@@ -520,31 +516,27 @@ COMPLEXITY: Time O(n) | Space O(1)
 
 ### 🔄 Summary: Cyclic Sort Decision Table
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    CYCLIC SORT CHEATSHEET                               │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  TRIGGER: "n numbers in range [0..n] or [1..n]" + "O(1) space"          │
-│                                                                         │
-│  PROBLEM              │ RANGE   │ SCAN FOR           │ LC#              │
-│  ═════════════════════╪═════════╪════════════════════╪═════════════════ │
-│  Missing Number       │ [0..n]  │ nums[i] ≠ i      │ 268                │
-│  All Disappeared      │ [1..n]  │ nums[i] ≠ i+1    │ 448                │
-│  All Duplicates       │ [1..n]  │ nums[i] ≠ i+1    │ 442                │
-│  First Missing +ve    │ [1..n]  │ nums[i] ≠ i+1    │ 41                 │
-│  Find Duplicate       │ [1..n]  │ nums[i] ≠ i+1    │ 287                │
-│  Set Mismatch         │ [1..n]  │ nums[i] ≠ i+1    │ 645                │
-│                                                                         │
-│  TEMPLATE:                                                              │
-│  1. while (nums[i] out of range) skip                                   │
-│  2. while (nums[i] != nums[correctIdx]) swap                            │
-│  3. Scan: where nums[i] ≠ expected → answer                             │
-│                                                                         │
-│  THE SWAP GUARD: Always compare nums[i] with nums[correctIdx]           │
-│  NOT nums[i] with i+1. This prevents infinite loops on duplicates.      │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
+**CYCLIC SORT CHEATSHEET**
+
+```text
+TRIGGER: "n numbers in range [0..n] or [1..n]" + "O(1) space"
+
+PROBLEM              │ RANGE   │ SCAN FOR           │ LC#
+═════════════════════╪═════════╪════════════════════╪═════════════════
+Missing Number       │ [0..n]  │ nums[i] ≠ i      │ 268
+All Disappeared      │ [1..n]  │ nums[i] ≠ i+1    │ 448
+All Duplicates       │ [1..n]  │ nums[i] ≠ i+1    │ 442
+First Missing +ve    │ [1..n]  │ nums[i] ≠ i+1    │ 41
+Find Duplicate       │ [1..n]  │ nums[i] ≠ i+1    │ 287
+Set Mismatch         │ [1..n]  │ nums[i] ≠ i+1    │ 645
+
+TEMPLATE:
+1. while (nums[i] out of range) skip
+2. while (nums[i] != nums[correctIdx]) swap
+3. Scan: where nums[i] ≠ expected → answer
+
+THE SWAP GUARD: Always compare nums[i] with nums[correctIdx]
+NOT nums[i] with i+1. This prevents infinite loops on duplicates.
 ```
 
 ---

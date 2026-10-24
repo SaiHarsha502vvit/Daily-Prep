@@ -325,92 +325,59 @@ APPROACH: DLL + HashMap
 
 ## #️⃣ Hashmap Complexity Cheat Sheet
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                     HASHMAP COMPLEXITY REFERENCE                             ║
-╠═══════════════════════════════╦═══════════╦══════════╦═══════════════════════╣
-║ Operation                     ║ Average   ║ Worst    ║ Notes                 ║
-╠═══════════════════════════════╬═══════════╬══════════╬═══════════════════════╣
-║ HashMap.get(key)              ║ O(1)      ║ O(log n) ║ Tree buckets in Java8 ║
-║ HashMap.put(key, val)         ║ O(1)*     ║ O(n)     ║ *amortized (rehash)   ║
-║ HashMap.remove(key)           ║ O(1)      ║ O(log n) ║ Tree buckets          ║
-║ HashMap.containsKey(key)      ║ O(1)      ║ O(log n) ║                       ║
-║ HashMap.containsValue(val)    ║ O(n)      ║ O(n)     ║ Full scan!            ║
-║ HashSet.add/remove/contains   ║ O(1)      ║ O(log n) ║ Same as HashMap       ║
-║ TreeMap.get/put/remove        ║ O(log n)  ║ O(log n) ║ Red-Black Tree        ║
-║ LinkedHashMap.get/put         ║ O(1)      ║ O(log n) ║ + insertion order     ║
-╠═══════════════════════════════╩═══════════╩══════════╩═══════════════════════╣
-║                                                                              ║
-║ PATTERN → COMPLEXITY:                                                        ║
-║  Frequency Count:       O(n) time, O(n) space                                ║
-║  Two-Sum (one-pass):    O(n) time, O(n) space                                ║
-║  Prefix Sum + HashMap:  O(n) time, O(n) space                                ║
-║  Group Anagrams:        O(NK) time, O(NK) space (count-key approach)         ║
-║  Longest Consecutive:   O(n) time, O(n) space                                ║
-║  LRU Cache:             O(1) per operation, O(capacity) space                ║
-║  RandomizedSet:         O(1) per operation, O(n) space                       ║
-║                                                                              ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ WHEN TO USE WHAT:                                                            ║
-║  HashMap      → unordered, O(1) average, allows null key                     ║
-║  TreeMap      → sorted keys, O(log n), NavigableMap (floor/ceiling)          ║
-║  LinkedHashMap→ insertion-order iteration, basis for LRU                     ║
-║  HashSet      → membership test only (no values)                             ║
-║  ConcurrentHM → thread-safe, no null keys/values                             ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+**HASHMAP COMPLEXITY REFERENCE**
+
+| Operation | Average | Worst | Notes |
+| --- | --- | --- | --- |
+| HashMap.get(key)<br>HashMap.put(key, val)<br>HashMap.remove(key)<br>HashMap.containsKey(key)<br>HashMap.containsValue(val)<br>HashSet.add/remove/contains<br>TreeMap.get/put/remove<br>LinkedHashMap.get/put | O(1)<br>O(1)*<br>O(1)<br>O(1)<br>O(n)<br>O(1)<br>O(log n)<br>O(1) | O(log n)<br>O(n)<br>O(log n)<br>O(log n)<br>O(n)<br>O(log n)<br>O(log n)<br>O(log n) | Tree buckets in Java8<br>*amortized (rehash)<br>Tree buckets<br>Full scan!<br>Same as HashMap<br>Red-Black Tree + insertion order |
+| PATTERN → COMPLEXITY:<br>Frequency Count:       O(n) time, O(n) space<br>Two-Sum (one-pass):    O(n) time, O(n) space<br>Prefix Sum + HashMap:  O(n) time, O(n) space<br>Group Anagrams:        O(NK) time, O(NK) space (count-key approach)<br>Longest Consecutive:   O(n) time, O(n) space<br>LRU Cache:             O(1) per operation, O(capacity) space<br>RandomizedSet:         O(1) per operation, O(n) space |  |  |  |
+| WHEN TO USE WHAT:<br>HashMap      → unordered, O(1) average, allows null key<br>TreeMap      → sorted keys, O(log n), NavigableMap (floor/ceiling)<br>LinkedHashMap→ insertion-order iteration, basis for LRU<br>HashSet      → membership test only (no values)<br>ConcurrentHM → thread-safe, no null keys/values |  |  |  |
 
 ---
 
 ## 📌 Mastery Checklist
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                     HASHMAP MASTERY CHECKLIST                                ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  FUNDAMENTALS:                                                               ║
-║  □ Can explain hash function, collision resolution, load factor              ║
-║  □ Can derive O(1) expected time under SUHA                                  ║
-║  □ Know Java HashMap internals (buckets, treeify, rehash)                    ║
-║  □ Understand hashCode/equals contract                                       ║
-║                                                                              ║
-║  FREQUENCY COUNTING:                                                         ║
-║  □ Two Sum — one-pass complement lookup                                      ║
-║  □ Group Anagrams — sort-key and count-key approaches                        ║
-║  □ Find All Duplicates — in-place negation trick                             ║
-║  □ Top K Frequent — bucket sort approach                                     ║
-║                                                                              ║
-║  PREFIX SUM + HASHMAP:                                                       ║
-║  □ Subarray Sum Equals K — can trace through example                         ║
-║  □ Subarrays Divisible by K — remainder grouping + Java mod fix              ║
-║  □ Largest 0-Sum Subarray — first occurrence technique                       ║
-║  □ Understand WHY sliding window fails with negative numbers                 ║
-║                                                                              ║
-║  DESIGN:                                                                     ║
-║  □ RandomizedSet — ArrayList + HashMap, swap-with-last trick                 ║
-║  □ LRU Cache — HashMap + Doubly Linked List from scratch                     ║
-║  □ Can prove O(1) for all operations in both designs                         ║
-║                                                                              ║
-║  PATTERN RECOGNITION:                                                        ║
-║  □ "O(n²) brute force with inner search" → HashMap makes it O(n)             ║
-║  □ "Count subarrays with property X" → prefix sum + HashMap                  ║
-║  □ "Group things by property" → HashMap with computed key                    ║
-║  □ "Need O(1) membership test" → HashSet                                     ║
-║  □ "Design O(1) everything" → combine HashMap with another structure         ║
-║                                                                              ║
-║  EDGE CASES:                                                                 ║
-║  □ Handle null keys, empty arrays, single-element arrays                     ║
-║  □ Java negative modulo: ((x % k) + k) % k                                   ║
-║  □ Integer overflow in prefix sums → use long if needed                      ║
-║  □ Duplicate values in input (distinguish value vs. index)                   ║
-║                                                                              ║
-║  SCORE: ___/20 items checked                                                 ║
-║  TARGET: 18+ before moving to next section                                   ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**HASHMAP MASTERY CHECKLIST**
+
+```text
+FUNDAMENTALS:
+□ Can explain hash function, collision resolution, load factor
+□ Can derive O(1) expected time under SUHA
+□ Know Java HashMap internals (buckets, treeify, rehash)
+□ Understand hashCode/equals contract
+
+FREQUENCY COUNTING:
+□ Two Sum — one-pass complement lookup
+□ Group Anagrams — sort-key and count-key approaches
+□ Find All Duplicates — in-place negation trick
+□ Top K Frequent — bucket sort approach
+
+PREFIX SUM + HASHMAP:
+□ Subarray Sum Equals K — can trace through example
+□ Subarrays Divisible by K — remainder grouping + Java mod fix
+□ Largest 0-Sum Subarray — first occurrence technique
+□ Understand WHY sliding window fails with negative numbers
+
+DESIGN:
+□ RandomizedSet — ArrayList + HashMap, swap-with-last trick
+□ LRU Cache — HashMap + Doubly Linked List from scratch
+□ Can prove O(1) for all operations in both designs
+
+PATTERN RECOGNITION:
+□ "O(n²) brute force with inner search" → HashMap makes it O(n)
+□ "Count subarrays with property X" → prefix sum + HashMap
+□ "Group things by property" → HashMap with computed key
+□ "Need O(1) membership test" → HashSet
+□ "Design O(1) everything" → combine HashMap with another structure
+
+EDGE CASES:
+□ Handle null keys, empty arrays, single-element arrays
+□ Java negative modulo: ((x % k) + k) % k
+□ Integer overflow in prefix sums → use long if needed
+□ Duplicate values in input (distinguish value vs. index)
+
+SCORE: ___/20 items checked
+TARGET: 18+ before moving to next section
 ```
 
 ---

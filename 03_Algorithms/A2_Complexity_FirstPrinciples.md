@@ -234,23 +234,21 @@ T(n) = a·T(n/b) + f(n)     where a ≥ 1, b > 1, f asymptotically positive
 
 ### Three Cases
 
-```
+```text
 Compare f(n) with nˡᵒᵍᵇ⁽ᵃ⁾:
 
-┌──────────────────────────────────────────────────────────────────────┐
-│ CASE 1: f(n) = O(nˡᵒᵍᵇ⁽ᵃ⁾ - ε) for some ε > 0                     │
-│         → leaves dominate                                            │
-│         T(n) = Θ(nˡᵒᵍᵇ⁽ᵃ⁾)                                         │
-│                                                                      │
-│ CASE 2: f(n) = Θ(nˡᵒᵍᵇ⁽ᵃ⁾ · logᵏ(n)) for some k ≥ 0              │
-│         → equally distributed (add a log factor)                    │
-│         T(n) = Θ(nˡᵒᵍᵇ⁽ᵃ⁾ · logᵏ⁺¹(n))                           │
-│                                                                      │
-│ CASE 3: f(n) = Ω(nˡᵒᵍᵇ⁽ᵃ⁾ ⁺ ε) for some ε > 0                     │
-│         AND a·f(n/b) ≤ c·f(n) for some c < 1 (regularity cond.)   │
-│         → root dominates                                            │
-│         T(n) = Θ(f(n))                                              │
-└──────────────────────────────────────────────────────────────────────┘
+CASE 1: f(n) = O(nˡᵒᵍᵇ⁽ᵃ⁾ - ε) for some ε > 0
+        → leaves dominate
+        T(n) = Θ(nˡᵒᵍᵇ⁽ᵃ⁾)
+
+CASE 2: f(n) = Θ(nˡᵒᵍᵇ⁽ᵃ⁾ · logᵏ(n)) for some k ≥ 0
+        → equally distributed (add a log factor)
+        T(n) = Θ(nˡᵒᵍᵇ⁽ᵃ⁾ · logᵏ⁺¹(n))
+
+CASE 3: f(n) = Ω(nˡᵒᵍᵇ⁽ᵃ⁾ ⁺ ε) for some ε > 0
+        AND a·f(n/b) ≤ c·f(n) for some c < 1 (regularity cond.)
+        → root dominates
+        T(n) = Θ(f(n))
 ```
 
 ### Worked Examples (Must Memorize)

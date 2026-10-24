@@ -43,34 +43,19 @@
 
   COMPARISON TABLE:
   ════════════════════════
+```
 
-  ┌────────────────────────────────┬──────────────────────┬─────────────────────┐
-  │  DIMENSION                    │  BUILDER             │  TELESCOPING         │
-  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
-  │  N optional params             │  1 class             │  2^N constructors   │
-  │  (where N = 5)                │  + 1 Builder inner   │  required!          │
-  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
-  │  Readability at call site     │  YES: Clear names    │  NO: positional args│
-  │                                │    .phone("123")     │    User("John",     │
-  │                                │                      │    null, "john@",   │
-  │                                │                      │    null, 30)        │
-  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
-  │  Immutability                 │  YES: final fields   │  NO: mutable during │
-  │                                │    set in constructor│    construction     │
-  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
-  │  Validation                   │  YES: Centralized    │  NO: scattered      │
-  │                                │    in build()        │    across ctors     │
-  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
-  │  Adding optional param         │  2 lines: setter +   │  16 constructor     │
-  │                                │  field               │  variants modified! │
-  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
-  │  IDE auto-complete            │  YES: Builder        │  NO: positional,    │
-  │                                │    methods named     │    no name hints    │
-  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
-  │  Lombok @Builder              │  YES: One annotation │  NO: manual all 32  │
-  │  (zero-boilerplate)           │    generates all     │    constructors     │
-  └────────────────────────────────┴──────────────────────┴─────────────────────┘
+| DIMENSION | BUILDER | TELESCOPING |
+| --- | --- | --- |
+| N optional params (where N = 5) | 1 class + 1 Builder inner | 2^N constructors required! |
+| Readability at call site | YES: Clear names .phone("123") | NO: positional args<br>User("John", null, "john@", null, 30) |
+| Immutability | YES: final fields set in constructor | NO: mutable during construction |
+| Validation | YES: Centralized in build() | NO: scattered across ctors |
+| Adding optional param | 2 lines: setter + field | 16 constructor variants modified! |
+| IDE auto-complete | YES: Builder methods named | NO: positional, no name hints |
+| Lombok @Builder (zero-boilerplate) | YES: One annotation generates all | NO: manual all 32 constructors |
 
+```
   BUILDER + FLUENT INTERFACE:
   ══════════════════════════
 
@@ -111,45 +96,16 @@
 
 ## Breadth Comparison 1: Creational Pattern Selection Table
 
-```
-┌─────────────────┬───────────────────┬─────────────────┬────────────────────────────┐
-│  PATTERN        │  WHEN TO USE      │  TRADE-OFFS     │  SELECTION CRITERIA        │
-├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
-│  Factory        │  Type determined  │  Decouples      │  Do you need to create     │
-│  Method         │  at subclass      │  creator from   │  ONE family of related     │
-│                 │  (Collection.     │  concrete type; │  objects with shared       │
-│                 │  iterator())      │  adds indirection│  configuration?           │
-├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
-│  Abstract       │  Creating         │  More complex   │  Need Button + Scrollbar   │
-│  Factory        │  families of      │  (many factory  │  to both be Windows-style  │
-│                 │  related objects  │  classes);      │  or both Mac-style? Use    │
-│                 │  (e.g., UI:       │  hard to add    │  Abstract Factory          │
-│                 │  Button+TextField │  new product    │                             │
-│                 │  must match style)│  families       │                             │
-├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
-│  Builder        │  Complex object,  │  More code      │  Object has 4+ fields,     │
-│                 │  many optional    │  (Builder class);│  some required, some      │
-│                 │  params, need     │  1 extra object │  optional; or validation   │
-│                 │  immutability     │  allocation     │  needed; or want readable  │
-│                 │                   │                 │  call site                 │
-├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
-│  Prototype      │  Creating objects │  Cloning can    │  Need copies of complex   │
-│                 │  by cloning       │  be complex for │  objects; avoid rebuilding│
-│                 │  existing one     │  deep copies    │  from scratch; e.g.,      │
-│                 │  (Shape.clone())  │  (circular refs)│  prototype registry       │
-├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
-│  Singleton      │  One instance,    │  Global state;  │  Framework globals (log,  │
-│  (use DI)       │  globally         │  hides deps;    │  config); but prefer DI   │
-│                 │  accessible       │  untestable     │  + Spring @Component      │
-│                 │  (Registry)       │                 │  over self-managed        │
-│                 │                   │                 │  getInstance()            │
-├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
-│  Object Pool    │  Reuse expensive  │  Must manage    │  DB connections, thread   │
-│  (not GoF)      │  objects          │  pool lifecycle;│  pools, string pool       │
-│                 │                   │  memory if pool │  (reuse String literals)  │
-│                 │                   │  too large      │                            │
-└─────────────────┴───────────────────┴─────────────────┴────────────────────────────┘
+| PATTERN | WHEN TO USE | TRADE-OFFS | SELECTION CRITERIA |
+| --- | --- | --- | --- |
+| Factory<br>Method | Type determined at subclass (Collection. iterator()) | Decouples creator from concrete type; adds indirection | Do you need to create<br>ONE family of related objects with shared configuration? |
+| Abstract<br>Factory | Creating families of related objects (e.g., UI:<br>Button+TextField must match style) | More complex (many factory classes); hard to add new product families | Need Button + Scrollbar to both be Windows-style or both Mac-style? Use<br>Abstract Factory |
+| Builder | Complex object, many optional params, need immutability | More code (Builder class);<br>1 extra object allocation | Object has 4+ fields, some required, some optional; or validation needed; or want readable call site |
+| Prototype | Creating objects by cloning existing one (Shape.clone()) | Cloning can be complex for deep copies (circular refs) | Need copies of complex objects; avoid rebuilding from scratch; e.g., prototype registry |
+| Singleton (use DI) | One instance, globally accessible (Registry) | Global state; hides deps; untestable | Framework globals (log, config); but prefer DI + Spring @Component over self-managed getInstance() |
+| Object Pool (not GoF) | Reuse expensive objects | Must manage pool lifecycle; memory if pool too large | DB connections, thread pools, string pool (reuse String literals) |
 
+```
   QUICK DECISION GUIDE:
   ══════════════════════════
   Need ONE of something, global access?  → Singleton (or DI)

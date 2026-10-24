@@ -96,19 +96,13 @@ A **loop invariant** is a property that:
 
 This is mathematical induction on the iteration number. The invariant is the inductive hypothesis.
 
-```
-Structure of a loop invariant proof:
+**Structure of a loop invariant proof: — INITIALIZATION  │  Before first iteration begins, — │  the invariant holds.**
 
-  ┌─────────────────────────────────────────────────────┐
-  │  INITIALIZATION  │  Before first iteration begins,  │
-  │                  │  the invariant holds.             │
-  ├─────────────────────────────────────────────────────┤
-  │  MAINTENANCE     │  If it holds at start of iter i, │
-  │                  │  it holds at start of iter i+1.  │
-  ├─────────────────────────────────────────────────────┤
-  │  TERMINATION     │  When loop ends, invariant gives  │
-  │                  │  us the answer we want.           │
-  └─────────────────────────────────────────────────────┘
+```text
+MAINTENANCE     │  If it holds at start of iter i,
+                │  it holds at start of iter i+1.
+TERMINATION     │  When loop ends, invariant gives
+                │  us the answer we want.
 ```
 
 ### The Mental Model: What Does the Invariant SAY?

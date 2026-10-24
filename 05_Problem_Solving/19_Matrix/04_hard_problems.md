@@ -4,11 +4,10 @@
 > Page 4 of 5 in **19. Matrix / Grid — Complete Problem Guide**
 
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                          HARD — 4 PROBLEMS                                   ║
-║  Advanced BFS, Dijkstra on grid, Union-Find, 3D heap BFS                     ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**HARD — 4 PROBLEMS**
+
+```text
+Advanced BFS, Dijkstra on grid, Union-Find, 3D heap BFS
 ```
 
 ## 1. [Shortest Path in Binary Matrix](https://leetcode.com/problems/shortest-path-in-binary-matrix/) (LC 1091) ⭐⭐⭐ Hard
@@ -18,15 +17,10 @@
 
 **Problem**: Given an `n × n` binary grid, return the length of the shortest clear path from top-left `(0,0)` to bottom-right `(n-1,n-1)`. A clear path only uses cells with value 0 and moves 8-directionally (including diagonals). Return -1 if no path exists. Path length = number of cells visited.
 
-```
-┌───┬───┬───┐
-│ 0 │ 0 │ 0 │   Shortest path: (0,0) → (1,1) → (2,2)
-├───┼───┼───┤   Length = 3 (count cells, not edges)
-│ 1 │ 1 │ 0 │
-├───┼───┼───┤   The diagonal shortcut through center
-│ 1 │ 1 │ 0 │   is faster than going around.
-└───┴───┴───┘
-```
+|  | 0 | 0 | 0 | Shortest path: (0,0) → (1,1) → (2,2) |
+| --- | --- | --- | --- | --- |
+| ├───┼───┼───┤   Length = 3 (count cells, not edges) | 1 | 1 | 0 |  |
+| ├───┼───┼───┤   The diagonal shortcut through center | 1 | 1 | 0 | is faster than going around. |
 
 **Key Insight**: Shortest path in an unweighted graph = BFS. The twist: 8 directions instead of 4. BFS guarantees the first time we reach `(n-1, n-1)` is via the shortest path.
 
@@ -93,15 +87,11 @@ class Solution {
 
 **Problem**: Given an `n × n` binary grid, you may change at most one `0` to `1`. Return the size of the largest island.
 
-```
-┌───┬───┬───┐
-│ 1 │ 0 │ 1 │   Islands: top-left (size 1, id=2), top-right (size 1, id=3),
-├───┼───┼───┤             bottom (size 3, id=4)
-│ 0 │ 0 │ 1 │
-├───┼───┼───┤   Flip (0,1) to 1: connects id=2 (size 1) + id=3 (size 1)
-│ 1 │ 1 │ 1 │              + 1 (the flipped cell) = 3
-└───┴───┴───┘   Flip (1,0) to 1: connects id=2 (1) + id=4 (3) + 1 = 5 ← answer
-```
+|  | 1 | 0 | 1 | Islands: top-left (size 1, id=2), top-right (size 1, id=3), |
+| --- | --- | --- | --- | --- |
+| ├───┼───┼───┤             bottom (size 3, id=4) | 0 | 0 | 1 |  |
+| ├───┼───┼───┤   Flip (0,1) to 1: connects id=2 (size 1) + id=3 (size 1) | 1 | 1 | 1 | + 1 (the flipped cell) = 3 |
+| └───┴───┴───┘   Flip (1,0) to 1: connects id=2 (1) + id=4 (3) + 1 = 5 ← answer |  |  |  |  |
 
 **Key Insight**: Two-pass approach:
 
@@ -188,15 +178,11 @@ class Solution {
 
 **Problem**: An `n × n` grid where `grid[i][j]` = elevation. At time `t`, you can visit any cell with elevation ≤ `t`. You can move 4-directionally between adjacent cells if both have elevation ≤ `t`. Find the minimum `t` such that you can travel from `(0,0)` to `(n-1,n-1)`.
 
-```
-┌───┬───┬───┐
-│ 0 │ 1 │ 2 │   At t=0: only (0,0) accessible
-├───┼───┼───┤   At t=3: path (0,0)→(1,0)→(2,0)→(2,1)→(2,2)
-│ 3 │ 8 │ 4 │        max elevation on path = 3+... wait
-├───┼───┼───┤   Answer = max elevation on the path we choose,
-│ 5 │ 6 │ 7 │   minimized over all possible paths.
-└───┴───┴───┘   = minimax path problem!
-```
+|  | 0 | 1 | 2 | At t=0: only (0,0) accessible |
+| --- | --- | --- | --- | --- |
+| ├───┼───┼───┤   At t=3: path (0,0)→(1,0)→(2,0)→(2,1)→(2,2) | 3 | 8 | 4 | max elevation on path = 3+... wait |
+| ├───┼───┼───┤   Answer = max elevation on the path we choose, | 5 | 6 | 7 | minimized over all possible paths. |
+| └───┴───┴───┘   = minimax path problem! |  |  |  |  |
 
 **Key Insight**: We need the path from `(0,0)` to `(n-1,n-1)` that minimizes the maximum elevation along the path. This is a **minimax path problem**, solvable with a min-heap BFS (essentially Dijkstra where "distance" = max elevation so far).
 
@@ -304,13 +290,14 @@ class Solution {
 
 ```
 Elevation map:               Water trapped:
-┌───┬───┬───┬───┬───┐      The border forms a "wall".
-│ 1 │ 4 │ 3 │ 1 │ 3 │      Water fills up to the minimum
-├───┼───┼───┼───┼───┤      border height, then overflows.
-│ 3 │ 2 │ 1 │ 3 │ 2 │      Total water = 4
-├───┼───┼───┼───┼───┤
-│ 2 │ 3 │ 3 │ 2 │ 3 │      Cell (1,1)h=2: water to level 3, traps 1
-└───┴───┴───┴───┴───┘      Cell (1,2)h=1: water to level 3, traps 2
+```
+
+| ┌───┬───┬───┬───┬───┐      The border forms a "wall". | 1 | 4 | 3 | 1 | 3 | Water fills up to the minimum |
+| --- | --- | --- | --- | --- | --- | --- |
+| ├───┼───┼───┼───┼───┤      border height, then overflows. | 3<br>2 | 2<br>3 | 1<br>3 | 3<br>2 | 2<br>3 | Total water = 4<br>Cell (1,1)h=2: water to level 3, traps 1 |
+| └───┴───┴───┴───┴───┘      Cell (1,2)h=1: water to level 3, traps 2 |  |  |  |  |  |  |
+
+```
                              Cell (2,1)h=3: no trapping (already at 3)
                              ...
 ```

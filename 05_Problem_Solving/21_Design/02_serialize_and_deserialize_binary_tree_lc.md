@@ -56,17 +56,14 @@ KEY: Using "null" markers preserves the tree structure uniquely.
 
 **LeetCode 341** | **Difficulty:** Medium
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  FLATTEN NESTED LIST ITERATOR (LeetCode 341 - Medium)                     ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given nested list of integers, implement iterator to flatten it.         ║
-║  Example: [[1,1],2,[1,1]] → 1, 1, 2, 1, 1                                 ║
-║                                                                           ║
-║  KEY: Use stack. Push elements in reverse. Flatten on hasNext().          ║
-║  TIME: O(1) amortized next/hasNext | SPACE: O(D) depth of nesting         ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**FLATTEN NESTED LIST ITERATOR (LeetCode 341 - Medium)**
+
+```text
+Given nested list of integers, implement iterator to flatten it.
+Example: [[1,1],2,[1,1]] → 1, 1, 2, 1, 1
+
+KEY: Use stack. Push elements in reverse. Flatten on hasNext().
+TIME: O(1) amortized next/hasNext | SPACE: O(D) depth of nesting
 ```
 
 ```java
@@ -100,17 +97,14 @@ public class NestedIterator implements Iterator<Integer> {
 
 **LeetCode 622** | **Difficulty:** Medium
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  DESIGN CIRCULAR QUEUE (LeetCode 622 - Medium)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Implement circular queue with: enQueue, deQueue, Front, Rear,            ║
-║  isEmpty, isFull.                                                         ║
-║                                                                           ║
-║  KEY: Array with head/tail pointers, modular arithmetic.                  ║
-║  All operations O(1)                                                      ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**DESIGN CIRCULAR QUEUE (LeetCode 622 - Medium)**
+
+```text
+Implement circular queue with: enQueue, deQueue, Front, Rear,
+isEmpty, isFull.
+
+KEY: Array with head/tail pointers, modular arithmetic.
+All operations O(1)
 ```
 
 ```java
@@ -152,19 +146,16 @@ class MyCircularQueue {
 
 **LeetCode 1146** | **Difficulty:** Medium
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  SNAPSHOT ARRAY (LeetCode 1146 - Medium)                                  ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Implement: set(index, val), snap() → snapId, get(index, snapId)          ║
-║                                                                           ║
-║  Example:                                                                 ║
-║  set(0,5) → snap()=0 → set(0,6) → get(0,0) → 5                            ║
-║                                                                           ║
-║  KEY: Store list of (snapId, value) per index. Binary search on get.      ║
-║  set/snap O(1), get O(log S) where S = number of snaps                    ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**SNAPSHOT ARRAY (LeetCode 1146 - Medium)**
+
+```text
+Implement: set(index, val), snap() → snapId, get(index, snapId)
+
+Example:
+set(0,5) → snap()=0 → set(0,6) → get(0,0) → 5
+
+KEY: Store list of (snapId, value) per index. Binary search on get.
+set/snap O(1), get O(log S) where S = number of snaps
 ```
 
 ```java
@@ -214,17 +205,14 @@ class SnapshotArray {
 
 **LeetCode 2034** | **Difficulty:** Medium
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  STOCK PRICE FLUCTUATION (LeetCode 2034 - Medium)                         ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Implement: update(timestamp, price), current(), maximum(), minimum()     ║
-║  update can CORRECT previous timestamp's price.                           ║
-║                                                                           ║
-║  KEY: HashMap for timestamp→price + TreeMap for price frequencies.        ║
-║  update O(log n), current/max/min O(1)                                    ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**STOCK PRICE FLUCTUATION (LeetCode 2034 - Medium)**
+
+```text
+Implement: update(timestamp, price), current(), maximum(), minimum()
+update can CORRECT previous timestamp's price.
+
+KEY: HashMap for timestamp→price + TreeMap for price frequencies.
+update O(log n), current/max/min O(1)
 ```
 
 ```java
@@ -263,21 +251,18 @@ class StockPrice {
 
 **LeetCode 295** | **Difficulty:** Hard
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  FIND MEDIAN FROM DATA STREAM (LeetCode 295 - Hard)                       ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  addNum(int num) — add integer from data stream                           ║
-║  findMedian() — return median of all elements so far                      ║
-║                                                                           ║
-║  Example:                                                                 ║
-║  add(1), add(2) → median=1.5, add(3) → median=2.0                         ║
-║                                                                           ║
-║  KEY: Two heaps — maxHeap for lower half, minHeap for upper half.         ║
-║  Keep balanced: |maxHeap.size - minHeap.size| <= 1                        ║
-║  addNum O(log n), findMedian O(1)                                         ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**FIND MEDIAN FROM DATA STREAM (LeetCode 295 - Hard)**
+
+```text
+addNum(int num) — add integer from data stream
+findMedian() — return median of all elements so far
+
+Example:
+add(1), add(2) → median=1.5, add(3) → median=2.0
+
+KEY: Two heaps — maxHeap for lower half, minHeap for upper half.
+Keep balanced: |maxHeap.size - minHeap.size| <= 1
+addNum O(log n), findMedian O(1)
 ```
 
 ```java

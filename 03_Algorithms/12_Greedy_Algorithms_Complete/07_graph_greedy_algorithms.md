@@ -375,35 +375,31 @@ public int dpCoinChange(int[] coins, int amount) {
 
 ### Greedy Choice Patterns
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│               COMMON GREEDY STRATEGIES                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  1. SORT BY END TIME                                            │
-│     → Max non-overlapping intervals                             │
-│     → Activity selection                                        │
-│                                                                 │
-│  2. SORT BY START TIME                                          │
-│     → Merge intervals                                           │
-│     → Cover range with min intervals                            │
-│                                                                 │
-│  3. SORT BY RATIO (value/weight)                                │
-│     → Fractional knapsack                                       │
-│                                                                 │
-│  4. SORT BY ONE, SECONDARY BY ANOTHER                           │
-│     → Job scheduling (profit desc, deadline)                    │
-│     → Queue reconstruction (height desc, k asc)                 │
-│                                                                 │
-│  5. TWO POINTERS (heaviest + lightest)                          │
-│     → Boat problem                                              │
-│     → Two sum variants                                          │
-│                                                                 │
-│  6. TRACK FARTHEST/EARLIEST ENDING                              │
-│     → Jump game                                                 │
-│     → Interval covering                                         │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**COMMON GREEDY STRATEGIES**
+
+```text
+1. SORT BY END TIME
+   → Max non-overlapping intervals
+   → Activity selection
+
+2. SORT BY START TIME
+   → Merge intervals
+   → Cover range with min intervals
+
+3. SORT BY RATIO (value/weight)
+   → Fractional knapsack
+
+4. SORT BY ONE, SECONDARY BY ANOTHER
+   → Job scheduling (profit desc, deadline)
+   → Queue reconstruction (height desc, k asc)
+
+5. TWO POINTERS (heaviest + lightest)
+   → Boat problem
+   → Two sum variants
+
+6. TRACK FARTHEST/EARLIEST ENDING
+   → Jump game
+   → Interval covering
 ```
 
 ### Common Mistakes to Avoid
@@ -429,16 +425,14 @@ public int dpCoinChange(int[] coins, int amount) {
 
 **Master These 3 Greedy Patterns:**
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║     GREEDY ESSENTIALS                                         ║
-╠═══════════════════════════════════════════════════════════════╣
-║  1. INTERVAL SELECTION: Sort by end time, pick earliest       ║
-║                                                               ║
-║  2. INTERVAL MERGING: Sort by start time, extend end          ║
-║                                                               ║
-║  3. TWO POINTER: Sort both, match greedily                    ║
-╚═══════════════════════════════════════════════════════════════╝
+**GREEDY ESSENTIALS**
+
+```text
+1. INTERVAL SELECTION: Sort by end time, pick earliest
+
+2. INTERVAL MERGING: Sort by start time, extend end
+
+3. TWO POINTER: Sort both, match greedily
 ```
 
 **Pro Tip:** If greedy doesn't work for a problem, try DP. If you can prove the greedy choice property (exchange argument), greedy is usually faster!

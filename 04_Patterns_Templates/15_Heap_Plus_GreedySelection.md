@@ -325,17 +325,18 @@ Not until `collect()` (or any terminal operation). `filter()` and `map()` are LA
 
 ```
 EDGE CASES:
-┌──────────────────────────────┬─────────────────────────────────────────┐
-│ Edge Case                    │ Handling                                │
-├──────────────────────────────┼─────────────────────────────────────────┤
-│ k = 1                        │ Heap of size 1 = max element            │
-│ k = n                        │ Heap of size n → just min of all        │
-│ All same values [3,3,3,3]    │ Works correctly, peek always = 3        │
-│ Negative numbers             │ PQ handles naturally                    │
-│ Single element stream        │ Median = that element                   │
-│ k > n (invalid)              │ Handle before processing                │
-└──────────────────────────────┴─────────────────────────────────────────┘
+```
 
+| Edge Case | Handling |
+| --- | --- |
+| k = 1 | Heap of size 1 = max element |
+| k = n | Heap of size n → just min of all |
+| All same values [3,3,3,3] | Works correctly, peek always = 3 |
+| Negative numbers | PQ handles naturally |
+| Single element stream | Median = that element |
+| k > n (invalid) | Handle before processing |
+
+```
 COMMON MISTAKES:
 1. Min-heap vs Max-heap confusion for Kth Largest
    Kth LARGEST uses Min-heap (evict smallest). Kth SMALLEST uses Max-heap.

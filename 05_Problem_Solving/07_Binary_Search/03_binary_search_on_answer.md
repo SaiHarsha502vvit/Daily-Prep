@@ -9,20 +9,16 @@
 **LeetCode 69** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/sqrtx/](https://leetcode.com/problems/sqrtx/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  SQRT(X) - Binary Search on Answer                                        ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find integer square root (truncate decimals).                            ║
-║                                                                           ║
-║  Input: x = 8                                                             ║
-║  Output: 2 (√8 = 2.828..., truncated to 2)                                ║
-║                                                                           ║
-║  Binary search range: [1, x]                                              ║
-║  Find largest n where n*n <= x                                            ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**SQRT(X) - Binary Search on Answer**
+
+```text
+Find integer square root (truncate decimals).
+
+Input: x = 8
+Output: 2 (√8 = 2.828..., truncated to 2)
+
+Binary search range: [1, x]
+Find largest n where n*n <= x
 ```
 
 ```java
@@ -54,26 +50,22 @@ public int mySqrt(int x) {
 **LeetCode 875** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/koko-eating-bananas/](https://leetcode.com/problems/koko-eating-bananas/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  KOKO EATING BANANAS                                                      ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Koko eats k bananas/hour. Guard returns in h hours.                      ║
-║  Find minimum k to eat all bananas before guard returns.                  ║
-║                                                                           ║
-║  Input: piles = [3, 6, 7, 11], h = 8                                      ║
-║  Output: 4                                                                ║
-║  Explanation: At k=4, time needed:                                        ║
-║  pile 3: ceil(3/4) = 1 hour                                               ║
-║  pile 6: ceil(6/4) = 2 hours                                              ║
-║  pile 7: ceil(7/4) = 2 hours                                              ║
-║  pile 11: ceil(11/4) = 3 hours                                            ║
-║  Total: 8 hours ≤ 8 ✓                                                     ║
-║                                                                           ║
-║  Binary search on k: range [1, max(piles)]                                ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**KOKO EATING BANANAS**
+
+```text
+Koko eats k bananas/hour. Guard returns in h hours.
+Find minimum k to eat all bananas before guard returns.
+
+Input: piles = [3, 6, 7, 11], h = 8
+Output: 4
+Explanation: At k=4, time needed:
+pile 3: ceil(3/4) = 1 hour
+pile 6: ceil(6/4) = 2 hours
+pile 7: ceil(7/4) = 2 hours
+pile 11: ceil(11/4) = 3 hours
+Total: 8 hours ≤ 8 ✓
+
+Binary search on k: range [1, max(piles)]
 ```
 
 ```java
@@ -109,26 +101,22 @@ private boolean canFinish(int[] piles, int h, int k) {
 **LeetCode 1011** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/](https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  CAPACITY TO SHIP PACKAGES                                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find minimum ship capacity to ship all packages in days days.            ║
-║  Packages must be shipped IN ORDER.                                       ║
-║                                                                           ║
-║  Input: weights = [1,2,3,4,5,6,7,8,9,10], days = 5                        ║
-║  Output: 15                                                               ║
-║  Explanation:                                                             ║
-║  Day 1: 1,2,3,4,5 (sum=15)                                                ║
-║  Day 2: 6,7 (sum=13)                                                      ║
-║  Day 3: 8 (sum=8)                                                         ║
-║  Day 4: 9 (sum=9)                                                         ║
-║  Day 5: 10 (sum=10)                                                       ║
-║                                                                           ║
-║  Binary search on capacity: [max(weights), sum(weights)]                  ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**CAPACITY TO SHIP PACKAGES**
+
+```text
+Find minimum ship capacity to ship all packages in days days.
+Packages must be shipped IN ORDER.
+
+Input: weights = [1,2,3,4,5,6,7,8,9,10], days = 5
+Output: 15
+Explanation:
+Day 1: 1,2,3,4,5 (sum=15)
+Day 2: 6,7 (sum=13)
+Day 3: 8 (sum=8)
+Day 4: 9 (sum=9)
+Day 5: 10 (sum=10)
+
+Binary search on capacity: [max(weights), sum(weights)]
 ```
 
 ```java
@@ -171,23 +159,19 @@ private boolean canShip(int[] weights, int days, int capacity) {
 **LeetCode 410** | **Difficulty:** Hard
 🔗 [https://leetcode.com/problems/split-array-largest-sum/](https://leetcode.com/problems/split-array-largest-sum/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  SPLIT ARRAY LARGEST SUM                                                  ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Split array into k subarrays. Minimize the largest subarray sum.         ║
-║                                                                           ║
-║  Input: nums = [7,2,5,10,8], k = 2                                        ║
-║  Output: 18                                                               ║
-║  Explanation:                                                             ║
-║  Split: [7,2,5] and [10,8]                                                ║
-║  Sums: 14 and 18                                                          ║
-║  Largest sum = 18 (minimized)                                             ║
-║                                                                           ║
-║  Binary search on max sum allowed                                         ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**SPLIT ARRAY LARGEST SUM**
+
+```text
+Split array into k subarrays. Minimize the largest subarray sum.
+
+Input: nums = [7,2,5,10,8], k = 2
+Output: 18
+Explanation:
+Split: [7,2,5] and [10,8]
+Sums: 14 and 18
+Largest sum = 18 (minimized)
+
+Binary search on max sum allowed
 ```
 
 ```java
@@ -229,46 +213,41 @@ private boolean canSplit(int[] nums, int k, int maxSum) {
 
 **LeetCode 719** | **Difficulty:** Hard | **Premium-Level**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  FIND K-TH SMALLEST PAIR DISTANCE                                         ║
-║  (LeetCode 719 - Hard)                                                    ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given array nums, define distance between pair (i,j) as |nums[i]-nums[j] ║
-║  Find the k-th smallest distance among all pairs.                         ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: nums = [1, 3, 1], k = 1                                           ║
-║  Output: 0                                                                ║
-║  Explanation:                                                             ║
-║  All distances: (1,3)=2, (1,1)=0, (3,1)=2                                 ║
-║  Sorted: [0, 2, 2]                                                        ║
-║  1st smallest = 0                                                         ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: nums = [1, 1, 1], k = 2                                           ║
-║  Output: 0                                                                ║
-║                                                                           ║
-║  Example 3:                                                               ║
-║  Input: nums = [1, 6, 1], k = 3                                           ║
-║  Output: 5                                                                ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  APPROACH: Binary search on distance + count pairs with dist <= mid       ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - n == nums.length                                                       ║
-║  - 2 <= n <= 10^4                                                         ║
-║  - 0 <= nums[i] <= 10^6                                                   ║
-║  - 1 <= k <= n * (n - 1) / 2                                              ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**FIND K-TH SMALLEST PAIR DISTANCE — (LeetCode 719 - Hard)**
+
+```text
+Given array nums, define distance between pair (i,j) as |nums[i]-nums[j]
+Find the k-th smallest distance among all pairs.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: nums = [1, 3, 1], k = 1
+Output: 0
+Explanation:
+All distances: (1,3)=2, (1,1)=0, (3,1)=2
+Sorted: [0, 2, 2]
+1st smallest = 0
+
+Example 2:
+Input: nums = [1, 1, 1], k = 2
+Output: 0
+
+Example 3:
+Input: nums = [1, 6, 1], k = 3
+Output: 5
+
+─────────────────────────────────────────────────────────────────────
+
+APPROACH: Binary search on distance + count pairs with dist <= mid
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- n == nums.length
+- 2 <= n <= 10^4
+- 0 <= nums[i] <= 10^6
+- 1 <= k <= n * (n - 1) / 2
 ```
 
 ```java

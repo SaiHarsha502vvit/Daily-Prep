@@ -6,25 +6,23 @@
 
 ## Problem 100: Balanced Brackets (HackerEarth)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  BALANCED BRACKETS - Extended validation                       │
-├────────────────────────────────────────────────────────────────┤
-│  Given a string containing brackets and other characters,      │
-│  determine if the brackets are balanced.                       │
-│                                                                │
-│  Valid: "{[()]}", "a{b[c(d)e]f}g", "(())()"                    │
-│  Invalid: "{[}]", "(()", "a{b(c]d}e"                           │
-│                                                                │
-│  Examples:                                                     │
-│  Input: "{[a+b]*[c-d]}"  → Output: "YES"                       │
-│  Input: "({[}])"         → Output: "NO" (mismatched)           │
-│  Input: "((()))"         → Output: "YES"                       │
-│                                                                │
-│  Constraints:                                                  │
-│  - 1 <= |s| <= 10^5                                            │
-│  - String contains alphanumeric and bracket characters         │
-└────────────────────────────────────────────────────────────────┘
+**BALANCED BRACKETS - Extended validation**
+
+```text
+Given a string containing brackets and other characters,
+determine if the brackets are balanced.
+
+Valid: "{[()]}", "a{b[c(d)e]f}g", "(())()"
+Invalid: "{[}]", "(()", "a{b(c]d}e"
+
+Examples:
+Input: "{[a+b]*[c-d]}"  → Output: "YES"
+Input: "({[}])"         → Output: "NO" (mismatched)
+Input: "((()))"         → Output: "YES"
+
+Constraints:
+- 1 <= |s| <= 10^5
+- String contains alphanumeric and bracket characters
 ```
 
 **Solution:**

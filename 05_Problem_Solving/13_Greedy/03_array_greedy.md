@@ -51,19 +51,17 @@ public boolean canJump(int[] nums) {
 
 **LeetCode 45** 🔗 https://leetcode.com/problems/jump-game-ii/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  JUMP GAME II - Minimum jumps to reach end                     │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [2, 3, 1, 1, 4]                                        │
-│                                                                │
-│  Jump 1: 0 → 1 (jump to index 1)                               │
-│  Jump 2: 1 → 4 (jump to index 4)                               │
-│                                                                │
-│  Output: 2 jumps                                               │
-│                                                                │
-│  Greedy: BFS-like level traversal                              │
-└────────────────────────────────────────────────────────────────┘
+**JUMP GAME II - Minimum jumps to reach end**
+
+```text
+nums = [2, 3, 1, 1, 4]
+
+Jump 1: 0 → 1 (jump to index 1)
+Jump 2: 1 → 4 (jump to index 4)
+
+Output: 2 jumps
+
+Greedy: BFS-like level traversal
 ```
 
 **Solution:**
@@ -93,25 +91,23 @@ public int jump(int[] nums) {
 
 **LeetCode 134** 🔗 https://leetcode.com/problems/gas-station/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  GAS STATION - Find starting station for circular trip         │
-├────────────────────────────────────────────────────────────────┤
-│  gas  = [1, 2, 3, 4, 5]                                        │
-│  cost = [3, 4, 5, 1, 2]                                        │
-│                                                                │
-│  Station: 0   1   2   3   4                                    │
-│  net:    -2  -2  -2  +3  +3                                    │
-│                                                                │
-│  Start at station 3:                                           │
-│  3→4: tank = 4-1 = 3                                           │
-│  4→0: tank = 3+5-2 = 6                                         │
-│  0→1: tank = 6+1-3 = 4                                         │
-│  1→2: tank = 4+2-4 = 2                                         │
-│  2→3: tank = 2+3-5 = 0 ✓                                       │
-│                                                                │
-│  Output: 3                                                     │
-└────────────────────────────────────────────────────────────────┘
+**GAS STATION - Find starting station for circular trip**
+
+```text
+gas  = [1, 2, 3, 4, 5]
+cost = [3, 4, 5, 1, 2]
+
+Station: 0   1   2   3   4
+net:    -2  -2  -2  +3  +3
+
+Start at station 3:
+3→4: tank = 4-1 = 3
+4→0: tank = 3+5-2 = 6
+0→1: tank = 6+1-3 = 4
+1→2: tank = 4+2-4 = 2
+2→3: tank = 2+3-5 = 0 ✓
+
+Output: 3
 ```
 
 **Solution:**
@@ -144,23 +140,21 @@ public int canCompleteCircuit(int[] gas, int[] cost) {
 
 **LeetCode 135** 🔗 https://leetcode.com/problems/candy/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  CANDY - Min candies for ratings                               │
-├────────────────────────────────────────────────────────────────┤
-│  ratings = [1, 0, 2]                                           │
-│                                                                │
-│  Rules:                                                        │
-│  - Each child gets at least 1 candy                            │
-│  - Higher rating than neighbor → more candies than neighbor    │
-│                                                                │
-│  Candies: [2, 1, 2]                                            │
-│  Child 0: rating 1 > rating 0, gets 2                          │
-│  Child 1: lowest rating, gets 1                                │
-│  Child 2: rating 2 > rating 0, gets 2                          │
-│                                                                │
-│  Output: 5 total candies                                       │
-└────────────────────────────────────────────────────────────────┘
+**CANDY - Min candies for ratings**
+
+```text
+ratings = [1, 0, 2]
+
+Rules:
+- Each child gets at least 1 candy
+- Higher rating than neighbor → more candies than neighbor
+
+Candies: [2, 1, 2]
+Child 0: rating 1 > rating 0, gets 2
+Child 1: lowest rating, gets 1
+Child 2: rating 2 > rating 0, gets 2
+
+Output: 5 total candies
 ```
 
 **Solution:**

@@ -385,20 +385,18 @@ WHY B+ TREE for DATABASES?
 
 ## ⚖️ Part 10: Comparison Table
 
-```
-┌───────────────────┬─────────────┬─────────────┬─────────────────────┐
-│ Data Structure    │ Search      │ Insert      │ Space               │
-├───────────────────┼─────────────┼─────────────┼─────────────────────┤
-│ Trie              │ O(m)        │ O(m)        │ O(ALPHABET × m × n) │
-│ Segment Tree      │ O(log n)    │ O(log n)    │ O(4n)               │
-│ Fenwick Tree      │ O(log n)    │ O(log n)    │ O(n)                │
-│ Disjoint Set      │ O(α(n))≈O(1)│ O(α(n))≈O(1)│ O(n)                │
-│ Skip List         │ O(log n)*   │ O(log n)*   │ O(n)*               │
-│ Bloom Filter      │ O(k)        │ O(k)        │ O(m) bits           │
-│ LRU Cache         │ O(1)        │ O(1)        │ O(n)                │
-│ B-Tree (order m)  │ O(log n)    │ O(log n)    │ O(n)                │
-└───────────────────┴─────────────┴─────────────┴─────────────────────┘
+| Data Structure | Search | Insert | Space |
+| --- | --- | --- | --- |
+| Trie | O(m) | O(m) | O(ALPHABET × m × n) |
+| Segment Tree | O(log n) | O(log n) | O(4n) |
+| Fenwick Tree | O(log n) | O(log n) | O(n) |
+| Disjoint Set | O(α(n))≈O(1) | O(α(n))≈O(1) | O(n) |
+| Skip List | O(log n)* | O(log n)* | O(n)* |
+| Bloom Filter | O(k) | O(k) | O(m) bits |
+| LRU Cache | O(1) | O(1) | O(n) |
+| B-Tree (order m) | O(log n) | O(log n) | O(n) |
 
+```
 * = average case for Skip List
 m = string length for Trie
 k = number of hash functions for Bloom Filter
@@ -415,7 +413,7 @@ _These data structures are the building blocks of modern systems!_ 🏗️
 
 ### Sparse Table (Range Minimum Query)
 
-```
+```text
 SPARSE TABLE: Precompute answers for all power-of-2 ranges
               Perfect for STATIC arrays with repeated queries
 
@@ -424,12 +422,10 @@ IDEA: Any range can be covered by at most 2 overlapping power-of-2 ranges
 Array: [3, 1, 4, 1, 5, 9, 2, 6]
 
 Sparse Table (for MIN):
-┌───────────────────────────────────────────────────────────────┐
-│ k=0 (2^0=1): [3, 1, 4, 1, 5, 9, 2, 6]  (each element itself)  │
-│ k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -]  (min of 2)             │
-│ k=2 (2^2=4): [1, 1, 1, 1, 2, 2, -, -]  (min of 4)             │
-│ k=3 (2^3=8): [1, -, -, -, -, -, -, -]  (min of 8)             │
-└───────────────────────────────────────────────────────────────┘
+k=0 (2^0=1): [3, 1, 4, 1, 5, 9, 2, 6]  (each element itself)
+k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -]  (min of 2)
+k=2 (2^2=4): [1, 1, 1, 1, 2, 2, -, -]  (min of 4)
+k=3 (2^3=8): [1, -, -, -, -, -, -, -]  (min of 8)
 
 Query(2, 6): min(sparse[2][2], sparse[3][2]) = min(1, 2) = 1
              Using k=2 (length 4), overlapping ranges [2-5] and [3-6]
@@ -577,7 +573,7 @@ public int largestRectangleArea(int[] heights) {
 
 ## Monotonic Deque (Sliding Window Maximum)
 
-```
+```text
 MONOTONIC DEQUE: Deque that maintains decreasing order
                  Front always has maximum of current window
 
@@ -585,14 +581,12 @@ PROBLEM: Find maximum in each sliding window of size k
 
 Array: [1, 3, -1, -3, 5, 3, 6, 7], k=3
 
-┌─────────────────────────────────────────────────────────────────┐
-│ Window [1,3,-1]     Deque: [3,-1]     Max: 3                    │
-│ Window [3,-1,-3]    Deque: [3,-1,-3]  Max: 3                    │
-│ Window [-1,-3,5]    Deque: [5]        Max: 5                    │
-│ Window [-3,5,3]     Deque: [5,3]      Max: 5                    │
-│ Window [5,3,6]      Deque: [6]        Max: 6                    │
-│ Window [3,6,7]      Deque: [7]        Max: 7                    │
-└─────────────────────────────────────────────────────────────────┘
+Window [1,3,-1]     Deque: [3,-1]     Max: 3
+Window [3,-1,-3]    Deque: [3,-1,-3]  Max: 3
+Window [-1,-3,5]    Deque: [5]        Max: 5
+Window [-3,5,3]     Deque: [5,3]      Max: 5
+Window [5,3,6]      Deque: [6]        Max: 6
+Window [3,6,7]      Deque: [7]        Max: 7
 
 Result: [3, 3, 5, 5, 6, 7]
 ```

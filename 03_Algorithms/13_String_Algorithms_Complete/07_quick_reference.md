@@ -6,46 +6,38 @@
 
 ## Algorithm Comparison
 
-```
-┌──────────────┬────────────┬───────────┬─────────────────────────────┐
-│  Algorithm   │   Time     │   Space   │        Best For             │
-├──────────────┼────────────┼───────────┼─────────────────────────────┤
-│  Naive       │ O(n*m)     │ O(1)      │ Very short patterns         │
-│  KMP         │ O(n+m)     │ O(m)      │ Single pattern, streaming   │
-│  Z-Algorithm │ O(n+m)     │ O(n+m)    │ Single pattern, intuitive   │
-│  Rabin-Karp  │ O(n+m) avg │ O(m)      │ Multiple patterns           │
-│  Trie        │ O(m) query │ O(total)  │ Prefix search, autocomplete │
-│  Suffix Array│ O(n log n) │ O(n)      │ All substring queries       │
-│  Manacher    │ O(n)       │ O(n)      │ Palindrome problems         │
-└──────────────┴────────────┴───────────┴─────────────────────────────┘
-```
+| Algorithm | Time | Space | Best For |
+| --- | --- | --- | --- |
+| Naive | O(n*m) | O(1) | Very short patterns |
+| KMP | O(n+m) | O(m) | Single pattern, streaming |
+| Z-Algorithm | O(n+m) | O(n+m) | Single pattern, intuitive |
+| Rabin-Karp | O(n+m) avg | O(m) | Multiple patterns |
+| Trie | O(m) query | O(total) | Prefix search, autocomplete |
+| Suffix Array | O(n log n) | O(n) | All substring queries |
+| Manacher | O(n) | O(n) | Palindrome problems |
 
 ## When to Use What
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              ALGORITHM SELECTION GUIDE                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  "Find pattern in text"                                         │
-│    → KMP or Z-algorithm (single pattern)                        │
-│    → Rabin-Karp (multiple patterns)                             │
-│                                                                 │
-│  "Check if prefix exists" / "Autocomplete"                      │
-│    → Trie                                                       │
-│                                                                 │
-│  "Longest palindrome"                                           │
-│    → Manacher's (O(n))                                          │
-│    → DP with memo (O(n²) but simpler)                           │
-│                                                                 │
-│  "Repeated substring" / "Count substrings"                      │
-│    → Rolling hash + Binary search                               │
-│    → Suffix array                                               │
-│                                                                 │
-│  "Is X a rotation of Y?"                                        │
-│    → KMP: search Y in X+X                                       │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**ALGORITHM SELECTION GUIDE**
+
+```text
+"Find pattern in text"
+  → KMP or Z-algorithm (single pattern)
+  → Rabin-Karp (multiple patterns)
+
+"Check if prefix exists" / "Autocomplete"
+  → Trie
+
+"Longest palindrome"
+  → Manacher's (O(n))
+  → DP with memo (O(n²) but simpler)
+
+"Repeated substring" / "Count substrings"
+  → Rolling hash + Binary search
+  → Suffix array
+
+"Is X a rotation of Y?"
+  → KMP: search Y in X+X
 ```
 
 ## Common String Tricks
@@ -110,27 +102,23 @@ Select **KMP** when you need a guaranteed O(n+m) bound and the pattern is known 
 
 Summary
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║            STRING ALGORITHMS - MASTER THESE                   ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  1. KMP - Pattern matching in O(n+m)                          ║
-║     Key: LPS array, never recheck matched characters          ║
-║                                                               ║
-║  2. RABIN-KARP - Rolling hash for multiple patterns           ║
-║     Key: Hash comparison, verify on match                     ║
-║                                                               ║
-║  3. Z-ALGORITHM - Alternative to KMP, more intuitive          ║
-║     Key: Z[i] = prefix match length at position i             ║
-║                                                               ║
-║  4. TRIE - Prefix search & autocomplete                       ║
-║     Key: Tree of characters, end-of-word markers              ║
-║                                                               ║
-║  Interview Tip: KMP is asked most often.                      ║
-║  Know how to build LPS and explain the skip logic.            ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
+**STRING ALGORITHMS - MASTER THESE**
+
+```text
+1. KMP - Pattern matching in O(n+m)
+   Key: LPS array, never recheck matched characters
+
+2. RABIN-KARP - Rolling hash for multiple patterns
+   Key: Hash comparison, verify on match
+
+3. Z-ALGORITHM - Alternative to KMP, more intuitive
+   Key: Z[i] = prefix match length at position i
+
+4. TRIE - Prefix search & autocomplete
+   Key: Tree of characters, end-of-word markers
+
+Interview Tip: KMP is asked most often.
+Know how to build LPS and explain the skip logic.
 ```
 
 **Pro Tip:** When explaining string algorithms in interviews, draw out the arrays (LPS, Z) step by step. Interviewers love to see you work through examples visually!

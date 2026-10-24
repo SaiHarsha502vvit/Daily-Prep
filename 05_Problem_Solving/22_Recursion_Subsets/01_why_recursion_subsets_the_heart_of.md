@@ -345,17 +345,16 @@ private void backtrack(int[] cands, int remaining, int start,
 
 ```
 COMPARISON TABLE:
-┌───────────────────┬──────────────┬──────────────────┬─────────────┐
-│ Problem           │ Reuse?       │ Recurse at       │ Skip dups?  │
-├───────────────────┼──────────────┼──────────────────┼─────────────┤
-│ Combination Sum   │ Unlimited    │ i (same index)   │ No          │
-│ Combination Sum II│ Once each    │ i+1              │ Yes (sort!) │
-│ Subsets           │ Once each    │ i+1              │ No          │
-│ Subsets II        │ Once each    │ i+1              │ Yes (sort!) │
-│ Permutations      │ Once each    │ 0 (use visited[])│ No          │
-│ Permutations II   │ Once each    │ 0 (use visited[])│ Yes (sort!) │
-└───────────────────┴──────────────┴──────────────────┴─────────────┘
 ```
+
+| Problem | Reuse? | Recurse at | Skip dups? |
+| --- | --- | --- | --- |
+| Combination Sum | Unlimited | i (same index) | No |
+| Combination Sum II | Once each | i+1 | Yes (sort!) |
+| Subsets | Once each | i+1 | No |
+| Subsets II | Once each | i+1 | Yes (sort!) |
+| Permutations | Once each | 0 (use visited[]) | No |
+| Permutations II | Once each | 0 (use visited[]) | Yes (sort!) |
 
 ---
 

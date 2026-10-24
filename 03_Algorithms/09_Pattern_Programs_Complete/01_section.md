@@ -1,6 +1,6 @@
-# ═══════════════════════════════════════════════════════════
+# Part 1 — Basic Star Patterns (15 patterns)
 
-> **Navigation**: [Chapter overview](../09_Pattern_Programs_Complete.md) | [═══════════════════════════════════════════════════════════ →](02_section.md)
+> **Navigation**: [Chapter overview](../09_Pattern_Programs_Complete.md) | [Part 2 — Number Patterns (15 patterns) →](02_section.md)
 > Page 1 of 6 in **Complete Pattern Programs - From Zero to Hero**
 
 
@@ -553,4 +553,4 @@ public static void cross(int n) {
 
 ---
 
-[Chapter overview](../09_Pattern_Programs_Complete.md) | [═══════════════════════════════════════════════════════════ →](02_section.md)
+[Chapter overview](../09_Pattern_Programs_Complete.md) | [Part 2 — Number Patterns (15 patterns) →](02_section.md)

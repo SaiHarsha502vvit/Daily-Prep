@@ -150,22 +150,20 @@ public int minPathSum(int[][] grid) {
 
 **LeetCode 1143** 🔗 https://leetcode.com/problems/longest-common-subsequence/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  LONGEST COMMON SUBSEQUENCE                                    │
-├────────────────────────────────────────────────────────────────┤
-│  text1 = "abcde", text2 = "ace"                                │
-│                                                                │
-│      ""  a  c  e                                               │
-│  ""   0  0  0  0                                               │
-│  a    0  1  1  1     If match: dp[i][j] = dp[i-1][j-1] + 1     │
-│  b    0  1  1  1     Else: dp[i][j] = max(dp[i-1][j],          │
-│  c    0  1  2  2                          dp[i][j-1])          │
-│  d    0  1  2  2                                               │
-│  e    0  1  2  3                                               │
-│                                                                │
-│  LCS = "ace", length = 3                                       │
-└────────────────────────────────────────────────────────────────┘
+**LONGEST COMMON SUBSEQUENCE**
+
+```text
+text1 = "abcde", text2 = "ace"
+
+    ""  a  c  e
+""   0  0  0  0
+a    0  1  1  1     If match: dp[i][j] = dp[i-1][j-1] + 1
+b    0  1  1  1     Else: dp[i][j] = max(dp[i-1][j],
+c    0  1  2  2                          dp[i][j-1])
+d    0  1  2  2
+e    0  1  2  3
+
+LCS = "ace", length = 3
 ```
 
 **Solution:**
@@ -201,23 +199,21 @@ If characters match: `dp[i][j] = dp[i-1][j-1]` (no operation needed).
 
 **LeetCode 72** 🔗 https://leetcode.com/problems/edit-distance/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  EDIT DISTANCE - Min operations to convert word1 to word2      │
-├────────────────────────────────────────────────────────────────┤
-│  word1 = "horse", word2 = "ros"                                │
-│  Operations: Insert, Delete, Replace                           │
-│                                                                │
-│      ""  r  o  s                                               │
-│  ""   0  1  2  3                                               │
-│  h    1  1  2  3    If match: dp[i][j] = dp[i-1][j-1]          │
-│  o    2  2  1  2    Else: 1 + min(dp[i-1][j],    // delete     │
-│  r    3  2  2  2                 dp[i][j-1],    // insert      │
-│  s    4  3  3  2                 dp[i-1][j-1])  // replace     │
-│  e    5  4  4  3                                               │
-│                                                                │
-│  Output: 3 (horse → rorse → rose → ros)                        │
-└────────────────────────────────────────────────────────────────┘
+**EDIT DISTANCE - Min operations to convert word1 to word2**
+
+```text
+word1 = "horse", word2 = "ros"
+Operations: Insert, Delete, Replace
+
+    ""  r  o  s
+""   0  1  2  3
+h    1  1  2  3    If match: dp[i][j] = dp[i-1][j-1]
+o    2  2  1  2    Else: 1 + min(dp[i-1][j],    // delete
+r    3  2  2  2                 dp[i][j-1],    // insert
+s    4  3  3  2                 dp[i-1][j-1])  // replace
+e    5  4  4  3
+
+Output: 3 (horse → rorse → rose → ros)
 ```
 
 **Solution:**

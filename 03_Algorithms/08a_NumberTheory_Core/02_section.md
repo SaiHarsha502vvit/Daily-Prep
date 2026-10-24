@@ -1,6 +1,6 @@
-# ═══════════════════════════════════════════════════════════
+# Part 2 — Prime Numbers
 
-> **Navigation**: [← ═══════════════════════════════════════════════════════════](01_section.md) | [Chapter overview](../08a_NumberTheory_Core.md) | [═══════════════════════════════════════════════════════════ →](03_section.md)
+> **Navigation**: [← Part 1 — GCD (Greatest Common Divisor)](01_section.md) | [Chapter overview](../08a_NumberTheory_Core.md) | [Part 3 — Modular Arithmetic and Proofs →](03_section.md)
 > Page 2 of 3 in **GCD, Number Theory & Pattern Programs - Complete Guide**
 
 
@@ -284,4 +284,4 @@ public static List<Integer> getAllDivisors(int n) {
 
 ---
 
-[← ═══════════════════════════════════════════════════════════](01_section.md) | [Chapter overview](../08a_NumberTheory_Core.md) | [═══════════════════════════════════════════════════════════ →](03_section.md)
+[← Part 1 — GCD (Greatest Common Divisor)](01_section.md) | [Chapter overview](../08a_NumberTheory_Core.md) | [Part 3 — Modular Arithmetic and Proofs →](03_section.md)

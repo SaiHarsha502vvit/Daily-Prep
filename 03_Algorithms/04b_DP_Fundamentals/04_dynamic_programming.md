@@ -187,26 +187,22 @@ TRANSITION: Try all split points k between i and j
 
 ## 🧠 Part 7: Memoization vs Tabulation
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    MEMOIZATION (Top-Down)                       │
-├─────────────────────────────────────────────────────────────────┤
-│ Approach:    Recursive with caching                             │
-│ Direction:   Start from main problem, recurse to subproblems    │
-│ When used:   Only computes needed subproblems                   │
-│ Space:       Recursion stack + memo table                       │
-│ Pros:        Natural, easy to write, lazy evaluation            │
-│ Cons:        Recursion overhead, stack overflow risk            │
-├─────────────────────────────────────────────────────────────────┤
-│                    TABULATION (Bottom-Up)                       │
-├─────────────────────────────────────────────────────────────────┤
-│ Approach:    Iterative with table                               │
-│ Direction:   Start from base cases, build up to main problem    │
-│ When used:   Computes ALL subproblems                           │
-│ Space:       Just the table (no stack)                          │
-│ Pros:        No recursion overhead, can optimize space          │
-│ Cons:        Need to think about computation order              │
-└─────────────────────────────────────────────────────────────────┘
+**MEMOIZATION (Top-Down)**
+
+```text
+Approach:    Recursive with caching
+Direction:   Start from main problem, recurse to subproblems
+When used:   Only computes needed subproblems
+Space:       Recursion stack + memo table
+Pros:        Natural, easy to write, lazy evaluation
+Cons:        Recursion overhead, stack overflow risk
+                   TABULATION (Bottom-Up)
+Approach:    Iterative with table
+Direction:   Start from base cases, build up to main problem
+When used:   Computes ALL subproblems
+Space:       Just the table (no stack)
+Pros:        No recursion overhead, can optimize space
+Cons:        Need to think about computation order
 
 WHEN TO USE WHICH?
 

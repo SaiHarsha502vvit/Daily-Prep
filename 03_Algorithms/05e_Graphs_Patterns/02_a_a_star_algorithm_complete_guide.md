@@ -8,36 +8,33 @@
 
 ## 🔵 WHY: Why Do We Need A\*?
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                     WHY A* EXISTS — THE MOTIVATION                               │
-│                                                                                  │
-│  Dijkstra explores in ALL directions equally:                                    │
-│                                                                                  │
-│           . . . . . . .                                                          │
-│         . . . . . . . . .                                                        │
-│       . . . . S . . . . . .          S = Start, G = Goal                         │
-│         . . . . . . . . .            Dijkstra explores the entire circle         │
-│           . . . . G . .              before finding path to G                    │
-│                                                                                  │
-│  A* uses a HEURISTIC to guide search TOWARD the goal:                            │
-│                                                                                  │
-│                 . .                                                              │
-│           S . . . . G                A* explores a narrow corridor               │
-│                 . .                   toward the goal — MUCH faster!             │
-│                                                                                  │
-│  WHEN TO USE:                                                                    │
-│  • Grid pathfinding (games, robotics, GPS)                                       │
-│  • Any graph where you have an estimate of distance to goal                      │
-│  • When Dijkstra is too slow because graph is huge                               │
-│                                                                                  │
-│  REAL-WORLD:                                                                     │
-│  • Google Maps route planning                                                    │
-│  • Game AI (NPCs navigating around obstacles)                                    │
-│  • Robot motion planning                                                         │
-│  • Network routing protocols                                                     │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+```text
+                   WHY A* EXISTS — THE MOTIVATION
+
+Dijkstra explores in ALL directions equally:
+
+         . . . . . . .
+       . . . . . . . . .
+     . . . . S . . . . . .          S = Start, G = Goal
+       . . . . . . . . .            Dijkstra explores the entire circle
+         . . . . G . .              before finding path to G
+
+A* uses a HEURISTIC to guide search TOWARD the goal:
+
+               . .
+         S . . . . G                A* explores a narrow corridor
+               . .                   toward the goal — MUCH faster!
+
+WHEN TO USE:
+• Grid pathfinding (games, robotics, GPS)
+• Any graph where you have an estimate of distance to goal
+• When Dijkstra is too slow because graph is huge
+
+REAL-WORLD:
+• Google Maps route planning
+• Game AI (NPCs navigating around obstacles)
+• Robot motion planning
+• Network routing protocols
 ```
 
 ---

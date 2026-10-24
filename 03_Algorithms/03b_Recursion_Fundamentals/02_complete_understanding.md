@@ -32,18 +32,14 @@ the SAME problem until reaching a simple case it can solve directly.
 
 ### Why use recursion over iteration
 
-```text
-┌────────────────────────────┬────────────────────────────────────────────┐
-│ USE RECURSION WHEN │ USE ITERATION WHEN │
-├────────────────────────────┼────────────────────────────────────────────┤
-│ Problem has tree structure │ Linear/sequential processing │
-│ Need to backtrack │ Simple counting/accumulation │
-│ D&C algorithms │ Memory is very limited │
-│ Generating combinations │ Input size is huge (>10⁵ depth) │
-│ Tree/Graph traversal │ Performance is critical │
-│ Nested structures │ Tail recursion not optimized (Java) │
-└────────────────────────────┴────────────────────────────────────────────┘
-```
+| USE RECURSION WHEN | USE ITERATION WHEN |
+| --- | --- |
+| Problem has tree structure | Linear/sequential processing |
+| Need to backtrack | Simple counting/accumulation |
+| D&C algorithms | Memory is very limited |
+| Generating combinations | Input size is huge (>10⁵ depth) |
+| Tree/Graph traversal | Performance is critical |
+| Nested structures | Tail recursion not optimized (Java) |
 
 **Key insight:** Every recursion CAN be converted to iteration with explicit stack, but recursion is often more readable for tree-like problems.
 
@@ -67,17 +63,13 @@ the SAME problem until reaching a simple case it can solve directly.
 - Parameters (separate copy)
 - Return address (where to go back)
 
+**factorial(1) │ ← TOP (currently executing) — n=1, return→2**
+
 ```text
-┌─────────────────┐
-│ factorial(1) │ ← TOP (currently executing)
-│ n=1, return→2 │
-├─────────────────┤
-│ factorial(2) │ (waiting for result from above)
-│ n=2, return→5 │
-├─────────────────┤
-│ factorial(3) │ (waiting)
-│ n=3, return→10 │
-└─────────────────┘
+factorial(2) │ (waiting for result from above)
+n=2, return→5
+factorial(3) │ (waiting)
+n=3, return→10
 ```
 
 Each frame WAITS until the frame above returns, then continues.

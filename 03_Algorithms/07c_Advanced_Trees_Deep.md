@@ -185,24 +185,22 @@ In modern databases (MySQL InnoDB, PostgreSQL), **B+ Trees** universally replace
 
 Let's calculate capacity using a standard **4KB Disk Page**.
 
+**B+ TREE CAPACITY MATH (4KB Disk Page)**
+
 ```text
-┌─────────────────────────────────────────────────────────────┐
-│ B+ TREE CAPACITY MATH (4KB Disk Page)                       │
-├─────────────────────────────────────────────────────────────┤
-│ Page Size:     4096 bytes                                   │
-│ Key Size:      8 bytes (e.g., BIGINT UUID)                  │
-│ Pointer:       8 bytes (to child node)                      │
-│ Total/Entry:   16 bytes                                     │
-│                                                             │
-│ Branching Factor (m): 4096 / 16 = 256 children per node     │
-│                                                             │
-│ Level 1 (Root):   1 node      => 256 ranges                 │
-│ Level 2:          256 nodes   => 65,536 ranges              │
-│ Level 3:          65,536      => 16.7 Million ranges        │
-│ Level 4:          16.7M       => 4.2 Billion ranges         │
-│                                                             │
-│ RESULT: Finding 1 in 4.2 BILLION rows takes exactly 4 reads!│
-└─────────────────────────────────────────────────────────────┘
+Page Size:     4096 bytes
+Key Size:      8 bytes (e.g., BIGINT UUID)
+Pointer:       8 bytes (to child node)
+Total/Entry:   16 bytes
+
+Branching Factor (m): 4096 / 16 = 256 children per node
+
+Level 1 (Root):   1 node      => 256 ranges
+Level 2:          256 nodes   => 65,536 ranges
+Level 3:          65,536      => 16.7 Million ranges
+Level 4:          16.7M       => 4.2 Billion ranges
+
+RESULT: Finding 1 in 4.2 BILLION rows takes exactly 4 reads!
 ```
 
 ---

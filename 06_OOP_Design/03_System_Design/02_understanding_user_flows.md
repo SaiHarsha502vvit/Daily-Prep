@@ -192,9 +192,11 @@ turning it into working software.
 
 ### Example: Creating a "Like" Feature
 
-### Like_Id │ User_Id │ Post_Id │ Created_At
+**Likes table**
 
-| PK | FK→users | FK→posts | timestamp |
+| Column | Like_Id | User_Id | Post_Id | Created_At |
+| --- | --- | --- | --- | --- |
+| Key | PK | FK → users | FK → posts | timestamp |
 
 ---
 

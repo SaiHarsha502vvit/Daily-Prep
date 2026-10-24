@@ -111,17 +111,16 @@ where each node vᵢ contains:
 Accessing the i-th element requires O(i) time since there is
 NO random access. Every operation that depends on position i
 has a lower bound of Ω(i) comparisons/pointer traversals.
-┬──────────┬
+
 | Operation | Array | LinkedList |
-┼──────────┼
+| --- | --- | --- |
 | Access i-th element | O(1) | O(i) |
 | Insert at head | O(n) | O(1) |
 | Insert at position i | O(n) | O(i) |
 | Delete at head | O(n) | O(1) |
 | Delete at position i | O(n) | O(i) |
 | Search | O(n) | O(n) |
-| Merge sort | O(n lgn) | O(n lgn) | ← LL uses O(1) space! |
-┴──────────┴
+| Merge sort | O(n log n) | O(n log n) (a linked list can merge sort in O(1) extra space) |
 
 > 🔬 **Section Challenge — Formal Definition (Mit / Kth Style)**
 
@@ -239,20 +238,18 @@ head might change. Every step maintains my loop invariant."
 
 ## Complexity Quick Reference
 
-┬──────────┬──────────┬
 | Problem | Time | Space | Technique |
-┼──────────┼──────────┼
+| --- | --- | --- | --- |
 | Reverse List | O(n) | O(1) | Three pointers |
 | Find Middle | O(n) | O(1) | Slow/fast |
 | Detect Cycle | O(n) | O(1) | Floyd's |
 | Merge Two Sorted | O(n+m) | O(1) | Dummy head |
 | Remove Nth from End | O(n) | O(1) | Two-pointer gap |
 | Add Two Numbers | O(max) | O(max) | Stack / reverse |
-| Copy Random Pointer | O(n) | O(1)_| Interleave 3-pass |
+| Copy Random Pointer | O(n) | O(1) | Interleave 3-pass |
 | Merge K Sorted | O(N lgk) | O(k) | Min-heap |
 | Reverse K-Group | O(n) | O(1) | Iterative K-rev |
 | Sort Linked List | O(n lgn) | O(1)_ | Bottom-up merge |
-┴──────────┴──────────┴
 
 - O(1) extra space (excluding recursion stack or output)
 

@@ -13,22 +13,20 @@
 
 **LeetCode 300** 🔗 https://leetcode.com/problems/longest-increasing-subsequence/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  LONGEST INCREASING SUBSEQUENCE                                │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [10, 9, 2, 5, 3, 7, 101, 18]                           │
-│                                                                │
-│  LIS: [2, 3, 7, 101] or [2, 5, 7, 101]                         │
-│  Length = 4                                                    │
-│                                                                │
-│  O(n²) DP: dp[i] = max length ending at i                      │
-│  Index:  0   1  2  3  4  5   6   7                             │
-│  nums:  10   9  2  5  3  7 101  18                             │
-│  dp:     1   1  1  2  2  3   4   4                             │
-│                                                                │
-│  O(n log n): Binary search on patience sorting                 │
-└────────────────────────────────────────────────────────────────┘
+**LONGEST INCREASING SUBSEQUENCE**
+
+```text
+nums = [10, 9, 2, 5, 3, 7, 101, 18]
+
+LIS: [2, 3, 7, 101] or [2, 5, 7, 101]
+Length = 4
+
+O(n²) DP: dp[i] = max length ending at i
+Index:  0   1  2  3  4  5   6   7
+nums:  10   9  2  5  3  7 101  18
+dp:     1   1  1  2  2  3   4   4
+
+O(n log n): Binary search on patience sorting
 ```
 
 **Solution (O(n log n)):**
@@ -69,21 +67,19 @@ private int binarySearch(List<Integer> tails, int target) {
 
 **LeetCode 139** 🔗 https://leetcode.com/problems/word-break/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  WORD BREAK - Can string be segmented into dictionary words?   │
-├────────────────────────────────────────────────────────────────┤
-│  s = "leetcode", wordDict = ["leet", "code"]                   │
-│                                                                │
-│  "leetcode" = "leet" + "code" ✓                                │
-│                                                                │
-│  dp[i] = true if s[0..i) can be segmented                      │
-│                                                                │
-│  Index:  0  1  2  3  4  5  6  7  8                             │
-│  s:      "" l  e  e  t  c  o  d  e                             │
-│  dp:      T F  F  F  T  F  F  F  T                             │
-│              "leet"↗         "code"↗                           │
-└────────────────────────────────────────────────────────────────┘
+**WORD BREAK - Can string be segmented into dictionary words?**
+
+```text
+s = "leetcode", wordDict = ["leet", "code"]
+
+"leetcode" = "leet" + "code" ✓
+
+dp[i] = true if s[0..i) can be segmented
+
+Index:  0  1  2  3  4  5  6  7  8
+s:      "" l  e  e  t  c  o  d  e
+dp:      T F  F  F  T  F  F  F  T
+            "leet"↗         "code"↗
 ```
 
 **Solution:**
@@ -113,26 +109,24 @@ public boolean wordBreak(String s, List<String> wordDict) {
 
 **LeetCode 516** 🔗 https://leetcode.com/problems/longest-palindromic-subsequence/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  LONGEST PALINDROMIC SUBSEQUENCE                               │
-├────────────────────────────────────────────────────────────────┤
-│  s = "bbbab"                                                   │
-│                                                                │
-│  LPS = "bbbb", length = 4                                      │
-│                                                                │
-│  dp[i][j] = LPS length in s[i..j]                              │
-│                                                                │
-│      b  b  b  a  b                                             │
-│  b   1  2  3  3  4                                             │
-│  b      1  2  2  3                                             │
-│  b         1  1  3                                             │
-│  a            1  1                                             │
-│  b               1                                             │
-│                                                                │
-│  If s[i]==s[j]: dp[i][j] = dp[i+1][j-1] + 2                    │
-│  Else: dp[i][j] = max(dp[i+1][j], dp[i][j-1])                  │
-└────────────────────────────────────────────────────────────────┘
+**LONGEST PALINDROMIC SUBSEQUENCE**
+
+```text
+s = "bbbab"
+
+LPS = "bbbb", length = 4
+
+dp[i][j] = LPS length in s[i..j]
+
+    b  b  b  a  b
+b   1  2  3  3  4
+b      1  2  2  3
+b         1  1  3
+a            1  1
+b               1
+
+If s[i]==s[j]: dp[i][j] = dp[i+1][j-1] + 2
+Else: dp[i][j] = max(dp[i+1][j], dp[i][j-1])
 ```
 
 **Solution:**

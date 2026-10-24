@@ -55,26 +55,22 @@ Binary Search on 1,000,000 elements:
 
 ### Prerequisites for Binary Search
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│           BINARY SEARCH APPLICABILITY                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  You need ONE of these properties:                              │
-│                                                                 │
-│  1. SORTED ARRAY                                                │
-│     - Ascending or descending                                   │
-│     - Search for specific value or boundary                     │
-│                                                                 │
-│  2. MONOTONIC FUNCTION                                          │
-│     - f(x) is always increasing or always decreasing            │
-│     - Search for value where f(x) crosses threshold             │
-│                                                                 │
-│  3. SEARCH SPACE WITH BINARY PROPERTY                           │
-│     - Can eliminate half based on some condition                │
-│     - "Binary search on answer"                                 │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**BINARY SEARCH APPLICABILITY**
+
+```text
+You need ONE of these properties:
+
+1. SORTED ARRAY
+   - Ascending or descending
+   - Search for specific value or boundary
+
+2. MONOTONIC FUNCTION
+   - f(x) is always increasing or always decreasing
+   - Search for value where f(x) crosses threshold
+
+3. SEARCH SPACE WITH BINARY PROPERTY
+   - Can eliminate half based on some condition
+   - "Binary search on answer"
 ```
 
 ---

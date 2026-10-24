@@ -12,18 +12,16 @@
 
 **LeetCode 131** 🔗 https://leetcode.com/problems/palindrome-partitioning/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  PALINDROME PARTITIONING                                       │
-├────────────────────────────────────────────────────────────────┤
-│  s = "aab"                                                     │
-│                                                                │
-│  Partitions where each part is palindrome:                     │
-│  "a" | "a" | "b" ✓                                             │
-│  "aa" | "b" ✓                                                  │
-│                                                                │
-│  Output: [["a","a","b"], ["aa","b"]]                           │
-└────────────────────────────────────────────────────────────────┘
+**PALINDROME PARTITIONING**
+
+```text
+s = "aab"
+
+Partitions where each part is palindrome:
+"a" | "a" | "b" ✓
+"aa" | "b" ✓
+
+Output: [["a","a","b"], ["aa","b"]]
 ```
 
 **Solution:**
@@ -119,18 +117,16 @@ private void backtrack(String digits, int index, StringBuilder path,
 
 **LeetCode 22** 🔗 https://leetcode.com/problems/generate-parentheses/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  GENERATE PARENTHESES                                          │
-├────────────────────────────────────────────────────────────────┤
-│  n = 3 (3 pairs)                                               │
-│                                                                │
-│  Rules:                                                        │
-│  - Can add '(' if open < n                                     │
-│  - Can add ')' if close < open                                 │
-│                                                                │
-│  Output: ["((()))","(()())","(())()","()(())","()()()"]        │
-└────────────────────────────────────────────────────────────────┘
+**GENERATE PARENTHESES**
+
+```text
+n = 3 (3 pairs)
+
+Rules:
+- Can add '(' if open < n
+- Can add ')' if close < open
+
+Output: ["((()))","(()())","(())()","()(())","()()()"]
 ```
 
 **Solution:**

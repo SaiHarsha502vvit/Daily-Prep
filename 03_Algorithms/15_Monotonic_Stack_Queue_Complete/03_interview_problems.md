@@ -6,31 +6,27 @@
 
 ## Problem Categories
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              MONOTONIC STACK/QUEUE PROBLEMS                     │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  NEXT/PREVIOUS GREATER/SMALLER:                                 │
-│  • Next Greater Element I/II                                    │
-│  • Daily Temperatures                                           │
-│  • Stock Span Problem                                           │
-│                                                                 │
-│  RECTANGLE PROBLEMS:                                            │
-│  • Largest Rectangle in Histogram                               │
-│  • Maximal Rectangle in Matrix                                  │
-│  • Trapping Rain Water                                          │
-│                                                                 │
-│  SLIDING WINDOW:                                                │
-│  • Sliding Window Maximum                                       │
-│  • Shortest Subarray with Sum >= K                              │
-│                                                                 │
-│  STRING/NUMBER:                                                 │
-│  • Remove K Digits                                              │
-│  • Remove Duplicate Letters                                     │
-│  • 132 Pattern                                                  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**MONOTONIC STACK/QUEUE PROBLEMS**
+
+```text
+NEXT/PREVIOUS GREATER/SMALLER:
+• Next Greater Element I/II
+• Daily Temperatures
+• Stock Span Problem
+
+RECTANGLE PROBLEMS:
+• Largest Rectangle in Histogram
+• Maximal Rectangle in Matrix
+• Trapping Rain Water
+
+SLIDING WINDOW:
+• Sliding Window Maximum
+• Shortest Subarray with Sum >= K
+
+STRING/NUMBER:
+• Remove K Digits
+• Remove Duplicate Letters
+• 132 Pattern
 ```
 
 ## Stock Span Problem (LeetCode 901)
@@ -249,27 +245,23 @@ Notice: `arr[1]` and `arr[4]` have the same value but vastly different contribut
 
 ### Which Stack Type to Use
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              STACK TYPE SELECTION                               │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  DECREASING STACK (larger at bottom):                           │
-│  • Next/Previous GREATER element                                │
-│  • Largest rectangle (find boundaries)                          │
-│  • Stock span (count higher prices)                             │
-│                                                                 │
-│  INCREASING STACK (smaller at bottom):                          │
-│  • Next/Previous SMALLER element                                │
-│  • Sum of subarray minimums                                     │
-│  • Remove K digits                                              │
-│                                                                 │
-│  MEMORY TRICK:                                                  │
-│  • Finding GREATER → maintain DECREASING                        │
-│  • Finding SMALLER → maintain INCREASING                        │
-│  (The stack is the "opposite" of what you're looking for)       │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**STACK TYPE SELECTION**
+
+```text
+DECREASING STACK (larger at bottom):
+• Next/Previous GREATER element
+• Largest rectangle (find boundaries)
+• Stock span (count higher prices)
+
+INCREASING STACK (smaller at bottom):
+• Next/Previous SMALLER element
+• Sum of subarray minimums
+• Remove K digits
+
+MEMORY TRICK:
+• Finding GREATER → maintain DECREASING
+• Finding SMALLER → maintain INCREASING
+(The stack is the "opposite" of what you're looking for)
 ```
 
 ### Code Templates
@@ -334,58 +326,50 @@ public int[] maxWindow(int[] arr, int k) {
 
 ### Complexity Summary
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              MONOTONIC STACK/QUEUE COMPLEXITIES                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Next Greater Element:            O(n) time, O(n) space         │
-│  Daily Temperatures:              O(n) time, O(n) space         │
-│  Largest Rectangle Histogram:     O(n) time, O(n) space         │
-│  Sliding Window Maximum:          O(n) time, O(k) space         │
-│  Remove K Digits:                 O(n) time, O(n) space         │
-│                                                                 │
-│  KEY INSIGHT:                                                   │
-│  Each element is pushed and popped at most ONCE.                │
-│  Total operations = 2n → O(n)                                   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**MONOTONIC STACK/QUEUE COMPLEXITIES**
+
+```text
+Next Greater Element:            O(n) time, O(n) space
+Daily Temperatures:              O(n) time, O(n) space
+Largest Rectangle Histogram:     O(n) time, O(n) space
+Sliding Window Maximum:          O(n) time, O(k) space
+Remove K Digits:                 O(n) time, O(n) space
+
+KEY INSIGHT:
+Each element is pushed and popped at most ONCE.
+Total operations = 2n → O(n)
 ```
 
 ---
 
 ## Summary
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║         MONOTONIC STACK/QUEUE - MASTER CHECKLIST              ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  1. IDENTIFY THE PATTERN                                      ║
-║     • "Next greater/smaller" → Monotonic Stack                ║
-║     • "Sliding window max/min" → Monotonic Queue              ║
-║     • "Rectangle area" → Usually needs both boundaries        ║
-║                                                               ║
-║  2. CHOOSE STACK TYPE                                         ║
-║     • Looking for GREATER → Decreasing stack                  ║
-║     • Looking for SMALLER → Increasing stack                  ║
-║                                                               ║
-║  3. KNOW WHEN ANSWER IS FOUND                                 ║
-║     • Next element: Answer when POPPING                       ║
-║     • Previous element: Answer when PUSHING (check top)       ║
-║                                                               ║
-║  4. HANDLE EDGE CASES                                         ║
-║     • No greater/smaller exists: default to -1 or n           ║
-║     • Circular array: iterate 2n times                        ║
-║     • Duplicates: decide on < vs ≤ carefully                  ║
-║                                                               ║
-║  5. COMMON APPLICATIONS                                       ║
-║     • Histogram problems                                      ║
-║     • Temperature/Stock problems                              ║
-║     • String manipulation                                     ║
-║     • Sliding window extremes                                 ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
+**MONOTONIC STACK/QUEUE - MASTER CHECKLIST**
+
+```text
+1. IDENTIFY THE PATTERN
+   • "Next greater/smaller" → Monotonic Stack
+   • "Sliding window max/min" → Monotonic Queue
+   • "Rectangle area" → Usually needs both boundaries
+
+2. CHOOSE STACK TYPE
+   • Looking for GREATER → Decreasing stack
+   • Looking for SMALLER → Increasing stack
+
+3. KNOW WHEN ANSWER IS FOUND
+   • Next element: Answer when POPPING
+   • Previous element: Answer when PUSHING (check top)
+
+4. HANDLE EDGE CASES
+   • No greater/smaller exists: default to -1 or n
+   • Circular array: iterate 2n times
+   • Duplicates: decide on < vs ≤ carefully
+
+5. COMMON APPLICATIONS
+   • Histogram problems
+   • Temperature/Stock problems
+   • String manipulation
+   • Sliding window extremes
 ```
 
 **Pro Tip:** When you see "next greater/smaller", "sliding window max/min", or problems involving "how far can we extend", think monotonic stack/queue!

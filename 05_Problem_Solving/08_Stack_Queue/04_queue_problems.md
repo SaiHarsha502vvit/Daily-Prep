@@ -76,22 +76,20 @@ class MyQueue {
 
 **LeetCode 225** 🔗 https://leetcode.com/problems/implement-stack-using-queues/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  IMPLEMENT STACK USING QUEUES                                  │
-├────────────────────────────────────────────────────────────────┤
-│  Approach: Make push O(n) to keep LIFO order                   │
-│                                                                │
-│  push(1): queue = [1]                                          │
-│  push(2): add 2, rotate 1 time                                 │
-│           [1,2] → poll 1, add 1 → [2,1]                        │
-│  push(3): add 3, rotate 2 times                                │
-│           [2,1,3] → [1,3,2] → [3,2,1]                          │
-│                                                                │
-│  Now front of queue is top of stack!                           │
-│  pop() → returns 3                                             │
-│  top() → returns 2                                             │
-└────────────────────────────────────────────────────────────────┘
+**IMPLEMENT STACK USING QUEUES**
+
+```text
+Approach: Make push O(n) to keep LIFO order
+
+push(1): queue = [1]
+push(2): add 2, rotate 1 time
+         [1,2] → poll 1, add 1 → [2,1]
+push(3): add 3, rotate 2 times
+         [2,1,3] → [1,3,2] → [3,2,1]
+
+Now front of queue is top of stack!
+pop() → returns 3
+top() → returns 2
 ```
 
 **Solution:**
@@ -194,27 +192,25 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 
 ## Problem 93: 🔒 Shortest Subarray with Sum at Least K (LeetCode 862 - Hard)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SHORTEST SUBARRAY WITH SUM AT LEAST K                         │
-├────────────────────────────────────────────────────────────────┤
-│  Return the length of the shortest non-empty subarray with     │
-│  sum at least k. If no such subarray exists, return -1.        │
-│  Note: Array can have NEGATIVE numbers!                        │
-│                                                                │
-│  Examples:                                                     │
-│  Input: nums = [1], k = 1        → Output: 1                   │
-│  Input: nums = [1,2], k = 4      → Output: -1                  │
-│  Input: nums = [2,-1,2], k = 3   → Output: 3                   │
-│                                                                │
-│  Constraints:                                                  │
-│  - 1 <= nums.length <= 10^5                                    │
-│  - -10^5 <= nums[i] <= 10^5                                    │
-│  - 1 <= k <= 10^9                                              │
-│                                                                │
-│  Key Insight: Use prefix sum + monotonic deque                 │
-│  prefix[j] - prefix[i] >= k means subarray (i,j] has sum >= k  │
-└────────────────────────────────────────────────────────────────┘
+**SHORTEST SUBARRAY WITH SUM AT LEAST K**
+
+```text
+Return the length of the shortest non-empty subarray with
+sum at least k. If no such subarray exists, return -1.
+Note: Array can have NEGATIVE numbers!
+
+Examples:
+Input: nums = [1], k = 1        → Output: 1
+Input: nums = [1,2], k = 4      → Output: -1
+Input: nums = [2,-1,2], k = 3   → Output: 3
+
+Constraints:
+- 1 <= nums.length <= 10^5
+- -10^5 <= nums[i] <= 10^5
+- 1 <= k <= 10^9
+
+Key Insight: Use prefix sum + monotonic deque
+prefix[j] - prefix[i] >= k means subarray (i,j] has sum >= k
 ```
 
 **Solution:**
@@ -347,37 +343,35 @@ class MyCircularQueue {
 
 ## Problem 95: 🔒 Design Circular Deque (LeetCode 641)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  DESIGN CIRCULAR DEQUE (Double-ended Queue)                    │
-├────────────────────────────────────────────────────────────────┤
-│  Design a circular deque with these operations:                │
-│  - insertFront(): Add at front                                 │
-│  - insertLast(): Add at rear                                   │
-│  - deleteFront(): Remove from front                            │
-│  - deleteLast(): Remove from rear                              │
-│  - getFront(): Get front element                               │
-│  - getRear(): Get rear element                                 │
-│  - isEmpty(): Check if empty                                   │
-│  - isFull(): Check if full                                     │
-│                                                                │
-│  Example:                                                      │
-│  MyCircularDeque deque = new MyCircularDeque(3);               │
-│  deque.insertLast(1);  // return true                          │
-│  deque.insertLast(2);  // return true                          │
-│  deque.insertFront(3); // return true                          │
-│  deque.insertFront(4); // return false (full)                  │
-│  deque.getRear();      // return 2                             │
-│  deque.isFull();       // return true                          │
-│  deque.deleteLast();   // return true                          │
-│  deque.insertFront(4); // return true                          │
-│  deque.getFront();     // return 4                             │
-│                                                                │
-│  Constraints:                                                  │
-│  - 1 <= k <= 1000                                              │
-│  - 0 <= value <= 1000                                          │
-│  - At most 2000 calls to operations                            │
-└────────────────────────────────────────────────────────────────┘
+**DESIGN CIRCULAR DEQUE (Double-ended Queue)**
+
+```text
+Design a circular deque with these operations:
+- insertFront(): Add at front
+- insertLast(): Add at rear
+- deleteFront(): Remove from front
+- deleteLast(): Remove from rear
+- getFront(): Get front element
+- getRear(): Get rear element
+- isEmpty(): Check if empty
+- isFull(): Check if full
+
+Example:
+MyCircularDeque deque = new MyCircularDeque(3);
+deque.insertLast(1);  // return true
+deque.insertLast(2);  // return true
+deque.insertFront(3); // return true
+deque.insertFront(4); // return false (full)
+deque.getRear();      // return 2
+deque.isFull();       // return true
+deque.deleteLast();   // return true
+deque.insertFront(4); // return true
+deque.getFront();     // return 4
+
+Constraints:
+- 1 <= k <= 1000
+- 0 <= value <= 1000
+- At most 2000 calls to operations
 ```
 
 **Solution:**

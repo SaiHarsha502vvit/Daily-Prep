@@ -117,7 +117,8 @@ The mistake 95% of people make is jumping to step 3 (writing transitions) before
 - **Rob i:** then I get `a[i]`, but i−1 is now forbidden, so the rest must come from `0..i-2` → `a[i] + dp[i-2]`.
 
 I want the better one:
-```
+
+```text
 dp[i] = max(dp[i-1],  a[i] + dp[i-2])
         └ skip ┘       └─ rob ──┘
 ```
@@ -168,12 +169,9 @@ Java int array: Header (16 bytes) + length (4 bytes) + data
 
 Memory Layout (n=10):
 
-```text
- ┌────────────────┬────────┬────────────────────────────────────────────────┐
- │ Object Header  │ Length │ int[0] int[1] int[2] int[3] ... int[9]       │
- │ 16 bytes       │ 4 bytes│ 4      4      4      4          4   bytes   │
- └────────────────┴────────┴────────────────────────────────────────────────┘
-```
+| Object Header | Length | int[0] int[1] int[2] int[3] ... int[9] |
+| --- | --- | --- |
+| 16 bytes | 4 bytes | 4      4      4      4          4   bytes |
 
 Total Memory = 16 + 4 + (n × 4) + padding
 For n=10: 16 + 4 + 40 = 60 bytes (padded to 64 bytes)
@@ -261,15 +259,11 @@ Column-major: Each access jumps to a different array!
 
 BENCHMARK (LCS of two 1000-char strings):
 
-```text
- ┌──────────────────────────┬─────────────┬─────────────────────────┐
- │ Iteration Order          │ Time (ms)   │ L1 Cache Misses         │
- ├──────────────────────────┼─────────────┼─────────────────────────┤
- │ Row-major (i then j)     │ 2.8         │ ~62,500                 │
- │ Column-major (j then i)  │ 15.3        │ ~1,000,000              │
- │ Ratio                    │ 5.5x slower │ 16x more misses         │
- └──────────────────────────┴─────────────┴─────────────────────────┘
-```
+| Iteration Order | Time (ms) | L1 Cache Misses |
+| --- | --- | --- |
+| Row-major (i then j) | 2.8 | ~62,500 |
+| Column-major (j then i) | 15.3 | ~1,000,000 |
+| Ratio | 5.5x slower | 16x more misses |
 
 **Rule:** In Java, always iterate rows in outer loop, columns in inner loop!
 
@@ -282,22 +276,18 @@ BENCHMARK (LCS of two 1000-char strings):
 Full 2D DP (wasteful):
 
 ```text
- ┌───────────────────────────────────────────────────────────────────────────┐
- │ Row 0: [0][0][0][0][0][0][0][0][0][0]  ← Never accessed after row 1      │
- │ Row 1: [0][1][1][1][1][1][1][1][1][1]  ← Never accessed after row 2      │
- │ Row 2: [0][1][1][2][2][2][2][2][2][2]  ← Never accessed after row 3      │
- │ Row 3: [0][1][1][2][2][3][3][3][3][3]  ← Only need THIS and row 2!       │
- │ ...                                                                       │
- └───────────────────────────────────────────────────────────────────────────┘
+Row 0: [0][0][0][0][0][0][0][0][0][0]  ← Never accessed after row 1
+Row 1: [0][1][1][1][1][1][1][1][1][1]  ← Never accessed after row 2
+Row 2: [0][1][1][2][2][2][2][2][2][2]  ← Never accessed after row 3
+Row 3: [0][1][1][2][2][3][3][3][3][3]  ← Only need THIS and row 2!
+...
 ```
 
 Rolling Array (2 rows):
 
 ```text
- ┌───────────────────────────────────────────────────────────────────────────┐
- │ prev: [0][1][1][2][2][3][3][3][3][3]  ← Row i-1                          │
- │ curr: [0][1][1][2][2][3][3][3][3][3]  ← Row i (computing)                │
- └───────────────────────────────────────────────────────────────────────────┘
+prev: [0][1][1][2][2][3][3][3][3][3]  ← Row i-1
+curr: [0][1][1][2][2][3][3][3][3][3]  ← Row i (computing)
  After each row: swap prev ↔ curr
 ```
 
@@ -444,39 +434,35 @@ return dp[n];
 
 ### 🧠 State Representation — Memory Efficiency
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ STATE REPRESENTATION TECHNIQUES                                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ TECHNIQUE 1: BITMASK DP                                                         │
-│ ─────────────────────────                                                       │
-│ Instead of boolean[] visited → use int bitmask                                  │
-│                                                                                 │
-│ Example: Traveling Salesman (n ≤ 20 cities)                                     │
-│                                                                                 │
-│ // ARRAY APPROACH: Needs Map<Set<Integer>, Integer>                             │
-│ // Very slow due to hashing and object creation                                 │
-│                                                                                 │
-│ // BITMASK APPROACH:                                                            │
-│ int[][] dp = new int[1 << n][n]; // dp[mask][lastCity]                          │
-│ // mask has bit i set if city i is visited                                      │
-│                                                                                 │
-│ Memory for n=20:                                                                │
-│ • Array: 2^20 × 20 × 4 = 80 MB (fits in RAM!)                                   │
-│ • Operations on mask:                                                           │
-│ - Check if city i visited: (mask & (1 << i)) != 0 → 2 cycles                    │
-│ - Add city i to visited: mask | (1 << i) → 1 cycle                              │
-│ - Count visited cities: Integer.bitCount(mask) → 1 cycle (CPU instr!)           │
-│                                                                                 │
-│                                                                                 │
-│ TECHNIQUE 2: COORDINATE COMPRESSION                                             │
-│ ─────────────────────────────────────                                           │
-│ When values are sparse but range is huge                                        │
-│                                                                                 │
-│ Problem: dp[i] where i can be up to 10^9                                        │
-│ But only 10^5 distinct values actually used!                                    │
-│                                                                                 │
+**STATE REPRESENTATION TECHNIQUES**
+
+```text
+TECHNIQUE 1: BITMASK DP
+─────────────────────────
+Instead of boolean[] visited → use int bitmask
+
+Example: Traveling Salesman (n ≤ 20 cities)
+
+// ARRAY APPROACH: Needs Map<Set<Integer>, Integer>
+// Very slow due to hashing and object creation
+
+// BITMASK APPROACH:
+int[][] dp = new int[1 << n][n]; // dp[mask][lastCity]
+// mask has bit i set if city i is visited
+
+Memory for n=20:
+• Array: 2^20 × 20 × 4 = 80 MB (fits in RAM!)
+• Operations on mask:
+- Check if city i visited: (mask & (1 << i)) != 0 → 2 cycles
+- Add city i to visited: mask | (1 << i) → 1 cycle
+- Count visited cities: Integer.bitCount(mask) → 1 cycle (CPU instr!)
+
+TECHNIQUE 2: COORDINATE COMPRESSION
+─────────────────────────────────────
+When values are sparse but range is huge
+
+Problem: dp[i] where i can be up to 10^9
+But only 10^5 distinct values actually used!
 ```
 
 ```java
@@ -492,18 +478,16 @@ for (int i = 0; i < sorted.length; i++) {
 // Can use int[5] instead of int[10^9]!
 ```
 
-```
-│ │
-│ │
-│ TECHNIQUE 3: STATE ENCODING │
-│ ──────────────────────────── │
-│ Combine multiple small states into one integer │
-│ │
-│ Example: Track (position, direction, speed) where: │
-│ • position: 0-999 │
-│ • direction: 0-3 │
-│ • speed: 0-9 │
-│ │
+**TECHNIQUE 3: STATE ENCODING**
+
+```text
+────────────────────────────
+Combine multiple small states into one integer
+
+Example: Track (position, direction, speed) where:
+• position: 0-999
+• direction: 0-3
+• speed: 0-9
 ```
 
 ```java
@@ -526,9 +510,7 @@ int decodeSpd(int state) { return state % 10; }
 // • Can use as hash key directly
 ```
 
-```
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
 ```
 
 ### 📌 DP Transition Cost Analysis
@@ -582,25 +564,20 @@ for (int i = 2; i <= n; i++) {
 }
 ```
 
-```
-│ │
-│ BENCHMARK (n=10^7 Fibonacci mod 10^9+7): │
-│ • With % every iter: 180 ms │
-│ • With conditional: 65 ms │
-│ • ~2.8x speedup! │
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+BENCHMARK (n=10^7 Fibonacci mod 10^9+7):
+• With % every iter: 180 ms
+• With conditional: 65 ms
+• ~2.8x speedup!
 ```
 
 ### 🧠 Memory Allocation Patterns
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ DP ARRAY ALLOCATION STRATEGIES                                                  │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ STRATEGY 1: PREALLOCATE ARRAYS (Best for fixed size)                            │
-│ ────────────────────────────────────────────────────                            │
+**DP ARRAY ALLOCATION STRATEGIES**
+
+```text
+STRATEGY 1: PREALLOCATE ARRAYS (Best for fixed size)
+────────────────────────────────────────────────────
 ```
 
 ```java
@@ -623,16 +600,15 @@ for (int i = 0; i < tests; i++) {
 }
 ```
 
-```
-│ │
-│ ALLOCATION COSTS: │
-│ • new int[1000]: ~50-100 ns │
-│ • new int[1000000]: ~500-2000 ns │
-│ • Arrays.fill(arr, 0): ~0.5 ns per element (uses fast memory set) │
-│ │
-│ │
-│ STRATEGY 2: LAZY INITIALIZATION (When sparse) │
-│ ───────────────────────────────────────────── │
+**ALLOCATION COSTS:**
+
+```text
+• new int[1000]: ~50-100 ns
+• new int[1000000]: ~500-2000 ns
+• Arrays.fill(arr, 0): ~0.5 ns per element (uses fast memory set)
+
+STRATEGY 2: LAZY INITIALIZATION (When sparse)
+─────────────────────────────────────────────
 ```
 
 ```java

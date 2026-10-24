@@ -1,6 +1,6 @@
-# ═══════════════════════════════════════════════════════════
+# Part 4 — Special Patterns (10 patterns)
 
-> **Navigation**: [← ═══════════════════════════════════════════════════════════](03_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [═══════════════════════════════════════════════════════════ →](05_section.md)
+> **Navigation**: [← Part 3 — Character Patterns (10 patterns)](03_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [Part 5 — Interview Pattern Questions →](05_section.md)
 > Page 4 of 6 in **Complete Pattern Programs - From Zero to Hero**
 
 
@@ -305,4 +305,4 @@ public static void hourglassNumbers(int n) {
 
 ---
 
-[← ═══════════════════════════════════════════════════════════](03_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [═══════════════════════════════════════════════════════════ →](05_section.md)
+[← Part 3 — Character Patterns (10 patterns)](03_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [Part 5 — Interview Pattern Questions →](05_section.md)

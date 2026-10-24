@@ -87,25 +87,23 @@ public int[] dailyTemperatures(int[] temperatures) {
 
 **LeetCode 496** 🔗 https://leetcode.com/problems/next-greater-element-i/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  NEXT GREATER ELEMENT I                                        │
-├────────────────────────────────────────────────────────────────┤
-│  nums1 = [4, 1, 2]  (subset of nums2)                          │
-│  nums2 = [1, 3, 4, 2]                                          │
-│                                                                │
-│  Find NGE in nums2 for each element in nums1:                  │
-│                                                                │
-│  nums2:  [1,  3,  4,  2]                                       │
-│  NGE:    [3,  4, -1, -1]                                       │
-│                                                                │
-│  For nums1 = [4, 1, 2]:                                        │
-│  - 4 → NGE in nums2 = -1                                       │
-│  - 1 → NGE in nums2 = 3                                        │
-│  - 2 → NGE in nums2 = -1                                       │
-│                                                                │
-│  Output: [-1, 3, -1]                                           │
-└────────────────────────────────────────────────────────────────┘
+**NEXT GREATER ELEMENT I**
+
+```text
+nums1 = [4, 1, 2]  (subset of nums2)
+nums2 = [1, 3, 4, 2]
+
+Find NGE in nums2 for each element in nums1:
+
+nums2:  [1,  3,  4,  2]
+NGE:    [3,  4, -1, -1]
+
+For nums1 = [4, 1, 2]:
+- 4 → NGE in nums2 = -1
+- 1 → NGE in nums2 = 3
+- 2 → NGE in nums2 = -1
+
+Output: [-1, 3, -1]
 ```
 
 **Solution:**
@@ -253,22 +251,15 @@ public int largestRectangleArea(int[] heights) {
 
 **Visual Stack Trace:**
 
-```
-┌─────┬────────┬──────────────┬────────────────┬──────────┐
-│  i  │ height │ Stack        │ Calculation    │ maxArea  │
-├─────┼────────┼──────────────┼────────────────┼──────────┤
-│  0  │   2    │ [0]          │ -              │    0     │
-│  1  │   1    │ [1]          │ h=2,w=1,a=2    │    2     │
-│  2  │   5    │ [1,2]        │ -              │    2     │
-│  3  │   6    │ [1,2,3]      │ -              │    2     │
-│  4  │   2    │ [1,4]        │ h=6,w=1,a=6    │    6     │
-│     │        │              │ h=5,w=2,a=10   │   10     │
-│  5  │   3    │ [1,4,5]      │ -              │   10     │
-│  6  │   0    │ []           │ h=3,w=1,a=3    │   10     │
-│     │        │              │ h=2,w=4,a=8    │   10     │
-│     │        │              │ h=1,w=6,a=6    │   10     │
-└─────┴────────┴──────────────┴────────────────┴──────────┘
-```
+| i | height | Stack | Calculation | maxArea |
+| --- | --- | --- | --- | --- |
+| 0 | 2 | [0] | - | 0 |
+| 1 | 1 | [1] | h=2,w=1,a=2 | 2 |
+| 2 | 5 | [1,2] | - | 2 |
+| 3 | 6 | [1,2,3] | - | 2 |
+| 4 | 2 | [1,4] | h=6,w=1,a=6 h=5,w=2,a=10 | 6<br>10 |
+| 5 | 3 | [1,4,5] | - | 10 |
+| 6 | 0 | [] | h=3,w=1,a=3 h=2,w=4,a=8 h=1,w=6,a=6 | 10<br>10<br>10 |
 
 ---
 

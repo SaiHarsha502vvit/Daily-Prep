@@ -4,21 +4,17 @@
 > Page 4 of 5 in **Advanced Recursion Patterns**
 
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║          ADVANCED RECURSION - BEYOND THE BASICS                                  ║
-╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                  ║
-║  This section covers advanced patterns used in competitive programming and       ║
-║  system-level programming:                                                       ║
-║  • Mutual recursion                                                              ║
-║  • Indirect recursion                                                            ║
-║  • Continuation Passing Style (CPS)                                              ║
-║  • Y-Combinator (anonymous recursion)                                            ║
-║  • Recursion with immutable state                                                ║
-║  • Advanced backtracking optimizations                                           ║
-║                                                                                  ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+**ADVANCED RECURSION - BEYOND THE BASICS**
+
+```text
+This section covers advanced patterns used in competitive programming and
+system-level programming:
+• Mutual recursion
+• Indirect recursion
+• Continuation Passing Style (CPS)
+• Y-Combinator (anonymous recursion)
+• Recursion with immutable state
+• Advanced backtracking optimizations
 ```
 
 ## 🔁 Mutual Recursion
@@ -57,11 +53,9 @@ boolean isOdd(int n) {
 // isEven(4) → isOdd(3) → isEven(2) → isOdd(1) → isEven(0) → true
 ```
 
-```
-│                                                                                 │
-│                                                                                 │
-│  REAL-WORLD USE: Expression Parsing                                             │
-│  ──────────────────────────────────                                             │
+```text
+REAL-WORLD USE: Expression Parsing
+──────────────────────────────────
 ```
 
 ```java
@@ -140,21 +134,17 @@ class Parser {
 
 ## 📌 Continuation Passing Style (cps)
 
-```
+**CONTINUATION PASSING STYLE (CPS)**
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ CONTINUATION PASSING STYLE (CPS)                                                │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ CONCEPT: Instead of returning a value, pass a function that handles the         │
-│ result. Every call becomes a tail call!                                         │
-│                                                                                 │
-│ TRADITIONAL: CPS:                                                               │
-│ return value ← caller continuation(value) → no return                           │
-│                                                                                 │
-│                                                                                 │
-│ EXAMPLE: Factorial in CPS                                                       │
-│ ───────────────────────────                                                     │
+```text
+CONCEPT: Instead of returning a value, pass a function that handles the
+result. Every call becomes a tail call!
+
+TRADITIONAL: CPS:
+return value ← caller continuation(value) → no return
+
+EXAMPLE: Factorial in CPS
+───────────────────────────
 ```
 
 ```java
@@ -217,33 +207,28 @@ void fibCPS(int n, Continuation<Integer> k) {
 }
 ```
 
-```
-│                                                                                 │
-│ WHY USE CPS?                                                                    │
-│ • All calls become tail calls → can be optimized in functional languages        │
-│ • Explicit control flow → useful for async programming                          │
-│ • Foundation of async/await patterns                                            │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+WHY USE CPS?
+• All calls become tail calls → can be optimized in functional languages
+• Explicit control flow → useful for async programming
+• Foundation of async/await patterns
 ```
 
 ## 🔁 Y — Combinator — Anonymous Recursion
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ Y-COMBINATOR - RECURSION WITHOUT NAMING                                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ PROBLEM: How do you write a recursive function without naming it?               │
-│ (Lambda calculus has no assignment!)                                            │
-│                                                                                 │
-│ SOLUTION: Y-Combinator - a higher-order function that enables recursion         │
-│                                                                                 │
-│ MATHEMATICAL DEFINITION:                                                        │
-│ Y = λf. (λx. f(x x)) (λx. f(x x))                                               │
-│                                                                                 │
-│ JAVA IMPLEMENTATION:                                                            │
-│ ─────────────────────                                                           │
+**Y-COMBINATOR - RECURSION WITHOUT NAMING**
+
+```text
+PROBLEM: How do you write a recursive function without naming it?
+(Lambda calculus has no assignment!)
+
+SOLUTION: Y-Combinator - a higher-order function that enables recursion
+
+MATHEMATICAL DEFINITION:
+Y = λf. (λx. f(x x)) (λx. f(x x))
+
+JAVA IMPLEMENTATION:
+─────────────────────
 ```
 
 ```java
@@ -274,11 +259,10 @@ Function<Integer, Integer> fib = Y((self, n) -> {
 System.out.println(fib.apply(10));  // 55
 ```
 
-```
-│                                                                                 │
-│                                                                                 │
-│  SIMPLER JAVA 8 VERSION:                                                        │
-│  ────────────────────────                                                       │
+**SIMPLER JAVA 8 VERSION:**
+
+```text
+────────────────────────
 ```
 
 ```java
@@ -292,14 +276,11 @@ Function<Integer, Integer> factorial = new Function<>() {
 };
 ```
 
-```
-│                                                                                 │
-│  WHY CARE ABOUT Y-COMBINATOR?                                                   │
-│  • Foundation of lambda calculus and functional programming                      │
-│  • Proves recursion can be derived from simpler constructs                       │
-│  • Asked in advanced interviews about programming theory                        │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+WHY CARE ABOUT Y-COMBINATOR?
+• Foundation of lambda calculus and functional programming
+• Proves recursion can be derived from simpler constructs
+• Asked in advanced interviews about programming theory
 ```
 
 🔬 **Section Challenge — 🔁 Y — Combinator — Anonymous Recursion**

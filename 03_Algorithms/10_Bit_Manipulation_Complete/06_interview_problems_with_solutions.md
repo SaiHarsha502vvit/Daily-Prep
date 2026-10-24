@@ -358,59 +358,51 @@ clearBit: n & ~(1 << i)
 
 ### Common Edge Cases
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    EDGE CASES TO WATCH                          │
-├─────────────────────────────────────────────────────────────────┤
-│  • Negative numbers (sign bit handling)                         │
-│  • Integer overflow (when shifting)                             │
-│  • Empty array (XOR of nothing = 0)                             │
-│  • n = 0 (special case for many operations)                     │
-│  • n = Integer.MIN_VALUE (-2^31, cannot negate)                 │
-│  • Shift by 32 or more (undefined behavior)                     │
-│  • Java >> vs >>> (signed vs unsigned shift)                    │
-└─────────────────────────────────────────────────────────────────┘
+**EDGE CASES TO WATCH**
+
+```text
+• Negative numbers (sign bit handling)
+• Integer overflow (when shifting)
+• Empty array (XOR of nothing = 0)
+• n = 0 (special case for many operations)
+• n = Integer.MIN_VALUE (-2^31, cannot negate)
+• Shift by 32 or more (undefined behavior)
+• Java >> vs >>> (signed vs unsigned shift)
 ```
 
 ### Interview Tips
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    INTERVIEW STRATEGIES                         │
-├─────────────────────────────────────────────────────────────────┤
-│  1. When you see "O(1) space" - think bits                      │
-│  2. When elements appear k times - think XOR or bit counting    │
-│  3. When dealing with subsets - think bitmask                   │
-│  4. When finding unique/missing - think XOR                     │
-│  5. When asked "power of 2" - think n & (n-1)                   │
-│  6. When optimizing arithmetic - think shifts                   │
-│  7. Always mention time/space complexity                        │
-│  8. Test with examples: 0, 1, negative, MAX_VALUE               │
-└─────────────────────────────────────────────────────────────────┘
+**INTERVIEW STRATEGIES**
+
+```text
+1. When you see "O(1) space" - think bits
+2. When elements appear k times - think XOR or bit counting
+3. When dealing with subsets - think bitmask
+4. When finding unique/missing - think XOR
+5. When asked "power of 2" - think n & (n-1)
+6. When optimizing arithmetic - think shifts
+7. Always mention time/space complexity
+8. Test with examples: 0, 1, negative, MAX_VALUE
 ```
 
 ---
 
 ## Summary: The 3 Most Important Things
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║     MASTER THESE 3 AND YOU'LL SOLVE 80% OF BIT PROBLEMS       ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  1. XOR PROPERTIES                                            ║
-║     a ^ a = 0, a ^ 0 = a                                      ║
-║     → Find single/missing numbers                             ║
-║                                                               ║
-║  2. n & (n-1) TRICK                                           ║
-║     Clears rightmost set bit                                  ║
-║     → Count bits, check power of 2                            ║
-║                                                               ║
-║  3. BITMASK FOR SUBSETS                                       ║
-║     n-bit number represents subset of n elements              ║
-║     → Subset DP, permutations, combinations                   ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
+**MASTER THESE 3 AND YOU'LL SOLVE 80% OF BIT PROBLEMS**
+
+```text
+1. XOR PROPERTIES
+   a ^ a = 0, a ^ 0 = a
+   → Find single/missing numbers
+
+2. n & (n-1) TRICK
+   Clears rightmost set bit
+   → Count bits, check power of 2
+
+3. BITMASK FOR SUBSETS
+   n-bit number represents subset of n elements
+   → Subset DP, permutations, combinations
 ```
 
 ---

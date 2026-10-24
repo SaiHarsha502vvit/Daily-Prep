@@ -379,46 +379,15 @@ if (acquired) {
 
 ## Breadth Comparison 1: LLD Problem Pattern Mapping Table
 
-```
-┌───────────────────┬────────────────────────────────────────────┬──────────────────────────────┐
-│  PROBLEM          │  DESIGN PATTERNS USED                      │  KEY OOP PRINCIPLE           │
-├───────────────────┼────────────────────────────────────────────┼──────────────────────────────┤
-│  Parking Lot      │  Strategy (pricing: hourly/flat/surge)     │  OCP: new strategy = new     │
-│                   │  Factory (VehicleFactory from scan)        │  class, no existing code mod  │
-│                   │  Observer (display board updates)          │                              │
-│                   │  Singleton (debatable, prefer DI)          │  SRP: parking logic ≠        │
-│                   │                                            │  pricing logic ≠ display logic│
-├───────────────────┼────────────────────────────────────────────┼──────────────────────────────┤
-│  BookMyShow       │  Observer (seat availability → UI update)  │  OCP: new payment gateway =  │
-│                   │  State (SeatStatus: AVAIL→LOCKED→BOOKED)   │  new class, existing code    │
-│                   │  Locking (pessimistic/optimistic/distrib)  │  unchanged                   │
-│                   │  Strategy (payment processing)             │                              │
-│                   │                                            │  SRP: BookingService only    │
-│                   │                                            │  books, PaymentService only  │
-│                   │                                            │  processes                   │
-├───────────────────┼────────────────────────────────────────────┼──────────────────────────────┤
-│  Splitwise        │  Strategy (Split: Equal/Exact/Percent)     │  LSP: any Split implementation│
-│                   │  Composite (Expense contains many Splits)   │  works in ExpenseService     │
-│                   │  Graph algorithm (debt simplification)      │                              │
-│                   │                                            │  OCP: new split type = new   │
-│                   │                                            │  class, no Expense changes   │
-├───────────────────┼────────────────────────────────────────────┼──────────────────────────────┤
-│  Elevator         │  Strategy (SchedulingStrategy: LOOK/SCAN)  │  OCP: new algorithm = new    │
-│                   │  State (ElevatorState: IDLE/MOVING_*)      │  class, controller unchanged │
-│                   │  Template Method (move sequence)            │                              │
-│                   │                                            │  DIP: ElevatorController     │
-│                   │                                            │  depends on abstract         │
-│                   │                                            │  SchedulingStrategy, not     │
-│                   │                                            │  concrete LOOKStrategy       │
-├───────────────────┼────────────────────────────────────────────┼──────────────────────────────┤
-│  Logger/          │  Chain of Responsibility (DEBUG→INFO→ERR) │  SRP: Logger chains don't     │
-│  Logging          │  Strategy (LogAppender: console/file/DB)   │  know about each other's     │
-│                   │  Singleton (Logger, but DI preferred)      │  details                     │
-│                   │  Builder (LoggerConfig for fluent build)   │                              │
-│                   │                                            │  ISP: LogAppender has one    │
-│                   │                                            │  method: append(String)      │
-└───────────────────┴────────────────────────────────────────────┴──────────────────────────────┘
+| PROBLEM | DESIGN PATTERNS USED | KEY OOP PRINCIPLE |
+| --- | --- | --- |
+| Parking Lot | Strategy (pricing: hourly/flat/surge)<br>Factory (VehicleFactory from scan)<br>Observer (display board updates)<br>Singleton (debatable, prefer DI) | OCP: new strategy = new class, no existing code mod<br>SRP: parking logic ≠ pricing logic ≠ display logic |
+| BookMyShow | Observer (seat availability → UI update)<br>State (SeatStatus: AVAIL→LOCKED→BOOKED)<br>Locking (pessimistic/optimistic/distrib)<br>Strategy (payment processing) | OCP: new payment gateway = new class, existing code unchanged<br>SRP: BookingService only books, PaymentService only processes |
+| Splitwise | Strategy (Split: Equal/Exact/Percent)<br>Composite (Expense contains many Splits)<br>Graph algorithm (debt simplification) | LSP: any Split implementation works in ExpenseService<br>OCP: new split type = new class, no Expense changes |
+| Elevator | Strategy (SchedulingStrategy: LOOK/SCAN)<br>State (ElevatorState: IDLE/MOVING_*)<br>Template Method (move sequence) | OCP: new algorithm = new class, controller unchanged<br>DIP: ElevatorController depends on abstract<br>SchedulingStrategy, not concrete LOOKStrategy |
+| Logger/Logging | Chain of Responsibility (DEBUG→INFO→ERR)<br>Strategy (LogAppender: console/file/DB)<br>Singleton (Logger, but DI preferred)<br>Builder (LoggerConfig for fluent build) | SRP: Logger chains don't know about each other's details<br>ISP: LogAppender has one method: append(String) |
 
+```
   RECURRING PATTERN ACROSS ALL 5 PROBLEMS:
   ══════════════════════════════════════
   1. Every problem uses AT LEAST 2 GoF patterns (Strategy appears in 4/5)
@@ -429,47 +398,18 @@ if (acquired) {
 
 ## Breadth Comparison 2: Concurrency Control Strategies Table
 
-```
-┌────────────────┬──────────────────┬──────────────────┬──────────────────────┐
-│  STRATEGY      │  MECHANISM       │  BEST FOR        │  RISKS               │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  synchronized  │  Intrinsic lock  │  Simple shared   │  Over-synchronization│
-│  (method)      │  on 'this'       │  state, low      │  (all threads wait)  │
-│                │                  │  concurrency     │  Deadlock if A locks │
-│                │                  │  needs           │  X and waits for Y   │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  synchronized  │  Intrinsic lock  │  Multiple shared │  Must release all    │
-│  (block)       │  on specific obj │  resources that  │  locks in same order │
-│  (more control)│  (e.g., spots[i])│  need atomicity  │  to avoid deadlock   │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  ReentrantLock │  Explicit lock   │  Try-lock        │  MUST unlock in      │
-│  (java.util    │  tryLock() with  │  (non-blocking   │  finally block or    │
-│  .concurrent)  │  timeout,        │  failure),       │  lock persists       │
-│                │  fairness param  │  read-write      │  (unlike synch)      │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  ReadWriteLock │  Shared read,    │  Read-heavy      │  Writers may starve │
-│                │  exclusive write │  workloads       │  if readers keep     │
-│                │                  │  (parking spots) │  coming              │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  AtomicInteger │  CAS (Compare-   │  Simple counter  │  Only works for      │
-│  AtomicLong    │  And-Swap, no    │  increments,     │  single variables    │
-│                │  locking)        │  flags           │  (not compound ops) │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  Concurrent    │  Lock-free queue │  Producer-       │  Iteration requires  │
-│  LinkedQueue   │  (CAS-based)     │  consumer (event │  snapshot or iterator│
-│  Concurrent    │                  │  processing,     │  from queue          │
-│  HashMap       │                  │  request queues) │                      │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  volatile      │  Read/write      │  Flags, caches   │  NOT atomic for      │
-│  (fields)      │  visibility      │  (no compound    │  compound operations │
-│                │  (no lock)       │  operations)     │  (volatile++ is NOT  │
-│                │                  │                  │  thread-safe!)       │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  StampedLock   │  Optimistic read │  Read-heavy      │  Must validate stamp │
-│  (Java 8+)     │  with validate   │  with rare writes│  after read or       │
-│                │                  │  (cache)         │  retry               │
-└────────────────┴──────────────────┴──────────────────┴──────────────────────┘
+| STRATEGY | MECHANISM | BEST FOR | RISKS |
+| --- | --- | --- | --- |
+| synchronized (method) | Intrinsic lock on 'this' | Simple shared state, low concurrency needs | Over-synchronization (all threads wait)<br>Deadlock if A locks<br>X and waits for Y |
+| synchronized (block) (more control) | Intrinsic lock on specific obj (e.g., spots[i]) | Multiple shared resources that need atomicity | Must release all locks in same order to avoid deadlock |
+| ReentrantLock (java.util .concurrent) | Explicit lock tryLock() with timeout, fairness param | Try-lock (non-blocking failure), read-write | MUST unlock in finally block or lock persists (unlike synch) |
+| ReadWriteLock | Shared read, exclusive write | Read-heavy workloads (parking spots) | Writers may starve if readers keep coming |
+| AtomicInteger<br>AtomicLong | CAS (Compare-And-Swap, no locking) | Simple counter increments, flags | Only works for single variables (not compound ops) |
+| Concurrent<br>LinkedQueue<br>Concurrent<br>HashMap | Lock-free queue (CAS-based) | Producer-consumer (event processing, request queues) | Iteration requires snapshot or iterator from queue |
+| volatile (fields) | Read/write visibility (no lock) | Flags, caches (no compound operations) | NOT atomic for compound operations (volatile++ is NOT thread-safe!) |
+| StampedLock (Java 8+) | Optimistic read with validate | Read-heavy with rare writes (cache) | Must validate stamp after read or retry |
 
+```
   DECISION GUIDE FOR LLD PROBLEMS:
   ════════════════════════════════════
 

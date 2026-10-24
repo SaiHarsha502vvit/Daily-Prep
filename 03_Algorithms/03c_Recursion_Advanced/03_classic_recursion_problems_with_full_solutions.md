@@ -239,19 +239,17 @@ private void helper(String num, int target, int index,
 
 ### Time Complexity Patterns
 
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│ RECURSION TYPE              │ RECURRENCE       │ TIME                    │
-├──────────────────────────────────────────────────────────────────────────┤
-│ Linear (1 call, n→n-1)      │ T(n) = T(n-1)+1  │ O(n)                    │
-│ Linear (1 call, n→n/2)      │ T(n) = T(n/2)+1  │ O(log n)                │
-│ Binary (2 calls, n→n-1)     │ T(n) = 2T(n-1)+1 │ O(2^n)                  │
-│ Binary (2 calls, n→n/2)     │ T(n) = 2T(n/2)+n │ O(n log n)              │
-│ Tree traversal              │ T(n) = 2T(n/2)+1 │ O(n)                    │
-│ Subsets                     │ T(n) = 2T(n-1)+1 │ O(2^n)                  │
-│ Permutations                │ T(n) = n*T(n-1)  │ O(n!)                   │
-│ Fibonacci (naive)           │ T(n) = T(n-1)+T(n-2) │ O(φ^n) ≈ O(1.618^n) │
-└──────────────────────────────────────────────────────────────────────────┘
+**RECURSION TYPE              │ RECURRENCE       │ TIME**
+
+```text
+Linear (1 call, n→n-1)      │ T(n) = T(n-1)+1  │ O(n)
+Linear (1 call, n→n/2)      │ T(n) = T(n/2)+1  │ O(log n)
+Binary (2 calls, n→n-1)     │ T(n) = 2T(n-1)+1 │ O(2^n)
+Binary (2 calls, n→n/2)     │ T(n) = 2T(n/2)+n │ O(n log n)
+Tree traversal              │ T(n) = 2T(n/2)+1 │ O(n)
+Subsets                     │ T(n) = 2T(n-1)+1 │ O(2^n)
+Permutations                │ T(n) = n*T(n-1)  │ O(n!)
+Fibonacci (naive)           │ T(n) = T(n-1)+T(n-2) │ O(φ^n) ≈ O(1.618^n)
 
 SPACE COMPLEXITY:
 - Usually O(max recursion depth)

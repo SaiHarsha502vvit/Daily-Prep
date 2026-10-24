@@ -69,11 +69,10 @@ int tsp(int[][] dist) {
 }
 ```
 
-```
-│ │
-│ │
-│ ITERATING OVER ALL SUBSETS OF A MASK: │
-│ ───────────────────────────────────── │
+**ITERATING OVER ALL SUBSETS OF A MASK:**
+
+```text
+─────────────────────────────────────
 ```
 
 ```java
@@ -88,11 +87,10 @@ for (int subset = mask; subset > 0; subset = (subset - 1) & mask) {
 // Loop generates: 5 → 4 → 1 → (stops, handle 0 separately)
 ```
 
-```
-│ │
-│ │
-│ ASSIGNMENT PROBLEM (HUNGARIAN ALTERNATIVE): │
-│ ─────────────────────────────────────────── │
+**ASSIGNMENT PROBLEM (HUNGARIAN ALTERNATIVE):**
+
+```text
+───────────────────────────────────────────
 ```
 
 ```java
@@ -119,9 +117,7 @@ int assignmentProblem(int[][] cost) {
 }
 ```
 
-```
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
 ```
 
 ---

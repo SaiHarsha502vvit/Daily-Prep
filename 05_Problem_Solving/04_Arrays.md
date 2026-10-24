@@ -137,45 +137,40 @@ public int[] twoSum(int[] nums, int target) {
 
 **LeetCode 170** | **Difficulty:** Easy | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  TWO SUM III - DATA STRUCTURE DESIGN                                      ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Design a data structure that accepts a stream of integers and checks     ║
-║  if it has a pair of integers that sum up to a particular value.          ║
-║                                                                           ║
-║  Implement the TwoSum class:                                              ║
-║  - TwoSum() Initializes the TwoSum object                                 ║
-║  - void add(int number) Adds number to the data structure                 ║
-║  - boolean find(int value) Returns true if there exists any pair of       ║
-║    numbers whose sum is equal to value, otherwise returns false.          ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input:                                                                   ║
-║  ["TwoSum", "add", "add", "add", "find", "find"]                          ║
-║  [[], [1], [3], [5], [4], [7]]                                            ║
-║  Output: [null, null, null, null, true, false]                            ║
-║                                                                           ║
-║  Explanation:                                                             ║
-║  TwoSum twoSum = new TwoSum();                                            ║
-║  twoSum.add(1);   // [1]                                                  ║
-║  twoSum.add(3);   // [1, 3]                                               ║
-║  twoSum.add(5);   // [1, 3, 5]                                            ║
-║  twoSum.find(4);  // 1 + 3 = 4, return true                               ║
-║  twoSum.find(7);  // No pairs sum to 7, return false                      ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - -10^5 <= number <= 10^5                                                ║
-║  - -2^31 <= value <= 2^31 - 1                                             ║
-║  - At most 10^4 calls will be made to add and find                        ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**TWO SUM III - DATA STRUCTURE DESIGN — (LeetCode Premium - Full Problem Description)**
+
+```text
+Design a data structure that accepts a stream of integers and checks
+if it has a pair of integers that sum up to a particular value.
+
+Implement the TwoSum class:
+- TwoSum() Initializes the TwoSum object
+- void add(int number) Adds number to the data structure
+- boolean find(int value) Returns true if there exists any pair of
+  numbers whose sum is equal to value, otherwise returns false.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input:
+["TwoSum", "add", "add", "add", "find", "find"]
+[[], [1], [3], [5], [4], [7]]
+Output: [null, null, null, null, true, false]
+
+Explanation:
+TwoSum twoSum = new TwoSum();
+twoSum.add(1);   // [1]
+twoSum.add(3);   // [1, 3]
+twoSum.add(5);   // [1, 3, 5]
+twoSum.find(4);  // 1 + 3 = 4, return true
+twoSum.find(7);  // No pairs sum to 7, return false
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- -10^5 <= number <= 10^5
+- -2^31 <= value <= 2^31 - 1
+- At most 10^4 calls will be made to add and find
 ```
 
 ```java
@@ -213,20 +208,16 @@ class TwoSum {
 **LeetCode 217** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/contains-duplicate/](https://leetcode.com/problems/contains-duplicate/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  CONTAINS DUPLICATE                                                       ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Return true if any value appears at least twice in the array.            ║
-║                                                                           ║
-║  Input: nums = [1, 2, 3, 1]                                               ║
-║  Output: true                                                             ║
-║                                                                           ║
-║  Input: nums = [1, 2, 3, 4]                                               ║
-║  Output: false                                                            ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**CONTAINS DUPLICATE**
+
+```text
+Return true if any value appears at least twice in the array.
+
+Input: nums = [1, 2, 3, 1]
+Output: true
+
+Input: nums = [1, 2, 3, 4]
+Output: false
 ```
 
 ```java
@@ -245,40 +236,35 @@ public boolean containsDuplicate(int[] nums) {
 
 **LeetCode 220** | **Difficulty:** Hard | **Premium-Level Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  CONTAINS DUPLICATE III                                                   ║
-║  (Premium-Level Difficulty)                                               ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given an integer array nums and two integers indexDiff and valueDiff,    ║
-║  find a pair of indices (i, j) such that:                                 ║
-║  - i != j                                                                 ║
-║  - abs(i - j) <= indexDiff                                                ║
-║  - abs(nums[i] - nums[j]) <= valueDiff                                    ║
-║                                                                           ║
-║  Return true if such pair exists, false otherwise.                        ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: nums = [1,2,3,1], indexDiff = 3, valueDiff = 0                    ║
-║  Output: true                                                             ║
-║  Explanation: i=0, j=3, |0-3|<=3, |1-1|<=0                                ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: nums = [1,5,9,1,5,9], indexDiff = 2, valueDiff = 3                ║
-║  Output: false                                                            ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 2 <= nums.length <= 10^5                                               ║
-║  - -10^9 <= nums[i] <= 10^9                                               ║
-║  - 1 <= indexDiff <= nums.length                                          ║
-║  - 0 <= valueDiff <= 10^9                                                 ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**CONTAINS DUPLICATE III — (Premium-Level Difficulty)**
+
+```text
+Given an integer array nums and two integers indexDiff and valueDiff,
+find a pair of indices (i, j) such that:
+- i != j
+- abs(i - j) <= indexDiff
+- abs(nums[i] - nums[j]) <= valueDiff
+
+Return true if such pair exists, false otherwise.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: nums = [1,2,3,1], indexDiff = 3, valueDiff = 0
+Output: true
+Explanation: i=0, j=3, |0-3|<=3, |1-1|<=0
+
+Example 2:
+Input: nums = [1,5,9,1,5,9], indexDiff = 2, valueDiff = 3
+Output: false
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 2 <= nums.length <= 10^5
+- -10^9 <= nums[i] <= 10^9
+- 1 <= indexDiff <= nums.length
+- 0 <= valueDiff <= 10^9
 ```
 
 ```java
@@ -323,18 +309,14 @@ private long getBucket(int num, long bucketSize) {
 **LeetCode 283** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/move-zeroes/](https://leetcode.com/problems/move-zeroes/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MOVE ZEROES                                                              ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Move all 0's to end while maintaining relative order of non-zero         ║
-║  elements. Do it in-place.                                                ║
-║                                                                           ║
-║  Input: nums = [0, 1, 0, 3, 12]                                           ║
-║  Output: [1, 3, 12, 0, 0]                                                 ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**MOVE ZEROES**
+
+```text
+Move all 0's to end while maintaining relative order of non-zero
+elements. Do it in-place.
+
+Input: nums = [0, 1, 0, 3, 12]
+Output: [1, 3, 12, 0, 0]
 ```
 
 ```java
@@ -361,49 +343,44 @@ public void moveZeroes(int[] nums) {
 
 **LeetCode 252** | **Difficulty:** Easy | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MEETING ROOMS                                                            ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given an array of meeting time intervals where intervals[i] =            ║
-║  [start_i, end_i], determine if a person could attend all meetings.       ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: intervals = [[0,30], [5,10], [15,20]]                             ║
-║  Output: false                                                            ║
-║  Explanation: [0,30] overlaps with [5,10] and [15,20]                     ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: intervals = [[7,10], [2,4]]                                       ║
-║  Output: true                                                             ║
-║  Explanation: No overlap between meetings                                 ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  Example 1:                                                               ║
-║  |=============================| [0,30]                                   ║
-║       |===| [5,10]                                                        ║
-║                 |====| [15,20]                                            ║
-║  Overlapping! Can't attend all.                                           ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║    |==| [2,4]                                                             ║
-║             |===| [7,10]                                                  ║
-║  No overlap! Can attend all.                                              ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 0 <= intervals.length <= 10^4                                          ║
-║  - intervals[i].length == 2                                               ║
-║  - 0 <= start_i < end_i <= 10^6                                           ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**MEETING ROOMS — (LeetCode Premium - Full Problem Description)**
+
+```text
+Given an array of meeting time intervals where intervals[i] =
+[start_i, end_i], determine if a person could attend all meetings.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: intervals = [[0,30], [5,10], [15,20]]
+Output: false
+Explanation: [0,30] overlaps with [5,10] and [15,20]
+
+Example 2:
+Input: intervals = [[7,10], [2,4]]
+Output: true
+Explanation: No overlap between meetings
+
+─────────────────────────────────────────────────────────────────────
+
+Visual:
+Example 1:
+|=============================| [0,30]
+     |===| [5,10]
+               |====| [15,20]
+Overlapping! Can't attend all.
+
+Example 2:
+  |==| [2,4]
+           |===| [7,10]
+No overlap! Can attend all.
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 0 <= intervals.length <= 10^4
+- intervals[i].length == 2
+- 0 <= start_i < end_i <= 10^6
 ```
 
 ```java
@@ -428,48 +405,43 @@ public boolean canAttendMeetings(int[][] intervals) {
 
 **LeetCode 253** | **Difficulty:** Medium | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MEETING ROOMS II                                                         ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given an array of meeting time intervals, find the minimum number of     ║
-║  conference rooms required.                                               ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: intervals = [[0,30], [5,10], [15,20]]                             ║
-║  Output: 2                                                                ║
-║  Explanation:                                                             ║
-║  Room 1: [0,30]                                                           ║
-║  Room 2: [5,10], then [15,20]                                             ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: intervals = [[7,10], [2,4]]                                       ║
-║  Output: 1                                                                ║
-║  Explanation: No overlap, one room is enough                              ║
-║                                                                           ║
-║  Example 3:                                                               ║
-║  Input: intervals = [[1,5], [2,6], [3,7], [4,8]]                          ║
-║  Output: 4                                                                ║
-║  Explanation: All meetings overlap at time 4, need 4 rooms                ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Visual for Example 1:                                                    ║
-║  Time: 0  5  10  15  20  25  30                                           ║
-║  Room1: |=========================|                                       ║
-║  Room2:    |==|     |====|                                                ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 1 <= intervals.length <= 10^4                                          ║
-║  - 0 <= start_i < end_i <= 10^6                                           ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**MEETING ROOMS II — (LeetCode Premium - Full Problem Description)**
+
+```text
+Given an array of meeting time intervals, find the minimum number of
+conference rooms required.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: intervals = [[0,30], [5,10], [15,20]]
+Output: 2
+Explanation:
+Room 1: [0,30]
+Room 2: [5,10], then [15,20]
+
+Example 2:
+Input: intervals = [[7,10], [2,4]]
+Output: 1
+Explanation: No overlap, one room is enough
+
+Example 3:
+Input: intervals = [[1,5], [2,6], [3,7], [4,8]]
+Output: 4
+Explanation: All meetings overlap at time 4, need 4 rooms
+
+─────────────────────────────────────────────────────────────────────
+
+Visual for Example 1:
+Time: 0  5  10  15  20  25  30
+Room1: |=========================|
+Room2:    |==|     |====|
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 1 <= intervals.length <= 10^4
+- 0 <= start_i < end_i <= 10^6
 ```
 
 ```java
@@ -529,54 +501,49 @@ public int minMeetingRoomsV2(int[][] intervals) {
 
 **LeetCode 163** | **Difficulty:** Easy | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MISSING RANGES                                                           ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given a sorted unique integer array nums and two integers lower and      ║
-║  upper, return the smallest sorted list of ranges that cover every        ║
-║  missing number exactly. That is, no element of nums is in any range,     ║
-║  and each missing number is in one of the ranges.                         ║
-║                                                                           ║
-║  Each range [a,b] in the list should be output as:                        ║
-║  - "a->b" if a != b                                                       ║
-║  - "a" if a == b                                                          ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: nums = [0, 1, 3, 50, 75], lower = 0, upper = 99                   ║
-║  Output: ["2", "4->49", "51->74", "76->99"]                               ║
-║  Explanation:                                                             ║
-║  - 2 is missing                                                           ║
-║  - 4 to 49 are missing                                                    ║
-║  - 51 to 74 are missing                                                   ║
-║  - 76 to 99 are missing                                                   ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: nums = [-1], lower = -1, upper = -1                               ║
-║  Output: []                                                               ║
-║  Explanation: No missing numbers in range [-1, -1]                        ║
-║                                                                           ║
-║  Example 3:                                                               ║
-║  Input: nums = [], lower = 1, upper = 1                                   ║
-║  Output: ["1"]                                                            ║
-║                                                                           ║
-║  Example 4:                                                               ║
-║  Input: nums = [], lower = -3, upper = -1                                 ║
-║  Output: ["-3->-1"]                                                       ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - -10^9 <= lower <= upper <= 10^9                                        ║
-║  - 0 <= nums.length <= 100                                                ║
-║  - lower <= nums[i] <= upper                                              ║
-║  - All values of nums are unique                                          ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**MISSING RANGES — (LeetCode Premium - Full Problem Description)**
+
+```text
+Given a sorted unique integer array nums and two integers lower and
+upper, return the smallest sorted list of ranges that cover every
+missing number exactly. That is, no element of nums is in any range,
+and each missing number is in one of the ranges.
+
+Each range [a,b] in the list should be output as:
+- "a->b" if a != b
+- "a" if a == b
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: nums = [0, 1, 3, 50, 75], lower = 0, upper = 99
+Output: ["2", "4->49", "51->74", "76->99"]
+Explanation:
+- 2 is missing
+- 4 to 49 are missing
+- 51 to 74 are missing
+- 76 to 99 are missing
+
+Example 2:
+Input: nums = [-1], lower = -1, upper = -1
+Output: []
+Explanation: No missing numbers in range [-1, -1]
+
+Example 3:
+Input: nums = [], lower = 1, upper = 1
+Output: ["1"]
+
+Example 4:
+Input: nums = [], lower = -3, upper = -1
+Output: ["-3->-1"]
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- -10^9 <= lower <= upper <= 10^9
+- 0 <= nums.length <= 100
+- lower <= nums[i] <= upper
+- All values of nums are unique
 ```
 
 ```java

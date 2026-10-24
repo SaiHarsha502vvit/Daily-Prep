@@ -155,54 +155,48 @@ public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
 }
 ```
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ EXAMPLE 2: SET COVER (log n - Approximation)                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│ Problem: Given universe U and sets S₁...Sₘ, find minimum number of sets that  │
-│ cover all elements.                                                             │
-│                                                                                 │
-│ Greedy Algorithm:                                                               │
-│ 1. While uncovered elements exist:                                              │
-│    a. Pick set Sᵢ that covers most uncovered elements                          │
-│    b. Add Sᵢ to solution                                                        │
-│    c. Mark covered elements                                                     │
-│                                                                                 │
-│ Approximation ratio: O(log n), where n = |U|                                   │
-│ (This is optimal unless P = NP.)                                                │
-│                                                                                 │
-│ EXAMPLE 3: TSP with Triangle Inequality (1.5-Approximation)                     │
-│ Christofides Algorithm:                                                         │
-│ 1. Find MST of graph                                                            │
-│ 2. Find minimum weight perfect matching on odd-degree vertices                  │
-│ 3. Combine MST + matching (Eulerian graph)                                      │
-│ 4. Find Euler tour                                                              │
-│ 5. Shortcut to Hamiltonian cycle                                                │
-│                                                                                 │
-│ Approximation ratio: 3/2 = 1.5                                                  │
-│ (Best known for metric TSP.)                                                    │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**EXAMPLE 2: SET COVER (log n - Approximation)**
+
+```text
+Problem: Given universe U and sets S₁...Sₘ, find minimum number of sets that
+cover all elements.
+
+Greedy Algorithm:
+1. While uncovered elements exist:
+   a. Pick set Sᵢ that covers most uncovered elements
+   b. Add Sᵢ to solution
+   c. Mark covered elements
+
+Approximation ratio: O(log n), where n = |U|
+(This is optimal unless P = NP.)
+
+EXAMPLE 3: TSP with Triangle Inequality (1.5-Approximation)
+Christofides Algorithm:
+1. Find MST of graph
+2. Find minimum weight perfect matching on odd-degree vertices
+3. Combine MST + matching (Eulerian graph)
+4. Find Euler tour
+5. Shortcut to Hamiltonian cycle
+
+Approximation ratio: 3/2 = 1.5
+(Best known for metric TSP.)
 ```
 
 ## 📌 Randomized Algorithms
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ RANDOMIZED ALGORITHMS - DEEP DIVE                                               │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ TWO TYPES:                                                                      │
-│ ───────────                                                                     │
-│ 1. Las Vegas: Always correct, expected polynomial time                          │
-│ Example: Randomized QuickSort                                                   │
-│                                                                                 │
-│ 2. Monte Carlo: May be wrong, but guaranteed polynomial time                    │
-│ Example: Primality testing, Min-Cut                                             │
-│                                                                                 │
-│                                                                                 │
-│ RANDOMIZED QUICKSORT:                                                           │
-│ ─────────────────────                                                           │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**RANDOMIZED ALGORITHMS - DEEP DIVE**
+
+```text
+TWO TYPES:
+───────────
+1. Las Vegas: Always correct, expected polynomial time
+Example: Randomized QuickSort
+
+2. Monte Carlo: May be wrong, but guaranteed polynomial time
+Example: Primality testing, Min-Cut
+
+RANDOMIZED QUICKSORT:
+─────────────────────
 ```
 
 ```java
@@ -222,25 +216,23 @@ void randomizedQuickSort(int[] arr, int low, int high) {
 // Worst case: O(n²) but probability is 1/n! → negligible
 ```
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ KARGER'S MIN-CUT ALGORITHM                                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│ Find minimum cut in undirected graph.                                          │
-│                                                                                 │
-│ Algorithm:                                                                      │
-│ 1. While more than 2 vertices:                                                 │
-│    a. Pick random edge (u, v)                                                  │
-│    b. Contract u and v into single vertex                                      │
-│    c. Remove self-loops                                                        │
-│ 2. Return number of edges between final 2 vertices                             │
-│                                                                                 │
-│ Probability of finding min-cut: ≥ 1/n²                                         │
-│ Run n² log n times → P(failure) < 1/n                                          │
-│ Total time: O(n⁴ log n) basic, O(n² log³ n) improved                           │
-│                                                                                 │
-│ MILLER-RABIN PRIMALITY TEST:                                                    │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**KARGER'S MIN-CUT ALGORITHM**
+
+```text
+Find minimum cut in undirected graph.
+
+Algorithm:
+1. While more than 2 vertices:
+   a. Pick random edge (u, v)
+   b. Contract u and v into single vertex
+   c. Remove self-loops
+2. Return number of edges between final 2 vertices
+
+Probability of finding min-cut: ≥ 1/n²
+Run n² log n times → P(failure) < 1/n
+Total time: O(n⁴ log n) basic, O(n² log³ n) improved
+
+MILLER-RABIN PRIMALITY TEST:
 ```
 
 ```java
@@ -516,12 +508,9 @@ class Dinic {
 
 ## 📌 Computational Geometry Basics
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ COMPUTATIONAL GEOMETRY - ESSENTIAL ALGORITHMS                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**COMPUTATIONAL GEOMETRY - ESSENTIAL ALGORITHMS**
+
+```text
 ```
 
 ```java

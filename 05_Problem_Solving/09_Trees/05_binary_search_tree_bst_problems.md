@@ -4,22 +4,20 @@
 > Page 5 of 7 in **Trees**
 
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  BINARY SEARCH TREE PROPERTY                                   │
-├────────────────────────────────────────────────────────────────┤
-│  For every node:                                               │
-│  - All values in LEFT subtree < node value                     │
-│  - All values in RIGHT subtree > node value                    │
-│                                                                │
-│         8                                                      │
-│        / \                                                     │
-│       3   10        Valid BST:                                 │
-│      / \    \       - Left of 8: {1,3,6} all < 8               │
-│     1   6    14     - Right of 8: {10,14} all > 8              │
-│        / \   /      - Inorder: 1,3,6,8,10,13,14 (sorted!)      │
-│       4   7 13                                                 │
-└────────────────────────────────────────────────────────────────┘
+**BINARY SEARCH TREE PROPERTY**
+
+```text
+For every node:
+- All values in LEFT subtree < node value
+- All values in RIGHT subtree > node value
+
+       8
+      / \
+     3   10        Valid BST:
+    / \    \       - Left of 8: {1,3,6} all < 8
+   1   6    14     - Right of 8: {10,14} all > 8
+      / \   /      - Inorder: 1,3,6,8,10,13,14 (sorted!)
+     4   7 13
 ```
 
 ---
@@ -28,20 +26,18 @@
 
 **LeetCode 98** 🔗 https://leetcode.com/problems/validate-binary-search-tree/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  VALIDATE BST                                                  │
-├────────────────────────────────────────────────────────────────┤
-│  Valid BST:           Invalid BST:                             │
-│       2                    5                                   │
-│      / \                  / \                                  │
-│     1   3                1   4  ← 4 < 5 but 3 > right val!     │
-│                             / \                                │
-│  true                      3   6                               │
-│                                                                │
-│  ⚠️ Common mistake: Only checking immediate children           │
-│  Must check against valid RANGE for each node                  │
-└────────────────────────────────────────────────────────────────┘
+**VALIDATE BST**
+
+```text
+Valid BST:           Invalid BST:
+     2                    5
+    / \                  / \
+   1   3                1   4  ← 4 < 5 but 3 > right val!
+                           / \
+true                      3   6
+
+⚠️ Common mistake: Only checking immediate children
+Must check against valid RANGE for each node
 ```
 
 **Solution:**
@@ -94,18 +90,16 @@ public boolean isValidBSTInorder(TreeNode root) {
 
 **LeetCode 700** 🔗 https://leetcode.com/problems/search-in-a-binary-search-tree/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SEARCH IN BST                                                 │
-├────────────────────────────────────────────────────────────────┤
-│       4                  Search for 2:                         │
-│      / \                 4 > 2 → go left                       │
-│     2   7                2 == 2 → found!                       │
-│    / \                                                         │
-│   1   3                  Return subtree rooted at 2            │
-│                                                                │
-│  Time: O(h) where h = height (O(log n) for balanced)           │
-└────────────────────────────────────────────────────────────────┘
+**SEARCH IN BST**
+
+```text
+     4                  Search for 2:
+    / \                 4 > 2 → go left
+   2   7                2 == 2 → found!
+  / \
+ 1   3                  Return subtree rooted at 2
+
+Time: O(h) where h = height (O(log n) for balanced)
 ```
 
 **Solution:**
@@ -134,23 +128,21 @@ public TreeNode searchBSTIterative(TreeNode root, int val) {
 
 **LeetCode 235** 🔗 https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  LOWEST COMMON ANCESTOR (LCA) in BST                           │
-├────────────────────────────────────────────────────────────────┤
-│         6                                                      │
-│        / \                                                     │
-│       2   8                                                    │
-│      / \ / \                                                   │
-│     0  4 7  9         LCA(2, 8) = 6                            │
-│       / \             LCA(2, 4) = 2                            │
-│      3   5            LCA(3, 5) = 4                            │
-│                                                                │
-│  BST Property helps:                                           │
-│  - If both < node → LCA is in left                             │
-│  - If both > node → LCA is in right                            │
-│  - Otherwise, current node is LCA (split point)                │
-└────────────────────────────────────────────────────────────────┘
+**LOWEST COMMON ANCESTOR (LCA) in BST**
+
+```text
+       6
+      / \
+     2   8
+    / \ / \
+   0  4 7  9         LCA(2, 8) = 6
+     / \             LCA(2, 4) = 2
+    3   5            LCA(3, 5) = 4
+
+BST Property helps:
+- If both < node → LCA is in left
+- If both > node → LCA is in right
+- Otherwise, current node is LCA (split point)
 ```
 
 **Solution:**
@@ -183,23 +175,21 @@ If only ONE returns non-null → that result IS the LCA (both p and q are in sam
 
 **LeetCode 236** 🔗 https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  LCA in General Binary Tree (not BST)                          │
-├────────────────────────────────────────────────────────────────┤
-│         3                                                      │
-│        / \                                                     │
-│       5   1                                                    │
-│      / \ / \                                                   │
-│     6  2 0  8        LCA(5, 1) = 3                             │
-│       / \            LCA(5, 4) = 5                             │
-│      7   4           LCA(6, 4) = 5                             │
-│                                                                │
-│  General approach (no BST property):                           │
-│  - Search both subtrees for p and q                            │
-│  - If found in different subtrees → current is LCA             │
-│  - If both in same subtree → recurse                           │
-└────────────────────────────────────────────────────────────────┘
+**LCA in General Binary Tree (not BST)**
+
+```text
+       3
+      / \
+     5   1
+    / \ / \
+   6  2 0  8        LCA(5, 1) = 3
+     / \            LCA(5, 4) = 5
+    7   4           LCA(6, 4) = 5
+
+General approach (no BST property):
+- Search both subtrees for p and q
+- If found in different subtrees → current is LCA
+- If both in same subtree → recurse
 ```
 
 **Solution:**
@@ -225,19 +215,17 @@ public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 
 **LeetCode 230** 🔗 https://leetcode.com/problems/kth-smallest-element-in-a-bst/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  Kth SMALLEST IN BST                                           │
-├────────────────────────────────────────────────────────────────┤
-│       3                                                        │
-│      / \         Inorder: [1, 2, 3, 4]                         │
-│     1   4                                                      │
-│      \           k=1 → return 1                                │
-│       2          k=2 → return 2                                │
-│                  k=3 → return 3                                │
-│                                                                │
-│  Inorder traversal of BST gives sorted order!                  │
-└────────────────────────────────────────────────────────────────┘
+**Kth SMALLEST IN BST**
+
+```text
+     3
+    / \         Inorder: [1, 2, 3, 4]
+   1   4
+    \           k=1 → return 1
+     2          k=2 → return 2
+                k=3 → return 3
+
+Inorder traversal of BST gives sorted order!
 ```
 
 **Solution:**
@@ -269,29 +257,27 @@ public int kthSmallest(TreeNode root, int k) {
 
 ## Problem 126: 🔒 Inorder Successor in BST (LeetCode 285 - Premium)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  INORDER SUCCESSOR IN BST                                      │
-├────────────────────────────────────────────────────────────────┤
-│  Given a BST and a node p, find the in-order successor of      │
-│  that node (smallest node greater than p).                     │
-│                                                                │
-│       5                                                        │
-│      / \                                                       │
-│     3   6                                                      │
-│    / \                                                         │
-│   2   4           Successor(3) = 4                             │
-│  /                Successor(4) = 5                             │
-│ 1                 Successor(6) = null                          │
-│                                                                │
-│  If p has right child → leftmost in right subtree              │
-│  Else → nearest ancestor where p is in left subtree            │
-│                                                                │
-│  Constraints:                                                  │
-│  - Number of nodes: [1, 10^4]                                  │
-│  - All node values unique                                      │
-│  - p exists in the tree                                        │
-└────────────────────────────────────────────────────────────────┘
+**INORDER SUCCESSOR IN BST**
+
+```text
+ Given a BST and a node p, find the in-order successor of
+ that node (smallest node greater than p).
+
+      5
+     / \
+    3   6
+   / \
+  2   4           Successor(3) = 4
+ /                Successor(4) = 5
+1                 Successor(6) = null
+
+ If p has right child → leftmost in right subtree
+ Else → nearest ancestor where p is in left subtree
+
+ Constraints:
+ - Number of nodes: [1, 10^4]
+ - All node values unique
+ - p exists in the tree
 ```
 
 **Solution:**

@@ -51,37 +51,32 @@ public int minSubArrayLen(int target, int[] nums) {
 **LeetCode 340** | **Difficulty:** Medium | 🔒 Premium
 🔗 Premium Problem
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  LONGEST SUBSTRING WITH AT MOST K DISTINCT CHARS                          ║
-║  (LeetCode 340 - Premium)                                                 ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find length of longest substring with at most k distinct characters.     ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: s = "eceba", k = 2                                                ║
-║  Output: 3                                                                ║
-║  Explanation: "ece" has 2 distinct chars (e, c)                           ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: s = "aa", k = 1                                                   ║
-║  Output: 2                                                                ║
-║                                                                           ║
-║  Example 3:                                                               ║
-║  Input: s = "aabacbebebe", k = 3                                          ║
-║  Output: 7                                                                ║
-║  Explanation: "cbebebe" has 3 distinct (c, b, e)                          ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 1 <= s.length <= 5 * 10^4                                              ║
-║  - 0 <= k <= 50                                                           ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**LONGEST SUBSTRING WITH AT MOST K DISTINCT CHARS — (LeetCode 340 - Premium)**
+
+```text
+Find length of longest substring with at most k distinct characters.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: s = "eceba", k = 2
+Output: 3
+Explanation: "ece" has 2 distinct chars (e, c)
+
+Example 2:
+Input: s = "aa", k = 1
+Output: 2
+
+Example 3:
+Input: s = "aabacbebebe", k = 3
+Output: 7
+Explanation: "cbebebe" has 3 distinct (c, b, e)
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 1 <= s.length <= 5 * 10^4
+- 0 <= k <= 50
 ```
 
 ```java
@@ -115,24 +110,20 @@ public int lengthOfLongestSubstringKDistinct(String s, int k) {
 **LeetCode 904** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/fruit-into-baskets/](https://leetcode.com/problems/fruit-into-baskets/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  FRUIT INTO BASKETS                                                       ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  You have 2 baskets. Each basket can hold only ONE type of fruit.         ║
-║  Find maximum fruits you can collect (longest subarray with 2 types).     ║
-║                                                                           ║
-║  Input: fruits = [1,2,1]                                                  ║
-║  Output: 3 (collect all)                                                  ║
-║                                                                           ║
-║  Input: fruits = [0,1,2,2]                                                ║
-║  Output: 3 ([1,2,2])                                                      ║
-║                                                                           ║
-║  Input: fruits = [1,2,3,2,2]                                              ║
-║  Output: 4 ([2,3,2,2])                                                    ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**FRUIT INTO BASKETS**
+
+```text
+You have 2 baskets. Each basket can hold only ONE type of fruit.
+Find maximum fruits you can collect (longest subarray with 2 types).
+
+Input: fruits = [1,2,1]
+Output: 3 (collect all)
+
+Input: fruits = [0,1,2,2]
+Output: 3 ([1,2,2])
+
+Input: fruits = [1,2,3,2,2]
+Output: 4 ([2,3,2,2])
 ```
 
 ```java
@@ -163,27 +154,23 @@ public int totalFruit(int[] fruits) {
 **LeetCode 424** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/longest-repeating-character-replacement/](https://leetcode.com/problems/longest-repeating-character-replacement/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  LONGEST REPEATING CHARACTER REPLACEMENT                                  ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  You can replace at most k characters. Find longest substring with all    ║
-║  same characters after at most k replacements.                            ║
-║                                                                           ║
-║  Input: s = "ABAB", k = 2                                                 ║
-║  Output: 4                                                                ║
-║  Explanation: Replace 2 A's with B's → "BBBB" (or vice versa)             ║
-║                                                                           ║
-║  Input: s = "AABABBA", k = 1                                              ║
-║  Output: 4                                                                ║
-║  Explanation: Replace middle B → "AAAAABA" gives "AAAA"                   ║
-║                                                                           ║
-║  KEY INSIGHT:                                                             ║
-║  Window is valid if: (windowLength - maxFreq) <= k                        ║
-║  We need to replace (windowLength - maxFreq) characters                   ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**LONGEST REPEATING CHARACTER REPLACEMENT**
+
+```text
+You can replace at most k characters. Find longest substring with all
+same characters after at most k replacements.
+
+Input: s = "ABAB", k = 2
+Output: 4
+Explanation: Replace 2 A's with B's → "BBBB" (or vice versa)
+
+Input: s = "AABABBA", k = 1
+Output: 4
+Explanation: Replace middle B → "AAAAABA" gives "AAAA"
+
+KEY INSIGHT:
+Window is valid if: (windowLength - maxFreq) <= k
+We need to replace (windowLength - maxFreq) characters
 ```
 
 ```java

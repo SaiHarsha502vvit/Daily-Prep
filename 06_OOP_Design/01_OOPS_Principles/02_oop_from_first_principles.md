@@ -55,15 +55,14 @@ HOW JVM ENFORCES ACCESS MODIFIERS:
   But production code should NEVER do this.
 
 ACCESS MODIFIER SCOPE:
-┌──────────────┬───────┬─────────┬────────────┬─────────┐
-│ Modifier     │ Class │ Package │ Subclass   │ World   │
-├──────────────┼───────┼─────────┼────────────┼─────────┤
-│ private      │ ✔     │ ✘      │ ✘          │ ✘      │
-│ default      │ ✔     │ ✔      │ ✘          │ ✘      │
-│ protected    │ ✔     │ ✔      │ ✔         │ ✘      │
-│ public       │ ✔     │ ✔      │ ✔          │ ✔      │
-└──────────────┴───────┴─────────┴────────────┴─────────┘
 ```
+
+| Modifier | Class | Package | Subclass | World |
+| --- | --- | --- | --- | --- |
+| private | ✔ | ✘ | ✘ | ✘ |
+| default | ✔ | ✔ | ✘ | ✘ |
+| protected | ✔ | ✔ | ✔ | ✘ |
+| public | ✔ | ✔ | ✔ | ✔ |
 
 ```java
 // WITHOUT ENCAPSULATION:

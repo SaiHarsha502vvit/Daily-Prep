@@ -12,23 +12,21 @@
 
 **LeetCode 105** 🔗 https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  BUILD TREE FROM PREORDER & INORDER                             │
-├─────────────────────────────────────────────────────────────────┤
-│  preorder = [3, 9, 20, 15, 7]  (Root, Left, Right)              │
-│  inorder  = [9, 3, 15, 20, 7]  (Left, Root, Right)              │
-│                                                                 │
-│  Step 1: First preorder element (3) is ROOT                     │
-│  Step 2: Find 3 in inorder → splits left [9] and right [15,20,7]│
-│  Step 3: Recursively build subtrees                             │
-│                                                                 │
-│        3                                                        │
-│       / \                                                       │
-│      9  20                                                      │
-│        /  \                                                     │
-│       15   7                                                    │
-└─────────────────────────────────────────────────────────────────┘
+**BUILD TREE FROM PREORDER & INORDER**
+
+```text
+preorder = [3, 9, 20, 15, 7]  (Root, Left, Right)
+inorder  = [9, 3, 15, 20, 7]  (Left, Root, Right)
+
+Step 1: First preorder element (3) is ROOT
+Step 2: Find 3 in inorder → splits left [9] and right [15,20,7]
+Step 3: Recursively build subtrees
+
+      3
+     / \
+    9  20
+      /  \
+     15   7
 ```
 
 **Solution:**
@@ -74,23 +72,21 @@ private TreeNode build(int[] preorder, int left, int right) {
 
 **LeetCode 106** 🔗 https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  BUILD TREE FROM INORDER & POSTORDER                           │
-├────────────────────────────────────────────────────────────────┤
-│  inorder   = [9, 3, 15, 20, 7]  (Left, Root, Right)            │
-│  postorder = [9, 15, 7, 20, 3]  (Left, Right, Root)            │
-│                                                                │
-│  LAST postorder element (3) is ROOT                            │
-│  Process postorder from END (right to left)                    │
-│  Build RIGHT subtree before LEFT (reverse of preorder)         │
-│                                                                │
-│        3                                                       │
-│       / \                                                      │
-│      9  20                                                     │
-│        /  \                                                    │
-│       15   7                                                   │
-└────────────────────────────────────────────────────────────────┘
+**BUILD TREE FROM INORDER & POSTORDER**
+
+```text
+inorder   = [9, 3, 15, 20, 7]  (Left, Root, Right)
+postorder = [9, 15, 7, 20, 3]  (Left, Right, Root)
+
+LAST postorder element (3) is ROOT
+Process postorder from END (right to left)
+Build RIGHT subtree before LEFT (reverse of preorder)
+
+      3
+     / \
+    9  20
+      /  \
+     15   7
 ```
 
 **Solution:**
@@ -132,19 +128,17 @@ private TreeNode build(int[] postorder, int left, int right) {
 
 **LeetCode 297** 🔗 https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SERIALIZE AND DESERIALIZE BINARY TREE                         │
-├────────────────────────────────────────────────────────────────┤
-│       1                                                        │
-│      / \         Serialize: "1,2,null,null,3,4,null,null,5"    │
-│     2   3        (Preorder with null markers)                  │
-│        / \                                                     │
-│       4   5      Deserialize: Rebuild from string              │
-│                                                                │
-│  Using preorder traversal with null markers works because      │
-│  null positions indicate exact tree structure                  │
-└────────────────────────────────────────────────────────────────┘
+**SERIALIZE AND DESERIALIZE BINARY TREE**
+
+```text
+     1
+    / \         Serialize: "1,2,null,null,3,4,null,null,5"
+   2   3        (Preorder with null markers)
+      / \
+     4   5      Deserialize: Rebuild from string
+
+Using preorder traversal with null markers works because
+null positions indicate exact tree structure
 ```
 
 **Solution:**

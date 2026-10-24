@@ -6,23 +6,21 @@
 
 ## Problem 206: Count Set Bits (HackerEarth)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  COUNT SET BITS - Number of 1s in binary representation        │
-├────────────────────────────────────────────────────────────────┤
-│  n = 13                                                        │
-│  Binary: 1101                                                  │
-│  Set bits: 3                                                   │
-│                                                                │
-│  Brian Kernighan's Algorithm:                                  │
-│  n & (n-1) removes rightmost set bit                           │
-│                                                                │
-│  13 = 1101                                                     │
-│  12 = 1100                                                     │
-│  13 & 12 = 1100 (12) → count = 1                               │
-│  12 & 11 = 1000 (8)  → count = 2                               │
-│  8 & 7 = 0           → count = 3                               │
-└────────────────────────────────────────────────────────────────┘
+**COUNT SET BITS - Number of 1s in binary representation**
+
+```text
+n = 13
+Binary: 1101
+Set bits: 3
+
+Brian Kernighan's Algorithm:
+n & (n-1) removes rightmost set bit
+
+13 = 1101
+12 = 1100
+13 & 12 = 1100 (12) → count = 1
+12 & 11 = 1000 (8)  → count = 2
+8 & 7 = 0           → count = 3
 ```
 
 **Solution:**
@@ -51,25 +49,23 @@ public int countSetBitsRange(int n) {
 
 ## Problem 207: Power of Two (Codeforces)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  POWER OF TWO - Check if n is power of 2                       │
-├────────────────────────────────────────────────────────────────┤
-│  Powers of 2 have exactly ONE set bit:                         │
-│  1  = 0001                                                     │
-│  2  = 0010                                                     │
-│  4  = 0100                                                     │
-│  8  = 1000                                                     │
-│  16 = 10000                                                    │
-│                                                                │
-│  Trick: n & (n-1) == 0 for powers of 2                         │
-│                                                                │
-│  8 = 1000, 7 = 0111                                            │
-│  8 & 7 = 0000 → True                                           │
-│                                                                │
-│  6 = 0110, 5 = 0101                                            │
-│  6 & 5 = 0100 → False                                          │
-└────────────────────────────────────────────────────────────────┘
+**POWER OF TWO - Check if n is power of 2**
+
+```text
+Powers of 2 have exactly ONE set bit:
+1  = 0001
+2  = 0010
+4  = 0100
+8  = 1000
+16 = 10000
+
+Trick: n & (n-1) == 0 for powers of 2
+
+8 = 1000, 7 = 0111
+8 & 7 = 0000 → True
+
+6 = 0110, 5 = 0101
+6 & 5 = 0100 → False
 ```
 
 **Solution:**
@@ -94,24 +90,22 @@ public int highestPowerOf2(int n) {
 
 ## Problem 208: XOR Queries (HackerEarth)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  XOR QUERIES - XOR of range [L, R]                             │
-├────────────────────────────────────────────────────────────────┤
-│  arr = [1, 3, 4, 8], queries = [[0,1], [1,2], [0,3]]           │
-│                                                                │
-│  XOR properties:                                               │
-│  - a ⊕ a = 0                                                   │
-│  - a ⊕ 0 = a                                                   │
-│  - Associative and commutative                                 │
-│                                                                │
-│  Prefix XOR: [1, 1⊕3, 1⊕3⊕4, 1⊕3⊕4⊕8]                          │
-│            = [1, 2, 6, 14]                                     │
-│                                                                │
-│  XOR[L,R] = prefix[R] ⊕ prefix[L-1]                            │
-│  XOR[1,2] = prefix[2] ⊕ prefix[0] = 6 ⊕ 1 = 7                  │
-│  Check: 3 ⊕ 4 = 7 ✓                                            │
-└────────────────────────────────────────────────────────────────┘
+**XOR QUERIES - XOR of range [L, R]**
+
+```text
+arr = [1, 3, 4, 8], queries = [[0,1], [1,2], [0,3]]
+
+XOR properties:
+- a ⊕ a = 0
+- a ⊕ 0 = a
+- Associative and commutative
+
+Prefix XOR: [1, 1⊕3, 1⊕3⊕4, 1⊕3⊕4⊕8]
+          = [1, 2, 6, 14]
+
+XOR[L,R] = prefix[R] ⊕ prefix[L-1]
+XOR[1,2] = prefix[2] ⊕ prefix[0] = 6 ⊕ 1 = 7
+Check: 3 ⊕ 4 = 7 ✓
 ```
 
 **Solution:**

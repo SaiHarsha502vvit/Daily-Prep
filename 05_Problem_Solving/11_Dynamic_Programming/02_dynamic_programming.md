@@ -58,22 +58,20 @@ public int climbStairs(int n) {
 
 **LeetCode 198** 🔗 https://leetcode.com/problems/house-robber/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  HOUSE ROBBER - Max money without robbing adjacent houses      │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [2, 7, 9, 3, 1]                                        │
-│                                                                │
-│  Houses:  [2]  [7]  [9]  [3]  [1]                              │
-│            │    │    │    │    │                               │
-│            0    1    2    3    4                               │
-│                                                                │
-│  Rob house 0, 2, 4: 2 + 9 + 1 = 12 ✓                           │
-│  Rob house 1, 3: 7 + 3 = 10                                    │
-│                                                                │
-│  dp[i] = max(dp[i-1], dp[i-2] + nums[i])                       │
-│  "Skip current" or "Rob current + skip previous"               │
-└────────────────────────────────────────────────────────────────┘
+**HOUSE ROBBER - Max money without robbing adjacent houses**
+
+```text
+nums = [2, 7, 9, 3, 1]
+
+Houses:  [2]  [7]  [9]  [3]  [1]
+          │    │    │    │    │
+          0    1    2    3    4
+
+Rob house 0, 2, 4: 2 + 9 + 1 = 12 ✓
+Rob house 1, 3: 7 + 3 = 10
+
+dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+"Skip current" or "Rob current + skip previous"
 ```
 
 **Solution:**
@@ -198,23 +196,21 @@ For each coin, check: `dp[i] = min(dp[i], dp[i - coin] + 1)`.
 
 **LeetCode 322** 🔗 https://leetcode.com/problems/coin-change/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  COIN CHANGE - Minimum coins to make amount                    │
-├────────────────────────────────────────────────────────────────┤
-│  coins = [1, 2, 5], amount = 11                                │
-│                                                                │
-│  dp[i] = min coins to make amount i                            │
-│                                                                │
-│  Amount:  0  1  2  3  4  5  6  7  8  9  10  11                 │
-│  dp:      0  1  1  2  2  1  2  2  3  3   2   3                 │
-│                                                                │
-│  For amount 11:                                                │
-│  - Use coin 5: dp[11-5] + 1 = dp[6] + 1 = 3                    │
-│  - Use coin 2: dp[11-2] + 1 = dp[9] + 1 = 4                    │
-│  - Use coin 1: dp[11-1] + 1 = dp[10] + 1 = 3                   │
-│  Min = 3 (5 + 5 + 1)                                           │
-└────────────────────────────────────────────────────────────────┘
+**COIN CHANGE - Minimum coins to make amount**
+
+```text
+coins = [1, 2, 5], amount = 11
+
+dp[i] = min coins to make amount i
+
+Amount:  0  1  2  3  4  5  6  7  8  9  10  11
+dp:      0  1  1  2  2  1  2  2  3  3   2   3
+
+For amount 11:
+- Use coin 5: dp[11-5] + 1 = dp[6] + 1 = 3
+- Use coin 2: dp[11-2] + 1 = dp[9] + 1 = 4
+- Use coin 1: dp[11-1] + 1 = dp[10] + 1 = 3
+Min = 3 (5 + 5 + 1)
 ```
 
 **Solution:**

@@ -153,37 +153,35 @@ flowchart LR
 
 ### Key Design Decisions
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  SHORT URL GENERATION — 3 Approaches                                            │
-│                                                                                 │
-│  1. Hash + Truncate:                                                            │
-│     MD5(longURL) → take first 7 chars of base62                                 │
-│     Problem: collisions! Need to check DB, retry with salt.                     │
-│                                                                                 │
-│  2. Auto-increment ID + Base62:  ← RECOMMENDED                                  │
-│     Database gives ID 12345 → convert to base62 → "dnh"                         │
-│     No collisions! But IDs are predictable (sequential).                        │
-│                                                                                 │
-│  3. Pre-generated Key Service:                                                  │
-│     Separate service pre-generates unique keys, hands them out.                 │
-│     Keys stored in two tables: used_keys and unused_keys.                       │
-│     App server requests batch of keys → fast, no collision.                     │
-│                                                                                 │
-│  DATABASE CHOICE:                                                               │
-│  → NoSQL (DynamoDB/Cassandra) — simple key-value, massive scale                 │
-│  → Schema: { shortUrl: "abc123", longUrl: "https://...",                        │
-│              createdAt: timestamp, expiresAt: timestamp, userId: "..." }        │
-│                                                                                 │
-│  CACHING: Redis/Memcached for hot URLs                                          │
-│  → 80/20 rule: 20% of URLs get 80% of traffic                                   │
-│  → Cache most-accessed short→long mappings                                      │
-│  → LRU eviction policy                                                          │
-│                                                                                 │
-│  REDIRECT: Use HTTP 301 (permanent) or 302 (temporary)                          │
-│  → 301: Browser caches redirect → less server load, but can't track analytics   │
-│  → 302: Every request hits server → more load, but full analytics  ← BETTER     │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+SHORT URL GENERATION — 3 Approaches
+
+1. Hash + Truncate:
+   MD5(longURL) → take first 7 chars of base62
+   Problem: collisions! Need to check DB, retry with salt.
+
+2. Auto-increment ID + Base62:  ← RECOMMENDED
+   Database gives ID 12345 → convert to base62 → "dnh"
+   No collisions! But IDs are predictable (sequential).
+
+3. Pre-generated Key Service:
+   Separate service pre-generates unique keys, hands them out.
+   Keys stored in two tables: used_keys and unused_keys.
+   App server requests batch of keys → fast, no collision.
+
+DATABASE CHOICE:
+→ NoSQL (DynamoDB/Cassandra) — simple key-value, massive scale
+→ Schema: { shortUrl: "abc123", longUrl: "https://...",
+            createdAt: timestamp, expiresAt: timestamp, userId: "..." }
+
+CACHING: Redis/Memcached for hot URLs
+→ 80/20 rule: 20% of URLs get 80% of traffic
+→ Cache most-accessed short→long mappings
+→ LRU eviction policy
+
+REDIRECT: Use HTTP 301 (permanent) or 302 (temporary)
+→ 301: Browser caches redirect → less server load, but can't track analytics
+→ 302: Every request hits server → more load, but full analytics  ← BETTER
 ```
 
 ---
@@ -226,38 +224,36 @@ Scale:
 
 ### The Hard Part — Feed Generation
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  TWO APPROACHES TO NEWS FEED                                                    │
-│                                                                                 │
-│  APPROACH 1: Pull (Fan-out on Read)                                             │
-│  ────────────────────────────────────                                           │
-│  When user opens feed:                                                          │
-│  1. Get list of followed user IDs                                               │
-│  2. For each followed user, fetch their recent tweets                           │
-│  3. Merge & sort by timestamp                                                   │
-│  4. Return top N                                                                │
-│                                                                                 │
-│  ✅ Simple, works for new tweets immediately                                     │
-│  ❌ SLOW at read time (merge 200+ users' tweets on every request!)               │
-│  ❌ High read latency                                                            │
-│                                                                                 │
-│  APPROACH 2: Push (Fan-out on Write)    ← TWITTER'S APPROACH                    │
-│  ────────────────────────────────────                                           │
-│  When user posts a tweet:                                                       │
-│  1. Write tweet to tweets table                                                 │
-│  2. Look up all followers                                                       │
-│  3. Insert tweet ID into each follower's pre-computed feed cache                │
-│                                                                                 │
-│  ✅ Feed reads are blazing fast (just read pre-computed list)                    │
-│  ❌ Write is expensive (celebrity posts → fan-out to 50M followers!)             │
-│  ❌ Wasted work for inactive users                                               │
-│                                                                                 │
-│  HYBRID (What Twitter actually does):                                           │
-│  → Regular users: Push model (fan-out their tweets to followers)                │
-│  → Celebrities (>1M followers): Pull model at read time                         │
-│  → Merge: pre-computed feed + celebrity tweets fetched on demand                │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**TWO APPROACHES TO NEWS FEED**
+
+```text
+APPROACH 1: Pull (Fan-out on Read)
+────────────────────────────────────
+When user opens feed:
+1. Get list of followed user IDs
+2. For each followed user, fetch their recent tweets
+3. Merge & sort by timestamp
+4. Return top N
+
+✅ Simple, works for new tweets immediately
+❌ SLOW at read time (merge 200+ users' tweets on every request!)
+❌ High read latency
+
+APPROACH 2: Push (Fan-out on Write)    ← TWITTER'S APPROACH
+────────────────────────────────────
+When user posts a tweet:
+1. Write tweet to tweets table
+2. Look up all followers
+3. Insert tweet ID into each follower's pre-computed feed cache
+
+✅ Feed reads are blazing fast (just read pre-computed list)
+❌ Write is expensive (celebrity posts → fan-out to 50M followers!)
+❌ Wasted work for inactive users
+
+HYBRID (What Twitter actually does):
+→ Regular users: Push model (fan-out their tweets to followers)
+→ Celebrities (>1M followers): Pull model at read time
+→ Merge: pre-computed feed + celebrity tweets fetched on demand
 ```
 
 ### Architecture
@@ -321,45 +317,43 @@ flowchart LR
 
 ## PROBLEM 4: Design Rate Limiter
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  PURPOSE: Prevent abuse, protect resources, enforce SLAs                        │
-│                                                                                 │
-│  ALGORITHM 1: Token Bucket                                                      │
-│  ─────────────────────────────                                                  │
-│  Bucket holds N tokens. Each request takes 1 token.                             │
-│  Tokens added at rate R per second. If empty, reject request.                   │
-│                                                                                 │
-│  Bucket: [●●●●●___]  capacity=8, current=5                                      │
-│  Request arrives → take token → [●●●●____]                                      │
-│  Refill (every 1/R sec) → [●●●●●___]                                            │
-│  Bucket full → tokens overflow (don't exceed capacity)                          │
-│  Bucket empty → REJECT (HTTP 429 Too Many Requests)                             │
-│                                                                                 │
-│  ✅ Allows bursts (up to bucket size)                                            │
-│  ✅ Simple to implement                                                          │
-│  ✅ Memory efficient: 2 numbers per user (tokens, last_refill_time)              │
-│                                                                                 │
-│  ALGORITHM 2: Sliding Window Log                                                │
-│  ────────────────────────────────                                               │
-│  Store timestamp of each request in sorted set.                                 │
-│  On new request: remove timestamps older than window, count remaining.          │
-│  If count >= limit → reject.                                                    │
-│                                                                                 │
-│  ✅ Most accurate                                                                │
-│  ❌ Memory intensive (stores every timestamp)                                    │
-│                                                                                 │
-│  ALGORITHM 3: Sliding Window Counter (BEST for most cases)                      │
-│  ─────────────────────────────────────                                          │
-│  Combine fixed window counters with sliding ratio.                              │
-│  Estimate = prev_window_count × overlap% + curr_window_count                    │
-│  ✅ Low memory    ✅ Smooths edge cases    ✅ Reasonably accurate                  │
-│                                                                                 │
-│  DISTRIBUTED RATE LIMITING:                                                     │
-│  → Redis + Lua script (atomic increment + expire)                               │
-│  → Key: "rate:{userId}:{minute}" → INCR → compare to limit                      │
-│  → Set TTL equal to window size                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+PURPOSE: Prevent abuse, protect resources, enforce SLAs
+
+ALGORITHM 1: Token Bucket
+─────────────────────────────
+Bucket holds N tokens. Each request takes 1 token.
+Tokens added at rate R per second. If empty, reject request.
+
+Bucket: [●●●●●___]  capacity=8, current=5
+Request arrives → take token → [●●●●____]
+Refill (every 1/R sec) → [●●●●●___]
+Bucket full → tokens overflow (don't exceed capacity)
+Bucket empty → REJECT (HTTP 429 Too Many Requests)
+
+✅ Allows bursts (up to bucket size)
+✅ Simple to implement
+✅ Memory efficient: 2 numbers per user (tokens, last_refill_time)
+
+ALGORITHM 2: Sliding Window Log
+────────────────────────────────
+Store timestamp of each request in sorted set.
+On new request: remove timestamps older than window, count remaining.
+If count >= limit → reject.
+
+✅ Most accurate
+❌ Memory intensive (stores every timestamp)
+
+ALGORITHM 3: Sliding Window Counter (BEST for most cases)
+─────────────────────────────────────
+Combine fixed window counters with sliding ratio.
+Estimate = prev_window_count × overlap% + curr_window_count
+✅ Low memory    ✅ Smooths edge cases    ✅ Reasonably accurate
+
+DISTRIBUTED RATE LIMITING:
+→ Redis + Lua script (atomic increment + expire)
+→ Key: "rate:{userId}:{minute}" → INCR → compare to limit
+→ Set TTL equal to window size
 ```
 
 ---
@@ -394,46 +388,44 @@ flowchart LR
 
 ## PROBLEM 6: Design Distributed Cache (Redis-like)
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Reduce DB load, sub-millisecond reads                                     │
-│                                                                                 │
-│  CORE DECISIONS:                                                                │
-│                                                                                 │
-│  1. EVICTION POLICY:                                                            │
-│     LRU (Least Recently Used) — most common                                     │
-│     LFU (Least Frequently Used) — better for skewed access                      │
-│     TTL (Time To Live) — expire after fixed time                                │
-│                                                                                 │
-│  2. CACHE PATTERNS:                                                             │
-│     Cache-Aside (Lazy Loading):                                                 │
-│       Read: Check cache → miss → read DB → write cache → return                 │
-│       Write: Write DB → invalidate cache                                        │
-│       ✅ Only caches what's needed  ❌ Cache miss penalty                         │
-│                                                                                 │
-│     Write-Through:                                                              │
-│       Write: Write cache AND DB simultaneously                                  │
-│       ✅ Cache always fresh  ❌ Write latency (two writes)                        │
-│                                                                                 │
-│     Write-Behind (Write-Back):                                                  │
-│       Write: Write cache → async write DB later                                 │
-│       ✅ Low write latency  ❌ Risk of data loss                                  │
-│                                                                                 │
-│  3. DISTRIBUTED CACHING:                                                        │
-│     → Consistent hashing to distribute keys across cache nodes                  │
-│     → When node dies, only 1/N keys need redistribution                         │
-│     → Virtual nodes for better distribution                                     │
-│                                                                                 │
-│  4. CACHE PROBLEMS:                                                             │
-│     Cache stampede: Many threads miss cache simultaneously → DB crushed         │
-│     Fix: Distributed lock (only one thread fetches, others wait)                │
-│                                                                                 │
-│     Cache penetration: Queries for non-existent keys always miss                │
-│     Fix: Cache null results with short TTL, or use Bloom filter                 │
-│                                                                                 │
-│     Cache avalanche: Many keys expire at same time → sudden DB load             │
-│     Fix: Add random jitter to TTL values                                        │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+WHY: Reduce DB load, sub-millisecond reads
+
+CORE DECISIONS:
+
+1. EVICTION POLICY:
+   LRU (Least Recently Used) — most common
+   LFU (Least Frequently Used) — better for skewed access
+   TTL (Time To Live) — expire after fixed time
+
+2. CACHE PATTERNS:
+   Cache-Aside (Lazy Loading):
+     Read: Check cache → miss → read DB → write cache → return
+     Write: Write DB → invalidate cache
+     ✅ Only caches what's needed  ❌ Cache miss penalty
+
+   Write-Through:
+     Write: Write cache AND DB simultaneously
+     ✅ Cache always fresh  ❌ Write latency (two writes)
+
+   Write-Behind (Write-Back):
+     Write: Write cache → async write DB later
+     ✅ Low write latency  ❌ Risk of data loss
+
+3. DISTRIBUTED CACHING:
+   → Consistent hashing to distribute keys across cache nodes
+   → When node dies, only 1/N keys need redistribution
+   → Virtual nodes for better distribution
+
+4. CACHE PROBLEMS:
+   Cache stampede: Many threads miss cache simultaneously → DB crushed
+   Fix: Distributed lock (only one thread fetches, others wait)
+
+   Cache penetration: Queries for non-existent keys always miss
+   Fix: Cache null results with short TTL, or use Bloom filter
+
+   Cache avalanche: Many keys expire at same time → sudden DB load
+   Fix: Add random jitter to TTL values
 ```
 
 ---

@@ -50,24 +50,22 @@ A **recipe that needs two techniques**, such as searing then braising.
 ---
 
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              COMPETITIVE PROGRAMMING PATTERNS                   │
-├─────────────────────────────────────────────────────────────────┤
-│  WHY PRACTICE THESE PLATFORMS?                                  │
-│  - Different problem styles than LeetCode                       │
-│  - Focus on mathematical thinking                               │
-│  - Time complexity matters more                                 │
-│  - Better at handling edge cases                                │
-│                                                                 │
-│  COMMON TOPICS:                                                 │
-│  • Number Theory (primes, GCD, modular arithmetic)              │
-│  • Combinatorics                                                │
-│  • Bit Manipulation                                             │
-│  • Sorting & Searching variations                               │
-│  • Implementation problems                                      │
-│  • Ad-hoc problems (pattern recognition)                        │
-└─────────────────────────────────────────────────────────────────┘
+**COMPETITIVE PROGRAMMING PATTERNS**
+
+```text
+WHY PRACTICE THESE PLATFORMS?
+- Different problem styles than LeetCode
+- Focus on mathematical thinking
+- Time complexity matters more
+- Better at handling edge cases
+
+COMMON TOPICS:
+• Number Theory (primes, GCD, modular arithmetic)
+• Combinatorics
+• Bit Manipulation
+• Sorting & Searching variations
+• Implementation problems
+• Ad-hoc problems (pattern recognition)
 ```
 
 

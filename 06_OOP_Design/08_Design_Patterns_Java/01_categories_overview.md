@@ -97,12 +97,10 @@ public class Logger {
 
 ### 2. Factory Method — Let Subclasses Decide
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Need to create objects without specifying exact class.     ║
-║  ANALOGY: You order "a pizza" — the kitchen decides which type.      ║
-║  USE: When a class can't anticipate which objects to create.         ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Need to create objects without specifying exact class.
+ANALOGY: You order "a pizza" — the kitchen decides which type.
+USE: When a class can't anticipate which objects to create.
 ```
 
 ```java
@@ -153,12 +151,10 @@ n.send("Your order has shipped!");
 
 ### 3. Builder — Complex Object Construction
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Constructor with too many parameters (telescoping).        ║
-║  ANALOGY: Ordering a customized burger — pick each component.        ║
-║  USE: Objects with many optional fields (HttpRequest, User, etc.)    ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Constructor with too many parameters (telescoping).
+ANALOGY: Ordering a customized burger — pick each component.
+USE: Objects with many optional fields (HttpRequest, User, etc.)
 ```
 
 ```java

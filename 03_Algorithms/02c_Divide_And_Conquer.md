@@ -141,15 +141,13 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 
 ## PART 0: THE MENTAL MODEL — "The Delegation Strategy"
 
-```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE REAL-WORLD ORIGIN                                                        │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ Roman emperor Julius Caesar famously used the strategy "divide et impera"    │
-│ (divide and rule) to defeat large enemy alliances by fighting them one small │
-│ tribe at a time. In computer science, John von Neumann applied this exact    │
-│ principle to sorting in 1945 to create Merge Sort.                           │
-└──────────────────────────────────────────────────────────────────────────────┘
+**THE REAL-WORLD ORIGIN**
+
+```text
+Roman emperor Julius Caesar famously used the strategy "divide et impera"
+(divide and rule) to defeat large enemy alliances by fighting them one small
+tribe at a time. In computer science, John von Neumann applied this exact
+principle to sorting in 1945 to create Merge Sort.
 ```
 
 ### The 5W+H Framework

@@ -229,44 +229,42 @@ You CANNOT have both during a partition. Period.
 
 ## Part 5: Partitioning (Sharding)
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Single machine can't hold all data → split across machines                │
-│                                                                                 │
-│  STRATEGY 1: Range-Based Partitioning                                           │
-│  ─────────────────────────────────────                                          │
-│  Shard 1: Users A-F    Shard 2: Users G-M    Shard 3: Users N-Z                 │
-│                                                                                 │
-│  ✅ Range queries are efficient (get all users A-C → only shard 1)               │
-│  ❌ Hot spots! (If most users start with "S", shard 3 overloaded)                │
-│                                                                                 │
-│  STRATEGY 2: Hash-Based Partitioning                                            │
-│  ────────────────────────────────────                                           │
-│  shard = hash(userId) % num_shards                                              │
-│                                                                                 │
-│  ✅ Even distribution (no hot spots for simple partition key)                    │
-│  ❌ Range queries require scatter-gather (hit all shards)                        │
-│  ❌ Adding/removing shard requires massive data movement                         │
-│                                                                                 │
-│  STRATEGY 3: Consistent Hashing  ← BEST FOR DISTRIBUTED SYSTEMS                 │
-│  ─────────────────────────────────                                              │
-│  Nodes and keys mapped to a hash ring (0 to 2^32)                               │
-│  Key assigned to nearest node clockwise                                         │
-│                                                                                 │
-│       0                                                                         │
-│      ╱ ╲        Node A at position 100                                          │
-│    ╱     ╲      Node B at position 200                                          │
-│   ╱       ╲     Node C at position 300                                          │
-│  ╱    ●A   ╲                                                                    │
-│  │  ●B   ●C │   Key at position 150 → goes to Node B (nearest clockwise)        │
-│  ╲         ╱                                                                    │
-│   ╲       ╱     When Node B dies: only keys between A and B move to C           │
-│    ╲     ╱      Not ALL keys — just 1/N of them!                                │
-│      ╲ ╱                                                                        │
-│                                                                                 │
-│  Virtual nodes: Each physical node owns multiple positions on ring              │
-│  → Better distribution, smoother rebalancing                                    │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+WHY: Single machine can't hold all data → split across machines
+
+STRATEGY 1: Range-Based Partitioning
+─────────────────────────────────────
+Shard 1: Users A-F    Shard 2: Users G-M    Shard 3: Users N-Z
+
+✅ Range queries are efficient (get all users A-C → only shard 1)
+❌ Hot spots! (If most users start with "S", shard 3 overloaded)
+
+STRATEGY 2: Hash-Based Partitioning
+────────────────────────────────────
+shard = hash(userId) % num_shards
+
+✅ Even distribution (no hot spots for simple partition key)
+❌ Range queries require scatter-gather (hit all shards)
+❌ Adding/removing shard requires massive data movement
+
+STRATEGY 3: Consistent Hashing  ← BEST FOR DISTRIBUTED SYSTEMS
+─────────────────────────────────
+Nodes and keys mapped to a hash ring (0 to 2^32)
+Key assigned to nearest node clockwise
+
+     0
+    ╱ ╲        Node A at position 100
+  ╱     ╲      Node B at position 200
+ ╱       ╲     Node C at position 300
+╱    ●A   ╲
+│  ●B   ●C │   Key at position 150 → goes to Node B (nearest clockwise)
+╲         ╱
+ ╲       ╱     When Node B dies: only keys between A and B move to C
+  ╲     ╱      Not ALL keys — just 1/N of them!
+    ╲ ╱
+
+Virtual nodes: Each physical node owns multiple positions on ring
+→ Better distribution, smoother rebalancing
 ```
 
 ---
@@ -309,35 +307,16 @@ The field crystallised around a few landmark papers and systems. **Leslie Lampor
 
 ## Part 7: Common Distributed System Patterns
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  PATTERN              │ WHAT                          │ USED IN                 │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Circuit Breaker      │ Stop calling failing service  │ Hystrix (legacy),       │
-│                       │ to prevent cascade failures   │ Resilience4J            │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Bulkhead             │ Isolate failures to one       │ Thread pool per service │
-│                       │ component, protect others     │                         │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Saga                 │ Distributed transaction as    │ Order → Pay → Ship      │
-│                       │ sequence of local txns +      │ with compensation       │
-│                       │ compensations                 │                         │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  CQRS                 │ Separate read and write       │ Event-sourced systems   │
-│                       │ models/databases              │                         │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Event Sourcing       │ Store events, not state       │ Banking ledger, audit   │
-│                       │ Rebuild state by replaying    │ systems                 │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Sidecar              │ Attach helper process to main │ Service mesh (Istio),   │
-│                       │ service (logging, proxy)      │ Envoy proxy             │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Leader Election      │ One node coordinates work     │ ZooKeeper, etcd         │
-│──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Gossip Protocol      │ Nodes share state by random   │ Cassandra, Consul       │
-│                       │ peer-to-peer communication    │                         │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+| PATTERN | WHAT | USED IN |
+| --- | --- | --- |
+| Circuit Breaker | Stop calling failing service to prevent cascade failures | Hystrix (legacy), Resilience4J |
+| Bulkhead | Isolate failures to one component, protect others | Thread pool per service |
+| Saga | Distributed transaction as sequence of local txns + compensations | Order → Pay → Ship with compensation |
+| CQRS | Separate read and write models/databases | Event-sourced systems |
+| Event Sourcing | Store events, not state<br>Rebuild state by replaying | Banking ledger, audit systems |
+| Sidecar | Attach helper process to main service (logging, proxy) | Service mesh (Istio), Envoy proxy |
+| Leader Election | One node coordinates work | ZooKeeper, etcd |
+| Gossip Protocol | Nodes share state by random peer-to-peer communication | Cassandra, Consul |
 
 ---
 
@@ -633,38 +612,18 @@ The etcd team (core of Kubernetes) evaluated Paxos before choosing Raft and conc
 
 ### Breadth Comparison 1: Consistency Model Full Comparison Table
 
-```
-┌──────────────────────┬────────────────────┬──────────────────────┬──────────────────┐
-│  CONSISTENCY MODEL   │  GUARANTEE         │  LATENCY             │  NAMED SYSTEMS   │
-├──────────────────────┼────────────────────┼──────────────────────┼──────────────────┤
-│  Linearizability     │  Read = latest     │  10-100ms+           │  Google Spanner  │
-│  (Strongest)         │  write, globally   │  (must coordinate    │  Zookeeper      │
-│                      │                    │   all replicas)      │  etcd            │
-├──────────────────────┼────────────────────┼──────────────────────┼──────────────────┤
-│  Sequential          │  All ops in        │  5-50ms              │  DynamoDB        │
-│  Consistency         │  same total order  │  (leader coordinates │  (per-object     │
-│                      │  across all nodes  │   but no wall clock  │   locks)         │
-├──────────────────────┼────────────────────┼──────────────────────┼──────────────────┤
-│  Causal              │  Causally related  │  1-20ms              │  MongoDB 4.0+    │
-│  Consistency         │  ops in order,     │  (track dependencies │  (causal reads)  │
-│                      │  concurrent may    │   in vector clocks)  │  Azure Cosmos DB │
-│                      │   differ           │                      │                  │
-├──────────────────────┼────────────────────┼──────────────────────┼──────────────────┤
-│  Eventual            │  All replicas      │  0.5-5ms             │  Amazon DynamoDB │
-│  Consistency         │  converge given    │  (local reads, no    │  Apache Cassandra│
-│  (Weakest practical) │  no new writes     │   coordination)      │  AWS S3          │
-│                      │                    │                      │  DNS             │
-├──────────────────────┼────────────────────┼──────────────────────┼──────────────────┤
-│  Read-Your-Writes    │  Session sees its  │  1-10ms              │  DynamoDB        │
-│  (PRAM)              │  own writes        │  (session affinity)  │  DAX             │
-│                      │                    │                      │  Cassandra       │
-│                      │                    │                      │  (per-DC reads)  │
-├──────────────────────┼────────────────────┼──────────────────────┼──────────────────┤
-│  Monotonic Reads     │  Never read older  │  1-10ms              │  DynamoDB        │
-│                      │  data after reads  │  (client-side        │  Azure Table     │
-│                      │                    │   tracking)          │  Storage         │
-└──────────────────────┴────────────────────┴──────────────────────┴──────────────────┘
+| Consistency model | Guarantee | Relative cost | Systems that offer it |
+| --- | --- | --- | --- |
+| Linearizability (strongest) | Every read sees the latest completed write, as if there were one copy | Highest: needs coordination (a quorum or leader) on each operation | etcd, Google Spanner (externally consistent), ZooKeeper writes |
+| Sequential consistency | All clients see operations in one total order that respects each client's own order | High | ZooKeeper (reads may lag the latest write) |
+| Causal consistency | Causally related operations are seen in order; concurrent ones may differ | Medium | MongoDB causally consistent sessions (3.6+), research systems such as COPS |
+| Session guarantees (read-your-writes, monotonic reads) | A session sees its own writes and never goes back in time | Low to medium: needs session affinity or tokens | Azure Cosmos DB session level, MongoDB sessions |
+| Eventual consistency (weakest) | Replicas converge if writes stop | Lowest: local reads, no coordination | DynamoDB default reads, Cassandra at low consistency levels, DNS |
 
+> [!NOTE]
+> The cost column is qualitative on purpose. Real latency depends on network distance, quorum size and load; measure your own system.
+
+```
   SELECTION CRITERIA:
   Banking/ledger/leader election  → Linearizability (CP)
   Shopping cart/inventory          → Read-Your-Writes (session)
@@ -675,41 +634,18 @@ The etcd team (core of Kubernetes) evaluated Paxos before choosing Raft and conc
 
 ### Breadth Comparison 2: Distributed Transaction Patterns
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  PATTERN         │  2PC (Two-Phase Commit)  │  SAGA (Choreography/Orchestration) │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  MODEL           │  All-or-nothing atomic   │  Sequence of local txns +          │
-│                  │  commit across services  │  compensating actions              │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  COORDINATION    │  Central Coordinator     │  Distributed (choreography) or     │
-│                  │  sends Prepare → Commit  │  central Orchestrator              │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  ON FAILURE      │  Coordinator decides     │  Compensate each completed step:  │
-│                  │  COMMIT or ROLLBACK      │  undo_ship → refund_payment →     │
-│                  │  (all nodes must agree)  │  cancel_order                     │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  BLOCKING        │  YES — locks held during │  NO — each step is independent,   │
-│                  │  prepare phase           │  compensation is a new forward    │
-│                  │                          │  transaction                       │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  USE WHEN        │  Tightly coupled data,   │  Loosely coupled microservices,   │
-│                  │  must not violate        │  long-running workflows,          │
-│                  │  invariants              │  eventual consistency OK          │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  EXAMPLES        │  Distributed SQL,        │  Order → Pay → Ship (e-commerce)  │
-│                  │  HBase, Spanner          │  Travel booking pipeline          │
-│                  │                          │  Financial ledger with reversals  │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  CRITICAL RISK   │  Coordinator crash       │  Compensation failure             │
-│                  │  → nodes wait forever    │  (refund fails after ship —       │
-│                  │  → need timeouts +       │  need retry/idempotency)          │
-│                  │    recovery protocols    │                                   │
-├──────────────────┼──────────────────────────┼──────────────────────────────────  ┤
-│  LATENCY         │  High (3 round-trips     │  Lower per step, but more steps   │
-│                  │  total coordination)     │  overall                           │
-└──────────────────┴──────────────────────────┴──────────────────────────────────  ┘
+| PATTERN | 2PC (Two-Phase Commit) | SAGA (Choreography/Orchestration) |
+| --- | --- | --- |
+| MODEL | All-or-nothing atomic commit across services | Sequence of local txns + compensating actions |
+| COORDINATION | Central Coordinator sends Prepare → Commit | Distributed (choreography) or central Orchestrator |
+| ON FAILURE | Coordinator decides<br>COMMIT or ROLLBACK (all nodes must agree) | Compensate each completed step: undo_ship → refund_payment → cancel_order |
+| BLOCKING | YES — locks held during prepare phase | NO — each step is independent, compensation is a new forward transaction |
+| USE WHEN | Tightly coupled data, must not violate invariants | Loosely coupled microservices, long-running workflows, eventual consistency OK |
+| EXAMPLES | Distributed SQL, HBase, Spanner | Order → Pay → Ship (e-commerce)<br>Travel booking pipeline<br>Financial ledger with reversals |
+| CRITICAL RISK | Coordinator crash<br>→ nodes wait forever<br>→ need timeouts + recovery protocols | Compensation failure (refund fails after ship — need retry/idempotency) |
+| LATENCY | High (3 round-trips total coordination) | Lower per step, but more steps overall |
 
+```
   EVENTUAL CONSISTENCY AS THIRD ALTERNATIVE:
   ══════════════════════════════════════════════════
 

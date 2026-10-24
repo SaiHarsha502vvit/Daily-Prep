@@ -12,18 +12,16 @@
 
 **LeetCode 104** 🔗 https://leetcode.com/problems/maximum-depth-of-binary-tree/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MAXIMUM DEPTH (Height)                                        │
-├────────────────────────────────────────────────────────────────┤
-│        3          depth = 1 + max(depth(left), depth(right))   │
-│       / \                                                      │
-│      9  20        depth(3) = 1 + max(1, 2) = 3                 │
-│        /  \       depth(9) = 1 + max(0, 0) = 1                 │
-│       15   7      depth(20) = 1 + max(1, 1) = 2                │
-│                                                                │
-│  Maximum Depth = 3                                             │
-└────────────────────────────────────────────────────────────────┘
+**MAXIMUM DEPTH (Height)**
+
+```text
+      3          depth = 1 + max(depth(left), depth(right))
+     / \
+    9  20        depth(3) = 1 + max(1, 2) = 3
+      /  \       depth(9) = 1 + max(0, 0) = 1
+     15   7      depth(20) = 1 + max(1, 1) = 2
+
+Maximum Depth = 3
 ```
 
 **Solution:**
@@ -67,21 +65,19 @@ public int maxDepthBFS(TreeNode root) {
 
 **LeetCode 111** 🔗 https://leetcode.com/problems/minimum-depth-of-binary-tree/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MINIMUM DEPTH - Shortest path from root to leaf               │
-├────────────────────────────────────────────────────────────────┤
-│        3                    3                                  │
-│       / \                    \                                 │
-│      9  20                   20                                │
-│        /  \                 /  \                               │
-│       15   7               15   7                              │
-│                                                                │
-│  Min depth = 2           Min depth = 3 (not 1!)                │
-│  (3→9 is leaf)           (3 is not a leaf)                     │
-│                                                                │
-│  ⚠️ TRAP: If one child is null, use the other child's depth    │
-└────────────────────────────────────────────────────────────────┘
+**MINIMUM DEPTH - Shortest path from root to leaf**
+
+```text
+      3                    3
+     / \                    \
+    9  20                   20
+      /  \                 /  \
+     15   7               15   7
+
+Min depth = 2           Min depth = 3 (not 1!)
+(3→9 is leaf)           (3 is not a leaf)
+
+⚠️ TRAP: If one child is null, use the other child's depth
 ```
 
 **Solution:**
@@ -132,22 +128,20 @@ public int minDepthBFS(TreeNode root) {
 
 **LeetCode 110** 🔗 https://leetcode.com/problems/balanced-binary-tree/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  BALANCED BINARY TREE                                          │
-├────────────────────────────────────────────────────────────────┤
-│  A tree is balanced if for every node, the height difference   │
-│  between left and right subtrees is at most 1.                 │
-│                                                                │
-│  Balanced:              Unbalanced:                            │
-│        3                      1                                │
-│       / \                      \                               │
-│      9  20                      2                              │
-│        /  \                      \                             │
-│       15   7                      3                            │
-│                                    \                           │
-│  |h(L) - h(R)| <= 1               4 ← depth diff > 1           │
-└────────────────────────────────────────────────────────────────┘
+**BALANCED BINARY TREE**
+
+```text
+A tree is balanced if for every node, the height difference
+between left and right subtrees is at most 1.
+
+Balanced:              Unbalanced:
+      3                      1
+     / \                      \
+    9  20                      2
+      /  \                      \
+     15   7                      3
+                                  \
+|h(L) - h(R)| <= 1               4 ← depth diff > 1
 ```
 
 **Solution:**
@@ -179,17 +173,15 @@ private int checkHeight(TreeNode node) {
 
 **LeetCode 100** 🔗 https://leetcode.com/problems/same-tree/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SAME TREE - Check if two trees are identical                  │
-├────────────────────────────────────────────────────────────────┤
-│      1         1                    1         1                │
-│     / \       / \                  / \       / \               │
-│    2   3     2   3                2   1     1   2              │
-│                                                                │
-│  Same: true                      Same: false                   │
-│                                  (structure same, values diff) │
-└────────────────────────────────────────────────────────────────┘
+**SAME TREE - Check if two trees are identical**
+
+```text
+    1         1                    1         1
+   / \       / \                  / \       / \
+  2   3     2   3                2   1     1   2
+
+Same: true                      Same: false
+                                (structure same, values diff)
 ```
 
 **Solution:**
@@ -216,19 +208,17 @@ public boolean isSameTree(TreeNode p, TreeNode q) {
 
 **LeetCode 101** 🔗 https://leetcode.com/problems/symmetric-tree/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SYMMETRIC TREE - Mirror image of itself                       │
-├────────────────────────────────────────────────────────────────┤
-│  Symmetric:                    Not Symmetric:                  │
-│        1                            1                          │
-│       / \                          / \                         │
-│      2   2                        2   2                        │
-│     / \ / \                        \   \                       │
-│    3  4 4  3                        3   3                      │
-│                                                                │
-│  Check: left.left == right.right AND left.right == right.left  │
-└────────────────────────────────────────────────────────────────┘
+**SYMMETRIC TREE - Mirror image of itself**
+
+```text
+Symmetric:                    Not Symmetric:
+      1                            1
+     / \                          / \
+    2   2                        2   2
+   / \ / \                        \   \
+  3  4 4  3                        3   3
+
+Check: left.left == right.right AND left.right == right.left
 ```
 
 **Solution:**
@@ -280,19 +270,17 @@ public boolean isSymmetricIterative(TreeNode root) {
 
 **LeetCode 226** 🔗 https://leetcode.com/problems/invert-binary-tree/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  INVERT BINARY TREE - Mirror/Flip the tree                     │
-├────────────────────────────────────────────────────────────────┤
-│  Input:           Output:                                      │
-│       4               4                                        │
-│      / \             / \                                       │
-│     2   7    →      7   2                                      │
-│    / \ / \         / \ / \                                     │
-│   1  3 6  9       9  6 3  1                                    │
-│                                                                │
-│  At each node: swap left and right children                    │
-└────────────────────────────────────────────────────────────────┘
+**INVERT BINARY TREE - Mirror/Flip the tree**
+
+```text
+Input:           Output:
+     4               4
+    / \             / \
+   2   7    →      7   2
+  / \ / \         / \ / \
+ 1  3 6  9       9  6 3  1
+
+At each node: swap left and right children
 ```
 
 **Solution:**

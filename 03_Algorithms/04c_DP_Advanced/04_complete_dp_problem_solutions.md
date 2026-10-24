@@ -487,11 +487,9 @@ long solve(String N, int pos, int sum, boolean tight, int target) {
 // For range [L, R]: answer = count(R) - count(L-1)
 ```
 
-```
-│ │
-│ │
-│ EXAMPLE: Count numbers 1 to N with no repeated adjacent digits │
-│ ───────────────────────────────────────────────────────────── │
+```text
+EXAMPLE: Count numbers 1 to N with no repeated adjacent digits
+─────────────────────────────────────────────────────────────
 ```
 
 ```java
@@ -522,9 +520,7 @@ long solve(String N, int pos, int prev, boolean tight) {
 }
 ```
 
-```
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
 ```
 
 ---

@@ -6,36 +6,20 @@
 
 ## The General Method
 
-```
-BRANCH AND BOUND:
-Like backtracking, but uses BOUNDS to prune more aggressively.
+**BRANCH AND BOUND: — Like backtracking, but uses BOUNDS to prune more aggressively. — KEY DIFFERENCE FROM BACKTRACKING: — - Backtracking: Prune when solution CANNOT be completed — - Branch & Bound: Prune when solution CANNOT be optimal — COMPONENTS: — 1. BRANCHING: Split problem into subproblems — 2. BOUNDING: Calculate bounds for each subproblem — 3. PRUNING: Discard subproblems with bad bounds — BRANCH AND BOUND TYPES**
 
-KEY DIFFERENCE FROM BACKTRACKING:
-- Backtracking: Prune when solution CANNOT be completed
-- Branch & Bound: Prune when solution CANNOT be optimal
+```text
+FIFO (BFS-like):
+  - Process nodes in queue order
+  - Explores level by level
 
-COMPONENTS:
-1. BRANCHING: Split problem into subproblems
-2. BOUNDING: Calculate bounds for each subproblem
-3. PRUNING: Discard subproblems with bad bounds
+LC (Least Cost):
+  - Process most promising node first
+  - Uses priority queue
 
-┌─────────────────────────────────────────┐
-│        BRANCH AND BOUND TYPES           │
-├─────────────────────────────────────────┤
-│                                         │
-│  FIFO (BFS-like):                       │
-│    - Process nodes in queue order       │
-│    - Explores level by level            │
-│                                         │
-│  LC (Least Cost):                       │
-│    - Process most promising node first  │
-│    - Uses priority queue                │
-│                                         │
-│  LIFO (DFS-like):                       │
-│    - Process most recent node first     │
-│    - Memory efficient                   │
-│                                         │
-└─────────────────────────────────────────┘
+LIFO (DFS-like):
+  - Process most recent node first
+  - Memory efficient
 ```
 
 ### 0/1 Knapsack using Branch and Bound

@@ -148,6 +148,7 @@ Total insert cost (the O(1) part, n times): n
 ### Verification
 
 Let n = 16. Resizes at sizes: 1, 2, 4, 8.
+
 | Resize at size | Elements copied | Cost |
 | -------------- | --------------- | ---- |
 | 1 | 1 | 1 |

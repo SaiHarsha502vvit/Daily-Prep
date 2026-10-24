@@ -4,11 +4,10 @@
 > Page 2 of 5 in **19. Matrix / Grid — Complete Problem Guide**
 
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                         EASY — 4 PROBLEMS                                    ║
-║  Build intuition: basic traversals, simple transformations                   ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**EASY — 4 PROBLEMS**
+
+```text
+Build intuition: basic traversals, simple transformations
 ```
 
 ## 1. [Flood Fill](https://leetcode.com/problems/flood-fill/) (LC 733) ⭐ Easy
@@ -76,17 +75,10 @@ class Solution {
 
 **Problem**: Given a 2D grid where `1` = land, `0` = water, find the perimeter of the island. There is exactly one island (no lakes).
 
-```
-┌───┬───┬───┬───┐
-│ 0 │ 1 │ 0 │ 0 │    Land cells: 7
-├───┼───┼───┼───┤    Each land cell contributes 4 edges
-│ 1 │ 1 │ 1 │ 0 │    Subtract 2 for each internal adjacency (shared edge)
-├───┼───┼───┼───┤
-│ 0 │ 1 │ 0 │ 0 │    Perimeter = 4 * landCells - 2 * internalEdges
-├───┼───┼───┼───┤                = 4 * 7 - 2 * 6 = 28 - 12 = 16 ✓
-│ 1 │ 1 │ 0 │ 0 │
-└───┴───┴───┴───┘
-```
+|  | 0 | 1 | 0 | 0 | Land cells: 7 |
+| --- | --- | --- | --- | --- | --- |
+| ├───┼───┼───┼───┤    Each land cell contributes 4 edges | 1<br>0 | 1<br>1 | 1<br>0 | 0<br>0 | Subtract 2 for each internal adjacency (shared edge)<br>Perimeter = 4 * landCells - 2 * internalEdges |
+| ├───┼───┼───┼───┤                = 4 * 7 - 2 * 6 = 28 - 12 = 16 ✓ | 1 | 1 | 0 | 0 |  |
 
 **Key Insight**: No DFS/BFS needed! Every land cell starts with 4 edges. Each shared edge between two adjacent land cells removes 2 from the perimeter (one for each cell). Count land cells and right/down adjacencies.
 
@@ -229,11 +221,10 @@ class Solution {
 
 ## 🧩 Part 2: Medium Problems
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                        MEDIUM — 10 PROBLEMS                                  ║
-║  Core grid patterns: BFS, DFS, simulation, backtracking, state encoding      ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**MEDIUM — 10 PROBLEMS**
+
+```text
+Core grid patterns: BFS, DFS, simulation, backtracking, state encoding
 ```
 
 ### 1. [Number of Islands](https://leetcode.com/problems/number-of-islands/) (LC 200) ⭐⭐ Medium
@@ -245,16 +236,12 @@ class Solution {
 
 ```
 Grid:                          Islands = 3
-┌───┬───┬───┬───┬───┐
-│ 1 │ 1 │ 0 │ 0 │ 0 │        Island 1: top-left 1,1
-├───┼───┼───┼───┼───┤        Island 2: top-right 1
-│ 1 │ 1 │ 0 │ 0 │ 0 │        Island 3: bottom-right 1
-├───┼───┼───┼───┼───┤
-│ 0 │ 0 │ 1 │ 0 │ 0 │
-├───┼───┼───┼───┼───┤
-│ 0 │ 0 │ 0 │ 1 │ 1 │
-└───┴───┴───┴───┴───┘
 ```
+
+| 1<br>├───┼───┼───┼───┼───┤        Island 2: top-right 1<br>1 | 1<br>1 | 0<br>0 | 0<br>0 | 0<br>0 | Island 1: top-left 1,1<br>Island 3: bottom-right 1 |
+| --- | --- | --- | --- | --- | --- |
+| 0 | 0 | 1 | 0 | 0 |  |
+| 0 | 0 | 0 | 1 | 1 |  |
 
 **Key Insight**: Each island is a connected component. When we find an unvisited land cell, that's a new island. DFS/BFS marks the entire component as visited, so it won't be counted again.
 
@@ -676,14 +663,13 @@ class Solution {
 
 ```
 Board:                  word = "ABCCED" → true
-┌───┬───┬───┬───┐      A → B → C
-│ A │ B │ C │ E │            │
-├───┼───┼───┼───┤            C ← E → D (nope, "ABCCED"):
-│ S │ F │ C │ S │            actually: A→B→C→C→E→D
-├───┼───┼───┼───┤                          ↓
-│ A │ D │ E │ E │            path: (0,0)→(0,1)→(0,2)→(1,2)→(1,3)... wait
-└───┴───┴───┴───┘            (0,0)A→(0,1)B→(0,2)C→(1,2)C→(2,2)E→(2,1)D ✓
 ```
+
+| ┌───┬───┬───┬───┐      A → B → C | A | B | C | E |  |
+| --- | --- | --- | --- | --- | --- |
+| ├───┼───┼───┼───┤            C ← E → D (nope, "ABCCED"): | S | F | C | S | actually: A→B→C→C→E→D |
+| ├───┼───┼───┼───┤                          ↓ | A | D | E | E | path: (0,0)→(0,1)→(0,2)→(1,2)→(1,3)... wait |
+| └───┴───┴───┴───┘            (0,0)A→(0,1)B→(0,2)C→(1,2)C→(2,2)E→(2,1)D ✓ |  |  |  |  |  |
 
 **Key Insight**: This is a constrained DFS with backtracking. For each starting cell that matches `word[0]`, attempt to extend the path. Mark cells as visited along the path, but **unmark on backtrack** (this is the backtracking part).
 

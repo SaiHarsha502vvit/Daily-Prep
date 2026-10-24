@@ -406,17 +406,15 @@ Unless P = NP, Set Cover cannot be approximated better than (1 - ε) ln n for an
 
 ### The Approximability Landscape
 
-```
-Problem            │ Best known approximation    │ Hardness (unless P=NP)
-───────────────────┼─────────────────────────────┼──────────────────────
-Vertex Cover       │ 2                           │ No factor < 1.36
-Set Cover          │ H(n) ≈ ln n                 │ No factor < (1-ε)ln n
-Metric TSP         │ 1.5 (Christofides)          │ No PTAS
-General TSP        │ None!                       │ No constant factor
-Knapsack           │ FPTAS (1+ε, poly in 1/ε)   │ No FPTAS for 0/1 unless P=NP
-Max-3-SAT          │ 7/8 (optimal!)              │ No factor > 7/8
-Independent Set    │ O(n / log² n)               │ No n^(1-ε) approx
-```
+| Problem | Best known approximation | Hardness (unless P=NP) |
+| --- | --- | --- |
+| Vertex Cover | 2 | No factor < 1.36 |
+| Set Cover | H(n) ≈ ln n | No factor < (1-ε)ln n |
+| Metric TSP | 1.5 (Christofides) | No PTAS |
+| General TSP | None! | No constant factor |
+| Knapsack | FPTAS (1+ε, poly in 1/ε) | No FPTAS for 0/1 unless P=NP |
+| Max-3-SAT | 7/8 (optimal!) | No factor > 7/8 |
+| Independent Set | O(n / log² n) | No n^(1-ε) approx |
 
 ---
 

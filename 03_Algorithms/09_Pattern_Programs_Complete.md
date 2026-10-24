@@ -49,7 +49,6 @@ Laying **tiles in a pattern**: you describe how many tiles of each kind go in ea
 
 ---
 
-
 WHY PATTERN PROGRAMS?
 
 1. INTERVIEW REALITY: Asked in 90% of fresher interviews
@@ -92,38 +91,18 @@ STEP 4: CODE THE LOOPS
 
 ---
 
-## ═══════════════════════════════════════════════════════════
-
-## PART 1: BASIC STAR PATTERNS (15 Patterns)
-
 ## 📚 Topic Pages in This Chapter
 
 This chapter is split into focused pages so each topic can be read on its own. Read them in order the first time; use the table to jump back later.
 
 | # | Page | What is inside | Lines |
 | --- | --- | --- | --- |
-| 1 | [═══════════════════════════════════════════════════════════](09_Pattern_Programs_Complete/01_section.md) | ═══════════════════════════════════════════════════════════ | 551 |
-| 2 | [═══════════════════════════════════════════════════════════](09_Pattern_Programs_Complete/02_section.md) | ═══════════════════════════════════════════════════════════ | 495 |
-| 3 | [═══════════════════════════════════════════════════════════](09_Pattern_Programs_Complete/03_section.md) | ═══════════════════════════════════════════════════════════ | 294 |
-| 4 | [═══════════════════════════════════════════════════════════](09_Pattern_Programs_Complete/04_section.md) | ═══════════════════════════════════════════════════════════ | 303 |
-| 5 | [═══════════════════════════════════════════════════════════](09_Pattern_Programs_Complete/05_section.md) | ═══════════════════════════════════════════════════════════ | 176 |
-| 6 | [PATTERN PROBLEM SOLVING CHEAT SHEET](09_Pattern_Programs_Complete/06_solving_cheat_sheet.md) | PATTERN PROBLEM SOLVING CHEAT SHEET | 143 |
-
-## ═══════════════════════════════════════════════════════════
-
-## PART 2: NUMBER PATTERNS (15 Patterns)
-
-## ═══════════════════════════════════════════════════════════
-
-## PART 3: CHARACTER PATTERNS (10 Patterns)
-
-## ═══════════════════════════════════════════════════════════
-
-## PART 4: SPECIAL PATTERNS (10 Patterns)
-
-## ═══════════════════════════════════════════════════════════
-
-## 🎨 Part 5: Interview Pattern Questions
+| 1 | [Part 1 — Basic Star Patterns (15 patterns)](09_Pattern_Programs_Complete/01_section.md) | Pattern 1: Square · Pattern 2: Right Triangle (Increasing) · Pattern 3: Inverted Right Triangle | 551 |
+| 2 | [Part 2 — Number Patterns (15 patterns)](09_Pattern_Programs_Complete/02_section.md) | Pattern N1: Number Triangle (Row Number) · Pattern N2: Number Triangle (Column Number) · Pattern N3: Number Triangle Reverse | 495 |
+| 3 | [Part 3 — Character Patterns (10 patterns)](09_Pattern_Programs_Complete/03_section.md) | Pattern C1: Alphabet Triangle · Pattern C2: Alphabet Triangle (Same Letter) · Pattern C3: Reverse Alphabet Triangle | 294 |
+| 4 | [Part 4 — Special Patterns (10 patterns)](09_Pattern_Programs_Complete/04_section.md) | Pattern S1: Heart Shape · Pattern S2: Butterfly · Pattern S3: Stairs | 303 |
+| 5 | [Part 5 — Interview Pattern Questions](09_Pattern_Programs_Complete/05_section.md) | Q1: Print Triangle with Custom Character · Q2: Print Pattern Based on Input String · Q3: Zigzag Pattern | 176 |
+| 6 | [Pattern Problem-Solving Cheat Sheet](09_Pattern_Programs_Complete/06_solving_cheat_sheet.md) | 🏋️ Practice Order for Feb 10, 2026 · Proof Corner -- Two Pointers O(n) Correctness · When It Breaks -- Algorithm Patterns | 143 |
 
 ## 🏢 Enterprise Lens — Pattern Programs
 

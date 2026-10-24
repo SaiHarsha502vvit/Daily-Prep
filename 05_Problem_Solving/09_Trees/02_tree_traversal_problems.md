@@ -11,20 +11,18 @@
 
 **LeetCode 94** 🔗 https://leetcode.com/problems/binary-tree-inorder-traversal/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  INORDER TRAVERSAL: Left → Root → Right                        │
-├────────────────────────────────────────────────────────────────┤
-│        1                                                       │
-│         \                                                      │
-│          2        Inorder: [1, 3, 2]                           │
-│         /                                                      │
-│        3                                                       │
-│                                                                │
-│  Recursive call flow:                                          │
-│  inorder(1) → inorder(null) → visit 1 → inorder(2)             │
-│            → inorder(3) → visit 3 → visit 2 → inorder(null)    │
-└────────────────────────────────────────────────────────────────┘
+**INORDER TRAVERSAL: Left → Root → Right**
+
+```text
+      1
+       \
+        2        Inorder: [1, 3, 2]
+       /
+      3
+
+Recursive call flow:
+inorder(1) → inorder(null) → visit 1 → inorder(2)
+          → inorder(3) → visit 3 → visit 2 → inorder(null)
 ```
 
 **Solution (Recursive):**
@@ -78,18 +76,16 @@ public List<Integer> inorderTraversal(TreeNode root) {
 
 **LeetCode 144** 🔗 https://leetcode.com/problems/binary-tree-preorder-traversal/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  PREORDER TRAVERSAL: Root → Left → Right                       │
-├────────────────────────────────────────────────────────────────┤
-│        1                                                       │
-│       / \                                                      │
-│      2   3        Preorder: [1, 2, 4, 5, 3]                    │
-│     / \                                                        │
-│    4   5                                                       │
-│                                                                │
-│  Process order: 1 → 2 → 4 → 5 → 3                              │
-└────────────────────────────────────────────────────────────────┘
+**PREORDER TRAVERSAL: Root → Left → Right**
+
+```text
+      1
+     / \
+    2   3        Preorder: [1, 2, 4, 5, 3]
+   / \
+  4   5
+
+Process order: 1 → 2 → 4 → 5 → 3
 ```
 
 **Solution (Iterative):**
@@ -121,19 +117,17 @@ public List<Integer> preorderTraversal(TreeNode root) {
 
 **LeetCode 145** 🔗 https://leetcode.com/problems/binary-tree-postorder-traversal/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  POSTORDER TRAVERSAL: Left → Right → Root                      │
-├────────────────────────────────────────────────────────────────┤
-│        1                                                       │
-│       / \                                                      │
-│      2   3        Postorder: [4, 5, 2, 3, 1]                   │
-│     / \                                                        │
-│    4   5                                                       │
-│                                                                │
-│  Trick: Reverse of (Root → Right → Left)                       │
-│  Modified preorder: 1→3→2→5→4 then reverse → 4,5,2,3,1         │
-└────────────────────────────────────────────────────────────────┘
+**POSTORDER TRAVERSAL: Left → Right → Root**
+
+```text
+      1
+     / \
+    2   3        Postorder: [4, 5, 2, 3, 1]
+   / \
+  4   5
+
+Trick: Reverse of (Root → Right → Left)
+Modified preorder: 1→3→2→5→4 then reverse → 4,5,2,3,1
 ```
 
 **Solution:**
@@ -221,18 +215,16 @@ public List<List<Integer>> levelOrder(TreeNode root) {
 
 **LeetCode 103** 🔗 https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  ZIGZAG LEVEL ORDER                                            │
-├────────────────────────────────────────────────────────────────┤
-│        3         Level 0 (→): [3]                              │
-│       / \        Level 1 (←): [20, 9]                          │
-│      9  20       Level 2 (→): [15, 7]                          │
-│        /  \                                                    │
-│       15   7     Output: [[3], [20,9], [15,7]]                 │
-│                                                                │
-│  Alternate direction each level                                │
-└────────────────────────────────────────────────────────────────┘
+**ZIGZAG LEVEL ORDER**
+
+```text
+      3         Level 0 (→): [3]
+     / \        Level 1 (←): [20, 9]
+    9  20       Level 2 (→): [15, 7]
+      /  \
+     15   7     Output: [[3], [20,9], [15,7]]
+
+Alternate direction each level
 ```
 
 **Solution:**
@@ -275,29 +267,27 @@ public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
 
 ## Problem 109: 🔒 Binary Tree Vertical Order Traversal (LeetCode 314 - Premium)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  VERTICAL ORDER TRAVERSAL                                      │
-├────────────────────────────────────────────────────────────────┤
-│  Given a binary tree, return the vertical order traversal      │
-│  of its nodes' values (column by column from left to right).   │
-│  If nodes are in the same row and column, order left to right. │
-│                                                                │
-│        3 (col 0)                                               │
-│       / \                                                      │
-│      9   20      Column mapping:                               │
-│     /   /  \     col -2: [4]                                   │
-│    4   15   7    col -1: [9]                                   │
-│       /          col  0: [3, 15]                               │
-│      5           col  1: [20, 5]                               │
-│                  col  2: [7]                                   │
-│                                                                │
-│  Output: [[4], [9], [3,15], [20,5], [7]]                       │
-│                                                                │
-│  Constraints:                                                  │
-│  - Number of nodes in range [0, 100]                           │
-│  - -100 <= Node.val <= 100                                     │
-└────────────────────────────────────────────────────────────────┘
+**VERTICAL ORDER TRAVERSAL**
+
+```text
+Given a binary tree, return the vertical order traversal
+of its nodes' values (column by column from left to right).
+If nodes are in the same row and column, order left to right.
+
+      3 (col 0)
+     / \
+    9   20      Column mapping:
+   /   /  \     col -2: [4]
+  4   15   7    col -1: [9]
+     /          col  0: [3, 15]
+    5           col  1: [20, 5]
+                col  2: [7]
+
+Output: [[4], [9], [3,15], [20,5], [7]]
+
+Constraints:
+- Number of nodes in range [0, 100]
+- -100 <= Node.val <= 100
 ```
 
 **Solution:**

@@ -164,7 +164,7 @@ Together, these give **O(α(n))** amortized time per operation, where α is the 
 
 ## 🧠 WHEN TO RECOGNIZE
 
-```
+```text
 Problem type → Algorithm:
 ├── "Shortest path" (unweighted) → BFS
 ├── "Shortest path" (weighted, no negative) → Dijkstra
@@ -340,18 +340,19 @@ Time: O(V + E) | Space: O(V + E)
 
 ```
 EDGE CASES:
-┌──────────────────────────────────┬──────────────────────────────────────┐
-│ Edge Case                        │ Handling                             │
-├──────────────────────────────────┼──────────────────────────────────────┤
-│ Disconnected graph               │ BFS/DFS may miss components — loop!  │
-│ Self-loop                        │ Cycle detection catches this         │
-│ Empty graph (no edges)           │ All nodes are valid, indegree=0      │
-│ Grid with all 0s                 │ 0 islands                            │
-│ Grid with all 1s                 │ 1 island                             │
-│ Single node, no edges            │ Trivially works                      │
-│ Negative weights (Dijkstra)      │ Dijkstra FAILS! Use Bellman-Ford     │
-└──────────────────────────────────┴──────────────────────────────────────┘
+```
 
+| Edge Case | Handling |
+| --- | --- |
+| Disconnected graph | BFS/DFS may miss components — loop! |
+| Self-loop | Cycle detection catches this |
+| Empty graph (no edges) | All nodes are valid, indegree=0 |
+| Grid with all 0s | 0 islands |
+| Grid with all 1s | 1 island |
+| Single node, no edges | Trivially works |
+| Negative weights (Dijkstra) | Dijkstra FAILS! Use Bellman-Ford |
+
+```
 COMMON MISTAKES:
 1. BFS: Adding to visited AFTER dequeue instead of WHEN enqueueing
    Result: same node enqueued multiple times → TLE or wrong answer

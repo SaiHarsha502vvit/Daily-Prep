@@ -1,6 +1,6 @@
-# ═══════════════════════════════════════════════════════════
+# Part 3 — Character Patterns (10 patterns)
 
-> **Navigation**: [← ═══════════════════════════════════════════════════════════](02_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [═══════════════════════════════════════════════════════════ →](04_section.md)
+> **Navigation**: [← Part 2 — Number Patterns (15 patterns)](02_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [Part 4 — Special Patterns (10 patterns) →](04_section.md)
 > Page 3 of 6 in **Complete Pattern Programs - From Zero to Hero**
 
 
@@ -296,4 +296,4 @@ public static void hollowAlphabetTriangle(int n) {
 
 ---
 
-[← ═══════════════════════════════════════════════════════════](02_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [═══════════════════════════════════════════════════════════ →](04_section.md)
+[← Part 2 — Number Patterns (15 patterns)](02_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [Part 4 — Special Patterns (10 patterns) →](04_section.md)

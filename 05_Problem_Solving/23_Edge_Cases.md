@@ -703,31 +703,25 @@ DURING INTERVIEW:
 
 ## 📖 Part 7: Quick Reference Card
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     EDGE CASE QUICK CHECK                       │
-├─────────────────────────────────────────────────────────────────┤
-│ Arrays:                                                         │
-│ □ Empty array        □ Single element     □ Two elements        │
-│ □ All same           □ Sorted             □ Reverse sorted      │
-│ □ Negatives          □ Zeros              □ Large values        │
-├─────────────────────────────────────────────────────────────────┤
-│ Strings:                                                        │
-│ □ Empty ""           □ Single char        □ All spaces          │
-│ □ Mixed case         □ Special chars      □ Unicode             │
-├─────────────────────────────────────────────────────────────────┤
-│ Numbers:                                                        │
-│ □ Zero               □ One                □ Negative            │
-│ □ MAX_VALUE          □ MIN_VALUE          □ Overflow possible   │
-├─────────────────────────────────────────────────────────────────┤
-│ Trees/Graphs:                                                   │
-│ □ Null/empty         □ Single node        □ Linear (skewed)     │
-│ □ Cycles             □ Disconnected       □ Negative weights    │
-├─────────────────────────────────────────────────────────────────┤
-│ General:                                                        │
-│ □ No solution exists □ Multiple solutions □ Duplicate values    │
-│ □ Boundary values    □ null input         □ Very large input    │
-└─────────────────────────────────────────────────────────────────┘
+**EDGE CASE QUICK CHECK**
+
+```text
+Arrays:
+□ Empty array        □ Single element     □ Two elements
+□ All same           □ Sorted             □ Reverse sorted
+□ Negatives          □ Zeros              □ Large values
+Strings:
+□ Empty ""           □ Single char        □ All spaces
+□ Mixed case         □ Special chars      □ Unicode
+Numbers:
+□ Zero               □ One                □ Negative
+□ MAX_VALUE          □ MIN_VALUE          □ Overflow possible
+Trees/Graphs:
+□ Null/empty         □ Single node        □ Linear (skewed)
+□ Cycles             □ Disconnected       □ Negative weights
+General:
+□ No solution exists □ Multiple solutions □ Duplicate values
+□ Boundary values    □ null input         □ Very large input
 ```
 
 ---

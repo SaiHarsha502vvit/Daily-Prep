@@ -90,34 +90,32 @@ class FenwickTree {
 
 ## PART 4b: SEGMENT TREE — Complete Implementation
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                      SEGMENT TREE — THEORY & CODE                            ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  A Segment Tree allows:                                                      ║
-║  • Range Query (sum/min/max/gcd) in O(log n)                                 ║
-║  • Point Update in O(log n)                                                  ║
-║  • Range Update with Lazy Propagation in O(log n)                            ║
-║  • Uses O(4n) space (built as complete binary tree in array)                 ║
-║                                                                              ║
-║  WHEN TO USE vs BIT/FENWICK:                                                 ║
-║  • BIT: Only prefix-sum/point-update. Simpler, less memory.                  ║
-║  • Segment Tree: Range update, range min/max, lazy propagation.              ║
-║    More powerful but ~2× more code.                                          ║
-║                                                                              ║
-║  VISUAL:                                                                     ║
-║  Array: [1, 3, 5, 7, 9, 11]                                                  ║
-║                                                                              ║
-║                    [0,5]=36                                                  ║
-║                  /          \                                                ║
-║            [0,2]=9         [3,5]=27                                          ║
-║            /    \          /     \                                           ║
-║        [0,1]=4  [2]=5  [3,4]=16  [5]=11                                      ║
-║        /    \          /    \                                                ║
-║     [0]=1  [1]=3   [3]=7  [4]=9                                              ║
-║                                                                              ║
-║  Each node stores aggregate (sum/min/max) of its range.                      ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**SEGMENT TREE — THEORY & CODE**
+
+```text
+A Segment Tree allows:
+• Range Query (sum/min/max/gcd) in O(log n)
+• Point Update in O(log n)
+• Range Update with Lazy Propagation in O(log n)
+• Uses O(4n) space (built as complete binary tree in array)
+
+WHEN TO USE vs BIT/FENWICK:
+• BIT: Only prefix-sum/point-update. Simpler, less memory.
+• Segment Tree: Range update, range min/max, lazy propagation.
+  More powerful but ~2× more code.
+
+VISUAL:
+Array: [1, 3, 5, 7, 9, 11]
+
+                  [0,5]=36
+                /          \
+          [0,2]=9         [3,5]=27
+          /    \          /     \
+      [0,1]=4  [2]=5  [3,4]=16  [5]=11
+      /    \          /    \
+   [0]=1  [1]=3   [3]=7  [4]=9
+
+Each node stores aggregate (sum/min/max) of its range.
 ```
 
 ### Segment Tree Implementation (Range Sum + Point Update)

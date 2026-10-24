@@ -83,24 +83,22 @@ private boolean hasCycle(List<List<Integer>> graph, int node, int[] state) {
 
 **LeetCode 210** 🔗 https://leetcode.com/problems/course-schedule-ii/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  COURSE SCHEDULE II - Return valid course order                │
-├────────────────────────────────────────────────────────────────┤
-│  numCourses = 4                                                │
-│  prerequisites = [[1,0], [2,0], [3,1], [3,2]]                  │
-│                                                                │
-│  Valid orders:                                                 │
-│  [0, 1, 2, 3] or [0, 2, 1, 3]                                  │
-│                                                                │
-│  Topological Sort: Order where all prerequisites come first    │
-│                                                                │
-│  Using Kahn's Algorithm (BFS):                                 │
-│  1. Calculate in-degree for each node                          │
-│  2. Start with nodes having in-degree 0                        │
-│  3. Remove node, reduce neighbors' in-degree                   │
-│  4. Add nodes with in-degree 0 to queue                        │
-└────────────────────────────────────────────────────────────────┘
+**COURSE SCHEDULE II - Return valid course order**
+
+```text
+numCourses = 4
+prerequisites = [[1,0], [2,0], [3,1], [3,2]]
+
+Valid orders:
+[0, 1, 2, 3] or [0, 2, 1, 3]
+
+Topological Sort: Order where all prerequisites come first
+
+Using Kahn's Algorithm (BFS):
+1. Calculate in-degree for each node
+2. Start with nodes having in-degree 0
+3. Remove node, reduce neighbors' in-degree
+4. Add nodes with in-degree 0 to queue
 ```
 
 **Solution (Kahn's Algorithm - BFS):**
@@ -151,31 +149,29 @@ public int[] findOrder(int numCourses, int[][] prerequisites) {
 
 **LeetCode 261 (Premium)** 🔗 (Premium)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  GRAPH VALID TREE                                              │
-├────────────────────────────────────────────────────────────────┤
-│  A valid tree has:                                             │
-│  1. No cycles                                                  │
-│  2. All nodes connected (single connected component)           │
-│  3. Exactly n-1 edges for n nodes                              │
-│                                                                │
-│  Example 1: n=5, edges=[[0,1],[0,2],[0,3],[1,4]]               │
-│       0                                                        │
-│      /|\                                                       │
-│     1 2 3    Valid tree ✓                                      │
-│     |                                                          │
-│     4                                                          │
-│                                                                │
-│  Example 2: n=5, edges=[[0,1],[1,2],[2,3],[1,3],[1,4]]         │
-│     0─1─4                                                      │
-│       │\                                                       │
-│       2─3    Has cycle (1-2-3-1) ✗                             │
-│                                                                │
-│  Constraints:                                                  │
-│  - 1 <= n <= 2000                                              │
-│  - 0 <= edges.length <= 5000                                   │
-└────────────────────────────────────────────────────────────────┘
+**GRAPH VALID TREE**
+
+```text
+A valid tree has:
+1. No cycles
+2. All nodes connected (single connected component)
+3. Exactly n-1 edges for n nodes
+
+Example 1: n=5, edges=[[0,1],[0,2],[0,3],[1,4]]
+     0
+    /|\
+   1 2 3    Valid tree ✓
+   |
+   4
+
+Example 2: n=5, edges=[[0,1],[1,2],[2,3],[1,3],[1,4]]
+   0─1─4
+     │\
+     2─3    Has cycle (1-2-3-1) ✗
+
+Constraints:
+- 1 <= n <= 2000
+- 0 <= edges.length <= 5000
 ```
 
 **Solution (Union-Find):**

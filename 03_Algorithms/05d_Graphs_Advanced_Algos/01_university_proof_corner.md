@@ -41,23 +41,21 @@ Since relaxations can only lower `dist` (never below `true_dist`): `dist[v] = tr
 
 ---
 
+**5W1H: Advanced Graph Algorithms**
+
 ```text
- ┌─────────────────────────────────────────────────────────────────────────┐
- │  5W1H: Advanced Graph Algorithms                                        │
- ├─────────────────────────────────────────────────────────────────────────┤
- │ WHAT : Sophisticated techniques beyond basic BFS/DFS (e.g., Dijkstra,   │
- │        Bellman-Ford, Floyd-Warshall, Prim, Kruskal, Topo Sort).         │
- │ WHY  : Basic traversals cannot efficiently solve weighted shortest      │
- │        paths, MSTs, all-pairs distances, or complex connectivity.       │
- │ WHEN : Dealing with weighted networks, scheduling dependencies, routing │
- │        packets, or analyzing network vulnerabilities/flow.              │
- │ WHERE: Embedded in network routers (OSPF/BGP), GPS navigation, build    │
- │        systems (Make, Maven), and scheduling algorithms.                │
- │ WHO  : Backend engineers, distributed systems designers, networking     │
- │        engineers, and competitive programmers.                          │
- │ HOW  : Leveraging greedy strategies (Dijkstra/Prim), DP (Bellman-Ford/  │
- │        Floyd-Warshall), Union-Find (Kruskal), and DFS (Tarjan/Kahn).    │
- └─────────────────────────────────────────────────────────────────────────┘
+WHAT : Sophisticated techniques beyond basic BFS/DFS (e.g., Dijkstra,
+       Bellman-Ford, Floyd-Warshall, Prim, Kruskal, Topo Sort).
+WHY  : Basic traversals cannot efficiently solve weighted shortest
+       paths, MSTs, all-pairs distances, or complex connectivity.
+WHEN : Dealing with weighted networks, scheduling dependencies, routing
+       packets, or analyzing network vulnerabilities/flow.
+WHERE: Embedded in network routers (OSPF/BGP), GPS navigation, build
+       systems (Make, Maven), and scheduling algorithms.
+WHO  : Backend engineers, distributed systems designers, networking
+       engineers, and competitive programmers.
+HOW  : Leveraging greedy strategies (Dijkstra/Prim), DP (Bellman-Ford/
+       Floyd-Warshall), Union-Find (Kruskal), and DFS (Tarjan/Kahn).
 ```
 
 ## Historical Evolution

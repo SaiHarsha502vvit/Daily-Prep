@@ -4,23 +4,20 @@
 > Page 6 of 7 in **Advanced DP Patterns**
 
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ INTERVAL DP - THE PATTERN                                                       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ WHEN TO USE: Optimal solution for range [i,j] depends on smaller ranges         │
-│                                                                                 │
-│ CLASSIC PROBLEMS:                                                               │
-│ • Matrix chain multiplication                                                   │
-│ • Optimal BST                                                                   │
-│ • Palindrome partitioning                                                       │
-│ • Burst balloons                                                                │
-│ • Stone game                                                                    │
-│                                                                                 │
-│                                                                                 │
-│ TEMPLATE:                                                                       │
-│ ───────────                                                                     │
+**INTERVAL DP - THE PATTERN**
+
+```text
+WHEN TO USE: Optimal solution for range [i,j] depends on smaller ranges
+
+CLASSIC PROBLEMS:
+• Matrix chain multiplication
+• Optimal BST
+• Palindrome partitioning
+• Burst balloons
+• Stone game
+
+TEMPLATE:
+───────────
 ```
 
 ```java
@@ -54,11 +51,10 @@ int intervalDP(int[] arr) {
 }
 ```
 
-```
-│ │
-│ │
-│ MATRIX CHAIN MULTIPLICATION: │
-│ ──────────────────────────── │
+**MATRIX CHAIN MULTIPLICATION:**
+
+```text
+────────────────────────────
 ```
 
 ```java
@@ -89,11 +85,9 @@ int matrixChain(int[] dims) {
 }
 ```
 
-```
-│ │
-│ │
-│ BURST BALLOONS (LeetCode 312): │
-│ ────────────────────────────── │
+```text
+BURST BALLOONS (LeetCode 312):
+──────────────────────────────
 ```
 
 ```java
@@ -125,11 +119,9 @@ int maxCoins(int[] nums) {
 // Key insight: Think of k as LAST to burst, not first!
 ```
 
-```
-│ │
-│ │
-│ MINIMUM COST TO CUT A STICK (LeetCode 1547): │
-│ ──────────────────────────────────────────── │
+```text
+MINIMUM COST TO CUT A STICK (LeetCode 1547):
+────────────────────────────────────────────
 ```
 
 ```java

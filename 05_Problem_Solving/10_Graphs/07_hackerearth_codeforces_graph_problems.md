@@ -54,28 +54,26 @@ public int findJudge(int n, int[][] trust) {
 
 ## Problem 156: Minimum Spanning Tree (Codeforces-style)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MINIMUM SPANNING TREE - Kruskal's Algorithm                   │
-├────────────────────────────────────────────────────────────────┤
-│  Connect all nodes with minimum total edge weight              │
-│  n = 4, edges = [[1,2,1], [1,3,4], [2,3,2], [3,4,3]]           │
-│                                                                │
-│       1 ──(1)── 2                                              │
-│        \       /                                               │
-│       (4)   (2)                                                │
-│          \ /                                                   │
-│           3                                                    │
-│           │                                                    │
-│          (3)                                                   │
-│           │                                                    │
-│           4                                                    │
-│                                                                │
-│  MST edges: [1,2,1], [2,3,2], [3,4,3]                          │
-│  Total weight = 1 + 2 + 3 = 6                                  │
-│                                                                │
-│  Kruskal's: Sort edges, add if doesn't create cycle            │
-└────────────────────────────────────────────────────────────────┘
+**MINIMUM SPANNING TREE - Kruskal's Algorithm**
+
+```text
+Connect all nodes with minimum total edge weight
+n = 4, edges = [[1,2,1], [1,3,4], [2,3,2], [3,4,3]]
+
+     1 ──(1)── 2
+      \       /
+     (4)   (2)
+        \ /
+         3
+         │
+        (3)
+         │
+         4
+
+MST edges: [1,2,1], [2,3,2], [3,4,3]
+Total weight = 1 + 2 + 3 = 6
+
+Kruskal's: Sort edges, add if doesn't create cycle
 ```
 
 **Solution:**
@@ -121,19 +119,17 @@ private int find(int[] parent, int x) {
 
 ## Problem 157: Detect Cycle in Undirected Graph (HackerEarth)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  DETECT CYCLE IN UNDIRECTED GRAPH                              │
-├────────────────────────────────────────────────────────────────┤
-│  Has Cycle:               No Cycle:                            │
-│     0 ─── 1                  0 ─── 1                           │
-│     │     │                  │                                 │
-│     │     │                  │                                 │
-│     3 ─── 2                  2 ─── 3                           │
-│                                                                │
-│  DFS: If we visit a node that's already visited and            │
-│  it's not the parent → cycle detected                          │
-└────────────────────────────────────────────────────────────────┘
+**DETECT CYCLE IN UNDIRECTED GRAPH**
+
+```text
+Has Cycle:               No Cycle:
+   0 ─── 1                  0 ─── 1
+   │     │                  │
+   │     │                  │
+   3 ─── 2                  2 ─── 3
+
+DFS: If we visit a node that's already visited and
+it's not the parent → cycle detected
 ```
 
 **Solution:**

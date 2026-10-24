@@ -6,21 +6,19 @@
 
 ## Problem 130: Count Leaf Nodes (HackerEarth)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  COUNT LEAF NODES                                              │
-├────────────────────────────────────────────────────────────────┤
-│  A leaf node has no children (both left and right are null).   │
-│                                                                │
-│        1                                                       │
-│       / \                                                      │
-│      2   3         Leaf nodes: 4, 5, 6                         │
-│     / \   \        Count = 3                                   │
-│    4   5   6                                                   │
-│                                                                │
-│  Constraints:                                                  │
-│  - 1 <= n <= 10^5                                              │
-└────────────────────────────────────────────────────────────────┘
+**COUNT LEAF NODES**
+
+```text
+A leaf node has no children (both left and right are null).
+
+      1
+     / \
+    2   3         Leaf nodes: 4, 5, 6
+   / \   \        Count = 3
+  4   5   6
+
+Constraints:
+- 1 <= n <= 10^5
 ```
 
 **Solution:**
@@ -40,18 +38,16 @@ public int countLeaves(TreeNode root) {
 
 ## Problem 131: Sum of All Nodes (HackerEarth)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SUM OF ALL NODES                                              │
-├────────────────────────────────────────────────────────────────┤
-│        1                                                       │
-│       / \                                                      │
-│      2   3         Sum = 1 + 2 + 3 + 4 + 5 + 6 = 21            │
-│     / \   \                                                    │
-│    4   5   6                                                   │
-│                                                                │
-│  Simple DFS traversal                                          │
-└────────────────────────────────────────────────────────────────┘
+**SUM OF ALL NODES**
+
+```text
+      1
+     / \
+    2   3         Sum = 1 + 2 + 3 + 4 + 5 + 6 = 21
+   / \   \
+  4   5   6
+
+Simple DFS traversal
 ```
 
 **Solution:**
@@ -68,22 +64,20 @@ public int sumOfNodes(TreeNode root) {
 
 ## Problem 132: Level with Maximum Sum (Codeforces-style)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  LEVEL WITH MAXIMUM SUM                                        │
-├────────────────────────────────────────────────────────────────┤
-│  Find the level (1-indexed) with the maximum sum.              │
-│                                                                │
-│        1          Level 1: sum = 1                             │
-│       / \         Level 2: sum = 2 + 3 = 5                     │
-│      2   3        Level 3: sum = 4 + 5 + 6 = 15 ← Maximum      │
-│     / \   \                                                    │
-│    4   5   6      Output: 3                                    │
-│                                                                │
-│  Constraints:                                                  │
-│  - 1 <= n <= 10^4                                              │
-│  - -10^5 <= node.val <= 10^5                                   │
-└────────────────────────────────────────────────────────────────┘
+**LEVEL WITH MAXIMUM SUM**
+
+```text
+Find the level (1-indexed) with the maximum sum.
+
+      1          Level 1: sum = 1
+     / \         Level 2: sum = 2 + 3 = 5
+    2   3        Level 3: sum = 4 + 5 + 6 = 15 ← Maximum
+   / \   \
+  4   5   6      Output: 3
+
+Constraints:
+- 1 <= n <= 10^4
+- -10^5 <= node.val <= 10^5
 ```
 
 **Solution:**
@@ -126,19 +120,17 @@ public int maxLevelSum(TreeNode root) {
 
 ## Problem 133: Print Nodes at K Distance (HackerEarth)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  NODES AT K DISTANCE FROM ROOT                                 │
-├────────────────────────────────────────────────────────────────┤
-│        1          k = 2                                        │
-│       / \                                                      │
-│      2   3        Nodes at distance 2: [4, 5, 6]               │
-│     / \   \                                                    │
-│    4   5   6                                                   │
-│                                                                │
-│  Distance from root = Level - 1                                │
-│  Nodes at distance k are at level k+1                          │
-└────────────────────────────────────────────────────────────────┘
+**NODES AT K DISTANCE FROM ROOT**
+
+```text
+      1          k = 2
+     / \
+    2   3        Nodes at distance 2: [4, 5, 6]
+   / \   \
+  4   5   6
+
+Distance from root = Level - 1
+Nodes at distance k are at level k+1
 ```
 
 **Solution:**
@@ -167,22 +159,20 @@ private void findNodes(TreeNode node, int k, List<Integer> result) {
 
 ## Problem 134: Check if Tree is Complete (Codeforces-style)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  CHECK IF COMPLETE BINARY TREE                                 │
-├────────────────────────────────────────────────────────────────┤
-│  A complete binary tree has all levels filled except possibly  │
-│  the last, and all nodes in last level are as left as possible.│
-│                                                                │
-│  Complete:              Not Complete:                          │
-│       1                      1                                 │
-│      / \                    / \                                │
-│     2   3                  2   3                               │
-│    / \                    / \   \                              │
-│   4   5                  4   5   6  (gap at left of last level)│
-│                                                                │
-│  BFS approach: After seeing first null, no more non-null nodes │
-└────────────────────────────────────────────────────────────────┘
+**CHECK IF COMPLETE BINARY TREE**
+
+```text
+A complete binary tree has all levels filled except possibly
+the last, and all nodes in last level are as left as possible.
+
+Complete:              Not Complete:
+     1                      1
+    / \                    / \
+   2   3                  2   3
+  / \                    / \   \
+ 4   5                  4   5   6  (gap at left of last level)
+
+BFS approach: After seeing first null, no more non-null nodes
 ```
 
 **Solution:**
@@ -217,22 +207,20 @@ public boolean isCompleteTree(TreeNode root) {
 
 ## Problem 135: Left View of Binary Tree (HackerEarth)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  LEFT VIEW OF BINARY TREE                                      │
-├────────────────────────────────────────────────────────────────┤
-│  Print first node of each level (as seen from left side)       │
-│                                                                │
-│        1     ←                                                 │
-│       / \                                                      │
-│      2   3   ← (2 is leftmost at this level)                   │
-│       \   \                                                    │
-│        5   4 ← (5 is leftmost at this level)                   │
-│                                                                │
-│  Left view: [1, 2, 5]                                          │
-│                                                                │
-│  Right view would be: [1, 3, 4]                                │
-└────────────────────────────────────────────────────────────────┘
+**LEFT VIEW OF BINARY TREE**
+
+```text
+Print first node of each level (as seen from left side)
+
+      1     ←
+     / \
+    2   3   ← (2 is leftmost at this level)
+     \   \
+      5   4 ← (5 is leftmost at this level)
+
+Left view: [1, 2, 5]
+
+Right view would be: [1, 3, 4]
 ```
 
 **Solution:**

@@ -69,21 +69,17 @@ public int search(int[] nums, int target) {
 **LeetCode 81** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/search-in-rotated-sorted-array-ii/](https://leetcode.com/problems/search-in-rotated-sorted-array-ii/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  SEARCH IN ROTATED SORTED ARRAY II (WITH DUPLICATES)                      ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Same as above but array may have duplicates.                             ║
-║                                                                           ║
-║  Input: nums = [2, 5, 6, 0, 0, 1, 2], target = 0                          ║
-║  Output: true                                                             ║
-║                                                                           ║
-║  EDGE CASE: nums[left] == nums[mid] == nums[right]                        ║
-║  Example: [1, 0, 1, 1, 1] - can't determine which half is sorted          ║
-║  Solution: Skip duplicates by left++, right--                             ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**SEARCH IN ROTATED SORTED ARRAY II (WITH DUPLICATES)**
+
+```text
+Same as above but array may have duplicates.
+
+Input: nums = [2, 5, 6, 0, 0, 1, 2], target = 0
+Output: true
+
+EDGE CASE: nums[left] == nums[mid] == nums[right]
+Example: [1, 0, 1, 1, 1] - can't determine which half is sorted
+Solution: Skip duplicates by left++, right--
 ```
 
 ```java
@@ -126,28 +122,24 @@ public boolean search(int[] nums, int target) {
 **LeetCode 153** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  FIND MINIMUM IN ROTATED SORTED ARRAY                                     ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find minimum element in rotated sorted array (no duplicates).            ║
-║                                                                           ║
-║  Input: nums = [3, 4, 5, 1, 2]                                            ║
-║  Output: 1                                                                ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║       5                                                                   ║
-║    4     ╲                                                                ║
-║ 3           ╲                                                             ║
-║               2                                                           ║
-║             1   ← minimum                                                 ║
-║                                                                           ║
-║  KEY: Compare mid with right                                              ║
-║  - If mid > right: min is in right half                                   ║
-║  - If mid < right: min is in left half (including mid)                    ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**FIND MINIMUM IN ROTATED SORTED ARRAY**
+
+```text
+ Find minimum element in rotated sorted array (no duplicates).
+
+ Input: nums = [3, 4, 5, 1, 2]
+ Output: 1
+
+ Visual:
+      5
+   4     ╲
+3           ╲
+              2
+            1   ← minimum
+
+ KEY: Compare mid with right
+ - If mid > right: min is in right half
+ - If mid < right: min is in left half (including mid)
 ```
 
 ```java

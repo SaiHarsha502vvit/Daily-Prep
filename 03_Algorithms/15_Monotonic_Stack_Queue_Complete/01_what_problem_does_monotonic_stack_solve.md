@@ -278,23 +278,19 @@ public int[] prevSmaller(int[] arr) {
 
 ### What is Monotonic Stack/Queue?
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║              MONOTONIC DATA STRUCTURES                        ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  MONOTONIC STACK: A stack where elements are always in        ║
-║  increasing or decreasing order from bottom to top.           ║
-║                                                               ║
-║  MONOTONIC QUEUE: A deque where elements are always in        ║
-║  increasing or decreasing order.                              ║
-║                                                               ║
-║  WHY USE THEM?                                                ║
-║  • Find next/previous greater/smaller element in O(n)         ║
-║  • Sliding window max/min in O(n) total                       ║
-║  • Reduce O(n²) brute force to O(n)                           ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
+**MONOTONIC DATA STRUCTURES**
+
+```text
+MONOTONIC STACK: A stack where elements are always in
+increasing or decreasing order from bottom to top.
+
+MONOTONIC QUEUE: A deque where elements are always in
+increasing or decreasing order.
+
+WHY USE THEM?
+• Find next/previous greater/smaller element in O(n)
+• Sliding window max/min in O(n) total
+• Reduce O(n²) brute force to O(n)
 ```
 
 ### Visual Comparison
@@ -323,24 +319,20 @@ Monotonic Increasing Stack:
 
 ### The Key Insight
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              MONOTONIC STACK KEY INSIGHT                        │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  When we POP an element, we've found its answer!                │
-│                                                                 │
-│  For Next Greater Element:                                      │
-│  - Use DECREASING stack (larger pops smaller)                   │
-│  - When we pop: current element IS the next greater             │
-│                                                                 │
-│  For Next Smaller Element:                                      │
-│  - Use INCREASING stack (smaller pops larger)                   │
-│  - When we pop: current element IS the next smaller             │
-│                                                                 │
-│  "Pop = Found the answer for the popped element"                │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**MONOTONIC STACK KEY INSIGHT**
+
+```text
+When we POP an element, we've found its answer!
+
+For Next Greater Element:
+- Use DECREASING stack (larger pops smaller)
+- When we pop: current element IS the next greater
+
+For Next Smaller Element:
+- Use INCREASING stack (smaller pops larger)
+- When we pop: current element IS the next smaller
+
+"Pop = Found the answer for the popped element"
 ```
 
 ---
@@ -570,26 +562,22 @@ public int[] nextSmallerElement(int[] nums) {
 
 ### Next Smaller vs Next Greater
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              COMPARISON: GREATER vs SMALLER                     │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  NEXT GREATER ELEMENT:                                          │
-│  • Use DECREASING stack                                         │
-│  • Pop when current > stack.top                                 │
-│  • "Larger element kicks out smaller ones"                      │
-│                                                                 │
-│  NEXT SMALLER ELEMENT:                                          │
-│  • Use INCREASING stack                                         │
-│  • Pop when current < stack.top                                 │
-│  • "Smaller element kicks out larger ones"                      │
-│                                                                 │
-│  Rule of thumb:                                                 │
-│  • Looking for GREATER → maintain DECREASING                    │
-│  • Looking for SMALLER → maintain INCREASING                    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**COMPARISON: GREATER vs SMALLER**
+
+```text
+NEXT GREATER ELEMENT:
+• Use DECREASING stack
+• Pop when current > stack.top
+• "Larger element kicks out smaller ones"
+
+NEXT SMALLER ELEMENT:
+• Use INCREASING stack
+• Pop when current < stack.top
+• "Smaller element kicks out larger ones"
+
+Rule of thumb:
+• Looking for GREATER → maintain DECREASING
+• Looking for SMALLER → maintain INCREASING
 ```
 
 ### Daily Temperatures (LeetCode 739)
@@ -690,32 +678,28 @@ public int[] previousSmallerElement(int[] nums) {
 
 ### Four Relationships Summary
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              ALL FOUR PATTERNS                                  │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  NEXT GREATER (right):                                          │
-│  • Direction: Left → Right                                      │
-│  • Stack: Decreasing                                            │
-│  • Answer: When POPPING                                         │
-│                                                                 │
-│  NEXT SMALLER (right):                                          │
-│  • Direction: Left → Right                                      │
-│  • Stack: Increasing                                            │
-│  • Answer: When POPPING                                         │
-│                                                                 │
-│  PREVIOUS GREATER (left):                                       │
-│  • Direction: Left → Right                                      │
-│  • Stack: Decreasing                                            │
-│  • Answer: When PUSHING (stack top is answer)                   │
-│                                                                 │
-│  PREVIOUS SMALLER (left):                                       │
-│  • Direction: Left → Right                                      │
-│  • Stack: Increasing                                            │
-│  • Answer: When PUSHING (stack top is answer)                   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**ALL FOUR PATTERNS**
+
+```text
+NEXT GREATER (right):
+• Direction: Left → Right
+• Stack: Decreasing
+• Answer: When POPPING
+
+NEXT SMALLER (right):
+• Direction: Left → Right
+• Stack: Increasing
+• Answer: When POPPING
+
+PREVIOUS GREATER (left):
+• Direction: Left → Right
+• Stack: Decreasing
+• Answer: When PUSHING (stack top is answer)
+
+PREVIOUS SMALLER (left):
+• Direction: Left → Right
+• Stack: Increasing
+• Answer: When PUSHING (stack top is answer)
 ```
 
 ---
@@ -724,21 +708,17 @@ public int[] previousSmallerElement(int[] nums) {
 
 ### What is Monotonic Queue?
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║              MONOTONIC QUEUE                                  ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  A queue (deque) maintaining monotonic order.                 ║
-║                                                               ║
-║  Key Operations:                                              ║
-║  • Add from back (may pop existing elements)                  ║
-║  • Remove from front (when element leaves window)             ║
-║  • Get max/min: Front of deque                                ║
-║                                                               ║
-║  Use case: Sliding window max/min in O(n) total               ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
+**MONOTONIC QUEUE**
+
+```text
+A queue (deque) maintaining monotonic order.
+
+Key Operations:
+• Add from back (may pop existing elements)
+• Remove from front (when element leaves window)
+• Get max/min: Front of deque
+
+Use case: Sliding window max/min in O(n) total
 ```
 
 ### Visual: Monotonic Queue for Max

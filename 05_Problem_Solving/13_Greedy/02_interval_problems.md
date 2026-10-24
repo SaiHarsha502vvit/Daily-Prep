@@ -12,24 +12,22 @@
 
 **LeetCode 252 (Premium)** 🔒
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MEETING ROOMS - Can attend all meetings?                      │
-├────────────────────────────────────────────────────────────────┤
-│  intervals = [[0,30], [5,10], [15,20]]                         │
-│                                                                │
-│  Timeline:                                                     │
-│  0────────────────────────────30  Meeting 1                    │
-│       5────10                      Meeting 2 (overlaps!)       │
-│            15────20                Meeting 3 (overlaps!)       │
-│                                                                │
-│  Output: false (meetings overlap)                              │
-│                                                                │
-│  Constraints:                                                  │
-│  - 0 <= intervals.length <= 10^4                               │
-│  - intervals[i].length == 2                                    │
-│  - 0 <= start < end <= 10^6                                    │
-└────────────────────────────────────────────────────────────────┘
+**MEETING ROOMS - Can attend all meetings?**
+
+```text
+intervals = [[0,30], [5,10], [15,20]]
+
+Timeline:
+0────────────────────────────30  Meeting 1
+     5────10                      Meeting 2 (overlaps!)
+          15────20                Meeting 3 (overlaps!)
+
+Output: false (meetings overlap)
+
+Constraints:
+- 0 <= intervals.length <= 10^4
+- intervals[i].length == 2
+- 0 <= start < end <= 10^6
 ```
 
 **Solution:**
@@ -56,20 +54,18 @@ public boolean canAttendMeetings(int[][] intervals) {
 
 **LeetCode 253 (Premium)** 🔒
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MEETING ROOMS II - Minimum rooms needed                       │
-├────────────────────────────────────────────────────────────────┤
-│  intervals = [[0,30], [5,10], [15,20]]                         │
-│                                                                │
-│  Room 1: |═══════════════════════════════| [0,30]              │
-│  Room 2:      |════|      |═════|          [5,10], [15,20]     │
-│                                                                │
-│  Output: 2 rooms needed                                        │
-│                                                                │
-│  Approach: Track concurrent meetings using min-heap            │
-│  Heap stores end times of ongoing meetings                     │
-└────────────────────────────────────────────────────────────────┘
+**MEETING ROOMS II - Minimum rooms needed**
+
+```text
+intervals = [[0,30], [5,10], [15,20]]
+
+Room 1: |═══════════════════════════════| [0,30]
+Room 2:      |════|      |═════|          [5,10], [15,20]
+
+Output: 2 rooms needed
+
+Approach: Track concurrent meetings using min-heap
+Heap stores end times of ongoing meetings
 ```
 
 **Solution:**
@@ -103,20 +99,18 @@ public int minMeetingRooms(int[][] intervals) {
 
 **LeetCode 435** 🔗 https://leetcode.com/problems/non-overlapping-intervals/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  NON-OVERLAPPING INTERVALS - Min removals for no overlap       │
-├────────────────────────────────────────────────────────────────┤
-│  intervals = [[1,2], [2,3], [3,4], [1,3]]                      │
-│                                                                │
-│  1──2  2──3  3──4                                              │
-│  1─────3     (overlaps with both above)                        │
-│                                                                │
-│  Remove [1,3] → No overlaps                                    │
-│  Output: 1                                                     │
-│                                                                │
-│  Greedy: Sort by end time, keep non-overlapping                │
-└────────────────────────────────────────────────────────────────┘
+**NON-OVERLAPPING INTERVALS - Min removals for no overlap**
+
+```text
+intervals = [[1,2], [2,3], [3,4], [1,3]]
+
+1──2  2──3  3──4
+1─────3     (overlaps with both above)
+
+Remove [1,3] → No overlaps
+Output: 1
+
+Greedy: Sort by end time, keep non-overlapping
 ```
 
 **Solution:**

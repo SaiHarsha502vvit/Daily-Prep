@@ -52,30 +52,26 @@ public boolean isPrime(int n) {
 **LeetCode 204** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/count-primes/](https://leetcode.com/problems/count-primes/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  COUNT PRIMES                                                             ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Count the number of prime numbers less than n.                           ║
-║                                                                           ║
-║  Input: n = 10                                                            ║
-║  Output: 4                                                                ║
-║  Explanation: Primes less than 10 are 2, 3, 5, 7                          ║
-║                                                                           ║
-║  Input: n = 0                                                             ║
-║  Output: 0                                                                ║
-║                                                                           ║
-║  Use: SIEVE OF ERATOSTHENES                                               ║
-║                                                                           ║
-║  Visual for n=30:                                                         ║
-║  2  3  4  5  6  7  8  9  10 11 12 13 14 15...                             ║
-║  ✓  ✓  ✗  ✓  ✗  ✓  ✗  ✗  ✗  ✓  ✗  ✓  ✗  ✗                                 ║
-║     Mark all multiples of 2 as non-prime                                  ║
-║     Mark all multiples of 3 as non-prime                                  ║
-║     ... continue till √n                                                  ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**COUNT PRIMES**
+
+```text
+Count the number of prime numbers less than n.
+
+Input: n = 10
+Output: 4
+Explanation: Primes less than 10 are 2, 3, 5, 7
+
+Input: n = 0
+Output: 0
+
+Use: SIEVE OF ERATOSTHENES
+
+Visual for n=30:
+2  3  4  5  6  7  8  9  10 11 12 13 14 15...
+✓  ✓  ✗  ✓  ✗  ✓  ✗  ✗  ✗  ✓  ✗  ✓  ✗  ✗
+   Mark all multiples of 2 as non-prime
+   Mark all multiples of 3 as non-prime
+   ... continue till √n
 ```
 
 ```java
@@ -105,26 +101,22 @@ public int countPrimes(int n) {
 
 **Difficulty:** Medium | **Category:** Basic Math
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  FIND THE NTH PRIME NUMBER                                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given n, find the nth prime number.                                      ║
-║                                                                           ║
-║  Input: n = 1                                                             ║
-║  Output: 2 (1st prime)                                                    ║
-║                                                                           ║
-║  Input: n = 5                                                             ║
-║  Output: 11 (5th prime: 2, 3, 5, 7, 11)                                   ║
-║                                                                           ║
-║  Input: n = 10                                                            ║
-║  Output: 29 (10th prime)                                                  ║
-║                                                                           ║
-║  Input: n = 100                                                           ║
-║  Output: 541 (100th prime)                                                ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**FIND THE NTH PRIME NUMBER**
+
+```text
+Given n, find the nth prime number.
+
+Input: n = 1
+Output: 2 (1st prime)
+
+Input: n = 5
+Output: 11 (5th prime: 2, 3, 5, 7, 11)
+
+Input: n = 10
+Output: 29 (10th prime)
+
+Input: n = 100
+Output: 541 (100th prime)
 ```
 
 ```java
@@ -160,27 +152,23 @@ private boolean isPrime(int n) {
 
 **Difficulty:** Easy | **Category:** Basic Math
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  FIND PREVIOUS AND NEXT PRIME                                             ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given a number n, find the nearest prime less than n (previous prime)    ║
-║  and nearest prime greater than n (next prime).                           ║
-║                                                                           ║
-║  Input: n = 10                                                            ║
-║  Output: Previous = 7, Next = 11                                          ║
-║                                                                           ║
-║  Input: n = 14                                                            ║
-║  Output: Previous = 13, Next = 17                                         ║
-║                                                                           ║
-║  Input: n = 7 (n is prime)                                                ║
-║  Output: Previous = 5, Next = 11                                          ║
-║                                                                           ║
-║  Edge case: n = 2                                                         ║
-║  Output: Previous = -1 (no prime before 2), Next = 3                      ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**FIND PREVIOUS AND NEXT PRIME**
+
+```text
+Given a number n, find the nearest prime less than n (previous prime)
+and nearest prime greater than n (next prime).
+
+Input: n = 10
+Output: Previous = 7, Next = 11
+
+Input: n = 14
+Output: Previous = 13, Next = 17
+
+Input: n = 7 (n is prime)
+Output: Previous = 5, Next = 11
+
+Edge case: n = 2
+Output: Previous = -1 (no prime before 2), Next = 3
 ```
 
 ```java
@@ -218,26 +206,22 @@ private int findNextPrime(int n) {
 
 **Difficulty:** Easy | **Category:** Basic Math
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  FIND ALL PRIME FACTORS                                                   ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given a number n, find all its prime factors.                            ║
-║                                                                           ║
-║  Input: n = 12                                                            ║
-║  Output: [2, 2, 3]                                                        ║
-║  Explanation: 12 = 2 × 2 × 3                                              ║
-║                                                                           ║
-║  Input: n = 100                                                           ║
-║  Output: [2, 2, 5, 5]                                                     ║
-║  Explanation: 100 = 2 × 2 × 5 × 5                                         ║
-║                                                                           ║
-║  Input: n = 315                                                           ║
-║  Output: [3, 3, 5, 7]                                                     ║
-║  Explanation: 315 = 3 × 3 × 5 × 7                                         ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**FIND ALL PRIME FACTORS**
+
+```text
+Given a number n, find all its prime factors.
+
+Input: n = 12
+Output: [2, 2, 3]
+Explanation: 12 = 2 × 2 × 3
+
+Input: n = 100
+Output: [2, 2, 5, 5]
+Explanation: 100 = 2 × 2 × 5 × 5
+
+Input: n = 315
+Output: [3, 3, 5, 7]
+Explanation: 315 = 3 × 3 × 5 × 7
 ```
 
 ```java
@@ -273,49 +257,44 @@ public List<Integer> primeFactors(int n) {
 
 **LeetCode 2523** | **Difficulty:** Medium | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  CLOSEST PRIME NUMBERS IN RANGE                                           ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given two positive integers left and right, find the two integers num1   ║
-║  and num2 such that:                                                      ║
-║  - left <= num1 < num2 <= right                                           ║
-║  - Both num1 and num2 are prime numbers                                   ║
-║  - num2 - num1 is the minimum amongst all other pairs                     ║
-║                                                                           ║
-║  Return the positive integer array [num1, num2]. If there are multiple    ║
-║  pairs with the minimum gap, return the one with smallest num1. If no     ║
-║  such pair exists, return [-1, -1].                                       ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: left = 10, right = 19                                             ║
-║  Output: [11, 13]                                                         ║
-║  Explanation:                                                             ║
-║  Primes in range: 11, 13, 17, 19                                          ║
-║  Differences: 13-11=2, 17-13=4, 19-17=2                                   ║
-║  Minimum difference is 2. Pairs: (11,13) and (17,19)                      ║
-║  Return (11,13) as it has smaller num1.                                   ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: left = 4, right = 6                                               ║
-║  Output: [-1, -1]                                                         ║
-║  Explanation: Only one prime (5) in range, need at least 2.               ║
-║                                                                           ║
-║  Example 3:                                                               ║
-║  Input: left = 1, right = 1000000                                         ║
-║  Output: [2, 3]                                                           ║
-║  Explanation: Twin primes (difference = 1 only for 2,3)                   ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 1 <= left <= right <= 10^6                                             ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**CLOSEST PRIME NUMBERS IN RANGE — (LeetCode Premium - Full Problem Description)**
+
+```text
+Given two positive integers left and right, find the two integers num1
+and num2 such that:
+- left <= num1 < num2 <= right
+- Both num1 and num2 are prime numbers
+- num2 - num1 is the minimum amongst all other pairs
+
+Return the positive integer array [num1, num2]. If there are multiple
+pairs with the minimum gap, return the one with smallest num1. If no
+such pair exists, return [-1, -1].
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: left = 10, right = 19
+Output: [11, 13]
+Explanation:
+Primes in range: 11, 13, 17, 19
+Differences: 13-11=2, 17-13=4, 19-17=2
+Minimum difference is 2. Pairs: (11,13) and (17,19)
+Return (11,13) as it has smaller num1.
+
+Example 2:
+Input: left = 4, right = 6
+Output: [-1, -1]
+Explanation: Only one prime (5) in range, need at least 2.
+
+Example 3:
+Input: left = 1, right = 1000000
+Output: [2, 3]
+Explanation: Twin primes (difference = 1 only for 2,3)
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 1 <= left <= right <= 10^6
 ```
 
 ```java

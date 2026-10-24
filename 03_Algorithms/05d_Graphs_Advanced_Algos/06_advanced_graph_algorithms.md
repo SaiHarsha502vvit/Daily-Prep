@@ -217,17 +217,13 @@ public class TarjanSCC {
 
 ### Kosaraju vs Tarjan — When to Use Which
 
-```
-╔══════════════╦══════════════════════════════╦═══════════════════════════════╗
-║              ║ Kosaraju                     ║ Tarjan                        ║
-╠══════════════╬══════════════════════════════╬═══════════════════════════════╣
-║ Passes       ║ 2 DFS passes                ║ 1 DFS pass                     ║
-║ Extra memory ║ Reversed graph O(V+E)        ║ Stack + low-link arrays O(V)  ║
-║ Simpler code ║ ✓ (two simple DFS)          ║ ✗ (low-link logic tricky)      ║
-║ Better for   ║ Dense graphs, simple impl    ║ Online/streaming, less memory ║
-║ 2-SAT        ║ Commonly used                ║ Also works                    ║
-╚══════════════╩══════════════════════════════╩═══════════════════════════════╝
-```
+|  | Kosaraju | Tarjan |
+| --- | --- | --- |
+| Passes | 2 DFS passes | 1 DFS pass |
+| Extra memory | Reversed graph O(V+E) | Stack + low-link arrays O(V) |
+| Simpler code | ✓ (two simple DFS) | ✗ (low-link logic tricky) |
+| Better for | Dense graphs, simple impl | Online/streaming, less memory |
+| 2-SAT | Commonly used | Also works |
 
 ### 2-SAT via SCC
 
@@ -336,60 +332,27 @@ public class AStar {
 
 ### Common Heuristics
 
-```
-╔════════════════════╦══════════════════════════════════════════╗
-║ Heuristic          ║ When to Use                              ║
-╠════════════════════╬══════════════════════════════════════════╣
-║ Manhattan distance ║ 4-directional grid (up/down/left/right)  ║
-║ |x₁-x₂| + |y₁-y₂|║                                            ║
-╠════════════════════╬══════════════════════════════════════════╣
-║ Euclidean distance ║ 8-directional or free movement           ║
-║ √((x₁-x₂)²+(y₁-y₂)²)                                          ║
-╠════════════════════╬══════════════════════════════════════════╣
-║ Chebyshev distance ║ 8-directional grid (king moves)          ║
-║ max(|x₁-x₂|,|y₁-y₂|)                                          ║
-╠════════════════════╬══════════════════════════════════════════╣
-║ h(n) = 0          ║ Degenerates to Dijkstra (always safe)     ║
-╚════════════════════╩══════════════════════════════════════════╝
-```
+| Heuristic | When to Use |
+| --- | --- |
+| Manhattan distance<br>\|x₁-x₂\| + \|y₁-y₂\| | 4-directional grid (up/down/left/right) |
+| Euclidean distance<br>√((x₁-x₂)²+(y₁-y₂)²) | 8-directional or free movement |
+| Chebyshev distance max(\|x₁-x₂\|,\|y₁-y₂\|) | 8-directional grid (king moves) |
+| h(n) = 0 | Degenerates to Dijkstra (always safe) |
 
 ## Curated Practice — Advanced Graph Algorithms
 
-```
-╔════╦══════════════════════════════════════════════════════════════╦═══════════════════════════════════════════════╗
-║  # ║ Problem                                                     ║ Diff.                                          ║
-╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
-║  1 ║ Critical Connections (LC 1192)                               ║ Hard                                          ║
-║    ║ https://leetcode.com/problems/critical-connections-in-a-network/ ║                                           ║
-╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
-║  2 ║ Shortest Path in Binary Matrix (LC 1091)                    ║ Medium                                         ║
-║    ║ https://leetcode.com/problems/shortest-path-in-binary-matrix/ ║                                              ║
-╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
-║  3 ║ Network Delay Time (LC 743)                                 ║ Medium                                         ║
-║    ║ https://leetcode.com/problems/network-delay-time/            ║                                               ║
-╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
-║  4 ║ Cheapest Flights Within K Stops (LC 787)                    ║ Medium                                         ║
-║    ║ https://leetcode.com/problems/cheapest-flights-within-k-stops/ ║                                             ║
-╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
-║  5 ║ Course Schedule II (LC 210) — Topo Sort                     ║ Medium                                         ║
-║    ║ https://leetcode.com/problems/course-schedule-ii/            ║                                               ║
-╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
-║  6 ║ Path with Maximum Probability (LC 1514) — Max Dijkstra      ║ Medium                                         ║
-║    ║ https://leetcode.com/problems/path-with-maximum-probability/ ║                                               ║
-╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
-║  7 ║ Minimum Cost to Make at Least One Valid Path (LC 1368)      ║ Hard                                           ║
-║    ║ https://leetcode.com/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/ ║                      ║
-╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
-║  8 ║ Redundant Connection II (LC 685) — Directed graph cycle     ║ Hard                                           ║
-║    ║ https://leetcode.com/problems/redundant-connection-ii/       ║                                               ║
-╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
-║  9 ║ Swim in Rising Water (LC 778) — Binary Search + BFS/UF     ║ Hard                                            ║
-║    ║ https://leetcode.com/problems/swim-in-rising-water/          ║                                               ║
-╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
-║ 10 ║ Find the City (LC 1334) — Floyd-Warshall                   ║ Medium                                          ║
-║    ║ https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/ ║ ║
-╚════╩══════════════════════════════════════════════════════════════╩═══════════════════════════════════════════════╝
-```
+| # | Problem | Diff. |
+| --- | --- | --- |
+| 1 | Critical Connections (LC 1192) https://leetcode.com/problems/critical-connections-in-a-network/ | Hard |
+| 2 | Shortest Path in Binary Matrix (LC 1091) https://leetcode.com/problems/shortest-path-in-binary-matrix/ | Medium |
+| 3 | Network Delay Time (LC 743) https://leetcode.com/problems/network-delay-time/ | Medium |
+| 4 | Cheapest Flights Within K Stops (LC 787) https://leetcode.com/problems/cheapest-flights-within-k-stops/ | Medium |
+| 5 | Course Schedule II (LC 210) — Topo Sort https://leetcode.com/problems/course-schedule-ii/ | Medium |
+| 6 | Path with Maximum Probability (LC 1514) — Max Dijkstra https://leetcode.com/problems/path-with-maximum-probability/ | Medium |
+| 7 | Minimum Cost to Make at Least One Valid Path (LC 1368) https://leetcode.com/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/ | Hard |
+| 8 | Redundant Connection II (LC 685) — Directed graph cycle https://leetcode.com/problems/redundant-connection-ii/ | Hard |
+| 9 | Swim in Rising Water (LC 778) — Binary Search + BFS/UF https://leetcode.com/problems/swim-in-rising-water/ | Hard |
+| 10 | Find the City (LC 1334) — Floyd-Warshall https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/ | Medium |
 
 ---
 

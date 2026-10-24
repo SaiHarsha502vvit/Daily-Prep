@@ -1,6 +1,6 @@
-# ═══════════════════════════════════════════════════════════
+# Part 5 — Interview Pattern Questions
 
-> **Navigation**: [← ═══════════════════════════════════════════════════════════](04_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [PATTERN PROBLEM SOLVING CHEAT SHEET →](06_solving_cheat_sheet.md)
+> **Navigation**: [← Part 4 — Special Patterns (10 patterns)](04_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [Pattern Problem-Solving Cheat Sheet →](06_solving_cheat_sheet.md)
 > Page 5 of 6 in **Complete Pattern Programs - From Zero to Hero**
 
 
@@ -178,4 +178,4 @@ public static void rotate90(int[][] matrix) {
 
 ---
 
-[← ═══════════════════════════════════════════════════════════](04_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [PATTERN PROBLEM SOLVING CHEAT SHEET →](06_solving_cheat_sheet.md)
+[← Part 4 — Special Patterns (10 patterns)](04_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md) | [Pattern Problem-Solving Cheat Sheet →](06_solving_cheat_sheet.md)

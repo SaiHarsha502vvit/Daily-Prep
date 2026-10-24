@@ -8,21 +8,17 @@
 
 **Difficulty:** Easy | **Category:** Basic Math
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  SUM OF DIGITS                                                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find the sum of all digits of a given number.                            ║
-║                                                                           ║
-║  Input: n = 12345                                                         ║
-║  Output: 15                                                               ║
-║  Explanation: 1 + 2 + 3 + 4 + 5 = 15                                      ║
-║                                                                           ║
-║  Input: n = 9999                                                          ║
-║  Output: 36                                                               ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**SUM OF DIGITS**
+
+```text
+Find the sum of all digits of a given number.
+
+Input: n = 12345
+Output: 15
+Explanation: 1 + 2 + 3 + 4 + 5 = 15
+
+Input: n = 9999
+Output: 36
 ```
 
 ```java
@@ -50,24 +46,20 @@ public int sumOfDigitsRecursive(int n) {
 **LeetCode 258** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/add-digits/](https://leetcode.com/problems/add-digits/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  ADD DIGITS (DIGITAL ROOT)                                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Repeatedly add digits until single digit remains.                        ║
-║                                                                           ║
-║  Input: num = 38                                                          ║
-║  Output: 2                                                                ║
-║  Explanation: 3 + 8 = 11, 1 + 1 = 2                                       ║
-║                                                                           ║
-║  Input: num = 9999                                                        ║
-║  Output: 9                                                                ║
-║  Explanation: 36 → 9                                                      ║
-║                                                                           ║
-║  FORMULA: Digital Root = 1 + (num - 1) % 9  (for num > 0)                 ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**ADD DIGITS (DIGITAL ROOT)**
+
+```text
+Repeatedly add digits until single digit remains.
+
+Input: num = 38
+Output: 2
+Explanation: 3 + 8 = 11, 1 + 1 = 2
+
+Input: num = 9999
+Output: 9
+Explanation: 36 → 9
+
+FORMULA: Digital Root = 1 + (num - 1) % 9  (for num > 0)
 ```
 
 ```java
@@ -98,24 +90,20 @@ public int addDigitsIterative(int num) {
 **LeetCode 7** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/reverse-integer/](https://leetcode.com/problems/reverse-integer/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  REVERSE INTEGER                                                          ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Reverse digits of a 32-bit signed integer.                               ║
-║  Return 0 if result overflows.                                            ║
-║                                                                           ║
-║  Input: x = 123                                                           ║
-║  Output: 321                                                              ║
-║                                                                           ║
-║  Input: x = -123                                                          ║
-║  Output: -321                                                             ║
-║                                                                           ║
-║  Input: x = 1534236469                                                    ║
-║  Output: 0 (overflow when reversed)                                       ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**REVERSE INTEGER**
+
+```text
+Reverse digits of a 32-bit signed integer.
+Return 0 if result overflows.
+
+Input: x = 123
+Output: 321
+
+Input: x = -123
+Output: -321
+
+Input: x = 1534236469
+Output: 0 (overflow when reversed)
 ```
 
 ```java
@@ -149,23 +137,19 @@ public int reverse(int x) {
 **LeetCode 9** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/palindrome-number/](https://leetcode.com/problems/palindrome-number/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PALINDROME NUMBER                                                        ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Check if integer is palindrome (reads same forwards and backwards).      ║
-║                                                                           ║
-║  Input: x = 121                                                           ║
-║  Output: true                                                             ║
-║                                                                           ║
-║  Input: x = -121                                                          ║
-║  Output: false (reads as 121-)                                            ║
-║                                                                           ║
-║  Input: x = 10                                                            ║
-║  Output: false (reads as 01)                                              ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PALINDROME NUMBER**
+
+```text
+Check if integer is palindrome (reads same forwards and backwards).
+
+Input: x = 121
+Output: true
+
+Input: x = -121
+Output: false (reads as 121-)
+
+Input: x = 10
+Output: false (reads as 01)
 ```
 
 ```java
@@ -195,27 +179,23 @@ public boolean isPalindrome(int x) {
 **LeetCode 202** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/happy-number/](https://leetcode.com/problems/happy-number/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  HAPPY NUMBER                                                             ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Starting with any positive integer, replace the number by the sum of     ║
-║  the squares of its digits. Repeat until it equals 1 (happy), or loops    ║
-║  endlessly in a cycle (not happy).                                        ║
-║                                                                           ║
-║  Input: n = 19                                                            ║
-║  Output: true                                                             ║
-║  Explanation:                                                             ║
-║  1² + 9² = 82                                                             ║
-║  8² + 2² = 68                                                             ║
-║  6² + 8² = 100                                                            ║
-║  1² + 0² + 0² = 1 ✓                                                       ║
-║                                                                           ║
-║  Input: n = 2                                                             ║
-║  Output: false (enters cycle)                                             ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**HAPPY NUMBER**
+
+```text
+Starting with any positive integer, replace the number by the sum of
+the squares of its digits. Repeat until it equals 1 (happy), or loops
+endlessly in a cycle (not happy).
+
+Input: n = 19
+Output: true
+Explanation:
+1² + 9² = 82
+8² + 2² = 68
+6² + 8² = 100
+1² + 0² + 0² = 1 ✓
+
+Input: n = 2
+Output: false (enters cycle)
 ```
 
 ```java

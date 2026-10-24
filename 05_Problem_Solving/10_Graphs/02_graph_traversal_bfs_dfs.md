@@ -122,23 +122,21 @@ public int numIslandsBFS(char[][] grid) {
 
 **LeetCode 695** 🔗 https://leetcode.com/problems/max-area-of-island/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MAX AREA OF ISLAND                                            │
-├────────────────────────────────────────────────────────────────┤
-│  grid = [                                                      │
-│    [0,0,1,0,0,0,0,1,0,0,0,0,0],                                │
-│    [0,0,0,0,0,0,0,1,1,1,0,0,0],                                │
-│    [0,1,1,0,1,0,0,0,0,0,0,0,0],                                │
-│    [0,1,0,0,1,1,0,0,1,0,1,0,0],                                │
-│    [0,1,0,0,1,1,0,0,1,1,1,0,0],                                │
-│    [0,0,0,0,0,0,0,0,0,0,1,0,0],                                │
-│    [0,0,0,0,0,0,0,1,1,1,0,0,0],                                │
-│    [0,0,0,0,0,0,0,1,1,0,0,0,0]                                 │
-│  ]                                                             │
-│                                                                │
-│  Maximum area = 6 (the island in middle-right)                 │
-└────────────────────────────────────────────────────────────────┘
+**MAX AREA OF ISLAND**
+
+```text
+grid = [
+  [0,0,1,0,0,0,0,1,0,0,0,0,0],
+  [0,0,0,0,0,0,0,1,1,1,0,0,0],
+  [0,1,1,0,1,0,0,0,0,0,0,0,0],
+  [0,1,0,0,1,1,0,0,1,0,1,0,0],
+  [0,1,0,0,1,1,0,0,1,1,1,0,0],
+  [0,0,0,0,0,0,0,0,0,0,1,0,0],
+  [0,0,0,0,0,0,0,1,1,1,0,0,0],
+  [0,0,0,0,0,0,0,1,1,0,0,0,0]
+]
+
+Maximum area = 6 (the island in middle-right)
 ```
 
 **Solution:**
@@ -177,21 +175,19 @@ private int dfs(int[][] grid, int i, int j) {
 
 **LeetCode 133** 🔗 https://leetcode.com/problems/clone-graph/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  CLONE GRAPH - Deep copy of undirected graph                   │
-├────────────────────────────────────────────────────────────────┤
-│  Input:                   Output (Clone):                      │
-│      1 ─── 2                  1' ─── 2'                        │
-│      │     │                  │      │                         │
-│      │     │                  │      │                         │
-│      4 ─── 3                  4' ─── 3'                        │
-│                                                                │
-│  Each node has: val, List<Node> neighbors                      │
-│                                                                │
-│  Key: Use HashMap to track original → clone mapping            │
-│  Prevents infinite loop when graph has cycles                  │
-└────────────────────────────────────────────────────────────────┘
+**CLONE GRAPH - Deep copy of undirected graph**
+
+```text
+Input:                   Output (Clone):
+    1 ─── 2                  1' ─── 2'
+    │     │                  │      │
+    │     │                  │      │
+    4 ─── 3                  4' ─── 3'
+
+Each node has: val, List<Node> neighbors
+
+Key: Use HashMap to track original → clone mapping
+Prevents infinite loop when graph has cycles
 ```
 
 **Solution:**

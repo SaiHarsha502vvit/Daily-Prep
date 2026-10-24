@@ -1,7 +1,7 @@
-# ═══════════════════════════════════════════════════════════
+# Part 8 — Four-Week Study Plan
 
-> **Navigation**: [← ═══════════════════════════════════════════════════════════](03_section.md) | [Chapter overview](../08b_NumberTheory_Advanced.md)
-> Page 4 of 4 in **NumberTheory Advanced**
+> **Navigation**: [← Part 7 — Real-Life Incident → DSA Mapping](03_section.md) | [Chapter overview](../08b_NumberTheory_Advanced.md)
+> Page 4 of 4 in **Essential Algorithms, Data-Structure Problems and a Study Plan**
 
 
 ```
@@ -129,4 +129,4 @@ DAILY ROUTINE (apply 6 learning techniques):
 
 ---
 
-[← ═══════════════════════════════════════════════════════════](03_section.md) | [Chapter overview](../08b_NumberTheory_Advanced.md)
+[← Part 7 — Real-Life Incident → DSA Mapping](03_section.md) | [Chapter overview](../08b_NumberTheory_Advanced.md)

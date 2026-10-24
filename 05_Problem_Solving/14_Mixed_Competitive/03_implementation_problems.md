@@ -74,21 +74,19 @@ public List<Integer> spiralOrder(int[][] matrix) {
 
 ## Problem 210: Rotate Array (HackerEarth)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  ROTATE ARRAY - Rotate by k positions                          │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [1,2,3,4,5,6,7], k = 3                                 │
-│                                                                │
-│  Method: Reverse three times                                   │
-│                                                                │
-│  Original:      [1,2,3,4,5,6,7]                                │
-│  Reverse all:   [7,6,5,4,3,2,1]                                │
-│  Reverse 0..k-1:[5,6,7,4,3,2,1]                                │
-│  Reverse k..n-1:[5,6,7,1,2,3,4]                                │
-│                                                                │
-│  Output: [5,6,7,1,2,3,4]                                       │
-└────────────────────────────────────────────────────────────────┘
+**ROTATE ARRAY - Rotate by k positions**
+
+```text
+nums = [1,2,3,4,5,6,7], k = 3
+
+Method: Reverse three times
+
+Original:      [1,2,3,4,5,6,7]
+Reverse all:   [7,6,5,4,3,2,1]
+Reverse 0..k-1:[5,6,7,4,3,2,1]
+Reverse k..n-1:[5,6,7,1,2,3,4]
+
+Output: [5,6,7,1,2,3,4]
 ```
 
 **Solution:**
@@ -117,26 +115,24 @@ private void reverse(int[] nums, int start, int end) {
 
 ## Problem 211: Next Permutation (Codeforces)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  NEXT PERMUTATION - Next lexicographically greater             │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [1,2,3] → [1,3,2]                                      │
-│  nums = [3,2,1] → [1,2,3] (wrap around)                        │
-│  nums = [1,1,5] → [1,5,1]                                      │
-│                                                                │
-│  Algorithm:                                                    │
-│  1. Find largest i where nums[i] < nums[i+1]                   │
-│  2. Find largest j where nums[j] > nums[i]                     │
-│  3. Swap nums[i] and nums[j]                                   │
-│  4. Reverse from i+1 to end                                    │
-│                                                                │
-│  Example: [1,3,5,4,2]                                          │
-│  Step 1: i = 1 (3 < 5)                                         │
-│  Step 2: j = 3 (4 > 3)                                         │
-│  Step 3: [1,4,5,3,2]                                           │
-│  Step 4: [1,4,2,3,5]                                           │
-└────────────────────────────────────────────────────────────────┘
+**NEXT PERMUTATION - Next lexicographically greater**
+
+```text
+nums = [1,2,3] → [1,3,2]
+nums = [3,2,1] → [1,2,3] (wrap around)
+nums = [1,1,5] → [1,5,1]
+
+Algorithm:
+1. Find largest i where nums[i] < nums[i+1]
+2. Find largest j where nums[j] > nums[i]
+3. Swap nums[i] and nums[j]
+4. Reverse from i+1 to end
+
+Example: [1,3,5,4,2]
+Step 1: i = 1 (3 < 5)
+Step 2: j = 3 (4 > 3)
+Step 3: [1,4,5,3,2]
+Step 4: [1,4,2,3,5]
 ```
 
 **Solution:**

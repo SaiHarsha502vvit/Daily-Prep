@@ -129,21 +129,18 @@ The nth Catalan number C(n) = (2n)! / ((n+1)! × n!)
 
 **LeetCode 131** | **Difficulty:** Medium
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PALINDROME PARTITIONING (LeetCode 131 - Medium)                          ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Partition string s so every substring is a palindrome.                   ║
-║  Return all possible partitions.                                          ║
-║                                                                           ║
-║  Example: s = "aab"                                                       ║
-║  Output: [["a","a","b"], ["aa","b"]]                                      ║
-║                                                                           ║
-║  KEY: Backtrack trying each prefix. If prefix is palindrome, recurse      ║
-║  on remaining suffix.                                                     ║
-║  TIME: O(n × 2^n) | SPACE: O(n) recursion depth                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PALINDROME PARTITIONING (LeetCode 131 - Medium)**
+
+```text
+Partition string s so every substring is a palindrome.
+Return all possible partitions.
+
+Example: s = "aab"
+Output: [["a","a","b"], ["aa","b"]]
+
+KEY: Backtrack trying each prefix. If prefix is palindrome, recurse
+on remaining suffix.
+TIME: O(n × 2^n) | SPACE: O(n) recursion depth
 ```
 
 ```java
@@ -184,20 +181,17 @@ private boolean isPalindrome(String s) {
 
 **LeetCode 77** | **Difficulty:** Medium
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  COMBINATIONS (LeetCode 77 - Medium)                                      ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given n and k, return all possible combinations of k numbers             ║
-║  chosen from range [1, n].                                                ║
-║                                                                           ║
-║  Example: n = 4, k = 2                                                    ║
-║  Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]                            ║
-║                                                                           ║
-║  KEY: Standard backtracking. Prune when remaining < needed.               ║
-║  TIME: O(C(n,k) × k) | SPACE: O(k)                                        ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**COMBINATIONS (LeetCode 77 - Medium)**
+
+```text
+Given n and k, return all possible combinations of k numbers
+chosen from range [1, n].
+
+Example: n = 4, k = 2
+Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]
+
+KEY: Standard backtracking. Prune when remaining < needed.
+TIME: O(C(n,k) × k) | SPACE: O(k)
 ```
 
 ```java
@@ -228,21 +222,18 @@ private void backtrack(int n, int k, int start, List<Integer> path,
 
 **LeetCode 51** | **Difficulty:** Hard
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  N-QUEENS (LeetCode 51 - Hard)                                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Place n queens on n×n chessboard so no two attack each other.            ║
-║  Return all distinct solutions.                                           ║
-║                                                                           ║
-║  Example: n = 4                                                           ║
-║  Output: [[".Q..","...Q","Q...","..Q."],                                  ║
-║           ["..Q.","Q...","...Q",".Q.."]]                                  ║
-║                                                                           ║
-║  KEY: Place row by row. Track cols, diags, anti-diags with sets.          ║
-║  TIME: O(n!) | SPACE: O(n²)                                               ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**N-QUEENS (LeetCode 51 - Hard)**
+
+```text
+Place n queens on n×n chessboard so no two attack each other.
+Return all distinct solutions.
+
+Example: n = 4
+Output: [[".Q..","...Q","Q...","..Q."],
+         ["..Q.","Q...","...Q",".Q.."]]
+
+KEY: Place row by row. Track cols, diags, anti-diags with sets.
+TIME: O(n!) | SPACE: O(n²)
 ```
 
 ```java

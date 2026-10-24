@@ -1,6 +1,6 @@
-# ═══════════════════════════════════════════════════════════
+# Part 3 — Modular Arithmetic and Proofs
 
-> **Navigation**: [← ═══════════════════════════════════════════════════════════](02_section.md) | [Chapter overview](../08a_NumberTheory_Core.md)
+> **Navigation**: [← Part 2 — Prime Numbers](02_section.md) | [Chapter overview](../08a_NumberTheory_Core.md)
 > Page 3 of 3 in **GCD, Number Theory & Pattern Programs - Complete Guide**
 
 
@@ -399,4 +399,4 @@ long g2 = ArithmeticUtils.gcd(48L, -18L); // returns 6
 
 ---
 
-[← ═══════════════════════════════════════════════════════════](02_section.md) | [Chapter overview](../08a_NumberTheory_Core.md)
+[← Part 2 — Prime Numbers](02_section.md) | [Chapter overview](../08a_NumberTheory_Core.md)

@@ -179,20 +179,16 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 
 ### Core Idea
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                      GREEDY PHILOSOPHY                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│    "At each step, make the choice that looks best RIGHT NOW"    │
-│                                                                 │
-│    LOCAL OPTIMUM → Hopefully → GLOBAL OPTIMUM                   │
-│                                                                 │
-│    Key properties:                                              │
-│    1. Greedy Choice Property: Local choice leads to global      │
-│    2. Optimal Substructure: Optimal contains optimal sub        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**GREEDY PHILOSOPHY**
+
+```text
+"At each step, make the choice that looks best RIGHT NOW"
+
+LOCAL OPTIMUM → Hopefully → GLOBAL OPTIMUM
+
+Key properties:
+1. Greedy Choice Property: Local choice leads to global
+2. Optimal Substructure: Optimal contains optimal sub
 ```
 
 ### Visual Example: Coin Change (When Greedy Works)
@@ -246,46 +242,38 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 
 ### The Two Requirements
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│          GREEDY WORKS WHEN BOTH ARE TRUE:                       │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  1. GREEDY CHOICE PROPERTY                                      │
-│     → The locally optimal choice is part of globally optimal    │
-│     → "Taking the best now won't hurt us later"                 │
-│                                                                 │
-│  2. OPTIMAL SUBSTRUCTURE                                        │
-│     → After making greedy choice, remaining is smaller          │
-│       version of same problem                                   │
-│     → "Problem breaks into similar subproblems"                 │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**GREEDY WORKS WHEN BOTH ARE TRUE:**
+
+```text
+1. GREEDY CHOICE PROPERTY
+   → The locally optimal choice is part of globally optimal
+   → "Taking the best now won't hurt us later"
+
+2. OPTIMAL SUBSTRUCTURE
+   → After making greedy choice, remaining is smaller
+     version of same problem
+   → "Problem breaks into similar subproblems"
 ```
 
 ### How to Recognize Greedy Problems
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              GREEDY PATTERN INDICATORS                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Keywords in Problem:                                           │
-│  ✓ "Minimum/Maximum number of..."                               │
-│  ✓ "Largest/Smallest..."                                        │
-│  ✓ "Optimal arrangement/schedule"                               │
-│  ✓ "Non-overlapping intervals"                                  │
-│  ✓ "Select items with constraint"                               │
-│                                                                 │
-│  Problem Patterns:                                              │
-│  ✓ Activity/Job scheduling                                      │
-│  ✓ Interval selection/merging                                   │
-│  ✓ Huffman coding                                               │
-│  ✓ Minimum spanning tree (Kruskal's, Prim's)                    │
-│  ✓ Shortest path (Dijkstra's)                                   │
-│  ✓ Fractional knapsack                                          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**GREEDY PATTERN INDICATORS**
+
+```text
+Keywords in Problem:
+✓ "Minimum/Maximum number of..."
+✓ "Largest/Smallest..."
+✓ "Optimal arrangement/schedule"
+✓ "Non-overlapping intervals"
+✓ "Select items with constraint"
+
+Problem Patterns:
+✓ Activity/Job scheduling
+✓ Interval selection/merging
+✓ Huffman coding
+✓ Minimum spanning tree (Kruskal's, Prim's)
+✓ Shortest path (Dijkstra's)
+✓ Fractional knapsack
 ```
 
 ### Proof Technique: Exchange Argument
@@ -342,16 +330,14 @@ public int greedyTemplate(int[] items) {
 
 ```
 Different interval problems need different sorting:
-
-┌──────────────────────────────────────────────────────────────────┐
-│  PROBLEM                          │  SORT BY                     │
-├───────────────────────────────────┼──────────────────────────────┤
-│  Max non-overlapping intervals    │  End time (earliest first)   │
-│  Min intervals to cover range     │  Start time (earliest first) │
-│  Merge overlapping intervals      │  Start time (earliest first) │
-│  Meeting rooms needed             │  Start time (process events) │
-└───────────────────────────────────┴──────────────────────────────┘
 ```
+
+| PROBLEM | SORT BY |
+| --- | --- |
+| Max non-overlapping intervals | End time (earliest first) |
+| Min intervals to cover range | Start time (earliest first) |
+| Merge overlapping intervals | Start time (earliest first) |
+| Meeting rooms needed | Start time (process events) |
 
 ### Pattern 3: Two-Pointer Greedy
 

@@ -115,16 +115,26 @@ Downwards for 0/1 (each item once); upwards for unbounded (items can repeat).
 
 ### The Knapsack Family Tree
 
-KNAPSACK
-/ | \
-0/1 Unbounded Bounded
-/ | \ | |
-Subset Target Partition Coin Rod
-Sum Sum Equal Change Cut
-(LC416) (LC494)(LC416) (LC322) (GFG)
-|
-Coin Ways
-(LC518)
+```mermaid
+flowchart TB
+  K["Knapsack"] --> ZO["0/1"]
+  K --> UB["Unbounded"]
+  K --> BD["Bounded"]
+  ZO --> SS["Subset Sum<br/>(generic)"]
+  ZO --> TS["Target Sum<br/>LC 494"]
+  ZO --> PE["Partition Equal Subset Sum<br/>LC 416"]
+  UB --> CC["Coin Change<br/>LC 322"]
+  UB --> RC["Rod Cutting<br/>GFG"]
+  CC --> CW["Coin Change II<br/>(ways) LC 518"]
+  classDef root fill:#dbeafe,stroke:#2563eb,color:#0c1a4a;
+  classDef kind fill:#dcfce7,stroke:#16a34a,color:#052e16;
+  classDef prob fill:#fef3c7,stroke:#d97706,color:#451a03;
+  class K root;
+  class ZO,UB,BD kind;
+  class SS,TS,PE,CC,RC,CW prob;
+```
+
+**How to read this diagram.** The three branches are the three ways an item can be used: at most once (0/1), any number of times (unbounded) or a limited number of times (bounded). Leaves are the classic problems of each kind.
 
 **Insight**: ALL these problems share ONE core recurrence:
 dp[i][w] = max/min/count of (take item, skip item)
@@ -662,34 +672,30 @@ If `k` weren't exactly a sum of distinct powers of 2 (e.g., `k = 10`), we'd use 
 
 ### 📌 The Direction Rule — Visual Proof
 
-```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY LOOP DIRECTION MATTERS                                                   │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  Consider item: weight=2, value=3. Capacity W=6.                             │
-│                                                                              │
-│  0/1 KNAPSACK (RIGHT → LEFT):                                                │
-│  dp = [0, 0, 0, 0, 0, 0, 0]                                                  │
-│                                                                              │
-│  w=6: dp[6] = max(dp[6], dp[4]+3) = 3    dp=[0,0,0,0,0,0,3]                  │
-│  w=5: dp[5] = max(dp[5], dp[3]+3) = 3    dp=[0,0,0,0,0,3,3]                  │
-│  w=4: dp[4] = max(dp[4], dp[2]+3) = 3    dp=[0,0,0,0,3,3,3]                  │
-│  w=3: dp[3] = max(dp[3], dp[1]+3) = 3    dp=[0,0,0,3,3,3,3]                  │
-│  w=2: dp[2] = max(dp[2], dp[0]+3) = 3    dp=[0,0,3,3,3,3,3]                  │
-│  ✅ Item used only ONCE (dp[4] used old dp[2]=0, not the updated 3)           │
-│                                                                              │
-│  UNBOUNDED KNAPSACK (LEFT → RIGHT):                                          │
-│  dp = [0, 0, 0, 0, 0, 0, 0]                                                  │
-│                                                                              │
-│  w=2: dp[2] = max(dp[2], dp[0]+3) = 3    dp=[0,0,3,0,0,0,0]                  │
-│  w=3: dp[3] = max(dp[3], dp[1]+3) = 3    dp=[0,0,3,3,0,0,0]                  │
-│  w=4: dp[4] = max(dp[4], dp[2]+3) = 6    dp=[0,0,3,3,6,0,0]  ← used new!     │
-│  w=5: dp[5] = max(dp[5], dp[3]+3) = 6    dp=[0,0,3,3,6,6,0]                  │
-│  w=6: dp[6] = max(dp[6], dp[4]+3) = 9    dp=[0,0,3,3,6,6,9]                  │
-│  ✅ Item reused multiple times (dp[4] used updated dp[2]=3 → 2 copies)        │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+**WHY LOOP DIRECTION MATTERS**
+
+```text
+Consider item: weight=2, value=3. Capacity W=6.
+
+0/1 KNAPSACK (RIGHT → LEFT):
+dp = [0, 0, 0, 0, 0, 0, 0]
+
+w=6: dp[6] = max(dp[6], dp[4]+3) = 3    dp=[0,0,0,0,0,0,3]
+w=5: dp[5] = max(dp[5], dp[3]+3) = 3    dp=[0,0,0,0,0,3,3]
+w=4: dp[4] = max(dp[4], dp[2]+3) = 3    dp=[0,0,0,0,3,3,3]
+w=3: dp[3] = max(dp[3], dp[1]+3) = 3    dp=[0,0,0,3,3,3,3]
+w=2: dp[2] = max(dp[2], dp[0]+3) = 3    dp=[0,0,3,3,3,3,3]
+✅ Item used only ONCE (dp[4] used old dp[2]=0, not the updated 3)
+
+UNBOUNDED KNAPSACK (LEFT → RIGHT):
+dp = [0, 0, 0, 0, 0, 0, 0]
+
+w=2: dp[2] = max(dp[2], dp[0]+3) = 3    dp=[0,0,3,0,0,0,0]
+w=3: dp[3] = max(dp[3], dp[1]+3) = 3    dp=[0,0,3,3,0,0,0]
+w=4: dp[4] = max(dp[4], dp[2]+3) = 6    dp=[0,0,3,3,6,0,0]  ← used new!
+w=5: dp[5] = max(dp[5], dp[3]+3) = 6    dp=[0,0,3,3,6,6,0]
+w=6: dp[6] = max(dp[6], dp[4]+3) = 9    dp=[0,0,3,3,6,6,9]
+✅ Item reused multiple times (dp[4] used updated dp[2]=3 → 2 copies)
 ```
 
 ---

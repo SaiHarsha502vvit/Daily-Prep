@@ -154,122 +154,114 @@ while (left < right)              // CORRECT: < (stop when they meet)
 
 ## 📊 2. Array Index Out of Bounds
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    ARRAY INDEX OUT OF BOUNDS                              ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  MISTAKE 1: Accessing negative index                                      ║
-║  ────────────────────────────────────                                     ║
-║                                                                           ║
-║  int[] arr = {1, 2, 3};                                                   ║
-║  int x = arr[-1];  // CRASH! ArrayIndexOutOfBoundsException               ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  MISTAKE 2: Accessing arr[i-1] without check                              ║
-║  ────────────────────────────────────────────                             ║
-║                                                                           ║
-║  ✗ WRONG:                                                                 ║
-║  for (int i = 0; i < arr.length; i++) {                                   ║
-║      if (arr[i] != arr[i-1]) ...  // When i=0, arr[i-1] = arr[-1]!        ║
-║  }                                                                        ║
-║                                                                           ║
-║  ✓ CORRECT:                                                               ║
-║  for (int i = 1; i < arr.length; i++) {  // Start from 1                  ║
-║      if (arr[i] != arr[i-1]) ...                                          ║
-║  }                                                                        ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  MISTAKE 3: Accessing arr[i+1] without check                              ║
-║  ────────────────────────────────────────────                             ║
-║                                                                           ║
-║  ✗ WRONG:                                                                 ║
-║  for (int i = 0; i < arr.length; i++) {                                   ║
-║      if (arr[i] < arr[i+1]) ...  // When i=last, arr[i+1] crashes!        ║
-║  }                                                                        ║
-║                                                                           ║
-║  ✓ CORRECT:                                                               ║
-║  for (int i = 0; i < arr.length - 1; i++) {  // Stop one early            ║
-║      if (arr[i] < arr[i+1]) ...                                           ║
-║  }                                                                        ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  MISTAKE 4: Empty array access                                            ║
-║  ─────────────────────────────                                            ║
-║                                                                           ║
-║  ✗ WRONG:                                                                 ║
-║  int first = arr[0];  // CRASH if arr is empty!                           ║
-║                                                                           ║
-║  ✓ CORRECT:                                                               ║
-║  if (arr.length > 0) {                                                    ║
-║      int first = arr[0];                                                  ║
-║  }                                                                        ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**ARRAY INDEX OUT OF BOUNDS**
+
+```text
+MISTAKE 1: Accessing negative index
+────────────────────────────────────
+
+int[] arr = {1, 2, 3};
+int x = arr[-1];  // CRASH! ArrayIndexOutOfBoundsException
+
+═══════════════════════════════════════════════════════════════════════
+
+MISTAKE 2: Accessing arr[i-1] without check
+────────────────────────────────────────────
+
+✗ WRONG:
+for (int i = 0; i < arr.length; i++) {
+    if (arr[i] != arr[i-1]) ...  // When i=0, arr[i-1] = arr[-1]!
+}
+
+✓ CORRECT:
+for (int i = 1; i < arr.length; i++) {  // Start from 1
+    if (arr[i] != arr[i-1]) ...
+}
+
+═══════════════════════════════════════════════════════════════════════
+
+MISTAKE 3: Accessing arr[i+1] without check
+────────────────────────────────────────────
+
+✗ WRONG:
+for (int i = 0; i < arr.length; i++) {
+    if (arr[i] < arr[i+1]) ...  // When i=last, arr[i+1] crashes!
+}
+
+✓ CORRECT:
+for (int i = 0; i < arr.length - 1; i++) {  // Stop one early
+    if (arr[i] < arr[i+1]) ...
+}
+
+═══════════════════════════════════════════════════════════════════════
+
+MISTAKE 4: Empty array access
+─────────────────────────────
+
+✗ WRONG:
+int first = arr[0];  // CRASH if arr is empty!
+
+✓ CORRECT:
+if (arr.length > 0) {
+    int first = arr[0];
+}
 ```
 
 ---
 
 ## 💥 3. Integer Overflow
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    INTEGER OVERFLOW                                       ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Java int range: -2,147,483,648 to 2,147,483,647 (about ±2 billion)       ║
-║                                                                           ║
-║  MISTAKE 1: Factorial overflow                                            ║
-║  ─────────────────────────────                                            ║
-║                                                                           ║
-║  13! = 6,227,020,800 > Integer.MAX_VALUE                                  ║
-║                                                                           ║
-║  ✗ WRONG:                                                                 ║
-║  int factorial = 1;                                                       ║
-║  for (int i = 1; i <= n; i++) {                                           ║
-║      factorial *= i;  // Overflows at n=13                                ║
-║  }                                                                        ║
-║                                                                           ║
-║  ✓ CORRECT (use long):                                                    ║
-║  long factorial = 1L;                                                     ║
-║  for (int i = 1; i <= n; i++) {                                           ║
-║      factorial *= i;  // Works up to n=20                                 ║
-║  }                                                                        ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  MISTAKE 2: Sum overflow                                                  ║
-║  ───────────────────────                                                  ║
-║                                                                           ║
-║  Array: [1,000,000,000, 1,000,000,000, 1,000,000,000]                     ║
-║  Sum: 3,000,000,000 > Integer.MAX_VALUE                                   ║
-║                                                                           ║
-║  ✗ WRONG:                                                                 ║
-║  int sum = 0;                                                             ║
-║  for (int num : arr) sum += num;  // Overflow!                            ║
-║                                                                           ║
-║  ✓ CORRECT:                                                               ║
-║  long sum = 0L;                                                           ║
-║  for (int num : arr) sum += num;  // Safe                                 ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  MISTAKE 3: Multiplication overflow                                       ║
-║  ──────────────────────────────────                                       ║
-║                                                                           ║
-║  ✗ WRONG:                                                                 ║
-║  int area = width * height;  // Can overflow for large rectangles         ║
-║                                                                           ║
-║  ✓ CORRECT:                                                               ║
-║  long area = (long) width * height;  // Cast BEFORE multiplication        ║
-║                                                                           ║
-║  ⚠️ Note: long area = (long)(width * height) is WRONG!                    ║
-║     The overflow happens in (width * height) BEFORE the cast.             ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**INTEGER OVERFLOW**
+
+```text
+Java int range: -2,147,483,648 to 2,147,483,647 (about ±2 billion)
+
+MISTAKE 1: Factorial overflow
+─────────────────────────────
+
+13! = 6,227,020,800 > Integer.MAX_VALUE
+
+✗ WRONG:
+int factorial = 1;
+for (int i = 1; i <= n; i++) {
+    factorial *= i;  // Overflows at n=13
+}
+
+✓ CORRECT (use long):
+long factorial = 1L;
+for (int i = 1; i <= n; i++) {
+    factorial *= i;  // Works up to n=20
+}
+
+═══════════════════════════════════════════════════════════════════════
+
+MISTAKE 2: Sum overflow
+───────────────────────
+
+Array: [1,000,000,000, 1,000,000,000, 1,000,000,000]
+Sum: 3,000,000,000 > Integer.MAX_VALUE
+
+✗ WRONG:
+int sum = 0;
+for (int num : arr) sum += num;  // Overflow!
+
+✓ CORRECT:
+long sum = 0L;
+for (int num : arr) sum += num;  // Safe
+
+═══════════════════════════════════════════════════════════════════════
+
+MISTAKE 3: Multiplication overflow
+──────────────────────────────────
+
+✗ WRONG:
+int area = width * height;  // Can overflow for large rectangles
+
+✓ CORRECT:
+long area = (long) width * height;  // Cast BEFORE multiplication
+
+⚠️ Note: long area = (long)(width * height) is WRONG!
+   The overflow happens in (width * height) BEFORE the cast.
 ```
 
 ---
@@ -570,135 +562,127 @@ ALWAYS CHECK THESE BEFORE SUBMITTING:
 
 ## 📌 8. Logic Mistakes
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    LOGIC MISTAKES                                         ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  MISTAKE 1: Wrong boolean logic                                           ║
-║  ──────────────────────────────                                           ║
-║                                                                           ║
-║  De Morgan's Laws:                                                        ║
-║  !(A && B) = !A || !B                                                     ║
-║  !(A || B) = !A && !B                                                     ║
-║                                                                           ║
-║  ✗ WRONG:                                                                 ║
-║  if (!(x > 5 && x < 10))  // Confusing                                    ║
-║                                                                           ║
-║  ✓ CLEARER:                                                               ║
-║  if (x <= 5 || x >= 10)  // Same logic, easier to read                    ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  MISTAKE 2: && vs || confusion                                            ║
-║  ─────────────────────────────                                            ║
-║                                                                           ║
-║  "x is between 5 and 10" (inclusive):                                     ║
-║                                                                           ║
-║  ✗ WRONG:                                                                 ║
-║  if (x >= 5 || x <= 10)  // Always true for any x!                        ║
-║                                                                           ║
-║  ✓ CORRECT:                                                               ║
-║  if (x >= 5 && x <= 10)  // Both conditions must be true                  ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  MISTAKE 3: Assignment vs comparison                                      ║
-║  ────────────────────────────────────                                     ║
-║                                                                           ║
-║  ✗ WRONG:                                                                 ║
-║  if (x = 5) { ... }  // Assignment! Always "true" in some languages       ║
-║                      // Java: Compile error (thankfully!)                 ║
-║                                                                           ║
-║  ✓ CORRECT:                                                               ║
-║  if (x == 5) { ... }  // Comparison                                       ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  MISTAKE 4: Short-circuit evaluation                                      ║
-║  ────────────────────────────────────                                     ║
-║                                                                           ║
-║  ✗ DANGEROUS:                                                             ║
-║  if (arr[i] != null && arr.length > i) { ... }                            ║
-║  // If arr[i] throws exception, arr.length is never checked!              ║
-║                                                                           ║
-║  ✓ CORRECT ORDER:                                                         ║
-║  if (i < arr.length && arr[i] != null) { ... }                            ║
-║  // Check bounds FIRST, then access                                       ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**LOGIC MISTAKES**
+
+```text
+MISTAKE 1: Wrong boolean logic
+──────────────────────────────
+
+De Morgan's Laws:
+!(A && B) = !A || !B
+!(A || B) = !A && !B
+
+✗ WRONG:
+if (!(x > 5 && x < 10))  // Confusing
+
+✓ CLEARER:
+if (x <= 5 || x >= 10)  // Same logic, easier to read
+
+═══════════════════════════════════════════════════════════════════════
+
+MISTAKE 2: && vs || confusion
+─────────────────────────────
+
+"x is between 5 and 10" (inclusive):
+
+✗ WRONG:
+if (x >= 5 || x <= 10)  // Always true for any x!
+
+✓ CORRECT:
+if (x >= 5 && x <= 10)  // Both conditions must be true
+
+═══════════════════════════════════════════════════════════════════════
+
+MISTAKE 3: Assignment vs comparison
+────────────────────────────────────
+
+✗ WRONG:
+if (x = 5) { ... }  // Assignment! Always "true" in some languages
+                    // Java: Compile error (thankfully!)
+
+✓ CORRECT:
+if (x == 5) { ... }  // Comparison
+
+═══════════════════════════════════════════════════════════════════════
+
+MISTAKE 4: Short-circuit evaluation
+────────────────────────────────────
+
+✗ DANGEROUS:
+if (arr[i] != null && arr.length > i) { ... }
+// If arr[i] throws exception, arr.length is never checked!
+
+✓ CORRECT ORDER:
+if (i < arr.length && arr[i] != null) { ... }
+// Check bounds FIRST, then access
 ```
 
 ---
 
 ## 📦 9. Return Statement Mistakes
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    RETURN STATEMENT MISTAKES                              ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  MISTAKE 1: Missing return statement                                      ║
-║  ────────────────────────────────────                                     ║
-║                                                                           ║
-║  ✗ WRONG (compile error):                                                 ║
-║  public int findMax(int[] arr) {                                          ║
-║      int max = arr[0];                                                    ║
-║      for (int num : arr) {                                                ║
-║          if (num > max) max = num;                                        ║
-║      }                                                                    ║
-║      // Forgot return! Compile error: "missing return statement"          ║
-║  }                                                                        ║
-║                                                                           ║
-║  ✓ CORRECT:                                                               ║
-║  public int findMax(int[] arr) {                                          ║
-║      int max = arr[0];                                                    ║
-║      for (int num : arr) {                                                ║
-║          if (num > max) max = num;                                        ║
-║      }                                                                    ║
-║      return max;  // Don't forget!                                        ║
-║  }                                                                        ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  MISTAKE 2: Return inside loop (early exit)                               ║
-║  ───────────────────────────────────────────                              ║
-║                                                                           ║
-║  ✗ WRONG (returns on first iteration):                                    ║
-║  public int sum(int[] arr) {                                              ║
-║      int sum = 0;                                                         ║
-║      for (int num : arr) {                                                ║
-║          sum += num;                                                      ║
-║          return sum;  // Returns immediately after first element!         ║
-║      }                                                                    ║
-║      return sum;                                                          ║
-║  }                                                                        ║
-║                                                                           ║
-║  ✓ CORRECT:                                                               ║
-║  public int sum(int[] arr) {                                              ║
-║      int sum = 0;                                                         ║
-║      for (int num : arr) {                                                ║
-║          sum += num;                                                      ║
-║      }                                                                    ║
-║      return sum;  // Return AFTER loop                                    ║
-║  }                                                                        ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  MISTAKE 3: Wrong return type                                             ║
-║  ────────────────────────────                                             ║
-║                                                                           ║
-║  ✗ WRONG:                                                                 ║
-║  public int divide(int a, int b) {                                        ║
-║      return a / b;  // Integer division! 5/2 = 2, not 2.5                 ║
-║  }                                                                        ║
-║                                                                           ║
-║  ✓ CORRECT (if you need decimal):                                         ║
-║  public double divide(int a, int b) {                                     ║
-║      return (double) a / b;  // Cast to double first                      ║
-║  }                                                                        ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**RETURN STATEMENT MISTAKES**
+
+```text
+MISTAKE 1: Missing return statement
+────────────────────────────────────
+
+✗ WRONG (compile error):
+public int findMax(int[] arr) {
+    int max = arr[0];
+    for (int num : arr) {
+        if (num > max) max = num;
+    }
+    // Forgot return! Compile error: "missing return statement"
+}
+
+✓ CORRECT:
+public int findMax(int[] arr) {
+    int max = arr[0];
+    for (int num : arr) {
+        if (num > max) max = num;
+    }
+    return max;  // Don't forget!
+}
+
+═══════════════════════════════════════════════════════════════════════
+
+MISTAKE 2: Return inside loop (early exit)
+───────────────────────────────────────────
+
+✗ WRONG (returns on first iteration):
+public int sum(int[] arr) {
+    int sum = 0;
+    for (int num : arr) {
+        sum += num;
+        return sum;  // Returns immediately after first element!
+    }
+    return sum;
+}
+
+✓ CORRECT:
+public int sum(int[] arr) {
+    int sum = 0;
+    for (int num : arr) {
+        sum += num;
+    }
+    return sum;  // Return AFTER loop
+}
+
+═══════════════════════════════════════════════════════════════════════
+
+MISTAKE 3: Wrong return type
+────────────────────────────
+
+✗ WRONG:
+public int divide(int a, int b) {
+    return a / b;  // Integer division! 5/2 = 2, not 2.5
+}
+
+✓ CORRECT (if you need decimal):
+public double divide(int a, int b) {
+    return (double) a / b;  // Cast to double first
+}
 ```
 
 ---
@@ -789,24 +773,20 @@ REFERENCE TABLE:
 
 ## 📋 PRE-SUBMISSION CHECKLIST
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    BEFORE YOU SUBMIT - CHECK THESE!                       ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  □ Did I handle empty input (n=0, empty array, empty string)?             ║
-║  □ Did I handle single element input?                                     ║
-║  □ Did I handle all negative numbers?                                     ║
-║  □ Did I handle all same elements?                                        ║
-║  □ Is my loop bound correct (< vs <=)?                                    ║
-║  □ Did I use .equals() for string comparison (not ==)?                    ║
-║  □ Did I handle Scanner newline after nextInt()?                          ║
-║  □ Will my code overflow? (use long if needed)                            ║
-║  □ Did I initialize min/max correctly?                                    ║
-║  □ Does my function have a return statement on all paths?                 ║
-║  □ Did I test with the given examples?                                    ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**BEFORE YOU SUBMIT - CHECK THESE!**
+
+```text
+□ Did I handle empty input (n=0, empty array, empty string)?
+□ Did I handle single element input?
+□ Did I handle all negative numbers?
+□ Did I handle all same elements?
+□ Is my loop bound correct (< vs <=)?
+□ Did I use .equals() for string comparison (not ==)?
+□ Did I handle Scanner newline after nextInt()?
+□ Will my code overflow? (use long if needed)
+□ Did I initialize min/max correctly?
+□ Does my function have a return statement on all paths?
+□ Did I test with the given examples?
 ```
 
 ---

@@ -4,18 +4,15 @@
 > Page 7 of 7 in **Advanced DP Patterns**
 
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ TREE DP - THE PATTERN                                                           │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ WHEN TO USE: Compute optimal values on tree structures                          │
-│                                                                                 │
-│ KEY INSIGHT: Process children first (post-order), then compute parent           │
-│                                                                                 │
-│                                                                                 │
-│ BASIC TREE DP - MAXIMUM INDEPENDENT SET:                                        │
-│ ─────────────────────────────────────────                                       │
+**TREE DP - THE PATTERN**
+
+```text
+WHEN TO USE: Compute optimal values on tree structures
+
+KEY INSIGHT: Process children first (post-order), then compute parent
+
+BASIC TREE DP - MAXIMUM INDEPENDENT SET:
+─────────────────────────────────────────
 ```
 
 ```java
@@ -44,11 +41,10 @@ void dfs(int v, int parent) {
 // Answer: Math.max(dp[root][0], dp[root][1])
 ```
 
-```
-│ │
-│ │
-│ TREE DIAMETER: │
-│ ────────────── │
+**TREE DIAMETER:**
+
+```text
+──────────────
 ```
 
 ```java
@@ -77,11 +73,9 @@ int dfs(int v, int parent) {
 }
 ```
 
-```
-│ │
-│ │
-│ REROOTING TECHNIQUE (for all-roots DP): │
-│ ───────────────────────────────────────── │
+```text
+REROOTING TECHNIQUE (for all-roots DP):
+─────────────────────────────────────────
 ```
 
 ```java
@@ -133,49 +127,43 @@ void dfs2(int v, int parent) {
 }
 ```
 
-```
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
 ```
 
 ## ⚡ DP Optimizations — Convex Hull Trick
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ CONVEX HULL TRICK (CHT)                                                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ WHEN TO USE: Recurrence of form dp[i] = min(dp[j] + b[j] _ a[i]) for j < i      │
-│ Reduces O(n²) to O(n) or O(n log n)                                             │
-│                                                                                 │
-│ CONDITIONS:                                                                     │
-│ • Slopes b[j] are monotonic                                                     │
-│ • Query values a[i] are monotonic                                               │
-│ • Want minimum (or can convert to minimum)                                      │
-│                                                                                 │
-│                                                                                 │
-│ INTUITION:                                                                      │
-│ ───────────                                                                     │
-│ Each j gives a line: y = b[j] _ x + dp[j]                                       │
-│ Query for x = a[i]: find line with minimum y                                    │
-│ Maintain lower convex hull of lines                                             │
-│                                                                                 │
-│ VISUALIZATION:                                                                  │
-│ y │                                                                             │
-│ │ ╱ line 3 (b=4)                                                                │
-│ │ ╱                                                                             │
-│ │╱ ╱ line 2 (b=2)                                                               │
-│ │ ╱                                                                             │
-│ │ ╱ ╱ line 1 (b=1)                                                              │
-│ │ ╱ ╱                                                                           │
-│ │ ╱ ╱                                                                           │
-│ │╱──╱───────────────── x                                                        │
-│ ╱╲                                                                              │
-│ ╱ ╲ Convex hull (only these lines can be optimal)                               │
-│                                                                                 │
-│                                                                                 │
-│ IMPLEMENTATION (monotonic slopes and queries):                                  │
-│ ─────────────────────────────────────────────                                   │
+**CONVEX HULL TRICK (CHT)**
+
+```text
+WHEN TO USE: Recurrence of form dp[i] = min(dp[j] + b[j] _ a[i]) for j < i
+Reduces O(n²) to O(n) or O(n log n)
+
+CONDITIONS:
+• Slopes b[j] are monotonic
+• Query values a[i] are monotonic
+• Want minimum (or can convert to minimum)
+
+INTUITION:
+───────────
+Each j gives a line: y = b[j] _ x + dp[j]
+Query for x = a[i]: find line with minimum y
+Maintain lower convex hull of lines
+
+VISUALIZATION:
+y │
+│ ╱ line 3 (b=4)
+│ ╱
+│╱ ╱ line 2 (b=2)
+│ ╱
+│ ╱ ╱ line 1 (b=1)
+│ ╱ ╱
+│ ╱ ╱
+│╱──╱───────────────── x
+╱╲
+╱ ╲ Convex hull (only these lines can be optimal)
+
+IMPLEMENTATION (monotonic slopes and queries):
+─────────────────────────────────────────────
 ```
 
 ```java
@@ -220,31 +208,26 @@ for (int i = 1; i < n; i++) {
 }
 ```
 
-```
-│ │
-│ COMPLEXITY: │
-│ • Amortized O(1) per addLine and query if both are monotonic │
-│ • O(log n) per query with binary search if queries not monotonic │
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**COMPLEXITY:**
+
+```text
+• Amortized O(1) per addLine and query if both are monotonic
+• O(log n) per query with binary search if queries not monotonic
 ```
 
 ## ⚡ Divide and Conquer DP Optimization
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ DIVIDE AND CONQUER DP                                                           │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ WHEN TO USE: dp[i][j] = min(dp[i-1][k] + cost(k+1, j)) for k < j                │
-│ And: optimal k for j₁ ≤ optimal k for j₂ when j₁ < j₂                           │
-│ (This is the "monotonicity of optimal splits" property)                         │
-│                                                                                 │
-│ Reduces O(n × m × n) to O(n × m × log n)                                        │
-│                                                                                 │
-│                                                                                 │
-│ IMPLEMENTATION:                                                                 │
-│ ───────────────                                                                 │
+**DIVIDE AND CONQUER DP**
+
+```text
+WHEN TO USE: dp[i][j] = min(dp[i-1][k] + cost(k+1, j)) for k < j
+And: optimal k for j₁ ≤ optimal k for j₂ when j₁ < j₂
+(This is the "monotonicity of optimal splits" property)
+
+Reduces O(n × m × n) to O(n × m × log n)
+
+IMPLEMENTATION:
+───────────────
 ```
 
 ```java
@@ -276,11 +259,9 @@ void compute(int level, int lo, int hi, int optLo, int optHi) {
 // Call: compute(i, 1, n, 0, n) for each level i
 ```
 
-```
-│ │
-│ │
-│ EXAMPLE: Partition array into k subarrays, minimize max sum │
-│ ────────────────────────────────────────────────────────── │
+```text
+EXAMPLE: Partition array into k subarrays, minimize max sum
+──────────────────────────────────────────────────────────
 ```
 
 ```java
@@ -305,9 +286,7 @@ long cost(int l, int r) {
 }
 ```
 
-```
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
 ```
 
 ## 📌 Broken Profile DP (plug DP)
@@ -392,13 +371,10 @@ long dominoTiling(int n, int m) {
 }
 ```
 
-```
-│ │
-│ Time: O(m × n × 2^n) │
-│ Space: O(2^n) │
-│ Practical for n ≤ 15-20 │
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```text
+Time: O(m × n × 2^n)
+Space: O(2^n)
+Practical for n ≤ 15-20
 ```
 
 ## 🎨 DP Pattern Quick Reference

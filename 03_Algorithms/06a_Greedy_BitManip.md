@@ -427,20 +427,12 @@ has been extracted to its own dedicated file for discoverability:
 
 ### The General Method
 
-```
-GREEDY APPROACH:
-Make the locally optimal choice at each step,
-hoping to find a global optimum.
+**GREEDY APPROACH: — Make the locally optimal choice at each step, — hoping to find a global optimum. — GREEDY STRATEGY**
 
-┌─────────────────────────────────────────┐
-│           GREEDY STRATEGY               │
-├─────────────────────────────────────────┤
-│                                         │
-│  1. FEASIBILITY: Check if choice valid  │
-│  2. LOCAL OPTIMUM: Pick best option NOW │
-│  3. IRREVOCABLE: Never reconsider       │
-│                                         │
-└─────────────────────────────────────────┘
+```text
+ 1. FEASIBILITY: Check if choice valid
+ 2. LOCAL OPTIMUM: Pick best option NOW
+ 3. IRREVOCABLE: Never reconsider
 
 WHEN GREEDY WORKS:
 ✓ Greedy Choice Property: Local optimal → Global optimal

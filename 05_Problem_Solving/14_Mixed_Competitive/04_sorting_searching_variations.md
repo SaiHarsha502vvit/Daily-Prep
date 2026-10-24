@@ -6,22 +6,20 @@
 
 ## Problem 212: Count Inversions (HackerEarth Classic)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  COUNT INVERSIONS - Pairs where i < j but arr[i] > arr[j]      │
-├────────────────────────────────────────────────────────────────┤
-│  arr = [2, 4, 1, 3, 5]                                         │
-│                                                                │
-│  Inversions:                                                   │
-│  (2, 1): 2 > 1                                                 │
-│  (4, 1): 4 > 1                                                 │
-│  (4, 3): 4 > 3                                                 │
-│                                                                │
-│  Total: 3 inversions                                           │
-│                                                                │
-│  Approach: Modified Merge Sort                                 │
-│  During merge, count inversions when right element chosen      │
-└────────────────────────────────────────────────────────────────┘
+**COUNT INVERSIONS - Pairs where i < j but arr[i] > arr[j]**
+
+```text
+arr = [2, 4, 1, 3, 5]
+
+Inversions:
+(2, 1): 2 > 1
+(4, 1): 4 > 1
+(4, 3): 4 > 3
+
+Total: 3 inversions
+
+Approach: Modified Merge Sort
+During merge, count inversions when right element chosen
 ```
 
 **Solution:**
@@ -68,23 +66,21 @@ private void merge(int[] arr, int left, int mid, int right) {
 
 ## Problem 213: Aggressive Cows (Codeforces/SPOJ Classic)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  AGGRESSIVE COWS - Max minimum distance between cows           │
-├────────────────────────────────────────────────────────────────┤
-│  stalls = [1, 2, 4, 8, 9], cows = 3                            │
-│                                                                │
-│  Place 3 cows to maximize minimum distance                     │
-│                                                                │
-│  Try placing at 1, 4, 9: min distance = 3                      │
-│  Try placing at 1, 4, 8: min distance = 3                      │
-│  Try placing at 1, 8, 9: min distance = 1                      │
-│                                                                │
-│  Binary search on answer:                                      │
-│  - Can we place cows with min distance = mid?                  │
-│                                                                │
-│  Output: 3                                                     │
-└────────────────────────────────────────────────────────────────┘
+**AGGRESSIVE COWS - Max minimum distance between cows**
+
+```text
+stalls = [1, 2, 4, 8, 9], cows = 3
+
+Place 3 cows to maximize minimum distance
+
+Try placing at 1, 4, 9: min distance = 3
+Try placing at 1, 4, 8: min distance = 3
+Try placing at 1, 8, 9: min distance = 1
+
+Binary search on answer:
+- Can we place cows with min distance = mid?
+
+Output: 3
 ```
 
 **Solution:**
@@ -134,19 +130,17 @@ private boolean canPlace(int[] stalls, int cows, int minDist) {
 
 ### Problem 214: Longest Consecutive Sequence (HackerEarth)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  LONGEST CONSECUTIVE SEQUENCE                                  │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [100, 4, 200, 1, 3, 2]                                 │
-│                                                                │
-│  Sequences: [1,2,3,4], [100], [200]                            │
-│                                                                │
-│  Longest: [1,2,3,4] → length 4                                 │
-│                                                                │
-│  Approach: Use HashSet                                         │
-│  Only start counting from sequence beginning (n-1 not in set)  │
-└────────────────────────────────────────────────────────────────┘
+**LONGEST CONSECUTIVE SEQUENCE**
+
+```text
+nums = [100, 4, 200, 1, 3, 2]
+
+Sequences: [1,2,3,4], [100], [200]
+
+Longest: [1,2,3,4] → length 4
+
+Approach: Use HashSet
+Only start counting from sequence beginning (n-1 not in set)
 ```
 
 **Solution:**
@@ -181,22 +175,20 @@ public int longestConsecutive(int[] nums) {
 
 ### Problem 215: Subarray Sum Equals K (Codeforces Style)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SUBARRAY SUM EQUALS K - Count subarrays with sum k            │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [1, 1, 1], k = 2                                       │
-│                                                                │
-│  Subarrays with sum 2:                                         │
-│  [1,1] at index 0-1                                            │
-│  [1,1] at index 1-2                                            │
-│                                                                │
-│  Output: 2                                                     │
-│                                                                │
-│  Prefix sum trick:                                             │
-│  If prefix[j] - prefix[i] = k, subarray [i+1, j] has sum k     │
-│  Count prefix[j] - k occurrences using HashMap                 │
-└────────────────────────────────────────────────────────────────┘
+**SUBARRAY SUM EQUALS K - Count subarrays with sum k**
+
+```text
+nums = [1, 1, 1], k = 2
+
+Subarrays with sum 2:
+[1,1] at index 0-1
+[1,1] at index 1-2
+
+Output: 2
+
+Prefix sum trick:
+If prefix[j] - prefix[i] = k, subarray [i+1, j] has sum k
+Count prefix[j] - k occurrences using HashMap
 ```
 
 **Solution:**

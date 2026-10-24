@@ -9,21 +9,17 @@
 **LeetCode 567** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/permutation-in-string/](https://leetcode.com/problems/permutation-in-string/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PERMUTATION IN STRING                                                    ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Check if s2 contains any permutation of s1.                              ║
-║                                                                           ║
-║  Input: s1 = "ab", s2 = "eidbaooo"                                        ║
-║  Output: true                                                             ║
-║  Explanation: s2 contains "ba" which is permutation of "ab"               ║
-║                                                                           ║
-║  Input: s1 = "ab", s2 = "eidboaoo"                                        ║
-║  Output: false                                                            ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PERMUTATION IN STRING**
+
+```text
+Check if s2 contains any permutation of s1.
+
+Input: s1 = "ab", s2 = "eidbaooo"
+Output: true
+Explanation: s2 contains "ba" which is permutation of "ab"
+
+Input: s1 = "ab", s2 = "eidboaoo"
+Output: false
 ```
 
 ```java
@@ -129,33 +125,28 @@ public String minWindow(String s, String t) {
 
 **LeetCode 159** | **Difficulty:** Medium | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  LONGEST SUBSTRING WITH AT MOST TWO DISTINCT CHARACTERS                   ║
-║  (LeetCode 159 - Premium)                                                 ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find length of longest substring with at most 2 distinct characters.     ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: s = "eceba"                                                       ║
-║  Output: 3                                                                ║
-║  Explanation: "ece" has 2 distinct characters                             ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: s = "ccaabbb"                                                     ║
-║  Output: 5                                                                ║
-║  Explanation: "aabbb" has 2 distinct characters                           ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 1 <= s.length <= 10^5                                                  ║
-║  - s consists of English letters                                          ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**LONGEST SUBSTRING WITH AT MOST TWO DISTINCT CHARACTERS — (LeetCode 159 - Premium)**
+
+```text
+Find length of longest substring with at most 2 distinct characters.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: s = "eceba"
+Output: 3
+Explanation: "ece" has 2 distinct characters
+
+Example 2:
+Input: s = "ccaabbb"
+Output: 5
+Explanation: "aabbb" has 2 distinct characters
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 1 <= s.length <= 10^5
+- s consists of English letters
 ```
 
 ```java
@@ -196,21 +187,18 @@ No single inventor. Moving averages predate computers; the TCP sliding-window fl
 
 **LeetCode 239** | **Difficulty:** Hard
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  SLIDING WINDOW MAXIMUM (LeetCode 239 - Hard)                             ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given array nums and sliding window of size k, return max in each        ║
-║  window position as the window slides from left to right.                 ║
-║                                                                           ║
-║  Example:                                                                 ║
-║  Input: nums = [1,3,-1,-3,5,3,6,7], k = 3                                 ║
-║  Output: [3,3,5,5,6,7]                                                    ║
-║                                                                           ║
-║  KEY INSIGHT: Use monotonic deque (decreasing) — front always has max     ║
-║  TIME: O(n) | SPACE: O(k)                                                 ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**SLIDING WINDOW MAXIMUM (LeetCode 239 - Hard)**
+
+```text
+Given array nums and sliding window of size k, return max in each
+window position as the window slides from left to right.
+
+Example:
+Input: nums = [1,3,-1,-3,5,3,6,7], k = 3
+Output: [3,3,5,5,6,7]
+
+KEY INSIGHT: Use monotonic deque (decreasing) — front always has max
+TIME: O(n) | SPACE: O(k)
 ```
 
 ```java
@@ -238,19 +226,16 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 
 **LeetCode 992** | **Difficulty:** Hard
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  SUBARRAYS WITH K DIFFERENT INTEGERS (LeetCode 992 - Hard)                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Return count of subarrays with exactly k distinct integers.              ║
-║                                                                           ║
-║  Example:                                                                 ║
-║  Input: nums = [1,2,1,2,3], k = 2  →  Output: 7                           ║
-║                                                                           ║
-║  KEY TRICK: exactly(k) = atMost(k) - atMost(k-1)                          ║
-║  TIME: O(n) | SPACE: O(k)                                                 ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**SUBARRAYS WITH K DIFFERENT INTEGERS (LeetCode 992 - Hard)**
+
+```text
+Return count of subarrays with exactly k distinct integers.
+
+Example:
+Input: nums = [1,2,1,2,3], k = 2  →  Output: 7
+
+KEY TRICK: exactly(k) = atMost(k) - atMost(k-1)
+TIME: O(n) | SPACE: O(k)
 ```
 
 ```java
@@ -281,21 +266,18 @@ private int atMost(int[] nums, int k) {
 
 **LeetCode 1052** | **Difficulty:** Medium
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  GRUMPY BOOKSTORE OWNER (LeetCode 1052 - Medium)                          ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Owner can use technique for k minutes to not be grumpy.                  ║
-║  Find max satisfied customers.                                            ║
-║                                                                           ║
-║  Example:                                                                 ║
-║  customers = [1,0,1,2,1,1,7,5], grumpy = [0,1,0,1,0,1,0,1], k=3           ║
-║  Output: 16                                                               ║
-║                                                                           ║
-║  KEY: Base satisfied + sliding window of size k for max extra.            ║
-║  TIME: O(n) | SPACE: O(1)                                                 ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**GRUMPY BOOKSTORE OWNER (LeetCode 1052 - Medium)**
+
+```text
+Owner can use technique for k minutes to not be grumpy.
+Find max satisfied customers.
+
+Example:
+customers = [1,0,1,2,1,1,7,5], grumpy = [0,1,0,1,0,1,0,1], k=3
+Output: 16
+
+KEY: Base satisfied + sliding window of size k for max extra.
+TIME: O(n) | SPACE: O(1)
 ```
 
 ```java
@@ -321,18 +303,15 @@ public int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
 
 **LeetCode 1248** | **Difficulty:** Medium
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  COUNT NUMBER OF NICE SUBARRAYS (LeetCode 1248 - Medium)                  ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Nice subarray = exactly k odd numbers. Return count.                     ║
-║                                                                           ║
-║  Example: nums = [1,1,2,1,1], k = 3  →  Output: 2                         ║
-║                                                                           ║
-║  KEY: exactly(k) = atMost(k) - atMost(k-1)                                ║
-║  TIME: O(n) | SPACE: O(1)                                                 ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**COUNT NUMBER OF NICE SUBARRAYS (LeetCode 1248 - Medium)**
+
+```text
+Nice subarray = exactly k odd numbers. Return count.
+
+Example: nums = [1,1,2,1,1], k = 3  →  Output: 2
+
+KEY: exactly(k) = atMost(k) - atMost(k-1)
+TIME: O(n) | SPACE: O(1)
 ```
 
 ```java
@@ -360,18 +339,15 @@ private int atMost(int[] nums, int k) {
 
 **LeetCode 1004** | **Difficulty:** Medium
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MAX CONSECUTIVE ONES III (LeetCode 1004 - Medium)                        ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Max consecutive 1's if you can flip at most k 0's.                       ║
-║                                                                           ║
-║  Example: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2  →  Output: 6             ║
-║                                                                           ║
-║  KEY: Sliding window tracking zeros count. Shrink when > k.               ║
-║  TIME: O(n) | SPACE: O(1)                                                 ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**MAX CONSECUTIVE ONES III (LeetCode 1004 - Medium)**
+
+```text
+Max consecutive 1's if you can flip at most k 0's.
+
+Example: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2  →  Output: 6
+
+KEY: Sliding window tracking zeros count. Shrink when > k.
+TIME: O(n) | SPACE: O(1)
 ```
 
 ```java

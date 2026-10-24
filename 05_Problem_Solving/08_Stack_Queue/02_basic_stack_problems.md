@@ -135,34 +135,32 @@ class MinStack {
 
 ## Problem 80: 🔒 Max Stack (LeetCode 716 - Premium)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MAX STACK - Stack with popMax() operation                     │
-├────────────────────────────────────────────────────────────────┤
-│  Design a max stack that supports:                             │
-│  - push(x): Push x onto stack                                  │
-│  - pop(): Remove top element                                   │
-│  - top(): Get top element                                      │
-│  - peekMax(): Retrieve maximum element                         │
-│  - popMax(): Remove maximum element (topmost if tie)           │
-│                                                                │
-│  Example:                                                      │
-│  MaxStack stack = new MaxStack();                              │
-│  stack.push(5);   // Stack: [5]                                │
-│  stack.push(1);   // Stack: [5, 1]                             │
-│  stack.push(5);   // Stack: [5, 1, 5]                          │
-│  stack.top();     // Returns 5                                 │
-│  stack.popMax();  // Returns 5, Stack: [5, 1]                  │
-│  stack.top();     // Returns 1                                 │
-│  stack.peekMax(); // Returns 5                                 │
-│  stack.pop();     // Returns 1, Stack: [5]                     │
-│  stack.top();     // Returns 5                                 │
-│                                                                │
-│  Constraints:                                                  │
-│  - -10^7 <= x <= 10^7                                          │
-│  - At most 10^4 operations                                     │
-│  - popMax and pop called only when stack not empty             │
-└────────────────────────────────────────────────────────────────┘
+**MAX STACK - Stack with popMax() operation**
+
+```text
+Design a max stack that supports:
+- push(x): Push x onto stack
+- pop(): Remove top element
+- top(): Get top element
+- peekMax(): Retrieve maximum element
+- popMax(): Remove maximum element (topmost if tie)
+
+Example:
+MaxStack stack = new MaxStack();
+stack.push(5);   // Stack: [5]
+stack.push(1);   // Stack: [5, 1]
+stack.push(5);   // Stack: [5, 1, 5]
+stack.top();     // Returns 5
+stack.popMax();  // Returns 5, Stack: [5, 1]
+stack.top();     // Returns 1
+stack.peekMax(); // Returns 5
+stack.pop();     // Returns 1, Stack: [5]
+stack.top();     // Returns 5
+
+Constraints:
+- -10^7 <= x <= 10^7
+- At most 10^4 operations
+- popMax and pop called only when stack not empty
 ```
 
 **Solution (Using TreeMap + Doubly Linked List for O(log n)):**
@@ -379,27 +377,25 @@ public int evalRPN(String[] tokens) {
 
 ## Problem 83: 🔒 Basic Calculator III (LeetCode 772 - Premium)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  BASIC CALCULATOR III - Evaluate expression with +,-,*,/,()    │
-├────────────────────────────────────────────────────────────────┤
-│  Implement a basic calculator to evaluate a simple expression  │
-│  string. The expression string contains only non-negative      │
-│  integers, +, -, *, / operators, open ( and closing )          │
-│  parentheses, and empty spaces.                                │
-│                                                                │
-│  Examples:                                                     │
-│  Input: "1+1"              → Output: 2                         │
-│  Input: "6-4/2"            → Output: 4                         │
-│  Input: "2*(5+5*2)/3+(6/2+8)" → Output: 21                     │
-│  Input: "(2+6*3+5-(3*14/7+2)*5)+3" → Output: -12               │
-│                                                                │
-│  Constraints:                                                  │
-│  - 1 <= s.length <= 10^4                                       │
-│  - s consists of digits, +, -, *, /, (, ), and spaces          │
-│  - s represents a valid expression                             │
-│  - All intermediate results in range [-2^31, 2^31 - 1]         │
-└────────────────────────────────────────────────────────────────┘
+**BASIC CALCULATOR III - Evaluate expression with +,-,*,/,()**
+
+```text
+Implement a basic calculator to evaluate a simple expression
+string. The expression string contains only non-negative
+integers, +, -, *, / operators, open ( and closing )
+parentheses, and empty spaces.
+
+Examples:
+Input: "1+1"              → Output: 2
+Input: "6-4/2"            → Output: 4
+Input: "2*(5+5*2)/3+(6/2+8)" → Output: 21
+Input: "(2+6*3+5-(3*14/7+2)*5)+3" → Output: -12
+
+Constraints:
+- 1 <= s.length <= 10^4
+- s consists of digits, +, -, *, /, (, ), and spaces
+- s represents a valid expression
+- All intermediate results in range [-2^31, 2^31 - 1]
 ```
 
 **Solution:**

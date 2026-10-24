@@ -92,27 +92,25 @@ public int ladderLength(String beginWord, String endWord, List<String> wordList)
 
 ## Problem 153: 🔒 Alien Dictionary (LeetCode 269 - Premium)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  ALIEN DICTIONARY - Find character order from sorted words     │
-├────────────────────────────────────────────────────────────────┤
-│  words = ["wrt", "wrf", "er", "ett", "rftt"]                   │
-│  These words are sorted in alien language order                │
-│                                                                │
-│  Compare adjacent words to find relationships:                 │
-│  "wrt" vs "wrf" → t comes before f (t < f)                     │
-│  "wrf" vs "er"  → w comes before e (w < e)                     │
-│  "er" vs "ett"  → r comes before t (r < t)                     │
-│  "ett" vs "rftt"→ e comes before r (e < r)                     │
-│                                                                │
-│  Build graph: w→e→r→t→f                                        │
-│  Topological sort gives: "wertf"                               │
-│                                                                │
-│  Constraints:                                                  │
-│  - 1 <= words.length <= 100                                    │
-│  - 1 <= words[i].length <= 100                                 │
-│  - All characters are lowercase English letters                │
-└────────────────────────────────────────────────────────────────┘
+**ALIEN DICTIONARY - Find character order from sorted words**
+
+```text
+words = ["wrt", "wrf", "er", "ett", "rftt"]
+These words are sorted in alien language order
+
+Compare adjacent words to find relationships:
+"wrt" vs "wrf" → t comes before f (t < f)
+"wrf" vs "er"  → w comes before e (w < e)
+"er" vs "ett"  → r comes before t (r < t)
+"ett" vs "rftt"→ e comes before r (e < r)
+
+Build graph: w→e→r→t→f
+Topological sort gives: "wertf"
+
+Constraints:
+- 1 <= words.length <= 100
+- 1 <= words[i].length <= 100
+- All characters are lowercase English letters
 ```
 
 **Solution:**
@@ -178,21 +176,19 @@ public String alienOrder(String[] words) {
 
 **LeetCode 785** 🔗 https://leetcode.com/problems/is-graph-bipartite/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  IS GRAPH BIPARTITE - Can nodes be divided into 2 sets?        │
-├────────────────────────────────────────────────────────────────┤
-│  A graph is bipartite if we can color nodes with 2 colors      │
-│  such that no two adjacent nodes have the same color.          │
-│                                                                │
-│  Bipartite:               Not Bipartite:                       │
-│     0 ─── 1                  0 ─── 1                           │
-│     │     │                  │ \   │                           │
-│     │     │                  │  \  │                           │
-│     3 ─── 2                  3 ─── 2                           │
-│                                                                │
-│  Colors: 0,2=RED, 1,3=BLUE   Triangle can't be 2-colored       │
-└────────────────────────────────────────────────────────────────┘
+**IS GRAPH BIPARTITE - Can nodes be divided into 2 sets?**
+
+```text
+A graph is bipartite if we can color nodes with 2 colors
+such that no two adjacent nodes have the same color.
+
+Bipartite:               Not Bipartite:
+   0 ─── 1                  0 ─── 1
+   │     │                  │ \   │
+   │     │                  │  \  │
+   3 ─── 2                  3 ─── 2
+
+Colors: 0,2=RED, 1,3=BLUE   Triangle can't be 2-colored
 ```
 
 **Solution:**

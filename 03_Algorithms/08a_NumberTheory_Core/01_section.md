@@ -1,6 +1,6 @@
-# ═══════════════════════════════════════════════════════════
+# Part 1 — GCD (Greatest Common Divisor)
 
-> **Navigation**: [Chapter overview](../08a_NumberTheory_Core.md) | [═══════════════════════════════════════════════════════════ →](02_section.md)
+> **Navigation**: [Chapter overview](../08a_NumberTheory_Core.md) | [Part 2 — Prime Numbers →](02_section.md)
 > Page 1 of 3 in **GCD, Number Theory & Pattern Programs - Complete Guide**
 
 
@@ -476,4 +476,4 @@ public static int countCoprimePairs(int[] arr) {
 
 ---
 
-[Chapter overview](../08a_NumberTheory_Core.md) | [═══════════════════════════════════════════════════════════ →](02_section.md)
+[Chapter overview](../08a_NumberTheory_Core.md) | [Part 2 — Prime Numbers →](02_section.md)

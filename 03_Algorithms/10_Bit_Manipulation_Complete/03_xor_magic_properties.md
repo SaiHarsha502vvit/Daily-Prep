@@ -6,16 +6,14 @@
 
 ## The 5 XOR Properties (MEMORIZE!)
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     XOR PROPERTIES                              │
-├─────────────────────────────────────────────────────────────────┤
-│  1. a ^ 0 = a       (XOR with 0 gives same number)              │
-│  2. a ^ a = 0       (XOR with itself gives 0)                   │
-│  3. a ^ b = b ^ a   (Commutative - order doesn't matter)        │
-│  4. (a^b)^c = a^(b^c) (Associative - grouping doesn't matter)   │
-│  5. a ^ b ^ a = b   (Self-inverse - cancels out)                │
-└─────────────────────────────────────────────────────────────────┘
+**XOR PROPERTIES**
+
+```text
+1. a ^ 0 = a       (XOR with 0 gives same number)
+2. a ^ a = 0       (XOR with itself gives 0)
+3. a ^ b = b ^ a   (Commutative - order doesn't matter)
+4. (a^b)^c = a^(b^c) (Associative - grouping doesn't matter)
+5. a ^ b ^ a = b   (Self-inverse - cancels out)
 ```
 
 ## Why XOR is Magic for "Find Missing/Duplicate"

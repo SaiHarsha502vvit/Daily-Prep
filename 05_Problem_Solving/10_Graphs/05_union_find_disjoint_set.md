@@ -8,30 +8,28 @@
 **When to use over BFS/DFS:** When edges arrive one-by-one (online), or when you need to count components after each merge.
 **Template:** Find with path compression + Union by rank → O(α(n)) ≈ O(1) per operation.
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  UNION-FIND DATA STRUCTURE                                     │
-├────────────────────────────────────────────────────────────────┤
-│  Operations:                                                   │
-│  - find(x): Find root/representative of x's set                │
-│  - union(x, y): Merge sets containing x and y                  │
-│                                                                │
-│  Optimizations:                                                │
-│  1. Path Compression: Flatten tree during find                 │
-│  2. Union by Rank: Attach smaller tree under larger            │
-│                                                                │
-│  Example:                                                      │
-│  Initial: {0}, {1}, {2}, {3}, {4}                              │
-│                                                                │
-│  union(0,1): {0,1}, {2}, {3}, {4}                              │
-│  union(2,3): {0,1}, {2,3}, {4}                                 │
-│  union(1,3): {0,1,2,3}, {4}                                    │
-│                                                                │
-│  find(0) == find(3)? → true (same set)                         │
-│  find(0) == find(4)? → false (different sets)                  │
-│                                                                │
-│  Time: O(α(n)) ≈ O(1) amortized per operation                  │
-└────────────────────────────────────────────────────────────────┘
+**UNION-FIND DATA STRUCTURE**
+
+```text
+Operations:
+- find(x): Find root/representative of x's set
+- union(x, y): Merge sets containing x and y
+
+Optimizations:
+1. Path Compression: Flatten tree during find
+2. Union by Rank: Attach smaller tree under larger
+
+Example:
+Initial: {0}, {1}, {2}, {3}, {4}
+
+union(0,1): {0,1}, {2}, {3}, {4}
+union(2,3): {0,1}, {2,3}, {4}
+union(1,3): {0,1,2,3}, {4}
+
+find(0) == find(3)? → true (same set)
+find(0) == find(4)? → false (different sets)
+
+Time: O(α(n)) ≈ O(1) amortized per operation
 ```
 
 ---
@@ -40,24 +38,22 @@
 
 **LeetCode 323 (Premium)** 🔗 (Premium)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  NUMBER OF CONNECTED COMPONENTS                                │
-├────────────────────────────────────────────────────────────────┤
-│  n = 5, edges = [[0,1], [1,2], [3,4]]                          │
-│                                                                │
-│  0 ─── 1 ─── 2        3 ─── 4                                  │
-│                                                                │
-│  Component 1: {0,1,2}                                          │
-│  Component 2: {3,4}                                            │
-│                                                                │
-│  Output: 2                                                     │
-│                                                                │
-│  Constraints:                                                  │
-│  - 1 <= n <= 2000                                              │
-│  - 0 <= edges.length <= 5000                                   │
-│  - No duplicate edges                                          │
-└────────────────────────────────────────────────────────────────┘
+**NUMBER OF CONNECTED COMPONENTS**
+
+```text
+n = 5, edges = [[0,1], [1,2], [3,4]]
+
+0 ─── 1 ─── 2        3 ─── 4
+
+Component 1: {0,1,2}
+Component 2: {3,4}
+
+Output: 2
+
+Constraints:
+- 1 <= n <= 2000
+- 0 <= edges.length <= 5000
+- No duplicate edges
 ```
 
 **Solution:**
@@ -113,19 +109,17 @@ private boolean union(int[] parent, int[] rank, int x, int y) {
 
 **LeetCode 684** 🔗 https://leetcode.com/problems/redundant-connection/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  REDUNDANT CONNECTION - Find edge that creates cycle           │
-├────────────────────────────────────────────────────────────────┤
-│  edges = [[1,2], [1,3], [2,3]]                                 │
-│                                                                │
-│       1                                                        │
-│      / \                                                       │
-│     2───3   Edge [2,3] creates the cycle                       │
-│                                                                │
-│  Return the last edge that creates a cycle                     │
-│  Output: [2, 3]                                                │
-└────────────────────────────────────────────────────────────────┘
+**REDUNDANT CONNECTION - Find edge that creates cycle**
+
+```text
+edges = [[1,2], [1,3], [2,3]]
+
+     1
+    / \
+   2───3   Edge [2,3] creates the cycle
+
+Return the last edge that creates a cycle
+Output: [2, 3]
 ```
 
 **Solution:**
@@ -165,27 +159,25 @@ private int find(int[] parent, int x) {
 
 **LeetCode 721** 🔗 https://leetcode.com/problems/accounts-merge/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  ACCOUNTS MERGE - Merge accounts with same email               │
-├────────────────────────────────────────────────────────────────┤
-│  accounts = [                                                  │
-│    ["John", "john@mail.com", "john_work@mail.com"],            │
-│    ["John", "john@mail.com", "john_home@mail.com"],            │
-│    ["Mary", "mary@mail.com"],                                  │
-│    ["John", "johnny@mail.com"]                                 │
-│  ]                                                             │
-│                                                                │
-│  John (account 0) and John (account 1) share "john@mail.com"   │
-│  → Merge them                                                  │
-│                                                                │
-│  Output: [                                                     │
-│    ["John", "john@mail.com", "john_home@mail.com",             │
-│            "john_work@mail.com"],                              │
-│    ["Mary", "mary@mail.com"],                                  │
-│    ["John", "johnny@mail.com"]                                 │
-│  ]                                                             │
-└────────────────────────────────────────────────────────────────┘
+**ACCOUNTS MERGE - Merge accounts with same email**
+
+```text
+accounts = [
+  ["John", "john@mail.com", "john_work@mail.com"],
+  ["John", "john@mail.com", "john_home@mail.com"],
+  ["Mary", "mary@mail.com"],
+  ["John", "johnny@mail.com"]
+]
+
+John (account 0) and John (account 1) share "john@mail.com"
+→ Merge them
+
+Output: [
+  ["John", "john@mail.com", "john_home@mail.com",
+          "john_work@mail.com"],
+  ["Mary", "mary@mail.com"],
+  ["John", "johnny@mail.com"]
+]
 ```
 
 **Solution:**

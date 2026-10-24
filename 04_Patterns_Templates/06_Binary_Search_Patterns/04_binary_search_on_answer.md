@@ -6,25 +6,21 @@
 
 ## The Concept
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│           BINARY SEARCH ON ANSWER PATTERN                       │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  When: You're not searching IN an array, but searching FOR      │
-│        an optimal value in a range.                             │
-│                                                                 │
-│  Pattern:                                                       │
-│  1. Define search space: [min_possible, max_possible]           │
-│  2. Define feasibility function: canAchieve(answer)             │
-│  3. Binary search for boundary where answer becomes feasible    │
-│                                                                 │
-│  Examples:                                                      │
-│  • Minimum capacity to ship packages in D days                  │
-│  • Maximum minimum distance between elements                    │
-│  • Kth smallest element in sorted matrix                        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**BINARY SEARCH ON ANSWER PATTERN**
+
+```text
+When: You're not searching IN an array, but searching FOR
+      an optimal value in a range.
+
+Pattern:
+1. Define search space: [min_possible, max_possible]
+2. Define feasibility function: canAchieve(answer)
+3. Binary search for boundary where answer becomes feasible
+
+Examples:
+• Minimum capacity to ship packages in D days
+• Maximum minimum distance between elements
+• Kth smallest element in sorted matrix
 ```
 
 ## Template: Binary Search on Answer
@@ -518,38 +514,34 @@ if (nums[left] <= nums[mid])  // ✓
 
 ### Quick Problem Classification
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              BINARY SEARCH PROBLEM TYPES                        │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  BASIC (Template 1):                                            │
-│  - Binary Search, Search Insert Position                        │
-│                                                                 │
-│  BOUNDARY FINDING (Template 2/3):                               │
-│  - First/Last Position of Element                               │
-│  - First Bad Version, Find Smallest Letter                      │
-│                                                                 │
-│  ROTATED ARRAY:                                                 │
-│  - Search in Rotated Array I/II                                 │
-│  - Find Minimum in Rotated Array I/II                           │
-│                                                                 │
-│  PEAK FINDING:                                                  │
-│  - Find Peak Element, Mountain Array                            │
-│                                                                 │
-│  BINARY SEARCH ON ANSWER:                                       │
-│  - Ship Packages, Koko Bananas, Split Array                     │
-│  - Magnetic Force, Capacity to Ship                             │
-│                                                                 │
-│  2D MATRIX:                                                     │
-│  - Search 2D Matrix I/II                                        │
-│  - Kth Smallest in Sorted Matrix                                │
-│                                                                 │
-│  ADVANCED:                                                      │
-│  - Median of Two Sorted Arrays                                  │
-│  - Longest Increasing Subsequence (with BS)                     │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**BINARY SEARCH PROBLEM TYPES**
+
+```text
+BASIC (Template 1):
+- Binary Search, Search Insert Position
+
+BOUNDARY FINDING (Template 2/3):
+- First/Last Position of Element
+- First Bad Version, Find Smallest Letter
+
+ROTATED ARRAY:
+- Search in Rotated Array I/II
+- Find Minimum in Rotated Array I/II
+
+PEAK FINDING:
+- Find Peak Element, Mountain Array
+
+BINARY SEARCH ON ANSWER:
+- Ship Packages, Koko Bananas, Split Array
+- Magnetic Force, Capacity to Ship
+
+2D MATRIX:
+- Search 2D Matrix I/II
+- Kth Smallest in Sorted Matrix
+
+ADVANCED:
+- Median of Two Sorted Arrays
+- Longest Increasing Subsequence (with BS)
 ```
 
 ### First Bad Version (LeetCode 278)
@@ -618,27 +610,23 @@ public char nextGreatestLetter(char[] letters, char target) {
 
 ### Template Selection Guide
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              WHICH TEMPLATE TO USE?                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  "Find exact element"                                           │
-│    → Template 1: left <= right                                  │
-│                                                                 │
-│  "Find first position where condition is true"                  │
-│    → Template 2: left < right, right = mid                      │
-│                                                                 │
-│  "Find last position where condition is true"                   │
-│    → Template 3: left < right, left = mid, upper mid            │
-│                                                                 │
-│  "Minimize answer" (find smallest valid)                        │
-│    → Template 2 style                                           │
-│                                                                 │
-│  "Maximize answer" (find largest valid)                         │
-│    → Template 3 style (use upper mid)                           │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**WHICH TEMPLATE TO USE?**
+
+```text
+"Find exact element"
+  → Template 1: left <= right
+
+"Find first position where condition is true"
+  → Template 2: left < right, right = mid
+
+"Find last position where condition is true"
+  → Template 3: left < right, left = mid, upper mid
+
+"Minimize answer" (find smallest valid)
+  → Template 2 style
+
+"Maximize answer" (find largest valid)
+  → Template 3 style (use upper mid)
 ```
 
 ### Binary Search Checklist
@@ -664,51 +652,43 @@ After coding:
 
 ### Complexity Summary
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              BINARY SEARCH COMPLEXITIES                         │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Basic Binary Search:        O(log n) time, O(1) space          │
-│  Rotated Array Search:       O(log n) time, O(1) space          │
-│  Rotated Array w/ Dups:      O(n) worst, O(log n) average       │
-│  Binary Search on Answer:    O(log R × f(n)) where R = range    │
-│  2D Matrix (sorted):         O(log(m×n))                        │
-│  2D Matrix (row/col sorted): O(m + n)                           │
-│  Median of Two Arrays:       O(log min(m, n))                   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**BINARY SEARCH COMPLEXITIES**
+
+```text
+Basic Binary Search:        O(log n) time, O(1) space
+Rotated Array Search:       O(log n) time, O(1) space
+Rotated Array w/ Dups:      O(n) worst, O(log n) average
+Binary Search on Answer:    O(log R × f(n)) where R = range
+2D Matrix (sorted):         O(log(m×n))
+2D Matrix (row/col sorted): O(m + n)
+Median of Two Arrays:       O(log min(m, n))
 ```
 
 ---
 
 ## Summary
 
-```
-┌───────────────────────────────────────────────────────────────┐
-│            BINARY SEARCH - MASTER CHECKLIST                   │
-├───────────────────────────────────────────────────────────────┤
-│                                                               │
-│  1. MEMORIZE THE 3 TEMPLATES                                  │
-│     - T1: Exact match (left <= right)                         │
-│     - T2: First true (left < right, right = mid)              │
-│     - T3: Last true (left < right, left = mid, upper mid)     │
-│                                                               │
-│  2. BINARY SEARCH ON ANSWER                                   │
-│     - Define search space [min, max]                          │
-│     - Define feasibility check                                │
-│     - Binary search for optimal boundary                      │
-│                                                               │
-│  3. ROTATED ARRAY                                             │
-│     - One half is always sorted                               │
-│     - Check which half, then decide direction                 │
-│                                                               │
-│  4. AVOID COMMON BUGS                                         │
-│     - Overflow: Use left + (right - left) / 2                 │
-│     - Infinite loop: Match update with while condition        │
-│     - Off-by-one: right = length vs length - 1                │
-│                                                               │
-└───────────────────────────────────────────────────────────────┘
+**BINARY SEARCH - MASTER CHECKLIST**
+
+```text
+1. MEMORIZE THE 3 TEMPLATES
+   - T1: Exact match (left <= right)
+   - T2: First true (left < right, right = mid)
+   - T3: Last true (left < right, left = mid, upper mid)
+
+2. BINARY SEARCH ON ANSWER
+   - Define search space [min, max]
+   - Define feasibility check
+   - Binary search for optimal boundary
+
+3. ROTATED ARRAY
+   - One half is always sorted
+   - Check which half, then decide direction
+
+4. AVOID COMMON BUGS
+   - Overflow: Use left + (right - left) / 2
+   - Infinite loop: Match update with while condition
+   - Off-by-one: right = length vs length - 1
 ```
 
 **Pro Tip:** When stuck, ask yourself: "At each step, can I eliminate half of the remaining possibilities?" If yes, binary search applies!

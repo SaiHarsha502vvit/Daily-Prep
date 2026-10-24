@@ -105,21 +105,18 @@ void dfs(int[][] grid, int r, int c) {
 
 ## In-Place Marking (Visited) Techniques
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  VISITED MARKING STRATEGIES                                                  ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  1. Separate boolean[][] visited — safest, uses O(m*n) space                 ║
-║  2. Modify grid in-place — set grid[r][c] = '#' or -1 or 2                   ║
-║     (destroys input, but O(1) extra space)                                   ║
-║  3. State encoding — use unused bits (Game of Life trick):                   ║
-║     grid[r][c] |= (newState << 1);  // encode both old and new state         ║
-║  4. Coordinate hashing — visited.add(r * cols + c) in a HashSet              ║
-║                                                                              ║
-║  CRITICAL: In BFS, mark visited WHEN ENQUEUEING, not when dequeuing.         ║
-║  Otherwise, the same cell gets enqueued multiple times → TLE.                ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**VISITED MARKING STRATEGIES**
+
+```text
+1. Separate boolean[][] visited — safest, uses O(m*n) space
+2. Modify grid in-place — set grid[r][c] = '#' or -1 or 2
+   (destroys input, but O(1) extra space)
+3. State encoding — use unused bits (Game of Life trick):
+   grid[r][c] |= (newState << 1);  // encode both old and new state
+4. Coordinate hashing — visited.add(r * cols + c) in a HashSet
+
+CRITICAL: In BFS, mark visited WHEN ENQUEUEING, not when dequeuing.
+Otherwise, the same cell gets enqueued multiple times → TLE.
 ```
 
 ## Spiral Traversal Logic
@@ -170,43 +167,41 @@ VARIANTS:
 
 ## Common Mistakes (Top 7)
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  MISTAKE #1: Off-By-One in Boundaries                                        ║
-║  ───────────────────────────────────                                         ║
-║  WRONG: if (r >= 0 && r <= grid.length)    // should be < not <=             ║
-║  RIGHT: if (r >= 0 && r < grid.length && c >= 0 && c < grid[0].length)       ║
-║                                                                              ║
-║  MISTAKE #2: Forgetting Diagonal Movement                                    ║
-║  ──────────────────────────────────────                                      ║
-║  Some problems require 8 directions (Shortest Path in Binary Matrix).        ║
-║  Always read the problem statement carefully for "adjacent" definitions.     ║
-║                                                                              ║
-║  MISTAKE #3: Not Marking Visited BEFORE Enqueueing in BFS                    ║
-║  ────────────────────────────────────────────────────────                    ║
-║  WRONG: enqueue → poll → mark visited (duplicate enqueues!)                  ║
-║  RIGHT: mark visited → enqueue → poll → process                              ║
-║                                                                              ║
-║  MISTAKE #4: Confusing row/col with x/y                                      ║
-║  ──────────────────────────────────────                                      ║
-║  grid[row][col] → row is the Y axis (vertical), col is X (horizontal).       ║
-║  When problem gives (x, y), translate: row = y, col = x.                     ║
-║                                                                              ║
-║  MISTAKE #5: Modifying Grid While Iterating Over It                          ║
-║  ─────────────────────────────────────────────────                           ║
-║  In Game of Life style problems, changing cells during iteration affects     ║
-║  neighbors. Use state encoding or a copy.                                    ║
-║                                                                              ║
-║  MISTAKE #6: Assuming Square Matrix                                          ║
-║  ──────────────────────────────────                                          ║
-║  Always use m = grid.length (rows), n = grid[0].length (cols) separately.    ║
-║  Never assume m == n unless the problem guarantees it.                       ║
-║                                                                              ║
-║  MISTAKE #7: Stack Overflow on Large Grids with Recursive DFS                ║
-║  ───────────────────────────────────────────────────────────                 ║
-║  A 1000×1000 grid can have DFS depth up to 1,000,000. Convert to             ║
-║  iterative DFS with an explicit stack, or use BFS instead.                   ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+```text
+MISTAKE #1: Off-By-One in Boundaries
+───────────────────────────────────
+WRONG: if (r >= 0 && r <= grid.length)    // should be < not <=
+RIGHT: if (r >= 0 && r < grid.length && c >= 0 && c < grid[0].length)
+
+MISTAKE #2: Forgetting Diagonal Movement
+──────────────────────────────────────
+Some problems require 8 directions (Shortest Path in Binary Matrix).
+Always read the problem statement carefully for "adjacent" definitions.
+
+MISTAKE #3: Not Marking Visited BEFORE Enqueueing in BFS
+────────────────────────────────────────────────────────
+WRONG: enqueue → poll → mark visited (duplicate enqueues!)
+RIGHT: mark visited → enqueue → poll → process
+
+MISTAKE #4: Confusing row/col with x/y
+──────────────────────────────────────
+grid[row][col] → row is the Y axis (vertical), col is X (horizontal).
+When problem gives (x, y), translate: row = y, col = x.
+
+MISTAKE #5: Modifying Grid While Iterating Over It
+─────────────────────────────────────────────────
+In Game of Life style problems, changing cells during iteration affects
+neighbors. Use state encoding or a copy.
+
+MISTAKE #6: Assuming Square Matrix
+──────────────────────────────────
+Always use m = grid.length (rows), n = grid[0].length (cols) separately.
+Never assume m == n unless the problem guarantees it.
+
+MISTAKE #7: Stack Overflow on Large Grids with Recursive DFS
+───────────────────────────────────────────────────────────
+A 1000×1000 grid can have DFS depth up to 1,000,000. Convert to
+iterative DFS with an explicit stack, or use BFS instead.
 ```
 
 ---

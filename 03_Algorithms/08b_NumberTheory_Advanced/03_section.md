@@ -1,7 +1,7 @@
-# ═══════════════════════════════════════════════════════════
+# Part 7 — Real-Life Incident → DSA Mapping
 
-> **Navigation**: [← ═══════════════════════════════════════════════════════════](02_section.md) | [Chapter overview](../08b_NumberTheory_Advanced.md) | [═══════════════════════════════════════════════════════════ →](04_section.md)
-> Page 3 of 4 in **NumberTheory Advanced**
+> **Navigation**: [← Part 6 — Data Structure Problems: Why and How](02_section.md) | [Chapter overview](../08b_NumberTheory_Advanced.md) | [Part 8 — Four-Week Study Plan →](04_section.md)
+> Page 3 of 4 in **Essential Algorithms, Data-Structure Problems and a Study Plan**
 
 
 ```
@@ -47,4 +47,4 @@ _This file is Part 1. See PART 8 (Study Plan) at the end of this guide_
 
 ---
 
-[← ═══════════════════════════════════════════════════════════](02_section.md) | [Chapter overview](../08b_NumberTheory_Advanced.md) | [═══════════════════════════════════════════════════════════ →](04_section.md)
+[← Part 6 — Data Structure Problems: Why and How](02_section.md) | [Chapter overview](../08b_NumberTheory_Advanced.md) | [Part 8 — Four-Week Study Plan →](04_section.md)

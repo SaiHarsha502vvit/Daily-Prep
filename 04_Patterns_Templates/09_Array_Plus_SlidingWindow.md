@@ -362,19 +362,14 @@ WHY fixed window? Size is given (k=3), so just slide it.
 
 ## 🛡️ EDGE CASES
 
-```
-┌───────────────────────────────┬──────────────────────────────────────┐
-│ Edge Case                     │ Handling                             │
-├───────────────────────────────┼──────────────────────────────────────┤
-│ Empty string / array          │ Return 0 immediately                 │
-│ k > array length              │ Invalid — return -1 or throw         │
-│ All same characters "aaaa"    │ Longest unique substring = 1         │
-│ All unique "abcdef"           │ Entire string is the answer          │
-│ Negative numbers in subarray  │ DON'T use sliding window for sum!    │
-│                               │ Use Prefix Sum + HashMap instead     │
-│ Single element                │ Window of size 1 = that element      │
-└───────────────────────────────┴──────────────────────────────────────┘
-```
+| Edge Case | Handling |
+| --- | --- |
+| Empty string / array | Return 0 immediately |
+| k > array length | Invalid — return -1 or throw |
+| All same characters "aaaa" | Longest unique substring = 1 |
+| All unique "abcdef" | Entire string is the answer |
+| Negative numbers in subarray | DON'T use sliding window for sum!<br>Use Prefix Sum + HashMap instead |
+| Single element | Window of size 1 = that element |
 
 ---
 

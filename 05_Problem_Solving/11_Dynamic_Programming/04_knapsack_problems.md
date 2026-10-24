@@ -13,23 +13,21 @@
 
 **Classic Problem**
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  0/1 KNAPSACK - Max value with weight limit                    │
-├────────────────────────────────────────────────────────────────┤
-│  weights = [1, 2, 3], values = [6, 10, 12], capacity = 5       │
-│                                                                │
-│  Item 0: weight=1, value=6                                     │
-│  Item 1: weight=2, value=10                                    │
-│  Item 2: weight=3, value=12                                    │
-│                                                                │
-│  Take items 1 and 2: weight=5, value=22 ✓                      │
-│                                                                │
-│      Cap:  0  1  2  3  4  5                                    │
-│  Item 0:   0  6  6  6  6  6                                    │
-│  Item 1:   0  6 10 16 16 16                                    │
-│  Item 2:   0  6 10 16 18 22                                    │
-└────────────────────────────────────────────────────────────────┘
+**0/1 KNAPSACK - Max value with weight limit**
+
+```text
+weights = [1, 2, 3], values = [6, 10, 12], capacity = 5
+
+Item 0: weight=1, value=6
+Item 1: weight=2, value=10
+Item 2: weight=3, value=12
+
+Take items 1 and 2: weight=5, value=22 ✓
+
+    Cap:  0  1  2  3  4  5
+Item 0:   0  6  6  6  6  6
+Item 1:   0  6 10 16 16 16
+Item 2:   0  6 10 16 18 22
 ```
 
 **Solution:**
@@ -56,20 +54,18 @@ public int knapsack(int[] weights, int[] values, int capacity) {
 
 **LeetCode 416** 🔗 https://leetcode.com/problems/partition-equal-subset-sum/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  PARTITION EQUAL SUBSET SUM                                    │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [1, 5, 11, 5]                                          │
-│  Total = 22, Target = 11                                       │
-│                                                                │
-│  Can we find subset with sum = 11?                             │
-│  Yes! [1, 5, 5] and [11]                                       │
-│                                                                │
-│  This is 0/1 Knapsack with target = sum/2                      │
-│                                                                │
-│  dp[i] = true if sum i is achievable                           │
-└────────────────────────────────────────────────────────────────┘
+**PARTITION EQUAL SUBSET SUM**
+
+```text
+nums = [1, 5, 11, 5]
+Total = 22, Target = 11
+
+Can we find subset with sum = 11?
+Yes! [1, 5, 5] and [11]
+
+This is 0/1 Knapsack with target = sum/2
+
+dp[i] = true if sum i is achievable
 ```
 
 **Solution:**
@@ -101,26 +97,24 @@ public boolean canPartition(int[] nums) {
 
 **LeetCode 494** 🔗 https://leetcode.com/problems/target-sum/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  TARGET SUM - Assign + or - to reach target                    │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [1, 1, 1, 1, 1], target = 3                            │
-│                                                                │
-│  Ways to get 3:                                                │
-│  -1 +1 +1 +1 +1 = 3                                            │
-│  +1 -1 +1 +1 +1 = 3                                            │
-│  +1 +1 -1 +1 +1 = 3                                            │
-│  +1 +1 +1 -1 +1 = 3                                            │
-│  +1 +1 +1 +1 -1 = 3                                            │
-│                                                                │
-│  Output: 5 ways                                                │
-│                                                                │
-│  Let P = sum of positives, N = sum of negatives                │
-│  P - N = target, P + N = sum                                   │
-│  P = (target + sum) / 2                                        │
-│  → Find subsets with sum P                                     │
-└────────────────────────────────────────────────────────────────┘
+**TARGET SUM - Assign + or - to reach target**
+
+```text
+nums = [1, 1, 1, 1, 1], target = 3
+
+Ways to get 3:
+-1 +1 +1 +1 +1 = 3
++1 -1 +1 +1 +1 = 3
++1 +1 -1 +1 +1 = 3
++1 +1 +1 -1 +1 = 3
++1 +1 +1 +1 -1 = 3
+
+Output: 5 ways
+
+Let P = sum of positives, N = sum of negatives
+P - N = target, P + N = sum
+P = (target + sum) / 2
+→ Find subsets with sum P
 ```
 
 **Solution:**

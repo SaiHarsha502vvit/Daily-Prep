@@ -179,26 +179,22 @@ public int findDuplicate(int[] nums) {
 
 ### Sliding Window as Two Pointers
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│           SLIDING WINDOW = TWO POINTERS + WINDOW STATE          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Sliding Window Template:                                       │
-│                                                                 │
-│  left = 0                                                       │
-│  for right in range(n):                                         │
-│      # Expand: add element at right to window                   │
-│      window.add(arr[right])                                     │
-│                                                                 │
-│      # Shrink: while window is invalid/too large                │
-│      while invalid(window):                                     │
-│          window.remove(arr[left])                               │
-│          left++                                                 │
-│                                                                 │
-│      # Update answer if needed                                  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**SLIDING WINDOW = TWO POINTERS + WINDOW STATE**
+
+```text
+Sliding Window Template:
+
+left = 0
+for right in range(n):
+    # Expand: add element at right to window
+    window.add(arr[right])
+
+    # Shrink: while window is invalid/too large
+    while invalid(window):
+        window.remove(arr[left])
+        left++
+
+    # Update answer if needed
 ```
 
 ### Minimum Window Substring (LeetCode 76)

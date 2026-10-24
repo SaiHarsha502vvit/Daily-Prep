@@ -566,30 +566,26 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 
 ### 📋 Summary: the Interval Pattern Cheatsheet
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    INTERVAL PROBLEMS CHEATSHEET                         │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  PROBLEM TYPE        │ SORT BY  │ TECHNIQUE        │ LC#                │
-│  ════════════════════╪══════════╪══════════════════╪═══════════════════ │
-│  Merge overlapping   │ START    │ Linear scan      │ 56                 │
-│  Insert + merge      │ (sorted) │ 3-phase scan     │ 57                 │
-│  Can attend all?     │ START    │ Adjacent check   │ 252                │
-│  Min rooms needed    │ START    │ Min-Heap / Sweep │ 253                │
-│  Min removals        │ END      │ Greedy keep early│ 435                │
-│  List intersections  │ (sorted) │ Two pointers     │ 986                │
-│  Min arrows          │ END      │ Greedy groups    │ 452                │
-│  Employee free time  │ START    │ Merge + gaps     │ 759                │
-│                                                                         │
-│  GOLDEN RULES:                                                          │
-│  1. Sort by START for merge/overlap problems                            │
-│  2. Sort by END for greedy selection/removal problems                   │
-│  3. Overlap check: next.start ≤ curr.end (after sorting by start)       │
-│  4. For "max simultaneous": use Sweep Line or Min-Heap                  │
-│  5. Use Integer.compare() to avoid overflow in comparators              │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
+**INTERVAL PROBLEMS CHEATSHEET**
+
+```text
+PROBLEM TYPE        │ SORT BY  │ TECHNIQUE        │ LC#
+════════════════════╪══════════╪══════════════════╪═══════════════════
+Merge overlapping   │ START    │ Linear scan      │ 56
+Insert + merge      │ (sorted) │ 3-phase scan     │ 57
+Can attend all?     │ START    │ Adjacent check   │ 252
+Min rooms needed    │ START    │ Min-Heap / Sweep │ 253
+Min removals        │ END      │ Greedy keep early│ 435
+List intersections  │ (sorted) │ Two pointers     │ 986
+Min arrows          │ END      │ Greedy groups    │ 452
+Employee free time  │ START    │ Merge + gaps     │ 759
+
+GOLDEN RULES:
+1. Sort by START for merge/overlap problems
+2. Sort by END for greedy selection/removal problems
+3. Overlap check: next.start ≤ curr.end (after sorting by start)
+4. For "max simultaneous": use Sweep Line or Min-Heap
+5. Use Integer.compare() to avoid overflow in comparators
 ```
 
 ---
