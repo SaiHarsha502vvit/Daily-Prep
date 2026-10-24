@@ -6,6 +6,46 @@
 
 **🎯 Goal:** Understand what data structures are, why they exist, and develop the right mindset for mastering them.
 
+## ⚡ At a Glance — Arrays
+
+> [!NOTE]
+> **Mental model:** an array is one unbroken block of equal-sized slots, so the address of slot `i` is just `base + i × size`. That single formula gives O(1) access and also explains why inserting in the middle is expensive.
+
+```mermaid
+flowchart TD
+    A["Array problem"] --> B{"Need random access<br/>by index?"}
+    B -- yes --> C{"Size known<br/>or bounded?"}
+    B -- no --> Z["Consider linked list,<br/>deque or hash set"]
+    C -- yes --> D["Plain array<br/>int[] / T[]"]
+    C -- no --> E["Dynamic array<br/>ArrayList / vector"]
+    D --> F{"Sorted?"}
+    E --> F
+    F -- yes --> G["Binary search O(log n)"]
+    F -- no --> H["Linear scan O(n)<br/>or build hash index"]
+    classDef good fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef warn fill:#fff3b0,stroke:#b58900,color:#111
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    class D,E,G good
+    class H,Z warn
+    class B,C,F ask
+```
+
+**How to read this diagram.** Start at the top and answer the blue questions. Green boxes are the cheap outcomes; yellow boxes mean you either pay O(n) or should switch structure.
+
+| Operation | Static array | Dynamic array | Why |
+| --------- | ------------ | ------------- | --- |
+| Access `a[i]` | O(1) | O(1) | Address arithmetic |
+| Search (unsorted) | O(n) | O(n) | Must inspect elements |
+| Search (sorted) | O(log n) | O(log n) | Binary search |
+| Append at end | n/a (fixed) | O(1) amortized | Occasional resize copy |
+| Insert/delete in middle | O(n) | O(n) | Shift the tail |
+| Insert/delete at end | O(1) | O(1) | No shifting |
+
+> [!WARNING]
+> Off-by-one errors and unchecked bounds are the #1 array bug. State the loop invariant (`a[0..i)` is processed) before writing the loop.
+
+---
+
 ## 5W1H — Why This Chapter?
 
 > WHAT: The foundation of all data organization—Arrays and general data structure theory.
@@ -1798,61 +1838,73 @@ An array's invariants (contiguity, random access, bounded size) can be violated.
 
 **Condition:** Index `i` is negative, ≥ length, or computed from another index that overflowed.
 
-**What breaks:** `ArrayIndexOutOfBoundsException` in Java; undefined behavior in C/C++; silent corruption in Fortran if the array is on the stack and the out-of-bounds location is reused.
+> [!CAUTION]
+> **What breaks:** `ArrayIndexOutOfBoundsException` in Java; undefined behavior in C/C++; silent corruption in Fortran if the array is on the stack and the out-of-bounds location is reused.
 
 **Invariant violated:** `0 ≤ i < arr.length` for every access. Algorithms that compute indices (e.g., `i = left + (right - left) / 2` for binary search) must prove the index stays in bounds for the entire loop.
 
-**Defense:** Test boundary cases (`i = 0`, `i = length - 1`, `i = length`) explicitly. Use checked arithmetic for index computation.
+> [!TIP]
+> **Defense:** Test boundary cases (`i = 0`, `i = length - 1`, `i = length`) explicitly. Use checked arithmetic for index computation.
 
 ### Break 2 — Resize Cost Amortization Failure
 
 **Condition:** An algorithm repeatedly appends to an array that needs to grow. If growth is not geometric (e.g., `+1` per resize), the total cost is O(n²), not O(n).
 
-**What breaks:** A `n = 10⁶` append becomes 10¹² ops → 1,000 seconds instead of 1 second. The `ArrayList` in Java uses 1.5× growth; `Vector` (legacy) uses 2×; both are correct, but a custom implementation that grows by `+1` is broken.
+> [!CAUTION]
+> **What breaks:** A `n = 10⁶` append becomes 10¹² ops → 1,000 seconds instead of 1 second. The `ArrayList` in Java uses 1.5× growth; `Vector` (legacy) uses 2×; both are correct, but a custom implementation that grows by `+1` is broken.
 
 **Invariant violated:** Amortized O(1) per append requires geometric growth. The proof (geometric series, sum ≤ 2n) is in `01g_DS_Internals.md` Challenge 1.
 
-**Defense:** Always check the growth factor. Linear growth is a bug.
+> [!TIP]
+> **Defense:** Always check the growth factor. Linear growth is a bug.
 
 ### Break 3 — Cache-Line Trashing on Column-Major Traversal
 
 **Condition:** 2D array iterated in column-major order when stored in row-major memory (the C/Java/Fortran default).
 
-**What breaks:** Every access misses the cache line. For an N×M matrix, total cache misses are M×N instead of N + M/16. See `01a_Memory_Foundations.md` Challenge 3 for the 1,000× slowdown demonstration.
+> [!CAUTION]
+> **What breaks:** Every access misses the cache line. For an N×M matrix, total cache misses are M×N instead of N + M/16. See `01a_Memory_Foundations.md` Challenge 3 for the 1,000× slowdown demonstration.
 
 **Invariant violated:** Spatial locality: consecutive memory accesses should be within the same cache line (64 bytes = 16 `int`s). Column-major access in row-major memory breaks this.
 
-**Defense:** Use row-major order in row-major memory. For column-major data (e.g., from a Fortran library), transpose first or use blocked algorithms.
+> [!TIP]
+> **Defense:** Use row-major order in row-major memory. For column-major data (e.g., from a Fortran library), transpose first or use blocked algorithms.
 
 ### Break 4 — Memory Fragmentation with Variable-Length Rows
 
 **Condition:** Java `int[][]` is an array of references to inner arrays. Each inner array is a separate heap allocation. If inner rows are allocated with different sizes (jagged array), fragmentation occurs.
 
-**What breaks:** Outer array fits in cache; inner arrays scatter across the heap. Iteration in row-major order pays one cache miss per row on average instead of amortizing across the row.
+> [!CAUTION]
+> **What breaks:** Outer array fits in cache; inner arrays scatter across the heap. Iteration in row-major order pays one cache miss per row on average instead of amortizing across the row.
 
 **Invariant violated:** A 2D array stored row-major must have contiguous rows. Ragged arrays break this invariant.
 
-**Defense:** Use a 1D array with manual indexing (`arr[row * cols + col]`) when memory locality matters.
+> [!TIP]
+> **Defense:** Use a 1D array with manual indexing (`arr[row * cols + col]`) when memory locality matters.
 
 ### Break 5 — Integer Overflow on Size Computation
 
 **Condition:** Computing `n * sizeof(T)` or `2 * size` where the result exceeds `Integer.MAX_VALUE`.
 
-**What breaks:** Negative array length → `NegativeArraySizeException`; wrong size allocated → OOB write on first element.
+> [!CAUTION]
+> **What breaks:** Negative array length → `NegativeArraySizeException`; wrong size allocated → OOB write on first element.
 
 **Invariant violated:** Array size must be a non-negative integer. The OS allocates memory in pages, so the size must also be representable as `size_t` (typically 64-bit).
 
-**Defense:** Use `long` for size arithmetic. Allocate via `Math.toIntExact(longValue)` to detect overflow explicitly.
+> [!TIP]
+> **Defense:** Use `long` for size arithmetic. Allocate via `Math.toIntExact(longValue)` to detect overflow explicitly.
 
 ### Break 6 — Aliasing in In-Place Algorithms
 
 **Condition:** In-place reversal, rotation, or partition algorithms that use two pointers moving toward each other. If the two pointers reference overlapping memory (e.g., the same subarray), the swap corrupts data.
 
-**What breaks:** In-place reversal of a palindrome (`[1, 2, 1]` → swap(0, 2) gives `[1, 2, 1]`, then swap(1, 1) is a no-op — works). But for an even-length palindrome (`[1, 2, 2, 1]` → swap(0, 3) gives `[1, 2, 2, 1]`, then swap(1, 2) gives `[1, 2, 2, 1]`, then loop terminates — works). The bug surfaces with `arr == reverseInPlace(arr)` when `arr.length == 1`.
+> [!CAUTION]
+> **What breaks:** In-place reversal of a palindrome (`[1, 2, 1]` → swap(0, 2) gives `[1, 2, 1]`, then swap(1, 1) is a no-op — works). But for an even-length palindrome (`[1, 2, 2, 1]` → swap(0, 3) gives `[1, 2, 2, 1]`, then swap(1, 2) gives `[1, 2, 2, 1]`, then loop terminates — works). The bug surfaces with `arr == reverseInPlace(arr)` when `arr.length == 1`.
 
 **Invariant violated:** `i < j` for the entire loop. When `i == j`, the algorithm must terminate.
 
-**Defense:** Use `while (i < j)` (strict), not `while (i <= j)`.
+> [!TIP]
+> **Defense:** Use `while (i < j)` (strict), not `while (i <= j)`.
 
 ## Brute-Force to Optimal Ladder — Array Problems
 
@@ -2062,7 +2114,8 @@ When append does NOT trigger resize (normal case): actual cost = 1; Φ increases
 
 <details><summary>Model Answer</summary>
 
-**Key insight**: Sum of integers 1 to (n+1) = (n+1)(n+2)/2. The actual sum of the array is some value S. The missing integer = (n+1)(n+2)/2 − S.
+> [!TIP]
+> **Key insight:** Sum of integers 1 to (n+1) = (n+1)(n+2)/2. The actual sum of the array is some value S. The missing integer = (n+1)(n+2)/2 − S.
 
 ```java
 int missing = (n+1)*(n+2)/2;
@@ -2081,12 +2134,27 @@ return missing;
 
 ## Reality Check
 
-**"ArrayList and Array are the same thing"** → `int[]` is a contiguous block of raw ints in memory — no object headers, no capacity metadata, fixed size. `ArrayList<Integer>` stores *boxed* Integer objects (each 16 bytes on JVM), holds pointers to them, has a capacity buffer (1.5× growth), and incurs boxing/unboxing on every access. For numeric data, a primitive array is 4-8× more memory-efficient.
+> [!CAUTION]
+> **Myth:** "ArrayList and Array are the same thing"
+>
+> **Reality:** `int[]` is a contiguous block of raw ints in memory — no object headers, no capacity metadata, fixed size. `ArrayList<Integer>` stores *boxed* Integer objects (each 16 bytes on JVM), holds pointers to them, has a capacity buffer (1.5× growth), and incurs boxing/unboxing on every access. For numeric data, a primitive array is 4-8× more memory-efficient.
 
-**"Array index out of bounds crashes are just off-by-one errors"** → Off-by-one is *one cause*. The actual check: the JVM verifies `0 ≤ index < length` on every array access. In C, there is no such check — you silently read/write adjacent memory (buffer overflow). This is a major class of security vulnerabilities. Java's bounds checking costs ~1 CPU cycle per access but prevents entire exploit categories.
+> [!CAUTION]
+> **Myth:** "Array index out of bounds crashes are just off-by-one errors"
+>
+> **Reality:** Off-by-one is *one cause*. The actual check: the JVM verifies `0 ≤ index < length` on every array access. In C, there is no such check — you silently read/write adjacent memory (buffer overflow). This is a major class of security vulnerabilities. Java's bounds checking costs ~1 CPU cycle per access but prevents entire exploit categories.
 
-**"`array2 = array1` makes a copy"** → It copies the *reference*. Both variables now point to the same array object. Mutating `array2[0]` changes `array1[0]` too. To copy: `Arrays.copyOf(array1, array1.length)` or `array1.clone()`.
+> [!CAUTION]
+> **Myth:** "`array2 = array1` makes a copy"
+>
+> **Reality:** It copies the *reference*. Both variables now point to the same array object. Mutating `array2[0]` changes `array1[0]` too. To copy: `Arrays.copyOf(array1, array1.length)` or `array1.clone()`.
 
-**"2D arrays in Java are rectangular grids stored in a grid"** → A Java `int[][]` is an array of *references to* `int[]` arrays. Each row is a separate heap object. They need not be the same length (jagged arrays). Memory is NOT contiguous between rows — cache misses on row transitions. For performance-critical matrix math, use a flattened 1D array and compute `[row * cols + col]` manually.
+> [!CAUTION]
+> **Myth:** "2D arrays in Java are rectangular grids stored in a grid"
+>
+> **Reality:** A Java `int[][]` is an array of *references to* `int[]` arrays. Each row is a separate heap object. They need not be the same length (jagged arrays). Memory is NOT contiguous between rows — cache misses on row transitions. For performance-critical matrix math, use a flattened 1D array and compute `[row * cols + col]` manually.
 
-**"Passing an array to a method is pass-by-value, so the original won't change"** → Java is always pass-by-value, but for arrays the *value* passed is the reference (memory address). The method receives the same reference and CAN mutate the array contents. What it cannot do is make the caller's variable point to a different array.
+> [!CAUTION]
+> **Myth:** "Passing an array to a method is pass-by-value, so the original won't change"
+>
+> **Reality:** Java is always pass-by-value, but for arrays the *value* passed is the reference (memory address). The method receives the same reference and CAN mutate the array contents. What it cannot do is make the caller's variable point to a different array.

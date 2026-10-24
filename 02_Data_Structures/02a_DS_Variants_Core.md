@@ -33,6 +33,39 @@
 
 ---
 
+## ⚡ At a Glance — Core Variants
+
+> [!NOTE]
+> **Mental model:** each variant tweaks one design choice of its base structure — which pointers exist, where the ends are, or what extra field is stored — to remove a specific cost.
+
+```mermaid
+flowchart LR
+    LL["Linked list"] --> SL["Singly"]
+    LL --> DL["Doubly<br/>+prev: O(1) delete"]
+    LL --> CL["Circular<br/>no null end"]
+    LL --> SK["Skip list<br/>+express lanes"]
+    classDef base fill:#e0e0e0,stroke:#616161,color:#111
+    classDef var fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef adv fill:#ffd9b3,stroke:#e65100,color:#111
+    class LL base
+    class SL,DL,CL var
+    class SK adv
+```
+
+**How to read this diagram.** Grey is the base structure, blue are the classic variants, orange is the one that adds probabilistic shortcuts. Each arrow answers "what did we add, and what cost did it remove?".
+
+| Variant | Extra cost | Removes this problem |
+| ------- | ---------- | -------------------- |
+| Doubly linked | +1 pointer per node | O(n) predecessor search on delete |
+| Circular | Careful termination checks | Wrap-around (round-robin, buffers) |
+| Sentinel node | One dummy node | Head/tail special cases |
+| Skip list | Extra levels (~2× space) | O(n) search in a linked list |
+
+> [!TIP]
+> Learn variants as *"base + one change + what it buys"*; this makes them easy to recall and to choose between.
+
+---
+
 # Part 0b: Historical Evolution of Data Structure Variants
 
 ::: timeline
@@ -2218,65 +2251,81 @@ Memory budget tight?
 
 **Condition:** Using `java.util.Stack` (legacy, synchronized) instead of `ArrayDeque`.
 
-**What breaks:** Synchronization overhead (~2-5× slower); legacy `Stack` extends `Vector` which has stale API. Modern best practice: `Deque<T> stack = new ArrayDeque<>();`.
+> [!CAUTION]
+> **What breaks:** Synchronization overhead (~2-5× slower); legacy `Stack` extends `Vector` which has stale API. Modern best practice: `Deque<T> stack = new ArrayDeque<>();`.
 
-**Defense:** Always use `ArrayDeque` for stack/queue in non-concurrent code.
+> [!TIP]
+> **Defense:** Always use `ArrayDeque` for stack/queue in non-concurrent code.
 
 ### Break 2 — PriorityQueue Non-Determinism
 
 **Condition:** Two elements compare equal in the comparator.
 
-**What breaks:** `PriorityQueue` does not guarantee order for equal elements → non-deterministic iteration order → flaky tests.
+> [!CAUTION]
+> **What breaks:** `PriorityQueue` does not guarantee order for equal elements → non-deterministic iteration order → flaky tests.
 
-**Defense:** Always include a tie-breaker in the comparator: `(a, b) -> Integer.compare(a.priority, b.priority) != 0 ? Integer.compare(a.priority, b.priority) : Integer.compare(a.id, b.id)`.
+> [!TIP]
+> **Defense:** Always include a tie-breaker in the comparator: `(a, b) -> Integer.compare(a.priority, b.priority) != 0 ? Integer.compare(a.priority, b.priority) : Integer.compare(a.id, b.id)`.
 
 ### Break 3 — LinkedList Random Access
 
 **Condition:** Using `list.get(i)` in a loop.
 
-**What breaks:** O(n) per `get(i)` → O(n²) total for the loop.
+> [!CAUTION]
+> **What breaks:** O(n) per `get(i)` → O(n²) total for the loop.
 
-**Defense:** Use `ArrayList` for random access; use iterator for `LinkedList`.
+> [!TIP]
+> **Defense:** Use `ArrayList` for random access; use iterator for `LinkedList`.
 
 ### Break 4 — ArrayDeque Capacity Resize
 
 **Condition:** Adding to a fully-utilized ArrayDeque.
 
-**What breaks:** Internal array doubles; O(n) copy. For `ArrayDeque` (not `ArrayList`), the resize factor is implementation-defined (typically 2×).
+> [!CAUTION]
+> **What breaks:** Internal array doubles; O(n) copy. For `ArrayDeque` (not `ArrayList`), the resize factor is implementation-defined (typically 2×).
 
-**Defense:** Pre-size: `new ArrayDeque<>(expectedSize)`.
+> [!TIP]
+> **Defense:** Pre-size: `new ArrayDeque<>(expectedSize)`.
 
 ### Break 5 — MultiMap Empty Collection Handling
 
 **Condition:** `Map<K, List<V>>` where some keys have no values.
 
-**What breaks:** `get(k)` returns null instead of empty list → NPE on iteration. Common bug.
+> [!CAUTION]
+> **What breaks:** `get(k)` returns null instead of empty list → NPE on iteration. Common bug.
 
-**Defense:** Use `computeIfAbsent(k, k2 -> new ArrayList<>())` for first put; or use `Multimap` (Guava) which returns empty collection.
+> [!TIP]
+> **Defense:** Use `computeIfAbsent(k, k2 -> new ArrayList<>())` for first put; or use `Multimap` (Guava) which returns empty collection.
 
 ### Break 6 — TreeSet Comparator Inconsistency
 
 **Condition:** `Comparator.compare(a, b)` returns inconsistent results across calls.
 
-**What breaks:** TreeSet contracts broken; entries in wrong positions; `contains(k)` returns wrong result.
+> [!CAUTION]
+> **What breaks:** TreeSet contracts broken; entries in wrong positions; `contains(k)` returns wrong result.
 
-**Defense:** Comparator must be a pure function of inputs. Document this explicitly.
+> [!TIP]
+> **Defense:** Comparator must be a pure function of inputs. Document this explicitly.
 
 ### Break 7 — ConcurrentSkipListMap Iteration Weakly Consistent
 
 **Condition:** Iterating a `ConcurrentSkipListMap` while another thread modifies it.
 
-**What breaks:** Iterator returns elements that were present at some point during iteration; may not reflect latest state. This is *intentional* (weakly consistent iterator for concurrency) but surprising.
+> [!CAUTION]
+> **What breaks:** Iterator returns elements that were present at some point during iteration; may not reflect latest state. This is *intentional* (weakly consistent iterator for concurrency) but surprising.
 
-**Defense:** Document weakly-consistent semantics; don't expect snapshot isolation.
+> [!TIP]
+> **Defense:** Document weakly-consistent semantics; don't expect snapshot isolation.
 
 ### Break 8 — LinkedHashMap Removal Order
 
 **Condition:** Using `LinkedHashMap` with `accessOrder = true` for LRU cache, but using `get()` to "peek" without intending eviction.
 
-**What breaks:** Each `get()` moves the entry to the tail (most-recently-used); subsequent eviction removes from the head (least-recently-used). A bug in the eviction policy can cause hot entries to be evicted incorrectly.
+> [!CAUTION]
+> **What breaks:** Each `get()` moves the entry to the tail (most-recently-used); subsequent eviction removes from the head (least-recently-used). A bug in the eviction policy can cause hot entries to be evicted incorrectly.
 
-**Defense:** Use `LinkedHashMap.getOrDefault()` to peek; or implement true LRU with separate metadata.
+> [!TIP]
+> **Defense:** Use `LinkedHashMap.getOrDefault()` to peek; or implement true LRU with separate metadata.
 
 ## Formal Complexity Comparison — Core Variants
 
@@ -2407,12 +2456,27 @@ Where k = number of values for key, n = total entries.
 
 ## Reality Check
 
-**"A deque (double-ended queue) is just a doubly-linked list"** → A deque IS often implemented with a doubly-linked list (Java's `LinkedList` implements `Deque`). But Java's `ArrayDeque` is a deque implemented with a circular array — much faster due to cache locality, no per-element allocation overhead. For most deque use cases, `ArrayDeque` is 2-5x faster than `LinkedList`. The only case where `LinkedList` wins: O(1) insert/delete in the MIDDLE of the list (via an iterator), which `ArrayDeque` cannot do.
+> [!CAUTION]
+> **Myth:** "A deque (double-ended queue) is just a doubly-linked list"
+>
+> **Reality:** A deque IS often implemented with a doubly-linked list (Java's `LinkedList` implements `Deque`). But Java's `ArrayDeque` is a deque implemented with a circular array — much faster due to cache locality, no per-element allocation overhead. For most deque use cases, `ArrayDeque` is 2-5x faster than `LinkedList`. The only case where `LinkedList` wins: O(1) insert/delete in the MIDDLE of the list (via an iterator), which `ArrayDeque` cannot do.
 
-**"TreeSet and TreeMap always sort by natural ordering"** → TreeSet/TreeMap sort by the `Comparator` you provide (if any) or the natural ordering of elements (elements must implement `Comparable`). If you insert objects that don't implement `Comparable` without providing a `Comparator`, you get `ClassCastException` at insertion time. Custom `Comparator`: `new TreeSet<>((a, b) -> a.name.compareTo(b.name))`. The Comparator/Comparable must be consistent with `equals()` — if two objects compare as equal (return 0), they should be `equals()` — otherwise TreeSet may silently discard what it considers duplicates.
+> [!CAUTION]
+> **Myth:** "TreeSet and TreeMap always sort by natural ordering"
+>
+> **Reality:** TreeSet/TreeMap sort by the `Comparator` you provide (if any) or the natural ordering of elements (elements must implement `Comparable`). If you insert objects that don't implement `Comparable` without providing a `Comparator`, you get `ClassCastException` at insertion time. Custom `Comparator`: `new TreeSet<>((a, b) -> a.name.compareTo(b.name))`. The Comparator/Comparable must be consistent with `equals()` — if two objects compare as equal (return 0), they should be `equals()` — otherwise TreeSet may silently discard what it considers duplicates.
 
-**"LinkedHashMap maintains insertion order"** → `LinkedHashMap` maintains insertion order by default. But: `LinkedHashMap(capacity, loadFactor, true)` enables access order — most recently accessed entry is last (implements LRU cache behavior). `get()` and `put()` both count as access in access-order mode. Combining with `removeEldestEntry()` override gives you a self-evicting LRU cache in about 10 lines of Java. This is the standard Java implementation interview answer for "implement an LRU cache."
+> [!CAUTION]
+> **Myth:** "LinkedHashMap maintains insertion order"
+>
+> **Reality:** `LinkedHashMap` maintains insertion order by default. But: `LinkedHashMap(capacity, loadFactor, true)` enables access order — most recently accessed entry is last (implements LRU cache behavior). `get()` and `put()` both count as access in access-order mode. Combining with `removeEldestEntry()` override gives you a self-evicting LRU cache in about 10 lines of Java. This is the standard Java implementation interview answer for "implement an LRU cache."
 
-**"PriorityQueue in Java is a min-heap — PriorityQueue.peek() returns the minimum"** → Default `PriorityQueue<Integer>` returns the minimum (natural ordering). For a max-heap: `new PriorityQueue<>(Collections.reverseOrder())` or `new PriorityQueue<>((a,b) -> b-a)`. For objects: provide a Comparator. Important: `PriorityQueue` does NOT sort all elements — it maintains heap property (peek is O(1), poll is O(log n)). Iterating a `PriorityQueue` with for-each does NOT give sorted order — it gives heap-array order. Always poll elements to get sorted output.
+> [!CAUTION]
+> **Myth:** "PriorityQueue in Java is a min-heap — PriorityQueue.peek() returns the minimum"
+>
+> **Reality:** Default `PriorityQueue<Integer>` returns the minimum (natural ordering). For a max-heap: `new PriorityQueue<>(Collections.reverseOrder())` or `new PriorityQueue<>((a,b) -> b-a)`. For objects: provide a Comparator. Important: `PriorityQueue` does NOT sort all elements — it maintains heap property (peek is O(1), poll is O(log n)). Iterating a `PriorityQueue` with for-each does NOT give sorted order — it gives heap-array order. Always poll elements to get sorted output.
 
-**"Stack class in Java is the standard stack implementation"** → `java.util.Stack` is a legacy class (extends `Vector` — synchronized). Use `Deque<Integer> stack = new ArrayDeque<>()` instead: `push()` = `addFirst()`, `pop()` = `removeFirst()`, `peek()` = `peekFirst()`. `ArrayDeque` is faster (no synchronization overhead, cache-friendly array), unsynchronized (appropriate for single-threaded use), and implements both stack and queue operations. Java's own `Stack` Javadoc recommends `ArrayDeque` as the preferred stack implementation.
+> [!CAUTION]
+> **Myth:** "Stack class in Java is the standard stack implementation"
+>
+> **Reality:** `java.util.Stack` is a legacy class (extends `Vector` — synchronized). Use `Deque<Integer> stack = new ArrayDeque<>()` instead: `push()` = `addFirst()`, `pop()` = `removeFirst()`, `peek()` = `peekFirst()`. `ArrayDeque` is faster (no synchronization overhead, cache-friendly array), unsynchronized (appropriate for single-threaded use), and implements both stack and queue operations. Java's own `Stack` Javadoc recommends `ArrayDeque` as the preferred stack implementation.

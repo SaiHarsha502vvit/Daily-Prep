@@ -14,6 +14,32 @@
 >
 > **HOW:** Read top-down (Foundations → Internals → Variants → Production). For interview prep, jump to Problem Sets first. For production work, start with `05_DS_In_Production`.
 
+## ⚡ Section Map
+
+```mermaid
+flowchart LR
+    F["01a Memory<br/>foundations"] --> C["01b-01f Core structures<br/>array, list, stack/queue, hash, tree/heap"]
+    C --> I["01g Internals"]
+    C --> V["02a / 02b Variants"]
+    C --> J["03 Java collections"]
+    V --> P["05 Production"]
+    I --> P
+    C --> PS["02 Problem sets and bridges"]
+    C --> A["A1-A5 University methodology"]
+    classDef found fill:#e0e0e0,stroke:#616161,color:#111
+    classDef core fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef deep fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef apply fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class F found
+    class C core
+    class I,V,A deep
+    class J,P,PS apply
+```
+
+**How to read this diagram.** Grey is the foundation, blue the core structures, orange the depth layers (internals, variants, proofs), green the application layers. Arrows show the suggested reading order.
+
+---
+
 ## How to Read This Section
 
 This section supports four distinct reading paths:

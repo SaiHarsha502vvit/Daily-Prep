@@ -109,6 +109,39 @@ Java equivalent: `StringBuilder` (mutable string buffer on heap) vs `String` con
 
 ---
 
+## ⚡ At a Glance — Memory Is the Foundation
+
+> [!NOTE]
+> **Mental model:** a data structure is a *layout of bytes plus rules for walking them*. Every Big-O cost in this folder comes from one question — how many memory hops, and how far apart are they?
+
+```mermaid
+flowchart LR
+    CPU["CPU registers<br/>~1 cycle"] --> L1["L1 cache<br/>~4 cycles"]
+    L1 --> L2["L2 cache<br/>~12 cycles"]
+    L2 --> L3["L3 cache<br/>~40 cycles"]
+    L3 --> RAM["RAM<br/>~200 cycles"]
+    classDef fast fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef mid fill:#fff3b0,stroke:#b58900,color:#111
+    classDef slow fill:#ffc9c9,stroke:#c62828,color:#111
+    class CPU,L1 fast
+    class L2,L3 mid
+    class RAM slow
+```
+
+**How to read this diagram.** Left to right is the memory hierarchy: each step is bigger but slower. Green levels are cheap, yellow are tolerable, red is the cache miss that dominates real-world run time. Contiguous layouts (arrays) keep you on the green side; pointer-chasing layouts (linked lists, trees) keep falling to red.
+
+| Concept | One-line takeaway | Where it bites |
+| ------- | ----------------- | -------------- |
+| Stack vs heap | Locals live on the stack; objects live on the heap | Object-heavy structures pay header + pointer overhead |
+| Cache line (64 B) | Memory moves in 64-byte chunks | Sequential access is "free"; random access is not |
+| Object header | Every Java object carries ~12–16 bytes of metadata | `ArrayList<Integer>` costs far more than `int[]` |
+| Alignment/padding | Fields are padded to 4/8-byte boundaries | Sizes round up in surprising ways |
+
+> [!TIP]
+> When two structures have the same Big-O, pick the one with better **locality** — it usually wins by a large constant factor.
+
+---
+
 ## 5W1H — Why This Chapter?
 
 > WHAT: The hardware realities (CPU cache, memory hierarchy, byte structure) that dictate software performance.
@@ -324,124 +357,105 @@ Cache miss rate. `int[]` is contiguous in memory — one cache line loads 16 con
 
 ## JAVA MEMORY MODEL - Stack vs Heap
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                        JAVA MEMORY LAYOUT                                       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  When JVM runs your program, memory is divided into:                            │
-│                                                                                 │
-│  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │                           JVM MEMORY                                     │   │
-│  │                                                                          │   │
-│  │  ┌───────────────────────────────────────────────────────────────────┐  │    │
-│  │  │                    METHOD AREA                                    │  │    │
-│  │  │  • Class metadata (methods, fields)                              │  │     │
-│  │  │  • Static variables                                              │  │     │
-│  │  │  • Constant pool (string literals, numbers)                      │  │     │
-│  │  │  • Method bytecode                                               │  │     │
-│  │  └───────────────────────────────────────────────────────────────────┘  │    │
-│  │                                                                          │   │
-│  │  ┌───────────────────────────────────────────────────────────────────┐  │    │
-│  │  │                         HEAP                                      │  │    │
-│  │  │  • All objects live here                                         │  │     │
-│  │  │  • Arrays are objects!                                           │  │     │
-│  │  │  • Garbage collected                                             │  │     │
-│  │  │  • Shared between all threads                                    │  │     │
-│  │  │                                                                   │  │    │
-│  │  │  Divided into:                                                   │  │     │
-│  │  │  ┌─────────────────┬──────────────────┬────────────────────┐    │  │      │
-│  │  │  │ Young Gen       │ Old Gen           │ Metaspace          │    │  │     │
-│  │  │  │ (Eden+Survivor) │ (Long-lived objs) │ (Class metadata)   │    │  │     │
-│  │  │  └─────────────────┴──────────────────┴────────────────────┘    │  │      │
-│  │  └───────────────────────────────────────────────────────────────────┘  │    │
-│  │                                                                          │   │
-│  │  ┌───────────────────┐  ┌───────────────────┐  ┌───────────────────┐   │     │
-│  │  │   STACK (Thread1) │  │   STACK (Thread2) │  │   STACK (Thread3) │   │     │
-│  │  │                   │  │                   │  │                   │   │     │
-│  │  │  ┌─────────────┐  │  │  ┌─────────────┐  │  │  ┌─────────────┐  │   │     │
-│  │  │  │ Frame 3     │  │  │  │ Frame 2     │  │  │  │ Frame 1     │  │   │     │
-│  │  │  │ (method c)  │  │  │  │ (method b)  │  │  │  │ (method a)  │  │   │     │
-│  │  │  ├─────────────┤  │  │  ├─────────────┤  │  │  ├─────────────┤  │   │     │
-│  │  │  │ Frame 2     │  │  │  │ Frame 1     │  │  │  │             │  │   │     │
-│  │  │  │ (method b)  │  │  │  │ (main)      │  │  │  │             │  │   │     │
-│  │  │  ├─────────────┤  │  │  ├─────────────┤  │  │  │             │  │   │     │
-│  │  │  │ Frame 1     │  │  │  │             │  │  │  │             │  │   │     │
-│  │  │  │ (main)      │  │  │  │             │  │  │  │             │  │   │     │
-│  │  │  └─────────────┘  │  │  └─────────────┘  │  │  └─────────────┘  │   │     │
-│  │  └───────────────────┘  └───────────────────┘  └───────────────────┘   │     │
-│  │                                                                          │   │
-│  │  Each thread has its OWN stack!                                         │    │
-│  │                                                                          │   │
-│  └─────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+### JVM memory layout
 
+When the JVM runs your program, memory is divided into areas that are **shared by all threads** and areas that are **private to each thread**.
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                     STACK FRAME - INSIDE VIEW                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  When you call a method:                                                        │
-│                                                                                 │
-│  public int calculate(int a, int b) {                                           │
-│      int sum = a + b;        // Local variable                                  │
-│      int[] arr = new int[5]; // Reference on stack, array on HEAP               │
-│      return sum;                                                                │
-│  }                                                                              │
-│                                                                                 │
-│                                                                                 │
-│  STACK FRAME for calculate():                                                   │
-│  ┌───────────────────────────────────────────────────────────────┐              │
-│  │                                                               │              │
-│  │  HIGH ADDRESS (top of stack)                                  │              │
-│  │  ┌─────────────────────────────────────────────────────────┐ │               │
-│  │  │  Return Address                                         │ │               │
-│  │  │  (where to go after method ends)                        │ │               │
-│  │  ├─────────────────────────────────────────────────────────┤ │               │
-│  │  │  Previous Frame Pointer                                 │ │               │
-│  │  │  (link to caller's frame)                               │ │               │
-│  │  ├─────────────────────────────────────────────────────────┤ │               │
-│  │  │  Local Variable: sum = 15                              │ │                │
-│  │  │  (4 bytes for int)                                      │ │               │
-│  │  ├─────────────────────────────────────────────────────────┤ │               │
-│  │  │  Local Variable: arr = 0x00ABC123                      │ │                │
-│  │  │  (reference pointing to heap)──────────────────────┐   │ │                │
-│  │  ├─────────────────────────────────────────────────────┤   │ │               │
-│  │  │  Parameter: a = 5                                   │   │ │               │
-│  │  │  (4 bytes for int)                                  │   │ │               │
-│  │  ├─────────────────────────────────────────────────────┤   │ │               │
-│  │  │  Parameter: b = 10                                  │   │ │               │
-│  │  │  (4 bytes for int)                                  │   │ │               │
-│  │  └─────────────────────────────────────────────────────┘   │ │               │
-│  │  LOW ADDRESS (bottom of frame)                         │   │ │               │
-│  │                                                        │   │ │               │
-│  └────────────────────────────────────────────────────────│───┘ │               │
-│                                                           │     │               │
-│                                                           ▼     │               │
-│  HEAP:                                                          │               │
-│  ┌─────────────────────────────────────────────────────────┐   │                │
-│  │  Address 0x00ABC123:                                    │◄──┘                │
-│  │  ┌───────────────────────────────────────────────────┐ │                     │
-│  │  │ Object Header (12 bytes)                          │ │                     │
-│  │  │  • Mark Word (8 bytes): GC info, hash, locks     │ │                      │
-│  │  │  • Class Pointer (4 bytes): points to int[].class│ │                      │
-│  │  ├───────────────────────────────────────────────────┤ │                     │
-│  │  │ Array Length (4 bytes): 5                         │ │                     │
-│  │  ├───────────────────────────────────────────────────┤ │                     │
-│  │  │ arr[0] = 0  (4 bytes)                            │ │                      │
-│  │  │ arr[1] = 0  (4 bytes)                            │ │                      │
-│  │  │ arr[2] = 0  (4 bytes)                            │ │                      │
-│  │  │ arr[3] = 0  (4 bytes)                            │ │                      │
-│  │  │ arr[4] = 0  (4 bytes)                            │ │                      │
-│  │  └───────────────────────────────────────────────────┘ │                     │
-│  │                                                        │                     │
-│  │  Total: 12 + 4 + (5×4) = 36 bytes                     │                      │
-│  │  (may be padded to 40 bytes for alignment)            │                      │
-│  └────────────────────────────────────────────────────────┘                     │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph SHARED["Shared by all threads"]
+        direction TB
+        subgraph HEAP["HEAP - all objects, arrays included, garbage collected"]
+            direction LR
+            YG["Young Gen<br/>Eden + Survivor<br/>new objects"] --> OG["Old Gen<br/>long-lived objects"]
+        end
+        subgraph META["METASPACE - native memory"]
+            direction TB
+            M1["Class metadata<br/>methods, fields"]
+            M2["Static variables"]
+            M3["Constant pool<br/>string literals, numbers"]
+            M4["Method bytecode"]
+        end
+    end
+    subgraph PRIVATE["Private to each thread"]
+        direction LR
+        subgraph T1["Stack - Thread 1"]
+            direction TB
+            F13["Frame 3: method c"] --> F12["Frame 2: method b"] --> F11["Frame 1: main"]
+        end
+        subgraph T2["Stack - Thread 2"]
+            direction TB
+            F22["Frame 2: method b"] --> F21["Frame 1: main"]
+        end
+        subgraph T3["Stack - Thread 3"]
+            direction TB
+            F31["Frame 1: method a"]
+        end
+    end
+    PRIVATE -. "references point into" .-> HEAP
+    classDef heap fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef meta fill:#e1d5f7,stroke:#6a1b9a,color:#111
+    classDef stack fill:#cfe8ff,stroke:#1565c0,color:#111
+    class YG,OG heap
+    class M1,M2,M3,M4 meta
+    class F13,F12,F11,F22,F21,F31 stack
 ```
+
+**How to read this diagram.** Orange is the heap (every object and array lives here, shared by all threads). Purple is Metaspace, which holds class metadata, static variables, the constant pool and bytecode (in modern JVMs it is native memory, *outside* the heap). Blue are the per-thread stacks: each thread has its **own** stack of frames, newest frame on top. The dotted arrow shows that stack variables only hold *references* into the heap.
+
+| Area | Holds | Shared? | Managed by |
+| ---- | ----- | ------- | ---------- |
+| Heap | Objects, arrays | Yes | Garbage collector |
+| Metaspace | Class metadata, statics, constant pool, bytecode | Yes | Class loader / GC of classes |
+| Thread stack | Frames: locals, parameters, return address | No (one per thread) | Pushed/popped on call/return |
+
+### Stack frame — inside view
+
+```java
+public int calculate(int a, int b) {
+    int sum = a + b;               // local variable, lives on the stack
+    int[] arr = new int[5];        // reference on the stack, array on the HEAP
+    return sum;
+}
+```
+
+```mermaid
+flowchart LR
+    subgraph FRAME["Stack frame for calculate(5, 10)"]
+        direction TB
+        RA["Return address<br/>where to go after the method ends"]
+        FP["Previous frame pointer<br/>link to the caller's frame"]
+        SUM["Local: sum = 15<br/>4 bytes"]
+        ARR["Local: arr = 0x00ABC123<br/>reference"]
+        PA["Parameter: a = 5<br/>4 bytes"]
+        PB["Parameter: b = 10<br/>4 bytes"]
+        RA --- FP --- SUM --- ARR --- PA --- PB
+    end
+    subgraph OBJ["HEAP at 0x00ABC123 - int[5]"]
+        direction TB
+        H1["Mark word: 8 bytes<br/>GC info, hash, locks"]
+        H2["Class pointer: 4 bytes<br/>points to int[].class"]
+        H3["Array length: 4 bytes = 5"]
+        H4["arr[0..4] = 0<br/>5 x 4 bytes = 20 bytes"]
+        H1 --- H2 --- H3 --- H4
+    end
+    ARR ==>|"points to"| H1
+    classDef stack fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ref fill:#fff3b0,stroke:#b58900,color:#111
+    classDef heap fill:#ffd9b3,stroke:#e65100,color:#111
+    class RA,FP,SUM,PA,PB stack
+    class ARR ref
+    class H1,H2,H3,H4 heap
+```
+
+**How to read this diagram.** Blue boxes are the frame's own data (the exact slot order differs between JVMs; what matters is that all of it lives on the stack). The yellow `arr` slot holds only an address; the thick arrow follows it to the real array on the heap (orange), which has its own header and length.
+
+| Part of the `int[5]` object | Size |
+| --------------------------- | ---- |
+| Object header (mark word 8 B + class pointer 4 B) | 12 bytes |
+| Array length | 4 bytes |
+| Elements (5 × 4 bytes) | 20 bytes |
+| **Total** | **36 bytes**, padded to **40 bytes** for 8-byte alignment |
 
 🔬 **Section Challenge — JAVA MEMORY MODEL - Stack vs Heap**
 
@@ -1086,7 +1100,8 @@ A "when breaks" section is the university-grade counterpart to the production fa
 
 **Condition:** Recursion depth exceeds the thread's stack size (default 1 MiB on HotSpot; configurable with `-Xss`).
 
-**What breaks:** The thread receives a `StackOverflowError` and the JVM terminates the frame mid-allocation. If a finalizer or `try/finally` is in flight, it can leave a heap object half-initialized.
+> [!CAUTION]
+> **What breaks:** The thread receives a `StackOverflowError` and the JVM terminates the frame mid-allocation. If a finalizer or `try/finally` is in flight, it can leave a heap object half-initialized.
 
 **Invariant violated:** Top-of-stack pointer cannot exceed `base_f - stack_size`. The runtime should detect this *before* writing; HotSpot does, but only as a guard page, so the actual overflow location is approximate.
 
@@ -1094,7 +1109,8 @@ A "when breaks" section is the university-grade counterpart to the production fa
 
 **Condition:** Long-running JVM (hours to days) with high allocation churn and variable object sizes.
 
-**What breaks:** The heap has many small free regions but no single region large enough for a new big object → `OutOfMemoryError: Java heap space` despite available bytes total.
+> [!CAUTION]
+> **What breaks:** The heap has many small free regions but no single region large enough for a new big object → `OutOfMemoryError: Java heap space` despite available bytes total.
 
 **Invariant violated:** Heap is contiguous enough to satisfy any allocation request ≤ free bytes. Compacting GC (G1, ZGC) preserves the invariant by relocating objects; parallel GC without compaction can break it.
 
@@ -1102,7 +1118,8 @@ A "when breaks" section is the university-grade counterpart to the production fa
 
 **Condition:** Two threads write to different variables that happen to share a cache line (within 64 bytes).
 
-**What breaks:** Each thread's write invalidates the other's cache line → cache-coherence ping-pong. Single-threaded code runs at L1 speed (1 ns); contended code runs at L3 or RAM speed (10–100 ns).
+> [!CAUTION]
+> **What breaks:** Each thread's write invalidates the other's cache line → cache-coherence ping-pong. Single-threaded code runs at L1 speed (1 ns); contended code runs at L3 or RAM speed (10–100 ns).
 
 **Invariant violated:** Independent threads should not share cache lines. `jdk.internal.vm.annotation.Contended` (JDK 9+) inserts 128-byte padding to restore the invariant. See Section 9 Failure Mode 1 for the full incident analysis.
 
@@ -1110,7 +1127,8 @@ A "when breaks" section is the university-grade counterpart to the production fa
 
 **Condition:** Thread on socket 0 allocates memory; thread on socket 1 reads it after a workload shift.
 
-**What breaks:** Cross-socket memory access (~70–100 ns) instead of local (~30 ns). At 10⁹ ops, the 70 ns difference is 70 seconds.
+> [!CAUTION]
+> **What breaks:** Cross-socket memory access (~70–100 ns) instead of local (~30 ns). At 10⁹ ops, the 70 ns difference is 70 seconds.
 
 **Invariant violated:** Memory accessed by a thread should be local to its socket. Restored via `numactl --membind` or `Thread.onSpinWait` + affinity APIs.
 
@@ -1118,7 +1136,8 @@ A "when breaks" section is the university-grade counterpart to the production fa
 
 **Condition:** Working set exceeds TLB reach (~64 entries × 4 KiB = 256 KiB; or 64 × 2 MiB = 128 MiB with huge pages).
 
-**What breaks:** Every memory access traps into the kernel page-walker → 10×–100× slowdown. Common with sparse hash tables, large graphs, or `mmap`ed files > working set.
+> [!CAUTION]
+> **What breaks:** Every memory access traps into the kernel page-walker → 10×–100× slowdown. Common with sparse hash tables, large graphs, or `mmap`ed files > working set.
 
 **Invariant violated:** Active memory pages ≤ TLB reach. Restored via huge pages (`-XX:+UseLargePages`), reducing working set, or restructuring data to fit.
 
@@ -1277,7 +1296,8 @@ class Counters { long counter0; long counter1; }
 
 Both longs are adjacent in heap memory (8 bytes each). A CPU cache line = 64 bytes — both fields fit in one line. When Thread A writes `counter0`, the CPU invalidates the entire 64-byte cache line (MESI protocol: Exclusive → Invalid). Thread B, which was using `counter1` from that same line, must reload the entire line from L3/main memory before it can read or write `counter1`. This repeats on every write from either thread: **false sharing** — two independent variables fighting over one cache line.
 
-**Fix**: Pad to 64 bytes between fields so they occupy separate cache lines. `LongAdder` (JDK) does this via `@Contended`.
+> [!TIP]
+> **Fix:** Pad to 64 bytes between fields so they occupy separate cache lines. `LongAdder` (JDK) does this via `@Contended`.
 
 </details>
 
@@ -1319,12 +1339,27 @@ Both longs are adjacent in heap memory (8 bytes each). A CPU cache line = 64 byt
 
 ## Reality Check
 
-**"Stack memory is faster because it's a special hardware chip"** → The stack and heap are both regions of RAM. The stack is faster because it is *used* differently: push/pop is a single pointer increment, and the working set stays in L1/L2 cache. The heap involves a memory allocator (malloc/GC), bookkeeping headers, and scattered allocations that cause cache misses.
+> [!CAUTION]
+> **Myth:** "Stack memory is faster because it's a special hardware chip"
+>
+> **Reality:** The stack and heap are both regions of RAM. The stack is faster because it is *used* differently: push/pop is a single pointer increment, and the working set stays in L1/L2 cache. The heap involves a memory allocator (malloc/GC), bookkeeping headers, and scattered allocations that cause cache misses.
 
-**"When a function returns, its local variables are freed immediately"** → The stack pointer moves back — but the bytes aren't erased. They still exist in RAM until overwritten by the next stack frame. Reading a deallocated stack slot returns stale data (undefined behaviour in C). Java prevents this; C/C++ do not.
+> [!CAUTION]
+> **Myth:** "When a function returns, its local variables are freed immediately"
+>
+> **Reality:** The stack pointer moves back — but the bytes aren't erased. They still exist in RAM until overwritten by the next stack frame. Reading a deallocated stack slot returns stale data (undefined behaviour in C). Java prevents this; C/C++ do not.
 
-**"Virtual memory = RAM"** → Virtual memory is an OS abstraction. Your process sees a large contiguous address space (e.g., 48 bits = 256 TB) even though physical RAM may be 8 GB. The MMU (Memory Management Unit, hardware in the CPU) translates virtual → physical on every access using a page table. Pages not in RAM are stored on disk (swap); accessing them triggers a page fault and a disk read.
+> [!CAUTION]
+> **Myth:** "Virtual memory = RAM"
+>
+> **Reality:** Virtual memory is an OS abstraction. Your process sees a large contiguous address space (e.g., 48 bits = 256 TB) even though physical RAM may be 8 GB. The MMU (Memory Management Unit, hardware in the CPU) translates virtual → physical on every access using a page table. Pages not in RAM are stored on disk (swap); accessing them triggers a page fault and a disk read.
 
-**"64-bit addresses mean the program can use 16 EB of memory"** → The CPU supports 64-bit addresses in theory but the OS limits user-space to 47–48 bits (128 TB) in practice. And physical RAM limits practical use further. The 64-bit pointer size itself wastes memory: each pointer in a linked list or object header is 8 bytes vs 4 bytes on 32-bit — a significant cost for pointer-heavy data structures.
+> [!CAUTION]
+> **Myth:** "64-bit addresses mean the program can use 16 EB of memory"
+>
+> **Reality:** The CPU supports 64-bit addresses in theory but the OS limits user-space to 47–48 bits (128 TB) in practice. And physical RAM limits practical use further. The 64-bit pointer size itself wastes memory: each pointer in a linked list or object header is 8 bytes vs 4 bytes on 32-bit — a significant cost for pointer-heavy data structures.
 
-**"Garbage collection in Java/Python makes memory management a non-issue"** → GC prevents use-after-free crashes but not logical memory leaks (objects reachable but logically dead — static collections, event listeners, ThreadLocal). GC also introduces pause latency (stop-the-world events) and throughput overhead. Memory tuning (heap size, GC algorithm choice) is a real production concern.
+> [!CAUTION]
+> **Myth:** "Garbage collection in Java/Python makes memory management a non-issue"
+>
+> **Reality:** GC prevents use-after-free crashes but not logical memory leaks (objects reachable but logically dead — static collections, event listeners, ThreadLocal). GC also introduces pause latency (stop-the-world events) and throughput overhead. Memory tuning (heap size, GC algorithm choice) is a real production concern.

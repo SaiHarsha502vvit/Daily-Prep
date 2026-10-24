@@ -31,6 +31,35 @@
 
 ---
 
+## ⚡ At a Glance — Amortized Analysis
+
+> [!NOTE]
+> **Mental model:** amortized cost is the *average cost per operation over a worst-case sequence*. A rare expensive operation is paid for by many cheap ones. It is not an average over random inputs.
+
+```mermaid
+flowchart TD
+    AM["Amortized analysis"] --> AG["Aggregate<br/>total cost / n"]
+    AM --> AC["Accounting<br/>pre-pay credits"]
+    AM --> PO["Potential<br/>energy function"]
+    classDef root fill:#e0e0e0,stroke:#616161,color:#111
+    classDef m fill:#cfe8ff,stroke:#1565c0,color:#111
+    class AM root
+    class AG,AC,PO m
+```
+
+**How to read this diagram.** The three methods prove the same bounds; pick the one that fits the structure. Aggregate is simplest, accounting is intuitive, potential is the most general.
+
+| Example | Worst single op | Amortized | Why |
+| ------- | --------------- | --------- | --- |
+| Dynamic array append (doubling) | O(n) | O(1) | Total copies < 2n over n appends |
+| Multipop stack | O(n) | O(1) | Each element pushed and popped once |
+| Binary counter increment | O(log n) | O(1) | Total bit flips < 2n |
+
+> [!WARNING]
+> Amortized O(1) still allows a single slow operation. For latency-bounded systems you need worst-case O(1), not amortized.
+
+---
+
 ## 1. Why Worst-Case Per-Op Lies — The Resize Example
 
 Consider the canonical mutable structure: a dynamic array (Java's `ArrayList`, C++'s `vector`).
@@ -98,7 +127,8 @@ If `T(n) = O(n)`, then amortized cost per op is `O(n)/n = O(1)`.
 
 **When to use**: When you can define a per-element credit that exactly covers the future work attributable to that element. Each piece of work has a clear "payer."
 
-**Key insight**: The charge per operation need not equal its actual cost. The charge only needs to overapproximate the cost in a way that lets credit accumulate for the rare expensive operations.
+> [!TIP]
+> **Key insight:** The charge per operation need not equal its actual cost. The charge only needs to overapproximate the cost in a way that lets credit accumulate for the rare expensive operations.
 
 ### 2.3 Potential Method (Physicist's)
 
@@ -212,7 +242,8 @@ A stack supports three operations:
 
 ### Accounting Method Design
 
-**Key insight**: Every element, once pushed, is responsible for paying for its own eventual pop. We assign a charge to `push` that covers both the push itself and the future pop of that element.
+> [!TIP]
+> **Key insight:** Every element, once pushed, is responsible for paying for its own eventual pop. We assign a charge to `push` that covers both the push itself and the future pop of that element.
 
 **Charges**:
 - `push(x)`: charge 2 units
@@ -752,7 +783,8 @@ for (String k : keys) {
 
 The O(1) average bound assumes a *good* hash function. Under worst-case hash functions (or adversarial input), a hash table with chaining degrades to O(n) per operation. Use `Integer` keys or a collision-resistant custom hash to avoid this in practice.
 
-**Fix**: Use `java.util.HashMap` with a strong `hashCode()` implementation. For security-sensitive code, use a cryptographic hash or a hash tree (Merkle tree) to prevent hash flooding.
+> [!TIP]
+> **Fix:** Use `java.util.HashMap` with a strong `hashCode()` implementation. For security-sensitive code, use a cryptographic hash or a hash tree (Merkle tree) to prevent hash flooding.
 
 ### Pitfall 3: Forgetting That `peek()` and `remove()` Have Different Complexities
 
@@ -790,7 +822,8 @@ for (int i = 0; i < n; i++) {
 
 Each iteration: create new string of size i, copy i−1 chars from old string. Total characters copied: 1+2+...+n = Θ(n²). **Space used at peak: O(n)** (the final result), but **total allocation: O(n²) bytes**. This is the same Σi pattern as the array resize example, applied to memory allocation.
 
-**Fix**: Use `StringBuilder` (which uses a dynamic array internally, giving O(n) total construction) or `"".join()` (O(n) with one pass).
+> [!TIP]
+> **Fix:** Use `StringBuilder` (which uses a dynamic array internally, giving O(n) total construction) or `"".join()` (O(n) with one pass).
 
 ### Pitfall 6: Amortized Analysis Depends on the Operation Sequence
 
@@ -982,12 +1015,27 @@ But the question asks the opposite: O(n) amortised with O(1) worst-case. This is
 
 ## Reality Check
 
-**"Big-O is the complexity"** → Big-O gives an UPPER bound. An algorithm that is O(n squared) might actually run in O(n) — the bound is just not tight. Big-Theta gives a TIGHT bound (both upper and lower). When someone says "quicksort is O(n log n)," they usually mean the average case is Theta(n log n). The worst case is Theta(n squared). Precision about which bound and which case matters for making correct algorithmic decisions.
+> [!CAUTION]
+> **Myth:** "Big-O is the complexity"
+>
+> **Reality:** Big-O gives an UPPER bound. An algorithm that is O(n squared) might actually run in O(n) — the bound is just not tight. Big-Theta gives a TIGHT bound (both upper and lower). When someone says "quicksort is O(n log n)," they usually mean the average case is Theta(n log n). The worst case is Theta(n squared). Precision about which bound and which case matters for making correct algorithmic decisions.
 
-**"Constant factors do not matter"** → An O(n) algorithm with a constant factor of 1000 is slower than an O(n log n) algorithm with a constant factor of 1 for all n under roughly 10 million. In practice, constant factors come from: number of operations per element, cache miss rates, branch misprediction rates, and memory allocation overhead. For competitive programming with n up to 10^6, constant factors often determine whether a solution passes within the time limit.
+> [!CAUTION]
+> **Myth:** "Constant factors do not matter"
+>
+> **Reality:** An O(n) algorithm with a constant factor of 1000 is slower than an O(n log n) algorithm with a constant factor of 1 for all n under roughly 10 million. In practice, constant factors come from: number of operations per element, cache miss rates, branch misprediction rates, and memory allocation overhead. For competitive programming with n up to 10^6, constant factors often determine whether a solution passes within the time limit.
 
-**"Space complexity only counts extra space"** → There are two conventions: total space (including input) and auxiliary space (excluding input). An in-place sorting algorithm uses O(1) auxiliary space but O(n) total space (the input array). When someone claims O(1) space, clarify whether they mean auxiliary space. Recursive algorithms use O(depth) stack space that is often forgotten — recursive merge sort uses O(n) auxiliary space for the merge step PLUS O(log n) stack space.
+> [!CAUTION]
+> **Myth:** "Space complexity only counts extra space"
+>
+> **Reality:** There are two conventions: total space (including input) and auxiliary space (excluding input). An in-place sorting algorithm uses O(1) auxiliary space but O(n) total space (the input array). When someone claims O(1) space, clarify whether they mean auxiliary space. Recursive algorithms use O(depth) stack space that is often forgotten — recursive merge sort uses O(n) auxiliary space for the merge step PLUS O(log n) stack space.
 
-**"Amortized O(1) means every operation is fast"** → Amortized O(1) means n operations cost O(n) TOTAL. Individual operations can be expensive: ArrayList.add is O(n) when it triggers a resize (copying all elements to a new array). But resizes happen rarely enough that averaged over all operations, each costs O(1). For REAL-TIME systems where every operation must complete within a deadline, amortized bounds are insufficient — you need worst-case bounds.
+> [!CAUTION]
+> **Myth:** "Amortized O(1) means every operation is fast"
+>
+> **Reality:** Amortized O(1) means n operations cost O(n) TOTAL. Individual operations can be expensive: ArrayList.add is O(n) when it triggers a resize (copying all elements to a new array). But resizes happen rarely enough that averaged over all operations, each costs O(1). For REAL-TIME systems where every operation must complete within a deadline, amortized bounds are insufficient — you need worst-case bounds.
 
-**"Lower bounds tell you the fastest possible algorithm"** → Lower bounds are proven within a specific computational MODEL. The Omega(n log n) lower bound for comparison-based sorting does not apply to non-comparison sorts (radix sort). The lower bound for single-threaded algorithms does not apply to parallel algorithms. When a lower bound seems to block progress, question the model — the breakthrough may come from changing what operations are allowed, not from a cleverer algorithm within the same model.
+> [!CAUTION]
+> **Myth:** "Lower bounds tell you the fastest possible algorithm"
+>
+> **Reality:** Lower bounds are proven within a specific computational MODEL. The Omega(n log n) lower bound for comparison-based sorting does not apply to non-comparison sorts (radix sort). The lower bound for single-threaded algorithms does not apply to parallel algorithms. When a lower bound seems to block progress, question the model — the breakthrough may come from changing what operations are allowed, not from a cleverer algorithm within the same model.

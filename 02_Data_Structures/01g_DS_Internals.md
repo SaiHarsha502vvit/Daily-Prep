@@ -29,6 +29,41 @@
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+## ⚡ At a Glance — What the JVM Actually Does
+
+> [!NOTE]
+> **Mental model:** Big-O counts operations; this chapter counts *bytes and cache misses*. Two structures with identical complexity can differ by 5–50× because of object headers, pointer chasing and boxing.
+
+```mermaid
+flowchart LR
+    subgraph ARR["int[3]: 28 bytes"]
+        a1["header + length"] --> a2["3 values inline"]
+    end
+    subgraph LST["ArrayList of Integer: 136 bytes"]
+        l1["ArrayList object 32 B"] --> l2["Object array 56 B"] --> l3["3 Integer objects 48 B"]
+    end
+    classDef lean fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef heavy fill:#ffc9c9,stroke:#c62828,color:#111
+    class a1,a2 lean
+    class l1,l2,l3 heavy
+```
+
+**How to read this diagram.** The same three numbers cost 28 bytes in a primitive array and 136 bytes boxed in an `ArrayList` (≈4.8×), because each element is a separate heap object reached through a reference.
+
+| Structure | Internal layout | Cache behaviour |
+| --------- | --------------- | --------------- |
+| `ArrayList` | Object array of references | References contiguous; the objects they point to are scattered |
+| `HashMap` | Bucket array + `Node` chains (trees at 8+) | One miss for the bucket, more for each chain node |
+| `LinkedList` | One 32-byte node per element | Every hop is likely a miss |
+| `ArrayDeque` | Circular array | Contiguous, very friendly |
+| `TreeMap` | Red-black `Entry` nodes | One miss per level |
+| `PriorityQueue` | Binary heap in an array | Parent/child by index math, friendly |
+
+> [!TIP]
+> Use primitive arrays or specialised primitive collections in hot loops to avoid boxing.
+
+---
+
 ## Evolution of Data Structure Internals (1945-2020)
 
 ### Why History Matters Here
@@ -526,7 +561,8 @@ Let the 12 entries have hash codes whose `h ^ (h >>> 16)` folded values, when ma
 
 **Result:** 6 entries move to new bucket indices (oldIndex + 16). 6 entries stay in the same bucket. The new bucket array is now half-empty (16 of 32 buckets are used), and the load factor drops from 0.75 to 0.375.
 
-**Key insight:** Not every entry is re-distributed uniformly. Only entries whose folded hash has bit 4 = 1 move, and they move to `oldIndex + 16`. This is why resize is O(n) but not as bad as random redistribution — entries stay in a predictable range. The JIT will often optimize this with a conditional move (`cmov`) instruction rather than a branch.
+> [!TIP]
+> **Key insight:** Not every entry is re-distributed uniformly. Only entries whose folded hash has bit 4 = 1 move, and they move to `oldIndex + 16`. This is why resize is O(n) but not as bad as random redistribution — entries stay in a predictable range. The JIT will often optimize this with a conditional move (`cmov`) instruction rather than a branch.
 
 </details>
 
@@ -1762,65 +1798,81 @@ These are the invariants the JDK enforces via internal assertions (in debug buil
 
 **Condition:** Appending to an ArrayList without pre-sizing. Each resize allocates a new array (1.5× growth) and copies all elements.
 
-**What breaks:** O(n) work per resize; multiple resizes during fill → O(n × log n) total. For 10⁶ appends starting from default capacity 10: ~17 resizes × O(n) each ≈ O(n log n).
+> [!CAUTION]
+> **What breaks:** O(n) work per resize; multiple resizes during fill → O(n × log n) total. For 10⁶ appends starting from default capacity 10: ~17 resizes × O(n) each ≈ O(n log n).
 
-**Defense:** Pre-size: `new ArrayList<>(expectedSize / 0.75 + 1)` (or just `expectedSize + 1` for a margin). For 10⁶ expected entries, allocate `1,333,334` capacity to avoid all resizes.
+> [!TIP]
+> **Defense:** Pre-size: `new ArrayList<>(expectedSize / 0.75 + 1)` (or just `expectedSize + 1` for a margin). For 10⁶ expected entries, allocate `1,333,334` capacity to avoid all resizes.
 
 ### Break 2 — HashMap Rehash on Every Insert
 
 **Condition:** Using a custom key with poor hashCode that returns constant values, or all keys collide.
 
-**What breaks:** HM1 violated → all entries hash to bucket 0 → HM3 triggers treeify at 8 entries → red-black tree of n nodes → O(log n) per lookup instead of O(1).
+> [!CAUTION]
+> **What breaks:** HM1 violated → all entries hash to bucket 0 → HM3 triggers treeify at 8 entries → red-black tree of n nodes → O(log n) per lookup instead of O(1).
 
-**Defense:** Test hash distribution. Use `Map<K, V>` only with keys that have well-distributed hashCodes (String, Integer, Long, UUID). For custom classes, use `Objects.hash(field1, field2, ...)` and verify bucket distribution with `IntStream.range(0, 1_000_000).mapToObj(i -> new MyKey(i)).collect(groupingBy(k -> k.hashCode() & 15)).values().stream().mapToInt(List::size).summaryStatistics()`.
+> [!TIP]
+> **Defense:** Test hash distribution. Use `Map<K, V>` only with keys that have well-distributed hashCodes (String, Integer, Long, UUID). For custom classes, use `Objects.hash(field1, field2, ...)` and verify bucket distribution with `IntStream.range(0, 1_000_000).mapToObj(i -> new MyKey(i)).collect(groupingBy(k -> k.hashCode() & 15)).values().stream().mapToInt(List::size).summaryStatistics()`.
 
 ### Break 3 — HashMap Concurrent Modification
 
 **Condition:** Inserting into a HashMap while iterating.
 
-**What breaks:** `ConcurrentModificationException` (the friendly outcome). Without HM6, the iterator may see stale or duplicated entries.
+> [!CAUTION]
+> **What breaks:** `ConcurrentModificationException` (the friendly outcome). Without HM6, the iterator may see stale or duplicated entries.
 
-**Defense:** Use `ConcurrentHashMap` for concurrent access. Or collect keys to add/remove in a separate list, then apply changes after iteration completes.
+> [!TIP]
+> **Defense:** Use `ConcurrentHashMap` for concurrent access. Or collect keys to add/remove in a separate list, then apply changes after iteration completes.
 
 ### Break 4 — HashMap Resize During Bulk Load
 
 **Condition:** `Map.putAll(largeMap)` or `new HashMap<>().putAll(...)` with a large source map.
 
-**What breaks:** Multiple resizes during putAll → O(n × log n) total. The default constructor uses capacity 16, so even loading 1000 entries triggers ~6 resizes.
+> [!CAUTION]
+> **What breaks:** Multiple resizes during putAll → O(n × log n) total. The default constructor uses capacity 16, so even loading 1000 entries triggers ~6 resizes.
 
-**Defense:** `new HashMap<>(sourceMap.size() / 0.75 + 1); map.putAll(sourceMap);` — one allocation, no resize.
+> [!TIP]
+> **Defense:** `new HashMap<>(sourceMap.size() / 0.75 + 1); map.putAll(sourceMap);` — one allocation, no resize.
 
 ### Break 5 — TreeMap Rotation Storm
 
 **Condition:** Inserting keys in sorted or near-sorted order that causes many rotations.
 
-**What breaks:** Each rotation is O(1) but the constant factor is ~3× higher than a single BST insert. For n = 10⁶ with sorted insert, total rotations can reach O(n).
+> [!CAUTION]
+> **What breaks:** Each rotation is O(1) but the constant factor is ~3× higher than a single BST insert. For n = 10⁶ with sorted insert, total rotations can reach O(n).
 
-**Defense:** This is unavoidable for Red-Black trees; the rotations preserve the O(log n) bound. If rotation overhead is critical, consider `HashMap` + sorted iteration of the result, or use a B-tree (e.g., `ConcurrentSkipListMap`).
+> [!TIP]
+> **Defense:** This is unavoidable for Red-Black trees; the rotations preserve the O(log n) bound. If rotation overhead is critical, consider `HashMap` + sorted iteration of the result, or use a B-tree (e.g., `ConcurrentSkipListMap`).
 
 ### Break 6 — HashMap Default Capacity 16
 
 **Condition:** Default `new HashMap<>()` allocates capacity 16. For any reasonable n, the load factor is exceeded quickly.
 
-**What breaks:** Resize at size 12 (16 × 0.75). For 10⁶ entries, this triggers ~17 resizes.
+> [!CAUTION]
+> **What breaks:** Resize at size 12 (16 × 0.75). For 10⁶ entries, this triggers ~17 resizes.
 
-**Defense:** Always pre-size: `new HashMap<>(expectedSize / 0.75 + 1)`. This is the single most common HashMap performance bug.
+> [!TIP]
+> **Defense:** Always pre-size: `new HashMap<>(expectedSize / 0.75 + 1)`. This is the single most common HashMap performance bug.
 
 ### Break 7 — LinkedList Random Access
 
 **Condition:** Iterating a LinkedList via `list.get(i)`.
 
-**What breaks:** O(n) per `get(i)` because LinkedList has no random access. A loop of n `get(i)` calls is O(n²).
+> [!CAUTION]
+> **What breaks:** O(n) per `get(i)` because LinkedList has no random access. A loop of n `get(i)` calls is O(n²).
 
-**Defense:** Always iterate LinkedList with an iterator: `for (T item : linkedList) { ... }`. Or use `ArrayList` if random access is needed.
+> [!TIP]
+> **Defense:** Always iterate LinkedList with an iterator: `for (T item : linkedList) { ... }`. Or use `ArrayList` if random access is needed.
 
 ### Break 8 — ArrayList vs LinkedList in Tight Loop
 
 **Condition:** Iterating ArrayList vs LinkedList with the same access pattern.
 
-**What breaks:** ArrayList is ~16× faster due to cache locality. See `01a_Memory_Foundations.md` Section 0 Story 1 and the worked example in `01c_LinkedList.md`.
+> [!CAUTION]
+> **What breaks:** ArrayList is ~16× faster due to cache locality. See `01a_Memory_Foundations.md` Section 0 Story 1 and the worked example in `01c_LinkedList.md`.
 
-**Defense:** Use ArrayList for tight loops. Use LinkedList only for frequent insert/delete at known positions.
+> [!TIP]
+> **Defense:** Use ArrayList for tight loops. Use LinkedList only for frequent insert/delete at known positions.
 
 ## Memory Cost Per Implementation
 
@@ -2095,12 +2147,27 @@ For α < 1 (Java default: 0.75): E[comparisons per lookup] ≤ 1 + α = 1.75 = O
 
 ## Reality Check
 
-**"Data structure choice is just a performance micro-optimisation"** → Data structure choice determines the *asymptotic complexity class* of your algorithm. Choosing a list where a set is needed turns O(n) membership tests; choosing HashMap where TreeMap is needed loses sorted order. These are correctness and scalability differences, not tweaks.
+> [!CAUTION]
+> **Myth:** "Data structure choice is just a performance micro-optimisation"
+>
+> **Reality:** Data structure choice determines the *asymptotic complexity class* of your algorithm. Choosing a list where a set is needed turns O(n) membership tests; choosing HashMap where TreeMap is needed loses sorted order. These are correctness and scalability differences, not tweaks.
 
-**"Amortized O(1) and worst-case O(1) are both 'constant time'"** → Worst-case O(1): every single operation takes constant time (array index access). Amortized O(1): the *average* over a sequence of operations is constant, but individual operations may spike (ArrayList resize: O(n) for that single call). For real-time systems or latency-sensitive paths, the occasional O(n) spike from amortized structures is unacceptable. Use fixed-capacity ring buffers or pre-sized structures instead.
+> [!CAUTION]
+> **Myth:** "Amortized O(1) and worst-case O(1) are both 'constant time'"
+>
+> **Reality:** Worst-case O(1): every single operation takes constant time (array index access). Amortized O(1): the *average* over a sequence of operations is constant, but individual operations may spike (ArrayList resize: O(n) for that single call). For real-time systems or latency-sensitive paths, the occasional O(n) spike from amortized structures is unacceptable. Use fixed-capacity ring buffers or pre-sized structures instead.
 
-**"The JVM always lays objects out the way you declare fields"** → The JVM can reorder fields for alignment and padding. A class with `byte b; long l; byte b2;` may be laid out as `b, b2, [6 padding bytes], l` to align `long` on an 8-byte boundary. Object header on HotSpot JVM: 12–16 bytes (mark word + class pointer). Every small Java object carries this overhead regardless of fields.
+> [!CAUTION]
+> **Myth:** "The JVM always lays objects out the way you declare fields"
+>
+> **Reality:** The JVM can reorder fields for alignment and padding. A class with `byte b; long l; byte b2;` may be laid out as `b, b2, [6 padding bytes], l` to align `long` on an 8-byte boundary. Object header on HotSpot JVM: 12–16 bytes (mark word + class pointer). Every small Java object carries this overhead regardless of fields.
 
-**"More memory = always worse"** → The time-space tradeoff is fundamental. Memoization (DP) and caching trade memory for speed. Hash tables trade memory (load factor < 1 → wasted buckets) for O(1) access. Precomputed lookup tables trade memory for computation time. The right choice depends on which resource is the bottleneck.
+> [!CAUTION]
+> **Myth:** "More memory = always worse"
+>
+> **Reality:** The time-space tradeoff is fundamental. Memoization (DP) and caching trade memory for speed. Hash tables trade memory (load factor < 1 → wasted buckets) for O(1) access. Precomputed lookup tables trade memory for computation time. The right choice depends on which resource is the bottleneck.
 
-**"Thread-safe data structures are always safe to use from multiple threads"** → Thread-safe (synchronized) means individual operations are atomic. But compound operations across two thread-safe calls are NOT atomic: `if (queue.isEmpty()) queue.poll()` has a TOCTOU (time-of-check-time-of-use) race even if both methods are synchronized. Use `ConcurrentLinkedQueue.poll()` which returns null on empty — one atomic operation.
+> [!CAUTION]
+> **Myth:** "Thread-safe data structures are always safe to use from multiple threads"
+>
+> **Reality:** Thread-safe (synchronized) means individual operations are atomic. But compound operations across two thread-safe calls are NOT atomic: `if (queue.isEmpty()) queue.poll()` has a TOCTOU (time-of-check-time-of-use) race even if both methods are synchronized. Use `ConcurrentLinkedQueue.poll()` which returns null on empty — one atomic operation.

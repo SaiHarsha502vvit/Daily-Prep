@@ -25,6 +25,39 @@
 
 ---
 
+## ⚡ At a Glance — Invariant Proofs
+
+> [!NOTE]
+> **Mental model:** an invariant is a fact that is true before and after every operation. To prove a structure correct you show it holds **initially**, is **preserved** by each operation, and **implies** the result you want.
+
+```mermaid
+flowchart LR
+    I0["Initial state<br/>invariant holds"] --> OP["Operation runs"]
+    OP --> CHK{"Invariant still<br/>holds?"}
+    CHK -- yes --> NEXT["Next operation"]
+    CHK -- no --> BUG["Bug found"]
+    NEXT --> OP
+    classDef ok fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef bad fill:#ffc9c9,stroke:#c62828,color:#111
+    classDef step fill:#cfe8ff,stroke:#1565c0,color:#111
+    class I0,NEXT ok
+    class BUG bad
+    class OP,CHK step
+```
+
+**How to read this diagram.** The loop is induction: if every operation preserves the invariant, it holds forever. The red exit is what a failing proof or test looks like.
+
+| Structure | Core invariant |
+| --------- | -------------- |
+| Array | Elements occupy `0..size-1` contiguously |
+| Linked list | Every node reachable from head; no cycle (unless circular) |
+| Hash table | Each key is in the bucket given by its hash |
+| BST | Left subtree < node < right subtree |
+| Heap | Parent ≤ children (min-heap) and the tree is complete |
+| Union-Find | Following parents always reaches a root |
+
+---
+
 ## 1. The Invariant Methodology — What Are We Proving?
 
 ### Structural Invariant vs. Operational Invariant
@@ -849,12 +882,27 @@ Rule: invariant checks are O(n) or worse -- too expensive for production hot pat
 
 ## Reality Check
 
-**"Testing proves correctness"** → Testing shows the ABSENCE of bugs for tested inputs, not the absence of bugs for ALL inputs. A binary search implementation that fails only when the array has exactly 2^31-1 elements will pass every reasonable test suite. Invariant-based reasoning proves correctness for ALL inputs: if the invariant holds before and after each iteration and implies the postcondition at termination, the algorithm is correct for every valid input.
+> [!CAUTION]
+> **Myth:** "Testing proves correctness"
+>
+> **Reality:** Testing shows the ABSENCE of bugs for tested inputs, not the absence of bugs for ALL inputs. A binary search implementation that fails only when the array has exactly 2^31-1 elements will pass every reasonable test suite. Invariant-based reasoning proves correctness for ALL inputs: if the invariant holds before and after each iteration and implies the postcondition at termination, the algorithm is correct for every valid input.
 
-**"Invariants are just assertions"** → Assertions check that a condition holds at a specific point in execution. Invariants are LOGICAL PROPERTIES that hold throughout an operation: the BST invariant (left < root < right) must hold before and after every insertion, deletion, and rotation. An assertion is a runtime check at one moment. An invariant is a mathematical claim about every reachable state of the data structure.
+> [!CAUTION]
+> **Myth:** "Invariants are just assertions"
+>
+> **Reality:** Assertions check that a condition holds at a specific point in execution. Invariants are LOGICAL PROPERTIES that hold throughout an operation: the BST invariant (left < root < right) must hold before and after every insertion, deletion, and rotation. An assertion is a runtime check at one moment. An invariant is a mathematical claim about every reachable state of the data structure.
 
-**"Off-by-one errors are minor bugs"** → Off-by-one errors in data structure implementations can violate structural invariants: a heap with an off-by-one parent index formula accesses the wrong children, corrupting the heap property silently. The heap APPEARS to work for small inputs but produces incorrect results for specific configurations. Invariant checking (is heap property satisfied after every operation) catches these immediately.
+> [!CAUTION]
+> **Myth:** "Off-by-one errors are minor bugs"
+>
+> **Reality:** Off-by-one errors in data structure implementations can violate structural invariants: a heap with an off-by-one parent index formula accesses the wrong children, corrupting the heap property silently. The heap APPEARS to work for small inputs but produces incorrect results for specific configurations. Invariant checking (is heap property satisfied after every operation) catches these immediately.
 
-**"Representation invariants are implementation details"** → A representation invariant defines what makes a data structure instance VALID. For a Red-Black tree: every path from root to null has the same number of black nodes, red nodes have black children, and root is black. Violating any of these means the tree is corrupt — operations will produce wrong results or crash. The rep invariant is the CONTRACT between the data structure and its operations.
+> [!CAUTION]
+> **Myth:** "Representation invariants are implementation details"
+>
+> **Reality:** A representation invariant defines what makes a data structure instance VALID. For a Red-Black tree: every path from root to null has the same number of black nodes, red nodes have black children, and root is black. Violating any of these means the tree is corrupt — operations will produce wrong results or crash. The rep invariant is the CONTRACT between the data structure and its operations.
 
-**"Formal verification is impractical"** → Lightweight formal reasoning (writing preconditions, postconditions, and loop invariants as comments, then mentally checking them) catches bugs that testing misses, costs minutes, and requires no tools. Full formal verification with proof assistants (Coq, Isabelle) is expensive, but the REASONING DISCIPLINE of formal methods — stating exactly what must be true and why — is practical and immediately useful in everyday programming.
+> [!CAUTION]
+> **Myth:** "Formal verification is impractical"
+>
+> **Reality:** Lightweight formal reasoning (writing preconditions, postconditions, and loop invariants as comments, then mentally checking them) catches bugs that testing misses, costs minutes, and requires no tools. Full formal verification with proof assistants (Coq, Isabelle) is expensive, but the REASONING DISCIPLINE of formal methods — stating exactly what must be true and why — is practical and immediately useful in everyday programming.

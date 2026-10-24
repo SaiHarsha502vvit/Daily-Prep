@@ -27,6 +27,36 @@ This chapter applies to data structures the lower-bound proving techniques that 
 
 ---
 
+## ⚡ At a Glance — Lower Bounds
+
+> [!NOTE]
+> **Mental model:** a lower bound says *no algorithm in a given model can beat this cost*. Each model (comparison, cell-probe, information-theoretic) restricts what the algorithm is allowed to do, and the bound only holds inside it.
+
+```mermaid
+flowchart TD
+    LB["Lower-bound techniques"] --> CM["Comparison model<br/>decision trees"]
+    LB --> IT["Information-theoretic<br/>count outcomes"]
+    LB --> CP["Cell-probe<br/>count memory reads"]
+    CM --> R1["Sorting: Omega(n log n)"]
+    IT --> R2["log2(outcomes) bits needed"]
+    classDef root fill:#e0e0e0,stroke:#616161,color:#111
+    classDef m fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef r fill:#ffd9b3,stroke:#e65100,color:#111
+    class LB root
+    class CM,IT,CP m
+    class R1,R2 r
+```
+
+**How to read this diagram.** Blue boxes are the proof techniques; orange boxes are classic results they produce. Always state the model before quoting a bound.
+
+| Claim | Model | Meaning |
+| ----- | ----- | ------- |
+| Comparison sort ≥ n log n | Comparisons only | Radix/counting sort escape it by not comparing |
+| Finding the max ≥ n−1 comparisons | Comparisons | One pass is optimal |
+| Tight bound = lower bound meets upper bound | — | Nothing better is possible in the model |
+
+---
+
 ## 1. Why DS Lower Bounds Are Harder Than Algorithm Lower Bounds
 
 An algorithm lower bound asks: "How many comparisons (or arithmetic operations) does any algorithm need to sort n items?" The answer is Ω(n log n), and the proof works by counting leaves in a decision tree — a combinatorial argument that depends only on the number of possible inputs, not on how those inputs are stored.
@@ -885,12 +915,27 @@ static int[] minMax(int[] arr) {
 
 ## Reality Check
 
-**"Lower bounds are only theoretical"** → Lower bounds have direct practical impact: the Omega(n log n) comparison sorting bound tells you to stop looking for a faster comparison sort and instead ask whether you can use a non-comparison approach (radix sort, counting sort). The Omega(n) lower bound for finding the maximum tells you a single pass is optimal — no clever algorithm can avoid looking at every element. Lower bounds prevent wasted optimization effort.
+> [!CAUTION]
+> **Myth:** "Lower bounds are only theoretical"
+>
+> **Reality:** Lower bounds have direct practical impact: the Omega(n log n) comparison sorting bound tells you to stop looking for a faster comparison sort and instead ask whether you can use a non-comparison approach (radix sort, counting sort). The Omega(n) lower bound for finding the maximum tells you a single pass is optimal — no clever algorithm can avoid looking at every element. Lower bounds prevent wasted optimization effort.
 
-**"Every problem has a known lower bound"** → Most interesting problems have UNKNOWN tight lower bounds. We do not know whether matrix multiplication requires Omega(n squared) operations (current best algorithm is O(n^2.37)). We do not know whether SAT requires exponential time (the P vs NP question). Proving lower bounds is generally much harder than designing algorithms — it requires showing that NO possible algorithm can do better, not just that your algorithm cannot.
+> [!CAUTION]
+> **Myth:** "Every problem has a known lower bound"
+>
+> **Reality:** Most interesting problems have UNKNOWN tight lower bounds. We do not know whether matrix multiplication requires Omega(n squared) operations (current best algorithm is O(n^2.37)). We do not know whether SAT requires exponential time (the P vs NP question). Proving lower bounds is generally much harder than designing algorithms — it requires showing that NO possible algorithm can do better, not just that your algorithm cannot.
 
-**"Decision tree lower bounds apply to all algorithms"** → Decision tree lower bounds apply to COMPARISON-BASED algorithms. Each comparison has two outcomes (yes/no), creating a binary tree. With n elements, there are n-factorial permutations, so the tree needs at least log2(n-factorial) = Omega(n log n) leaves. This does NOT apply to algorithms that use arithmetic, hashing, or bit manipulation — these can extract more information per operation than a binary comparison.
+> [!CAUTION]
+> **Myth:** "Decision tree lower bounds apply to all algorithms"
+>
+> **Reality:** Decision tree lower bounds apply to COMPARISON-BASED algorithms. Each comparison has two outcomes (yes/no), creating a binary tree. With n elements, there are n-factorial permutations, so the tree needs at least log2(n-factorial) = Omega(n log n) leaves. This does NOT apply to algorithms that use arithmetic, hashing, or bit manipulation — these can extract more information per operation than a binary comparison.
 
-**"If no algorithm beats O(n squared), the lower bound must be Omega(n squared)"** → The absence of a better algorithm does NOT prove a lower bound. For decades, the best matrix multiplication was O(n^3), but the Strassen algorithm proved O(n^2.81) was achievable. We still do not know the true lower bound for matrix multiplication. A lower bound is a PROOF about all possible algorithms, not an observation about known algorithms.
+> [!CAUTION]
+> **Myth:** "If no algorithm beats O(n squared), the lower bound must be Omega(n squared)"
+>
+> **Reality:** The absence of a better algorithm does NOT prove a lower bound. For decades, the best matrix multiplication was O(n^3), but the Strassen algorithm proved O(n^2.81) was achievable. We still do not know the true lower bound for matrix multiplication. A lower bound is a PROOF about all possible algorithms, not an observation about known algorithms.
 
-**"Information-theoretic lower bounds are the tightest possible"** → Information-theoretic arguments count the minimum information needed to solve a problem. For sorting, you need log2(n-factorial) bits of information, giving Omega(n log n) comparisons. But for specific problems, adversary arguments (constructing a worst-case input that forces any algorithm to do maximum work) can sometimes give tighter bounds than pure information-theoretic counting.
+> [!CAUTION]
+> **Myth:** "Information-theoretic lower bounds are the tightest possible"
+>
+> **Reality:** Information-theoretic arguments count the minimum information needed to solve a problem. For sorting, you need log2(n-factorial) bits of information, giving Omega(n log n) comparisons. But for specific problems, adversary arguments (constructing a worst-case input that forces any algorithm to do maximum work) can sometimes give tighter bounds than pure information-theoretic counting.

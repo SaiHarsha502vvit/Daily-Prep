@@ -4,6 +4,14 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - 02_Data_Structures Presentation Upgrade
+
+- Added an "At a Glance" block (mental model callout, colour-styled Mermaid diagram, complexity/decision table) to the index, `01a`–`01g`, `02a`, `02b`, `03`, `04`, `05` and `A1`–`A5`.
+- Converted ~270 single-paragraph "What breaks / Defense / Fix / Key insight / Constraint warning / Invariant learned / Lesson learned" lines and all Reality Check myths into GitHub callouts (`> [!CAUTION]`, `[!TIP]`, `[!WARNING]`, `[!IMPORTANT]`, `[!NOTE]`).
+- `01a`: replaced the two oversized ASCII boxes (JVM memory layout, stack frame) with Mermaid diagrams plus tables; corrected Metaspace, which sits outside the heap in modern JVMs.
+- `05`: fixed a Mermaid parse error in the LSM-tree diagram and added its explanation.
+- Verification: `tools/mermaid-check` renders all 20 diagrams in the folder.
+
 ## 2026-10-24 - 02_Data_Structures Encoding, Table and Fence Repair
 
 Formatting-only repair of `02_Data_Structures/` (no teaching content changed):

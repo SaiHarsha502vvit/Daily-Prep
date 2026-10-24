@@ -45,6 +45,45 @@
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+## ⚡ At a Glance — Stack & Queue
+
+> [!NOTE]
+> **Mental model:** both are *restricted-access lists*. A **stack** only touches one end (LIFO); a **queue** adds at one end and removes at the other (FIFO). Restricting access is what lets every operation be O(1).
+
+```mermaid
+flowchart LR
+    subgraph S["Stack - LIFO"]
+        direction TB
+        s1["push(x)"] --> s2["top"] --> s3["pop()"]
+    end
+    subgraph Q["Queue - FIFO"]
+        direction LR
+        q1["enqueue at rear"] --> q2["..."] --> q3["dequeue at front"]
+    end
+    S --> DFS["Used by: DFS, undo, parsing, recursion"]
+    Q --> BFS["Used by: BFS, schedulers, buffers"]
+    classDef st fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef qu fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef use fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class s1,s2,s3 st
+    class q1,q2,q3 qu
+    class DFS,BFS use
+```
+
+**How to read this diagram.** Orange is the stack (one open end), blue is the queue (two ends, one for each direction), and green shows the algorithm each one powers.
+
+| Operation | Stack | Queue / Deque | Java choice |
+| --------- | ----- | ------------- | ----------- |
+| Add | `push` O(1) | `offer`/`addLast` O(1) | `ArrayDeque` |
+| Remove | `pop` O(1) | `poll`/`pollFirst` O(1) | `ArrayDeque` |
+| Peek | O(1) | O(1) | `peek()` |
+| Search | O(n) | O(n) | rarely needed |
+
+> [!TIP]
+> Prefer `ArrayDeque` over the legacy synchronized `Stack` class, and over `LinkedList`, for both stack and queue use.
+
+---
+
 ## 🧬 Nature & Behavior
 
 ### What is a Stack?
@@ -1253,61 +1292,73 @@ need to remove arbitrary element?
 
 **Condition:** Recursion depth exceeds the thread's stack size (default 1 MiB on HotSpot; ~10⁴ stack frames for typical Java methods, fewer for C++).
 
-**What breaks:** `StackOverflowError` thrown mid-call. The current frame's locals are partially initialized. If a `try { ... } finally { cleanup(); }` is in flight, the `finally` may not execute.
+> [!CAUTION]
+> **What breaks:** `StackOverflowError` thrown mid-call. The current frame's locals are partially initialized. If a `try { ... } finally { cleanup(); }` is in flight, the `finally` may not execute.
 
 **Invariant violated:** S2 (top terminator). The runtime's stack guard page is hit.
 
-**Defense:** Convert recursion to iteration using an explicit stack (see below). Or increase thread stack size with `-Xss`. See `01a_Memory_Foundations.md` Break 1 and the production failure mode 1 in the body.
+> [!TIP]
+> **Defense:** Convert recursion to iteration using an explicit stack (see below). Or increase thread stack size with `-Xss`. See `01a_Memory_Foundations.md` Break 1 and the production failure mode 1 in the body.
 
 ### Break 2 — Unbounded Queue Memory Exhaustion
 
 **Condition:** Producer is faster than consumer for an unbounded queue (`LinkedList`-backed, no capacity limit).
 
-**What breaks:** Queue grows without bound → `OutOfMemoryError`. Production traffic can DDoS the JVM by simply POSTing faster than the worker can process.
+> [!CAUTION]
+> **What breaks:** Queue grows without bound → `OutOfMemoryError`. Production traffic can DDoS the JVM by simply POSTing faster than the worker can process.
 
 **Invariant violated:** Q3 (size consistency). The queue's size grows without bound.
 
-**Defense:** Use a bounded queue (`ArrayBlockingQueue`) with a rejection policy (e.g., `AbortPolicy` throws, `CallerRunsPolicy` runs the producer thread synchronously to apply backpressure). See `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` for the full backpressure discussion.
+> [!TIP]
+> **Defense:** Use a bounded queue (`ArrayBlockingQueue`) with a rejection policy (e.g., `AbortPolicy` throws, `CallerRunsPolicy` runs the producer thread synchronously to apply backpressure). See `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` for the full backpressure discussion.
 
 ### Break 3 — Queue Deadlock (BlockingQueue)
 
 **Condition:** Two threads each hold a lock and wait for the other to release. Classic deadlock pattern: thread A holds lock X waiting for Y; thread B holds Y waiting for X.
 
-**What breaks:** Both threads block forever. The application hangs; health checks report OK until the heartbeat expires.
+> [!CAUTION]
+> **What breaks:** Both threads block forever. The application hangs; health checks report OK until the heartbeat expires.
 
 **Invariant violated:** Q1 (FIFO) cannot progress because no thread is consuming.
 
-**Defense:** Always use a timeout on `BlockingQueue.take()` (e.g., `poll(timeout, unit)`). Detect deadlocks via thread dumps. See production failure mode 2 in the body of this chapter.
+> [!TIP]
+> **Defense:** Always use a timeout on `BlockingQueue.take()` (e.g., `poll(timeout, unit)`). Detect deadlocks via thread dumps. See production failure mode 2 in the body of this chapter.
 
 ### Break 4 — PriorityQueue Non-Determinism
 
 **Condition:** Two elements compare equal in the `Comparator`. `PriorityQueue` does not guarantee any order for equal elements; the iteration order is implementation-dependent.
 
-**What breaks:** Non-deterministic behavior across JVM versions or platforms. A test passes locally, fails in CI, passes in production, fails again.
+> [!CAUTION]
+> **What breaks:** Non-deterministic behavior across JVM versions or platforms. A test passes locally, fails in CI, passes in production, fails again.
 
 **Invariant violated:** Implicit — equal elements should have stable ordering. `PriorityQueue` does not provide this.
 
-**Defense:** Always use a tie-breaker in the comparator (e.g., `(a, b) -> Integer.compare(a.priority, b.priority) != 0 ? compare : Integer.compare(a.id, b.id)`).
+> [!TIP]
+> **Defense:** Always use a tie-breaker in the comparator (e.g., `(a, b) -> Integer.compare(a.priority, b.priority) != 0 ? compare : Integer.compare(a.id, b.id)`).
 
 ### Break 5 — Circular Buffer head == tail Ambiguity
 
 **Condition:** Using a circular buffer without a `size` field, trying to detect both empty and full with `head == tail`.
 
-**What breaks:** Cannot distinguish empty (size = 0) from full (size = capacity). Either the buffer overflows (no full detection) or refuses to enqueue when not full.
+> [!CAUTION]
+> **What breaks:** Cannot distinguish empty (size = 0) from full (size = capacity). Either the buffer overflows (no full detection) or refuses to enqueue when not full.
 
 **Invariant violated:** Q4 (empty/full distinction).
 
-**Defense:** Always maintain a separate `size` field, or sacrifice one slot (`capacity - 1` usable).
+> [!TIP]
+> **Defense:** Always maintain a separate `size` field, or sacrifice one slot (`capacity - 1` usable).
 
 ### Break 6 — Stack Reallocation Invalidates References
 
 **Condition:** Holding a reference to an internal array element of an array-backed stack. The stack grows and copies elements to a new array. The held reference now points to stale memory.
 
-**What breaks:** Use-after-free or stale read. In Java, this is mostly mitigated by GC, but the principle applies to `Iterator` semantics.
+> [!CAUTION]
+> **What breaks:** Use-after-free or stale read. In Java, this is mostly mitigated by GC, but the principle applies to `Iterator` semantics.
 
 **Invariant violated:** S2 (top terminator). The stack's internal storage is replaced.
 
-**Defense:** Always re-fetch references after push operations that may trigger growth.
+> [!TIP]
+> **Defense:** Always re-fetch references after push operations that may trigger growth.
 
 ## Recursion-to-Iterative Conversion
 
@@ -1586,12 +1637,27 @@ Every operation is O(1) amortised. ✓
 
 ## Reality Check
 
-**"A stack is a data structure; recursion is an algorithm"** → The call stack IS a stack data structure, managed by the OS/JVM. Every recursive call is a push onto the call stack (stack frame with local variables + return address). Every return is a pop. Iterative DFS with an explicit Stack<> replicates exactly what the call stack does — they have identical semantics, just different ownership of the stack.
+> [!CAUTION]
+> **Myth:** "A stack is a data structure; recursion is an algorithm"
+>
+> **Reality:** The call stack IS a stack data structure, managed by the OS/JVM. Every recursive call is a push onto the call stack (stack frame with local variables + return address). Every return is a pop. Iterative DFS with an explicit Stack<> replicates exactly what the call stack does — they have identical semantics, just different ownership of the stack.
 
-**"A PriorityQueue is a type of Queue"** → It implements the `Queue` interface but violates queue's defining property: FIFO order. A `PriorityQueue` returns the *minimum* (or maximum) element regardless of insertion order. Calling it a "queue" misleads. It is a heap with a Queue interface grafted on.
+> [!CAUTION]
+> **Myth:** "A PriorityQueue is a type of Queue"
+>
+> **Reality:** It implements the `Queue` interface but violates queue's defining property: FIFO order. A `PriorityQueue` returns the *minimum* (or maximum) element regardless of insertion order. Calling it a "queue" misleads. It is a heap with a Queue interface grafted on.
 
-**"Stack and Queue are just for CS theory — real code uses Lists"** → Monotonic stacks solve problems like "next greater element" and "largest rectangle in histogram" in O(n) that would be O(n²) with a list scan. Browser history (back/forward), undo/redo, expression evaluation, syntax validation (balanced parentheses) — all are stacks. BFS (shortest path in unweighted graphs) requires a queue, not a list.
+> [!CAUTION]
+> **Myth:** "Stack and Queue are just for CS theory — real code uses Lists"
+>
+> **Reality:** Monotonic stacks solve problems like "next greater element" and "largest rectangle in histogram" in O(n) that would be O(n²) with a list scan. Browser history (back/forward), undo/redo, expression evaluation, syntax validation (balanced parentheses) — all are stacks. BFS (shortest path in unweighted graphs) requires a queue, not a list.
 
-**"Java's `Stack` class is the right stack to use"** → Java's `Stack` extends `Vector` (synchronized on every operation, from 1998). It is deprecated in practice. Use `ArrayDeque` as a stack: `push = addFirst`, `pop = removeFirst`, `peek = peekFirst`. It is unsynchronized and faster, with the same O(1) operations.
+> [!CAUTION]
+> **Myth:** "Java's `Stack` class is the right stack to use"
+>
+> **Reality:** Java's `Stack` extends `Vector` (synchronized on every operation, from 1998). It is deprecated in practice. Use `ArrayDeque` as a stack: `push = addFirst`, `pop = removeFirst`, `peek = peekFirst`. It is unsynchronized and faster, with the same O(1) operations.
 
-**"Circular buffer / ring buffer is just a deque"** → A circular buffer is a *fixed-capacity* deque backed by an array with head and tail pointers that wrap modulo capacity. It is O(1) for all operations and uses a single contiguous memory block. A dynamic deque (like `ArrayDeque` in Java) also uses a circular buffer internally but doubles in size when full — it is NOT fixed-capacity. For bounded producer-consumer queues (e.g., audio buffers, kernel ring buffers), fixed circular buffers are the standard implementation.
+> [!CAUTION]
+> **Myth:** "Circular buffer / ring buffer is just a deque"
+>
+> **Reality:** A circular buffer is a *fixed-capacity* deque backed by an array with head and tail pointers that wrap modulo capacity. It is O(1) for all operations and uses a single contiguous memory block. A dynamic deque (like `ArrayDeque` in Java) also uses a circular buffer internally but doubles in size when full — it is NOT fixed-capacity. For bounded producer-consumer queues (e.g., audio buffers, kernel ring buffers), fixed circular buffers are the standard implementation.
