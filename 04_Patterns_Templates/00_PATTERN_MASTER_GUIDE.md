@@ -73,20 +73,18 @@ Full decision guide: [Constraint-Based Pattern Selection](25_Constraint_Based_Pa
 
 ## 🔗 How This Connects to the Rest of Your Repo
 
+```mermaid
+flowchart TD
+  A["You encounter a problem"] --> B["Read this file: identify the pattern"]
+  B --> C["Go learn the pattern if needed"]
+  C --> C1["Data structures: 02_Data_Structures/"]
+  C --> C2["Pattern file: 04_Patterns_Templates/"]
+  C --> C3["Algorithms: 03_Algorithms/"]
+  C1 & C2 & C3 --> D["Return to the problem: apply the pattern"]
+  D --> E["Practice more: 05_Problem_Solving/"]
 ```
-You encounter a problem
-        ↓
-Read this file → identify pattern
-        ↓
-GO LEARN the pattern if needed
-  ├── DS file: 02_Data_Structures/
-  ├── Pattern file: 04_Patterns_Templates/
-  └── Algo file: 03_Algorithms/
-        ↓
-RETURN to problem → apply pattern
-        ↓
-Practice more: 05_Problem_Solving/
-```
+
+**How to read this diagram.** Use this folder as a loop: identify the pattern, learn it from the right folder, then go back and apply it to the problem.
 
 ---
 

@@ -164,14 +164,10 @@ THEN → Sliding Window on Array
 
 ### Fixed vs Variable Window
 
-```
-Fixed Window (size k):          Variable Window:
-┌─────┐                        ┌──────────────┐
-│ k=3 │→ slide                 │   expand →   │
-└─────┘                        └──────────────┘
-                                ← shrink │
-Use when: size is given         Use when: find optimal size
-```
+| | Fixed window (size `k`) | Variable window |
+| --- | --- | --- |
+| **Shape** | Always `k` elements; the whole window slides one step | Expand the right edge, shrink the left edge |
+| **Use when** | The size is given | You must find the optimal size |
 
 ---
 

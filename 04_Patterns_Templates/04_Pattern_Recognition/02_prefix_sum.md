@@ -202,40 +202,38 @@ Optimizations:
 
 ### Visual
 
+**Initial:** each element is its own parent.
+
+```mermaid
+flowchart TB
+  subgraph S0["Initial"]
+    a0((0)) ~~~ a1((1)) ~~~ a2((2)) ~~~ a3((3)) ~~~ a4((4))
+  end
+  subgraph S1["After union(0, 1)"]
+    b0((0)) --> b1((1))
+    b2((2)) ~~~ b3((3)) ~~~ b4((4))
+  end
+  subgraph S2["After union(2, 3)"]
+    c0((0)) --> c1((1))
+    c2((2)) --> c3((3))
+    c4((4))
+  end
+  subgraph S3["After union(0, 2)"]
+    d0((0)) --> d1((1))
+    d0 --> d2((2))
+    d2 --> d3((3))
+    d4((4))
+  end
+  subgraph S4["After path compression on find(3)"]
+    e0((0)) --> e1((1))
+    e0 --> e2((2))
+    e0 --> e3((3))
+    e4((4))
+  end
+  S0 --> S1 --> S2 --> S3 --> S4
 ```
-Initial: Each element is its own parent
-   0    1    2    3    4
-   ↓    ↓    ↓    ↓    ↓
-   0    1    2    3    4
 
-After union(0, 1):
-   0    2    3    4
-   ↓    ↓    ↓    ↓
-   0    2    3    4
-   ↑
-   1
-
-After union(2, 3):
-   0    2    4
-   ↓    ↓    ↓
-   0    2    4
-   ↑    ↑
-   1    3
-
-After union(0, 2):
-        0
-       /|\
-      1 2 4
-        |
-        3
-
-With Path Compression on find(3):
-        0
-      /|\ \
-     1 2 3 4
-
-Now find(3) = 0 directly!
-```
+**How to read this diagram.** Each arrow points from a root to a child that hangs below it. `union` joins two trees under one root. After `find(3)` compresses the path, 3 hangs directly under 0, so `find(3) = 0` takes one step. Node 4 was never unioned, so it stays alone.
 
 ### Template
 

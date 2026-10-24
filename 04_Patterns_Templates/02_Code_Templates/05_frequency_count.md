@@ -6,45 +6,31 @@
 
 ## Visual Concept
 
-```
-                  FREQUENCY COUNT PATTERNS
-──────────────────────────────────────────────────
+### Frequency count patterns
 
-PATTERN 1: Array of 26 (lowercase letters only)
-────────────────────────────────────────────────
-Use when: Only lowercase a-z characters
+**Pattern 1: array of 26 (lowercase letters only).** Use it when the input has only `a` to `z`. For the string `"hello"`, `freq[ch - 'a']` maps `'a'` → 0, `'b'` → 1, …, `'z'` → 25.
 
-String: "hello"
+| Letter | a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Count | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 2 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-freq[ch - 'a']  ← Maps 'a'→0, 'b'→1, ..., 'z'→25
+The non-zero entries are `e: 1`, `h: 1`, `l: 2`, `o: 1`.
 
-┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
-│0│0│0│0│1│0│0│1│0│0│0│2│0│0│1│0│0│0│0│0│0│0│0│0│0│0│
-└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘
- a b c d e f g h i j k l m n o p q r s t u v w x y z
-           ↑     ↑       ↑     ↑
-          e:1   h:1     l:2   o:1
+**Pattern 2: HashMap (any characters, large range).** Use it for Unicode characters, numbers or any large range.
 
-════════════════════════════════════════════════════════════════════
-
-PATTERN 2: HashMap (any characters, large range)
-─────────────────────────────────────────────────
-Use when: Unicode characters, numbers, or large range
-
+```java
 Map<Character, Integer> freq = new HashMap<>();
 for (char c : str.toCharArray()) {
     freq.put(c, freq.getOrDefault(c, 0) + 1);
 }
-
-┌─────────────────────────────────────────────────────────────────────┐
-│  Key   │  Value                                                     │
-├────────┼────────────────────────────────────────────────────────────┤
-│  'h'   │    1                                                       │
-│  'e'   │    1                                                       │
-│  'l'   │    2                                                       │
-│  'o'   │    1                                                       │
-└─────────────────────────────────────────────────────────────────────┘
 ```
+
+| Key | Value |
+| --- | --- |
+| `'h'` | 1 |
+| `'e'` | 1 |
+| `'l'` | 2 |
+| `'o'` | 1 |
 
 ## Template: Check Anagram
 
@@ -130,38 +116,32 @@ public int firstUniqChar(String s) {
 
 **STACK PATTERNS**
 
-```text
-PATTERN 1: Matching/Balancing
-─────────────────────────────
+### Stack patterns
 
-Input: "({[]})"
+**Pattern 1: matching and balancing.** Input: `"({[]})"`.
 
-Process '(':  Stack: [(]
-Process '{':  Stack: [(, {]
-Process '[':  Stack: [(, {, []
-Process ']':  Matches '[', Stack: [(, {]
-Process '}':  Matches '{', Stack: [(]
-Process ')':  Matches '(', Stack: []
+| Character | Action | Stack after |
+| --- | --- | --- |
+| `(` | push | `[(]` |
+| `{` | push | `[(, {]` |
+| `[` | push | `[(, {, []` |
+| `]` | matches `[`, pop | `[(, {]` |
+| `}` | matches `{`, pop | `[(]` |
+| `)` | matches `(`, pop | `[]` |
 
-Stack empty at end → BALANCED! ✓
+The stack is empty at the end, so the input is **balanced** ✓.
 
-────────────────────────────────────────────────────────────────────
+**Pattern 2: monotonic stack (next greater element).** Input: `[2, 1, 2, 4, 3]`; output: `[4, 2, 4, -1, -1]`.
 
-PATTERN 2: Monotonic Stack (Next Greater Element)
-──────────────────────────────────────────────────
+| Element | Action | Stack after |
+| --- | --- | --- |
+| 2 | push | `[2]` |
+| 1 | push (1 < 2, cannot pop) | `[2, 1]` |
+| 2 | pop 1 (its next greater is 2), push | `[2, 2]` |
+| 4 | pop everything (4 is greater than all): the next greater of both 2s is 4 | `[4]` |
+| 3 | push (3 < 4, cannot pop) | `[4, 3]` |
 
-Input: [2, 1, 2, 4, 3]
-Output: [4, 2, 4, -1, -1]  (next greater for each)
-
-Process 2: Stack: [2]
-Process 1: Stack: [2, 1]  (1 < 2, can't pop)
-Process 2: Pop 1 (next greater of 1 is 2), Stack: [2, 2]
-Process 4: Pop all (4 > everyone), next greater of 2,2 is 4
-           Stack: [4]
-Process 3: Stack: [4, 3]  (3 < 4, can't pop)
-
-Stack maintains DECREASING order from bottom to top
-```
+The stack stays in **decreasing order** from bottom to top.
 
 ### Template: Valid Parentheses
 

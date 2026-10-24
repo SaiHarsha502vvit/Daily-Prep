@@ -8,172 +8,109 @@
 
 ## 📚 Part 0: Complete Understanding
 
-```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                    SLIDING WINDOW - COMPLETE UNDERSTANDING                   │
-└──────────────────────────────────────────────────────────────────────────────┘
+### What is sliding window?
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS SLIDING WINDOW?                                                      │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ A technique that maintains a "window" (subarray/substring) that "slides"     │
-│ across the data structure, processing elements as the window moves.          │
-│                                                                              │
-│ Instead of recomputing everything for each window position, we:              │
-│ • ADD the new element entering the window                                    │
-│ • REMOVE the old element leaving the window                                  │
-│ • UPDATE our answer                                                          │
-│                                                                              │
-│ This avoids redundant work!                                                  │
-└──────────────────────────────────────────────────────────────────────────────┘
+A technique that maintains a "window" (a subarray or substring) that "slides" across the data, processing elements as the window moves.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES IT SOLVE?                                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ CORE PROBLEM: Efficiently computing something over all contiguous subarrays  │
-│                                                                              │
-│ EXAMPLE: "Find maximum sum of any 3 consecutive elements"                    │
-│ Array: [1, 4, 2, 10, 2, 3, 1, 0, 20]                                         │
-│                                                                              │
-│ BRUTE FORCE: For each starting position i, sum arr[i] to arr[i+2]            │
-│ • Window 0-2: 1+4+2 = 7                                                      │
-│ • Window 1-3: 4+2+10 = 16                                                    │
-│ • Window 2-4: 2+10+2 = 14 ... and so on                                      │
-│ Time: O(n × k) where k = window size                                         │
-│                                                                              │
-│ SLIDING WINDOW: Reuse previous sum!                                          │
-│ • Window 0-2: sum = 1+4+2 = 7                                                │
-│ • Window 1-3: sum = 7 - arr[0] + arr[3] = 7 - 1 + 10 = 16                    │
-│ • Window 2-4: sum = 16 - arr[1] + arr[4] = 16 - 4 + 2 = 14                   │
-│ Time: O(n) - each element added and removed exactly ONCE!                    │
-│                                                                              │
-│ REAL-WORLD APPLICATIONS:                                                     │
-│ • Network: "Average packets per second over last 5 seconds"                  │
-│ • Finance: "Moving average of stock price over 20 days"                      │
-│ • DNA: "Find all substrings of length 10 with pattern X"                     │
-│ • Streaming: "Process data chunks efficiently"                               │
-└──────────────────────────────────────────────────────────────────────────────┘
+Instead of recomputing everything for each window position, we:
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY IS SLIDING WINDOW EFFICIENT?                                             │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ THE KEY INSIGHT: Consecutive windows OVERLAP!                                │
-│                                                                              │
-│ Window 1: [a, b, c] d, e, f                                                  │
-│ Window 2:  a [b, c, d] e, f                                                  │
-│               ↑  ↑                                                           │
-│          SHARED! Don't recompute!                                            │
-│                                                                              │
-│ BRUTE FORCE WASTE:                                                           │
-│ Window 1: compute(a) + compute(b) + compute(c)                               │
-│ Window 2: compute(b) + compute(c) + compute(d)  ← b,c computed AGAIN!        │
-│                                                                              │
-│ SLIDING WINDOW EFFICIENCY:                                                   │
-│ Window 1: result = f(a) + f(b) + f(c)                                        │
-│ Window 2: result = result - f(a) + f(d)   ← Only compute what's NEW!         │
-│                                                                              │
-│ n elements, k window size:                                                   │
-│ • Brute force: O(n×k) - recompute k elements for each of n windows           │
-│ • Sliding window: O(n) - each element processed exactly twice (add+remove)   │
-└──────────────────────────────────────────────────────────────────────────────┘
+- **add** the new element entering the window,
+- **remove** the old element leaving the window,
+- **update** the answer.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE SLIDING WINDOW?                                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ ✅ USE SLIDING WINDOW WHEN (Signals in problem):                             │
-│    • "Contiguous subarray/substring"                                         │
-│    • "Of size k" or "at most k"                                              │
-│    • "Maximum/minimum sum/length"                                            │
-│    • "Contains all/distinct/at most k unique"                                │
-│    • Data structure is linear (array, string)                                │
-│    • Window moves in ONE direction (left to right)                           │
-│                                                                              │
-│ TWO TYPES:                                                                   │
-│ 1. FIXED SIZE WINDOW: "subarray of size k"                                   │
-│    → Window always has exactly k elements                                    │
-│    → Simpler: just slide both pointers together                              │
-│                                                                              │
-│ 2. VARIABLE SIZE WINDOW: "longest/shortest subarray with condition"          │
-│    → Window size changes based on condition                                  │
-│    → Expand right pointer, shrink left pointer when condition violated       │
-│                                                                              │
-│ ❌ DON'T USE SLIDING WINDOW WHEN:                                             │
-│    • Problem asks about non-contiguous elements                              │
-│    • Order doesn't matter (use sorting/hashmap)                              │
-│    • Need to find subarrays that aren't consecutive                          │
-│    • Problem involves negative numbers with sum conditions (can be tricky)   │
-└──────────────────────────────────────────────────────────────────────────────┘
+This avoids redundant work.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ HOW DOES SLIDING WINDOW WORK?                                                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ FIXED SIZE WINDOW TEMPLATE:                                                  │
-│ ┌────────────────────────────────────────────────────────────────┐           │
-│ │ 1. Initialize: Process first k elements (build first window)  │            │
-│ │ 2. Slide: For each new position:                               │           │
-│ │    a. Add new element (entering from right)                    │           │
-│ │    b. Remove old element (leaving from left)                   │           │
-│ │    c. Update answer                                            │           │
-│ │ 3. Return answer                                               │           │
-│ └────────────────────────────────────────────────────────────────┘           │
-│                                                                              │
-│ VARIABLE SIZE WINDOW TEMPLATE:                                               │
-│ ┌────────────────────────────────────────────────────────────────┐           │
-│ │ 1. left = 0, right = 0                                         │           │
-│ │ 2. Expand right until condition met or window too big          │           │
-│ │ 3. While condition violated:                                    │          │
-│ │    a. Remove arr[left] from window                             │           │
-│ │    b. Move left++                                              │           │
-│ │ 4. Update answer if valid window                               │           │
-│ │ 5. Move right++                                                │           │
-│ │ 6. Repeat until right reaches end                              │           │
-│ └────────────────────────────────────────────────────────────────┘           │
-└──────────────────────────────────────────────────────────────────────────────┘
+### What problem does it solve?
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ DIFFICULTIES & COMMON MISTAKES                                               │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. OFF-BY-ONE ERRORS (Most Common!):                                         │
-│    "Window has k elements" = j - i + 1 == k (NOT j - i == k!)                │
-│    Solution: Count = rightIndex - leftIndex + 1                              │
-│                                                                              │
-│ 2. FORGETTING TO REMOVE WHEN SHRINKING:                                      │
-│    Must undo the effect of element leaving window                            │
-│    Sum window: sum -= arr[left]                                              │
-│    Freq map: map[arr[left]]-- and remove if 0                                │
-│                                                                              │
-│ 3. VARIABLE WINDOW TERMINATION:                                              │
-│    When to shrink? When to stop expanding?                                   │
-│    Solution: Clear condition check before/after each operation               │
-│                                                                              │
-│ 4. NEGATIVE NUMBERS:                                                         │
-│    "Max sum subarray" with negatives - sliding window doesn't work directly  │
-│    Solution: Use Kadane's algorithm for that specific problem                │
-│                                                                              │
-│ 5. EDGE CASES:                                                               │
-│    Empty array, k > array length, single element                             │
-│    Solution: Always validate input first                                     │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Core problem:** efficiently compute something over all contiguous subarrays.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ EXPECTED OUTPUTS & COMPLEXITY                                                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ TIME COMPLEXITY: O(n)                                                        │
-│ • Each element is added to window exactly ONCE                               │
-│ • Each element is removed from window at most ONCE                           │
-│ • Total operations ≤ 2n → O(n)                                               │
-│                                                                              │
-│ SPACE COMPLEXITY:                                                            │
-│ • Basic sliding window: O(1) - just pointers and running total               │
-│ • With frequency map: O(k) or O(alphabet) for character problems             │
-│                                                                              │
-│ TYPICAL OUTPUT TYPES:                                                        │
-│ • Single value: max/min sum, max/min length                                  │
-│ • All windows: list of valid windows or their properties                     │
-│ • Count: number of valid subarrays                                           │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+**Example:** "Find the maximum sum of any 3 consecutive elements" in `[1, 4, 2, 10, 2, 3, 1, 0, 20]`.
+
+| Approach | Window 0-2 | Window 1-3 | Window 2-4 | Time |
+| --- | --- | --- | --- | --- |
+| **Brute force:** sum each window from scratch | 1+4+2 = 7 | 4+2+10 = 16 | 2+10+2 = 14 | O(n × k), k = window size |
+| **Sliding window:** reuse the previous sum | 7 | 7 − arr[0] + arr[3] = 7 − 1 + 10 = 16 | 16 − arr[1] + arr[4] = 16 − 4 + 2 = 14 | O(n): each element is added and removed once |
+
+**Real-world applications**
+
+- Network: average packets per second over the last 5 seconds.
+- Finance: moving average of a stock price over 20 days.
+- DNA: find all substrings of length 10 with a given pattern.
+- Streaming: process data chunks efficiently.
+
+### Why is it efficient?
+
+**The key insight: consecutive windows overlap.**
+
+| Window | `a` | `b` | `c` | `d` | `e` | `f` |
+| --- | --- | --- | --- | --- | --- | --- |
+| Window 1 | **[a** | **b** | **c]** | d | e | f |
+| Window 2 | a | **[b** | **c** | **d]** | e | f |
+
+`b` and `c` are shared, so do not recompute them.
+
+- **Brute-force waste:** window 1 computes `f(a) + f(b) + f(c)`, and window 2 computes `f(b) + f(c) + f(d)`, so `b` and `c` are computed again.
+- **Sliding window:** window 1 computes `result = f(a) + f(b) + f(c)`; window 2 computes `result = result − f(a) + f(d)`, so only what is new is computed.
+
+For `n` elements and window size `k`: brute force is O(n × k) because it recomputes `k` elements for each of `n` windows; sliding window is O(n) because each element is processed twice (add and remove).
+
+### When to use sliding window?
+
+✅ **Use it when the problem signals:**
+
+- "Contiguous subarray/substring"
+- "Of size k" or "at most k"
+- "Maximum/minimum sum/length"
+- "Contains all / distinct / at most k unique"
+- The data structure is linear (array, string)
+- The window moves in one direction (left to right)
+
+**Two types**
+
+1. **Fixed-size window** ("subarray of size k"): the window always has exactly `k` elements; slide both pointers together.
+2. **Variable-size window** ("longest/shortest subarray with a condition"): the size changes with the condition; expand the right pointer and shrink the left pointer when the condition is violated.
+
+❌ **Do not use it when:**
+
+- The problem asks about non-contiguous elements.
+- Order does not matter (use sorting or a hash map).
+- You need subarrays that are not consecutive.
+- The problem has negative numbers with sum conditions (it can be tricky; see Kadane's algorithm below).
+
+### How does it work?
+
+**Fixed-size window template**
+
+1. Initialise: process the first `k` elements to build the first window.
+2. Slide: for each new position, (a) add the new element entering from the right, (b) remove the old element leaving from the left, (c) update the answer.
+3. Return the answer.
+
+**Variable-size window template**
+
+1. `left = 0, right = 0`.
+2. Expand `right` until the condition is met or the window is too big.
+3. While the condition is violated: (a) remove `arr[left]` from the window, (b) `left++`.
+4. Update the answer if the window is valid.
+5. `right++`.
+6. Repeat until `right` reaches the end.
+
+### Difficulties & common mistakes
+
+| # | Mistake | Solution |
+| --- | --- | --- |
+| 1 | **Off-by-one errors (most common):** "window has k elements" is `j - i + 1 == k`, not `j - i == k` | Count = `rightIndex - leftIndex + 1` |
+| 2 | **Forgetting to remove when shrinking:** you must undo the effect of the leaving element (sum: `sum -= arr[left]`; frequency map: decrement and remove at 0) | Write the removal next to the addition |
+| 3 | **Variable-window termination:** when to shrink, when to stop expanding | Use a clear condition check before or after each operation |
+| 4 | **Negative numbers:** "max-sum subarray" with negatives does not work with a plain window | Use Kadane's algorithm for that problem |
+| 5 | **Edge cases:** empty array, `k > length`, single element | Validate the input first |
+
+### Expected outputs and complexity
+
+**Time: O(n).** Each element is added to the window once and removed at most once, so total operations ≤ 2n.
+
+**Space:** O(1) for the basic version (pointers and a running total); O(k) or O(alphabet size) with a frequency map.
+
+**Typical outputs:** a single value (max/min sum or length), all valid windows or their properties, or a count of valid subarrays.
 
 ---
 
@@ -258,71 +195,19 @@ This is also exactly why the "at most K distinct characters" family works beauti
 
 ## 🎨 VISUAL PROOF (The Moment It Clicks)
 
-```
-            SLIDING WINDOW - THE COMPLETE VISUAL GUIDE
-──────────────────────────────────────────────────
+### Sliding window: the complete visual guide
 
-Array: [2, 1, 5, 1, 3, 2]    Window Size K = 3
-Index:  0  1  2  3  4  5
+Array: `[2, 1, 5, 1, 3, 2]`, window size `K = 3`, indexes 0 to 5.
 
-═══════════════════════════════════════════════════════════════════════
+| Window | `i` | `j` | Elements in the window | Count = `j - i + 1` |
+| --- | --- | --- | --- | --- |
+| 1 | 0 | 2 | `[2, 1, 5]` | 2 − 0 + 1 = 3 ✅ (equals k: process the window) |
+| 2 (after sliding) | 1 | 3 | `[1, 5, 1]` | 3 − 1 + 1 = 3 ✅ |
+| 3 | 2 | 4 | `[5, 1, 3]` | 4 − 2 + 1 = 3 ✅ |
+| 4 (final) | 3 | 5 | `[1, 3, 2]` | 5 − 3 + 1 = 3 ✅ |
 
-WINDOW 1: i=0, j=2
-┌───┬───┬───┬───┬───┬───┐
-│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
-└───┴───┴───┴───┴───┴───┘
-  ↑       ↑
-  i       j
-├─────────┤
- window [2,1,5]
-
-Count = j - i + 1 = 2 - 0 + 1 = 3 ✅ (equals k, process window!)
-
-═══════════════════════════════════════════════════════════════════════
-
-WINDOW 2: i=1, j=3 (after sliding)
-┌───┬───┬───┬───┬───┬───┐
-│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
-└───┴───┴───┴───┴───┴───┘
-      ↑       ↑
-      i       j
-    ├─────────┤
-     window [1,5,1]
-
-Count = j - i + 1 = 3 - 1 + 1 = 3 ✅
-
-═══════════════════════════════════════════════════════════════════════
-
-WINDOW 3: i=2, j=4
-┌───┬───┬───┬───┬───┬───┐
-│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
-└───┴───┴───┴───┴───┴───┘
-          ↑       ↑
-          i       j
-        ├─────────┤
-         window [5,1,3]
-
-Count = j - i + 1 = 4 - 2 + 1 = 3 ✅
-
-═══════════════════════════════════════════════════════════════════════
-
-WINDOW 4: i=3, j=5 (FINAL)
-┌───┬───┬───┬───┬───┬───┐
-│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
-└───┴───┴───┴───┴───┴───┘
-              ↑       ↑
-              i       j
-            ├─────────┤
-             window [1,3,2]
-
-Count = j - i + 1 = 5 - 3 + 1 = 3 ✅
-
-═══════════════════════════════════════════════════════════════════════
-
-KEY INSIGHT: We NEVER thought about i+k or i+k-1!
-Just: "Does my window have k elements? Check j-i+1 == k"
-
-```
+> [!IMPORTANT]
+> **Key insight:** we never think about `i + k` or `i + k - 1`. We only ask: "Does my window have `k` elements?" Check `j - i + 1 == k`.
 
 ### Setup:
 
@@ -335,28 +220,11 @@ Window Size K = 3
 
 ### Count Elements, Not Indices:
 
-```
-Window at i=0, j=2:
-[2, 1, 5] | _, _, _
- ↑     ↑
- i     j
-
-Count = j - i + 1 = 2 - 0 + 1 = 3 ✅
-
-Window at i=1, j=3:
-_, [1, 5, 1] | _, _
-    ↑     ↑
-    i     j
-
-Count = j - i + 1 = 3 - 1 + 1 = 3 ✅
-
-Window at i=2, j=4:
-_, _, [5, 1, 3] | _
-       ↑     ↑
-       i     j
-
-Count = j - i + 1 = 4 - 2 + 1 = 3 ✅
-```
+| Window | Position in `[2, 1, 5, 1, 3, 2]` | `i` | `j` | Count = `j - i + 1` |
+| --- | --- | --- | --- | --- |
+| At i=0, j=2 | **[2, 1, 5]** , _, _, _ | 0 | 2 | 2 − 0 + 1 = 3 ✅ |
+| At i=1, j=3 | _, **[1, 5, 1]** , _, _ | 1 | 3 | 3 − 1 + 1 = 3 ✅ |
+| At i=2, j=4 | _, _, **[5, 1, 3]** , _ | 2 | 4 | 4 − 2 + 1 = 3 ✅ |
 
 **Notice:** We never had to think about `i + k` or `i + k - 1`!
 
@@ -364,43 +232,25 @@ Count = j - i + 1 = 4 - 2 + 1 = 3 ✅
 
 ## 🔗 THE EQUIVALENCE CHAIN (Memorize This)
 
-```
-            THE EQUIVALENCE CHAIN - WHY j-i+1=k WORKS
-──────────────────────────────────────────────────
+### The equivalence chain: why `j - i + 1 = k` works
 
-These THREE expressions are MATHEMATICALLY EQUIVALENT:
+These three expressions are mathematically equivalent:
 
-┌─────────────────────────────────────────────────────────────────────┐
-│                                                                     │
-│     j - i + 1 = k       ← "Window has K elements" ⭐ BEST!           │
-│           ↕                                                         │
-│     j = i + k - 1       ← "j is at last valid position"             │
-│           ↕                                                         │
-│     j < i + k           ← "j hasn't crossed boundary"               │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+| Form | Reads as |
+| --- | --- |
+| `j - i + 1 = k` | "Window has K elements" ⭐ best |
+| `j = i + k - 1` | "j is at the last valid position" |
+| `j < i + k` | "j has not crossed the boundary" |
 
-Mathematical Proof:
-──────────────────
+**Proof.** Start with `j - i + 1 = k`. Rearranging gives `j - i = k - 1`, so `j = i + k - 1` (second form). For a loop where `j` runs from `i` to `i + k - 1`, the loop condition is `j < i + k` (third form).
 
-Start with:      j - i + 1 = k
+**Why the first is best**
 
-Rearrange:       j - i = k - 1
-                 j = i + k - 1          (second form)
+- ❌ `j < i + k`: you wonder, "is it `<` or `<=`?"
+- ❌ `j = i + k - 1`: you wonder, "should I subtract 1?"
+- ✅ `j - i + 1 = k`: you ask, "do I have k elements?" Simple.
 
-For loop condition, we want j to go from i to i+k-1:
-That means:      j < i + k              (third form)
-
-WHY THE FIRST IS BEST:
-─────────────────────
-
-❌ "j < i + k" → You think: "Wait, is it < or <=?"
-❌ "j = i + k - 1" → You think: "Should I subtract 1?"
-✅ "j - i + 1 = k" → You think: "Do I have k elements? Simple!"
-
-The first form is a QUESTION, not a FORMULA.
-Questions are easier to remember than formulas!
-```
+The first form is a **question**, not a formula, and questions are easier to remember than formulas.
 
 These three expressions mean **exactly** the same thing:
 

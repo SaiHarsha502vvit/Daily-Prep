@@ -65,22 +65,13 @@ The four "types" in the table above look like four different algorithms. They're
 
 ## Two Pointer Patterns
 
-1. OPPOSITE DIRECTION (Collision)
-   left → ← right
-   [....converging....]
-   Use: Pair sum, palindrome, partition
-2. SAME DIRECTION (Fast/Slow or Reader/Writer)
-   slow →
-   fast →
-   Use: Remove duplicates, cycle detection, partition
-3. SLIDING WINDOW (Special Same Direction)
-   [left ... right]
-   → →
-   Use: Subarray/substring problems
-4. MULTI-ARRAY (Merge Pattern)
-   Array A: p1 →
-   Array B: p2 →
-   Use: Merge, intersection, comparison
+| # | Pattern | Picture | Use for |
+| --- | --- | --- | --- |
+| 1 | **Opposite direction** (collision) | `left →` ... `← right`, converging | Pair sum, palindrome, partition |
+| 2 | **Same direction** (fast/slow or reader/writer) | `slow →` and `fast →` | Remove duplicates, cycle detection, partition |
+| 3 | **Sliding window** (special same direction) | `[left ... right]`, both edges move right | Subarray and substring problems |
+| 4 | **Multi-array** (merge pattern) | Array A: `p1 →`, array B: `p2 →` | Merge, intersection, comparison |
+
 
 ---
 
@@ -114,26 +105,15 @@ public int[] twoSum(int[] numbers, int target) {
 
 ### Visual: Two Sum Logic
 
-```
-Array: [2, 7, 11, 15], target = 9
+Array `[2, 7, 11, 15]`, target `9`.
 
-Step 1: left=0, right=3
-        [2, 7, 11, 15]
-         ↑          ↑
-        sum = 2 + 15 = 17 > 9 → right--
+| Step | `left` | `right` | Sum | Decision |
+| --- | --- | --- | --- | --- |
+| 1 | 0 (2) | 3 (15) | 2 + 15 = 17 > 9 | `right--` |
+| 2 | 0 (2) | 2 (11) | 2 + 11 = 13 > 9 | `right--` |
+| 3 | 0 (2) | 1 (7) | 2 + 7 = 9 = target ✓ | Found |
 
-Step 2: left=0, right=2
-        [2, 7, 11, 15]
-         ↑      ↑
-        sum = 2 + 11 = 13 > 9 → right--
-
-Step 3: left=0, right=1
-        [2, 7, 11, 15]
-         ↑  ↑
-        sum = 2 + 7 = 9 = target ✓
-
-Answer: [1, 2]
-```
+Answer: `[1, 2]` (1-indexed).
 
 ### 3Sum (LeetCode 15)
 

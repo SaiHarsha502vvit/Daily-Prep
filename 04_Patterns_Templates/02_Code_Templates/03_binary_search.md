@@ -6,41 +6,18 @@
 
 ## Visual Concept
 
-```
-┌───────────────────────────────────────────────────────────────────────────┐
-│                    BINARY SEARCH VISUALIZATION                            │
-├───────────────────────────────────────────────────────────────────────────┤
-║                                                                           ║
-║  Find 7 in sorted array:                                                  ║
-║                                                                           ║
-║  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]                                          ║
-║   0  1  2  3  4  5  6  7  8   9                                           ║
-║                                                                           ║
-║  Step 1: low=0, high=9, mid=4                                             ║
-║  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]                                          ║
-║   ↑           ↑              ↑                                            ║
-║  low         mid           high                                           ║
-║  arr[4]=5 < 7 → search right half                                         ║
-║                                                                           ║
-║  Step 2: low=5, high=9, mid=7                                             ║
-║  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]                                          ║
-║                  ↑     ↑      ↑                                           ║
-║                 low   mid   high                                          ║
-║  arr[7]=8 > 7 → search left half                                          ║
-║                                                                           ║
-║  Step 3: low=5, high=6, mid=5                                             ║
-║  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]                                          ║
-║                  ↑  ↑                                                     ║
-║               low,mid high                                                ║
-║  arr[5]=6 < 7 → search right half                                         ║
-║                                                                           ║
-║  Step 4: low=6, high=6, mid=6                                             ║
-║  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]                                          ║
-║                     ↑                                                     ║
-║                 low,mid,high                                              ║
-║  arr[6]=7 == 7 → FOUND! Return 6                                          ║
-└───────────────────────────────────────────────────────────────────────────┘
-```
+### Binary search visualisation
+
+Find `7` in the sorted array `[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]` (indexes 0 to 9).
+
+| Step | low | high | mid | `arr[mid]` | Decision |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 0 | 9 | 4 | 5 | 5 < 7, so search the right half (`low = mid + 1`) |
+| 2 | 5 | 9 | 7 | 8 | 8 > 7, so search the left half (`high = mid - 1`) |
+| 3 | 5 | 6 | 5 | 6 | 6 < 7, so search the right half |
+| 4 | 6 | 6 | 6 | 7 | 7 == 7, **found**: return 6 |
+
+Each step halves the search range, so the search takes O(log n) steps.
 
 ## Template: Standard Binary Search
 

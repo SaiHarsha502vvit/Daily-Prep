@@ -157,24 +157,24 @@ Both have the same time complexity. Top-down is better for **thinking**; bottom-
 
 ## 🧠 THE DP DECISION TREE
 
-```text
-Does the problem have:
-├── Optimal substructure? (optimal solution uses optimal sub-solutions)
-├── Overlapping subproblems? (same sub-problem solved multiple times)
-└── YES to both → USE DP
+**Does the problem have:**
 
-Which family?
-├── "How many ways?" → COUNTING DP
-├── "Minimum/Maximum cost?" → OPTIMIZATION DP
-├── "Can we achieve X?" → FEASIBILITY DP
-├── Involves two sequences → LCS / EDIT DISTANCE family
-├── Involves one sequence → LIS / KADANE family
-├── Items with weights/values → KNAPSACK family
-├── Interval operations → INTERVAL DP
-├── Grid traversal → GRID DP
-├── Choices at each step → DECISION DP
-└── String palindrome → PALINDROME DP
-```
+- Optimal substructure? (optimal solution uses optimal sub-solutions)
+- Overlapping subproblems? (same sub-problem solved multiple times)
+- YES to both → USE DP
+
+**Which family?**
+
+- "How many ways?" → COUNTING DP
+- "Minimum/Maximum cost?" → OPTIMIZATION DP
+- "Can we achieve X?" → FEASIBILITY DP
+- Involves two sequences → LCS / EDIT DISTANCE family
+- Involves one sequence → LIS / KADANE family
+- Items with weights/values → KNAPSACK family
+- Interval operations → INTERVAL DP
+- Grid traversal → GRID DP
+- Choices at each step → DECISION DP
+- String palindrome → PALINDROME DP
 
 ---
 

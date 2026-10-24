@@ -331,42 +331,41 @@ private void backtrack(int[] nums, int start,
 
 ### Visual Trace
 
-```
-backtrack(start=0, current=[])
-├── Add []
-├── i=0: Choose 1
-│   └── backtrack(start=1, current=[1])
-│       ├── Add [1]
-│       ├── i=1: Choose 2
-│       │   └── backtrack(start=2, current=[1,2])
-│       │       ├── Add [1,2]
-│       │       ├── i=2: Choose 3
-│       │       │   └── backtrack(start=3, current=[1,2,3])
-│       │       │       └── Add [1,2,3]
-│       │       └── Unchoose 3
-│       │       └── return
-│       ├── Unchoose 2
-│       ├── i=2: Choose 3
-│       │   └── backtrack(start=3, current=[1,3])
-│       │       └── Add [1,3]
-│       └── Unchoose 3
-│       └── return
-├── Unchoose 1
-├── i=1: Choose 2
-│   └── backtrack(start=2, current=[2])
-│       ├── Add [2]
-│       ├── i=2: Choose 3
-│       │   └── backtrack(start=3, current=[2,3])
-│       │       └── Add [2,3]
-│       └── Unchoose 3
-├── Unchoose 2
-├── i=2: Choose 3
-│   └── backtrack(start=3, current=[3])
-│       └── Add [3]
-└── Unchoose 3
+**backtrack(start=0, current=[])**
 
-Result: [[], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]]
-```
+- Add []
+- i=0: Choose 1
+- backtrack(start=1, current=[1])
+  - Add [1]
+  - i=1: Choose 2
+    - backtrack(start=2, current=[1,2])
+      - Add [1,2]
+      - i=2: Choose 3
+        - backtrack(start=3, current=[1,2,3])
+          - Add [1,2,3]
+      - Unchoose 3
+      - return
+  - Unchoose 2
+  - i=2: Choose 3
+    - backtrack(start=3, current=[1,3])
+      - Add [1,3]
+  - Unchoose 3
+  - return
+- Unchoose 1
+- i=1: Choose 2
+- backtrack(start=2, current=[2])
+  - Add [2]
+  - i=2: Choose 3
+    - backtrack(start=3, current=[2,3])
+      - Add [2,3]
+  - Unchoose 3
+- Unchoose 2
+- i=2: Choose 3
+- backtrack(start=3, current=[3])
+  - Add [3]
+- Unchoose 3
+
+**Result: [[], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]]**
 
 ### Subsets II - With Duplicates (LeetCode 90)
 

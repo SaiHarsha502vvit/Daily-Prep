@@ -155,18 +155,17 @@ Use `int[128]` when the problem involves ASCII characters (uppercase, digits, et
 
 ## 🧠 PATTERN DECODER FOR STRING PROBLEMS
 
-```text
-String problem?
-├── "Parentheses" → Stack
-├── "Anagram/permutation" → HashMap frequency / sorted key
-├── "Substring with condition" → Sliding Window + HashMap
-├── "Palindrome" → Two Pointers (expand from center) or DP
-├── "Pattern matching" → KMP / Rabin-Karp / Z-algorithm
-├── "Transform A to B" → DP (Edit Distance)
-├── "Word break" → DP + Trie/Set
-├── "Expression evaluation" → Stack (operator precedence)
-└── "Justify/format" → Simulation
-```
+**String problem?**
+
+- "Parentheses" → Stack
+- "Anagram/permutation" → HashMap frequency / sorted key
+- "Substring with condition" → Sliding Window + HashMap
+- "Palindrome" → Two Pointers (expand from center) or DP
+- "Pattern matching" → KMP / Rabin-Karp / Z-algorithm
+- "Transform A to B" → DP (Edit Distance)
+- "Word break" → DP + Trie/Set
+- "Expression evaluation" → Stack (operator precedence)
+- "Justify/format" → Simulation
 
 ---
 

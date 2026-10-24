@@ -445,38 +445,34 @@ class Solution {
 
 ### WHEN TO USE HEAP — Decision Flowchart
 
-```
-            WHEN TO USE A HEAP — DECISION FLOWCHART
-──────────────────────────────────────────────────
+**WHEN TO USE A HEAP — DECISION FLOWCHART**
 
-Need to repeatedly find min/max of a dynamic collection?
-  │
-  ├── YES ─→ Use a Heap (PriorityQueue)
-  │    │
-  │    ├── Need BOTH min and max? ─→ Two heaps or TreeMap
-  │    ├── Need fast delete(obj)?  ─→ TreeMap (not heap — O(n) remove!)
-  │    └── Need median?           ─→ Two heaps pattern
-  │
-  └── NO
-       │
-       ├── Need top K elements? ─────────────────────────────────────
-       │    ├── K is small, N is large? ─→ Min-heap of size K: O(n log k)
-       │    ├── K ≈ N?                  ─→ Just sort: O(n log n)
-       │    └── Online/streaming?       ─→ Heap (can't sort unseen data)
-       │
-       ├── Merging K sorted sequences?  ─→ Min-heap of K heads
-       │
-       ├── Greedy: always pick best available?
-       │    ├── Fixed priority? ─→ Sort once
-       │    └── Dynamic priority / reinsertions? ─→ Heap
-       │
-       ├── Sliding window min/max?
-       │    ├── O(n) needed?   ─→ Monotonic Deque (not heap!)
-       │    └── O(n log n) OK? ─→ Heap with lazy deletion
-       │
-       └── Dijkstra / Prim?    ─→ Min-heap for edge relaxation
+**Need to repeatedly find min/max of a dynamic collection?**
 
-```
+- YES ─→ Use a Heap (PriorityQueue)
+
+- Need BOTH min and max? ─→ Two heaps or TreeMap
+- Need fast delete(obj)?  ─→ TreeMap (not heap — O(n) remove!)
+- Need median?           ─→ Two heaps pattern
+
+- NO
+
+  - Need top K elements? ─────────────────────────────────────
+- K is small, N is large? ─→ Min-heap of size K: O(n log k)
+- K ≈ N?                  ─→ Just sort: O(n log n)
+- Online/streaming?       ─→ Heap (can't sort unseen data)
+
+  - Merging K sorted sequences?  ─→ Min-heap of K heads
+
+  - Greedy: always pick best available?
+- Fixed priority? ─→ Sort once
+- Dynamic priority / reinsertions? ─→ Heap
+
+  - Sliding window min/max?
+- O(n) needed?   ─→ Monotonic Deque (not heap!)
+- O(n log n) OK? ─→ Heap with lazy deletion
+
+  - Dijkstra / Prim?    ─→ Min-heap for edge relaxation
 
 ### Problem Pattern Quick Reference
 

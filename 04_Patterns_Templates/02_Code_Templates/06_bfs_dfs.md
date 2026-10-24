@@ -6,46 +6,45 @@
 
 ## Visual Concept
 
+### BFS versus DFS visualisation
+
+```mermaid
+flowchart TD
+  n1((1)) --> n2((2))
+  n1 --> n3((3))
+  n1 --> n4((4))
+  n2 --> n5((5))
+  n2 --> n6((6))
+  n4 --> n7((7))
 ```
-                  BFS vs DFS VISUALIZATION
-──────────────────────────────────────────────────
 
-Graph:        1
-             /|\
-            2 3 4
-           /|   |
-          5 6   7
+**How to read this diagram.** The graph used in both traversals below: node 1 is the root, with children 2, 3 and 4; node 2 has children 5 and 6; node 4 has child 7.
 
-BFS (Level by Level) - Use QUEUE
-────────────────────────────────
-Level 0: [1]
-Level 1: [2, 3, 4]
-Level 2: [5, 6, 7]
+**BFS (level by level), using a queue**
 
-Visit order: 1 → 2 → 3 → 4 → 5 → 6 → 7
-Best for: Shortest path, Level order traversal
+| Level | Nodes |
+| --- | --- |
+| 0 | `[1]` |
+| 1 | `[2, 3, 4]` |
+| 2 | `[5, 6, 7]` |
 
-════════════════════════════════════════════════════════════════════
+Visit order: 1 → 2 → 3 → 4 → 5 → 6 → 7. Best for shortest path and level-order traversal.
 
-DFS (Go Deep First) - Use STACK (or recursion)
-───────────────────────────────────────────────
+**DFS (go deep first), using a stack or recursion**
 
-Path 1: 1 → 2 → 5 (dead end, backtrack)
-Path 2: 1 → 2 → 6 (dead end, backtrack)
-Path 3: 1 → 3 (dead end, backtrack)
-Path 4: 1 → 4 → 7 (dead end, done!)
+- Path 1: 1 → 2 → 5 (dead end, backtrack)
+- Path 2: 1 → 2 → 6 (dead end, backtrack)
+- Path 3: 1 → 3 (dead end, backtrack)
+- Path 4: 1 → 4 → 7 (dead end, done)
 
-Visit order: 1 → 2 → 5 → 6 → 3 → 4 → 7 (depends on order)
-Best for: Find any path, Detect cycle, Topological sort
+Visit order: 1 → 2 → 5 → 6 → 3 → 4 → 7 (depends on neighbour order). Best for finding any path, cycle detection and topological sort.
 
-════════════════════════════════════════════════════════════════════
+**When to use what**
 
-WHEN TO USE WHAT:
-┌────────────────────────────────────────────────────────────────────┐
-│ BFS: Shortest path (unweighted), Level order, Nearest neighbors    │
-│ DFS: All paths, Cycle detection, Connected components, Backtrack   │
-└────────────────────────────────────────────────────────────────────┘
-```
+| Traversal | Best for |
+| --- | --- |
+| **BFS** | Shortest path (unweighted), level order, nearest neighbours |
+| **DFS** | All paths, cycle detection, connected components, backtracking |
 
 ## Template: BFS Level Order Traversal
 

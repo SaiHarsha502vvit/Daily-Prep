@@ -246,48 +246,52 @@ class MerkleTree {
 
 ### Practice Problems Mapped to DS
 
-```
-TRIE:
-├── LC 208: Implement Trie (Prefix Tree)          ⭐ Medium
-├── LC 211: Design Add and Search Words           ⭐ Medium
-├── LC 212: Word Search II                        🔥 Hard
-├── LC 648: Replace Words                         ⭐ Medium
-└── LC 1268: Search Suggestions System            ⭐ Medium
+**TRIE:**
 
-SEGMENT TREE:
-├── LC 307: Range Sum Query - Mutable             ⭐ Medium
-├── LC 315: Count of Smaller Numbers After Self   🔥 Hard
-├── LC 493: Reverse Pairs                         🔥 Hard
-└── LC 327: Count of Range Sum                    🔥 Hard
+- LC 208: Implement Trie (Prefix Tree)          ⭐ Medium
+- LC 211: Design Add and Search Words           ⭐ Medium
+- LC 212: Word Search II                        🔥 Hard
+- LC 648: Replace Words                         ⭐ Medium
+- LC 1268: Search Suggestions System            ⭐ Medium
 
-DISJOINT SET (UNION-FIND):
-├── LC 200: Number of Islands                     ⭐ Medium
-├── LC 547: Number of Provinces                   ⭐ Medium
-├── LC 684: Redundant Connection                  ⭐ Medium
-├── LC 721: Accounts Merge                        ⭐ Medium
-├── LC 990: Satisfiability of Equality Equations  ⭐ Medium
-└── LC 1584: Min Cost to Connect All Points       ⭐ Medium
+**SEGMENT TREE:**
 
-MONOTONIC STACK:
-├── LC 84: Largest Rectangle in Histogram         🔥 Hard
-├── LC 85: Maximal Rectangle                      🔥 Hard
-├── LC 496: Next Greater Element I                ⭐ Easy
-├── LC 503: Next Greater Element II               ⭐ Medium
-├── LC 739: Daily Temperatures                    ⭐ Medium
-└── LC 901: Online Stock Span                     ⭐ Medium
+- LC 307: Range Sum Query - Mutable             ⭐ Medium
+- LC 315: Count of Smaller Numbers After Self   🔥 Hard
+- LC 493: Reverse Pairs                         🔥 Hard
+- LC 327: Count of Range Sum                    🔥 Hard
 
-LRU CACHE:
-├── LC 146: LRU Cache                             ⭐ Medium
-├── LC 460: LFU Cache                             🔥 Hard
-└── LC 1472: Design Browser History               ⭐ Medium
+**DISJOINT SET (UNION-FIND):**
 
-HEAP/PRIORITY QUEUE:
-├── LC 23: Merge k Sorted Lists                   🔥 Hard
-├── LC 295: Find Median from Data Stream          🔥 Hard
-├── LC 347: Top K Frequent Elements               ⭐ Medium
-├── LC 373: Find K Pairs with Smallest Sums       ⭐ Medium
-└── LC 767: Reorganize String                     ⭐ Medium
-```
+- LC 200: Number of Islands                     ⭐ Medium
+- LC 547: Number of Provinces                   ⭐ Medium
+- LC 684: Redundant Connection                  ⭐ Medium
+- LC 721: Accounts Merge                        ⭐ Medium
+- LC 990: Satisfiability of Equality Equations  ⭐ Medium
+- LC 1584: Min Cost to Connect All Points       ⭐ Medium
+
+**MONOTONIC STACK:**
+
+- LC 84: Largest Rectangle in Histogram         🔥 Hard
+- LC 85: Maximal Rectangle                      🔥 Hard
+- LC 496: Next Greater Element I                ⭐ Easy
+- LC 503: Next Greater Element II               ⭐ Medium
+- LC 739: Daily Temperatures                    ⭐ Medium
+- LC 901: Online Stock Span                     ⭐ Medium
+
+**LRU CACHE:**
+
+- LC 146: LRU Cache                             ⭐ Medium
+- LC 460: LFU Cache                             🔥 Hard
+- LC 1472: Design Browser History               ⭐ Medium
+
+**HEAP/PRIORITY QUEUE:**
+
+- LC 23: Merge k Sorted Lists                   🔥 Hard
+- LC 295: Find Median from Data Stream          🔥 Hard
+- LC 347: Top K Frequent Elements               ⭐ Medium
+- LC 373: Find K Pairs with Smallest Sums       ⭐ Medium
+- LC 767: Reorganize String                     ⭐ Medium
 
 ---
 

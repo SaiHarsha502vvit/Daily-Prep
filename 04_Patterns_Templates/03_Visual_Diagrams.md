@@ -131,162 +131,49 @@ A lookup walks the chain comparing keys, so cost grows with chain length. A good
 
 ### Two Sum (Two Pointers on Sorted Array)
 
-```
-                  TWO SUM - TWO POINTERS
-──────────────────────────────────────────────────
+Sorted array `[1, 2, 3, 5, 7, 10, 11]`, target `9`.
 
-Sorted Array: [1, 2, 3, 5, 7, 10, 11]    Target: 9
-
-Step 1:
-┌───┬───┬───┬───┬───┬────┬────┐
-│ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │
-└───┴───┴───┴───┴───┴────┴────┘
-  ↑                        ↑
- left                    right
-
-sum = 1 + 11 = 12 > 9  → Move right LEFT
-
-Step 2:
-┌───┬───┬───┬───┬───┬────┬────┐
-│ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │
-└───┴───┴───┴───┴───┴────┴────┘
-  ↑                  ↑
- left              right
-
-sum = 1 + 10 = 11 > 9  → Move right LEFT
-
-Step 3:
-┌───┬───┬───┬───┬───┬────┬────┐
-│ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │
-└───┴───┴───┴───┴───┴────┴────┘
-  ↑              ↑
- left          right
-
-sum = 1 + 7 = 8 < 9  → Move left RIGHT
-
-Step 4:
-┌───┬───┬───┬───┬───┬────┬────┐
-│ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │
-└───┴───┴───┴───┴───┴────┴────┘
-      ↑          ↑
-     left      right
-
-sum = 2 + 7 = 9 == 9  ✓ FOUND!
-```
+| Step | `left` (value) | `right` (value) | Sum | Decision |
+| --- | --- | --- | --- | --- |
+| 1 | 0 (1) | 6 (11) | 1 + 11 = 12 > 9 | Move `right` left |
+| 2 | 0 (1) | 5 (10) | 1 + 10 = 11 > 9 | Move `right` left |
+| 3 | 0 (1) | 4 (7) | 1 + 7 = 8 < 9 | Move `left` right |
+| 4 | 1 (2) | 4 (7) | 2 + 7 = 9 | **Found** ✓ |
 
 ### Kadane's Algorithm (Maximum Subarray Sum)
 
-```
-                  KADANE'S ALGORITHM
-──────────────────────────────────────────────────
+Array: `[-2, 1, -3, 4, -1, 2, 1, -5, 4]`.
 
-Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+**Key idea:** at each position, decide, "Should I start fresh here, or extend the previous subarray?"
 
-KEY IDEA: At each position, decide:
-"Should I start fresh here, or extend previous subarray?"
+| Index | `arr[i]` | `current = max(arr[i], current + arr[i])` | Choice | `maxSum` | Best subarray ending here |
+| --- | --- | --- | --- | --- | --- |
+| 0 | −2 | max(−2, 0 + (−2)) = −2 | start | −2 | `[-2]` |
+| 1 | 1 | max(1, −2 + 1) = 1 | start fresh | 1 | `[1]` |
+| 2 | −3 | max(−3, 1 + (−3)) = −2 | extend | 1 | `[1, -3]` |
+| 3 | 4 | max(4, −2 + 4) = 4 | start fresh | 4 | `[4]` |
+| 4 | −1 | max(−1, 4 + (−1)) = 3 | extend | 4 | `[4, -1]` |
+| 5 | 2 | max(2, 3 + 2) = 5 | extend | 5 | `[4, -1, 2]` |
+| 6 | 1 | max(1, 5 + 1) = 6 | extend | **6** ⭐ | `[4, -1, 2, 1]` (maximum subarray) |
 
-Index 0: arr[0] = -2
-         current = max(-2, 0 + (-2)) = max(-2, -2) = -2
-         maxSum = -2
-         ├───┤
-         [-2]
-
-Index 1: arr[1] = 1
-         current = max(1, -2 + 1) = max(1, -1) = 1  ← Start fresh!
-         maxSum = 1
-             ├───┤
-             [1]
-
-Index 2: arr[2] = -3
-         current = max(-3, 1 + (-3)) = max(-3, -2) = -2  ← Extend
-         maxSum = 1
-             ├───────┤
-             [1, -3]
-
-Index 3: arr[3] = 4
-         current = max(4, -2 + 4) = max(4, 2) = 4  ← Start fresh!
-         maxSum = 4
-                     ├───┤
-                     [4]
-
-Index 4: arr[4] = -1
-         current = max(-1, 4 + (-1)) = max(-1, 3) = 3  ← Extend
-         maxSum = 4
-                     ├───────┤
-                     [4, -1]
-
-Index 5: arr[5] = 2
-         current = max(2, 3 + 2) = max(2, 5) = 5  ← Extend
-         maxSum = 5
-                     ├───────────┤
-                     [4, -1, 2]
-
-Index 6: arr[6] = 1
-         current = max(1, 5 + 1) = max(1, 6) = 6  ← Extend
-         maxSum = 6 ⭐
-                     ├───────────────┤
-                     [4, -1, 2, 1]    ← MAXIMUM SUBARRAY
-
-Continue... Final Answer: 6 (subarray [4, -1, 2, 1])
-```
+Continuing through the rest of the array leaves the final answer at **6**, from the subarray `[4, -1, 2, 1]`.
 
 ### Dutch National Flag (Sort 0s, 1s, 2s)
 
-```
-                  DUTCH NATIONAL FLAG
-──────────────────────────────────────────────────
+Array `[2, 0, 2, 1, 1, 0]`. Three pointers: `low` (end of the 0s zone), `mid` (scanning) and `high` (start of the 2s zone).
 
-Array: [2, 0, 2, 1, 1, 0]
+| Step | `low` | `mid` | `high` | `arr[mid]` | Action | Array after |
+| --- | --- | --- | --- | --- | --- | --- |
+| Initial | 0 | 0 | 5 | 2 | | `[2, 0, 2, 1, 1, 0]` |
+| 1 | 0 | 0 | 5 | 2 | Swap with `high`, `high--` | `[0, 0, 2, 1, 1, 2]` |
+| 2 | 0 | 0 | 4 | 0 | Swap with `low`, `low++`, `mid++` | `[0, 0, 2, 1, 1, 2]` |
+| 3 | 1 | 1 | 4 | 0 | Swap with `low`, `low++`, `mid++` | `[0, 0, 2, 1, 1, 2]` |
+| 4 | 2 | 2 | 4 | 2 | Swap with `high`, `high--` | `[0, 0, 1, 1, 2, 2]` |
+| 5 | 2 | 2 | 3 | 1 | `mid++` | `[0, 0, 1, 1, 2, 2]` |
+| 6 | 2 | 3 | 3 | 1 | `mid++` | `[0, 0, 1, 1, 2, 2]` |
+| End | 2 | 4 | 3 | | `mid > high`: done ✓ | `[0, 0, 1, 1, 2, 2]` |
 
-Three pointers: low (0s boundary), mid (scanning), high (2s boundary)
-
-Initial:
-┌───┬───┬───┬───┬───┬───┐
-│ 2 │ 0 │ 2 │ 1 │ 1 │ 0 │
-└───┴───┴───┴───┴───┴───┘
-  ↑                   ↑
-low,mid              high
-
-arr[mid]=2: Swap with high, high--
-┌───┬───┬───┬───┬───┬───┐
-│ 0 │ 0 │ 2 │ 1 │ 1 │ 2 │
-└───┴───┴───┴───┴───┴───┘
-  ↑               ↑   ↑
-low,mid          high (2s zone)
-
-arr[mid]=0: Swap with low, low++, mid++
-┌───┬───┬───┬───┬───┬───┐
-│ 0 │ 0 │ 2 │ 1 │ 1 │ 2 │
-└───┴───┴───┴───┴───┴───┘
-  ↑   ↑           ↑   ↑
- (0s) low,mid    high (2s)
-
-arr[mid]=0: Swap with low, low++, mid++
-┌───┬───┬───┬───┬───┬───┐
-│ 0 │ 0 │ 2 │ 1 │ 1 │ 2 │
-└───┴───┴───┴───┴───┴───┘
- (0s)  ↑   ↑      ↑   ↑
-      low mid    high (2s)
-
-arr[mid]=2: Swap with high, high--
-┌───┬───┬───┬───┬───┬───┐
-│ 0 │ 0 │ 1 │ 1 │ 2 │ 2 │
-└───┴───┴───┴───┴───┴───┘
- (0s)  ↑   ↑   ↑  (2s zone)
-      low mid high
-
-arr[mid]=1: Just mid++
-┌───┬───┬───┬───┬───┬───┐
-│ 0 │ 0 │ 1 │ 1 │ 2 │ 2 │
-└───┴───┴───┴───┴───┴───┘
- (0s)  ↑      ↑↑  (2s zone)
-      low   mid,high
-
-arr[mid]=1: mid++
-mid > high → DONE! ✓
-
-Result: [0, 0, 1, 1, 2, 2]
-```
+Result: `[0, 0, 1, 1, 2, 2]`. Everything left of `low` is 0, everything right of `high` is 2, and `low..mid-1` holds the 1s.
 
 ---
 
@@ -294,43 +181,31 @@ Result: [0, 0, 1, 1, 2, 2]
 
 ### Anagram Check
 
-```
-                  ANAGRAM CHECK VISUALIZATION
-──────────────────────────────────────────────────
+Strings: `"listen"` and `"silent"`.
 
-String 1: "listen"        String 2: "silent"
+**Method 1: frequency count**
 
-METHOD 1: Frequency Count
+| Letter | Count in "listen" | Count in "silent" |
+| --- | --- | --- |
+| e | 1 | 1 |
+| i | 1 | 1 |
+| l | 1 | 1 |
+| n | 1 | 1 |
+| s | 1 | 1 |
+| t | 1 | 1 |
 
-Count for "listen":       Count for "silent":
-┌───┬───┐                 ┌───┬───┐
-│ l │ 1 │                 │ s │ 1 │
-│ i │ 1 │                 │ i │ 1 │
-│ s │ 1 │                 │ l │ 1 │
-│ t │ 1 │                 │ e │ 1 │
-│ e │ 1 │                 │ n │ 1 │
-│ n │ 1 │                 │ t │ 1 │
-└───┴───┘                 └───┴───┘
+Both strings have the same characters with the same frequencies, so they are anagrams ✓.
 
-Both have same characters with same frequencies → ANAGRAM ✓
+**Method 2: single frequency array**
 
-METHOD 2: Single Frequency Array
+Start with `freq[26]` all zeros. Add 1 for each character of `"listen"`, then subtract 1 for each character of `"silent"`.
 
-Start: freq[26] = all zeros
+| Letter | a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| After "listen" (+1) | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
+| After "silent" (−1) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-Process "listen": +1 for each char
-┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
-│0│0│0│0│1│0│0│0│1│0│0│1│0│1│0│0│0│0│1│1│0│0│0│0│0│0│
-└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘
- a b c d e f g h i j k l m n o p q r s t u v w x y z
-
-Process "silent": -1 for each char
-┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
-│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│
-└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘
-
-All zeros → ANAGRAM ✓
-```
+All zeros, so the strings are anagrams ✓.
 
 ### KMP String Matching (Pattern Search)
 
@@ -418,45 +293,27 @@ Continue... Final: [1, 3, 4, 5, 10]
 
 ### Counting Sort Visualization
 
-```
-                  COUNTING SORT VISUALIZATION
-──────────────────────────────────────────────────
+Array `[4, 2, 2, 8, 3, 3, 1]` (values in the range 0 to 9).
 
-Array: [4, 2, 2, 8, 3, 3, 1]    (values range 0-9)
+**Step 1: count occurrences** (index = value)
 
-STEP 1: Count occurrences
+| Value | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `count` | 0 | 1 | 2 | 2 | 1 | 0 | 0 | 0 | 1 | 0 |
 
-Count array (index = value):
-┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
-│ 0 │ 1 │ 2 │ 1 │ 1 │ 0 │ 0 │ 0 │ 1 │ 0 │
-└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
-  0   1   2   3   4   5   6   7   8   9
-      ↑   ↑   ↑   ↑               ↑
-     one two two one             one
-      1   2s  3s  4               8
+(one 1, two 2s, two 3s, one 4, one 8)
 
-STEP 2: Cumulative sum (for stable sort)
+**Step 2: cumulative sum** (for a stable sort)
 
-┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
-│ 0 │ 1 │ 3 │ 4 │ 5 │ 5 │ 5 │ 5 │ 6 │ 6 │
-└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
-  0   1   2   3   4   5   6   7   8   9
+| Value | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `count` | 0 | 1 | 3 | 5 | 6 | 6 | 6 | 6 | 7 | 7 |
 
-Meaning: count[i] = number of elements ≤ i
+Meaning: `count[i]` = the number of elements ≤ `i`.
 
-STEP 3: Build output (right to left for stability)
+**Step 3: build the output, right to left, for stability.** Process the input `[4, 2, 2, 8, 3, 3, 1]` from the right. The last element, `1`, goes to position `count[1] - 1 = 0`, and `count[1]` is decremented. Continuing gives the final result `[1, 2, 2, 3, 3, 4, 8]`.
 
-Input:  [4, 2, 2, 8, 3, 3, 1]
-                          ↑ Process 1 first (from right)
-
-1 goes to position count[1]-1 = 0
-Output: [1, _, _, _, _, _, _]
-
-Continue... Final: [1, 2, 2, 3, 3, 4, 8]
-
-Time: O(N + K) where K = range of values
-Best when: K is small (like sorting ages 0-100)
-```
+**Time:** O(N + K), where K is the range of values. **Best when** K is small, such as sorting ages 0 to 100.
 
 ---
 
@@ -474,68 +331,17 @@ Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced par
 
 ### Binary Search Variants
 
-```
-                  BINARY SEARCH VARIANTS
-──────────────────────────────────────────────────
+Array `[1, 2, 2, 2, 2, 3, 5, 7]` (indexes 0 to 7). Find `2`.
 
-Array: [1, 2, 2, 2, 2, 3, 5, 7]    Find: 2
-Index:  0  1  2  3  4  5  6  7
+| Variant | Returns | Logic |
+| --- | --- | --- |
+| 1. Find **any** occurrence | Index 2 or 3 (any match) | Return as soon as `arr[mid] == target` |
+| 2. Find the **first** occurrence | 1 (the leftmost 2) | When found, do not return: save it and go **left**: `if (arr[mid] == target) { result = mid; high = mid - 1; }` |
+| 3. Find the **last** occurrence | 4 (the rightmost 2) | When found, do not return: save it and go **right**: `if (arr[mid] == target) { result = mid; low = mid + 1; }` |
+| 4. **Lower bound** (first element ≥ target) | 1 | First index where `arr[i] >= 2` |
+| 5. **Upper bound** (first element > target) | 5 | First index where `arr[i] > 2` |
 
-═══════════════════════════════════════════════════════════════════════
-
-VARIANT 1: Find ANY occurrence
-┌───┬───┬───┬───┬───┬───┬───┬───┐
-│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
-└───┴───┴───┴───┴───┴───┴───┴───┘
-            ↑
-         returns 2 or 3 (any match)
-
-═══════════════════════════════════════════════════════════════════════
-
-VARIANT 2: Find FIRST occurrence
-┌───┬───┬───┬───┬───┬───┬───┬───┐
-│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
-└───┴───┴───┴───┴───┴───┴───┴───┘
-      ↑
-   returns 1 (leftmost 2)
-
-Logic: When found, don't return! Save and go LEFT
-       if (arr[mid] == target) { result = mid; high = mid - 1; }
-
-═══════════════════════════════════════════════════════════════════════
-
-VARIANT 3: Find LAST occurrence
-┌───┬───┬───┬───┬───┬───┬───┬───┐
-│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
-└───┴───┴───┴───┴───┴───┴───┴───┘
-                ↑
-            returns 4 (rightmost 2)
-
-Logic: When found, don't return! Save and go RIGHT
-       if (arr[mid] == target) { result = mid; low = mid + 1; }
-
-═══════════════════════════════════════════════════════════════════════
-
-VARIANT 4: Lower Bound (first >= target)
-Target: 2
-┌───┬───┬───┬───┬───┬───┬───┬───┐
-│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
-└───┴───┴───┴───┴───┴───┴───┴───┘
-      ↑
-   returns 1 (first element ≥ 2)
-
-═══════════════════════════════════════════════════════════════════════
-
-VARIANT 5: Upper Bound (first > target)
-Target: 2
-┌───┬───┬───┬───┬───┬───┬───┬───┐
-│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
-└───┴───┴───┴───┴───┴───┴───┴───┘
-                    ↑
-                returns 5 (first element > 2)
-
-Count of 2s = Upper Bound - Lower Bound = 5 - 1 = 4
-```
+Count of 2s = upper bound − lower bound = 5 − 1 = 4.
 
 ---
 
@@ -569,55 +375,28 @@ flowchart LR
 
 ### Stack vs Queue
 
-```
-                  STACK vs QUEUE
-──────────────────────────────────────────────────
+**Stack (LIFO, last in first out).** Think of a stack of plates.
 
-STACK (LIFO - Last In First Out)
-─────────────────────────────────
-Think: Stack of plates
+| Operation | Stack (bottom → top) | Result |
+| --- | --- | --- |
+| Push 1, push 2, push 3 | `1, 2, 3` | `3` is on top |
+| Pop | `1, 2` | `3` comes out first |
+| Pop | `1` | `2` comes out next |
 
-Push 1, Push 2, Push 3:          Pop:
-┌─────┐                          ┌─────┐
-│  3  │ ← top                    │  3  │ ← comes out first
-├─────┤                          └─────┘
-│  2  │                          Then:
-├─────┤                          ┌─────┐
-│  1  │                          │  2  │ ← next out
-└─────┘                          └─────┘
+Use cases: undo, recursion, balanced brackets.
 
-Use cases: Undo, Recursion, Balanced brackets
+**Queue (FIFO, first in first out).** Think of a line at a store.
 
-═══════════════════════════════════════════════════════════════════════
+| Operation | Queue (front → rear) | Result |
+| --- | --- | --- |
+| Enqueue 1, 2, 3 | `1, 2, 3` | `1` is at the front |
+| Dequeue | `2, 3` | `1` comes out first |
 
-QUEUE (FIFO - First In First Out)
-─────────────────────────────────
-Think: Line at store
+Use cases: BFS, level-order traversal, task scheduling.
 
-Enqueue 1, 2, 3:                 Dequeue:
-┌───┬───┬───┐                    ┌───┬───┬───┐
-│ 1 │ 2 │ 3 │                    │ 1 │ 2 │ 3 │
-└───┴───┴───┘                    └───┴───┴───┘
-  ↑       ↑                        ↑
-front    rear                    comes out first
+**Deque (double-ended queue).** You can add and remove at **both** ends: `addFirst`/`removeFirst` at the front and `addLast`/`removeLast` at the back.
 
-Use cases: BFS, Level-order traversal, Task scheduling
-
-═══════════════════════════════════════════════════════════════════════
-
-DEQUE (Double-Ended Queue)
-─────────────────────────────
-Can add/remove from BOTH ends!
-
-┌───┬───┬───┬───┬───┐
-│ A │ B │ C │ D │ E │
-└───┴───┴───┴───┴───┘
-  ↑               ↑
-addFirst/      addLast/
-removeFirst    removeLast
-
-Use cases: Sliding window max, BFS variations
-```
+Use cases: sliding-window maximum, BFS variations.
 
 ---
 
@@ -787,101 +566,62 @@ The LCS is **"ADH"** (length 3). To recover it, start at `dp[6][6]` and trace ba
 
 ### Bit Operations Visual
 
-BIT MANIPULATION VISUAL
+**Checking whether `n` is a power of 2**
 
-CHECKING IF POWER OF 2:
-────────────────────────
+| `n` | Binary | `n - 1` | Binary | `n & (n - 1)` | Result |
+| --- | --- | --- | --- | --- | --- |
+| 8 | `1000` | 7 | `0111` | `0000` | All zeros: power of 2 ✓ |
+| 6 | `0110` | 5 | `0101` | `0100` | Not zero: not a power of 2 ✗ |
 
-n = 8: 1000 (binary)
-n-1 = 7: 0111 (binary)
-────
-n & (n-1): 0000 ← All zeros! Power of 2 ✓
+**Rule:** a power of 2 has exactly one bit set. `n & (n - 1)` removes the rightmost set bit, so if the result is 0 it was a power of 2.
 
-n = 6: 0110 (binary)
-n-1 = 5: 0101 (binary)
-────
-n & (n-1): 0100 ← Not zero! Not power of 2 ✗
+**Counting set bits** (Brian Kernighan's method). `n = 13` is `1101` in binary, with 3 set bits.
 
-Rule: Power of 2 has exactly ONE bit set
-n & (n-1) removes rightmost set bit
-If result is 0, it was power of 2
+| Iteration | `n` | `n - 1` | `n & (n - 1)` | Count |
+| --- | --- | --- | --- | --- |
+| 1 | `1101` | `1100` | `1100` | 1 (removed the rightmost 1) |
+| 2 | `1100` | `1011` | `1000` | 2 |
+| 3 | `1000` | `0111` | `0000` | 3 |
 
-═══════════════════════════════════════════════════════════════════════
+`n` is now 0: stop. Answer: 3 set bits ✓.
 
-COUNTING SET BITS:
-──────────────────
+**XOR properties**
 
-n = 13: 1101 (binary) → 3 set bits
+- `a ^ a = 0` (equal numbers cancel)
+- `a ^ 0 = a` (XOR with 0 gives the same number)
+- `a ^ b ^ a = b` (`a` cancels out)
 
-Iteration 1:
-n = 1101
-n-1 = 1100
-n & (n-1) = 1100 → count = 1 (removed rightmost 1)
+Example: find the single number in `[4, 1, 2, 1, 2]`.
 
-Iteration 2:
-n = 1100
-n-1 = 1011
-n & (n-1) = 1000 → count = 2
-
-Iteration 3:
-n = 1000
-n-1 = 0111
-n & (n-1) = 0000 → count = 3
-
-n = 0, stop. Answer: 3 set bits ✓
-
-═══════════════════════════════════════════════════════════════════════
-
-XOR PROPERTIES:
-───────────────
-
-a ^ a = 0 (same numbers cancel)
-a ^ 0 = a (XOR with 0 gives same number)
-a ^ b ^ a = b (a cancels out)
-
-Example: Find single number in [4, 1, 2, 1, 2]
-
+```text
 4 ^ 1 ^ 2 ^ 1 ^ 2
 = 4 ^ (1 ^ 1) ^ (2 ^ 2)
 = 4 ^ 0 ^ 0
-= 4 ← The single number!
+= 4        <- the single number
+```
+
 
 ### GCD Euclidean Algorithm
 
+Find `GCD(48, 18)`.
+
+| Step | Division | Remainder | Next |
+| --- | --- | --- | --- |
+| 1 | 48 = 18 × 2 + 12 | 12 | GCD(48, 18) = GCD(18, 12) |
+| 2 | 18 = 12 × 1 + 6 | 6 | GCD(18, 12) = GCD(12, 6) |
+| 3 | 12 = 6 × 2 + 0 | 0 | The remainder is 0, so **GCD = 6** ✓ |
+
+```mermaid
+flowchart TD
+  A["GCD(48, 18)"] -->|"48 % 18 = 12"| B["GCD(18, 12)"]
+  B -->|"18 % 12 = 6"| C["GCD(12, 6)"]
+  C -->|"12 % 6 = 0"| D["GCD(6, 0)"]
+  D --> E["return 6 (when b becomes 0, a is the GCD)"]
 ```
-                  GCD - EUCLIDEAN ALGORITHM
-──────────────────────────────────────────────────
 
-Find GCD(48, 18):
+**How to read this diagram.** Each step replaces `(a, b)` with `(b, a % b)` until `b` is 0.
 
-Step 1: 48 = 18 × 2 + 12
-        a    b        remainder
-
-        48 ÷ 18 = 2 remainder 12
-        Now: GCD(48, 18) = GCD(18, 12)
-
-Step 2: 18 = 12 × 1 + 6
-        18 ÷ 12 = 1 remainder 6
-        Now: GCD(18, 12) = GCD(12, 6)
-
-Step 3: 12 = 6 × 2 + 0
-        12 ÷ 6 = 2 remainder 0
-        Remainder is 0 → GCD = 6 ✓
-
-Visual:
-┌──────────────────────────────────────────────────────────────────────┐
-│ GCD(48, 18)                                                          │
-│    ↓                                                                 │
-│ GCD(18, 48 % 18) = GCD(18, 12)                                       │
-│    ↓                                                                 │
-│ GCD(12, 18 % 12) = GCD(12, 6)                                        │
-│    ↓                                                                 │
-│ GCD(6, 12 % 6) = GCD(6, 0)                                           │
-│    ↓                                                                 │
-│ return 6  ← When b becomes 0, a is the GCD                           │
-└──────────────────────────────────────────────────────────────────────┘
-
-Code:
+```java
 int gcd(int a, int b) {
     while (b != 0) {
         int temp = b;
@@ -890,9 +630,9 @@ int gcd(int a, int b) {
     }
     return a;
 }
-
-Time Complexity: O(log(min(a, b)))
 ```
+
+Time complexity: O(log(min(a, b))).
 
 ---
 

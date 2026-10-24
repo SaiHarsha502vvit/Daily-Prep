@@ -169,18 +169,17 @@ THEN → Two Pointers on Array
 
 ### Decision Tree
 
-```
-Problem involves array?
-├── Need pair with target sum?
-│   ├── Array sorted? → OPPOSITE DIRECTION pointers
-│   └── Array unsorted? → HashMap (not two pointers)
-├── Remove/move elements in-place?
-│   └── SAME DIRECTION (reader-writer) pointers
-├── Partition into groups (0s, 1s, 2s)?
-│   └── THREE POINTERS (Dutch National Flag)
-└── Compare from both ends?
-    └── OPPOSITE DIRECTION pointers
-```
+**Problem involves array?**
+
+- Need pair with target sum?
+- Array sorted? → OPPOSITE DIRECTION pointers
+- Array unsorted? → HashMap (not two pointers)
+- Remove/move elements in-place?
+- SAME DIRECTION (reader-writer) pointers
+- Partition into groups (0s, 1s, 2s)?
+- THREE POINTERS (Dutch National Flag)
+- Compare from both ends?
+  - OPPOSITE DIRECTION pointers
 
 ---
 

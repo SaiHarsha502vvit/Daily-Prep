@@ -240,36 +240,34 @@ These problems are less commonly seen in "Top 100" lists but teach deep graph in
 
 #### Graph Problem-Solving Decision Tree
 
-```
-Which graph problem type am I facing?
-│
-├── Need shortest/minimum path?
-│   ├── Unweighted edges → BFS
-│   ├── Weighted (non-negative) → Dijkstra
-│   ├── Weighted (negative okay) → Bellman-Ford
-│   ├── All-pairs shortest → Floyd-Warshall
-│   └── Know the target + have heuristic → A*
-│
-├── Need ordering/dependencies?
-│   └── Topological Sort (Kahn's BFS or DFS)
-│
-├── Need components/connectivity?
-│   ├── Static graph → DFS/BFS count components
-│   ├── Dynamic (add edges) → Union-Find
-│   └── Directed → Kosaraju's/Tarjan's (SCC)
-│
-├── Need minimum cost to connect all?
-│   └── MST (Kruskal + UF or Prim + PQ)
-│
-├── Cycle detection?
-│   ├── Undirected → UF or DFS with parent
-│   └── Directed → DFS with 3 colors (white/gray/black)
-│
-└── Grid problem?
-    ├── Connected regions → Flood fill DFS/BFS
-    ├── Shortest path on grid → BFS (or Dijkstra if weighted)
-    └── Multi-source → Start BFS from all sources simultaneously
-```
+**Which graph problem type am I facing?**
+
+- Need shortest/minimum path?
+- Unweighted edges → BFS
+- Weighted (non-negative) → Dijkstra
+- Weighted (negative okay) → Bellman-Ford
+- All-pairs shortest → Floyd-Warshall
+- Know the target + have heuristic → A*
+
+- Need ordering/dependencies?
+- Topological Sort (Kahn's BFS or DFS)
+
+- Need components/connectivity?
+- Static graph → DFS/BFS count components
+- Dynamic (add edges) → Union-Find
+- Directed → Kosaraju's/Tarjan's (SCC)
+
+- Need minimum cost to connect all?
+- MST (Kruskal + UF or Prim + PQ)
+
+- Cycle detection?
+- Undirected → UF or DFS with parent
+- Directed → DFS with 3 colors (white/gray/black)
+
+- Grid problem?
+  - Connected regions → Flood fill DFS/BFS
+  - Shortest path on grid → BFS (or Dijkstra if weighted)
+  - Multi-source → Start BFS from all sources simultaneously
 
 ---
 

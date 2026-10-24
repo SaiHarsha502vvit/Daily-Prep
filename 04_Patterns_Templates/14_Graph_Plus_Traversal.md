@@ -164,19 +164,18 @@ Together, these give **O(α(n))** amortized time per operation, where α is the 
 
 ## 🧠 WHEN TO RECOGNIZE
 
-```text
-Problem type → Algorithm:
-├── "Shortest path" (unweighted) → BFS
-├── "Shortest path" (weighted, no negative) → Dijkstra
-├── "Shortest path" (negative edges) → Bellman-Ford
-├── "All pairs shortest path" → Floyd-Warshall
-├── "Connected components" → BFS/DFS or Union-Find
-├── "Cycle detection" → DFS (directed) or Union-Find (undirected)
-├── "Topological ordering" → Kahn's BFS or DFS
-├── "Minimum spanning tree" → Prim's or Kruskal's
-├── "Bridges/Articulation points" → Tarjan's DFS
-└── "Bipartite check" → BFS/DFS with 2-coloring
-```
+**Problem type → Algorithm:**
+
+- "Shortest path" (unweighted) → BFS
+- "Shortest path" (weighted, no negative) → Dijkstra
+- "Shortest path" (negative edges) → Bellman-Ford
+- "All pairs shortest path" → Floyd-Warshall
+- "Connected components" → BFS/DFS or Union-Find
+- "Cycle detection" → DFS (directed) or Union-Find (undirected)
+- "Topological ordering" → Kahn's BFS or DFS
+- "Minimum spanning tree" → Prim's or Kruskal's
+- "Bridges/Articulation points" → Tarjan's DFS
+- "Bipartite check" → BFS/DFS with 2-coloring
 
 ---
 

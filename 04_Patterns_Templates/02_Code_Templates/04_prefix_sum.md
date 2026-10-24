@@ -6,47 +6,31 @@
 
 ## Visual Concept
 
-```
-                  PREFIX SUM VISUALIZATION
-──────────────────────────────────────────────────
+### Prefix sum visualisation
 
-Original Array:
-┌───┬───┬───┬───┬───┬───┐
-│ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │
-└───┴───┴───┴───┴───┴───┘
-  0   1   2   3   4   5
+**Original array**
 
-Prefix Sum Array:
-prefix[i] = sum of arr[0] to arr[i-1]
-┌───┬───┬───┬───┬───┬────┬────┐
-│ 0 │ 1 │ 3 │ 6 │ 10│ 15 │ 21 │
-└───┴───┴───┴───┴───┴────┴────┘
-  0   1   2   3   4    5    6
-  ↑
-Extra 0 at start!
+| Index | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Value | 1 | 2 | 3 | 4 | 5 | 6 |
 
-prefix[0] = 0                 (empty prefix)
-prefix[1] = 1                 (sum of arr[0])
-prefix[2] = 1+2 = 3           (sum of arr[0..1])
-prefix[3] = 1+2+3 = 6         (sum of arr[0..2])
-prefix[4] = 1+2+3+4 = 10      (sum of arr[0..3])
-prefix[5] = 1+2+3+4+5 = 15    (sum of arr[0..4])
-prefix[6] = 1+2+3+4+5+6 = 21  (sum of arr[0..5])
+**Prefix sum array.** `prefix[i]` = sum of `arr[0]` to `arr[i-1]`, with an **extra 0 at the start**.
 
-═══════════════════════════════════════════════════════════════════════
+| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `prefix` | 0 | 1 | 3 | 6 | 10 | 15 | 21 |
 
-Range sum [i, j] = prefix[j+1] - prefix[i]
+| Entry | Meaning |
+| --- | --- |
+| `prefix[0] = 0` | empty prefix |
+| `prefix[1] = 1` | sum of `arr[0]` |
+| `prefix[2] = 1+2 = 3` | sum of `arr[0..1]` |
+| `prefix[3] = 1+2+3 = 6` | sum of `arr[0..2]` |
+| `prefix[4] = 1+2+3+4 = 10` | sum of `arr[0..3]` |
+| `prefix[5] = 1+2+3+4+5 = 15` | sum of `arr[0..4]` |
+| `prefix[6] = 1+2+3+4+5+6 = 21` | sum of `arr[0..5]` |
 
-Example: Sum of arr[2..4] = sum(3,4,5) = 12
-         = prefix[5] - prefix[2] = 15 - 3 = 12 ✓
-
-┌───┬───┬───┬───┬───┬───┐
-│ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │
-└───┴───┴───┴───┴───┴───┘
-          └───────────┘
-          i=2      j=4
-          sum = 3+4+5 = 12
-```
+**Range sum** `[i, j]` = `prefix[j+1] - prefix[i]`
 
 ## Template: Build Prefix Sum
 

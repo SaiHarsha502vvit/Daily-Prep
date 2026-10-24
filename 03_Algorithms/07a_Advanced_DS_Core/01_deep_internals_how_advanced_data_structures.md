@@ -440,48 +440,53 @@ For 1,000,000 entries: ~80 MB
 
 ## ❓ Part 1: Why These Data Structures Matter
 
-```
-REAL-WORLD USAGE:
+**REAL-WORLD USAGE:**
 
-TRIE:
-├── Autocomplete in Google Search
-├── Spell checkers
-├── IP routing tables
-└── DNA sequence matching
+**TRIE:**
 
-SEGMENT TREE:
-├── Range queries in databases
-├── Graphics rendering (visibility)
-└── Computational geometry
+- Autocomplete in Google Search
+- Spell checkers
+- IP routing tables
+- DNA sequence matching
 
-FENWICK TREE (BIT):
-├── Cumulative frequency tables
-├── Range sum queries
-└── Inversion counting
+**SEGMENT TREE:**
 
-DISJOINT SET (UNION-FIND):
-├── Network connectivity
-├── Kruskal's MST algorithm
-├── Image processing (connected components)
-└── Social networks (friend circles)
+- Range queries in databases
+- Graphics rendering (visibility)
+- Computational geometry
 
-SKIP LIST:
-├── Redis database
-├── LevelDB
-└── Concurrent data structures
+**FENWICK TREE (BIT):**
 
-BLOOM FILTER:
-├── Chrome's malicious URL check
-├── Database query optimization
-├── Spell checkers
-└── Network routers
+- Cumulative frequency tables
+- Range sum queries
+- Inversion counting
 
-LRU CACHE:
-├── Operating system page replacement
-├── Web browser cache
-├── Database query cache
-└── CPU cache management
-```
+**DISJOINT SET (UNION-FIND):**
+
+- Network connectivity
+- Kruskal's MST algorithm
+- Image processing (connected components)
+- Social networks (friend circles)
+
+**SKIP LIST:**
+
+- Redis database
+- LevelDB
+- Concurrent data structures
+
+**BLOOM FILTER:**
+
+- Chrome's malicious URL check
+- Database query optimization
+- Spell checkers
+- Network routers
+
+**LRU CACHE:**
+
+- Operating system page replacement
+- Web browser cache
+- Database query cache
+- CPU cache management
 
 ---
 
