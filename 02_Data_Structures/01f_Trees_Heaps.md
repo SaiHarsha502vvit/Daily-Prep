@@ -32,6 +32,43 @@
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+## ⚡ At a Glance — Trees & Heaps
+
+> [!NOTE]
+> **Mental model:** a tree organises data by *hierarchy*; adding an ordering rule turns it into a search structure (BST) or a priority structure (heap). Balanced trees keep height ≈ log n, which is where the O(log n) comes from.
+
+```mermaid
+flowchart TD
+    T["Tree"] --> BT["Binary tree"]
+    T --> NT["N-ary / Trie"]
+    BT --> BST["BST<br/>left < node < right"]
+    BT --> HP["Heap<br/>parent vs children order"]
+    BST --> BAL["Self-balancing<br/>AVL, Red-Black"]
+    HP --> PQ["Priority queue"]
+    classDef root fill:#e0e0e0,stroke:#616161,color:#111
+    classDef search fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef prio fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef good fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class T,BT,NT root
+    class BST search
+    class BAL good
+    class HP,PQ prio
+```
+
+**How to read this diagram.** Blue is the "find by order" branch, orange is the "get the best element" branch, green is the guarantee you want in production (balance).
+
+| Structure | Search | Insert | Delete | Peek min/max | Order |
+| --------- | ------ | ------ | ------ | ------------ | ----- |
+| BST (unbalanced) | O(n) worst | O(n) worst | O(n) worst | O(h) | sorted in-order |
+| AVL / Red-Black | O(log n) | O(log n) | O(log n) | O(log n) | sorted in-order |
+| Binary heap | O(n) | O(log n) | O(log n) (top) | O(1) | partial only |
+| Build heap from array | — | O(n) | — | — | — |
+
+> [!WARNING]
+> A plain BST fed sorted input degenerates into a linked list (O(n)). Use a balanced tree (`TreeMap`) when order matters and input is not random.
+
+---
+
 ## Historical Evolution of Tree Data Structures
 
 Trees are not a single invention — they are a **50-year family of solutions**, each invented to fix a specific weakness of its predecessor. Understanding the _why_ behind each variant transforms memorization into genuine insight.
@@ -166,9 +203,9 @@ No pointers needed! This makes heaps extremely cache-friendly (contiguous memory
 ### Tree Variants Comparison Table
 
 | Structure          | Year  | Balance Invariant                                   | Search                       | Insert          | Primary Use Case                              | Cache Behavior                                 |
-| ------------------ | ----- | --------------------------------------------------- | ---------------------------- | --------------- | --------------------------------------------- | ---------------------------------------------- | --------------------- | ----------------------- |
+| ------------------ | ----- | --------------------------------------------------- | ---------------------------- | --------------- | --------------------------------------------- | ---------------------------------------------- |
 | BST (unbalanced)   | 1960s | None                                                | O(n) worst                   | O(n) worst      | Teaching only                                 | Pointer-chasing, poor locality                 |
-| AVL Tree           | 1962  | `                                                   | height(left) − height(right) | ≤ 1`            | O(log n)                                      | O(log n)                                       | Read-heavy DB indexes | Good; strictly balanced |
+| AVL Tree           | 1962  | `\|height(left) − height(right)\| ≤ 1`              | O(log n)                     | O(log n)        | Read-heavy DB indexes                         | Good; strictly balanced                        |
 | Red-Black Tree     | 1978  | 4 color rules → height ≤ 2 log₂(N+1)                | O(log n)                     | O(log n)        | In-memory maps (Java TreeMap, C++ `std::map`) | Good; less rigid than AVL                      |
 | B-Tree             | 1970  | `⌈m/2⌉ ≤ children ≤ m`; all leaves same depth       | O(log_m N)                   | O(log_m N)      | Database disk indexes                         | Excellent; high fan-out, few page faults       |
 | B+Tree             | 1970s | B-tree + all data in linked leaf nodes              | O(log_m N)                   | O(log_m N)      | SQL indexes (MySQL, PostgreSQL, Oracle)       | Best; sequential leaf scan for range queries   |
@@ -1204,57 +1241,71 @@ frequent insertions, occasional lookups?
 
 **Condition:** Insert sorted or reverse-sorted data into a plain BST (no balancing).
 
-**What breaks:** T1 holds but A2 is violated → tree degenerates to a linked list → O(n) lookup, O(n) insert, O(n) delete.
+> [!CAUTION]
+> **What breaks:** T1 holds but A2 is violated → tree degenerates to a linked list → O(n) lookup, O(n) insert, O(n) delete.
 
-**Defense:** Use a self-balancing BST (AVL, Red-Black, Treap, Splay). Or use `TreeMap` directly in Java (Red-Black under the hood).
+> [!TIP]
+> **Defense:** Use a self-balancing BST (AVL, Red-Black, Treap, Splay). Or use `TreeMap` directly in Java (Red-Black under the hood).
 
 ### Break 2 — Balance Invariant Violation After Deletion
 
 **Condition:** A custom balanced BST implementation that handles insertion correctly but forgets to rebalance after deletion.
 
-**What breaks:** A2 violated → height grows unboundedly → operations degrade to O(n).
+> [!CAUTION]
+> **What breaks:** A2 violated → height grows unboundedly → operations degrade to O(n).
 
-**Defense:** Use a tested library. Java's `TreeMap` handles deletion rebalancing. For custom impls, follow the deletion algorithm from CLRS Chapter 12.
+> [!TIP]
+> **Defense:** Use a tested library. Java's `TreeMap` handles deletion rebalancing. For custom impls, follow the deletion algorithm from CLRS Chapter 12.
 
 ### Break 3 — Heap Shape Invariant Broken
 
 **Condition:** Insertion or deletion bypasses the "fill left-to-right" rule, or sift-up/sift-down uses wrong indices.
 
-**What breaks:** H2 violated → array indexing breaks → next heap operation accesses invalid index or misses elements.
+> [!CAUTION]
+> **What breaks:** H2 violated → array indexing breaks → next heap operation accesses invalid index or misses elements.
 
-**Defense:** Always use a tested library. For custom impls, validate the shape invariant after every operation (`assert parent(i) == (i-1)/2` for all i).
+> [!TIP]
+> **Defense:** Always use a tested library. For custom impls, validate the shape invariant after every operation (`assert parent(i) == (i-1)/2` for all i).
 
 ### Break 4 — Tree Modification During Iteration
 
 **Condition:** Modifying a TreeMap while iterating (e.g., removing entries via `map.remove(k)` inside a `for` loop).
 
-**What breaks:** `ConcurrentModificationException` is the friendly outcome. Without it (custom impl), iteration may skip or revisit entries.
+> [!CAUTION]
+> **What breaks:** `ConcurrentModificationException` is the friendly outcome. Without it (custom impl), iteration may skip or revisit entries.
 
-**Defense:** Collect keys to remove in a separate list, then `removeAll` after iteration. Or use `Iterator.remove()` explicitly.
+> [!TIP]
+> **Defense:** Collect keys to remove in a separate list, then `removeAll` after iteration. Or use `Iterator.remove()` explicitly.
 
 ### Break 5 — Comparator Inconsistency
 
 **Condition:** `compare(a, b)` returns inconsistent results across calls (e.g., uses mutable state that changes).
 
-**What breaks:** TreeMap contracts broken → entries in wrong positions; `get(k)` may not find k.
+> [!CAUTION]
+> **What breaks:** TreeMap contracts broken → entries in wrong positions; `get(k)` may not find k.
 
-**Defense:** Comparators must be pure functions of their inputs. Document this explicitly in the comparator's javadoc.
+> [!TIP]
+> **Defense:** Comparators must be pure functions of their inputs. Document this explicitly in the comparator's javadoc.
 
 ### Break 6 — Large Depth on Skewed Operations
 
 **Condition:** A series of `firstKey()` / `remove(firstKey())` operations on a BST. If the tree is unbalanced, this is O(n) per op instead of O(log n).
 
-**What breaks:** Performance, not correctness. But in production with n = 10⁶, this is a 30× slowdown.
+> [!CAUTION]
+> **What breaks:** Performance, not correctness. But in production with n = 10⁶, this is a 30× slowdown.
 
-**Defense:** Use Red-Black trees (which balance after deletions) or measure tree height in production (`TreeMap.size()` doesn't expose height; you need a custom metric).
+> [!TIP]
+> **Defense:** Use Red-Black trees (which balance after deletions) or measure tree height in production (`TreeMap.size()` doesn't expose height; you need a custom metric).
 
 ### Break 7 — B-Tree Node Split Failure
 
 **Condition:** A B-tree implementation that forgets to split a full node on insert, or splits incorrectly.
 
-**What breaks:** B2 violated → node contains more than `2t-1` keys → children pointers break → subsequent operations access invalid memory.
+> [!CAUTION]
+> **What breaks:** B2 violated → node contains more than `2t-1` keys → children pointers break → subsequent operations access invalid memory.
 
-**Defense:** Use a tested library (Berkeley DB, LMDB, sqlite). Writing a B-tree from scratch is a multi-week project; off-by-one errors are common.
+> [!TIP]
+> **Defense:** Use a tested library (Berkeley DB, LMDB, sqlite). Writing a B-tree from scratch is a multi-week project; off-by-one errors are common.
 
 ## Edge Cases — Always Check These
 
@@ -1475,12 +1526,27 @@ Contrast with n insertions: each costs O(log n) → O(n log n) total. Build-heap
 
 ## Reality Check
 
-**"A Binary Search Tree is always balanced"** → A plain BST has NO self-balancing guarantee. Insert sorted data (1, 2, 3, 4, 5...) into a BST and it degrades to a linked list — every operation becomes O(n). Self-balancing BSTs (AVL, Red-Black) pay a small constant rotation cost to guarantee O(log n). Java's `TreeMap` uses a Red-Black tree. Never use a plain BST for production — use a self-balancing variant or a library.
+> [!CAUTION]
+> **Myth:** "A Binary Search Tree is always balanced"
+>
+> **Reality:** A plain BST has NO self-balancing guarantee. Insert sorted data (1, 2, 3, 4, 5...) into a BST and it degrades to a linked list — every operation becomes O(n). Self-balancing BSTs (AVL, Red-Black) pay a small constant rotation cost to guarantee O(log n). Java's `TreeMap` uses a Red-Black tree. Never use a plain BST for production — use a self-balancing variant or a library.
 
-**"A heap is a type of tree you build like a BST"** → A heap satisfies the *heap property* (parent ≥ all children for max-heap) but NOT BST ordering (left child < parent < right child). You cannot binary-search a heap. A heap's power is O(1) peek-max and O(log n) extract-max. It is stored as an array (index math: left child = 2i+1, right = 2i+2) with no pointers — cache-friendly and compact.
+> [!CAUTION]
+> **Myth:** "A heap is a type of tree you build like a BST"
+>
+> **Reality:** A heap satisfies the *heap property* (parent ≥ all children for max-heap) but NOT BST ordering (left child < parent < right child). You cannot binary-search a heap. A heap's power is O(1) peek-max and O(log n) extract-max. It is stored as an array (index math: left child = 2i+1, right = 2i+2) with no pointers — cache-friendly and compact.
 
-**"Building a heap from n elements takes O(n log n)"** → `heapify` (Floyd's algorithm, bottom-up) takes **O(n)**, not O(n log n). The math: most nodes are near the bottom (leaves) and need 0 or 1 swaps. The height-weighted sum converges to O(n). This is why `heapq.heapify(list)` in Python and `PriorityQueue(collection)` in Java are O(n), while repeatedly calling `add()` n times is O(n log n).
+> [!CAUTION]
+> **Myth:** "Building a heap from n elements takes O(n log n)"
+>
+> **Reality:** `heapify` (Floyd's algorithm, bottom-up) takes **O(n)**, not O(n log n). The math: most nodes are near the bottom (leaves) and need 0 or 1 swaps. The height-weighted sum converges to O(n). This is why `heapq.heapify(list)` in Python and `PriorityQueue(collection)` in Java are O(n), while repeatedly calling `add()` n times is O(n log n).
 
-**"Tree height and tree depth mean the same thing"** → Height of a *node*: length of the longest path FROM that node TO a leaf. Height of a tree = height of the root. Depth of a *node*: length of the path FROM the root TO that node. Depth of root = 0. They are complementary, not synonymous. Many textbooks and problems use them interchangeably — always check the definition given.
+> [!CAUTION]
+> **Myth:** "Tree height and tree depth mean the same thing"
+>
+> **Reality:** Height of a *node*: length of the longest path FROM that node TO a leaf. Height of a tree = height of the root. Depth of a *node*: length of the path FROM the root TO that node. Depth of root = 0. They are complementary, not synonymous. Many textbooks and problems use them interchangeably — always check the definition given.
 
-**"Inorder traversal of any binary tree gives sorted output"** → Inorder (Left, Root, Right) gives sorted output ONLY for a Binary SEARCH Tree. For a generic binary tree or a heap, inorder traversal gives no meaningful order guarantee.
+> [!CAUTION]
+> **Myth:** "Inorder traversal of any binary tree gives sorted output"
+>
+> **Reality:** Inorder (Left, Root, Right) gives sorted output ONLY for a Binary SEARCH Tree. For a generic binary tree or a heap, inorder traversal gives no meaningful order guarantee.

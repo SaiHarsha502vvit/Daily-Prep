@@ -28,6 +28,41 @@
 
 ---
 
+## ⚡ At a Glance — Randomized Structures
+
+> [!NOTE]
+> **Mental model:** randomness buys simplicity or space. Skip lists and treaps use coins to stay balanced in expectation; Bloom filters, Count-Min and HyperLogLog trade exactness for tiny memory.
+
+```mermaid
+flowchart TD
+    R["Randomized DS"] --> EX["Exact answers<br/>random structure"]
+    R --> AP["Approximate answers<br/>small memory"]
+    EX --> SKL["Skip list"]
+    EX --> TR["Treap"]
+    EX --> CK["Cuckoo hashing"]
+    EX --> CH["Consistent hashing"]
+    AP --> BL["Bloom filter<br/>membership"]
+    AP --> CMS["Count-Min<br/>frequency"]
+    AP --> HLL["HyperLogLog<br/>distinct count"]
+    classDef root fill:#e0e0e0,stroke:#616161,color:#111
+    classDef ex fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef ap fill:#ffd9b3,stroke:#e65100,color:#111
+    class R,EX,AP root
+    class SKL,TR,CK,CH ex
+    class BL,CMS,HLL ap
+```
+
+**How to read this diagram.** Green structures always return correct answers (only their running time is random). Orange ones return approximate answers with a controlled error.
+
+| Structure | Guarantee | Error type |
+| --------- | --------- | ---------- |
+| Skip list / treap | O(log n) expected | None (time varies) |
+| Bloom filter | No false negatives | Some false positives |
+| Count-Min sketch | Never underestimates | Overestimates |
+| HyperLogLog | ~1–2% standard error | Both directions |
+
+---
+
 ## 1. Why Randomize a Data Structure?
 
 ### The Deterministic Trap
@@ -1259,12 +1294,27 @@ long estimate = hll.cardinality();
 
 ## Reality Check
 
-**"Randomized data structures are unpredictable"** ? Randomized data structures provide PROBABILISTIC guarantees with high probability. A skip list provides O(log n) search with probability at least 1 - 1/n^c for any constant c. The probability of O(n) worst-case behavior is astronomically small � comparable to a cosmic ray flipping a bit in your deterministic algorithm. In practice, randomized structures are as reliable as deterministic ones.
+> [!CAUTION]
+> **Myth:** "Randomized data structures are unpredictable"
+>
+> **Reality:** Randomized data structures provide PROBABILISTIC guarantees with high probability. A skip list provides O(log n) search with probability at least 1 - 1/n^c for any constant c. The probability of O(n) worst-case behavior is astronomically small — comparable to a cosmic ray flipping a bit in your deterministic algorithm. In practice, randomized structures are as reliable as deterministic ones.
 
-**"Skip lists are inferior to balanced BSTs"** ? Skip lists match balanced BSTs in time complexity (O(log n) for search, insert, delete) and are SIMPLER to implement correctly. Lock-free concurrent skip lists are substantially easier to implement than lock-free balanced BSTs because skip list operations only modify local pointers. Redis, LevelDB, and Java ConcurrentSkipListMap use skip lists for exactly this reason.
+> [!CAUTION]
+> **Myth:** "Skip lists are inferior to balanced BSTs"
+>
+> **Reality:** Skip lists match balanced BSTs in time complexity (O(log n) for search, insert, delete) and are SIMPLER to implement correctly. Lock-free concurrent skip lists are substantially easier to implement than lock-free balanced BSTs because skip list operations only modify local pointers. Redis, LevelDB, and Java ConcurrentSkipListMap use skip lists for exactly this reason.
 
-**"Bloom filters have false positives so they are unreliable"** ? Bloom filters are designed to have false positives at a CONTROLLED rate. With k hash functions and m bits, the false positive rate is approximately (1 - e^(-kn/m))^k. You choose m and k to achieve your desired false positive rate. A 1-percent false positive rate with 10 hash functions uses about 10 bits per element. The zero false negative guarantee means a negative answer is always correct � web browsers use Bloom filters for safe browsing because a false positive just triggers an extra check, while a false negative would miss a dangerous URL.
+> [!CAUTION]
+> **Myth:** "Bloom filters have false positives so they are unreliable"
+>
+> **Reality:** Bloom filters are designed to have false positives at a CONTROLLED rate. With k hash functions and m bits, the false positive rate is approximately (1 - e^(-kn/m))^k. You choose m and k to achieve your desired false positive rate. A 1-percent false positive rate with 10 hash functions uses about 10 bits per element. The zero false negative guarantee means a negative answer is always correct — web browsers use Bloom filters for safe browsing because a false positive just triggers an extra check, while a false negative would miss a dangerous URL.
 
-**"Consistent hashing is just hashing"** ? Standard hashing (hash mod n servers) requires remapping ALL keys when adding or removing a server. Consistent hashing maps both keys and servers to a ring, so adding a server only reassigns keys from ONE adjacent range. With virtual nodes (each physical server mapped to many ring positions), load distribution becomes nearly uniform. This is the foundation of distributed caching (Memcached), distributed databases (Cassandra, DynamoDB), and CDN routing.
+> [!CAUTION]
+> **Myth:** "Consistent hashing is just hashing"
+>
+> **Reality:** Standard hashing (hash mod n servers) requires remapping ALL keys when adding or removing a server. Consistent hashing maps both keys and servers to a ring, so adding a server only reassigns keys from ONE adjacent range. With virtual nodes (each physical server mapped to many ring positions), load distribution becomes nearly uniform. This is the foundation of distributed caching (Memcached), distributed databases (Cassandra, DynamoDB), and CDN routing.
 
-**"Randomized algorithms need true randomness"** ? Pseudorandom number generators (PRNGs) with good statistical properties (Java ThreadLocalRandom, SplittableRandom) suffice for randomized data structures and algorithms. True randomness (hardware RNG) is only needed for cryptographic applications. The key property is unpredictability to an adversary � for non-adversarial applications, any PRNG that passes statistical tests (no detectable patterns) produces the same probabilistic guarantees as true randomness.
+> [!CAUTION]
+> **Myth:** "Randomized algorithms need true randomness"
+>
+> **Reality:** Pseudorandom number generators (PRNGs) with good statistical properties (Java ThreadLocalRandom, SplittableRandom) suffice for randomized data structures and algorithms. True randomness (hardware RNG) is only needed for cryptographic applications. The key property is unpredictability to an adversary — for non-adversarial applications, any PRNG that passes statistical tests (no detectable patterns) produces the same probabilistic guarantees as true randomness.

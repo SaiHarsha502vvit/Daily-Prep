@@ -6,6 +6,47 @@
 
 ---
 
+## ⚡ At a Glance — Which Java Collection?
+
+> [!NOTE]
+> **Mental model:** choose by *what you must do fastest* (index, lookup, order, priority), then by whether duplicates, null and thread-safety matter.
+
+```mermaid
+flowchart TD
+    S["Need to store things"] --> K{"Key to value lookup?"}
+    K -- yes --> O{"Sorted keys?"}
+    O -- yes --> TM["TreeMap"]
+    O -- "insertion order" --> LHM["LinkedHashMap"]
+    O -- no --> HM["HashMap"]
+    K -- no --> U{"Unique elements?"}
+    U -- yes --> HS["HashSet / TreeSet"]
+    U -- no --> Q{"FIFO / LIFO / priority?"}
+    Q -- "FIFO or LIFO" --> AD["ArrayDeque"]
+    Q -- priority --> PQ["PriorityQueue"]
+    Q -- "indexed list" --> AL["ArrayList"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef pick fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class K,O,U,Q ask
+    class TM,LHM,HM,HS,AD,PQ,AL pick
+```
+
+**How to read this diagram.** Answer the blue questions top-down; the green leaf is the default collection to reach for.
+
+| Collection | Get/lookup | Add | Remove | Ordered? |
+| ---------- | ---------- | --- | ------ | -------- |
+| `ArrayList` | O(1) by index | O(1) amortized end | O(n) | by index |
+| `LinkedList` | O(n) | O(1) at ends | O(1) at ends | by index |
+| `HashMap` / `HashSet` | O(1) avg | O(1) avg | O(1) avg | no |
+| `LinkedHashMap` | O(1) avg | O(1) avg | O(1) avg | insertion/access |
+| `TreeMap` / `TreeSet` | O(log n) | O(log n) | O(log n) | sorted |
+| `ArrayDeque` | O(1) ends | O(1) | O(1) | FIFO/LIFO |
+| `PriorityQueue` | O(1) peek | O(log n) | O(log n) | heap order |
+
+> [!WARNING]
+> Never modify a collection while iterating it with a for-each loop (`ConcurrentModificationException`); use the iterator's `remove()` or `removeIf`.
+
+---
+
 # ☕ Part 0: Complete Understanding of Java Collections
 
 ### 5W1H: Mastering Java Collections
@@ -971,11 +1012,13 @@ These are the most common production failures from misuse of Java Collections. E
 
 **Trigger:** `new ArrayList<>()` then `add` 10⁶ elements.
 
-**What breaks:** Multiple resizes (17 with default 1.5× growth from capacity 10 to ~1.3M). Each resize copies all existing elements → O(n × log n) total instead of O(n).
+> [!CAUTION]
+> **What breaks:** Multiple resizes (17 with default 1.5× growth from capacity 10 to ~1.3M). Each resize copies all existing elements → O(n × log n) total instead of O(n).
 
 **Root cause:** Default capacity is 10. The user assumes ArrayList is "fast enough" without considering the resize cost.
 
-**Defense:** Always pre-size: `new ArrayList<>(expectedSize + 1)`. For `expectedSize = 10⁶`, allocate `1,000,001` capacity to skip all resizes.
+> [!TIP]
+> **Defense:** Always pre-size: `new ArrayList<>(expectedSize + 1)`. For `expectedSize = 10⁶`, allocate `1,000,001` capacity to skip all resizes.
 
 **Diagnostic:** Profile with JFR (Java Flight Recorder) and look for `jdk.internal.array.Resize` events.
 
@@ -985,11 +1028,13 @@ These are the most common production failures from misuse of Java Collections. E
 
 **Trigger:** `new HashMap<>()` then `put` 10⁶ entries.
 
-**What breaks:** Resize at size 12 (16 × 0.75). 17 resizes total. Each resize copies all buckets and rehashes every key.
+> [!CAUTION]
+> **What breaks:** Resize at size 12 (16 × 0.75). 17 resizes total. Each resize copies all buckets and rehashes every key.
 
 **Root cause:** Default capacity is 16, but most production maps have 10⁴-10⁶ entries.
 
-**Defense:** Always pre-size: `new HashMap<>(expectedSize / 0.75 + 1)`. For `expectedSize = 10⁶`, allocate `1,333,334` capacity.
+> [!TIP]
+> **Defense:** Always pre-size: `new HashMap<>(expectedSize / 0.75 + 1)`. For `expectedSize = 10⁶`, allocate `1,333,334` capacity.
 
 **Diagnostic:** JFR `java.util.HashMap` events or `HashMap.size()` checks against `HashMap.table.length()`.
 
@@ -999,11 +1044,13 @@ These are the most common production failures from misuse of Java Collections. E
 
 **Trigger:** Iterating a HashMap/ArrayList while another thread modifies it (or even the same thread via `Iterator.remove()` patterns).
 
-**What breaks:** `ConcurrentModificationException` thrown mid-iteration. Worst case: data corruption without exception (custom impl).
+> [!CAUTION]
+> **What breaks:** `ConcurrentModificationException` thrown mid-iteration. Worst case: data corruption without exception (custom impl).
 
 **Root cause:** `modCount` field incremented on structural modification; iterators check `expectedModCount == modCount` and throw on mismatch.
 
-**Defense:** Use `ConcurrentHashMap` for concurrent access. Or collect keys to modify first, then apply changes after iteration. Or use `Iterator.remove()` explicitly (which updates `expectedModCount`).
+> [!TIP]
+> **Defense:** Use `ConcurrentHashMap` for concurrent access. Or collect keys to modify first, then apply changes after iteration. Or use `Iterator.remove()` explicitly (which updates `expectedModCount`).
 
 **Diagnostic:** Look for stack trace with `AbstractList$Itr.next()` or `HashMap$HashIterator.next()` — these are the throw sites.
 
@@ -1013,11 +1060,13 @@ These are the most common production failures from misuse of Java Collections. E
 
 **Trigger:** Iterating a HashMap while a `put` triggers a resize.
 
-**What breaks:** Iterator's `expectedModCount` is set correctly, but the iteration now walks the *old* bucket array (which the iterator holds by reference). The new bucket array is invisible to the iterator. Result: iteration misses new entries or returns stale.
+> [!CAUTION]
+> **What breaks:** Iterator's `expectedModCount` is set correctly, but the iteration now walks the *old* bucket array (which the iterator holds by reference). The new bucket array is invisible to the iterator. Result: iteration misses new entries or returns stale.
 
 **Root cause:** HashMap's iterator holds a reference to the old table; resize creates a new table; iterator still walks the old.
 
-**Defense:** Don't modify during iteration. Use `ConcurrentHashMap` for concurrent updates.
+> [!TIP]
+> **Defense:** Don't modify during iteration. Use `ConcurrentHashMap` for concurrent updates.
 
 **Cost in production:** Silent data inconsistency — observed values don't match expected.
 
@@ -1025,11 +1074,13 @@ These are the most common production failures from misuse of Java Collections. E
 
 **Trigger:** `linkedList.get(i)` in a loop.
 
-**What breaks:** Each `get(i)` walks from head or tail (whichever is closer) → O(n) per call. Loop of n gets → O(n²) total.
+> [!CAUTION]
+> **What breaks:** Each `get(i)` walks from head or tail (whichever is closer) → O(n) per call. Loop of n gets → O(n²) total.
 
 **Root cause:** LinkedList has no random access; `get(i)` is implemented as `Node node(int index) { ... }`.
 
-**Defense:** Always use `Iterator` for LinkedList. Or use ArrayList when random access is needed.
+> [!TIP]
+> **Defense:** Always use `Iterator` for LinkedList. Or use ArrayList when random access is needed.
 
 **Diagnostic:** Profile with async-profiler; look for `LinkedList.node(int)` in CPU samples.
 
@@ -1039,11 +1090,13 @@ These are the most common production failures from misuse of Java Collections. E
 
 **Trigger:** `Hashtable.put(null, value)` or `ConcurrentHashMap.put(null, value)`.
 
-**What breaks:** `NullPointerException` thrown.
+> [!CAUTION]
+> **What breaks:** `NullPointerException` thrown.
 
 **Root cause:** Hashtable and ConcurrentHashMap explicitly reject null keys/values to avoid ambiguity with `containsKey`. HashMap allows one null key.
 
-**Defense:** Don't use null as a key. Use `Optional<T>` or a sentinel object.
+> [!TIP]
+> **Defense:** Don't use null as a key. Use `Optional<T>` or a sentinel object.
 
 **Cost in production:** Crash on edge-case input (e.g., user-submitted form with missing field).
 
@@ -1051,11 +1104,13 @@ These are the most common production failures from misuse of Java Collections. E
 
 **Trigger:** `Comparator.compare(a, b)` returns inconsistent results across calls (e.g., uses mutable state).
 
-**What breaks:** TreeMap contracts broken; entries in wrong positions; `get(k)` may not find k.
+> [!CAUTION]
+> **What breaks:** TreeMap contracts broken; entries in wrong positions; `get(k)` may not find k.
 
 **Root cause:** Comparator must be a pure function of inputs. Violating this violates the TreeMap contract.
 
-**Defense:** Comparator should use only the inputs and stateless fields. Document this explicitly.
+> [!TIP]
+> **Defense:** Comparator should use only the inputs and stateless fields. Document this explicitly.
 
 **Cost in production:** Silent data corruption; tree structure may violate ordering invariant.
 
@@ -1063,11 +1118,13 @@ These are the most common production failures from misuse of Java Collections. E
 
 **Trigger:** Custom key class overrides `equals` but not `hashCode`.
 
-**What breaks:** Two equal keys hash to different buckets → `get(k)` returns null even though `containsKey(k) == true` is impossible (the lookup uses `hashCode` to find the bucket, then `equals` to find the entry).
+> [!CAUTION]
+> **What breaks:** Two equal keys hash to different buckets → `get(k)` returns null even though `containsKey(k) == true` is impossible (the lookup uses `hashCode` to find the bucket, then `equals` to find the entry).
 
 **Root cause:** Hash contract: `equals(a, b) ⟹ hashCode(a) == hashCode(b)`. Violating this breaks lookup.
 
-**Defense:** Always override both `equals` and `hashCode`. Use `Objects.hash(field1, field2, ...)` for `hashCode`. Use `IDE` to generate.
+> [!TIP]
+> **Defense:** Always override both `equals` and `hashCode`. Use `Objects.hash(field1, field2, ...)` for `hashCode`. Use `IDE` to generate.
 
 **Cost in production:** Lost entries; size() reports correct count but `get()` returns null for some keys.
 
@@ -1075,11 +1132,13 @@ These are the most common production failures from misuse of Java Collections. E
 
 **Trigger:** Using `IdentityHashMap` instead of `HashMap` for a typical map.
 
-**What breaks:** Uses `==` instead of `.equals()`. Two strings `"a"` and `new String("a")` are different keys.
+> [!CAUTION]
+> **What breaks:** Uses `==` instead of `.equals()`. Two strings `"a"` and `new String("a")` are different keys.
 
 **Root cause:** IdentityHashMap's contract is reference equality.
 
-**Defense:** Use HashMap unless you specifically need reference equality (e.g., object identity tracking).
+> [!TIP]
+> **Defense:** Use HashMap unless you specifically need reference equality (e.g., object identity tracking).
 
 **Cost in production:** Silent incorrect behavior — equal keys treated as different.
 
@@ -1087,11 +1146,13 @@ These are the most common production failures from misuse of Java Collections. E
 
 **Trigger:** Using `EnumMap` with a non-enum key.
 
-**What breaks:** `ClassCastException` at runtime. EnumMap is typed for enums only.
+> [!CAUTION]
+> **What breaks:** `ClassCastException` at runtime. EnumMap is typed for enums only.
 
 **Root cause:** EnumMap uses an array indexed by enum ordinal; non-enum keys can't be cast to enum.
 
-**Defense:** Always declare EnumMap with an enum type: `EnumMap<MyEnum, V> map = new EnumMap<>(MyEnum.class)`.
+> [!TIP]
+> **Defense:** Always declare EnumMap with an enum type: `EnumMap<MyEnum, V> map = new EnumMap<>(MyEnum.class)`.
 
 **Cost in production:** Runtime crash on first use.
 
@@ -1099,11 +1160,13 @@ These are the most common production failures from misuse of Java Collections. E
 
 **Trigger:** Iterating a `PriorityQueue` and expecting sorted order.
 
-**What breaks:** Iteration is in heap order (parent before children), NOT sorted order. The heap property only guarantees `peek()` returns the minimum.
+> [!CAUTION]
+> **What breaks:** Iteration is in heap order (parent before children), NOT sorted order. The heap property only guarantees `peek()` returns the minimum.
 
 **Root cause:** PriorityQueue is a binary heap; iteration is level-order (BFS).
 
-**Defense:** To iterate in sorted order, repeatedly call `poll()` (drains the heap in sorted order). Or copy to a List and sort.
+> [!TIP]
+> **Defense:** To iterate in sorted order, repeatedly call `poll()` (drains the heap in sorted order). Or copy to a List and sort.
 
 **Cost in production:** Silent incorrect results when user assumes iteration is sorted.
 
@@ -1111,11 +1174,13 @@ These are the most common production failures from misuse of Java Collections. E
 
 **Trigger:** `Collections.unmodifiableList(listOfMutableObjects)` then mutating the contained objects.
 
-**What breaks:** Mutation succeeds — `unmodifiableList` only prevents structural changes (add/remove), not element mutations.
+> [!CAUTION]
+> **What breaks:** Mutation succeeds — `unmodifiableList` only prevents structural changes (add/remove), not element mutations.
 
 **Root cause:** `unmodifiableList` wraps the list; it doesn't deep-copy elements.
 
-**Defense:** Use immutable objects (Java records, Lombok `@Value`) for elements. Or use `List.copyOf(list)` which is shallow but creates a new immutable list.
+> [!TIP]
+> **Defense:** Use immutable objects (Java records, Lombok `@Value`) for elements. Or use `List.copyOf(list)` which is shallow but creates a new immutable list.
 
 **Cost in production:** Defensive immutability violated; mutations propagate unexpectedly.
 
@@ -1295,7 +1360,8 @@ This invariant is why `ConcurrentModificationException` works: any modification 
 
 Therefore, the invariant `compare == 0 ⟺ equals == true` is required. Violating it produces non-deterministic behavior. ✓
 
-**Defense:** Document this requirement. Use `Comparator.comparingInt()` which delegates to `Integer.compare` (which is consistent with `Integer.equals`).
+> [!TIP]
+> **Defense:** Document this requirement. Use `Comparator.comparingInt()` which delegates to `Integer.compare` (which is consistent with `Integer.equals`).
 
 ## Performance Anti-Patterns Summary
 
@@ -1338,12 +1404,27 @@ Therefore, the invariant `compare == 0 ⟺ equals == true` is required. Violatin
 
 ## Reality Check
 
-**"Collections.sort() and Arrays.sort() use the same algorithm"** → They use the same underlying strategy (Timsort for objects) but `Arrays.sort(int[])` (primitive array) uses a *dual-pivot quicksort* — different algorithm, no stability guarantee, faster in practice because no boxing. `Collections.sort()` and `Arrays.sort(Integer[])` use Timsort, which IS stable. Choosing between primitives and boxed types affects both performance and sort stability.
+> [!CAUTION]
+> **Myth:** "Collections.sort() and Arrays.sort() use the same algorithm"
+>
+> **Reality:** They use the same underlying strategy (Timsort for objects) but `Arrays.sort(int[])` (primitive array) uses a *dual-pivot quicksort* — different algorithm, no stability guarantee, faster in practice because no boxing. `Collections.sort()` and `Arrays.sort(Integer[])` use Timsort, which IS stable. Choosing between primitives and boxed types affects both performance and sort stability.
 
-**"Removing elements from a List while iterating with a for-each loop is fine"** → `ConcurrentModificationException`. The for-each loop uses an `Iterator` that checks a `modCount` field. Calling `list.remove()` during iteration modifies `modCount`, causing the iterator to throw. Fix: use `iterator.remove()`, `removeIf()`, or collect into a new list.
+> [!CAUTION]
+> **Myth:** "Removing elements from a List while iterating with a for-each loop is fine"
+>
+> **Reality:** `ConcurrentModificationException`. The for-each loop uses an `Iterator` that checks a `modCount` field. Calling `list.remove()` during iteration modifies `modCount`, causing the iterator to throw. Fix: use `iterator.remove()`, `removeIf()`, or collect into a new list.
 
-**"Unmodifiable collection = immutable collection"** → `Collections.unmodifiableList(list)` returns a *view* that prevents mutations through the wrapper — but the backing list is still mutable. If someone holds a reference to the original list and modifies it, the "unmodifiable" view reflects those changes. `List.copyOf()` (Java 10+) creates a truly immutable snapshot.
+> [!CAUTION]
+> **Myth:** "Unmodifiable collection = immutable collection"
+>
+> **Reality:** `Collections.unmodifiableList(list)` returns a *view* that prevents mutations through the wrapper — but the backing list is still mutable. If someone holds a reference to the original list and modifies it, the "unmodifiable" view reflects those changes. `List.copyOf()` (Java 10+) creates a truly immutable snapshot.
 
-**"EnumSet and EnumMap are just sugar over HashSet/HashMap"** → `EnumSet` is backed by a `long` bitmask (or multiple longs for > 64 values). Membership test = bitwise AND, O(1) with zero GC overhead. For enum-typed sets, `EnumSet` is both faster and more memory-efficient than `HashSet` by orders of magnitude. Same principle for `EnumMap`. Always use these when keys/elements are enums.
+> [!CAUTION]
+> **Myth:** "EnumSet and EnumMap are just sugar over HashSet/HashMap"
+>
+> **Reality:** `EnumSet` is backed by a `long` bitmask (or multiple longs for > 64 values). Membership test = bitwise AND, O(1) with zero GC overhead. For enum-typed sets, `EnumSet` is both faster and more memory-efficient than `HashSet` by orders of magnitude. Same principle for `EnumMap`. Always use these when keys/elements are enums.
 
-**"Map.getOrDefault() and computeIfAbsent() do the same thing"** → `getOrDefault(key, default)` returns the default without inserting it — map is unchanged. `computeIfAbsent(key, fn)` inserts `fn.apply(key)` into the map if absent and returns it — map IS modified. For building multimap-style structures (`map.computeIfAbsent(k, k -> new ArrayList<>()).add(v)`), only `computeIfAbsent` works correctly.
+> [!CAUTION]
+> **Myth:** "Map.getOrDefault() and computeIfAbsent() do the same thing"
+>
+> **Reality:** `getOrDefault(key, default)` returns the default without inserting it — map is unchanged. `computeIfAbsent(key, fn)` inserts `fn.apply(key)` into the map if absent and returns it — map IS modified. For building multimap-style structures (`map.computeIfAbsent(k, k -> new ArrayList<>()).add(v)`), only `computeIfAbsent` works correctly.

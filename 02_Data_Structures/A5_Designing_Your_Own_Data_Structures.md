@@ -41,6 +41,30 @@
 
 ---
 
+## ⚡ At a Glance — The Design Loop
+
+> [!NOTE]
+> **Mental model:** you do not invent a data structure; you *derive* it from the operations you need, then pick the cheapest tool that satisfies them.
+
+```mermaid
+flowchart LR
+    OPS["1. List operations<br/>and their frequency"] --> INV["2. State invariants"]
+    INV --> BASE["3. Start from a known<br/>structure"]
+    BASE --> TOOL["4. Apply a tool:<br/>augment, amortize,<br/>randomize, be lazy"]
+    TOOL --> PROVE["5. Prove and test"]
+    PROVE -->|fails| INV
+    classDef step fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef tool fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef done fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class OPS,INV,BASE step
+    class TOOL tool
+    class PROVE done
+```
+
+**How to read this diagram.** Move left to right; the arrow back from step 5 to step 2 is the normal case, because failed proofs usually mean the invariant was wrong or incomplete.
+
+---
+
 ## 1. The Central Question: What Forces a New Structure Into Existence
 
 Every data structure in history was created by the same event: **someone wrote down an operation set with cost requirements, and no existing structure could satisfy all of them at once.**
@@ -716,12 +740,27 @@ void delete(T x) {
 
 ## Reality Check
 
-**"Designing a data structure means inventing something nobody has built"** → Almost every custom structure in production is a *composition* or an *augmentation* of standard ones — LRU is a map plus a linked list, an indexed priority queue is a heap plus a map, an interval tree is a BST plus one cached field. The genuinely novel structure is rare and usually a research contribution. Aiming for "novel" makes the skill feel unreachable; aiming for "assembled and augmented correctly to meet my contract table" makes it a Tuesday afternoon.
+> [!CAUTION]
+> **Myth:** "Designing a data structure means inventing something nobody has built"
+>
+> **Reality:** Almost every custom structure in production is a *composition* or an *augmentation* of standard ones — LRU is a map plus a linked list, an indexed priority queue is a heap plus a map, an interval tree is a BST plus one cached field. The genuinely novel structure is rare and usually a research contribution. Aiming for "novel" makes the skill feel unreachable; aiming for "assembled and augmented correctly to meet my contract table" makes it a Tuesday afternoon.
 
-**"You start designing by thinking about the implementation"** → You start by writing the operation-contract table (§1.1). Designs that begin at the implementation produce structures that solve a problem adjacent to the real one, and the mismatch surfaces only after the code exists. The table is also what makes the design *reviewable* — a colleague can challenge a required complexity in one sentence, where challenging half-written code takes an afternoon.
+> [!CAUTION]
+> **Myth:** "You start designing by thinking about the implementation"
+>
+> **Reality:** You start by writing the operation-contract table (§1.1). Designs that begin at the implementation produce structures that solve a problem adjacent to the real one, and the mismatch surfaces only after the code exists. The table is also what makes the design *reviewable* — a colleague can challenge a required complexity in one sentence, where challenging half-written code takes an afternoon.
 
-**"A correct-looking implementation that passes tests is a validated design"** → Hand-written tests exercise the sequences you imagined; custom structures fail on the sequences you did not. The validation protocol (§11) exists because invariant checks after every operation, an inductive correctness argument, a stated complexity proof, a deliberate adversarial input, and differential testing against a stupid reference each catch a *different* class of defect. Passing tests is stage zero of five.
+> [!CAUTION]
+> **Myth:** "A correct-looking implementation that passes tests is a validated design"
+>
+> **Reality:** Hand-written tests exercise the sequences you imagined; custom structures fail on the sequences you did not. The validation protocol (§11) exists because invariant checks after every operation, an inductive correctness argument, a stated complexity proof, a deliberate adversarial input, and differential testing against a stupid reference each catch a *different* class of defect. Passing tests is stage zero of five.
 
-**"Amortized O(1) is as good as worst-case O(1)"** → They are equivalent for throughput systems and materially different for latency-bounded ones. Amortized O(1) permits one operation in the sequence to genuinely take O(n) — fine for a batch job, potentially a dropped frame or a violated p99.9 SLA in a real-time system. The design decision is upstream of the structure choice: *decide which kind of system you are building*, then pick bounds accordingly, and know that deamortization (spreading the expensive work across operations) is available when you need worst-case guarantees.
+> [!CAUTION]
+> **Myth:** "Amortized O(1) is as good as worst-case O(1)"
+>
+> **Reality:** They are equivalent for throughput systems and materially different for latency-bounded ones. Amortized O(1) permits one operation in the sequence to genuinely take O(n) — fine for a batch job, potentially a dropped frame or a violated p99.9 SLA in a real-time system. The design decision is upstream of the structure choice: *decide which kind of system you are building*, then pick bounds accordingly, and know that deamortization (spreading the expensive work across operations) is available when you need worst-case guarantees.
 
-**"If a standard structure exists, designing your own is always wasted effort"** → True in production, false in learning — and the distinction matters because the learning transfers back. Deriving the Fenwick tree (§10) does not make you ship a Fenwick tree; it makes you able to *read* one, recognize when a problem wants one, and debug the library version when it misbehaves. The production rule (§12: use the standard structure) and the learning rule (build it once from the contract) are not in conflict — they operate at different times, and skipping the second is why so many engineers can call `TreeMap` and cannot say what it costs them.
+> [!CAUTION]
+> **Myth:** "If a standard structure exists, designing your own is always wasted effort"
+>
+> **Reality:** True in production, false in learning — and the distinction matters because the learning transfers back. Deriving the Fenwick tree (§10) does not make you ship a Fenwick tree; it makes you able to *read* one, recognize when a problem wants one, and debug the library version when it misbehaves. The production rule (§12: use the standard structure) and the learning rule (build it once from the contract) are not in conflict — they operate at different times, and skipping the second is why so many engineers can call `TreeMap` and cannot say what it costs them.

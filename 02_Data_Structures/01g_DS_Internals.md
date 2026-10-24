@@ -29,6 +29,41 @@
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+## ⚡ At a Glance — What the JVM Actually Does
+
+> [!NOTE]
+> **Mental model:** Big-O counts operations; this chapter counts *bytes and cache misses*. Two structures with identical complexity can differ by 5–50× because of object headers, pointer chasing and boxing.
+
+```mermaid
+flowchart LR
+    subgraph ARR["int[3]: 28 bytes"]
+        a1["header + length"] --> a2["3 values inline"]
+    end
+    subgraph LST["ArrayList of Integer: 136 bytes"]
+        l1["ArrayList object 32 B"] --> l2["Object array 56 B"] --> l3["3 Integer objects 48 B"]
+    end
+    classDef lean fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef heavy fill:#ffc9c9,stroke:#c62828,color:#111
+    class a1,a2 lean
+    class l1,l2,l3 heavy
+```
+
+**How to read this diagram.** The same three numbers cost 28 bytes in a primitive array and 136 bytes boxed in an `ArrayList` (≈4.8×), because each element is a separate heap object reached through a reference.
+
+| Structure | Internal layout | Cache behaviour |
+| --------- | --------------- | --------------- |
+| `ArrayList` | Object array of references | References contiguous; the objects they point to are scattered |
+| `HashMap` | Bucket array + `Node` chains (trees at 8+) | One miss for the bucket, more for each chain node |
+| `LinkedList` | One 32-byte node per element | Every hop is likely a miss |
+| `ArrayDeque` | Circular array | Contiguous, very friendly |
+| `TreeMap` | Red-black `Entry` nodes | One miss per level |
+| `PriorityQueue` | Binary heap in an array | Parent/child by index math, friendly |
+
+> [!TIP]
+> Use primitive arrays or specialised primitive collections in hot loops to avoid boxing.
+
+---
+
 ## Evolution of Data Structure Internals (1945-2020)
 
 ### Why History Matters Here
@@ -245,14 +280,19 @@ None of the standard ones do all three efficiently. Tradeoffs: `ArrayList`: O(1)
 
 ## Arraylist - Complete Internal View
 
+```java
 ArrayList<Integer> list = new ArrayList<>();
 list.add(42);
 list.add(99);
 list.add(15);
-MEMORY LAYOUT (JVM HotSpot, 64-bit, compressed oops):
-ArrayList Object (HEAP):
+```
+
+**Memory layout** (JVM HotSpot, 64-bit, compressed oops):
+
+**ArrayList object (heap):**
+
 | OFFSET | SIZE | FIELD | VALUE |
-┼──────┼────────────────────────┼
+| ------ | ---- | ----- | ----- |
 | 0 | 8 | Mark Word | 0x00000001 (unlocked) |
 | 8 | 4 | Class Pointer | → ArrayList.class |
 | 12 | 4 | padding | (alignment) |
@@ -260,12 +300,13 @@ ArrayList Object (HEAP):
 | 20 | 4 | size | 3 |
 | 24 | 4 | modCount | 3 (modification counter) |
 | 28 | 4 | padding | |
-┴──────┴────────────────────────┴
 
-**Total**: 32 bytes for ArrayList object itself
-Object[] elementData (at 0x00ABC000):
+**Total**: 32 bytes for the ArrayList object itself.
+
+**`Object[] elementData` (at 0x00ABC000):**
+
 | OFFSET | SIZE | CONTENT | VALUE |
-┼──────┼────────────────────────┼
+| ------ | ---- | ------- | ----- |
 | 0 | 8 | Mark Word | 0x00000001 |
 | 8 | 4 | Class Pointer | → Object[].class |
 | 12 | 4 | Array Length | 10 (default capacity) |
@@ -275,28 +316,34 @@ Object[] elementData (at 0x00ABC000):
 | 28 | 4 | element[3] ref | null (empty slot) |
 | ... | ... | ... | null |
 | 52 | 4 | element[9] ref | null |
-┴──────┴────────────────────────┴
 
-**Total**: 56 bytes for Object[10] array
-Integer Object (at 0x00DEF000 - for value 42):
+**Total**: 56 bytes for `Object[10]`.
+
+**`Integer` object (at 0x00DEF000, for value 42):**
+
 | OFFSET | SIZE | FIELD | VALUE |
-┼──────┼────────────────────────┼
+| ------ | ---- | ----- | ----- |
 | 0 | 8 | Mark Word | 0x00000001 |
 | 8 | 4 | Class Pointer | → Integer.class |
 | 12 | 4 | value | 42 |
-┴──────┴────────────────────────┴
 
 **Total**: 16 bytes per Integer object!
-TOTAL MEMORY FOR 3 INTEGERS:
+
+**Total memory for 3 Integers:**
 
 - ArrayList object: 32 bytes
 - Object[] array: 56 bytes
 - 3 Integer objects: 48 bytes (16 × 3)
 
 **Total**: 136 bytes!
+
 Compare to:
-int[] arr = {42, 99, 15}; → 28 bytes (12 header + 4 length + 3×4 values)
-ArrayList uses 4.8x MORE memory than primitive array!
+
+```java
+int[] arr = {42, 99, 15};   // 28 bytes (12 header + 4 length + 3×4 values)
+```
+
+ArrayList uses 4.8x MORE memory than a primitive array!
 
 🔬 **Section Challenge — Arraylist - Complete Internal View**
 
@@ -310,31 +357,50 @@ Three layers of overhead: (1) ArrayList object itself: 32 bytes (Mark Word 8 + C
 
 ## Arraylist.Get() - What Actually Happens
 
-int value = list.get(1); // Get element at index 1
-JAVA SOURCE (simplified):
+```java
+int value = list.get(1);  // Get element at index 1
+```
+
+**Java source (simplified):**
+
+```java
 public E get(int index) {
-rangeCheck(index);
-return elementData(index);
+    rangeCheck(index);
+    return elementData(index);
 }
-BYTECODE (actual JVM instructions):
-aload_1 // Load 'list' reference onto stack
-iconst_1 // Push constant 1 (index) onto stack
-invokevirtual #4 // Method ArrayList.get:(I)Ljava/lang/Object;
-Inside get():
-iload_1 // Load index parameter
-aload_0 // Load 'this' reference
-getfield #2 // Field elementData:[Ljava/lang/Object;
-iload_1 // Load index again
-aaload // Load element from array (THE KEY OPERATION!)
-areturn // Return object reference
-ASSEMBLY (x86-64, after JIT compilation):
+```
+
+**Bytecode (actual JVM instructions):**
+
+```text
+aload_1                // Load 'list' reference onto stack
+iconst_1               // Push constant 1 (index) onto stack
+invokevirtual #4       // Method ArrayList.get:(I)Ljava/lang/Object;
+```
+
+Inside `get()`:
+
+```text
+iload_1                // Load index parameter
+aload_0                // Load 'this' reference
+getfield #2            // Field elementData:[Ljava/lang/Object;
+iload_1                // Load index again
+aaload                 // Load element from array (THE KEY OPERATION!)
+areturn                // Return object reference
+```
+
+**Assembly (x86-64, after JIT compilation):**
+
+```asm
 ; Bounds check (usually eliminated by JIT if in loop)
-cmp edx, [rax+0x10] ; Compare index with array length
-jae THROW_EXCEPTION ; Jump if index >= length
+cmp  edx, [rax+0x10]        ; Compare index with array length
+jae  THROW_EXCEPTION        ; Jump if index >= length
+
 ; Calculate element address
-movsxd rdx, edx ; Sign-extend index to 64-bit
-mov rax, [rax+0x18+rdx*4]; Load element reference from array
+movsxd rdx, edx             ; Sign-extend index to 64-bit
+mov  rax, [rax+0x18+rdx*4]  ; Load element reference from array
 ; rax now contains reference to Integer object
+```
 
 **Cpu Cycles Breakdown**:
 
@@ -348,22 +414,24 @@ mov rax, [rax+0x18+rdx*4]; Load element reference from array
 **Worst Case**: ~200+ cycles (cache miss on array or object)
 
 **Cache Behavior**:
-When you access list.get(0):
+When you access `list.get(0)`:
 
 - CPU loads cache line containing array reference pointers
 - Adjacent elements (indices 1, 2, 3...) also loaded!
 - But actual Integer objects are scattered in heap
 - Each Integer object access may be a CACHE MISS
-  Cache Line (64 bytes) loaded for array:
-  ┌──────────────────────────────────────────────────────────────────┐
-  | | ref[0] | ref[1] | ref[2] | ref[3] | ... | ref[15] | | |
-  | | 4 bytes| 4 bytes| 4 bytes| 4 bytes| ... | 4 bytes | | |
-  └────┬───┴────┬───┴────┬───┴────┬───┴─────┴─────────┘ │
-  | | | | | | |
-  ▼ ▼ ▼ ▼ │
-  Integer Integer Integer Integer ← SCATTERED IN HEAP! │
-  @0x1000 @0x5000 @0x8000 @0x2000 ← EACH IS CACHE MISS! │
-  │
+
+```text
+Cache line (64 bytes) loaded for the array:
+┌────────┬────────┬────────┬────────┬─────┬─────────┐
+│ ref[0] │ ref[1] │ ref[2] │ ref[3] │ ... │ ref[15] │
+│ 4 bytes│ 4 bytes│ 4 bytes│ 4 bytes│ ... │ 4 bytes │
+└───┬────┴───┬────┴───┬────┴───┬────┴─────┴─────────┘
+    │        │        │        │
+    ▼        ▼        ▼        ▼
+ Integer  Integer  Integer  Integer   ← SCATTERED IN HEAP!
+ @0x1000  @0x5000  @0x8000  @0x2000   ← EACH IS A CACHE MISS!
+```
 
 🔬 **Section Challenge — Arraylist.Get() - What Actually Happens**
 
@@ -377,42 +445,61 @@ Two levels of indirection with opposite cache behavior. Level 1 (reference array
 
 ## Arraylist Resize - What Actually Happens
 
-// When ArrayList is full and you add another element:
+When the ArrayList is full and you add another element:
+
+```java
 list.add(newElement);
-STEP 1: Allocate new array (1.5x size)
-int newCapacity = oldCapacity + (oldCapacity >> 1); // 10 → 15
+```
+
+**Step 1: Allocate new array (1.5x size)**
+
+```java
+int newCapacity = oldCapacity + (oldCapacity >> 1);  // 10 → 15
 Object[] newElementData = new Object[newCapacity];
-Memory: Request 15 × 8 = 120 bytes (+ header) from heap
+```
 
-**Jvm**: Find free space, potentially trigger GC if heap full
-STEP 2: Copy all elements
+Memory: request 15 × 8 = 120 bytes (+ header) from the heap.
+**JVM**: finds free space, potentially triggering GC if the heap is full.
+
+**Step 2: Copy all elements**
+
+```java
 System.arraycopy(oldArray, 0, newArray, 0, size);
-What System.arraycopy actually does:
+```
 
-- Uses CPU's SIMD instructions (SSE/AVX) for bulk memory copy
+What `System.arraycopy` actually does:
+
+- Uses CPU SIMD instructions (SSE/AVX) for bulk memory copy
 - Can copy 32-64 bytes per cycle using vector registers
-- Much faster than manual loop!
-  Assembly (AVX-256 enabled):
-  vmovdqu ymm0, [rsi] ; Load 32 bytes from source
-  vmovdqu [rdi], ymm0 ; Store 32 bytes to destination
-  add rsi, 32 ; Advance source pointer
-  add rdi, 32 ; Advance destination pointer
-  ; Repeat until all copied
-  STEP 3: Update reference
-  this.elementData = newElementData;
-  Old array becomes garbage → collected later by GC
+- Much faster than a manual loop!
+
+Assembly (AVX-256 enabled):
+
+```asm
+vmovdqu ymm0, [rsi]    ; Load 32 bytes from source
+vmovdqu [rdi], ymm0    ; Store 32 bytes to destination
+add     rsi, 32        ; Advance source pointer
+add     rdi, 32        ; Advance destination pointer
+; Repeat until all copied
+```
+
+**Step 3: Update reference**
+
+```java
+this.elementData = newElementData;
+// Old array becomes garbage → collected later by GC
+```
 
 **Time Complexity Analysis**:
 
-- Single add() with resize: O(n) - must copy n elements
-- But resize happens rarely!
-  After n adds, how many total copies?
-- 10 elements → 10 copies (resize from 10 to 15)
-- 15 elements → 15 copies (resize from 15 to 22)
-- 22 elements → 22 copies (resize from 22 to 33)
-- ...
-  Total copies ≈ n + n/1.5 + n/1.5² + ... ≈ 3n
-  Average per add = 3n / n = 3 = O(1) AMORTIZED!
+- Single `add()` with resize: O(n) — must copy n elements
+- But resize happens rarely! After n adds, how many total copies?
+  - 10 elements → 10 copies (resize from 10 to 15)
+  - 15 elements → 15 copies (resize from 15 to 22)
+  - 22 elements → 22 copies (resize from 22 to 33)
+  - ...
+- Total copies ≈ n + n/1.5 + n/1.5² + ... ≈ 3n
+- Average per add = 3n / n = 3 = O(1) AMORTIZED!
 
 🔬 **Section Challenge — Arraylist Resize - What Actually Happens**
 
@@ -426,7 +513,7 @@ Use the geometric series argument. After `n` adds starting from capacity 10, tot
 
 ## #️⃣ 2. Hashmap Deep Internals
 
-🔬 **Section Challenge — ️⃣ 2. Hashmap Deep Internals**
+🔬 **Section Challenge — #️⃣ 2. Hashmap Deep Internals**
 
 **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
 
@@ -474,20 +561,26 @@ Let the 12 entries have hash codes whose `h ^ (h >>> 16)` folded values, when ma
 
 **Result:** 6 entries move to new bucket indices (oldIndex + 16). 6 entries stay in the same bucket. The new bucket array is now half-empty (16 of 32 buckets are used), and the load factor drops from 0.75 to 0.375.
 
-**Key insight:** Not every entry is re-distributed uniformly. Only entries whose folded hash has bit 4 = 1 move, and they move to `oldIndex + 16`. This is why resize is O(n) but not as bad as random redistribution — entries stay in a predictable range. The JIT will often optimize this with a conditional move (`cmov`) instruction rather than a branch.
+> [!TIP]
+> **Key insight:** Not every entry is re-distributed uniformly. Only entries whose folded hash has bit 4 = 1 move, and they move to `oldIndex + 16`. This is why resize is O(n) but not as bad as random redistribution — entries stay in a predictable range. The JIT will often optimize this with a conditional move (`cmov`) instruction rather than a branch.
 
 </details>
 
 ## Hashmap - Complete Internal View
 
+```java
 HashMap<String, Integer> map = new HashMap<>();
 map.put("Alice", 25);
 map.put("Bob", 30);
 map.put("Charlie", 35);
-MEMORY LAYOUT (Java 8+, 64-bit JVM):
-HashMap Object:
+```
+
+**Memory layout** (Java 8+, 64-bit JVM):
+
+**HashMap object:**
+
 | OFFSET | SIZE | FIELD | VALUE |
-┼──────┼────────────────────────┼
+| ------ | ---- | ----- | ----- |
 | 0 | 8 | Mark Word | 0x00000001 |
 | 8 | 4 | Class Pointer | → HashMap.class |
 | 12 | 4 | padding | |
@@ -497,28 +590,30 @@ HashMap Object:
 | 28 | 4 | threshold | 12 (capacity × loadFactor) |
 | 32 | 4 | loadFactor | 0.75f (as int bits) |
 | 36 | 4 | padding | |
-┴──────┴────────────────────────┴
 
-**Total**: 40 bytes for HashMap object
-Node[] table (bucket array, at 0x00AA0000):
-INDEX │ CONTENT
-┼
-[0] │ null
-[1] │ null
-[2] │ 0x00BB0000 → Node("Alice", 25, null)
-[3] │ null
-[4] │ 0x00BB0040 → Node("Bob", 30, null)
-[5] │ null
-[6] │ null
-[7] │ 0x00BB0080 → Node("Charlie", 35, null)
-... │ null
-[15] │ null
-┴
+**Total**: 40 bytes for the HashMap object.
 
-**Total**: 16 + (16 × 4) = 80 bytes for Node[16]
-Node Object (at 0x00BB0000 for "Alice"):
+**`Node[] table` (bucket array, at 0x00AA0000):**
+
+| INDEX | CONTENT |
+| ----- | ------- |
+| [0] | null |
+| [1] | null |
+| [2] | 0x00BB0000 → Node("Alice", 25, null) |
+| [3] | null |
+| [4] | 0x00BB0040 → Node("Bob", 30, null) |
+| [5] | null |
+| [6] | null |
+| [7] | 0x00BB0080 → Node("Charlie", 35, null) |
+| ... | null |
+| [15] | null |
+
+**Total**: 16 + (16 × 4) = 80 bytes for `Node[16]`.
+
+**`Node` object (at 0x00BB0000, for "Alice"):**
+
 | OFFSET | SIZE | FIELD | VALUE |
-┼──────┼────────────────────────┼
+| ------ | ---- | ----- | ----- |
 | 0 | 8 | Mark Word | 0x00000001 |
 | 8 | 4 | Class Pointer | → HashMap$Node.class |
 | 12 | 4 | hash | 63479193 (cached hash) |
@@ -526,54 +621,83 @@ Node Object (at 0x00BB0000 for "Alice"):
 | 20 | 4 | value (ref) | 0x00DD0000 → Integer(25) |
 | 24 | 4 | next (ref) | null (no collision) |
 | 28 | 4 | padding | |
-┴──────┴────────────────────────┴
 
-**Total**: 32 bytes per Node
+**Total**: 32 bytes per Node.
 
 ## Hashmap.Put() - What Actually Happens
 
+```java
 map.put("Alice", 25);
-STEP 1: Calculate hash
-int h = key.hashCode(); // "Alice".hashCode() = 63479193
-int hash = h ^ (h >>> 16); // Spread high bits to low bits
+```
+
+**Step 1: Calculate hash**
+
+```java
+int h = key.hashCode();      // "Alice".hashCode() = 63479193
+int hash = h ^ (h >>> 16);   // Spread high bits to low bits
+```
+
 Why XOR with right shift?
 
-- Original: h = 0011_1100_0110_0100_0000_0000_1001_1001
-- Shifted: h>>>16 = 0000_0000_0000_0000_0011_1100_0110_0100
-- XOR: hash = 0011_1100_0110_0100_0011_1100_1111_1101
-  This makes low bits depend on high bits, better distribution!
-  STEP 2: Calculate bucket index
-  int index = hash & (n - 1); // n = 16 (power of 2)
-  Why AND with (n-1)?
-- n = 16 = 0001_0000
-- n-1 = 15 = 0000_1111
-- hash & 15 = extracts last 4 bits = index 0-15
-  This is FASTER than modulo:
-- hash % n → ~20-80 CPU cycles (division)
-- hash & (n-1) → 1 CPU cycle (bitwise AND)
-  STEP 3: Insert into bucket
-  if (table[index] == null) {
-  table[index] = new Node(hash, key, value, null);
-  } else {
-  // Collision! Walk the chain or convert to tree
-  Node e = table[index];
-  while (e != null) {
-  if (e.hash == hash && e.key.equals(key)) {
-  e.value = value; // Update existing
-  return;
-  }
-  e = e.next;
-  }
-  // Add at end of chain
-  }
-  STEP 4: Check for tree conversion (Java 8+)
-  if (chainLength >= 8 && tableSize >= 64) {
-  treeifyBin(table, index); // Convert chain to Red-Black Tree
-  }
-  Why threshold = 8?
-- Probability of 8 collisions under random hash is 0.00000006
-- Tree overhead (48 bytes/node) only worthwhile for long chains
-- Tree: O(log n) search vs Chain: O(n) search
+```text
+Original:  h        = 0011_1100_0110_0100_0000_0000_1001_1001
+Shifted:   h >>> 16 = 0000_0000_0000_0000_0011_1100_0110_0100
+XOR:       hash     = 0011_1100_0110_0100_0011_1100_1111_1101
+```
+
+This makes the low bits depend on the high bits, giving better distribution!
+
+**Step 2: Calculate bucket index**
+
+```java
+int index = hash & (n - 1);  // n = 16 (power of 2)
+```
+
+Why AND with `(n-1)`?
+
+```text
+n     = 16 = 0001_0000
+n - 1 = 15 = 0000_1111
+hash & 15  = extracts the last 4 bits = index 0-15
+```
+
+This is FASTER than modulo:
+
+- `hash % n` → ~20-80 CPU cycles (division)
+- `hash & (n-1)` → 1 CPU cycle (bitwise AND)
+
+**Step 3: Insert into bucket**
+
+```java
+if (table[index] == null) {
+    table[index] = new Node(hash, key, value, null);
+} else {
+    // Collision! Walk the chain or convert to tree
+    Node e = table[index];
+    while (e != null) {
+        if (e.hash == hash && e.key.equals(key)) {
+            e.value = value;  // Update existing
+            return;
+        }
+        e = e.next;
+    }
+    // Add at end of chain
+}
+```
+
+**Step 4: Check for tree conversion (Java 8+)**
+
+```java
+if (chainLength >= 8 && tableSize >= 64) {
+    treeifyBin(table, index);  // Convert chain to Red-Black Tree
+}
+```
+
+Why threshold = 8?
+
+- Probability of 8 collisions under a random hash is 0.00000006
+- Tree overhead (48 bytes/node) is only worthwhile for long chains
+- Tree: O(log n) search vs chain: O(n) search
 
 🔬 **Section Challenge — Hashmap.Put() - What Actually Happens**
 
@@ -600,50 +724,65 @@ Hash-DoS attack (CVE-2011-4858): strings like `"Aa"` and `"BB"` have identical h
 
 ## Hashmap.Get() - Cpu Instruction Level
 
+```java
 Integer age = map.get("Alice");
+```
 
 **Bytecode**:
-aload_1 // Load map reference
-ldc "Alice" // Push string constant
-invokevirtual #5 // HashMap.get(Object)Object
-checkcast #6 // Cast to Integer
-invokevirtual #7 // Integer.intValue()
-istore_2 // Store in local variable
-INSIDE HashMap.get() - JIT COMPILED x86-64:
-; rdi = this (HashMap), rsi = key ("Alice")
-; Step 1: Get hash
-mov eax, [rsi+0x08] ; Load cached hashCode from String
-mov edx, eax ; Copy hash
-shr edx, 16 ; h >>> 16
-xor eax, edx ; h ^ (h >>> 16)
-; Step 2: Get table and index
-mov rcx, [rdi+0x10] ; Load table reference
-mov r8d, [rcx+0x0C] ; Load table.length
-sub r8d, 1 ; n - 1
-and eax, r8d ; hash & (n-1) = index
-; Step 3: Get bucket
-mov rcx, [rcx+0x10+rax*8] ; Load table[index] (Node reference)
-test rcx, rcx ; Check if null
-jz NOT_FOUND ; Return null if empty bucket
-; Step 4: Check node
 
-**Loop**:
-cmp [rcx+0x0C], eax ; Compare cached hash
-jne NEXT_NODE ; Skip if hash different
-mov rdi, [rcx+0x10] ; Load node.key
-call String.equals ; Compare keys
-test al, al ; Check result
-jz NEXT_NODE ; Continue if not equal
-mov rax, [rcx+0x14] ; Load node.value - FOUND!
+```text
+aload_1              // Load map reference
+ldc "Alice"          // Push string constant
+invokevirtual #5     // HashMap.get(Object)Object
+checkcast #6         // Cast to Integer
+invokevirtual #7     // Integer.intValue()
+istore_2             // Store in local variable
+```
+
+**Inside `HashMap.get()` — JIT compiled x86-64:**
+
+```asm
+; rdi = this (HashMap), rsi = key ("Alice")
+
+; Step 1: Get hash
+mov  eax, [rsi+0x08]        ; Load cached hashCode from String
+mov  edx, eax               ; Copy hash
+shr  edx, 16                ; h >>> 16
+xor  eax, edx               ; h ^ (h >>> 16)
+
+; Step 2: Get table and index
+mov  rcx, [rdi+0x10]        ; Load table reference
+mov  r8d, [rcx+0x0C]        ; Load table.length
+sub  r8d, 1                 ; n - 1
+and  eax, r8d               ; hash & (n-1) = index
+
+; Step 3: Get bucket
+mov  rcx, [rcx+0x10+rax*8]  ; Load table[index] (Node reference)
+test rcx, rcx               ; Check if null
+jz   NOT_FOUND              ; Return null if empty bucket
+
+; Step 4: Check node
+LOOP:
+cmp  [rcx+0x0C], eax        ; Compare cached hash
+jne  NEXT_NODE              ; Skip if hash different
+mov  rdi, [rcx+0x10]        ; Load node.key
+call String.equals          ; Compare keys
+test al, al                 ; Check result
+jz   NEXT_NODE              ; Continue if not equal
+mov  rax, [rcx+0x14]        ; Load node.value - FOUND!
 ret
+
 NEXT_NODE:
-mov rcx, [rcx+0x18] ; Load node.next
-test rcx, rcx ; Check if null
-jnz LOOP ; Continue if more nodes
+mov  rcx, [rcx+0x18]        ; Load node.next
+test rcx, rcx               ; Check if null
+jnz  LOOP                   ; Continue if more nodes
+
 NOT_FOUND:
-xor eax, eax ; Return null
+xor  eax, eax               ; Return null
 ret
-CPU CYCLES (no collision, L1 cache hit):
+```
+
+**CPU cycles (no collision, L1 cache hit):**
 
 - Hash calculation: ~5 cycles
 - Index calculation: ~2 cycles
@@ -651,65 +790,82 @@ CPU CYCLES (no collision, L1 cache hit):
 - Method call: ~20 cycles (if not fully inlined)
 
 **Total**: ~40 cycles ≈ 15 nanoseconds @ 3GHz
-With cache miss: Add ~200 cycles per miss!
+
+With a cache miss: add ~200 cycles per miss!
 
 ## Hashmap Collision Handling - Deep View
 
-**Scenario**: Two keys with same bucket index
-map.put("Aa", 1); // "Aa".hashCode() = 2112
-map.put("BB", 2); // "BB".hashCode() = 2112 (SAME HASH!)
+**Scenario**: two keys with the same bucket index.
+
+```java
+map.put("Aa", 1);  // "Aa".hashCode() = 2112
+map.put("BB", 2);  // "BB".hashCode() = 2112 (SAME HASH!)
+```
+
 This happens because:
+
+```text
 'A' = 65, 'a' = 97, 'B' = 66
 "Aa" = 31 × 65 + 97 = 2015 + 97 = 2112
 "BB" = 31 × 66 + 66 = 2046 + 66 = 2112
-LINKED LIST COLLISION CHAIN (before 8 nodes):
+```
+
+**Linked-list collision chain (before 8 nodes):**
+
+```text
 table[bucket]:
-| Node | | Node |
-| hash: 2112 | | hash: 2112 |
-| key: "Aa" |────►| key: "BB" |────► null |
-| value: 1 | | value: 2 |
-get("BB") requires:
+┌──────────────┐      ┌──────────────┐
+│ Node         │      │ Node         │
+│ hash: 2112   │      │ hash: 2112   │
+│ key: "Aa"    │ ───► │ key: "BB"    │ ───► null
+│ value: 1     │      │ value: 2     │
+└──────────────┘      └──────────────┘
+```
+
+`get("BB")` requires:
 
 1. Hash calculation → 2112
-2. Bucket lookup → table[2112 & 15]
-3. Check "Aa" hash (2112) and equals() → NOT MATCH
+2. Bucket lookup → `table[2112 & 15]`
+3. Check "Aa" hash (2112) and `equals()` → NOT MATCH
 4. Follow next pointer
-5. Check "BB" hash (2112) and equals() → MATCH!
-   Time: O(n) where n = chain length
-   RED-BLACK TREE (after 8 nodes in same bucket, Java 8+):
-   table[bucket]:
-   TreeNode (BLACK)
-   hash: 2112
-   key: "Cc"
-   ┬
-   ┴
-   ▼ ▼
-   | TreeNode | | TreeNode |
-   | (RED) | | (RED) |
-   | key: "Aa" | | key: "Ee" |
-   ┬──────┘ └──────┬
-   ┴────┐ ┌────┴
-   ▼ ▼ ▼ ▼
-   [node] [node] [node] [node]
-   Tree lookup: O(log n) instead of O(n)!
-   8 nodes: 3 comparisons instead of 8
-   TreeNode Memory (MORE than regular Node):
-   | OFFSET | SIZE | FIELD | VALUE |
-   ┼──────┼────────────────────────┼
-   | 0 | 8 | Mark Word | |
-   | 8 | 4 | Class Pointer | |
-   | 12 | 4 | hash | |
-   | 16 | 4 | key | |
-   | 20 | 4 | value | |
-   | 24 | 4 | next | (for iteration) |
-   | 28 | 4 | parent | (tree structure) |
-   | 32 | 4 | left | (tree structure) |
-   | 36 | 4 | right | (tree structure) |
-   | 40 | 1 | red (boolean) | (color flag) |
-   | 41 | 7 | padding | |
-   ┴──────┴────────────────────────┴
+5. Check "BB" hash (2112) and `equals()` → MATCH!
 
-**Total**: 48 bytes vs 32 bytes for regular Node (50% more memory)
+Time: O(n) where n = chain length.
+
+**Red-Black tree (after 8 nodes in the same bucket, Java 8+):**
+
+```text
+table[bucket]:
+                 TreeNode (BLACK)
+                 hash: 2112
+                 key: "Cc"
+                 /          \
+      TreeNode (RED)      TreeNode (RED)
+      key: "Aa"           key: "Ee"
+       /      \             /      \
+   [node]   [node]      [node]   [node]
+```
+
+Tree lookup: O(log n) instead of O(n)!
+8 nodes: 3 comparisons instead of 8.
+
+**TreeNode memory (MORE than a regular Node):**
+
+| OFFSET | SIZE | FIELD | VALUE |
+| ------ | ---- | ----- | ----- |
+| 0 | 8 | Mark Word | |
+| 8 | 4 | Class Pointer | |
+| 12 | 4 | hash | |
+| 16 | 4 | key | |
+| 20 | 4 | value | |
+| 24 | 4 | next | (for iteration) |
+| 28 | 4 | parent | (tree structure) |
+| 32 | 4 | left | (tree structure) |
+| 36 | 4 | right | (tree structure) |
+| 40 | 1 | red (boolean) | (color flag) |
+| 41 | 7 | padding | |
+
+**Total**: 48 bytes vs 32 bytes for a regular Node (50% more memory).
 
 ## 🔬 3. Linkedlist Deep Internals
 
@@ -844,75 +1000,99 @@ get("BB") requires:
 
 ## Stack - Complete Internal View
 
-Java's Stack class extends Vector (legacy, synchronized)
-Modern alternative: Deque<E> stack = new ArrayDeque<>();
-ARRAYDEQUE AS STACK - MEMORY LAYOUT:
+Java's `Stack` class extends `Vector` (legacy, synchronized).
+Modern alternative: `Deque<E> stack = new ArrayDeque<>();`
+
+**ArrayDeque as a stack — memory layout:**
+
+```java
 ArrayDeque<Integer> stack = new ArrayDeque<>();
 stack.push(10);
 stack.push(20);
 stack.push(30);
-ArrayDeque Object:
+```
+
+**ArrayDeque object:**
+
 | OFFSET | SIZE | FIELD | VALUE |
-┼──────┼────────────────────────┼
+| ------ | ---- | ----- | ----- |
 | 0 | 8 | Mark Word | 0x00000001 |
 | 8 | 4 | Class Pointer | → ArrayDeque.class |
 | 12 | 4 | padding | |
 | 16 | 4 | elements (ref) | → Object[16] |
 | 20 | 4 | head | 13 (index of first element) |
 | 24 | 4 | tail | 0 (index after last element) |
-┴──────┴────────────────────────┴
-Circular Buffer (elements array):
-| Index | 0 | 1 | ... | 13 | 14 | 15 | |
-| Value |null |null | ... | 30 | 20 | 10 | |
-| | | | | TOP | |BOTTOM| |
-| |tail | | |head | | | |
-push() grows towards index 0 (head decrements)
-pop() shrinks from head (head increments)
-PUSH OPERATION - CPU LEVEL:
+
+**Circular buffer (elements array):**
+
+| Index | 0 | 1 | ... | 13 | 14 | 15 |
+| ----- | - | - | --- | -- | -- | -- |
+| Value | null | null | ... | 30 | 20 | 10 |
+| Marker | tail | | | head (TOP) | | BOTTOM |
+
+- `push()` grows towards index 0 (head decrements)
+- `pop()` shrinks from head (head increments)
+
+**Push operation — CPU level:**
+
+```java
 stack.push(40);
-Java:
-head = (head - 1) & (elements.length - 1); // 13-1 = 12
+
+head = (head - 1) & (elements.length - 1);  // 13-1 = 12
 elements[head] = element;
+```
+
 Bytecode:
-aload_0 // Load 'this'
-aload_0 // Load 'this' again
-getfield #2 // Get head
-iconst_1 // Push 1
-isub // head - 1
-aload_0 // Load 'this'
-getfield #3 // Get elements.length
-iconst_1 // Push 1
-isub // length - 1
-iand // & (circular wrap)
-dup // Duplicate for store
-putfield #2 // Store new head
-aload_0 // Load 'this'
-getfield #4 // Get elements array
-swap // Swap index and array ref
-aload_1 // Load element
-aastore // Store in array
-CPU Cycles: ~15-20 (if JIT inlined and cache hit)
+
+```text
+aload_0              // Load 'this'
+aload_0              // Load 'this' again
+getfield #2          // Get head
+iconst_1             // Push 1
+isub                 // head - 1
+aload_0              // Load 'this'
+getfield #3          // Get elements.length
+iconst_1             // Push 1
+isub                 // length - 1
+iand                 // & (circular wrap)
+dup                  // Duplicate for store
+putfield #2          // Store new head
+aload_0              // Load 'this'
+getfield #4          // Get elements array
+swap                 // Swap index and array ref
+aload_1              // Load element
+aastore              // Store in array
+```
+
+CPU cycles: ~15-20 (if JIT inlined and cache hit).
 
 ## 🌳 5. Binary Tree / Bst Deep Internals
 
 ## Binary Search Tree - Complete Internal View
 
+```java
 TreeMap<Integer, String> tree = new TreeMap<>();
 tree.put(50, "A");
 tree.put(30, "B");
 tree.put(70, "C");
 tree.put(20, "D");
 tree.put(40, "E");
+```
 
-**Tree Structure**:
-[50,"A"]
-/ \
-[30,"B"] [70,"C"]
-/ \
-[20,"D"] [40,"E"]
-RED-BLACK TREE NODE (TreeMap.Entry):
+**Tree structure**:
+
+```text
+           [50,"A"]
+           /      \
+     [30,"B"]    [70,"C"]
+     /      \
+[20,"D"]  [40,"E"]
+```
+
+**Red-Black tree node (`TreeMap.Entry`):**
+
 | OFFSET | SIZE | FIELD | VALUE |
-┼──────┼────────────────────────┼
+| ------ | ---- | ----- | ----- |
 | 0 | 8 | Mark Word | 0x00000001 |
 | 8 | 4 | Class Pointer | → TreeMap$Entry.class |
 | 12 | 4 | key (ref) | → Integer(50) |
@@ -922,44 +1102,54 @@ RED-BLACK TREE NODE (TreeMap.Entry):
 | 28 | 4 | parent (ref) | null (root) |
 | 32 | 1 | color (boolean) | BLACK |
 | 33 | 7 | padding | |
-┴──────┴────────────────────────┴
 
-**Total**: 40 bytes per Entry
-TREE TRAVERSAL - CPU LEVEL (find key 40):
+**Total**: 40 bytes per Entry.
+
+**Tree traversal — CPU level (find key 40):**
+
+```java
 Integer key = 40;
-Entry<K,V> p = root; // Start at root (50)
+Entry<K,V> p = root;            // Start at root (50)
 while (p != null) {
-int cmp = key.compareTo(p.key);
-if (cmp < 0)
-p = p.left;
-else if (cmp > 0)
-p = p.right;
-else
-return p; // Found!
+    int cmp = key.compareTo(p.key);
+    if (cmp < 0)
+        p = p.left;
+    else if (cmp > 0)
+        p = p.right;
+    else
+        return p;               // Found!
 }
+```
+
+```text
 Iteration 1: key=40, node=50 → 40 < 50 → go left
 Iteration 2: key=40, node=30 → 40 > 30 → go right
 Iteration 3: key=40, node=40 → FOUND!
-Total: 3 comparisons, 3 memory accesses
-For n nodes: O(log n) comparisons in balanced tree
 
-**Memory Access Pattern**:
+Total: 3 comparisons, 3 memory accesses
+For n nodes: O(log n) comparisons in a balanced tree
+```
+
+**Memory access pattern**:
+
+```text
 Access 1: Load Entry(50) from RAM
-→ CACHE MISS (200 cycles)
-→ Also loads Entry(50).left and right pointers
+          → CACHE MISS (200 cycles)
+          → Also loads Entry(50).left and right pointers
 Access 2: Load Entry(30) from RAM
-→ CACHE MISS (200 cycles) - different memory location
+          → CACHE MISS (200 cycles) - different memory location
 Access 3: Load Entry(40) from RAM
-→ CACHE MISS (200 cycles) - different memory location
+          → CACHE MISS (200 cycles) - different memory location
+```
 
 **Total**: ~600 cycles just for memory access!
-Compare to Array: 3 accesses in same cache line = ~12 cycles
+Compare to an array: 3 accesses in the same cache line = ~12 cycles.
 
 **Why Trees Are Still Useful**:
 
 - Sorted order guaranteed
 - Range queries: O(log n + k) where k = results
-- Insert/Delete: O(log n) vs O(n) for sorted array
+- Insert/Delete: O(log n) vs O(n) for a sorted array
 - No resize needed like HashMap
 
 🔬 **Section Challenge — Binary Search Tree - Complete Internal View**
@@ -984,27 +1174,39 @@ TreeMap.Entry has 5 reference fields (key, value, left, right, parent) + 1 boole
 
 ## Heap (Priority Queue) - Complete Internal View
 
+```java
 PriorityQueue<Integer> heap = new PriorityQueue<>();
 heap.offer(50); heap.offer(30); heap.offer(70);
 heap.offer(20); heap.offer(40);
-HEAP STRUCTURE (MIN HEAP):
-20 (index 0)
-/ \
-30 70 (index 1, 2)
-/ \
-50 40 (index 3, 4)
-STORED AS ARRAY (CONTIGUOUS - CACHE FRIENDLY!):
-| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | ... | |
-| Value | 20 | 30 | 70 | 50 | 40 |null |null | ... | |
-PARENT-CHILD RELATIONSHIP (NO POINTERS NEEDED!):
+```
 
-- Parent of index i: (i - 1) / 2
-- Left child of i: 2 \* i + 1
-- Right child of i: 2 \* i + 2
-  Example: Node at index 1 (value 30)
-- Parent: (1-1)/2 = 0 → value 20 ✓
-- Left: 2\*1+1 = 3 → value 50 ✓
-- Right: 2\*1+2 = 4 → value 40 ✓
+**Heap structure (min-heap):**
+
+```text
+          20  (index 0)
+        /    \
+   30 (1)    70 (2)
+   /   \
+50 (3)  40 (4)
+```
+
+**Stored as an array (contiguous — cache friendly!):**
+
+| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | ... |
+| ----- | - | - | - | - | - | - | - | --- |
+| Value | 20 | 30 | 70 | 50 | 40 | null | null | ... |
+
+**Parent-child relationship (no pointers needed!):**
+
+- Parent of index `i`: `(i - 1) / 2`
+- Left child of `i`: `2 * i + 1`
+- Right child of `i`: `2 * i + 2`
+
+Example: node at index 1 (value 30)
+
+- Parent: `(1-1)/2 = 0` → value 20 ✓
+- Left: `2*1+1 = 3` → value 50 ✓
+- Right: `2*1+2 = 4` → value 40 ✓
 
 **Why Array Is Brilliant For Heap**:
 
@@ -1012,40 +1214,57 @@ PARENT-CHILD RELATIONSHIP (NO POINTERS NEEDED!):
 2. All nodes in contiguous memory (cache friendly)
 3. Parent/child calculation: just arithmetic (fast!)
 4. Complete binary tree guaranteed by structure
-   HEAPIFY UP (after insert) - CPU LEVEL:
-   heap.offer(10); // Insert 10 (smaller than root!)
-   Step 1: Add at end
-   | Index | 0 | 1 | 2 | 3 | 4 | 5 | |
-   | Value | 20 | 30 | 70 | 50 | 40 | 10 | ← NEW |
-   Step 2: Bubble up (swap with parent if smaller)
 
-- index=5, parent=(5-1)/2=2, arr[5]=10 < arr[2]=70 → SWAP
-  | Index | 0 | 1 | 2 | 3 | 4 | 5 | |
-  | Value | 20 | 30 | 10 | 50 | 40 | 70 | |
-- index=2, parent=(2-1)/2=0, arr[2]=10 < arr[0]=20 → SWAP
-  | Index | 0 | 1 | 2 | 3 | 4 | 5 | |
-  | Value | 10 | 30 | 20 | 50 | 40 | 70 | ← FINAL |
-  Assembly for parent calculation:
-  mov eax, edi ; eax = index
-  sub eax, 1 ; eax = index - 1
-  sar eax, 1 ; eax = (index-1) >> 1 (signed right shift)
-  ; Only 3 CPU cycles!
+**Heapify up (after insert) — CPU level:**
+
+```java
+heap.offer(10);  // Insert 10 (smaller than root!)
+```
+
+Step 1: add at the end
+
+| Index | 0 | 1 | 2 | 3 | 4 | 5 |
+| ----- | - | - | - | - | - | - |
+| Value | 20 | 30 | 70 | 50 | 40 | 10 ← NEW |
+
+Step 2: bubble up (swap with parent if smaller)
+
+- index=5, parent=(5-1)/2=2, `arr[5]=10 < arr[2]=70` → SWAP
+
+  | Index | 0 | 1 | 2 | 3 | 4 | 5 |
+  | ----- | - | - | - | - | - | - |
+  | Value | 20 | 30 | 10 | 50 | 40 | 70 |
+
+- index=2, parent=(2-1)/2=0, `arr[2]=10 < arr[0]=20` → SWAP
+
+  | Index | 0 | 1 | 2 | 3 | 4 | 5 |
+  | ----- | - | - | - | - | - | - |
+  | Value | 10 | 30 | 20 | 50 | 40 | 70 |
+
+  ← FINAL
+
+Assembly for parent calculation:
+
+```asm
+mov  eax, edi    ; eax = index
+sub  eax, 1      ; eax = index - 1
+sar  eax, 1      ; eax = (index-1) >> 1 (signed right shift)
+; Only 3 CPU cycles!
+```
 
 **Complexity Analysis**:
 
-- offer() / add(): O(log n) - bubble up at most log n levels
-- poll() / remove(): O(log n) - bubble down at most log n levels
-- peek(): O(1) - just return arr[0]
-- heapify array: O(n) - bottom-up construction (not O(n log n)!)
-  CACHE PERFORMANCE vs TREE:
-  For poll() traversing 3 levels:
-  HEAP (array):
-- All nodes likely in same cache line: ~4 cycles per access
-- Total: ~12 cycles
-  TREE (pointers):
-- Each node in different cache line: ~200 cycles per access
-- Total: ~600 cycles
-  HEAP IS 50x FASTER due to cache locality!
+- `offer()` / `add()`: O(log n) — bubble up at most log n levels
+- `poll()` / `remove()`: O(log n) — bubble down at most log n levels
+- `peek()`: O(1) — just return `arr[0]`
+- heapify array: O(n) — bottom-up construction (not O(n log n)!)
+
+**Cache performance vs tree** (for `poll()` traversing 3 levels):
+
+- **Heap (array):** all nodes likely in the same cache line: ~4 cycles per access → total ~12 cycles
+- **Tree (pointers):** each node in a different cache line: ~200 cycles per access → total ~600 cycles
+
+HEAP IS 50x FASTER due to cache locality!
 
 ## 🕸️ 7. Graph Representation Deep Internals
 
@@ -1062,75 +1281,101 @@ Adjacency list, overwhelmingly. Matrix: 10^9 × 10^9 × 1 bit = 10^18 bits ≈ 1
 ## Graph - Complete Internal View
 
 **Graph**:
+
+```text
 0 ─── 1
+│     │
 3 ─── 2
-REPRESENTATION 1: ADJACENCY MATRIX
+```
+
+**Representation 1: adjacency matrix**
+
+```java
 int[][] matrix = {
-{0, 1, 0, 1}, // Node 0 connected to 1, 3
-{1, 0, 1, 0}, // Node 1 connected to 0, 2
-{0, 1, 0, 1}, // Node 2 connected to 1, 3
-{1, 0, 1, 0} // Node 3 connected to 0, 2
+    {0, 1, 0, 1},  // Node 0 connected to 1, 3
+    {1, 0, 1, 0},  // Node 1 connected to 0, 2
+    {0, 1, 0, 1},  // Node 2 connected to 1, 3
+    {1, 0, 1, 0}   // Node 3 connected to 0, 2
 };
+```
 
-**Memory Layout**:
-int[][] object header: 24 bytes
-int[] row 0 (+ header): 16 + 16 = 32 bytes
-int[] row 1 (+ header): 16 + 16 = 32 bytes
-int[] row 2 (+ header): 16 + 16 = 32 bytes
-int[] row 3 (+ header): 16 + 16 = 32 bytes
-────────────────────────────────────────────────────
+**Memory layout**:
 
-**Total**: 152 bytes for 4 nodes
-Space: O(V²) - wasteful for sparse graphs!
-Check edge (u,v): O(1) - just matrix[u][v]
-Get all neighbors: O(V) - must scan entire row
-REPRESENTATION 2: ADJACENCY LIST
+```text
+int[][] object header:   24 bytes
+int[] row 0 (+ header):  16 + 16 = 32 bytes
+int[] row 1 (+ header):  16 + 16 = 32 bytes
+int[] row 2 (+ header):  16 + 16 = 32 bytes
+int[] row 3 (+ header):  16 + 16 = 32 bytes
+────────────────────────────────────────────
+Total:                   152 bytes for 4 nodes
+```
+
+- Space: O(V²) — wasteful for sparse graphs!
+- Check edge (u,v): O(1) — just `matrix[u][v]`
+- Get all neighbors: O(V) — must scan the entire row
+
+**Representation 2: adjacency list**
+
+```java
 List<List<Integer>> adjList = new ArrayList<>();
-adjList.add(Arrays.asList(1, 3)); // Node 0
-adjList.add(Arrays.asList(0, 2)); // Node 1
-adjList.add(Arrays.asList(1, 3)); // Node 2
-adjList.add(Arrays.asList(0, 2)); // Node 3
+adjList.add(Arrays.asList(1, 3));  // Node 0
+adjList.add(Arrays.asList(0, 2));  // Node 1
+adjList.add(Arrays.asList(1, 3));  // Node 2
+adjList.add(Arrays.asList(0, 2));  // Node 3
+```
 
-**Memory Layout**:
+**Memory layout**:
+
+```text
 adjList[0] ──────► ArrayList [1, 3]
 adjList[1] ──────► ArrayList [0, 2]
 adjList[2] ──────► ArrayList [1, 3]
 adjList[3] ──────► ArrayList [0, 2]
-Outer ArrayList: 32 bytes
-Inner ArrayList × 4: 32 × 4 = 128 bytes
-Integer objects × 8: 16 × 8 = 128 bytes
-────────────────────────────────────────
 
-**Total**: ~288 bytes
-BUT for sparse graph with 1000 nodes and 50 edges:
-Matrix: 1000 × 1000 × 4 = 4 MB
-List: ~50 × 48 = 2.4 KB
+Outer ArrayList:       32 bytes
+Inner ArrayList × 4:   32 × 4 = 128 bytes
+Integer objects × 8:   16 × 8 = 128 bytes
+────────────────────────────────────────
+Total:                 ~288 bytes
+```
+
+For a sparse graph with 1000 nodes and 50 edges:
+
+- Matrix: 1000 × 1000 × 4 = 4 MB
+- List: ~50 × 48 = 2.4 KB
+
 ADJACENCY LIST IS 1000x SMALLER!
-Space: O(V + E) - much better for sparse graphs
-Check edge (u,v): O(degree(u)) - must search neighbor list
-Get all neighbors: O(degree(u)) - just return the list
-BFS TRAVERSAL - CPU LEVEL:
+
+- Space: O(V + E) — much better for sparse graphs
+- Check edge (u,v): O(degree(u)) — must search the neighbor list
+- Get all neighbors: O(degree(u)) — just return the list
+
+**BFS traversal — CPU level:**
+
+```java
 Queue<Integer> queue = new LinkedList<>();
 boolean[] visited = new boolean[V];
 queue.offer(0);
 visited[0] = true;
 while (!queue.isEmpty()) {
-int node = queue.poll();
-for (int neighbor : adjList.get(node)) {
-if (!visited[neighbor]) {
-visited[neighbor] = true;
-queue.offer(neighbor);
+    int node = queue.poll();
+    for (int neighbor : adjList.get(node)) {
+        if (!visited[neighbor]) {
+            visited[neighbor] = true;
+            queue.offer(neighbor);
+        }
+    }
 }
-}
-}
+```
 
 **Cache Behavior**:
 
-- visited[] array: CONTIGUOUS, cache-friendly
-- adjList traversal: SCATTERED, cache-unfriendly
+- `visited[]` array: CONTIGUOUS, cache-friendly
+- `adjList` traversal: SCATTERED, cache-unfriendly
 - Queue operations: depends on implementation
 
-**Optimization**: Use int[] instead of List<Integer> for neighbors
+**Optimization**: use `int[]` instead of `List<Integer>` for neighbors
 
 - Avoids Integer autoboxing overhead
 - Better cache locality for neighbor iteration
@@ -1553,65 +1798,81 @@ These are the invariants the JDK enforces via internal assertions (in debug buil
 
 **Condition:** Appending to an ArrayList without pre-sizing. Each resize allocates a new array (1.5× growth) and copies all elements.
 
-**What breaks:** O(n) work per resize; multiple resizes during fill → O(n × log n) total. For 10⁶ appends starting from default capacity 10: ~17 resizes × O(n) each ≈ O(n log n).
+> [!CAUTION]
+> **What breaks:** O(n) work per resize; multiple resizes during fill → O(n × log n) total. For 10⁶ appends starting from default capacity 10: ~17 resizes × O(n) each ≈ O(n log n).
 
-**Defense:** Pre-size: `new ArrayList<>(expectedSize / 0.75 + 1)` (or just `expectedSize + 1` for a margin). For 10⁶ expected entries, allocate `1,333,334` capacity to avoid all resizes.
+> [!TIP]
+> **Defense:** Pre-size: `new ArrayList<>(expectedSize / 0.75 + 1)` (or just `expectedSize + 1` for a margin). For 10⁶ expected entries, allocate `1,333,334` capacity to avoid all resizes.
 
 ### Break 2 — HashMap Rehash on Every Insert
 
 **Condition:** Using a custom key with poor hashCode that returns constant values, or all keys collide.
 
-**What breaks:** HM1 violated → all entries hash to bucket 0 → HM3 triggers treeify at 8 entries → red-black tree of n nodes → O(log n) per lookup instead of O(1).
+> [!CAUTION]
+> **What breaks:** HM1 violated → all entries hash to bucket 0 → HM3 triggers treeify at 8 entries → red-black tree of n nodes → O(log n) per lookup instead of O(1).
 
-**Defense:** Test hash distribution. Use `Map<K, V>` only with keys that have well-distributed hashCodes (String, Integer, Long, UUID). For custom classes, use `Objects.hash(field1, field2, ...)` and verify bucket distribution with `IntStream.range(0, 1_000_000).mapToObj(i -> new MyKey(i)).collect(groupingBy(k -> k.hashCode() & 15)).values().stream().mapToInt(List::size).summaryStatistics()`.
+> [!TIP]
+> **Defense:** Test hash distribution. Use `Map<K, V>` only with keys that have well-distributed hashCodes (String, Integer, Long, UUID). For custom classes, use `Objects.hash(field1, field2, ...)` and verify bucket distribution with `IntStream.range(0, 1_000_000).mapToObj(i -> new MyKey(i)).collect(groupingBy(k -> k.hashCode() & 15)).values().stream().mapToInt(List::size).summaryStatistics()`.
 
 ### Break 3 — HashMap Concurrent Modification
 
 **Condition:** Inserting into a HashMap while iterating.
 
-**What breaks:** `ConcurrentModificationException` (the friendly outcome). Without HM6, the iterator may see stale or duplicated entries.
+> [!CAUTION]
+> **What breaks:** `ConcurrentModificationException` (the friendly outcome). Without HM6, the iterator may see stale or duplicated entries.
 
-**Defense:** Use `ConcurrentHashMap` for concurrent access. Or collect keys to add/remove in a separate list, then apply changes after iteration completes.
+> [!TIP]
+> **Defense:** Use `ConcurrentHashMap` for concurrent access. Or collect keys to add/remove in a separate list, then apply changes after iteration completes.
 
 ### Break 4 — HashMap Resize During Bulk Load
 
 **Condition:** `Map.putAll(largeMap)` or `new HashMap<>().putAll(...)` with a large source map.
 
-**What breaks:** Multiple resizes during putAll → O(n × log n) total. The default constructor uses capacity 16, so even loading 1000 entries triggers ~6 resizes.
+> [!CAUTION]
+> **What breaks:** Multiple resizes during putAll → O(n × log n) total. The default constructor uses capacity 16, so even loading 1000 entries triggers ~6 resizes.
 
-**Defense:** `new HashMap<>(sourceMap.size() / 0.75 + 1); map.putAll(sourceMap);` — one allocation, no resize.
+> [!TIP]
+> **Defense:** `new HashMap<>(sourceMap.size() / 0.75 + 1); map.putAll(sourceMap);` — one allocation, no resize.
 
 ### Break 5 — TreeMap Rotation Storm
 
 **Condition:** Inserting keys in sorted or near-sorted order that causes many rotations.
 
-**What breaks:** Each rotation is O(1) but the constant factor is ~3× higher than a single BST insert. For n = 10⁶ with sorted insert, total rotations can reach O(n).
+> [!CAUTION]
+> **What breaks:** Each rotation is O(1) but the constant factor is ~3× higher than a single BST insert. For n = 10⁶ with sorted insert, total rotations can reach O(n).
 
-**Defense:** This is unavoidable for Red-Black trees; the rotations preserve the O(log n) bound. If rotation overhead is critical, consider `HashMap` + sorted iteration of the result, or use a B-tree (e.g., `ConcurrentSkipListMap`).
+> [!TIP]
+> **Defense:** This is unavoidable for Red-Black trees; the rotations preserve the O(log n) bound. If rotation overhead is critical, consider `HashMap` + sorted iteration of the result, or use a B-tree (e.g., `ConcurrentSkipListMap`).
 
 ### Break 6 — HashMap Default Capacity 16
 
 **Condition:** Default `new HashMap<>()` allocates capacity 16. For any reasonable n, the load factor is exceeded quickly.
 
-**What breaks:** Resize at size 12 (16 × 0.75). For 10⁶ entries, this triggers ~17 resizes.
+> [!CAUTION]
+> **What breaks:** Resize at size 12 (16 × 0.75). For 10⁶ entries, this triggers ~17 resizes.
 
-**Defense:** Always pre-size: `new HashMap<>(expectedSize / 0.75 + 1)`. This is the single most common HashMap performance bug.
+> [!TIP]
+> **Defense:** Always pre-size: `new HashMap<>(expectedSize / 0.75 + 1)`. This is the single most common HashMap performance bug.
 
 ### Break 7 — LinkedList Random Access
 
 **Condition:** Iterating a LinkedList via `list.get(i)`.
 
-**What breaks:** O(n) per `get(i)` because LinkedList has no random access. A loop of n `get(i)` calls is O(n²).
+> [!CAUTION]
+> **What breaks:** O(n) per `get(i)` because LinkedList has no random access. A loop of n `get(i)` calls is O(n²).
 
-**Defense:** Always iterate LinkedList with an iterator: `for (T item : linkedList) { ... }`. Or use `ArrayList` if random access is needed.
+> [!TIP]
+> **Defense:** Always iterate LinkedList with an iterator: `for (T item : linkedList) { ... }`. Or use `ArrayList` if random access is needed.
 
 ### Break 8 — ArrayList vs LinkedList in Tight Loop
 
 **Condition:** Iterating ArrayList vs LinkedList with the same access pattern.
 
-**What breaks:** ArrayList is ~16× faster due to cache locality. See `01a_Memory_Foundations.md` Section 0 Story 1 and the worked example in `01c_LinkedList.md`.
+> [!CAUTION]
+> **What breaks:** ArrayList is ~16× faster due to cache locality. See `01a_Memory_Foundations.md` Section 0 Story 1 and the worked example in `01c_LinkedList.md`.
 
-**Defense:** Use ArrayList for tight loops. Use LinkedList only for frequent insert/delete at known positions.
+> [!TIP]
+> **Defense:** Use ArrayList for tight loops. Use LinkedList only for frequent insert/delete at known positions.
 
 ## Memory Cost Per Implementation
 
@@ -1886,12 +2147,27 @@ For α < 1 (Java default: 0.75): E[comparisons per lookup] ≤ 1 + α = 1.75 = O
 
 ## Reality Check
 
-**"Data structure choice is just a performance micro-optimisation"** → Data structure choice determines the *asymptotic complexity class* of your algorithm. Choosing a list where a set is needed turns O(n) membership tests; choosing HashMap where TreeMap is needed loses sorted order. These are correctness and scalability differences, not tweaks.
+> [!CAUTION]
+> **Myth:** "Data structure choice is just a performance micro-optimisation"
+>
+> **Reality:** Data structure choice determines the *asymptotic complexity class* of your algorithm. Choosing a list where a set is needed turns O(n) membership tests; choosing HashMap where TreeMap is needed loses sorted order. These are correctness and scalability differences, not tweaks.
 
-**"Amortized O(1) and worst-case O(1) are both 'constant time'"** → Worst-case O(1): every single operation takes constant time (array index access). Amortized O(1): the *average* over a sequence of operations is constant, but individual operations may spike (ArrayList resize: O(n) for that single call). For real-time systems or latency-sensitive paths, the occasional O(n) spike from amortized structures is unacceptable. Use fixed-capacity ring buffers or pre-sized structures instead.
+> [!CAUTION]
+> **Myth:** "Amortized O(1) and worst-case O(1) are both 'constant time'"
+>
+> **Reality:** Worst-case O(1): every single operation takes constant time (array index access). Amortized O(1): the *average* over a sequence of operations is constant, but individual operations may spike (ArrayList resize: O(n) for that single call). For real-time systems or latency-sensitive paths, the occasional O(n) spike from amortized structures is unacceptable. Use fixed-capacity ring buffers or pre-sized structures instead.
 
-**"The JVM always lays objects out the way you declare fields"** → The JVM can reorder fields for alignment and padding. A class with `byte b; long l; byte b2;` may be laid out as `b, b2, [6 padding bytes], l` to align `long` on an 8-byte boundary. Object header on HotSpot JVM: 12–16 bytes (mark word + class pointer). Every small Java object carries this overhead regardless of fields.
+> [!CAUTION]
+> **Myth:** "The JVM always lays objects out the way you declare fields"
+>
+> **Reality:** The JVM can reorder fields for alignment and padding. A class with `byte b; long l; byte b2;` may be laid out as `b, b2, [6 padding bytes], l` to align `long` on an 8-byte boundary. Object header on HotSpot JVM: 12–16 bytes (mark word + class pointer). Every small Java object carries this overhead regardless of fields.
 
-**"More memory = always worse"** → The time-space tradeoff is fundamental. Memoization (DP) and caching trade memory for speed. Hash tables trade memory (load factor < 1 → wasted buckets) for O(1) access. Precomputed lookup tables trade memory for computation time. The right choice depends on which resource is the bottleneck.
+> [!CAUTION]
+> **Myth:** "More memory = always worse"
+>
+> **Reality:** The time-space tradeoff is fundamental. Memoization (DP) and caching trade memory for speed. Hash tables trade memory (load factor < 1 → wasted buckets) for O(1) access. Precomputed lookup tables trade memory for computation time. The right choice depends on which resource is the bottleneck.
 
-**"Thread-safe data structures are always safe to use from multiple threads"** → Thread-safe (synchronized) means individual operations are atomic. But compound operations across two thread-safe calls are NOT atomic: `if (queue.isEmpty()) queue.poll()` has a TOCTOU (time-of-check-time-of-use) race even if both methods are synchronized. Use `ConcurrentLinkedQueue.poll()` which returns null on empty — one atomic operation.
+> [!CAUTION]
+> **Myth:** "Thread-safe data structures are always safe to use from multiple threads"
+>
+> **Reality:** Thread-safe (synchronized) means individual operations are atomic. But compound operations across two thread-safe calls are NOT atomic: `if (queue.isEmpty()) queue.poll()` has a TOCTOU (time-of-check-time-of-use) race even if both methods are synchronized. Use `ConcurrentLinkedQueue.poll()` which returns null on empty — one atomic operation.

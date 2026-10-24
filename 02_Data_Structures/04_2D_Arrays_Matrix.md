@@ -6,6 +6,43 @@
 
 ---
 
+## ⚡ At a Glance — 2D Arrays & Matrices
+
+> [!NOTE]
+> **Mental model:** a 2D array is a grid addressed by `[row][col]`. In Java it is an array of row arrays, so rows are contiguous but different rows may not be adjacent in memory.
+
+```mermaid
+flowchart LR
+    G["grid[r][c]"] --> T{"Traversal"}
+    T --> RW["Row-major<br/>cache friendly"]
+    T --> CM["Column-major<br/>cache unfriendly"]
+    T --> DR["4/8-direction<br/>dx, dy arrays"]
+    T --> SP["Spiral / layer"]
+    classDef base fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef good fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef bad fill:#ffc9c9,stroke:#c62828,color:#111
+    classDef pat fill:#fff3b0,stroke:#b58900,color:#111
+    class G,T base
+    class RW good
+    class CM bad
+    class DR,SP pat
+```
+
+**How to read this diagram.** Green is the access order the hardware prefers, red is the order that causes cache misses on large grids, yellow are the standard traversal patterns you will reuse.
+
+| Task | Time | Space | Note |
+| ---- | ---- | ----- | ---- |
+| Full traversal | O(R·C) | O(1) | Loop rows outer, columns inner |
+| Transpose (square, in place) | O(n²) | O(1) | Swap `a[i][j]` and `a[j][i]` |
+| Rotate 90° (in place) | O(n²) | O(1) | Transpose then reverse rows |
+| Prefix-sum build | O(R·C) | O(R·C) | Then any rectangle sum in O(1) |
+| Grid BFS/DFS | O(R·C) | O(R·C) | Mark visited; bound-check first |
+
+> [!TIP]
+> Always bound-check with `0 <= r < rows && 0 <= c < cols` before touching a neighbour, and keep direction arrays (`dx`, `dy`) instead of copy-pasted `if` branches.
+
+---
+
 # 📊 Part 0: Complete Understanding of 2D Arrays
 
 ### 5W1H: Mastering 2D Arrays & Matrices
@@ -139,19 +176,25 @@ INVARIANT 3 — CSR (Compressed Sparse Row) Array Lengths:
 
 ## What Problem Do 2D Arrays Solve
 
-PROBLEM 1: Representing GRID-BASED data
+**Problem 1: Representing GRID-BASED data**
 
 - Maps: Geographic data in grid form
 - Games: Chess, Sudoku, Tic-Tac-Toe boards
 - Images: Pixels arranged in grid
-  PROBLEM 2: Representing RELATIONSHIPS between two sets
+
+**Problem 2: Representing RELATIONSHIPS between two sets**
+
 - Graph adjacency matrix: connections between nodes
 - Distance matrix: distances between cities
 - Transition matrix: state changes in systems
-  PROBLEM 3: Table-structured data
+
+**Problem 3: Table-structured data**
+
 - Spreadsheets: Rows of records, columns of fields
 - Databases: Conceptually stored as tables
-  WITHOUT 2D ARRAYS:
+
+**Without 2D arrays:**
+
 - Would need multiple 1D arrays with manual coordination
 - Prone to index mismatch errors
 - Harder to visualize and reason about
@@ -206,21 +249,16 @@ USE 2D ARRAY WHEN:
 
 ## Difficulties & Common Mistakes
 
-1. INDEX CONFUSION:
-   "Is it [row][col] or [col][row]?"
-   Solution: ALWAYS use [row][col] in Java. Row = y, Col = x
-2. BOUNDARY CHECKING:
-   ArrayIndexOutOfBounds is common
-   Solution: Always check 0 <= row < rows && 0 <= col < cols
-3. TRAVERSAL ORDER:
-   "Which direction first?"
-   Solution: Use direction arrays: dx = {0,0,1,-1}, dy = {1,-1,0,0}
-4. MODIFYING WHILE TRAVERSING:
-   Changing values affects later iterations
-   Solution: Use visited array or mark with special value
-5. JAGGED ARRAYS:
-   "Rows have different lengths!"
-   Solution: Use matrix[i].length for each row's column count
+1. **Index confusion** — "Is it `[row][col]` or `[col][row]`?"
+   **Solution:** ALWAYS use `[row][col]` in Java. Row = y, Col = x.
+2. **Boundary checking** — `ArrayIndexOutOfBounds` is common.
+   **Solution:** Always check `0 <= row < rows && 0 <= col < cols`.
+3. **Traversal order** — "Which direction first?"
+   **Solution:** Use direction arrays: `dx = {0,0,1,-1}`, `dy = {1,-1,0,0}`.
+4. **Modifying while traversing** — changing values affects later iterations.
+   **Solution:** Use a visited array or mark with a special value.
+5. **Jagged arrays** — "Rows have different lengths!"
+   **Solution:** Use `matrix[i].length` for each row's column count.
 
 ## Expected Outcomes
 
@@ -1692,23 +1730,28 @@ The body already lists some edge cases; this section formalizes them with exampl
 
 **Condition:** Using `arr[i * numCols + j + 1]` instead of `arr[i * numCols + j]`.
 
-**What breaks:** OOB access on last column; potential memory corruption in C/C++.
+> [!CAUTION]
+> **What breaks:** OOB access on last column; potential memory corruption in C/C++.
 
-**Defense:** Always test boundary: `i = 0`, `i = numRows - 1`, `j = 0`, `j = numCols - 1`. Use `arr[i][j]` in Java instead of 1D access when possible.
+> [!TIP]
+> **Defense:** Always test boundary: `i = 0`, `i = numRows - 1`, `j = 0`, `j = numCols - 1`. Use `arr[i][j]` in Java instead of 1D access when possible.
 
 ### Break 2 — Spiral Traversal Missing Corners
 
 **Condition:** Spiral algorithm increments the wrong boundary after traversing a row.
 
-**What breaks:** Duplicates or skips at corners.
+> [!CAUTION]
+> **What breaks:** Duplicates or skips at corners.
 
-**Defense:** Test with 1×1, 1×N, N×1, 2×2, 3×3 matrices. The 2×2 case is the most common bug.
+> [!TIP]
+> **Defense:** Test with 1×1, 1×N, N×1, 2×2, 3×3 matrices. The 2×2 case is the most common bug.
 
 ### Break 3 — Rotation Skipping Inner Layer
 
 **Condition:** In-place rotation by 90° loops through layers but doesn't recurse on inner layer.
 
-**What breaks:** Outer layer rotated; inner layer unchanged. Looks correct for the outer cells but inner cells are wrong.
+> [!CAUTION]
+> **What breaks:** Outer layer rotated; inner layer unchanged. Looks correct for the outer cells but inner cells are wrong.
 
 **Defense:** Use the standard 4-cell swap pattern:
 ```
@@ -1725,7 +1768,8 @@ for i in 0..n/2 - 1:
 
 **Condition:** Applying 1D Kadane's to each row, then across rows, without compressing rows correctly.
 
-**What breaks:** The algorithm finds max-subarray in any row, not the max-submatrix (which can span multiple rows).
+> [!CAUTION]
+> **What breaks:** The algorithm finds max-subarray in any row, not the max-submatrix (which can span multiple rows).
 
 **Defense:** Use the standard 2D Kadane's:
 ```
@@ -1743,17 +1787,21 @@ This finds the max-sum submatrix in O(m² × n) time.
 
 **Condition:** Recursive DFS on a grid with dimensions ≥ 10⁴ × 10⁴.
 
-**What breaks:** `StackOverflowError` after ~10⁴ frames.
+> [!CAUTION]
+> **What breaks:** `StackOverflowError` after ~10⁴ frames.
 
-**Defense:** Convert recursion to iteration using explicit stack (see `01d_Stack_Queue.md`).
+> [!TIP]
+> **Defense:** Convert recursion to iteration using explicit stack (see `01d_Stack_Queue.md`).
 
 ### Break 6 — 2D Prefix Sum Off-By-One
 
 **Condition:** Using inclusive-exclusive vs inclusive-inclusive ranges inconsistently.
 
-**What breaks:** Submatrix sum is off by one row or column.
+> [!CAUTION]
+> **What breaks:** Submatrix sum is off by one row or column.
 
-**Defense:** Pick a convention (inclusive-exclusive is standard) and document it. Test with `top = left = 0`, `bottom = right = m-1`.
+> [!TIP]
+> **Defense:** Pick a convention (inclusive-exclusive is standard) and document it. Test with `top = left = 0`, `bottom = right = m-1`.
 
 The 2D prefix sum formula (inclusive-exclusive):
 ```
@@ -1765,17 +1813,21 @@ sum(top, left, bottom, right) = prefix[bottom+1][right+1] - prefix[top][right+1]
 
 **Condition:** DFS/BFS that checks all 4 neighbors without bounds checking.
 
-**What breaks:** `ArrayIndexOutOfBoundsException` on border cells.
+> [!CAUTION]
+> **What breaks:** `ArrayIndexOutOfBoundsException` on border cells.
 
-**Defense:** Always check `0 ≤ ni < m && 0 ≤ nj < n` before accessing `matrix[ni][nj]`. Or pre-pad the matrix with a border row/column of sentinel values.
+> [!TIP]
+> **Defense:** Always check `0 ≤ ni < m && 0 ≤ nj < n` before accessing `matrix[ni][nj]`. Or pre-pad the matrix with a border row/column of sentinel values.
 
 ### Break 8 — Modifying Matrix During Iteration
 
 **Condition:** Setting `matrix[i][j] = ...` inside a loop that walks the matrix.
 
-**What breaks:** Subsequent iterations see the modified value; algorithm produces wrong output.
+> [!CAUTION]
+> **What breaks:** Subsequent iterations see the modified value; algorithm produces wrong output.
 
-**Defense:** Use a separate `visited[][]` boolean array, or make a copy of the matrix before modification.
+> [!TIP]
+> **Defense:** Use a separate `visited[][]` boolean array, or make a copy of the matrix before modification.
 
 ## Formal Complexity Proofs — 2D Operations
 
@@ -1890,12 +1942,27 @@ This is the canonical 90° clockwise rotation. Each cell is moved exactly once. 
 
 ## Reality Check
 
-**"Accessing matrix[row][col] and matrix[col][row] are equivalent"** → They are semantically equivalent only if the matrix is square. For an n×m matrix with n≠m, transposing indices accesses a different row — likely an ArrayIndexOutOfBoundsException. Beyond correctness: `matrix[row][col]` iterating row-by-row is cache-friendly (C-order / row-major). `matrix[col][row]` iterating column-by-column causes a cache miss per access — can be 10× slower for large matrices.
+> [!CAUTION]
+> **Myth:** "Accessing matrix[row][col] and matrix[col][row] are equivalent"
+>
+> **Reality:** They are semantically equivalent only if the matrix is square. For an n×m matrix with n≠m, transposing indices accesses a different row — likely an ArrayIndexOutOfBoundsException. Beyond correctness: `matrix[row][col]` iterating row-by-row is cache-friendly (C-order / row-major). `matrix[col][row]` iterating column-by-column causes a cache miss per access — can be 10× slower for large matrices.
 
-**"A 2D array in Java is stored as a contiguous 2D grid in memory"** → Java's `int[][]` is an array of *references to* `int[]` arrays. The rows are separate heap objects at arbitrary memory addresses. Only within a single row is memory contiguous. For numerical computing (matrix multiply, image processing), use a 1D array of size n*m and compute index as `row * cols + col` — truly contiguous, cache-optimal.
+> [!CAUTION]
+> **Myth:** "A 2D array in Java is stored as a contiguous 2D grid in memory"
+>
+> **Reality:** Java's `int[][]` is an array of *references to* `int[]` arrays. The rows are separate heap objects at arbitrary memory addresses. Only within a single row is memory contiguous. For numerical computing (matrix multiply, image processing), use a 1D array of size n*m and compute index as `row * cols + col` — truly contiguous, cache-optimal.
 
-**"In-place matrix rotation requires a temporary matrix"** → Classic 90° clockwise rotation can be done in-place in two passes: (1) transpose (swap `[i][j]` with `[j][i]`) (2) reverse each row. No extra matrix needed, O(1) space. Understanding these geometric operations comes from recognizing the composition of reflections.
+> [!CAUTION]
+> **Myth:** "In-place matrix rotation requires a temporary matrix"
+>
+> **Reality:** Classic 90° clockwise rotation can be done in-place in two passes: (1) transpose (swap `[i][j]` with `[j][i]`) (2) reverse each row. No extra matrix needed, O(1) space. Understanding these geometric operations comes from recognizing the composition of reflections.
 
-**"Matrix multiplication is O(n²) like element-wise operations"** → Element-wise multiplication (Hadamard product) is O(n²). Matrix multiplication (dot product, used in linear algebra and ML) is O(n³) for naive implementation. Strassen's algorithm is O(n^2.807). Modern ML frameworks use highly optimised BLAS routines and GPU parallelism — naive loops are 100-1000× slower than cuBLAS for large matrices.
+> [!CAUTION]
+> **Myth:** "Matrix multiplication is O(n²) like element-wise operations"
+>
+> **Reality:** Element-wise multiplication (Hadamard product) is O(n²). Matrix multiplication (dot product, used in linear algebra and ML) is O(n³) for naive implementation. Strassen's algorithm is O(n^2.807). Modern ML frameworks use highly optimised BLAS routines and GPU parallelism — naive loops are 100-1000× slower than cuBLAS for large matrices.
 
-**"Diagonal traversal and anti-diagonal traversal are the same"** → Main diagonal: `matrix[i][i]` — top-left to bottom-right. Anti-diagonal: `matrix[i][n-1-i]` — top-right to bottom-left. The common "diagonals of a matrix" interview problem (print all diagonals) requires tracking which diagonal group each cell belongs to: `row - col` (constant on each main diagonal), `row + col` (constant on each anti-diagonal).
+> [!CAUTION]
+> **Myth:** "Diagonal traversal and anti-diagonal traversal are the same"
+>
+> **Reality:** Main diagonal: `matrix[i][i]` — top-left to bottom-right. Anti-diagonal: `matrix[i][n-1-i]` — top-right to bottom-left. The common "diagonals of a matrix" interview problem (print all diagonals) requires tracking which diagonal group each cell belongs to: `row - col` (constant on each main diagonal), `row + col` (constant on each anti-diagonal).

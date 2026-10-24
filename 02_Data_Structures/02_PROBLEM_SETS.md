@@ -449,7 +449,8 @@ When you mutate the key, its `hashCode()` changes. The next `get()` computes a *
 
 **The ghost entry** lives in the map forever, wasting memory and causing a subtle correctness bug.
 
-**Fix:** Always use **immutable keys** (String, Integer, UUID) or implement proper value-based immutability via DDD Value Objects.
+> [!TIP]
+> **Fix:** Always use **immutable keys** (String, Integer, UUID) or implement proper value-based immutability via DDD Value Objects.
 
 🔴 **Erklärung:** This is one of the most common production bugs. The fix is not "override hashCode to return a constant" — that degrades performance to O(n) by forcing all keys into one bucket.
 

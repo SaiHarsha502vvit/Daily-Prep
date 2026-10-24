@@ -641,7 +641,8 @@ The bridges above share failure modes that emerge from the *combination* of DS +
 
 **Cause:** Initialization of left/right pointers; condition `right < n` vs `right <= n`.
 
-**Defense:** Test with k = 1 (window of size 1); test with k = n (window is the entire array).
+> [!TIP]
+> **Defense:** Test with k = 1 (window of size 1); test with k = n (window is the entire array).
 
 ### Cross-DS Failure 2 — HashMap Iteration Order Surprise
 
@@ -649,7 +650,8 @@ The bridges above share failure modes that emerge from the *combination* of DS +
 
 **Cause:** HashMap iteration order is implementation-defined (not insertion order, not sorted).
 
-**Defense:** Use LinkedHashMap (insertion order) or TreeMap (sorted order) when order matters.
+> [!TIP]
+> **Defense:** Use LinkedHashMap (insertion order) or TreeMap (sorted order) when order matters.
 
 ### Cross-DS Failure 3 — Recursive DFS Stack Overflow
 
@@ -657,7 +659,8 @@ The bridges above share failure modes that emerge from the *combination* of DS +
 
 **Cause:** Recursion depth = number of nodes; default stack size = 1 MiB ≈ 10⁴ frames.
 
-**Defense:** Convert recursion to iteration using explicit stack (see `01d_Stack_Queue.md` recursion-to-iterative section).
+> [!TIP]
+> **Defense:** Convert recursion to iteration using explicit stack (see `01d_Stack_Queue.md` recursion-to-iterative section).
 
 ### Cross-DS Failure 4 — PriorityQueue Non-Determinism
 
@@ -665,7 +668,8 @@ The bridges above share failure modes that emerge from the *combination* of DS +
 
 **Cause:** Equal priorities in the comparator → non-deterministic ordering.
 
-**Defense:** Always include a tie-breaker (node ID or insertion order).
+> [!TIP]
+> **Defense:** Always include a tie-breaker (node ID or insertion order).
 
 ### Cross-DS Failure 5 — Trie Memory Blowup
 
@@ -673,7 +677,8 @@ The bridges above share failure modes that emerge from the *combination* of DS +
 
 **Cause:** Each TrieNode has 256 child pointers even when only a few are used.
 
-**Defense:** Use HashMap-based children (sparse); or use a sorted array of children (compact); or use double-array trie (DAWG) for memory efficiency.
+> [!TIP]
+> **Defense:** Use HashMap-based children (sparse); or use a sorted array of children (compact); or use double-array trie (DAWG) for memory efficiency.
 
 ### Cross-DS Failure 6 — Union-Find Path Compression Recursion
 

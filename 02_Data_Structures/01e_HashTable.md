@@ -31,6 +31,40 @@
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+## ⚡ At a Glance — Hash Tables
+
+> [!NOTE]
+> **Mental model:** a hash function turns a key into a bucket index, so lookup jumps straight to (nearly) the right slot instead of searching. Speed depends on keeping buckets short.
+
+```mermaid
+flowchart LR
+    K["key"] --> HF["hashCode() + spread"] --> IDX["index = hash & (n-1)"] --> B{"bucket"}
+    B -- empty --> NEW["store entry"]
+    B -- occupied --> EQ{"equals()?"}
+    EQ -- yes --> UPD["update value"]
+    EQ -- no --> CH["chain / tree the collision"]
+    classDef step fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ok fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef warn fill:#fff3b0,stroke:#b58900,color:#111
+    class K,HF,IDX step
+    class NEW,UPD ok
+    class B,EQ,CH warn
+```
+
+**How to read this diagram.** Blue steps are the deterministic part (hash → index). Yellow is where the table decides what to do on collision; green means the operation finished cheaply.
+
+| Operation | Average | Worst case | Note |
+| --------- | ------- | ---------- | ---- |
+| `get` / `containsKey` | O(1) | O(n); O(log n) with Java 8+ tree bins | Needs a good `hashCode` |
+| `put` | O(1) amortized | O(n) | Resize doubles capacity and rehashes |
+| `remove` | O(1) | O(n) | |
+| Iterate | O(capacity + n) | — | No guaranteed order (`HashMap`) |
+
+> [!IMPORTANT]
+> **Contract:** if `a.equals(b)` then `a.hashCode() == b.hashCode()`. Break it and equal keys land in different buckets, so lookups silently fail. Never mutate a key after inserting it.
+
+---
+
 ## PART 0: COMPLETE UNDERSTANDING — The WHY Before the WHAT
 
 ### What Problem Does a Hash Table Solve?
@@ -443,7 +477,8 @@ Hash tables are battle-tested, but they have sharp edges in production. These fa
 
 **Root Cause:** Before JDK 7u6 (2012), `String.hashCode()` was deterministic with no per-JVM randomization. The same string always produced the same hash, so an attacker could pre-compute colliding keys.
 
-**Fix:** JDK 8 switched to a randomized hash seed (`-XX:StringTableSize` or the internal `hashSeed` in `Hashtable`). Each JVM instance computes a random seed at startup, making pre-computed collisions useless.
+> [!TIP]
+> **Fix:** JDK 8 switched to a randomized hash seed (`-XX:StringTableSize` or the internal `hashSeed` in `Hashtable`). Each JVM instance computes a random seed at startup, making pre-computed collisions useless.
 
 **Debugging:** Use `-XX:+PrintStringTableStatistics` to monitor string table size; `jmap -histo:live <pid>` to spot abnormally large bucket chains. CPU spike with no obvious code cause → suspect hash collision DoS.
 
@@ -453,7 +488,8 @@ Hash tables are battle-tested, but they have sharp edges in production. These fa
 
 **Root Cause:** Failing to pre-size the HashMap when the expected size is known. Each resize doubles capacity and re-hashes every entry — an O(n) operation that blocks the thread.
 
-**Fix:** Pre-size: `new HashMap<>(expectedSize / 0.75 + 1)` or Guava's `Maps.newHashMapWithExpectedSize(1000)`. This allocates the correct capacity upfront, avoiding all resizes.
+> [!TIP]
+> **Fix:** Pre-size: `new HashMap<>(expectedSize / 0.75 + 1)` or Guava's `Maps.newHashMapWithExpectedSize(1000)`. This allocates the correct capacity upfront, avoiding all resizes.
 
 **Debugging:** `jstack <pid>` during a spike will show threads in `HashMap.resize()` or `TransferData`. Add `-XX:HashMapInitCapacity=<N>` logging. Profile with `async-profiler` to find which `put()` calls dominate.
 
@@ -482,7 +518,8 @@ for (Map.Entry<Integer, String> e : map.entrySet()) {
 }
 ```
 
-**Fix:** Use the iterator's own `remove()`: `Iterator<Map.Entry<Integer, String>> it = map.entrySet().iterator(); while (it.hasNext()) { it.remove(); }`. Or use `ConcurrentHashMap` which supports safe concurrent iteration.
+> [!TIP]
+> **Fix:** Use the iterator's own `remove()`: `Iterator<Map.Entry<Integer, String>> it = map.entrySet().iterator(); while (it.hasNext()) { it.remove(); }`. Or use `ConcurrentHashMap` which supports safe concurrent iteration.
 
 **Debugging:** `jstack <pid>` will show the `ConcurrentModificationException` stack trace pointing to the failing loop.
 
@@ -930,69 +967,85 @@ need thread-safe?
 
 **Condition:** Many keys hash to the same bucket (e.g., custom `hashCode` returns constant, or strings all start with same prefix).
 
-**What breaks:** H2 violated → lookup degrades to O(n) per call. A 10⁶-element HashMap with one bucket becomes a linked list of 10⁶ nodes → each lookup is 10⁶ comparisons.
+> [!CAUTION]
+> **What breaks:** H2 violated → lookup degrades to O(n) per call. A 10⁶-element HashMap with one bucket becomes a linked list of 10⁶ nodes → each lookup is 10⁶ comparisons.
 
-**Defense:** Use a high-quality hash function (e.g., Java's `String.hashCode()` mixes characters; for custom classes, use `Objects.hash(...)` or `Hashing.murmur3_128()` from Guava). Override `hashCode` for every class used as a key.
+> [!TIP]
+> **Defense:** Use a high-quality hash function (e.g., Java's `String.hashCode()` mixes characters; for custom classes, use `Objects.hash(...)` or `Hashing.murmur3_128()` from Guava). Override `hashCode` for every class used as a key.
 
 ### Break 2 — Hash-DoS Attack
 
 **Condition:** An attacker submits keys crafted to collide with each other (e.g., PHP CVE-2011-3414).
 
-**What breaks:** H2 violated → lookup is O(n) per request. A 10⁴-byte request body can cause a 10⁶-bucket HashMap to degenerate to a single bucket → DOS.
+> [!CAUTION]
+> **What breaks:** H2 violated → lookup is O(n) per request. A 10⁴-byte request body can cause a 10⁶-bucket HashMap to degenerate to a single bucket → DOS.
 
-**Defense:** Use a hash function the attacker cannot predict (Java's `String.hashCode` is deterministic; an attacker can craft collisions). For untrusted keys, use a randomized hash (`-XX:+UnlockExperimentalVMOptions -XX:+UseSwitchHasing` in older JVMs; modern JVMs default to murmur3 since Java 7u72).
+> [!TIP]
+> **Defense:** Use a hash function the attacker cannot predict (Java's `String.hashCode` is deterministic; an attacker can craft collisions). For untrusted keys, use a randomized hash (`-XX:+UnlockExperimentalVMOptions -XX:+UseSwitchHasing` in older JVMs; modern JVMs default to murmur3 since Java 7u72).
 
 ### Break 3 — Resize Storm
 
 **Condition:** A HashMap is created with default capacity (16) and immediately filled with millions of entries. Each resize doubles capacity and rehashes all entries.
 
-**What breaks:** O(n) work per resize; multiple resizes during fill → O(n log n) total. For n = 10⁶, this is 20 resizes × 10⁶ entries × 2 (insert + rehash) = 40 × 10⁶ operations just for rehashing.
+> [!CAUTION]
+> **What breaks:** O(n) work per resize; multiple resizes during fill → O(n log n) total. For n = 10⁶, this is 20 resizes × 10⁶ entries × 2 (insert + rehash) = 40 × 10⁶ operations just for rehashing.
 
 **Invariant violated:** H3 (rehashing trigger). Multiple triggers fire in rapid succession.
 
-**Defense:** Pre-size the HashMap: `new HashMap<>(expectedSize / 0.75 + 1)` (Java's load-factor-correct sizing formula). For known sizes, this avoids all resizes.
+> [!TIP]
+> **Defense:** Pre-size the HashMap: `new HashMap<>(expectedSize / 0.75 + 1)` (Java's load-factor-correct sizing formula). For known sizes, this avoids all resizes.
 
 ### Break 4 — Mutable Key Hash Code Change
 
 **Condition:** A key's `hashCode` changes while it is in the map (e.g., updating a field on a custom POJO used as a key).
 
-**What breaks:** H5 violated → lookup computes new hash, looks in new bucket, doesn't find the entry → returns null. The entry is still in the map (in the old bucket), unreachable from normal operations.
+> [!CAUTION]
+> **What breaks:** H5 violated → lookup computes new hash, looks in new bucket, doesn't find the entry → returns null. The entry is still in the map (in the old bucket), unreachable from normal operations.
 
-**Defense:** Use immutable keys (Java records, Lombok `@Value`, or final fields). Never mutate an object while it is a key in a map.
+> [!TIP]
+> **Defense:** Use immutable keys (Java records, Lombok `@Value`, or final fields). Never mutate an object while it is a key in a map.
 
 ### Break 5 — Load Factor Misconfiguration
 
 **Condition:** Setting load factor too high (e.g., 1.0 or higher) to save memory.
 
-**What breaks:** H1 violated → lookup degrades from O(1) to O(n). The savings in memory are paid for in latency.
+> [!CAUTION]
+> **What breaks:** H1 violated → lookup degrades from O(1) to O(n). The savings in memory are paid for in latency.
 
-**Defense:** Use the default 0.75 unless profiling shows memory is the bottleneck. If memory is critical, use a more compact data structure (e.g., `IntIntMap` from fastutil).
+> [!TIP]
+> **Defense:** Use the default 0.75 unless profiling shows memory is the bottleneck. If memory is critical, use a more compact data structure (e.g., `IntIntMap` from fastutil).
 
 ### Break 6 — Treeify Threshold Exceeded Without Treeify
 
 **Condition:** A bucket grows beyond 8 entries (Java 8 threshold) but the implementation doesn't treeify.
 
-**What breaks:** O(n) lookup for the unlucky keys that hash to that bucket. Pre-Java-8 HashMaps suffered from this; modern Java 8+ auto-trees.
+> [!CAUTION]
+> **What breaks:** O(n) lookup for the unlucky keys that hash to that bucket. Pre-Java-8 HashMaps suffered from this; modern Java 8+ auto-trees.
 
-**Defense:** Use Java 8+ HashMap. For custom implementations, treeify at bucket length 8 (or use cuckoo hashing from the start).
+> [!TIP]
+> **Defense:** Use Java 8+ HashMap. For custom implementations, treeify at bucket length 8 (or use cuckoo hashing from the start).
 
 ### Break 7 — Null Key Handling
 
 **Condition:** `HashMap` allows one null key; `Hashtable` and `ConcurrentHashMap` do not. Code that worked with HashMap fails on `Hashtable.put(null, value)`.
 
-**What breaks:** NPE on `Hashtable.put`; `ConcurrentModificationException` on iteration if null key is removed during traversal.
+> [!CAUTION]
+> **What breaks:** NPE on `Hashtable.put`; `ConcurrentModificationException` on iteration if null key is removed during traversal.
 
-**Defense:** Don't use null as a key. Use `Optional` or a sentinel object.
+> [!TIP]
+> **Defense:** Don't use null as a key. Use `Optional` or a sentinel object.
 
 ### Break 8 — Concurrent Modification (Non-Concurrent Map)
 
 **Condition:** One thread iterates a HashMap while another inserts or deletes.
 
-**What breaks:** `ConcurrentModificationException` is the friendly outcome. Without it (custom impl), iteration may see stale or duplicated entries.
+> [!CAUTION]
+> **What breaks:** `ConcurrentModificationException` is the friendly outcome. Without it (custom impl), iteration may see stale or duplicated entries.
 
 **Invariant violated:** Single-threaded mutation invariant. HashMap is not thread-safe.
 
-**Defense:** Use `ConcurrentHashMap` for concurrent access. Never wrap a HashMap with `Collections.synchronizedMap` and iterate without external synchronization.
+> [!TIP]
+> **Defense:** Use `ConcurrentHashMap` for concurrent access. Never wrap a HashMap with `Collections.synchronizedMap` and iterate without external synchronization.
 
 ## Edge Cases — Always Check These
 
@@ -1182,12 +1235,27 @@ Java shortcut: `new LinkedHashMap<>(c, 0.75f, true)` with `removeEldestEntry` ov
 
 ## Reality Check
 
-**"If I override equals(), I don't need to override hashCode()"** → Java's contract: objects that are `equals()` MUST have the same `hashCode()`. Breaking this makes your objects invisible in HashMaps: you `put(key, value)`, then `get(key)` with an equal key returns `null` because the two objects hash to different buckets. The compiler won't warn you. Always override both together.
+> [!CAUTION]
+> **Myth:** "If I override equals(), I don't need to override hashCode()"
+>
+> **Reality:** Java's contract: objects that are `equals()` MUST have the same `hashCode()`. Breaking this makes your objects invisible in HashMaps: you `put(key, value)`, then `get(key)` with an equal key returns `null` because the two objects hash to different buckets. The compiler won't warn you. Always override both together.
 
-**"HashMap preserves insertion order"** → `HashMap` makes NO order guarantee. `LinkedHashMap` preserves insertion order (uses a doubly-linked list alongside the hash table). `TreeMap` maintains sorted key order. Relying on HashMap order is a bug waiting to appear when the JVM version changes its hashing strategy.
+> [!CAUTION]
+> **Myth:** "HashMap preserves insertion order"
+>
+> **Reality:** `HashMap` makes NO order guarantee. `LinkedHashMap` preserves insertion order (uses a doubly-linked list alongside the hash table). `TreeMap` maintains sorted key order. Relying on HashMap order is a bug waiting to appear when the JVM version changes its hashing strategy.
 
-**"A good hash function just needs to be fast"** → Speed matters but distribution is critical. A hash function that maps many keys to the same bucket degrades HashMap from O(1) to O(n) — or O(log n) with Java 8's tree-ification. For strings, Java's `hashCode()` uses a polynomial rolling hash (31 as the base). Simple hashes like `return length` or `return 0` are catastrophically bad.
+> [!CAUTION]
+> **Myth:** "A good hash function just needs to be fast"
+>
+> **Reality:** Speed matters but distribution is critical. A hash function that maps many keys to the same bucket degrades HashMap from O(1) to O(n) — or O(log n) with Java 8's tree-ification. For strings, Java's `hashCode()` uses a polynomial rolling hash (31 as the base). Simple hashes like `return length` or `return 0` are catastrophically bad.
 
-**"HashSet is just a wrapper around a list that removes duplicates"** → `HashSet` is backed by a `HashMap` where each element is a key and the value is a constant dummy `Object`. Membership test is O(1) average, not O(n) like a list scan. For n = 1,000,000 elements, `set.contains(x)` is microseconds; `list.contains(x)` is milliseconds.
+> [!CAUTION]
+> **Myth:** "HashSet is just a wrapper around a list that removes duplicates"
+>
+> **Reality:** `HashSet` is backed by a `HashMap` where each element is a key and the value is a constant dummy `Object`. Membership test is O(1) average, not O(n) like a list scan. For n = 1,000,000 elements, `set.contains(x)` is microseconds; `list.contains(x)` is milliseconds.
 
-**"ConcurrentHashMap makes all compound operations thread-safe"** → `ConcurrentHashMap` makes individual operations (`get`, `put`, `remove`) thread-safe. But compound operations like "check then put" are NOT atomic: `if (!map.containsKey(k)) map.put(k, v)` has a race between the check and the put. Use `map.putIfAbsent(k, v)` or `map.computeIfAbsent(k, ...)` instead — these are single atomic operations.
+> [!CAUTION]
+> **Myth:** "ConcurrentHashMap makes all compound operations thread-safe"
+>
+> **Reality:** `ConcurrentHashMap` makes individual operations (`get`, `put`, `remove`) thread-safe. But compound operations like "check then put" are NOT atomic: `if (!map.containsKey(k)) map.put(k, v)` has a race between the check and the put. Use `map.putIfAbsent(k, v)` or `map.computeIfAbsent(k, ...)` instead — these are single atomic operations.

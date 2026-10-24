@@ -44,6 +44,41 @@
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+## ⚡ At a Glance — Linked Lists
+
+> [!NOTE]
+> **Mental model:** a chain of separately allocated nodes, each holding data plus a pointer to the next (and, in a doubly-linked list, the previous). You trade O(1) indexing for O(1) splicing — *if* you already hold the node.
+
+```mermaid
+flowchart LR
+    H(["head"]) --> N1["A | next"] --> N2["B | next"] --> N3["C | next"] --> NULL(["null"])
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ptr fill:#fff3b0,stroke:#b58900,color:#111
+    classDef end1 fill:#e0e0e0,stroke:#616161,color:#111
+    class N1,N2,N3 node
+    class H ptr
+    class NULL end1
+```
+
+**How to read this diagram.** Follow the arrows: reaching `C` means walking `A → B → C`, so access is O(n). Re-linking a pointer (e.g. removing `B`) is just changing `A.next`, which is O(1) once you are standing on `A`.
+
+| Operation | Singly | Doubly | Notes |
+| --------- | ------ | ------ | ----- |
+| Access by index | O(n) | O(n) | Doubly can start from the nearer end |
+| Insert/delete at head | O(1) | O(1) | |
+| Insert at tail | O(1) with tail pointer | O(1) | O(n) without a tail pointer |
+| Delete tail | O(n) | O(1) | Singly needs the predecessor |
+| Delete a known node | O(n) (find predecessor) | O(1) | `prev` pointer removes the search |
+| Search | O(n) | O(n) | No random access |
+
+> [!TIP]
+> Reach for a **dummy (sentinel) head** and the **fast/slow pointer** trick first — together they remove most edge cases and solve cycle, middle and k-th-from-end problems.
+
+> [!WARNING]
+> Nodes are scattered in memory, so traversal is cache-unfriendly. In Java, `ArrayList` or `ArrayDeque` usually beats `LinkedList` even for queue workloads.
+
+---
+
 ## PART 0: COMPLETE UNDERSTANDING — The WHY Before the WHAT
 
 ### What Problem Does a Linked List Solve?
@@ -1158,7 +1193,6 @@ Now reset `slow` to head. Both move at speed 1.
   After μ more steps: C - (μ mod C) + μ = C + μ - (μ mod C).
   This is a multiple of C (since μ - (μ mod C) = ⌊μ/C⌋ × C).
   So fast is also at the cycle entry. ∎
-```
 
 **Worked trace.** List: `1 → 2 → 3 → 4 → 5 → 3` (cycle entry at node 3, μ = 2, C = 3).
 
@@ -1339,55 +1373,67 @@ single-direction traversal sufficient?
 
 **Condition:** Inserting a node `n` such that `n.next` points back to a node earlier in the list, or such that the previous tail's `next` is not properly updated.
 
-**What breaks:** I3 violated → infinite loop on traversal. Concurrent modification can also introduce cycles if two threads insert simultaneously.
+> [!CAUTION]
+> **What breaks:** I3 violated → infinite loop on traversal. Concurrent modification can also introduce cycles if two threads insert simultaneously.
 
-**Defense:** Always update both `prev.next` and `tail.next` atomically. Use CAS (compare-and-swap) for lock-free LLs; the Java `ConcurrentLinkedQueue` does this.
+> [!TIP]
+> **Defense:** Always update both `prev.next` and `tail.next` atomically. Use CAS (compare-and-swap) for lock-free LLs; the Java `ConcurrentLinkedQueue` does this.
 
 ### Break 2 — Lost Reference on Delete
 
 **Condition:** Deleting a node `n` without first saving `n.next` (singly LL) or without first updating `n.prev.next` and `n.next.prev` (doubly LL).
 
-**What breaks:** The rest of the list becomes unreachable → memory leak. Worse, future iterations may or may not include the deleted node depending on which pointer was checked.
+> [!CAUTION]
+> **What breaks:** The rest of the list becomes unreachable → memory leak. Worse, future iterations may or may not include the deleted node depending on which pointer was checked.
 
-**Defense:** Always capture `n.next` (and `n.prev` for doubly) before mutating `n`. In Java, save `iter.next()` before `iter.remove()`.
+> [!TIP]
+> **Defense:** Always capture `n.next` (and `n.prev` for doubly) before mutating `n`. In Java, save `iter.next()` before `iter.remove()`.
 
 ### Break 3 — Cache Miss Cascade
 
 **Condition:** Iterating a LL with n nodes where n exceeds L1 cache (typically 32 KiB / 16 bytes per node = 2,048 nodes).
 
-**What breaks:** Every node access misses L1 → 100 ns latency per node. For n = 10⁶, that's 100 ms vs 6 ms for an array — a 16× slowdown.
+> [!CAUTION]
+> **What breaks:** Every node access misses L1 → 100 ns latency per node. For n = 10⁶, that's 100 ms vs 6 ms for an array — a 16× slowdown.
 
 **Invariant violated:** Spatial locality. LL nodes are heap-scattered; array elements are contiguous.
 
-**Defense:** Pool LL nodes to reduce fragmentation; use a `Deque<ArrayList<T>>` if the workload allows batching; or use `IntArrayList` for primitive data.
+> [!TIP]
+> **Defense:** Pool LL nodes to reduce fragmentation; use a `Deque<ArrayList<T>>` if the workload allows batching; or use `IntArrayList` for primitive data.
 
 ### Break 4 — Concurrent Modification
 
 **Condition:** One thread iterates the LL while another inserts or deletes. Java's `LinkedList` uses a `modCount` field; `next()` checks `expectedModCount == modCount` and throws `ConcurrentModificationException` on mismatch.
 
-**What breaks:** `ConcurrentModificationException` is the friendly outcome. Without it (e.g., C++ `std::list` without a lock), iteration may see stale or duplicated nodes.
+> [!CAUTION]
+> **What breaks:** `ConcurrentModificationException` is the friendly outcome. Without it (e.g., C++ `std::list` without a lock), iteration may see stale or duplicated nodes.
 
 **Invariant violated:** Single-threaded mutation invariant. The LL is not thread-safe.
 
-**Defense:** Use `CopyOnWriteArrayList` for read-heavy workloads; `ConcurrentLinkedQueue` for FIFO; or external synchronization with `synchronized` blocks.
+> [!TIP]
+> **Defense:** Use `CopyOnWriteArrayList` for read-heavy workloads; `ConcurrentLinkedQueue` for FIFO; or external synchronization with `synchronized` blocks.
 
 ### Break 5 — Memory Leak from Static References
 
 **Condition:** A static field holds a reference to a node in a long-lived LL.
 
-**What breaks:** The entire LL is reachable from GC roots → never collected → memory leak.
+> [!CAUTION]
+> **What breaks:** The entire LL is reachable from GC roots → never collected → memory leak.
 
 **Invariant violated:** Reachability. The LL is supposed to be reclaimable when no external references exist.
 
-**Defense:** Clear static references when done; use `WeakReference` for caches.
+> [!TIP]
+> **Defense:** Clear static references when done; use `WeakReference` for caches.
 
 ### Break 6 — Sentinel Misuse
 
 **Condition:** A doubly LL uses sentinel nodes to mark head/tail. The sentinel is removed or repurposed.
 
-**What breaks:** Sentinel removal breaks I6 → iterator returns null when list is non-empty.
+> [!CAUTION]
+> **What breaks:** Sentinel removal breaks I6 → iterator returns null when list is non-empty.
 
-**Defense:** Never expose sentinels via public API. Mark them `private static final`.
+> [!TIP]
+> **Defense:** Never expose sentinels via public API. Mark them `private static final`.
 
 ## Edge Cases — Always Check These
 
@@ -1614,12 +1660,27 @@ All operations O(1). ✓
 
 ## Reality Check
 
-**"LinkedList insertion at position i is O(1)"** → Insertion after a *known node* is O(1). But finding that node at position i requires traversing from the head — O(i). The full operation is O(n). The only truly O(1) insertions are at head and tail (if you hold a tail reference).
+> [!CAUTION]
+> **Myth:** "LinkedList insertion at position i is O(1)"
+>
+> **Reality:** Insertion after a *known node* is O(1). But finding that node at position i requires traversing from the head — O(i). The full operation is O(n). The only truly O(1) insertions are at head and tail (if you hold a tail reference).
 
-**"LinkedList uses less memory than ArrayList for the same elements"** → The opposite. Each node in a singly-linked list of Integers: 16 bytes (object header) + 4 bytes (int field) + 8 bytes (next pointer) = 28 bytes, padded to 32 bytes. A `int[]` stores the same integer in 4 bytes. LinkedList uses 8× more memory per element for primitive data.
+> [!CAUTION]
+> **Myth:** "LinkedList uses less memory than ArrayList for the same elements"
+>
+> **Reality:** The opposite. Each node in a singly-linked list of Integers: 16 bytes (object header) + 4 bytes (int field) + 8 bytes (next pointer) = 28 bytes, padded to 32 bytes. A `int[]` stores the same integer in 4 bytes. LinkedList uses 8× more memory per element for primitive data.
 
-**"Java's LinkedList is good for queue operations"** → Java's `LinkedList` implements `Deque` but `ArrayDeque` is 2-3× faster for queue operations because it is a circular buffer — cache-contiguous, no pointer chasing. `LinkedList` for queues is a common Java mistake.
+> [!CAUTION]
+> **Myth:** "Java's LinkedList is good for queue operations"
+>
+> **Reality:** Java's `LinkedList` implements `Deque` but `ArrayDeque` is 2-3× faster for queue operations because it is a circular buffer — cache-contiguous, no pointer chasing. `LinkedList` for queues is a common Java mistake.
 
-**"Doubly-linked lists are always better than singly-linked"** → Doubly-linked enables O(1) backwards traversal and O(1) deletion given a node reference (no need to find the previous node). But each node carries an extra pointer (8 bytes on 64-bit JVM). For read-mostly or forward-only use cases, singly-linked saves memory and is simpler. Doubly-linked is worth it when you need O(1) deletion given node reference — as in LRU cache implementation.
+> [!CAUTION]
+> **Myth:** "Doubly-linked lists are always better than singly-linked"
+>
+> **Reality:** Doubly-linked enables O(1) backwards traversal and O(1) deletion given a node reference (no need to find the previous node). But each node carries an extra pointer (8 bytes on 64-bit JVM). For read-mostly or forward-only use cases, singly-linked saves memory and is simpler. Doubly-linked is worth it when you need O(1) deletion given node reference — as in LRU cache implementation.
 
-**"Sentinel nodes are just an optimization"** → Sentinel (dummy) head and tail nodes eliminate special-case code for empty-list and single-element operations. They make the logic *correct by construction* — all nodes always have a prev and next. Without sentinels, every insert/delete must check `if (head == null)` and `if (tail == null)` separately. Sentinels are a correctness technique as much as a performance one.
+> [!CAUTION]
+> **Myth:** "Sentinel nodes are just an optimization"
+>
+> **Reality:** Sentinel (dummy) head and tail nodes eliminate special-case code for empty-list and single-element operations. They make the logic *correct by construction* — all nodes always have a prev and next. Without sentinels, every insert/delete must check `if (head == null)` and `if (tail == null)` separately. Sentinels are a correctness technique as much as a performance one.

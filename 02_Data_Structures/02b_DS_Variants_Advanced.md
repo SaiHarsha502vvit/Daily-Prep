@@ -4,6 +4,42 @@
 
 # 📚 Advanced Data Structure Variants: Stacks, Queues, & Trees
 
+## ⚡ At a Glance — Advanced Variants
+
+> [!NOTE]
+> **Mental model:** advanced variants *add an invariant* to a basic structure — a running minimum, a fixed capacity, monotonic order, or a balance rule — so that one hard query becomes O(1) or O(log n).
+
+```mermaid
+flowchart TD
+    ST["Stack"] --> MINS["Min / Max stack<br/>O(1) getMin"]
+    QU["Queue"] --> CQ["Circular queue<br/>fixed buffer"]
+    QU --> DQ["Deque<br/>both ends"]
+    DQ --> MQ["Monotonic queue<br/>sliding-window max"]
+    BST["BST"] --> AVL["AVL<br/>strict balance"]
+    BST --> RB["Red-Black<br/>looser balance"]
+    classDef base fill:#e0e0e0,stroke:#616161,color:#111
+    classDef var fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef bal fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class ST,QU,BST base
+    class MINS,CQ,DQ,MQ var
+    class AVL,RB bal
+```
+
+**How to read this diagram.** Each grey base grows into coloured variants. The invariant it adds (shown in the label) is what you should state first when solving a problem with that variant.
+
+| Variant | Invariant | Typical use |
+| ------- | --------- | ----------- |
+| Min Stack | Each entry knows the min so far | `getMin()` in O(1) |
+| Circular queue | Indices wrap with modulo | Ring buffers, streaming |
+| Monotonic queue | Values kept in sorted order | Sliding window max/min in O(n) |
+| AVL | Balance factor ∈ {−1, 0, +1} | Read-heavy ordered maps |
+| Red-Black | Colour rules bound height ≤ 2·log₂(n+1) | Java `TreeMap`, C++ `std::map` |
+
+> [!WARNING]
+> Every extra invariant must be restored after *every* mutation. Bugs in rotations and wrap-around indices are the usual failures.
+
+---
+
 ## Historical Evolution of Advanced Data Structure Variants
 
 ::: timeline
@@ -703,6 +739,7 @@ public class MyDeque<T> {
 │                                                                             │
 │ KEY USE CASE: Sliding Window Maximum/Minimum in O(n)!                       │
 └─────────────────────────────────────────────────────────────────────────────┘
+```
 
 **INVARIANT (Monotonic Decreasing Queue for Sliding Window Max):**
 ```
@@ -717,6 +754,7 @@ For window [i-k+1, i] with deque D (stores indices):
 
 ```
 
+```
 EXAMPLE - SLIDING WINDOW MAXIMUM:
 Array: [1, 3, -1, -3, 5, 3, 6, 7], Window size: 3
 
@@ -919,6 +957,7 @@ Essentially a linked list!
 │ Valid values: -1, 0, +1                                                     │
 │ If BF becomes -2 or +2, we ROTATE!                                          │
 └─────────────────────────────────────────────────────────────────────────────┘
+```
 
 **INVARIANT (AVL Tree — Strict Balance):**
 ```
@@ -934,6 +973,7 @@ Implications:
 
 ```
 
+```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ ROTATIONS (The Key to Balance)                                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
@@ -1675,7 +1715,8 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 - BST (TreeMap): O(log n) for insert and find both min/max, but deletion of arbitrary element requires locating it → O(log n) + O(log n) for lazy deletion
 - **Monotonic Deque (two deques)**: One decreasing for max, one increasing for min. Each element pushed/popped at most once → O(1) amortized per update. For 500 tickers × 50 updates = 25,000 ops/sec, this easily fits in a single thread.
 
-**Key insight:** Rolling window problems with explicit eviction (time-based or count-based) are the canonical use case for monotonic queue. The front eviction check (`index < i - k + 1`) handles the window sliding naturally.
+> [!TIP]
+> **Key insight:** Rolling window problems with explicit eviction (time-based or count-based) are the canonical use case for monotonic queue. The front eviction check (`index < i - k + 1`) handles the window sliding naturally.
 
 </details>
 
@@ -1982,65 +2023,81 @@ Storage medium?
 
 **Condition:** The random number generator produces non-uniform distribution (e.g., `java.util.Random` with poor seeding).
 
-**What breaks:** SK3 violated → some levels have many more nodes than expected → height grows beyond log_p(n) → O(n) worst-case search.
+> [!CAUTION]
+> **What breaks:** SK3 violated → some levels have many more nodes than expected → height grows beyond log_p(n) → O(n) worst-case search.
 
-**Defense:** Use a high-quality RNG (e.g., `SplittableRandom` or `ThreadLocalRandom`). Test level distribution with histogram.
+> [!TIP]
+> **Defense:** Use a high-quality RNG (e.g., `SplittableRandom` or `ThreadLocalRandom`). Test level distribution with histogram.
 
 ### Break 2 — Bloom Filter Underestimated m
 
 **Condition:** Inserting more elements than the bloom filter was sized for.
 
-**What breaks:** BF1 violated → false positive rate increases sharply. At 2× expected size, FP rate is `p²`. At 10×, FP rate is `p^10` (essentially all queries return true).
+> [!CAUTION]
+> **What breaks:** BF1 violated → false positive rate increases sharply. At 2× expected size, FP rate is `p²`. At 10×, FP rate is `p^10` (essentially all queries return true).
 
-**Defense:** Size bloom filters conservatively (e.g., 2× expected n). For unbounded growth, use a scalable bloom filter (multiple filters, decreasing size).
+> [!TIP]
+> **Defense:** Size bloom filters conservatively (e.g., 2× expected n). For unbounded growth, use a scalable bloom filter (multiple filters, decreasing size).
 
 ### Break 3 — B-Tree Node Split During Scan
 
 **Condition:** A B-tree scan encounters a node split mid-traversal.
 
-**What breaks:** Cursor-based scan may miss newly-inserted entries or duplicate entries that moved during the split.
+> [!CAUTION]
+> **What breaks:** Cursor-based scan may miss newly-inserted entries or duplicate entries that moved during the split.
 
-**Defense:** Use cursor with versioning (read at a snapshot timestamp). Or use a B+ Tree with linked leaves for sequential scans.
+> [!TIP]
+> **Defense:** Use cursor with versioning (read at a snapshot timestamp). Or use a B+ Tree with linked leaves for sequential scans.
 
 ### Break 4 — LSM-Tree Compaction Stall
 
 **Condition:** Write rate exceeds compaction rate during peak load.
 
-**What breaks:** L2 violated → level size grows beyond threshold → read amplification increases → latency spikes.
+> [!CAUTION]
+> **What breaks:** L2 violated → level size grows beyond threshold → read amplification increases → latency spikes.
 
-**Defense:** Tune compaction throughput (more threads, larger SSTables). Or use leveled compaction with bounded levels (RocksDB default).
+> [!TIP]
+> **Defense:** Tune compaction throughput (more threads, larger SSTables). Or use leveled compaction with bounded levels (RocksDB default).
 
 ### Break 5 — Splay Tree Worst-Case Single Operation
 
 **Condition:** Accessing nodes in a pathological order (e.g., alternating extremes).
 
-**What breaks:** Single operation can be O(n) (e.g., accessing every node in order results in O(n²) for n accesses). However, amortized over m operations, the cost is O(m log n).
+> [!CAUTION]
+> **What breaks:** Single operation can be O(n) (e.g., accessing every node in order results in O(n²) for n accesses). However, amortized over m operations, the cost is O(m log n).
 
-**Defense:** Don't use Splay trees in real-time systems where worst-case latency matters. Use AVL or Red-Black for strict bounds.
+> [!TIP]
+> **Defense:** Don't use Splay trees in real-time systems where worst-case latency matters. Use AVL or Red-Black for strict bounds.
 
 ### Break 6 — Treap Priority Collision
 
 **Condition:** Random priority generator produces the same priority for two nodes.
 
-**What breaks:** TR2 violated → heap property ambiguous → tree structure may not be unique.
+> [!CAUTION]
+> **What breaks:** TR2 violated → heap property ambiguous → tree structure may not be unique.
 
-**Defense:** Use 64-bit random priorities; collision probability is `2^-64` per pair, negligible.
+> [!TIP]
+> **Defense:** Use 64-bit random priorities; collision probability is `2^-64` per pair, negligible.
 
 ### Break 7 — ConcurrentSkipListMap ABA Problem
 
 **Condition:** A node is removed and re-inserted with the same key during a CAS operation.
 
-**What breaks:** CAS sees the same reference as before but the node has been replaced → wrong operation applied.
+> [!CAUTION]
+> **What breaks:** CAS sees the same reference as before but the node has been replaced → wrong operation applied.
 
-**Defense:** Use versioned pointers (Java's `AtomicStampedReference`) or accept ABA as a non-issue for typical usage.
+> [!TIP]
+> **Defense:** Use versioned pointers (Java's `AtomicStampedReference`) or accept ABA as a non-issue for typical usage.
 
 ### Break 8 — Bloom Filter Misuse as Cache
 
 **Condition:** Using Bloom filter as the only data structure for membership, then acting on `mightContain == true` without verification.
 
-**What breaks:** BF4 false positive causes incorrect action (e.g., evicting valid cache entry, rejecting valid user).
+> [!CAUTION]
+> **What breaks:** BF4 false positive causes incorrect action (e.g., evicting valid cache entry, rejecting valid user).
 
-**Defense:** Always verify after Bloom filter positive. The filter is a *probabilistic* optimization, not a source of truth.
+> [!TIP]
+> **Defense:** Always verify after Bloom filter positive. The filter is a *probabilistic* optimization, not a source of truth.
 
 ## Formal Complexity Proofs — Advanced Variant Operations
 
@@ -2194,12 +2251,27 @@ This is equivalent to a random walk that climbs exactly log₁/p(n) levels in ex
 
 ## Reality Check
 
-**"Skip list is just a linked list with shortcuts"** → Structurally yes — multiple layers of linked lists where higher layers skip over more elements. The key insight: the skip structure is probabilistic. Each node at level i is promoted to level i+1 with probability p (typically 1/2). This gives O(log n) expected height, O(log n) expected search/insert/delete without complex rotations. Redis uses skip lists for sorted sets because they're simpler to implement than balanced BSTs, support efficient range queries, and are easy to make lock-free for concurrent access.
+> [!CAUTION]
+> **Myth:** "Skip list is just a linked list with shortcuts"
+>
+> **Reality:** Structurally yes — multiple layers of linked lists where higher layers skip over more elements. The key insight: the skip structure is probabilistic. Each node at level i is promoted to level i+1 with probability p (typically 1/2). This gives O(log n) expected height, O(log n) expected search/insert/delete without complex rotations. Redis uses skip lists for sorted sets because they're simpler to implement than balanced BSTs, support efficient range queries, and are easy to make lock-free for concurrent access.
 
-**"Bloom filter false positive rate is fixed at design time"** → You choose the false positive rate when sizing the filter: given n (expected elements) and p (target false positive rate), compute m (bits) = `-n * ln(p) / ln(2)²` and k (hash functions) = `m/n * ln(2)`. Lower false positive rate = more bits. You cannot change the false positive rate after construction without rebuilding the filter. After inserting more than n elements, the actual false positive rate rises above the design p. Scalable Bloom Filters chain multiple Bloom filters to handle growth while maintaining a bounded false positive rate.
+> [!CAUTION]
+> **Myth:** "Bloom filter false positive rate is fixed at design time"
+>
+> **Reality:** You choose the false positive rate when sizing the filter: given n (expected elements) and p (target false positive rate), compute m (bits) = `-n * ln(p) / ln(2)²` and k (hash functions) = `m/n * ln(2)`. Lower false positive rate = more bits. You cannot change the false positive rate after construction without rebuilding the filter. After inserting more than n elements, the actual false positive rate rises above the design p. Scalable Bloom Filters chain multiple Bloom filters to handle growth while maintaining a bounded false positive rate.
 
-**"LRU cache can be implemented efficiently with just a HashMap"** → HashMap gives O(1) lookup but O(n) for eviction (you'd need to find the least recently used item). Efficient LRU = HashMap + doubly-linked list: HashMap maps key → node, doubly-linked list maintains LRU order (head = MRU, tail = LRU). Eviction: remove the tail node in O(1), remove from HashMap in O(1). Access: move the accessed node to head in O(1). All operations O(1). Java's `LinkedHashMap` with access-order mode does this internally, giving you a ready-made LRU eviction mechanism.
+> [!CAUTION]
+> **Myth:** "LRU cache can be implemented efficiently with just a HashMap"
+>
+> **Reality:** HashMap gives O(1) lookup but O(n) for eviction (you'd need to find the least recently used item). Efficient LRU = HashMap + doubly-linked list: HashMap maps key → node, doubly-linked list maintains LRU order (head = MRU, tail = LRU). Eviction: remove the tail node in O(1), remove from HashMap in O(1). Access: move the accessed node to head in O(1). All operations O(1). Java's `LinkedHashMap` with access-order mode does this internally, giving you a ready-made LRU eviction mechanism.
 
-**"Suffix arrays are just sorted lists of suffixes"** → A suffix array is an array of starting indices of all suffixes, sorted lexicographically. The naive construction (sort all n suffixes) is O(n² log n). SA-IS (Suffix Array induced sorting) builds it in O(n). Combined with an LCP array (Longest Common Prefix between adjacent sorted suffixes), suffix arrays enable: O(m log n) pattern matching (binary search on sorted suffixes), longest repeated substring (max LCP value), number of distinct substrings (n*(n+1)/2 - sum of LCP array). Used in bioinformatics (genome alignment) and data compression.
+> [!CAUTION]
+> **Myth:** "Suffix arrays are just sorted lists of suffixes"
+>
+> **Reality:** A suffix array is an array of starting indices of all suffixes, sorted lexicographically. The naive construction (sort all n suffixes) is O(n² log n). SA-IS (Suffix Array induced sorting) builds it in O(n). Combined with an LCP array (Longest Common Prefix between adjacent sorted suffixes), suffix arrays enable: O(m log n) pattern matching (binary search on sorted suffixes), longest repeated substring (max LCP value), number of distinct substrings (n*(n+1)/2 - sum of LCP array). Used in bioinformatics (genome alignment) and data compression.
 
-**"Wavelet tree is a theoretical data structure with no practical use"** → Wavelet trees answer: k-th smallest in a range O(log n), count of elements ≤ v in a range O(log n), rank and select queries. Used in: databases (column store range queries), competitive programming, text compression (BWT + wavelet tree for FM-index — used in genome sequencing aligners like BWA and Bowtie). The FM-index powers DNA sequence alignment in bioinformatics — processing terabytes of genomic data. Wavelet trees are a production data structure in specialised domains.
+> [!CAUTION]
+> **Myth:** "Wavelet tree is a theoretical data structure with no practical use"
+>
+> **Reality:** Wavelet trees answer: k-th smallest in a range O(log n), count of elements ≤ v in a range O(log n), rank and select queries. Used in: databases (column store range queries), competitive programming, text compression (BWT + wavelet tree for FM-index — used in genome sequencing aligners like BWA and Bowtie). The FM-index powers DNA sequence alignment in bioinformatics — processing terabytes of genomic data. Wavelet trees are a production data structure in specialised domains.

@@ -32,6 +32,49 @@
 
 ---
 
+## ⚡ At a Glance — Where Each DS Lives in Production
+
+> [!NOTE]
+> **Mental model:** production systems rarely use a textbook structure unchanged. They pick the structure whose *worst case matches the failure they cannot afford*, then add sizing rules and monitoring.
+
+```mermaid
+flowchart LR
+    subgraph IDX["Storage and indexes"]
+        BT["B+Tree<br/>SQL indexes"]
+        LSM["LSM-tree<br/>RocksDB, Cassandra"]
+    end
+    subgraph MEM["In-memory serving"]
+        HM["Hash table<br/>caches, Redis dict"]
+        SK["Skip list<br/>Redis sorted sets"]
+        BF["Bloom filter<br/>skip disk reads"]
+    end
+    subgraph FLOW["Data flow"]
+        LOG["Append-only log<br/>Kafka"]
+        RB["Ring buffer<br/>I/O queues"]
+    end
+    classDef a fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef b fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef c fill:#ffd9b3,stroke:#e65100,color:#111
+    class BT,LSM a
+    class HM,SK,BF b
+    class LOG,RB c
+```
+
+**How to read this diagram.** Blue groups the structures that sit on disk, green the ones that serve requests from memory, orange the ones that move data. The rest of this chapter walks real incidents for each.
+
+| Need | Typical structure | Why |
+| ---- | ----------------- | --- |
+| Range queries on disk | B+Tree | High fan-out, few page reads |
+| Write-heavy storage | LSM-tree | Sequential writes, compaction later |
+| "Probably not present" check | Bloom filter | Tiny memory, no false negatives |
+| Cache with eviction | Hash map + doubly linked list (LRU) | O(1) lookup and O(1) reorder |
+| Leaderboards | Skip list / balanced tree | Ordered, range-capable |
+
+> [!WARNING]
+> Capacity planning matters as much as Big-O: unbounded maps, queues and caches are the most common production memory incidents.
+
+---
+
 ## Conceptual Framing: Why Production DS Literacy Matters
 
 > **Big-O is for interviews. Production DS knowledge is for Staff/Principal Engineering.**
@@ -337,7 +380,8 @@ redis-cli --latency-history
 # Metric to watch: cluster_slots_assigned (should be 16384 when stable)
 ```
 
-**Fix:** Use `redis-cli cluster set-slot` with `--pipeline` for batch slot ownership transfer; throttle client retry with exponential backoff; pre-warm destination node before switching traffic.
+> [!TIP]
+> **Fix:** Use `redis-cli cluster set-slot` with `--pipeline` for batch slot ownership transfer; throttle client retry with exponential backoff; pre-warm destination node before switching traffic.
 
 ---
 
@@ -367,7 +411,8 @@ ORDER BY n_dead_tup DESC;
 VACUUM VERBOSE ANALYZE orders;
 ```
 
-**Fix:** Tune `autovacuum_vacuum_scale_factor` (lower to 0.01 for large tables); schedule `VACUUM ANALYZE` during off-peak hours; consider `pg_repack` to defragment without table lock.
+> [!TIP]
+> **Fix:** Tune `autovacuum_vacuum_scale_factor` (lower to 0.01 for large tables); schedule `VACUUM ANALYZE` during off-peak hours; consider `pg_repack` to defragment without table lock.
 
 ---
 
@@ -395,7 +440,8 @@ kafka-topics.sh --describe --topic orders --bootstrap-server $KAFKA_BROKER
 iostat -x 1 | grep sd  # look for %util > 80% on follower brokers
 ```
 
-**Fix:** Restart the lagging broker; increase `replica.lag.max.messages`; add brokers to the cluster; set `unclean.leader.election=false` to prevent data loss on network partitions.
+> [!TIP]
+> **Fix:** Restart the lagging broker; increase `replica.lag.max.messages`; add brokers to the cluster; set `unclean.leader.election=false` to prevent data loss on network partitions.
 
 ---
 
@@ -419,7 +465,8 @@ echo "stats" | nc -w 2 $MEMCACHED_HOST 11211 | grep -E "get_hits|get_misses"
 echo "stats" | nc -w 2 $MEMCACHED_HOST 11211 | grep evicted_items
 ```
 
-**Fix:** Implement probabilistic early expiration (extend TTL with jitter before expiry); use a distributed lock (Redis SETNX) so only one request fetches from the database; pre-warm hot keys before TTL expiry.
+> [!TIP]
+> **Fix:** Implement probabilistic early expiration (extend TTL with jitter before expiry); use a distributed lock (Redis SETNX) so only one request fetches from the database; pre-warm hot keys before TTL expiry.
 
 ---
 
@@ -734,8 +781,8 @@ To achieve infinite write scaling (Cassandra, ScyllaDB, LevelDB, DynamoDB), we m
 
 ```mermaid
 flowchart TD
-    Client -->|1. Insert| WAL[Sequential Commit Log (Disk)]
-    Client -->|2. Insert| MEM[MemTable / Skip List (RAM)]
+    Client -->|1. Insert| WAL["Sequential Commit Log (Disk)"]
+    Client -->|2. Insert| MEM["MemTable / Skip List (RAM)"]
 
     MEM -->|3. Flush when full| L0_1[SSTable 1 - Level 0]
     MEM -->|3. Flush when full| L0_2[SSTable 2 - Level 0]
@@ -745,7 +792,13 @@ flowchart TD
         L0_2 --> M
         M -->|Sequential Write| L1[SSTable 3 - Level 1]
     end
+    classDef ram fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef disk fill:#cfe8ff,stroke:#1565c0,color:#111
+    class MEM ram
+    class WAL,L0_1,L0_2,L1 disk
 ```
+
+**How to read this diagram.** Every write goes to the commit log (disk, sequential) and the MemTable (RAM). When the MemTable fills it is flushed as an immutable Level-0 SSTable, and a background worker merges SSTables into larger ones. Green is memory, blue is disk.
 
 **The Reality:** LSM-Trees mathematically convert all Random I/O into Sequential I/O. This is why Cassandra can handle 1,000,000 writes per second, while PostgreSQL chokes at 20,000.
 
@@ -825,7 +878,8 @@ Each incident includes: system, year, root cause, DS involved, failure mode, les
 
 **Failure mode:** Stale routing entry + priority inversion (old server processed before new). The "production deployment" did not include the routing table update — the hash map keyed on server ID, and one server had a stale entry pointing to retired code.
 
-**Lesson learned:** Routing tables must be atomic with code deploy. The incident is in `05_Problem_Solving/24_Common_Mistakes.md` and is cited as the textbook example of a hash table staleness bug.
+> [!NOTE]
+> **Lesson learned:** Routing tables must be atomic with code deploy. The incident is in `05_Problem_Solving/24_Common_Mistakes.md` and is cited as the textbook example of a hash table staleness bug.
 
 **DS lesson:** Hash table invariants are not just about internal consistency; they're about external consistency with the systems that update them. A "correct" hash table with stale entries is functionally incorrect.
 
@@ -839,7 +893,8 @@ Each incident includes: system, year, root cause, DS involved, failure mode, les
 
 **Failure mode:** Unbounded recursion = stack exhaustion. The "stack" abstract data type's invariant ("top terminator") was violated by the runtime — the runtime tried to push more frames than allowed.
 
-**Lesson learned:** Stack depth must be bounded by design. Recursive algorithms should be converted to iterative when input size is unbounded. This is the canonical "recursion-to-iterative" lesson — see `01d_Stack_Queue.md`.
+> [!NOTE]
+> **Lesson learned:** Stack depth must be bounded by design. Recursive algorithms should be converted to iterative when input size is unbounded. This is the canonical "recursion-to-iterative" lesson — see `01d_Stack_Queue.md`.
 
 **DS lesson:** Stack overflow is a real production failure mode, not just an academic exercise. The relationship between recursive depth and stack size is a constraint that must be checked in production code.
 
@@ -853,7 +908,8 @@ Each incident includes: system, year, root cause, DS involved, failure mode, les
 
 **Failure mode:** Off-by-one in `mid = (left + right) / 2` or in the comparison condition. The bug was present for years but only manifested when an ID value hit the boundary case.
 
-**Lesson learned:** Binary search is famously bug-prone — Knuth, Bentley, and others have documented at least 6 distinct ways to write it wrong. The `mid = left + (right - left) / 2` formulation is safer (no integer overflow); the loop condition `left <= right` vs `left < right` matters.
+> [!NOTE]
+> **Lesson learned:** Binary search is famously bug-prone — Knuth, Bentley, and others have documented at least 6 distinct ways to write it wrong. The `mid = left + (right - left) / 2` formulation is safer (no integer overflow); the loop condition `left <= right` vs `left < right` matters.
 
 **DS lesson:** Off-by-one in index arithmetic is one of the most common bugs in array algorithms. Boundary testing (`i = 0`, `i = n - 1`, `i = n`) catches these. The lesson appears in `05_Problem_Solving/07_Binary_Search.md`.
 
@@ -867,7 +923,8 @@ Each incident includes: system, year, root cause, DS involved, failure mode, les
 
 **Failure mode:** Load factor invariant (H1) violated → O(n) lookup → timeout → cascading failures.
 
-**Lesson learned:** Non-default collection parameters require deep understanding. "Save memory" trade-offs often cost latency. The 0.75 default is well-tuned; deviating requires measurement.
+> [!NOTE]
+> **Lesson learned:** Non-default collection parameters require deep understanding. "Save memory" trade-offs often cost latency. The 0.75 default is well-tuned; deviating requires measurement.
 
 **DS lesson:** The HashMap load factor is not a free parameter. Changing it without understanding the trade-off is a bug.
 
@@ -881,7 +938,8 @@ Each incident includes: system, year, root cause, DS involved, failure mode, les
 
 **Failure mode:** Hash table entry deletion without proper rollback. The recovery process didn't gracefully handle the smaller-than-expected server set, leading to longer than expected recovery.
 
-**Lesson learned:** Hash table mutations during operational changes need careful rollback procedures. AWS later published a postmortem that became required reading for SRE teams.
+> [!NOTE]
+> **Lesson learned:** Hash table mutations during operational changes need careful rollback procedures. AWS later published a postmortem that became required reading for SRE teams.
 
 **DS lesson:** Operational tooling must consider hash table invariants (entry reachability, size consistency) during recovery. The incident appears in `13_Developer_Essentials/02_SRE_Monitoring.md`.
 
@@ -895,7 +953,8 @@ Each incident includes: system, year, root cause, DS involved, failure mode, les
 
 **Failure mode:** Cache stampede — concurrent cache miss + synchronized recompute = thundering herd.
 
-**Lesson learned:** Use probabilistic early expiration (refresh the cache 10% before TTL with some probability). Or use a single-flight pattern (only one thread recomputes, others wait). This is the canonical "cache stampede" lesson.
+> [!NOTE]
+> **Lesson learned:** Use probabilistic early expiration (refresh the cache 10% before TTL with some probability). Or use a single-flight pattern (only one thread recomputes, others wait). This is the canonical "cache stampede" lesson.
 
 **DS lesson:** Cache + concurrent access + TTL = potential stampede. The mitigation is in the application layer, not the cache data structure.
 
@@ -909,7 +968,8 @@ Each incident includes: system, year, root cause, DS involved, failure mode, les
 
 **Failure mode:** LL1 invariant (size = reachable nodes) violated due to static reference; OOM after hours.
 
-**Lesson learned:** Static references + heap-allocated data structures = memory leaks. Always profile with `jmap -histo` and `jcmd <pid> GC.class_histogram` to find leaks.
+> [!NOTE]
+> **Lesson learned:** Static references + heap-allocated data structures = memory leaks. Always profile with `jmap -histo` and `jcmd <pid> GC.class_histogram` to find leaks.
 
 **DS lesson:** Reachability analysis is the formal theory behind GC. Static fields create roots that prevent reclamation.
 
@@ -923,7 +983,8 @@ Each incident includes: system, year, root cause, DS involved, failure mode, les
 
 **Failure mode:** Cursor invalidation on concurrent modification. The iterator's leaf pointer became invalid when a split moved entries to a new node.
 
-**Lesson learned:** Use cursor versioning (read at snapshot timestamp) for B-tree iteration under writes. Or use copy-on-write B-trees (e.g., LMDB).
+> [!NOTE]
+> **Lesson learned:** Use cursor versioning (read at snapshot timestamp) for B-tree iteration under writes. Or use copy-on-write B-trees (e.g., LMDB).
 
 **DS lesson:** Iterators on disk-based structures need careful versioning. In-memory `ConcurrentSkipListMap` solves this for in-memory cases; disk-based solutions require B+ tree variants (e.g., append-only, COW).
 
@@ -1005,7 +1066,8 @@ When a production DS-related bug surfaces:
 
 **Root cause:** A misconfigured `HashMap<UserId, UserProfile>` with default capacity 16 but 10⁵ entries. The map grew via 17 resizes; one bucket chain has 50 entries due to hash collision; lookups for those users are O(n).
 
-**Fix:** Pre-size the HashMap to `133,334` capacity. Resize to spread entries evenly.
+> [!TIP]
+> **Fix:** Pre-size the HashMap to `133,334` capacity. Resize to spread entries evenly.
 
 **Prevent:** Add JVM metric `HashMap.size() / HashMap.table.length()`; alert when load factor exceeds 0.7.
 
@@ -1083,12 +1145,27 @@ freq.merge("key", 1, Integer::sum); // atomic increment -- no synchronized neede
 
 ## Reality Check
 
-**"Production code uses textbook data structures directly"** → Libraries like Java's `HashMap`, `TreeMap`, `ArrayDeque` ARE textbook data structures. But production code typically uses them through higher-level abstractions: JPA repositories (not raw HashMaps for entity lookup), message queues (not raw queues for async work), Redis sorted sets (not hand-rolled skip lists for leaderboards). The textbook understanding tells you WHICH abstraction to reach for and WHY — it doesn't mean you implement red-black trees in production code.
+> [!CAUTION]
+> **Myth:** "Production code uses textbook data structures directly"
+>
+> **Reality:** Libraries like Java's `HashMap`, `TreeMap`, `ArrayDeque` ARE textbook data structures. But production code typically uses them through higher-level abstractions: JPA repositories (not raw HashMaps for entity lookup), message queues (not raw queues for async work), Redis sorted sets (not hand-rolled skip lists for leaderboards). The textbook understanding tells you WHICH abstraction to reach for and WHY — it doesn't mean you implement red-black trees in production code.
 
-**"CPU cache effects don't matter in Java"** → Java objects are heap-allocated. Object fields in the same class share a cache line (64 bytes). Two longs in the same object: one cache line fetch for both. A `HashMap` entry with a `String` key: the HashMap array holds references, not values — to access the key and value you follow two pointers, causing two cache misses per entry. This is why arrays of primitives outperform arrays of boxed types: arrays of int are contiguous in memory; arrays of Integer are arrays of references each pointing elsewhere.
+> [!CAUTION]
+> **Myth:** "CPU cache effects don't matter in Java"
+>
+> **Reality:** Java objects are heap-allocated. Object fields in the same class share a cache line (64 bytes). Two longs in the same object: one cache line fetch for both. A `HashMap` entry with a `String` key: the HashMap array holds references, not values — to access the key and value you follow two pointers, causing two cache misses per entry. This is why arrays of primitives outperform arrays of boxed types: arrays of int are contiguous in memory; arrays of Integer are arrays of references each pointing elsewhere.
 
-**"Memory usage is the JVM heap size you configured"** → JVM memory = heap + metaspace + thread stacks + JIT compiled code cache + off-heap (direct ByteBuffers). With `-Xmx2G`: heap is 2GB. Metaspace (class metadata): 200-500MB in large applications. Thread stacks (each thread gets ~256KB–1MB): 500 threads × 256KB = 128MB. Code cache (JIT compiled code): 200MB default. Total JVM process = 3-4GB for a `-Xmx2G` application. Monitoring: `Runtime.getRuntime().totalMemory()`/`freeMemory()` see heap; `ps`/`top`/`jcmd <pid> VM.native_memory` see the full picture.
+> [!CAUTION]
+> **Myth:** "Memory usage is the JVM heap size you configured"
+>
+> **Reality:** JVM memory = heap + metaspace + thread stacks + JIT compiled code cache + off-heap (direct ByteBuffers). With `-Xmx2G`: heap is 2GB. Metaspace (class metadata): 200-500MB in large applications. Thread stacks (each thread gets ~256KB–1MB): 500 threads × 256KB = 128MB. Code cache (JIT compiled code): 200MB default. Total JVM process = 3-4GB for a `-Xmx2G` application. Monitoring: `Runtime.getRuntime().totalMemory()`/`freeMemory()` see heap; `ps`/`top`/`jcmd <pid> VM.native_memory` see the full picture.
 
-**"Profiling is only needed when there's a performance problem"** → Profiling should be part of the normal development cycle for performance-sensitive applications: baseline profile in CI (alert if a key metric regresses), periodic profiling of production under real load (synthetic benchmarks miss real access patterns), flame graphs before and after performance-impacting changes. Waiting until production is slow means diagnosing under pressure. JFR (Java Flight Recorder) has near-zero overhead and can run in production continuously. VisualVM and async-profiler for development.
+> [!CAUTION]
+> **Myth:** "Profiling is only needed when there's a performance problem"
+>
+> **Reality:** Profiling should be part of the normal development cycle for performance-sensitive applications: baseline profile in CI (alert if a key metric regresses), periodic profiling of production under real load (synthetic benchmarks miss real access patterns), flame graphs before and after performance-impacting changes. Waiting until production is slow means diagnosing under pressure. JFR (Java Flight Recorder) has near-zero overhead and can run in production continuously. VisualVM and async-profiler for development.
 
-**"Thread-local storage eliminates contention"** → `ThreadLocal<T>` gives each thread its own instance — no synchronisation needed. But: ThreadLocal values are stored in the Thread object and persist until the thread is reused or terminated. In thread pool environments (servlet containers, Java EE app servers), threads are reused across requests. A forgotten `ThreadLocal.remove()` in a request filter → the next request on the same thread sees the previous request's data (user ID, transaction context, tenant ID). Always `remove()` in a `finally` block. Spring's `TransactionSynchronizationManager` uses ThreadLocal for this — it handles cleanup properly; your own ThreadLocal must too.
+> [!CAUTION]
+> **Myth:** "Thread-local storage eliminates contention"
+>
+> **Reality:** `ThreadLocal<T>` gives each thread its own instance — no synchronisation needed. But: ThreadLocal values are stored in the Thread object and persist until the thread is reused or terminated. In thread pool environments (servlet containers, Java EE app servers), threads are reused across requests. A forgotten `ThreadLocal.remove()` in a request filter → the next request on the same thread sees the previous request's data (user ID, transaction context, tenant ID). Always `remove()` in a `finally` block. Spring's `TransactionSynchronizationManager` uses ThreadLocal for this — it handles cleanup properly; your own ThreadLocal must too.

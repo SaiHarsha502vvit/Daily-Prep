@@ -4,6 +4,25 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - 02_Data_Structures Presentation Upgrade
+
+- Added an "At a Glance" block (mental model callout, colour-styled Mermaid diagram, complexity/decision table) to the index, `01a`–`01g`, `02a`, `02b`, `03`, `04`, `05` and `A1`–`A5`.
+- Converted ~270 single-paragraph "What breaks / Defense / Fix / Key insight / Constraint warning / Invariant learned / Lesson learned" lines and all Reality Check myths into GitHub callouts (`> [!CAUTION]`, `[!TIP]`, `[!WARNING]`, `[!IMPORTANT]`, `[!NOTE]`).
+- `01a`: replaced the two oversized ASCII boxes (JVM memory layout, stack frame) with Mermaid diagrams plus tables; corrected Metaspace, which sits outside the heap in modern JVMs.
+- `05`: fixed a Mermaid parse error in the LSM-tree diagram and added its explanation.
+- Verification: `tools/mermaid-check` renders all 20 diagrams in the folder.
+
+## 2026-10-24 - 02_Data_Structures Encoding, Table and Fence Repair
+
+Formatting-only repair of `02_Data_Structures/` (no teaching content changed):
+
+- `A1`–`A4`: cp1252 em-dash bytes (`0x97`) that broke UTF-8 decoding replaced with `—`; lost `→` in Reality Check bullets (`** ? `) restored.
+- `01a`, `01g`, `04`: flattened code, assembly, bit-trick and memory-layout blocks rebuilt as fenced code; broken `┼───┼` pseudo-tables converted to real Markdown tables; ASCII diagrams (cache line, hash chain, red-black bucket, BST, heap, graph) redrawn.
+- `01c`, `02b`: unbalanced code fences fixed (stray/missing ``` markers).
+- `01f`: AVL row in the tree comparison table fixed (escaped `\|`, header/separator column count).
+- `01g`: lost `#` in the keycap heading restored (`#️⃣`).
+- Verification: all 22 files decode as UTF-8; fences balanced; no unfenced box-drawing characters; every table has a header separator and consistent column counts.
+
 ## 2026-07-26 - 21_SDET_Playwright_Automation Explanation Clarity Review
 
 Added a file-by-file clarity review for the Playwright/SDET module:
