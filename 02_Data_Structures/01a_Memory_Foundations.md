@@ -216,54 +216,39 @@ Let's go DEEP into how computers actually work!
 
 ## THE MEMORY HIERARCHY - Why Some Operations Are Faster
 
+```mermaid
+flowchart TB
+    CPU(["CPU core"]) --> REG["REGISTERS - 64 bytes<br/>~1 cycle, 0.5 ns<br/>variables being computed"]
+    REG --> L1["L1 CACHE - 32 KB per core<br/>~4 cycles, 1 ns<br/>hot data (current loop)"]
+    L1 --> L2["L2 CACHE - 256 KB per core<br/>~12 cycles, 4 ns<br/>recent data"]
+    L2 --> L3["L3 CACHE - 8 MB shared<br/>~40 cycles, 15 ns<br/>shared between cores"]
+    L3 --> RAM["MAIN MEMORY (RAM) - 16 GB<br/>~200 cycles, 100 ns<br/>all your program data"]
+    RAM --> SSD["SSD / DISK - 1 TB<br/>millions of cycles, 100,000 ns<br/>persistent storage"]
+    classDef fast fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef mid fill:#fff3b0,stroke:#b58900,color:#111
+    classDef slow fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef vslow fill:#ffc9c9,stroke:#c62828,color:#111
+    classDef cpu fill:#e0e0e0,stroke:#616161,color:#111
+    class CPU cpu
+    class REG,L1 fast
+    class L2,L3 mid
+    class RAM slow
+    class SSD vslow
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                        MEMORY HIERARCHY (Speed vs Size)                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│                          ┌─────────────┐                                        │
-│                          │  CPU CORE   │                                        │
-│                          └──────┬──────┘                                        │
-│                                 │                                               │
-│    FASTEST    ┌─────────────────▼─────────────────┐                             │
-│    (~1 cycle) │     REGISTERS (64 bytes)          │  ← Variables being computed │
-│               │     Access: 0.5 nanoseconds       │                             │
-│               └─────────────────┬─────────────────┘                             │
-│                                 │                                               │
-│    VERY FAST  ┌─────────────────▼─────────────────┐                             │
-│    (~4 cycles)│     L1 CACHE (32KB per core)      │  ← Hot data (current loop)  │
-│               │     Access: 1 nanosecond          │                             │
-│               └─────────────────┬─────────────────┘                             │
-│                                 │                                               │
-│    FAST       ┌─────────────────▼─────────────────┐                             │
-│   (~12 cycles)│     L2 CACHE (256KB per core)     │  ← Recent data              │
-│               │     Access: 4 nanoseconds         │                             │
-│               └─────────────────┬─────────────────┘                             │
-│                                 │                                               │
-│    MODERATE   ┌─────────────────▼─────────────────┐                             │
-│   (~40 cycles)│     L3 CACHE (8MB shared)         │  ← Shared between cores     │
-│               │     Access: 15 nanoseconds        │                             │
-│               └─────────────────┬─────────────────┘                             │
-│                                 │                                               │
-│    SLOW       ┌─────────────────▼─────────────────┐                             │
-│  (~200 cycles)│     MAIN MEMORY / RAM (16GB)      │  ← All your program data    │
-│               │     Access: 100 nanoseconds       │                             │
-│               └─────────────────┬─────────────────┘                             │
-│                                 │                                               │
-│    VERY SLOW  ┌─────────────────▼─────────────────┐                             │
-│  (~millions)  │     SSD / DISK (1TB)              │  ← Persistent storage       │
-│               │     Access: 100,000 nanoseconds   │                             │
-│               └─────────────────────────────────────┘                           │
-│                                                                                 │
-│  KEY INSIGHT:                                                                   │
-│  ─────────────                                                                  │
-│  RAM is 100x SLOWER than L1 cache!                                              │
-│  Disk is 1000x SLOWER than RAM!                                                 │
-│                                                                                 │
-│  This is why CACHE-FRIENDLY data structures matter so much!                     │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Going down the page, each level is bigger but slower. Green is effectively free, yellow is cheap, orange is expensive and red is catastrophic for a hot loop.
+
+| Level | Typical size | Latency (cycles) | Latency (time) | Speed |
+| ----- | ------------ | ---------------- | -------------- | ----- |
+| Registers | 64 bytes | ~1 | 0.5 ns | Fastest |
+| L1 cache | 32 KB per core | ~4 | 1 ns | Very fast |
+| L2 cache | 256 KB per core | ~12 | 4 ns | Fast |
+| L3 cache | 8 MB shared | ~40 | 15 ns | Moderate |
+| RAM | 16 GB | ~200 | 100 ns | Slow |
+| SSD / disk | 1 TB | millions | 100,000 ns | Very slow |
+
+> [!IMPORTANT]
+> **Key insight:** RAM is ~100× slower than L1 cache, and disk is ~1000× slower than RAM. This is why **cache-friendly** data structures matter so much.
 
 🔬 **Section Challenge — THE MEMORY HIERARCHY - Why Some Operations Are Faster**
 
@@ -285,75 +270,69 @@ Cache miss rate. `int[]` is contiguous in memory — one cache line loads 16 con
 
 ## HOW MEMORY IS ORGANIZED (Addresses & Bytes)
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                         MEMORY ADDRESS SPACE                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  Memory is like a HUGE array of bytes, each with an ADDRESS                     │
-│                                                                                 │
-│  ADDRESS        CONTENT (1 byte = 8 bits)                                       │
-│  ────────────────────────────────────────────                                   │
-│  0x00000000     [01001010]  ← First byte of RAM                                 │
-│  0x00000001     [11010010]                                                      │
-│  0x00000002     [00001111]                                                      │
-│  0x00000003     [10101010]                                                      │
-│  ...                                                                            │
-│  0xFFFFFFFF     [????????]  ← Last byte (in 32-bit system)                      │
-│                                                                                 │
-│                                                                                 │
-│  DATA TYPE SIZES (Java):                                                        │
-│  ───────────────────────                                                        │
-│  byte     = 1 byte  = 8 bits   → Range: -128 to 127                             │
-│  short    = 2 bytes = 16 bits  → Range: -32,768 to 32,767                       │
-│  int      = 4 bytes = 32 bits  → Range: -2.1 billion to 2.1 billion             │
-│  long     = 8 bytes = 64 bits  → Range: ±9.2 quintillion                        │
-│  float    = 4 bytes = 32 bits  → ~7 decimal digits precision                    │
-│  double   = 8 bytes = 64 bits  → ~15 decimal digits precision                   │
-│  char     = 2 bytes = 16 bits  → Unicode character                              │
-│  boolean  = 1 byte* = 8 bits   → true or false                                  │
-│  reference= 4 or 8 bytes       → Points to object in heap                       │
-│                                                                                 │
-│  * JVM may use 1 bit internally but allocates 1 byte                            │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+Memory is like a **huge array of bytes**, each with an **address**.
 
-
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    HOW AN int IS STORED IN MEMORY                               │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  int x = 42;                                                                    │
-│                                                                                 │
-│  Binary of 42:  00000000 00000000 00000000 00101010                             │
-│                 ────────┬────────┬────────┬────────                             │
-│                   Byte 3  Byte 2  Byte 1  Byte 0                                │
-│                                                                                 │
-│  In Memory (Little Endian - Intel/AMD):                                         │
-│  ┌──────────────────────────────────────────────────┐                           │
-│  │ Address  │ 0x1000 │ 0x1001 │ 0x1002 │ 0x1003 │  │                            │
-│  │ Content  │  0x2A  │  0x00  │  0x00  │  0x00  │  │                            │
-│  │          │ (42)   │  (0)   │  (0)   │  (0)   │  │                            │
-│  └──────────────────────────────────────────────────┘                           │
-│              ↑                                                                  │
-│              Least Significant Byte stored FIRST                                │
-│                                                                                 │
-│  In Memory (Big Endian - Network Order):                                        │
-│  ┌──────────────────────────────────────────────────┐                           │
-│  │ Address  │ 0x1000 │ 0x1001 │ 0x1002 │ 0x1003 │  │                            │
-│  │ Content  │  0x00  │  0x00  │  0x00  │  0x2A  │  │                            │
-│  │          │  (0)   │  (0)   │  (0)   │ (42)   │  │                            │
-│  └──────────────────────────────────────────────────┘                           │
-│                                              ↑                                  │
-│              Most Significant Byte stored FIRST                                 │
-│                                                                                 │
-│  WHY DOES THIS MATTER?                                                          │
-│  • Network protocols use Big Endian                                             │
-│  • Your CPU likely uses Little Endian                                           │
-│  • Must convert when sending data over network!                                 │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    A0["0x00000000<br/>01001010<br/>first byte of RAM"] --- A1["0x00000001<br/>11010010"] --- A2["0x00000002<br/>00001111"] --- A3["0x00000003<br/>10101010"] --- AD["..."] --- AL["0xFFFFFFFF<br/>last byte<br/>in a 32-bit system"]
+    classDef b fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef e fill:#e0e0e0,stroke:#616161,color:#111
+    class A0,A1,A2,A3,AL b
+    class AD e
 ```
+
+**How to read this diagram.** Each box is one byte (8 bits). Its address is the label on top. A 32-bit address space therefore covers 2³² bytes (4 GiB).
+
+**Java data type sizes:**
+
+| Type | Size | Bits | Range / meaning |
+| ---- | ---- | ---- | --------------- |
+| `byte` | 1 byte | 8 | −128 to 127 |
+| `short` | 2 bytes | 16 | −32,768 to 32,767 |
+| `int` | 4 bytes | 32 | −2.1 billion to 2.1 billion |
+| `long` | 8 bytes | 64 | ±9.2 quintillion |
+| `float` | 4 bytes | 32 | ~7 decimal digits precision |
+| `double` | 8 bytes | 64 | ~15 decimal digits precision |
+| `char` | 2 bytes | 16 | Unicode character (UTF-16 code unit) |
+| `boolean` | 1 byte* | 8 | `true` or `false` |
+| reference | 4 or 8 bytes | 32 / 64 | Points to an object in the heap |
+
+\* The JVM may use 1 bit internally but allocates 1 byte for a standalone `boolean`.
+
+### How an `int` is stored in memory
+
+```java
+int x = 42;
+```
+
+Binary of 42: `00000000 00000000 00000000 00101010`, that is bytes `0x00 0x00 0x00 0x2A` from the most significant byte (Byte 3) to the least significant byte (Byte 0).
+
+```mermaid
+flowchart TB
+    subgraph LE["Little Endian - Intel / AMD"]
+        direction LR
+        L0["0x1000<br/>0x2A (42)<br/>LSB first"] --- L1["0x1001<br/>0x00"] --- L2["0x1002<br/>0x00"] --- L3["0x1003<br/>0x00"]
+    end
+    subgraph BE["Big Endian - network order"]
+        direction LR
+        B0["0x1000<br/>0x00"] --- B1["0x1001<br/>0x00"] --- B2["0x1002<br/>0x00"] --- B3["0x1003<br/>0x2A (42)<br/>MSB first"]
+    end
+    classDef key fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef zero fill:#e0e0e0,stroke:#616161,color:#111
+    class L0,B3 key
+    class L1,L2,L3,B0,B1,B2 zero
+```
+
+**How to read this diagram.** The same four bytes are stored in opposite orders. In little endian the **least** significant byte (`0x2A`) sits at the lowest address; in big endian the **most** significant byte comes first. The highlighted box is where the non-zero byte lands.
+
+| | Little endian | Big endian |
+| --- | ------------- | ---------- |
+| First byte stored | Least significant | Most significant |
+| Used by | Your CPU (x86, most ARM) | Network protocols ("network byte order") |
+| Address `0x1000` holds | `0x2A` | `0x00` |
+
+> [!WARNING]
+> **Why does this matter?** Network protocols use big endian while your CPU is likely little endian, so you must convert when sending multi-byte values over a network.
 
 ## JAVA MEMORY MODEL - Stack vs Heap
 
@@ -508,34 +487,31 @@ chasing, NO heap traversal, NO cache misses on the index itself.
 
 ### Cache Friendliness — The Real Speed Multiplier
 
+```mermaid
+flowchart LR
+    MISS["arr[0] access<br/>ONE cache miss ~100 ns"] ==> LINE
+    subgraph LINE["One 64-byte cache line loaded into L1"]
+        direction LR
+        c0["0x1000<br/>arr[0] = 10"] --- c1["0x1004<br/>arr[1] = 20"] --- c2["0x1008<br/>arr[2] = 30"] --- c3["0x100C<br/>arr[3] = 40"] --- cd["..."] --- c15["0x103C<br/>arr[15]"]
+    end
+    LINE ==> HIT["arr[1..15] already in L1<br/>~1 ns each, 100x faster than RAM"]
+    classDef miss fill:#ffc9c9,stroke:#c62828,color:#111
+    classDef cell fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef hit fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class MISS miss
+    class c0,c1,c2,c3,c15,cd cell
+    class HIT hit
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                         CACHE LINE LOADING (64 bytes)                           │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  When you access arr[0], the CPU loads a 64-byte cache line into L1:           │
-│                                                                                 │
-│  Address:    0x1000    0x1004    0x1008    0x100C    ...    0x103C            │
-│  Index:       [0]       [1]       [2]       [3]      ...      [15]              │
-│  Value:        10        20        30        40       ...       ...             │
-│  ───────────────────────────────────────────────────────────────────────────    │
-│         ▲                                                                       │
-│         └── ONE cache miss (100 ns) loads arr[0] through arr[15]                │
-│                                                                                 │
-│  Now arr[1], arr[2], ..., arr[15] are already in L1 cache:                      │
-│  Access time: ~1 nanosecond each (100× faster than RAM!)                        │
-│                                                                                 │
-│  For a 1,000,000-element array:                                                 │
-│  • Cache misses: ~62,500  (only every 16th access)                              │
-│  • Cache hits:   ~937,500 (free, effectively zero cost)                         │
-│                                                                                 │
-│  KEY INSIGHT:                                                                   │
-│  ────────                                                                       │
-│  This is why iterating sequentially is ~50-100× faster than random access.     │
-│  The hardware *predicts* your pattern and prefetches future cache lines.        │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Touching `arr[0]` pulls the whole 64-byte line (16 ints) into L1 with a single slow miss (red). The next 15 reads are free hits (green).
+
+| For a 1,000,000-element `int[]` | Count | Cost |
+| ------------------------------- | ----- | ---- |
+| Cache misses | ~62,500 (every 16th access) | ~100 ns each |
+| Cache hits | ~937,500 | effectively free (~1 ns) |
+
+> [!IMPORTANT]
+> **Key insight:** this is why sequential iteration is ~50–100× faster than random access. The hardware *predicts* your pattern and prefetches future cache lines.
 
 **This is why iterating an array is SO FAST:**
 
@@ -552,67 +528,54 @@ for (int i = 0; i < arr.length; i++) {
 
 ## WHY LINKED LISTS ARE SLOW - Memory Layout Explained
 
+```java
+LinkedList<Integer> list;   // [10 → 20 → 30 → 40 → 50]
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                 LINKED LIST MEMORY LAYOUT - THE SLOWNESS SECRET                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  LinkedList<Integer> list; // [10 → 20 → 30 → 40 → 50]                          │
-│                                                                                 │
-│  MEMORY (SCATTERED - nodes all over heap):                                      │
-│                                                                                 │
-│  HEAP:                                                                          │
-│  ┌──────────────────────────────────────────────────────────────────────────┐   │
-│  │                                                                          │   │
-│  │    Address 0x1000:          Address 0x5F00:          Address 0x2A00:    │    │
-│  │    ┌─────────────┐          ┌─────────────┐          ┌─────────────┐    │    │
-│  │    │ Node        │          │ Node        │          │ Node        │    │    │
-│  │    ├─────────────┤          ├─────────────┤          ├─────────────┤    │    │
-│  │    │ value: 10   │          │ value: 20   │          │ value: 30   │    │    │
-│  │    │ next: 0x5F00│─────────►│ next: 0x2A00│─────────►│ next: 0x8B00│──┐ │    │
-│  │    │ prev: null  │◄─────────│ prev: 0x1000│◄─────────│ prev: 0x5F00│  │ │    │
-│  │    └─────────────┘          └─────────────┘          └─────────────┘  │ │    │
-│  │                                                                        │ │   │
-│  │                                                       ┌────────────────┘ │   │
-│  │    Address 0x8B00:          Address 0x3C00:          ▼                   │   │
-│  │    ┌─────────────┐          ┌─────────────┐                             │    │
-│  │    │ Node        │          │ Node        │                             │    │
-│  │    ├─────────────┤          ├─────────────┤                             │    │
-│  │    │ value: 40   │          │ value: 50   │                             │    │
-│  │    │ next: 0x3C00│─────────►│ next: null  │                             │    │
-│  │    │ prev: 0x2A00│◄─────────│ prev: 0x8B00│                             │    │
-│  │    └─────────────┘          └─────────────┘                             │    │
-│  │                                                                          │   │
-│  └──────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                 │
-│  TO ACCESS list.get(3) (value 40):                                              │
-│  ───────────────────────────────────                                            │
-│  1. Start at head: 0x1000 (value 10)     - Cache miss! Load from RAM            │
-│  2. Follow next to: 0x5F00 (value 20)    - Cache miss! Different location       │
-│  3. Follow next to: 0x2A00 (value 30)    - Cache miss! Different location       │
-│  4. Follow next to: 0x8B00 (value 40)    - Cache miss! Found it!                │
-│                                                                                 │
-│  4 memory accesses × 100ns each = 400 nanoseconds!                              │
-│  Compare to array: 1 memory access = 1-100 nanoseconds                          │
-│                                                                                 │
-│                                                                                 │
-│  MEMORY OVERHEAD:                                                               │
-│  ────────────────                                                               │
-│  Array:  5 integers = 20 bytes + 16 bytes header = 36 bytes                     │
-│                                                                                 │
-│  LinkedList: Each node needs:                                                   │
-│  • Object header: 12 bytes                                                      │
-│  • Integer object reference: 4 bytes                                            │
-│  • Next pointer: 8 bytes                                                        │
-│  • Prev pointer: 8 bytes                                                        │
-│  • Integer object: 16 bytes (12 header + 4 value)                               │
-│  Total per node: ~48 bytes                                                      │
-│                                                                                 │
-│  5 nodes = 240 bytes vs 36 bytes for array                                      │
-│  LinkedList uses 6.7x MORE memory!                                              │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+**Memory (scattered: nodes are all over the heap):**
+
+```mermaid
+flowchart LR
+    N1["Node @ 0x1000<br/>value: 10<br/>next: 0x5F00<br/>prev: null"]
+    N2["Node @ 0x5F00<br/>value: 20<br/>next: 0x2A00<br/>prev: 0x1000"]
+    N3["Node @ 0x2A00<br/>value: 30<br/>next: 0x8B00<br/>prev: 0x5F00"]
+    N4["Node @ 0x8B00<br/>value: 40<br/>next: 0x3C00<br/>prev: 0x2A00"]
+    N5["Node @ 0x3C00<br/>value: 50<br/>next: null<br/>prev: 0x8B00"]
+    N1 -- next --> N2 -- next --> N3 -- next --> N4 -- next --> N5
+    N5 -. prev .-> N4 -. prev .-> N3 -. prev .-> N2 -. prev .-> N1
+    classDef hit fill:#ffc9c9,stroke:#c62828,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class N1,N2,N3,N4 hit
+    class N5 node
 ```
+
+**How to read this diagram.** Solid arrows are `next` pointers, dotted arrows are `prev` pointers. The addresses (`0x1000`, `0x5F00`, `0x2A00`, ...) are far apart, so every hop lands on a different cache line. Red nodes are the four visited by `get(3)`.
+
+**To access `list.get(3)` (value 40):**
+
+| Step | Action | Cost |
+| ---- | ------ | ---- |
+| 1 | Start at head `0x1000` (value 10) | Cache miss: load from RAM |
+| 2 | Follow `next` to `0x5F00` (value 20) | Cache miss: different location |
+| 3 | Follow `next` to `0x2A00` (value 30) | Cache miss: different location |
+| 4 | Follow `next` to `0x8B00` (value 40) | Cache miss: found it |
+
+4 memory accesses × 100 ns = **400 ns**, versus 1 access (1–100 ns) for an array.
+
+**Memory overhead** (assuming 8-byte references, no compressed oops):
+
+| Item | Array `int[5]` | `LinkedList<Integer>` (per node) |
+| ---- | -------------- | -------------------------------- |
+| Object header | 16 bytes (once) | 12 bytes |
+| Integer object reference | n/a | 4 bytes |
+| `next` pointer | n/a | 8 bytes |
+| `prev` pointer | n/a | 8 bytes |
+| `Integer` object | n/a (values stored inline) | 16 bytes (12 header + 4 value) |
+| Elements | 5 × 4 = 20 bytes | included above |
+| **Total** | **36 bytes** | **~48 bytes per node, 240 bytes for 5 nodes** |
+
+> [!CAUTION]
+> The `LinkedList` uses about **6.7× more memory** (240 vs 36 bytes) and is slower to traverse.
 
 ## CPU OPERATIONS - What Actually Happens
 
