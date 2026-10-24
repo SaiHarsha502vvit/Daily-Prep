@@ -857,132 +857,144 @@ Tree lookup: O(log n) instead of O(n)!
 
 ## 🔬 3. Linkedlist Deep Internals
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    LINKEDLIST - COMPLETE INTERNAL VIEW                          │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  LinkedList<String> list = new LinkedList<>();                                  │
-│  list.add("A");                                                                 │
-│  list.add("B");                                                                 │
-│  list.add("C");                                                                 │
-│                                                                                 │
-│  MEMORY LAYOUT:                                                                 │
-│                                                                                 │
-│  LinkedList Object:                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │ OFFSET │ SIZE │ FIELD                  │ VALUE                         │     │
-│  ├────────┼──────┼────────────────────────┼───────────────────────────────┤     │
-│  │ 0      │ 8    │ Mark Word              │ 0x00000001                     │    │
-│  │ 8      │ 4    │ Class Pointer          │ → LinkedList.class            │     │
-│  │ 12     │ 4    │ padding                │                                │    │
-│  │ 16     │ 4    │ first (ref)            │ 0x00110000 → Node("A")        │     │
-│  │ 20     │ 4    │ last (ref)             │ 0x00330000 → Node("C")        │     │
-│  │ 24     │ 4    │ size                   │ 3                              │    │
-│  │ 28     │ 4    │ modCount               │ 3                              │    │
-│  └────────┴──────┴────────────────────────┴───────────────────────────────┘     │
-│  TOTAL: 32 bytes                                                                │
-│                                                                                 │
-│                                                                                 │
-│  Node Objects (SCATTERED in heap - not contiguous!):                            │
-│                                                                                 │
-│  Node @ 0x00110000:           Node @ 0x00220000:           Node @ 0x00330000:   │
-│  ┌─────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐│
-│  │ Mark Word   │ 8     │     │ Mark Word   │ 8     │     │ Mark Word   │ 8     ││
-│  │ Class Ptr   │ 4     │     │ Class Ptr   │ 4     │     │ Class Ptr   │ 4     ││
-│  │ padding     │ 4     │     │ padding     │ 4     │     │ padding     │ 4     ││
-│  │ item: "A"   │ 4     │     │ item: "B"   │ 4     │     │ item: "C"   │ 4     ││
-│  │ prev: null  │ 4     │     │ prev: 0x110 │ 4     │     │ prev: 0x220 │ 4     ││
-│  │ next: 0x220 │ 4     │     │ next: 0x330 │ 4     │     │ next: null  │ 4     ││
-│  │ padding     │ 4     │     │ padding     │ 4     │     │ padding     │ 4     ││
-│  └─────────────────────┘     └─────────────────────┘     └─────────────────────┘│
-│  32 bytes each                32 bytes each                32 bytes each        │
-│                                                                                 │
-│                                                                                 │
-│  MEMORY LAYOUT IN HEAP (reality):                                               │
-│  ────────────────────────────────                                               │
-│  ┌──────────────────────────────────────────────────────────────────────────┐   │
-│  │  Address │ Content                                                       │   │
-│  ├──────────┼───────────────────────────────────────────────────────────────┤   │
-│  │ 0x00110  │ [Node A]                                                      │   │
-│  │ 0x00120  │ [Some other object...]                                        │   │
-│  │ 0x00150  │ [Some other object...]                                        │   │
-│  │ 0x00220  │ [Node B]  ← FAR from Node A!                                 │    │
-│  │ 0x00250  │ [Some other object...]                                        │   │
-│  │ 0x00330  │ [Node C]  ← FAR from Node B!                                 │    │
-│  └──────────┴───────────────────────────────────────────────────────────────┘   │
-│                                                                                 │
-│  THIS IS WHY LINKEDLIST HAS POOR CACHE PERFORMANCE!                             │
-│  Each node access is likely a cache miss (~200 cycles penalty)                  │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+### LinkedList — complete internal view
 
-
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    LINKEDLIST.ADD(index, element) - INTERNAL VIEW               │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  list.add(1, "X");  // Insert "X" at index 1                                    │
-│                                                                                 │
-│  BEFORE:                                                                        │
-│                                                                                 │
-│  ┌─────────┐     ┌─────────┐     ┌─────────┐                                    │
-│  │ Node A  │────►│ Node B  │────►│ Node C  │                                    │
-│  │         │◄────│         │◄────│         │                                    │
-│  └─────────┘     └─────────┘     └─────────┘                                    │
-│     first                           last                                        │
-│                                                                                 │
-│                                                                                 │
-│  STEP 1: Find position (O(n) traversal)                                         │
-│  ───────────────────────────────────────                                        │
-│  if (index < size/2) {                                                          │
-│      // Start from HEAD (index 1 < 3/2, so start from head)                     │
-│      Node node = first;                                                         │
-│      for (int i = 0; i < index; i++)                                            │
-│          node = node.next;                                                      │
-│  } else {                                                                       │
-│      // Start from TAIL (optimization for second half)                          │
-│      Node node = last;                                                          │
-│      for (int i = size - 1; i > index; i--)                                     │
-│          node = node.prev;                                                      │
-│  }                                                                              │
-│                                                                                 │
-│                                                                                 │
-│  STEP 2: Create new node and relink (O(1))                                      │
-│  ─────────────────────────────────────────                                      │
-│  Node newNode = new Node("X");   // Allocate 32 bytes on heap                   │
-│  Node succ = node;               // successor = Node B                          │
-│  Node pred = node.prev;          // predecessor = Node A                        │
-│                                                                                 │
-│  // Relink pointers (4 pointer updates)                                         │
-│  newNode.prev = pred;            // X.prev = A                                  │
-│  newNode.next = succ;            // X.next = B                                  │
-│  pred.next = newNode;            // A.next = X                                  │
-│  succ.prev = newNode;            // B.prev = X                                  │
-│                                                                                 │
-│                                                                                 │
-│  AFTER:                                                                         │
-│                                                                                 │
-│  ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐                    │
-│  │ Node A  │────►│ Node X  │────►│ Node B  │────►│ Node C  │                    │
-│  │         │◄────│  (NEW)  │◄────│         │◄────│         │                    │
-│  └─────────┘     └─────────┘     └─────────┘     └─────────┘                    │
-│     first                                           last                        │
-│                                                                                 │
-│                                                                                 │
-│  ASSEMBLY FOR POINTER UPDATE:                                                   │
-│  ─────────────────────────────                                                  │
-│  ; pred.next = newNode                                                          │
-│  mov    [rax+0x18], rcx      ; Store newNode reference in pred.next             │
-│                                                                                 │
-│  ; succ.prev = newNode                                                          │
-│  mov    [rbx+0x14], rcx      ; Store newNode reference in succ.prev             │
-│                                                                                 │
-│  Each pointer update: 1 CPU cycle (just a memory store)                         │
-│  But finding the position: O(n) memory accesses with cache misses!              │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```java
+LinkedList<String> list = new LinkedList<>();
+list.add("A");
+list.add("B");
+list.add("C");
 ```
+
+**`LinkedList` object:**
+
+| OFFSET | SIZE | FIELD | VALUE |
+| ------ | ---- | ----- | ----- |
+| 0 | 8 | Mark Word | 0x00000001 |
+| 8 | 4 | Class Pointer | → LinkedList.class |
+| 12 | 4 | padding | |
+| 16 | 4 | first (ref) | 0x00110000 → Node("A") |
+| 20 | 4 | last (ref) | 0x00330000 → Node("C") |
+| 24 | 4 | size | 3 |
+| 28 | 4 | modCount | 3 |
+
+**Total**: 32 bytes.
+
+**Node objects (scattered in the heap, not contiguous!):**
+
+```mermaid
+flowchart LR
+    LL["LinkedList object<br/>first: 0x00110000<br/>last: 0x00330000"]
+    NA["Node @ 0x00110000<br/>Mark Word 8 B<br/>Class Ptr 4 B<br/>padding 4 B<br/>item: A 4 B<br/>prev: null 4 B<br/>next: 0x220 4 B<br/>padding 4 B<br/>= 32 bytes"]
+    NB["Node @ 0x00220000<br/>Mark Word 8 B<br/>Class Ptr 4 B<br/>padding 4 B<br/>item: B 4 B<br/>prev: 0x110 4 B<br/>next: 0x330 4 B<br/>padding 4 B<br/>= 32 bytes"]
+    NC["Node @ 0x00330000<br/>Mark Word 8 B<br/>Class Ptr 4 B<br/>padding 4 B<br/>item: C 4 B<br/>prev: 0x220 4 B<br/>next: null 4 B<br/>padding 4 B<br/>= 32 bytes"]
+    LL -- first --> NA
+    LL -- last --> NC
+    NA -- next --> NB -- next --> NC
+    NC -. prev .-> NB -. prev .-> NA
+    classDef obj fill:#e1d5f7,stroke:#6a1b9a,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class LL obj
+    class NA,NB,NC node
+```
+
+**How to read this diagram.** The `LinkedList` object (purple) only stores `first`, `last` and `size`. Each node (blue) is a separate 32-byte heap object with `prev` and `next` references. Solid arrows are `next`, dotted arrows are `prev`.
+
+**Memory layout in the heap (reality):**
+
+| Address | Content |
+| ------- | ------- |
+| 0x00110 | [Node A] |
+| 0x00120 | [Some other object...] |
+| 0x00150 | [Some other object...] |
+| 0x00220 | [Node B] ← FAR from Node A! |
+| 0x00250 | [Some other object...] |
+| 0x00330 | [Node C] ← FAR from Node B! |
+
+> [!CAUTION]
+> **This is why LinkedList has poor cache performance.** Each node access is likely a cache miss (~200 cycles penalty).
+
+### LinkedList.add(index, element) — internal view
+
+```java
+list.add(1, "X");   // Insert "X" at index 1
+```
+
+**Before:**
+
+```mermaid
+flowchart LR
+    F(["first"]) --> A1["Node A"]
+    A1 -- next --> B1["Node B"] -- next --> C1["Node C"]
+    C1 -. prev .-> B1 -. prev .-> A1
+    L(["last"]) --> C1
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ptr fill:#fff3b0,stroke:#b58900,color:#111
+    class A1,B1,C1 node
+    class F,L ptr
+```
+
+**How to read this diagram.** Before the insert, `A`, `B` and `C` are linked in both directions; `first` and `last` point to the two ends.
+
+**Step 1: find the position (O(n) traversal)**
+
+```java
+if (index < size/2) {
+    // Start from HEAD (index 1 < 3/2, so start from head)
+    Node node = first;
+    for (int i = 0; i < index; i++)
+        node = node.next;
+} else {
+    // Start from TAIL (optimization for the second half)
+    Node node = last;
+    for (int i = size - 1; i > index; i--)
+        node = node.prev;
+}
+```
+
+**Step 2: create the new node and relink (O(1))**
+
+```java
+Node newNode = new Node("X");   // Allocate 32 bytes on heap
+Node succ = node;               // successor = Node B
+Node pred = node.prev;          // predecessor = Node A
+
+// Relink pointers (4 pointer updates)
+newNode.prev = pred;            // X.prev = A
+newNode.next = succ;            // X.next = B
+pred.next = newNode;            // A.next = X
+succ.prev = newNode;            // B.prev = X
+```
+
+**After:**
+
+```mermaid
+flowchart LR
+    F2(["first"]) --> A2["Node A"]
+    A2 -- next --> X2["Node X (NEW)"] -- next --> B2["Node B"] -- next --> C2["Node C"]
+    C2 -. prev .-> B2 -. prev .-> X2 -. prev .-> A2
+    L2(["last"]) --> C2
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef new fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef ptr fill:#fff3b0,stroke:#b58900,color:#111
+    class A2,B2,C2 node
+    class X2 new
+    class F2,L2 ptr
+```
+
+**How to read these diagrams.** Solid arrows are `next`, dotted arrows are `prev`. Inserting `X` (green) only rewrites four pointers; no existing node moves.
+
+**Assembly for the pointer update:**
+
+```asm
+; pred.next = newNode
+mov  [rax+0x18], rcx    ; Store newNode reference in pred.next
+
+; succ.prev = newNode
+mov  [rbx+0x14], rcx    ; Store newNode reference in succ.prev
+```
+
+Each pointer update costs 1 CPU cycle (just a memory store), but **finding the position** is O(n) memory accesses with cache misses.
 
 ## 📚 4. Stack Deep Internals
 
@@ -1382,97 +1394,76 @@ If you mark visited after polling: multiple nodes can enqueue the SAME neighbor 
 
 # 🔬 PART 10B: JAVA COLLECTIONS FRAMEWORK - INTERNAL ARCHITECTURE
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    JAVA COLLECTIONS HIERARCHY - COMPLETE VIEW                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│                              Iterable<E>                                        │
-│                                  │                                              │
-│                             Collection<E>                                       │
-│                    ┌────────────┼────────────┐                                  │
-│                    │            │            │                                  │
-│                 List<E>      Set<E>      Queue<E>                               │
-│                    │            │            │                                  │
-│        ┌──────────┬┴─────┐     │      ┌─────┴─────┐                             │
-│        │          │      │     │      │           │                             │
-│   ArrayList  LinkedList  │  ┌──┴──┐   │       Deque<E>                          │
-│                    Vector │  │     │  │           │                             │
-│                          │ HashSet  TreeSet      │                              │
-│                          │  │       │     PriorityQueue                         │
-│                          │  │  LinkedHashSet   ArrayDeque                       │
-│                          │  │                                                   │
-│                          │  └─────────────────────┐                             │
-│                          │                        │                             │
-│                        Map<K,V>           SortedSet<E>                          │
-│                    ┌─────┴─────┐           (TreeSet)                            │
-│                    │           │                                                │
-│                HashMap    TreeMap                                               │
-│                    │                                                            │
-│              LinkedHashMap                                                      │
-│                                                                                 │
-│                                                                                 │
-│  THREAD-SAFE VERSIONS (java.util.concurrent):                                   │
-│  ─────────────────────────────────────────────                                  │
-│  • ConcurrentHashMap    - Lock-free reads, segment locks for writes             │
-│  • CopyOnWriteArrayList - Copy on write, great for read-heavy                   │
-│  • ConcurrentLinkedQueue - Lock-free queue using CAS operations                 │
-│  • BlockingQueue        - Thread coordination (producer-consumer)               │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+### Java Collections hierarchy — complete view
 
-
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│               WHEN TO USE WHICH COLLECTION - DECISION TREE                      │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  START HERE: What do you need?                                                  │
-│              │                                                                  │
-│              ├─── Key-Value pairs?                                              │
-│              │         │                                                        │
-│              │         ├─── Need sorted keys? ──────► TreeMap                   │
-│              │         │                                                        │
-│              │         ├─── Need insertion order? ──► LinkedHashMap             │
-│              │         │                                                        │
-│              │         ├─── Need thread-safety? ────► ConcurrentHashMap         │
-│              │         │                                                        │
-│              │         └─── Just fast lookup? ──────► HashMap                   │
-│              │                                                                  │
-│              ├─── Unique elements only?                                         │
-│              │         │                                                        │
-│              │         ├─── Need sorted? ───────────► TreeSet                   │
-│              │         │                                                        │
-│              │         ├─── Need insertion order? ──► LinkedHashSet             │
-│              │         │                                                        │
-│              │         └─── Just uniqueness? ───────► HashSet                   │
-│              │                                                                  │
-│              ├─── Ordered sequence with duplicates?                             │
-│              │         │                                                        │
-│              │         ├─── Frequent random access? ─► ArrayList                │
-│              │         │                                                        │
-│              │         ├─── Frequent insert/delete                              │
-│              │         │    at both ends? ──────────► LinkedList                │
-│              │         │                                                        │
-│              │         └─── Thread-safe needed? ────► CopyOnWriteArrayList      │
-│              │                                                                  │
-│              ├─── LIFO (Stack behavior)?                                        │
-│              │         │                                                        │
-│              │         └─── Use ArrayDeque as stack                             │
-│              │                                                                  │
-│              ├─── FIFO (Queue behavior)?                                        │
-│              │         │                                                        │
-│              │         ├─── Need priority? ─────────► PriorityQueue             │
-│              │         │                                                        │
-│              │         ├─── Thread coordination? ───► BlockingQueue             │
-│              │         │                                                        │
-│              │         └─── Simple queue? ──────────► ArrayDeque                │
-│              │                                                                  │
-│              └─── Double-ended operations?                                      │
-│                        │                                                        │
-│                        └─── Use ArrayDeque (Deque)                              │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    IT["Iterable&lt;E&gt;"] --> CO["Collection&lt;E&gt;"]
+    CO --> LI["List&lt;E&gt;"]
+    CO --> SE["Set&lt;E&gt;"]
+    CO --> QU["Queue&lt;E&gt;"]
+    LI --> AL["ArrayList"]
+    LI --> LL["LinkedList"]
+    LI --> VE["Vector"]
+    SE --> HS["HashSet"]
+    SE --> SS["SortedSet&lt;E&gt;"]
+    HS --> LHS["LinkedHashSet"]
+    SS --> TS["TreeSet"]
+    QU --> PQ["PriorityQueue"]
+    QU --> DQ["Deque&lt;E&gt;"]
+    DQ --> AD["ArrayDeque"]
+    DQ --> LL
+    MP["Map&lt;K,V&gt;"] --> HM["HashMap"]
+    MP --> TM["TreeMap"]
+    HM --> LHM["LinkedHashMap"]
+    classDef iface fill:#e1d5f7,stroke:#6a1b9a,color:#111
+    classDef cls fill:#cfe8ff,stroke:#1565c0,color:#111
+    class IT,CO,LI,SE,QU,SS,DQ,MP iface
+    class AL,LL,VE,HS,LHS,TS,PQ,AD,HM,TM,LHM cls
 ```
+
+**How to read this diagram.** Purple boxes are interfaces, blue boxes are concrete classes. `Map` sits outside the `Collection` tree. `LinkedList` implements both `List` and `Deque`, which is why it has two arrows into it.
+
+**Thread-safe versions (`java.util.concurrent`):**
+
+| Class | Behaviour |
+| ----- | --------- |
+| `ConcurrentHashMap` | Lock-free reads, fine-grained locking for writes |
+| `CopyOnWriteArrayList` | Copy on write; great for read-heavy workloads |
+| `ConcurrentLinkedQueue` | Lock-free queue using CAS operations |
+| `BlockingQueue` | Thread coordination (producer-consumer) |
+
+### When to use which collection — decision tree
+
+```mermaid
+flowchart TD
+    S{"START HERE:<br/>what do you need?"}
+    S --> KV{"Key-value pairs?"}
+    S --> UN{"Unique elements only?"}
+    S --> SQ{"Ordered sequence<br/>with duplicates?"}
+    S --> LF["LIFO (stack)"] --> AD1["Use ArrayDeque as a stack"]
+    S --> FF{"FIFO (queue)?"}
+    S --> DE["Double-ended operations"] --> AD2["Use ArrayDeque (Deque)"]
+    KV -- "sorted keys" --> TM["TreeMap"]
+    KV -- "insertion order" --> LHM["LinkedHashMap"]
+    KV -- "thread-safety" --> CHM["ConcurrentHashMap"]
+    KV -- "just fast lookup" --> HM["HashMap"]
+    UN -- sorted --> TS["TreeSet"]
+    UN -- "insertion order" --> LHS["LinkedHashSet"]
+    UN -- "just uniqueness" --> HS["HashSet"]
+    SQ -- "frequent random access" --> AL["ArrayList"]
+    SQ -- "frequent insert/delete at both ends" --> LL["LinkedList"]
+    SQ -- "thread-safe needed" --> COW["CopyOnWriteArrayList"]
+    FF -- "need priority" --> PQ["PriorityQueue"]
+    FF -- "thread coordination" --> BQ["BlockingQueue"]
+    FF -- "simple queue" --> AD3["ArrayDeque"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef pick fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class S,KV,UN,SQ,FF ask
+    class TM,LHM,CHM,HM,TS,LHS,HS,AL,LL,COW,PQ,BQ,AD1,AD2,AD3 pick
+```
+
+**How to read this diagram.** Start at the blue question, follow the edge that matches your requirement, and stop at the green collection.
 
 ---
 
@@ -1536,104 +1527,79 @@ Based on the internals above, here is a constraint-first decision matrix for cho
 
 # 🔬 PART 10C: PERFORMANCE COMPARISON - ALL DATA STRUCTURES
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    COMPLETE TIME COMPLEXITY COMPARISON                          │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ┌────────────────┬────────┬────────┬────────┬────────┬────────┬──────────┐     │
-│  │ Data Structure │ Access │ Search │ Insert │ Delete │ Space  │ Notes    │     │
-│  ├────────────────┼────────┼────────┼────────┼────────┼────────┼──────────┤     │
-│  │ Array          │ O(1)   │ O(n)   │ O(n)   │ O(n)   │ O(n)   │ Fixed sz │     │
-│  │ ArrayList      │ O(1)   │ O(n)   │ O(1)*  │ O(n)   │ O(n)   │ Dynamic  │     │
-│  │ LinkedList     │ O(n)   │ O(n)   │ O(1)†  │ O(1)†  │ O(n)   │ Pointers │     │
-│  │ Stack          │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)   │ LIFO     │     │
-│  │ Queue          │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)   │ FIFO     │     │
-│  │ HashSet        │ -      │ O(1)   │ O(1)   │ O(1)   │ O(n)   │ No order │     │
-│  │ TreeSet        │ -      │O(logn) │O(logn) │O(logn) │ O(n)   │ Sorted   │     │
-│  │ HashMap        │ -      │ O(1)   │ O(1)   │ O(1)   │ O(n)   │ No order │     │
-│  │ TreeMap        │ -      │O(logn) │O(logn) │O(logn) │ O(n)   │ Sorted   │     │
-│  │ LinkedHashMap  │ -      │ O(1)   │ O(1)   │ O(1)   │ O(n)   │ Ins ordr │     │
-│  │ Heap/PQ        │ -      │ O(n)   │O(logn) │O(logn) │ O(n)   │ Priority │     │
-│  │ BST (balanced) │ -      │O(logn) │O(logn) │O(logn) │ O(n)   │ Sorted   │     │
-│  │ BST (unbal)    │ -      │ O(n)   │ O(n)   │ O(n)   │ O(n)   │ Avoid!   │     │
-│  │ Trie           │ -      │ O(m)   │ O(m)   │ O(m)   │ O(n×m) │ Strings  │     │
-│  │ Graph (Adj L)  │ -      │O(V+E)  │ O(1)   │O(E/V)  │O(V+E)  │ Sparse   │     │
-│  │ Graph (Adj M)  │ -      │ O(1)   │ O(1)   │ O(1)   │O(V²)   │ Dense    │     │
-│  └────────────────┴────────┴────────┴────────┴────────┴────────┴──────────┘     │
-│                                                                                 │
-│  * Amortized O(1), worst case O(n) during resize                                │
-│  † O(1) if position known, O(n) to find position                                │
-│  m = length of string (for Trie)                                                │
-│  V = vertices, E = edges (for Graph)                                            │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+### Complete time-complexity comparison
 
+| Data Structure | Access | Search | Insert | Delete | Space | Notes |
+| -------------- | ------ | ------ | ------ | ------ | ----- | ----- |
+| Array | O(1) | O(n) | O(n) | O(n) | O(n) | Fixed size |
+| ArrayList | O(1) | O(n) | O(1)* | O(n) | O(n) | Dynamic |
+| LinkedList | O(n) | O(n) | O(1)† | O(1)† | O(n) | Pointers |
+| Stack | O(n) | O(n) | O(1) | O(1) | O(n) | LIFO |
+| Queue | O(n) | O(n) | O(1) | O(1) | O(n) | FIFO |
+| HashSet | - | O(1) | O(1) | O(1) | O(n) | No order |
+| TreeSet | - | O(log n) | O(log n) | O(log n) | O(n) | Sorted |
+| HashMap | - | O(1) | O(1) | O(1) | O(n) | No order |
+| TreeMap | - | O(log n) | O(log n) | O(log n) | O(n) | Sorted |
+| LinkedHashMap | - | O(1) | O(1) | O(1) | O(n) | Insertion order |
+| Heap / PQ | - | O(n) | O(log n) | O(log n) | O(n) | Priority |
+| BST (balanced) | - | O(log n) | O(log n) | O(log n) | O(n) | Sorted |
+| BST (unbalanced) | - | O(n) | O(n) | O(n) | O(n) | Avoid! |
+| Trie | - | O(m) | O(m) | O(m) | O(n×m) | Strings |
+| Graph (adjacency list) | - | O(V+E) | O(1) | O(E/V) | O(V+E) | Sparse |
+| Graph (adjacency matrix) | - | O(1) | O(1) | O(1) | O(V²) | Dense |
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    MEMORY OVERHEAD COMPARISON                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  Storing 1,000,000 integers:                                                    │
-│                                                                                 │
-│  ┌────────────────────┬─────────────┬─────────────────────────────────────┐     │
-│  │ Data Structure     │ Memory      │ Overhead Explanation                │     │
-│  ├────────────────────┼─────────────┼─────────────────────────────────────┤     │
-│  │ int[]              │ ~4 MB       │ 4 bytes × 1M + 16 header            │     │
-│  │ Integer[]          │ ~20 MB      │ 16 bytes × 1M + references          │     │
-│  │ ArrayList<Integer> │ ~24 MB      │ Integer objects + ArrayList overhead│     │
-│  │ LinkedList<Integer>│ ~48 MB      │ Node(24) + Integer(16) per element  │     │
-│  │ HashSet<Integer>   │ ~52 MB      │ Entry overhead + Integer objects    │     │
-│  │ TreeSet<Integer>   │ ~56 MB      │ TreeNode + Integer objects          │     │
-│  └────────────────────┴─────────────┴─────────────────────────────────────┘     │
-│                                                                                 │
-│  KEY INSIGHT:                                                                   │
-│  • Primitive arrays are 5-14x more memory efficient!                            │
-│  • Use primitive arrays when possible for large datasets                        │
-│  • Consider libraries like Trove or Eclipse Collections for primitive support   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+\* Amortized O(1), worst case O(n) during resize.
+† O(1) if the position is known, O(n) to find the position.
+`m` = length of the string (for Trie); `V` = vertices, `E` = edges (for Graph).
 
+### Memory overhead comparison — storing 1,000,000 integers
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    REAL-WORLD BENCHMARK (nanoseconds)                           │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  Test: 100,000 elements, JDK 17, Intel i7-10700 @ 3.8GHz                        │
-│                                                                                 │
-│  ADD OPERATIONS:                                                                │
-│  ┌────────────────┬───────────┬────────────────────────────────────────────┐    │
-│  │ Collection     │ Time (ns) │ Visualization                              │    │
-│  ├────────────────┼───────────┼────────────────────────────────────────────┤    │
-│  │ ArrayList.add  │ 8         │ ██                                         │    │
-│  │ LinkedList.add │ 15        │ ████                                       │    │
-│  │ HashSet.add    │ 25        │ ██████                                     │    │
-│  │ TreeSet.add    │ 150       │ █████████████████████████████████████      │    │
-│  └────────────────┴───────────┴────────────────────────────────────────────┘    │
-│                                                                                 │
-│  GET/CONTAINS OPERATIONS:                                                       │
-│  ┌────────────────┬───────────┬────────────────────────────────────────────┐    │
-│  │ Collection     │ Time (ns) │ Visualization                              │    │
-│  ├────────────────┼───────────┼────────────────────────────────────────────┤    │
-│  │ ArrayList.get  │ 5         │ █                                          │    │
-│  │ LinkedList.get │ 25000     │ (off the chart - 5000x slower!)            │    │
-│  │ HashSet.contain│ 12        │ ███                                        │    │
-│  │ TreeSet.contain│ 80        │ ████████████████████                       │    │
-│  └────────────────┴───────────┴────────────────────────────────────────────┘    │
-│                                                                                 │
-│  ITERATION OVER ALL ELEMENTS:                                                   │
-│  ┌────────────────┬───────────┬────────────────────────────────────────────┐    │
-│  │ Collection     │ Time (ms) │ Notes                                      │    │
-│  ├────────────────┼───────────┼────────────────────────────────────────────┤    │
-│  │ int[]          │ 0.3       │ Best cache locality                        │    │
-│  │ ArrayList      │ 0.8       │ Good cache locality                        │    │
-│  │ LinkedList     │ 12.0      │ Poor cache locality (40x slower!)          │    │
-│  │ HashSet        │ 3.2       │ Moderate - must traverse buckets           │    │
-│  │ TreeSet        │ 2.5       │ In-order traversal                         │    │
-│  └────────────────┴───────────┴────────────────────────────────────────────┘    │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+| Data Structure | Memory | Overhead explanation |
+| -------------- | ------ | -------------------- |
+| `int[]` | ~4 MB | 4 bytes × 1M + 16 header |
+| `Integer[]` | ~20 MB | 16 bytes × 1M + references |
+| `ArrayList<Integer>` | ~24 MB | Integer objects + ArrayList overhead |
+| `LinkedList<Integer>` | ~48 MB | Node (24) + Integer (16) per element |
+| `HashSet<Integer>` | ~52 MB | Entry overhead + Integer objects |
+| `TreeSet<Integer>` | ~56 MB | TreeNode + Integer objects |
+
+> [!IMPORTANT]
+> **Key insight:**
+> - Primitive arrays are 5–14× more memory efficient.
+> - Use primitive arrays when possible for large datasets.
+> - Consider libraries like Trove or Eclipse Collections for primitive support.
+
+### Real-world benchmark
+
+Test setup: 100,000 elements, JDK 17, Intel i7-10700 @ 3.8 GHz (illustrative numbers).
+
+**Add operations:**
+
+| Collection | Time (ns) | Visualization |
+| ---------- | --------- | ------------- |
+| `ArrayList.add` | 8 | ██ |
+| `LinkedList.add` | 15 | ████ |
+| `HashSet.add` | 25 | ██████ |
+| `TreeSet.add` | 150 | ██████████████████████████████████████ |
+
+**Get / contains operations:**
+
+| Collection | Time (ns) | Visualization |
+| ---------- | --------- | ------------- |
+| `ArrayList.get` | 5 | █ |
+| `LinkedList.get` | 25000 | off the chart (5000× slower!) |
+| `HashSet.contains` | 12 | ███ |
+| `TreeSet.contains` | 80 | ████████████████████ |
+
+**Iteration over all elements:**
+
+| Collection | Time (ms) | Notes |
+| ---------- | --------- | ----- |
+| `int[]` | 0.3 | Best cache locality |
+| `ArrayList` | 0.8 | Good cache locality |
+| `LinkedList` | 12.0 | Poor cache locality (40× slower!) |
+| `HashSet` | 3.2 | Moderate: must traverse buckets |
+| `TreeSet` | 2.5 | In-order traversal |
 
 ---
 
