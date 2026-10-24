@@ -995,15 +995,18 @@ flowchart LR
     subgraph "Virtual Thread (VT1) Execution"
         SYNC["Enters: synchronized(obj)"]
         IO["Executes: Network I/O (Wait)"]
+    end
 
     subgraph "JVM Carrier Thread (OS Thread)"
         MOUNT["VT1 Mounted"]
         PINNED["Carrier Pinned!\nCannot unmount VT1"]
+    end
 
     subgraph "Other Virtual Threads"
         VT2["VT2: Ready"]
         VT3["VT3: Ready"]
         STARVE["Starvation\n(Waiting for Carrier)"]
+    end
 
     MOUNT --> SYNC
     SYNC --> IO

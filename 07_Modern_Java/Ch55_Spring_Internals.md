@@ -959,19 +959,21 @@ flowchart TD
         EXT["External Class"]
         PROXY1["CGLIB Proxy<br/>(Starts Transaction)"]
         REAL1["Real Target Bean<br/>placeOrder()"]
+    end
 
-        EXT -->|proxy.placeOrder()| PROXY1
-        PROXY1 -->|super.placeOrder()| REAL1
+        EXT -->|"proxy.placeOrder()"| PROXY1
+        PROXY1 -->|"super.placeOrder()"| REAL1
 
     subgraph FAILURE ["Self-Invocation (FAILURE)"]
         EXT2["External Class"]
         PROXY2["CGLIB Proxy<br/>(No TX on batchProcess)"]
         REAL2["Real Target Bean<br/>batchProcess()"]
         REAL3["Real Target Bean<br/>placeOrder()"]
+    end
 
-        EXT2 -->|proxy.batchProcess()| PROXY2
-        PROXY2 -->|super.batchProcess()| REAL2
-        REAL2 -->|this.placeOrder()<br/>BYPASSES PROXY| REAL3
+        EXT2 -->|"proxy.batchProcess()"| PROXY2
+        PROXY2 -->|"super.batchProcess()"| REAL2
+        REAL2 -->|"this.placeOrder()<br/>BYPASSES PROXY"| REAL3
 
 ```
 
@@ -1107,6 +1109,7 @@ flowchart TD
     subgraph T1_GROUP ["OS Thread 1 (Handling Request A)"]
         T1["ThreadLocal Map"]
         CONN_A["Connection-A<br/>(AutoCommit=false)"]
+    end
 
         T1 -->|Binds| CONN_A
 
@@ -1121,6 +1124,7 @@ flowchart TD
     subgraph T2_GROUP ["OS Thread 2 (Handling Request B)"]
         T2["ThreadLocal Map"]
         CONN_B["Connection-B<br/>(AutoCommit=false)"]
+    end
 
         T2 -->|Binds| CONN_B
 

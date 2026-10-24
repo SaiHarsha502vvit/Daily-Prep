@@ -559,17 +559,17 @@ Instead of copying `clients/` and `pages/` into 5 different repositories, enterp
 graph TD
     subgraph "Monorepo (packages/)"
         subgraph "Shared Libraries"
-            CORE[core-test-utils<br/>(db, auth, reporters)]
-            API[shared-api-clients<br/>(axios, payloads)]
-            POM[shared-poms<br/>(login, navigation)]
-        end
-
-        subgraph "Test Projects"
-            CRM[CRM Tests<br/>(playwright.config.ts)]
-            BILL[Billing Tests<br/>(playwright.config.ts)]
-            CUST[Customer Portal Tests<br/>(playwright.config.ts)]
+            CORE["core-test-utils<br/>(db, auth, reporters)"]
+            API["shared-api-clients<br/>(axios, payloads)"]
+            POM["shared-poms<br/>(login, navigation)"]
         end
     end
+
+        subgraph "Test Projects"
+            CRM["CRM Tests<br/>(playwright.config.ts)"]
+            BILL["Billing Tests<br/>(playwright.config.ts)"]
+            CUST["Customer Portal Tests<br/>(playwright.config.ts)"]
+        end
 
     CRM --> CORE
     CRM --> API

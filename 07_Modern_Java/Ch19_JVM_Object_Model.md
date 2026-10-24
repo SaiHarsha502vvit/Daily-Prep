@@ -870,15 +870,18 @@ flowchart TD
     %% Compressed OOPs Physics
     subgraph "64-bit Hardware RAM Address Space"
     RAM_ADDR["Physical 64-bit Address: 0x0000000800000008\n(Binary ending in ...1000)"]
+    end
 
     subgraph "JVM Heap (< 32GB)"
     COMPRESS["Bit-Shift Right (>> 3)\nTruncates last 3 zero bits"]
     STORE["Store as 32-bit compressed OOP\n(Saves 50% Memory footprint)"]
+    end
 
     subgraph "CPU Execution Pipeline"
     FETCH["Fetch 32-bit pointer from L1 Cache"]
     DECOMPRESS["Bit-Shift Left (<< 3)\nAdds 3 zero bits back"]
     RESOLVE["Reconstruct 64-bit Physical Address"]
+    end
 
     RAM_ADDR --> COMPRESS
     COMPRESS --> STORE
@@ -926,21 +929,25 @@ flowchart LR
     subgraph "Intel CPU Cores"
         Core1["Core 1\nExecutes: t1Count++"]
         Core2["Core 2\nExecutes: t2Count++"]
+    end
 
     subgraph "L1 Caches (MESI Protocol)"
         L1_1["L1 Cache (Core 1)\n[ t1Count | t2Count ]"]
         L1_2["L1 Cache (Core 2)\n[ t1Count | t2Count ]"]
+    end
 
     subgraph "Physical Motherboard Bus"
         MESI_BROADCAST["MESI Invalidate Broadcast\n'Core 1 modified line! Core 2 must flush!'"]
+    end
 
     subgraph "Main Memory (RAM)"
         RAM["Physical 64-byte Cache Line\n[ t1Count (8 bytes) | t2Count (8 bytes) ]"]
+    end
 
     Core1 -->|Modifies| L1_1
     L1_1 -->|Triggers| MESI_BROADCAST
     MESI_BROADCAST -->|Invalidates| L1_2
-    Core2 -.->|Cache Miss Stall (100 cycles)| RAM
+    Core2 -.->|"Cache Miss Stall (100 cycles)"| RAM
     RAM -.->|Fetch full line| L1_2
 
 ```

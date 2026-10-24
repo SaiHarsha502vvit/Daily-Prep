@@ -528,7 +528,7 @@ To fix this, React engineers wrote **Fiber**. Fiber is a complete rewrite of Rea
 
 ```mermaid
 flowchart TD
-    subgraph Browser Main Thread (Shared Physical Core)
+    subgraph "Browser Main Thread (Shared Physical Core)"
         REACT[React WorkLoop]
         PAINT[Browser C++ Paint/Layout]
         INPUT[User Click Events]
@@ -540,7 +540,7 @@ flowchart TD
     PAINT -->|Resume| REACT
     INPUT -->|Resume| REACT
 
-    subgraph Heap Memory (The Fiber Tree)
+    subgraph "Heap Memory (The Fiber Tree)"
         F_APP[App Fiber] -->|child| F_HEAD[Header Fiber]
         F_HEAD -->|sibling| F_MAIN[Main Fiber]
         F_MAIN -->|child| F_BTN[Button Fiber]

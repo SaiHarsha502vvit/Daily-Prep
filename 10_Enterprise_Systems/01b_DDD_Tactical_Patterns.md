@@ -544,33 +544,31 @@ You physically segregate the Write Model (The Command) from the Read Model (The 
 flowchart TD
     UI[Client Application]
 
-    subgraph Command Side (Writes)
+    subgraph CMD_SIDE["Command Side (Writes)"]
         CMD_API[Command API]
         ES[(Event Store / Append Only)]
         CMD_API -->|1. Validate & Append Event| ES
     end
 
-    subgraph Event Bus
+    subgraph BUS["Event Bus"]
         KAFKA[Kafka Cluster]
-        ES -.->|2. Publish Event| KAFKA
     end
 
-    subgraph Query Side (Reads)
+    subgraph QRY_SIDE["Query Side (Reads)"]
         PROJ1[Postgres Projector]
         PROJ2[Elastic Projector]
         DB_PG[(Relational Read DB)]
         DB_ES[(Search Read DB)]
-
-        KAFKA -->|3. Consume| PROJ1
-        KAFKA -->|3. Consume| PROJ2
+        QRY_API[Query API]
         PROJ1 -->|4. SQL Update| DB_PG
         PROJ2 -->|4. Index Docs| DB_ES
-
-        QRY_API[Query API]
         QRY_API -->|Fast Select| DB_PG
         QRY_API -->|Fast Search| DB_ES
     end
 
+    ES -.->|2. Publish Event| KAFKA
+    KAFKA -->|3. Consume| PROJ1
+    KAFKA -->|3. Consume| PROJ2
     UI -->|POST /withdraw| CMD_API
     UI -->|GET /balance| QRY_API
 ```

@@ -892,13 +892,16 @@ flowchart TD
         T1["Thread 1\nRunning Loop"]
         T2["Thread 2\nExecuting I/O"]
         T3["Thread 3\nNative Code"]
+    end
 
     subgraph "JIT Injected Polling Pages"
         P1{"Poll global SafePoint flag\n(Is it true?)"}
+    end
 
     subgraph "JVM OS Operations"
         STW["Global SafePoint Flag = TRUE"]
         PARK["Voluntarily Park Thread\n(Dump Registers)"]
+    end
 
     STW -.->|Signals| P1
     T1 -->|Loop Back-edge| P1
@@ -935,18 +938,21 @@ flowchart LR
     %% ZGC Load Barrier Physics
     subgraph "Application Execution"
         APP["Thread: Object obj = person.address;"]
+    end
 
     subgraph "JIT Load Barrier (Injected Assembly)"
         CHECK{"Check Pointer 'Color' Bits"}
         HEAL["Stall Thread (ns)\nRemap Pointer to New Memory"]
         PASS["Return Valid Pointer"]
+    end
 
     subgraph "ZGC Concurrent Threads"
         EVAC["Moving Objects in Background\n(Marking Pointers as 'Bad')"]
+    end
 
     APP --> CHECK
     EVAC -.->|Invalidates Color| CHECK
-    CHECK -->|Color is Bad (Moved)| HEAL
+    CHECK -->|"Color is Bad (Moved)"| HEAL
     HEAL --> PASS
     CHECK -->|Color is Good| PASS
 
@@ -1019,10 +1025,12 @@ flowchart LR
         ALU1["Execute: flag = true"]
         SB1["Store Buffer\n(Hardware Queue)\n[flag=true]"]
         L1_1["L1 Cache\n[flag=false]"]
+    end
 
     subgraph "CPU Core 2 (Thread B)"
         L1_2["L1 Cache\n[flag=false]"]
         ALU2["Execute: read flag"]
+    end
 
     MB["volatile (StoreLoad Memory Barrier)\nForces CPU to halt and drain Store Buffer!"]
     RAM["Main RAM"]

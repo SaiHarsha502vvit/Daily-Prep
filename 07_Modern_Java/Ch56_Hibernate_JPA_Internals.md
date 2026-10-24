@@ -425,6 +425,7 @@ flowchart TD
     %% Hibernate Dirty Checking Physics
     subgraph FLUSH ["Transaction Commit (Flush Phase)"]
         PC["Persistence Context (L1 Cache)"]
+    end
 
         ENTITY["Java Entity Reference<br/>name='Sai Harsha'"]
         SNAPSHOT["Internal Snapshot[]<br/>name='Harsha'"]
@@ -801,6 +802,7 @@ sequenceDiagram
         Note over DB_OS: 100 Consecutive Context Switches!<br/>Kernel overhead destroys CPU cache!
         DB_OS->>DB_CPU: Wake Process, Parse AST, Plan Query
         DB_CPU-->>APP: Return Employee
+    end
 ```
 
 ### 4 Solutions

@@ -49,22 +49,22 @@ Chapter 4 taught "macrotask queue vs microtask queue" — accurate for the brows
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Loop as libuv event loop
+    participant EL as libuv event loop
     participant Timers as 1. timers
     participant Pending as 2. pending callbacks
     participant Poll as 4. poll
     participant Check as 5. check
     participant Close as 6. close callbacks
 
-    Note over Loop,Close: One full iteration ("tick") of the loop, in order:
+    Note over EL,Close: One full iteration ("tick") of the loop, in order:
 
-    Loop->>Timers: run any setTimeout/setInterval callbacks<br/>whose delay has elapsed
-    Loop->>Pending: run I/O callbacks deferred from the<br/>previous iteration (e.g. certain TCP errors)
-    Note over Loop: idle, prepare phases run here too — internal use only
-    Loop->>Poll: retrieve new I/O events; run their callbacks.<br/>BLOCKS here waiting for I/O if nothing else is due.
-    Loop->>Check: run setImmediate() callbacks —<br/>this phase exists SPECIFICALLY to run<br/>right after poll, every iteration
-    Loop->>Close: run close-event callbacks<br/>(e.g. socket.on('close', ...))
-    Close-->>Loop: iteration complete — start the next tick at "timers" again
+    EL->>Timers: run any setTimeout/setInterval callbacks<br/>whose delay has elapsed
+    EL->>Pending: run I/O callbacks deferred from the<br/>previous iteration (e.g. certain TCP errors)
+    Note over EL: idle, prepare phases run here too — internal use only
+    EL->>Poll: retrieve new I/O events, run their callbacks.<br/>BLOCKS here waiting for I/O if nothing else is due.
+    EL->>Check: run setImmediate() callbacks —<br/>this phase exists SPECIFICALLY to run<br/>right after poll, every iteration
+    EL->>Close: run close-event callbacks<br/>(e.g. socket.on('close', ...))
+    Close-->>EL: iteration complete — start the next tick at "timers" again
 ```
 
 **Why `setImmediate` and `setTimeout(fn, 0)` race unpredictably at the top level, but never inside an I/O callback — derived, not memorized.**

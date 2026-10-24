@@ -191,6 +191,7 @@ flowchart TD
         START["Thread calls acquire()"]
         CAS{"CPU CAS Instruction\ncompareAndSwap(state, 0, 1)"}
         FAST_PATH["Success: Acquired!\n(0ns OS Overhead)"]
+    end
 
         START --> CAS
         CAS -->|State was 0| FAST_PATH
@@ -198,14 +199,16 @@ flowchart TD
     subgraph "AQS Fallback (Contention)"
         QUEUE["Create Node & Append to\nCLH Double-Linked List"]
         PARK["Syscall: LockSupport.park()\n(Thread dumped to RAM)"]
+    end
 
-        CAS -.->|State was 1\n(Failed)| QUEUE
+        CAS -.->|"State was 1<br/>(Failed)"| QUEUE
         QUEUE --> PARK
 
     subgraph "AQS release()"
         OWNER["Owner calls release()"]
         UNPARK["Syscall: LockSupport.unpark(NextNode)"]
         WAKE["Parked Thread Wakes Up & Retries CAS"]
+    end
 
         OWNER --> UNPARK
         UNPARK --> WAKE
