@@ -129,9 +129,9 @@ AuthorizationFilter             │  Check if current Authentication
 
 <details><summary>Answer</summary>
 
-**Scenario:** Background execution threads fail to access the authenticated user's context, leading to intermittent NPEs.
-**Trace:** `SecurityContextHolder` uses a `ThreadLocal` strategy by default (`MODE_THREADLOCAL`). The context is exclusively bound to the Tomcat HTTP worker thread that intercepted the request. When `@Async` delegates execution to a separate thread pool (`TaskExecutor`), the newly spawned worker thread has an empty `ThreadLocal` state.
-**Debug/Fix:** Do not rely on `MODE_INHERITABLETHREADLOCAL` in thread-pooled environments, as worker threads are reused, risking severe security cross-contamination where User B might inherit User A's context. The architectural fix is to wrap the thread pool with Spring Security's concurrency utilities. Configure the `@Async` executor to return a `DelegatingSecurityContextExecutor`, which explicitly propagates and clears the `SecurityContext` across thread boundaries safely for each task execution.
+- **Scenario:** Background execution threads fail to access the authenticated user's context, leading to intermittent NPEs.
+- **Trace:** `SecurityContextHolder` uses a `ThreadLocal` strategy by default (`MODE_THREADLOCAL`). The context is exclusively bound to the Tomcat HTTP worker thread that intercepted the request. When `@Async` delegates execution to a separate thread pool (`TaskExecutor`), the newly spawned worker thread has an empty `ThreadLocal` state.
+- **Debug/Fix:** Do not rely on `MODE_INHERITABLETHREADLOCAL` in thread-pooled environments, as worker threads are reused, risking severe security cross-contamination where User B might inherit User A's context. The architectural fix is to wrap the thread pool with Spring Security's concurrency utilities. Configure the `@Async` executor to return a `DelegatingSecurityContextExecutor`, which explicitly propagates and clears the `SecurityContext` across thread boundaries safely for each task execution.
 
 </details>
 
@@ -185,9 +185,9 @@ UsernamePasswordAuthenticationToken {
 
 <details><summary>Answer</summary>
 
-**Scenario:** An authenticated admin receives an Authentication error (401) instead of an Authorization evaluation (403 or 200).
-**Trace:** In the Spring Security Filter Chain, the `AuthorizationFilter` evaluates `@PreAuthorize` rules. If an `AccessDeniedException` is thrown, the `ExceptionTranslationFilter` intercepts it. It checks if the user is authenticated. However, if the `Authentication` object represents an _Anonymous_ user (or if the token filter failed to populate the `SecurityContext` for this specific request), it assumes the user isn't logged in and returns a 401. If the user _is_ authenticated but lacks the role, it returns a 403. If a 401 is returned despite a "successful" login, the state is being lost.
-**Debug/Fix:** This happens in stateless JWT architectures when the `JwtAuthenticationFilter` is placed _after_ the `AuthorizationFilter` in the security chain, or if the JWT is missing from the `Authorization` header on this specific client request. Fix the order by explicitly configuring `.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)`.
+- **Scenario:** An authenticated admin receives an Authentication error (401) instead of an Authorization evaluation (403 or 200).
+- **Trace:** In the Spring Security Filter Chain, the `AuthorizationFilter` evaluates `@PreAuthorize` rules. If an `AccessDeniedException` is thrown, the `ExceptionTranslationFilter` intercepts it. It checks if the user is authenticated. However, if the `Authentication` object represents an _Anonymous_ user (or if the token filter failed to populate the `SecurityContext` for this specific request), it assumes the user isn't logged in and returns a 401. If the user _is_ authenticated but lacks the role, it returns a 403. If a 401 is returned despite a "successful" login, the state is being lost.
+- **Debug/Fix:** This happens in stateless JWT architectures when the `JwtAuthenticationFilter` is placed _after_ the `AuthorizationFilter` in the security chain, or if the JWT is missing from the `Authorization` header on this specific client request. Fix the order by explicitly configuring `.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)`.
 
 </details>
 
@@ -259,9 +259,9 @@ If not cleared, next request on same thread would see previous user!
 
 <details><summary>Answer</summary>
 
-**Scenario:** Standard ThreadLocal-based security contexts disappear during reactive stream execution, causing unexpected `null` errors.
-**Trace:** `SecurityContextHolder` relies on `ThreadLocal` storage. In reactive programming (WebFlux/Reactor), a single HTTP request is processed asynchronously across multiple worker threads (event loop). When execution jumps from the I/O thread to a worker thread inside a `flatMap`, the `ThreadLocal` state is left behind on the original thread.
-**Debug/Fix:** Never use `SecurityContextHolder` in WebFlux. Instead, use the reactive `ReactiveSecurityContextHolder`. To access the context inside a reactive pipeline, use `ReactiveSecurityContextHolder.getContext()`, which retrieves the context from the Reactor `Context` (which safely propagates across thread boundaries), e.g., `ReactiveSecurityContextHolder.getContext().map(ctx -> ctx.getAuthentication().getName())`.
+- **Scenario:** Standard ThreadLocal-based security contexts disappear during reactive stream execution, causing unexpected `null` errors.
+- **Trace:** `SecurityContextHolder` relies on `ThreadLocal` storage. In reactive programming (WebFlux/Reactor), a single HTTP request is processed asynchronously across multiple worker threads (event loop). When execution jumps from the I/O thread to a worker thread inside a `flatMap`, the `ThreadLocal` state is left behind on the original thread.
+- **Debug/Fix:** Never use `SecurityContextHolder` in WebFlux. Instead, use the reactive `ReactiveSecurityContextHolder`. To access the context inside a reactive pipeline, use `ReactiveSecurityContextHolder.getContext()`, which retrieves the context from the Reactor `Context` (which safely propagates across thread boundaries), e.g., `ReactiveSecurityContextHolder.getContext().map(ctx -> ctx.getAuthentication().getName())`.
 
 </details>
 
@@ -670,9 +670,9 @@ JWT in Authorization header is NOT sent automatically.
 
 <details><summary>Answer</summary>
 
-**Scenario:** CORS policy blocks a cross-origin state-changing request despite a successful OPTIONS preflight.
-**Trace:** The `CorsFilter` correctly handled the `OPTIONS` request and returned `Access-Control-Allow-Origin: https://frontend.com`. However, the `POST` request hits the `CsrfFilter` before reaching the controller. Because the SPA did not include a valid CSRF token in the request header (e.g., `X-CSRF-TOKEN`), the `CsrfFilter` immediately rejected the request with a 403 Forbidden. The browser sees a failed request lacking the proper CORS headers in the error response, masking it as a generic "CORS error".
-**Debug/Fix:** If the API uses stateless JWTs instead of session cookies, disable CSRF entirely using `.csrf(csrf -> csrf.disable())` since CSRF exploits cookie auto-inclusion. If using session cookies, configure a `CookieCsrfTokenRepository` to send the token to the frontend, and ensure the SPA reads the `XSRF-TOKEN` cookie and attaches it as an `X-XSRF-TOKEN` header on every `POST`/`PUT`/`DELETE` request.
+- **Scenario:** CORS policy blocks a cross-origin state-changing request despite a successful OPTIONS preflight.
+- **Trace:** The `CorsFilter` correctly handled the `OPTIONS` request and returned `Access-Control-Allow-Origin: https://frontend.com`. However, the `POST` request hits the `CsrfFilter` before reaching the controller. Because the SPA did not include a valid CSRF token in the request header (e.g., `X-CSRF-TOKEN`), the `CsrfFilter` immediately rejected the request with a 403 Forbidden. The browser sees a failed request lacking the proper CORS headers in the error response, masking it as a generic "CORS error".
+- **Debug/Fix:** If the API uses stateless JWTs instead of session cookies, disable CSRF entirely using `.csrf(csrf -> csrf.disable())` since CSRF exploits cookie auto-inclusion. If using session cookies, configure a `CookieCsrfTokenRepository` to send the token to the frontend, and ensure the SPA reads the `XSRF-TOKEN` cookie and attaches it as an `X-XSRF-TOKEN` header on every `POST`/`PUT`/`DELETE` request.
 
 </details>
 
@@ -746,9 +746,9 @@ public class SecurityConfig {
 
 <details><summary>Answer</summary>
 
-**Scenario:** A compromised or suspended JWT continues to grant access because stateless tokens cannot be revoked natively by the authorization server.
-**Trace:** By design, JWTs are mathematically verified via signature checks (HMAC/RSA) locally by each microservice without calling a central database. Because the token is valid until its `exp` claim passes, the downstream services have no way of knowing the user's state has changed. Moving back to stateful session validation defeats the purpose of decentralized JWTs.
-**Debug/Fix:** Implement a hybrid token-revocation pattern using an asynchronous Redis Deny List. When an account is suspended, the Auth server publishes a "revoke" event to an event broker (Kafka/RabbitMQ). All microservices consume this event and cache the `jti` (JWT ID) in a local fast-lookup store (or a shared low-latency Redis cluster) with a TTL matching the token's remaining lifespan. The API Gateway or `JwtAuthenticationFilter` simply checks the cache for the `jti` before performing the signature validation.
+- **Scenario:** A compromised or suspended JWT continues to grant access because stateless tokens cannot be revoked natively by the authorization server.
+- **Trace:** By design, JWTs are mathematically verified via signature checks (HMAC/RSA) locally by each microservice without calling a central database. Because the token is valid until its `exp` claim passes, the downstream services have no way of knowing the user's state has changed. Moving back to stateful session validation defeats the purpose of decentralized JWTs.
+- **Debug/Fix:** Implement a hybrid token-revocation pattern using an asynchronous Redis Deny List. When an account is suspended, the Auth server publishes a "revoke" event to an event broker (Kafka/RabbitMQ). All microservices consume this event and cache the `jti` (JWT ID) in a local fast-lookup store (or a shared low-latency Redis cluster) with a TTL matching the token's remaining lifespan. The API Gateway or `JwtAuthenticationFilter` simply checks the cache for the `jti` before performing the signature validation.
 
 </details>
 
@@ -853,9 +853,9 @@ Put ONLY: user ID, roles, expiration. Never secrets.
 
 <details><summary>Answer</summary>
 
-**Scenario:** URL path manipulation allows an unauthenticated user to bypass authorization filters and access restricted endpoints.
-**Trace:** Historically (in Spring Security 5 with `AntPathRequestMatcher`), path matching was strict. If the security rule was `/api/admin/**`, a request to `/api/admin/dashboard/` might be treated differently than `/api/admin/dashboard` depending on Spring MVC's trailing slash configuration, leading to severe bypass vulnerabilities if the controller still routed the malicious path to the restricted handler.
-**Debug/Fix:** Spring Security 6 mitigates this by dropping `antMatchers` in favor of `requestMatchers`, which natively integrates with Spring MVC's `HandlerMappingIntrospector`. However, to fully secure endpoints against path traversal/normalization attacks (like `//` or `%2e`), you must enforce `StrictHttpFirewall` (the default) and ensure your routing rules strictly match the MVC handlers. Never rely solely on URL prefix matching; combine it with `@PreAuthorize("hasRole('ADMIN')")` directly on the controller methods to guarantee defense-in-depth regardless of the URL path requested.
+- **Scenario:** URL path manipulation allows an unauthenticated user to bypass authorization filters and access restricted endpoints.
+- **Trace:** Historically (in Spring Security 5 with `AntPathRequestMatcher`), path matching was strict. If the security rule was `/api/admin/**`, a request to `/api/admin/dashboard/` might be treated differently than `/api/admin/dashboard` depending on Spring MVC's trailing slash configuration, leading to severe bypass vulnerabilities if the controller still routed the malicious path to the restricted handler.
+- **Debug/Fix:** Spring Security 6 mitigates this by dropping `antMatchers` in favor of `requestMatchers`, which natively integrates with Spring MVC's `HandlerMappingIntrospector`. However, to fully secure endpoints against path traversal/normalization attacks (like `//` or `%2e`), you must enforce `StrictHttpFirewall` (the default) and ensure your routing rules strictly match the MVC handlers. Never rely solely on URL prefix matching; combine it with `@PreAuthorize("hasRole('ADMIN')")` directly on the controller methods to guarantee defense-in-depth regardless of the URL path requested.
 
 </details>
 

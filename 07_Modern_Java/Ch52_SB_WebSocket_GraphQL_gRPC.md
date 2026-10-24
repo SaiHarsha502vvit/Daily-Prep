@@ -2,9 +2,9 @@
 
 # 🔥 Spring Boot Part 23 — Missing Essential Topics
 
-**WHY this file?** Parts 0-22 cover a LOT, but these topics were missing.
-Every topic here is asked in interviews or used in production.
-**Framework:** WHY → HOW → EXAMPLE → PITFALL → INTERVIEW Q
+- **WHY this file?** Parts 0-22 cover a LOT, but these topics were missing.
+- Every topic here is asked in interviews or used in production.
+- **Framework:** WHY → HOW → EXAMPLE → PITFALL → INTERVIEW Q
 
 ---
 
@@ -120,7 +120,9 @@ When you have **100,000 idle users** holding open WebSockets, your server is con
 With HTTP Polling, the connection is alive for maybe **50ms**. The server replies and _instantly_ recycles that memory for the next user.
 
 **Architectural Takeaway:**
+
 Before defaulting to WebSockets, ask: _Does this actually need a persistent two-way connection?_
+
 If users only get a real notification every 2 hours, polling every 30 seconds uses **significantly less server memory** than holding a persistent pipe. WebSockets excel for **high-frequency, bidirectional exchanges** (multiplayer games, live trading), but fail as idle event listeners at scale.
 
 ---

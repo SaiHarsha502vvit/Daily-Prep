@@ -70,15 +70,17 @@ Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE ema
 ## The Problem: Tight Coupling
 
 WITHOUT IoC (Traditional approach):
+```java
 public class OrderService {
-// OrderService CREATES its dependencies
-private UserRepository userRepo = new MySQLUserRepository();
-private EmailService email = new SMTPEmailService("smtp.gmail.com");
-private PaymentGateway payment = new StripePaymentGateway("sk_xxx");
-public void processOrder(Order order) {
-// Business logic using hardcoded implementations
+    // OrderService CREATES its dependencies
+    private UserRepository userRepo = new MySQLUserRepository();
+    private EmailService email = new SMTPEmailService("smtp.gmail.com");
+    private PaymentGateway payment = new StripePaymentGateway("sk_xxx");
+    public void processOrder(Order order) {
+        // Business logic using hardcoded implementations
+    }
 }
-}
+```
 
 **Problems**:
 
@@ -86,20 +88,24 @@ public void processOrder(Order order) {
 - ❌ Can't switch implementations (MySQL → PostgreSQL = rewrite!)
 - ❌ Configuration scattered everywhere (API keys in code!)
 - ❌ Every class manages its own dependencies (circular dependencies!)
-  WITH IoC (Spring approach):
-  public class OrderService {
-  // Dependencies are INJECTED (someone else provides them)
-  private final UserRepository userRepo;
-  private final EmailService email;
-  private final PaymentGateway payment;
-  public OrderService(UserRepository userRepo,
-  EmailService email,
-  PaymentGateway payment) {
-  this.userRepo = userRepo;
-  this.email = email;
-  this.payment = payment;
-  }
-  }
+
+WITH IoC (Spring approach):
+
+```java
+public class OrderService {
+    // Dependencies are INJECTED (someone else provides them)
+    private final UserRepository userRepo;
+    private final EmailService email;
+    private final PaymentGateway payment;
+    public OrderService(UserRepository userRepo,
+                        EmailService email,
+                        PaymentGateway payment) {
+        this.userRepo = userRepo;
+        this.email = email;
+        this.payment = payment;
+    }
+}
+```
 
 **Benefits**:
 
@@ -120,6 +126,8 @@ flowchart LR
   OS -->|"creates"| E["SMTPEmailService"]
   OS -->|"creates"| P["StripePaymentGateway"]
 ```
+
+**How to read this diagram.** Read it as one object reaching out for everything it needs: OrderService itself creates a MySQLUserRepository, an SMTPEmailService and a StripePaymentGateway. Notice that OrderService is in control and tied to concrete classes; the inverted-control diagram that follows flips this.
 
 **Inverted control (IoC).** The container controls object creation and wiring.
 
@@ -235,15 +243,21 @@ A Spring Bean is simply an object that is:
 3. Managed by Spring (lifecycle, scope)
 
 **Plain Java Object**:
+
+```java
 User user = new User(); // You create it, you manage it
+```
 
 **Spring Bean**:
+
+```java
 @Component
 public class UserService { ... } // Spring creates and manages it
+```
 
 💡 **KEY INSIGHT:**
-Spring Beans are the objects that live in Spring's ApplicationContext
-The container is a big Map<BeanName, Object> (simplified)
+- Spring Beans are the objects that live in Spring's ApplicationContext
+- The container is a big Map<BeanName, Object> (simplified)
 
 ### Ways to Define Beans
 
@@ -1388,6 +1402,8 @@ flowchart TD
   OS["OrderService"] --> SH["SharedOrderLogic<br/>new service both can use"]
   PS["PaymentService"] --> SH
 ```
+
+**How to read this diagram.** OrderService and PaymentService both point down to a new shared service instead of at each other. Notice that no arrow runs between the two original services, so the cycle is gone.
 
 **Solution 2: `@Lazy`**
 

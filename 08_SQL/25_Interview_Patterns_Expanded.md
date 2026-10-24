@@ -6,10 +6,10 @@
 
 This is your SQL interview ready-reckoner.
 
-50 problems organized by pattern, not by difficulty.
-Each problem has: Schema, Question, Solution, Explanation.
-Focus on PATTERNS — once you learn the pattern, you can
-solve any variation.
+- 50 problems organized by pattern, not by difficulty.
+- Each problem has: Schema, Question, Solution, Explanation.
+- Focus on PATTERNS — once you learn the pattern, you can
+  solve any variation.
 
 COMMON INTERVIEW DATASETS (used throughout):
 

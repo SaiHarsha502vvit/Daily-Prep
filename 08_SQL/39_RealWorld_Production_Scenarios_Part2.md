@@ -1,9 +1,9 @@
 # Chapter 39 — Real-World Production Scenarios Part 2: Query Performance & Optimization Crises
 
-**What:** 25 real-world query performance disasters (Scenarios 26–50) with full 5W-H + fixes
-**Why:** Slow queries cost revenue, frustrate users, and wake engineers at 3 AM
-**Where:** Every production database — OLTP and OLAP
-**How:** Identify the anti-pattern → SQL fix → Spring Boot/Backend fix → DSA insight
+- **What:** 25 real-world query performance disasters (Scenarios 26–50) with full 5W-H + fixes
+- **Why:** Slow queries cost revenue, frustrate users, and wake engineers at 3 AM
+- **Where:** Every production database — OLTP and OLAP
+- **How:** Identify the anti-pattern → SQL fix → Spring Boot/Backend fix → DSA insight
 
 ---
 

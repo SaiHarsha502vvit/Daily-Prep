@@ -25,8 +25,9 @@
 
 ### A1. INT to BIGINT Migration on 24/7 System
 
-**Setup:** E-commerce orders table, 2B rows, INT PK at 95% capacity, zero-downtime requirement.
-**Twist:** The table has 15 foreign key references from other tables.
+- **Setup:** E-commerce orders table, 2B rows, INT PK at 95% capacity, zero-downtime requirement.
+- **Twist:** The table has 15 foreign key references from other tables.
+
 **Expected Discussion Points:**
 
 - Shadow table approach with sequence continuation
@@ -36,8 +37,9 @@
 
 ### A2. UUID v4 Performance Regression
 
-**Setup:** Team migrated from INT to UUID v4 for distributed IDs. INSERT throughput dropped 60%.
-**Twist:** They also noticed their ORDER BY queries got 3x slower.
+- **Setup:** Team migrated from INT to UUID v4 for distributed IDs. INSERT throughput dropped 60%.
+- **Twist:** They also noticed their ORDER BY queries got 3x slower.
+
 **Expected Discussion Points:**
 
 - B-Tree fragmentation from random UUIDs (page splits)
@@ -47,8 +49,9 @@
 
 ### A3. Snowflake ID Clock Skew
 
-**Setup:** Distributed system using Snowflake IDs. After a server clock jumped backward, IDs collided.
-**Twist:** The collision wasn't detected immediately — orders were overwritten.
+- **Setup:** Distributed system using Snowflake IDs. After a server clock jumped backward, IDs collided.
+- **Twist:** The collision wasn't detected immediately — orders were overwritten.
+
 **Expected Discussion Points:**
 
 - Snowflake ID structure (timestamp + machine + sequence)
@@ -68,8 +71,9 @@
 
 ### A5. Running Out of VARCHAR Business IDs
 
-**Setup:** Invoice numbers follow pattern `INV-YYYY-NNNNN` (e.g., `INV-2025-00001`). At 99,999/year limit.
-**Twist:** Changing format breaks integration with 3 external payment processors.
+- **Setup:** Invoice numbers follow pattern `INV-YYYY-NNNNN` (e.g., `INV-2025-00001`). At 99,999/year limit.
+- **Twist:** Changing format breaks integration with 3 external payment processors.
+
 **Expected Discussion Points:**
 
 - Extend to 7 digits? Alphanumeric? New format entirely?
@@ -154,16 +158,16 @@
 
 ### B1. Index on Wrong Column Order
 
-**Setup:** Index (created_at, status, customer_id). Query: WHERE customer_id = ? AND status = ? AND created_at > ?.
-**Question:** Why is this 100x slower than it should be?
-**Answer:** Range column (created_at) is leftmost → B-Tree enters wide branch → can't narrow by status/customer.
-**Fix:** Reorder to (customer_id, status, created_at) — equality first, range last.
+- **Setup:** Index (created_at, status, customer_id). Query: WHERE customer_id = ? AND status = ? AND created_at > ?.
+- **Question:** Why is this 100x slower than it should be?
+- **Answer:** Range column (created_at) is leftmost → B-Tree enters wide branch → can't narrow by status/customer.
+- **Fix:** Reorder to (customer_id, status, created_at) — equality first, range last.
 
 ### B2. Covering Index Opportunity Missed
 
-**Setup:** Dashboard query: `SELECT customer_id, status, COUNT(*) FROM orders GROUP BY customer_id, status`
-**Runs in 45 seconds** with full table scan.
-**Fix:** `CREATE INDEX idx_covering ON orders (customer_id, status);` → Index Only Scan → 200ms.
+- **Setup:** Dashboard query: `SELECT customer_id, status, COUNT(*) FROM orders GROUP BY customer_id, status`
+- **Runs in 45 seconds** with full table scan.
+- **Fix:** `CREATE INDEX idx_covering ON orders (customer_id, status);` → Index Only Scan → 200ms.
 
 ### B3. Function Kills Index
 
@@ -177,9 +181,9 @@
 
 ### B5. OR Condition Index Bypass
 
-**Setup:** `WHERE status = 'pending' OR customer_name LIKE '%john%'` → full scan.
-**Why:** OR with different columns can't use a single index efficiently.
-**Fix:** UNION of two indexed queries, or GIN trigram index for LIKE '%..%'.
+- **Setup:** `WHERE status = 'pending' OR customer_name LIKE '%john%'` → full scan.
+- **Why:** OR with different columns can't use a single index efficiently.
+- **Fix:** UNION of two indexed queries, or GIN trigram index for LIKE '%..%'.
 
 ### B6. Large IN List
 
@@ -203,21 +207,21 @@
 
 ### B10. LIKE '%pattern%' Full Scan
 
-**Setup:** Search by partial name: `WHERE name LIKE '%johnson%'` → always full scan.
-**Fix PostgreSQL:** `CREATE EXTENSION pg_trgm; CREATE INDEX idx_name_trgm ON users USING GIN (name gin_trgm_ops);`
-**Fix MySQL:** Full-text search index.
+- **Setup:** Search by partial name: `WHERE name LIKE '%johnson%'` → always full scan.
+- **Fix PostgreSQL:** `CREATE EXTENSION pg_trgm; CREATE INDEX idx_name_trgm ON users USING GIN (name gin_trgm_ops);`
+- **Fix MySQL:** Full-text search index.
 
 ### B11. NOT IN with NULLs
 
-**Setup:** `WHERE id NOT IN (SELECT parent_id FROM categories)` returns no rows when parent_id has NULLs!
-**Why:** `NOT IN` with NULL in subquery = unknown for ALL rows.
-**Fix:** `WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)` or `NOT EXISTS`.
+- **Setup:** `WHERE id NOT IN (SELECT parent_id FROM categories)` returns no rows when parent_id has NULLs!
+- **Why:** `NOT IN` with NULL in subquery = unknown for ALL rows.
+- **Fix:** `WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)` or `NOT EXISTS`.
 
 ### B12. Correlated Subquery O(n²)
 
-**Setup:** `SELECT *, (SELECT MAX(amount) FROM orders o WHERE o.customer_id = c.id) FROM customers c`
-**Problem:** Subquery runs once PER customer row = O(n) subqueries.
-**Fix:** `LEFT JOIN LATERAL` or just `GROUP BY + JOIN`.
+- **Setup:** `SELECT *, (SELECT MAX(amount) FROM orders o WHERE o.customer_id = c.id) FROM customers c`
+- **Problem:** Subquery runs once PER customer row = O(n) subqueries.
+- **Fix:** `LEFT JOIN LATERAL` or just `GROUP BY + JOIN`.
 
 ### B13. Materialized View Staleness
 
@@ -245,9 +249,9 @@
 
 ### C2. N+1 Hidden by @Cacheable
 
-**Setup:** N+1 queries are cached individually. Appears fast on second request but cold cache is catastrophically slow.
-**Problem:** 1000 individual cache entries instead of 1 batch cache entry.
-**Fix:** Cache at collection level, not individual entity level.
+- **Setup:** N+1 queries are cached individually. Appears fast on second request but cold cache is catastrophically slow.
+- **Problem:** 1000 individual cache entries instead of 1 batch cache entry.
+- **Fix:** Cache at collection level, not individual entity level.
 
 ### C3. Eager Fetch Causing Cartesian Explosion
 
@@ -383,9 +387,9 @@
 
 ### E10. Pool Sizing Math (Little's Law)
 
-**Setup:** 200 req/s, average query time 5ms.
-**Answer:** L = λ × W = 200 × 0.005 = 1 connection needed on average.
-Pool size 10 handles 10x burst. Pool size 50 is wasteful (unused connections consume DB memory).
+- **Setup:** 200 req/s, average query time 5ms.
+- **Answer:** L = λ × W = 200 × 0.005 = 1 connection needed on average.
+  Pool size 10 handles 10x burst. Pool size 50 is wasteful (unused connections consume DB memory).
 
 ---
 
@@ -471,9 +475,9 @@ Enable connection keepalive/validation so dead sockets are detected before check
 
 ### F13. CAS (Compare-And-Swap) Pattern
 
-**Setup:** `UPDATE accounts SET balance = 500 WHERE id = 1 AND balance = 1000`
-**If returns 0 rows:** someone changed balance between your read and write. Retry with fresh read.
-**This is optimistic locking without @Version — pure SQL.**
+- **Setup:** `UPDATE accounts SET balance = 500 WHERE id = 1 AND balance = 1000`
+- **If returns 0 rows:** someone changed balance between your read and write. Retry with fresh read.
+- **This is optimistic locking without @Version — pure SQL.**
 
 ### F14. MySQL's Default REPEATABLE READ Surprises
 

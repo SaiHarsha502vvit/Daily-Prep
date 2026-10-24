@@ -358,9 +358,9 @@ Today, every modern web framework (Django ORM, Rails ActiveRecord, Prisma) gener
 3. **UPSERT race condition in concurrent pipelines**: Two processes simultaneously run `INSERT ... ON CONFLICT DO UPDATE` with the same unique key — both see "no conflict" at the same time, both try to insert, one wins and the other gets a serialization error. Fix: handle the unique violation retry loop or use `INSERT ... ON CONFLICT DO NOTHING` followed by a separate UPDATE.
 
 **Debug workflow:**
-(1) Wrap all DML in transactions: `START TRANSACTION; UPDATE ... WHERE ...; SELECT affected_rows(); COMMIT;` — if the row count is unexpected, `ROLLBACK`.
-(2) Always preview before modifying: run `SELECT * FROM table WHERE ...` using the same WHERE clause, count rows, verify before executing UPDATE/DELETE.
-(3) Check `pg_stat_activity` (PostgreSQL) or `SHOW PROCESSLIST` (MySQL) for long-running UPDATE/DELETE queries — a query running >30s is almost always missing a WHERE clause.
+1. Wrap all DML in transactions: `START TRANSACTION; UPDATE ... WHERE ...; SELECT affected_rows(); COMMIT;` — if the row count is unexpected, `ROLLBACK`.
+2. Always preview before modifying: run `SELECT * FROM table WHERE ...` using the same WHERE clause, count rows, verify before executing UPDATE/DELETE.
+3. Check `pg_stat_activity` (PostgreSQL) or `SHOW PROCESSLIST` (MySQL) for long-running UPDATE/DELETE queries — a query running >30s is almost always missing a WHERE clause.
 
 **Modern practice anchor:**
 Today, read-replica databases allow running analytics on replicas while DML targets the primary, and ORMs with soft-delete (Django's `is_deleted`, Rails `paranoia`) prevent accidental hard deletes in production pipelines.

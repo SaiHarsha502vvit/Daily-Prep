@@ -1,9 +1,9 @@
 # Chapter 42 — Real-World Production Scenarios Part 5: Backend & Spring Boot Production Hell
 
-**What:** 25+ backend/Spring Boot production nightmares (Scenarios 101–125) with 5W-H + fixes
-**Why:** The backend layer has its own class of disasters — memory leaks, thread starvation, JPA traps
-**Where:** Any Java/Spring Boot application running in production
-**How:** Understand the failure → code-level fix → SQL fix → DSA insight
+- **What:** 25+ backend/Spring Boot production nightmares (Scenarios 101–125) with 5W-H + fixes
+- **Why:** The backend layer has its own class of disasters — memory leaks, thread starvation, JPA traps
+- **Where:** Any Java/Spring Boot application running in production
+- **How:** Understand the failure → code-level fix → SQL fix → DSA insight
 
 ---
 

@@ -455,9 +455,9 @@ Today, LeetCode SQL Medium/Hard problems with window functions and recursive CTE
 3. **Missing index on foreign key causing sequential scan**: A JOIN between `orders` (100M rows) and `customers` (10M rows) without an index on `orders.customer_id` forces a nested loop or hash join reading 100M rows. PostgreSQL's `pg_stat_user_tables` shows `seq_scan >> idx_scan`. Fix: `CREATE INDEX ON orders(customer_id)`.
 
 **Debug workflow:**
-(1) Run `EXPLAIN (ANALYZE, BUFFERS)` on suspect queries — look for `Seq Scan` on large tables and `Sort` operations without index support.
-(2) Check `pg_stat_statements` (PostgreSQL) or `performance_schema` (MySQL) for top time-consuming queries by `total_exec_time`.
-(3) Verify indexes exist on all foreign key columns with `\\d+ table_name` (PostgreSQL) or `SHOW INDEX FROM table` (MySQL).
+1. Run `EXPLAIN (ANALYZE, BUFFERS)` on suspect queries — look for `Seq Scan` on large tables and `Sort` operations without index support.
+2. Check `pg_stat_statements` (PostgreSQL) or `performance_schema` (MySQL) for top time-consuming queries by `total_exec_time`.
+3. Verify indexes exist on all foreign key columns with `\\d+ table_name` (PostgreSQL) or `SHOW INDEX FROM table` (MySQL).
 
 **Modern practice anchor:**
 Today, tools like `pg_stat_statements`, MySQL `performance_schema`, and ORMs with query logging (e.g., Django DEBUG=True, Hibernate show_sql) catch N+1 and full-table scan issues before they reach production.

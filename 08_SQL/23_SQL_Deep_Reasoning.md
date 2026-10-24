@@ -39,14 +39,16 @@ Answer: "I don't know!" → NULL (not true, not false)
 
 SQL uses THREE-VALUED LOGIC: TRUE, FALSE, NULL
 
-NULL = NULL → NULL (not TRUE!)
-NULL <> NULL → NULL (not TRUE!)
-NULL > 5 → NULL
-NULL + 10 → NULL (anything + NULL = NULL)
-NULL AND TRUE → NULL
-NULL OR TRUE → TRUE (TRUE wins over unknown)
-NULL OR FALSE → NULL
-NOT NULL → NULL
+| Expression | Result |
+| --- | --- |
+| NULL = NULL | NULL (not TRUE!) |
+| NULL <> NULL | NULL (not TRUE!) |
+| NULL > 5 | NULL |
+| NULL + 10 | NULL (anything + NULL = NULL) |
+| NULL AND TRUE | NULL |
+| NULL OR TRUE | TRUE (TRUE wins over unknown) |
+| NULL OR FALSE | NULL |
+| NOT NULL | NULL |
 
 To check for NULL: Use IS NULL / IS NOT NULL
 NOT: = NULL or <> NULL (these always return NULL, never TRUE)

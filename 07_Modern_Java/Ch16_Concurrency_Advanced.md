@@ -370,6 +370,8 @@ sequenceDiagram
     BUS-->>T2: Success! Value is now 7
 ```
 
+**How to read this diagram.** Read top to bottom: both threads issue the same LOCK CMPXCHG (expect 5, set 6) on a value of 5; the hardware resolves the race so Thread 1 succeeds and Thread 2 fails, then Thread 2 retries with the new expected value (6, set 7) and succeeds. Notice that the losing thread never sleeps - it stays on the CPU, so there is no OS context-switch cost but it uses 100% of the core while it spins.
+
 ---
 
 ```java
@@ -955,6 +957,8 @@ flowchart LR
     VT3 --> STARVE
 
 ```
+
+**How to read this diagram.** Read the three groups together: virtual thread VT1 is mounted on a carrier OS thread, enters `synchronized`, and then does network I/O. The JVM tries to unmount it (dashed arrow) but cannot, so the carrier is pinned, and the other ready virtual threads (VT2, VT3) starve waiting for a carrier. Notice the pinned carrier: it is what turns one blocked virtual thread into starvation for the rest.
 
 ```java
 // ❌ PINNING — synchronized blocks PREVENT virtual thread mounting

@@ -55,11 +55,11 @@ FIXED MINDSET (Consumer):
 - "My thinking muscles grow stronger with each problem"
 
 **Key Realization**:
-Dijkstra INVENTED his algorithm because GPS didn't exist!
-Kadane CREATED his algorithm by observing patterns!
-Google's PageRank was INVENTED by two PhD students!
-THEY WERE NOT BORN KNOWING THESE - THEY CREATED THEM!
-AND YOU CAN CREATE NEW ALGORITHMS TOO!
+- Dijkstra INVENTED his algorithm because GPS didn't exist!
+- Kadane CREATED his algorithm by observing patterns!
+- Google's PageRank was INVENTED by two PhD students!
+- THEY WERE NOT BORN KNOWING THESE - THEY CREATED THEM!
+- AND YOU CAN CREATE NEW ALGORITHMS TOO!
 
 🔬 **Section Challenge — ⭐ The Fundamental Shift - Fixed Vs Growth Mindset ⭐**
 
@@ -107,8 +107,10 @@ memorized patterns.
 
 ## ⭐⭐⭐ How To Create Your Own Algorithm - Step By Step ⭐⭐⭐
 
-STEP 1: UNDERSTAND THE PROBLEM DEEPLY
+**STEP 1: UNDERSTAND THE PROBLEM DEEPLY**
+
 Don't just read - INTERROGATE the problem!
+
 Questions to ask:
 
 - What EXACTLY is the input? (type, size, range, constraints)
@@ -124,20 +126,30 @@ Questions to ask:
 - Return indices or values? (affects what we track)
 - Multiple valid answers? (affects when to stop)
 - Negative numbers? (affects sorting approaches)
-  STEP 2: SOLVE IT THE DUMBEST WAY POSSIBLE (BRUTE FORCE)
-  This is CRUCIAL! Don't skip this step!
-  WHY BRUTE FORCE FIRST?
+
+**STEP 2: SOLVE IT THE DUMBEST WAY POSSIBLE (BRUTE FORCE)**
+
+This is CRUCIAL! Don't skip this step!
+
+**WHY BRUTE FORCE FIRST?**
+
 - Ensures you UNDERSTAND the problem
 - Gives you a WORKING solution to compare against
 - Reveals the STRUCTURE of the problem
 - Shows you WHERE the inefficiency is
 
 **Example**: Two Sum
+
 Brute Force: Check every pair → O(n²)
+
+```python
 for i in range(n):
-for j in range(i+1, n):
-if arr[i] + arr[j] == target: return [i, j]
-STEP 3: IDENTIFY THE WASTE
+    for j in range(i+1, n):
+        if arr[i] + arr[j] == target: return [i, j]
+```
+
+**STEP 3: IDENTIFY THE WASTE**
+
 Look at your brute force and ask:
 "What work am I doing REPEATEDLY that I could do ONCE?"
 
@@ -159,18 +171,24 @@ Each search is O(n) → Total O(n²)
 
 **Fix**: Store values in HashMap, search becomes O(1)
 Total: O(n)!
-STEP 4: APPLY OR INVENT THE FIX
+
+**STEP 4: APPLY OR INVENT THE FIX**
+
 Once you identify the waste, the fix often suggests itself!
-WASTE TYPE → TYPICAL FIX
-Repeated search → HashMap / HashSet
-Check all pairs → Sort + Two Pointers
-Recompute sums → Prefix Sums
-Recompute ranges → Sliding Window
-Recalculate same → Memoization / DP
-Check all subsets → Bitmask / Backtrack + Pruning
-Check entire space → Binary Search
+
+| Waste type | Typical fix |
+| --- | --- |
+| Repeated search | HashMap / HashSet |
+| Check all pairs | Sort + Two Pointers |
+| Recompute sums | Prefix Sums |
+| Recompute ranges | Sliding Window |
+| Recalculate same | Memoization / DP |
+| Check all subsets | Bitmask / Backtrack + Pruning |
+| Check entire space | Binary Search |
+
 IF NO KNOWN FIX EXISTS → YOU INVENT ONE!
-STEP 5: VERIFY AND OPTIMIZE
+
+**STEP 5: VERIFY AND OPTIMIZE**
 
 - Test with edge cases
 - Analyze complexity (time & space)
@@ -219,13 +237,18 @@ DATA STRUCTURES ARE JUST ALGORITHMS + ORGANIZATION!
 
 - Main stack: actual values
 - Min stack: minimum value at each point
-  push(5): main=[5], min=[5]
-  push(3): main=[5,3], min=[5,3]
-  push(7): main=[5,3,7], min=[5,3,3] ← min stays 3
-  pop(): main=[5,3], min=[5,3]
-  getMin(): return min.peek() → 3
-  YOU JUST CREATED A NEW DATA STRUCTURE! 🎉
-  EXAMPLE 2: Create LRU Cache (O(1) get and put with capacity limit)
+
+```text
+push(5): main=[5], min=[5]
+push(3): main=[5,3], min=[5,3]
+push(7): main=[5,3,7], min=[5,3,3] ← min stays 3
+pop(): main=[5,3], min=[5,3]
+getMin(): return min.peek() → 3
+```
+
+YOU JUST CREATED A NEW DATA STRUCTURE! 🎉
+
+**EXAMPLE 2: Create LRU Cache (O(1) get and put with capacity limit)**
 
 **Operations Needed**:
 
@@ -245,17 +268,23 @@ DATA STRUCTURES ARE JUST ALGORITHMS + ORGANIZATION!
 
 - HashMap: key → node in list
 - List: maintains order (front = recent, back = least recent)
-  get(key):
+
+get(key):
 
 1. Find node in HashMap → O(1)
 2. Move node to front of list → O(1)
-   put(key, val):
-3. If exists: update + move to front
-4. If new: add to front
-5. If over capacity: remove from back
-   ANOTHER NEW DATA STRUCTURE! 🎉
-   EXAMPLE 3: Create MaxQueue (Queue with O(1) getMax)
-   YOUR TURN! Try to design this before reading:
+
+put(key, val):
+
+1. If exists: update + move to front
+2. If new: add to front
+3. If over capacity: remove from back
+
+ANOTHER NEW DATA STRUCTURE! 🎉
+
+**EXAMPLE 3: Create MaxQueue (Queue with O(1) getMax)**
+
+YOUR TURN! Try to design this before reading:
 
 **Hint**: Think about what information you lose when you dequeue...
 
@@ -296,12 +325,15 @@ NEW SOLUTION = (ALGORITHM A) + (ALGORITHM B) + (DATA STRUCTURE C)
   "Explore level by level, prioritize by cost"
 - Union-Find + Edge Processing = Connected Components
   "Process edges, unify components"
-  REAL-WORLD EXAMPLE: Autocomplete System
-  Components:
+
+**REAL-WORLD EXAMPLE: Autocomplete System**
+
+Components:
 - Trie: Stores words efficiently
 - Priority Queue: Ranks suggestions
 - Caching: Remembers recent queries
-  Algorithm: Trie traversal + PQ ranking + LRU caching
+
+Algorithm: Trie traversal + PQ ranking + LRU caching
 
 🔬 **Section Challenge — Combining Algorithms + Data Structures (Advanced Technique)**
 
@@ -318,26 +350,26 @@ NEW SOLUTION = (ALGORITHM A) + (ALGORITHM B) + (DATA STRUCTURE C)
 DELIBERATE PRACTICE (not just solving more problems):
 
 1. AFTER SOLVING ANY PROBLEM:
-   □ Write down WHY your solution works
-   □ Identify WHAT PATTERN it uses
-   □ Think of 2 OTHER problems this pattern solves
-   □ What if constraints changed? Would solution change?
+   - □ Write down WHY your solution works
+   - □ Identify WHAT PATTERN it uses
+   - □ Think of 2 OTHER problems this pattern solves
+   - □ What if constraints changed? Would solution change?
 2. WHEN STUCK ON A PROBLEM:
-   □ Write brute force FIRST
-   □ Identify the WASTE
-   □ Look at hints ONLY after 20 min of real trying
-   □ After seeing solution, RECREATE it from memory
-   □ Solve 3 similar problems to reinforce
+   - □ Write brute force FIRST
+   - □ Identify the WASTE
+   - □ Look at hints ONLY after 20 min of real trying
+   - □ After seeing solution, RECREATE it from memory
+   - □ Solve 3 similar problems to reinforce
 3. WEEKLY REVIEW:
-   □ What patterns did I learn this week?
-   □ What connections between patterns did I discover?
-   □ What problems challenged me most? Why?
-   □ Can I explain each solution to a beginner?
+   - □ What patterns did I learn this week?
+   - □ What connections between patterns did I discover?
+   - □ What problems challenged me most? Why?
+   - □ Can I explain each solution to a beginner?
 4. CREATIVE CHALLENGES:
-   □ Take a solved problem → Add a constraint → Re-solve
-   □ Combine two problems into one
-   □ Create your own problem and solve it
-   □ Optimize an existing solution further
+   - □ Take a solved problem → Add a constraint → Re-solve
+   - □ Combine two problems into one
+   - □ Create your own problem and solve it
+   - □ Optimize an existing solution further
 
 **Progress Metrics**:
 

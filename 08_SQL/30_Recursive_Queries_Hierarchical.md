@@ -163,6 +163,8 @@ flowchart TD
     style A fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px
 ```
 
+**How to read this diagram.** Read it as the org chart the recursive CTE walks: Alice (CEO) is at the top, her direct reports Bob, Carol and Eve are below her, and each of their reports sits below them in turn (for example Bob, Dave, Frank, then Grace and Hank). Notice that each level of depth corresponds to one join of the recursive step, as the sentence above says.
+
 ### 2.3 Find All Subordinates of a Manager
 
 ```sql

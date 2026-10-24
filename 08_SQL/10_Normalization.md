@@ -52,6 +52,8 @@ flowchart TD
     style BCNF fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
 ```
 
+**How to read this diagram.** Read top to bottom: an unnormalized table is reshaped step by step into 1NF (atomic values, no repeating groups), 2NF (also no partial dependencies), 3NF (also no transitive dependencies) and BCNF (every determinant is a candidate key). Notice that each box adds a rule on top of the previous one, matching the 'strictly stronger' sentence above; the red start box and green end box mark where you begin and where you aim.
+
 ### First Normal Form (1NF)
 
 ```
@@ -262,9 +264,9 @@ Today, every SQL interview tests your ability to identify normalization violatio
 3. **Normalization without profiling actual query patterns**: A startup normalizes aggressively into 20 tables based on theoretical "3NF by default". Their most common query joins 8 tables to display a product catalog — 500ms per page load. The fix: profile with `pg_stat_statements` to find the most frequent queries, then denormalize just those patterns.
 
 **Debug workflow:**
-(1) Profile actual query patterns with `pg_stat_statements` or MySQL `performance_schema` — find the top 10 most-called queries and count their JOIN count.
-(2) Verify referential integrity: query for orphan rows with `SELECT * FROM orders o LEFT JOIN customers c ON o.customer_id = c.customer_id WHERE c.customer_id IS NULL` — non-empty results indicate missing FK enforcement.
-(3) Measure query latency: `EXPLAIN ANALYZE` the top dashboard query, sum the estimated cost of all join nodes. If cost > 10,000, consider denormalization for that specific read pattern.
+1. Profile actual query patterns with `pg_stat_statements` or MySQL `performance_schema` — find the top 10 most-called queries and count their JOIN count.
+2. Verify referential integrity: query for orphan rows with `SELECT * FROM orders o LEFT JOIN customers c ON o.customer_id = c.customer_id WHERE c.customer_id IS NULL` — non-empty results indicate missing FK enforcement.
+3. Measure query latency: `EXPLAIN ANALYZE` the top dashboard query, sum the estimated cost of all join nodes. If cost > 10,000, consider denormalization for that specific read pattern.
 
 **Modern practice anchor:**
 Today, hybrid approaches dominate — OLTP systems (banking, e-commerce) use 3NF schemas with FK constraints enforced at the application layer via Prisma/Hibernate, while analytical platforms (Snowflake, BigQuery) use denormalized wide tables for single-pass aggregation queries.

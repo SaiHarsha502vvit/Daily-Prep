@@ -782,7 +782,9 @@ This section strips away the "Passport" and "Bookshelf" analogies. We will look 
 **The Naked Truth:** A 64-bit CPU naturally uses 64-bit (8-byte) pointers for memory addresses. If Java used raw 64-bit pointers for every object reference, the heap size would instantly bloat by 50% compared to a 32-bit system. Furthermore, larger pointers mean fewer objects fit into the CPU's ultra-fast L1 cache, causing **Cache Misses** (which stall the CPU for 100+ clock cycles while fetching from main RAM).
 
 **The Mechanical Execution (Compressed OOPs):**
+
 To solve this, the JVM uses a mathematical trick called **Compressed Ordinary Object Pointers (Oops)**.
+
 If your heap is smaller than 32GB, the JVM does _not_ store real 64-bit memory addresses. It stores **32-bit integers**.
 
 1. **The Alignment Physics:** The JVM forces EVERY object to be aligned to an 8-byte boundary. This means object addresses always end in three binary zeros (e.g., `0x1000`, `0x1008`, `0x1010`).
@@ -816,6 +818,8 @@ flowchart TD
     DECOMPRESS --> RESOLVE
 ```
 
+**How to read this diagram.** Read top to bottom: the 64-bit address is shifted right by 3 (dropping the three always-zero bits) and stored as a 32-bit compressed OOP; on a read, the CPU fetches the 32-bit pointer, shifts it left by 3, and reconstructs the 64-bit address. Notice the 50% pointer saving - it works only because objects are 8-byte aligned and the heap stays under 32GB.
+
 ---
 
 ## 11.2 The Abstraction: "Object Padding" vs The Reality of Cache Line False Sharing
@@ -845,8 +849,11 @@ class GlobalCounter {
 6. Thread 1 and Thread 2 enter a death spiral of constantly invalidating each other's L1 cache, degrading performance by 1000x, even though they are operating on _completely different variables_. This is **False Sharing**.
 
 **The Physics Solution (`@Contended`):**
+
 To fix this, high-performance Java (like the `LongAdder` or `ConcurrentHashMap`) uses the `@jdk.internal.vm.annotation.Contended` annotation.
+
 This tells the JVM: _"Physically inject 64 bytes of dead padding (zeros) between `thread1Count` and `thread2Count` in the Object Layout."_
+
 Now, `thread1Count` lives in Cache Line A, and `thread2Count` lives in Cache Line B. Thread 1 and Thread 2 can increment their counters billions of times per second without ever triggering MESI invalidation across the CPU cores.
 
 ```mermaid
@@ -878,6 +885,8 @@ flowchart LR
 
 ```
 
+**How to read this diagram.** Follow the arrows: Core 1 modifies `t1Count` in its L1 cache, which triggers a MESI invalidate broadcast that invalidates Core 2's copy of the same line, so Core 2 stalls on a cache miss (about 100 cycles) and refetches the line from RAM. Notice that `t1Count` and `t2Count` share one 64-byte cache line, so Core 2 pays for a variable it never touched - this is false sharing.
+
 ---
 
 ## 11.3 The Abstraction: "Virtual Methods" vs The Reality of CPU Branch Prediction
@@ -887,7 +896,9 @@ flowchart LR
 **The Naked Truth:** Polymorphism physically breaks CPU execution pipelines.
 
 **The Mechanical Execution:**
+
 Modern CPUs execute instructions using a Pipeline (Fetch, Decode, Execute). To keep the pipeline full, the CPU tries to guess the outcome of `if` statements and function calls before they happen (**Branch Prediction**).
+
 If you have a loop calling `animal.speak()`:
 
 1. **Monomorphic Call Site:** If every single object in the loop is a `Dog`, the CPU's branch predictor learns the pattern. It preemptively loads the `Dog.speak()` machine code into the L1 Instruction Cache. Furthermore, the HotSpot JVM's C2 JIT Compiler will actually **Inline** the code, completely deleting the `invokevirtual` dispatch overhead.

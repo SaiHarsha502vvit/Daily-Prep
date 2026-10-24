@@ -49,18 +49,18 @@ ViewResolver → "Render the response"
 
 ← FILTER 3 ← FILTER 2 ← FILTER 1 ← [Response]
 
-FILTER = Security guard at the building entrance
-→ Runs BEFORE and AFTER the request reaches Spring
-→ Part of the Servlet spec (javax.servlet.Filter)
-→ NOT part of Spring — works at the web container level
-→ Can modify request/response, reject requests, log, compress
-→ Spring Security IS a filter chain!
+- FILTER = Security guard at the building entrance
+  - → Runs BEFORE and AFTER the request reaches Spring
+  - → Part of the Servlet spec (javax.servlet.Filter)
+  - → NOT part of Spring — works at the web container level
+  - → Can modify request/response, reject requests, log, compress
+  - → Spring Security IS a filter chain!
 
-DISPATCHER SERVLET = The receptionist inside the building
-→ A special Servlet that routes requests to the right Controller
-→ IS the entry point to Spring MVC
-→ Only ONE DispatcherServlet (front controller pattern)
-→ Handles: URL mapping, argument binding, exception handling
+- DISPATCHER SERVLET = The receptionist inside the building
+  - → A special Servlet that routes requests to the right Controller
+  - → IS the entry point to Spring MVC
+  - → Only ONE DispatcherServlet (front controller pattern)
+  - → Handles: URL mapping, argument binding, exception handling
 
 ```java
 // FILTER: Runs at Servlet container level, wraps the entire request

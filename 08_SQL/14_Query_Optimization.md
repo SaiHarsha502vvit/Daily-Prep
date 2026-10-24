@@ -266,6 +266,8 @@ flowchart TD
 
 ```
 
+**How to read this diagram.** Compare the two groups: in the Index Scan group each index row sends the disk to a heap page in a different place (page 50, then 2, then 90), so the disk arm keeps moving (dotted arrows); in the Bitmap Heap Scan group the matching pointers are collected, sorted in memory, and the heap pages are read in order (2, 50, 90). Notice that the same pages are visited and only the order changes, from scattered to sequential.
+
 **Why Bitmap Heap Scans Exist:**
 If the optimizer realizes an Index Scan will jump around the disk too much (thrashing the physical arm or saturating random I/O IOPS on an SSD), it switches to a **Bitmap Heap Scan**. It reads the index first, builds a memory bitmap of all the heap pages it needs, **sorts them by physical disk location**, and then visits each page exactly once in a smooth, sequential sweep.
 

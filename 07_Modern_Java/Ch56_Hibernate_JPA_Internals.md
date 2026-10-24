@@ -83,9 +83,9 @@ flowchart TD
 
 <details><summary>Answer</summary>
 
-**Scenario:** During a high-traffic signup event, thread starvation occurs because `save()` blocks execution longer than expected.
-**Trace:** `GenerationType.IDENTITY` forces Hibernate to immediately execute an `INSERT` statement to obtain the database-generated ID, completely bypassing Hibernate's internal ActionQueue and deferred execution (transactional write-behind). This means every `save()` synchronously hits the database and waits for disk I/O, preventing JDBC batching.
-**Debug/Fix:** Change the generation strategy to `GenerationType.SEQUENCE` (with a sequence generator like Postgre's `CREATE SEQUENCE`). This allows Hibernate to pre-fetch a batch of IDs (using `allocationSize=50`), assign them to entities in memory, and defer the actual `INSERT` statements until the flush phase, enabling JDBC batching and eliminating the per-request synchronous I/O bottleneck.
+- **Scenario:** During a high-traffic signup event, thread starvation occurs because `save()` blocks execution longer than expected.
+- **Trace:** `GenerationType.IDENTITY` forces Hibernate to immediately execute an `INSERT` statement to obtain the database-generated ID, completely bypassing Hibernate's internal ActionQueue and deferred execution (transactional write-behind). This means every `save()` synchronously hits the database and waits for disk I/O, preventing JDBC batching.
+- **Debug/Fix:** Change the generation strategy to `GenerationType.SEQUENCE` (with a sequence generator like Postgre's `CREATE SEQUENCE`). This allows Hibernate to pre-fetch a batch of IDs (using `allocationSize=50`), assign them to entities in memory, and defer the actual `INSERT` statements until the flush phase, enabling JDBC batching and eliminating the per-request synchronous I/O bottleneck.
 
 </details>
 
@@ -136,9 +136,9 @@ public void demonstrateIdentity() {
 
 <details><summary>Answer</summary>
 
-**Scenario:** A background worker processing millions of rows causes the JVM to run out of heap space.
-**Trace:** The Persistence Context (L1 cache) stores a hard reference to _every_ entity loaded or persisted during the transaction. It also stores a deep-copied `Object[]` snapshot of the entity's initial state for dirty checking. When processing 100,000 entities in one transaction, the L1 cache balloons continuously until memory is exhausted, because the Session is not cleared until the method ends.
-**Debug/Fix:** Implement chunk-based processing with explicit flushing and clearing. Read and process entities in batches (e.g., 500 at a time). After each batch, manually call `entityManager.flush()` to send the `UPDATE` statements to the database, followed immediately by `entityManager.clear()` to detach all managed entities and allow the garbage collector to reclaim the memory from the L1 cache.
+- **Scenario:** A background worker processing millions of rows causes the JVM to run out of heap space.
+- **Trace:** The Persistence Context (L1 cache) stores a hard reference to _every_ entity loaded or persisted during the transaction. It also stores a deep-copied `Object[]` snapshot of the entity's initial state for dirty checking. When processing 100,000 entities in one transaction, the L1 cache balloons continuously until memory is exhausted, because the Session is not cleared until the method ends.
+- **Debug/Fix:** Implement chunk-based processing with explicit flushing and clearing. Read and process entities in batches (e.g., 500 at a time). After each batch, manually call `entityManager.flush()` to send the `UPDATE` statements to the database, followed immediately by `entityManager.clear()` to detach all managed entities and allow the garbage collector to reclaim the memory from the L1 cache.
 
 </details>
 
@@ -210,9 +210,9 @@ public void dangerousMerge(User detachedUser) {
 
 <details><summary>Answer</summary>
 
-**Scenario:** High database load caused by an unexpected N+1 style read penalty during an update operation.
-**Trace:** The `User` object retrieved from Redis is a standard Java object, meaning it is in the `TRANSIENT` or `DETACHED` state. When you call `save()` (which calls `em.merge()` under the hood for entities with existing IDs), Hibernate must figure out the difference between the detached entity and the current database state. To do this, it executes a `SELECT` statement to pull the current state into the Persistence Context before merging the changes and issuing the `UPDATE`.
-**Debug/Fix:** If you know the exact ID and only need to update specific fields, bypass the merge trap entirely by writing a custom JPQL `@Modifying` query (e.g., `@Query("UPDATE User u SET u.lastLogin = :time WHERE u.id = :id")`). This pushes the update directly to the database, completely avoiding the `SELECT` penalty and bypasses the Persistence Context.
+- **Scenario:** High database load caused by an unexpected N+1 style read penalty during an update operation.
+- **Trace:** The `User` object retrieved from Redis is a standard Java object, meaning it is in the `TRANSIENT` or `DETACHED` state. When you call `save()` (which calls `em.merge()` under the hood for entities with existing IDs), Hibernate must figure out the difference between the detached entity and the current database state. To do this, it executes a `SELECT` statement to pull the current state into the Persistence Context before merging the changes and issuing the `UPDATE`.
+- **Debug/Fix:** If you know the exact ID and only need to update specific fields, bypass the merge trap entirely by writing a custom JPQL `@Modifying` query (e.g., `@Query("UPDATE User u SET u.lastLogin = :time WHERE u.id = :id")`). This pushes the update directly to the database, completely avoiding the `SELECT` penalty and bypasses the Persistence Context.
 
 </details>
 
@@ -343,6 +343,8 @@ flowchart TD
 
 ```
 
+**How to read this diagram.** Read top to bottom: at flush time the Persistence Context holds both the live entity (name='Sai Harsha') and the internal snapshot taken at load (name='Harsha'); the dirty-check loop compares them property by property, and any difference adds an EntityUpdateAction to the ActionQueue, which JDBC then runs as the UPDATE. Notice that the trigger is the entity-versus-snapshot comparison, not a call you make.
+
 **Why this matters**
 
 ```text
@@ -380,9 +382,9 @@ For 10,000 entities: skipping snapshots saves ~40KB memory + CPU time
 
 <details><summary>Answer</summary>
 
-**Scenario:** Database storage engines struggle with excessive WAL writes during minor entity updates.
-**Trace:** By default, when Hibernate's Dirty Checking detects a change, it generates a static `UPDATE` statement that includes _every single column_ in the entity, regardless of whether it changed. It does this to cache the `PreparedStatement` at the JDBC level. Writing 150 columns (including heavy text blobs) to the database forces the database engine to rewrite massive amounts of data into the WAL and data pages, crushing disk I/O.
-**Debug/Fix:** Annotate the `Employee` entity with `@DynamicUpdate`. This instructs Hibernate to dynamically generate the `UPDATE` SQL string at runtime, including _only_ the columns that were modified (in this case, just `isActive = false`). This eliminates the massive payload overhead at the cost of slight CPU overhead in string generation, dramatically reducing network and database I/O.
+- **Scenario:** Database storage engines struggle with excessive WAL writes during minor entity updates.
+- **Trace:** By default, when Hibernate's Dirty Checking detects a change, it generates a static `UPDATE` statement that includes _every single column_ in the entity, regardless of whether it changed. It does this to cache the `PreparedStatement` at the JDBC level. Writing 150 columns (including heavy text blobs) to the database forces the database engine to rewrite massive amounts of data into the WAL and data pages, crushing disk I/O.
+- **Debug/Fix:** Annotate the `Employee` entity with `@DynamicUpdate`. This instructs Hibernate to dynamically generate the `UPDATE` SQL string at runtime, including _only_ the columns that were modified (in this case, just `isActive = false`). This eliminates the massive payload overhead at the cost of slight CPU overhead in string generation, dramatically reducing network and database I/O.
 
 </details>
 
@@ -662,6 +664,8 @@ sequenceDiagram
     end
 ```
 
+**How to read this diagram.** Read top to bottom: the first query fetches 100 departments, then the loop runs the employees query once per department (100 times), each one a separate network packet, context switch, parse and plan on the database server. Notice the loop note: 100 consecutive context switches on top of the first query is the N+1 cost.
+
 ### 4 Solutions
 
 ```java
@@ -778,9 +782,9 @@ Force all DB access through @Transactional service methods
 
 <details><summary>Answer</summary>
 
-**Scenario:** Connection pool starvation caused by long-running HTTP responses.
-**Trace:** Spring Boot enables Open Session in View (OSIV) by default (`spring.jpa.open-in-view=true`). OSIV keeps the Hibernate `Session`—and its underlying JDBC connection—open for the _entire_ lifecycle of the HTTP request, including the view rendering or JSON serialization phase. If the client has a slow network and the 5MB payload takes 2 seconds to transmit, the database connection is held hostage for those 2 seconds, entirely defeating the purpose of a connection pool.
-**Debug/Fix:** Explicitly disable OSIV by setting `spring.jpa.open-in-view=false` in `application.yml`. Refactor the service layer to fetch all necessary lazy associations explicitly within the `@Transactional` boundary (using `JOIN FETCH` or by mapping entities to DTOs) so the JDBC connection is returned to the pool _before_ the JSON serialization begins.
+- **Scenario:** Connection pool starvation caused by long-running HTTP responses.
+- **Trace:** Spring Boot enables Open Session in View (OSIV) by default (`spring.jpa.open-in-view=true`). OSIV keeps the Hibernate `Session`—and its underlying JDBC connection—open for the _entire_ lifecycle of the HTTP request, including the view rendering or JSON serialization phase. If the client has a slow network and the 5MB payload takes 2 seconds to transmit, the database connection is held hostage for those 2 seconds, entirely defeating the purpose of a connection pool.
+- **Debug/Fix:** Explicitly disable OSIV by setting `spring.jpa.open-in-view=false` in `application.yml`. Refactor the service layer to fetch all necessary lazy associations explicitly within the `@Transactional` boundary (using `JOIN FETCH` or by mapping entities to DTOs) so the JDBC connection is returned to the pool _before_ the JSON serialization begins.
 
 </details>
 
@@ -833,9 +837,9 @@ The HikariCP wiki suggests: `connections = (core_count * 2) + effective_spindle_
 
 <details><summary>Answer</summary>
 
-**Scenario:** Database thrashing caused by an oversized connection pool.
-**Trace:** A database connection is not a lightweight construct; it maps to an OS thread or process on the database server. When 200 active connections simultaneously hit a 4-core database, the OS scheduler spends the vast majority of its CPU cycles context switching between 200 threads rather than actually executing SQL. This destroys the CPU cache and causes extreme lock contention on database pages.
-**Debug/Fix:** Right-size the connection pool. According to HikariCP's sizing formula (`connections = (core_count * 2) + effective_spindle_count`), a 4-core DB should have a pool size of around 10. Revert the pool size back to 10, and if the application still faces throughput issues, introduce asynchronous processing (message queues) or a caching layer (Redis) to absorb the concurrency before it reaches the database.
+- **Scenario:** Database thrashing caused by an oversized connection pool.
+- **Trace:** A database connection is not a lightweight construct; it maps to an OS thread or process on the database server. When 200 active connections simultaneously hit a 4-core database, the OS scheduler spends the vast majority of its CPU cycles context switching between 200 threads rather than actually executing SQL. This destroys the CPU cache and causes extreme lock contention on database pages.
+- **Debug/Fix:** Right-size the connection pool. According to HikariCP's sizing formula (`connections = (core_count * 2) + effective_spindle_count`), a 4-core DB should have a pool size of around 10. Revert the pool size back to 10, and if the application still faces throughput issues, introduce asynchronous processing (message queues) or a caching layer (Redis) to absorb the concurrency before it reaches the database.
 
 </details>
 
@@ -921,9 +925,9 @@ Delete                deleteByName              DELETE FROM ... WHERE
 
 <details><summary>Answer</summary>
 
-**Scenario:** Brittleness and startup overhead caused by abusing Spring Data JPA dynamic query generation.
-**Trace:** Spring Data parses repository method names at application startup to build an internal AST (Abstract Syntax Tree) and generate the backing JPQL. As the method name grows in complexity, the parsing overhead increases, slowing down application bootstrap time. More importantly, it creates a rigid coupling to the entity's exact property names. If a property like `departmentName` is refactored to `deptName`, the method breaks, often silently until the Spring context attempts to load.
-**Debug/Fix:** Cap method derivation to simple lookups (e.g., `findByEmail(String email)`). For complex conditions, use the `@Query` annotation with a clean, readable method name: `@Query("SELECT u FROM User u WHERE u.status = :status AND u.department.name = :deptName AND...") List<User> findTargetUsers(...)`. This decouples the method signature from the entity field names and centralizes the SQL logic for easier tuning.
+- **Scenario:** Brittleness and startup overhead caused by abusing Spring Data JPA dynamic query generation.
+- **Trace:** Spring Data parses repository method names at application startup to build an internal AST (Abstract Syntax Tree) and generate the backing JPQL. As the method name grows in complexity, the parsing overhead increases, slowing down application bootstrap time. More importantly, it creates a rigid coupling to the entity's exact property names. If a property like `departmentName` is refactored to `deptName`, the method breaks, often silently until the Spring context attempts to load.
+- **Debug/Fix:** Cap method derivation to simple lookups (e.g., `findByEmail(String email)`). For complex conditions, use the `@Query` annotation with a clean, readable method name: `@Query("SELECT u FROM User u WHERE u.status = :status AND u.department.name = :deptName AND...") List<User> findTargetUsers(...)`. This decouples the method signature from the entity field names and centralizes the SQL logic for easier tuning.
 
 </details>
 

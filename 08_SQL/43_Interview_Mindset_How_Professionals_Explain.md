@@ -1,8 +1,8 @@
 # Chapter 43 — The Interview Mindset: How Professionals Explain Production Problems
 
-**What:** The exact mental framework, vocabulary, and structure that separates a junior "I fixed the bug" answer from a senior "I identified, analyzed, and resolved a systemic issue" answer
-**Why:** Knowing the fix is 30% of the interview. Explaining it like a professional is the other 70%.
-**Who:** Anyone preparing for mid-level to senior backend/database interviews
+- **What:** The exact mental framework, vocabulary, and structure that separates a junior "I fixed the bug" answer from a senior "I identified, analyzed, and resolved a systemic issue" answer
+- **Why:** Knowing the fix is 30% of the interview. Explaining it like a professional is the other 70%.
+- **Who:** Anyone preparing for mid-level to senior backend/database interviews
 
 ---
 
@@ -472,8 +472,11 @@ Rewrite this into a professional, 30-second SIREN-framework elevator summary tha
 <details><summary>Answer</summary>
 
 "**SITUATION:** Our user-lookup API latency degraded to 4 seconds during peak traffic for a table of 150 million users.
+
 **INVESTIGATION & ROOT CAUSE:** I analyzed the slow query logs and identified a full table scan occurring because the `WHERE` clause queried the `email` column, which lacked an index.
+
 **EXECUTION:** I introduced a B-Tree index on `email`, which reduced the lookup from an O(N) sequential scan to an O(log N) traversal, dropping latency to 12ms.
+
 **NEXT Steps:** To prevent recurrence, I added an automated CI/CD check that warns if a query in our ORM targets a non-indexed column on tables exceeding 1M rows."
 
 </details>

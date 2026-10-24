@@ -136,7 +136,9 @@ flowchart TD
 **Ordering:**
 
 Messages are guaranteed in order **within a partition**, NOT across partitions.
+
 To order all messages for `user123`: use `userId` as the **partition key**.
+
 `hash("user123") % num_partitions` → always the same partition.
 
 **Delivery Semantics:**

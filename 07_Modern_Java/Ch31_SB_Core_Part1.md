@@ -102,9 +102,10 @@ Control over instantiation. `@Component` is a class-level annotation. Spring aut
 - Understand why Spring creates proxies in heap
 - Debug memory issues confidently
 - Pass advanced Java interview questions
-  🔴 REAL INCIDENT: A startup's Spring Boot app crashed every 2 hours
-  with OutOfMemoryError: Metaspace. Root cause: Dynamically generated
-  classes from reflection never got garbage collected.
+
+🔴 REAL INCIDENT: A startup's Spring Boot app crashed every 2 hours
+with OutOfMemoryError: Metaspace. Root cause: Dynamically generated
+classes from reflection never got garbage collected.
 
 ### 🟢 HOW: JVM Memory Architecture
 

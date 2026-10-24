@@ -358,9 +358,9 @@ Today, every SQL analytics interview tests GROUP BY with HAVING and window funct
 3. **ROLLUP memory blow-up on multi-column groupings**: `GROUP BY ROLLUP(region, country, city, store)` generates 16 groupings (2^4) — if each group requires a hash table in memory, a 4-level ROLLUP on a large dataset can exhaust temp_tables_space and cause disk spills that slow queries 100x.
 
 **Debug workflow:**
-(1) Use `EXPLAIN ANALYZE` to measure aggregation time — look for `HashAggregate` vs `Sort` nodes and check `peak_memory` and `spills`.
-(2) For large COUNTs, check row estimates in `EXPLAIN` — if `rows` estimate is way off, run `ANALYZE table` to update statistics.
-(3) For ROLLUP/CUBE, test with production data volume in a staging environment and monitor `work_mem` (PostgreSQL) or `sort_buffer_size` (MySQL) to confirm the query fits in memory.
+1. Use `EXPLAIN ANALYZE` to measure aggregation time — look for `HashAggregate` vs `Sort` nodes and check `peak_memory` and `spills`.
+2. For large COUNTs, check row estimates in `EXPLAIN` — if `rows` estimate is way off, run `ANALYZE table` to update statistics.
+3. For ROLLUP/CUBE, test with production data volume in a staging environment and monitor `work_mem` (PostgreSQL) or `sort_buffer_size` (MySQL) to confirm the query fits in memory.
 
 **Modern practice anchor:**
 Today, materialized views (Snowflake, PostgreSQL, Oracle) pre-compute expensive COUNT/GROUP BY aggregations on a schedule, eliminating the need for real-time COUNT(*) on large tables. Real-time dashboards use streaming ingestion (Kafka + DruDB) to maintain pre-aggregated counters.

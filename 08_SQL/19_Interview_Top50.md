@@ -205,9 +205,9 @@ Top 50 SQL interview questions now include window functions (LAG/LEAD, RANK), CT
 3. **NULL handling surprises in production filters**: An interview query `WHERE dept_id != 5` silently drops NULL dept_id rows (NULL != 5 evaluates to NULL, not TRUE). In a production report this means the "unassigned" bucket is always zero. Every SQL developer discovers this bug in their first month on the job.
 
 **Debug workflow:**
-(1) Review query execution plans with `EXPLAIN ANALYZE` — look for `Seq Scan` and `Sort (Disk)` indicating full-table sort without index.
-(2) Enable query logging in production and filter for queries returning >10,000 rows unexpectedly.
-(3) Test NULL-edge-case queries: run `WHERE col != val` and explicitly check `WHERE col IS NULL` to ensure all buckets are accounted for.
+1. Review query execution plans with `EXPLAIN ANALYZE` — look for `Seq Scan` and `Sort (Disk)` indicating full-table sort without index.
+2. Enable query logging in production and filter for queries returning >10,000 rows unexpectedly.
+3. Test NULL-edge-case queries: run `WHERE col != val` and explicitly check `WHERE col IS NULL` to ensure all buckets are accounted for.
 
 **Modern practice anchor:**
 Today, tools like New Relic, Datadog, and Percona's PMM dashboard visualize query row counts and latency in production, catching interview-style unbounded results before they cascade into page timeouts.

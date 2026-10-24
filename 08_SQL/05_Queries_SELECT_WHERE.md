@@ -483,9 +483,9 @@ Today, every SQL interview expects candidates to explain why `WHERE` filters bef
 3. **Function on indexed column in WHERE clause**: `WHERE YEAR(hire_date) = 2023` applies YEAR() to every row before filtering, preventing the index on `hire_date` from being used. The database does a seq scan even with an index present. Fix: use `WHERE hire_date >= '2023-01-01' AND hire_date < '2024-01-01'`.
 
 **Debug workflow:**
-(1) Run `EXPLAIN ANALYZE` and check for `Seq Scan` or `type=ALL` — if present on a table with an index on the filtered column, suspect a function wrapper or leading wildcard.
-(2) Profile column sizes: `SELECT AVG(LENGTH(col)) FROM table` to find unexpectedly large columns, then remove them from `SELECT *` to explicit column lists.
-(3) Replace `LIKE '%pattern%'` with `LIKE 'pattern%'` where possible, or migrate to full-text search (MySQL `MATCH ... AGAINST`, PostgreSQL `tsvector`). Check `pg_stat_user_indexes` for index usage ratios.
+1. Run `EXPLAIN ANALYZE` and check for `Seq Scan` or `type=ALL` — if present on a table with an index on the filtered column, suspect a function wrapper or leading wildcard.
+2. Profile column sizes: `SELECT AVG(LENGTH(col)) FROM table` to find unexpectedly large columns, then remove them from `SELECT *` to explicit column lists.
+3. Replace `LIKE '%pattern%'` with `LIKE 'pattern%'` where possible, or migrate to full-text search (MySQL `MATCH ... AGAINST`, PostgreSQL `tsvector`). Check `pg_stat_user_indexes` for index usage ratios.
 
 **Modern practice anchor:**
 Today, query analyzers like `pt-query-digest` (Percona), MySQL `performance_schema`, and PostgreSQL `pg_stat_statements` surface slow queries with high row counts — catching SELECT * abuse and unindexed LIKE patterns automatically in production.

@@ -60,36 +60,34 @@ flowchart TD
 
 ## # File Name Topics
 
--- Ch06_Functional_Programming.md Lambda, Streams, Optional,
-Records, var keyword
-00 02_Spring_Boot_Part0_Hidden_Foundations Reflection, Proxy, Servlet,
-Jackson, HikariCP, DevTools
-01 03_Spring_Boot_Complete_Part1 JVM, GC, Threads, Memory
-02 04_Spring_Boot_Complete_Part2 IoC, DI, Bean Scopes, Lifecycle,
-Circular Dependencies
-03 05_Spring_Boot_Complete_Part3 AOP, Proxies, Auto-Config
-04 06_Spring_Boot_Complete_Part4 JPA/Web/Security Overview
-05 07_Spring_Boot_Part5_Lombok_DTOs @Data, @Builder, DTO Patterns
-06 08_Spring_Boot_Part6_Service_Repository @Service, @Repository, @Query
-07 09_Spring_Boot_Part7_Controllers_REST @RestController, @Valid, APIs
-08 10_Spring_Boot_Part8_JPA_Deep_Dive Entities, Relations, N+1, Fetch
-09 11_Spring_Boot_Part9_Architecture_Quality Clean Code, Package Structure
-10 12_Spring_Boot_Part10_HTTP_Deep_Dive HTTP Lifecycle, Headers, REST
-11 13_Spring_Boot_Part11_Auth_Security JWT, OAuth2, Spring Security
-12 14_Spring_Boot_Part12_DSA_Applications Rate Limiter, LRU, Trie, Graph
-13 15_Spring_Boot_Part13_Industry_Projects Notification, Feature Flags
-14 16_Spring_Boot_Part14_Essential_Topics Cache, Async, Actuator, Swagger
-15 17_Spring_Boot_Part15_WebFlux_Reactive Mono, Flux, WebClient, R2DBC
-16 18_Spring_Boot_Part16_SOLID_Principles S.O.L.I.D with Spring Examples
-17 19_Spring_Boot_Part17_Database_Security Password Hash, Encryption, RBAC
-18 20_Spring_Boot_Part18_Distributed_Tracing Micrometer, Zipkin, Spans
-19 21_Spring_Boot_Part19_Testing_Complete JUnit, Mockito, TestContainers
-20 22_Spring_Boot_Part20_Microservices Eureka, Gateway, Circuit Breaker
-21 23_Spring_Boot_Part21_Cloud_Deployment Docker, K8s, AWS, Azure, CI/CD
-22 24_Spring_Boot_Part22_Annotations ALL annotations reference
-23 25_Spring_Boot_Part23_Missing_Essentials WebSockets, GraphQL, gRPC,
-Batch, HATEOAS, i18n, GraalVM
--- 26_Spring_Boot_Curriculum_50Day 50-day study plan (10 weeks)
+| # | File | Topics |
+| --- | --- | --- |
+| -- | Ch06_Functional_Programming.md | Lambda, Streams, Optional, Records, var keyword |
+| 00 | 02_Spring_Boot_Part0_Hidden_Foundations | Reflection, Proxy, Servlet, Jackson, HikariCP, DevTools |
+| 01 | 03_Spring_Boot_Complete_Part1 | JVM, GC, Threads, Memory |
+| 02 | 04_Spring_Boot_Complete_Part2 | IoC, DI, Bean Scopes, Lifecycle, Circular Dependencies |
+| 03 | 05_Spring_Boot_Complete_Part3 | AOP, Proxies, Auto-Config |
+| 04 | 06_Spring_Boot_Complete_Part4 | JPA/Web/Security Overview |
+| 05 | 07_Spring_Boot_Part5_Lombok_DTOs | @Data, @Builder, DTO Patterns |
+| 06 | 08_Spring_Boot_Part6_Service_Repository | @Service, @Repository, @Query |
+| 07 | 09_Spring_Boot_Part7_Controllers_REST | @RestController, @Valid, APIs |
+| 08 | 10_Spring_Boot_Part8_JPA_Deep_Dive | Entities, Relations, N+1, Fetch |
+| 09 | 11_Spring_Boot_Part9_Architecture_Quality | Clean Code, Package Structure |
+| 10 | 12_Spring_Boot_Part10_HTTP_Deep_Dive | HTTP Lifecycle, Headers, REST |
+| 11 | 13_Spring_Boot_Part11_Auth_Security | JWT, OAuth2, Spring Security |
+| 12 | 14_Spring_Boot_Part12_DSA_Applications | Rate Limiter, LRU, Trie, Graph |
+| 13 | 15_Spring_Boot_Part13_Industry_Projects | Notification, Feature Flags |
+| 14 | 16_Spring_Boot_Part14_Essential_Topics | Cache, Async, Actuator, Swagger |
+| 15 | 17_Spring_Boot_Part15_WebFlux_Reactive | Mono, Flux, WebClient, R2DBC |
+| 16 | 18_Spring_Boot_Part16_SOLID_Principles | S.O.L.I.D with Spring Examples |
+| 17 | 19_Spring_Boot_Part17_Database_Security | Password Hash, Encryption, RBAC |
+| 18 | 20_Spring_Boot_Part18_Distributed_Tracing | Micrometer, Zipkin, Spans |
+| 19 | 21_Spring_Boot_Part19_Testing_Complete | JUnit, Mockito, TestContainers |
+| 20 | 22_Spring_Boot_Part20_Microservices | Eureka, Gateway, Circuit Breaker |
+| 21 | 23_Spring_Boot_Part21_Cloud_Deployment | Docker, K8s, AWS, Azure, CI/CD |
+| 22 | 24_Spring_Boot_Part22_Annotations | ALL annotations reference |
+| 23 | 25_Spring_Boot_Part23_Missing_Essentials | WebSockets, GraphQL, gRPC, Batch, HATEOAS, i18n, GraalVM |
+| -- | 26_Spring_Boot_Curriculum_50Day | 50-day study plan (10 weeks) |
 
 ---
 
@@ -780,11 +778,11 @@ A comprehensive reference covering ALL important annotations:
 2. EACH PART = 1-3 DAYS
    Don't rush. Understanding beats memorization.
 3. BUILD SOMETHING AFTER EACH PHASE
-   Phase 1: Simple bean playground
-   Phase 2: REST API skeleton
-   Phase 3: Complete CRUD app
-   Phase 4: Add caching, security
-   Phase 5: Full industry-level project
+   - Phase 1: Simple bean playground
+   - Phase 2: REST API skeleton
+   - Phase 3: Complete CRUD app
+   - Phase 4: Add caching, security
+   - Phase 5: Full industry-level project
 4. INTERVIEW PREP PRIORITY
    Most asked: IoC/DI, REST, JPA, Transactions, Security
 5. REVISIT FOUNDATIONS
@@ -796,38 +794,52 @@ A comprehensive reference covering ALL important annotations:
 
 ## Learning Paths By Goal
 
-🎯 PATH A: JOB INTERVIEW PREP (2-3 weeks)
+
+**🎯 PATH A: JOB INTERVIEW PREP (2-3 weeks)**
+
 Functional Prog → Part 0 (key sections) → Part 2 → Part 7 → Part 8 → Part 11
 
 **Focus**: Lambdas, IoC/DI, REST APIs, JPA Basics, Security
 
 **Interview Topics**: "How does @Autowired work?", "Explain @Transactional"
-📚 PATH B: FULL MASTERY (10-14 weeks)
+
+**📚 PATH B: FULL MASTERY (10-14 weeks)**
+
 Functional Prog → Part 0 → Parts 1-22 (all in roadmap order)
 
 **Result**: Complete backend engineer with enterprise knowledge
-⚡ PATH C: ALREADY KNOW JAVA (4-5 weeks)
+
+**⚡ PATH C: ALREADY KNOW JAVA (4-5 weeks)**
+
 Part 0 (review) → Part 2 → Part 10 → Part 7-8 → Part 14 → Part 11 → Part 13
 
 **Skip**: Part 1 (Java basics), Part 5 (if know Lombok)
 
 **Focus**: Spring internals, REST, JPA, Production features
-🔍 PATH D: "I WANT TO REALLY UNDERSTAND SPRING" (Recommended!)
+
+**🔍 PATH D: "I WANT TO REALLY UNDERSTAND SPRING" (Recommended!)**
+
 Part 0 (ALL sections) → Part 2 → Part 3 → Continue in roadmap order
 
 **Why**: Part 0 explains the WHY behind Spring's "magic"
 
 **Result**: Debug any Spring issue, understand any blog post
-☁️ PATH E: MICROSERVICES & CLOUD FOCUS (4-5 weeks)
+
+**☁️ PATH E: MICROSERVICES & CLOUD FOCUS (4-5 weeks)**
+
 Part 15 (WebFlux) → Part 19 (Testing) → Part 20 (Microservices) → Part 21
 Add: Part 18 (Distributed Tracing) for observability
 
 **Ideal For**: Senior devs moving to microservices architecture
-🛡️ PATH F: SECURITY SPECIALIST (2-3 weeks)
+
+**🛡️ PATH F: SECURITY SPECIALIST (2-3 weeks)**
+
 Part 11 (Auth/Security) → Part 17 (DB Security) → Part 22 (Security annot.)
 
 **Focus**: JWT, OAuth2, Role-Based Access, SQL Injection Prevention
-🧪 PATH G: TESTING EXPERT (1-2 weeks)
+
+**🧪 PATH G: TESTING EXPERT (1-2 weeks)**
+
 Part 19 (Testing Complete) → Part 22 (Testing annotations)
 
 **Topics**: JUnit 5, Mockito, @SpringBootTest, TestContainers, TDD/BDD
@@ -849,48 +861,62 @@ Separation of Concerns and Testability. Controllers should only handle HTTP prot
 ## After Each Phase, You Should Be Able To Answer These Questions
 
 **Prerequisites**:
-☐ What's the difference between map() and flatMap() in Streams?
-☐ When would you use Optional vs returning null?
-☐ How do Java Records differ from regular classes?
-PHASE 0 (Hidden Foundations):
-☐ How does @Autowired inject dependencies? (Reflection!)
-☐ Why doesn't @Transactional work on private methods? (Proxies!)
-☐ What is the Servlet lifecycle?
-PHASE 1 (Core Spring):
-☐ What's the difference between @Component and @Bean?
-☐ Explain constructor injection vs field injection pros/cons
-☐ What are the different bean scopes?
-☐ How does AOP work in Spring?
-PHASE 2 (Web Fundamentals):
-☐ What HTTP status code for "resource not found" vs "validation error"?
-☐ When to use @PathVariable vs @RequestParam?
-☐ What does Content-Type header do?
-PHASE 3 (Application Layers):
-☐ Build a complete CRUD REST API from scratch
-☐ What is the N+1 query problem and how to solve it?
-☐ Explain LAZY vs EAGER fetch strategies
-☐ What are transaction propagation levels?
-PHASE 4 (Production Features):
-☐ How to implement JWT authentication?
-☐ What is the Filter Chain in Spring Security?
-☐ How does @Cacheable work?
-☐ What endpoints does Actuator expose?
-PHASE 5 (Mastery):
-☐ Design a rate limiter using sliding window
-☐ Implement clean architecture in a Spring Boot app
-☐ Build a notification engine with retry logic
-PHASE 6 (Enterprise):
-☐ Explain Mono vs Flux in WebFlux
-☐ Implement Circuit Breaker pattern
-☐ Deploy Spring Boot app to Kubernetes
-☐ Set up distributed tracing with Zipkin
+- ☐ What's the difference between map() and flatMap() in Streams?
+- ☐ When would you use Optional vs returning null?
+- ☐ How do Java Records differ from regular classes?
+
+**PHASE 0 (Hidden Foundations):**
+
+- ☐ How does @Autowired inject dependencies? (Reflection!)
+- ☐ Why doesn't @Transactional work on private methods? (Proxies!)
+- ☐ What is the Servlet lifecycle?
+
+**PHASE 1 (Core Spring):**
+
+- ☐ What's the difference between @Component and @Bean?
+- ☐ Explain constructor injection vs field injection pros/cons
+- ☐ What are the different bean scopes?
+- ☐ How does AOP work in Spring?
+
+**PHASE 2 (Web Fundamentals):**
+
+- ☐ What HTTP status code for "resource not found" vs "validation error"?
+- ☐ When to use @PathVariable vs @RequestParam?
+- ☐ What does Content-Type header do?
+
+**PHASE 3 (Application Layers):**
+
+- ☐ Build a complete CRUD REST API from scratch
+- ☐ What is the N+1 query problem and how to solve it?
+- ☐ Explain LAZY vs EAGER fetch strategies
+- ☐ What are transaction propagation levels?
+
+**PHASE 4 (Production Features):**
+
+- ☐ How to implement JWT authentication?
+- ☐ What is the Filter Chain in Spring Security?
+- ☐ How does @Cacheable work?
+- ☐ What endpoints does Actuator expose?
+
+**PHASE 5 (Mastery):**
+
+- ☐ Design a rate limiter using sliding window
+- ☐ Implement clean architecture in a Spring Boot app
+- ☐ Build a notification engine with retry logic
+
+**PHASE 6 (Enterprise):**
+
+- ☐ Explain Mono vs Flux in WebFlux
+- ☐ Implement Circuit Breaker pattern
+- ☐ Deploy Spring Boot app to Kubernetes
+- ☐ Set up distributed tracing with Zipkin
 
 ---
 
-_Start with Functional Programming if you're weak in modern Java._
-_Start with Part 0 if you want to understand the magic._
-_Start with Part 1 if you're completely new to Java._
-_Trust the process!_ 🚀
+- _Start with Functional Programming if you're weak in modern Java._
+- _Start with Part 0 if you want to understand the magic._
+- _Start with Part 1 if you're completely new to Java._
+- _Trust the process!_ 🚀
 
 ---
 

@@ -95,6 +95,8 @@ flowchart TD
   IS --> DB
 ```
 
+**How to read this diagram.** All four services (user, order, payment, inventory) sit inside one application box, and every one of them points to the same single database. Notice the shared database; compare it with the microservices diagram that follows.
+
 **🌐 Microservices architecture**
 
 ```mermaid

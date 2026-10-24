@@ -75,6 +75,8 @@ flowchart TD
     style Skip2 fill:transparent,stroke:transparent
 ```
 
+**How to read this diagram.** Start at the search box and follow the root-page decision: 'Kumar' falls in the [K-P] range, so only the [K-P] page is visited, and its leaf page points to Row 5. Notice the dotted 'not visited' links - the [A-J] and [Q-Z] pages are never read.
+
 3-4 comparisons total for a 10-million-row table — every other branch of the tree is never touched.
 
 ```
@@ -324,9 +326,9 @@ Today, every database performance interview tests B-tree index understanding —
 3. **Leading wildcard LIKE '%pattern%' preventing index use**: `WHERE name LIKE '%phone%'` cannot use a B-tree index. Application search features built on a plain `LIKE '%term%'` against a large table are a common way this reaches production unnoticed — it works fine in testing with a small dataset, then saturates database CPU once the table grows into the millions of rows.
 
 **Debug workflow:**
-(1) Check `pg_stat_user_tables` for `seq_scan vs idx_scan` ratios — if `seq_scan > idx_scan` on a large table, add indexes.
-(2) Run `EXPLAIN (ANALYZE, BUFFERS)` and look for `Seq Scan` on large tables. For composite indexes, verify the `key` column in EXPLAIN output matches the leftmost prefix of your index.
-(3) For function-wrapped WHERE clauses, check if an expression index exists: `SELECT indexname FROM pg_indexes WHERE tablename = 'users' AND indexname LIKE '%lower%'`. If missing, create one matching the exact expression used in queries.
+1. Check `pg_stat_user_tables` for `seq_scan vs idx_scan` ratios — if `seq_scan > idx_scan` on a large table, add indexes.
+2. Run `EXPLAIN (ANALYZE, BUFFERS)` and look for `Seq Scan` on large tables. For composite indexes, verify the `key` column in EXPLAIN output matches the leftmost prefix of your index.
+3. For function-wrapped WHERE clauses, check if an expression index exists: `SELECT indexname FROM pg_indexes WHERE tablename = 'users' AND indexname LIKE '%lower%'`. If missing, create one matching the exact expression used in queries.
 
 **Modern practice anchor:**
 Today, Percona's PMM, Datadog's database monitoring, and PostgreSQL's `pg_stat_statements` automatically surface missing index candidates by comparing seq_scan frequency against table size — catching an accidental index removal in staging before it ever reaches production.

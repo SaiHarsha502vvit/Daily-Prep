@@ -40,14 +40,14 @@ You give me a COPY of the address (not the keys).
 I can VISIT the house and rearrange furniture inside:
 → modifyObject(dog) → dog.name = "Max" → ORIGINAL changes
 
-But I CANNOT demolish your house and build a new one:
-→ dog = new Dog("Rex") → only MY copy of the address changes
-→ YOUR original variable still points to the old house
+- But I CANNOT demolish your house and build a new one:
+  - → dog = new Dog("Rex") → only MY copy of the address changes
+  - → YOUR original variable still points to the old house
 
 Java ALWAYS passes a COPY of the value.
-For primitives: copy of the value (5, true, 'a')
-For objects: copy of the REFERENCE (the address), not the
-object itself. The reference is passed BY VALUE.
+- For primitives: copy of the value (5, true, 'a')
+- For objects: copy of the REFERENCE (the address), not the
+  object itself. The reference is passed BY VALUE.
 
 ```java
 public class PassByValueDemo {

@@ -808,6 +808,8 @@ flowchart TD
 
 ```
 
+**How to read this diagram.** Read it as threads polling a flag: the JIT-injected poll points sit at loop back-edges and method exits, and when the JVM sets the global SafePoint flag to TRUE (dashed 'Signals' arrow) every thread that polls and sees true parks itself and dumps its registers. Notice Thread 3 in native code, which cannot be polled - the GC has to wait for every thread to reach a safepoint.
+
 ### 18.2 ZGC Physics: Colored Pointers and Load Barriers
 
 ZGC (Z Garbage Collector) achieves sub-millisecond pauses not by eliminating GC, but by performing the tracing and evacuation _while the application threads are still actively modifying the heap_.
@@ -853,6 +855,8 @@ flowchart LR
     CHECK -->|Color is Good| PASS
 
 ```
+
+**How to read this diagram.** Follow the application thread's read of `person.address` into the load barrier: the barrier checks the pointer's colour bits, a good colour returns the pointer straight away, and a bad colour (the object was moved) stalls the thread for nanoseconds to remap the pointer before returning it. The dotted arrow shows the background evacuation threads marking pointers bad. Notice that the repair happens inside the reader's own load, not in a global pause.
 
 **GC COMPARISON FOR PRODUCTION DECISIONS:**
 
@@ -938,6 +942,8 @@ flowchart LR
 
 ```
 
+**How to read this diagram.** Follow Thread A's write `flag = true` into Core 1's store buffer: without a barrier it reaches L1 only after a delayed flush (dashed arrow), so Core 2's L1 still holds flag=false. The volatile StoreLoad barrier intercepts the store buffer and forces the flush to L1, and the MESI broadcast then lets Core 2's L1, and so Thread B, see the new value. Notice the barrier in the middle - that forced halt is what makes volatile expensive.
+
 ### 19.2 The Abstraction: "Reordering" vs The Reality of Out-of-Order Execution
 
 **The Abstraction:** "The compiler might reorder your code to make it faster."
@@ -945,7 +951,9 @@ flowchart LR
 **The Naked Truth:** The compiler does reorder your code. But the physical CPU also reorders your code _while it is running_.
 
 **The Mechanical Execution (Tomasulo's Algorithm):**
+
 Modern CPUs use an architecture called **Out-of-Order Execution (OoOE)**.
+
 If the CPU sees these instructions:
 
 ```java

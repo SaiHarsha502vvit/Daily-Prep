@@ -293,9 +293,9 @@ Today, every SQL interview tests your understanding of DECIMAL vs FLOAT for mone
 2. **VARCHAR(255) truncation in real-world fields**: A `VARCHAR(255)` limit on the `email` column was set in 2005 when emails were rarely over 50 chars. By 2020, Microsoft 365 and Google Workspace both issue emails with long routing paths exceeding 254 characters. An `INSERT` of a valid RFC-compliant email fails with data truncation, blocking sign-up flows. Fix: use `VARCHAR(320)` for emails (254 + domain) and never assume a fixed upper bound.
 
 **Debug workflow:**
-(1) Trace data types from the application layer to the database — check ORM model definitions (Django, Hibernate, Prisma) for mismatches with the actual schema.
-(2) Run `LENGTH()` analysis on VARCHAR columns to find actual max lengths: `SELECT MAX(LENGTH(col)) FROM table` — compare to the defined column limit.
-(3) For financial columns, verify DECIMAL precision: query `NUMERIC_PRECISION` from `INFORMATION_SCHEMA.COLUMNS` to confirm DECIMAL(10,2) instead of FLOAT/DOUBLE.
+1. Trace data types from the application layer to the database — check ORM model definitions (Django, Hibernate, Prisma) for mismatches with the actual schema.
+2. Run `LENGTH()` analysis on VARCHAR columns to find actual max lengths: `SELECT MAX(LENGTH(col)) FROM table` — compare to the defined column limit.
+3. For financial columns, verify DECIMAL precision: query `NUMERIC_PRECISION` from `INFORMATION_SCHEMA.COLUMNS` to confirm DECIMAL(10,2) instead of FLOAT/DOUBLE.
 
 **Modern practice anchor:**
 Today, schema validation tools (Liquibase, Flyway, Prisma Migrate) enforce column types in CI/CD, and application-layer libraries like Stripe's decimal.js handle currency arithmetic before it reaches the database — catching FLOAT/DECIMAL mismatches before deployment.

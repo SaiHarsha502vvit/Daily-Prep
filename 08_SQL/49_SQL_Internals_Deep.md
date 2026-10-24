@@ -759,9 +759,13 @@ What happens if Leaf Page #5 is completely full (8192 bytes used), and you inser
    **The Penalty:** One simple `INSERT` just caused a massive cascade of lock acquisition, memory allocation, and 3 dirty pages in the Buffer Pool.
 
 **The Physics Solution (Fillfactor):**
+
 If you have a table that receives massive amounts of `UPDATE` and `INSERT` operations, you configure the Index `FILLFACTOR`.
+
 `CREATE INDEX idx_users ON users(id) WITH (fillfactor = 70);`
+
 This tells the database: "When building the B+Tree, physically leave 30% of every 8KB page completely empty."
+
 Now, when you insert new rows, there is physical empty space waiting on the disk block. The database just writes the bytes. No Page Splits. No Lock Cascades. Massive write-throughput.
 
 ---

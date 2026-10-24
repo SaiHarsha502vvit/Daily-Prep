@@ -670,6 +670,8 @@ flowchart LR
   C["Controller"] -->|"directly calls"| S["Service"] -->|"directly calls"| R["Repository"]
 ```
 
+**How to read this diagram.** Read left to right: the Controller calls the Service, which calls the Repository, and every arrow is a direct call. Notice that each link is hard-wired, which is why adding email means editing the Service.
+
 Problem: tight coupling. Adding email means changing the Service code.
 
 **Event-driven**

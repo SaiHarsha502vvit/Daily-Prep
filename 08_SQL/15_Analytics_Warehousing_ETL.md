@@ -342,6 +342,8 @@ flowchart TD
     style F fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
 ```
 
+**How to read this diagram.** The four dimension tables (product, customer, date, store) each point into the single fact_sales table, which holds the measures plus a foreign key to every dimension. Notice the shape: one fact table in the centre with the dimensions radiating outward, which is the star that gives the star schema its name.
+
 **Star schema** is exactly this: one fact table, dimensions denormalized (each dimension is a single flat table, no sub-tables) and connected directly to the fact table — fewer joins per query. **Snowflake schema** normalizes the dimensions themselves into sub-dimensions (e.g. `dim_product` referencing a separate `dim_category` table) — less storage redundancy, but more joins to reassemble a query.
 
 ```sql

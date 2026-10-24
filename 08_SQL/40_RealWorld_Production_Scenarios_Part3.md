@@ -1,9 +1,9 @@
 # Chapter 40 — Real-World Production Scenarios Part 3: Concurrency, Transactions & Data Integrity
 
-**What:** 25 real-world concurrency disasters (Scenarios 51–75) with 5W-H + fixes
-**Why:** Race conditions, deadlocks, and data corruption are the hardest bugs to reproduce and fix
-**Where:** Every multi-user system — e-commerce, banking, SaaS, ticketing
-**How:** Understand the failure → SQL/backend fix → DSA insight
+- **What:** 25 real-world concurrency disasters (Scenarios 51–75) with 5W-H + fixes
+- **Why:** Race conditions, deadlocks, and data corruption are the hardest bugs to reproduce and fix
+- **Where:** Every multi-user system — e-commerce, banking, SaaS, ticketing
+- **How:** Understand the failure → SQL/backend fix → DSA insight
 
 ---
 

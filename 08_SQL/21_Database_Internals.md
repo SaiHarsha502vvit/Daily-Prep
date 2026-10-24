@@ -52,21 +52,21 @@ Know what happens beneath your SQL queries — B-Trees, WAL, MVCC, Buffer Pool, 
 
 ### Clustered vs Non-Clustered Index
 
-CLUSTERED INDEX (Primary Key):
-→ Table data is PHYSICALLY sorted by this key on disk
-→ Only ONE per table (you can only sort data one way)
-→ Leaf pages contain the ACTUAL ROW data
+- CLUSTERED INDEX (Primary Key):
+  - → Table data is PHYSICALLY sorted by this key on disk
+  - → Only ONE per table (you can only sort data one way)
+  - → Leaf pages contain the ACTUAL ROW data
 
-NON-CLUSTERED INDEX (Secondary):
-→ Separate B-Tree with its own leaf pages
-→ Leaf pages contain: index key + pointer to actual row
-→ Lookup: find key in index B-Tree → follow pointer to row
-→ Extra hop = slightly slower than clustered
+- NON-CLUSTERED INDEX (Secondary):
+  - → Separate B-Tree with its own leaf pages
+  - → Leaf pages contain: index key + pointer to actual row
+  - → Lookup: find key in index B-Tree → follow pointer to row
+  - → Extra hop = slightly slower than clustered
 
-COVERING INDEX:
-→ Index contains ALL columns needed by query
-→ No need to visit actual table row! (index-only scan)
-→ CREATE INDEX idx ON orders(customer_id) INCLUDE (total, status)
+- COVERING INDEX:
+  - → Index contains ALL columns needed by query
+  - → No need to visit actual table row! (index-only scan)
+  - → CREATE INDEX idx ON orders(customer_id) INCLUDE (total, status)
 
 ---
 
@@ -121,6 +121,8 @@ sequenceDiagram
     WAL->>Data: Reconstruct the lost in-memory change
     end
 ```
+
+**How to read this diagram.** Read top to bottom: the client first writes the change to the WAL on disk and gets the fsync back, then the page is modified in the buffer pool in memory and the client is told COMMIT OK; only later, at a checkpoint, are the dirty pages flushed to the data files. The red band shows a crash: on restart the WAL is replayed from the last checkpoint to rebuild the lost in-memory change. Notice that COMMIT OK arrives before the data-file flush.
 
 Step 3 is why WAL makes commits durable *without* waiting for the (slow, random-I/O) data-page write: the client is told "COMMIT OK" as soon as the change is safely on disk in the WAL, not once the actual data page has been updated. Step 4 can happen whenever it's convenient — if the server crashes before it does, replaying the WAL reconstructs exactly what step 4 would have written.
 

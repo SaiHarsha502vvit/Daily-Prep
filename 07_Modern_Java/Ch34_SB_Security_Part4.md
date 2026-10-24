@@ -89,31 +89,42 @@ Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method tha
 ## Jdbc Vs Jpa Comparison
 
 RAW JDBC (Boilerplate hell):
+
+```java
 public User findById(Long id) {
-String sql = "SELECT \* FROM users WHERE id = ?";
-try (Connection conn = dataSource.getConnection();
-PreparedStatement ps = conn.prepareStatement(sql)) {
-ps.setLong(1, id);
-ResultSet rs = ps.executeQuery();
-if (rs.next()) {
-User user = new User();
-user.setId(rs.getLong("id"));
-user.setName(rs.getString("name"));
-user.setEmail(rs.getString("email"));
-// ... 20 more fields
-return user;
+    String sql = "SELECT * FROM users WHERE id = ?";
+    try (Connection conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setLong(1, id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            User user = new User();
+            user.setId(rs.getLong("id"));
+            user.setName(rs.getString("name"));
+            user.setEmail(rs.getString("email"));
+            // ... 20 more fields
+            return user;
+        }
+        return null;
+    }
 }
-return null;
-}
-}
+```
+
 JPA (Clean and simple):
+
+```java
 public User findById(Long id) {
-return entityManager.find(User.class, id); // One line!
+    return entityManager.find(User.class, id); // One line!
 }
+```
+
 OR with Spring Data JPA:
+
+```java
 public interface UserRepository extends JpaRepository<User, Long> {
-// findById() is automatic! No implementation needed!
+    // findById() is automatic! No implementation needed!
 }
+```
 
 ### JPA Architecture Stack
 

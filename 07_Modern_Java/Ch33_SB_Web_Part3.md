@@ -60,27 +60,30 @@ ADVANCED:      Custom auto-configuration, conditional bean creation
 ## The Cross-Cutting Problem
 
 WITHOUT AOP (Logging everywhere):
+
+```java
 @Service
 public class UserService {
-public User findById(Long id) {
-log.info("Entering findById with id={}", id); // REPEATED!
-long start = System.currentTimeMillis(); // REPEATED!
-try { // REPEATED!
-User user = userRepo.findById(id);
-log.info("Exiting findById, took {}ms",
-System.currentTimeMillis() - start); // REPEATED!
-return user;
-} catch (Exception e) { // REPEATED!
-log.error("Error in findById", e); // REPEATED!
-throw e;
+    public User findById(Long id) {
+        log.info("Entering findById with id={}", id); // REPEATED!
+        long start = System.currentTimeMillis(); // REPEATED!
+        try { // REPEATED!
+            User user = userRepo.findById(id);
+            log.info("Exiting findById, took {}ms",
+                    System.currentTimeMillis() - start); // REPEATED!
+            return user;
+        } catch (Exception e) { // REPEATED!
+            log.error("Error in findById", e); // REPEATED!
+            throw e;
+        }
+    }
+    public void createUser(User user) {
+        log.info("Entering createUser"); // REPEATED!
+        long start = System.currentTimeMillis(); // REPEATED!
+        // Same boilerplate... in EVERY method!
+    }
 }
-}
-public void createUser(User user) {
-log.info("Entering createUser"); // REPEATED!
-long start = System.currentTimeMillis(); // REPEATED!
-// Same boilerplate... in EVERY method!
-}
-}
+```
 
 **Problems**:
 
@@ -103,23 +106,28 @@ Separation of Concerns. Controllers should only focus on mapping requests and de
 
 ## With Aop (Separation Of Concerns)
 
+```java
 @Service
 public class UserService {
-public User findById(Long id) {
-return userRepo.findById(id); // Pure business logic!
+    public User findById(Long id) {
+        return userRepo.findById(id); // Pure business logic!
+    }
+    public void createUser(User user) {
+        userRepo.save(user); // Clean!
+    }
 }
-public void createUser(User user) {
-userRepo.save(user); // Clean!
-}
-}
+```
+
+```java
 @Aspect
 @Component
 public class LoggingAspect {
-@Around("execution(_ com.example.service._.\*(..))")
-public Object logMethod(ProceedingJoinPoint pjp) {
-// Logging logic defined ONCE, applied everywhere!
+    @Around("execution(* com.example.service.*.*(..))")
+    public Object logMethod(ProceedingJoinPoint pjp) {
+        // Logging logic defined ONCE, applied everywhere!
+    }
 }
-}
+```
 
 **Benefits**:
 

@@ -321,7 +321,7 @@ sequenceDiagram
     end
 ```
 
-Synchronous makes the client's COMMIT *wait for* the replica's ACK before returning — the extra round trip is the cost of the zero-data-loss guarantee. Asynchronous returns COMMIT the moment the primary itself has durably written the change, and ships it to the replica afterward, on its own schedule — which is exactly why a replica can be several seconds behind and why reading from it right after a write can show stale data.
+**How to read this diagram.** Synchronous makes the client's COMMIT *wait for* the replica's ACK before returning — the extra round trip is the cost of the zero-data-loss guarantee. Asynchronous returns COMMIT the moment the primary itself has durably written the change, and ships it to the replica afterward, on its own schedule — which is exactly why a replica can be several seconds behind and why reading from it right after a write can show stale data.
 
 ### 3.2 Read Replica Architecture
 

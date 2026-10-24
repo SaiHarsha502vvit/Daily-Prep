@@ -456,10 +456,12 @@ selector.select() returns: {A, C}
 
 SELECTABLE OPERATIONS:
 
-SelectionKey.OP_ACCEPT  → ServerSocketChannel ready to accept
-SelectionKey.OP_CONNECT → SocketChannel finished connecting
-SelectionKey.OP_READ    → Channel has data to read
-SelectionKey.OP_WRITE   → Channel ready to write
+| Selectable operation | Meaning |
+| --- | --- |
+| SelectionKey.OP_ACCEPT | ServerSocketChannel ready to accept |
+| SelectionKey.OP_CONNECT | SocketChannel finished connecting |
+| SelectionKey.OP_READ | Channel has data to read |
+| SelectionKey.OP_WRITE | Channel ready to write |
 
 ---
 

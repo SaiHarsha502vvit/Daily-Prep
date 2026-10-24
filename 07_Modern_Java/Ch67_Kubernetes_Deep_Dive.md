@@ -143,6 +143,8 @@ flowchart TD
   end
 ```
 
+**How to read this diagram.** The outer box is the pod, which has its own IP, and it holds one container (image, port, resources and environment) plus a volume mounted at /config. Notice that the pod wraps the container - the cluster IP belongs to the pod.
+
 **Multi-container pod (sidecar pattern)**
 
 ```mermaid
@@ -174,6 +176,8 @@ stateDiagram-v2
   Running --> Succeeded
   Running --> Failed
 ```
+
+**How to read this diagram.** Follow the arrows: a pod starts as Pending (waiting for scheduling, image pull or init containers), moves to Running once containers are running and health checks pass, and ends as either Succeeded or Failed. Notice that Succeeded and Failed have no outgoing arrows - they are the end states.
 
 ---
 

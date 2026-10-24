@@ -27,9 +27,9 @@
 
 DEVELOPER SQL vs ANALYST SQL
 
-Developer: "Get me user #42's orders"
-Analyst: "Show me Week-1 retention for users who signed
-up in January vs February, segmented by plan type"
+- Developer: "Get me user #42's orders"
+- Analyst: "Show me Week-1 retention for users who signed
+  up in January vs February, segmented by plan type"
 
 Developer: SELECT → WHERE → JOIN → done
 Analyst: WITH → WINDOW → CASE → GROUP BY → HAVING → layers

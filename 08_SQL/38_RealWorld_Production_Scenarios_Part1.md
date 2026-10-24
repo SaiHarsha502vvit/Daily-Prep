@@ -1,11 +1,11 @@
 # Chapter 38 — Real-World Production Scenarios Part 1: IDs, Data Growth & Storage Crises
 
-**What:** 25 real-world production scenarios that every developer hits — ID exhaustion, data overflow, storage crises
-**Why:** These aren't textbook problems; they're 3 AM pager alerts that break real systems
-**When:** When your tables grow from thousands to billions of rows
-**Where:** E-commerce, banking, SaaS, healthcare, logistics — every production database
-**Who:** Backend devs, DBAs, Spring Boot developers, on-call engineers
-**How:** 5W-H analysis → SQL solution → DSA/Backend solution → Prevention strategy
+- **What:** 25 real-world production scenarios that every developer hits — ID exhaustion, data overflow, storage crises
+- **Why:** These aren't textbook problems; they're 3 AM pager alerts that break real systems
+- **When:** When your tables grow from thousands to billions of rows
+- **Where:** E-commerce, banking, SaaS, healthcare, logistics — every production database
+- **Who:** Backend devs, DBAs, Spring Boot developers, on-call engineers
+- **How:** 5W-H analysis → SQL solution → DSA/Backend solution → Prevention strategy
 
 ---
 

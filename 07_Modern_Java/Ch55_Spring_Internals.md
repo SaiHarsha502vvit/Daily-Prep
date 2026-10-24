@@ -716,6 +716,8 @@ sequenceDiagram
     Proxy-->>Caller: Return Result
 ```
 
+**How to read this diagram.** Read top to bottom: the caller invokes `transferMoney()` on the CGLIB proxy, not the real bean; the proxy begins a transaction on the database connection (autocommit off), calls the real method, and on a normal return commits and passes the result back. Notice that all the transaction logic lives in the proxy - your own code contains none.
+
 **ANSWER: A PROXY wraps your bean and adds transaction logic:**
 
 **What you think happens:          What ACTUALLY happens:**
@@ -847,6 +849,8 @@ flowchart TD
         REAL2 -->|"this.placeOrder()<br/>BYPASSES PROXY"| REAL3
 
 ```
+
+**How to read this diagram.** Compare the two groups: in the external call, the caller reaches the proxy, which starts the transaction and then calls the real `placeOrder()`. In the self-invocation group, the proxy handles `batchProcess()`, but the real bean's `this.placeOrder()` goes straight to the real object (arrow marked BYPASSES PROXY). Notice that this second `placeOrder()` never passes through the proxy, so no transaction starts.
 
 The proxy wraps the outside; a self-call (`this.placeOrder()`) happens INSIDE the real object, so it never passes through the proxy and no transaction starts.
 
@@ -992,6 +996,8 @@ flowchart TD
         SERV_B -.->|Retrieves| CONN_B
 
 ```
+
+**How to read this diagram.** Each group is one request thread: its ThreadLocal map binds one connection (Connection-A on thread 1, Connection-B on thread 2), and the service and repository calls in that request retrieve (dotted arrows) the same bound connection. Notice that each thread has its own connection - that is how the repository methods share one transaction without the connection being passed around.
 
 ```text
 TransactionSynchronizationManager uses ThreadLocal:

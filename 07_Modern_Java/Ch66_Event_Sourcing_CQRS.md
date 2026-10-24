@@ -529,6 +529,8 @@ sequenceDiagram
   O->>O: Step 4: confirm the order (status CONFIRMED)
 ```
 
+**How to read this diagram.** Read top to bottom: Order service creates the order as PENDING and asks Payment service to charge the card, which asks Inventory service to reserve stock; the success replies flow back and the order becomes CONFIRMED. Notice that every step is a local transaction, which is why the failure path below needs compensating steps.
+
 **Failure path** (step 3 fails: out of stock)
 
 ```mermaid

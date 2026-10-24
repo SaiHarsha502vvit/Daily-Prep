@@ -679,9 +679,9 @@ Today, SQL problem sets are the dominant format in technical interviews (HackerR
 3. **Recursive CTE infinite loop in org-chart queries**: A recursive CTE without a termination guard (e.g., wrong join condition `ON e.manager_id = oc.emp_id` with circular manager data) loops forever until `max_execution_time` or `cte_max_recursion_depth` (default 3000 in PostgreSQL) is hit, crashing the query with "infinite recursion detected".
 
 **Debug workflow:**
-(1) Run `EXPLAIN ANALYZE` on top-N queries — compare estimated rows vs actual rows, and check for nested loop with high loop count indicating O(n²).
-(2) Bench-test with production data volume in staging: load 10k employee records and time the correlated subquery vs window function approach. The window function should be 100x+ faster.
-(3) Set `cte_max_recursion_depth` guard in PostgreSQL (`SET cte_max_recursion_depth = 1000;`) and add explicit LIMIT to recursive CTEs to catch infinite loops early.
+1. Run `EXPLAIN ANALYZE` on top-N queries — compare estimated rows vs actual rows, and check for nested loop with high loop count indicating O(n²).
+2. Bench-test with production data volume in staging: load 10k employee records and time the correlated subquery vs window function approach. The window function should be 100x+ faster.
+3. Set `cte_max_recursion_depth` guard in PostgreSQL (`SET cte_max_recursion_depth = 1000;`) and add explicit LIMIT to recursive CTEs to catch infinite loops early.
 
 **Modern practice anchor:**
 Today, CI/CD pipelines run SQL query benchmarking against synthetic data at production scale (e.g., pgBench, generated 100k-row datasets) to catch O(n²) patterns before they reach production, and tools like pg_stat_statements flag queries with unexpectedly high invocation counts.

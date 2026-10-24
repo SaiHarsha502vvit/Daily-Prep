@@ -138,6 +138,8 @@ flowchart LR
   I --- BUS
 ```
 
+**How to read this diagram.** Read left to right: Order service emits an event that triggers Payment service, whose event in turn triggers Inventory service, and all three also connect to a shared event bus (Kafka). Notice that there is no central coordinator - each service reacts to events, which gives loose coupling but makes overall progress hard to track.
+
 - ✅ Loose coupling.
 - ❌ Hard to track overall progress.
 

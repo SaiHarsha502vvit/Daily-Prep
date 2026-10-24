@@ -39,18 +39,18 @@ THE SUSHI CONVEYOR BELT ANALOGY
 
 Imagine a sushi restaurant with a conveyor belt:
 
-EAGER approach (old Java loops):
-→ Chef makes ALL 100 sushi plates first
-→ Puts them ALL on the belt
-→ You pick the 3 you want
-→ 97 plates WASTED
+- EAGER approach (old Java loops):
+  - → Chef makes ALL 100 sushi plates first
+  - → Puts them ALL on the belt
+  - → You pick the 3 you want
+  - → 97 plates WASTED
 
-LAZY approach (streams):
-→ Chef waits for your ORDER (terminal operation)
-→ Makes one plate at a time
-→ You take it, inspect it (filter), modify it (map)
-→ Stop when you have 3 (limit)
-→ Chef stops. Only 3 plates made.
+- LAZY approach (streams):
+  - → Chef waits for your ORDER (terminal operation)
+  - → Makes one plate at a time
+  - → You take it, inspect it (filter), modify it (map)
+  - → Stop when you have 3 (limit)
+  - → Chef stops. Only 3 plates made.
 
 WHY THIS MATTERS:
 

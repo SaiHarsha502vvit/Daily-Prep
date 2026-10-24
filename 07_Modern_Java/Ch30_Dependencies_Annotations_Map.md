@@ -28,10 +28,10 @@ WHAT: A complete map showing which Maven/Gradle dependency
 enables which annotations and features in Spring Boot.
 
 WHY: Developers (especially beginners) face confusion:
-"I added @Data but it doesn't work!"
-→ Because @Data is Lombok, not Spring.
-"Where does @Entity come from?"
-→ JPA dependency, not Spring Web.
+- "I added @Data but it doesn't work!"
+  - → Because @Data is Lombok, not Spring.
+- "Where does @Entity come from?"
+  - → JPA dependency, not Spring Web.
 
 THE CORE CONFUSION: Spring Boot has 50+ starter dependencies.
 Each unlocks different annotations. Without a map, you guess.
@@ -81,27 +81,28 @@ WHAT @Data ACTUALLY GENERATES:
 
 YOU WRITE: LOMBOK GENERATES AT COMPILE:
 
-@Data public class User {
-public class User { private String name;
-private String name; private String email;
-private String email;
-} public String getName()
-{ return name; }
-public void setName(...)
-{ this.name = name; }
-public String getEmail()
-{ return email; }
-public void setEmail(...)
-{ this.email = email; }
-public String toString()
-{ return "User(name=" ... }
-public boolean equals(...)
-{ ... }
-public int hashCode()
-{ ... }
-public User(String name,
-String email) { ... }
+```java
+@Data
+public class User {
+    private String name;
+    private String email;
 }
+```
+
+```java
+public class User {
+    private String name;
+    private String email;
+    public String getName() { return name; }
+    public void setName(...) { this.name = name; }
+    public String getEmail() { return email; }
+    public void setEmail(...) { this.email = email; }
+    public String toString() { return "User(name=" ... }
+    public boolean equals(...) { ... }
+    public int hashCode() { ... }
+    public User(String name, String email) { ... }
+}
+```
 
 IF @Data DOESN'T WORK:
 
@@ -161,93 +162,112 @@ Constructor injection is better: (1) Dependencies explicit — you can't create 
 CATEGORY 1: BEAN CREATION (Spring Core)
 "Tell Spring to manage this object"
 
-@Component → Generic Spring bean
-@Service → Business logic layer (same as @Component)
-@Repository → Data access layer (adds exception translation)
-@Controller → Web layer (returns views — HTML)
-@RestController → Web layer (returns JSON — @Controller +
-@ResponseBody combined)
-@Configuration → Declares @Bean methods
-@Bean → Method return value becomes a Spring bean
+| Annotation | Purpose |
+| --- | --- |
+| @Component | Generic Spring bean |
+| @Service | Business logic layer (same as @Component) |
+| @Repository | Data access layer (adds exception translation) |
+| @Controller | Web layer (returns views — HTML) |
+| @RestController | Web layer (returns JSON — @Controller + @ResponseBody combined) |
+| @Configuration | Declares @Bean methods |
+| @Bean | Method return value becomes a Spring bean |
 
 ───────────────────────────────────────────────────────────────
 
 CATEGORY 2: DEPENDENCY INJECTION (Spring Core)
 "Give me an instance of that class"
 
-@Autowired → Inject a bean (prefer constructor injection)
-@Qualifier → Choose WHICH bean when multiple exist
-@Primary → This bean is the DEFAULT choice
-@Value → Inject a property value
+| Annotation | Purpose |
+| --- | --- |
+| @Autowired | Inject a bean (prefer constructor injection) |
+| @Qualifier | Choose WHICH bean when multiple exist |
+| @Primary | This bean is the DEFAULT choice |
+| @Value | Inject a property value |
+
+```java
 @Value("${server.port}") int port;
+```
 
 ───────────────────────────────────────────────────────────────
 
 CATEGORY 3: WEB / HTTP (spring-boot-starter-web)
 "Map HTTP requests to Java methods"
 
-@GetMapping("/users") → HTTP GET
-@PostMapping("/users") → HTTP POST
-@PutMapping("/users/{id}") → HTTP PUT
-@DeleteMapping("/users/{id}") → HTTP DELETE
-@PathVariable → Extract from URL path
-@RequestParam → Extract from query string
-@RequestBody → Parse JSON body to object
-@ResponseStatus(HttpStatus.CREATED) → Set response status code
+| Annotation | Purpose |
+| --- | --- |
+| @GetMapping("/users") | HTTP GET |
+| @PostMapping("/users") | HTTP POST |
+| @PutMapping("/users/{id}") | HTTP PUT |
+| @DeleteMapping("/users/{id}") | HTTP DELETE |
+| @PathVariable | Extract from URL path |
+| @RequestParam | Extract from query string |
+| @RequestBody | Parse JSON body to object |
+| @ResponseStatus(HttpStatus.CREATED) | Set response status code |
 
 ───────────────────────────────────────────────────────────────
 
 CATEGORY 4: DATABASE / JPA (spring-boot-starter-data-jpa)
 "Map Java classes to database tables"
 
-@Entity → "This class = a database table"
-@Table → Customize table name: @Table(name="users")
-@Id → Primary key field
-@GeneratedValue → Auto-increment strategy
-@Column → Column config: nullable, length, unique
-@Transient → NOT saved to database (Java-only field)
+| Annotation | Purpose |
+| --- | --- |
+| @Entity | "This class = a database table" |
+| @Table | Customize table name: @Table(name="users") |
+| @Id | Primary key field |
+| @GeneratedValue | Auto-increment strategy |
+| @Column | Column config: nullable, length, unique |
+| @Transient | NOT saved to database (Java-only field) |
 
 Relationships:
-@OneToMany(mappedBy="user") → One user has many orders
-@ManyToOne → Many orders belong to one user
-@ManyToMany → Users ↔ Roles
-@JoinColumn(name="user_id") → Foreign key column name
+
+| Relationship | Meaning |
+| --- | --- |
+| @OneToMany(mappedBy="user") | One user has many orders |
+| @ManyToOne | Many orders belong to one user |
+| @ManyToMany | Users ↔ Roles |
+| @JoinColumn(name="user_id") | Foreign key column name |
 
 ───────────────────────────────────────────────────────────────
 
 CATEGORY 5: VALIDATION (spring-boot-starter-validation)
 "Reject bad input before processing"
 
-@Valid → Trigger validation on this object
-@NotNull → Cannot be null
-@NotBlank → Cannot be null, empty, or whitespace
-@Size(min, max) → String/collection length bounds
-@Min, @Max → Numeric bounds
-@Email → Must be valid email format
-@Pattern(regex) → Must match regex
-@Past, @Future → Date must be before/after now
+| Annotation | Purpose |
+| --- | --- |
+| @Valid | Trigger validation on this object |
+| @NotNull | Cannot be null |
+| @NotBlank | Cannot be null, empty, or whitespace |
+| @Size(min, max) | String/collection length bounds |
+| @Min, @Max | Numeric bounds |
+| @Email | Must be valid email format |
+| @Pattern(regex) | Must match regex |
+| @Past, @Future | Date must be before/after now |
 
 USAGE:
+
+```java
 @PostMapping("/users")
 public User create(@Valid @RequestBody CreateUserDTO dto) {
 // ^^^^^^ THIS triggers validation
 }
+```
 
 ───────────────────────────────────────────────────────────────
 
 CATEGORY 6: LOMBOK (separate library, NOT Spring)
 "Generate boilerplate Java code at compile time"
 
-@Data → Getter + Setter + toString + equals +
-hashCode + RequiredArgsConstructor
-@Getter/@Setter → Just getters/setters
-@Builder → Builder pattern: User.builder().name()...
-@NoArgsConstructor → Empty constructor (JPA needs this!)
-@AllArgsConstructor → Constructor with ALL fields
-@RequiredArgsConstructor → Constructor for final fields only
-@Slf4j → Creates: private static final Logger log
-@ToString(exclude="password") → Custom toString
-@EqualsAndHashCode(of="id") → Only use id for comparison
+| Annotation | Purpose |
+| --- | --- |
+| @Data | Getter + Setter + toString + equals + hashCode + RequiredArgsConstructor |
+| @Getter/@Setter | Just getters/setters |
+| @Builder | Builder pattern: User.builder().name()... |
+| @NoArgsConstructor | Empty constructor (JPA needs this!) |
+| @AllArgsConstructor | Constructor with ALL fields |
+| @RequiredArgsConstructor | Constructor for final fields only |
+| @Slf4j | Creates: private static final Logger log |
+| @ToString(exclude="password") | Custom toString |
+| @EqualsAndHashCode(of="id") | Only use id for comparison |
 
 ---
 
@@ -255,36 +275,36 @@ hashCode + RequiredArgsConstructor
 
 MISTAKE → WHY IT HAPPENS → FIX
 
-"@Entity not recognized"
-→ Missing spring-boot-starter-data-jpa dependency.
-→ Fix: Add to pom.xml + reimport Maven.
+- "@Entity not recognized"
+  - → Missing spring-boot-starter-data-jpa dependency.
+  - → Fix: Add to pom.xml + reimport Maven.
 
-"@Valid doesn't validate anything"
-→ Missing spring-boot-starter-validation dep (since SB 2.3+).
-→ Before 2.3, validation was included in web starter.
-→ Fix: Add spring-boot-starter-validation explicitly.
+- "@Valid doesn't validate anything"
+  - → Missing spring-boot-starter-validation dep (since SB 2.3+).
+  - → Before 2.3, validation was included in web starter.
+  - → Fix: Add spring-boot-starter-validation explicitly.
 
-"@Data generates nothing / red squiggles"
-→ Lombok not properly configured.
-→ Fix: 1) Add lombok to pom.xml 2) Install Lombok plugin in IntelliJ 3) Enable annotation processing in IDE settings
+- "@Data generates nothing / red squiggles"
+  - → Lombok not properly configured.
+  - → Fix: 1) Add lombok to pom.xml 2) Install Lombok plugin in IntelliJ 3) Enable annotation processing in IDE settings
 
-"@Autowired field is null"
-→ Object was created with 'new' instead of Spring injection.
-→ Fix: Let Spring create it (@Component + @Autowired), or
-use constructor injection (recommended).
+- "@Autowired field is null"
+  - → Object was created with 'new' instead of Spring injection.
+  - → Fix: Let Spring create it (@Component + @Autowired), or
+  - use constructor injection (recommended).
 
-"@Transactional doesn't rollback"
-→ Called from within same class (proxy bypass).
-→ Fix: Call from another bean, or use self-injection.
-→ Or: exception is checked (only unchecked rolls back by default)
+- "@Transactional doesn't rollback"
+  - → Called from within same class (proxy bypass).
+  - → Fix: Call from another bean, or use self-injection.
+  - → Or: exception is checked (only unchecked rolls back by default)
 
-"@Scheduled doesn't run"
-→ Missing @EnableScheduling on @Configuration class.
-→ Fix: Add @EnableScheduling to main class or config class.
+- "@Scheduled doesn't run"
+  - → Missing @EnableScheduling on @Configuration class.
+  - → Fix: Add @EnableScheduling to main class or config class.
 
-"Can't find @PreAuthorize"
-→ Missing spring-boot-starter-security dependency.
-→ Also needs @EnableMethodSecurity on config class.
+- "Can't find @PreAuthorize"
+  - → Missing spring-boot-starter-security dependency.
+  - → Also needs @EnableMethodSecurity on config class.
 
 ---
 

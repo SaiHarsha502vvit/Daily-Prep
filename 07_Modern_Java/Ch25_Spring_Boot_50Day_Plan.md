@@ -2,10 +2,10 @@
 
 # 🚀 SPRING BOOT COMPLETE CURRICULUM — Separate Study Plan
 
-**Duration:** 10 Weeks (alongside your DSA plan or standalone)
-**Who:** Beginner → Intermediate → Expert (covers everything)
-**Framework:** Every topic uses WHY → HOW → EXAMPLE → PITFALL → INTERVIEW Q
-**Files covered:** Parts 0-23 (25 files, 26 files total in 07_Modern_Java)
+- **Duration:** 10 Weeks (alongside your DSA plan or standalone)
+- **Who:** Beginner → Intermediate → Expert (covers everything)
+- **Framework:** Every topic uses WHY → HOW → EXAMPLE → PITFALL → INTERVIEW Q
+- **Files covered:** Parts 0-23 (25 files, 26 files total in 07_Modern_Java)
 
 ---
 

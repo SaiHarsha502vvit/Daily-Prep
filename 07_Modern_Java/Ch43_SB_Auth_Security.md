@@ -233,6 +233,8 @@ sequenceDiagram
   S-->>C: 200 OK {"accessToken": "eyJhbG...", "refreshToken": "eyJhbG...", "expiresIn": 3600}
 ```
 
+**How to read this diagram.** Read top to bottom: the client posts its email and password to the login endpoint; the server finds the user, verifies the password hash and generates a JWT (the note lists these three steps), then replies 200 OK with an access token, a refresh token and an expiry. Notice that the server returns the tokens - the client uses them in Step 2.
+
 **Step 2: access a protected resource**
 
 ```mermaid

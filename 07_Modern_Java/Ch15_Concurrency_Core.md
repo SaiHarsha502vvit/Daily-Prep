@@ -177,16 +177,16 @@ Your REST API gets 1000 requests/second. Each request = 1 thread.
 If each thread takes 200ms, you need 200 threads running simultaneously.
 
 Without understanding concurrency:
-❌ Race conditions corrupt data
-❌ Deadlocks freeze your server
-❌ Thread leaks crash your JVM
-❌ You can't debug "works locally, fails in prod" issues
+- ❌ Race conditions corrupt data
+- ❌ Deadlocks freeze your server
+- ❌ Thread leaks crash your JVM
+- ❌ You can't debug "works locally, fails in prod" issues
 
 With mastery:
-✅ You write thread-safe code by default
-✅ You choose the right concurrency tool for each problem
-✅ You debug production issues others can't
-✅ You design systems that scale
+- ✅ You write thread-safe code by default
+- ✅ You choose the right concurrency tool for each problem
+- ✅ You debug production issues others can't
+- ✅ You design systems that scale
 
 ---
 
@@ -2667,15 +2667,24 @@ sequenceDiagram
     note over CPU: Cache Misses Spike (Data Evicted)
 ```
 
+**How to read this diagram.** Read top to bottom: Thread A runs user code until a hardware interrupt makes the CPU trap into the OS kernel; the kernel dumps Thread A's registers into its thread control block (TCB) in main memory, reads Thread B's registers back into the CPU, and returns to user space to run Thread B. Notice the two notes on the CPU: cache pollution begins during the switch and cache misses spike afterwards, which is why the whole penalty is ~1000-5000ns.
+
 **The Mathematical Cost:**
+
 A single context switch takes about **1 to 5 microseconds**. That sounds fast, until you do the math.
+
 If you have 10,000 threads fighting for 8 CPU cores, the OS might context switch 100,000 times per second.
+
 $100,000 \times 5 \text{ microseconds} = 500,000 \text{ microseconds}$.
+
 **Your CPU is spending 50% of its total processing power just swapping out registers, doing zero actual work.** This is called **Thrashing**.
 
 **The Production Rule (Amdahl's Law applied to CPU Cores):**
+
 For CPU-bound tasks (math, data processing, encryption), the optimal thread pool size is EXACTLY the number of physical CPU cores you have.
+
 `Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())`
+
 If you have 8 cores, creating 9 threads actually makes your math program _slower_ because you have just introduced Context Switching overhead for zero hardware parallel gain.
 
 ---
@@ -2733,9 +2742,9 @@ Without hesitation, you should know:
 
 ---
 
-**→ Continue to**: [Ch16 — ExecutorService, CompletableFuture, Virtual Threads →](Ch16_Concurrency_Advanced.md)
-**→ Also see**: [Ch17 — CountDownLatch, CyclicBarrier, Phaser, Semaphore deep dive →](Ch17_Concurrency_Synchronizers.md)
-**→ JMM foundation**: [Ch18 — Java Memory Model, happens-before →](Ch18_JMM_GC_Deep.md)
+- **→ Continue to**: [Ch16 — ExecutorService, CompletableFuture, Virtual Threads →](Ch16_Concurrency_Advanced.md)
+- **→ Also see**: [Ch17 — CountDownLatch, CyclicBarrier, Phaser, Semaphore deep dive →](Ch17_Concurrency_Synchronizers.md)
+- **→ JMM foundation**: [Ch18 — Java Memory Model, happens-before →](Ch18_JMM_GC_Deep.md)
 
 ---
 

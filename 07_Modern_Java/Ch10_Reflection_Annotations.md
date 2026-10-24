@@ -275,8 +275,8 @@ Object singleton2 = privateCtor.newInstance();  // BREAKS singleton!
 ```
 
 **⚠ï¸ Interview Question**: "How can you break a Singleton?"
-Answer: Reflection + setAccessible(true) on private constructor.
-Defense: Throw exception from constructor if instance exists, OR use enum singleton.
+- Answer: Reflection + setAccessible(true) on private constructor.
+- Defense: Throw exception from constructor if instance exists, OR use enum singleton.
 
 ---
 

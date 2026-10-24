@@ -87,6 +87,8 @@ flowchart TD
 
 ```
 
+**How to read this diagram.** Read top to bottom: the root page (8KB, holding 583 pointers) points to internal pages in memory, which point to leaf pages on disk (8KB, 400 rows); each hop from an internal page to a leaf costs one disk I/O. Notice the double-headed arrows between the leaf pages - they are the doubly-linked list that range scans follow.
+
 ### Why Sequential IDs Are Faster Than Random UUIDs
 
 ```
@@ -419,6 +421,8 @@ sequenceDiagram
     BUF->>DATA: Replay Changes (Flush Dirty Pages)
 ```
 
+**How to read this diagram.** Read top to bottom: the UPDATE dirties a page in shared buffers and writes a WAL record; COMMIT fsyncs the WAL to disk and the application gets 'COMMIT OK' (durability guaranteed). The SERVER CRASH note then splits the story: on restart, recovery reads the WAL from the last checkpoint and replays the changes into the data files. Notice that the data pages were not flushed before the crash, yet nothing is lost, because the WAL already was.
+
 ```text
 WHY WAL IS FAST:
 - WAL = sequential writes (append-only log file)
@@ -510,6 +514,8 @@ flowchart TD
     end
 
 ```
+
+**How to read this diagram.** Follow the query's three possible paths: a buffer hit in shared buffers (0.001ms), an OS page cache hit (0.01ms), or a buffer miss that goes to the base data pages on disk (0.1ms - 5ms). The dotted arrows show the cold page being evicted to the OS cache and the OS cache flushing to disk. Notice that each tier you fall to is slower than the last.
 
 ```text
 PERFORMANCE DIFFERENCE:

@@ -1,9 +1,9 @@
 # Chapter 41 — Real-World Production Scenarios Part 4: Schema Evolution, Migrations & Data Integrity Crises
 
-**What:** 25 real-world schema/migration/integrity disasters (Scenarios 76–100) with 5W-H + fixes
-**Why:** Schema changes are the #1 cause of production outages in database-backed systems
-**Where:** Every growing application — startups scaling up, enterprises modernizing
-**How:** Understand the failure → SQL/migration fix → Spring Boot/backend fix → DSA insight
+- **What:** 25 real-world schema/migration/integrity disasters (Scenarios 76–100) with 5W-H + fixes
+- **Why:** Schema changes are the #1 cause of production outages in database-backed systems
+- **Where:** Every growing application — startups scaling up, enterprises modernizing
+- **How:** Understand the failure → SQL/migration fix → Spring Boot/backend fix → DSA insight
 
 ---
 

@@ -31,6 +31,7 @@ Every feature that changed how production Java is written
 ## ❓ Why This Matters
 
 Interviewers ask: "What Java version do you use? What features?"
+
 Senior devs MUST know: Records, Sealed classes, Pattern matching, Var,
 Text blocks, Switch expressions, Virtual threads, Structured concurrency
 
