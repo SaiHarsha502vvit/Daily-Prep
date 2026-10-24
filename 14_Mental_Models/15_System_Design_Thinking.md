@@ -76,14 +76,14 @@ Insight: Read-heavy (100:1 ratio) → need caching + CDN
 
 ## Mental Model 3: The Trade-Off Triangle
 
-## Choice │ Trade-Off
-
-SQL vs NoSQL │ Consistency vs Flexibility
-Cache vs No Cache │ Speed vs Freshness
-Monolith vs Micro │ Simplicity vs Scalability
-Sync vs Async │ Simplicity vs Throughput
-Normalize vs Denorm │ Write speed vs Read speed
-Push vs Pull │ Latency vs Resource usage
+| Choice | Trade-Off |
+|---|---|
+| SQL vs NoSQL | Consistency vs Flexibility |
+| Cache vs No Cache | Speed vs Freshness |
+| Monolith vs Micro | Simplicity vs Scalability |
+| Sync vs Async | Simplicity vs Throughput |
+| Normalize vs Denorm | Write speed vs Read speed |
+| Push vs Pull | Latency vs Resource usage |
 
 ---
 
@@ -156,16 +156,16 @@ under-engineering. Build for 10x your current scale, not 1000x.
 
 ## Mental Model 6: Failure Will Happen — Design For It
 
-## If This Fails... │ We Should...
-
-Database goes down │ Failover to replica
-Cache goes down │ Fall through to DB
-Service times out │ Circuit breaker + fallback
-Queue is full │ Backpressure + dead letter
-Region goes down │ Multi-region failover
-Deployment is buggy │ Canary + quick rollback
-Data is corrupted │ Backup + point-in-time
-Traffic spikes 10x │ Auto-scaling + rate limit
+| If This Fails... | We Should... |
+|---|---|
+| Database goes down | Failover to replica |
+| Cache goes down | Fall through to DB |
+| Service times out | Circuit breaker + fallback |
+| Queue is full | Backpressure + dead letter |
+| Region goes down | Multi-region failover |
+| Deployment is buggy | Canary + quick rollback |
+| Data is corrupted | Backup + point-in-time |
+| Traffic spikes 10x | Auto-scaling + rate limit |
 
 ---
 

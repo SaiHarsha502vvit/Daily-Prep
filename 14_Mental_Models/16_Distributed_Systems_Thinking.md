@@ -31,8 +31,8 @@ Things developers WRONGLY ASSUME:
 8. The network is homogeneous → Different HARDWARE exists
 
 PRACTICAL IMPLICATION:
-Every network call CAN fail. Every response CAN be delayed.
-Design every remote interaction with timeout + retry + fallback.
+- Every network call CAN fail. Every response CAN be delayed.
+- Design every remote interaction with timeout + retry + fallback.
 
 ---
 
@@ -158,12 +158,16 @@ THE SPLIT-BRAIN PROBLEM
 What happens when the network PARTITIONS?
 
 BEFORE PARTITION:
+```text
 [Node A] ←──→ [Node B] ←──→ [Node C] (all connected)
 Leader
+```
 
 AFTER PARTITION:
+```text
 [Node A] ←──→ [Node B] | [Node C] (C is isolated)
 Leader |
+```
 
 Node C thinks A is dead → elects itself as leader!
 Now TWO leaders accepting writes = DATA CORRUPTION
@@ -287,9 +291,10 @@ At-least-once: Retry until acknowledged. Might duplicate.
 → Most systems use this + IDEMPOTENCY
 
 Exactly-once: Each message processed exactly once.
-→ IMPOSSIBLE in theory (FLP impossibility)
-→ In practice: "effectively once" via
-deduplication + idempotent processing
+
+- → IMPOSSIBLE in theory (FLP impossibility)
+- → In practice: "effectively once" via
+  deduplication + idempotent processing
 
 HOW TO ACHIEVE "EFFECTIVELY ONCE":
 
@@ -298,27 +303,28 @@ HOW TO ACHIEVE "EFFECTIVELY ONCE":
 3. If yes → skip (already processed)
 4. If no → process + record the ID atomically
 
+```sql
 -- PostgreSQL example
 INSERT INTO processed_events (event_id, result)
 VALUES ('evt_123', 'success')
 ON CONFLICT (event_id) DO NOTHING;
+```
 
 ---
 
 ## The Distributed Systems Decision Cheat Sheet
 
-SITUATION │ THINK ABOUT
-Need low latency worldwide │ CDN + read replicas in regions
-Need data safety │ WAL + synchronous replication
-Hot partition (one key │ Better partition key or scatter
-gets all traffic) │
-Cascading failure │ Circuit breaker + bulkhead
-Stale data in cache │ TTL + cache invalidation events
-Two services need to │ Saga pattern (not distributed
-agree on outcome │ transactions)
-Need ordering guarantee │ Single partition in Kafka
-Service discovery │ Consul, Eureka, K8s DNS
-Config across services │ Central config (Spring Cloud)
+| SITUATION | THINK ABOUT |
+|---|---|
+| Need low latency worldwide | CDN + read replicas in regions |
+| Need data safety | WAL + synchronous replication |
+| Hot partition (one key gets all traffic) | Better partition key or scatter |
+| Cascading failure | Circuit breaker + bulkhead |
+| Stale data in cache | TTL + cache invalidation events |
+| Two services need to agree on outcome | Saga pattern (not distributed transactions) |
+| Need ordering guarantee | Single partition in Kafka |
+| Service discovery | Consul, Eureka, K8s DNS |
+| Config across services | Central config (Spring Cloud) |
 
 ---
 

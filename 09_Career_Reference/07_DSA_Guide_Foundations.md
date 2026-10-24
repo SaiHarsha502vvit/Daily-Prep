@@ -377,8 +377,6 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-```
-
 ---
 
 ## 📋 Master Index
@@ -401,8 +399,6 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 ## The WHY-HOW-WHAT Framework
 
 ### For Every Data Structure, Ask:
-
-```
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -435,15 +431,13 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 └─────────────────────────────────────────────────────────────┘
 ```
 
-```
-
 ---
 
 ## Arrays - Complete Guide
 
 ### WHY Arrays Exist
 
-```
+```text
 
 Problem: Store multiple related values efficiently
 
@@ -459,23 +453,17 @@ int[] items = new int[1000]; // One declaration, 1000 values
 Key Insight:
 Arrays solve the problem of managing COLLECTIONS of same-type data
 with O(1) random access using index-based addressing.
+```
 
 ### HOW Arrays Work (Memory Model)
 
+```text
 Memory Layout (Contiguous Allocation):
 
 Address: 1000 1004 1008 1012 1016
-
-```
 ┌───────┬───────┬───────┬───────┬───────┐
-```
-
 int[] arr = │ 10 │ 20 │ 30 │ 40 │ 50 │
-
-```
 └───────┴───────┴───────┴───────┴───────┘
-```
-
 Index: [0] [1] [2] [3] [4]
 
 Address Calculation:
@@ -485,14 +473,11 @@ address(arr[3]) = 1000 + (3 × 4) = 1012
 Why O(1) Access?
 → Direct arithmetic calculation, no traversal needed
 → CPU can fetch any element in constant time
-
 ```
 
 ### Array Variants
 
 #### 1. Static Array (Fixed Size)
-
-```
 
 ```java
 // Declaration
@@ -1363,9 +1348,9 @@ class StackWithMiddle {
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
-**Scenario:** Complex nested JSON requests trigger deep recursion, exceeding the thread stack size limit (`-Xss`). This crashes the thread entirely.
-**Trace:** Recursive calls allocate a new stack frame for each nested level. With a default stack size (e.g., 1MB), processing deeply nested structures blows the stack. Because thread death might go unhandled by the global executor pool, this causes silent task drops.
-**Debug/Fix:** Replace recursion with **Iteration + Explicit Stack**. Move the memory burden from the JVM thread stack (limited) to the Heap (abundant) using `Deque<Node> stack = new ArrayDeque<>()`. This converts the `StackOverflowError` risk into a manageable `OutOfMemoryError` risk, which can be mitigated by rejecting payloads exceeding a max depth threshold.
+- **Scenario:** Complex nested JSON requests trigger deep recursion, exceeding the thread stack size limit (`-Xss`). This crashes the thread entirely.
+- **Trace:** Recursive calls allocate a new stack frame for each nested level. With a default stack size (e.g., 1MB), processing deeply nested structures blows the stack. Because thread death might go unhandled by the global executor pool, this causes silent task drops.
+- **Debug/Fix:** Replace recursion with **Iteration + Explicit Stack**. Move the memory burden from the JVM thread stack (limited) to the Heap (abundant) using `Deque<Node> stack = new ArrayDeque<>()`. This converts the `StackOverflowError` risk into a manageable `OutOfMemoryError` risk, which can be mitigated by rejecting payloads exceeding a max depth threshold.
 
 </details>
 

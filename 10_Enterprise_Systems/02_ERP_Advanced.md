@@ -3,12 +3,12 @@
 
 ## 📌 5W1H
 
-**WHAT** — ERP integration patterns (RFC, BAPI, IDoc, ALE, OData, SOAP, Kafka), AP/AR workflows, GST/TDS compliance, Order Management state machines, Inventory reservation, and the SAP Finance Module landscape (FI/CO/AP/AR/FA/Bank/Tax).
-**WHY** — Production ERP work requires understanding integration patterns (their latencies, coupling, failure modes) AND the SAP module landscape; interviews and production debugging assume both.
-**WHO** — Backend engineers with 2–4 years of Java/Spring experience working on or integrating with SAP, Oracle ERP, or homegrown ERP systems.
-**WHEN** — 2026 — SAP S/4HANA migration is live (ECC 6.0 EOL 2027); IDoc ORDERS05 (1992 format) is still in use because trading partners cannot upgrade; Kafka-based event backbones are replacing ALE for new integrations.
-**WHERE** — SAP (R/3, ECC, S/4HANA), Oracle ERP Cloud, Workday, Microsoft Dynamics; integration via RFC/BAPI/IDoc/OData/Kafka; AP/AR via FBL5N/FBL1N/SAP t-codes.
-**HOW** — Pattern → integration mechanism → failure mode → debug workflow (WE02, BD87, SMGW); taught via SAP-specific examples and Java code for greenfield integrations.
+- **WHAT** — ERP integration patterns (RFC, BAPI, IDoc, ALE, OData, SOAP, Kafka), AP/AR workflows, GST/TDS compliance, Order Management state machines, Inventory reservation, and the SAP Finance Module landscape (FI/CO/AP/AR/FA/Bank/Tax).
+- **WHY** — Production ERP work requires understanding integration patterns (their latencies, coupling, failure modes) AND the SAP module landscape; interviews and production debugging assume both.
+- **WHO** — Backend engineers with 2–4 years of Java/Spring experience working on or integrating with SAP, Oracle ERP, or homegrown ERP systems.
+- **WHEN** — 2026 — SAP S/4HANA migration is live (ECC 6.0 EOL 2027); IDoc ORDERS05 (1992 format) is still in use because trading partners cannot upgrade; Kafka-based event backbones are replacing ALE for new integrations.
+- **WHERE** — SAP (R/3, ECC, S/4HANA), Oracle ERP Cloud, Workday, Microsoft Dynamics; integration via RFC/BAPI/IDoc/OData/Kafka; AP/AR via FBL5N/FBL1N/SAP t-codes.
+- **HOW** — Pattern → integration mechanism → failure mode → debug workflow (WE02, BD87, SMGW); taught via SAP-specific examples and Java code for greenfield integrations.
 
 ## 💸 Accounts Payable - Automated Payment Run
 

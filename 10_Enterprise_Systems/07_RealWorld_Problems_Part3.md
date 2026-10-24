@@ -10,12 +10,13 @@
 
 ## Problem 23: Split Bill Among Friends (Simplify Debts)
 
-COMPANY: Splitwise / PhonePe
-SYSTEM: Bill Splitting
-CHALLENGE: Minimize number of transactions to settle debts
+- COMPANY: Splitwise / PhonePe
+- SYSTEM: Bill Splitting
+- CHALLENGE: Minimize number of transactions to settle debts
 
 EXAMPLE:
 ────────
+
 Trip expenses:
 
 - Alice paid ₹3000 for hotel (for Alice, Bob, Charlie)

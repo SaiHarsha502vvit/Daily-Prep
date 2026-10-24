@@ -4,12 +4,12 @@
 
 ## 📌 5W1H
 
-**WHAT** — DSA in production ERP finance: binary search for slab pricing, HashMap for inventory lookup, two-pointers for payment reconciliation, sliding window for sliding-window-rate algorithms, tree traversal for org hierarchy. Plus a 30-day Junior-to-Senior learning plan, six learning techniques (Feynman, Active Recall, Blurting, 2-3-7 revision, 45-15 blocks, Question First), and production failure-mode postmortems (phantom inventory, reconciliation breaks, SOX audit-trail gaps).
-**WHY** — DSA applied to enterprise contexts is the interview sweet spot (L5/L6 at FAANG, senior roles at fintechs); the learning-techniques section accelerates mastery beyond what most curricula offer.
-**WHO** — Backend engineers preparing for senior interviews, plus working professionals with 1–2 hours/day who want a structured upgrade path from Junior to Senior.
-**WHEN** — 2026 — DSA interview format is mature (LeetCode 2015, HackerRank 2009, Codeforces 2010); binary search (Mauchly 1946), HashMap (Luhn 1953), and sliding window (TCP RFC 793, 1981) are foundational; regulatory context is SOX 2002, Dodd-Frank 2010, IFRS 9/ASC 606 (2018), Basel III, PSD2.
-**WHERE** — Any enterprise system with bounded-latency DSA requirements (billing engines, payment reconciliation, fraud detection, org-chart APIs); finance-specific examples use BigDecimal for money, BigInteger for tax IDs.
-**HOW** — DSA pattern → enterprise scenario → why-this-algorithm selection criterion → code → test cases → production failure mode; layered with a 30-day action plan and six learning techniques.
+- **WHAT** — DSA in production ERP finance: binary search for slab pricing, HashMap for inventory lookup, two-pointers for payment reconciliation, sliding window for sliding-window-rate algorithms, tree traversal for org hierarchy. Plus a 30-day Junior-to-Senior learning plan, six learning techniques (Feynman, Active Recall, Blurting, 2-3-7 revision, 45-15 blocks, Question First), and production failure-mode postmortems (phantom inventory, reconciliation breaks, SOX audit-trail gaps).
+- **WHY** — DSA applied to enterprise contexts is the interview sweet spot (L5/L6 at FAANG, senior roles at fintechs); the learning-techniques section accelerates mastery beyond what most curricula offer.
+- **WHO** — Backend engineers preparing for senior interviews, plus working professionals with 1–2 hours/day who want a structured upgrade path from Junior to Senior.
+- **WHEN** — 2026 — DSA interview format is mature (LeetCode 2015, HackerRank 2009, Codeforces 2010); binary search (Mauchly 1946), HashMap (Luhn 1953), and sliding window (TCP RFC 793, 1981) are foundational; regulatory context is SOX 2002, Dodd-Frank 2010, IFRS 9/ASC 606 (2018), Basel III, PSD2.
+- **WHERE** — Any enterprise system with bounded-latency DSA requirements (billing engines, payment reconciliation, fraud detection, org-chart APIs); finance-specific examples use BigDecimal for money, BigInteger for tax IDs.
+- **HOW** — DSA pattern → enterprise scenario → why-this-algorithm selection criterion → code → test cases → production failure mode; layered with a 30-day action plan and six learning techniques.
 
 
 ### Strategy 5: Read Replicas

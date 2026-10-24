@@ -168,29 +168,29 @@
 THE 6 TYPES OF REDUNDANCY:
 
 1. REPEATED COMPUTATION
-   "I keep recalculating the same subproblem"
-   Signal: Same recursive calls with same arguments
-   Fix → MEMOIZATION / DP
+   - "I keep recalculating the same subproblem"
+   - Signal: Same recursive calls with same arguments
+   - Fix → MEMOIZATION / DP
 2. REPEATED SCANNING
-   "I scan the whole array to find something I could look up"
-   Signal: Inner loop searching for a value
-   Fix → HASH MAP (O(1) lookup)
+   - "I scan the whole array to find something I could look up"
+   - Signal: Inner loop searching for a value
+   - Fix → HASH MAP (O(1) lookup)
 3. REPEATED COMPARISON
-   "I compare elements that are already in order"
-   Signal: Unsorted data causing extra comparisons
-   Fix → SORT FIRST, then two pointers / binary search
+   - "I compare elements that are already in order"
+   - Signal: Unsorted data causing extra comparisons
+   - Fix → SORT FIRST, then two pointers / binary search
 4. OVERLAPPING WINDOW
-   "When I slide by 1, I throw away work and redo it"
-   Signal: Sum/count of contiguous subarray/substring
-   Fix → SLIDING WINDOW
+   - "When I slide by 1, I throw away work and redo it"
+   - Signal: Sum/count of contiguous subarray/substring
+   - Fix → SLIDING WINDOW
 5. REDUNDANT STATE EXPLORATION
-   "I explore paths that can't possibly lead to a better answer"
-   Signal: Backtracking with no pruning
-   Fix → PRUNING / BRANCH AND BOUND / GREEDY
+   - "I explore paths that can't possibly lead to a better answer"
+   - Signal: Backtracking with no pruning
+   - Fix → PRUNING / BRANCH AND BOUND / GREEDY
 6. UNNECESSARY GRANULARITY
-   "I check every value when I could binary search"
-   Signal: Monotonic property in search space
-   Fix → BINARY SEARCH ON ANSWER
+   - "I check every value when I could binary search"
+   - Signal: Monotonic property in search space
+   - Fix → BINARY SEARCH ON ANSWER
 
 ---
 
@@ -212,26 +212,26 @@ Two valid fixes:
 
 ## Redundancy → Technique Decision Map
 
-"I'm checking all pairs"
-Need complement/match? → HASH MAP O(n²) → O(n)
-Array is sorted? → TWO POINTERS O(n²) → O(n)
-Can sort first? → SORT + TWO PTR O(n²) → O(n log n)
-"I'm checking all subarrays"
-Fixed-size window? → SLIDING WINDOW O(n·k) → O(n)
-Variable window? → EXPAND/SHRINK O(n²) → O(n)
-Need prefix sums? → PREFIX SUM O(n²) → O(n)
-"I'm checking all subsets"
-Overlapping subprobs? → DP O(2ⁿ) → O(n·W)
-Greedy choice works? → GREEDY O(2ⁿ) → O(n log n)
-Need all subsets? → BACKTRACK + PRUNE O(2ⁿ) → O(2ⁿ) pruned
-"I'm searching linearly"
-Sorted data? → BINARY SEARCH O(n) → O(log n)
-Monotonic property? → BS ON ANSWER O(n) → O(log n)
-Need range queries? → SEGMENT TREE O(n) → O(log n)
-"I'm doing repeated DFS/BFS"
-Shortest path? → BFS / DIJKSTRA varies
-Connected components? → UNION-FIND O(V·E) → O(E·α(V))
-Topological order? → TOPOLOGICAL SORT O(V²) → O(V+E)
+- "I'm checking all pairs"
+  - Need complement/match? → HASH MAP O(n²) → O(n)
+  - Array is sorted? → TWO POINTERS O(n²) → O(n)
+  - Can sort first? → SORT + TWO PTR O(n²) → O(n log n)
+- "I'm checking all subarrays"
+  - Fixed-size window? → SLIDING WINDOW O(n·k) → O(n)
+  - Variable window? → EXPAND/SHRINK O(n²) → O(n)
+  - Need prefix sums? → PREFIX SUM O(n²) → O(n)
+- "I'm checking all subsets"
+  - Overlapping subprobs? → DP O(2ⁿ) → O(n·W)
+  - Greedy choice works? → GREEDY O(2ⁿ) → O(n log n)
+  - Need all subsets? → BACKTRACK + PRUNE O(2ⁿ) → O(2ⁿ) pruned
+- "I'm searching linearly"
+  - Sorted data? → BINARY SEARCH O(n) → O(log n)
+  - Monotonic property? → BS ON ANSWER O(n) → O(log n)
+  - Need range queries? → SEGMENT TREE O(n) → O(log n)
+- "I'm doing repeated DFS/BFS"
+  - Shortest path? → BFS / DIJKSTRA varies
+  - Connected components? → UNION-FIND O(V·E) → O(E·α(V))
+  - Topological order? → TOPOLOGICAL SORT O(V²) → O(V+E)
 
 ---
 
@@ -249,10 +249,10 @@ You failed to verify the **Constraints vs. Complexity**. Bitmask DP requires `O(
 
 ## Implementation Checklist
 
-□ Does the optimized solution handle ALL edge cases from brute force?
-□ Did I verify with the same test cases that brute force passes?
-□ Is the complexity actually better? (count operations, don't guess)
-□ Did I trade space for time? Is the space acceptable?
+- □ Does the optimized solution handle ALL edge cases from brute force?
+- □ Did I verify with the same test cases that brute force passes?
+- □ Is the complexity actually better? (count operations, don't guess)
+- □ Did I trade space for time? Is the space acceptable?
 
 **Verify**:
 

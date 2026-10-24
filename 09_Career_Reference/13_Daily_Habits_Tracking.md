@@ -35,10 +35,11 @@
 
 DAILY WORKFLOW:
 ───────────────
-Morning: Look at problems FIRST → Study theory → Solve
-Lunch: Blurt session - dump everything on paper
-Evening: Revise today + previous days (2-3-7)
-Night: Can you explain it simply? (Feynman test)
+
+- Morning: Look at problems FIRST → Study theory → Solve
+- Lunch: Blurt session - dump everything on paper
+- Evening: Revise today + previous days (2-3-7)
+- Night: Can you explain it simply? (Feynman test)
 
 ---
 

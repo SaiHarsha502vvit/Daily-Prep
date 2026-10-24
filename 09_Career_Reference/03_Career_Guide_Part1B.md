@@ -226,9 +226,9 @@ BEFORE CLOUD:
 ─────────────
 ```
 
-Buy Server → Wait 2-4 weeks → Setup → Configure → Hope it's enough
-Cost: $50,000 upfront
-Risk: Over-provision (waste) or Under-provision (crash)
+- Buy Server → Wait 2-4 weeks → Setup → Configure → Hope it's enough
+- Cost: $50,000 upfront
+- Risk: Over-provision (waste) or Under-provision (crash)
 
 WITH CLOUD:
 
@@ -236,9 +236,9 @@ WITH CLOUD:
 ───────────
 ```
 
-Click → Server in 60 seconds → Scale up/down anytime
-Cost: Pay only what you use
-Risk: Minimal - add/remove resources instantly
+- Click → Server in 60 seconds → Scale up/down anytime
+- Cost: Pay only what you use
+- Risk: Minimal - add/remove resources instantly
 
 CLOUD BENEFITS:
 
@@ -480,52 +480,49 @@ COST OPTIMIZATION STRATEGIES:
 ```
 
 1. RIGHT-SIZING
-   ├── Monitor CPU/Memory usage
-   ├── Downsize underutilized instances
-   ├── Use AWS Compute Optimizer recommendations
-   └── Tools: CloudWatch, Cost Explorer
+   - Monitor CPU/Memory usage
+   - Downsize underutilized instances
+   - Use AWS Compute Optimizer recommendations
+   - Tools: CloudWatch, Cost Explorer
 
 2. RESERVED INSTANCES / SAVINGS PLANS
-   ┌──────────────────────────────────────────────────────────┐
-   │ Instance Type │ On-Demand │ 1-Year RI │ Savings │
-   ├──────────────────┼────────────┼────────────┼────────────┤
-   │ t3.medium │ $30/month │ $19/month │ 37% │
-   │ m5.large │ $70/month │ $44/month │ 37% │
-   │ r5.xlarge │ $180/month │ $113/month │ 37% │
-   └──────────────────────────────────────────────────────────┘
+   | Instance Type | On-Demand | 1-Year RI | Savings |
+   |---|---|---|---|
+   | t3.medium | $30/month | $19/month | 37% |
+   | m5.large | $70/month | $44/month | 37% |
+   | r5.xlarge | $180/month | $113/month | 37% |
 
 3. SPOT INSTANCES
-   ├── Up to 90% discount
-   ├── Can be terminated with 2-min notice
-   ├── Good for: Batch processing, CI/CD, Dev/Test
-   └── Not for: Production databases, Critical apps
+   - Up to 90% discount
+   - Can be terminated with 2-min notice
+   - Good for: Batch processing, CI/CD, Dev/Test
+   - Not for: Production databases, Critical apps
 
 4. S3 STORAGE TIERS
-   ┌──────────────────────────────────────────────────────────┐
-   │ Storage Class │ Cost/GB │ Use Case │
-   ├───────────────────┼───────────┼─────────────────────────┤
-   │ S3 Standard │ $0.023 │ Frequent access │
-   │ S3 IA │ $0.0125 │ Infrequent access │
-   │ S3 Glacier IR │ $0.004 │ Archive, mins retrieval │
-   │ S3 Glacier DA │ $0.00099 │ Archive, hours retrieve │
-   └──────────────────────────────────────────────────────────┘
+   | Storage Class | Cost/GB | Use Case |
+   |---|---|---|
+   | S3 Standard | $0.023 | Frequent access |
+   | S3 IA | $0.0125 | Infrequent access |
+   | S3 Glacier IR | $0.004 | Archive, mins retrieval |
+   | S3 Glacier DA | $0.00099 | Archive, hours retrieve |
 
    Lifecycle Policy Example:
-   Day 0-30: S3 Standard
-   Day 31-90: S3 IA
-   Day 91+: Glacier
+
+   - Day 0-30: S3 Standard
+   - Day 31-90: S3 IA
+   - Day 91+: Glacier
 
 5. DATABASE OPTIMIZATION
-   ├── Use Aurora Serverless for variable workloads
-   ├── Read replicas for read-heavy apps
-   ├── Reserved instances for steady workloads
-   └── Delete unused snapshots
+   - Use Aurora Serverless for variable workloads
+   - Read replicas for read-heavy apps
+   - Reserved instances for steady workloads
+   - Delete unused snapshots
 
 6. NETWORK COST REDUCTION
-   ├── Use VPC endpoints (avoid NAT Gateway charges)
-   ├── Same-AZ communication when possible
-   ├── CloudFront for content delivery
-   └── Compress data before transfer
+   - Use VPC endpoints (avoid NAT Gateway charges)
+   - Same-AZ communication when possible
+   - CloudFront for content delivery
+   - Compress data before transfer
 
 ### Azure Services - Complete Map
 
@@ -572,39 +569,39 @@ CLOUD SECURITY CHECKLIST:
 ```
 
 1. IDENTITY & ACCESS
-   □ Enable MFA for all users
-   □ Use least privilege principle
-   □ Regular access reviews
-   □ Use roles, not access keys
-   □ Rotate credentials regularly
+   - □ Enable MFA for all users
+   - □ Use least privilege principle
+   - □ Regular access reviews
+   - □ Use roles, not access keys
+   - □ Rotate credentials regularly
 
 2. NETWORK SECURITY
-   □ Use private subnets for databases
-   □ Configure security groups (allow only needed ports)
-   □ Enable VPC Flow Logs
-   □ Use WAF for web applications
-   □ Enable DDoS protection
+   - □ Use private subnets for databases
+   - □ Configure security groups (allow only needed ports)
+   - □ Enable VPC Flow Logs
+   - □ Use WAF for web applications
+   - □ Enable DDoS protection
 
 3. DATA PROTECTION
-   □ Encrypt data at rest (S3, EBS, RDS)
-   □ Encrypt data in transit (HTTPS, TLS)
-   □ Use KMS for key management
-   □ Enable versioning and backup
-   □ Implement data classification
+   - □ Encrypt data at rest (S3, EBS, RDS)
+   - □ Encrypt data in transit (HTTPS, TLS)
+   - □ Use KMS for key management
+   - □ Enable versioning and backup
+   - □ Implement data classification
 
 4. MONITORING & LOGGING
-   □ Enable CloudTrail (audit logs)
-   □ Set up CloudWatch alarms
-   □ Configure GuardDuty (threat detection)
-   □ Implement centralized logging
-   □ Regular security assessments
+   - □ Enable CloudTrail (audit logs)
+   - □ Set up CloudWatch alarms
+   - □ Configure GuardDuty (threat detection)
+   - □ Implement centralized logging
+   - □ Regular security assessments
 
 5. COMPLIANCE
-   □ Document security policies
-   □ Regular penetration testing
-   □ Compliance certifications (SOC2, ISO27001)
-   □ Data retention policies
-   □ Incident response plan
+   - □ Document security policies
+   - □ Regular penetration testing
+   - □ Compliance certifications (SOC2, ISO27001)
+   - □ Data retention policies
+   - □ Incident response plan
 
 ### Infrastructure as Code (IaC)
 

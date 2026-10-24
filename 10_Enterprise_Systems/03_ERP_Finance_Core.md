@@ -4,12 +4,12 @@
 
 ## 📌 5W1H
 
-**WHAT** — ERP Finance domain vocabulary (Debit/Credit, Accrual vs Cash, TDS, GST, HSN, Payment Terms, Cost Center, Profit Center), the SAP Finance Module landscape (FI/CO/AP/AR/FA/Bank/Tax/CCA/PCA), ERP optimization strategies (indexing, partitioning, caching, async, batching, read replicas), and a Junior Developer's career path.
-**WHY** — Finance vocabulary is the interface between developers and accountants; SAP module knowledge determines whether you can debug a real production ERP system; optimization strategies are tested in interviews and applied daily.
-**WHO** — Backend engineers and junior-to-mid developers moving into ERP, fintech, banking, or BFSI roles; finance-curious developers who need production-grade accounting context.
-**WHEN** — 2026 — IFRS 9 and ASC 606 (both 2018) are now standard; SOX 2002 audit-trail requirements persist; Pacioli's 1494 double-entry framework is the foundation still in use.
-**WHERE** — SAP FI/CO, Oracle Financials, Tally, Zoho Books; payment processing via NEFT/RTGS/IMPS/UPI (India) and ACH/SEPA/Wire (global).
-**HOW** — Vocabulary first → SAP module landscape → optimization patterns → production failure modes (double-posting, reconciliation breaks, wrong-period posting) → learning techniques (Active Recall, Feynman, 45-15 blocks).
+- **WHAT** — ERP Finance domain vocabulary (Debit/Credit, Accrual vs Cash, TDS, GST, HSN, Payment Terms, Cost Center, Profit Center), the SAP Finance Module landscape (FI/CO/AP/AR/FA/Bank/Tax/CCA/PCA), ERP optimization strategies (indexing, partitioning, caching, async, batching, read replicas), and a Junior Developer's career path.
+- **WHY** — Finance vocabulary is the interface between developers and accountants; SAP module knowledge determines whether you can debug a real production ERP system; optimization strategies are tested in interviews and applied daily.
+- **WHO** — Backend engineers and junior-to-mid developers moving into ERP, fintech, banking, or BFSI roles; finance-curious developers who need production-grade accounting context.
+- **WHEN** — 2026 — IFRS 9 and ASC 606 (both 2018) are now standard; SOX 2002 audit-trail requirements persist; Pacioli's 1494 double-entry framework is the foundation still in use.
+- **WHERE** — SAP FI/CO, Oracle Financials, Tally, Zoho Books; payment processing via NEFT/RTGS/IMPS/UPI (India) and ACH/SEPA/Wire (global).
+- **HOW** — Vocabulary first → SAP module landscape → optimization patterns → production failure modes (double-posting, reconciliation breaks, wrong-period posting) → learning techniques (Active Recall, Feynman, 45-15 blocks).
 
 # 03 - ERP Finance Core
 
@@ -26,14 +26,18 @@ Can you build a house if you can't:
 - Lay a single brick correctly?
 - Mix cement properly?
 - Read a simple measurement?
-  NO! You MUST master small tasks before designing mansions.
-  Similarly:
-  Junior: Write calculateTax(), validateEmail(), findDuplicates()
-  Mid: Design TaxCalculationService, build REST APIs
-  Senior: Design entire Order Management System architecture
-  Lead: Design microservices for million-user e-commerce
-  YOU ARE AT THE RIGHT STARTING POINT.
-  Master functions first. Architecture will come naturally.
+
+NO! You MUST master small tasks before designing mansions.
+
+Similarly:
+
+- Junior: Write calculateTax(), validateEmail(), findDuplicates()
+- Mid: Design TaxCalculationService, build REST APIs
+- Senior: Design entire Order Management System architecture
+- Lead: Design microservices for million-user e-commerce
+
+YOU ARE AT THE RIGHT STARTING POINT.
+Master functions first. Architecture will come naturally.
 
 ---
 
@@ -43,12 +47,14 @@ Can you build a house if you can't:
 
 ## What Customer Sees (Frontend)
 
+```text
 🍔 McChicken Burger ₹189
 🍟 Medium Fries ₹99
 🥤 Coke ₹79
 [ Add to Cart ]
 Total: ₹367
 [ Pay Now ]
+```
 Simple UI: Images, buttons, cart. Maybe 500 lines of code.
 A fresher can build this in a week.
 

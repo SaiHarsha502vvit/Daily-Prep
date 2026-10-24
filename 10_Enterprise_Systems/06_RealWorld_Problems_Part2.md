@@ -45,9 +45,9 @@ This is the same cold-start problem that plagues any collaborative filtering sys
 
 ## Problem 13: Video Watch History - Recently Watched (LRU Cache)
 
-COMPANY: Netflix / Hotstar / YouTube
-SYSTEM: User Experience
-FEATURE: "Continue Watching" shows last 20 videos you watched
+- COMPANY: Netflix / Hotstar / YouTube
+- SYSTEM: User Experience
+- FEATURE: "Continue Watching" shows last 20 videos you watched
 
 THE REQUIREMENT:
 ────────────────

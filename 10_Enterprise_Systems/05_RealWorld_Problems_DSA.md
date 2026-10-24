@@ -10,15 +10,16 @@
 
 ## Problem 1: Find Duplicate Orders (HashMap)
 
-COMPANY: Flipkart / Amazon
-SYSTEM: Order Management
-INCIDENT: Customer clicked "Place Order" twice due to slow network
+- COMPANY: Flipkart / Amazon
+- SYSTEM: Order Management
+- INCIDENT: Customer clicked "Place Order" twice due to slow network
 
 THE REAL PROBLEM:
 ─────────────────
-Customer's internet was slow. They clicked "Place Order" button twice.
-Two orders were created for same items, same address, within 5 seconds.
-Customer was charged twice. ₹15,000 x 2 = ₹30,000
+
+- Customer's internet was slow. They clicked "Place Order" button twice.
+- Two orders were created for same items, same address, within 5 seconds.
+- Customer was charged twice. ₹15,000 x 2 = ₹30,000
 
 BUSINESS IMPACT:
 

@@ -82,6 +82,7 @@ kubectl apply -f deployment.yaml
 
 ## Pod Scheduling Flow
 
+```text
 STEP 1: User submits deployment
 kubectl → API Server → Validate → Store in etcd
 etcd now has:
@@ -127,6 +128,7 @@ Kubelet on Node 4 watches for pods assigned to it
 → Mounts volumes
 → Starts container
 → Reports status: "Running"
+```
 
 **Total Time**: 2-30 seconds (depending on image pull)
 
@@ -153,6 +155,7 @@ Pods: myapp-abc (10.244.1.5:8080), myapp-def (10.244.2.8:8080)
 
 ## Service Networking
 
+```text
 Client Pod sends request:
 curl http://myapp-service:80/api/users
 STEP 1: DNS RESOLUTION
@@ -161,6 +164,7 @@ myapp-service.default.svc.cluster.local → 10.96.45.123
 STEP 2: IPTABLES/IPVS RULES (kube-proxy)
 IPTABLES RULES
 (on every node)
+```
 
 **Rule**: If destination = 10.96.45.123:80
 → DNAT to one of:
@@ -168,17 +172,20 @@ IPTABLES RULES
 - 10.244.1.5:8080 (50% probability)
 - 10.244.2.8:8080 (50% probability)
   This is random load balancing!
-  STEP 3: PACKET ROUTING
-  Client Pod ──► 10.96.45.123:80 (Service IP)
-  │
-  │ iptables DNAT
-  ▼
-  10.244.2.8:8080 (Pod IP - selected randomly)
-  │
-  │ If pod on same node: direct delivery
-  │ If pod on different node: route via overlay
-  ▼
-  myapp-def Pod receives request
+
+```text
+STEP 3: PACKET ROUTING
+Client Pod ──► 10.96.45.123:80 (Service IP)
+│
+│ iptables DNAT
+▼
+10.244.2.8:8080 (Pod IP - selected randomly)
+│
+│ If pod on same node: direct delivery
+│ If pod on different node: route via overlay
+▼
+myapp-def Pod receives request
+```
 
 **Service Types**:
 ClusterIP (default):

@@ -9,18 +9,21 @@
 ## The Core Difference
 
 **Greedy**: Make the locally optimal choice at each step.
-Never look back. Never reconsider.
-Works when local optimum → global optimum.
-Time: Usually O(n log n) [sort] + O(n) [scan]
+
+- Never look back. Never reconsider.
+- Works when local optimum → global optimum.
+- Time: Usually O(n log n) [sort] + O(n) [scan]
 
 **Dp**: Try ALL choices at each step. Remember results.
-Build optimal from sub-solutions.
-Works when you need to explore all possibilities.
-Time: Usually O(n²) or O(n × W) — slower but always correct.
+
+- Build optimal from sub-solutions.
+- Works when you need to explore all possibilities.
+- Time: Usually O(n²) or O(n × W) — slower but always correct.
 
 💡 **ANALOGY:**
-Greedy = Taking the highway with the fewest current cars (local best)
-DP = Checking ALL possible routes on Google Maps (global best)
+- Greedy = Taking the highway with the fewest current cars (local best)
+- DP = Checking ALL possible routes on Google Maps (global best)
+
 GREEDY IS FASTER BUT RISKIER.
 It only works when you can PROVE local = global.
 
@@ -28,16 +31,18 @@ It only works when you can PROVE local = global.
 
 Ask these THREE questions. If ALL are YES → Greedy works.
 If ANY is NO → Use DP.
-Q1: GREEDY CHOICE PROPERTY
-"Can I make the best local choice and never regret it?"
-Q2: OPTIMAL SUBSTRUCTURE
-"Does the optimal solution contain optimal sub-solutions?"
-Q3: NO FUTURE DEPENDENCY
-"Does my current choice NOT affect future choices'
-available options in a complex way?"
-BOTH Greedy and DP need Optimal Substructure (Q2).
-Greedy ADDITIONALLY needs the Greedy Choice Property (Q1).
-DP doesn't need Q1 — it explores everything anyway.
+
+- Q1: GREEDY CHOICE PROPERTY
+  - "Can I make the best local choice and never regret it?"
+- Q2: OPTIMAL SUBSTRUCTURE
+  - "Does the optimal solution contain optimal sub-solutions?"
+- Q3: NO FUTURE DEPENDENCY
+  - "Does my current choice NOT affect future choices'
+    available options in a complex way?"
+
+- BOTH Greedy and DP need Optimal Substructure (Q2).
+- Greedy ADDITIONALLY needs the Greedy Choice Property (Q1).
+- DP doesn't need Q1 — it explores everything anyway.
 
 ## Proof Techniques For Greedy
 
@@ -60,14 +65,19 @@ The Exchange Argument is the most mathematically rigorous way to prove a Greedy 
 - **Step 2:** At the first point of divergence, $G$ picks activity $g$ (ends at $T_g$). $O$ picks activity $o$ (ends at $T_o$). By definition of our greedy rule, $T_g \le T_o$.
 - **Step 3:** Create $O'$ by replacing $o$ with $g$.
 - **Step 4:** Does $O'$ break? No. Since $g$ ends _earlier_ than $o$, it frees up MORE time. Any subsequent activities in $O$ that started after $T_o$ will _definitely_ start after $T_g$. The total number of activities remains the same. Thus, $O'$ is just as optimal as $O$.
-  TECHNIQUE 2: GREEDY STAYS AHEAD
-  "At every step, show greedy solution is at least as good
-  as any other solution up to that point."
-  Example — Fractional Knapsack:
-  Sort by value/weight ratio. Taking highest ratio first → at every stage,
-  total value ≥ any alternative selection of the same total weight.
+
+TECHNIQUE 2: GREEDY STAYS AHEAD
+
+"At every step, show greedy solution is at least as good
+as any other solution up to that point."
+
+Example — Fractional Knapsack:
+
+Sort by value/weight ratio. Taking highest ratio first → at every stage,
+total value ≥ any alternative selection of the same total weight.
 
 **In Interviews**: You don't need a formal proof. Say:
+
 "I believe greedy works here because [greedy choice property holds] —
 choosing the locally best [X] can never make the global answer worse."
 
@@ -84,14 +94,14 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 ## When Greedy Fails — Classic Traps
 
 - ❌ 0/1 KNAPSACK: Greedy by value/weight ratio FAILS.
-  Items: (w=10,v=60), (w=20,v=100), (w=30,v=120). Capacity=50.
-  Greedy by ratio: take first (6.0), then second (5.0) → w=30, v=160
-  Optimal: take second + third → w=50, v=220. GREEDY LOSES.
-  (But Fractional Knapsack → greedy IS optimal.)
+  - Items: (w=10,v=60), (w=20,v=100), (w=30,v=120). Capacity=50.
+  - Greedy by ratio: take first (6.0), then second (5.0) → w=30, v=160
+  - Optimal: take second + third → w=50, v=220. GREEDY LOSES.
+  - (But Fractional Knapsack → greedy IS optimal.)
 - ❌ COIN CHANGE (arbitrary denominations): Greedy FAILS.
-  Coins: [1, 3, 4]. Amount: 6.
-  Greedy: 4+1+1 = 3 coins. Optimal: 3+3 = 2 coins.
-  (But with US coins [1,5,10,25] → greedy IS optimal.)
+  - Coins: [1, 3, 4]. Amount: 6.
+  - Greedy: 4+1+1 = 3 coins. Optimal: 3+3 = 2 coins.
+  - (But with US coins [1,5,10,25] → greedy IS optimal.)
 - ❌ LONGEST INCREASING SUBSEQUENCE: Greedy "pick smallest" FAILS.
   [1, 100, 2, 3, 4]. Greedy might pick 1, 2 early but needs to
   explore whether 100 leads somewhere. Need DP (or patience sort).

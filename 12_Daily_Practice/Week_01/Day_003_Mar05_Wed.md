@@ -246,6 +246,7 @@ public boolean isAnagram(String s, String t) {
 
 **Problem:** You receive server logs as strings. Each log has format:
 `"TIMESTAMP LEVEL MESSAGE"`
+
 Example: `"2026-03-05T10:15:30 ERROR Database connection timeout"`
 
 Write a function to:

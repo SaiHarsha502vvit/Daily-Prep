@@ -121,9 +121,9 @@ public class Order { // Aggregate Root
 
 <details><summary>Answer</summary>
 
-**The Violation:** Aggregates define strict transactional boundaries. An Aggregate Root may only hold references to _other_ Aggregate Roots by their **Identity (ID)**, never by direct object reference.
-**The Catastrophe:** If `Order` directly mutates `InventoryItem` in the same transaction, you are modifying two Aggregates simultaneously. Under high load, multiple users buying the same popular item will cause the database to lock the `InventoryItem` row. Because the transaction also locks the individual `Order` rows, you create massive lock contention and inevitable database deadlocks, bringing the checkout system to a halt.
-**The DDD Solution (Eventual Consistency):** The `Order` transaction should ONLY modify the `Order` state and publish a Domain Event (e.g., `OrderPlacedEvent`). The transaction commits immediately. An asynchronous listener catches the event and initiates a _separate_ transaction on the `InventoryItem` aggregate. This decouples the locks and scales infinitely.
+- **The Violation:** Aggregates define strict transactional boundaries. An Aggregate Root may only hold references to _other_ Aggregate Roots by their **Identity (ID)**, never by direct object reference.
+- **The Catastrophe:** If `Order` directly mutates `InventoryItem` in the same transaction, you are modifying two Aggregates simultaneously. Under high load, multiple users buying the same popular item will cause the database to lock the `InventoryItem` row. Because the transaction also locks the individual `Order` rows, you create massive lock contention and inevitable database deadlocks, bringing the checkout system to a halt.
+- **The DDD Solution (Eventual Consistency):** The `Order` transaction should ONLY modify the `Order` state and publish a Domain Event (e.g., `OrderPlacedEvent`). The transaction commits immediately. An asynchronous listener catches the event and initiates a _separate_ transaction on the `InventoryItem` aggregate. This decouples the locks and scales infinitely.
 
 </details>
 
@@ -204,14 +204,19 @@ If 10,000 users buy the PS5, the system handles 10,000 fast, non-conflicting `Or
 When learning to code, developers are taught that applications are just user interfaces over a database. You have four operations: Create, Read, Update, Delete (CRUD). To facilitate this in object-oriented programming, developers create classes with private fields and public `get()` and `set()` methods for every single field.
 
 **The Naked Truth of the "Anemic Domain Model":**
+
 When you give an object public setters (e.g., `user.setAccountType()`, `user.setDiscountRate()`), you have stripped the object of all its behavioral agency. The object is no longer a representation of a complex business concept; it is just a "dumb data bag" mapping to a memory address.
+
 This forces all the actual "business logic" to live in massive procedural `Service` classes (e.g., `UserService`).
 
 - **The Catastrophe:** If `UserService` updates the `accountType` but forgets to update the `discountRate`, the `User` object is perfectly happy to exist in an illegal, corrupted state. The compiler won't complain. The ORM won't complain. You only find out when the company loses millions of dollars because premium users aren't getting their discounts.
 
 **The Reality of Ubiquitous Language & Rich Domain Models:**
+
 DDD dictates that the code must be a literal, executable translation of the exact words spoken by the Domain Experts (the business stakeholders).
+
 Business stakeholders never say: _"We need to update the User's account type string to 'PREMIUM' and then set the cart discount decimal to 0.10."_
+
 They say: _"When a user upgrades their subscription to premium, they get a 10% loyalty discount applied to their cart."_
 
 In true DDD, an Entity is violently protective of its internal memory. It refuses to let external code mutate it using raw CRUD abstractions. It exposes **Domain Intent Methods**, not setters.
@@ -375,6 +380,8 @@ sequenceDiagram
     Note over O: Saga Status: FAILED
 ```
 
+**How to read this diagram.** Read it top to bottom as a conversation between the Order Orchestrator and two services: the orchestrator commands Inventory to reserve stock, then commands Payment to charge the card, and the declined reply triggers a compensation command that releases the stock. Notice that the orchestrator only updates its own state between steps and never holds a database lock while waiting.
+
 **The Physical Advantage:** The Orchestrator holds NO database locks while waiting for `PaymentService` to respond. It simply saves its state machine state (`status='WAITING_FOR_PAYMENT'`) to disk and frees the CPU thread. The database is entirely unlocked. Throughput is theoretically infinite, limited only by network bandwidth and disk IOPS.
 
 ---
@@ -422,7 +429,9 @@ public void placeOrder(Order order) {
 Because `Order` and `OutboxEvent` are in the same Postgres database, they are written to the same Write-Ahead Log (WAL). If the commit fails, neither is saved. If it succeeds, both are saved to the hard drive simultaneously.
 
 **The Relay (Debezium / CDC):**
+
 How does the event get from the Postgres `Outbox` table into Kafka? You do NOT use a polling `SELECT * FROM outbox WHERE sent=false` (that destroys DB performance).
+
 Instead, you use **Change Data Capture (CDC)** like Debezium. Debezium acts like a Postgres Replica. It physically tails the Postgres WAL file on the hard drive. The moment the commit hits the disk, Debezium reads the binary log, sees the `Outbox` insertion, and pushes it directly into Kafka.
 
 ```mermaid
@@ -449,6 +458,8 @@ flowchart LR
     WAL -->|2. Stream BinLog| CDC
     CDC -->|3. Publish| KAFKA
 ```
+
+**How to read this diagram.** Follow the numbered arrows left to right: the Order Service commits the order and its outbox row in one Postgres transaction (1), both land in the Write-Ahead Log, Debezium streams that log (2), and publishes the event to Kafka (3). Notice that the application never talks to Kafka directly, so the event cannot be lost between the database commit and the broker.
 
 **The Guarantee:** At-Least-Once Delivery. The event is mathematically guaranteed to reach Kafka.
 
@@ -494,7 +505,9 @@ Instead of an `Account` table with a `balance` column, you have an `EventStore` 
 | A-123 | 3 | FundsWithdrawn | `{"amount": 20}` |
 
 **How do you know the balance? (Rehydration):**
+
 When the user opens the app, the system loads all events for `A-123` from disk, and applies a pure, functional "Reduce" operation in memory (RAM).
+
 `0 + 100 - 20 = 80`. The balance is calculated on the fly.
 
 **The Superpowers of Event Sourcing:**
@@ -573,8 +586,12 @@ flowchart TD
     UI -->|GET /balance| QRY_API
 ```
 
+**How to read this diagram.** The client sends writes (`POST /withdraw`) to the Command API, which appends an event to the Event Store (1); the event is published to Kafka (2) and consumed by the Postgres and Elastic projectors (3), which update separate read databases (4). Reads (`GET /balance`) go only to the Query API. Notice that the write path and read path share nothing except the event bus, which is why the read side is eventually consistent.
+
 **The Final Naked Truth:**
+
 CQRS embraces the ultimate reality of distributed systems: **Data on the screen is already stale the millisecond it reaches the user's eyes.** By the time the user reads their $80 balance, an automatic subscription fee might have already deducted $10 in the background.
+
 CQRS accepts this reality. It allows the Read Database to be eventually consistent (lagging by 10-50ms), enabling us to scale the Read Databases and Write Databases completely independently on entirely different hardware architectures.
 
 ---
@@ -602,13 +619,19 @@ If your producer pushes these messages using a Round-Robin algorithm, `AccountCr
 - Consumer B reads Partition 0 and processes `AccountCreated` 10 milliseconds later.
 
 **The Mechanical Solution (Partition Keys):**
+
 You MUST use a **Routing Key**. When producing the message, you specify the `userId=99` as the Kafka Message Key.
+
 The Kafka Producer executes a hash function: `murmur2("99") % num_partitions = 3`.
+
 Because the hash is deterministic, **every single event for user 99 is mathematically guaranteed to be written to Partition 3.**
+
 Because Consumer A is assigned to Partition 3, it reads the physical log sequentially, guaranteeing it processes `AccountCreated` before `FundsDeposited`.
 
 **The Partition Scaling Formula:**
+
 If you have 10 Partitions, the absolute maximum number of consumers you can have in a Consumer Group is 10. If you add an 11th consumer, it will sit completely idle.
+
 To achieve infinite scalability, you must over-partition early (e.g., 100 partitions) to allow horizontal pod autoscaling (HPA) to scale your consumers up to 100 instances during Black Friday spikes.
 
 ---

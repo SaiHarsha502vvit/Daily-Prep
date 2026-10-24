@@ -199,30 +199,15 @@ Fix → Inventory Service returns null for new products
 
 ## Mental Model 5: The Usual Suspects
 
-## Symptom │ Likely Cause
-
-Slow response │ N+1 queries, missing index,
-connection pool exhaustion,
-GC pauses, contention (locks)
-┼
-OOM (Out Of │ Memory leak, unbounded cache,
-Memory) │ large query results loaded to RAM,
-too many threads
-┼
-High CPU │ Infinite loop, regex backtracking,
-expensive computation, crypto ops
-┼
-Connection │ Pool exhaustion (DB/HTTP), leaked
-refused │ connections, firewall rules
-┼
-Timeout │ Downstream service slow, network
-partition, DNS resolution slow
-┼
-Data corruption │ Race condition, missing transaction,
-partial write, schema mismatch
-┼
-Cascading failure│ No circuit breaker, no timeout,
-retry storm, thundering herd
+| Symptom | Likely Cause |
+|---|---|
+| Slow response | N+1 queries, missing index, connection pool exhaustion, GC pauses, contention (locks) |
+| OOM (Out Of Memory) | Memory leak, unbounded cache, large query results loaded to RAM, too many threads |
+| High CPU | Infinite loop, regex backtracking, expensive computation, crypto ops |
+| Connection refused | Pool exhaustion (DB/HTTP), leaked connections, firewall rules |
+| Timeout | Downstream service slow, network partition, DNS resolution slow |
+| Data corruption | Race condition, missing transaction, partial write, schema mismatch |
+| Cascading failure | No circuit breaker, no timeout, retry storm, thundering herd |
 
 ---
 

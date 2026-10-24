@@ -31,14 +31,14 @@ The ability to STORE and RETRIEVE information when you need it.
 
 ## What Problem Does This Solve
 
-PROBLEM 1: "I learned this last week and forgot it"
-→ Without review, 90% is forgotten in 1 week (Ebbinghaus)
-PROBLEM 2: "I understand when reading but can't apply"
-→ Recognition ≠ Recall. You need active retrieval practice.
-PROBLEM 3: "I've solved 500 problems but still can't solve new ones"
-→ Solving without UNDERSTANDING builds no transferable skills
-PROBLEM 4: "Interview blank - I knew this!"
-→ Stress impairs retrieval. Need stronger memory traces.
+- PROBLEM 1: "I learned this last week and forgot it"
+  - → Without review, 90% is forgotten in 1 week (Ebbinghaus)
+- PROBLEM 2: "I understand when reading but can't apply"
+  - → Recognition ≠ Recall. You need active retrieval practice.
+- PROBLEM 3: "I've solved 500 problems but still can't solve new ones"
+  - → Solving without UNDERSTANDING builds no transferable skills
+- PROBLEM 4: "Interview blank - I knew this!"
+  - → Stress impairs retrieval. Need stronger memory traces.
 
 **The Core Issue**: Most people study WRONG!
 
@@ -49,21 +49,21 @@ PROBLEM 4: "Interview blank - I knew this!"
 ## Why Does Retention Matter For Dsa
 
 1. PATTERNS MUST BE INSTANT:
-   Interview gives you 30-45 minutes
-   No time to "figure out" which pattern to use
-   Must RECOGNIZE instantly from problem structure
+   - Interview gives you 30-45 minutes
+   - No time to "figure out" which pattern to use
+   - Must RECOGNIZE instantly from problem structure
 2. KNOWLEDGE COMPOUNDS:
-   DP builds on recursion
-   Graph algorithms build on trees
-   Advanced patterns combine basic ones
-   If you forget basics, advanced becomes impossible
+   - DP builds on recursion
+   - Graph algorithms build on trees
+   - Advanced patterns combine basic ones
+   - If you forget basics, advanced becomes impossible
 3. REAL WORK NEEDS RECALL:
-   At work, you can't Google everything
-   Need to KNOW when to use HashMap vs TreeMap
-   Quick decisions require internalized knowledge
+   - At work, you can't Google everything
+   - Need to KNOW when to use HashMap vs TreeMap
+   - Quick decisions require internalized knowledge
 4. CONFIDENCE COMES FROM MASTERY:
-   "I've seen this pattern 20 times" → confident
-   "I think I saw something similar..." → anxious
+   - "I've seen this pattern 20 times" → confident
+   - "I think I saw something similar..." → anxious
 
 ## ⭐ Growth Mindset For Learning ⭐
 
@@ -82,11 +82,11 @@ PROBLEM 4: "Interview blank - I knew this!"
 - "Forgetting is normal - it's a signal to review"
 
 **The Truth**:
-STRUGGLE = GROWTH
-When learning feels hard, your brain is building new connections!
-Easy learning = weak memory
-Difficult learning = strong memory
-Don't avoid hard problems - they're building your brain!
+- STRUGGLE = GROWTH
+- When learning feels hard, your brain is building new connections!
+- Easy learning = weak memory
+- Difficult learning = strong memory
+- Don't avoid hard problems - they're building your brain!
 
 ## How Memory Actually Works (Science-Based)
 
@@ -109,8 +109,10 @@ Don't avoid hard problems - they're building your brain!
 - Testing yourself > re-reading
 
 **Optimal Learning Cycle**:
+```text
 Learn → Sleep → Review → Retrieve → Apply → Teach
 ↑**********************\_\_\_\_**********************↓
+```
 
 ## Expected Outcomes
 
@@ -713,22 +715,22 @@ Close all notes → Write down everything you remember about today's topic
 "Your brain LOVES clear start-stop cycles."
 
 **Timeline Example**:
-09:00-09:45 → Deep work (Problem solving)
-09:45-10:00 → Break (walk, stretch, water)
-10:00-10:45 → Deep work (Learn new pattern)
-10:45-11:00 → Break
-11:00-11:45 → Deep work (Practice problems)
-11:45-12:00 → Break
-12:00-12:45 → Deep work (Review and revise)
-= 3 hours of QUALITY study (worth 6+ hours of distracted study)
+- 09:00-09:45 → Deep work (Problem solving)
+- 09:45-10:00 → Break (walk, stretch, water)
+- 10:00-10:45 → Deep work (Learn new pattern)
+- 10:45-11:00 → Break
+- 11:00-11:45 → Deep work (Practice problems)
+- 11:45-12:00 → Break
+- 12:00-12:45 → Deep work (Review and revise)
+- = 3 hours of QUALITY study (worth 6+ hours of distracted study)
 
 **Break Rules**:
 
 - ✅ DO: Walk, stretch, drink water, look at nature, rest eyes
 - ❌ DON'T: Social media, YouTube, phone (these tire your brain!)
-  WHY NO PHONE?
-  Phone activates same brain areas as studying → No real rest
-  Walking/nature → Different brain areas → Real rest
+  - WHY NO PHONE?
+    - Phone activates same brain areas as studying → No real rest
+    - Walking/nature → Different brain areas → Real rest
 
 ## 📝 Technique 3: BLURTING TECHNIQUE
 
@@ -744,10 +746,11 @@ Close all notes → Write down everything you remember about today's topic
 5. You instantly SEE your weak areas!
 
 **Why It Works**:
-You can't hide from what you don't know.
-The different color shows exactly what needs more work.
+- You can't hide from what you don't know.
+- The different color shows exactly what needs more work.
 
 **Dsa Example**:
+```text
 Topic: Binary Search
 YOUR BLURT (from memory):
 "Binary search works on sorted arrays
@@ -763,10 +766,11 @@ Time complexity is O(log n)
 
 **Edge Cases**: empty array, single element ← [FORGOT!]"
 Now you know EXACTLY what to review!
+```
 
 **Recommended**:
-Do this after completing each chapter/pattern
-Keep your blurt papers - they become revision sheets!
+- Do this after completing each chapter/pattern
+- Keep your blurt papers - they become revision sheets!
 
 ## 📅 Technique 4: 2-3-7 REVISION RULE
 
@@ -829,6 +833,7 @@ Keep your blurt papers - they become revision sheets!
 
 **The Rule**:
 ═════════
+
 Explain the topic in simple language...
 ...as if teaching a 10-year-old child.
 
@@ -842,14 +847,14 @@ Explain the topic in simple language...
 4. Go back to source, fill gaps, simplify further
 
 **Dsa Example**: Explaining Hash Table to a 10-year-old
-BAD (complex): "A hash table is a data structure that implements
-an associative array abstract data type using a hash function
-to compute an index into an array of buckets."
-GOOD (simple): "Imagine a school with 100 lockers numbered 1-100.
-Each student's name is converted to a locker number using a magic
-formula (hash function). When you want to find Rahul's stuff,
-you use the formula to know exactly which locker to check.
-You don't check all 100 lockers - you go directly to his!"
+- BAD (complex): "A hash table is a data structure that implements
+  an associative array abstract data type using a hash function
+  to compute an index into an array of buckets."
+- GOOD (simple): "Imagine a school with 100 lockers numbered 1-100.
+  Each student's name is converted to a locker number using a magic
+  formula (hash function). When you want to find Rahul's stuff,
+  you use the formula to know exactly which locker to check.
+  You don't check all 100 lockers - you go directly to his!"
 
 **Another Example**: Binary Search
 "Imagine finding a word in a dictionary. You don't start from
@@ -858,8 +863,8 @@ Then you take that half and open to ITS middle. Keep doing this
 until you find the word. That's binary search!"
 
 **Practice This**:
-Pretend you're teaching your younger sibling or cousin
-If they wouldn't understand, simplify more!
+- Pretend you're teaching your younger sibling or cousin
+- If they wouldn't understand, simplify more!
 
 ## ❓ Technique 6: QUESTION FIRST APPROACH
 
@@ -867,6 +872,7 @@ If they wouldn't understand, simplify more!
 
 **The Rule**:
 ═════════
+
 Start with Previous Year Questions (PYQs) / Problems BEFORE theory.
 
 > 💡 **KEY INSIGHT:**
@@ -885,22 +891,22 @@ Start with Previous Year Questions (PYQs) / Problems BEFORE theory.
 **Dsa Application**:
 
 **Wrong Order**:
-Read all about DP → Watch videos → Then try problems
-(You don't know WHAT to focus on, so you learn everything vaguely)
+- Read all about DP → Watch videos → Then try problems
+- (You don't know WHAT to focus on, so you learn everything vaguely)
 
 **Right Order**:
 Look at DP problems first → Notice patterns → Read theory →
 "Ah, THIS is why I need memoization!" → Solve with understanding
 
 **Example Workflow**:
-Day 1: Open Sliding Window problems
-Try 2-3 problems (probably fail, that's OK!)
-Note: "I don't understand how to track the window"
-Day 1: Read Sliding Window theory
-Focus on: "How to track window efficiently"
-Everything clicks because you KNOW what you need!
-Day 1: Return to problems
-Solve with understanding
+- Day 1: Open Sliding Window problems
+- Try 2-3 problems (probably fail, that's OK!)
+- Note: "I don't understand how to track the window"
+- Day 1: Read Sliding Window theory
+- Focus on: "How to track window efficiently"
+- Everything clicks because you KNOW what you need!
+- Day 1: Return to problems
+- Solve with understanding
 
 **Why This Works**:
 

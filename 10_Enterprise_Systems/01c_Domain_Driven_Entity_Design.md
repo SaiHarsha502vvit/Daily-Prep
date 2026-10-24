@@ -2,12 +2,12 @@
 
 ## 📌 5W1H
 
-**WHAT** — The 4-step domain-to-entity framework (Flow → Domains → Responsibilities → Entities), with worked examples (Uber case study, TripEvent append-only log, DriverOnboardingRequest separation).
-**WHY** — Entity redesign after deployment is 10× more expensive than design-time generalization; this framework prevents the most common breakage patterns (anemic models, mutated VOs, request/final entity confusion).
-**WHO** — Backend engineers and tech leads designing or migrating domain models in Java/Spring or .NET enterprises.
-**WHEN** — 2026 — Domain-Driven Design is now mainstream in enterprise Java (Spring Modulith, Axon Framework, jMolecules); Eric Evans's 2003 book is the canonical reference, with Vaughn Vernon's 2013 "Implementing DDD" as the Java implementation guide.
-**WHERE** — Spring Boot, Jakarta EE, Axon, EventStore; applicable to any bounded context (orders, inventory, payments, identity).
-**HOW** — 4-step framework applied via Uber case study, then generalization patterns (TripPassenger for Uber Pool), then failure-mode enumeration (mutated Money, lost identity, reference vs. DTO confusion).
+- **WHAT** — The 4-step domain-to-entity framework (Flow → Domains → Responsibilities → Entities), with worked examples (Uber case study, TripEvent append-only log, DriverOnboardingRequest separation).
+- **WHY** — Entity redesign after deployment is 10× more expensive than design-time generalization; this framework prevents the most common breakage patterns (anemic models, mutated VOs, request/final entity confusion).
+- **WHO** — Backend engineers and tech leads designing or migrating domain models in Java/Spring or .NET enterprises.
+- **WHEN** — 2026 — Domain-Driven Design is now mainstream in enterprise Java (Spring Modulith, Axon Framework, jMolecules); Eric Evans's 2003 book is the canonical reference, with Vaughn Vernon's 2013 "Implementing DDD" as the Java implementation guide.
+- **WHERE** — Spring Boot, Jakarta EE, Axon, EventStore; applicable to any bounded context (orders, inventory, payments, identity).
+- **HOW** — 4-step framework applied via Uber case study, then generalization patterns (TripPassenger for Uber Pool), then failure-mode enumeration (mutated Money, lost identity, reference vs. DTO confusion).
 
 > **🔥 4+ YOE God-Level Architectural Insight**
 > Unlike static technologies (e.g., MySQL, Redis) whose internal workings remain constant, **entities must continuously evolve alongside business requirements**.
@@ -83,10 +83,10 @@ Applying the 4-step framework to a ride-hailing system reveals distinct domains,
 
 A new "Rental Car" feature is added to the Uber-style platform. Users can rent a car for self-driven trips (different from Uber's driver-rides). Apply the 4-step framework:
 
-**Step 1 — Understand the Flow**: Pickup → Car selection → Identity verification → Unlock → Drive → Return → Inspection → Charge.
-**Step 2 — Identify Domains**: Pricing (per-km + per-hour), Identity (driver's license verification), Fleet (car availability and location), Trip (rental trip lifecycle), Billing (rental charges + deposits).
-**Step 3 — Write Responsibilities**: Each domain has clear responsibilities — Fleet owns car state; Trip owns rental lifecycle; Identity verifies the renter.
-**Step 4 — Extract Entities**: `RentalCar`, `RentalTrip`, `Renter`, `Reservation`, `InspectionRecord`, `Deposit`.
+- **Step 1 — Understand the Flow**: Pickup → Car selection → Identity verification → Unlock → Drive → Return → Inspection → Charge.
+- **Step 2 — Identify Domains**: Pricing (per-km + per-hour), Identity (driver's license verification), Fleet (car availability and location), Trip (rental trip lifecycle), Billing (rental charges + deposits).
+- **Step 3 — Write Responsibilities**: Each domain has clear responsibilities — Fleet owns car state; Trip owns rental lifecycle; Identity verifies the renter.
+- **Step 4 — Extract Entities**: `RentalCar`, `RentalTrip`, `Renter`, `Reservation`, `InspectionRecord`, `Deposit`.
 
 Draw the domain boundary decision: does `RentalCar` share a domain with the existing `Trip` entity? Does `Reservation` belong in Trip or Fleet? What cross-domain events fire when a `RentalTrip` is completed (e.g., `RentalCompleted` → Fleet marks car available, Billing releases deposit)?
 
@@ -165,9 +165,9 @@ The standard pattern is to have BOTH:
 
 2. **`Trip` (materialized projection)** — fast-query view. Has `status`, `driverId`, `currentLocation`, etc. Maintained by a **background projector** that listens to the TripEvent stream and updates the `Trip` table on each new event.
 
-**Read path**: queries use the `Trip` projection (O(1) SELECT).
-**Write path**: appends a new `TripEvent` (O(1) INSERT), and the projector eventually updates the `Trip` projection (eventual consistency, typically <1s lag).
-**Recovery path**: replay all events to rebuild the projection if it gets corrupted.
+- **Read path**: queries use the `Trip` projection (O(1) SELECT).
+- **Write path**: appends a new `TripEvent` (O(1) INSERT), and the projector eventually updates the `Trip` projection (eventual consistency, typically <1s lag).
+- **Recovery path**: replay all events to rebuild the projection if it gets corrupted.
 
 **Storage growth calculation**:
 - ~10 events per trip × 100M trips/year = 1B events/year.

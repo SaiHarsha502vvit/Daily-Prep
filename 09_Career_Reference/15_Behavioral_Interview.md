@@ -51,13 +51,14 @@ S.T.A.R. FRAMEWORK
 
 ### STAR Anti-Patterns
 
-❌ BAD STAR ✅ GOOD STAR
-"We did this..." "I specifically did this..."
-Too much situation setup Quick context, deep action
-Vague results ("it worked") "Reduced latency by 60%"
-No learning mentioned "I learned that..."
-10+ minute rambling answer 2-3 minute focused answer
-Made-up or hypothetical Real, specific experience
+| BAD STAR | GOOD STAR |
+|---|---|
+| "We did this..." | "I specifically did this..." |
+| Too much situation setup | Quick context, deep action |
+| Vague results ("it worked") | "Reduced latency by 60%" |
+| No learning mentioned | "I learned that..." |
+| 10+ minute rambling answer | 2-3 minute focused answer |
+| Made-up or hypothetical | Real, specific experience |
 
 ---
 
@@ -213,12 +214,12 @@ RESULT: Production stable within 1 hour, feature delivered next day,
 
 DECISION-MAKING SIGNALS
 
-✓ Considered trade-offs (not just "it's the best")
-✓ Thought about maintainability, not just speed
-✓ Consulted others when appropriate
-✓ Made reversible decisions quickly
-✓ Made irreversible decisions carefully
-✓ Used data/evidence, not just gut feeling
+- Considered trade-offs (not just "it's the best")
+- Thought about maintainability, not just speed
+- Consulted others when appropriate
+- Made reversible decisions quickly
+- Made irreversible decisions carefully
+- Used data/evidence, not just gut feeling
 
 ### Category 7: Adaptability & Ambiguity
 
@@ -272,56 +273,55 @@ AMAZON LPs — PREPARE 2 STORIES FOR EACH
 
 STORY BANK — YOUR PERSONAL PREPARATION
 
-Story 1: "The Production Bug"
-Tags: [failure, debugging, ownership, time-pressure]
-S: ****************************\_\_\_****************************
-T: ****************************\_\_\_****************************
-A: ****************************\_\_\_****************************
-R: ****************************\_\_\_****************************
+- Story 1: "The Production Bug"
+  - Tags: [failure, debugging, ownership, time-pressure]
+  - S: ****************************\_\_\_****************************
+  - T: ****************************\_\_\_****************************
+  - A: ****************************\_\_\_****************************
+  - R: ****************************\_\_\_****************************
 
-Story 2: "The Disagreement"
-Tags: [conflict, communication, data-driven]
-S: ****************************\_\_\_****************************
-T: ****************************\_\_\_****************************
-A: ****************************\_\_\_****************************
-R: ****************************\_\_\_****************************
+- Story 2: "The Disagreement"
+  - Tags: [conflict, communication, data-driven]
+  - S: ****************************\_\_\_****************************
+  - T: ****************************\_\_\_****************************
+  - A: ****************************\_\_\_****************************
+  - R: ****************************\_\_\_****************************
 
-Story 3: "I Took Initiative"
-Tags: [leadership, initiative, impact]
+- Story 3: "I Took Initiative"
+  - Tags: [leadership, initiative, impact]
 
-Story 4: "The Tight Deadline"
-Tags: [prioritization, pressure, delivery]
+- Story 4: "The Tight Deadline"
+  - Tags: [prioritization, pressure, delivery]
 
-Story 5: "I Helped a Struggling Teammate"
-Tags: [teamwork, empathy, mentoring]
+- Story 5: "I Helped a Struggling Teammate"
+  - Tags: [teamwork, empathy, mentoring]
 
-Story 6: "The Technical Decision"
-Tags: [trade-offs, simplification, architecture]
+- Story 6: "The Technical Decision"
+  - Tags: [trade-offs, simplification, architecture]
 
-Story 7: "Learning Something New Fast"
-Tags: [adaptability, curiosity, growth]
+- Story 7: "Learning Something New Fast"
+  - Tags: [adaptability, curiosity, growth]
 
-Story 8: "Customer Impact"
-Tags: [user-focus, going-beyond, feedback]
+- Story 8: "Customer Impact"
+  - Tags: [user-focus, going-beyond, feedback]
 
-TIP: Each story should map to 3+ question categories
-8 stories can cover 20+ different questions
+- TIP: Each story should map to 3+ question categories
+- 8 stories can cover 20+ different questions
 
 ### How to Map Stories to Questions
 
 STORY → QUESTION MAPPING MATRIX
-╠══════════════════════════════════════════════════════════════════╗ ║
-│ Conflict │ Leader │ Fail │ Team │ Priority ║
-──────────────────┼──────────┼────────┼──────┼──────┼──────── ║
-Production Bug │ │ ✓ │ ✓ │ ✓ │ ✓ ║
-The Disagreement │ ✓ │ │ │ ✓ │ ║
-Took Initiative │ │ ✓ │ │ ✓ │ ✓ ║
-Tight Deadline │ │ │ ✓ │ │ ✓ ║
-Helped Teammate │ ✓ │ ✓ │ │ ✓ │ ║
-Tech Decision │ ✓ │ ✓ │ │ │ ✓ ║
-──────────────────┼──────────┼────────┼──────┼──────┼──────── ║
-║
-EVERY category should have 2+ stories that fit ║
+
+| Story | Conflict | Leader | Fail | Team | Priority |
+|---|---|---|---|---|---|
+| Production Bug |  | ✓ | ✓ | ✓ | ✓ |
+| The Disagreement | ✓ |  |  | ✓ |  |
+| Took Initiative |  | ✓ |  | ✓ | ✓ |
+| Tight Deadline |  |  | ✓ |  | ✓ |
+| Helped Teammate | ✓ | ✓ |  | ✓ |  |
+| Tech Decision | ✓ | ✓ |  |  | ✓ |
+
+EVERY category should have 2+ stories that fit
 
 ---
 
@@ -330,36 +330,37 @@ EVERY category should have 2+ stories that fit ║
 GOOGLE EVALUATES 4 THINGS:
 
 1. General Cognitive Ability
-   → How you approach & solve problems
-   → "Walk me through your thought process"
+   - How you approach & solve problems
+   - "Walk me through your thought process"
 
 2. Leadership
-   → Emergent leadership (not just title-based)
-   → "Stepped up when needed, stepped back when appropriate"
+   - Emergent leadership (not just title-based)
+   - "Stepped up when needed, stepped back when appropriate"
 
 3. Googleyness
-   → Comfort with ambiguity
-   → Fun to work with
-   → Pushes boundaries
+   - Comfort with ambiguity
+   - Fun to work with
+   - Pushes boundaries
 
 4. Role-Related Knowledge
-   → Technical skills specific to the role
+   - Technical skills specific to the role
 
 ---
 
 ## Common Traps & How to Avoid Them
 
-TRAP │ SOLUTION
-Saying "we" for everything │ Use "I" — show YOUR role
-Badmouthing former employers │ Be diplomatic, focus on learning
-Too short answer (30 sec) │ Aim for 2-3 minutes
-Too long answer (10+ min) │ Practice with a timer
-No quantifiable results │ Add numbers: "reduced by 40%"
-Only positive stories │ Include failures + growth
-Hypothetical answers │ ALWAYS use real experiences
-Not answering the question │ Repeat the question to yourself
-No follow-up ready │ Prepare "if asked more" details
-Same story for everything │ Prepare 8-10 diverse stories
+| TRAP | SOLUTION |
+|---|---|
+| Saying "we" for everything | Use "I" — show YOUR role |
+| Badmouthing former employers | Be diplomatic, focus on learning |
+| Too short answer (30 sec) | Aim for 2-3 minutes |
+| Too long answer (10+ min) | Practice with a timer |
+| No quantifiable results | Add numbers: "reduced by 40%" |
+| Only positive stories | Include failures + growth |
+| Hypothetical answers | ALWAYS use real experiences |
+| Not answering the question | Repeat the question to yourself |
+| No follow-up ready | Prepare "if asked more" details |
+| Same story for everything | Prepare 8-10 diverse stories |
 
 ---
 
@@ -457,27 +458,27 @@ Before every behavioral interview, research:
 
 BEFORE THE INTERVIEW
 
-□ Review your 8-10 stories (read once, don't memorize)
-□ Research the company (last 15 min before)
-□ Prepare 3 questions to ask
-□ Test tech setup (camera, mic, internet) if virtual
-□ Have water nearby
-□ Be ready 5 minutes early
+- □ Review your 8-10 stories (read once, don't memorize)
+- □ Research the company (last 15 min before)
+- □ Prepare 3 questions to ask
+- □ Test tech setup (camera, mic, internet) if virtual
+- □ Have water nearby
+- □ Be ready 5 minutes early
 
 DURING THE INTERVIEW
 
-□ Listen to the FULL question before answering
-□ Take 5 seconds to think — silence is OK
-□ Use STAR — don't ramble
-□ Say "I" not "we"
-□ If stuck: "Can I take a moment to think of a good example?"
-□ Watch body language — sit up, eye contact, smile
+- □ Listen to the FULL question before answering
+- □ Take 5 seconds to think — silence is OK
+- □ Use STAR — don't ramble
+- □ Say "I" not "we"
+- □ If stuck: "Can I take a moment to think of a good example?"
+- □ Watch body language — sit up, eye contact, smile
 
 AFTER THE INTERVIEW
 
-□ Send thank-you email within 24 hours
-□ Note down questions you were asked (for future prep)
-□ Reflect: What went well? What to improve?
+- □ Send thank-you email within 24 hours
+- □ Note down questions you were asked (for future prep)
+- □ Reflect: What went well? What to improve?
 
 ---
 
@@ -517,9 +518,9 @@ I've started breaking tasks into smaller subtasks and
 tracking my estimates vs actuals. My accuracy has improved
 significantly over the past 6 months."
 
-❌ BAD: "I'm a perfectionist" (humble brag)
-❌ BAD: "I have no weaknesses" (delusional)
-❌ BAD: "I'm terrible at communication" (too damaging)
+- ❌ BAD: "I'm a perfectionist" (humble brag)
+- ❌ BAD: "I have no weaknesses" (delusional)
+- ❌ BAD: "I'm terrible at communication" (too damaging)
 
 ---
 

@@ -528,8 +528,9 @@ number of subsequences = 2^n
 number of non-empty subsequences = 2^n - 1
 ```
 
-Subarray is contiguous.
-Subsequence can skip.
+- Subarray is contiguous.
+- Subsequence can skip.
+
 This distinction matters constantly.
 
 ## 6.3 Combinatorics

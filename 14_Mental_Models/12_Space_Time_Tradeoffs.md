@@ -39,10 +39,15 @@ Big-O notation assumes all memory accesses cost the same $O(1)$. **In reality, m
 | **Main Memory (RAM)** | ~100+ ns  | Random access here is a "Cache Miss". Extremely slow. |
 
 **The Linked List vs Array Reality Check:**
+
 A Linked List traversal is $O(n)$. An Array traversal is $O(n)$.
+
 However, an Array is **contiguous in memory**. Fetching index 0 loads indices 1-15 into the L1 cache simultaneously. The next 15 loop iterations take 1 nanosecond each (Cache Hits).
+
 A Linked List's nodes are scattered randomly across the heap. Every `.next` pointer dereference likely triggers a RAM Cache Miss (100 nanoseconds).
+
 **Result:** Array traversal can be 10x to 50x faster than Linked List traversal in the real world, despite both being mathematically $O(n)$.
+
 **Rule of Thumb:** Always prefer contiguous memory (Arrays) over scattered memory (LinkedLists, Trees, complex object graphs) when raw speed is critical.
 
 ## The Decision Framework
@@ -75,31 +80,31 @@ A Linked List's nodes are scattered randomly across the heap. Every `.next` poin
 
 ## Classic Tradeoff Examples In Dsa
 
-EXAMPLE 1: TWO SUM (LC 1)
-Brute force: O(n²) time, O(1) space — check every pair
-Hash map: O(n) time, O(n) space — lookup complement in O(1)
-→ Trade O(n) space to save O(n) time factor. WORTH IT.
-EXAMPLE 2: FIBONACCI
-Recursive: O(2ⁿ) time, O(n) stack space
-Memo (cache): O(n) time, O(n) space — cache all results
-Bottom-up: O(n) time, O(1) space — only keep last 2
-→ DP caches to avoid recomputation. Bottom-up further optimizes space.
-EXAMPLE 3: SUBARRAY SUM EQUALS K (LC 560)
-Brute force: O(n²) — check every subarray
-Prefix sum map: O(n) time, O(n) space — store prefix freq
-→ Trade O(n) space to avoid O(n) inner loop. WORTH IT.
-EXAMPLE 4: GRAPH REPRESENTATION
-Dense graph (many edges): adjacency matrix O(V²) space, O(1) edge check
-Sparse graph (few edges): adjacency list O(V+E) space, O(degree) check
-→ Choose representation based on graph density.
-EXAMPLE 5: DP SPACE OPTIMIZATION
-2D DP table: O(n×m) space
-1D rolling: O(m) space — if current row only depends on previous row
-→ Knapsack, LCS, Edit Distance all reduce from 2D to 1D.
-EXAMPLE 6: BIT PACKING
-Boolean array visited[10000]: 10KB
-Bitset: 10000/8 = 1.25KB
-→ 8× space reduction. Time slightly worse (bit operations).
+- EXAMPLE 1: TWO SUM (LC 1)
+  - Brute force: O(n²) time, O(1) space — check every pair
+  - Hash map: O(n) time, O(n) space — lookup complement in O(1)
+  - → Trade O(n) space to save O(n) time factor. WORTH IT.
+- EXAMPLE 2: FIBONACCI
+  - Recursive: O(2ⁿ) time, O(n) stack space
+  - Memo (cache): O(n) time, O(n) space — cache all results
+  - Bottom-up: O(n) time, O(1) space — only keep last 2
+  - → DP caches to avoid recomputation. Bottom-up further optimizes space.
+- EXAMPLE 3: SUBARRAY SUM EQUALS K (LC 560)
+  - Brute force: O(n²) — check every subarray
+  - Prefix sum map: O(n) time, O(n) space — store prefix freq
+  - → Trade O(n) space to avoid O(n) inner loop. WORTH IT.
+- EXAMPLE 4: GRAPH REPRESENTATION
+  - Dense graph (many edges): adjacency matrix O(V²) space, O(1) edge check
+  - Sparse graph (few edges): adjacency list O(V+E) space, O(degree) check
+  - → Choose representation based on graph density.
+- EXAMPLE 5: DP SPACE OPTIMIZATION
+  - 2D DP table: O(n×m) space
+  - 1D rolling: O(m) space — if current row only depends on previous row
+  - → Knapsack, LCS, Edit Distance all reduce from 2D to 1D.
+- EXAMPLE 6: BIT PACKING
+  - Boolean array visited[10000]: 10KB
+  - Bitset: 10000/8 = 1.25KB
+  - → 8× space reduction. Time slightly worse (bit operations).
 
 🔬 **Section Challenge — Classic Tradeoff Examples In Dsa**
 
@@ -125,9 +130,9 @@ DON'T trade space for time when:
 - Recomputation cost is astronomical (deep recursion without memo)
 
 **The Interview Rule**:
-In interviews, ALWAYS prefer time over space unless explicitly asked.
-Say: "I'll use a hash map for O(1) lookup, trading O(n) space."
-If interviewer pushes for O(1) space, THEN optimize.
+- In interviews, ALWAYS prefer time over space unless explicitly asked.
+- Say: "I'll use a hash map for O(1) lookup, trading O(n) space."
+- If interviewer pushes for O(1) space, THEN optimize.
 
 ## Common Space-Time Tools
 

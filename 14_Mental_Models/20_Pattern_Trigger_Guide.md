@@ -116,6 +116,8 @@ flowchart TD
     S3C -->|No| P9[Greedy]
 ```
 
+**How to read this diagram.** Start at one of the three ambiguous signals (`Subarray/Substring`, `Kth Largest`, `Min/Max cost to X`) and answer the yes/no question on each diamond to reach a single pattern box. Notice that each signal splits on a property of the data, such as monotonic values, a stream, or weighted edges, so that property rather than the keyword decides the algorithm.
+
 ---
 
 ## 🧠 5-Question Quick Classifier (Use for Any Problem)

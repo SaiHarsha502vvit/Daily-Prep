@@ -38,24 +38,23 @@ If you can articulate both outer and inner roles, you stop "trying random patter
 
 ## The Top 15 Pattern Compositions
 
-# COMPOSITION EXAMPLE PROBLEM LC#
-
-══ ═══════════════════════ ═══════════════════════════ ═══
-1 Binary Search + Greedy Split Array Largest Sum 410
-2 BFS + Bitmask DP Shortest Path Visit All 847
-3 Trie + Backtracking Word Search II 212
-4 Sorting + Two Pointers 3Sum 15
-5 Binary Search + Sliding Min Size Subarray Sum 209
-6 Graph + DP Cheapest Flight K Stops 787
-7 Heap + Greedy Task Scheduler 621
-8 Union-Find + Sort Accounts Merge 721
-9 Monotonic Stack + DP Largest Rectangle Histogram 84
-10 Prefix Sum + HashMap Subarray Sum Equals K 560
-11 Binary Search + Matrix Search 2D Matrix II 240
-12 DFS + Memoization Longest Inc Path in Matrix 329
-13 Topological Sort + DP Course Schedule + min time —
-14 Segment Tree + Sweep Count Smaller After Self 315
-15 Trie + DP Word Break 139
+| # | COMPOSITION | EXAMPLE PROBLEM | LC# |
+|---|---|---|---|
+| 1 | Binary Search + Greedy | Split Array Largest Sum | 410 |
+| 2 | BFS + Bitmask DP | Shortest Path Visit All | 847 |
+| 3 | Trie + Backtracking | Word Search II | 212 |
+| 4 | Sorting + Two Pointers | 3Sum | 15 |
+| 5 | Binary Search + Sliding | Min Size Subarray Sum | 209 |
+| 6 | Graph + DP | Cheapest Flight K Stops | 787 |
+| 7 | Heap + Greedy | Task Scheduler | 621 |
+| 8 | Union-Find + Sort | Accounts Merge | 721 |
+| 9 | Monotonic Stack + DP | Largest Rectangle Histogram | 84 |
+| 10 | Prefix Sum + HashMap | Subarray Sum Equals K | 560 |
+| 11 | Binary Search + Matrix | Search 2D Matrix II | 240 |
+| 12 | DFS + Memoization | Longest Inc Path in Matrix | 329 |
+| 13 | Topological Sort + DP | Course Schedule + min time | — |
+| 14 | Segment Tree + Sweep | Count Smaller After Self | 315 |
+| 15 | Trie + DP | Word Break | 139 |
 
 ---
 
@@ -70,10 +69,12 @@ If you can articulate both outer and inner roles, you stop "trying random patter
 3. Narrow the search based on feasibility
 
 **Visual**:
+```text
 Answer space: [lo ─────────── mid ─────────── hi]
 feasible(mid)?
 YES → search lower (minimize max)
 NO → search higher
+```
 
 **Example**: Split Array Largest Sum (LC 410)
 "Split array into m subarrays to minimize the largest subarray sum"
