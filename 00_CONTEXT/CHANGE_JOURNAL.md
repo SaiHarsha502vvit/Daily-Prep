@@ -4,6 +4,14 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - 07_Modern_Java: Functional Programming Foundations Series (Ch06a-Ch06g)
+
+- Added seven one-topic pages after `Ch06_Functional_Programming.md`, guided by the topic list of *Functional Programming in Scala* (Chiusano and Bjarnason, Manning 2014; the book file is not in the repo and was not reproduced): learning path and book map (Ch06a), purity and effects (Ch06b), ADTs and immutable lists (Ch06c), Option/Either (Ch06d), laziness (Ch06e), pure state and property-based testing (Ch06f), monoids/functors/monads (Ch06g).
+- All Java 21 code compiled and tested (list folds, Either pipelines, lazy streams and sieve, pure RNG, state monad, property harness, monoid/functor/monad laws, balanced fold vs linear fold on 500 random lists).
+- Known open gaps listed in Ch06a: parser combinators, from-scratch parallelism library, applicative/traversable theory, IO monad library.
+- Observed (not yet fixed): `07_Modern_Java` contains cp1252 encoding damage in other chapters; schedule for the folder-level pass.
+- `00_INDEX.md` and `CONTEXT.md` of `07_Modern_Java` updated.
+
 ## 2026-10-24 - 04_Patterns_Templates Repair, Fact Check and Enterprise Upgrade
 
 - Repaired encoding in 18 files (cp1252 bytes, `** ?` separators, replacement characters), the headerless pattern table in `00_INDEX.md`, the broken HashMap diagram in `03_Visual_Diagrams.md` (now Mermaid) and three dead cross-links.

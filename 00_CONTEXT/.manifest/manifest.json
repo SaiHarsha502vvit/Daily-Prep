@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-24T15:05:19.123027+00:00",
+  "generatedAt": "2026-10-24T15:11:29.044798+00:00",
   "repoRoot": "/home/user/Daily-Prep",
-  "activeFileCount": 1314,
+  "activeFileCount": 1321,
   "files": [
     {
       "path": ".github/agents/diagram-audit.agent.md",
@@ -4126,9 +4126,9 @@
       "folder": "07_Modern_Java",
       "title": "07 - Modern Java & Spring Boot",
       "role": "Module index and local navigation",
-      "sha256": "66bb05c399e8eb303a41258ee1e5e822d1b8a88f6d3387c131dffbe7ee665067",
-      "shortHash": "66bb05c399e8",
-      "bytes": 13074,
+      "sha256": "7cae908a8cc2df09a9cc61b385aabc42af71fc537b3f77a2530ead1a89bc2dd5",
+      "shortHash": "7cae908a8cc2",
+      "bytes": 14023,
       "headings": 13,
       "codeFences": 0,
       "codeFencesBalanced": true,
@@ -4187,16 +4187,17 @@
       "folder": "07_Modern_Java",
       "title": "Folder Context: 07_Modern_Java",
       "role": "Folder-level agent context and writing boundaries",
-      "sha256": "2534e96c67b80ff4dc8e3aa8dd5fe1ded4b084b79e9a2288b9dd8b143ea7b06a",
-      "shortHash": "2534e96c67b8",
-      "bytes": 728,
+      "sha256": "d38c8e9ebf6ac70c2d8c5bd100f46307493c7629a0bcfc037b6210199d851209",
+      "shortHash": "d38c8e9ebf6a",
+      "bytes": 946,
       "headings": 5,
       "codeFences": 0,
       "codeFencesBalanced": true,
       "challengeCount": 0,
       "styleSignals": [
         "java/spring",
-        "react"
+        "react",
+        "enterprise"
       ]
     },
     {
@@ -4348,6 +4349,133 @@
         "5W1H",
         "code-heavy",
         "java/spring",
+        "typescript",
+        "react",
+        "enterprise"
+      ]
+    },
+    {
+      "path": "07_Modern_Java/Ch06a_FP_Learning_Path_And_Book_Map.md",
+      "folder": "07_Modern_Java",
+      "title": "🧩 Functional Programming Foundations — Learning Path & Book Map",
+      "role": "Java, JVM, Spring Boot, JPA, security, testing, and distributed Java services",
+      "sha256": "bc4d61d1e9365a158918c7cd257d63b25c99ba183c074b6b4c216c0162f84055",
+      "shortHash": "bc4d61d1e936",
+      "bytes": 10258,
+      "headings": 13,
+      "codeFences": 2,
+      "codeFencesBalanced": true,
+      "challengeCount": 0,
+      "styleSignals": [
+        "typescript",
+        "enterprise"
+      ]
+    },
+    {
+      "path": "07_Modern_Java/Ch06b_FP_Purity_Substitution_And_Effects.md",
+      "folder": "07_Modern_Java",
+      "title": "🧩 Purity, Referential Transparency & Effects",
+      "role": "Java, JVM, Spring Boot, JPA, security, testing, and distributed Java services",
+      "sha256": "83963c82394b08eb4505c4f31ff69616d40bb106ec78e4ea3172cb88d18f58dc",
+      "shortHash": "83963c82394b",
+      "bytes": 8591,
+      "headings": 16,
+      "codeFences": 8,
+      "codeFencesBalanced": true,
+      "challengeCount": 0,
+      "styleSignals": [
+        "java/spring",
+        "enterprise"
+      ]
+    },
+    {
+      "path": "07_Modern_Java/Ch06c_FP_Algebraic_Data_Types_And_Immutable_Lists.md",
+      "folder": "07_Modern_Java",
+      "title": "🧩 Algebraic Data Types & Immutable Lists",
+      "role": "Java, JVM, Spring Boot, JPA, security, testing, and distributed Java services",
+      "sha256": "ff6a751ad8b50fe4894edad2d6b1fa834cefa0ac7b0b3e475e55ac1b1f105b31",
+      "shortHash": "ff6a751ad8b5",
+      "bytes": 8777,
+      "headings": 15,
+      "codeFences": 8,
+      "codeFencesBalanced": true,
+      "challengeCount": 0,
+      "styleSignals": [
+        "java/spring",
+        "typescript",
+        "enterprise"
+      ]
+    },
+    {
+      "path": "07_Modern_Java/Ch06d_FP_Error_Handling_Option_Either.md",
+      "folder": "07_Modern_Java",
+      "title": "🧩 Error Handling with Option & Either",
+      "role": "Java, JVM, Spring Boot, JPA, security, testing, and distributed Java services",
+      "sha256": "868fe6fb038d7ecad82f5158114a93c85dd6aba5e46803faf59aab73cf817b56",
+      "shortHash": "868fe6fb038d",
+      "bytes": 9075,
+      "headings": 15,
+      "codeFences": 6,
+      "codeFencesBalanced": true,
+      "challengeCount": 0,
+      "styleSignals": [
+        "java/spring",
+        "typescript",
+        "enterprise"
+      ]
+    },
+    {
+      "path": "07_Modern_Java/Ch06e_FP_Laziness_And_Lazy_Streams.md",
+      "folder": "07_Modern_Java",
+      "title": "🧩 Laziness & Lazy Streams",
+      "role": "Java, JVM, Spring Boot, JPA, security, testing, and distributed Java services",
+      "sha256": "ff4424dc962b317b81d973dc34a2aaa67ef12fc9be916ba2fd6b2acaa8cdfe12",
+      "shortHash": "ff4424dc962b",
+      "bytes": 9000,
+      "headings": 15,
+      "codeFences": 6,
+      "codeFencesBalanced": true,
+      "challengeCount": 0,
+      "styleSignals": [
+        "java/spring",
+        "typescript",
+        "enterprise"
+      ]
+    },
+    {
+      "path": "07_Modern_Java/Ch06f_FP_Pure_State_And_Property_Testing.md",
+      "folder": "07_Modern_Java",
+      "title": "🧩 Pure State & Property-Based Testing",
+      "role": "Java, JVM, Spring Boot, JPA, security, testing, and distributed Java services",
+      "sha256": "7269f1a6306d86b2f1fa271307550009fba6aae28a512dd5312ed022628c030c",
+      "shortHash": "7269f1a6306d",
+      "bytes": 9031,
+      "headings": 14,
+      "codeFences": 8,
+      "codeFencesBalanced": true,
+      "challengeCount": 0,
+      "styleSignals": [
+        "java/spring",
+        "typescript",
+        "enterprise"
+      ]
+    },
+    {
+      "path": "07_Modern_Java/Ch06g_FP_Monoids_Functors_Monads.md",
+      "folder": "07_Modern_Java",
+      "title": "🧩 Monoids, Functors & Monads",
+      "role": "Java, JVM, Spring Boot, JPA, security, testing, and distributed Java services",
+      "sha256": "49fcd8b25af9a29f53c7c3c50a644c42352ad5bc3b005de46c7df56f6630c90a",
+      "shortHash": "49fcd8b25af9",
+      "bytes": 11303,
+      "headings": 15,
+      "codeFences": 10,
+      "codeFencesBalanced": true,
+      "challengeCount": 0,
+      "styleSignals": [
+        "code-heavy",
+        "java/spring",
+        "javascript",
         "typescript",
         "react",
         "enterprise"
