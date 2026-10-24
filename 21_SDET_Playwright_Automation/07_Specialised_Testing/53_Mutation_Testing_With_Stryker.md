@@ -34,7 +34,7 @@ test("30 is adult", () => {
 
 Coverage tool says: 100% — that line ran.
 
-Stryker mutates `>=` to `>`. Now `isAdult(18) === false`. The test still passes (it tested 30, not 18). Mutant **survived**.
+Stryker mutates `>=` to `>`. Now `isAdult(18) === false`. The test still passes (it tested 30, not 18). Mutant **survived**. A second mutant, `return true`, survives too: nothing ever asks for `false`.
 
 The fix is a better test, not better coverage:
 
@@ -43,7 +43,9 @@ test("exactly 18 is adult", () => expect(isAdult(18)).toBe(true));
 test("17 is not adult", () => expect(isAdult(17)).toBe(false));
 ```
 
-Both these kill the mutant.
+The 18 test kills `>=` → `>`; the 17 test kills `true`.
+
+> **Verified** with Stryker 10.0.0 + Jest 30 + TypeScript 5.9 on exactly this function: with only `isAdult(30)` the run reported 2 killed, 2 survived (`age > 18` and `true`) and 1 compile error (the emptied function body), score 50%. Adding the 18 and 17 tests gave 4 killed, 0 survived, score 100%. Every config key, status name and number in this chapter was checked against that version.
 
 ---
 
@@ -52,6 +54,10 @@ Both these kill the mutant.
 This chapter is in the SDET module on purpose: **the SDET who advocates for mutation testing is the SDET who gets noticed**. Most teams have never heard of it. Bringing it up in a code review or quality meeting is rare and high-signal.
 
 That said: you don't run Stryker against Playwright E2E tests (too slow). You run it against the codebase the E2E suite _exercises_, or against unit tests in the same repo.
+
+There is **no Playwright runner plugin** for Stryker (the official runners are jest, vitest, mocha, jasmine, karma, tap and cucumber, plus the generic `command` runner). Playwright Test specs that do not open a browser still work through `testRunner: "command"` with `commandRunner: { command: "npx playwright test" }`: on `@playwright/test` 1.64.1 a 5-mutant run over `age >= 18` killed all 5 and took 11 s, but the command runner has no per-test coverage, so every mutant re-runs the whole command (use `coverageAnalysis: "off"`). That is why browser specs stay out of scope.
+
+Mutation testing by hand is what the module's own grader does: [`labs/HARNESS_GUIDE.md`](../labs/HARNESS_GUIDE.md#how-the-grader-works--read-it-then-copy-the-shape) plants one bug per variant and requires the lab's tests to fail against each. Stryker automates the planting; the lab shows what a surviving mutant feels like.
 
 ---
 
@@ -89,11 +95,10 @@ Engineers started abandoning PRs mid-build. The platform team got complaints abo
 npm i -D @stryker-mutator/core @stryker-mutator/typescript-checker @stryker-mutator/jest-runner
 ```
 
-```javascript
-// stryker.conf.json
+```json
+// stryker.config.json  (JSON has no comments: delete this line)
 {
   "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
-  "packageManager": "npm",
   "mutate": ["src/**/*.ts", "!src/**/*.spec.ts"],
   "testRunner": "jest",
   "reporters": ["html", "clear-text", "progress"],
@@ -107,7 +112,7 @@ npm i -D @stryker-mutator/core @stryker-mutator/typescript-checker @stryker-muta
 npx stryker run
 ```
 
-You get an HTML report with every surviving mutant highlighted.
+You get an HTML report at `reports/mutation/mutation.html` with every surviving mutant highlighted. (`stryker init` writes `stryker.config.json`, or `stryker.config.mjs` if you choose JavaScript; the file is also found as `stryker.conf.json`, `.stryker.config.js` and the other `[.]stryker.[conf|config].[json|js|mjs|cjs]` spellings.)
 
 ---
 
@@ -123,14 +128,16 @@ flowchart TD
     C -->|All tests pass| Survived["Survived -- tests aren't asserting enough"]
     C -->|Tests hang| Timeout["Timeout -- counts as Killed"]
     C -->|No test ran this line| NoCov["NoCoverage -- add a test"]
-    C -->|Mutant fails to typecheck| Compile["CompileError -- counts as Killed"]
+    C -->|Mutant fails to typecheck| Compile["CompileError -- excluded from the score"]
 
     style Killed fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
     style Timeout fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
-    style Compile fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    style Compile fill:#eeeeee,stroke:#9e9e9e,stroke-width:2px
     style Survived fill:#ffebee,stroke:#e53935,stroke-width:2px
     style NoCov fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
 ```
+
+**How to read this diagram.** Start at the top: Stryker changes one line, then re-runs your tests against that single change. The diamond shows the five possible outcomes. Green (Killed, Timeout) means your tests detected the change, red (Survived) means they did not, yellow (NoCoverage) means no test even ran that line, and grey (CompileError) means the mutant did not type-check, so it is left out of the score.
 
 | Status       | Meaning                                      | Action                                |
 | ------------ | -------------------------------------------- | ------------------------------------- |
@@ -138,7 +145,17 @@ flowchart TD
 | Survived     | All tests passed                             | ❌ your tests aren't asserting enough |
 | Timeout      | Mutant caused infinite loop, tests timed out | Counts as killed                      |
 | NoCoverage   | No test exercised the line                   | Add a test                            |
-| CompileError | Mutant didn't typecheck                      | Counts as killed                      |
+| CompileError | Mutant didn't typecheck                      | Excluded from the score (not killed)  |
+
+**The score formula** (checked by feeding a real report to `mutation-testing-metrics`, the library Stryker uses):
+
+```text
+detected   = Killed + Timeout
+undetected = Survived + NoCoverage
+score      = detected / (detected + undetected) * 100
+```
+
+`CompileError`, `RuntimeError` and `Ignored` mutants are in neither the numerator nor the denominator. In the first run in this chapter's scratch project: 5 killed, 0 timeout, 3 survived, 30 no-coverage and 20 compile errors gave 5 / 38 = 13.16%, and the 20 compile errors did not help the score. Stryker also prints a second "covered" figure, `detected / (detected + Survived)`, which ignores NoCoverage: 5 / 8 = 62.5% for the same run. Do not quote it as "the" score.
 
 **Target mutation score**: 60% is realistic for legacy code. 80% is strong. 95% is research territory.
 
@@ -183,95 +200,96 @@ You will learn more about assertion quality in this single exercise than from 20
 
 ## 9. Stryker Configuration Deep-Dive
 
-Every field in `stryker.config.mjs` (or `.json`, `.ts`) has a purpose. This section explains each one so you are not copy-pasting blindly.
+Every field in `stryker.config.json` / `stryker.config.mjs` has a purpose. This section explains each one so you are not copy-pasting blindly. Checked on Stryker 10.0.0 (the option list comes from `node_modules/@stryker-mutator/core/schema/stryker-schema.json`).
 
 ```javascript
 // stryker.config.mjs
-import { defineConfig } from "@stryker-mutator/core/schema";
+/** @type {import('@stryker-mutator/api/core').PartialStrykerOptions} */
+export default {
+  // There is NO defineConfig helper: `import { defineConfig } from
+  // "@stryker-mutator/core/schema"` throws ERR_PACKAGE_PATH_NOT_EXPORTED. The JSDoc @type above
+  // gives IDE autocomplete; in a .json file use the "$schema" key instead.
+  // Stryker's schema validation WARNS about unknown keys (it does not silently ignore them).
 
-export default defineConfig({
-  // $schema: included by defineConfig — enables IDE autocomplete and validation.
-  // Without it, Stryker silently ignores misnamed keys.
+  packageManager: "npm", // The package manager Stryker may use to install missing dependencies.
+  // Alternatives: 'yarn', 'pnpm'. Usually unnecessary; you can drop it.
 
-  packageManager: "npm", // Used for `npm install` in the temp dir Stryker creates.
-  // Alternatives: 'yarn', 'pnpm'. Match your project's lock file.
-
-  reporters: ["html", "json", "clear-text", "dashboard"],
-  // html   — human-readable report at `reports/mutation/html/index.html`.
-  //         Open in browser; surviving mutants are red, killed are green.
-  // json   — machine-readable report at `reports/mutation/mutation.json`.
-  //         Consumed by automation: CI gates, pull request comments, dashboards.
-  // clear-text — prints a table to stdout after each run. Useful for local dev.
-  // dashboard  — posts results to stryker-mutator.io dashboard (free tier available).
-  //         Enables historical score tracking per branch and trend graphs.
+  reporters: ["html", "json", "clear-text", "progress", "dashboard"],
+  // Default is ["clear-text", "progress", "html"].
+  // html       - human-readable report at `reports/mutation/mutation.html`.
+  //              Open in browser; surviving mutants are red, killed are green.
+  // json       - machine-readable report at `reports/mutation/mutation.json`
+  //              (mutation-testing-elements schema; it has NO precomputed score field, see section 12).
+  // clear-text - prints a table (and the surviving mutants) to stdout after each run.
+  // progress   - live progress bar while the run is going.
+  // dashboard  - posts results to dashboard.stryker-mutator.io (needs STRYKER_DASHBOARD_API_KEY, CI only).
+  //              Enables historical score tracking per branch and trend graphs.
 
   mutate: [
     "src/**/*.ts", // Files to mutate. Stryker injects mutants into these.
-    "!src/**/*.spec.ts", // Exclude test files — mutating tests themselves is meaningless.
+    "!src/**/*.spec.ts", // Exclude test files: mutating tests themselves is meaningless.
     "!src/**/*.d.ts", // Exclude type declarations.
     "!src/generated/**/*", // Exclude generated code (auto-generated = not human-tested).
   ],
+  // CLI override: `npx stryker run --mutate "src/auth/**/*.ts"`, or a single range: `src/a.ts:10-20`.
 
   testRunner: "jest",
-  // jest — runs Jest as the test harness. Stryker runs `jest --config jest.config.js`.
-  // Alternatives:
-  //   vitest       — faster, Vite-native. Use for Vite projects.
-  //   mocha        — for Mocha/Chai setups. Pass `mochaOptions: { spec: ['test/**/*.ts'] }`.
-  //   karma        — browser-based. Rarely needed in Node projects.
-  //   command      — run any shell command as test runner. Useful for custom setups.
+  // jest     - runs Jest as the test harness (options under `jest: { configFile: ... }`).
+  // Alternatives (each is its own @stryker-mutator/*-runner package):
+  //   vitest   - Vite-native. Use for Vite projects.
+  //   mocha    - for Mocha/Chai setups. Pass `mochaOptions: { spec: ['test/**/*.ts'] }`.
+  //   jasmine, karma, tap, cucumber
+  //   command  - the DEFAULT when you configure nothing. Runs a shell command (`commandRunner:
+  //              { command: "npm test" }`) and reads only the exit code. Works with anything,
+  //              including `npx playwright test`, but has no per-test coverage.
 
   coverageAnalysis: "perTest",
-  // perTest — Instruments code so Stryker knows which tests covered each line.
-  //           Only tests that exercise a mutant's line are re-run against it.
-  //           Most accurate but slowest. Best for projects with < 500 tests.
-  // off     — Runs all tests against every mutant. Fast but noisy.
-  //           Use when perTest overhead is prohibitive (> 10 min run time).
+  // perTest - (default) records which tests cover each mutant and runs ONLY those tests.
+  //           The fastest option when the runner supports it (jest, vitest, mocha, ...).
+  // all     - records which mutants the suite as a whole covers: uncovered mutants become
+  //           NoCoverage instantly, covered ones run every test.
+  // off     - no coverage; every mutant runs the whole suite. Required for the command runner.
 
   tsconfigFile: "tsconfig.json",
-  // Path to TypeScript config. The TypeScript checker uses this to:
-  //   1. Validate that mutants type-check (mutations that break types are killed automatically).
-  //   2. Resolve paths and aliases so mutation locations are accurate.
-  // Include a tsconfig that matches your production build, not a test-specific one,
-  // otherwise mutants may appear in dead code paths that the production build would strip.
+  // Default is tsconfig.json. Used by the TypeScript checker and so Stryker can rewrite `extends`
+  // and `references` in the sandbox copy. Point it at a config that includes the files you mutate.
 
   checkers: ["typescript"],
-  // TypeScript checker runs `tsc --noEmit` on every mutant.
-  // A mutant that causes a compile error is immediately marked "Killed (CompileError)".
-  // This saves test execution time for obviously broken mutants.
-  // Without this checker, a TypeScript type error would need a real test to catch it.
+  // The TypeScript checker type-checks every mutant before any test runs (it does not shell out to
+  // `tsc --noEmit` per mutant; it uses the language service). A mutant that fails to compile is
+  // marked CompileError and is excluded from the score. This saves test time; without the checker
+  // those mutants would run and some would "survive" for the wrong reason or fail at runtime.
 
   thresholds: {
-    high: 80, // Team should aspire to 80%+ mutation score.
-    low: 60, // CI warning at 60-80%. Still green but should improve.
-    break: 50, // CI failure below 50%. Blocks merge. Adjust to your reality.
+    high: 80, // Default 80. Score at or above is shown green.
+    low: 60, // Default 60. Below this is shown red; between low and high is amber.
+    break: 50, // Default null (never fails). When the final score is below this, Stryker exits 1:
+    // "Final mutation score 13.16 under breaking threshold 50, setting exit code to 1".
   },
   // Common mistake: setting break: 80 on a legacy codebase with no prior mutation history.
   // You will spend two weeks just getting to 55% before writing any feature code.
   // Start with break: 40, move to 60 after quarter 1, 80 after a full remediation cycle.
 
   concurrency: 4,
-  // Number of mutant workers running in parallel. Default: your CPU core count.
+  // Number of worker processes. Default is cpuCount - 1 (or cpuCount when there are 4 or fewer
+  // cores); a percentage string such as "50%" is also accepted.
   // Reduce if Stryker causes CI resource contention with other parallel jobs.
-  // Increase only if your machine has headroom — more concurrency needs more RAM.
 
   incremental: true,
-  // Stores results in `.stryker-mutator/tmp/incremental/`.
-  // On subsequent runs, only re-mutates files changed since last run.
-  // A file unchanged since last run keeps its previous mutants and results.
-  // Benefits:
-  //   - Second run on a 200-file codebase: 5-10 minutes instead of 40+.
-  //   - Safe to run on every PR as long as a full baseline run was done on main.
-  // Caveat: clean the incremental cache after major refactors — stale results poison future runs.
-  //   Run: `npx stryker run --clean_tmp dir` or delete `.stryker-mutator/tmp/`.
+  // Stores results in `reports/stryker-incremental.json` (change with `incrementalFile`).
+  // On the next run, mutants whose source AND covering tests are unchanged reuse the old result.
+  // Measured: a second `--incremental` run on an untouched project reported
+  // "58 of 58 mutant result(s) are reused" and took 17 s instead of 29 s (most of the remainder is
+  // startup and the dry run).
+  // To rebuild from scratch: `npx stryker run --incremental --force`.
+  // The file lives under reports/, so in CI you must cache or upload it yourself (section 12).
 
   dashboard: {
-    project: "your-org/your-repo",
+    project: "github.com/your-org/your-repo",
     module: "frontend", // optional, for monorepo splitting
   },
-  // stryker-mutator.io free dashboard. Tracks mutation score per branch.
-  // Shows trend line: is quality improving or degrading over commits?
-  // In monorepos, one module name per package enables per-package scoring.
-});
+  // Only read when the "dashboard" reporter is on. Defaults come from the CI environment.
+};
 ```
 
 In monorepos, each package should have its own `stryker.config.mjs` at the package root.
