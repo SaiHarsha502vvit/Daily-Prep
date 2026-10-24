@@ -36,6 +36,8 @@
 
 ## 📚 Module Catalog
 
+> **How to read the hours:** the module tables below estimate *reading and study of the module itself*. The semester guides add problem sets, mini-projects and the capstone, so each semester totals roughly 130–155 hours (see the totals at the top of each guide listed under *Semester Guides* below). Capstones are scheduled in the last weeks of each semester.
+
 ### Semester 1: Foundations
 
 | Module                                  | Folder                                        | Est. Hours | Competency Target |

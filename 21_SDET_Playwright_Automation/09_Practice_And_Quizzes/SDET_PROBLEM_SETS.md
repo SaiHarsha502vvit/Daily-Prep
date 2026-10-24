@@ -8,7 +8,7 @@
 
 ## Problem Set SDET-PS1 — Unit Testing & Mocking
 
-**Prerequisites:** `21_SDET_Playwright_Automation/02_JUnit5.md`, `21_SDET_Playwright_Automation/03_Mockito.md`
+**Prerequisites:** `07_Modern_Java/Ch59_SB_Testing_Fundamentals.md` (JUnit 5, Mockito, `@SpringBootTest`/`@WebMvcTest`/`@DataJpaTest`), `07_Modern_Java/Ch60_SB_Testing_Advanced.md` (Testcontainers), `13_Developer_Essentials/06_Testing_Fundamentals.md`; for the Playwright parts start at `21_SDET_Playwright_Automation/README.md`
 
 ---
 

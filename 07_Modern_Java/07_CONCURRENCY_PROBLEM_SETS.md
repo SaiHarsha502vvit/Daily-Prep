@@ -25,7 +25,7 @@
 
 ## Problem Set JAVA-PS3 — Concurrency Bugs & Fixes
 
-**Prerequisites:** `07_Modern_Java/Ch15_Concurrency_Core.md`, `07_Modern_Java/Ch16_Concurrency_Advanced.md`, `07_Modern_Java/Ch17_CompletableFuture.md`
+**Prerequisites:** `07_Modern_Java/Ch15_Concurrency_Core.md`, `07_Modern_Java/Ch16_Concurrency_Advanced.md`, `07_Modern_Java/Ch17_Concurrency_Synchronizers.md` (CompletableFuture itself is Part 9 of `Ch16_Concurrency_Advanced.md`)
 
 ---
 
