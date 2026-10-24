@@ -6,31 +6,22 @@
 
 ### 5W1H: Deep Understanding of Trees
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: A Tree is a hierarchical data structure consisting of nodes   ║
-║        connected by edges, starting from a single root node.         ║
-║                                                                      ║
-║  WHY:  Linear structures (arrays, lists) only represent sequences.   ║
-║        Trees represent hierarchies (parent-child). Furthermore,      ║
-║        balanced trees enable O(log N) operations by eliminating      ║
-║        half the remaining search space at every step.                ║
-║                                                                      ║
-║  WHO:  Engineers working with databases, file systems, compilers,    ║
-║        and DOM rendering (browsers).                                 ║
-║                                                                      ║
-║  WHEN: Use when data has natural hierarchy or requires sorted access.║
-║        ✔ HTML DOM / File Systems (general trees)                     ║
-║        ✔ Databases (B-Trees)                                         ║
-║        ✔ Autocomplete / dictionaries (Tries)                         ║
-║        ✔ Priority Queues (Heaps)                                     ║
-║        ✘ When you need O(1) exact match lookup (use HashMap)         ║
-║                                                                      ║
-║  HOW:  Pointers! A node contains data and references (left, right)   ║
-║        to its children. Operations often use recursion (DFS) or a    ║
-║        queue (BFS) to traverse the structure.                        ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** A Tree is a hierarchical data structure consisting of nodes connected by edges, starting from a single root node.
+>
+> **WHY:** Linear structures (arrays, lists) only represent sequences. Trees represent hierarchies (parent-child). Furthermore, balanced trees enable O(log N) operations by eliminating half the remaining search space at every step.
+>
+> **WHO:** Engineers working with databases, file systems, compilers, and DOM rendering (browsers).
+>
+> **WHEN:** Use when data has natural hierarchy or requires sorted access.
+>
+> - ✅ HTML DOM / File Systems (general trees)
+> - ✅ Databases (B-Trees)
+> - ✅ Autocomplete / dictionaries (Tries)
+> - ✅ Priority Queues (Heaps)
+> - ❌ When you need O(1) exact match lookup (use HashMap)
+>
+> **HOW:** Pointers! A node contains data and references (left, right) to its children. Operations often use recursion (DFS) or a queue (BFS) to traverse the structure.
 
 ## ⚡ At a Glance — Trees & Heaps
 

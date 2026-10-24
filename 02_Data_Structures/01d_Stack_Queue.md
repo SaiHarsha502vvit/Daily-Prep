@@ -6,44 +6,30 @@
 
 ### 5W1H: Deep Understanding of Stack
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: A Stack is a LIFO (Last In, First Out) data structure.        ║
-║        Only the TOP element is accessible. Push/Pop are O(1).        ║
-║                                                                      ║
-║  WHY:  Many problems have a NESTING structure — what was opened      ║
-║        LAST must be closed FIRST (parentheses, function calls,       ║
-║        undo operations). LIFO naturally models this.                 ║
-║                                                                      ║
-║  HOW THE JVM USES A STACK (Call Stack):                              ║
-║  Every Java THREAD has its own call stack.                           ║
-║  When you call a method, JVM PUSHES a stack frame:                   ║
-║  ┌─────────────────────────────────────────┐                         ║
-║  │ main()     frame: { args, locals }      │ ← bottom                ║
-║  │ calculate() frame: { x=5, y=10 }       │                          ║
-║  │ multiply()  frame: { a=5, b=10 }       │ ← top (executing)        ║
-║  └─────────────────────────────────────────┘                         ║
-║  When multiply() returns, JVM POPS its frame.                        ║
-║  StackOverflowError = too many frames (infinite recursion).          ║
-║  Default stack size: 512KB - 1MB per thread.                         ║
-║                                                                      ║
-║  WHERE Stacks appear in production:                                  ║
-║  • JVM call stack (method invocation/return)                         ║
-║  • Browser back button (pages pushed, back = pop)                    ║
-║  • Ctrl+Z undo (actions pushed, undo = pop)                          ║
-║  • Expression evaluation (postfix, infix conversion)                 ║
-║  • DFS traversal (explicit or implicit via recursion)                ║
-║  • Compiler: syntax parsing, bracket matching                        ║
-║                                                                      ║
-║  WHEN to use a Stack:                                                ║
-║  ✔ Matching/nesting problems (brackets, HTML tags)                   ║
-║  ✔ Backtracking (maze solving, permutations)                         ║
-║  ✔ Converting recursion to iteration                                 ║
-║  ✔ Monotonic problems (next greater element)                         ║
-║  ✘ When you need FIFO order (use Queue)                              ║
-║  ✘ When you need random access (use Array)                           ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** A Stack is a LIFO (Last In, First Out) data structure. Only the TOP element is accessible. Push/Pop are O(1).
+>
+> **WHY:** Many problems have a NESTING structure — what was opened LAST must be closed FIRST (parentheses, function calls, undo operations). LIFO naturally models this.
+>
+> **HOW THE JVM USES A STACK (Call Stack):**  Every Java THREAD has its own call stack. When you call a method, JVM PUSHES a stack frame: ┌─────────────────────────────────────────┐ │ main()     frame: { args, locals }      │ ← bottom │ calculate() frame: { x=5, y=10 }       │ │ multiply()  frame: { a=5, b=10 }       │ ← top (executing) └─────────────────────────────────────────┘ When multiply() returns, JVM POPS its frame. StackOverflowError = too many frames (infinite recursion). Default stack size: 512KB - 1MB per thread.
+>
+> **WHERE Stacks appear in production:**
+>
+> - JVM call stack (method invocation/return)
+> - Browser back button (pages pushed, back = pop)
+> - Ctrl+Z undo (actions pushed, undo = pop)
+> - Expression evaluation (postfix, infix conversion)
+> - DFS traversal (explicit or implicit via recursion)
+> - Compiler: syntax parsing, bracket matching
+>
+> **WHEN to use a Stack:**
+>
+> - ✅ Matching/nesting problems (brackets, HTML tags)
+> - ✅ Backtracking (maze solving, permutations)
+> - ✅ Converting recursion to iteration
+> - ✅ Monotonic problems (next greater element)
+> - ❌ When you need FIFO order (use Queue)
+> - ❌ When you need random access (use Array)
 
 ## ⚡ At a Glance — Stack & Queue
 
@@ -379,34 +365,27 @@ Same complexity but different behavior: DFS explores ONE component completely us
 
 ### 5W1H: Deep Understanding of Queue
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: A Queue is a FIFO (First In, First Out) data structure.       ║
-║        Elements enter at the BACK and leave from the FRONT.          ║
-║                                                                      ║
-║  WHY:  We need a way to manage resources fairly or process data      ║
-║        in the exact order it arrived. LIFO (Stack) is unfair for     ║
-║        scheduling; FIFO guarantees order preservation.               ║
-║                                                                      ║
-║  WHO:  Systems programmers, backend engineers handling requests,     ║
-║        and algorithm designers implementing BFS.                     ║
-║                                                                      ║
-║  WHEN: Use when order of arrival strictly dictates order of process. ║
-║        ✔ Task scheduling (printer spoolers, CPU run queues)          ║
-║        ✔ Breadth-First Search (level-by-level traversal)             ║
-║        ✔ Asynchronous data transfer (IO buffers, pipes)              ║
-║        ✘ When you need LIFO (use Stack)                              ║
-║                                                                      ║
-║  WHERE Queues appear in production:                                  ║
-║  • Thread pools (waiting tasks)                                      ║
-║  • Message brokers (Kafka, RabbitMQ)                                 ║
-║  • Network routers (packet queuing)                                  ║
-║                                                                      ║
-║  HOW:  Usually implemented via a Circular Array (for strict memory   ║
-║        bounds and O(1) performance) or a Linked List (for unbounded  ║
-║        growth).                                                      ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** A Queue is a FIFO (First In, First Out) data structure. Elements enter at the BACK and leave from the FRONT.
+>
+> **WHY:** We need a way to manage resources fairly or process data in the exact order it arrived. LIFO (Stack) is unfair for scheduling; FIFO guarantees order preservation.
+>
+> **WHO:** Systems programmers, backend engineers handling requests, and algorithm designers implementing BFS.
+>
+> **WHEN:** Use when order of arrival strictly dictates order of process.
+>
+> - ✅ Task scheduling (printer spoolers, CPU run queues)
+> - ✅ Breadth-First Search (level-by-level traversal)
+> - ✅ Asynchronous data transfer (IO buffers, pipes)
+> - ❌ When you need LIFO (use Stack)
+>
+> **WHERE Queues appear in production:**
+>
+> - Thread pools (waiting tasks)
+> - Message brokers (Kafka, RabbitMQ)
+> - Network routers (packet queuing)
+>
+> **HOW:** Usually implemented via a Circular Array (for strict memory bounds and O(1) performance) or a Linked List (for unbounded growth).
 
 ## 🧬 Nature & Behavior
 

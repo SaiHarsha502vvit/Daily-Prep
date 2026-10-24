@@ -6,43 +6,34 @@
 
 ### 5W1H: Deep Understanding
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: A linked list is a sequence of NODES where each node          ║
-║        holds DATA and a POINTER (reference) to the next node.        ║
-║        Nodes are SCATTERED in memory (not contiguous).               ║
-║                                                                      ║
-║  WHY:  Arrays have a fatal flaw: inserting/deleting at arbitrary     ║
-║        positions requires SHIFTING all subsequent elements O(n).     ║
-║        Linked lists solve this — insert/delete is O(1) pointer       ║
-║        manipulation (if you have a reference to the position).       ║
-║                                                                      ║
-║  WHEN: Use when insertions/deletions dominate over random access.    ║
-║        ✔ Implementing stacks, queues, hash table chaining            ║
-║        ✔ Size unknown or changes frequently                          ║
-║        ✔ LRU cache (doubly-linked list + HashMap)                    ║
-║        ✘ Random access needed (use array)                            ║
-║        ✘ Cache performance critical (nodes scatter in memory)        ║
-║                                                                      ║
-║  HOW (JVM internals):                                                ║
-║  Each `new Node(data)` allocates on the Java HEAP:                   ║
-║  • Object header: 12-16 bytes (mark word + klass pointer)            ║
-║  • data field: 4 bytes (int) or 8 bytes (reference)                  ║
-║  • next field: 4-8 bytes (compressed/uncompressed reference)         ║
-║  • Total per node: ~32 bytes for a single int!                       ║
-║  vs Array: 4 bytes per int (8x less memory!)                         ║
-║                                                                      ║
-║  GC IMPACT: Linked list nodes are scattered → harder for GC to       ║
-║  traverse (poor GC locality). Pre-tenured nodes (old gen) cause      ║
-║  longer full GC pauses than arrays in young gen.                     ║
-║                                                                      ║
-║  REAL-WORLD SYSTEM USAGE:                                            ║
-║  • OS kernel: free memory blocks managed as a linked list            ║
-║  • Java ConcurrentLinkedQueue: lock-free queue using CAS             ║
-║  • Linux kernel: task_struct linked list for process management      ║
-║  • Redis LRU: doubly-linked list for eviction ordering               ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** A linked list is a sequence of NODES where each node holds DATA and a POINTER (reference) to the next node. Nodes are SCATTERED in memory (not contiguous).
+>
+> **WHY:** Arrays have a fatal flaw: inserting/deleting at arbitrary positions requires SHIFTING all subsequent elements O(n). Linked lists solve this — insert/delete is O(1) pointer manipulation (if you have a reference to the position).
+>
+> **WHEN:** Use when insertions/deletions dominate over random access.
+>
+> - ✅ Implementing stacks, queues, hash table chaining
+> - ✅ Size unknown or changes frequently
+> - ✅ LRU cache (doubly-linked list + HashMap)
+> - ❌ Random access needed (use array)
+> - ❌ Cache performance critical (nodes scatter in memory)
+>
+> **HOW (JVM internals):**  Each `new Node(data)` allocates on the Java HEAP:
+>
+> - Object header: 12-16 bytes (mark word + klass pointer)
+> - data field: 4 bytes (int) or 8 bytes (reference)
+> - next field: 4-8 bytes (compressed/uncompressed reference)
+> - Total per node: ~32 bytes for a single int! vs Array: 4 bytes per int (8x less memory!)
+>
+> **GC IMPACT:** Linked list nodes are scattered → harder for GC to traverse (poor GC locality). Pre-tenured nodes (old gen) cause longer full GC pauses than arrays in young gen.
+>
+> **REAL-WORLD SYSTEM USAGE:**
+>
+> - OS kernel: free memory blocks managed as a linked list
+> - Java ConcurrentLinkedQueue: lock-free queue using CAS
+> - Linux kernel: task_struct linked list for process management
+> - Memcached LRU: doubly-linked list per slab class for eviction ordering (Redis approximates LRU by sampling instead)
 
 ## ⚡ At a Glance — Linked Lists
 

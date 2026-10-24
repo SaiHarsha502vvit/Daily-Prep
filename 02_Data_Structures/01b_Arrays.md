@@ -267,38 +267,34 @@ Every DS was created to solve a **SPECIFIC** problem:
 
 ### 5W1H: Deep Understanding of Arrays
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: An array is a CONTIGUOUS block of memory storing elements    ║
-║        of the SAME TYPE at consecutive addresses.                    ║
-║                                                                      ║
-║  WHY:  Arrays exploit how CPU hardware works:                        ║
-║        • O(1) access: address = base + (index × size)               ║
-║        • Cache-friendly: contiguous data → fewer cache misses        ║
-║        • Simplest data structure with the best raw performance       ║
-║                                                                      ║
-║  WHEN to use Arrays:                                                 ║
-║        ✔ Random access by index is frequent                          ║
-║        ✔ Size is known in advance (or rarely changes)                ║
-║        ✔ Sequential iteration (cache locality = 10x faster)          ║
-║        ✘ Frequent insertions/deletions at arbitrary positions        ║
-║        ✘ Unknown or wildly varying size at runtime                    ║
-║                                                                      ║
-║  WHERE arrays appear in production:                                  ║
-║        • Database pages are arrays of records (fixed-size pages)     ║
-║        • Image pixels: 2D array of RGB values                        ║
-║        • Network buffers: byte arrays holding packet data            ║
-║        • GPU matrices: arrays for parallel computation               ║
-║                                                                      ║
-║  HOW (JVM internals):                                                ║
-║  Java `int[] arr = new int[6]`:                                      ║
-║  1. JVM allocates 24 bytes (6 × 4) PLUS 16 bytes object header      ║
-║     (mark word + klass pointer + array length) = 40 bytes total     ║
-║  2. All 24 bytes are CONTIGUOUS in heap memory                       ║
-║  3. JVM stores the array length (arr.length is O(1))                 ║
-║  4. Bounds checking: arr[i] verifies 0 ≤ i < length (throws AIOOBE) ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** An array is a **contiguous** block of memory storing elements of the **same type** at consecutive addresses.
+
+**WHY:** arrays exploit how CPU hardware works.
+
+- **O(1) access:** `address = base + (index × size)`
+- **Cache-friendly:** contiguous data → fewer cache misses
+- Simplest data structure with the best raw performance
+
+| ✅ Use arrays when | ❌ Avoid arrays when |
+| ----------------- | ------------------- |
+| Random access by index is frequent | Insertions/deletions at arbitrary positions are frequent |
+| Size is known in advance (or rarely changes) | Size is unknown or varies wildly at runtime |
+| You iterate sequentially (cache locality ≈ 10× faster) | |
+
+**WHERE arrays appear in production:**
+
+- Database pages are arrays of records (fixed-size pages)
+- Image pixels: 2D array of RGB values
+- Network buffers: byte arrays holding packet data
+- GPU matrices: arrays for parallel computation
+
+**HOW (JVM internals)** for `int[] arr = new int[6]`:
+
+1. The JVM allocates 24 bytes (6 × 4) **plus** a 16-byte object header (mark word + klass pointer + array length) = **40 bytes** total.
+2. All 24 data bytes are **contiguous** in heap memory.
+3. The JVM stores the array length, so `arr.length` is O(1).
+4. Bounds checking: `arr[i]` verifies `0 ≤ i < length` (throws `ArrayIndexOutOfBoundsException`).
 
 ### 🔒 Array Invariants (Always True — Never Assumptions)
 
@@ -333,25 +329,27 @@ Every DS was created to solve a **SPECIFIC** problem:
 
 ### What is an Array?
 
-```
-PHYSICAL REALITY:
-┌────────────────────────────────────────────────────┐
-│ Memory is a long tape of numbered boxes            │
-│                                                    │
-│ Address: 1000  1004  1008  1012  1016  1020        │
-│          ┌────┬────┬────┬────┬────┬────┐           │
-│          │ 10 │ 20 │ 30 │ 40 │ 50 │ 60 │           │
-│          └────┴────┴────┴────┴────┴────┘           │
-│          arr[0] arr[1] arr[2] arr[3] arr[4] arr[5] │
-│                                                    │
-│ CONTIGUOUS = Next to each other in memory          │
-└────────────────────────────────────────────────────┘
+**Physical reality:** memory is a long tape of numbered boxes.
 
-WHY CONTIGUOUS MATTERS:
-- arr[3] = baseAddress + (3 × elementSize)
-- arr[3] = 1000 + (3 × 4) = 1012
-- This is O(1) random access!
+```mermaid
+flowchart LR
+    subgraph TAPE["Contiguous memory - one int = 4 bytes"]
+        direction LR
+        a0["addr 1000<br/>10<br/>arr[0]"] --- a1["addr 1004<br/>20<br/>arr[1]"] --- a2["addr 1008<br/>30<br/>arr[2]"] --- a3["addr 1012<br/>40<br/>arr[3]"] --- a4["addr 1016<br/>50<br/>arr[4]"] --- a5["addr 1020<br/>60<br/>arr[5]"]
+    end
+    classDef cell fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef hot fill:#ffd9b3,stroke:#e65100,color:#111
+    class a0,a1,a2,a4,a5 cell
+    class a3 hot
 ```
+
+**How to read this diagram.** Each box is one `int` sitting right next to the previous one (addresses differ by 4). The orange box is `arr[3]`, found directly by arithmetic.
+
+**Why contiguous matters:**
+
+- `arr[3] = baseAddress + (3 × elementSize)`
+- `arr[3] = 1000 + (3 × 4) = 1012`
+- This is O(1) random access!
 
 ### Array Characteristics
 
@@ -366,53 +364,48 @@ WHY CONTIGUOUS MATTERS:
 
 ### 🧠 CPU Cache Locality — Why Arrays Are 10x Faster Than LinkedLists
 
+Big-O says array iteration and linked-list iteration are both O(n), but in practice iterating an array is **10–100× faster**. Why?
+
+**The CPU memory hierarchy:**
+
+| Level | Size | Latency | Cycles |
+| ----- | ---- | ------- | ------ |
+| L1 cache | 32 KB | ~1 ns | ~4 |
+| L2 cache | 256 KB | ~4 ns | ~12 |
+| L3 cache | 8 MB | ~12 ns | ~36 |
+| RAM | 16 GB | ~100 ns | ~300 |
+| SSD | 1 TB | ~100,000 ns | — |
+| HDD | 2 TB | ~10,000,000 ns | — |
+
+When the CPU reads `arr[0]` it doesn't fetch just 4 bytes: it fetches a **cache line of 64 bytes** (on most CPUs), that is **16 ints in one fetch**.
+
+```mermaid
+flowchart TB
+    subgraph ARR["ARRAY ITERATION - 1 miss per 16 elements"]
+        direction LR
+        r0["arr[0]<br/>MISS: fetch 64 bytes"] --> r1["arr[1]<br/>HIT"] --> r2["arr[2]<br/>HIT"] --> rd["...<br/>HIT"] --> r15["arr[15]<br/>HIT"] --> r16["arr[16]<br/>MISS: next 64 bytes"]
+    end
+    subgraph LST["LINKED LIST ITERATION - nearly every node misses"]
+        direction LR
+        n1["node1 @ 0x1000<br/>MISS"] --> n2["node2 @ 0x5F00<br/>MISS"] --> n3["node3 @ 0x2A00<br/>MISS"] --> n4["node4 @ 0x8100<br/>MISS"]
+    end
+    classDef miss fill:#ffc9c9,stroke:#c62828,color:#111
+    classDef hit fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class r0,r16,n1,n2,n3,n4 miss
+    class r1,r2,rd,r15 hit
 ```
-THE HIDDEN PERFORMANCE SECRET:
-═══════════════════════════════
 
-Big-O says array access and linked list access are both O(n) for iteration.
-But in practice, iterating an array is 10-100x FASTER. Why?
+**How to read this diagram.** Red is a cache miss (slow, goes to RAM), green is a cache hit (fast). The array hits 15 times for every miss (6.25% miss rate); the linked list's nodes are scattered, so almost every hop misses (~100% miss rate).
 
-THE CPU MEMORY HIERARCHY:
-┌─────────────┐ ← L1 Cache: 32KB, ~1 nanosecond (4 cycles)
-├─────────────┤ ← L2 Cache: 256KB, ~4 nanoseconds (12 cycles)
-├─────────────┤ ← L3 Cache: 8MB, ~12 nanoseconds (36 cycles)
-├─────────────┤ ← RAM: 16GB, ~100 nanoseconds (300 cycles)
-├─────────────┤ ← SSD: 1TB, ~100,000 nanoseconds
-└─────────────┘ ← HDD: 2TB, ~10,000,000 nanoseconds
+| Summing 1 million integers | Time | Behaviour |
+| -------------------------- | ---- | --------- |
+| Array | ~0.5 ms | Cache-friendly sequential access |
+| LinkedList | ~5.0 ms | Cache-hostile random access |
 
-When CPU reads arr[0], it doesn't just fetch 4 bytes.
-It fetches a CACHE LINE of 64 bytes (on most CPUs).
-That's 16 ints in one fetch!
+Same Big-O, **10× slower** in practice.
 
-ARRAY ITERATION:
-  arr[0]: CACHE MISS → fetch 64 bytes → arr[0..15] now in cache
-  arr[1]: CACHE HIT!  (already in cache)
-  arr[2]: CACHE HIT!  (already in cache)
-  ...
-  arr[15]: CACHE HIT! (already in cache)
-  arr[16]: CACHE MISS → fetch next 64 bytes
-
-  Result: Only 1 cache miss per 16 elements = 6.25% miss rate
-
-LINKED LIST ITERATION:
-  node1 at address 0x1000: CACHE MISS → fetch 64 bytes
-  node2 at address 0x5F00: CACHE MISS → different region!
-  node3 at address 0x2A00: CACHE MISS → different region!
-  node4 at address 0x8100: CACHE MISS → different region!
-
-  Result: Nearly 100% cache miss rate (nodes scattered in memory)
-
-REAL NUMBERS (summing 1 million integers):
-  Array:      ~0.5 ms  (cache-friendly sequential access)
-  LinkedList: ~5.0 ms  (cache-hostile random access)
-  That's 10x slower with the SAME Big-O complexity!
-
-ANALOGY: Reading a book vs reading a dictionary.
-  Array = reading pages sequentially (fast — pages are next to each other)
-  LinkedList = following "see also" references that jump to random pages
-  (slow — you keep flipping through the entire dictionary)
-```
+> [!TIP]
+> **Analogy:** reading a book vs reading a dictionary. An array is reading pages in order (fast, pages are adjacent). A linked list is following "see also" references that jump to random pages (slow).
 
 ### 🔴 Real-World Origin: Supermarket Inventory (1957)
 

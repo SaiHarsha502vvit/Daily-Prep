@@ -51,28 +51,16 @@ flowchart TD
 
 ### 5W1H: Mastering Java Collections
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: A unified architecture (interfaces, implementations, and algorithms)  ║
-║        for storing, retrieving, and manipulating groups of objects.          ║
-║                                                                              ║
-║  WHY:  Raw arrays have fixed sizes and lack built-in operations. The         ║
-║        Collections framework provides robust, tested, high-performance       ║
-║        data structures out-of-the-box, saving massive development time.      ║
-║                                                                              ║
-║  WHO:  Every Java developer. It is the absolute foundation of production     ║
-║        Java code and 90% of Data Structure & Algorithm interviews.           ║
-║                                                                              ║
-║  WHEN: Use whenever you need to store variable amounts of data, guarantee    ║
-║        uniqueness (Set), map keys to values (Map), or process in specific    ║
-║        orders (Queue/Stack/Tree).                                            ║
-║                                                                              ║
-║  HOW:  By understanding the interface hierarchy (Iterable -> Collection ->   ║
-║        List/Set/Queue) and choosing the implementation (ArrayList, HashMap,  ║
-║        etc.) that provides optimal O(1) or O(log N) operations for your use  ║
-║        case.                                                                 ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** A unified architecture (interfaces, implementations, and algorithms) for storing, retrieving, and manipulating groups of objects.
+>
+> **WHY:** Raw arrays have fixed sizes and lack built-in operations. The Collections framework provides robust, tested, high-performance data structures out-of-the-box, saving massive development time.
+>
+> **WHO:** Every Java developer. It is the absolute foundation of production Java code and 90% of Data Structure & Algorithm interviews.
+>
+> **WHEN:** Use whenever you need to store variable amounts of data, guarantee uniqueness (Set), map keys to values (Map), or process in specific orders (Queue/Stack/Tree).
+>
+> **HOW:** By understanding the interface hierarchy (Iterable -> Collection -> List/Set/Queue) and choosing the implementation (ArrayList, HashMap, etc.) that provides optimal O(1) or O(log N) operations for your use case.
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗

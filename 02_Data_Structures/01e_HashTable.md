@@ -6,30 +6,21 @@
 
 ### 5W1H: Deep Understanding of Hash Table
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: A Hash Table (or HashMap) is a data structure that maps keys  ║
-║        to values for highly efficient lookups, using a hash function ║
-║        to compute an index into an array of buckets.                 ║
-║                                                                      ║
-║  WHY:  Searching an array or linked list for a specific element is   ║
-║        O(N). Binary search on a sorted array is O(log N). We need a  ║
-║        way to find, insert, and delete data in O(1) time.            ║
-║                                                                      ║
-║  WHO:  Every software engineer. Hash tables are the most frequently  ║
-║        used data structure in real-world application development.    ║
-║                                                                      ║
-║  WHEN: Use when you need instant lookups by a unique identifier.     ║
-║        ✔ Caching (LRU, Memcached, Redis)                             ║
-║        ✔ Counting frequencies (word counts, duplicates)              ║
-║        ✔ Fast pair finding (Two-Sum problem)                         ║
-║        ✘ When you need data in sorted order (use TreeMap)            ║
-║                                                                      ║
-║  HOW:  Pass the key through a hash function (e.g., `hashCode()`) to  ║
-║        get an integer, use modulo to find the bucket index, and      ║
-║        handle collisions via chaining (linked lists) or probing.     ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** A Hash Table (or HashMap) is a data structure that maps keys to values for highly efficient lookups, using a hash function to compute an index into an array of buckets.
+>
+> **WHY:** Searching an array or linked list for a specific element is O(N). Binary search on a sorted array is O(log N). We need a way to find, insert, and delete data in O(1) time.
+>
+> **WHO:** Every software engineer. Hash tables are the most frequently used data structure in real-world application development.
+>
+> **WHEN:** Use when you need instant lookups by a unique identifier.
+>
+> - ✅ Caching (LRU, Memcached, Redis)
+> - ✅ Counting frequencies (word counts, duplicates)
+> - ✅ Fast pair finding (Two-Sum problem)
+> - ❌ When you need data in sorted order (use TreeMap)
+>
+> **HOW:** Pass the key through a hash function (e.g., `hashCode()`) to get an integer, use modulo to find the bucket index, and handle collisions via chaining (linked lists) or probing.
 
 ## ⚡ At a Glance — Hash Tables
 

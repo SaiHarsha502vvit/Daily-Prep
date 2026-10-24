@@ -8,28 +8,16 @@
 
 ### 5W1H: Mastering Data Structure Variants
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: A comprehensive taxonomy and implementation guide of every      ║
-║        core data structure variant (Linear, Non-Linear, Hash-based). ║
-║                                                                      ║
-║  WHY:  Standard arrays and lists are often insufficient. Real-world  ║
-║        systems require specialized variants (e.g., Doubly Linked     ║
-║        Lists for LRU caches, Deques for sliding windows) to meet     ║
-║        strict O(1) performance constraints.                          ║
-║                                                                      ║
-║  WHO:  Engineers building high-performance systems or preparing for  ║
-║        advanced technical interviews where choosing the exact right  ║
-║        variant determines pass/fail.                                 ║
-║                                                                      ║
-║  WHEN: Use this guide when a standard data structure fails your      ║
-║        time/space complexity requirements and you need a specialized ║
-║        alternative.                                                  ║
-║                                                                      ║
-║  HOW:  By studying the exact memory layouts, pointer manipulations,  ║
-║        and time complexities of each variant compared side-by-side.  ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** A comprehensive taxonomy and implementation guide of every core data structure variant (Linear, Non-Linear, Hash-based).
+>
+> **WHY:** Standard arrays and lists are often insufficient. Real-world systems require specialized variants (e.g., Doubly Linked Lists for LRU caches, Deques for sliding windows) to meet strict O(1) performance constraints.
+>
+> **WHO:** Engineers building high-performance systems or preparing for advanced technical interviews where choosing the exact right variant determines pass/fail.
+>
+> **WHEN:** Use this guide when a standard data structure fails your time/space complexity requirements and you need a specialized alternative.
+>
+> **HOW:** By studying the exact memory layouts, pointer manipulations, and time complexities of each variant compared side-by-side.
 
 ---
 

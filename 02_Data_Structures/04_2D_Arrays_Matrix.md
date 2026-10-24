@@ -47,25 +47,16 @@ flowchart LR
 
 ### 5W1H: Mastering 2D Arrays & Matrices
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: A collection of arrays organized in rows and columns. In memory, it   ║
-║        is fundamentally a 1D contiguous block of memory abstracted as a grid.║
-║                                                                              ║
-║  WHY:  Essential for representing grid-based data, relationships (graphs),   ║
-║        and table-structured records. Many real-world problems (images,       ║
-║        maps, games) naturally map to a 2D coordinate system.                 ║
-║                                                                              ║
-║  WHO:  Developers implementing UI layouts, processing images, designing      ║
-║        games, or solving algorithmic graph and grid problems.                ║
-║                                                                              ║
-║  WHEN: Use when data has natural row/column relationships, when modeling     ║
-║        neighbors (up/down/left/right), or mapping (x,y) coordinates.         ║
-║                                                                              ║
-║  HOW:  By manipulating indices (e.g., `matrix[row][col]`), traversing via    ║
-║        nested loops or BFS/DFS, and transforming the matrix in-place.        ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** A collection of arrays organized in rows and columns. In memory, it is fundamentally a 1D contiguous block of memory abstracted as a grid.
+>
+> **WHY:** Essential for representing grid-based data, relationships (graphs), and table-structured records. Many real-world problems (images, maps, games) naturally map to a 2D coordinate system.
+>
+> **WHO:** Developers implementing UI layouts, processing images, designing games, or solving algorithmic graph and grid problems.
+>
+> **WHEN:** Use when data has natural row/column relationships, when modeling neighbors (up/down/left/right), or mapping (x,y) coordinates.
+>
+> **HOW:** By manipulating indices (e.g., `matrix[row][col]`), traversing via nested loops or BFS/DFS, and transforming the matrix in-place.
 
 ## What Is A 2D Array?
 
