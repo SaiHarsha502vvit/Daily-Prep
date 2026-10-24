@@ -1,13 +1,78 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [System Design Problems](05_SD_Interview_Problems.md)
 🧠 **Mental Model**: See [Distributed Systems Thinking](../14_Mental_Models/16_Distributed_Systems_Thinking.md)
 
 ---
 
 # 🌐 Distributed Systems Fundamentals — CAP, Consistency, Partitioning
 
+> **Navigation**: [← Chapter 05 - System Design…](05b_System_Design_Fundamentals.md) | [Chapter index](00_INDEX.md) | [System Design Interview Problems… →](05_SD_Interview_Problems.md)
+
 Everything you need to reason about systems that span multiple machines
 
 ---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [System Design Fundamentals](05b_System_Design_Fundamentals.md), [Hash tables](../02_Data_Structures/01e_HashTable.md) |
+| **You will learn** | Why distribute, CAP and PACELC, consistency models, replication, partitioning, consensus and common patterns |
+| **Leads to** | [LLD Solved Problems](07_LLD_Solved_Problems.md), [Domain-Driven Design](09_Domain_Driven_Design_Essentials.md) (aggregates and eventual consistency) |
+| **Abstraction level** | One machine → **many machines that fail independently** → **protocols that give guarantees despite failure** |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Distributed Systems Fundamentals
+
+### 1. The bottom line
+
+Machines and networks fail independently, so every distributed design chooses what to give up during a partition.
+
+### 2. The textbook core
+
+- **CAP**: during a network partition you must choose between consistency and availability (Gilbert and Lynch, 2002).
+- **Consistency models** range from linearizable to eventual.
+- **Replication** copies data for durability and read scale; **partitioning** splits data for write scale.
+- **Consensus** (Paxos, Raft) lets nodes agree on a value despite crashes.
+- Patterns: retries with idempotency, circuit breakers, bulkheads, sagas.
+
+### 3. The real-world analogy
+
+A **group of friends planning a dinner by text**: messages arrive late or out of order, someone's phone dies, and they still have to agree on one restaurant.
+
+### 4. Walkthrough
+
+1. Write goes to the leader; replicas follow.
+2. The network between two data centres drops.
+3. CP choice: the minority side refuses writes.
+4. AP choice: both sides accept writes; reconcile later.
+5. State the business rule that picks the side.
+
+> [!NOTE]
+> **Quick check:** When is eventual consistency acceptable? *When stale reads or briefly divergent copies are cheaper than refusing service, such as feeds and counters, but not for balances.*
+
+### 5. Check yourself
+
+**Q1.** A system refuses writes during a partition to keep replicas identical. CP or AP?
+
+<details><summary>Answer</summary>
+
+**CP**: it keeps consistency and gives up availability on the minority side.
+
+</details>
+
+**Q2.** Does Paxos tolerate Byzantine (arbitrary) faults?
+
+<details><summary>Answer</summary>
+
+No. Paxos and Raft assume nodes crash or are slow but do not lie; Byzantine fault tolerance needs different protocols.
+
+</details>
+
+---
+
 
 ## Part 1: Why Distributed Systems?
 
@@ -238,7 +303,7 @@ USED BY: etcd (Kubernetes), CockroachDB, TiKV, Consul
 
 ### Historical Evolution
 
-Distributed systems theory emerged from the practical necessity of making multiple machines behave as one. The field crystallized around a few landmark publications and systems. **Leslie Lamport introduced Paxos in 1989** (published 1998 after a decade of industry use internally at DEC and Microsoft) — the first consensus algorithm proven to work correctly under Byzantine failures, now used in Chubby (Google's lock service) and Azure Cosmos DB. **Eric Brewer presented the CAP conjecture as a PODC keynote in 1999**, formalizing what engineers had observed empirically: during a network partition, you must choose between consistency and availability. **Nancy Lynch and Michael Fischer proved CAP mathematically in 2002**, elevating it from conjecture to theorem — this is the origin of the formal CAP theorem cited in Part 2. **Google's MapReduce paper (Dean & Ghemawat, 2004)** established the paradigm for batch-processing massive datasets across commodity clusters; Hadoop (2006) was its open-source implementation. **BigTable (Chang et al., 2006)** introduced the wide-column store model, powering Google's crawl index and driving the design of HBase and Cassandra. **Amazon's Dynamo paper (DeCandia et al., 2007)** challenged the SQL orthodoxy by showing that an eventually-consistent key-value store could achieve five-nines availability — DynamoDB, Cassandra, and Riak all descend directly from this paper. **Google Spanner (2012)** reconciled global distribution with strong consistency using TrueTime (GPS + atomic clocks), proving that the CAP trade-off is not binary in time — you can have both AP and CP over different time windows. **Diego Ongaro's Raft paper (2014 PhD dissertation)** introduced Raft as a "understandable" alternative to Paxos, deliberately designed to be easier to teach and implement — today it powers etcd (Kubernetes), CockroachDB, and TiKV.
+The field crystallised around a few landmark papers and systems. **Leslie Lamport wrote the Paxos paper in 1989; it was published in 1998** (_The Part-Time Parliament_) and re-explained in _Paxos Made Simple_ (2001). Paxos is a consensus protocol that tolerates crash failures (not Byzantine ones) and underlies systems such as Google's Chubby lock service and Spanner. **Eric Brewer presented the CAP conjecture in his PODC 2000 keynote**; **Seth Gilbert and Nancy Lynch proved it in 2002**, which is the origin of the formal CAP theorem cited in Part 2. **MapReduce (Dean and Ghemawat, OSDI 2004)** set the model for batch processing on commodity clusters; Hadoop (2006) is its open-source counterpart. **Bigtable (Chang et al., OSDI 2006)** introduced the wide-column model that influenced HBase and Cassandra. **Amazon's Dynamo paper (DeCandia et al., SOSP 2007)** showed an eventually consistent, highly available key-value store; Cassandra and Riak borrow heavily from it (DynamoDB is a different, managed service that shares the name and some ideas). **Google Spanner (OSDI 2012)** offers externally consistent transactions across data centres using Paxos replication and TrueTime (GPS and atomic clocks): it is a CP system that makes unavailability rare through engineering. **Raft (Ongaro and Ousterhout, USENIX ATC 2014)** was designed to be easier to understand than Paxos and powers etcd (the Kubernetes datastore), CockroachDB and TiKV.
 
 ---
 
@@ -248,7 +313,7 @@ Distributed systems theory emerged from the practical necessity of making multip
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  PATTERN              │ WHAT                          │ USED IN                 │
 │──────────────────────┼───────────────────────────────┼────────────────────────  │
-│  Circuit Breaker      │ Stop calling failing service  │ Netflix Hystrix,        │
+│  Circuit Breaker      │ Stop calling failing service  │ Hystrix (legacy),       │
 │                       │ to prevent cascade failures   │ Resilience4J            │
 │──────────────────────┼───────────────────────────────┼────────────────────────  │
 │  Bulkhead             │ Isolate failures to one       │ Thread pool per service │
@@ -300,8 +365,9 @@ Distributed systems theory emerged from the practical necessity of making multip
 
 ### Production Reality
 
-- **Knight Capital 2012**: Deployed untested trading software, lost **$440M in 45 minutes** due to a single conditional that was supposed to be removed but remained enabled by a legacy config flag. Cause: dead-code activation bug, classic regression-test failure. Violated "test before deploy" SDLC/SRP principles. This is the canonical failure for the CAP-consistency trade-off lesson: the distributed nature of trading systems means state can diverge rapidly and silently — without end-to-end integration tests that cover production configuration, a single config flag can activate a code path that was "known to be untested."
-- **Healthcare.gov 2013**: A **$1.7B** system crashed on launch. Cause: monolithic architecture with no load balancing, tightly-coupled components, and synchronous blocking calls between every layer — when one component saturated, it back-pressured all others synchronously. Violated SRP at the system level (one monolith with N reasons to change), DIP at the component level (no dependency injection between services — every service called every other directly with no abstraction layer), and AP principles (the system was designed as a CP monolith that couldn't degrade gracefully under load). The fix was decomposing into independent services with load balancers, circuit breakers, and async communication — exactly the distributed system patterns taught in this chapter.
+- **Knight Capital, 1 August 2012**: A deployment reached only seven of eight servers; the eighth ran old code that a reused flag re-activated, flooding the market with unintended orders. The firm lost about **$440M in roughly 45 minutes** (SEC findings). Distributed-systems lesson: a fleet running mixed versions is a partially failed system, so deployments must be verified on every node, rollouts need a kill switch, and monitoring must alert on anomalous order flow in minutes, not hours.
+- **Healthcare.gov, October 2013**: The federal marketplace failed under launch load. Government audits (GAO, HHS Inspector General) cite unclear requirements, late changes, limited end-to-end load testing and integration problems between contractors' components. Distributed-systems lesson: capacity, integration and graceful degradation have to be tested as a whole before launch.
+
 
 #### Related: Multiple Inheritance in OOP
 
@@ -671,6 +737,16 @@ The etcd team (core of Kubernetes) evaluated Paxos before choosing Raft and conc
 
 > **Navigation**: [< Previous](05_SD_Interview_Problems.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_LLD_Solved_Problems.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Distributed Systems Fundamentals
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Databases (Raft in etcd and CockroachDB), message queues, service meshes |
+| **Failure modes** | Retry storms, split brain, clock assumptions |
+| **Testing and verification** | Fault-injection tests; Jepsen-style checking for consistency claims |
 
 ---
 

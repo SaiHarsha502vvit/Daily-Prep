@@ -1,10 +1,75 @@
 # 📝 OOP & Design — Problem Sets
 
+> **Navigation**: [← LLD Reference Implementations…](13_LLD_Reference_Implementations.md) | [Chapter index](00_INDEX.md) | [From User Stories to Design… →](10_Stories_To_Design.md)
+
 ## `06_OOP_Design` Module | ETH Zurich / MIT Style
 
 > **How to use:** Attempt every part before reading the answer. Part B code goes in `JavaSolutions/ps/oop/`. Run JUnit stubs. Read 🔴 **Erklärung** if you fail.
 
 ---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [OOP Principles](01_OOPS_Principles.md), [Design Patterns](02_Design_Patterns.md), [LLD Solved Problems](07_LLD_Solved_Problems.md) |
+| **You will learn** | Practice on SOLID, GoF patterns and low-level design with starter code and tests |
+| **Leads to** | [LLD Solved Problems](07_LLD_Solved_Problems.md), [Design Patterns in Java](08_Design_Patterns_Java.md) |
+| **Abstraction level** | Reading solutions → **producing your own designs under constraints** |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — OOP and Design Problem Sets
+
+### 1. The bottom line
+
+Attempt the problem, run the tests, then compare with the model solution; the struggle is the learning.
+
+### 2. The textbook core
+
+- Each set targets one skill: SOLID, patterns, or LLD.
+- Starter stubs show the expected signatures.
+- Tests define the behaviour; the design is yours.
+- Review your solution against the principle each problem trains.
+
+### 3. The real-world analogy
+
+A **gym circuit**: each station isolates a muscle so that when you play the real game, the movements are automatic.
+
+### 4. Walkthrough
+
+1. Read the problem and the tests.
+2. Sketch the classes and responsibilities.
+3. Implement until the tests pass.
+4. Refactor against the principle being trained.
+5. Compare with the model answer and note the differences.
+
+> [!NOTE]
+> **Quick check:** Why do the tests come before the model answer? *Attempting first reveals what you do not yet know.*
+
+### 5. Check yourself
+
+**Q1.** How can you measure whether your design is flexible?
+
+<details><summary>Answer</summary>
+
+Add a plausible new requirement and count how many classes you must edit; fewer is better.
+
+</details>
+
+**Q2.** Why include JUnit stubs?
+
+<details><summary>Answer</summary>
+
+They fix the interface and give immediate feedback so effort goes into design, not guessing signatures.
+
+</details>
+
+---
+
 
 ## Problem Set OOP-PS1 — SOLID Principles
 
@@ -799,6 +864,16 @@ The `@Override` annotation is a developer tool that leverages the compiler as a 
 
 [← Back to Semester 2 Guide](../00_CURRICULUM/SEMESTER_2_GUIDE.md)
 
+
+---
+
+## 🏢 Enterprise Lens — OOP and Design Problem Sets
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Onboarding exercises, code katas, interview practice |
+| **Failure modes** | Copying solutions without attempting; passing tests with a poor design |
+| **Testing and verification** | Run the stub tests; add a requirement change and count the lines it touches |
 
 ---
 
