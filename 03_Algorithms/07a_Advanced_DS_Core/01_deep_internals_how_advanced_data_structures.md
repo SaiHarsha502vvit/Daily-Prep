@@ -208,16 +208,6 @@ BIT array stores:
 
 ## 📌 Union — Find — Path Compression Visualization
 
-🔬 **Section Challenge — 📌 Union — Find — Path Compression Visualization**
-
-**Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
-
-<details><summary>Answer</summary>
-
-Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
-
-</details>
-
 ## Union-Find - Path Compression Deep Dive
 
 **Worked example with 8 elements** (union by rank):

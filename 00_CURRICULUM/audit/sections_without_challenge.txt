@@ -1,0 +1,17 @@
+03_Algorithms/01_Algorithm_Thinking/02_the_thinking_process_for_each_pattern.md :: 🔬 **Section Challenge — 2. Sliding Window Thinking**
+03_Algorithms/16_DSA_Deep_Reasoning/01_big_o_not_just_how_fast.md :: 🔬 **Section Challenge — 2. Why HashMap Isn't Always O(1)**
+03_Algorithms/16_DSA_Deep_Reasoning/01_big_o_not_just_how_fast.md :: 🔬 **Section Challenge — 5. Dynamic Programming vs Greedy: How To Know Which One**
+03_Algorithms/16_DSA_Deep_Reasoning/01_big_o_not_just_how_fast.md :: 🔬 **Section Challenge — 8. Two Pointers: Not Just "Left and Right"**
+03_Algorithms/02a_Sorting_Fundamentals/02_deep_internals_how_sorting_actually_works.md :: 🔬 **Section Challenge — Exact Operation Counts For Sorting Algorithms**
+02_Data_Structures/01b_Arrays/05_sorting_algorithms_all_5.md :: 🔬 **Section Challenge — 📈 Part 7: Sorting Algorithms — All 5**
+02_Data_Structures/01b_Arrays/06_frequency_duplicates.md :: 🔬 **Section Challenge — 🌀 Part 10: Recursion in Arrays**
+02_Data_Structures/01e_HashTable/02_implementation_without_collections.md :: 🔬 **Section Challenge — ⚡ Production Failure Modes**
+02_Data_Structures/01e_HashTable/02_implementation_without_collections.md :: 🔬 **Section Challenge — 🎯 Full Problem Set — HashMap / HashTable**
+02_Data_Structures/03_Collections_Java/02_section_2_map_interface.md :: 🔬 **Section Challenge — StringBuilder Methods (For String Manipulation)**
+03_Algorithms/17_DSA_Java_Implementation_Mastery.md :: 🔬 **Section Challenge — 3. TreeMap & TreeSet: Your BST in Disguise**
+03_Algorithms/17_DSA_Java_Implementation_Mastery.md :: 🔬 **Section Challenge — 8. String Manipulation for DSA: StringBuilder Reasoning**
+03_Algorithms/02c_Divide_And_Conquer.md :: 🔬 **Section Challenge — Algorithm Analysis Fundamentals + D&C + Binary Search + Master The
+03_Algorithms/20_DSA_Patterns_PDF_Java_Coverage_Map.md :: 🔬 **Section Challenge — 5. Gap Closure Status from PDF**
+03_Algorithms/07a_Advanced_DS_Core/01_deep_internals_how_advanced_data_structures.md :: 🔬 **Section Challenge — 📌 Union — Find — Path Compression Visualization**
+03_Algorithms/08b_NumberTheory_Advanced/01_section.md :: 🔬 **Section Challenge — Algorithm: Kadane's Algorithm (Maximum Subarray Sum) ⭐⭐⭐**
+03_Algorithms/12_Greedy_Algorithms_Complete/07_graph_greedy_algorithms.md :: 🔬 **Section Challenge — Graph Greedy Algorithms <a name="graph-greedy"></a>**

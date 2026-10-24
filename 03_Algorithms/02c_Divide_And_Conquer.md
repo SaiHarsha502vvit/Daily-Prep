@@ -121,24 +121,6 @@ Binary search: a=1, b=2, p=0, f(n)=1=Θ(1) → **Case 2 → Θ(log n)**.
 
 ---
 
-🔬 **Section Challenge — Algorithm Analysis Fundamentals + D&C + Binary Search + Master Theorem**
-
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-
-<details><summary>Answer</summary>
-
-lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-
-</details>
-
-**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-
-<details><summary>Answer</summary>
-
-Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-
-</details>
-
 ## PART 0: THE MENTAL MODEL — "The Delegation Strategy"
 
 **THE REAL-WORLD ORIGIN**

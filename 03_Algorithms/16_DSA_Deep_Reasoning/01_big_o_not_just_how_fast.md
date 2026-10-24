@@ -72,24 +72,6 @@ Amortized: $1,000/month (O(1) per operation).
 
 ---
 
-🔬 **Section Challenge — 2. Why HashMap Isn't Always O(1)**
-
-**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-
-<details><summary>Answer</summary>
-
-Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-
-<details><summary>Answer</summary>
-
-Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-
-</details>
-
 ### The Freeze Question
 
 "Mergesort is O(n log n) guaranteed. Quicksort is O(n²) worst case. Why do we use Quicksort?"
@@ -215,16 +197,6 @@ DP NEEDED: Knapsack, LCS, Edit distance, Matrix chain
 
 ---
 
-🔬 **Section Challenge — 5. Dynamic Programming vs Greedy: How To Know Which One**
-
-**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-
-<details><summary>Answer</summary>
-
-Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-
-</details>
-
 ## 6. Recursion: Why It Overflows and When To Convert To Iteration
 
 ### The Freeze Question
@@ -348,16 +320,6 @@ eliminating impossible pairs. Each pointer moves one direction
 
 ---
 
-🔬 **Section Challenge — 8. Two Pointers: Not Just "Left and Right"**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
-
 ## 9. Why Balanced BST When We Have HashMap
 
 "If HashMap is O(1), why would anyone use a TreeMap/BST?"
@@ -392,7 +354,7 @@ RULE: Need only lookup by key? → HashMap.
 
 🔬 **Section Challenge — 9. Why Balanced BST When We Have HashMap**
 
-**Challenge 1 (Constraint Reasoning):** `HashMap` gives average `O(1)`, but a problem asks for "smallest key greater than x", "all keys in [L, R]", and online inserts. Why does this push you toward a balanced BST?
+**Challenge 2 (Constraint Reasoning):** `HashMap` gives average `O(1)`, but a problem asks for "smallest key greater than x", "all keys in [L, R]", and online inserts. Why does this push you toward a balanced BST?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 
@@ -402,7 +364,7 @@ A balanced BST keeps keys ordered while supporting `insert`, `delete`, `floor`, 
 
 </details>
 
-**Challenge 2 (Trade-off):** If both `TreeMap` and `HashMap` pass the time limit for exact lookup, which one should you choose?
+**Challenge 3 (Trade-off):** If both `TreeMap` and `HashMap` pass the time limit for exact lookup, which one should you choose?
 
 <details><summary>Trace, Reasoning & Debug</summary>
 

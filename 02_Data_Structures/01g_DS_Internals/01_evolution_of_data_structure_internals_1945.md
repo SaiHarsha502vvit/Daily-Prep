@@ -224,14 +224,6 @@ The invariant tells you what the structure _must_ guarantee. The implementation 
 > **Quick check:** What does `modCount` do? *It lets iterators detect structural changes and throw `ConcurrentModificationException`.*
 
 
-**Challenge 2 (Design):** You need to frequently add/remove from both ends of a list AND access by index. Which collection?
-
-<details><summary>Answer</summary>
-
-None of the standard ones do all three efficiently. Tradeoffs: `ArrayList`: O(1) index access, O(N) front insert/delete. `LinkedList`/`ArrayDeque`: O(1) front/back, O(N) index access. Real solution: if index access can be avoided, use `ArrayDeque`. If all 3 are needed constantly, consider a skip list or re-examine your design.
-
-</details>
-
 ## Arraylist - Complete Internal View
 
 ```java
@@ -395,7 +387,7 @@ flowchart TB
 
 🔬 **Section Challenge — Arraylist.Get() - What Actually Happens**
 
-**Challenge 1 (Reasoning):** `ArrayList.get(0)` loads a cache line containing references `ref[0]` through `ref[15]`. But each `Integer` object those references point to is scattered across the heap. Why does this make iterating an `ArrayList<Integer>` fundamentally slower than iterating an `int[]`?
+**Challenge 2 (Reasoning):** `ArrayList.get(0)` loads a cache line containing references `ref[0]` through `ref[15]`. But each `Integer` object those references point to is scattered across the heap. Why does this make iterating an `ArrayList<Integer>` fundamentally slower than iterating an `int[]`?
 
 <details><summary>Answer</summary>
 
@@ -463,7 +455,7 @@ this.elementData = newElementData;
 
 🔬 **Section Challenge — Arraylist Resize - What Actually Happens**
 
-**Challenge 1 (Reasoning):** ArrayList grows by 1.5x on each resize. After `n` total `add()` calls, prove that the amortized cost per add is O(1) even though individual resizes are O(n).
+**Challenge 3 (Reasoning):** ArrayList grows by 1.5x on each resize. After `n` total `add()` calls, prove that the amortized cost per add is O(1) even though individual resizes are O(n).
 
 <details><summary>Answer</summary>
 
@@ -497,7 +489,7 @@ Use the geometric series argument. After `n` adds starting from capacity 10, tot
 > **Quick check:** Why a power-of-two capacity? *So `hash & (n-1)` replaces a slow modulo.*
 
 
-**Challenge 3 (Tracing):** Trace a HashMap resize operation: starting with 16 buckets and 12 entries at load factor 0.75, what is the new bucket count and the rehashing pattern? Show which entries move to a different bucket index after resize.
+**Challenge 4 (Tracing):** Trace a HashMap resize operation: starting with 16 buckets and 12 entries at load factor 0.75, what is the new bucket count and the rehashing pattern? Show which entries move to a different bucket index after resize.
 
 <details><summary>Answer</summary>
 
@@ -667,7 +659,7 @@ Why threshold = 8?
 
 🔬 **Section Challenge — Hashmap.Put() - What Actually Happens**
 
-**Challenge 1 (Reasoning):** Java's HashMap computes the bucket index as `hash & (n-1)` instead of `hash % n`. Why is this faster AND why does it require the capacity to be a power of 2?
+**Challenge 5 (Reasoning):** Java's HashMap computes the bucket index as `hash & (n-1)` instead of `hash % n`. Why is this faster AND why does it require the capacity to be a power of 2?
 
 <details><summary>Answer</summary>
 
@@ -675,7 +667,7 @@ Bitwise AND is 1 CPU cycle; integer modulo (division) is 20-80 cycles. For this 
 
 </details>
 
-**Challenge 2 (Security):** An attacker sends HTTP requests with carefully crafted parameter names that ALL hash to the same bucket. Explain the attack and Java 8's defense.
+**Challenge 6 (Security):** An attacker sends HTTP requests with carefully crafted parameter names that ALL hash to the same bucket. Explain the attack and Java 8's defense.
 
 <details><summary>Answer</summary>
 

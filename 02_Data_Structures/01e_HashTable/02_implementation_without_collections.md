@@ -177,8 +177,6 @@ for (Map.Entry<Integer, String> e : map.entrySet()) {
 
 ---
 
-🔬 **Section Challenge — ⚡ Production Failure Modes**
-
 **Challenge (Real-World Reasoning):** In 2011, the hash collision DoS attack forced Java (and Ruby, PHP, Python) to switch to randomized hash seeds. Explain WHY this fix works, WHY it was necessary, and what the trade-off was. What other design decisions in `HashMap` (Java 8+) help mitigate similar attacks today?
 
 <details><summary>Answer</summary>
@@ -401,16 +399,6 @@ It handles subarrays that start at index 0. When `prefix[j] - K = 0`, it means t
 | 10  | CF 525A — Slavic's Exam               | Codeforces | Div2-A      | Char frequency       |
 
 ---
-
-🔬 **Section Challenge — 🎯 Full Problem Set — HashMap / HashTable**
-
-**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-
-<details><summary>Answer</summary>
-
-Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-
-</details>
 
 ## 🧠 Pattern Fingerprint — HashMap
 

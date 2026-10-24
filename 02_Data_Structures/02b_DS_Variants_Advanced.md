@@ -194,15 +194,7 @@ This chapter is split into focused pages so each topic can be read on its own. R
 
 🔬 **Section Challenge — Section 3: Monotonic Stack / Monotonic Queue**
 
-**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-
-<details><summary>Answer</summary>
-
-In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-
-</details>
-
-**Challenge 2 (Variant Selection):** You're building a real-time stock price dashboard that displays the rolling 5-minute high and low for 500 tickers. Each ticker updates 10-50 times per second. Which data structure variant would you choose, and why? Justify against the alternatives.
+**Challenge 1 (Variant Selection):** You're building a real-time stock price dashboard that displays the rolling 5-minute high and low for 500 tickers. Each ticker updates 10-50 times per second. Which data structure variant would you choose, and why? Justify against the alternatives.
 
 <details><summary>Answer</summary>
 
@@ -220,7 +212,7 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 
 </details>
 
-**Challenge 3 (Invariant Reasoning):** Given the AVL invariant (|height(L) - height(R)| ≤ 1), prove that the AVL tree height is bounded by 1.44 _ log2(n+1). Why is this tighter than Red-Black's 2 _ log2(n+1) bound, and when does this matter in practice?
+**Challenge 2 (Invariant Reasoning):** Given the AVL invariant (|height(L) - height(R)| ≤ 1), prove that the AVL tree height is bounded by 1.44 _ log2(n+1). Why is this tighter than Red-Black's 2 _ log2(n+1) bound, and when does this matter in practice?
 
 <details><summary>Answer</summary>
 

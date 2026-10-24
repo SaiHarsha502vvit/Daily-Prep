@@ -323,16 +323,6 @@ For array of n elements:
   | Quick Sort | ~14,000 | ~3,000 | Very Good |
   | Heap Sort | ~20,000 | ~10,000 | Poor |
 
-🔬 **Section Challenge — Exact Operation Counts For Sorting Algorithms**
-
-**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-
-<details><summary>Answer</summary>
-
-Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-
-</details>
-
 ## 📌 Real Benchmark Data
 
 ### ACTUAL BENCHMARK RESULTS (Intel i7-10700 @ 3.8GHz)

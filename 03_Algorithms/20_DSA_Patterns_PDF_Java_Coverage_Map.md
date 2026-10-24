@@ -186,16 +186,6 @@ Based on PDF-to-workspace matching done in this session:
 
 ---
 
-🔬 **Section Challenge — 5. Gap Closure Status from PDF**
-
-**Challenge 1 (Reasoning):** What is a closure and why can't garbage collection remove variables that are closed over?
-
-<details><summary>Answer</summary>
-
-A closure is a function that retains a reference to its lexical environment (the scope where it was created). Variables closed over are kept alive by the closure reference — GC can't collect them because there's still a reference (the closure's internal scope). Memory leak scenario: large data object captured in a closure, closure stored in a long-lived event listener → data stays in memory for the page's lifetime. Fix: explicitly null the large variable after use, or use a WeakRef.
-
-</details>
-
 ### Topical Breadth — Pattern-to-Language Selection Trade-offs
 
 Not all DSA patterns are equally natural in every language. The trade-off between pattern expressiveness and language idiom determines which template to use in an interview. **Java**: strong for tree/graph pointer-chasing (explicit Node classes, generics), competitive for segment trees and Fenwick trees with OOP wrappers, weaker for functional patterns (no first-class functions pre-Java 8). **Python**: strong for rapid prototyping with dictionaries and lists, excellent for two-pointer and sliding window (readable, concise), weaker for low-level bit manipulation (integers are arbitrary precision, no unsigned). **JavaScript**: strong for tree/graph traversal with JSON-like objects, weaker for typed DS (no generics, no unsigned integers). The **interview trade-off**: Java demonstrates CS fundamentals and type safety (impresses security-conscious teams); Python demonstrates speed of reasoning (impresses ML/data teams); JavaScript demonstrates full-stack awareness (impresses web-native companies).

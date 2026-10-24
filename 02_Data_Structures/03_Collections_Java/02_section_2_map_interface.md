@@ -110,15 +110,7 @@ for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
 map.forEach((key, value) -> System.out.println(key + " -> " + value));
 ```
 
-**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-
-<details><summary>Answer</summary>
-
-Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-
-</details>
-
-**Challenge 3 (Design):** `ConcurrentHashMap` uses lock striping on 16 segments (JDK 7) instead of a single global lock. What's the performance trade-off vs `Hashtable` and vs JDK 8's CAS-based approach?
+**Challenge 1 (Design):** `ConcurrentHashMap` uses lock striping on 16 segments (JDK 7) instead of a single global lock. What's the performance trade-off vs `Hashtable` and vs JDK 8's CAS-based approach?
 
 <details><summary>Answer</summary>
 
@@ -165,7 +157,7 @@ treeMap.floorKey(7);      // 5 (largest <= 7)
 
 🔬 **Section Challenge — TreeMap Methods (Sorted Order)**
 
-**Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
+**Challenge 2 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
 
 <details><summary>Answer</summary>
 
@@ -475,16 +467,6 @@ if (sb.length() > 0) {
 ```
 
 ---
-
-🔬 **Section Challenge — StringBuilder Methods (For String Manipulation)**
-
-**Challenge 1 (Reasoning):** Why is `String str = ""; for(int i=0;i<1000;i++) str += i;` O(N²) and how does StringBuilder fix it?
-
-<details><summary>Answer</summary>
-
-Each `+=` creates a NEW String object: copies all existing chars + appends new char. Iteration 1: copy 1 char. Iteration 2: copy 2 chars. ... Iteration N: copy N chars. Total: 1+2+...+N = N(N+1)/2 = O(N²) character copies. StringBuilder uses a resizable internal array. `append()` adds to the end: O(1) amortized. Final `toString()`: O(N) once. Total: O(N).
-
-</details>
 
 ## 📊 Section 7: Arrays Utility Class
 

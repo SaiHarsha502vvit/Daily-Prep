@@ -239,16 +239,6 @@ System.out.println("Row-major: " + (end - start) / 1e6 + " ms");
 
 ---
 
-🔬 **Section Challenge — 📈 Part 7: Sorting Algorithms — All 5**
-
-**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-
-<details><summary>Answer</summary>
-
-Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-
-</details>
-
 ---
 
 [← Sub Sequences — Order Without Contiguity](04_sub_sequences_order_without_contiguity.md) | [Chapter overview](../01b_Arrays.md) | [Frequency & Duplicates →](06_frequency_duplicates.md)

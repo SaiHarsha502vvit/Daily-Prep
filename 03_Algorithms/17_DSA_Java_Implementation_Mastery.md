@@ -378,16 +378,6 @@ int closest = (target - floor <= ceiling - target) ? floor : ceiling;
 
 ---
 
-🔬 **Section Challenge — 3. TreeMap & TreeSet: Your BST in Disguise**
-
-**Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
-
-<details><summary>Answer</summary>
-
-`TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
-
-</details>
-
 ## 4. Comparator Mastery: Sorting Logic That Doesn't Break
 
 ### Deep Reasoning
@@ -751,16 +741,6 @@ sb.setCharAt(index, 'c');  // Modify in-place
 ```
 
 ---
-
-🔬 **Section Challenge — 8. String Manipulation for DSA: StringBuilder Reasoning**
-
-**Challenge 1 (Reasoning):** Why is `String str = ""; for(int i=0;i<1000;i++) str += i;` O(N²) and how does StringBuilder fix it?
-
-<details><summary>Answer</summary>
-
-Each `+=` creates a NEW String object: copies all existing chars + appends new char. Iteration 1: copy 1 char. Iteration 2: copy 2 chars. ... Iteration N: copy N chars. Total: 1+2+...+N = N(N+1)/2 = O(N²) character copies. StringBuilder uses a resizable internal array. `append()` adds to the end: O(1) amortized. Final `toString()`: O(N) once. Total: O(N).
-
-</details>
 
 ## 9. Bit Manipulation with Java Specifics
 
