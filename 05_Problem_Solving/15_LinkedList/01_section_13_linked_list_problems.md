@@ -157,84 +157,79 @@ You should **always offer to restore** in an interview — it shows you understa
 
 ## Java Code Templates
 
-TEMPLATE 1: REVERSE LINKED LIST (iterative, O(1) space)
+**Template 1: reverse a linked list (iterative, O(1) space)**
+
+```java
 ListNode prev = null, curr = head;
 while (curr != null) {
-ListNode next = curr.next; // save next
-curr.next = prev; // reverse pointer
-prev = curr; // advance prev
-curr = next; // advance curr
+    ListNode next = curr.next;   // save next
+    curr.next = prev;            // reverse pointer
+    prev = curr;                 // advance prev
+    curr = next;                 // advance curr
 }
-return prev; // new head
-TEMPLATE 2: FIND MIDDLE (slow/fast runner)
+return prev;                     // new head
+```
+
+**Template 2: find the middle (slow/fast runner)**
+
+```java
 ListNode slow = head, fast = head;
 while (fast != null && fast.next != null) {
-slow = slow.next;
-fast = fast.next.next;
+    slow = slow.next;
+    fast = fast.next.next;
 }
-return slow; // middle node (2nd middle if even length)
-TEMPLATE 3: MERGE TWO SORTED LISTS (dummy head)
+return slow;   // middle node (2nd middle if the length is even)
+```
+
+**Template 3: merge two sorted lists (dummy head)**
+
+```java
 ListNode dummy = new ListNode(0), tail = dummy;
 while (l1 != null && l2 != null) {
-if (l1.val <= l2.val) { tail.next = l1; l1 = l1.next; }
-else { tail.next = l2; l2 = l2.next; }
-tail = tail.next;
+    if (l1.val <= l2.val) { tail.next = l1; l1 = l1.next; }
+    else                  { tail.next = l2; l2 = l2.next; }
+    tail = tail.next;
 }
 tail.next = (l1 != null) ? l1 : l2;
 return dummy.next;
+```
 
-**Node Definition**:
+**Node definition**
+
+```java
 class ListNode {
-int val;
-ListNode next;
-ListNode(int val) { this.val = val; }
+    int val;
+    ListNode next;
+    ListNode(int val) { this.val = val; }
 }
+```
 
 ## Difficulties & Common Mistakes
 
-MISTAKE 1: Losing reference to head
-You traverse with head directly → now you can't return it.
-
-**Fix**: Always use a separate pointer: ListNode curr = head;
-MISTAKE 2: Not handling null / empty list
-if (head == null) or if (head.next == null) — check FIRST.
-Forgetting this → NullPointerException on single-node or empty input.
-MISTAKE 3: Forgetting to update .next (dangling pointer)
-After moving a node, its old .next still points to the old location.
-
-**Fix**: Explicitly set node.next = null or to the correct new target.
-MISTAKE 4: Creating a cycle when relinking nodes
-Swapping pointers without breaking old links → infinite loop.
-
-**Fix**: Save next BEFORE rewiring. Draw the pointer diagram.
-MISTAKE 5: Off-by-one in kth from end
-"kth from end" — do you count from 1 or 0? Move fast k or k+1 times?
-
-**Fix**: Clarify with interviewer. Typically k=1 means last node.
-Move fast exactly k steps, then move both until fast == null.
-MISTAKE 6: Not using dummy head when head might change
-Deleting the head node, or merging where the new head is unknown.
-Writing special-case if-else instead of using a sentinel.
-
-**Fix**: ListNode dummy = new ListNode(0); dummy.next = head;
-Process uniformly. Return dummy.next.
+| # | Mistake | Why it hurts | Fix |
+| --- | --- | --- | --- |
+| 1 | Losing the reference to `head` | You traverse with `head` itself and can no longer return it | Use a separate pointer: `ListNode curr = head;` |
+| 2 | Not handling a null or empty list | `NullPointerException` on single-node or empty input | Check `head == null` and `head.next == null` first |
+| 3 | Forgetting to update `.next` (dangling pointer) | After moving a node, its old `.next` still points to the old location | Set `node.next = null` or the correct new target explicitly |
+| 4 | Creating a cycle when relinking | Swapping pointers without breaking old links loops forever | Save `next` before rewiring; draw the pointer diagram |
+| 5 | Off-by-one for "k-th from the end" | Counting from 1 or 0; moving `fast` k or k+1 times | Clarify with the interviewer (usually k = 1 is the last node); move `fast` exactly k steps, then move both until `fast == null` |
+| 6 | Not using a dummy head when the head may change | Special-case `if/else` code when deleting or merging at the head | `ListNode dummy = new ListNode(0); dummy.next = head;` process uniformly, return `dummy.next` |
 
 ## Expected Outcomes
 
-- ✅ See "reverse" → three-pointer template in 1 minute (iterative + recur.)
-- ✅ See "cycle" → Floyd's slow/fast immediately, prove convergence
-- ✅ See "merge sorted" → dummy head + tail pointer without thinking
+- ✅ See "reverse" → three-pointer template in 1 minute (iterative and recursive)
+- ✅ See "cycle" → Floyd's slow/fast immediately; prove convergence
+- ✅ See "merge sorted" → dummy head plus tail pointer without thinking
 - ✅ See "kth from end" → two-pointer gap technique instantly
-- ✅ See "head might change" → always reach for dummy sentinel
-- ✅ See "palindrome" → find middle + reverse second half + compare
+- ✅ See "head might change" → always reach for a dummy sentinel
+- ✅ See "palindrome" → find middle, reverse the second half, compare
 
-**The Transformation**:
+**The transformation**
 
-**From**: "I keep getting null pointer errors and infinite loops"
+**From:** "I keep getting null pointer errors and infinite loops."
 
-**To**: "I draw the pointer diagram, identify which pointers change,
-save references before rewiring, and use dummy heads when the
-head might change. Every step maintains my loop invariant."
+**To:** "I draw the pointer diagram, identify which pointers change, save references before rewiring, and use dummy heads when the head might change. Every step maintains my loop invariant."
+
 
 ## Complexity Quick Reference
 

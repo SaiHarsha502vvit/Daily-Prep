@@ -53,25 +53,21 @@ public boolean checkInclusion(String s1, String s2) {
 **LeetCode 76** | **Difficulty:** Hard
 🔗 [https://leetcode.com/problems/minimum-window-substring/](https://leetcode.com/problems/minimum-window-substring/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MINIMUM WINDOW SUBSTRING                                                 ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find minimum window in s that contains all characters of t.              ║
-║                                                                           ║
-║  Input: s = "ADOBECODEBANC", t = "ABC"                                    ║
-║  Output: "BANC"                                                           ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  ADOBECODEBANC                                                            ║
-║  A   ─┘    (has A, need B,C)                                              ║
-║  ADOBEC    (has A,B,C - valid, len=6)                                     ║
-║   DOBEC    (no A - invalid)                                               ║
-║  ...                                                                      ║
-║         BANC  (has A,B,C - valid, len=4) ← MIN                            ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**MINIMUM WINDOW SUBSTRING**
+
+```text
+Find minimum window in s that contains all characters of t.
+
+Input: s = "ADOBECODEBANC", t = "ABC"
+Output: "BANC"
+
+Visual:
+ADOBECODEBANC
+A   ─┘    (has A, need B,C)
+ADOBEC    (has A,B,C - valid, len=6)
+ DOBEC    (no A - invalid)
+...
+       BANC  (has A,B,C - valid, len=4) ← MIN
 ```
 
 ```java

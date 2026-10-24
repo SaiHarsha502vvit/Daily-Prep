@@ -510,117 +510,49 @@ If any of these are unchecked, your Walking Skeleton is not production-ready.
 
 ##### 1. Walking Skeleton Flow Diagram
 
+```mermaid
+flowchart TD
+  A["User clicks 'Buy'"] -->|"1. HTTPS POST /checkout"| B["Frontend (React)<br/>validates input, sends authenticated request"]
+  B -->|"2. JSON over HTTP"| C["API gateway (Spring Boot)<br/>JWT verify, rate limit, route to Order Service"]
+  C -->|"3. internal call"| D["Order service<br/>create order in DB, publish OrderCreated to Kafka"]
+  D -->|"4. SQL INSERT"| E[("Database (PostgreSQL)<br/>returns order_id")]
+  E -->|"5. response back up the chain"| A
 ```
-   ┌──────────────────────────────────────────────────────┐
-   │ User clicks "Buy" button                            │
-   └────────────────────┬─────────────────────────────────┘
-                        │ 1. HTTPS POST /checkout
-                        ▼
-   ┌──────────────────────────────────────────────────────┐
-   │ Frontend (React)                                    │
-   │  - Validates input                                  │
-   │  - Sends authenticated request                      │
-   └────────────────────┬─────────────────────────────────┘
-                        │ 2. JSON over HTTP
-                        ▼
-   ┌──────────────────────────────────────────────────────┐
-   │ API Gateway (Spring Boot)                           │
-   │  - Auth check (JWT verify)                          │
-   │  - Rate limit                                       │
-   │  - Routes to Order Service                          │
-   └────────────────────┬─────────────────────────────────┘
-                        │ 3. Internal call
-                        ▼
-   ┌──────────────────────────────────────────────────────┐
-   │ Order Service                                       │
-   │  - Create order in DB                               │
-   │  - Publish OrderCreated event to Kafka               │
-   └────────────────────┬─────────────────────────────────┘
-                        │ 4. SQL INSERT
-                        ▼
-   ┌──────────────────────────────────────────────────────┐
-   │ Database (PostgreSQL)                               │
-   │  - Returns order_id                                 │
-   └────────────────────┬─────────────────────────────────┘
-                        │ 5. Response back up the chain
-                        ▼
-   ┌──────────────────────────────────────────────────────┐
-   │ User sees "Order #12345 created!"                   │
-   └──────────────────────────────────────────────────────┘
 
-Walking Skeleton = ALL these components connected, even if Order Service
-just hardcodes "Order #12345" instead of doing real work.
-```
+**How to read this diagram.** The request goes down through four layers and the order identifier travels back up the same path.
 
 ##### 2. Chaos Engineering Experiment Flow
 
+```mermaid
+flowchart TD
+  A["1. Define hypothesis<br/>'Killing one API server has no customer-visible impact'"]
+  B["2. Set blast radius<br/>ONE instance (not an AZ), 5-minute window"]
+  C["3. Inject failure (Chaos Monkey)<br/>SIGKILL one API server"]
+  D["4. Observe metrics in real time<br/>error rate, latency p99, support tickets"]
+  E{"5. Verify hypothesis"}
+  F["Confirmed: no impact<br/>expand the blast radius"]
+  G["Refuted: error rate spiked<br/>fix root cause, re-run the experiment"]
+  A --> B --> C --> D --> E
+  E -->|"confirmed"| F
+  E -->|"refuted"| G
 ```
-   ┌──────────────────────────────────────┐
-   │ 1. Define hypothesis:                │
-   │    "Killing one API server has no    │
-   │     customer-visible impact"         │
-   └────────────────┬─────────────────────┘
-                    ▼
-   ┌──────────────────────────────────────┐
-   │ 2. Set blast radius:                │
-   │    ONE instance (not an AZ)         │
-   │    5-minute window                   │
-   └────────────────┬─────────────────────┘
-                    ▼
-   ┌──────────────────────────────────────┐
-   │ 3. Inject failure (Chaos Monkey):   │
-   │    SIGKILL one API server           │
-   └────────────────┬─────────────────────┘
-                    ▼
-   ┌──────────────────────────────────────┐
-   │ 4. Observe metrics in real-time:    │
-   │    - Error rate                      │
-   │    - Latency p99                     │
-   │    - Customer support tickets        │
-   └────────────────┬─────────────────────┘
-                    ▼
-   ┌──────────────────────────────────────┐
-   │ 5. Verify hypothesis:               │
-   │    ✓ Confirmed: no impact           │
-   │    OR                                │
-   │    ✗ Refuted: error rate spiked     │
-   └────────────────┬─────────────────────┘
-                    ▼
-   ┌──────────────────────────────────────┐
-   │ 6. If refuted: fix root cause,      │
-   │    re-run experiment                 │
-   │    If confirmed: expand blast radius│
-   └──────────────────────────────────────┘
-```
+
+**How to read this diagram.** A chaos experiment is a controlled loop: state a hypothesis, limit the damage, inject the fault, watch real metrics, then either widen the experiment or fix and repeat.
 
 ##### 3. Sharding Topology Diagram
 
+```mermaid
+flowchart TD
+  R["Client request: GET /users/42"] --> RT["Router (application side)<br/>shard = hash(42) % 4 = 2"]
+  RT --> S0["Shard 0"]
+  RT --> S1["Shard 1"]
+  RT --> S2["Shard 2<br/>user 42 lives here"]
+  RT --> S3["Shard 3"]
+  classDef hit fill:#dcfce7,stroke:#16a34a,color:#052e16;
+  class S2 hit;
 ```
-                ┌──────────────────────────────────┐
-                │      Client request:            │
-                │      GET /users/42              │
-                └────────────────┬─────────────────┘
-                                 ▼
-                ┌──────────────────────────────────┐
-                │   Router (application-side):    │
-                │   shard = hash(42) % 4 = 2      │
-                └────────────────┬─────────────────┘
-                                 ▼
-   ┌─────────────┬──────────────┼──────────────┬─────────────┐
-   ▼             ▼              ▼              ▼             ▼
-┌────────┐  ┌────────┐    ┌────────────┐  ┌────────┐    ┌────────┐
-│Shard 0 │  │Shard 1 │    │  Shard 2   │  │Shard 3 │    │ Shard 4│
-│IDs:    │  │IDs:    │    │  IDs:      │  │IDs:    │    │ (full) │
-│0-24%   │  │25-49%  │    │  50-74%    │  │75-99%  │    │        │
-└────────┘  └────────┘    └────────────┘  └────────┘    └────────┘
-                                ▲
-                                │
-                          User 42 lives here
-                          (range 50-74%)
 
-   Resharding (adding Shard 4): consistent hashing moves ~25% of keys
-   from each existing shard to Shard 4 — minimal disruption
-```
+**How to read this diagram.** The router hashes the key and takes the remainder modulo the number of shards, so every request for user 42 goes to shard 2. Note that adding a fifth shard would change `hash % 4` into `hash % 5` and move most keys, which is why consistent hashing or a directory service is used when the shard count changes.
 
 #### In-Depth Explanations
 

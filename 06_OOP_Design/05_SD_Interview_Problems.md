@@ -317,44 +317,44 @@ flowchart LR
 
 ## PROBLEM 4: Design Rate Limiter
 
-```text
-PURPOSE: Prevent abuse, protect resources, enforce SLAs
+**Purpose:** prevent abuse, protect resources and enforce SLAs.
 
-ALGORITHM 1: Token Bucket
-─────────────────────────────
-Bucket holds N tokens. Each request takes 1 token.
-Tokens added at rate R per second. If empty, reject request.
+**Algorithm 1: token bucket**
 
-Bucket: [●●●●●___]  capacity=8, current=5
-Request arrives → take token → [●●●●____]
-Refill (every 1/R sec) → [●●●●●___]
-Bucket full → tokens overflow (don't exceed capacity)
-Bucket empty → REJECT (HTTP 429 Too Many Requests)
+The bucket holds up to N tokens. Each request takes one token. Tokens are added at rate R per second. If the bucket is empty, reject the request.
 
-✅ Allows bursts (up to bucket size)
-✅ Simple to implement
-✅ Memory efficient: 2 numbers per user (tokens, last_refill_time)
+| Event | Bucket (capacity 8) |
+| --- | --- |
+| Start | 5 tokens |
+| Request arrives → take a token | 4 tokens |
+| Refill (every 1/R seconds) | 5 tokens |
+| Bucket full | Extra tokens overflow (never exceed capacity) |
+| Bucket empty | Reject with HTTP 429 Too Many Requests |
 
-ALGORITHM 2: Sliding Window Log
-────────────────────────────────
-Store timestamp of each request in sorted set.
-On new request: remove timestamps older than window, count remaining.
-If count >= limit → reject.
+- ✅ Allows bursts (up to the bucket size)
+- ✅ Simple to implement
+- ✅ Memory efficient: two numbers per user (tokens, last refill time)
 
-✅ Most accurate
-❌ Memory intensive (stores every timestamp)
+**Algorithm 2: sliding window log**
 
-ALGORITHM 3: Sliding Window Counter (BEST for most cases)
-─────────────────────────────────────
-Combine fixed window counters with sliding ratio.
-Estimate = prev_window_count × overlap% + curr_window_count
-✅ Low memory    ✅ Smooths edge cases    ✅ Reasonably accurate
+Store the timestamp of each request in a sorted set. On a new request, remove timestamps older than the window and count what remains. If the count is at or above the limit, reject.
 
-DISTRIBUTED RATE LIMITING:
-→ Redis + Lua script (atomic increment + expire)
-→ Key: "rate:{userId}:{minute}" → INCR → compare to limit
-→ Set TTL equal to window size
-```
+- ✅ Most accurate
+- ❌ Memory intensive (stores every timestamp)
+
+**Algorithm 3: sliding window counter** (a good default)
+
+Combine fixed-window counters with a sliding ratio: `estimate = previous_window_count × overlap% + current_window_count`.
+
+- ✅ Low memory
+- ✅ Smooths edge cases
+- ✅ Reasonably accurate
+
+**Distributed rate limiting**
+
+- Use Redis with a Lua script (atomic increment and expire).
+- Key: `rate:{userId}:{minute}` → `INCR` → compare with the limit.
+- Set the TTL equal to the window size.
 
 ---
 

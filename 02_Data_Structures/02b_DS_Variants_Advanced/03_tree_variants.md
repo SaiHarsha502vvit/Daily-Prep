@@ -190,6 +190,8 @@ flowchart LR
   B1 -->|rotate right at 30| A1
 ```
 
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
+
 **2. Right-right (RR) → single left rotation**
 
 ```mermaid
@@ -203,6 +205,8 @@ flowchart LR
   end
   B2 -->|rotate left at 10| A2
 ```
+
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
 
 **3. Left-right (LR) → left rotation at the child, then right rotation at the root**
 
@@ -220,6 +224,8 @@ flowchart LR
   end
   B3 --> M3 --> A3
 ```
+
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
 
 **4. Right-left (RL) → right rotation at the child, then left rotation at the root**
 

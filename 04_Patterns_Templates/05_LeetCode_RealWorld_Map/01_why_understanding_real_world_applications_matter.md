@@ -4,101 +4,95 @@
 > Page 1 of 2 in **LeetCode ↔ Real-World Map — Pattern Guide**
 
 
+```text
+LEETCODE TO REAL-WORLD - COMPLETE UNDERSTANDING
 ```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│        LEETCODE TO REAL-WORLD - COMPLETE UNDERSTANDING                       │
-└──────────────────────────────────────────────────────────────────────────────┘
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS THIS GUIDE?                                                          │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ A bridge between ABSTRACT coding problems and REAL problems they model.      │
-│                                                                              │
-│ KEY INSIGHT: LeetCode problems aren't arbitrary puzzles!                     │
-│ They're distilled versions of real engineering challenges.                   │
-│                                                                              │
-│ EXAMPLE:                                                                     │
-│ • "Two Sum" looks artificial, but...                                         │
-│ • It's the core of finding complementary products on Amazon                  │
-│ • It's how Netflix finds matching user preferences                           │
-│ • It's how dating apps find compatible matches!                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+**WHAT IS THIS GUIDE?**
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES THIS SOLVE?                                                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ PROBLEM 1: "I'm solving problems but don't know WHY they matter"             │
-│ → Without purpose, motivation fades and learning is shallow                  │
-│                                                                              │
-│ PROBLEM 2: "Interviewer asks: Where is this used?"                           │
-│ → Real-world context shows you understand beyond the algorithm               │
-│                                                                              │
-│ PROBLEM 3: "I can solve LeetCode but can't apply at work"                    │
-│ → Knowing applications helps you RECOGNIZE when to use patterns              │
-│                                                                              │
-│ PROBLEM 4: "Feels like I'm just 'grinding' with no real learning"            │
-│ → Purpose transforms grinding into meaningful learning                       │
-└──────────────────────────────────────────────────────────────────────────────┘
+```text
+A bridge between ABSTRACT coding problems and REAL problems they model.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY LEARN REAL-WORLD CONNECTIONS?                                            │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 1. BETTER MEMORY:                                                            │
-│    Story: "Used in Google Maps" sticks better than "Dijkstra is O(V+E)"      │
-│                                                                              │
-│ 2. INTERVIEW ADVANTAGE:                                                      │
-│    Connecting problems to applications shows MATURITY                        │
-│    Senior engineers think this way naturally                                 │
-│                                                                              │
-│ 3. TRANSFERABLE SKILLS:                                                      │
-│    At work, no one says "implement Two Sum"                                  │
-│    They say "find products that complement this one"                         │
-│    You need to RECOGNIZE the pattern                                         │
-│                                                                              │
-│ 4. SYSTEM DESIGN READY:                                                      │
-│    Knowing where algorithms are used helps in system design                  │
-│    "For this feature, we'd use the Two Sum approach..."                      │
-└──────────────────────────────────────────────────────────────────────────────┘
+KEY INSIGHT: LeetCode problems aren't arbitrary puzzles!
+They're distilled versions of real engineering challenges.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ HOW TO USE THIS GUIDE                                                        │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ BEFORE solving a problem:                                                    │
-│ • Look up the real-world application                                         │
-│ • Visualize the actual problem (users, data, system)                         │
-│ • This gives you MOTIVATION and CONTEXT                                      │
-│                                                                              │
-│ AFTER solving a problem:                                                     │
-│ • Review the applications again                                              │
-│ • Ask: "Where else could this pattern help?"                                 │
-│ • Try to think of 1-2 NEW applications yourself                              │
-│                                                                              │
-│ IN INTERVIEWS:                                                               │
-│ • If asked "Where is this used?", you have ready answers                     │
-│ • Even if not asked, mention: "This pattern is used in..."                   │
-│ • Shows depth and maturity                                                   │
-└──────────────────────────────────────────────────────────────────────────────┘
+EXAMPLE:
+• "Two Sum" looks artificial, but...
+• It's the core of finding complementary products on Amazon
+• It's how Netflix finds matching user preferences
+• It's how dating apps find compatible matches!
+```
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ GROWTH MINDSET: FROM PROBLEM-SOLVER TO SYSTEM-BUILDER ⭐                    │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ LEVEL 1 (Beginner): "I solved Two Sum"                                       │
-│                                                                              │
-│ LEVEL 2 (Intermediate): "Two Sum uses HashMap for O(1) complement lookup"    │
-│                                                                              │
-│ LEVEL 3 (Advanced): "Two Sum pattern appears in e-commerce, matching         │
-│                      systems, and financial analysis"                        │
-│                                                                              │
-│ LEVEL 4 (Expert): "When building our recommendation system, I recognized     │
-│                    this is essentially a Two Sum variant and optimized       │
-│                    using the same approach"                                  │
-│                                                                              │
-│ THIS GUIDE HELPS YOU REACH LEVEL 3-4!                                        │
-└──────────────────────────────────────────────────────────────────────────────┘
+**WHAT PROBLEM DOES THIS SOLVE?**
+
+```text
+PROBLEM 1: "I'm solving problems but don't know WHY they matter"
+→ Without purpose, motivation fades and learning is shallow
+
+PROBLEM 2: "Interviewer asks: Where is this used?"
+→ Real-world context shows you understand beyond the algorithm
+
+PROBLEM 3: "I can solve LeetCode but can't apply at work"
+→ Knowing applications helps you RECOGNIZE when to use patterns
+
+PROBLEM 4: "Feels like I'm just 'grinding' with no real learning"
+→ Purpose transforms grinding into meaningful learning
+```
+
+**WHY LEARN REAL-WORLD CONNECTIONS?**
+
+```text
+1. BETTER MEMORY:
+   Story: "Used in Google Maps" sticks better than "Dijkstra is O(V+E)"
+
+2. INTERVIEW ADVANTAGE:
+   Connecting problems to applications shows MATURITY
+   Senior engineers think this way naturally
+
+3. TRANSFERABLE SKILLS:
+   At work, no one says "implement Two Sum"
+   They say "find products that complement this one"
+   You need to RECOGNIZE the pattern
+
+4. SYSTEM DESIGN READY:
+   Knowing where algorithms are used helps in system design
+   "For this feature, we'd use the Two Sum approach..."
+```
+
+**HOW TO USE THIS GUIDE**
+
+```text
+BEFORE solving a problem:
+• Look up the real-world application
+• Visualize the actual problem (users, data, system)
+• This gives you MOTIVATION and CONTEXT
+
+AFTER solving a problem:
+• Review the applications again
+• Ask: "Where else could this pattern help?"
+• Try to think of 1-2 NEW applications yourself
+
+IN INTERVIEWS:
+• If asked "Where is this used?", you have ready answers
+• Even if not asked, mention: "This pattern is used in..."
+• Shows depth and maturity
+```
+
+**⭐ GROWTH MINDSET: FROM PROBLEM-SOLVER TO SYSTEM-BUILDER ⭐**
+
+```text
+LEVEL 1 (Beginner): "I solved Two Sum"
+
+LEVEL 2 (Intermediate): "Two Sum uses HashMap for O(1) complement lookup"
+
+LEVEL 3 (Advanced): "Two Sum pattern appears in e-commerce, matching
+                     systems, and financial analysis"
+
+LEVEL 4 (Expert): "When building our recommendation system, I recognized
+                   this is essentially a Two Sum variant and optimized
+                   using the same approach"
+
+THIS GUIDE HELPS YOU REACH LEVEL 3-4!
 ```
 
 ---

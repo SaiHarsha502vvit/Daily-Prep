@@ -251,7 +251,7 @@ flowchart LR
     P3 --> P4["exit(ticket)"] --> P5["return spot, price by hours"]
   end
   subgraph ST["Seat booking"]
-    S1["hold(seat, user, ttl)"] --> S2expired or same user?
+    S1["hold(seat, user, ttl)"] --> S2{"expired or same user?"}
     S2 -->|yes| S3["confirm -> sold"]
     S2 -->|no| S4["rejected"]
   end

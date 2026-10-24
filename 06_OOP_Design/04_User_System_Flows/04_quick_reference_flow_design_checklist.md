@@ -4,24 +4,20 @@
 > Page 4 of 4 in **Understanding User Flows & System Flows**
 
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    FLOW DESIGN CHECKLIST                                     ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Flow design checklist
 
-□ Clear START and END points
-□ All decision points marked (diamonds)
-□ Happy path clearly visible
-□ Error paths included
-□ All actors/systems identified
-□ Data formats at each stage
-□ Async operations marked
-□ Retry/rollback paths shown
-□ Edge cases considered
-□ Timing/timeout handling
-□ Security checkpoints
-□ Logging/monitoring points
-```
+- [ ] Clear **start** and **end** points
+- [ ] All decision points marked (diamonds)
+- [ ] Happy path clearly visible
+- [ ] Error paths included
+- [ ] All actors and systems identified
+- [ ] Data formats at each stage
+- [ ] Async operations marked
+- [ ] Retry and rollback paths shown
+- [ ] Edge cases considered
+- [ ] Timing and timeout handling
+- [ ] Security checkpoints
+- [ ] Logging and monitoring points
 
 ---
 
@@ -31,90 +27,69 @@
 
 #### 1. End-to-End Payment Flow Sequence
 
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant F as Frontend (React)
+  participant O as Order service
+  participant P as Payment gateway
+  participant B as Bank API
+  U->>F: 1. Click "Pay"
+  F->>O: 2. POST /orders
+  O->>P: 3. POST /charge
+  P->>B: 4. Verify funds
+  B-->>P: 5. Authorisation result
+  P-->>O: 6. Charge OK
+  O-->>F: 7. Order created
+  F-->>U: 8. Show "Success"
+  O-)O: 9. Async email via Email Service
 ```
-   ┌──────┐         ┌──────────┐      ┌─────────┐      ┌─────────┐      ┌─────────┐
-   │ User │         │ Frontend │      │  Order  │      │ Payment │      │   Bank  │
-   │      │         │ (React)  │      │ Service │      │ Gateway │      │   API   │
-   └──┬───┘         └────┬─────┘      └────┬────┘      └────┬────┘      └────┬────┘
-      │ 1. Click "Pay"    │                 │                │                │
-      │───────────────────▶                 │                │                │
-      │                  │ 2. POST /orders  │                │                │
-      │                  │──────────────────▶                │                │
-      │                  │                 │ 3. POST /charge                │
-      │                  │                 │───────────────▶                │
-      │                  │                 │                │ 4. Verify funds │
-      │                  │                 │                │───────────────▶│
-      │                  │                 │                │ 5. Auth result │
-      │                  │                 │                │◀───────────────│
-      │                  │                 │ 6. Charge OK   │                │
-      │                  │                 │◀───────────────│                │
-      │                  │ 7. Order created│                │                │
-      │                  │◀──────────────────                │                │
-      │ 8. Show "Success" │                │                │                │
-      │◀──────────────────│                │                │                │
-      │                  │                 │ 9. Async email │                │
-      │                  │                 │──┐             │                │
-      │                  │                 │  │ to Email Service            │
-      │                  │                 │◀─┘             │                │
-```
+
+**How to read this diagram.** Solid arrows are calls, dashed arrows are replies, and the final arrow is asynchronous: the email is sent after the user already has their answer.
 
 **Failure mode at step 6**: Bank auth succeeds but Order Service crashes before updating DB → user charged, order never created. **Mitigation**: idempotency key on /charge (Stripe-style) + outbox pattern for the Order DB write.
 
 #### 2. Order State Machine
 
+```mermaid
+stateDiagram-v2
+  [*] --> Created : order placed by user
+  Created --> PendingPayment : PaymentInitiated
+  PendingPayment --> Paid : PaymentSuccess
+  PendingPayment --> Cancelled : 10 min timeout
+  Paid --> Shipped : ShipmentDispatched
+  Shipped --> Delivered : DeliveryConfirmed
+  Delivered --> Refunded : RefundRequested (within 30 days)
 ```
-                    ┌──────────────────┐
-                    │      Created     │ (Order placed by user)
-                    └────────┬─────────┘
-                             │ PaymentInitiated
-                             ▼
-                    ┌──────────────────┐
-              ┌────▶│ PendingPayment   │──── (10 min timeout)
-              │     └────────┬─────────┘     │
-              │              │ PaymentSuccess │
-              │              ▼               │
-              │     ┌──────────────────┐    │
-              │     │       Paid       │    │
-              │     └────────┬─────────┘    │
-              │              │ ShipmentDispatched
-              │              ▼               ▼
-              │     ┌──────────────────┐ ┌──────────────────┐
-              │     │     Shipped      │ │   Cancelled      │
-              │     └────────┬─────────┘ └──────────────────┘
-              │              │ DeliveryConfirmed
-              │              ▼
-              │     ┌──────────────────┐
-              │     │    Delivered     │
-              │     └────────┬─────────┘
-              │              │ RefundRequested (within 30 days)
-              └──────────────┘
-```
+
+**How to read this diagram.** Each arrow is an event that moves the order to a new state. An order that is not paid within ten minutes is cancelled. A refund requested within 30 days of delivery moves the order to a final `Refunded` state.
 
 **Invariant**: every transition has exactly ONE trigger event. State changes are append-only in an event log (event sourcing pattern) for auditability.
 
 #### 3. Microservices Flow vs Monolith Flow
 
-```
-MONOLITH (in-process stack trace):
-┌─────────────────────────────────────┐
-│ User → OrderSvc → Payment → DB      │  Total: 1 network call, 1 stack
-└─────────────────────────────────────┘
+**Monolith (in-process stack trace)**
 
-MICROSERVICES (distributed trace):
-┌──────┐  ┌─────┐  ┌─────────┐  ┌─────────┐  ┌──────┐  ┌─────────┐
-│ User │─▶│ CDN │─▶│  API GW │─▶│  Order  │─▶│ Pay  │─▶│   DB    │
-└──────┘  └─────┘  └─────────┘  │ Service │  └──────┘  └─────────┘
-                               │         │
-                               │ event:  │  Kafka
-                               │ order_created
-                               ▼
-                          ┌─────────┐
-                          │  Email  │
-                          │ Service │
-                          └─────────┘
-
-Total: 5+ network hops, distributed tracing REQUIRED (Jaeger/Zipkin)
+```mermaid
+flowchart LR
+  U["User"] --> O["OrderSvc"] --> P["Payment"] --> D[("DB")]
 ```
+
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
+
+Total: one network call and one stack trace.
+
+**Microservices (distributed trace)**
+
+```mermaid
+flowchart LR
+  U["User"] --> C["CDN"] --> G["API gateway"] --> O["Order service"] --> P["Payment"] --> D[("DB")]
+  O -->|"event: order_created (Kafka)"| E["Email service"]
+```
+
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
+
+Total: five or more network hops, so **distributed tracing is required** (Jaeger, Zipkin or OpenTelemetry).
 
 **Trade-off**: monoliths give free observability (one stack trace shows everything); microservices require explicit observability infrastructure. Microservices pay this cost for team-scale and failure-isolation benefits.
 

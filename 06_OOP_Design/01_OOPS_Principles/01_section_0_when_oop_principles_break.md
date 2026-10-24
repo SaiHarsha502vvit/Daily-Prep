@@ -177,15 +177,18 @@ As software grows, complexity grows **exponentially**. Procedural programming sc
 
 **OOP Solution** — organized workstations:
 
+```mermaid
+flowchart LR
+  subgraph A["Object A"]
+    ad["data"] --- am["methods"]
+  end
+  subgraph B["Object B"]
+    bd["data"] --- bm["methods"]
+  end
+  am <--> bm
 ```
-     ┌─────────────┐       ┌─────────────┐
-     │   Object A  │       │   Object B  │
-     │ ┌─────────┐ │       │ ┌─────────┐ │
-     │ │  data   │ │       │ │  data   │ │
-     │ │ methods │ │◄─────►│ │ methods │ │
-     │ └─────────┘ │       │ └─────────┘ │
-     └─────────────┘       └─────────────┘
-```
+
+**How to read this diagram.** Each object keeps its data private behind its methods; the two objects talk only through those methods.
 
 - Data + related functions **bundled together**
 - Clear boundaries — change inside without breaking outside

@@ -473,17 +473,13 @@ class LoggerConfig {
 
 ### SOLID Principles in Every Solution
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  PRINCIPLE          │ WHERE WE APPLIED IT                                        ║
-║─────────────────────┼─────────────────────────────────────────────────────────   ║
-║  S - Single Resp.   │ BookingService only books, PricingStrategy only prices     ║
-║  O - Open/Closed    │ New split types without changing ExpenseService            ║
-║  L - Liskov Sub.    │ EqualSplit/ExactSplit both work wherever Split is used     ║
-║  I - Interface Seg. │ Small interfaces: PricingStrategy, LogAppender             ║
-║  D - Dependency Inv.│ ParkingLot depends on PricingStrategy interface, not impl  ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+| Principle | Where we applied it |
+| --- | --- |
+| **S** — Single Responsibility | `BookingService` only books, `PricingStrategy` only prices |
+| **O** — Open/Closed | New split types without changing `ExpenseService` |
+| **L** — Liskov Substitution | `EqualSplit` and `ExactSplit` both work wherever `Split` is used |
+| **I** — Interface Segregation | Small interfaces: `PricingStrategy`, `LogAppender` |
+| **D** — Dependency Inversion | `ParkingLot` depends on the `PricingStrategy` interface, not an implementation |
 
 ---
 

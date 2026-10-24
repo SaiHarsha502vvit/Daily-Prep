@@ -123,392 +123,270 @@ _OOP is about managing complexity through smart organization!_
 
 #### Diagram 1: Inheritance Hierarchy — Animal / Dog / Cat
 
+**Inheritance hierarchy — the Animal family**
+
+```mermaid
+classDiagram
+  class Animal {
+    <<abstract>>
+    #String name
+    +eat() void
+    +sleep() void
+    +makeSound() void*
+  }
+  class Dog {
+    +bark() void
+    +fetch() void
+  }
+  class Cat {
+    +meow() void
+    +purr() void
+  }
+  Animal <|-- Dog : extends (IS-A)
+  Animal <|-- Cat : extends (IS-A)
 ```
-┌────────────────────────────────────────────────────────────────────────────┐
-│                     INHERITANCE HIERARCHY — Animal Family                  │
-└────────────────────────────────────────────────────────────────────────────┘
 
-                        ┌──────────────────────────┐
-                        │      <<abstract>>        │
-                        │         Animal           │
-                        ├──────────────────────────┤
-                        │ # name: String           │
-                        ├──────────────────────────┤
-                        │ + eat(): void            │
-                        │ + sleep(): void          │
-                        │ + makeSound(): <<abstract>>│
-                        └──────────────┬───────────┘
-                                       │ extends (IS-A)
-                    ┌──────────────────┴──────────────────┐
-                    ▼                                     ▼
-        ┌───────────────────┐                 ┌───────────────────┐
-        │      <<class>>    │                 │      <<class>>    │
-        │        Dog        │                 │        Cat        │
-        ├───────────────────┤                 ├───────────────────┤
-        │                   │                 │                   │
-        ├───────────────────┤                 ├───────────────────┤
-        │ + bark(): void    │                 │ + meow(): void    │
-        │ + fetch(): void   │                 │ + purr(): void    │
-        └───────────────────┘                 └───────────────────┘
+**How to read this diagram.** Arrows point from the subclass to the parent it extends. `Animal` is abstract: it supplies `eat()` and `sleep()` and leaves `makeSound()` for each subclass to define.
 
-  Method resolution order at RUNTIME (dynamic dispatch):
+**Method resolution at run time (dynamic dispatch).** When you call `dog.makeSound()`, the JVM looks up the method in the vtable of `Dog`:
 
-  dog.makeSound()
-       │
-       ▼ JVM looks up vtable for Dog class
-  Dog's vtable entry 0 ──▶ Animal.eat()      (inherited, not overridden)
-  Dog's vtable entry 1 ──▶ Dog.bark()        (own method)
-  Dog's vtable entry 2 ──▶ Animal.makeSound() overridden by Dog
+| Vtable entry | Resolves to | Why |
+| --- | --- | --- |
+| 0 | `Animal.eat()` | Inherited, not overridden |
+| 1 | `Dog.bark()` | Dog's own method |
+| 2 | `Dog.makeSound()` | Overrides the abstract method in `Animal` |
 
-  super() call chain (constructor):
+**Constructor chain for `new Dog("Buddy")`:**
 
-  new Dog("Buddy")
-       │
-       ├─► Dog() constructor starts
-       │        │
-       │        ▼ implicit super() call
-       │   Animal() runs first  ──► sets name = "Buddy"
-       │   Animal() finishes
-       │        │
-       │        ▼
-       │   Dog() body runs  ──► additional Dog initialization
-       │        │
-       │        ▼
-       └─► Dog object fully constructed
-
-  ┌────────────────────────────────────────────────────────────────────────┐
-  │ FAILURE MODE: Deep Inheritance Chain                                   │
-  │                                                                        │
-  │  Animal                                                                │
-  │   └── Mammal                                                           │
-  │        └── Dog                                                         │
-  │             └── ServiceDog                                             │
-  │                  └── PoliceDog                                         │
-  │                                                                        │
-  │  Problem: A change to Animal.eat() ripples through 5 classes.          │
-  │  Adding a new method to Dog requires updating PoliceDog.               │
-  │  The "is-a" relationship weakens: is PoliceDog really an Animal?       │
-  │  Solution: Composition (ServiceDog HAS-A TrainingCertificate)          │
-  └────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  A["new Dog('Buddy')"] --> B["Dog() constructor starts"]
+  B --> C["implicit super() call"]
+  C --> D["Animal() runs: name = 'Buddy'"]
+  D --> E["Animal() finishes"]
+  E --> F["Dog() body runs: extra Dog initialisation"]
+  F --> G["Dog object fully constructed"]
 ```
+
+**How to read this diagram.** The superclass constructor always completes before the subclass constructor body runs.
+
+> [!WARNING]
+> **Failure mode: a deep inheritance chain.**
+> In `Animal → Mammal → Dog → ServiceDog → PoliceDog`, a change to `Animal.eat()` ripples through five classes, adding a method to `Dog` can force changes in `PoliceDog`, and the "is-a" relationship weakens (is a `PoliceDog` really just an `Animal`?).
+> **Solution:** composition, for example `ServiceDog` *has a* `TrainingCertificate`.
 
 #### Diagram 2: Diamond Inheritance — C++ vs Java 8 Default Methods
 
+**The diamond problem: C++ versus Java default methods**
+
+**C++ (multiple inheritance of classes)**
+
+```mermaid
+classDiagram
+  class A { +foo() }
+  class L { +foo() }
+  class R { +foo() }
+  class D
+  A <|-- L
+  A <|-- R
+  L <|-- D
+  R <|-- D
 ```
-┌────────────────────────────────────────────────────────────────────────────┐
-│           DIAMOND PROBLEM — C++ vs Java 8 Default Methods                 │
-└────────────────────────────────────────────────────────────────────────────┘
 
-  C++ DIAMOND (multiple inheritance — AMBIGUOUS):
+**How to read this diagram.** `D` inherits from both `L` and `R`, and each of them inherits `A`. With ordinary (non-virtual) inheritance, `D` contains two `A` sub-objects, so `d.foo()` is **ambiguous** and the compiler rejects it. Qualify the call (`d.L::foo()`), or use **virtual inheritance** (`class L : virtual public A`) so there is a single shared `A`.
 
-       ┌──────────────┐
-       │     Base     │  class A { void foo(); }
-       │   foo()      │
-       └──────┬───────┘
-              │
-       ┌──────┴───────┐
-       ▼              ▼
-  ┌──────────┐  ┌──────────┐
-  │  Left    │  │  Right   │
-  │ extends A│  │ extends A│
-  │  foo()   │  │  foo()   │
-  └────┬─────┘  └────┬─────┘
-       │             │
-       └──────┬──────┘
-              │
-              ▼
-       ┌──────────────┐
-       │    Derived   │
-       │extends L, R  │  class D : public L, public R {}
-       └──────────────┘
+**Java (interfaces with default methods)**
 
-  PROBLEM: d.foo() ──► Compiler error: "request for member 'foo' is ambiguous"
-            Both L and R inherited foo() from A, and D has two copies.
-  FIX: D must explicitly say which one: d.L::foo(); or d.R::foo();
-
-  ────────────────────────────────────────────────────────────────────────────
-
-  JAVA 8 INTERFACE DIAMOND (compile ERROR + resolution):
-
-       ┌──────────────────┐
-       │   <<interface>>  │
-       │        A         │  interface A { default void foo(); }
-       │  default foo()   │
-       └────────┬─────────┘
-                │
-        ┌───────┴───────┐
-        ▼               ▼
-  ┌─────────────┐  ┌─────────────┐
-  │<<interface>> │  │<<interface>>│
-  │     B       │  │     C       │
-  │ implements A│  │ implements A│
-  └──────┬──────┘  └──────┬──────┘
-         │                │
-         └────────┬───────┘
-                  ▼
-         ┌────────────────┐
-         │    <<class>>   │
-         │       D        │
-         │ implements B,C │
-         └────────────────┘
-
-  PROBLEM: d.foo() ──► Java 7: compile error! Which foo()?
-           Java 8: RESOLVED automatically — more SPECIFIC wins.
-           Since D explicitly implements B and C, and neither overrides foo(),
-           A.foo() is inherited once (not twice) because Java does NOT
-           duplicate default method implementations through interfaces.
-
-  COMPILATION ERROR SCENARIO (Java 8+):
-
-  interface A    { default void x() { System.out.println("A"); } }
-  interface B extends A { @Override default void x() { System.out.println("B"); } }
-  interface C extends A { @Override default void x() { System.out.println("C"); } }
-  class D implements B, C {
-      // Which x()? B.x() and C.x() both override A.x() — AMBIGUOUS!
-      // Fix: D must override x() { B.super.x(); }
-  }
-
-  ┌──────────────────────────────────────────────────────────────────────┐
-  │ SUMMARY TABLE                                                          │
-  │                                                                        │
-  │  Language   │ Duplication  │ Resolution           │ Fix Required?      │
-  │  ────────────────────────────────────────────────────────────────────│
-  │  C++        │ YES (2 copies│ Explicit scope::     │ YES (always)       │
-  │  Java 7     │ No duplication│ N/A — compile error │ YES (diamond not   │
-  │             │ (not allowed)│                      │  allowed)          │
-  │  Java 8+    │ No duplication│ Nearest super wins   │ No (unless both    │
-  │             │ (single copy)│ (specificity rule)   │  override A)       │
-  └──────────────────────────────────────────────────────────────────────┘
+```mermaid
+classDiagram
+  class A { <<interface>> default x() }
+  class B { <<interface>> default x() }
+  class C { <<interface>> default x() }
+  class D { <<class>> }
+  A <|-- B
+  A <|-- C
+  B <|.. D
+  C <|.. D
 ```
+
+**How to read this diagram.** Java forbids extending several classes, but a class may implement several interfaces. Since Java 8 interfaces can carry default methods, so a diamond can appear.
+
+**Resolution rules:**
+
+1. A method declared in the class (or a superclass) wins over any interface default.
+2. Otherwise the **most specific** interface wins. If only `A` declares `x()` and neither `B` nor `C` overrides it, `D` inherits the single `A.x()`, with no conflict.
+3. If `B` and `C` both override `x()`, the compiler reports an error and `D` must override it and choose explicitly.
+
+```java
+interface A { default void x() { System.out.println("A"); } }
+interface B extends A { @Override default void x() { System.out.println("B"); } }
+interface C extends A { @Override default void x() { System.out.println("C"); } }
+class D implements B, C {
+    // B.x() and C.x() both override A.x(): ambiguous, so D must pick one.
+    @Override public void x() { B.super.x(); }
+}
+```
+
+| Language | Two copies of the base? | How the ambiguity is resolved | Fix required? |
+| --- | --- | --- | --- |
+| C++ (plain inheritance) | Yes, one `A` per path | Qualify the call, or use virtual inheritance | Yes, when you call the ambiguous member |
+| Java 7 and earlier | Not applicable: interfaces had no method bodies | Nothing to resolve | No |
+| Java 8+ | No, interface defaults have no state | Class wins, then most specific interface | Only if two unrelated interfaces both supply a default |
 
 #### Diagram 3: SOLID Principles Pyramid
 
+**SOLID principles, layered by dependency**
+
+```mermaid
+flowchart BT
+  SRP["SRP<br/>One reason to change<br/>One class, one job"] --> OCP["OCP<br/>Open for extension,<br/>closed for modification"]
+  OCP --> LSP["LSP<br/>Subtypes substitutable<br/>for their base types"]
+  LSP --> ISP["ISP<br/>Many small interfaces<br/>beat one fat interface"]
+  ISP --> DIP["DIP<br/>Depend on abstractions,<br/>not concretions"]
+  classDef a fill:#dbeafe,stroke:#2563eb,color:#0c1a4a;
+  class SRP,OCP,LSP,ISP,DIP a;
 ```
-┌────────────────────────────────────────────────────────────────────────────┐
-│                    SOLID PRINCIPLES PYRAMID                                │
-│              (layered by dependency direction and failure modes)           │
-└────────────────────────────────────────────────────────────────────────────┘
 
-                              ┌──────────────────────────┐
-                              │         DIP             │  Dependency Inversion
-                              │  Depend on abstractions  │  High-level → abstract
-                              │  not concretions         │
-                              └──────────┬───────────────┘
-                                         │
-                              ┌──────────┴───────────────┐
-                              │         ISP             │  Interface Segregation
-                              │  Many small interfaces   │  Clients shouldn't depend
-                              │  > one fat interface     │  on unused methods
-                              └──────────┬───────────────┘
-                                         │
-                              ┌──────────┴───────────────┐
-                              │         LSP             │  Liskov Substitution
-                              │  Substitutable for base │  Square isn't Rectangle
-                              │  everywhere             │  (behavioral contract)
-                              └──────────┬───────────────┘
-                                         │
-                              ┌──────────┴───────────────┐
-                              │         OCP             │  Open/Closed
-                              │  Open for extension      │  Don't modify existing
-                              │  Closed for modification │  code to add features
-                              └──────────┬───────────────┘
-                                         │
-                              ┌──────────┴───────────────┐
-                              │         SRP             │  Single Responsibility
-                              │  One reason to change    │  BASE OF PYRAMID
-                              │  One class, one job      │  All others build on this
-                              └──────────────────────────┘
+**How to read this diagram.** Read from the bottom: single responsibility is the foundation, and each later principle builds on the ones below it. This ordering is a teaching aid, not part of the original formulation.
 
-  FAILURE MODE MAP:
+**Failure modes by principle**
 
-  ┌────────────────┬───────────────────────────────────────────────────┐
-  │ Principle      │ Failure Mode (symptom)                            │
-  ├────────────────┼───────────────────────────────────────────────────┤
-  │ SRP            │ God class — 50 reasons to change, 3000 lines      │
-  │                │ Change in email logic breaks payment processing    │
-  ├────────────────┼───────────────────────────────────────────────────┤
-  │ OCP            │ if (type == DOG) ... else if (type == CAT) ...   │
-  │                │ Adding Cat means modifying the existing code       │
-  ├────────────────┼───────────────────────────────────────────────────┤
-  │ LSP            │ Square extends Rectangle → resize() breaks        │
-  │                │ NullPointerException from violating preconditions │
-  ├────────────────┼───────────────────────────────────────────────────┤
-  │ ISP            │ interface Worker { eat(); sleep(); work(); }      │
-  │                │ Robot forced to implement eat() and sleep()        │
-  ├────────────────┼───────────────────────────────────────────────────┤
-  │ DIP            │ new EmailService() inside UserService             │
-  │                │ Can't swap to SMSService without editing UserService│
-  └────────────────┴───────────────────────────────────────────────────┘
-```
+| Principle | Failure mode (symptom) |
+| --- | --- |
+| SRP | God class: 50 reasons to change, 3000 lines; a change in email logic breaks payment processing |
+| OCP | `if (type == DOG) ... else if (type == CAT) ...`; adding Cat means modifying existing code |
+| LSP | `Square extends Rectangle` and `resize()` breaks; subtypes violate the preconditions callers rely on |
+| ISP | `interface Worker { eat(); sleep(); work(); }` forces a `Robot` to implement `eat()` and `sleep()` |
+| DIP | `new EmailService()` inside `UserService`; you cannot swap in `SMSService` without editing `UserService` |
 
 #### Deep-Dive 1: Mechanism — Polymorphism at the JVM Bytecode Level
 
-```
-┌────────────────────────────────────────────────────────────────────────────┐
-│         POLYMORPHISM — Virtual Method Dispatch at Bytecode Level           │
-└────────────────────────────────────────────────────────────────────────────┘
+### Polymorphism: virtual method dispatch at bytecode level
 
-  THREE JVM BYTECODE INVOKE OPCODES — key difference:
+**Three JVM invoke opcodes**
 
-  ┌──────────────────┬──────────────────────────────────────────────────────┐
-  │ Opcode           │ Behavior                                              │
-  ├──────────────────┼──────────────────────────────────────────────────────┤
-  │ invokestatic     │ No dispatch — resolved at compile time (static)       │
-  │ invokevirtual    │ Virtual dispatch via vtable (dynamic)                 │
-  │ invokeinterface  │ Interface dispatch via itable (dynamic, slower)       │
-  └──────────────────┴──────────────────────────────────────────────────────┘
+| Opcode | Behaviour |
+| --- | --- |
+| `invokestatic` | No dispatch: resolved at compile time (static) |
+| `invokevirtual` | Virtual dispatch through the vtable (dynamic) |
+| `invokeinterface` | Interface dispatch through an itable-style lookup (dynamic) |
 
-  VTABLE (virtual table) — one per class, shared by all instances:
+**Vtable (virtual method table):** one per class, shared by all instances.
 
-  class Animal (vtable):
-    slot 0: Object.hashCode()      (inherited from Object)
-    slot 1: Object.equals()        (inherited from Object)
-    slot 2: Animal.eat()           (overridable)
-    slot 3: Animal.makeSound()     (abstract → slot set by subclass)
+| Slot | `Animal` | `Dog extends Animal` |
+| --- | --- | --- |
+| 0 | `Object.hashCode()` (inherited) | `Object.hashCode()` (inherited, unchanged) |
+| 1 | `Object.equals()` (inherited) | `Object.equals()` (inherited, unchanged) |
+| 2 | `Animal.eat()` (overridable) | `Dog.eat()` (**overridden**: new entry) |
+| 3 | `Animal.makeSound()` (abstract: slot filled by the subclass) | `Dog.makeSound()` (**implemented**: new entry) |
 
-  class Dog extends Animal (vtable):
-    slot 0: Object.hashCode()      (inherited, unchanged)
-    slot 1: Object.equals()        (inherited, unchanged)
-    slot 2: Dog.eat()              (OVERRIDDEN — new entry)
-    slot 3: Dog.makeSound()        (IMPLEMENTED — new entry)
+**Memory layout of a `Dog` object on the heap**
 
-  Memory layout of a Dog object on the heap:
+| Part | Size / content |
+| --- | --- |
+| Object header (mark word + class pointer) | About 12 bytes on a 64-bit JVM with compressed class pointers |
+| `Animal` fields (`name`) | Reference (4 or 8 bytes) |
+| `Dog` fields (`breed`) | Reference (4 or 8 bytes) |
 
-  ┌─────────────────────────────────────────────┐
-  │ Object Header (mark word + klass pointer)   │  12 bytes (64-bit JVM)
-  ├─────────────────────────────────────────────┤
-  │ Animal fields (name)                       │  Reference (4 or 8 bytes)
-  ├─────────────────────────────────────────────┤
-  │ Dog fields (breed)                         │  Reference (4 or 8 bytes)
-  └─────────────────────────────────────────────┘
+The vtable lives in the class metadata (`Dog.class`), not in each instance. Each instance holds a pointer to its class, and the class holds the vtable.
 
-  The vtable pointer lives IN the klass object (Dog.class), not in each instance.
-  Each Dog instance has a pointer to Dog.class, which has the vtable.
+**Method call:** `animal.makeSound()` where `animal` is actually a `Dog`.
 
-  Method call: animal.makeSound()  where animal is actually a Dog
+Bytecode: `invokevirtual #12` (a constant-pool entry that resolves to `Animal.makeSound()`).
 
-  Bytecode: invokevirtual #12   // resolves to Animal.makeSound() in constant pool
+At run time (conceptually, and in the JIT's generated code):
 
-  At RUNTIME (JIT):
-    1. Load animal from local var
-    2. Read klass pointer from animal object header
-    3. Look up method at vtable[slot 3]
-    4. Jump to Dog.makeSound() address
+1. Load `animal` from the local variable.
+2. Read the class pointer from the object header.
+3. Look up the method at `vtable[slot 3]`.
+4. Jump to `Dog.makeSound()`.
 
-  THIS is why Java is polymorphic by default — the actual class determines
-  the method address at runtime, not the reference variable type.
+> [!IMPORTANT]
+> This is why Java is polymorphic by default: the actual class decides the method address at run time, not the type of the reference variable. (The JIT often removes the lookup when profiling shows only one receiver type.)
 
-  invokeinterface is similar but uses an ITABLE (interface method table)
-  because a class can implement multiple interfaces, requiring separate lookup:
+`invokeinterface` is similar but must find the method in the receiver class's table for that interface, because a class can implement several interfaces. In practice the JIT's inline caches make the difference from `invokevirtual` small.
 
-  interface I1 { void m1(); }
-  interface I2 { void m2(); }
-  class C implements I1, I2 {
-    void m1() {}
-    void m2() {}
-  }
-
-  C's itable: [I1 → slot 0: C.m1()] [I2 → slot 0: C.m2()]
-  invokeinterface I1.m1() → itable lookup → C.m1()
-  invokeinterface is ~10-20% slower than invokevirtual due to 2-level lookup.
+```java
+interface I1 { void m1(); }
+interface I2 { void m2(); }
+class C implements I1, I2 {
+    public void m1() {}
+    public void m2() {}
+}
+// invokeinterface I1.m1() -> look up m1 for interface I1 in C -> C.m1()
 ```
 
 #### Deep-Dive 2: Why Composition Over Inheritance — Side-by-Side
 
+**Composition versus inheritance — side-by-side failure analysis**
+
+**Inheritance approach (Vehicle → Car)**
+
+```mermaid
+classDiagram
+  class Vehicle {
+    <<abstract>>
+    +start()
+    +stop()
+    +refuel()
+  }
+  Vehicle <|-- Car
+  Vehicle <|-- Bike
+  Car <|-- SportsCar
+  Car <|-- SedanCar
 ```
-┌────────────────────────────────────────────────────────────────────────────┐
-│        COMPOSITION vs INHERITANCE — Side-by-Side Failure Analysis          │
-└────────────────────────────────────────────────────────────────────────────┘
 
-  INHERITANCE APPROACH (Vehicle → Car):
+**How to read this diagram.** Every arrow is an "is-a" relationship, so each new kind of vehicle must be placed somewhere in one tree.
 
-  ┌─────────────────────────────┐
-  │ <<abstract>> Vehicle        │
-  ├─────────────────────────────┤
-  │ + start()                   │
-  │ + stop()                    │
-  │ + refuel()                  │
-  └─────────────┬───────────────┘
-                │
-    ┌───────────┴───────────────┐
-    ▼                           ▼
-  ┌──────────┐              ┌──────────┐
-  │   Car    │              │   Bike   │
-  │          │              │          │
-  └────┬─────┘              └──────────┘
-       │
-  ┌────┴─────┐
-  ▼          ▼
-┌─────────┐ ┌──────────┐
-│SportsCar│ │SedanCar  │
-│         │ │          │
-└─────────┘ └──────────┘
+**Failure mode: what if a `SportsCar` must share engine behaviour with a `SedanCar`?**
 
-  FAILURE MODE: What if a SportsCar needs to share engine behavior with SedanCar?
-  1. Add ElectricCar ──► must decide: IS-A Car? IS-A Vehicle?
-  2. Add HybridCar ──► IS-A SportsCar? IS-A SedanCar? Neither fits.
-  3. Add FlyingCar ──► The entire hierarchy collapses — mix flying + driving.
-  4. Result: 7 classes to model 4 vehicles with shared features.
+1. Add `ElectricCar`: must it be a `Car` or a `Vehicle`?
+2. Add `HybridCar`: is it a `SportsCar` or a `SedanCar`? Neither fits.
+3. Add `FlyingCar`: the hierarchy collapses, because it must mix flying and driving.
+4. Result: about seven classes to model four vehicles with shared features.
 
-  ────────────────────────────────────────────────────────────────────────────
+**Composition approach (a `Car` has an `Engine`, a `Transmission`, and so on)**
 
-  COMPOSITION APPROACH (Car HAS-A Engine, Transmission, etc.):
-
-  ┌───────────────────────────────────────────────────────────────────────┐
-  │                          Car (composition root)                       │
-  │  ┌─────────────────────────────────────────────────────────────────┐ │
-  │  │ - engine: Engine                                                │ │
-  │  │ - transmission: Transmission                                     │ │
-  │  │ - wheels: List<Wheel>                                            │ │
-  │  └─────────────────────────────────────────────────────────────────┘ │
-  └───────────────────────────────────────────────────────────────────────┘
-
-  Interfaces for swappable behavior:
-
-  ┌──────────────────┐   ┌──────────────────────┐   ┌────────────────────┐
-  │    <<interface>> │   │   <<interface>>      │   │  <<interface>>     │
-  │     Engine       │   │   Transmission       │   │  FuelSystem        │
-  ├──────────────────┤   ├──────────────────────┤   ├────────────────────┤
-  │ + start()        │   │ + shift(gear)        │   │ + refuel()         │
-  │ + stop()         │   │ + getCurrentGear()   │   │ + checkLevel()     │
-  └──────────────────┘   └──────────────────────┘   └────────────────────┘
-         ▲                        ▲                         ▲
-         │                        │                         │
-  ┌──────┴──────┐          ┌─────┴──────┐            ┌─────┴──────┐
-  │V8Engine     │          │AutoTrans   │            │ PetrolFuel │
-  │ElectricMotor│          │ManualTrans │            │ElectricFuel│
-  │HybridEngine │          │CVTTrans    │            │HybridFuel  │
-  └─────────────┘          └────────────┘            └────────────┘
-
-  FlyingCar? Just add: - flyingMechanism: FlyingMechanism
-  No class hierarchy change. Just compose a new capability.
-
-  ElectricCar? engine=ElectricMotor, fuelSystem=ElectricFuel, transmission=AutoTrans
-  No inheritance. All behavior is plug-and-play.
-
-  ┌──────────────────────────────────────────────────────────────────────┐
-  │ PRODUCTION FAILURE MODE — The Deep Inheritance Chain                │
-  │                                                                       │
-  │ Real-world example from a production codebase:                       │
-  │                                                                       │
-  │  Entity (base)                                                        │
-  │    └── PersistentObject (adds save/load)                             │
-  │          └── UserObject (adds userId)                                │
-  │                └── AdminUserObject (adds admin flags)                │
-  │                      └── SuperAdminUserObject (adds super flags)     │
-  │                                                                       │
-  │  Problem at scale (10K+ users, 50+ fields):                          │
-  │  - Changing Entity.toString() requires retesting 5 classes           │
-  │  - PersistentObject.getId() null in unit tests → 4-level stack trace │
-  │  - New developer adds method to AdminUserObject, forgets SuperAdmin  │
-  │  - The "is-a" chain is fragile: is SuperAdmin really an Entity?      │
-  │                                                                       │
-  │  Fix: Replace with composition + traits (Java records + sealed)      │
-  │  record Auditable(id, createdAt, updatedAt) {}                        │
-  │  record Adminable(roles, permissions) {}                             │
-  │  class User implements Auditable, Adminable {}                        │
-  └──────────────────────────────────────────────────────────────────────┘
+```mermaid
+classDiagram
+  class Car {
+    -Engine engine
+    -Transmission transmission
+    -List~Wheel~ wheels
+  }
+  class Engine { <<interface>> +start() +stop() }
+  class Transmission { <<interface>> +shift(gear) +getCurrentGear() }
+  class FuelSystem { <<interface>> +refuel() +checkLevel() }
+  Car o-- Engine
+  Car o-- Transmission
+  Car o-- FuelSystem
+  Engine <|.. V8Engine
+  Engine <|.. ElectricMotor
+  Engine <|.. HybridEngine
+  Transmission <|.. AutoTrans
+  Transmission <|.. ManualTrans
+  Transmission <|.. CVTTrans
+  FuelSystem <|.. PetrolFuel
+  FuelSystem <|.. ElectricFuel
+  FuelSystem <|.. HybridFuel
 ```
+
+**How to read this diagram.** The diamond arrows mean "has a". The car is assembled from interchangeable parts, each behind an interface.
+
+- **`FlyingCar`?** Add a `flyingMechanism: FlyingMechanism` field. No class hierarchy changes; you compose a new capability.
+- **`ElectricCar`?** `engine = ElectricMotor`, `fuelSystem = ElectricFuel`, `transmission = AutoTrans`. No inheritance, and everything is plug-and-play.
+
+> [!WARNING]
+> **Production failure mode: the deep inheritance chain** (an illustrative composite, not a report of one codebase).
+> ```text
+> Entity (base)
+>   └── PersistentObject   (adds save/load)
+>         └── UserObject   (adds userId)
+>               └── AdminUserObject      (adds admin flags)
+>                     └── SuperAdminUserObject   (adds super flags)
+> ```
+> Problems at scale: changing `Entity.toString()` means retesting five classes; `PersistentObject.getId()` returning null in a unit test produces a four-level stack trace; a developer adds a method to `AdminUserObject` and forgets `SuperAdminUserObject`; and the question "is a super admin really an entity?" shows the chain is fragile.
+> **Fix:** replace the chain with composition, for example small records such as `Auditable(id, createdAt, updatedAt)` and `Adminable(roles, permissions)` held as fields of `User`.
 
 #### Breadth Comparison 1: OOP vs Other Paradigms
 

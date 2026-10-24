@@ -418,43 +418,42 @@ j < i + k              ← "j hasn't crossed boundary"
 
 ## 🧪 WHY THE OTHER FORMS CONFUSE YOU
 
-```
-            WHY OTHER FORMS ARE CONFUSING
-──────────────────────────────────────────────────
+**Why other forms are confusing**
 
 Test Case: i = 0, k = 3
+
 We want elements at indices: 0, 1, 2 (3 elements)
 
-┌──────────────────────────────────────────────────────────────────────┐
-│ USING j < i + k:                                                     │
-│                                                                      │
-│   j < 0 + 3                                                          │
-│   j < 3                                                              │
-│                                                                      │
-│   Valid j: 0, 1, 2  ✅ (3 elements — CORRECT!)                        │
-└──────────────────────────────────────────────────────────────────────┘
+```text
+USING j < i + k:
 
-┌──────────────────────────────────────────────────────────────────────┐
-│ USING j <= i + k:  ❌ WRONG                                           │
-│                                                                      │
-│   j <= 0 + 3                                                         │
-│   j <= 3                                                             │
-│                                                                      │
-│   Valid j: 0, 1, 2, 3  ❌ (4 elements — TOO MANY!)                    │
-└──────────────────────────────────────────────────────────────────────┘
+  j < 0 + 3
+  j < 3
 
-┌──────────────────────────────────────────────────────────────────────┐
-│ USING j < k:  ❌ WRONG (after first window)                           │
-│                                                                      │
-│   After i moves to 1:                                                │
-│   j < 3                                                              │
-│                                                                      │
-│   Valid j: 0, 1, 2  ❌ (We need 1, 2, 3 now!)                         │
-└──────────────────────────────────────────────────────────────────────┘
+  Valid j: 0, 1, 2  ✅ (3 elements — CORRECT!)
+```
+
+```text
+USING j <= i + k:  ❌ WRONG
+
+  j <= 0 + 3
+  j <= 3
+
+  Valid j: 0, 1, 2, 3  ❌ (4 elements — TOO MANY!)
+```
+
+```text
+USING j < k:  ❌ WRONG (after first window)
+
+  After i moves to 1:
+  j < 3
+
+  Valid j: 0, 1, 2  ❌ (We need 1, 2, 3 now!)
+```
 
 CONCLUSION: Only "j < i + k" works, but it's HARD to remember!
+
 SOLUTION: Use "j - i + 1 == k" and NEVER think about it again!
-```
 
 ### Test Case: i = 0, k = 3
 
@@ -493,35 +492,35 @@ Valid j: 0, 1, 2  ❌ (We need 1, 2, 3!)
 
 ## ✅ THE EXAM-SAFE PATTERN
 
-EXAM-SAFE SLIDING WINDOW TEMPLATE
+**Exam-safe sliding-window template**
 
-int i = 0; // Window start (left pointer)
+```java
+int i = 0;                                  // window start (left pointer)
 
-for (int j = 0; j < n; j++) { // j expands window (right pointer)
+for (int j = 0; j < n; j++) {               // j expands the window (right pointer)
 
-// STEP 1: EXPAND - Include arr[j] in window
-// (add to sum, add to hashmap, etc.)
+    // STEP 1: EXPAND - include arr[j] in the window
+    // (add to sum, add to hashmap, etc.)
 
-if (j - i + 1 == k) { // STEP 2: CHECK - "Do I have K elements?"
+    if (j - i + 1 == k) {                   // STEP 2: CHECK - "do I have K elements?"
 
-// STEP 3: PROCESS - Window is ready, do something
-// (compare max, print result, etc.)
+        // STEP 3: PROCESS - the window is ready, do something
+        // (compare max, record result, etc.)
 
-// STEP 4: SHRINK - Remove arr[i] from window
-// (subtract from sum, remove from hashmap, etc.)
+        // STEP 4: SHRINK - remove arr[i] from the window
+        // (subtract from sum, remove from hashmap, etc.)
 
-i++; // STEP 5: SLIDE - Move window forward
+        i++;                                // STEP 5: SLIDE - move the window forward
+    }
 }
-}
+```
 
-─────────────────────────────────────────────────────────────────────
+**Why this is the safe template**
 
-WHY THIS IS PERFECT:
-
-✅ You count elements (j - i + 1), not indices
-✅ No confusion about < vs <=
-✅ Clear 5-step process: EXPAND → CHECK → PROCESS → SHRINK → SLIDE
-✅ Works for ANY window problem with small modifications
+- ✅ You count elements (`j - i + 1`), not indices
+- ✅ No confusion about `<` versus `<=`
+- ✅ Clear 5-step process: expand → check → process → shrink → slide
+- ✅ Works for any window problem with small modifications
 
 ### Pattern 1: Count-Based (Recommended)
 

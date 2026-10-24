@@ -504,58 +504,61 @@ for (int i = 0; i < n; i++) {
 
 ## 📌 7. Edge Case Mistakes
 
+**Edge case mistakes**
+
+**Always check these before submitting**
+
+**1. empty input**
+
+```text
+arr = []
+str = ""
+n = 0
 ```
-                  EDGE CASE MISTAKES
-──────────────────────────────────────────────────
 
-ALWAYS CHECK THESE BEFORE SUBMITTING:
+**2. single element**
 
-1. EMPTY INPUT
-┌────────────────────────────────────────────────────────────────────┐
-│ arr = []                                                           │
-│ str = ""                                                           │
-│ n = 0                                                              │
-└────────────────────────────────────────────────────────────────────┘
+```text
+arr = [5]
+str = "a"
+n = 1
+```
 
-2. SINGLE ELEMENT
-┌────────────────────────────────────────────────────────────────────┐
-│ arr = [5]                                                          │
-│ str = "a"                                                          │
-│ n = 1                                                              │
-└────────────────────────────────────────────────────────────────────┘
+**3. two elements**
 
-3. TWO ELEMENTS
-┌────────────────────────────────────────────────────────────────────┐
-│ arr = [1, 2]  (minimum for comparison)                             │
-│ str = "ab"                                                         │
-└────────────────────────────────────────────────────────────────────┘
+```text
+arr = [1, 2]  (minimum for comparison)
+str = "ab"
+```
 
-4. ALL SAME ELEMENTS
-┌────────────────────────────────────────────────────────────────────┐
-│ arr = [5, 5, 5, 5, 5]                                              │
-│ str = "aaaa"                                                       │
-└────────────────────────────────────────────────────────────────────┘
+**4. all same elements**
 
-5. NEGATIVE NUMBERS
-┌────────────────────────────────────────────────────────────────────┐
-│ arr = [-5, -3, -1]                                                 │
-│ sum with negatives                                                 │
-│ max of all negatives                                               │
-└────────────────────────────────────────────────────────────────────┘
+```text
+arr = [5, 5, 5, 5, 5]
+str = "aaaa"
+```
 
-6. BOUNDARY VALUES
-┌────────────────────────────────────────────────────────────────────┐
-│ Integer.MAX_VALUE, Integer.MIN_VALUE                               │
-│ k = 0, k = n (window size edge cases)                              │
-│ First/last element special handling                                │
-└────────────────────────────────────────────────────────────────────┘
+**5. negative numbers**
 
-7. SORTED/REVERSE SORTED
-┌────────────────────────────────────────────────────────────────────┐
-│ arr = [1, 2, 3, 4, 5]  (already sorted)                            │
-│ arr = [5, 4, 3, 2, 1]  (reverse sorted)                            │
-└────────────────────────────────────────────────────────────────────┘
+```text
+arr = [-5, -3, -1]
+sum with negatives
+max of all negatives
+```
 
+**6. boundary values**
+
+```text
+Integer.MAX_VALUE, Integer.MIN_VALUE
+k = 0, k = n (window size edge cases)
+First/last element special handling
+```
+
+**7. sorted/reverse sorted**
+
+```text
+arr = [1, 2, 3, 4, 5]  (already sorted)
+arr = [5, 4, 3, 2, 1]  (reverse sorted)
 ```
 
 ---

@@ -120,86 +120,49 @@
 
 ## Breadth Comparison 2: Structural Pattern Comparison — Adapter vs Decorator vs Proxy vs Facade
 
+### Adapter, Decorator, Proxy and Facade compared
+
+| Dimension | Adapter | Decorator | Proxy | Facade |
+| --- | --- | --- | --- | --- |
+| **Wraps** | An interface (converts it) | An interface (adds to it) | An interface (controls it) | A subsystem (simplifies it) |
+| **What changes** | The interface shape | Behaviour (adds new) | Access (same operation, guarded) | The API (many → one) |
+| **Client sees** | A new interface (the target) | The same interface (component) | The same interface (service) | A simpler interface |
+| **Can stack?** | No (wrap once) | Yes, many layers | No (single level) | No (one level) |
+| **Intention** | Make things work together | Add behaviour dynamically | Control access (lazy, cache, auth, log) | Simplify complexity |
+| **Java example** | `Arrays.asList` (array → `List`) | `BufferedReader` wrapping `FileReader` | `@Transactional` (Spring AOP), lazy init (Hibernate) | `OrderFacade.placeOrder()` |
+| **Spring use** | `HandlerAdapter` | `HttpServletRequestWrapper` | `@Transactional`, `@Cacheable`, `@Async` | Repository (hides JPA complexity) |
+
+### The common structure
+
+All four share the wrapper idea:
+
+```mermaid
+classDiagram
+  class TargetInterface { <<interface>> }
+  class Wrapper
+  class Wrapped
+  Client --> TargetInterface
+  TargetInterface <|.. Wrapper : implements
+  TargetInterface <|.. Wrapped : implements
+  Wrapper o-- Wrapped : wrappee
 ```
-┌──────────────────┬───────────────┬───────────────┬───────────────┬──────────────┐
-│  DIMENSION       │  ADAPTER      │  DECORATOR    │  PROXY        │  FACADE      │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  WRAPS           │  Interface    │  Interface    │  Interface    │  Subsystem   │
-│  (what)          │  (converts)   │  (adds)       │  (controls)   │  (simplifies)│
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  CHANGES         │  Interface    │  Behavior     │  Access       │  API         │
-│  (what changes)  │  shape        │  (add new)    │  (same op,    │  (many -> 1) │
-│                  │               │               │  guarded)     │              │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  CLIENT SEES     │  New interface│  Same interface│  Same interface│  Simple     │
-│                  │  (target)     │  (component)   │  (service)    │  interface   │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  CAN STACK       │  No (wrap     │  YES - stack  │  No (single   │  No (one     │
-│  (multiple)      │  once)        │  many layers  │  level)       │  level)      │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  LOCATION        │  Anywhere     │  Same package │  Same package │  Client side │
-│                  │  (bridges)    │  (extension)  │  (control)    │  (isolation) │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  INTENTION       │  Make work    │  Add behavior │  Control access│  Simplify   │
-│  (why)           │  together     │  dynamically  │  (lazy, cache,│  complexity  │
-│                  │               │               │  auth, log)   │              │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  JAVA EXAMPLE    │  Arrays.asList│  BufferedReader│  @Transactional│  OrderFacade│
-│                  │  (ListAdapter)│  wrapping     │  (Spring AOP) │  (placeOrder)│
-│                  │               │  FileReader   │  Lazy init    │              │
-│                  │               │               │  (Hibernate)  │              │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  SPRING USE      │  HandlerAdapter│ HttpServlet  │  @Transactional│  Repository │
-│  CASE            │  (converts    │  RequestWrap │  @Cacheable   │  (hides JPA  │
-│                  │  HTTP request) │  (adds gzip) │  @Async       │  complexity) │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  STRUCTURAL      │  Target <-> Adaptee Component<-> │  Real<->Proxy │ Client<->  │
-│  PARITY          │  (compatible) │  Decorator<-> │  (transparent)│  Subsystem   │
-│                  │               │  Concrete     │               │  (all hidden)│
-└──────────────────┴───────────────┴───────────────┴───────────────┴──────────────┘
 
-  THE COMMON STRUCTURE (all four wrap):
-  ═════════════════════════════════════════
+**How to read this diagram.** The wrapper (adapter, decorator, proxy or facade) holds a reference to what it wraps. What differs is the wrapper's behaviour:
 
-  All four structural patterns share the WRAPPER pattern:
+- **Adapter:** wraps an incompatible interface and makes it look like the target.
+- **Decorator:** wraps the same interface and adds new behaviour (stacking is fine).
+- **Proxy:** wraps the same interface and controls access (caching, auth, laziness).
+- **Facade:** wraps several interfaces and provides one simple entry point.
 
-  ┌────────────────┐
-  │    Client      │
-  └───────┬────────┘
-          │
-          ▼
-  ┌────────────────┐     implements      ┌────────────────────┐
-  │  Wrapper       │────────────────────▶│  Target Interface  │
-  │  (Adapter/     │                     └────────────────────┘
-  │   Decorator/   │                            ▲
-  │   Proxy/Facade)│                            │ implements
-  │                │                     ┌──────┴──────────────┐
-  │  wrappee: ────▶│                     │                     │
-  └────────────────┘                     │                     │
-                                          └─────────────────────┘
+> [!TIP]
+> **Remember:** an adapter makes things *work* together, a decorator makes things *do more*, a proxy makes things *accessible safely*, and a facade makes things *simpler*.
 
-  WHAT DIFFERS IS THE WRAPPER'S BEHAVIOR:
-  ════════════════════════════════════
+**Structural similarity, practical difference**
 
-  ADAPTER:    Wraps incompatible interface → makes it look like target
-  DECORATOR:  Wraps same interface → adds NEW behavior (stacking OK)
-  PROXY:      Wraps same interface → CONTROLS access (caching, auth)
-  FACADE:     Wraps MULTIPLE interfaces → provides SIMPLE entry point
-
-  REMEMBER:
-  ─────────
-  "Adapter makes things WORK together."
-  "Decorator makes things DO MORE."
-  "Proxy makes things ACCESS SAFELY."
-  "Facade makes things SIMPLER."
-
-  STRUCTURAL SIMILARITY → PRACTICAL DIFFERENCE:
-  ══════════════════════════════════════════════
-  Adapter:   I have X but need Y → adapt X to look like Y
-  Decorator: I have X and need X + logging → wrap X with logging
-  Proxy:     I have X but don't want to load it until called → lazy X
-  Facade:    I have A+B+C+D and client only knows E → E hides A+B+C+D
-```
+- **Adapter:** I have X but need Y, so adapt X to look like Y.
+- **Decorator:** I have X and need X plus logging, so wrap X with logging.
+- **Proxy:** I have X but do not want to load it until it is called, so use a lazy X.
+- **Facade:** I have A, B, C and D and the client only knows E, so E hides A, B, C and D.
 
 ---
 

@@ -287,24 +287,15 @@ class PaymentProcessorTest {
 **Subject:** `UserService` publishes `UserRegisteredEvent`.
 **Observers:** `WelcomeEmailListener`, `AnalyticsListener`, `AuditLogListener`.
 
-```java
-// Event
-record UserRegisteredEvent(String userId, String email) {}
-
-// Subject (publisher)
-@Service class UserService {
-    @Autowired ApplicationEventPublisher publisher;
-    public void register(User user) {
-        userRepo.save(user);
-        publisher.publishEvent(new UserRegisteredEvent(user.id(), user.email()));
-    }
-}
-
-// Observer 1 — knows nothing about UserService
-@Component class WelcomeEmailListener {
-    @EventListener void on(UserRegisteredEvent e) { /* send welcome email to e.email() */ }
-}
+```mermaid
+flowchart LR
+  US["UserService<br/>register(u)"] -->|"publishes UserRegisteredEvent(userId)"| EP["ApplicationEventPublisher<br/>(Spring event bus)"]
+  EP --> W["WelcomeEmailListener<br/>@EventListener: sends welcome email"]
+  EP --> A["AnalyticsListener<br/>@EventListener: tracks registration"]
+  EP --> AU["AuditLogListener<br/>@EventListener: writes security log"]
 ```
+
+**How to read this diagram.** `UserService` knows only the publisher. Each listener subscribes independently, so adding a new reaction to registration means adding a class, not editing `UserService`.
 
 `UserService` is completely unaware of what happens after publishing. New observers are added with zero changes to `UserService`. This is textbook Observer.
 
@@ -522,98 +513,54 @@ class ParkingLotTest {
 
 ### Diagram 1: SOLID Principles Relationship Diagram
 
+```mermaid
+flowchart BT
+  SRP["SRP (base)<br/>One reason to change"] --> OCP["OCP<br/>Open for extension, closed for modification"]
+  SRP --> LSP["LSP<br/>Subtypes satisfy base contracts"]
+  OCP --> ISP["ISP<br/>Many client-specific interfaces"]
+  LSP --> ISP
+  ISP --> DIP["DIP (top)<br/>Depend on abstractions, not concretions"]
+  classDef a fill:#dbeafe,stroke:#2563eb,color:#0c1a4a;
+  class SRP,OCP,LSP,ISP,DIP a;
 ```
-                         ┌──────────────────┐
-                         │   DIP (top)       │
-                         │ Dependency Inver. │
-                         │ Depend on abs-    │
-                         │ tractions, not    │
-                         │ concretions       │
-                         └────────┬─────────┘
-                                  ▲
-                         ┌────────┴─────────┐
-                         │   ISP (top)       │
-                         │ Interface Seg.    │
-                         │ Many client-      │
-                         │ specific interfac.│
-                         └────────┬─────────┘
-                                  │
-          ┌───────────────────────┼──────────────────────────┐
-          │                       │                          │
-          ▼                       ▼                          ▼
-  ┌───────────────┐     ┌─────────────────┐      ┌─────────────────┐
-  │  OCP (middle) │     │  LSP (middle)    │      │                 │
-  │  Open-Closed  │     │  Liskov Subst.   │      │                 │
-  │  Open for ext │     │ Subtypes must    │      │                 │
-  │  Closed for   │     │ satisfy base     │      │                 │
-  │  mod          │     │ contracts        │      │                 │
-  └───────┬───────┘     └────────┬─────────┘      │                 │
-          │                      │                │                 │
-          │         ┌────────────┴────────────┐   │                 │
-          ▼         ▼                           ▼   │                 │
-  ┌─────────────────────────────────────────────────┐ │                 │
-  │              SRP (BASE)                         │ │                 │
-  │              Single Responsibility              │ │                 │
-  │              One reason to change               │ │                 │
-  │  All other principles depend on SRP:            │ │                 │
-  │    If a class has ONE reason to change,         │ │                 │
-  │    → It can be extended without modification    │ │                 │
-  │      (OCP)                                      │ │                 │
-  │    → Its contract is clear for LSP              │ │                 │
-  │    → Its interface is focused for ISP           │ │                 │
-  │    → Dependencies are injectable for DIP        │ │                 │
-  └─────────────────────────────────────────────────┘ │                 │
-                                                         │                 │
-                                                         │                 │
-                            All 5 principles form a COHESIVE SYSTEM:
-                            Violating any one creates cascade violations.
-```
+
+**How to read this diagram.** One way to see the principles as a system: if a class has one reason to change (SRP), it is easier to extend without modification (OCP), its contract is clear for substitution (LSP), its interface is focused (ISP) and its dependencies are injectable (DIP). Violating one often triggers violations of the others.
 
 ### Diagram 2: Observer Pattern with Spring EventBus Sequence
 
+```mermaid
+flowchart LR
+  US["UserService<br/>register(u)"] -->|"publishes UserRegisteredEvent(userId)"| EP["ApplicationEventPublisher<br/>(Spring event bus)"]
+  EP --> W["WelcomeEmailListener<br/>@EventListener: sends welcome email"]
+  EP --> A["AnalyticsListener<br/>@EventListener: tracks registration"]
+  EP --> AU["AuditLogListener<br/>@EventListener: writes security log"]
 ```
-  ┌──────────────┐   publishes    ┌──────────────────────────────────┐
-  │ UserService  │────────────────▶│      ApplicationEventPublisher   │
-  │              │  UserRegistered │         (Spring EventBus)        │
-  │ register(u)──│──Event(userId)  └──────────┬───────────┬───────────┘
-  └──────────────┘                            │           │
-                                                │           │
-                                 ┌─────────────┘  ┌────────┴───────────┐
-                                 ▼                ▼                    ▼
-                        ┌─────────────────┐ ┌──────────────┐ ┌────────────────┐
-                        │WelcomeEmailList │ │AnalyticsList│ │AuditLogListener│
-                        │                 │ │             │ │                │
-                        │ @EventListener  │ │@EventListener│ │@EventListener │
-                        │                 │ │             │ │                │
-                        │ Sends welcome   │ │ Tracks user │ │ Writes to     │
-                        │ email to user   │ │ registration│ │ security log  │
-                        └─────────────────┘ │ event       │ └────────────────┘
-                                            └──────────────┘
 
-  KEY PROPERTIES:
-  1. UserService KNOWS NOTHING about listeners
-     → Decoupled: new listeners added with ZERO changes to UserService
-  2. All 3 listeners fire in parallel (separate threads in Spring async mode)
-  3. If one listener fails, others continue (isolated failure)
-  4. Order of listener invocation is NOT guaranteed (don't rely on it)
+**How to read this diagram.** `UserService` knows only the publisher. Each listener subscribes independently.
 
-  CODE FLOW:
-  ════════════
-  1. UserService.register(user)
-     └─ userRepo.save(user)
-     └─ publisher.publishEvent(new UserRegisteredEvent(user.id, user.email))
-          └─ Spring scans @EventListener beans
-               └─ dispatches to: WelcomeEmailListener, AnalyticsListener, AuditLogListener
-                    └─ all receive SAME event object (independent copies)
+**Key properties**
 
-  ADDING A NEW LISTENER:
-  ════════════════════
-  @Component
-  class NewRelicListener {
-      @EventListener  ◀── just add @EventListener annotation
-      void on(UserRegisteredEvent e) { newRelic.trackEvent(e); }
-  }
-  // Zero changes to UserService. This is textbook OCP + Observer.
+1. `UserService` knows nothing about the listeners. New listeners are added with **zero changes** to `UserService`.
+2. By default Spring calls listeners **synchronously, in the publisher's thread**. They run in parallel on separate threads only if you make them asynchronous (`@Async` with `@EnableAsync`, or an async multicaster).
+3. In the default synchronous mode an exception in one listener propagates to the publisher and stops later listeners. Isolated failure needs async listeners or an error handler.
+4. The order of listener invocation is not guaranteed unless you add `@Order`; do not rely on it.
+
+**Code flow**
+
+1. `UserService.register(user)` saves the user with `userRepo.save(user)`.
+2. It calls `publisher.publishEvent(new UserRegisteredEvent(user.id, user.email))`.
+3. Spring finds the `@EventListener` methods and dispatches to `WelcomeEmailListener`, `AnalyticsListener` and `AuditLogListener`.
+4. All of them receive the **same event object**, so events should be immutable (a record is ideal).
+
+**Adding a new listener**
+
+```java
+@Component
+class NewRelicListener {
+    @EventListener                       // just add the annotation
+    void on(UserRegisteredEvent e) { newRelic.trackEvent(e); }
+}
+// Zero changes to UserService: textbook OCP + Observer.
 ```
 
 ### Mechanism Deep-Dive: Liskov Substitution and the Role of @Override

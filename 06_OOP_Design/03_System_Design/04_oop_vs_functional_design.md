@@ -12,35 +12,33 @@
 - Complex BEHAVIOR associated with data
 - Need for INHERITANCE and polymorphism
 - Long-lived STATEFUL objects
-  EXAMPLE - E-commerce Order System (OOP):
-  Order
-  ───────────────────────────────────────────────────────────────────────
-- orderId: Long
-- items: List<OrderItem>
-- status: OrderStatus
-- customer: Customer
-  ───────────────────────────────────────────────────────────────────────
 
-* addItem(item): void
-* removeItem(itemId): void
-* calculateTotal(): Money
-* submit(): void
-* cancel(): void
-  // OOP - Behavior lives with data
-  public class Order {
-  private List<OrderItem> items;
-  private OrderStatus status;
-  public Money calculateTotal() {
-  return items.stream()
-  .map(OrderItem::getSubtotal)
-  .reduce(Money.ZERO, Money::add);
-  }
-  public void submit() {
-  validateItems();
-  validatePayment();
-  this.status = OrderStatus.SUBMITTED;
-  }
-  }
+**Example: e-commerce order system (OOP)**
+
+| Order | |
+| --- | --- |
+| **State** | `orderId: Long`, `items: List<OrderItem>`, `status: OrderStatus`, `customer: Customer` |
+| **Behaviour** | `addItem(item)`, `removeItem(itemId)`, `calculateTotal(): Money`, `submit()`, `cancel()` |
+
+```java
+// OOP: behaviour lives with the data
+public class Order {
+    private List<OrderItem> items;
+    private OrderStatus status;
+
+    public Money calculateTotal() {
+        return items.stream()
+                    .map(OrderItem::getSubtotal)
+                    .reduce(Money.ZERO, Money::add);
+    }
+
+    public void submit() {
+        validateItems();
+        validatePayment();
+        this.status = OrderStatus.SUBMITTED;
+    }
+}
+```
 
 🔬 **Section Challenge — When To Use Oop Design**
 
@@ -60,25 +58,30 @@
 - STATELESS operations
 - CONCURRENT processing
 - Mathematical/logical computations
-  EXAMPLE - Data Processing Pipeline (Functional):
-  // Functional - Data flows through transformations
-  public class OrderProcessor {
-  // Pure function - no side effects
-  public static Money calculateTotal(List<OrderItem> items) {
-  return items.stream()
-  .map(item -> item.price().multiply(item.quantity()))
-  .reduce(Money.ZERO, Money::add);
-  }
-  // Pipeline of transformations
-  public static OrderSummary processOrder(OrderRequest request) {
-  return validateRequest(request)
-  .map(OrderProcessor::enrichWithInventory)
-  .map(OrderProcessor::calculatePricing)
-  .map(OrderProcessor::applyDiscounts)
-  .map(OrderProcessor::createSummary)
-  .orElseThrow(InvalidOrderException::new);
-  }
-  }
+
+**Example: data-processing pipeline (functional)**
+
+```java
+// Functional: data flows through transformations
+public class OrderProcessor {
+    // Pure function: no side effects
+    public static Money calculateTotal(List<OrderItem> items) {
+        return items.stream()
+                    .map(item -> item.price().multiply(item.quantity()))
+                    .reduce(Money.ZERO, Money::add);
+    }
+
+    // Pipeline of transformations
+    public static OrderSummary processOrder(OrderRequest request) {
+        return validateRequest(request)
+            .map(OrderProcessor::enrichWithInventory)
+            .map(OrderProcessor::calculatePricing)
+            .map(OrderProcessor::applyDiscounts)
+            .map(OrderProcessor::createSummary)
+            .orElseThrow(InvalidOrderException::new);
+    }
+}
+```
 
 **Benefits**:
 
@@ -98,124 +101,113 @@
 
 ## Hybrid Approach (Most Real Systems)
 
-REAL SYSTEMS USE BOTH!
+Real systems use both:
 
-- OOP for DOMAIN ENTITIES:
-  User, Order, Product, Payment
-- Functional for DATA PROCESSING:
-  Validation, Transformation, Calculation
+- **OOP for domain entities:** User, Order, Product, Payment
+- **Functional for data processing:** validation, transformation, calculation
 
-**Example**:
+**Example**
+
+```java
 // Domain entity (OOP)
 public class Order {
-private List<OrderItem> items;
-// Uses functional internally!
-public Money getTotal() {
-return items.stream()
-.map(OrderItem::getSubtotal)
-.reduce(Money.ZERO, Money::add);
+    private List<OrderItem> items;
+
+    // Uses functional style internally
+    public Money getTotal() {
+        return items.stream()
+                    .map(OrderItem::getSubtotal)
+                    .reduce(Money.ZERO, Money::add);
+    }
 }
-}
-// Service (Functional processing with OOP entities)
+
+// Service (functional processing with OOP entities)
 public class OrderService {
-public List<Order> getHighValueOrders(List<Order> orders) {
-return orders.stream()
-.filter(o -> o.getTotal().isGreaterThan(Money.of(1000)))
-.sorted(comparing(Order::getTotal).reversed())
-.collect(toList());
+    public List<Order> getHighValueOrders(List<Order> orders) {
+        return orders.stream()
+                     .filter(o -> o.getTotal().isGreaterThan(Money.of(1000)))
+                     .sorted(comparing(Order::getTotal).reversed())
+                     .collect(toList());
+    }
 }
-}
+```
 
 ---
 
 ## 🎨 Part 5: System Design Patterns
 
+### Common system architecture patterns
+
+**1. Monolithic architecture**
+
+```mermaid
+flowchart TB
+  subgraph APP["Single application"]
+    UI["UI layer"]
+    US["Users module"]
+    OR["Orders module"]
+    PA["Payments module"]
+    UI --> US
+    UI --> OR
+    UI --> PA
+    US --> DB[("Database")]
+    OR --> DB
+    PA --> DB
+  end
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                COMMON SYSTEM ARCHITECTURE PATTERNS                           ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ 1. MONOLITHIC ARCHITECTURE                                                   │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ┌─────────────────────────────────────────────────────────────────────────┐  │
-│ │                         SINGLE APPLICATION                              │  │
-│ │ ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐                │   │
-│ │ │   UI      │ │  Users    │ │  Orders   │ │ Payments  │                │   │
-│ │ │  Layer    │ │  Module   │ │  Module   │ │  Module   │                │   │
-│ │ └───────────┘ └───────────┘ └───────────┘ └───────────┘                │   │
-│ │                         │                                               │  │
-│ │                   ┌─────┴─────┐                                         │  │
-│ │                   │  Database │                                         │  │
-│ │                   └───────────┘                                         │  │
-│ └─────────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│ PROS: Simple, easy to develop, easy to deploy                                │
-│ CONS: Hard to scale, hard to maintain as it grows                            │
-│ USE WHEN: Small team, MVP, simple domain                                     │
-└──────────────────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ 2. MICROSERVICES ARCHITECTURE                                                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐                 │
-│ │  User    │    │  Order   │    │ Payment  │    │ Notific. │                 │
-│ │ Service  │    │ Service  │    │ Service  │    │ Service  │                 │
-│ └────┬─────┘    └────┬─────┘    └────┬─────┘    └────┬─────┘                 │
-│      │               │               │               │                       │
-│   ┌──┴──┐         ┌──┴──┐         ┌──┴──┐         ┌──┴──┐                    │
-│   │ DB1 │         │ DB2 │         │ DB3 │         │ DB4 │                    │
-│   └─────┘         └─────┘         └─────┘         └─────┘                    │
-│                                                                              │
-│ PROS: Scalable, independent deployment, tech diversity                       │
-│ CONS: Complex, distributed system challenges, operational overhead           │
-│ USE WHEN: Large team, complex domain, need to scale independently            │
-└──────────────────────────────────────────────────────────────────────────────┘
+| Pros | Cons | Use when |
+| --- | --- | --- |
+| Simple, easy to develop, easy to deploy | Hard to scale and to maintain as it grows | Small team, MVP, simple domain |
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ 3. EVENT-DRIVEN ARCHITECTURE                                                 │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│                    ┌─────────────────────────┐                               │
-│                    │      Event Bus          │                               │
-│                    │  (Kafka/RabbitMQ/SQS)   │                               │
-│                    └───────────┬─────────────┘                               │
-│              ┌─────────────────┼─────────────────┐                           │
-│              │                 │                 │                           │
-│         ┌────┴────┐       ┌────┴────┐       ┌────┴────┐                      │
-│         │Producer │       │Consumer │       │Consumer │                      │
-│         │(Orders) │       │(Inventory)│     │(Analytics)│                    │
-│         └─────────┘       └─────────┘       └─────────┘                      │
-│                                                                              │
-│ PROS: Loose coupling, real-time, scalable                                    │
-│ CONS: Eventual consistency, debugging harder                                 │
-│ USE WHEN: Real-time processing, many consumers, async workflows              │
-└──────────────────────────────────────────────────────────────────────────────┘
+**2. Microservices architecture**
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ 4. CQRS (Command Query Responsibility Segregation)                           │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│     WRITES                              READS                                │
-│   ┌─────────┐                        ┌─────────┐                             │
-│   │ Command │                        │  Query  │                             │
-│   │ Service │                        │ Service │                             │
-│   └────┬────┘                        └────┬────┘                             │
-│        │                                  │                                  │
-│        ▼                                  ▼                                  │
-│   ┌─────────┐      sync/async       ┌─────────┐                              │
-│   │  Write  │ ─────────────────────▶│  Read   │                              │
-│   │   DB    │                       │   DB    │                              │
-│   └─────────┘                       └─────────┘                              │
-│   (normalized)                      (denormalized)                           │
-│                                                                              │
-│ PROS: Optimized reads AND writes, scalable                                   │
-│ CONS: Complexity, eventual consistency                                       │
-│ USE WHEN: Read-heavy systems, complex queries, different read/write needs    │
-└──────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+  U["User service"] --> D1[("DB 1")]
+  O["Order service"] --> D2[("DB 2")]
+  P["Payment service"] --> D3[("DB 3")]
+  N["Notification service"] --> D4[("DB 4")]
 ```
+
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
+
+| Pros | Cons | Use when |
+| --- | --- | --- |
+| Scalable, independent deployment, technology diversity | Complex; distributed-system challenges; operational overhead | Large team, complex domain, need to scale parts independently |
+
+**3. Event-driven architecture**
+
+```mermaid
+flowchart TB
+  B[["Event bus<br/>Kafka / RabbitMQ / SQS"]]
+  P["Producer<br/>(Orders)"] --> B
+  B --> C1["Consumer<br/>(Inventory)"]
+  B --> C2["Consumer<br/>(Analytics)"]
+```
+
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
+
+| Pros | Cons | Use when |
+| --- | --- | --- |
+| Loose coupling, real-time, scalable | Eventual consistency; harder debugging | Real-time processing, many consumers, async workflows |
+
+**4. CQRS (Command Query Responsibility Segregation)**
+
+```mermaid
+flowchart LR
+  C["Command service<br/>(writes)"] --> W[("Write DB<br/>normalised")]
+  W -->|"sync or async"| R[("Read DB<br/>denormalised")]
+  Q["Query service<br/>(reads)"] --> R
+```
+
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
+
+| Pros | Cons | Use when |
+| --- | --- | --- |
+| Reads and writes optimised separately; scalable | Complexity; eventual consistency | Read-heavy systems, complex queries, different read and write needs |
 
 ---
 
@@ -223,112 +215,79 @@ return orders.stream()
 
 ### Example 1: URL Shortener (Like bit.ly)
 
+**Requirements**
+
+- Shorten long URLs
+- Redirect short URLs to the original
+- Track click analytics
+- 100 million URLs per month
+
+**High-level design**
+
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant G as API Gateway
+  participant S as URL Service
+  participant R as Redirect Service
+  participant D as Database (Cassandra)
+  participant C as Cache (Redis)
+  U->>G: POST /shorten {url: "long..."}
+  G->>S: create short URL
+  S->>S: generate ID, store mapping
+  S->>D: save mapping
+  G-->>U: {"short": "abc123"}
+  U->>G: GET /abc123
+  G->>R: look up URL, log analytics
+  R->>C: lookup
+  C-->>R: long URL (on a miss, read the database)
+  G-->>U: 302 Redirect
 ```
-REQUIREMENTS:
-• Shorten long URLs
-• Redirect short URLs to original
-• Track click analytics
-• 100 million URLs/month
 
-HIGH-LEVEL DESIGN:
+**How to read this diagram.** Two flows share one gateway: creating a short URL (top) writes the mapping, and following one (bottom) reads it through the cache.
 
-    User                API Gateway              Services
-    ─────              ───────────              ────────
-      │                     │
-      │ POST /shorten       │
-      │ {url: "long..."}    │
-      ├────────────────────▶│
-      │                     │
-      │                     │        ┌─────────────────┐
-      │                     ├───────▶│  URL Service    │
-      │                     │        │  - Generate ID  │
-      │                     │        │  - Store mapping│
-      │                     │        └────────┬────────┘
-      │                     │                 │
-      │                     │                 ▼
-      │                     │           ┌──────────┐
-      │                     │           │ Database │
-      │                     │           │(Cassandra)│
-      │                     │           └──────────┘
-      │                     │
-      │ {"short": "abc123"} │
-      │◀────────────────────┤
-      │                     │
-      │ GET /abc123         │
-      ├────────────────────▶│
-      │                     │
-      │                     │        ┌─────────────────┐
-      │                     ├───────▶│  Redirect Svc   │
-      │                     │        │  - Lookup URL   │
-      │                     │        │  - Log analytics│
-      │                     │        └────────┬────────┘
-      │                     │                 │
-      │ 302 Redirect        │                 ▼
-      │◀────────────────────┤           ┌──────────┐
-      │                     │           │  Cache   │
-                                        │ (Redis)  │
-                                        └──────────┘
+**Key decisions**
 
-KEY DECISIONS:
 1. Base62 encoding for short IDs (a-z, A-Z, 0-9)
 2. Cassandra for distributed storage
 3. Redis cache for hot URLs
-4. Async analytics logging
-```
+4. Asynchronous analytics logging
 
 ### Example 2: Chat System (Like WhatsApp)
 
+**Requirements**
+
+- 1-to-1 and group messaging
+- Delivered and read receipts
+- Offline message delivery
+- 1 billion messages per day
+
+**High-level design**
+
+```mermaid
+flowchart TB
+  LB["Load balancer"] --> W1["WebSocket server 1"]
+  LB --> W2["WebSocket server 2"]
+  LB --> WN["WebSocket server N"]
+  W1 & W2 & WN --> K[["Message broker<br/>Kafka"]]
+  K --> M["Message service"] --> CA[("Cassandra<br/>messages")]
+  K --> PR["Presence service"] --> RE[("Redis<br/>online status")]
+  K --> PU["Push service"] --> FC["FCM / APNs"]
 ```
-REQUIREMENTS:
-• 1-to-1 and group messaging
-• Delivered/Read receipts
-• Offline message delivery
-• 1 billion messages/day
 
-HIGH-LEVEL DESIGN:
+**How to read this diagram.** Clients connect to any WebSocket server through the load balancer. All servers publish to one broker, and three services consume from it: storage, presence and push notifications.
 
-                    ┌─────────────────────────────────────┐
-                    │           Load Balancer              │
-                    └─────────────────┬───────────────────┘
-                                      │
-         ┌────────────────────────────┼────────────────────────────┐
-         │                            │                            │
-    ┌────┴────┐                  ┌────┴────┐                  ┌────┴────┐
-    │WebSocket│                  │WebSocket│                  │WebSocket│
-    │ Server 1│                  │ Server 2│                  │ Server N│
-    └────┬────┘                  └────┬────┘                  └────┬────┘
-         │                            │                            │
-         └────────────────────────────┼────────────────────────────┘
-                                      │
-                              ┌───────┴───────┐
-                              │ Message Broker │
-                              │   (Kafka)      │
-                              └───────┬───────┘
-                                      │
-              ┌───────────────────────┼───────────────────────┐
-              │                       │                       │
-         ┌────┴────┐            ┌────┴────┐            ┌────┴────┐
-         │ Message │            │Presence │            │  Push   │
-         │ Service │            │ Service │            │ Service │
-         └────┬────┘            └────┬────┘            └────┬────┘
-              │                      │                      │
-              ▼                      ▼                      ▼
-         ┌─────────┐            ┌─────────┐            ┌─────────┐
-         │Cassandra│            │  Redis  │            │   FCM   │
-         │(Messages)│           │(Online) │            │  /APNs  │
-         └─────────┘            └─────────┘            └─────────┘
+**Message flow**
 
-MESSAGE FLOW:
-1. User A connects to WebSocket server
-2. Server registers user in Presence Service (Redis)
-3. User A sends message to User B
-4. Message goes to Kafka
-5. Message Service stores in Cassandra
-6. If B online: Route to B's WebSocket server
-7. If B offline: Push notification via FCM/APNs
-8. B receives and sends ACK
-9. Delivery receipt sent back to A
-```
+1. User A connects to a WebSocket server.
+2. The server registers A in the presence service (Redis).
+3. A sends a message to B.
+4. The message goes to Kafka.
+5. The message service stores it in Cassandra.
+6. If B is online, route it to B's WebSocket server.
+7. If B is offline, send a push notification through FCM or APNs.
+8. B receives it and sends an acknowledgement.
+9. A delivery receipt goes back to A.
 
 ---
 
