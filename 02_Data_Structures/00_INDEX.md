@@ -95,13 +95,21 @@ This section supports four distinct reading paths:
 
 ## Roadmap
 
+```mermaid
+flowchart TD
+    U["University Methodology (U1-U4)<br/>read first for rigor"]
+    C["Memory → Arrays → LinkedList → Stack/Queue → HashTable → Trees/Heaps"]
+    D["DS Internals → Variants → Collections → 2D Arrays → Advanced Deep Add-ons"]
+    U --> C --> D
+    classDef a fill:#e1d5f7,stroke:#6a1b9a,color:#111
+    classDef b fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef c fill:#ffd9b3,stroke:#e65100,color:#111
+    class U a
+    class C b
+    class D c
 ```
-🎓 University Methodology (U1–U4) ← read first for rigor
-    ↓
-Memory → Arrays → LinkedList → Stack/Queue → HashTable → Trees/Heaps
-    ↓
-DS Internals → Variants → Collections → 2D Arrays → Advanced Deep Add-ons
-```
+
+**How to read this diagram.** Read the university layer first, then the core chapters in order, then the depth chapters.
 
 ## Historical Note
 

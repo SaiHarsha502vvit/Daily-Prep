@@ -6,44 +6,44 @@
 
 ### 5W1H: Deep Understanding of Stack
 
+> [!NOTE]
+> **WHAT:** A Stack is a LIFO (Last In, First Out) data structure. Only the TOP element is accessible. Push/Pop are O(1).
+>
+> **WHY:** Many problems have a NESTING structure — what was opened LAST must be closed FIRST (parentheses, function calls, undo operations). LIFO naturally models this.
+>
+> **HOW THE JVM USES A STACK (Call Stack):** every Java thread has its own call stack. When you call a method, the JVM **pushes** a stack frame (see the diagram below). When the method returns, the JVM **pops** its frame. `StackOverflowError` = too many frames (infinite recursion). Default stack size: 512 KB – 1 MB per thread.
+>
+> **WHERE Stacks appear in production:**
+>
+> - JVM call stack (method invocation/return)
+> - Browser back button (pages pushed, back = pop)
+> - Ctrl+Z undo (actions pushed, undo = pop)
+> - Expression evaluation (postfix, infix conversion)
+> - DFS traversal (explicit or implicit via recursion)
+> - Compiler: syntax parsing, bracket matching
+>
+> **WHEN to use a Stack:**
+>
+> - ✅ Matching/nesting problems (brackets, HTML tags)
+> - ✅ Backtracking (maze solving, permutations)
+> - ✅ Converting recursion to iteration
+> - ✅ Monotonic problems (next greater element)
+> - ❌ When you need FIFO order (use Queue)
+> - ❌ When you need random access (use Array)
+
+```mermaid
+flowchart TB
+    M3["multiply() frame: a=5, b=10<br/>top (executing)"] --> M2["calculate() frame: x=5, y=10"] --> M1["main() frame: args, locals<br/>bottom"]
+    classDef top fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef mid fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef bot fill:#e0e0e0,stroke:#616161,color:#111
+    class M3 top
+    class M2 mid
+    class M1 bot
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: A Stack is a LIFO (Last In, First Out) data structure.        ║
-║        Only the TOP element is accessible. Push/Pop are O(1).        ║
-║                                                                      ║
-║  WHY:  Many problems have a NESTING structure — what was opened      ║
-║        LAST must be closed FIRST (parentheses, function calls,       ║
-║        undo operations). LIFO naturally models this.                 ║
-║                                                                      ║
-║  HOW THE JVM USES A STACK (Call Stack):                              ║
-║  Every Java THREAD has its own call stack.                           ║
-║  When you call a method, JVM PUSHES a stack frame:                   ║
-║  ┌─────────────────────────────────────────┐                         ║
-║  │ main()     frame: { args, locals }      │ ← bottom                ║
-║  │ calculate() frame: { x=5, y=10 }       │                          ║
-║  │ multiply()  frame: { a=5, b=10 }       │ ← top (executing)        ║
-║  └─────────────────────────────────────────┘                         ║
-║  When multiply() returns, JVM POPS its frame.                        ║
-║  StackOverflowError = too many frames (infinite recursion).          ║
-║  Default stack size: 512KB - 1MB per thread.                         ║
-║                                                                      ║
-║  WHERE Stacks appear in production:                                  ║
-║  • JVM call stack (method invocation/return)                         ║
-║  • Browser back button (pages pushed, back = pop)                    ║
-║  • Ctrl+Z undo (actions pushed, undo = pop)                          ║
-║  • Expression evaluation (postfix, infix conversion)                 ║
-║  • DFS traversal (explicit or implicit via recursion)                ║
-║  • Compiler: syntax parsing, bracket matching                        ║
-║                                                                      ║
-║  WHEN to use a Stack:                                                ║
-║  ✔ Matching/nesting problems (brackets, HTML tags)                   ║
-║  ✔ Backtracking (maze solving, permutations)                         ║
-║  ✔ Converting recursion to iteration                                 ║
-║  ✔ Monotonic problems (next greater element)                         ║
-║  ✘ When you need FIFO order (use Queue)                              ║
-║  ✘ When you need random access (use Array)                           ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+**How to read this diagram.** Frames are stacked in call order: `main()` at the bottom, `multiply()` on top because it is executing. Returning pops the top frame.
+
 
 ## ⚡ At a Glance — Stack & Queue
 
@@ -119,28 +119,25 @@ Before compilers and managed runtimes existed, programmers manually calculated r
 - 1990s: Managed runtimes needed safety (stack overflow detection) and memory isolation
 - 2010s-2020s: High-frequency trading and async programming exposed limits of OS-thread stacks → virtual threads and lock-free queues
 
+**Physical reality** — like a stack of plates:
+
+```mermaid
+flowchart TB
+    TOP(["TOP"]) --> V5["5<br/>Last In, First Out (LIFO)"]
+    V5 --- V4["4"] --- V3["3"] --- V2["2"] --- V1["1<br/>bottom"]
+    classDef top fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef item fill:#cfe8ff,stroke:#1565c0,color:#111
+    class V5 top
+    class V4,V3,V2,V1 item
 ```
-PHYSICAL REALITY - Like a stack of plates:
-┌────────────────────────────────────────────────────┐
-│                                                    │
-│   TOP →  ┌─────┐                                   │
-│          │  5  │  ← Last In, First Out (LIFO)      │
-│          ├─────┤                                   │
-│          │  4  │                                   │
-│          ├─────┤                                   │
-│          │  3  │                                   │
-│          ├─────┤                                   │
-│          │  2  │                                   │
-│          ├─────┤                                   │
-│          │  1  │                                   │
-│          └─────┘                                   │
-│                                                    │
-│   PUSH: Add to top                                 │
-│   POP: Remove from top                             │
-│   PEEK: Look at top without removing               │
-│                                                    │
-└────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Only the top plate (orange) can be touched.
+
+| Operation | Meaning |
+| --------- | ------- |
+| `push` | Add to top |
+| `pop` | Remove from top |
+| `peek` | Look at top without removing |
 
 ### Stack Operations
 
@@ -165,17 +162,16 @@ PHYSICAL REALITY - Like a stack of plates:
 
 **Solution — Call Stack:**
 
+```mermaid
+flowchart TB
+    C["C() addr  - top (current)"] --> B["B() addr"] --> A["A() addr"] --> M["main() addr"]
+    classDef top fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef rest fill:#cfe8ff,stroke:#1565c0,color:#111
+    class C top
+    class B,A,M rest
 ```
-┌─────────────┐
-│ C() addr    │ ← Top (current)
-├─────────────┤
-│ B() addr    │
-├─────────────┤
-│ A() addr    │
-├─────────────┤
-│ main() addr │
-└─────────────┘
-```
+
+**How to read this diagram.** Each method call pushes a frame; `C()` is running now, and returning pops back to `B()`.
 
 When `C()` returns → pop → go to `B()`. When `B()` returns → pop → go to `A()`.
 
@@ -271,40 +267,38 @@ public class MyLinkedStack {
 
 ### Problem: Valid Parentheses
 
-```
-REAL-WORLD ORIGIN: Compiler Design (1960s)
+**Real-world origin: compiler design (1960s).**
 
-PROBLEM AT MIT (1962):
-- Compilers need to parse code
-- Code has nested structures: if { while { } }
-- How to verify brackets match correctly?
+**Problem at MIT (1962):**
 
-BAD CODE:
-if (x > 0 {    // Missing )
+- Compilers need to parse code.
+- Code has nested structures: `if { while { } }`.
+- How do we verify that brackets match correctly?
+
+```java
+// BAD CODE
+if (x > 0 {      // Missing )
     while (y) }  // Wrong bracket
 }
-
-COMPILER NEEDS TO DETECT THIS!
-
-SOLUTION THINKING:
-1. "When I see '(', I expect ')' later"
-2. "When I see '{', I expect '}' later"
-3. "Most recent open bracket closes first"
-4. "That's LIFO - use a STACK!"
-
-ALGORITHM:
-- See '(' → push ')'
-- See '{' → push '}'
-- See ')' → pop, check if matches
-- End: stack should be empty
-
-NOW USED IN:
-- Every compiler (GCC, javac, clang)
-- Every IDE (syntax highlighting)
-- Every code editor (bracket matching)
-- HTML validators
-- JSON parsers
 ```
+
+The compiler needs to detect this!
+
+**Solution thinking:**
+
+1. "When I see `(`, I expect `)` later."
+2. "When I see `{`, I expect `}` later."
+3. "The most recent open bracket closes first."
+4. "That's LIFO: use a **stack**!"
+
+**Algorithm:**
+
+- See `(` → push `)`
+- See `{` → push `}`
+- See `)` or `}` → pop, check that it matches
+- At the end the stack should be empty
+
+**Now used in:** every compiler (GCC, javac, clang), every IDE (syntax highlighting), every code editor (bracket matching), HTML validators and JSON parsers.
 
 ---
 
@@ -314,43 +308,45 @@ NOW USED IN:
 This is the single most important connection in all of graph algorithms.
 Understanding it rewires how you think about every traversal problem.
 
+```mermaid
+flowchart TD
+    A((A)) --> B((B))
+    A --> C((C))
+    B --> D((D))
+    B --> E((E))
+    E --> F((F))
+    classDef n fill:#cfe8ff,stroke:#1565c0,color:#111
+    class A,B,C,D,E,F n
 ```
-STACK (LIFO)                          QUEUE (FIFO)
-════════════                          ════════════
-Explore the DEEPEST path first        Explore closest paths first
- ↓ Go deep, then backtrack             → Spread outward level by level
 
-        A                                      A
-       / \                                    / \
-      B   C       DFS visits:               B   C      BFS visits:
-     / \           A→B→D→E                / \          A→B→C
-    D   E          (backtrack)           D   E         →D→E→F
-         \         →C→F                      \         →done
-          F                                   F
+**How to read this diagram.** The same graph is explored two ways. A **stack** (DFS) goes deep first: `A → B → D → E → F` (backtrack) `→ C`. A **queue** (BFS) goes level by level: `A → B → C → D → E → F`.
 
-Stack holds:  [A, C, B, D, E, F]     Queue holds: [A, B, C, D, E, F]
-(push all,    process deepest first   (enqueue neighbors, process FIFO)
- pop = pick deepest unvisited)
+| | **Stack (LIFO) → DFS** | **Queue (FIFO) → BFS** |
+| --- | --- | --- |
+| Idea | Explore the **deepest** path first; go deep, then backtrack | Explore the **closest** nodes first; spread outward level by level |
+| Visit order | A → B → D → E → F → C | A → B → C → D → E → F |
+| Frontier holds | Pushed neighbours; pop = the node pushed **last** (deepest) | Enqueued neighbours; poll = the node enqueued **first** (same level) |
 
-WHY STACK = DFS:
-  - Push unvisited neighbors onto stack
-  - Pop = always picks the node pushed LAST (deepest path)
-  - Natural recursion = implicit stack (call stack = your explicit stack)
+**Why stack = DFS:**
 
-WHY QUEUE = BFS:
-  - Enqueue unvisited neighbors into queue
-  - Poll = always picks the node enqueued FIRST (earliest = same level)
-  - Level ordering = exploring in distance rings from source
-```
+- Push unvisited neighbours onto the stack.
+- Pop always picks the node pushed *last* (the deepest path).
+- Natural recursion is an implicit stack: the call stack is your explicit stack.
+
+**Why queue = BFS:**
+
+- Enqueue unvisited neighbours into the queue.
+- Poll always picks the node enqueued *first* (earliest = same level).
+- Level ordering means exploring in distance rings from the source.
 
 **The Decision Rule:**
 
-```
-NEED SHORTEST PATH (fewest hops)?  → BFS (Queue)
-NEED TO EXPLORE ALL POSSIBILITIES? → DFS (Stack/recursion)
-NEED TOPOLOGICAL ORDER?            → DFS postorder
-NEED LEVEL-BY-LEVEL OUTPUT?        → BFS (Queue)
-```
+| If you need... | Use |
+| -------------- | --- |
+| Shortest path (fewest hops) | BFS (queue) |
+| To explore all possibilities | DFS (stack / recursion) |
+| Topological order | DFS postorder |
+| Level-by-level output | BFS (queue) |
 
 💡 **Analogy — Lost in a Maze:**
 
@@ -379,34 +375,27 @@ Same complexity but different behavior: DFS explores ONE component completely us
 
 ### 5W1H: Deep Understanding of Queue
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: A Queue is a FIFO (First In, First Out) data structure.       ║
-║        Elements enter at the BACK and leave from the FRONT.          ║
-║                                                                      ║
-║  WHY:  We need a way to manage resources fairly or process data      ║
-║        in the exact order it arrived. LIFO (Stack) is unfair for     ║
-║        scheduling; FIFO guarantees order preservation.               ║
-║                                                                      ║
-║  WHO:  Systems programmers, backend engineers handling requests,     ║
-║        and algorithm designers implementing BFS.                     ║
-║                                                                      ║
-║  WHEN: Use when order of arrival strictly dictates order of process. ║
-║        ✔ Task scheduling (printer spoolers, CPU run queues)          ║
-║        ✔ Breadth-First Search (level-by-level traversal)             ║
-║        ✔ Asynchronous data transfer (IO buffers, pipes)              ║
-║        ✘ When you need LIFO (use Stack)                              ║
-║                                                                      ║
-║  WHERE Queues appear in production:                                  ║
-║  • Thread pools (waiting tasks)                                      ║
-║  • Message brokers (Kafka, RabbitMQ)                                 ║
-║  • Network routers (packet queuing)                                  ║
-║                                                                      ║
-║  HOW:  Usually implemented via a Circular Array (for strict memory   ║
-║        bounds and O(1) performance) or a Linked List (for unbounded  ║
-║        growth).                                                      ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** A Queue is a FIFO (First In, First Out) data structure. Elements enter at the BACK and leave from the FRONT.
+>
+> **WHY:** We need a way to manage resources fairly or process data in the exact order it arrived. LIFO (Stack) is unfair for scheduling; FIFO guarantees order preservation.
+>
+> **WHO:** Systems programmers, backend engineers handling requests, and algorithm designers implementing BFS.
+>
+> **WHEN:** Use when order of arrival strictly dictates order of process.
+>
+> - ✅ Task scheduling (printer spoolers, CPU run queues)
+> - ✅ Breadth-First Search (level-by-level traversal)
+> - ✅ Asynchronous data transfer (IO buffers, pipes)
+> - ❌ When you need LIFO (use Stack)
+>
+> **WHERE Queues appear in production:**
+>
+> - Thread pools (waiting tasks)
+> - Message brokers (Kafka, RabbitMQ)
+> - Network routers (packet queuing)
+>
+> **HOW:** Usually implemented via a Circular Array (for strict memory bounds and O(1) performance) or a Linked List (for unbounded growth).
 
 ## 🧬 Nature & Behavior
 
@@ -443,24 +432,23 @@ Before compilers and managed runtimes existed, programmers manually calculated r
 - 1990s: Managed runtimes needed safety (stack overflow detection) and memory isolation
 - 2010s-2020s: High-frequency trading and async programming exposed limits of OS-thread stacks → virtual threads and lock-free queues
 
+**Physical reality** — like a line at a store:
+
+```mermaid
+flowchart LR
+    OUT(["Dequeue<br/>(remove)"]) --- Q1["1<br/>FRONT"] --- Q2["2"] --- Q3["3"] --- Q4["4"] --- Q5["5<br/>BACK"] --- IN(["Enqueue<br/>(add)"])
+    classDef end1 fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef item fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef io fill:#e0e0e0,stroke:#616161,color:#111
+    class Q1,Q5 end1
+    class Q2,Q3,Q4 item
+    class OUT,IN io
 ```
-PHYSICAL REALITY - Like a line at a store:
-┌────────────────────────────────────────────────────┐
-│                                                    │
-│  FRONT                               BACK          │
-│    ↓                                  ↓            │
-│  ┌───┬───┬───┬───┬───┐                             │
-│  │ 1 │ 2 │ 3 │ 4 │ 5 │                             │
-│  └───┴───┴───┴───┴───┘                             │
-│    ↑                 ↑                             │
-│  Dequeue          Enqueue                          │
-│  (Remove)         (Add)                            │
-│                                                    │
-│  FIFO = First In, First Out                        │
-│  "First come, first served"                        │
-│                                                    │
-└────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Items leave from the front and join at the back.
+
+> [!NOTE]
+> **FIFO = First In, First Out** — "first come, first served".
 
 ### Queue Operations
 
@@ -494,15 +482,21 @@ PHYSICAL REALITY - Like a line at a store:
 
 **Solution — Print Queue:** Jobs added to back, printer takes from front. First submitted = first printed.
 
+**Print queue:**
+
+```mermaid
+flowchart LR
+    P(["Printing now"]) --> J1["Job1<br/>front"] --> J2["Job2"] --> J3["Job3"] --> J4["Job4<br/>back"]
+    NEW(["New jobs join here"]) --> J4
+    classDef cur fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef job fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef io fill:#fff3b0,stroke:#b58900,color:#111
+    class J1 cur
+    class J2,J3,J4 job
+    class P,NEW io
 ```
-PRINT QUEUE:
-┌────────────────────────────────────────┐
-│ Front                            Back  │
-│ [Job1] → [Job2] → [Job3] → [Job4]      │
-│   ↑                              ↑     │
-│ Printing                    New jobs   │
-└────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The job at the front is being printed; new jobs are added at the back (FIFO).
 
 ✅ **Now used in:** OS task scheduling, web server request handling, message queues (Kafka, RabbitMQ), BFS algorithm
 
@@ -903,18 +897,17 @@ For comparison, `fibonacci(5)` also has max depth 6, but makes **exponentially m
 
 ## 🧠 Pattern Fingerprint — Stack & Queue
 
-```
-SEE THESE WORDS → USE THIS:
-┌──────────────────────────────────────────────────────────────┐
-│ "matching brackets / nesting"     → Stack (LIFO natural)    │
-│ "next greater / smaller element"  → Monotonic Stack O(n)    │
-│ "largest rectangle in histogram"  → Monotonic Stack         │
-│ "BFS / level-by-level traversal"  → Queue                   │
-│ "sliding window maximum"          → Monotonic Deque O(n)    │
-│ "undo / redo"                     → Two Stacks              │
-│ "evaluate expression"             → Two Stacks (ops+vals)   │
-└──────────────────────────────────────────────────────────────┘
-```
+**See these words → use this technique:**
+
+| If the problem says... | Use |
+| ---------------------- | --- |
+| "matching brackets / nesting" | Stack (LIFO natural) |
+| "next greater / smaller element" | Monotonic Stack O(n) |
+| "largest rectangle in histogram" | Monotonic Stack |
+| "BFS / level-by-level traversal" | Queue |
+| "sliding window maximum" | Monotonic Deque O(n) |
+| "undo / redo" | Two Stacks |
+| "evaluate expression" | Two Stacks (ops+vals) |
 
 ### 🚀 GO LEARN — When You Need More
 
@@ -1012,12 +1005,12 @@ The circular buffer (ring buffer) is the canonical implementation; Q4 is the inv
 
 **Step 2 — Two reversals cancel.** Push `1, 2, 3` onto stack S1. S1 top-to-bottom: `[3, 2, 1]`. Now pour S1 into S2 by popping each element and pushing it:
 
-```
-S1: [3, 2, 1] (top → bottom)     S2: empty
-Pop 3 from S1, push to S2 →      S2: [3]
-Pop 2 from S1, push to S2 →      S2: [2, 3]
-Pop 1 from S1, push to S2 →      S2: [1, 2, 3]
-```
+| Action | S1 (top → bottom) | S2 |
+| ------ | ----------------- | -- |
+| Start | `[3, 2, 1]` | empty |
+| Pop 3 from S1, push to S2 | `[2, 1]` | `[3]` |
+| Pop 2 from S1, push to S2 | `[1]` | `[2, 3]` |
+| Pop 1 from S1, push to S2 | empty | `[1, 2, 3]` |
 
 S2's top-to-bottom order is `[1, 2, 3]` — FIFO! The first reversal (push to S1) inverted the order; the second reversal (pour to S2) inverted it back. Two negations = identity.
 
@@ -1239,31 +1232,35 @@ for (int i = 0; i < n; i++) {
 
 ### Decision Tree
 
+```mermaid
+flowchart TD
+    Q0{"problem requires LIFO order?"}
+    Q1{"problem requires FIFO order?"}
+    Q2{"bounded capacity (fixed size)?"}
+    Q3{"priority-based ordering (smallest/largest first)?"}
+    Q4{"thread-safe required?"}
+    Q5{"need to remove arbitrary element?"}
+    Q0 -- YES --> A1["Stack"]
+    Q0 -- NO --> Q1
+    Q1 -- YES --> Q2
+    Q1 -- NO --> A2["consider Deque (double-ended)"]
+    Q2 -- YES --> A3["ArrayDeque or bounded ArrayBlockingQueue"]
+    Q2 -- NO --> A4["linked-list-based Queue (no overflow risk)"]
+    Q3 -- YES --> A5["PriorityQueue (binary heap) — see 01f_Trees_Heaps.md"]
+    Q3 -- NO --> Q4
+    Q4 -- YES --> A6["ArrayBlockingQueue, ConcurrentLinkedQueue, LinkedBlockingDeque"]
+    Q4 -- NO --> A7["ArrayDeque (faster, no synchronization overhead)"]
+    Q5 -- YES --> A8["Deque or PriorityQueue (not Stack or Queue)"]
+    Q5 -- NO --> A9["Stack or Queue"]
+    A4 -. "then decide" .-> Q3
+    A7 -. "then decide" .-> Q5
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3,Q4,Q5 ask
+    class A1,A2,A3,A4,A5,A6,A7,A8,A9 ans
 ```
-problem requires LIFO order?
-  → YES → Stack
-  → NO → continue
 
-problem requires FIFO order?
-  → YES → continue
-  → NO → consider Deque (double-ended)
-
-bounded capacity (fixed size)?
-  → YES → ArrayDeque or bounded ArrayBlockingQueue
-  → NO → linked-list-based Queue (no overflow risk)
-
-priority-based ordering (smallest/largest first)?
-  → YES → PriorityQueue (binary heap) — see 01f_Trees_Heaps.md
-  → NO → continue
-
-thread-safe required?
-  → YES → ArrayBlockingQueue, ConcurrentLinkedQueue, LinkedBlockingDeque
-  → NO → ArrayDeque (faster, no synchronization overhead)
-
-need to remove arbitrary element?
-  → YES → Deque or PriorityQueue (not Stack or Queue)
-  → NO → Stack or Queue
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 ### Decision Table
 

@@ -110,43 +110,26 @@ The LRU example is a fourth, special case: **two structures each satisfy a disjo
 
 This is the procedure. Follow it in order; the ordering is load-bearing.
 
+```mermaid
+flowchart TD
+    S1["1. SPECIFY<br/>Write the operation-contract table.<br/>Every operation, its frequency, its required cost."]
+    S2["2. LOCATE<br/>Find the closest existing structure.<br/>Name the EXACT row it fails and WHY."]
+    S3["3. CLASSIFY<br/>Missing info? Wrong cost lumps? Impossible?<br/>Picks your tool (§3-§8)"]
+    S4["4. STATE INVARIANTS<br/>What must be true of the structure at rest, ALWAYS?<br/>Write them before any code (§4)"]
+    S5["5. DESIGN OPERATIONS<br/>For each op: how does it preserve every invariant?<br/>If it cannot cheaply, the invariant is wrong."]
+    S6["6. PROVE<br/>Correctness: invariants hold after every op.<br/>Complexity: potential function or aggregate argument."]
+    S7["7. ATTACK<br/>Build the adversarial input. What sequence of ops<br/>makes your structure degenerate? (§11)"]
+    S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7
+    S5 -. "invariant is wrong" .-> S4
+    classDef a fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef b fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef c fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class S1,S2,S3 a
+    class S4,S5 b
+    class S6,S7 c
 ```
-┌─ 1. SPECIFY ─────────────────────────────────────────────┐
-│  Write the operation-contract table.                     │
-│  Every operation, its frequency, its required cost.      │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 2. LOCATE ──────────────────────────────────────────────┐
-│  Find the closest existing structure.                    │
-│  Name the EXACT row it fails and WHY.                    │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 3. CLASSIFY ────────────────────────────────────────────┐
-│  Missing info? Wrong cost lumps? Impossible?             │
-│  → picks your tool (§3–§8)                               │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 4. STATE INVARIANTS ────────────────────────────────────┐
-│  What must be true of the structure at rest, ALWAYS?     │
-│  Write them before you write any code. (§4)              │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 5. DESIGN OPERATIONS ───────────────────────────────────┐
-│  For each op: how does it preserve every invariant?      │
-│  An op that cannot preserve an invariant cheaply         │
-│  means the invariant is wrong — go back to 4.            │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 6. PROVE ───────────────────────────────────────────────┐
-│  Correctness: invariants hold after every op.            │
-│  Complexity: potential function or aggregate argument.   │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 7. ATTACK ──────────────────────────────────────────────┐
-│  Build the adversarial input. What sequence of ops       │
-│  makes your structure degenerate? (§11)                  │
-└──────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Follow the seven steps top to bottom. The dotted arrow is the loop-back: if an operation cannot preserve an invariant cheaply, the invariant (not the operation) is what you should revisit.
 
 **Step 5 is where most designs die, and it dies productively.** When you find that an operation cannot cheaply restore an invariant, you have not failed — you have learned that your invariant was too strong. Weaken it and continue. Red-Black trees exist precisely because AVL's invariant (heights differ by ≤ 1) is too strong to maintain cheaply under deletion; relaxing it to "no red node has a red child, and all root-to-leaf paths have equal black-height" buys cheaper rebalancing at the cost of slightly worse balance. That is step 5 producing a new structure.
 

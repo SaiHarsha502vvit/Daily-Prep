@@ -159,22 +159,13 @@ If Φ(D_0) = 0 and Φ(D_i) ≥ 0 for all i, then:
 2. Non-negative in all states
 3. Decrease by at most the actual cost of expensive ops (so the amortized cost bound is tight)
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│  Decision guide: which method?                                       │
-│                                                                      │
-│  Can you sum total costs directly? (geometric series, known freq)    │
-│    → Aggregate method                                               │
-│                                                                      │
-│  Can you assign per-element credits that cover future work?          │
-│    → Accounting method                                              │
-│                                                                      │
-│  Can you define a global "energy" of the structure that:            │
-│    - Increases on cheap operations (storing work for the future)    │
-│    - Decreases on expensive operations (spending stored energy)     │
-│    → Potential method                                               │
-└──────────────────────────────────────────────────────────────────────┘
-```
+**Decision guide: which method?**
+
+| Question | Method |
+| -------- | ------ |
+| Can you sum the total costs directly (geometric series, known frequencies)? | **Aggregate** method |
+| Can you assign per-element credits that cover future work? | **Accounting** method |
+| Can you define a global "energy" of the structure that increases on cheap operations (storing work for the future) and decreases on expensive operations (spending stored energy)? | **Potential** method |
 
 ---
 
@@ -215,15 +206,16 @@ Total insert cost (the O(1) part, n times): n
 ### Verification
 
 Let n = 16. Resizes at sizes: 1, 2, 4, 8.
-```
-Resize at size=1:  copy 1 element  → cost 1
-Resize at size=2:  copy 2 elements → cost 2
-Resize at size=4:  copy 4 elements → cost 4
-Resize at size=8:  copy 8 elements → cost 8
-Total resize: 1+2+4+8 = 15 = 2·8 − 1 = 2n − 1 ✓
-Total insert (16 O(1) operations): 16
-Total: 31. Amortized: 31/16 ≈ 1.94 → O(1) ✓
-```
+| Resize at size | Elements copied | Cost |
+| -------------- | --------------- | ---- |
+| 1 | 1 | 1 |
+| 2 | 2 | 2 |
+| 4 | 4 | 4 |
+| 8 | 8 | 8 |
+| **Total** | | 1+2+4+8 = 15 = 2·8 − 1 = **2n − 1** ✓ |
+
+- Total insert cost (16 O(1) operations): 16
+- Total: 31. Amortized: 31/16 ≈ 1.94 → **O(1)** ✓
 
 **Why doubling (not +1)?** If capacity grew by +1 each time, there would be n resizes costing 1+2+3+...+n = Θ(n²) total, giving O(n) amortized per op. Doubling makes the geometric series converge, converting Θ(n²) total into Θ(n).
 
@@ -290,15 +282,16 @@ you cannot pop an element that was never pushed.
 
 Sequence: push(a), push(b), push(c), multipop(5)
 
-```
-Step 1: push(a)      actual=1, charged=2,    credit: [a]→1   balance=1
-Step 2: push(b)      actual=1, charged=2,    credit: [a]→1,[b]→1  balance=2
-Step 3: push(c)      actual=1, charged=2,    credit: [a]→1,[b]→1,[c]→1  balance=3
-Step 4: multipop(5)  actual=3 (3 elements), charged=0,  credit used=3, balance=0
-Total charged: 2+2+2+0 = 6
-Total actual: 1+1+1+3 = 6
-Amortized per op: 6/4 = 1.5 = O(1) ✓
-```
+| Step | Operation | Actual | Charged | Credit on stack | Balance |
+| ---- | --------- | ------ | ------- | --------------- | ------- |
+| 1 | `push(a)` | 1 | 2 | a→1 | 1 |
+| 2 | `push(b)` | 1 | 2 | a→1, b→1 | 2 |
+| 3 | `push(c)` | 1 | 2 | a→1, b→1, c→1 | 3 |
+| 4 | `multipop(5)` (pops 3 elements) | 3 | 0 | credits used: 3 | 0 |
+
+- Total charged: 2+2+2+0 = 6
+- Total actual: 1+1+1+3 = 6
+- Amortized per operation: 6/4 = 1.5 = **O(1)** ✓
 
 ---
 
@@ -343,26 +336,16 @@ Amortized cost per increment: `O(n)/n = O(1)` ✓
 
 ### Verification for Key Sequences
 
-```
-Counter: 000 → 001 → 010 → 011 → 100
-         0    1    2     3     4
-Φ values: 0    1    1    2     1
+Counting 000 → 001 → 010 → 011 → 100, with Φ = number of 1-bits:
 
-Increment 0→1: c=1, ΔΦ=1, â=2
-Increment 1→2: c=2, ΔΦ=-1, â=1
-Increment 2→3: c=1, ΔΦ=1, â=2
-Increment 3→4: c=3, ΔΦ=-2, â=1
+| Increment | Bit pattern | c (bits flipped) | Φ before → after | ΔΦ | â = c + ΔΦ |
+| --------- | ----------- | ---------------- | ---------------- | -- | ---------- |
+| 0 → 1 | 000 → 001 | 1 | 0 → 1 | +1 | 2 |
+| 1 → 2 | 001 → 010 | 2 | 1 → 1 | 0 | 2 |
+| 2 → 3 | 010 → 011 | 1 | 1 → 2 | +1 | 2 |
+| 3 → 4 | 011 → 100 | 3 | 2 → 1 | −1 | 2 |
 
-Sum of â: 2+1+2+1 = 6
-Actual: 1+2+1+3 = 7   (accounting for the last flip correctly)
-Wait: actual cost of 3→4: bits flipped = 3 (011→100: flip positions 0,1,2)
-â=2, so 2+1+2+1 = 6 ≥ 7? No. Let me re-verify.
-
-3 = 011: rightmost k=2 trailing 1s. c = 2+1 = 3. ΔΦ = 1-2 = -1. â = 3-1 = 2. ✓
-4 = 100: 1 bit set. Φ=1.
-
-Sum â = 2+2+2+2 = 8 ≥ Σc = 1+2+1+3 = 7. ✓ Bound holds.
-```
+Σ c = 1+2+1+3 = **7** (actual cost), Σ â = 2+2+2+2 = **8** ≥ 7 ✓. The bound holds, and every increment is charged exactly 2.
 
 **Important**: The amortized cost bound is **O(1)** — not necessarily 2. For larger sequences, k can be up to log₂ n, but `â = 2` always holds by the algebra above. The bound is tight because a counter at 0 has `â = 2` (k = 0 trailing 1s: c=1, ΔΦ=+1, â=2).
 
@@ -549,21 +532,35 @@ Two rotation patterns:
 - **Zig-zig**: x and its parent are both left-children (or both right-children). Rotate the parent, then rotate x. This is the counterintuitive case — two rotations in the same direction.
 - **Zig-zag**: x is a left-child, parent is a right-child (or vice versa). Rotate x, then rotate x again. Two rotations in opposite directions.
 
+```mermaid
+flowchart LR
+    subgraph ZZB["Zig-zig - before"]
+        direction TB
+        g1((g)) --> p1((p)) --> x1((x))
+    end
+    subgraph ZZA["Zig-zig - after"]
+        direction TB
+        x2((x)) --> p2((p)) --> g2((g))
+    end
+    subgraph ZGB["Zig-zag - before"]
+        direction TB
+        g3((g)) --> p3((p))
+        p3 --> x3((x))
+    end
+    subgraph ZGA["Zig-zag - after"]
+        direction TB
+        x4((x)) --> p4((p))
+        x4 --> g4((g))
+    end
+    ZZB ==> ZZA
+    ZGB ==> ZGA
+    classDef x fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef n fill:#cfe8ff,stroke:#1565c0,color:#111
+    class x1,x2,x3,x4 x
+    class g1,p1,g2,p2,g3,p3,g4,p4 n
 ```
-Zig-zig:              Zig-zag:
-    g                     g
-   /                     / \
-  p        →           p    x
- / \                     |
-x   ...                 ...
 
-After:                   After:
-    x                     x
-   / \                   / \
-  g   p                 p   g
-     / \               / \
-   ...                 ...
-```
+**How to read this diagram.** The accessed node `x` (orange) is rotated up two levels. In **zig-zig** (x and p are children on the same side) the chain `g → p → x` is reversed to `x → p → g`. In **zig-zag** (x and p are on opposite sides) `x` becomes the root with `p` and `g` as its two children.
 
 ### The Access Lemma
 
@@ -687,34 +684,24 @@ Many production implementations address this:
 
 ### 7.4 Space-Time Tradeoffs
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│  More space → Less time:                                            │
-│  • Hash table: O(1) time, O(n) space (with O(n/m) load factor)     │
-│  • Memoization: O(n) space, O(n) time instead of O(2^n)             │
-│  • Bitmap index: O(n/8) space, O(1) bit-test instead of O(n) scan   │
-│                                                                      │
-│  Less space → More time:                                            │
-│  • Trie (compact): O(Σ|key|) space, O(|key|) lookup                 │
-│  • Bloom filter: O(n/m) space, O(k) lookup, probabilistic           │
-│  • Bit-sampled array: O(1) extra space, O(n) worst-case search      │
-└──────────────────────────────────────────────────────────────────────┘
-```
+| Trade-off | Example | Space / time |
+| --------- | ------- | ------------ |
+| **More space → less time** | Hash table | O(1) time, O(n) space (load factor n/m) |
+| | Memoization | O(n) space, O(n) time instead of O(2ⁿ) |
+| | Bitmap index | O(n/8) space, O(1) bit-test instead of an O(n) scan |
+| **Less space → more time** | Trie (compact) | O(Σ\|key\|) space, O(\|key\|) lookup |
+| | Bloom filter | Space proportional to a small number of bits per element, O(k) lookup, probabilistic |
+| | Bit-sampled array | O(1) extra space, O(n) worst-case search |
 
 ### 7.5 Recursive Data Structures — Call Stack Space
 
 For recursive DS implementations (tree traversals, recursive sorts), the call stack uses **O(depth)** space:
 
-```
-BST search:    depth ≤ h  →  O(h) space, h = O(log n) for balanced, O(n) for degenerate
-DFS on graph:  depth ≤ n  →  O(n) space  (stack overflow risk for n > 10^5 on JVM)
-Merge sort:    depth = log n  →  O(log n) stack space (auxiliary array is O(n) heap)
-
-Fibonacci recursive: T(n) = T(n-1) + T(n-2)
-  Call tree depth = n → O(n) stack space
-  For n=50,000: stack overflow on default JVM (512KB stack)
-  Fix: iterative or memoized DP → O(n) heap, O(1) stack
-```
+| Algorithm | Recursion depth | Stack space |
+| --------- | --------------- | ----------- |
+| BST search | depth ≤ h | O(h): h = O(log n) for balanced, O(n) for degenerate |
+| DFS on a graph | depth ≤ n | O(n) (stack-overflow risk for n > 10⁵ on the JVM) |
+| Merge sort | depth = log n | O(log n) stack space (the auxiliary array is O(n) heap) |
 
 ---
 
@@ -929,32 +916,15 @@ Explain why the cascade must stop after O(log n) cuts (the **rank bound lemma**)
 
 ## Summary
 
-```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│  Data Structure     │ Amortized Method │ Potential / Key Idea               │
-├─────────────────────┼──────────────────┼────────────────────────────────────┤
-│  Dynamic Array      │ Aggregate        │ Σ 2^i geometric series = O(n)      │
-│  (doubling)         │ (Section 3)      │                                    │
-├─────────────────────┼──────────────────┼────────────────────────────────────┤
-│  Stack+Multipop     │ Accounting       │ Each element carries 1 credit      │
-│                     │ (Section 4)      │ → Pay for future pop               │
-├─────────────────────┼──────────────────┼────────────────────────────────────┤
-│  Binary Counter     │ Potential        │ Φ = # 1-bits                       │
-│                     │ (Section 5)      │ â = c + ΔΦ = 2 always              │
-├─────────────────────┼──────────────────┼────────────────────────────────────┤
-│  Hash Table         │ Aggregate        │ Resize at n, 2n, 4n, ...           │
-│  (doubling)         │ (Section 6.3)    │ Σ n_i ≤ 2n total                   │
-├─────────────────────┼──────────────────┼────────────────────────────────────┤
-│  Union-Find         │ Potential        │ Track rank + path length           │
-│  (Tarjan)           │ (Section 6.4)    │ α(n) = inverse Ackermann ≤ 4       │
-├─────────────────────┼──────────────────┼────────────────────────────────────┤
-│  Splay Tree         │ Potential        │ Φ = Σ size(v)·log size(v)          │
-│  (Sleator-Tarjan)   │ (Section 6.5)    │ Access lemma: Σ log size ≤ 3·log n │
-├─────────────────────┼──────────────────┼────────────────────────────────────┤
-│  Fibonacci Heap     │ Potential        │ Φ = 2·(#roots) + Σ degree·rank     │
-│                     │ (Section 6.6)    │ Cascading cuts → rank bound O(log n)│
-└─────────────────────┴──────────────────┴────────────────────────────────────┘
-```
+| Data Structure | Amortized method | Potential / key idea |
+| -------------- | ---------------- | -------------------- |
+| Dynamic array (doubling) | Aggregate (Section 3) | Σ 2^i geometric series = O(n) |
+| Stack + multipop | Accounting (Section 4) | Each element carries 1 credit → pays for a future pop |
+| Binary counter | Potential (Section 5) | Φ = number of 1-bits; â = c + ΔΦ = 2 always |
+| Hash table (doubling) | Aggregate (Section 6.3) | Resize at n, 2n, 4n, ...; Σ nᵢ ≤ 2n total |
+| Union-Find (Tarjan) | Potential (Section 6.4) | Track rank + path length; α(n) = inverse Ackermann ≤ 4 |
+| Splay tree (Sleator-Tarjan) | Potential (Section 6.5) | Φ = Σ size(v)·log size(v); access lemma: Σ log size ≤ 3·log n |
+| Fibonacci heap | Potential (Section 6.6) | Φ = 2·(#roots) + Σ degree·rank; cascading cuts → rank bound O(log n) |
 
 > **Key theorem to remember**: For any mutable data structure where expensive operations are **triggered by** cheap ones and are **bounded in frequency**, amortized analysis converts O(n) worst-case into O(1) average-per-operation. The three methods — aggregate, accounting, potential — are different proof styles for the same underlying truth.
 

@@ -270,15 +270,21 @@ A treap node stores (key, priority, left, right). The structure satisfies two in
 
 **Invariant (Treap — Heap by priority)**: For every node, the node's priority is the minimum (for min-heap variant) of all priorities in its subtree.
 
-```text
-Treap example with keys {3,7,1,5,9} and random priorities:
+**Treap example** with keys `{3,7,1,5,9}` and random priorities:
 
-        5 (p=0.1)          ← root: smallest priority
-       / \
-      3   7 (p=0.3)        BST by key, heap by priority simultaneously
-     /     \
-    1       9              All priorities obey heap property
+```mermaid
+flowchart TD
+    k5["key 5<br/>p = 0.1<br/>root: smallest priority"] --> k3["key 3"]
+    k5 --> k7["key 7<br/>p = 0.3"]
+    k3 --> k1["key 1"]
+    k7 --> k9["key 9"]
+    classDef root fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class k5 root
+    class k3,k7,k1,k9 node
 ```
+
+**How to read this diagram.** The tree is a BST by key and, at the same time, a heap by priority: every node's priority is smaller than its children's (min-heap), so the smallest priority sits at the root.
 
 ### Why Expected Height is O(log n)
 
@@ -641,14 +647,16 @@ Cuckoo hashing excels in **write-heavy, latency-critical** workloads where consi
 
 The Count-Min sketch is a d × w array of counters. It uses d pairwise-independent hash functions h₁...h_d: U → {1...w}.
 
-```text
-            w columns
-    ┌────────────────────┐
-    │  c[1,1]  c[1,2] ... │  ← d rows (one per hash function)
-d   │  c[2,1]  c[2,2] ... │
-    │    ...        ...  │
-    └────────────────────┘
+**Count-Min sketch layout:** a `d × w` grid of counters, one row per hash function.
 
+| | col 1 | col 2 | ... | col w |
+| --- | --- | --- | --- | --- |
+| row 1 (hash h₁) | c[1,1] | c[1,2] | ... | c[1,w] |
+| row 2 (hash h₂) | c[2,1] | c[2,2] | ... | c[2,w] |
+| ... | ... | ... | ... | ... |
+| row d (hash h_d) | c[d,1] | c[d,2] | ... | c[d,w] |
+
+```text
 Update(x, delta):
     for i in 1..d:
         c[i][ h_i(x) ] += delta
@@ -865,21 +873,24 @@ This is catastrophic in practice: a single server failure cascades into total ca
 
 Map both servers and keys onto a circular ring of hash values [0, 2^32-1). Each key is stored on the next server clockwise on the ring:
 
-```text
-Ring (clockwise):
-   [Server C: hash=0x8...]
-         ↑
-    Key 1 (0x0...) routes here
-         |
-         ↓
-   [Server A: hash=0x2...] ← Key 3 routes here
-         ↑                        ↓
-         |                    [Server D: hash=0x5...]
-    Key 2 (0x1...)               ↑
-         |                        ↓
-         ↓                   [Server B: hash=0x9...]
-   (wraps around)
+```mermaid
+flowchart TB
+    subgraph RING["Hash ring, clockwise from 0x0"]
+        direction LR
+        A["Server A<br/>hash 0x2..."] --> D["Server D<br/>hash 0x5..."] --> C["Server C<br/>hash 0x8..."] --> B["Server B<br/>hash 0x9..."]
+        B -. "wraps around" .-> A
+    end
+    K1(["Key 1<br/>hash 0x0..."]) -- "first node clockwise" --> A
+    K2(["Key 2<br/>hash 0x1..."]) -- "first node clockwise" --> A
+    K3(["Key 3<br/>hash 0x6..."]) -- "first node clockwise" --> C
+    K4(["Key 4<br/>hash 0xA..."]) -- "wraps to the start" --> A
+    classDef srv fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef key fill:#fff3b0,stroke:#b58900,color:#111
+    class A,B,C,D srv
+    class K1,K2,K3,K4 key
 ```
+
+**How to read this diagram.** Servers and keys are hashed onto the same ring. Each key is served by the first server found going clockwise from its position (wrapping past the end). Adding or removing one server only moves the keys between it and its neighbour.
 
 **Invariant (Consistent Hashing)**: For any key k, it maps to the first node on the ring encountered by moving clockwise from hash(k).
 
@@ -1102,15 +1113,14 @@ Cassandra stores data in Sorted String Tables (SSTables), immutable files on dis
 
 **Scale**: Cassandra typically stores billions of keys per node. Each SSTable has a ~1-4 MB Bloom filter. With 4 bits per element and 1% false positive rate, the filter saves thousands of disk seeks per query for absent keys.
 
-```
-Query pattern:
-  Key present:  Bloom → YES → ~1 disk seek (found)
-  Key absent:   Bloom → YES → ~1 disk seek (false positive, not found)
-                Bloom → NO  → 0 disk seeks (definitely absent)
+| Query | Bloom filter says | Disk seeks | Meaning |
+| ----- | ----------------- | ---------- | ------- |
+| Key present | YES | ~1 | found |
+| Key absent | YES (false positive) | ~1 | not found |
+| Key absent | NO | 0 | definitely absent |
 
-Without bloom filter: ~50-100 disk seeks per absent key query (check all SSTables)
-With bloom filter:    ~1 disk seek per absent key query
-```
+- **Without** a Bloom filter: ~50–100 disk seeks per absent-key query (check all SSTables).
+- **With** a Bloom filter: ~1 disk seek per absent-key query.
 
 ### Chrome Safe Browsing — Client-Side Bloom Filter
 
@@ -1181,35 +1191,40 @@ A single `PFCOUNT` on 1 million unique visitors uses ~12 KB of memory with ±2% 
 
 ### Decision Framework
 
+```mermaid
+flowchart TD
+    Q0{"Need exact answers?"}
+    Q0 -- YES --> A0["Deterministic DS<br/>hash table, BST, trie"]
+    Q0 -- NO --> Q1{"Adversarial inputs?"}
+    Q1 -- YES --> A1["Randomized DS<br/>skip list, treap, universal hashing"]
+    Q1 -- NO --> A1b["Either; randomized may still be simpler"]
+    A1b -.-> Q2
+    Q2{"Need worst-case guarantees<br/>(not just expected)?"}
+    Q2 -- YES --> A2["Cuckoo hashing O(1) worst-case lookup,<br/>or Red-Black tree"]
+    Q2 -- NO --> A2b["Skip list, treap, Bloom filter"]
+    A2b -.-> Q3
+    Q3{"Membership with zero<br/>false negatives?"}
+    Q3 -- YES --> A3["Bloom filter<br/>(false positives only)"]
+    Q3 -- NO --> A3b["Any approximate structure"]
+    A3b -.-> Q4
+    Q4{"Working with streams?"}
+    Q4 -- YES --> A4["Count-Min sketch (frequencies),<br/>HyperLogLog (cardinality)"]
+    Q4 -- NO --> A4b["Batch DS: treap, skip list"]
+    A4b -.-> Q5
+    Q5{"Distributed system?"}
+    Q5 -- YES --> A5["Consistent hashing (partitioning),<br/>HyperLogLog (cardinality)"]
+    Q5 -- NO --> A5b["Any"]
+    A5b -.-> Q6
+    Q6{"Need deletions?"}
+    Q6 -- YES --> A6["Cuckoo filter, Counting Bloom filter,<br/>skip list, treap"]
+    Q6 -- NO --> A6b["Standard Bloom filter<br/>(more space-efficient)"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3,Q4,Q5,Q6 ask
+    class A0,A1,A1b,A2,A2b,A3,A3b,A4,A4b,A5,A5b,A6,A6b ans
 ```
-Need exact answers?
-  YES → Deterministic DS (hash table, BST, trie)
-  NO  → Continue...
 
-Need to handle adversarial inputs?
-  YES → Randomized DS (skip list, treap, universal hashing)
-  NO  → Either, but randomized DS may still be simpler
-
-Need worst-case guarantees (not just expected)?
-  YES → Cuckoo hashing (O(1) worst-case lookup), Red-Black tree
-  NO  → Skip list, treap, Bloom filter
-
-Need membership testing with zero false negatives?
-  YES → Bloom filter (false positives only)
-  NO  → Any approximate structure
-
-Working with streams?
-  YES → Count-Min sketch (frequencies), HyperLogLog (cardinality)
-  NO  → Batch DS (treap, skip list)
-
-Distributed system?
-  YES → Consistent hashing (partitioning), HyperLogLog (cardinality)
-  NO  → Any
-
-Need deletions?
-  YES → Cuckoo filter, Counting Bloom filter, skip list, treap
-  NO  → Standard Bloom filter (more space-efficient)
-```
+**How to read this diagram.** Work down the blue questions; each green box is the suggested structure for that constraint. Dotted arrows mean "now ask the next question too".
 
 ### Complexity Comparison Table
 

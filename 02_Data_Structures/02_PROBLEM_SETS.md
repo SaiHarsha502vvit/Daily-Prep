@@ -715,21 +715,30 @@ This catalog maps every problem type in this file to its canonical solution appr
 
 ### Mental Model: Problem Classification Decision Tree
 
+```mermaid
+flowchart TD
+    Q1{"Is the input sorted<br/>or sortable?"}
+    Q1 -- YES --> Q2{"Can I use<br/>two pointers?<br/>(two-sum, merge, palindrome)"}
+    Q2 -- "YES (sorted)" --> S1["O(n) two-pointer solution"]
+    Q2 -- "NO (need hash lookup)" --> S2["O(n) hashmap solution"]
+    Q1 -- NO --> Q3{"Contiguous<br/>subarray?"}
+    Q3 -- YES --> S3["Kadane's algorithm<br/>O(n) time, O(1) space"]
+    Q3 -- NO --> Q4{"'Next greater /<br/>smaller'?"}
+    Q4 -- YES --> S4["Monotonic stack<br/>O(n) time, O(n) space"]
+    Q4 -- NO --> Q5{"Caching /<br/>eviction?"}
+    Q5 -- YES --> S5["HashMap + DoublyLinkedList<br/>O(1) all operations"]
+    Q5 -- NO --> Q6{"Involves cycles?"}
+    Q6 -- YES --> S6["Floyd's tortoise and hare<br/>O(1) space"]
+    Q6 -- NO --> S7["Fall back to brute force,<br/>then optimize"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef fb fill:#fff3b0,stroke:#b58900,color:#111
+    class Q1,Q2,Q3,Q4,Q5,Q6 ask
+    class S1,S2,S3,S4,S5,S6 ans
+    class S7 fb
 ```
-Is the input sorted or sortable?
-├─ YES → Can I use two pointers? (two-sum, merge, palindrome)
-│         ├─ YES (sorted, two pointers) → O(n) solution
-│         └─ NO (need hash lookup) → O(n) hashmap solution
-└─ NO → Is the problem about a contiguous subarray?
-          ├─ YES → Kadane's algorithm (O(n), O(1) space)
-          └─ NO → Is it about "next greater/smaller"?
-                    ├─ YES → Monotonic stack (O(n), O(n) space)
-                    └─ NO → Is it about caching / eviction?
-                              ├─ YES → HashMap + DoublyLinkedList (O(1) all ops)
-                              └─ NO → Does it involve cycles?
-                                        ├─ YES → Floyd's tortoise and hare (O(1) space)
-                                        └─ NO → Fall back to brute force + optimize
-```
+
+**How to read this diagram.** Answer each blue question in turn; the first "yes" gives the green technique to try. Yellow is the fallback when nothing matches.
 
 ### Cross-Reference to Algorithms Problem Sets
 

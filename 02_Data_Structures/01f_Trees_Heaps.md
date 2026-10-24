@@ -6,31 +6,22 @@
 
 ### 5W1H: Deep Understanding of Trees
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: A Tree is a hierarchical data structure consisting of nodes   ║
-║        connected by edges, starting from a single root node.         ║
-║                                                                      ║
-║  WHY:  Linear structures (arrays, lists) only represent sequences.   ║
-║        Trees represent hierarchies (parent-child). Furthermore,      ║
-║        balanced trees enable O(log N) operations by eliminating      ║
-║        half the remaining search space at every step.                ║
-║                                                                      ║
-║  WHO:  Engineers working with databases, file systems, compilers,    ║
-║        and DOM rendering (browsers).                                 ║
-║                                                                      ║
-║  WHEN: Use when data has natural hierarchy or requires sorted access.║
-║        ✔ HTML DOM / File Systems (general trees)                     ║
-║        ✔ Databases (B-Trees)                                         ║
-║        ✔ Autocomplete / dictionaries (Tries)                         ║
-║        ✔ Priority Queues (Heaps)                                     ║
-║        ✘ When you need O(1) exact match lookup (use HashMap)         ║
-║                                                                      ║
-║  HOW:  Pointers! A node contains data and references (left, right)   ║
-║        to its children. Operations often use recursion (DFS) or a    ║
-║        queue (BFS) to traverse the structure.                        ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** A Tree is a hierarchical data structure consisting of nodes connected by edges, starting from a single root node.
+>
+> **WHY:** Linear structures (arrays, lists) only represent sequences. Trees represent hierarchies (parent-child). Furthermore, balanced trees enable O(log N) operations by eliminating half the remaining search space at every step.
+>
+> **WHO:** Engineers working with databases, file systems, compilers, and DOM rendering (browsers).
+>
+> **WHEN:** Use when data has natural hierarchy or requires sorted access.
+>
+> - ✅ HTML DOM / File Systems (general trees)
+> - ✅ Databases (B-Trees)
+> - ✅ Autocomplete / dictionaries (Tries)
+> - ✅ Priority Queues (Heaps)
+> - ❌ When you need O(1) exact match lookup (use HashMap)
+>
+> **HOW:** Pointers! A node contains data and references (left, right) to its children. Operations often use recursion (DFS) or a queue (BFS) to traverse the structure.
 
 ## ⚡ At a Glance — Trees & Heaps
 
@@ -326,61 +317,60 @@ nodetool tablestats keyspace1.standard1 | grep -E "Read Latency|Compaction| SSTa
 
 ### What is a Tree?
 
+```mermaid
+flowchart TD
+    A(("A<br/>root")) --> B((B))
+    A --> C((C))
+    B --> D((D))
+    B --> E((E))
+    C --> F((F))
+    C --> G((G))
+    classDef root fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef mid fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef leaf fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class A root
+    class B,C mid
+    class D,E,F,G leaf
 ```
-HIERARCHICAL STRUCTURE:
-┌────────────────────────────────────────────────────┐
-│                                                    │
-│              ┌───┐                                 │
-│              │ A │  ← Root                         │
-│              └─┬─┘                                 │
-│         ┌─────┴─────┐                              │
-│         ▼           ▼                              │
-│      ┌───┐       ┌───┐                             │
-│      │ B │       │ C │  ← Children of A            │
-│      └─┬─┘       └─┬─┘                             │
-│     ┌──┴──┐     ┌──┴──┐                            │
-│     ▼     ▼     ▼     ▼                            │
-│   ┌───┐ ┌───┐ ┌───┐ ┌───┐                          │
-│   │ D │ │ E │ │ F │ │ G │  ← Leaves                │
-│   └───┘ └───┘ └───┘ └───┘                          │
-│                                                    │
-│ Properties:                                        │
-│ - One root node                                    │
-│ - Each node has 0+ children                        │
-│ - No cycles                                        │
-│ - One path from root to any node                   │
-│                                                    │
-└────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Orange is the root, blue are the children of A, green are the leaves (nodes with no children).
+
+**Properties:**
+
+- One root node
+- Each node has 0 or more children
+- No cycles
+- Exactly one path from the root to any node
 
 ### Binary Search Tree (BST)
 
+**BST property:**
+
+- Left subtree: all values **<** node
+- Right subtree: all values **>** node
+
+```mermaid
+flowchart TD
+    n8((8)) --> n3((3))
+    n8 --> n10((10))
+    n3 --> n1((1))
+    n3 --> n6((6))
+    n10 --> n14((14))
+    classDef path fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef other fill:#cfe8ff,stroke:#1565c0,color:#111
+    class n8,n3,n6 path
+    class n1,n10,n14 other
 ```
-BST PROPERTY:
-- Left subtree: all values < node
-- Right subtree: all values > node
 
-          ┌───┐
-          │ 8 │
-          └─┬─┘
-      ┌────┴────┐
-      ▼         ▼
-   ┌───┐     ┌───┐
-   │ 3 │     │10 │
-   └─┬─┘     └─┬─┘
-  ┌──┴──┐     └──┐
-  ▼     ▼        ▼
-┌───┐ ┌───┐   ┌───┐
-│ 1 │ │ 6 │   │14 │
-└───┘ └───┘   └───┘
+**How to read this diagram.** Green nodes are the search path for `6`.
 
-Search for 6:
-8 → 6 < 8 → go left
-3 → 6 > 3 → go right
-6 → FOUND!
+**Search for 6:**
 
-Time: O(log n) for balanced tree
-```
+1. `8` → 6 < 8 → go left
+2. `3` → 6 > 3 → go right
+3. `6` → **FOUND!**
+
+Time: O(log n) for a balanced tree.
 
 ### 🔴 Real-World Origin: File Systems (1965)
 
@@ -556,35 +546,34 @@ public class MyBinaryTree {
 
 ### What is a Heap?
 
+**Heap = complete binary tree with the heap property.**
+
+**Max heap** (parent ≥ children):
+
+```mermaid
+flowchart TD
+    h100((100)) --> h90((90))
+    h100 --> h80((80))
+    h90 --> h70((70))
+    h90 --> h60((60))
+    h80 --> h50((50))
+    classDef root fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class h100 root
+    class h90,h80,h70,h60,h50 node
 ```
-HEAP = Complete Binary Tree with Heap Property
 
-MAX HEAP: Parent ≥ Children
-          ┌───┐
-          │100│
-          └─┬─┘
-       ┌───┴───┐
-       ▼       ▼
-     ┌───┐   ┌───┐
-     │ 90│   │ 80│
-     └─┬─┘   └─┬─┘
-    ┌──┴──┐  ┌─┘
-    ▼     ▼  ▼
-  ┌───┐┌───┐┌───┐
-  │70 ││60 ││50 │
-  └───┘└───┘└───┘
+**How to read this diagram.** Every parent is at least as large as its children, so the maximum (orange) is always at the root. In a **min heap** the rule flips (parent ≤ children) and the root is the smallest.
 
-MIN HEAP: Parent ≤ Children
-(Root is smallest)
+**Stored as an array (level order):**
 
-STORED AS ARRAY (Level order):
-[100, 90, 80, 70, 60, 50]
-  0   1   2   3   4   5
+| Index | 0 | 1 | 2 | 3 | 4 | 5 |
+| ----- | - | - | - | - | - | - |
+| Value | 100 | 90 | 80 | 70 | 60 | 50 |
 
-Parent of i: (i-1)/2
-Left child of i: 2*i + 1
-Right child of i: 2*i + 2
-```
+- Parent of `i`: `(i-1)/2`
+- Left child of `i`: `2*i + 1`
+- Right child of `i`: `2*i + 2`
 
 ### Why a Tree Fits in a Flat Array With No Pointers
 
@@ -592,13 +581,23 @@ That index arithmetic isn't a coincidence to memorize — it falls out of one fa
 
 Number the nodes in level order — row by row, left to right — starting at 0:
 
+```mermaid
+flowchart TD
+    i0(("0")) --> i1(("1"))
+    i0 --> i2(("2"))
+    i1 --> i3(("3"))
+    i1 --> i4(("4"))
+    i2 --> i5(("5"))
+    i2 --> i6(("6"))
+    classDef l0 fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef l1 fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef l2 fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class i0 l0
+    class i1,i2 l1
+    class i3,i4,i5,i6 l2
 ```
-            0              ← level 0: index 0
-          /   \
-        1       2          ← level 1: indices 1–2
-       / \     / \
-      3   4   5   6        ← level 2: indices 3–6
-```
+
+**How to read this diagram.** Node labels are array indices. Level 0 is index 0 (orange), level 1 holds indices 1–2 (blue), level 2 holds indices 3–6 (green).
 
 Now stare at any node `i` and its children. Node 1's children are 3 and 4. Node 2's children are 5 and 6. The pattern `left = 2i+1, right = 2i+2` is *forced* by completeness: before node `i`'s children appear, every node to `i`'s left on the same row has already placed its two children, and all earlier rows are full. Count them and the arithmetic is exact — there are no gaps to throw it off, precisely because a complete tree has no holes. Lose completeness (allow gaps) and the formula breaks, which is *why* heaps insist on it.
 
@@ -894,21 +893,20 @@ PriorityQueue<int[]> pq = new PriorityQueue<>((a,b) -> a[0]-b[0]);
 
 ## 🧠 Pattern Fingerprint — Trees & Heaps
 
-```
-SEE THESE WORDS → USE THIS:
-┌──────────────────────────────────────────────────────────────┐
-│ "height / depth of tree"            → DFS postorder         │
-│ "path sum / root to leaf"           → DFS preorder          │
-│ "level order / level by level"      → BFS Queue             │
-│ "validate BST"                      → DFS with [min,max]    │
-│ "lowest common ancestor"            → DFS LCA               │
-│ "kth largest / smallest"            → Min-Heap size k       │
-│ "top K frequent elements"           → Freq map + Heap       │
-│ "merge K sorted lists"              → Min-Heap              │
-│ "sorted order from BST"             → Inorder traversal     │
-│ "serialize / deserialize tree"      → Preorder + null marks │
-└──────────────────────────────────────────────────────────────┘
-```
+**See these words → use this technique:**
+
+| If the problem says... | Use |
+| ---------------------- | --- |
+| "height / depth of tree" | DFS postorder |
+| "path sum / root to leaf" | DFS preorder |
+| "level order / level by level" | BFS Queue |
+| "validate BST" | DFS with [min,max] |
+| "lowest common ancestor" | DFS LCA |
+| "kth largest / smallest" | Min-Heap size k |
+| "top K frequent elements" | Freq map + Heap |
+| "merge K sorted lists" | Min-Heap |
+| "sorted order from BST" | Inorder traversal |
+| "serialize / deserialize tree" | Preorder + null marks |
 
 ### 🚀 GO LEARN — When You Need More
 
@@ -1190,31 +1188,35 @@ int min = pq.poll();  // root removal + sift-down: O(log n)
 
 ### Decision Tree
 
+```mermaid
+flowchart TD
+    Q0{"ordering of keys required (sorted iteration, range queries)?"}
+    Q1{"range queries (find all k in [a, b])?"}
+    Q2{"min/max at head?"}
+    Q3{"need to find nearest neighbor (predecessor/successor)?"}
+    Q4{"disk-resident or very large (n &gt; memory)?"}
+    Q5{"frequent insertions, occasional lookups?"}
+    Q0 -- YES --> Q1
+    Q0 -- NO --> A1["HashMap (O(1) avg lookup, no ordering)"]
+    Q1 -- YES --> A2["B-Tree (databases) or balanced BST (in-memory)"]
+    Q1 -- NO --> Q2
+    Q2 -- YES --> A3["Heap (O(1) peek, O(log n) insert/remove)"]
+    Q2 -- NO --> Q3
+    Q3 -- YES --> A4["BST or TreeMap"]
+    Q3 -- NO --> A5["HashMap suffices"]
+    Q4 -- YES --> A6["B-Tree (one disk read per level)"]
+    Q4 -- NO --> A7["in-memory BST"]
+    Q5 -- YES --> A8["Red-Black (looser balance, faster inserts)"]
+    Q5 -- NO --> A9["AVL (tighter balance, faster lookups)"]
+    A5 -. "then decide" .-> Q4
+    A7 -. "then decide" .-> Q5
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3,Q4,Q5 ask
+    class A1,A2,A3,A4,A5,A6,A7,A8,A9 ans
 ```
-ordering of keys required (sorted iteration, range queries)?
-  → NO → HashMap (O(1) avg lookup, no ordering)
-  → YES → continue
 
-range queries (find all k in [a, b])?
-  → YES → B-Tree (databases) or balanced BST (in-memory)
-  → NO → continue
-
-min/max at head?
-  → YES → Heap (O(1) peek, O(log n) insert/remove)
-  → NO → continue
-
-need to find nearest neighbor (predecessor/successor)?
-  → YES → BST or TreeMap
-  → NO → HashMap suffices
-
-disk-resident or very large (n > memory)?
-  → YES → B-Tree (one disk read per level)
-  → NO → in-memory BST
-
-frequent insertions, occasional lookups?
-  → YES → Red-Black (looser balance, faster inserts)
-  → NO → AVL (tighter balance, faster lookups)
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 ### Decision Table
 

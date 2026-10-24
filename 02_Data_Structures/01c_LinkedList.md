@@ -6,43 +6,34 @@
 
 ### 5W1H: Deep Understanding
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: A linked list is a sequence of NODES where each node          ║
-║        holds DATA and a POINTER (reference) to the next node.        ║
-║        Nodes are SCATTERED in memory (not contiguous).               ║
-║                                                                      ║
-║  WHY:  Arrays have a fatal flaw: inserting/deleting at arbitrary     ║
-║        positions requires SHIFTING all subsequent elements O(n).     ║
-║        Linked lists solve this — insert/delete is O(1) pointer       ║
-║        manipulation (if you have a reference to the position).       ║
-║                                                                      ║
-║  WHEN: Use when insertions/deletions dominate over random access.    ║
-║        ✔ Implementing stacks, queues, hash table chaining            ║
-║        ✔ Size unknown or changes frequently                          ║
-║        ✔ LRU cache (doubly-linked list + HashMap)                    ║
-║        ✘ Random access needed (use array)                            ║
-║        ✘ Cache performance critical (nodes scatter in memory)        ║
-║                                                                      ║
-║  HOW (JVM internals):                                                ║
-║  Each `new Node(data)` allocates on the Java HEAP:                   ║
-║  • Object header: 12-16 bytes (mark word + klass pointer)            ║
-║  • data field: 4 bytes (int) or 8 bytes (reference)                  ║
-║  • next field: 4-8 bytes (compressed/uncompressed reference)         ║
-║  • Total per node: ~32 bytes for a single int!                       ║
-║  vs Array: 4 bytes per int (8x less memory!)                         ║
-║                                                                      ║
-║  GC IMPACT: Linked list nodes are scattered → harder for GC to       ║
-║  traverse (poor GC locality). Pre-tenured nodes (old gen) cause      ║
-║  longer full GC pauses than arrays in young gen.                     ║
-║                                                                      ║
-║  REAL-WORLD SYSTEM USAGE:                                            ║
-║  • OS kernel: free memory blocks managed as a linked list            ║
-║  • Java ConcurrentLinkedQueue: lock-free queue using CAS             ║
-║  • Linux kernel: task_struct linked list for process management      ║
-║  • Redis LRU: doubly-linked list for eviction ordering               ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** A linked list is a sequence of NODES where each node holds DATA and a POINTER (reference) to the next node. Nodes are SCATTERED in memory (not contiguous).
+>
+> **WHY:** Arrays have a fatal flaw: inserting/deleting at arbitrary positions requires SHIFTING all subsequent elements O(n). Linked lists solve this — insert/delete is O(1) pointer manipulation (if you have a reference to the position).
+>
+> **WHEN:** Use when insertions/deletions dominate over random access.
+>
+> - ✅ Implementing stacks, queues, hash table chaining
+> - ✅ Size unknown or changes frequently
+> - ✅ LRU cache (doubly-linked list + HashMap)
+> - ❌ Random access needed (use array)
+> - ❌ Cache performance critical (nodes scatter in memory)
+>
+> **HOW (JVM internals):**  Each `new Node(data)` allocates on the Java HEAP:
+>
+> - Object header: 12-16 bytes (mark word + klass pointer)
+> - data field: 4 bytes (int) or 8 bytes (reference)
+> - next field: 4-8 bytes (compressed/uncompressed reference)
+> - Total per node: ~32 bytes for a single int! vs Array: 4 bytes per int (8x less memory!)
+>
+> **GC IMPACT:** Linked list nodes are scattered → harder for GC to traverse (poor GC locality). Pre-tenured nodes (old gen) cause longer full GC pauses than arrays in young gen.
+>
+> **REAL-WORLD SYSTEM USAGE:**
+>
+> - OS kernel: free memory blocks managed as a linked list
+> - Java ConcurrentLinkedQueue: lock-free queue using CAS
+> - Linux kernel: task_struct linked list for process management
+> - Memcached LRU: doubly-linked list per slab class for eviction ordering (Redis approximates LRU by sampling instead)
 
 ## ⚡ At a Glance — Linked Lists
 
@@ -128,25 +119,33 @@ flowchart LR
 
 ### The Types at a Glance
 
+```mermaid
+flowchart LR
+    subgraph S["Singly linked list"]
+        direction LR
+        s1["10"] --> s2["20"] --> s3["30"] --> sn(["null"])
+    end
+    subgraph D["Doubly linked list"]
+        direction LR
+        dn0(["null"]) --- d1["10"] <--> d2["20"] <--> d3["30"] --- dn1(["null"])
+    end
+    subgraph C["Circular linked list"]
+        direction LR
+        c1["10"] --> c2["20"] --> c3["30"] --> c1
+    end
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef nul fill:#e0e0e0,stroke:#616161,color:#111
+    class s1,s2,s3,d1,d2,d3,c1,c2,c3 node
+    class sn,dn0,dn1 nul
 ```
-SINGLY LINKED LIST:
-  [10|●]→[20|●]→[30|null]
-  - Each node: data + next pointer
-  - Can only traverse FORWARD
-  - Used in: Stack, simple queue, hash chaining
 
-DOUBLY LINKED LIST:
-  null←[●|10|●]↔[●|20|●]↔[●|30|●]→null
-  - Each node: prev + data + next
-  - Can traverse BOTH directions
-  - Used in: LRU cache, browser history, text editors
+**How to read this diagram.** Each box is a node. Arrows are references; grey `null` marks the end of a list.
 
-CIRCULAR LINKED LIST:
-  [10|●]→[20|●]→[30|●]→(back to 10)
-  - Last node points back to first
-  - No null at the end
-  - Used in: Round-robin scheduling, multiplayer game turns
-```
+| Type | Node layout | Traversal | Used in |
+| ---- | ----------- | --------- | ------- |
+| **Singly** | data + `next` | Forward only | Stack, simple queue, hash chaining |
+| **Doubly** | `prev` + data + `next` | Both directions | LRU cache, browser history, text editors |
+| **Circular** | last node points back to the first (no `null` end) | Forward, wraps around | Round-robin scheduling, multiplayer game turns |
 
 ### Linked List Variants Comparison Table
 
@@ -199,24 +198,22 @@ LINKED LIST = Cargo train (cars coupled by hooks)
 
 ### What is a Linked List?
 
-```
-PHYSICAL REALITY:
-┌────────────────────────────────────────────────────┐
-│ Nodes scattered across memory, connected by refs   │
-│                                                    │
-│  ┌────┬────┐    ┌────┬────┐    ┌────┬────┐         │
-│  │ 10 │ ●──┼───→│ 20 │ ●──┼───→│ 30 │null│         │
-│  └────┴────┘    └────┴────┘    └────┴────┘         │
-│  addr: 5000     addr: 2000     addr: 8000          │
-│                                                    │
-│ NOT CONTIGUOUS = Scattered in memory               │
-└────────────────────────────────────────────────────┘
+**Physical reality:** nodes are scattered across memory and connected by references.
 
-WHY NON-CONTIGUOUS IS USEFUL:
-- No need for big continuous memory block
-- Insert/Delete = just change pointers
-- Size can grow infinitely (until memory full)
+```mermaid
+flowchart LR
+    A["addr 5000<br/>data: 10<br/>next"] --> B["addr 2000<br/>data: 20<br/>next"] --> C["addr 8000<br/>data: 30<br/>next: null"]
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class A,B,C node
 ```
+
+**How to read this diagram.** Each box is one node at its own address; the arrows are the `next` references. The addresses are *not* consecutive, so the list is **not contiguous**.
+
+**Why non-contiguous is useful:**
+
+- No need for one big contiguous memory block
+- Insert/delete = just change pointers
+- Size can grow until memory is full
 
 ### Linked List vs Array
 
@@ -534,15 +531,20 @@ while (curr != null) {
 
 > 💡 **Why it works:** Fast moves at 2x speed → when fast reaches end, slow is at middle. If there's a cycle → fast will eventually "lap" slow.
 
+```mermaid
+flowchart LR
+    n1["1"] --> n2["2"] --> n3["3<br/>slow"] --> n4["4"] --> n5["5<br/>fast"] --> nn(["null"])
+    classDef slow fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef fast fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef nul fill:#e0e0e0,stroke:#616161,color:#111
+    class n3 slow
+    class n5 fast
+    class n1,n2,n4 node
+    class nn nul
 ```
-             slow
-              ↓
-  [1] → [2] → [3] → [4] → [5] → null
-                             ↑
-                            fast
 
-  After 2 steps: slow=3, fast=5 → fast at end → slow IS the middle!
-```
+**How to read this diagram.** After 2 steps `slow` (green) is at node 3 and `fast` (orange) is at node 5, the end of the list. When `fast` reaches the end, `slow` **is** the middle.
 
 ```java
 // Find Nth node from end (one-pass, O(1) space)
@@ -565,30 +567,27 @@ ListNode nthFromEnd(ListNode head, int n) {
 
 **Key Insight:** Change arrow direction one by one:
 
-```
-  BEFORE: 1 → 2 → 3 → null
-
-  Step 1: null ← 1    2 → 3 → null   (reverse 1's pointer)
-  Step 2: null ← 1 ← 2    3 → null   (reverse 2's pointer)
-  Step 3: null ← 1 ← 2 ← 3           (reverse 3's pointer)
-
-  AFTER:  null ← 1 ← 2 ← 3  →  head = 3
-```
+| Step | List state | What happened |
+| ---- | ---------- | ------------- |
+| Before | `1 → 2 → 3 → null` | original list |
+| 1 | `null ← 1`   `2 → 3 → null` | reverse 1's pointer |
+| 2 | `null ← 1 ← 2`   `3 → null` | reverse 2's pointer |
+| 3 | `null ← 1 ← 2 ← 3` | reverse 3's pointer |
+| After | `null ← 1 ← 2 ← 3` | `head = 3` |
 
 ### Pattern 3: Merge Two Sorted Lists
 
 > **Foundation for merge sort on linked lists, and a common interview question.**
 
-```
-     L1: 1 → 3 → 5
-     L2: 2 → 4 → 6
+`L1: 1 → 3 → 5` and `L2: 2 → 4 → 6`
 
-     Compare heads: 1 < 2 → take 1
-     Compare: 3 > 2 → take 2
-     Compare: 3 < 4 → take 3
-     ...
-     Result: 1 → 2 → 3 → 4 → 5 → 6
-```
+| Compare heads | Take | Result so far |
+| ------------- | ---- | ------------- |
+| 1 < 2 | 1 | `1` |
+| 3 > 2 | 2 | `1 → 2` |
+| 3 < 4 | 3 | `1 → 2 → 3` |
+| ... | ... | ... |
+| final | | `1 → 2 → 3 → 4 → 5 → 6` |
 
 ### Pattern 4: Dummy Head Node
 
@@ -990,19 +989,18 @@ Before deploying linked list code to production:
 
 ## 🧠 Pattern Fingerprint — LinkedList
 
-```
-SEE THESE WORDS → USE THIS PATTERN:
-┌──────────────────────────────────────────────────────────────┐
-│ "middle of linked list"           → Fast/Slow (O(n) 1 pass) │
-│ "detect cycle"                    → Fast/Slow — Floyd's      │
-│ "cycle start / entry point"       → Floyd's 2-phase math     │
-│ "nth node from end"               → Gap of N (Fast/Slow)     │
-│ "reverse linked list"             → 3 pointer iterative      │
-│ "merge two sorted lists"          → Dummy head pointer       │
-│ "palindrome linked list"          → Reverse half + compare   │
-│ "head may change"                 → Use dummy head node      │
-└──────────────────────────────────────────────────────────────┘
-```
+**See these words → use this pattern:**
+
+| If the problem says... | Use |
+| ---------------------- | --- |
+| "middle of linked list" | Fast/Slow (O(n) 1 pass) |
+| "detect cycle" | Fast/Slow — Floyd's |
+| "cycle start / entry point" | Floyd's 2-phase math |
+| "nth node from end" | Gap of N (Fast/Slow) |
+| "reverse linked list" | 3 pointer iterative |
+| "merge two sorted lists" | Dummy head pointer |
+| "palindrome linked list" | Reverse half + compare |
+| "head may change" | Use dummy head node |
 
 ### 🚀 GO LEARN — When You Need More
 
@@ -1196,18 +1194,15 @@ Now reset `slow` to head. Both move at speed 1.
 
 **Worked trace.** List: `1 → 2 → 3 → 4 → 5 → 3` (cycle entry at node 3, μ = 2, C = 3).
 
-```
-Phase 1 (detect):
-  Step 0: slow=1, fast=1
-  Step 1: slow=2, fast=3
-  Step 2: slow=3, fast=5
-  Step 3: slow=4, fast=4  ← meet! (both at node 4)
-
-Phase 2 (find entry):
-  Reset slow to head (node 1). Both move at speed 1.
-  Step 1: slow=2, fast=5
-  Step 2: slow=3, fast=3  ← meet at node 3 = cycle entry ✓
-```
+| Phase | Step | `slow` | `fast` | Note |
+| ----- | ---- | ------ | ------ | ---- |
+| 1 (detect) | 0 | 1 | 1 | start |
+| 1 | 1 | 2 | 3 | |
+| 1 | 2 | 3 | 5 | |
+| 1 | 3 | 4 | 4 | **meet** (both at node 4) |
+| 2 (find entry) | reset | 1 | 4 | reset `slow` to head; both now move at speed 1 |
+| 2 | 1 | 2 | 5 | |
+| 2 | 2 | 3 | 3 | **meet at node 3 = cycle entry** ✓ |
 
 **Why speed 2, specifically?** Any speed ratio where fast is exactly 1 step faster per iteration works — the gap decreases by 1 each step, guaranteeing a meeting within one full cycle. Speed 3 would make the gap decrease by 2, but then on a cycle of odd length, they could *skip* each other (gap goes from 1 to -1 mod C, never hitting 0). Speed 2 is the smallest speed that guarantees meeting for all cycle lengths.
 
@@ -1340,23 +1335,28 @@ If **any** constraint fails, prefer an array:
 
 ### Decision Tree
 
+```mermaid
+flowchart TD
+    Q0{"hot loop over all elements (≥ 80% of CPU time)?"}
+    Q1{"insert/delete at known position dominates?"}
+    Q2{"memory budget tight (≤ 4 bytes/element overhead)?"}
+    Q3{"single-direction traversal sufficient?"}
+    Q0 -- YES --> A1["Array (cache locality wins)"]
+    Q0 -- NO --> Q1
+    Q1 -- YES --> A2["LinkedList (O(1) at known node)"]
+    Q1 -- NO --> Q2
+    Q2 -- YES --> A3["Array (LL needs 16 bytes/node header + 8 bytes/pointer = 24 bytes/element)"]
+    Q2 -- NO --> A4["either; choose by access pattern"]
+    Q3 -- YES --> A5["Singly Linked List (half the memory of doubly)"]
+    Q3 -- NO --> A6["Doubly Linked List (O(1) remove given the node reference)"]
+    A4 -. "then decide" .-> Q3
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3 ask
+    class A1,A2,A3,A4,A5,A6 ans
 ```
-hot loop over all elements (≥ 80% of CPU time)?
-  → YES → Array (cache locality wins)
-  → NO → continue
 
-insert/delete at known position dominates?
-  → YES → LinkedList (O(1) at known node)
-  → NO → continue
-
-memory budget tight (≤ 4 bytes/element overhead)?
-  → YES → Array (LL needs 16 bytes/node header + 8 bytes/pointer = 24 bytes/element)
-  → NO → either; choose by access pattern
-
-single-direction traversal sufficient?
-  → YES → Singly Linked List (half the memory of doubly)
-  → NO → Doubly Linked List (O(1) remove given the node reference)
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 ### Worked Example — ArrayList vs LinkedList in Hot Loops
 

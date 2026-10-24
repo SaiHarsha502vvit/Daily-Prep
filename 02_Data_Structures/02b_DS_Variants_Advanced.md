@@ -44,60 +44,24 @@ flowchart TD
 
 ::: timeline
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                 TIMELINE: EVOLUTION OF ADVANCED DATA STRUCTURES              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Timeline: evolution of advanced data structures
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ 1962 │ AVL Trees — Adelson-Velsky and Landis (Soviet mathematicians)        │
-│      │ First self-balancing BST; named after inventors' initials.           │
-│      │ Origin: Adelson-Velsky's bouncing-marble balancing game research.    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 1968 │ Knuth's "Fundamental Algorithms" — formalizes tree balancing         │
-│      │ analysis; establishes O(log n) guarantees as a field standard.       │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 1970s│ Monotonic Queue emerges in computational geometry                    │
-│      │ (Preparata-Shamos, 1985 formalization: convex hull algorithms)       │
-│      │ Key motivation: sliding-window maximum in O(n) vs O(nk) brute force  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 1976 │ Splay Trees — Tarjan                                               │
-│      │ Self-adjusting BST; amortized O(log n); no explicit balance factor   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 1978 │ Red-Black Trees — Guibas and Sedgewick                              │
-│      │ Refinement of Bayer's 1972 "symmetric binary B-trees"                │
-│      │ Adopted by JDK TreeMap (OpenJDK stable permalink)                    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 1980s│ Treaps — Vuillemin 1980, Aragon-Seidel 1996                         │
-│      │ Randomized BST; priorities give expected O(log n) without complex    │
-│      │ rotation logic. Origin: why complex balancing when randomness works? │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 1989 │ Rope — Boehm et al.                                                 │
-│      │ Persistent string structure for large text editing (Emacs origin)    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 1993 │ Skip Lists — Pugh                                                   │
-│      │ Concurrent alternative to balanced BST; probabilistic layers         │
-│      │ Apache Kafka uses Skip List for offset indexes.                      │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 1996 │ LSM-tree — O'Neil et al.                                            │
-│      │ Log-Structured Merge-tree for write-heavy workloads                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 2003 │ Cache-oblivious B-trees — Bender, Farach-Colton                     │
-│      │ Optimal across all cache levels without explicit tuning              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 2006 │ Bigtable SSTable — Google                                           │
-│      │ Sorted String Table; modern key-value storage foundation             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 2013 │ Bw-tree — Microsoft                                                 │
-│      │ Latch-free B-tree for multicore; used in SQL Server Hekaton          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 2017 │ SageDB — Kraska et al.                                              │
-│      │ Learned indexes; replaces B-trees with neural models                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 2018 │ Learned Bloom Filters — Mitzenmacher                                │
-│      │ Optimal space for approximate membership testing                     │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+| Year | Structure / event | Notes |
+| ---- | ----------------- | ----- |
+| 1962 | **AVL trees** — Adelson-Velsky and Landis | First self-balancing BST, named after the inventors' initials. |
+| 1968 | Knuth's *The Art of Computer Programming* (vol. 1) | Formalizes tree-balancing analysis and establishes O(log n) guarantees as a field standard. |
+| 1970s | **Monotonic queue** emerges in computational geometry | Preparata–Shamos (1985) formalization of convex-hull algorithms. Motivation: sliding-window maximum in O(n) vs O(nk) brute force. |
+| 1978 | **Red-Black trees** — Guibas and Sedgewick | Refinement of Bayer's 1972 "symmetric binary B-trees". Adopted by the JDK `TreeMap`. |
+| 1980s | **Treaps** — Vuillemin 1980 (Cartesian trees), Aragon–Seidel 1989/1996 | Randomized BST; priorities give expected O(log n) without complex rotation logic. |
+| 1985 | **Splay trees** — Sleator and Tarjan | Self-adjusting BST; amortized O(log n); no explicit balance factor. |
+| 1989–90 | **Skip lists** — Pugh | Probabilistic layers; a simple alternative to balanced BSTs that is easier to make concurrent (Java `ConcurrentSkipListMap`). |
+| 1995 | **Rope** — Boehm, Atkinson and Plass | Balanced-tree string structure for large text editing: O(log n) concatenation and split. |
+| 1996 | **LSM-tree** — O'Neil et al. | Log-structured merge-tree for write-heavy workloads. |
+| 2000 | **Cache-oblivious B-trees** — Bender, Demaine, Farach-Colton | Optimal across all cache levels without explicit tuning. |
+| 2006 | **Bigtable SSTable** — Google | Sorted String Table; foundation of modern key-value storage. |
+| 2013 | **Bw-tree** — Microsoft | Latch-free B-tree for multicore; used in SQL Server Hekaton. |
+| 2017 | **Learned indexes / SageDB** — Kraska et al. | Replace B-trees with learned models. |
+| 2018 | **Learned Bloom filters** — Mitzenmacher | Models combined with Bloom filters for approximate membership. |
 
 **Named Predecessors and Motivations:**
 
@@ -113,8 +77,8 @@ flowchart TD
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Red-Black Tree  | Java TreeMap ([OpenJDK `TreeMap.java`](https://github.com/openjdk/jdk17/blob/master/src/java.base/share/classes/java/util/TreeMap.java)), C++ std::map |
 | ArrayDeque      | Java Deque implementation — resizable array, not linked list                                                                                           |
-| Monotonic Queue | Apache Spark BlockManager for time-windowed aggregations                                                                                               |
-| Skip List       | Apache Kafka offset indexes; ConcurrentSkipListMap in Java                                                                                             |
+| Monotonic Queue | Sliding-window max/min in streaming and stock-span style computations                                                                                               |
+| Skip List       | Redis sorted sets; ConcurrentSkipListMap in Java                                                                                             |
 | B-Tree variants | Most database indexes (PostgreSQL, MySQL InnoDB)                                                                                                       |
 | LSM-tree        | RocksDB, Cassandra, LevelDB                                                                                                                            |
 
@@ -124,25 +88,16 @@ flowchart TD
 
 ### 5W1H: Mastering Advanced Data Structure Variants
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: Advanced variants of standard Stacks, Queues, and Trees (e.g., Min    ║
-║        Stack, Monotonic Queue, AVL Trees) tailored for specialized problems. ║
-║                                                                              ║
-║  WHY:  Standard linear processing or sorting often hits O(N) or O(N log N)   ║
-║        bottlenecks. Advanced variants exploit structural invariants (like    ║
-║        monotonicity or self-balancing) to achieve O(1) or strict O(log N).   ║
-║                                                                              ║
-║  WHO:  Engineers optimizing latency-critical systems or solving hard algorithmic║
-║        interview questions (e.g., Sliding Window Maximum, LFU Cache).        ║
-║                                                                              ║
-║  WHEN: Use when naive structures fail constraints—such as needing O(1)       ║
-║        minimum retrieval (Min Stack) or O(1) sliding window extremes.        ║
-║                                                                              ║
-║  HOW:  By augmenting standard structures with parallel tracking (e.g., two   ║
-║        stacks), deque manipulation, or complex rotation algorithms.          ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** Advanced variants of standard Stacks, Queues, and Trees (e.g., Min Stack, Monotonic Queue, AVL Trees) tailored for specialized problems.
+>
+> **WHY:** Standard linear processing or sorting often hits O(N) or O(N log N) bottlenecks. Advanced variants exploit structural invariants (like monotonicity or self-balancing) to achieve O(1) or strict O(log N).
+>
+> **WHO:** Engineers optimizing latency-critical systems or solving hard algorithmic interview questions (e.g., Sliding Window Maximum, LFU Cache).
+>
+> **WHEN:** Use when naive structures fail constraints—such as needing O(1) minimum retrieval (Min Stack) or O(1) sliding window extremes.
+>
+> **HOW:** By augmenting standard structures with parallel tracking (e.g., two stacks), deque manipulation, or complex rotation algorithms.
 
 ---
 
@@ -150,50 +105,44 @@ flowchart TD
 
 ::: warning
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    PRODUCTION FAILURE MODES FOR ADVANCED DS                  ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Production failure modes for advanced ds
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ FAILURE 1: MONOTONIC QUEUE OVERFLOW (Unbounded Window Growth)               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ Scenario: Streaming data with variable window sizes                         │
-│ Problem:  If window size k grows unboundedly, deque stores O(n) elements    │
-│ Symptom:  Memory exhaustion in long-running stream processors               │
-│ Example:  Apache Spark job processing stock trades without watermark        │
-│           timeout → deque accumulates all prices → OOM                      │
-│ Fix:      Implement explicit eviction policy or use time-based windows     │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ FAILURE 2: AVL REBALANCING CASCADE (Skewed Insertions)                     │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ Scenario: Sequential insertion of sorted data (e.g., auto-increment IDs)    │
-│ Problem:  Each insertion triggers balance check up to root; O(log n) per    │
-│           insert, but constants are higher than Red-Black (more rotations)  │
-│ Symptom:  15-20% slower than Red-Black for bulk inserts in benchmarks       │
-│ Example:  Inserting 1M sequential IDs into AVL vs RB tree in Java           │
-│ Fix:      Use bulk loading (balanced array build) or switch to Red-Black    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ FAILURE 3: MIN STACK STACK-OVERFLOW (Recursive Implementation)             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ Scenario: Deep stack usage (DFS on large graphs, recursive JSON parsers)    │
-│ Problem:  If getMin() uses recursion to find minimum, stack depth hits      │
-│           Java's default ~1024 frame limit                                  │
-│ Symptom:  StackOverflowError in production under deep recursion             │
-│ Example:  Processing JSON with nesting depth > 2000                         │
-│ Fix:      Use iterative two-stack approach; stack storage in heap           │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ FAILURE 4: ROPE TREE IMBALANCE (Pathological Text Patterns)                │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ Scenario: Concatenating strings with similar length distributions           │
-│ Problem:  Naive rope implementation can create O(n) depth if concatenating  │
-│           sequences of equal-sized ropes (not truly balanced)               │
-│ Symptom:  O(n) traversal instead of O(log n) — silent performance death    │
-│ Example:  Appending log lines of similar length to a Rope buffer            │
-│ Fix:      Use weight-based rebalancing (like implicit treap) or Fibonacci   │
-│           concatenation strategy                                            │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+#### FAILURE 1: MONOTONIC QUEUE OVERFLOW (Unbounded Window Growth)
+
+Scenario: Streaming data with variable window sizes
+Problem:  If window size k grows unboundedly, deque stores O(n) elements
+Symptom:  Memory exhaustion in long-running stream processors
+Example:  Apache Spark job processing stock trades without watermark
+timeout → deque accumulates all prices → OOM
+Fix:      Implement explicit eviction policy or use time-based windows
+
+**Failure 2:** AVL REBALANCING CASCADE (Skewed Insertions)
+
+Scenario: Sequential insertion of sorted data (e.g., auto-increment IDs)
+Problem:  Each insertion triggers balance check up to root; O(log n) per
+insert, but constants are higher than Red-Black (more rotations)
+Symptom:  15-20% slower than Red-Black for bulk inserts in benchmarks
+Example:  Inserting 1M sequential IDs into AVL vs RB tree in Java
+Fix:      Use bulk loading (balanced array build) or switch to Red-Black
+
+**Failure 3:** MIN STACK STACK-OVERFLOW (Recursive Implementation)
+
+Scenario: Deep stack usage (DFS on large graphs, recursive JSON parsers)
+Problem:  If getMin() uses recursion to find minimum, stack depth hits
+Java's default ~1024 frame limit
+Symptom:  StackOverflowError in production under deep recursion
+Example:  Processing JSON with nesting depth > 2000
+Fix:      Use iterative two-stack approach; stack storage in heap
+
+**Failure 4:** ROPE TREE IMBALANCE (Pathological Text Patterns)
+
+Scenario: Concatenating strings with similar length distributions
+Problem:  Naive rope implementation can create O(n) depth if concatenating
+sequences of equal-sized ropes (not truly balanced)
+Symptom:  O(n) traversal instead of O(log n) — silent performance death
+Example:  Appending log lines of similar length to a Rope buffer
+Fix:      Use weight-based rebalancing (like implicit treap) or Fibonacci
+concatenation strategy
 
 **Mitigation Checklist:**
 
@@ -333,26 +282,23 @@ public class MinStackOptimized {
 
 ::: pattern
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                      MAX STACK - COMPLETE GUIDE                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Max stack - complete guide
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS IT?                                                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ Similar to Min Stack but also supports:                                     │
-│ • popMax() - Remove and return the maximum element                          │
-│                                                                             │
-│ This is HARDER than Min Stack because:                                      │
-│ - popMax() might remove element from MIDDLE of stack                        │
-│ - Need to maintain consistency                                              │
-│                                                                             │
-│ APPROACH: Use TreeMap + Doubly Linked List                                  │
-│   - Doubly Linked List: Maintains stack order                               │
-│   - TreeMap: Maps values to their nodes for O(log n) max finding            │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+#### What is it
+
+Similar to Min Stack but also supports:
+
+- popMax() - Remove and return the maximum element
+
+This is HARDER than Min Stack because:
+
+- popMax() might remove element from MIDDLE of stack
+- Need to maintain consistency
+
+**Approach:** Use TreeMap + Doubly Linked List
+
+- Doubly Linked List: Maintains stack order
+- TreeMap: Maps values to their nodes for O(log n) max finding
 
 :::
 
@@ -430,43 +376,43 @@ public class MaxStackSimple {
 
 ::: pattern
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    CIRCULAR QUEUE - COMPLETE GUIDE                           ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Circular queue - complete guide
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS IT?                                                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ A queue implemented using a circular array.                                 │
-│ When we reach the end of the array, we wrap around to the beginning!        │
-│                                                                             │
-│ WHY CIRCULAR?                                                               │
-│                                                                             │
-│ LINEAR QUEUE PROBLEM:                                                       │
-│   After many enqueue/dequeue operations:                                    │
-│   [_, _, _, _, 5, 6, 7, _]                                                  │
-│               ↑        ↑                                                    │
-│             front    rear                                                   │
-│   Wasted space at beginning!                                                │
-│                                                                             │
-│ CIRCULAR QUEUE SOLUTION:                                                    │
-│   [8, 9, _, _, 5, 6, 7]                                                     │
-│         ↑     ↑                                                             │
-│       rear  front                                                           │
-│   rear wraps around to use empty space!                                     │
-│                                                                             │
-│ VISUAL (as a circle):                                                       │
-│           ┌───┐                                                             │
-│          / 7   \                                                            │
-│        /         \                                                          │
-│      │ 6          8 │                                                       │
-│        \         /                                                          │
-│         \ 5   9 /                                                           │
-│           └───┘                                                             │
-│            front                                                            │
-└─────────────────────────────────────────────────────────────────────────────┘
+#### What is it
+
+A queue implemented using a circular array.
+When we reach the end of the array, we wrap around to the beginning!
+
+WHY CIRCULAR?
+
+**Linear queue problem:** 
+
+After many enqueue/dequeue operations:
+[_, _, _, _, 5, 6, 7, _]
+↑        ↑
+front    rear
+Wasted space at beginning!
+
+**Circular queue solution:** 
+
+[8, 9, _, _, 5, 6, 7]
+↑     ↑
+rear  front
+rear wraps around to use empty space!
+
+VISUAL (as a circle):
+
+```mermaid
+flowchart LR
+    s5["5"] --> s6["6"] --> s7["7"] --> s8["8"] --> s9["9"] --> s5
+    FR(["front"]) --> s8
+    classDef cell fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ptr fill:#fff3b0,stroke:#b58900,color:#111
+    class s5,s6,s7,s8,s9 cell
+    class FR ptr
 ```
+
+**How to read this diagram.** The buffer is a ring: after the last slot the index wraps to the first, so freed slots at the start are reused instead of wasted.
 
 :::
 
@@ -565,36 +511,46 @@ public class CircularQueue<T> {
 
 ::: pattern
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                      DEQUE - COMPLETE GUIDE                                  ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Deque - complete guide
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS IT?                                                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ A queue where you can add/remove from BOTH ends in O(1)!                    │
-│                                                                             │
-│ VISUAL:                                                                     │
-│   addFirst ──→ ┌───┬───┬───┬───┬───┐ ←── addLast                            │
-│                │ A │ B │ C │ D │ E │                                        │
-│  removeFirst ←─ └───┴───┴───┴───┴───┘ ──→ removeLast                        │
-│                                                                             │
-│ OPERATIONS:                                                                 │
-│ • addFirst(x)    - Add to front                                             │
-│ • addLast(x)     - Add to back                                              │
-│ • removeFirst()  - Remove from front                                        │
-│ • removeLast()   - Remove from back                                         │
-│ • peekFirst()    - See front                                                │
-│ • peekLast()     - See back                                                 │
-│                                                                             │
-│ ALL OPERATIONS ARE O(1)!                                                    │
-│                                                                             │
-│ DEQUE = STACK + QUEUE                                                       │
-│ Can use as stack (addFirst/removeFirst)                                     │
-│ Can use as queue (addLast/removeFirst)                                      │
-└─────────────────────────────────────────────────────────────────────────────┘
+#### What is it
+
+A queue where you can add/remove from BOTH ends in O(1)!
+
+**Visual:** 
+
+```mermaid
+flowchart LR
+    AF(["addFirst"]) --> A
+    A -.-> RF(["removeFirst"])
+    subgraph DQ["Deque"]
+        direction LR
+        A["A"] --- B["B"] --- C["C"] --- D["D"] --- E["E"]
+    end
+    E --> AL(["addLast"])
+    E -.-> RL(["removeLast"])
+    classDef cell fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef op fill:#fff3b0,stroke:#b58900,color:#111
+    class A,B,C,D,E cell
+    class AF,RF,AL,RL op
 ```
+
+**How to read this diagram.** Elements can be added to or removed from **both** ends in O(1).
+
+**Operations:** 
+
+- addFirst(x)    - Add to front
+- addLast(x)     - Add to back
+- removeFirst()  - Remove from front
+- removeLast()   - Remove from back
+- peekFirst()    - See front
+- peekLast()     - See back
+
+ALL OPERATIONS ARE O(1)!
+
+DEQUE = STACK + QUEUE
+Can use as stack (addFirst/removeFirst)
+Can use as queue (addLast/removeFirst)
 
 :::
 
@@ -710,36 +666,31 @@ public class MyDeque<T> {
 
 ::: pattern
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    MONOTONIC QUEUE - COMPLETE GUIDE                          ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Monotonic queue - complete guide
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS IT?                                                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ A deque that maintains elements in MONOTONIC order                          │
-│ (either increasing or decreasing).                                          │
-│                                                                             │
-│ MONOTONIC DECREASING QUEUE (for finding max):                               │
-│ Elements from front to back: 8 > 6 > 5 > 3                                  │
-│ Front is always the maximum!                                                │
-│                                                                             │
-│ MONOTONIC INCREASING QUEUE (for finding min):                               │
-│ Elements from front to back: 2 < 4 < 7 < 9                                  │
-│ Front is always the minimum!                                                │
-│                                                                             │
-│ HOW IT WORKS (Decreasing for max):                                          │
-│ When adding element x:                                                      │
-│ 1. Remove all elements from BACK that are smaller than x                    │
-│ 2. Add x to back                                                            │
-│ 3. Front is always the current maximum                                      │
-│                                                                             │
-│ WHY? Elements smaller than x will NEVER be the max while x exists!          │
-│                                                                             │
-│ KEY USE CASE: Sliding Window Maximum/Minimum in O(n)!                       │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+#### What is it
+
+A deque that maintains elements in MONOTONIC order
+(either increasing or decreasing).
+
+MONOTONIC DECREASING QUEUE (for finding max):
+Elements from front to back: 8 > 6 > 5 > 3
+Front is always the maximum!
+
+MONOTONIC INCREASING QUEUE (for finding min):
+Elements from front to back: 2 < 4 < 7 < 9
+Front is always the minimum!
+
+HOW IT WORKS (Decreasing for max):
+When adding element x:
+
+1. Remove all elements from BACK that are smaller than x
+2. Add x to back
+3. Front is always the current maximum
+
+WHY? Elements smaller than x will NEVER be the max while x exists!
+
+**Key use case:** Sliding Window Maximum/Minimum in O(n)!
 
 **INVARIANT (Monotonic Decreasing Queue for Sliding Window Max):**
 ```
@@ -814,22 +765,22 @@ public class MonotonicQueue {
 
 ::: memory
 
-```
-🧠 INTERVIEW KEY POINTS - MONOTONIC QUEUE:
-
-1. "When to use Monotonic Queue?"
-   → Sliding window min/max problems
-   → Find next greater/smaller element
-   → Stock span problems
-
-2. "Time Complexity?"
-   → O(n) overall
-   → Each element added/removed at most once
-
-3. "Why store indices instead of values?"
-   → To check if element is within window
-   → To know position for result array
-```
+> [!TIP]
+> **🧠 Interview key points — Monotonic Queue**
+>
+>
+> 1. **"When to use Monotonic Queue?"**
+>    - Sliding window min/max problems
+>    - Find next greater/smaller element
+>    - Stock span problems
+>
+> 2. **"Time Complexity?"**
+>    - O(n) overall
+>    - Each element added/removed at most once
+>
+> 3. **"Why store indices instead of values?"**
+>    - To check if element is within window
+>    - To know position for result array
 
 :::
 
@@ -859,64 +810,75 @@ Use the potential method / accounting argument: each element is pushed into the 
 
 ::: map
 
+### Binary tree variants overview
+
+```mermaid
+flowchart TD
+    BT["Binary tree"] --> FU["Full"]
+    BT --> CO["Complete"]
+    BT --> PE["Perfect"]
+    BT --> BA["Balanced"]
+    BT --> DE["Degenerate"]
+    classDef root fill:#e0e0e0,stroke:#616161,color:#111
+    classDef good fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef bad fill:#ffc9c9,stroke:#c62828,color:#111
+    class BT root
+    class FU,CO,PE,BA good
+    class DE bad
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    BINARY TREE VARIANTS OVERVIEW                             ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-                        BINARY TREE
-                            │
-    ┌───────────┬───────────┼───────────┬───────────┐
-    │           │           │           │           │
-  FULL      COMPLETE     PERFECT    BALANCED    DEGENERATE
-    │           │           │           │           │
-    │           │           │           │           │
-    ▼           ▼           ▼           ▼           ▼
+**How to read this diagram.** The five types branch off the general binary tree; green types have well-behaved height, the red degenerate type does not.
 
-FULL BINARY TREE:
-Every node has 0 or 2 children (never 1)
-        1
-       / \
-      2   3
-     / \
-    4   5
+| Type | Rule | Example |
+| ---- | ---- | ------- |
+| **Full** | Every node has 0 or 2 children (never 1) | `1` → `2, 3`; `2` → `4, 5` |
+| **Complete** | All levels filled except possibly the last; last level filled as far **left** as possible | `1` → `2, 3`; `2` → `4, 5`; `3` → `6` |
+| **Perfect** | All internal nodes have 2 children and all leaves are at the same level | `1` → `2, 3`; `2` → `4, 5`; `3` → `6, 7` |
+| **Balanced** | Heights of the left and right subtrees differ by at most 1 (AVL is strictly balanced) | `4` → `2, 6`; `2` → `1`; `6` → `5, 7` |
+| **Degenerate** | Each parent has only one child: essentially a linked list | `1` → `2` → `3` (all on one side) |
 
-COMPLETE BINARY TREE:
-All levels filled except possibly last
-Last level has all nodes as far LEFT as possible
-        1
-       / \
-      2   3
-     / \  /
-    4  5 6
+Visual examples:
 
-PERFECT BINARY TREE:
-All internal nodes have 2 children
-All leaves at same level
-        1
-       / \
-      2   3
-     /\   /\
-    4  5 6  7
-
-BALANCED BINARY TREE:
-Height of left and right subtrees differ by at most 1
-(AVL tree is strictly balanced)
-        4
-       / \
-      2   6
-     /   / \
-    1   5   7
-
-DEGENERATE (Pathological):
-Each parent has only one child
-Essentially a linked list!
-    1
-     \
-      2
-       \
-        3
+```mermaid
+flowchart TD
+    subgraph F["Full"]
+        f1((1)) --> f2((2))
+        f1 --> f3((3))
+        f2 --> f4((4))
+        f2 --> f5((5))
+    end
+    subgraph C["Complete"]
+        c1((1)) --> c2((2))
+        c1 --> c3((3))
+        c2 --> c4((4))
+        c2 --> c5((5))
+        c3 --> c6((6))
+    end
+    subgraph P["Perfect"]
+        p1((1)) --> p2((2))
+        p1 --> p3((3))
+        p2 --> p4((4))
+        p2 --> p5((5))
+        p3 --> p6((6))
+        p3 --> p7((7))
+    end
+    subgraph B["Balanced (AVL)"]
+        b4((4)) --> b2((2))
+        b4 --> b6((6))
+        b2 --> b1((1))
+        b6 --> b5((5))
+        b6 --> b7((7))
+    end
+    subgraph D["Degenerate"]
+        d1((1)) --> d2((2)) --> d3((3))
+    end
+    classDef ok fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef bad fill:#ffc9c9,stroke:#c62828,color:#111
+    class f1,f2,f3,f4,f5,c1,c2,c3,c4,c5,c6,p1,p2,p3,p4,p5,p6,p7,b4,b2,b6,b1,b5,b7 ok
+    class d1,d2,d3 bad
 ```
+
+**How to read this diagram.** Each box draws one tree type from the table. Blue trees keep their height near log n; the red degenerate tree is a chain with height n.
 
 :::
 
@@ -936,28 +898,24 @@ Essentially a linked list!
 
 ::: pattern
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                       AVL TREE - COMPLETE GUIDE                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Avl tree - complete guide
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS IT?                                                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ A self-balancing Binary Search Tree where:                                  │
-│ • For EVERY node: |height(left) - height(right)| ≤ 1                        │
-│                                                                             │
-│ INVENTED: 1962 by Adelson-Velsky and Landis                                 │
-│                                                                             │
-│ WHY BALANCE MATTERS:                                                        │
-│ Unbalanced BST: O(n) worst case (degenerates to linked list)                │
-│ Balanced AVL:   O(log n) GUARANTEED for all operations!                     │
-│                                                                             │
-│ BALANCE FACTOR = height(left) - height(right)                               │
-│ Valid values: -1, 0, +1                                                     │
-│ If BF becomes -2 or +2, we ROTATE!                                          │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+#### What is it
+
+A self-balancing Binary Search Tree where:
+
+- For EVERY node: |height(left) - height(right)| ≤ 1
+
+**Invented:** 1962 by Adelson-Velsky and Landis
+
+**Why balance matters:** 
+
+Unbalanced BST: O(n) worst case (degenerates to linked list)
+Balanced AVL:   O(log n) GUARANTEED for all operations!
+
+BALANCE FACTOR = height(left) - height(right)
+Valid values: -1, 0, +1
+If BF becomes -2 or +2, we ROTATE!
 
 **INVARIANT (AVL Tree — Strict Balance):**
 ```
@@ -973,42 +931,37 @@ Implications:
 
 ```
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ ROTATIONS (The Key to Balance)                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ 4 CASES OF IMBALANCE:                                                       │
-│                                                                             │
-│ 1. LEFT-LEFT (LL) → Single Right Rotation                                   │
-│        30                     20                                            │
-│       /                      /  \                                           │
-│      20          →         10    30                                         │
-│     /                                                                       │
-│    10                                                                       │
-│                                                                             │
-│ 2. RIGHT-RIGHT (RR) → Single Left Rotation                                  │
-│    10                         20                                            │
-│      \                       /  \                                           │
-│       20         →         10    30                                         │
-│         \                                                                   │
-│          30                                                                 │
-│                                                                             │
-│ 3. LEFT-RIGHT (LR) → Left then Right Rotation                               │
-│        30                    30                      25                     │
-│       /                     /                       /  \                    │
-│      20          →        25         →           20    30                   │
-│        \                 /                                                  │
-│         25             20                                                   │
-│                                                                             │
-│ 4. RIGHT-LEFT (RL) → Right then Left Rotation                               │
-│    10                    10                         15                      │
-│      \                     \                       /  \                     │
-│       20        →           15       →           10    20                   │
-│      /                        \                                             │
-│     15                         20                                           │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+#### ROTATIONS (The Key to Balance)
+
+4 CASES OF IMBALANCE:
+
+1. LEFT-LEFT (LL) → Single Right Rotation
+   30                     20
+   /                      /  \
+   20          →         10    30
+   /
+   10
+
+2. RIGHT-RIGHT (RR) → Single Left Rotation
+   10                         20
+   \                       /  \
+   20         →         10    30
+   \
+   30
+
+3. LEFT-RIGHT (LR) → Left then Right Rotation
+   30                    30                      25
+   /                     /                       /  \
+   20          →        25         →           20    30
+   \                 /
+   25             20
+
+4. RIGHT-LEFT (RL) → Right then Left Rotation
+   10                    10                         15
+   \                     \                       /  \
+   20        →           15       →           10    20
+   /                        \
+   15                         20
 
 :::
 
@@ -1199,82 +1152,75 @@ public class AVLTree {
 
 ::: pattern
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    RED-BLACK TREE - COMPLETE GUIDE                           ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Red-black tree - complete guide
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS IT?                                                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ A self-balancing BST where each node has a COLOR (Red or Black)             │
-│                                                                             │
-│ INVENTED: 1972 by Rudolf Bayer (as "symmetric binary B-trees")              │
-│ REFINED: 1978 by Leonidas Guibas and Robert Sedgewick                       │
-│                                                                             │
-│ PROPERTIES (MUST ALL BE TRUE):                                              │
-│ 1. Every node is either RED or BLACK                                        │
-│ 2. Root is always BLACK                                                     │
-│ 3. Every leaf (NIL) is BLACK                                                │
-│ 4. If node is RED, both children must be BLACK (no red-red parent-child)    │
-│ 5. Every path from node to descendant NIL has same number of black nodes    │
-│                                                                             │
-│ VISUAL:                                                                     │
-│         [13:B]                                                              │
-│        /      \                                                             │
-│    [8:R]      [17:R]                                                        │
-│    /   \      /    \                                                        │
-│ [1:B] [11:B] [15:B] [25:B]                                                  │
-│        /             \                                                      │
-│     [6:R]          [22:R]                                                   │
-│                                                                             │
-│ B = Black, R = Red                                                          │
-└─────────────────────────────────────────────────────────────────────────────┘
+#### What is it
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ AVL vs RED-BLACK                                                            │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ ┌─────────────────────┬───────────────────┬────────────────────────────┐    │
-│ │ Property            │ AVL Tree          │ Red-Black Tree             │    │
-│ ├─────────────────────┼───────────────────┼────────────────────────────┤    │
-│ │ Balance strictness  │ Strictly balanced │ Loosely balanced           │    │
-│ │ Search              │ O(log n)          │ O(log n)                   │    │
-│ │ Insert              │ Slower (more rot.)│ Faster (fewer rotations)   │    │
-│ │ Delete              │ Slower            │ Faster                     │    │
-│ │ Height              │ 1.44 * log(n)     │ 2 * log(n)                 │    │
-│ │ Used in             │ Databases         │ Java TreeMap, C++ map      │    │
-│ └─────────────────────┴───────────────────┴────────────────────────────┘    │
-│                                                                             │
-│ WHEN TO USE:                                                                │
-│ • AVL: Lookup-heavy applications (more balanced = faster search)            │
-│ • RB: Insert/Delete-heavy (fewer rotations = faster modifications)          │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+A self-balancing BST where each node has a COLOR (Red or Black)
+
+**Invented:** 1972 by Rudolf Bayer (as "symmetric binary B-trees")
+
+**Refined:** 1978 by Leonidas Guibas and Robert Sedgewick
+
+**Properties (must all be true):** 
+
+1. Every node is either RED or BLACK
+2. Root is always BLACK
+3. Every leaf (NIL) is BLACK
+4. If node is RED, both children must be BLACK (no red-red parent-child)
+5. Every path from node to descendant NIL has same number of black nodes
+
+**Visual:** 
+
+[13:B]
+/      \
+[8:R]      [17:R]
+/   \      /    \
+[1:B] [11:B] [15:B] [25:B]
+/             \
+[6:R]          [22:R]
+
+B = Black, R = Red
+
+#### AVL vs RED-BLACK
+
+| Property | AVL Tree | Red-Black Tree |
+| -------- | -------- | -------------- |
+| Balance strictness | Strictly balanced | Loosely balanced |
+| Search | O(log n) | O(log n) |
+| Insert | Slower (more rotations) | Faster (fewer rotations) |
+| Delete | Slower | Faster |
+| Height | ≤ 1.44 · log₂(n) | ≤ 2 · log₂(n+1) |
+| Used in | Read-heavy indexes | Java `TreeMap`, C++ `std::map` |
+
+**When to use:** 
+
+- AVL: Lookup-heavy applications (more balanced = faster search)
+- RB: Insert/Delete-heavy (fewer rotations = faster modifications)
 
 :::
 
 ::: memory
 
-```
-🧠 INTERVIEW KEY POINTS - TREE VARIANTS:
-
-1. "Difference between AVL and Red-Black?"
-   → AVL: More balanced, better for lookups
-   → RB: Less rotations, better for inserts/deletes
-   → Both guarantee O(log n)
-
-2. "Which does Java TreeMap use?"
-   → Red-Black Tree
-
-3. "When is BST O(n)?"
-   → When degenerate (sorted insert)
-   → Solution: Use self-balancing trees
-
-4. "What's balance factor in AVL?"
-   → height(left) - height(right)
-   → Must be -1, 0, or 1
-```
+> [!TIP]
+> **🧠 Interview key points — Tree Variants**
+>
+>
+> 1. **"Difference between AVL and Red-Black?"**
+>    - AVL: More balanced, better for lookups
+>    - RB: Less rotations, better for inserts/deletes
+>    - Both guarantee O(log n)
+>
+> 2. **"Which does Java TreeMap use?"**
+>    - Red-Black Tree
+>
+> 3. **"When is BST O(n)?"**
+>    - When degenerate (sorted insert)
+>    - Solution: Use self-balancing trees
+>
+> 4. **"What's balance factor in AVL?"**
+>    - height(left) - height(right)
+>    - Must be -1, 0, or 1
 
 :::
 
@@ -1284,58 +1230,52 @@ public class AVLTree {
 
 ::: pattern
 
+### Heap variants — complete guide
+
+**Heap types**
+
+| # | Type | Rule / property | Notes |
+| - | ---- | --------------- | ----- |
+| 1 | **Min heap** | Parent ≤ children | Minimum at the root |
+| 2 | **Max heap** | Parent ≥ children | Maximum at the root |
+| 3 | **Binary heap** | Complete binary tree | The most common kind |
+| 4 | **D-ary heap** | Each node has D children (not just 2) | Shallower tree; used to optimize Dijkstra's algorithm |
+| 5 | **Fibonacci heap** | Amortized O(1) for many operations | Used in advanced graph algorithms; complex to implement |
+| 6 | **Binomial heap** | Collection of binomial trees | Efficient merge: O(log n) |
+
+```mermaid
+flowchart TD
+    subgraph MIN["Min heap - minimum at the root"]
+        a1((1)) --> a3((3))
+        a1 --> a6((6))
+        a3 --> a5((5))
+        a3 --> a9((9))
+    end
+    subgraph MAX["Max heap - maximum at the root"]
+        b9((9)) --> b6((6))
+        b9 --> b5((5))
+        b6 --> b3((3))
+        b6 --> b1((1))
+    end
+    classDef root fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class a1,b9 root
+    class a3,a6,a5,a9,b6,b5,b3,b1 node
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                       HEAP VARIANTS - COMPLETE GUIDE                         ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ HEAP TYPES                                                                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ 1. MIN HEAP: Parent ≤ Children                                              │
-│         1                                                                   │
-│        / \                                                                  │
-│       3   6                                                                 │
-│      / \                                                                    │
-│     5   9                                                                   │
-│    Min at root!                                                             │
-│                                                                             │
-│ 2. MAX HEAP: Parent ≥ Children                                              │
-│         9                                                                   │
-│        / \                                                                  │
-│       6   5                                                                 │
-│      / \                                                                    │
-│     3   1                                                                   │
-│    Max at root!                                                             │
-│                                                                             │
-│ 3. BINARY HEAP: Most common, complete binary tree                           │
-│                                                                             │
-│ 4. D-ARY HEAP: Each node has D children (not just 2)                        │
-│    - Shallower tree                                                         │
-│    - Used in Dijkstra's algorithm optimization                              │
-│                                                                             │
-│ 5. FIBONACCI HEAP: Amortized O(1) for many operations                       │
-│    - Used in advanced graph algorithms                                      │
-│    - Complex implementation                                                 │
-│                                                                             │
-│ 6. BINOMIAL HEAP: Collection of binomial trees                              │
-│    - Efficient merge: O(log n)                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** In the min heap every parent is ≤ its children; in the max heap every parent is ≥ its children. The orange node is the root, which is always the extreme value.
 
-ARRAY REPRESENTATION OF BINARY HEAP:
-For node at index i:
-• Parent: (i - 1) / 2
-• Left child: 2 * i + 1
-• Right child: 2 * i + 2
+**Array representation of a binary heap** — for the node at index `i`:
 
-Array: [1, 3, 6, 5, 9]
-Tree:      1      (index 0)
-          / \
-         3   6    (index 1, 2)
-        / \
-       5   9      (index 3, 4)
-```
+- Parent: `(i - 1) / 2`
+- Left child: `2 * i + 1`
+- Right child: `2 * i + 2`
+
+| Index | 0 | 1 | 2 | 3 | 4 |
+| ----- | - | - | - | - | - |
+| Value | 1 | 3 | 6 | 5 | 9 |
+
+The tree for `[1, 3, 6, 5, 9]` is the min heap drawn above: `1` at index 0, children `3` and `6` at indices 1 and 2, and `5`, `9` at indices 3 and 4 (children of `3`).
 
 :::
 
@@ -1470,63 +1410,53 @@ public class MinHeap {
 
 ::: pattern
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    HASH TABLE VARIANTS - COMPLETE GUIDE                      ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Hash table variants - complete guide
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ COLLISION RESOLUTION STRATEGIES                                             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ 1. SEPARATE CHAINING (External Chaining):                                   │
-│    Each bucket contains a linked list                                       │
-│                                                                             │
-│    Index 0: -> null                                                         │
-│    Index 1: -> [15] -> [25] -> null  (15 % 10 = 5, 25 % 10 = 5)             │
-│    Index 2: -> [12] -> null                                                 │
-│    ...                                                                      │
-│                                                                             │
-│    Pros: Simple, unlimited capacity                                         │
-│    Cons: Extra memory for pointers, cache unfriendly                        │
-│                                                                             │
-│ 2. OPEN ADDRESSING (Probing):                                               │
-│    Find another slot in same array                                          │
-│                                                                             │
-│    a) LINEAR PROBING: Try next slot                                         │
-│       h(k), h(k)+1, h(k)+2, ...                                             │
-│       Problem: Clustering                                                   │
-│                                                                             │
-│    b) QUADRATIC PROBING: Try squared distances                              │
-│       h(k), h(k)+1², h(k)+2², h(k)+3², ...                                  │
-│       Better distribution                                                   │
-│                                                                             │
-│    c) DOUBLE HASHING: Use second hash function                              │
-│       h(k), h(k)+h2(k), h(k)+2*h2(k), ...                                   │
-│       Best distribution                                                     │
-│                                                                             │
-│ 3. ROBIN HOOD HASHING:                                                      │
-│    Elements with larger "probe distance" steal from shorter ones            │
-│    More uniform distribution                                                │
-│                                                                             │
-│ 4. CUCKOO HASHING:                                                          │
-│    Two hash functions, two tables                                           │
-│    O(1) worst case lookup!                                                  │
-└─────────────────────────────────────────────────────────────────────────────┘
+#### Collision resolution strategies
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ JAVA HASH MAP VARIANTS                                                      │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ HashMap:         Basic, not thread-safe, allows null                        │
-│ LinkedHashMap:   Maintains insertion order                                  │
-│ TreeMap:         Sorted by keys (Red-Black Tree)                            │
-│ HashTable:       Thread-safe (legacy, use ConcurrentHashMap)                │
-│ ConcurrentHashMap: Thread-safe, modern                                      │
-│ WeakHashMap:     Keys can be garbage collected                              │
-│ IdentityHashMap: Uses == instead of equals()                                │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+1. SEPARATE CHAINING (External Chaining):
+   Each bucket contains a linked list
+
+Index 0: -> null
+Index 1: -> [15] -> [25] -> null  (15 % 10 = 5, 25 % 10 = 5)
+Index 2: -> [12] -> null
+...
+
+Pros: Simple, unlimited capacity
+Cons: Extra memory for pointers, cache unfriendly
+
+2. OPEN ADDRESSING (Probing):
+   Find another slot in same array
+
+a) LINEAR PROBING: Try next slot
+h(k), h(k)+1, h(k)+2, ...
+Problem: Clustering
+
+b) QUADRATIC PROBING: Try squared distances
+h(k), h(k)+1², h(k)+2², h(k)+3², ...
+Better distribution
+
+c) DOUBLE HASHING: Use second hash function
+h(k), h(k)+h2(k), h(k)+2*h2(k), ...
+Best distribution
+
+3. ROBIN HOOD HASHING:
+   Elements with larger "probe distance" steal from shorter ones
+   More uniform distribution
+
+4. CUCKOO HASHING:
+   Two hash functions, two tables
+   O(1) worst case lookup!
+
+#### Java hash map variants
+
+HashMap:         Basic, not thread-safe, allows null
+LinkedHashMap:   Maintains insertion order
+TreeMap:         Sorted by keys (Red-Black Tree)
+HashTable:       Thread-safe (legacy, use ConcurrentHashMap)
+ConcurrentHashMap: Thread-safe, modern
+WeakHashMap:     Keys can be garbage collected
+IdentityHashMap: Uses == instead of equals()
 
 :::
 
@@ -1536,59 +1466,51 @@ public class MinHeap {
 
 ::: memory
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    DATA STRUCTURE SELECTION GUIDE                            ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Data structure selection guide
 
-LINKED LIST SELECTION:
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Need                            │ Use                                       │
-│ ──────────────────────────────────────────────────────────────────────────  │
-│ Simple forward traversal        │ Singly Linked List                        │
-│ Delete at tail / backward       │ Doubly Linked List                        │
-│ Round-robin / cycling           │ Circular Linked List                      │
-│ Both directions + cycling       │ Circular Doubly Linked List               │
-│ O(log n) search in sorted list  │ Skip List                                 │
-│ LRU Cache                       │ Doubly Linked + HashMap                   │
-└─────────────────────────────────────────────────────────────────────────────┘
+**Linked list selection**
 
-QUEUE SELECTION:
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Need                            │ Use                                       │
-│ ──────────────────────────────────────────────────────────────────────────  │
-│ Basic FIFO                      │ Simple Queue                              │
-│ Fixed size, no wasted space     │ Circular Queue                            │
-│ Add/remove both ends            │ Deque                                     │
-│ Priority-based access           │ Priority Queue (Heap)                     │
-│ Sliding window max/min          │ Monotonic Queue                           │
-└─────────────────────────────────────────────────────────────────────────────┘
+| Need | Use |
+| ---- | --- |
+| Simple forward traversal | Singly linked list |
+| Delete at tail / backward traversal | Doubly linked list |
+| Round-robin / cycling | Circular linked list |
+| Both directions + cycling | Circular doubly linked list |
+| O(log n) search in a sorted list | Skip list |
+| LRU cache | Doubly linked list + HashMap |
 
-TREE SELECTION:
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Need                            │ Use                                       │
-│ ──────────────────────────────────────────────────────────────────────────  │
-│ Basic sorted structure          │ BST                                       │
-│ Guaranteed O(log n)             │ AVL or Red-Black Tree                     │
-│ Lookup-heavy                    │ AVL Tree                                  │
-│ Insert/Delete-heavy             │ Red-Black Tree                            │
-│ Range queries                   │ Segment Tree                              │
-│ Prefix operations               │ Trie                                      │
-│ Top-k / Priority                │ Heap                                      │
-│ Database index                  │ B-Tree / B+ Tree                          │
-└─────────────────────────────────────────────────────────────────────────────┘
+**Queue selection**
 
-HASH TABLE SELECTION:
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Need                            │ Use                                       │
-│ ──────────────────────────────────────────────────────────────────────────  │
-│ Basic key-value                 │ HashMap                                   │
-│ Maintain insertion order        │ LinkedHashMap                             │
-│ Sorted keys                     │ TreeMap                                   │
-│ Thread-safe                     │ ConcurrentHashMap                         │
-│ Only keys (no values)           │ HashSet                                   │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+| Need | Use |
+| ---- | --- |
+| Basic FIFO | Simple queue |
+| Fixed size, no wasted space | Circular queue |
+| Add/remove at both ends | Deque |
+| Priority-based access | Priority queue (heap) |
+| Sliding-window max/min | Monotonic queue |
+
+**Tree selection**
+
+| Need | Use |
+| ---- | --- |
+| Basic sorted structure | BST |
+| Guaranteed O(log n) | AVL or Red-Black tree |
+| Lookup-heavy | AVL tree |
+| Insert/delete-heavy | Red-Black tree |
+| Range queries | Segment tree |
+| Prefix operations | Trie |
+| Top-k / priority | Heap |
+| Database index | B-tree / B+ tree |
+
+**Hash table selection**
+
+| Need | Use |
+| ---- | --- |
+| Basic key-value | `HashMap` |
+| Maintain insertion order | `LinkedHashMap` |
+| Sorted keys | `TreeMap` |
+| Thread-safe | `ConcurrentHashMap` |
+| Only keys (no values) | `HashSet` |
 
 :::
 
@@ -1955,47 +1877,58 @@ Compare to B-tree: ~1-2× write amplification (single write per update, sometime
 
 ### Self-Balancing BST Choice
 
+```mermaid
+flowchart TD
+    Q0{"Read-heavy workload (&gt; 80% lookups)?"}
+    Q1{"Need worst-case O(log n) guarantees (real-time systems)?"}
+    Q2{"Concurrent access required?"}
+    Q3{"Access pattern is sequential or bursty (recent items accessed again)?"}
+    Q4{"Want simplest implementation?"}
+    Q0 -- YES --> A1["AVL tree (tighter balance, faster lookups)"]
+    Q0 -- NO --> Q1
+    Q1 -- YES --> A2["AVL or Red-Black"]
+    Q1 -- NO --> A3["consider Treap or Splay"]
+    Q2 -- YES --> A4["ConcurrentSkipListMap (lock-free skip list)"]
+    Q2 -- NO --> Q3
+    Q3 -- YES --> A5["Splay tree (amortized O(1) for re-access)"]
+    Q3 -- NO --> Q4
+    Q4 -- YES --> A6["Treap (just BST + heap on random priorities)"]
+    Q4 -- NO --> A7["use library impl (Java TreeMap, etc.)"]
+    A3 -. "then decide" .-> Q2
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3,Q4 ask
+    class A1,A2,A3,A4,A5,A6,A7 ans
 ```
-Read-heavy workload (> 80% lookups)?
-  → YES → AVL tree (tighter balance, faster lookups)
-  → NO → continue
 
-Need worst-case O(log n) guarantees (real-time systems)?
-  → YES → AVL or Red-Black
-  → NO → consider Treap or Splay
-
-Concurrent access required?
-  → YES → ConcurrentSkipListMap (lock-free skip list)
-  → NO → continue
-
-Access pattern is sequential or bursty (recent items accessed again)?
-  → YES → Splay tree (amortized O(1) for re-access)
-  → NO → continue
-
-Want simplest implementation?
-  → YES → Treap (just BST + heap on random priorities)
-  → NO → use library impl (Java TreeMap, etc.)
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 ### Bloom Filter vs HashSet for Membership
 
+```mermaid
+flowchart TD
+    Q0{"Need to support delete?"}
+    Q1{"Memory budget tight (10⁶ elements, ≤ 2 MB)?"}
+    Q2{"False positives acceptable (e.g., pre-filter before DB query)?"}
+    Q3{"Disk-based membership?"}
+    Q0 -- YES --> A1["HashSet (Bloom filter doesn't support delete, unless Counting Bloom Filter)"]
+    Q0 -- NO --> A2["consider Bloom filter for memory efficiency"]
+    Q1 -- YES --> A3["Bloom filter (1.2 MB for 1% FP)"]
+    Q1 -- NO --> A4["HashSet (~48 MB for 10⁶ entries)"]
+    Q2 -- YES --> A5["Bloom filter"]
+    Q2 -- NO --> A6["HashSet"]
+    Q3 -- YES --> A7["Disk-based Bloom filter (e.g., RocksDB Bloom filter)"]
+    Q3 -- NO --> A8["in-memory HashSet"]
+    A2 -. "then decide" .-> Q1
+    A4 -. "then decide" .-> Q2
+    A6 -. "then decide" .-> Q3
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2,Q3 ask
+    class A1,A2,A3,A4,A5,A6,A7,A8 ans
 ```
-Need to support delete?
-  → YES → HashSet (Bloom filter doesn't support delete, unless Counting Bloom Filter)
-  → NO → consider Bloom filter for memory efficiency
 
-Memory budget tight (10⁶ elements, ≤ 2 MB)?
-  → YES → Bloom filter (1.2 MB for 1% FP)
-  → NO → HashSet (~48 MB for 10⁶ entries)
-
-False positives acceptable (e.g., pre-filter before DB query)?
-  → YES → Bloom filter
-  → NO → HashSet
-
-Disk-based membership?
-  → YES → Disk-based Bloom filter (e.g., RocksDB Bloom filter)
-  → NO → in-memory HashSet
-```
+**How to read this diagram.** Start at the first blue question and follow the YES / NO edges; the green boxes are the recommended choice.
 
 ### B-Tree vs LSM-Tree for Storage
 

@@ -47,25 +47,16 @@ flowchart LR
 
 ### 5W1H: Mastering 2D Arrays & Matrices
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: A collection of arrays organized in rows and columns. In memory, it   ║
-║        is fundamentally a 1D contiguous block of memory abstracted as a grid.║
-║                                                                              ║
-║  WHY:  Essential for representing grid-based data, relationships (graphs),   ║
-║        and table-structured records. Many real-world problems (images,       ║
-║        maps, games) naturally map to a 2D coordinate system.                 ║
-║                                                                              ║
-║  WHO:  Developers implementing UI layouts, processing images, designing      ║
-║        games, or solving algorithmic graph and grid problems.                ║
-║                                                                              ║
-║  WHEN: Use when data has natural row/column relationships, when modeling     ║
-║        neighbors (up/down/left/right), or mapping (x,y) coordinates.         ║
-║                                                                              ║
-║  HOW:  By manipulating indices (e.g., `matrix[row][col]`), traversing via    ║
-║        nested loops or BFS/DFS, and transforming the matrix in-place.        ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!NOTE]
+> **WHAT:** A collection of arrays organized in rows and columns. In memory, it is fundamentally a 1D contiguous block of memory abstracted as a grid.
+>
+> **WHY:** Essential for representing grid-based data, relationships (graphs), and table-structured records. Many real-world problems (images, maps, games) naturally map to a 2D coordinate system.
+>
+> **WHO:** Developers implementing UI layouts, processing images, designing games, or solving algorithmic graph and grid problems.
+>
+> **WHEN:** Use when data has natural row/column relationships, when modeling neighbors (up/down/left/right), or mapping (x,y) coordinates.
+>
+> **HOW:** By manipulating indices (e.g., `matrix[row][col]`), traversing via nested loops or BFS/DFS, and transforming the matrix in-place.
 
 ## What Is A 2D Array?
 
@@ -95,37 +86,17 @@ The "2D" is just an abstraction for human understanding.
 
 ## Timeline: From Punch Cards to GPU Tensors
 
-```
-Pre-1958  →  Actuarial hand-computed tables → punch card matrices → magnetic drum storage
-     ↓
-1958     →  FORTRAN introduces multi-dimensional arrays (John Backus, IBM)
-            The "scientific method of computing" begins: matrix algebra becomes
-            expressible in code, not just mathematics notation.
-     ↓
-1979     →  VisiCalc on Apple II (Dan Bricklin, Bob Frankston)
-            First killer app for 2D arrays on consumer hardware.
-            Spreadsheets = 2D arrays made accessible to non-programmers.
-     ↓
-1980s    →  BLAS (Basic Linear Algebra Subprograms) established
-            Fortran standard library for matrix multiplication, LU decomposition,
-            and other linear algebra primitives. Row-major by default.
-     ↓
-1987     →  SPARSKIT released (Yousef Saad, University of Minnesota)
-            Toolkit for sparse matrix computations. CSR/CSC formats become standard.
-     ↓
-1990s    →  OpenGL texture storage maps 2D arrays directly to GPU memory.
-            Texture pixels accessed via (u, v) coordinates; hardware handles filtering.
-     ↓
-2001     →  NumPy (Travis Olliphant) brings true 2D arrays to Python.
-            Memory model exposed to scripting-language programmers at last.
-     ↓
-2010s    →  TensorFlow/PyTorch: n-dimensional arrays (tensors) on GPU/TPU.
-            CUDA memory coalescing requires understanding row vs column layout.
-     ↓
-2017     →  Tile-based GPU architectures (NVIDIA Volta, AMD Vega) make blocked/
-            tiled 2D layouts critical for performance. 64×64 tile size emerges
-            as the sweet spot matching shared memory capacity and warp size.
-```
+| Year | Milestone | Why it matters for 2D arrays |
+| ---- | --------- | ---------------------------- |
+| Pre-1958 | Actuarial hand-computed tables → punch-card matrices → magnetic drum storage | Tabular data existed long before code |
+| 1958 | FORTRAN introduces multi-dimensional arrays (John Backus, IBM) | Matrix algebra becomes expressible in code, not just mathematical notation |
+| 1979 | VisiCalc on Apple II (Dan Bricklin, Bob Frankston) | First killer app for 2D arrays on consumer hardware: spreadsheets make 2D arrays accessible to non-programmers |
+| 1979 | BLAS (Basic Linear Algebra Subprograms) | Standard library for matrix multiplication and other linear-algebra primitives; Fortran's column-major layout is the default |
+| c. 1990 | SPARSKIT (Yousef Saad, University of Minnesota) | Toolkit for sparse-matrix computation; CSR/CSC formats become standard |
+| 1990s | OpenGL texture storage | 2D arrays map directly to GPU memory; pixels are accessed via (u, v) coordinates while hardware handles filtering |
+| 1995 / 2006 | Numeric, then NumPy (Travis Oliphant) | True N-dimensional arrays in Python; the memory model is exposed to scripting-language programmers |
+| 2010s | TensorFlow / PyTorch | N-dimensional arrays (tensors) on GPU/TPU; CUDA memory coalescing requires understanding row vs column layout |
+| 2017 | Tile-based GPU architectures (NVIDIA Volta, AMD Vega) | Blocked/tiled 2D layouts become critical for performance; tile sizes are chosen to match shared-memory capacity and warp size |
 
 ## Predecessor Systems
 
@@ -275,29 +246,40 @@ USE 2D ARRAY WHEN:
 
 ## 🧬 What is a 2D Array REALLY?
 
+> [!IMPORTANT]
+> **Mental model: it is NOT actually "2D" in memory!** Memory is linear; rows are stored consecutively.
+
+```mermaid
+flowchart LR
+    subgraph BRAIN["YOUR BRAIN THINKS (grid)"]
+        direction TB
+        R0["Row 0:  1  2  3  4"] --- R1["Row 1:  5  6  7  8"] --- R2["Row 2:  9 10 11 12"]
+    end
+    subgraph MEM["COMPUTER STORES (one line)"]
+        direction LR
+        m1["1"] --- m2["2"] --- m3["3"] --- m4["4"] --- m5["5"] --- m6["6"] --- m7["7"] --- m8["8"] --- m9["9"] --- m10["10"] --- m11["11"] --- m12["12"]
+    end
+    BRAIN ==> MEM
+    classDef r0 fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef r1 fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef r2 fill:#ffd9b3,stroke:#e65100,color:#111
+    class R0,m1,m2,m3,m4 r0
+    class R1,m5,m6,m7,m8 r1
+    class R2,m9,m10,m11,m12 r2
 ```
-MENTAL MODEL - It's NOT actually "2D" in memory!
 
-YOUR BRAIN THINKS:            COMPUTER STORES:
-┌───┬───┬───┬───┐            ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
-│ 1 │ 2 │ 3 │ 4 │   Row 0    │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │10 │11 │12 │
-├───┼───┼───┼───┤            └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
-│ 5 │ 6 │ 7 │ 8 │   Row 1     ↑Row0 ends↑    ↑Row1 ends↑    ↑Row2 ends↑
-├───┼───┼───┼────────────────────────────────────────────────────────────────┤
-│ 9 │10 │11 │12 │   Row 2    Memory is LINEAR! Rows stored CONSECUTIVELY.
-└───┴───┴───┴────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** Matching colours show which row each memory cell came from: blue = row 0, green = row 1, orange = row 2. Row 1 starts right after row 0 ends.
 
-WHY THIS MATTERS:
-- arr[i][j] = baseAddress + (i × numColumns + j) × elementSize
-- arr[1][2] = base + (1 × 4 + 2) × 4 = base + 24
+**Why this matters:**
+
+- `arr[i][j] = baseAddress + (i × numColumns + j) × elementSize`
+- `arr[1][2] = base + (1 × 4 + 2) × 4 = base + 24`
 - This is still O(1) access!
 
-ROW-MAJOR ORDER (Java, C, Python):
-arr[0][0], arr[0][1], arr[0][2], arr[1][0], arr[1][1]...
-
-COLUMN-MAJOR ORDER (Fortran, MATLAB):
-arr[0][0], arr[1][0], arr[2][0], arr[0][1], arr[1][1]...
-```
+| Order | Languages | Traversal order |
+| ----- | --------- | --------------- |
+| Row-major | Java, C, Python (NumPy default) | `arr[0][0], arr[0][1], arr[0][2], arr[1][0], arr[1][1]...` |
+| Column-major | Fortran, MATLAB | `arr[0][0], arr[1][0], arr[2][0], arr[0][1], arr[1][1]...` |
 
 ## 🔴 Real-World Origin: Spreadsheets & Images (1970s)
 
@@ -1505,26 +1487,24 @@ private static void dfsIsland(int[][] grid, int r, int c,
 
 ## Matrix Challenge Patterns Summary
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    MATRIX PROBLEM RECOGNITION GUIDE                             │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  "Find shortest distance..."          → BFS                                     │
-│  "Can wrap around edges..."           → Use modulo: (pos + delta + size) % size │
-│  "Find NxN square with property..."   → Nested loops, check all positions       │
-│  "Count distinct shapes..."           → DFS + normalize coordinates             │
-│  "Path from A to B..."                → BFS (shortest) or DFS (any path)        │
-│  "Rotate matrix..."                   → Formula: new[j][n-1-i] = old[i][j]      │
-│  "Transform based on neighbors..."    → Need copy or process in specific order  │
-│                                                                                 │
-│  COMMON EDGE CASES:                                                             │
-│  • Empty matrix                  • Single cell                                  │
-│  • No valid path exists          • Target not found                             │
-│  • All cells are same value      • Wrap-around boundaries                       │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### Matrix problem recognition guide
+
+| If the problem says... | Reach for |
+| ---------------------- | --------- |
+| "Find shortest distance..." | BFS |
+| "Can wrap around edges..." | Modulo: `(pos + delta + size) % size` |
+| "Find N×N square with property..." | Nested loops, check all positions |
+| "Count distinct shapes..." | DFS + normalize coordinates |
+| "Path from A to B..." | BFS (shortest) or DFS (any path) |
+| "Rotate matrix..." | Formula: `new[j][n-1-i] = old[i][j]` |
+| "Transform based on neighbors..." | Need a copy, or process in a specific order |
+
+**Common edge cases:**
+
+| | | |
+| --- | --- | --- |
+| Empty matrix | Single cell | All cells are the same value |
+| No valid path exists | Target not found | Wrap-around boundaries |
 
 ---
 

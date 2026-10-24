@@ -86,13 +86,15 @@ Consider the difference:
 
 A single data structure problem can be attacked from multiple angles:
 
-```
-"Sorted array search — why is binary search optimal?"
-  Comparison model:    Adversary forces Ω(log n) comparisons  ← prove Ω(log n) time
-  Cell-probe model:    Probing < log₂ n cells can't distinguish all positions  ← same result
-  Information theory:  n+1 possible answers, need log₂(n+1) bits of query info ← same result
-  All three models agree: binary search is optimal!
-```
+**"Sorted array search: why is binary search optimal?"**
+
+| Model | Argument | Result |
+| ----- | -------- | ------ |
+| Comparison model | An adversary forces Ω(log n) comparisons | Ω(log n) time |
+| Cell-probe model | Probing fewer than log₂ n cells cannot distinguish all positions | Same result |
+| Information theory | n+1 possible answers need log₂(n+1) bits of query information | Same result |
+
+All three models agree: **binary search is optimal**.
 
 But sometimes they disagree, revealing the power of the right model:
 
@@ -340,16 +342,16 @@ When storing n keys in a hash table with m buckets using chaining, the load fact
 
 **The Operational Consequence**: When load factor exceeds 1, the average chain length is at least 1. Any lookup in that bucket requires Ω(1) expected work. In the worst case, a hash table with n elements and m = n/2 buckets has a bucket of size at least 2. With m = n/log n buckets (common for dynamic resizing), the maximum bucket size is Ω(log n), which matches the BST lower bound.
 
-```
-Load factor α = n/m
-  α < 1:  average chain length < 1 → Ω(1) expected search
-  α = 1:  average chain length = 1
-  α > 1:  worst-case bucket has Ω(α) elements → Ω(α) worst-case
+| Load factor α = n/m | Average chain length | Consequence |
+| ------------------- | -------------------- | ----------- |
+| α < 1 | < 1 | Ω(1) expected search |
+| α = 1 | = 1 | |
+| α > 1 | worst-case bucket has Ω(α) elements | Ω(α) worst-case |
 
-Hash tables achieve Ω(1) expected (universal hashing), not Ω(1) worst-case.
-  → Load factor > 1 breaks the constant-time guarantee.
-  → Resize when α approaches 1 to maintain O(1) expected.
-```
+Hash tables achieve O(1) **expected** time (universal hashing), not O(1) **worst-case**.
+
+- Load factor > 1 breaks the constant-time guarantee.
+- Resize when α approaches 1 to maintain O(1) expected time.
 
 ### 5.3 Bloom Filter — The Information-Theoretic Optimality
 
@@ -590,21 +592,30 @@ Lower bounds apply within a specific model. Outside that model, the ceiling disa
 
 ### Model Selection in Practice
 
+```mermaid
+flowchart TD
+    S{"Is your data static?"}
+    S -- YES --> FP{"Can you accept<br/>false positives?"}
+    FP -- YES --> BF["Bloom filter<br/>(near-optimal space for a given error rate)"]
+    FP -- NO --> BV["Bit vector<br/>(optimal space for exact queries)"]
+    S -- NO --> INT{"Keys are integers<br/>in [0, U-1]?"}
+    INT -- YES --> VEB["van Emde Boas tree<br/>O(log log U), optimal"]
+    INT -- NO --> IL{"Mostly insert / lookup?"}
+    IL -- YES --> HT["Hash table<br/>O(1) expected, O(n) worst case"]
+    IL -- NO --> SO{"Need sorted order?"}
+    SO -- YES --> BST["Balanced BST<br/>O(log n), optimal for the comparison model"]
+    SO -- NO --> DC{"Need dynamic<br/>connectivity?"}
+    DC -- YES --> HD["HDLT or Euler tour tree<br/>O(log n) or O(log^2 n)"]
+    DC -- NO --> SP["Specify your operations:<br/>the bound follows"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef fb fill:#fff3b0,stroke:#b58900,color:#111
+    class S,FP,INT,IL,SO,DC ask
+    class BF,BV,VEB,HT,BST,HD ans
+    class SP fb
 ```
-Is your data static?
-  YES → Can you accept false positives?
-    YES → Bloom filter (optimal space for given ε)
-    NO  → Bit vector (optimal space for exact queries)
-  NO  → Are your keys integers in [0, U-1]?
-    YES → van Emde Boas tree (O(log log U), optimal)
-    NO  → Are operations mostly insert/lookup?
-      YES → Hash table (O(1) expected, O(n) worst case)
-      NO  → Do you need sorted order?
-        YES → Balanced BST (O(log n), optimal for comparison model)
-        NO  → Do you need dynamic connectivity?
-          YES → HDLT or Euler tour tree (O(log n) or O(log² n))
-          NO  → Specify your operations — the bound follows.
-```
+
+**How to read this diagram.** Start at the blue question and follow YES / NO. Each green leaf is the structure whose upper bound matches the lower bound in this chapter.
 
 ### The "Don't Beat the Model" Principle
 
@@ -766,56 +777,52 @@ In the dynamic version: each `update` changes many prefix sums (specifically, al
 
 ## DS Lower Bound Cheat Sheet
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    DS LOWER BOUND CHEAT SHEET                   │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  COMPARISON MODEL (only <, >, = comparisons)                    │
-│  ─────────────────────────────────────────────                  │
-│  Sorted array search      Ω(log n)    → Binary search is optimal│
-│  BST any operation        Ω(log n)    → Red-black, AVL optimal  │
-│  Heap extract-min         Ω(log n)    → Binary heap optimal     │
-│  Priority queue (comp.)   Ω(log n)    → Binary heap optimal     │
-│  Any sort                 Ω(n log n)  → Merge/heap sort optimal  │
-│                                                                 │
-│  CELL-PROBE MODEL (count memory accesses, computation free)      │
-│  ───────────────────────────────────────────────────────         │
-│  Predecessor (integer)    Ω(log log n) → vEB tree matches!      │
-│  Partial-sums (dynamic)   Ω(log n)     → Fenwick tree optimal   │
-│  Union-Find m ops         Ω(m·α(n))   → Tarjan optimal! SOLVED  │
-│  Dynamic connectivity     Ω(log n)    → Gap to upper bound      │
-│                                                                 │
-│  INFORMATION-THEORETIC (model-independent)                      │
-│  ──────────────────────────────────────────                     │
-│  Static membership exact  Ω(n) bits     → Bit vector optimal    │
-│  Static membership (ε FP)  Ω(n·log(1/ε)) → Bloom filter optimal │
-│  Sorted array encoding    Ω(n log n) bits → Sorted array optimal│
-│                                                                 │
-│  HASH TABLE                                                    │
-│  ───────────                                                   │
-│  Load factor α = n/m                                            │
-│  When α > 1: worst-case bucket ≥ ⌈α⌉ → Ω(α) worst-case lookup  │
-│  Optimal ε-FP Bloom: m = -n·ln(ε)/ln²2, k = (m/n)·ln2          │
-│                                                                 │
-│  INTEGER KEYS / NON-COMPARISON                                  │
-│  ─────────────────────────────────                              │
-│  Predecessor on [0, U-1]    O(log log U)  → vEB tree            │
-│  (Beats Ω(log n) comparison bound by using bit indexing)        │
-│                                                                 │
-│  REMEMBER                                                       │
-│  ─────────                                                      │
-│  Ω(log n) = always applies to comparison-based BST/heap/search  │
-│  Ω(log log n) = the integer-key cell-probe floor               │
-│  Ω(α(n)) = the Union-Find floor — effectively constant          │
-│  Ω(n) bits = the floor for exact static membership              │
-│                                                                 │
-│  When upper bound = lower bound → PROBLEM IS SOLVED             │
-│  Known solved DS problems: BST, binary heap, bit vector,        │
-│    Bloom filter (optimal m), Union-Find, Fenwick tree, vEB tree │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+### DS lower-bound cheat sheet
+
+**Comparison model** (only `<`, `>`, `=` comparisons):
+
+| Problem | Lower bound | Optimal structure / algorithm |
+| ------- | ----------- | ----------------------------- |
+| Sorted array search | Ω(log n) | Binary search is optimal |
+| BST, any operation | Ω(log n) | Red-black, AVL are optimal |
+| Heap extract-min | Ω(log n) | Binary heap is optimal |
+| Priority queue (comparison-based) | Ω(log n) | Binary heap is optimal |
+| Any sort | Ω(n log n) | Merge sort / heap sort are optimal |
+
+**Cell-probe model** (count memory accesses, computation is free):
+
+| Problem | Lower bound | Notes |
+| ------- | ----------- | ----- |
+| Predecessor (integer keys) | Ω(log log n) | vEB tree matches |
+| Partial sums (dynamic) | Ω(log n) | Fenwick tree is optimal |
+| Union-Find, m operations | Ω(m·α(n)) | Tarjan's structure is optimal: **solved** |
+| Dynamic connectivity | Ω(log n) | Gap to the best upper bound |
+
+**Information-theoretic** (model-independent):
+
+| Problem | Lower bound | Notes |
+| ------- | ----------- | ----- |
+| Static membership, exact | Ω(n) bits | Bit vector is optimal |
+| Static membership, ε false-positive rate | Ω(n·log(1/ε)) bits | A Bloom filter uses ≈ 1.44× this; cuckoo/xor filters get closer |
+| Sorted array encoding | Ω(n log n) bits | Sorted array is optimal |
+
+**Hash table:**
+
+- Load factor α = n/m.
+- When α > 1 the worst-case bucket holds ≥ ⌈α⌉ items → Ω(α) worst-case lookup.
+- Bloom filter sizing for false-positive rate ε: `m = -n·ln(ε)/ln²2`, `k = (m/n)·ln 2`.
+
+**Integer keys / non-comparison:**
+
+- Predecessor on `[0, U-1]` is `O(log log U)` with a vEB tree. It beats the Ω(log n) comparison bound by using bit indexing.
+
+> [!IMPORTANT]
+> **Remember**
+> - Ω(log n): always applies to comparison-based BST / heap / search.
+> - Ω(log log n): the integer-key cell-probe floor.
+> - Ω(α(n)): the Union-Find floor, effectively constant.
+> - Ω(n) bits: the floor for exact static membership.
+> - When **upper bound = lower bound**, the problem is **solved**. Known solved DS problems: BST, binary heap, bit vector, Union-Find, Fenwick tree, vEB tree (and Bloom filter up to a constant factor).
 
 *[← A2: DS Complexity](A2_DS_Complexity_FirstPrinciples.md) | [A4: Randomized DS →](A4_Randomized_Data_Structures.md)*
 
