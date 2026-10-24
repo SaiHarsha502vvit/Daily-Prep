@@ -68,6 +68,8 @@ sequenceDiagram
     Note over CPU,You: If a later call passes a string or object,<br/>the assumption breaks -> deoptimize (Section 9).
 ```
 
+**How to read this diagram.** The lifelines trace one function, `add`, from source to fast code: the parser tokenizes and builds an AST, Ignition compiles it to bytecode and runs it while recording type feedback, and once the call count crosses the threshold TurboFan reads that feedback and installs speculative optimized machine code. The thing to notice is the final note: if a later call breaks the type assumption, the code deoptimizes (Section 9).
+
 **The two names to hold onto:** **Ignition** is the bytecode interpreter — it runs first, runs everything, and is designed to start fast and collect information. **TurboFan** is the optimizing compiler — it runs later, only for code that's actually hot, and produces genuinely fast machine code by betting on the patterns Ignition observed. (Since 2021, V8 also has **Sparkplug**, a very fast non-optimizing baseline compiler that sits between Ignition and TurboFan, and **Maglev**, a mid-tier optimizing compiler added in 2024 — both exist purely to shrink the gap before TurboFan kicks in. The three-name mental model of *interpret → observe → optimize* still holds; V8 just added faster rungs on that same ladder.)
 
 This whole pipeline exists because of one tension: **compiling straight to optimized machine code is slow to produce but fast to run; interpreting bytecode is fast to produce but slow to run.** A web page loads hundreds of functions that run once and never again (event handler setup, one-time init). Fully optimizing all of them would waste time compiling code that never benefits. Only functions that actually run *many times* (loops, hot call sites) earn the cost of full optimization. The two-tier pipeline is V8 paying the optimization cost only where it pays off.
@@ -237,6 +239,8 @@ sequenceDiagram
     Note over A,B: Same final property NAMES {x, y}.<br/>DIFFERENT hidden classes, because the offsets don't match<br/>(x is offset 0 in C2, but offset 1 in C4).
 ```
 
+**How to read this diagram.** Both functions assign the same two properties, but the diagram shows each one walking the hidden-class graph from the same starting class `C0`: `makePointA` goes C0, C1 (x), C2 (x, y), while `makePointB` goes C0, C3 (y), C4 (y, x). The thing to notice is that the final objects have the same property names yet end on different hidden classes (C2 vs C4), because the order of insertion changes the offsets.
+
 **Why this matters in practice.** Any code that reads `.x` from a mix of `makePointA()` and `makePointB()` results is reading from objects with two *different* hidden classes, even though every object "has an x and a y." That call site cannot assume a single fixed offset for `.x` — it has to check which shape it's looking at every time. This is the entire reason for the classic advice "always initialize an object's properties in the same order, ideally in a constructor" — it's not a style preference, it's the only way to guarantee every instance shares one hidden class.
 
 ```javascript
@@ -357,6 +361,8 @@ sequenceDiagram
     end
 ```
 
+**How to read this diagram.** Optimized `add()` first runs an assumption guard that checks whether both operands are really small integers. If the guard holds, the fast integer add proceeds; if it fails, the Deoptimizer rebuilds the exact interpreter state and resumes in Ignition bytecode. The thing to notice is the last note: the optimized version is discarded and the function runs interpreted again while it re-collects feedback.
+
 **Why this explains real, observed jank.** A function that runs fast for a while and then suddenly, permanently slows down is very often a deopt: something changed the shape of the values flowing through it (an API response occasionally includes an extra field, a loop occasionally receives `undefined`, a "numbers-only" accumulator gets one string appended). The fix is never "add more code to handle the edge case reactively" — it's making the function's inputs genuinely, structurally consistent so TurboFan's assumptions stay true. This is the same lesson as hidden classes and elements kinds, arriving from a different direction: **consistency is not a style preference in V8's world, it's the literal input to every optimization decision the engine makes.**
 
 ---
@@ -415,6 +421,8 @@ sequenceDiagram
     MSC->>Old: SWEEP: reclaim memory of unflagged objects
     MSC->>Old: COMPACT (periodic): slide survivors together, defragment
 ```
+
+**How to read this diagram.** Top to bottom: new objects are allocated in New Space, which triggers a minor GC when the from-space fills; the Scavenger copies live objects to the to-space and the two swap. An object that survives its second scavenge is promoted to Old Space, and when Old Space grows, the Mark-Sweep-Compact collector marks reachable objects, sweeps the rest and periodically compacts. The thing to notice is that the two collectors work on different spaces with different strategies.
 
 ---
 

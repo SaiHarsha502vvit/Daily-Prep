@@ -365,10 +365,10 @@ Node.js has picked a module condition.
 
 <details><summary>Answer</summary>
 
-**Scenario:** TypeScript can't find exported members despite correct JS exports.
-**Trace:** The root cause is almost certainly that the `"types"` condition is
-missing or incorrectly placed in the `exports` field. When TypeScript resolves
-`import { createClient } from 'my-lib'`, it:
+- **Scenario:** TypeScript can't find exported members despite correct JS exports.
+- **Trace:** The root cause is almost certainly that the `"types"` condition is
+  missing or incorrectly placed in the `exports` field. When TypeScript resolves
+  `import { createClient } from 'my-lib'`, it:
 
 1. Reads the `exports` field in package.json
 2. If `"types"` condition exists, uses that path for `.d.ts` lookup
@@ -527,13 +527,13 @@ isolatedModules: true ensures Stage 1 can run without Stage 2's context.
 
 <details><summary>Answer</summary>
 
-**Scenario:** `isolatedModules` violations in a barrel export file.
-**Trace:** When you write `export * from './types'`, TypeScript must resolve
-what `*` refers to at the type level — it needs to know the exported names
-from `./types`. With `isolatedModules: true`, the transpiler processing this
-file in isolation can't look at `./types` to determine which exports are types
-vs values. It defaults to assuming everything is a value — which would emit
-a runtime import even for purely type exports.
+- **Scenario:** `isolatedModules` violations in a barrel export file.
+- **Trace:** When you write `export * from './types'`, TypeScript must resolve
+  what `*` refers to at the type level — it needs to know the exported names
+  from `./types`. With `isolatedModules: true`, the transpiler processing this
+  file in isolation can't look at `./types` to determine which exports are types
+  vs values. It defaults to assuming everything is a value — which would emit
+  a runtime import even for purely type exports.
 
 **Is "just disable it" sound?** No — here's why:
 
@@ -715,11 +715,11 @@ The package compiles fine from the root. Why does this happen and how do you fix
 
 <details><summary>Answer</summary>
 
-**Scenario:** `tsc` works from root but fails in sub-package directory.
-**Trace:** When you run `tsc` in a sub-package directory, TypeScript only
-reads that package's tsconfig.json. It does NOT automatically include the
-root tsconfig.json's project references. The sub-package's tsconfig.json
-must have its own `references` array pointing to its dependencies.
+- **Scenario:** `tsc` works from root but fails in sub-package directory.
+- **Trace:** When you run `tsc` in a sub-package directory, TypeScript only
+  reads that package's tsconfig.json. It does NOT automatically include the
+  root tsconfig.json's project references. The sub-package's tsconfig.json
+  must have its own `references` array pointing to its dependencies.
 
 **Root cause:** Many developers assume "project references are global" or
 "the root tsconfig.json handles everything." But project references are
@@ -1188,10 +1188,10 @@ concerned about?
 
 <details><summary>Answer</summary>
 
-**Scenario:** Performance win from `skipLibCheck` and its implications.
-**Trace:** The senior engineer is partially right but misidentifies the risk.
-`skipLibCheck: true` skips **type-checking of declaration files** (`.d.ts`),
-not your source code. Your own `.ts` files are still fully type-checked.
+- **Scenario:** Performance win from `skipLibCheck` and its implications.
+- **Trace:** The senior engineer is partially right but misidentifies the risk.
+  `skipLibCheck: true` skips **type-checking of declaration files** (`.d.ts`),
+  not your source code. Your own `.ts` files are still fully type-checked.
 
 **What skipLibCheck actually skips:**
 - All `.d.ts` files in `node_modules` (type packages like `@types/react`)
@@ -1199,6 +1199,7 @@ not your source code. Your own `.ts` files are still fully type-checked.
 - Does NOT skip `.ts` source files
 
 **What the engineer got wrong:**
+
 It does NOT hide incompatibilities in your own code. Your types, interfaces,
 and source files are still checked. The "red flag" the engineer is thinking
 of is `noImplicitAny: false` or `strict: false` — those DO hide real type

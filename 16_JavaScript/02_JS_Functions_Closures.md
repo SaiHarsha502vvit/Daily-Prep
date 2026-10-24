@@ -215,6 +215,8 @@ flowchart TD
     Q4 -- "NO"  --> R_default
 ```
 
+**How to read this diagram.** Start at the top question and follow the YES/NO arrows down; the first YES gives the rule, and each rule box states what `this` becomes (arrow: enclosing lexical `this`, `new`: the new object, `call`/`apply`/`bind`: the passed receiver, `obj.method()`: the object before the dot). The thing to notice is that the order is fixed (arrow, `new`, explicit binding, dot call) and the final NO falls through to `globalThis` or `undefined`.
+
 **Why this order matters.** Arrow-check comes first because arrows opt
 out of the whole game — they have no `this` slot and won't accept any
 runtime binding. `new` comes next because it *invents* a receiver
@@ -320,6 +322,8 @@ sequenceDiagram
     Inner->>Env: write count = 2
     Inner-->>JS: log 2
 ```
+
+**How to read this diagram.** Read the sequence top to bottom through the four steps: calling `outer()` allocates the environment holding `count` and creates `inner` with a pointer to it, then `outer`'s context is popped, and the garbage collector finds the environment still referenced by `inner` and keeps it. The two later `counter()` calls both read and write that same environment, so notice that `count` goes 0, 1, 2 because it is one shared cell, not a copy.
 
 **Why `count` persists across calls, in one sentence:** `count` lives
 inside an *environment record*, not inside `outer`'s stack frame; the

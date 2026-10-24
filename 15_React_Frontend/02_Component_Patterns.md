@@ -491,7 +491,9 @@ This makes the `ProductTable` testable with mock data and reusable with differen
 <details><summary>Answer</summary>
 
 Compound components offer **Inversion of Control** and layout flexibility.
+
 With a config object, the `<Tabs>` component internally dictates exactly how and where the tabs render. If a user wants to inject an icon next to a specific tab label or change the order of the TabList vs TabPanel, they can't without changing the `<Tabs>` source code.
+
 With compound components, the _consumer_ writes the JSX, so they control the layout, order, and styling of children, while the parent `<Tabs>` implicitly manages the shared state via Context.
 
 </details>

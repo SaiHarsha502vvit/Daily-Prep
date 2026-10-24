@@ -77,6 +77,8 @@ sequenceDiagram
     S-->>C: HTML response begins
 ```
 
+**How to read this diagram.** Time flows downward through the four strictly ordered steps before any HTML can arrive: DNS lookup, the TCP handshake (SYN, SYN-ACK, ACK), the TLS handshake (hello messages, certificate check, session key), and finally the HTTP request. The thing to notice is that each step depends on the previous one's result, so the costs add up before the first byte of HTML.
+
 Add it up and the browser can easily burn **200-800ms before the
 first byte of HTML arrives** — and that's the number `preconnect`
 targets: `<link rel="preconnect" href="https://api.example.com">`

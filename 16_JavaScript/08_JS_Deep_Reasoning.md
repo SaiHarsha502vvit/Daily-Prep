@@ -10,10 +10,10 @@
 
 THE FREEZE PATTERN
 
-Junior: "I know closures capture variables"
-Interviewer: "But WHY does this print 5,5,5,5,5 instead of
-0,1,2,3,4?"
-Junior: _freezes_
+- Junior: "I know closures capture variables"
+- Interviewer: "But WHY does this print 5,5,5,5,5 instead of
+  0,1,2,3,4?"
+- Junior: _freezes_
 
 Senior: "Because var is function-scoped, so the loop shares
 ONE binding. The closure captures the variable, not

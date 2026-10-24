@@ -173,6 +173,8 @@ sequenceDiagram
     M->>M: worker.onmessage receives<br/>its own independent copy
 ```
 
+**How to read this diagram.** Follow the arrows between the two lifelines: the main thread calls `postMessage(data)`, the structured clone algorithm builds a separate copy in the worker's heap, the worker computes and posts a result back, and that result is cloned again on the way home. The thing to notice is the note on each hop: neither side ever shares an object with the other, so mutating the received copy cannot affect the sender.
+
 Not everything survives that clone walk — the algorithm can only rebuild things it knows how to serialize:
 
 | Clones successfully | Cannot be cloned |
@@ -314,6 +316,8 @@ graph LR
     T3["Tab 3"] -- port --> SW
     SW --> WS["Single WebSocket connection"]
 ```
+
+**How to read this diagram.** Three tabs each connect through their own `port` to a single SharedWorker instance, and that one instance holds the one WebSocket to the server. The thing to notice is the fan-in shape: many tabs on the left, one worker and one connection on the right.
 
 > Without SharedWorker, three tabs open a WebSocket connection each —
 > three sockets, three handshakes, three copies of the same server
@@ -479,6 +483,8 @@ sequenceDiagram
     end
 ```
 
+**How to read this diagram.** A tab calls `fetch('/api/data')` and the Service Worker's fetch event fires before the network is touched. Follow the `alt` branches: if a cached response exists it is returned straight from Cache Storage; otherwise the worker forwards the request to the network and replies, optionally caching the response first. The thing to notice is that the Service Worker sits between the tab and the network on every request.
+
 Every item below is that same interception point used for a different purpose:
 
 | Capability | What it uses the intercept point for |
@@ -515,9 +521,9 @@ if ("serviceWorker" in navigator) {
 
 <details><summary>Answer</summary>
 
-**Scenario:** Users stuck on an old version of the app despite new deployments.
-**Trace:** The browser fetches the `sw.js` file (which is byte-compared with the existing one). If it detects a change, the new SW installs but goes into the **WAITING** state. It will _not_ activate until all tabs controlled by the old SW are closed. Furthermore, if the `index.html` was heavily cached, the browser might not even know there's a new SW.
-**Debug/Design Fix:**
+- **Scenario:** Users stuck on an old version of the app despite new deployments.
+- **Trace:** The browser fetches the `sw.js` file (which is byte-compared with the existing one). If it detects a change, the new SW installs but goes into the **WAITING** state. It will _not_ activate until all tabs controlled by the old SW are closed. Furthermore, if the `index.html` was heavily cached, the browser might not even know there's a new SW.
+- **Debug/Design Fix:**
 
 1. **Never cache `index.html` or `sw.js`** with a Cache-First strategy. Use `Network-First` or set strict `Cache-Control: no-cache` headers for them.
 2. Listen for the SW update on the client: when a new SW is waiting, show a "New version available! [Refresh]" toast.
@@ -573,6 +579,8 @@ stateDiagram-v2
     Terminated --> Active: fetch / push / sync /<br/>message event arrives
     Discarded --> [*]
 ```
+
+**How to read this diagram.** Read the arrows as the Service Worker lifecycle: `register()` leads to Installing, which either fails into Discarded or succeeds into Waiting, then Activating and Active. The thing to notice is the loop at the bottom: an Active worker can be Terminated when idle and is woken again by a fetch, push, sync or message event, which is why state must live in `caches` or IndexedDB rather than in memory.
 
 ```javascript
 // sw.js — Service Worker

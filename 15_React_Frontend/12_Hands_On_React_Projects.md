@@ -525,7 +525,9 @@ listContainer.addEventListener("click", (e) => {
 ## 🔴 LEVEL 8: The Component Remount Trap (React Identity & Keys)
 
 **The Engineering Concept:**
+
 React relies on the `key` prop to identify which items have changed, been added, or been removed. Beginners often use `Math.random()`, `Date.now()`, or the `index` of an array.
+
 If a `key` changes, React **destroys** the entire component instance (along with its state and DOM focus) and rebuilds it from scratch.
 
 ### The Broken Concept (Why Juniors Fail)

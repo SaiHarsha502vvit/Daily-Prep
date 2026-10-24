@@ -1,10 +1,10 @@
 # 15_React_Frontend Combined Lens Audit Report
 
-**Auditor:** Sub-Agent — single-pass full-folder read (15 files)
-**Date:** 2026-06-14
-**Scope:** All 15 files in `/mnt/e/Dev_World/04_Practice/Daily-Prep/15_React_Frontend/`
-**Rubric:** Combined Lens (5 dimensions, 0-3 scale) from PEDAGOGY_STANDARDS.md
-**Threshold:** Flag if avg < 2.0 OR any dimension = 0
+- **Auditor:** Sub-Agent — single-pass full-folder read (15 files)
+- **Date:** 2026-06-14
+- **Scope:** All 15 files in `/mnt/e/Dev_World/04_Practice/Daily-Prep/15_React_Frontend/`
+- **Rubric:** Combined Lens (5 dimensions, 0-3 scale) from PEDAGOGY_STANDARDS.md
+- **Threshold:** Flag if avg < 2.0 OR any dimension = 0
 
 ---
 
@@ -60,9 +60,9 @@ Meta files (00_INDEX, CONTEXT) and problem set (15_PROBLEM_SETS) scored but flag
 
 ### P2-UPGRADE-01: Ch06 — React Router & Data Fetching Patterns
 
-**Scores:** CD=2 / TB=2 / PR=2 / HE=1 / PC=2 / Avg=**1.8**
-**Failed Dimensions:** HE=1 (avg below 2.0)
-**Priority:** P2
+- **Scores:** CD=2 / TB=2 / PR=2 / HE=1 / PC=2 / Avg=**1.8**
+- **Failed Dimensions:** HE=1 (avg below 2.0)
+- **Priority:** P2
 
 **Evidence:**
 1. HE=1: No named year for React Router creation or major versions. React Router was created by Ryan Florence and Michael Jackson (v1 in 2014), with v6 released in 2021 — no years cited.
@@ -81,9 +81,9 @@ Meta files (00_INDEX, CONTEXT) and problem set (15_PROBLEM_SETS) scored but flag
 
 ### P2-UPGRADE-02: Ch08 — React Performance & Enterprise Patterns
 
-**Scores:** CD=2 / TB=2 / PR=2 / HE=1 / PC=2 / Avg=**1.8**
-**Failed Dimensions:** HE=1 (avg below 2.0)
-**Priority:** P2
+- **Scores:** CD=2 / TB=2 / PR=2 / HE=1 / PC=2 / Avg=**1.8**
+- **Failed Dimensions:** HE=1 (avg below 2.0)
+- **Priority:** P2
 
 **Evidence:**
 1. HE=1: No years referenced anywhere. React.memo was introduced in React 16.6 (2018), useMemo/useCallback in React 16.8 (2019), lazy/Suspense in React 16.6 (2018), React 18 concurrent features (2022) — none cited.
@@ -102,9 +102,9 @@ Meta files (00_INDEX, CONTEXT) and problem set (15_PROBLEM_SETS) scored but flag
 
 ### P2-UPGRADE-03: Ch11 — Complex UI Pages & Patterns
 
-**Scores:** CD=2 / TB=2 / PR=2 / HE=0 / PC=2 / Avg=**1.6**
-**Failed Dimensions:** HE=0, avg below 2.0
-**Priority:** P2
+- **Scores:** CD=2 / TB=2 / PR=2 / HE=0 / PC=2 / Avg=**1.6**
+- **Failed Dimensions:** HE=0, avg below 2.0
+- **Priority:** P2
 
 **Evidence:**
 1. HE=0: Zero historical content. No years, no predecessors, no evolution, no modern practice anchors. The chapter presents 10 UI patterns as timeless recipes without any historical context.

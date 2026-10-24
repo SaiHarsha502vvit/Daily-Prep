@@ -1,8 +1,8 @@
 # 15_React_Frontend HE Upgrade Log
 
-**Phase:** 2, Step 1 (Combined Lens upgrade ferment)
-**Date:** 2026-06-14
-**Task:** Add `### Historical Evolution` subsections to all 12 numbered chapters
+- **Phase:** 2, Step 1 (Combined Lens upgrade ferment)
+- **Date:** 2026-06-14
+- **Task:** Add `### Historical Evolution` subsections to all 12 numbered chapters
 
 ## Per-File Additions
 

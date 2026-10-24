@@ -100,6 +100,8 @@ sequenceDiagram
     Note over CS,EL: Final output: 1, 4, 3, 2
 ```
 
+**How to read this diagram.** The sequence diagram replays the code above in three phases: the call stack runs the synchronous lines (`1` and `4`) while handing the timer to the Web APIs and queuing the promise callback, then the event loop drains the whole microtask queue (`3`), and only then takes one macrotask (`2`). The thing to notice is the order of the rules, microtasks before macrotasks, which is why the output is 1, 4, 3, 2.
+
 **Why the order is `1, 4, 3, 2` — not `1, 2, 3, 4`:**
 
 - `1` and `4` are synchronous — they run before the engine ever yields.
@@ -606,6 +608,8 @@ flowchart TD
     E["5. Render / paint if needed<br/>(browsers try for ~60fps)"]
     A --> B --> C --> D --> E --> C
 ```
+
+**How to read this diagram.** The boxes are one turn of the event loop in order: run synchronous code, drain all microtasks, run ONE macrotask, drain microtasks again, render, then loop back to the macrotask step. The thing to notice is the arrow from the render step back to step 3, which makes the cycle repeat and is why the microtask drain steps can block everything after them.
 
 **Implication — microtasks can starve macrotasks.** If every microtask
 schedules another microtask, step 2 (or step 4) never terminates.

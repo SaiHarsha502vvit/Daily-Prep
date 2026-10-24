@@ -248,6 +248,8 @@ graph TD
     boolean --> never
 ```
 
+**How to read this diagram.** The tree shows TypeScript's assignability hierarchy: `unknown` at the top fans out to `string`, `number`, `boolean`, `object` (which splits into `Array`, `Function` and object literals), `null`, `undefined` and `void`, and the primitives then converge on `never` at the bottom. Read an arrow `A --> B` as "a `B` can be stored in an `A`"; the thing to notice is that `any` hangs off `unknown` by a dotted line because it opts out of checking instead of being a normal subtype.
+
 `any` is drawn with a dashed line on purpose — it isn't really part of the hierarchy at all; assigning to or from `any` skips the assignability check completely, which is exactly why it's dangerous (Section 2's `anything.foo.bar()` compiles with zero complaint) and why `unknown` — a real, checked member of the hierarchy — is the safe substitute.
 
 ---

@@ -93,9 +93,9 @@ function isUser(obj: unknown): obj is User {
 
 <details><summary>Answer</summary>
 
-**Scenario:** Validating API payloads using TypeScript types.
-**Trace:** `User` is likely defined as an `interface` or `type` alias. Because of **Type Erasure**, the TypeScript compiler completely removes `interface User` during compilation. At runtime, the JS engine encounters `data instanceof User`, but `User` is `undefined`, throwing a `ReferenceError`. Even if it didn't throw, `instanceof` only works for classes, not plain JSON objects.
-**Debug/Fix:**
+- **Scenario:** Validating API payloads using TypeScript types.
+- **Trace:** `User` is likely defined as an `interface` or `type` alias. Because of **Type Erasure**, the TypeScript compiler completely removes `interface User` during compilation. At runtime, the JS engine encounters `data instanceof User`, but `User` is `undefined`, throwing a `ReferenceError`. Even if it didn't throw, `instanceof` only works for classes, not plain JSON objects.
+- **Debug/Fix:**
 
 1. Write a custom type guard: `function isUser(data: unknown): data is User { return typeof data === 'object' && data !== null && 'name' in data; }`.
 2. (Better for production): Use a runtime validation library like Zod or Yup to parse and validate the unknown payload, extracting the static type automatically.
@@ -174,9 +174,9 @@ interface Employee extends Person {
 
 <details><summary>Answer</summary>
 
-**Scenario:** Designing extensible types for library consumers.
-**Trace:** If you export a `type`, it is closed. A library consumer cannot add properties to it. If you export an `interface`, it is open via **Declaration Merging**.
-**Design Fix:** For public library configurations (like `Window`, `Express.Request`, or `WebpackConfig`), **always use `interface`**. This allows a consumer to declare the same interface name in their own `d.ts` file and inject custom properties (e.g., adding a custom middleware property to Express's `Request` object). Use `type` for internal complex unions or utility types.
+- **Scenario:** Designing extensible types for library consumers.
+- **Trace:** If you export a `type`, it is closed. A library consumer cannot add properties to it. If you export an `interface`, it is open via **Declaration Merging**.
+- **Design Fix:** For public library configurations (like `Window`, `Express.Request`, or `WebpackConfig`), **always use `interface`**. This allows a consumer to declare the same interface name in their own `d.ts` file and inject custom properties (e.g., adding a custom middleware property to Express's `Request` object). Use `type` for internal complex unions or utility types.
 
 </details>
 
@@ -275,9 +275,9 @@ function area(shape: Shape) {
 
 <details><summary>Answer</summary>
 
-**Scenario:** Handling caught errors securely.
-**Trace:** `throw` in JavaScript can throw literally anything — `throw "string"`, `throw null`, or `throw { errorCode: 500 }`. If you use `e: any`, you disable type checking, assuming `e` is an Error object. If the thrown value was a string, `e.message` is `undefined`, potentially causing secondary bugs.
-**Debug/Fix:** Use `catch (e: unknown)`. The compiler will now force you to prove what `e` is before using it:
+- **Scenario:** Handling caught errors securely.
+- **Trace:** `throw` in JavaScript can throw literally anything — `throw "string"`, `throw null`, or `throw { errorCode: 500 }`. If you use `e: any`, you disable type checking, assuming `e` is an Error object. If the thrown value was a string, `e.message` is `undefined`, potentially causing secondary bugs.
+- **Debug/Fix:** Use `catch (e: unknown)`. The compiler will now force you to prove what `e` is before using it:
 
 ```typescript
 catch (e: unknown) {

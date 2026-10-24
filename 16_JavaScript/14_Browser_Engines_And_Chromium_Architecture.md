@@ -53,6 +53,8 @@ graph TD
     Product --> Everything["PIECE 3: Everything Else<br/>networking, storage, security,<br/>process architecture, UI chrome<br/>(this chapter)"]
 ```
 
+**How to read this diagram.** The product at the top (Chrome, Edge, Brave) is made of three separate pieces below it: a rendering engine (Blink, WebKit, Gecko), a JavaScript engine (V8, JavaScriptCore, SpiderMonkey), and everything else (networking, storage, security, process architecture, UI). The thing to notice is that the JavaScript engine and the rendering engine are different pieces, which is why V8 does not render pages.
+
 ---
 
 ## 2. Where Today's Engines Actually Came From — A Real History
@@ -83,6 +85,8 @@ graph TD
     Netscape -->|"Netscape's browser division<br/>becomes Mozilla"| Gecko["Gecko + SpiderMonkey<br/>(SpiderMonkey descends directly<br/>from Eich's original engine)<br/>powers Firefox — NO relation to KHTML/WebKit/Blink"]
 ```
 
+**How to read this diagram.** Two lineages are shown: KHTML leads to Apple's WebKit (Safari, 2003), then Chrome launches on WebKit with the new V8 engine in 2008, and Google forks WebCore into Blink in 2013 while WebKit continues independently at Apple; separately, Netscape's first JavaScript engine becomes Mozilla's Gecko and SpiderMonkey. The thing to notice is that Blink and WebKit share an ancestor, while Gecko comes from a separate line.
+
 > **Why this history is worth actually knowing, not just skimming.** It answers, with mechanism instead of trivia, three questions engineers genuinely ask: "why does V8 feel unrelated to Blink even though they ship together?" (because they ARE unrelated — V8 was built from scratch in 2008 specifically as a separate project from the rendering engine, and that separateness is architecturally real, not just a naming quirk). "Why is Safari's engine called both 'WebKit' and sometimes 'WebCore'?" (WebKit is the umbrella name for the combination; WebCore is specifically the rendering-engine component inside it — the same component Google forked into Blink). "Why do people worry about a 'Chromium monoculture'?" (because Blink and WebKit share a common ancestor but have been developed independently since 2013, while Gecko never shared that ancestry at all — so today's "big three" engine diversity is really Blink, WebKit, and Gecko, and two of those three trace back to the same 1998 codebase).
 
 ### 2a. Where the Name "JavaScript" Actually Came From
@@ -109,6 +113,8 @@ graph TD
     LiveScript -->|"Dec 1995 — Netscape/Sun<br/>marketing + licensing deal"| JavaScript["JavaScript<br/>(rides Java's buzz — NOT technically related to Java)"]
     JavaScript -->|"1996-97 — submitted for<br/>vendor-neutral standardization"| ECMAScript["ECMAScript<br/>(the actual specification, published by ECMA International —<br/>'JavaScript' remained Sun/Oracle's trademarked name for an implementation)"]
 ```
+
+**How to read this diagram.** Read the chain from top to bottom as the language's names over time: written at Netscape in May 1995 under the codename Mocha, shipped as LiveScript in a Netscape 2.0 beta, renamed JavaScript in a Netscape and Sun deal, then submitted for vendor-neutral standardization as ECMAScript. The thing to notice is that the name JavaScript came from a marketing and licensing deal, not from any technical link to Java.
 
 ### 2b. What "JavaScript Runtime" Actually Means
 
@@ -213,6 +219,8 @@ graph TD
     Renderer -->|"IPC: crash/status reports,<br/>privileged-action requests"| BrowserProc["Browser Process"]
 ```
 
+**How to read this diagram.** Inside one sandboxed Renderer process, Blink and V8 run side by side and talk to each other for DOM access and events; everything outside that box goes through IPC to other processes: the Network process to fetch a URL, the GPU process to composite a frame, and the Browser process for status reports and privileged requests. The thing to notice is that a single Renderer runs the full rendering and JavaScript pipeline internally but reaches the network and GPU only through IPC.
+
 ---
 
 ## 8. Site Isolation — Why One Page Can Be Several Renderer Processes
@@ -240,6 +248,8 @@ sequenceDiagram
 
     Note over RP1,RP2: A Spectre-style attack inside RP2 (ads.example.com)<br/>can, at most, read memory belonging to RP2 itself.<br/>bank.com's data in RP1 is in a DIFFERENT OS process —<br/>physically unreachable, not just policy-forbidden.
 ```
+
+**How to read this diagram.** bank.com and the ad iframe from ads.example.com are different sites, so Site Isolation puts them in different renderer processes: Renderer A for bank.com and Renderer B for the iframe. The thing to notice is the closing note: a Spectre-style attack inside Renderer B can at most read B's own memory, so bank.com's data in Renderer A is out of reach.
 
 **Why this is the single most important architectural fact in this chapter to actually retain.** It's the concrete answer to "why does my browser use so much RAM with a lot of tabs open, and why does it seem to get worse with more embedded ads/widgets per page?" — every genuinely cross-site iframe is, by design, an entire separate Renderer process, with its own memory overhead, specifically traded off against exactly the security guarantee just described. That memory cost is not an accident or an unoptimized rough edge; it's the direct, deliberate price of Site Isolation's security model.
 

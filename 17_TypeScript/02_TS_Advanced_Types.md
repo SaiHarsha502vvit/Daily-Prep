@@ -360,9 +360,9 @@ own utility types for shapes the standard library doesn't cover.
 
 <details><summary>Answer</summary>
 
-**Scenario:** Building generic wrapper functions that preserve inner types.
-**Trace:** TypeScript provides the `ReturnType<T>` utility type, which uses `infer` under the hood to extract the return type of a function signature.
-**Design Fix:** You type the return value of `delay` as `Promise<ReturnType<typeof fn>>`. However, since `T` is already the return type in the generic definition `fn: () => T`, the return signature is simply `Promise<T>`. But if you didn't have `T`, or were extracting it from an existing function reference `const myFn = () => 42;`, you would use `type Res = ReturnType<typeof myFn>;`.
+- **Scenario:** Building generic wrapper functions that preserve inner types.
+- **Trace:** TypeScript provides the `ReturnType<T>` utility type, which uses `infer` under the hood to extract the return type of a function signature.
+- **Design Fix:** You type the return value of `delay` as `Promise<ReturnType<typeof fn>>`. However, since `T` is already the return type in the generic definition `fn: () => T`, the return signature is simply `Promise<T>`. But if you didn't have `T`, or were extracting it from an existing function reference `const myFn = () => 42;`, you would use `type Res = ReturnType<typeof myFn>;`.
 
 </details>
 
@@ -439,9 +439,9 @@ type UserStrings = OnlyStringProps<User>;
 
 <details><summary>Answer</summary>
 
-**Scenario:** Crafting precise API payload shapes.
-**Trace:** We need to split the type into two groups: the omitted properties and the partial properties.
-**Design Fix:**
+- **Scenario:** Crafting precise API payload shapes.
+- **Trace:** We need to split the type into two groups: the omitted properties and the partial properties.
+- **Design Fix:**
 
 ```typescript
 type UpdatePayload = Partial<Omit<DatabaseRow, "id" | "createdAt">>;
@@ -539,10 +539,10 @@ type EventPayload<E extends string> = E extends "click"
 
 <details><summary>Answer</summary>
 
-**Scenario:** Understanding Distributive Conditional Types.
-**Trace:** In TypeScript, conditional types are **distributive** by default when the checked type (`T`) is a bare type parameter. This means the compiler splits the union and applies the condition to each member individually. It evaluates `(string extends any ? string[] : never) | (number extends any ? number[] : never)`, resulting in `string[] | number[]`.
-**Debug/Fix:** If you want to disable distribution and evaluate the union as a single block, wrap both sides of the `extends` clause in tuples:
-`type ToArrayNonDist<T> = [T] extends [any] ? T[] : never;`
+- **Scenario:** Understanding Distributive Conditional Types.
+- **Trace:** In TypeScript, conditional types are **distributive** by default when the checked type (`T`) is a bare type parameter. This means the compiler splits the union and applies the condition to each member individually. It evaluates `(string extends any ? string[] : never) | (number extends any ? number[] : never)`, resulting in `string[] | number[]`.
+- **Debug/Fix:** If you want to disable distribution and evaluate the union as a single block, wrap both sides of the `extends` clause in tuples:
+  `type ToArrayNonDist<T> = [T] extends [any] ? T[] : never;`
 
 </details>
 
@@ -592,9 +592,9 @@ type Params = ExtractRouteParams<"/users/:userId/posts/:postId">;
 
 <details><summary>Answer</summary>
 
-**Scenario:** Generating highly specific string validation types.
-**Trace:** Template literal types allow you to multiply unions together to generate all possible string combinations at compile time.
-**Design Fix:**
+- **Scenario:** Generating highly specific string validation types.
+- **Trace:** Template literal types allow you to multiply unions together to generate all possible string combinations at compile time.
+- **Design Fix:**
 
 ```typescript
 type Prefix = "p" | "pt" | "pr" | "pb" | "pl" | "px" | "py";

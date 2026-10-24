@@ -58,11 +58,11 @@ Deep-reasoning failures occur at the boundary between React's concurrent schedul
 
 THE FREEZE PATTERN IN REACT INTERVIEWS
 
-Junior: "useState manages component state"
-Interviewer: "Can a component have more than one state?"
-Junior: "...yes?"
-Interviewer: "What happens when you call setState 3 times?"
-Junior: _freezes_
+- Junior: "useState manages component state"
+- Interviewer: "Can a component have more than one state?"
+- Junior: "...yes?"
+- Interviewer: "What happens when you call setState 3 times?"
+- Junior: _freezes_
 
 Senior: "Yes, a component can have unlimited states — each
 useState call manages an independent piece. When you

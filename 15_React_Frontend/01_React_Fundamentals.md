@@ -1,10 +1,12 @@
 ﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next: Hooks Deep Dive →](03_Hooks_Deep_Dive.md)
 🧠 **Mental Model**: See [Frontend Architecture Thinking](../14_Mental_Models/17_Frontend_Architecture_Thinking.md)
 
-[!IMPORTANT]
-**📌 Prerequisite:** This guide assumes JavaScript ES6+ knowledge.
-If you haven't studied JavaScript yet, start with **[16_JavaScript/01_JS_Foundations.md](../16_JavaScript/01_JS_Foundations.md)** first.
-Key concepts you need: Arrow functions, Destructuring, Array methods (map/filter/reduce), Modules (import/export), Closures, Promises.
+> [!IMPORTANT]
+> **📌 Prerequisite:** This guide assumes JavaScript ES6+ knowledge.
+>
+> If you haven't studied JavaScript yet, start with **[16_JavaScript/01_JS_Foundations.md](../16_JavaScript/01_JS_Foundations.md)** first.
+>
+> Key concepts you need: Arrow functions, Destructuring, Array methods (map/filter/reduce), Modules (import/export), Closures, Promises.
 
 ---
 
@@ -253,9 +255,10 @@ KEY IDEAS:
 4. **One-Way Data Flow**: Data flows Parent → Child via props
 
 MENTAL MODEL:
-Traditional: Manually update DOM when data changes (imperative)
-React: UI = f(state) — UI is a FUNCTION of state (declarative)
-When state changes → React re-renders → diffs → updates DOM
+
+- Traditional: Manually update DOM when data changes (imperative)
+- React: UI = f(state) — UI is a FUNCTION of state (declarative)
+- When state changes → React re-renders → diffs → updates DOM
 
 ### Library vs Framework — Why This Matters
 
@@ -312,6 +315,8 @@ sequenceDiagram
     Runtime->>DOM: on first render, walk the element tree and<br/>createElement("h1"), setAttribute("class", "title"),<br/>appendChild(textNode "Hello")
     DOM-->>You: user sees the heading
 ```
+
+**How to read this diagram.** Read top to bottom as one JSX expression's journey: you write `<h1 className="title">Hello</h1>`, the bundler's JSX transform turns it into a `React.createElement` call, the React runtime returns a plain element object, and on first render that object is walked to create real DOM nodes. The thing to notice is the note in the middle: the element is just a description (the "virtual DOM node"), not a DOM node.
 
 **Consequences that follow from "JSX compiles to function calls
 producing objects":**
@@ -939,6 +944,8 @@ sequenceDiagram
     R->>DOM: reorder existing <li> nodes (no re-mount, no state loss)
 ```
 
+**How to read this diagram.** The diagram walks the reconciler's three rules in order: compare the element type at each position (same `div`, so keep the node), diff the props on the kept node (`className` changes, so one `setAttribute`), then match list children by key. The thing to notice is the last rule: the keys `a` and `b` are the same but swapped, so React moves the existing `<li>` nodes and keeps their state instead of rebuilding them.
+
 ### Hydration: Server HTML → Interactive React
 
 **Trace what happens between "server got the request" and "the user
@@ -974,6 +981,8 @@ sequenceDiagram
         Note over Browser: user sees a flash, console warns,<br/>interactivity briefly delayed
     end
 ```
+
+**How to read this diagram.** The numbered notes are the five stages of server-side rendering: the server renders an HTML string, the browser paints it with no JS yet, the bundle downloads, React hydrates by attaching listeners to the existing DOM, and a mismatch path handles the failure case. The thing to notice is that hydration reuses the server's DOM nodes; only on a mismatch does React tear down and re-render client-side.
 
 **The invariant that keeps hydration cheap:** *server-rendered HTML
 must exactly equal the client's first render*. Any divergence and
@@ -1085,6 +1094,8 @@ sequenceDiagram
     Browser-->>User: user sees the badge update
     Note over User,Browser: total: ~16 ms (one 60 fps frame). User perception: INSTANT.
 ```
+
+**How to read this diagram.** Follow the arrows through one "Add to cart" click: the browser's click bubbles to React's root listener, your handler calls `setCart`, the scheduler queues the render, the render phase produces a new tree, the reconciler diffs it, and the commit phase applies only the differences to the DOM. The thing to notice is that only two DOM writes happen, which is why the whole thing fits in about one 16 ms frame.
 
 **What the sequence reveals about performance:** the six phases in
 the middle (scheduler through commit) are React's job and are

@@ -40,6 +40,8 @@ graph TD
     V8 -.->|"executes callbacks<br/>libuv hands it"| libuv
 ```
 
+**How to read this diagram.** Your JavaScript reaches two things: V8, which parses and executes it, and the Node C++ bindings (`fs`, `net`, `http`, `crypto`), which in turn sit on libuv and then the operating system. The thing to notice is the dotted arrow from V8 to libuv: libuv hands finished callbacks back to V8 to execute.
+
 ---
 
 ## 2. The libuv Event Loop — Six Phases, Not Two Queues
@@ -66,6 +68,8 @@ sequenceDiagram
     EL->>Close: run close-event callbacks<br/>(e.g. socket.on('close', ...))
     Close-->>EL: iteration complete — start the next tick at "timers" again
 ```
+
+**How to read this diagram.** The sequence is one full tick of the libuv event loop, visited in order: timers, pending callbacks, poll (which blocks waiting for I/O if nothing else is due), check (`setImmediate`), then close callbacks, and then the loop starts again at timers. The thing to notice is that `setImmediate` has its own phase directly after poll, which is not the same as the timers phase.
 
 **Why `setImmediate` and `setTimeout(fn, 0)` race unpredictably at the top level, but never inside an I/O callback — derived, not memorized.**
 
@@ -150,6 +154,8 @@ sequenceDiagram
     Pool-->>Main: queue completion callback for the poll phase
     Note over Main: on a later loop iteration's poll phase,<br/>callback(err, data) finally runs
 ```
+
+**How to read this diagram.** The main thread calls `fs.readFile` and immediately hands the blocking read to a free thread in the libuv pool, so the event loop keeps serving other work. The pool thread does the blocking syscall and, when the data is ready, queues the completion callback for a later poll phase. The thing to notice is that the blocking happens on the pool thread, not the main thread.
 
 **Why this explains a very real production surprise: `crypto.pbkdf2` slowing down unrelated file reads.** Both compete for the *same* 4-thread pool by default. A route that does expensive password hashing (`pbkdf2`) under load can saturate all 4 pool threads, and now `fs.readFile` calls from *completely unrelated* requests queue up waiting for a free pool thread — even though reading a file and hashing a password have nothing to do with each other in your code. The fix is either raising `UV_THREADPOOL_SIZE`, or moving genuinely CPU-heavy work (password hashing, image processing) to `worker_threads` (Section 10) instead of relying on the pool meant for blocking-I/O-that-isn't-really-CPU-bound.
 
@@ -284,6 +290,8 @@ sequenceDiagram
     Dst-->>Src: emit 'drain' event
     Note over Src: pipe() RESUMES reading from the source.
 ```
+
+**How to read this diagram.** The source writes chunk 1 and the destination's buffer accepts it, returning `true`. After chunk 2 the buffer is over `highWaterMark`, so `write` returns `false` and `pipe()` pauses the source; once the destination drains, it emits `drain` and `pipe()` resumes reading. The thing to notice is that the `false` return value is the signal that paces the fast source to the slow destination.
 
 **Why hand-rolling stream consumption without respecting this return value is a classic memory-leak-under-load bug.**
 

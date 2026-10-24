@@ -57,18 +57,20 @@ Test-environment failures are insidious because they don't fail immediately — 
 
 ## Testing Pyramid for React
 
-/\
-/ \ E2E (Cypress/Playwright)
-/ E2E\ → Test full user flows (login → checkout)
-/──────\ → Slow, expensive, few tests
-/ \
-/ Integr. \ Integration (React Testing Library)
-/────────────\ → Test components with user interactions
-/ \ → Most value per test
-/ Unit \ Unit (Vitest/Jest)
-/──────────────────\ → Test pure functions, hooks, utils
-/ \ → Fast, many tests
-/**********\_\_**********\
+```text
+           /\
+          /  \                      E2E (Cypress/Playwright)
+         /E2E \                     → Test full user flows (login → checkout)
+        /──────\                    → Slow, expensive, few tests
+       /        \
+      / Integr.  \                  Integration (React Testing Library)
+     /────────────\                 → Test components with user interactions
+    /              \                → Most value per test
+   /      Unit      \               Unit (Vitest/Jest)
+  /──────────────────\              → Test pure functions, hooks, utils
+ /                    \             → Fast, many tests
+/______________________\
+```
 
 ---
 
@@ -547,9 +549,14 @@ flowchart TD
     end
 ```
 
+**How to read this diagram.** The top box is the browser's single main thread, shared by the React WorkLoop, the browser's paint and layout work, and user input events. The WorkLoop processes about 5 ms of Fiber nodes, then yields to the browser, which paints or handles input and hands control back; the lower box shows the Fiber tree (App, Header, Main, Button) sitting in heap memory. The thing to notice is that React pauses itself between slices, which is why a test can look at the page in the middle of a render.
+
 **The E2E Testing Catastrophe (Act Warnings):**
+
 This is why testing React is so difficult. Because React constantly pauses and resumes rendering asynchronously, testing libraries have no idea when the UI is actually finished.
+
 If your test script executes `expect(button).toBeInTheDocument()` _during_ one of the 5-millisecond yield pauses, the button won't exist yet. The test fails.
+
 This is why `act()` exists in Unit Tests. `act()` forces React to completely drain the Fiber WorkLoop synchronously, forbidding it from yielding, so your assertions can run on a fully finished DOM.
 
 ---
@@ -569,11 +576,15 @@ This is why `act()` exists in Unit Tests. `act()` forces React to completely dra
 5. **The React Fiber Tree:** React updates the state and begins the massive asynchronous Fiber reconciliation loop.
 
 **The Problem of Flakiness (The Race Condition):**
+
 If Playwright sends the click event, and then immediately sends the command: `{"method": "DOM.querySelector", "params": {"selector": ".success-message"}}`, the test will fail 90% of the time.
+
 Why? Because the Playwright WebSocket command reached Chrome in 1 millisecond. But React's Fiber loop took 15 milliseconds to yield, calculate the Virtual DOM, and update the real DOM.
 
 **The Mechanical Solution (Auto-Waiting):**
+
 Playwright does not use `sleep()`. It hooks deeply into the CDP to monitor the physical state of the browser.
+
 Before Playwright clicks a button, it executes a mathematical checklist via CDP:
 
 1. Is the element attached to the DOM? (Check C++ DOM Tree)
@@ -592,7 +603,9 @@ Only when all 4 physical constraints are met does Playwright send the click even
 **The Naked Truth:** In Jest / React Testing Library, you are running tests inside JSDOM (a fake browser written entirely in JavaScript).
 
 **The Mechanical Reality:**
+
 If you run 500 tests, JSDOM creates 500 massive `document` objects in Node.js heap memory.
+
 If your React Component adds an event listener to the `window` (`window.addEventListener('scroll', handler)`), and you forget to remove it in the `useEffect` cleanup function, the `window` object holds a permanent memory reference to your component's closure.
 
 1. Test finishes. React unmounts the component.

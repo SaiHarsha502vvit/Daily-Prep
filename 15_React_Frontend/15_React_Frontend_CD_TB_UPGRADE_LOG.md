@@ -1,8 +1,8 @@
 # CD/TB Upgrade Log — 15_React_Frontend
 
-**Ferment:** Combined Lens Upgrade — Phase 2, Step 4 (CD/TB enhancements)
-**Date:** 2026-06-14
-**Scope:** Add Conceptual Depth (CD) invariant statements and Topical Breadth (TB) variant trade-off tables to all 12 chapter files.
+- **Ferment:** Combined Lens Upgrade — Phase 2, Step 4 (CD/TB enhancements)
+- **Date:** 2026-06-14
+- **Scope:** Add Conceptual Depth (CD) invariant statements and Topical Breadth (TB) variant trade-off tables to all 12 chapter files.
 
 ---
 

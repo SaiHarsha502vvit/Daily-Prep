@@ -156,6 +156,7 @@ CONTEXT PERFORMANCE TRAP:
   ✅ FIX 3: Use Zustand or Redux for frequently updating state
 ```
 
+```javascript
 // 🎓 MIT/KTH SYSTEMS DEEP DIVE: The Re-render Trap vs Selector Subscriptions
 // State managers like Redux and Zustand do NOT use Context to pass changing data.
 // Context is an INJECTOR that forces every consumer to re-render.
@@ -164,26 +165,27 @@ CONTEXT PERFORMANCE TRAP:
 
 // The mental model implemented in pure Vanilla JS:
 class VanillaStore {
-constructor() {
-this.state = { theme: 'dark', mouseX: 0 };
-this.listeners = new Set();
-}
+  constructor() {
+    this.state = { theme: 'dark', mouseX: 0 };
+    this.listeners = new Set();
+  }
 
-// Components subscribe to the store bypassing React Context
-subscribe(listener) {
-this.listeners.add(listener);
-return () => this.listeners.delete(listener); // unsubscribe
-}
+  // Components subscribe to the store bypassing React Context
+  subscribe(listener) {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener); // unsubscribe
+  }
 
-setState(newState) {
-this.state = { ...this.state, ...newState };
-// Notify ALL subscribers manually that memory changed
-this.listeners.forEach(listener => listener(this.state));
-}
+  setState(newState) {
+    this.state = { ...this.state, ...newState };
+    // Notify ALL subscribers manually that memory changed
+    this.listeners.forEach(listener => listener(this.state));
+  }
 }
 // In React, components use `useSyncExternalStore` to connect to this.
 // If mouseX changes, ONLY the exact component hooked to mouseX re-renders.
 // The Navbar (hooked to theme) remains safely untouched.
+```
 
 ---
 
@@ -249,6 +251,8 @@ sequenceDiagram
     Sel->>Cmp: if the selector's return value changed → trigger re-render
     Cmp-->>User: UI shows the updated cart
 ```
+
+**How to read this diagram.** Follow one "Add to cart" click around the Redux cycle: the component dispatches an action, the store calls the reducer, the reducer returns a new state object, and the store notifies subscribed selectors, which re-render the component only if their selected value changed. The thing to notice is that the arrows form a one-way loop: the component never writes state directly.
 
 **Why the arrows only point one way:**
 

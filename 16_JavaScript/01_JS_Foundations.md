@@ -142,25 +142,25 @@ with FIRST-CLASS FUNCTIONS and PROTOTYPE-BASED inheritance.
 
 Let's break each word down:
 
-DYNAMIC: Types are determined at RUNTIME, not compile-time.
-→ let x = 5; x = "hello"; // perfectly legal
-WHY this matters: flexibility, but also bugs.
+- DYNAMIC: Types are determined at RUNTIME, not compile-time.
+  - → let x = 5; x = "hello"; // perfectly legal
+  - WHY this matters: flexibility, but also bugs.
 
-WEAKLY-TYPED: JS will COERCE types to make operations work.
-→ "5" + 3 = "53" (string wins), "5" - 3 = 2 (math wins)
-WHY this matters: unexpected behavior if you don't know.
+- WEAKLY-TYPED: JS will COERCE types to make operations work.
+  - → "5" + 3 = "53" (string wins), "5" - 3 = 2 (math wins)
+  - WHY this matters: unexpected behavior if you don't know.
 
-SINGLE-THREADED: Only ONE call stack. One thing at a time.
-→ But HOW does async work then? → The EVENT LOOP.
-WHY this matters: no race conditions, but blocking is bad
+- SINGLE-THREADED: Only ONE call stack. One thing at a time.
+  - → But HOW does async work then? → The EVENT LOOP.
+  - WHY this matters: no race conditions, but blocking is bad
 
-FIRST-CLASS FUNCTIONS: Functions are values — pass them around.
-→ const greet = function() {}; // function in a variable
-WHY this matters: enables callbacks, closures, FP style.
+- FIRST-CLASS FUNCTIONS: Functions are values — pass them around.
+  - → const greet = function() {}; // function in a variable
+  - WHY this matters: enables callbacks, closures, FP style.
 
-PROTOTYPE-BASED: No classical classes (until ES6 sugar).
-→ Objects inherit from other objects via prototype chain.
-WHY this matters: understanding `this`, inheritance.
+- PROTOTYPE-BASED: No classical classes (until ES6 sugar).
+  - → Objects inherit from other objects via prototype chain.
+  - WHY this matters: understanding `this`, inheritance.
 
 ### JS Engine — How Code Actually Runs
 
@@ -305,10 +305,10 @@ reliable for predicting behavior.)*
 
 <details><summary>Answer</summary>
 
-**Scenario:** Checking if a property is an object before assigning to it.
-**Trace:** In JS, `typeof null === 'object'`. This is a legacy bug from the first implementation where values were stored in 32-bit units with the lowest 3 bits representing the type tag. The object type tag was `000`. `null` was represented as the NULL pointer (all zeros), so its type tag matched objects.
-**Debug:** If `data.settings` is `null`, the `if` condition passes, and `null.enabled = true` throws a `TypeError: Cannot set properties of null`.
-**Fix:** Always use an explicit null check or optional chaining: `if (data.settings && typeof data.settings === 'object')`.
+- **Scenario:** Checking if a property is an object before assigning to it.
+- **Trace:** In JS, `typeof null === 'object'`. This is a legacy bug from the first implementation where values were stored in 32-bit units with the lowest 3 bits representing the type tag. The object type tag was `000`. `null` was represented as the NULL pointer (all zeros), so its type tag matched objects.
+- **Debug:** If `data.settings` is `null`, the `if` condition passes, and `null.enabled = true` throws a `TypeError: Cannot set properties of null`.
+- **Fix:** Always use an explicit null check or optional chaining: `if (data.settings && typeof data.settings === 'object')`.
 
 </details>
 
@@ -434,9 +434,9 @@ if ([]) console.log("truthy!"); // PRINTS! empty array is truthy
 
 <details><summary>Answer</summary>
 
-**Scenario:** Bizarre results when using the `+` operator on complex objects.
-**Trace:** The `+` operator forces the JS engine to call `ToPrimitive()` on both operands.
-For `[] + {}`:
+- **Scenario:** Bizarre results when using the `+` operator on complex objects.
+- **Trace:** The `+` operator forces the JS engine to call `ToPrimitive()` on both operands.
+  For `[] + {}`:
 
 1. `[].valueOf()` is `[]` (not primitive). `[].toString()` is `""` (empty string).
 2. `{}.valueOf()` is `{}` (not primitive). `{}.toString()` is `"[object Object]"`.
@@ -581,6 +581,8 @@ graph TD
         UrlVar["API_URL<br/>(reachable everywhere in the file)"]
     end
 ```
+
+**How to read this diagram.** The three nested boxes are the scopes of the example, outermost first: global scope holds `API_URL`, the function scope of `greet(name)` holds `msg`, and the `if` block scope holds `upper`. Read from the inside out: a name is visible in the box where it lives and in every box nested inside it, so the thing to notice is that `upper` sits in the innermost box and nothing outside can reach it.
 
 **The rule this diagram makes visible, not just states:** an inner
 scope can always see everything in every scope that contains it — the

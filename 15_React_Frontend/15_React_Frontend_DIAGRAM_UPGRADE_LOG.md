@@ -1,8 +1,8 @@
 # 15_React_Frontend — Diagram Upgrade Log (Phase 2, Step 3)
 
-**Date:** 2026-06-14
-**Task:** Add NEW ASCII/Unicode diagrams to 12 chapter files per Phase 1 inventory top-5 missing diagrams list.
-**Method:** Surgical `edit` tool only — no file rewrites, no formatting changes.
+- **Date:** 2026-06-14
+- **Task:** Add NEW ASCII/Unicode diagrams to 12 chapter files per Phase 1 inventory top-5 missing diagrams list.
+- **Method:** Surgical `edit` tool only — no file rewrites, no formatting changes.
 
 ---
 

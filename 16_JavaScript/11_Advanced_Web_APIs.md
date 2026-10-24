@@ -580,9 +580,9 @@ eventSource.close();
 
 <details><summary>Answer</summary>
 
-**Scenario:** Handling connection drops in a one-way SSE stream.
-**Trace:** `EventSource` automatically attempts to reconnect when the connection drops. However, simply reconnecting doesn't recover lost messages unless the server knows what the client missed. The SSE protocol handles this natively via the `Last-Event-ID` header.
-**Debug/Design Fix:**
+- **Scenario:** Handling connection drops in a one-way SSE stream.
+- **Trace:** `EventSource` automatically attempts to reconnect when the connection drops. However, simply reconnecting doesn't recover lost messages unless the server knows what the client missed. The SSE protocol handles this natively via the `Last-Event-ID` header.
+- **Debug/Design Fix:**
 
 1. **Server:** When sending events, include an `id` field: `id: 1045\ndata: {"price": 150}\n\n`.
 2. **Client Drop:** Connection breaks.

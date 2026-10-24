@@ -1,8 +1,8 @@
 # 15_React_Frontend PR Upgrade Log
 
-**Phase:** 2, Step 2 (Combined Lens upgrade ferment)
-**Date:** 2026-06-14
-**Task:** Add `### Production Reality` subsections to all 12 numbered chapters
+- **Phase:** 2, Step 2 (Combined Lens upgrade ferment)
+- **Date:** 2026-06-14
+- **Task:** Add `### Production Reality` subsections to all 12 numbered chapters
 
 ## Per-File Additions
 
@@ -21,10 +21,10 @@
 | `11_Complex_UI_Pages_Patterns.md` | Key prop misuse, Ref forward mis-attachment | After HE, before Table of Contents | 15 |
 | `12_Hands_On_React_Projects.md` | Race condition, Memory leak, Hydration mismatch, Key prop misuse | After HE, before "3 Classic Challenges" | 19 |
 
-**Total unique failure modes cited:** 14 of 14 canonical modes
-**Chapters with 3 failure modes:** 7 chapters
-**Chapters with 4 failure modes:** 3 chapters (Ch03, Ch08, Ch12)
-**Chapters with 2 failure modes:** 2 chapters (Ch05, Ch11) — the minimum viable for their narrow scope
+- **Total unique failure modes cited:** 14 of 14 canonical modes
+- **Chapters with 3 failure modes:** 7 chapters
+- **Chapters with 4 failure modes:** 3 chapters (Ch03, Ch08, Ch12)
+- **Chapters with 2 failure modes:** 2 chapters (Ch05, Ch11) — the minimum viable for their narrow scope
 
 ## Verification Results
 
