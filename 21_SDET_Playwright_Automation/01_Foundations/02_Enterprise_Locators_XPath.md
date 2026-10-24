@@ -11,6 +11,7 @@
 - **WHO**: All SDETs. The locator strategy is where most automation experience actually lives.
 - **WHEN**: Before writing any POM. Bad locators written early spread through an entire framework.
 - **HOW**: By understanding the DOM as a tree, XPath as a navigation language over that tree, and Playwright's filter system as a higher-level abstraction over XPath.
+- **ALSO IN THIS CHAPTER**: §11 explains how `getByRole`'s `name` is computed; §12 is the measured HTML element → role map ("which role is an input box?"); §13 works the `<button type="submit">Login</button>` example end to end (why the HTML `name` attribute is irrelevant); §14 measures the precedence between `<label>`, `aria-label`, `aria-labelledby`, `title` and `placeholder`.
 
 ---
 
@@ -84,7 +85,7 @@ page.getByRole("row", { name: "CIT-001" }); // in a grid/table
 Every HTML element has a default role:
 
 - `<button>` → role: button
-- `<input>` → role: textbox (or combobox for selects)
+- `<input>` → depends on `type`: `textbox` (text/email/tel/url/password), `searchbox`, `spinbutton` (number), `checkbox`, `radio`, `button` (submit/button/reset/image/file) — there is **no** role called `input`; `<select>` is `combobox` (or `listbox` for `multiple`/`size>1`). Full measured map: [§12](#12-which-getbyrole-role-do-i-use--the-html-element--aria-role-map)
 - `<a>` → role: link
 - `<h1>-<h6>` → role: heading
 - `<table>` → role: table
@@ -817,7 +818,17 @@ flowchart TD
     style UseScoped fill:#2b6cb0,stroke:#3182ce,color:#fff
 ```
 
-**Key insight:** The top of the tree (green) gives you the most stable locators. The bottom (yellow) gives you the most powerful but most maintenance-heavy locators. Always try from the top down.
+**How to read this diagram.** It answers one question: *"I am staring at this element — which locator API do I reach for?"* Read it top to bottom; the first "Yes" wins.
+
+1. **`data-testid` / `data-automation-id`?** This is the *enterprise shortcut*: if your team owns a test-id contract (developers add and keep these attributes on purpose), a test id is the cheapest locator that never breaks on copy or layout changes, so it is checked first here. **On a product with no such contract, skip this node** — then the order is the one in §2: role + name first, test id second.
+2. **Unique ARIA role + accessible name?** The default best choice when there is no contract: it describes *function*, the same thing a screen reader announces (see §12–§14 for how the role and name are computed).
+3. **Form field with a visible label?** `getByLabel` — a form-specific route to the same accessible-name machinery.
+4. **Stable, unique visible text?** `getByText` — fine for static content, fragile for anything translated or generated.
+5. **Inside Shadow DOM → CSS** (it pierces open shadow roots automatically); **need to go *up* or sideways → XPath axes** (§3, §10); otherwise **CSS scoped to the nearest stable ancestor**.
+
+The colours encode risk: green leaves survive refactors; blue and amber leaves are more powerful but cost more maintenance. The common mistake is to jump straight to the amber XPath leaf because it "works right now" — walk the earlier questions first.
+
+**Key insight:** The top of the tree (green) gives you the most stable locators. The bottom gives you the most powerful but most maintenance-heavy ones. Always start at the top.
 
 ---
 
@@ -927,6 +938,363 @@ const approveBtn = page.getByRole('button', { name: 'Approve' });
 
 ---
 
+## 12. Which `getByRole` Role Do I Use? — The HTML Element → ARIA Role Map
+
+A learner's question that §2 never answers: *"Which `getByRole` role do I use for an input box?"* The honest first answer is that **there is no role called `input`**. `getByRole` does not take a tag name. It takes a **WAI-ARIA role**, and Playwright computes each element's role itself (explicit `role="…"` attribute first, otherwise a lookup keyed by tag name and, for `<input>`, by `type`). Everything in the tables below was **measured on Playwright 1.64.1 / Chromium 156** by rendering each snippet on its own page, counting `getByRole(<role>)` for every valid ARIA role, and reading `locator.ariaSnapshot()`. Nothing here is copied from a cheat sheet.
+
+> **Where this lives in the code you have installed.** Playwright bundles its in-page script into `node_modules/playwright-core/lib/coreBundle.js` as a string; the source module is `packages/injected/src/roleUtils.ts` in the Playwright repo. The functions to look for: `getAriaRole()` → `computeAriaRole()` → `getExplicitAriaRole()` / `getImplicitAriaRole()`, which reads the `kImplicitRoleByTagName` table (the `INPUT` entry consults a small `inputTypeToRole` map and falls back to `"textbox"`), and `queryRole()` which does the matching. The accessible name comes from `getElementAccessibleName()` → `getTextAlternativeInternal()` (the algorithm §11 describes). Find them yourself: `grep -o 'var inputTypeToRole = {[^}]*}' labs/node_modules/playwright-core/lib/coreBundle.js` (the embedded source has escaped `\n`, so grep returns one long line).
+
+### The `<input>` family
+
+| HTML                                                                | `getByRole` role                                                  | Evidence status                                                                                                                                                        |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<input>` with no `type`, or `type="text"`, `email`, `tel`, `url`   | `textbox`                                                         | Measured; spec agrees                                                                                                                                                  |
+| `type="search"`                                                     | `searchbox`                                                       | Measured; spec agrees                                                                                                                                                  |
+| `type="text"/"email"/"tel"/"url"/"search"` **with `list="id"`** pointing at a real `<datalist>` | `combobox`                                           | Measured; spec agrees. A `list` pointing at a missing id stays `textbox`                                                                                              |
+| `type="number"`                                                     | `spinbutton`                                                      | Measured; spec agrees. Adding `list=` does **not** make it a combobox (stays `spinbutton`)                                                                             |
+| `type="range"`                                                      | `slider`                                                          | Measured; spec agrees                                                                                                                                                  |
+| `type="checkbox"` / `type="radio"`                                  | `checkbox` / `radio`                                              | Measured; spec agrees                                                                                                                                                  |
+| `type="button"`, `submit`, `reset`, `image`                         | `button`                                                          | Measured; spec agrees                                                                                                                                                  |
+| `type="file"`                                                       | `button` (default name `Choose File`)                             | Measured. The spec says "no corresponding role"; Playwright follows Chromium and exposes a button                                                                       |
+| **`type="password"`**                                               | **`textbox`**                                                     | **Measured: `getByRole('textbox')` matches it.** The HTML specs say "no corresponding role" — that is where the "password has no textbox role" claim comes from (see below) |
+| `type="color"`, `date`, `time`, `datetime-local`, `month`, `week`   | `textbox`                                                         | Measured, but a **Playwright fallback**: the spec says "no corresponding role" and Chromium's own accessibility tree uses non-ARIA roles (`ColorWell`, `Date`, `InputTime`, `DateTime`) |
+| `type="hidden"`                                                     | none — never in the tree                                          | Measured                                                                                                                                                               |
+| `type="bogus"` (unknown value)                                      | `textbox`                                                         | Measured (browser normalises `.type` to `text`)                                                                                                                        |
+| `<textarea>`                                                        | `textbox`                                                         | Measured; spec agrees                                                                                                                                                  |
+| `<select>` (single) and `<select size="1">`                         | `combobox` (its `<option>`s are `option`)                         | Measured; spec agrees                                                                                                                                                  |
+| `<select multiple>` or `<select size="3">`                          | `listbox`                                                         | Measured. Playwright decides by `select.multiple \|\| select.size > 1` — the HTML spec text does not tie the role to those attributes                                    |
+| `<datalist>` and its options                                        | `listbox` / `option`, **hidden by default** (need `includeHidden: true`) | Measured                                                                                                                                                         |
+| `<div contenteditable>`                                             | **no role at all** — add `role="textbox"` or find it with `getByLabel`/`getByTestId` | Measured                                                                                                                                                  |
+
+### Everything else you will meet
+
+| HTML                                                    | `getByRole` role                                                                                       | Evidence status                                                                                  |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `<button>`                                              | `button`                                                                                               | Measured                                                                                         |
+| `<a href="…">`                                          | `link`                                                                                                 | Measured                                                                                         |
+| `<a>` **without `href`**                                | **none** (plain text)                                                                                  | Measured. Same for `<area>`                                                                      |
+| `<h1>`–`<h6>`                                           | `heading` (`level: 1`–`6`)                                                                             | Measured                                                                                         |
+| `<img alt="Logo">`                                      | `img`, named "Logo"                                                                                    | Measured                                                                                         |
+| `<img alt="">`                                          | `presentation` — **`getByRole('img')` will not find it**                                               | Measured. With `title=` or any `aria-*` it becomes `img` again                                   |
+| `<img>` with no `alt`; inline `<svg>`                   | `img` (no name unless `<svg><title>`)                                                                  | Measured                                                                                         |
+| `<table>`, `<tr>`, `<td>`, `<thead>/<tbody>/<tfoot>`    | `table`, `row`, `cell`, `rowgroup`                                                                     | Measured. `<td>` becomes `gridcell` inside `role="grid"`                                         |
+| `<th>`                                                  | `columnheader` or `rowheader`                                                                          | Measured: `scope="row"` → rowheader; first-row/`scope="col"` → columnheader; decided by position otherwise |
+| `<ul>`, `<ol>`, `<menu>` / `<li>`                       | `list` / `listitem`                                                                                    | Measured                                                                                         |
+| `<nav>`, `<main>`, `<aside>`, `<article>`, `<search>`   | `navigation`, `main`, `complementary`, `article`, `search`                                             | Measured                                                                                         |
+| `<header>`, `<footer>`                                  | `banner`, `contentinfo` — **only when not inside** `article/aside/main/nav/section`; otherwise **no role** | Measured (`<header>` in `<section>` → nothing; `<footer>` in `<main>` → nothing)             |
+| `<form>`                                                | `form` **only if it has `aria-label` or `aria-labelledby`**; otherwise no role                         | Measured. `name="login"`, `id=`, and `title=` do **not** count                                   |
+| `<section>`                                             | `region` **only if it has `aria-label` or `aria-labelledby`**; otherwise no role                       | Measured. `title=` alone does not count                                                          |
+| `<dialog>`                                              | `dialog` (a closed `<dialog>` is hidden, so it only matches with `includeHidden: true`)                | Measured                                                                                         |
+| `<details>` / `<summary>`                               | `group` / **no role** (find the summary with `getByText` or `locator('summary')`)                      | Measured; spec also says summary has no role                                                     |
+| `<fieldset><legend>`                                    | `group`, named by the `<legend>`                                                                       | Measured                                                                                         |
+| `<progress>`, `<meter>`, `<output>`                     | `progressbar`, `meter`, `status`                                                                       | Measured                                                                                         |
+| `<figure><figcaption>`, `<hr>`, `<p>`                   | `figure` (named by figcaption), `separator`, `paragraph`                                               | Measured                                                                                         |
+| `<div>`, `<span>`, `<label>`, `<canvas>`, `<video>`, `<iframe>`, custom elements | **none**                                                                      | Measured — these are exactly the elements for which you need a `role=` or a different locator    |
+
+**The page root `<html>` is `document`**, so `getByRole('document')` always matches once. Ignore it when you count.
+
+### Overrides and visibility
+
+| HTML                                               | Result                                                                                                         | Evidence status |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------- |
+| `<div role="button">X</div>`                       | `button` — an explicit role wins over the tag                                                                  | Measured        |
+| `<a href role="button">`, `<button role="link">`   | `button`, `link` — the tag's own role is replaced                                                              | Measured        |
+| `role="bogus button"`                              | `button` — the **first valid token** in the list wins                                                          | Measured        |
+| `<button role="presentation">`                     | still `button` — a focusable element cannot be stripped of its role                                            | Measured        |
+| `<h1 role="none">`                                 | role `none` (not a heading); add `tabindex="0"` or a global `aria-*` attribute and it is a `heading` again     | Measured        |
+| `hidden`, `display:none`, `aria-hidden="true"`     | excluded from `getByRole` unless `includeHidden: true`                                                         | Measured        |
+| `readonly`, `disabled` input                       | still `textbox` — state does not change the role (`disabled: true` filters on it)                              | Measured        |
+
+### Why these mappings exist (and why password is `textbox`)
+
+Roles come from two W3C documents: [HTML-AAM](https://www.w3.org/TR/html-aam-1.0/) (how each HTML element maps to platform accessibility APIs) and [ARIA in HTML](https://www.w3.org/TR/html-aria/) (which role each element implicitly has). A browser applies them to build the accessibility tree; Playwright does **not** ask the browser for that tree. It re-implements the mapping in `roleUtils.ts`, part of the script Playwright injects into the page, so the same code decides the role in Chromium, Firefox, and WebKit. Two consequences you can measure:
+
+- **Where the spec says "no corresponding role", Playwright still picks one.** ARIA in HTML lists `password`, `color`, `date`, `time`, `datetime-local`, `month`, `week`, `file`, `hidden` and `<summary>` as having no corresponding role. Playwright's `INPUT` entry falls through to `"textbox"` for every type not in `inputTypeToRole`, maps `file` to `button`, and returns nothing for `hidden` and `<summary>`.
+- **Playwright's role is not Chromium's role.** Asking Chromium directly (CDP `Accessibility.getFullAXTree`) for the same `<input>`s returns `textbox` for text/email/tel/url/password, `searchbox`, `spinbutton`, `slider`, `button` for file — and `ColorWell`, `Date`, `InputTime`, `DateTime` for the pickers, none of which are ARIA roles. Playwright reports `textbox` for all of them.
+
+**Pasted-answer claims, checked** (an AI answer a learner brought in; each tested on 1.64.1):
+
+| Claim                                              | Verdict                                                                                                                           |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `<input type="password">` has no `textbox` role    | **False in Playwright 1.64.1.** `getByRole('textbox', { name: 'Password' })` matches (count 1). It is true _of the HTML spec_ ("no corresponding role"), which is probably the source of the claim |
+| `type="search"` → `searchbox`                      | True                                                                                                                              |
+| `type="number"` → `spinbutton`                     | True (and `list=` does not change it)                                                                                             |
+| `<select>` → `combobox`                            | True for single/`size=1`. **`<select multiple>` and `size>1` are `listbox`**                                                      |
+| "an input box is `input`"                          | False — there is no such role; the valid role names are the list in the ARIA spec (`getByRole` takes the `AriaRole` union)        |
+
+**Do not guess; ask the page.** Two probes cover almost every doubt:
+
+```typescript
+import { type Locator } from "@playwright/test";
+
+// 1. The first line of an ariaSnapshot is "- <role> "<accessible name>"" for the element itself.
+async function roleOf(locator: Locator): Promise<string> {
+  const yaml = await locator.ariaSnapshot();
+  return yaml.trim().split("\n")[0] ?? "";
+}
+// await roleOf(page.locator('input[type="password"]'))  ->  - textbox "Password"
+// await roleOf(page.locator("input[list]"))              ->  - combobox "City"
+// await roleOf(page.locator("select[multiple]"))         ->  - listbox "Tags":   (children follow on later lines)
+
+// 2. Count a few candidate roles: the one that returns 1 is the role.
+for (const role of ["textbox", "searchbox", "spinbutton", "combobox"] as const) {
+  console.log(role, await page.getByRole(role).count());
+}
+```
+
+`npx playwright codegen <url>` and the Inspector's **Pick locator** button do the same job interactively; they suggest the role and name Playwright itself computes, which is the authoritative answer.
+
+```mermaid
+flowchart TD
+    Start["Element you want to find"] --> RoleAttr{"role attribute with a valid<br/>ARIA token?"}
+    RoleAttr -->|"No"| TagLookup["Look the TAG up in<br/>kImplicitRoleByTagName"]
+    RoleAttr -->|"Yes"| IsNone{"Token is none<br/>or presentation?"}
+    IsNone -->|"No"| ExplicitWins["Role = first valid token"]
+    IsNone -->|"Yes"| Rescue{"Focusable or has a<br/>global aria attribute?"}
+    Rescue -->|"Yes"| TagLookup
+    Rescue -->|"No"| NoRole["Role = none<br/>drops out of getByRole"]
+    TagLookup --> Tag{"Which tag?"}
+    Tag -->|"input"| InputType{"type?"}
+    Tag -->|"select"| SelectKind{"multiple or size greater than 1?"}
+    Tag -->|"form or section"| NeedsName{"aria-label or<br/>aria-labelledby?"}
+    Tag -->|"header or footer"| InLandmark{"inside article, aside,<br/>main, nav or section?"}
+    Tag -->|"a"| HasHref{"has href?"}
+    Tag -->|"div, span, label"| NoRole
+    InputType -->|"text, email, tel, url, search"| HasList{"list points at<br/>a datalist?"}
+    HasList -->|"Yes"| Combobox["combobox"]
+    HasList -->|"No"| TextOrSearch["textbox<br/>searchbox for type search"]
+    InputType -->|"number"| Spin["spinbutton"]
+    InputType -->|"range"| Slider["slider"]
+    InputType -->|"checkbox, radio"| CheckRadio["checkbox or radio"]
+    InputType -->|"button, submit, reset, image, file"| Btn["button"]
+    InputType -->|"hidden"| NoRole
+    InputType -->|"password, date, time, color, month, week and any other"| TextFallback["textbox<br/>the fallback"]
+    SelectKind -->|"Yes"| Listbox["listbox"]
+    SelectKind -->|"No"| Combobox
+    NeedsName -->|"Yes"| FormRegion["form or region"]
+    NeedsName -->|"No"| NoRole
+    InLandmark -->|"No"| BannerFooter["banner or contentinfo"]
+    InLandmark -->|"Yes"| NoRole
+    HasHref -->|"Yes"| Link["link"]
+    HasHref -->|"No"| NoRole
+
+    style Combobox fill:#276749,stroke:#38a169,color:#fff
+    style TextOrSearch fill:#276749,stroke:#38a169,color:#fff
+    style TextFallback fill:#744210,stroke:#d69e2e,color:#fff
+    style NoRole fill:#742a2a,stroke:#e53e3e,color:#fff
+```
+
+**How to read this diagram:** start at the top with the element in your HTML. The first question is always "did the author set `role=`?" because an explicit role beats the tag. Follow the arrows until you reach a coloured box: green boxes are roles you can pass to `getByRole`, the amber box is the "no spec role, Playwright says `textbox`" fallback (password and the date and colour pickers), and the red box means the element is **invisible to `getByRole`** — you need `getByLabel`, `getByText`, `getByTestId`, a CSS locator, or a `role=` fix in the app. The `form/section` and `header/footer` branches are the two places people lose elements without noticing.
+
+---
+
+## 13. The Worked Example — Why `getByRole('button', { name: 'Login' })` Works on a Button With No `name` Attribute
+
+A learner met this markup on a login page (a Vue app; the empty comments are Vue's template compiler, `data-v-…` is its scoped-CSS token):
+
+```html
+<button data-v-7ba5bd90="" type="submit"
+  class="oxd-button oxd-button--medium oxd-button--main orangehrm-login-button"><!----> Login <!----></button>
+```
+
+and concluded: _"it has no `name` attribute, so `getByRole('button', { name: 'Login' })` can't work."_ It works. The conclusion mixes up two different things that are both called "name":
+
+|                          | HTML `name` attribute                                            | Accessible **name** (`getByRole`'s `name` option)                          |
+| ------------------------ | ---------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| What it is               | Form-field key sent on submit (`<input name="username">`)        | The string assistive technology announces for the element                  |
+| Where it comes from      | One attribute you typed                                          | Computed by the accname algorithm — for a `<button>`, from its **content** |
+| Used by `getByRole`?     | **Never**                                                        | **Always**                                                                 |
+| Measured on this button  | `locator('button[name="Login"]')` → **0 matches**                | `getByRole('button', { name: 'Login' })` → **1 match**                     |
+
+To make the point unmissable: `<button name="loginBtn" type="submit">Login</button>` still has the accessible name `Login`, and `getByRole('button', { name: 'loginBtn' })` matches **0**.
+
+### How the match actually happens
+
+```mermaid
+sequenceDiagram
+    participant T as Your test
+    participant N as Playwright in Node
+    participant I as Injected script in the page
+    participant D as DOM
+
+    T->>N: page.getByRole('button', name Login).click()
+    N->>N: Build selector<br/>internal:role=button[name="Login"i]
+    N->>I: queryAll over the document
+    loop every element
+        I->>D: getAriaRole(el): role attr, else tag table
+        D-->>I: button / none / textbox ...
+        Note over I: keep only role = button, not hidden
+        I->>D: accessible name: aria-labelledby, aria-label,<br/>native label, then CONTENT
+        D-->>I: " Login " (comment nodes contribute nothing)
+        I->>I: collapse whitespace to "Login"<br/>compare, substring and case-insensitive
+    end
+    I-->>N: matching elements
+    alt exactly one
+        N->>D: wait for actionable, then click
+    else two or more
+        N-->>T: strict mode violation error
+    end
+```
+
+**How to read this diagram:** time flows downward. Your test only hands Playwright a role and a string; everything inside the `loop` runs _in the browser page_, once per element. The two filters are applied in order: role first (cheap), then the accessible name (computed only for elements that already have the right role). The `alt` block at the bottom is where strict mode lives: the locator is _resolved to a list first_, and the click only happens if the list has exactly one element.
+
+For the Vue button, "compute the name" walks the child nodes: `<!---->` comment nodes are skipped (they are not text), the text node `" Login "` is kept, and the result is whitespace-normalised to `Login`. `textContent` is `" Login "` (leading and trailing space) — the normalisation is why you do not have to write the spaces.
+
+### What `name` matching actually does (measured on that button)
+
+| Locator                                                        | Matches | Rule it demonstrates                                                                  |
+| -------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------- |
+| `getByRole('button', { name: 'Login' })`                       | 1       | Default: case-insensitive **substring** match on the normalised name                  |
+| `getByRole('button', { name: 'login' })`                       | 1       | Case-insensitive                                                                      |
+| `getByRole('button', { name: 'ogi' })`                         | 1       | Substring (so `name: 'Log'` also matches "Login with SSO"!)                           |
+| `getByRole('button', { name: 'Login', exact: true })`          | 1       | `exact: true` = whole string, **case-sensitive**, after whitespace normalisation      |
+| `getByRole('button', { name: 'login', exact: true })`          | 0       | …so the case must match                                                               |
+| `getByRole('button', { name: ' Login ', exact: true })`        | 1       | The string you pass is whitespace-normalised too                                      |
+| `getByRole('button', { name: /^Login$/ })`                     | 1       | RegExp is tested against the normalised name; `exact` is ignored; use `/i` for case   |
+| `getByRole('button', { name: 'Log in' })`                      | 0       | Different words, different string — no fuzzy matching                                 |
+| `<button>  Log⏎   in </button>` with `name: 'Log in'`           | 1       | Newlines, tabs, repeated spaces collapse to single spaces                             |
+
+Under the hood: `name: 'Login'` becomes the selector `internal:role=button[name="Login"i]`, `exact: true` becomes `[name="Login"s]` (case-**s**ensitive), and a RegExp is embedded as `[name=/^Login$/]`.
+
+### Two buttons: "Login" and "Login with SSO"
+
+Substring matching bites as soon as one name contains another:
+
+```typescript
+// <button>Login</button> <button>Login with SSO</button>
+const loose = page.getByRole("button", { name: "Login" }); // 2 matches
+await loose.click();
+// Error: locator.click: strict mode violation: getByRole('button', { name: 'Login' }) resolved to 2 elements:
+//   1) <button>Login</button> aka getByRole('button', { name: 'Login', exact: true })
+//   2) <button>Login with SSO</button> aka getByRole('button', { name: 'Login with SSO' })
+```
+
+Note that the error message **hands you the fix** (the `aka getByRole(…)` suggestions). Three fixes, all measured to leave exactly one match:
+
+```typescript
+page.getByRole("button", { name: "Login", exact: true }); // best default: say what you mean
+page.getByRole("button", { name: /^Login$/ });             // when you also need case-insensitivity: /^login$/i
+page.getByRole("button", { name: "Login" }).filter({ hasNotText: "SSO" }); // narrow a loose locator
+```
+
+`.first()` also "fixes" it — by silently picking whichever button comes first in the DOM, which is the strict-mode protection thrown away (§Reality Check). Do not.
+
+### When the locator _rightly_ fails: the icon-only button
+
+```html
+<button><svg width="16" height="16"></svg></button>
+<!-- accessible name: "" -> getByRole('button', { name: 'Close' }) finds nothing -->
+<button aria-label="Close dialog"><svg width="16" height="16"></svg></button>
+```
+
+An empty accessible name is not a Playwright bug, it is a real accessibility defect: a screen-reader user hears just "button". Measured: the bare button reports name `""` (`toHaveAccessibleName("")` passes), and `aria-label="Close dialog"` makes `getByRole('button', { name: 'Close dialog' })` match. Other legitimate name sources that also worked: `title="…"`, an `<svg><title>…</title></svg>` child, and an `<img alt="…">` child. The fix belongs **in the app** (ask for the `aria-label`), not in your locator; falling back to `.locator('button:nth-child(3)')` encodes the defect into the suite. One more twist: `<button aria-label="Go">Login</button>` has the name **Go** — `aria-label` outranks the visible text, so `name: 'Login'` finds nothing.
+
+Buttons made from `<input>` take their name from `value`: `<input type="submit" value="Login">` → `Login`; `<input type="submit">` with no value → `Submit` (a browser default, not in your HTML); `<input type="image" alt="Sign in">` → `Sign in`.
+
+### Which locator for that button? Ranked
+
+| Rank | Locator                                            | Why                                                                                                                                                       |
+| ---- | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | `page.getByRole('button', { name: 'Login' })`      | Survives restyling, Vue/React re-rendering, wrapper `<div>` changes. Verifies there is a _button_ **and** that a user can tell what it does. Breaks only on a copy change or a translation |
+| 2    | `page.getByTestId('login-submit')`                 | Survives copy changes and translations. Costs a developer-owned attribute, and says nothing about whether the element is accessible                         |
+| 3    | `` page.locator('form').locator('button[type="submit"]') `` | Survives copy changes with no developer cooperation. Breaks if another submit button joins the form, or the "button" becomes a link                  |
+| Avoid | `page.locator('.orangehrm-login-button')`, `[data-v-7ba5bd90]`, `.oxd-button--main` | Styling hooks and build artefacts — see below                                                                 |
+
+(§9's flowchart checks `data-testid` first; that is the enterprise shortcut when a team owns a test-id contract. Playwright's own guidance leads with role. Both are defensible — neither starts with a CSS class.)
+
+**Why `data-v-…` and utility classes are bad locators.**
+
+- `data-v-7ba5bd90` is the Vue compiler's _scoped-CSS token_, not a contract. In `@vitejs/plugin-vue` 6.0.10 the default component id is a hash of the file path in development, and of **path + file source in production** (`descriptor.id = getHash(normalizedPath + (isProduction ? source : ""))` in the plugin's `dist/index.mjs`). So the value changes whenever that component's source changes, and it differs between dev and prod builds. Vue's [docs](https://vuejs.org/api/sfc-css-features.html#scoped-css) show these attributes as generated output and never promise stability.
+- `oxd-button--medium`, `oxd-button--main` are BEM _modifier_ classes: they describe **look** (size, colour variant). A design tweak flips them without changing what the button does. `orangehrm-login-button` is a name, but still a CSS hook that styling work may rename.
+- Both fail silently at the worst moment — the app still works; only your test is red.
+
+**When `button[type="submit"]` is genuinely right:**
+
+- The button's text is dynamic or localised (a test that runs in five languages) and there is no test id.
+- Scoped to a container, in a page object, where "the form's submit control" _is_ the concept: `loginForm.locator('button[type="submit"]')`.
+- A generic helper that must work across many forms (`submitForm(form: Locator)`).
+- It is **not** right unscoped on a page with two forms (search box + login) — you will hit strict mode or, worse, click the wrong one.
+
+> **Practice — Q4. [Predict, then run] Four controls, four verdicts.** For each snippet, say which role `getByRole` assigns (or "none"), and write the locator you would use:
+>
+> ```html
+> <label for="pw">Password</label><input id="pw" type="password" />
+> <div contenteditable aria-label="Notes"></div>
+> <form id="login"><button>Sign in</button></form>
+> <details><summary>More</summary>hidden text</details>
+> ```
+>
+> <details><summary>Answer</summary>
+>
+> 1. **`textbox`**, named "Password" (from the `<label for>`): `page.getByLabel('Password')` or `page.getByRole('textbox', { name: 'Password' })`. Measured: both count 1. The password type does _not_ remove the role.
+> 2. **No role** — `<div contenteditable>` is not a `textbox` to Playwright. `getByRole('textbox', { name: 'Notes' })` → 0, but `page.getByLabel('Notes')` → 1 because `getByLabel` also reads `aria-label` on any element. Best fix in the app: `role="textbox"`.
+> 3. **No role.** `<form>` is only a `form` landmark when it has `aria-label`/`aria-labelledby`; `getByRole('form')` → 0. Use `page.locator('#login')` or ask for an `aria-label`. The inner button is fine: `getByRole('button', { name: 'Sign in' })`.
+> 4. `<details>` is `group` (`getByRole('group')` → 1), but `<summary>` has **no role**: `getByRole('button', { name: 'More' })` → 0. Use `page.getByText('More')` or `page.locator('summary')`.
+>
+> </details>
+
+---
+
+## 14. Accessible Names for Form Controls — Sources and Precedence
+
+§11 gave the general accname order. Form controls take a _native_ path through it, and "which attribute wins" decides whether `getByRole('textbox', { name })` and `getByLabel()` find your input. Each row below was measured on 1.64.1 by putting the source on an `<input type="text">` and asking for the name.
+
+| Name source                                    | Example                                                              | `getByRole('textbox', { name })` | `getByLabel()` |
+| ---------------------------------------------- | -------------------------------------------------------------------- | -------------------------------- | -------------- |
+| `<label for="id">`                             | `<label for="u">Username</label><input id="u">`                      | finds it                         | finds it       |
+| Wrapping `<label>`                             | `<label>Email <input type="email"></label>`                          | finds it                         | finds it       |
+| `aria-label`                                   | `<input aria-label="Phone">`                                         | finds it                         | finds it       |
+| `aria-labelledby` (one or many ids)            | `<span id="a">Postal</span> <span id="b">code</span><input aria-labelledby="a b">` | finds "Postal code"  | finds "Postal" or "code", **not** the joined "Postal code" |
+| `title`                                        | `<input title="Username">`                                           | finds it                         | **0** (use `getByTitle`) |
+| `placeholder`                                  | `<input placeholder="Username">`                                     | finds it (text-like types only)  | **0** (use `getByPlaceholder`) |
+| `name`, `id`, `class`, `type` attributes       | `<input name="username">`                                            | **never**                        | **never**      |
+
+**Precedence when several are present — measured:**
+
+| Both present                           | Winner                  | Evidence                                                                                              |
+| -------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------- |
+| `aria-labelledby` + `aria-label` + `<label>` | `aria-labelledby` | `name: 'LBY'` finds it; `'ARIA'` and `'LBL'` find nothing                                              |
+| `aria-label` + `<label for>`           | `aria-label`            | `name: 'ARIA'` → 1, `name: 'LBL'` → 0, and `getByLabel('LBL')` → 0 (the visible label is ignored)    |
+| `aria-label` + `title`                 | `aria-label`            | `'ARIA'` → 1, `'TT'` → 0                                                                              |
+| `<label>` + `title`                    | `<label>`               | `'LBL'` → 1, `'TT'` → 0                                                                               |
+| `<label>` + `placeholder`              | `<label>`               | `'LBL'` → 1, `'PH'` → 0                                                                               |
+| `title` + `placeholder`                | **`title`**             | `'TT'` → 1, `'PH'` → 0. HTML-AAM also puts `title` before `placeholder`                                |
+| `aria-labelledby` pointing at a missing id + `aria-label` | `aria-label` | falls through when no referenced element exists                                               |
+
+So for inputs the full order in 1.64.1 is **`aria-labelledby` > `aria-label` > `<label>` (for or wrapping) > `title` > `placeholder`**. This refines §11's summary ("`title` is the last resort"): for _buttons and links_ it is, but for `<input>`/`<textarea>` it is `placeholder` that is last, and it only counts for `text`, `password`, `number`, `search`, `tel`, `email`, `url` and `<textarea>`. A `placeholder` on `type="date"` or a checkbox gives **no** name (measured: `name: 'Pick date'` → 0). The practical rule: **`placeholder` is a last-resort locator, never a design intent** — it disappears the moment the user types, and many apps change it per release. Prefer it only when it is the sole hook (see the next block).
+
+Two gotchas with labels, both measured:
+
+- **A "label" that is not a `<label for>`** — `<div class="field"><span>Username</span><input></div>` — gives the input **no name at all**. `getByLabel('Username')` → 0 and `getByRole('textbox', { name: 'Username' })` → 0. A bare `<label>Username</label>` next to an input without `for` or wrapping fails the same way. Fall back to a scoped locator, e.g. `page.locator(".field").filter({ hasText: "Username" }).getByRole("textbox")`, and report the missing association — it is also a screen-reader defect.
+- **Decorations leak into the name.** `<label for="y">Phone <span>*</span></label>` has the name `Phone *`, so `name: 'Phone', exact: true` finds nothing while `name: 'Phone'` (substring) works. A star with `aria-hidden="true"` is excluded from the name (measured: `Email`).
+
+### Password fields
+
+`type="password"` is a `textbox` (§12), so the same rules apply — nothing special is needed except one hazard:
+
+```typescript
+// <label for="pw">Password</label><input id="pw" type="password" name="pwd">
+// <label for="pw2">Confirm password</label><input id="pw2" type="password">
+await page.getByLabel("Password").fill("fake-secret"); // strict mode violation: also matches "Confirm password" (2 matches)
+await page.getByLabel("Password", { exact: true }).fill("fake-secret"); // 1 match - correct
+await page.getByRole("textbox", { name: "Password", exact: true }).fill("fake-secret"); // equivalent
+await page.getByLabel("Confirm password").fill("fake-secret"); // unambiguous - the longer label wins on its own
+```
+
+Pick by what the field exposes: **`getByLabel`** when there is a real `<label>` (it reads exactly as a user would find the field); **`getByRole('textbox', { name })`** when you also want to assert it is a text field; **`getByPlaceholder`** when the placeholder is the only hook (e.g. an unassociated-label login page where the text "Username" is just a `<label>` with no `for`, but the `<input>` carries `placeholder="Username"` — then the name _is_ the placeholder and `getByRole('textbox', { name: 'Username' })` works too); `locator('input[type="password"]')` is the fallback when you truly mean "the password field" and the page has only one.
+
+**`getByLabel` vs `getByRole` name, in one line:** `getByLabel` considers `aria-labelledby` (each referenced element on its own), `aria-label`, then the `<label>` elements — and stops at the first source that exists; it never looks at `title` or `placeholder`. `getByRole` runs the full accname computation. When they disagree, `getByRole`'s answer is the one a screen reader gets.
+
+> **Challenge — Q5. [Predict] Which attribute pays the rent?** A page has `<label for="e">Email</label><input id="e" type="email" aria-label="Work email" placeholder="you@corp.com" title="Required">`. Write two locators that find it. Then say what `getByLabel("Email", { exact: true })` returns, and why.
+>
+> <details><summary>Answer</summary>
+>
+> `aria-label` outranks the `<label>`, so the accessible name is **"Work email"**. Two that work (both measured: 1 match): `page.getByRole("textbox", { name: "Work email" })` and `page.getByLabel("Work email")`. `getByLabel("Email", { exact: true })` returns **0** even though the page visibly says "Email": once `aria-label` is present the `<label>` text is not consulted (same for `getByRole("textbox", { name: "Email", exact: true })` → 0). The loose forms `getByLabel("Email")` and `getByRole("textbox", { name: "Email" })` still match, by substring of "Work email". `title` ("Required") and `placeholder` ("you@corp.com") lose to `aria-label`: `name: "Required"` → 0, `name: "you@corp.com"` → 0. Moral: when the visible label and your locator disagree, read `await locator.ariaSnapshot()` rather than the HTML.
+>
+> </details>
+
+---
+
 ## 📚 References & Further Reading
 
 ### Official Documentation
@@ -940,6 +1308,8 @@ const approveBtn = page.getByRole('button', { name: 'Approve' });
 - [XPath 3.1 Specification — W3C](https://www.w3.org/TR/xpath-31/) — The full XPath language standard; Section 3 covers Axes and path expressions
 - [ARIA Roles — W3C WAI-ARIA](https://www.w3.org/TR/wai-aria-1.2/#role_definitions) — Every ARIA role definition — understand what `getByRole` searches for
 - [Accessible Name Computation — W3C](https://www.w3.org/TR/accname-1.2/) — How browsers compute the "accessible name" that `getByRole({name})` matches against
+- [HTML Accessibility API Mappings (HTML-AAM)](https://www.w3.org/TR/html-aam-1.0/) and [ARIA in HTML](https://www.w3.org/TR/html-aria/) — which ARIA role each HTML element and `<input type>` maps to (and where the answer is "no corresponding role")
+- [Vue SFC scoped CSS](https://vuejs.org/api/sfc-css-features.html#scoped-css) — what the `data-v-…` attributes are
 
 ### Complementary Guides
 
@@ -965,3 +1335,13 @@ const approveBtn = page.getByRole('button', { name: 'Approve' });
 **"If an element is visible on screen, Playwright can click it"** → "Visible" in the CSS sense (opacity > 0, display not none) and "actionable" in Playwright's sense differ. An element might be visible but covered by another element (z-index overlay, sticky header), disabled via pointer-events: none, or inside a scrollable area not scrolled into view. Playwright's `click()` waits for the element to be actionable — including receiving pointer events — and scrolls it into view automatically.
 
 **"Strict mode causes false failures when there are duplicate elements"** → Strict mode (`locator.strict()` or the default in Playwright 1.14+) throws `Error: strict mode violation` when a locator matches multiple elements. This is a *feature*, not a bug — it prevents silently clicking the wrong element. Fix: make your locator more specific (scope to a container, add an attribute), not by disabling strict mode. The error tells you your locator is ambiguous.
+
+**"There is a `getByRole('input')` — an input box is role `input`"** → There is no such role. `getByRole` takes an ARIA role, and `<input>` maps to a different role depending on its `type`: `textbox` (text, email, tel, url, **password**), `searchbox`, `spinbutton`, `slider`, `checkbox`, `radio`, `button`, or `combobox` when a `list=` datalist is attached. Measured on 1.64.1 in [§12](#12-which-getbyrole-role-do-i-use--the-html-element--aria-role-map). When unsure, `await locator.ariaSnapshot()` tells you the role Playwright computed.
+
+**"`<input type=\"password\">` has no textbox role"** → True of the HTML spec ("no corresponding role"), false in Playwright 1.64.1: `getByRole('textbox', { name: 'Password' })` matches, as does `getByLabel('Password')`. The same fallback gives `textbox` to date, time, month, week and color inputs, which Chromium itself reports with non-ARIA roles.
+
+**"`getByRole('button', { name: 'Login' })` can't work because the button has no `name` attribute"** → The `name` option is the _accessible_ name, computed from the button's content (or `aria-label`, `<label>`, `title` …), never the HTML `name` attribute. `<button name="loginBtn">Login</button>` is found by `name: 'Login'` and not by `name: 'loginBtn'`. See [§13](#13-the-worked-example--why-getbyrolebutton--name-login--works-on-a-button-with-no-name-attribute).
+
+**"`name: 'Login'` matches exactly 'Login'"** → It is a case-insensitive _substring_ match on the whitespace-normalised name, so it also matches "Login with SSO" and trips strict mode. Say what you mean: `exact: true` or `/^Login$/`.
+
+**"`placeholder` is the accessible name, so `getByRole('textbox', { name })` is as good as a label"** → `placeholder` is the _last_ name source (below `<label>`, `aria-label`, `aria-labelledby` and even `title`), only counts for text-like inputs, and a `title` on the same input hides it. See [§14](#14-accessible-names-for-form-controls--sources-and-precedence).
