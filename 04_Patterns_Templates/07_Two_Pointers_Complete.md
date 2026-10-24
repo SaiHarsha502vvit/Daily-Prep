@@ -1,21 +1,66 @@
-﻿**Navigation**: [< Previous](06_Binary_Search_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Array_Plus_TwoPointers.md)
+# 🧩 Two Pointers — Pattern Guide
+
+**Navigation**: [< Previous](06_Binary_Search_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Array_Plus_TwoPointers.md)
+
+---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Arrays](../02_Data_Structures/01b_Arrays.md), [Sorting Fundamentals](../03_Algorithms/02a_Sorting_Fundamentals.md) |
+| **You will learn** | Opposite-direction, same-direction, fast/slow and multi-array pointers, their invariants and how they connect to sliding window |
+| **Leads to** | [Array + Two Pointers](08_Array_Plus_TwoPointers.md), [Linked List + Two Pointers](12_LinkedList_Plus_TwoPointers.md) |
+| **Abstraction level** | Nested loops over pairs → **two indices that never go backwards** → amortised `O(n)` |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Two Pointers
+
+### 1. The bottom line
+
+Use two indices that move monotonically so each element is visited a constant number of times.
+
+### 2. The textbook core
+
+- Opposite ends: sorted array, shrink from both sides (pair sum, container with most water).
+- Same direction: reader/writer (remove duplicates), partitioning.
+- Fast/slow: different speeds (cycle detection, middle of list).
+- Correctness argument: when you move a pointer you discard candidates that cannot be part of the answer.
+
+### 3. The real-world analogy
+
+Two people **walking toward each other along a corridor** looking for a pair that adds up to a target: too big, the right one steps back; too small, the left one steps forward.
+
+### 4. Walkthrough
+
+1. Sorted `[1,2,4,7,11]`, target 9.
+2. `L=1, R=11`: 12 > 9 → move `R`.
+3. `1 + 7 = 8 < 9` → move `L`.
+4. `2 + 7 = 9` → found.
+
+> [!NOTE]
+> **Quick check:** Why is it safe to move `R` when the sum is too large? *Any pair using `R` with a larger-or-equal left element is even larger.*
 
 ---
 
 ### Historical Evolution
 
-**Inventor / Originator:** Two pointers evolved from cycle detection (Robert Floyd 1967), the Dutch National Flag problem (Edsger Dijkstra 1976), and Hoare's quicksort partitioning (1959).
+**Inventor / Originator:** Two-pointer techniques have several independent roots: Hoare's partitioning (invented 1959, published in *Quicksort*, 1961), Floyd's cycle-finding algorithm (credited to Robert Floyd in the 1960s; Knuth records it), and Dijkstra's Dutch national flag problem (*A Discipline of Programming*, 1976).
 
-**Predecessor context:** Pair-finding problems required O(n²) brute force — checking all combinations. Sorting first then using two pointers reduced this to O(n log n) + O(n).
+**Predecessor context:** Pair-finding over a sorted array was `O(n²)`; scanning from both ends exploits the order to cut it to `O(n)`.
 
-**Evolution narrative:** Floyd's tortoise-and-hare algorithm (1967) introduced the fast/slow pointer concept. Dijkstra's Dutch National Flag (1976) formalized the three-way partitioning that maps to three-pointer problems. Hoare's partitioning scheme (1959) enabled in-place quicksort.
+**Evolution narrative:** Each root contributes a different pointer pattern: opposite ends (partitioning, pair sums), same direction at different speeds (cycle detection, read/write compaction), and three-way partitions (flag problem).
 
-**Modern practice:** Two pointers are fundamental to LeetCode's "Two Pointers" category (hundreds of problems). Floyd's cycle detection runs in every linked list's containsCycle implementation.
+**Modern practice:** Pointer patterns appear in standard-library partition routines, linked-list cycle checks and in-place array compaction.
 
-- **Hoare quicksort partition — 1959**: In-place partitioning scheme; foundation of two-pointer partitioning
-- **Floyd cycle detection — 1967**: "Tortoise and Hare" algorithm for O(n) cycle detection
-- **Dijkstra Dutch National Flag — 1976**: Three-way partitioning for elements with discrete values
-- **Modern practice**: Floyd's algorithm in every language's linked list library
+- **Hoare — 1959/1961**: In-place partition for quicksort
+- **Floyd — 1960s**: Tortoise-and-hare cycle detection (Knuth, TAOCP Vol. 2)
+- **Brent — 1980**: A faster cycle-finding variant
+- **Dijkstra — 1976**: Dutch national flag three-way partition
 
 ---
 
@@ -81,7 +126,7 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-🔗 **Practice problems:** [Two Pointers PS](../05_Problem_Solving/03_TwoPointers.md)
+🔗 **Practice problems:** [Two Pointers PS](../05_Problem_Solving/06_Two_Pointers.md)
 🔗 **Related:** [Sliding Window template](01_Sliding_Window.md) — sliding window IS two pointers + window state
 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](00_PATTERN_MASTER_GUIDE.md)
 
@@ -1436,6 +1481,17 @@ This is why phase 2 of Floyd works: after the meeting inside the cycle, resettin
 </details>
 
 
+
+---
+
+## 🏢 Enterprise Lens — Two Pointers
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Deduplication in pipelines, merging sorted streams, in-place compaction, partition steps in sorting |
+| **Failure modes** | Applying it to unsorted data; forgetting duplicate handling; moving the wrong pointer |
+| **Testing and verification** | Brute-force comparison on random arrays; test duplicates, length 0/1/2, all-equal |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

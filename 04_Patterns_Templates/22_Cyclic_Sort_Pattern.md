@@ -1,23 +1,67 @@
-﻿**Navigation**: [< Previous](21_Intervals_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Knapsack_Family.md)
+# 🧩 Cyclic Sort — Pattern Guide
+
+**Navigation**: [< Previous](21_Intervals_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Knapsack_Family.md)
 
 **Pattern 22** | [Prev](21_Intervals_Pattern.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Arrays](../02_Data_Structures/01b_Arrays.md), [Two Pointers](07_Two_Pointers_Complete.md) |
+| **You will learn** | Placing each value at index `value − 1`, then reading missing/duplicate numbers from the leftovers |
+| **Leads to** | [Linked List + Two Pointers](12_LinkedList_Plus_TwoPointers.md) (Floyd), [HashMap + Counting](10_HashMap_Plus_Counting.md) |
+| **Abstraction level** | Sort or hash for membership → **use the array itself as the hash table** → `O(1)` extra space |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Cyclic Sort
+
+### 1. The bottom line
+
+When values are in `1..n`, each value has exactly one home index — swap until everything is home, then the misplaced ones tell the story.
+
+### 2. The textbook core
+
+- Loop: while `nums[i]` is in range and not at its home, swap it home.
+- Duplicates: if the home already holds the same value, stop (avoids infinite loops).
+- After one pass, index `i` where `nums[i] != i + 1` marks a missing value.
+- Time `O(n)` (each swap places one value), space `O(1)`.
+
+### 3. The real-world analogy
+
+A **coat check**: each coat goes to the hook with its number; at the end, empty hooks are the missing coats.
+
+### 4. Walkthrough
+
+1. `[3,1,5,4]` → find the first missing positive (n = 4).
+2. Swap 3 home → `[5,1,3,4]`; 5 is out of range, so move on; swap 1 home → `[1,5,3,4]`.
+3. 3 and 4 are already home.
+4. Scan: index 1 holds 5 ≠ 2 → the first missing positive is 2.
+
+> [!NOTE]
+> **Quick check:** Why does the duplicate check prevent an infinite loop? *Swapping two equal values changes nothing.*
+
+---
+
 ### Historical Evolution
 
-**Inventor / Originator:** Cyclic sort is used since the 1960s. Abdi Edalat (1997) formalized the cycle decomposition. Related to Floyd's cycle detection (1967). Hadian (1969) studied sorting under permutation.
+**Inventor / Originator:** In-place permutation by following cycles is classical (Knuth, TAOCP Vol. 3 and Vol. 1 on permutations). B. K. Haddon named and analysed **cycle sort** in 1990 (*Cycle-sort: a linear sorting method*, The Computer Journal), a write-minimising sort. The interview pattern "place each value at index value−1" is folklore built on the same idea.
 
-**Predecessor context:** Sorting required comparison-based algorithms (O(n log n)). When values are in a known range, cyclic sort's O(n) time and O(1) space was known but not widely taught.
+**Predecessor context:** Sorting needed `O(n log n)` comparisons, even when the values were known to be a permutation of `1..n`.
 
-**Evolution narrative:** Cyclic sort leverages the fact that if elements are in range [1, n] (or can be mapped), each element belongs to exactly one position. By swapping until the position is correct, we achieve O(n) with O(1) space.
+**Evolution narrative:** When each value has exactly one correct slot, repeatedly swapping an element to its home position sorts in `O(n)` time and `O(1)` space; leftovers reveal missing or duplicate values.
 
-**Modern practice:** Cyclic sort is ideal for "find missing number" and "find duplicate" problems where values are in range [1, n]. It's commonly asked in interviews.
+**Modern practice:** First-missing-positive, find-all-duplicates and set-mismatch problems; cycle sort itself is used when writes to memory are expensive.
 
-- **Floyd cycle detection — 1967**: Foundational insight that cycles can be detected with two pointers
-- **Hadian 1969**: "Sorting under permutation" — theoretical study of cycle-based sorting
-- **Cycle decomposition — 1997**: Formal analysis of permutation cycles in sorting
-- **Modern practice**: LeetCode "find duplicate" and "find missing number" problems
+- **Knuth — 1968–1973**: Permutation cycles in TAOCP
+- **Haddon — 1990**: Cycle sort, minimising writes
+- **Floyd — 1960s**: Cycle detection for duplicates when mutation is forbidden
 
 ---
 
@@ -508,6 +552,17 @@ COMPLEXITY: Time O(n) | Space O(1)
 | 7   | [Couples Holding Hands](https://leetcode.com/problems/couples-holding-hands/)                           | 765  | Hard       | Cyclic swap variant   |
 | 8   | [Kth Missing Positive](https://leetcode.com/problems/kth-missing-positive-number/)                      | 1539 | Easy       | Binary search variant |
 
+
+---
+
+## 🏢 Enterprise Lens — Cyclic Sort
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Data validation on dense ID ranges, integrity checks, in-place permutation |
+| **Failure modes** | Input out of range; mutating a read-only array; infinite loop on duplicates |
+| **Testing and verification** | Compare with a hash-set solution on random arrays with deliberate missing/duplicate values |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

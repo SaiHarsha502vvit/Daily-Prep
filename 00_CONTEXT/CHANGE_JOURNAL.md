@@ -4,6 +4,15 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-10-24 - 04_Patterns_Templates Repair, Fact Check and Enterprise Upgrade
+
+- Repaired encoding in 18 files (cp1252 bytes, `** ?` separators, replacement characters), the headerless pattern table in `00_INDEX.md`, the broken HashMap diagram in `03_Visual_Diagrams.md` (now Mermaid) and three dead cross-links.
+- Rewrote every "Historical Evolution" block (25 files): removed fabricated or misattributed claims (e.g. "Knuth Algorithm 245" - actually Floyd's Treesort 3, invented authors, wrong years, Stanford/KACTL, Meyers/STL, Barbay et al., Hadian/Edalat) and replaced them with attributable history.
+- Added Bridge, study-partner explainer and Enterprise Lens to all 25 pattern chapters and the Master Guide; Master Guide decision flow converted to Mermaid.
+- Added `00_LEARNING_PATH.md` (abstraction ladder, dependency graph, ordered bridges, question-shape matrix, gap table) and rewrote `00_INDEX.md`.
+- Added six one-topic pattern pages with Java verified against brute force: 26 Prefix Sum & Difference Array, 27 Union-Find, 28 Topological Sort, 29 Trie, 30 Shortest Paths (BFS/0-1 BFS/Dijkstra/Bellman-Ford), 31 Top-K & Two Heaps.
+- `CONTEXT.md` updated with the standard-blocks and one-topic-one-page rules.
+
 ## 2026-10-24 - Book Audit: 03_Algorithms Chapter 27, Book Companion, 02_Data_Structures History Fact Check
 
 - Audited `03_Algorithms` against the two reference books in the repo root (Competitive Programmer's Handbook; Programming Challenges). Found nine topics with zero coverage (Catalan, Burnside, Cayley/Prüfer, Kirchhoff, Wilson, Dilworth, Josephus, linear Diophantine, Stern-Brocot).

@@ -1,21 +1,65 @@
-﻿**Navigation**: [< Previous](03_Visual_Diagrams.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_LeetCode_RealWorld_Map.md)
+# 🧩 Pattern Recognition — Pattern Guide
+
+**Navigation**: [< Previous](03_Visual_Diagrams.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_LeetCode_RealWorld_Map.md)
+
+---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Code Templates](02_Code_Templates.md), [Visual Diagrams](03_Visual_Diagrams.md) |
+| **You will learn** | Signals in a problem statement that point to a pattern, plus ten compact templates (prefix sum, Kadane, monotonic stack, union-find, trie, topological sort, binary search, intervals, graphs, bits) |
+| **Leads to** | [Constraint-Based Selection](25_Constraint_Based_Pattern_Selection.md), the dedicated pattern chapters |
+| **Abstraction level** | Keywords → **question shape** → pattern → constraints that confirm it |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Pattern Recognition
+
+### 1. The bottom line
+
+Read the *question* (what is being asked, over what structure, under which limits) and the pattern usually follows.
+
+### 2. The textbook core
+
+- Signals: "contiguous" → window/prefix sum; "sorted + pair" → two pointers; "minimum such that" → binary search on answer; "next greater" → monotonic stack; "connected" → union-find / graph search.
+- A pattern is confirmed only by the **constraints** (sizes, sortedness, sign of values).
+- Shortlist two or three patterns, test each against a small example, then commit.
+
+### 3. The real-world analogy
+
+A **doctor's triage**: symptoms (keywords) suggest candidates, tests (constraints) confirm the diagnosis.
+
+### 4. Walkthrough
+
+1. Problem: "number of subarrays with sum k" (values may be negative).
+2. "Subarray" suggests window or prefix sum; negatives rule out the window.
+3. Prefix sum + hash map counting earlier prefixes.
+4. Verify on `[1,1,1], k=2` → 2 subarrays.
+
+> [!NOTE]
+> **Quick check:** Why is "subarray" alone not enough to choose a sliding window? *Without a monotone condition (non-negatives), windows fail.*
 
 ---
 
 ### Historical Evolution
 
-**Inventor / Originator:** Pattern recognition as a structured approach was pioneered by George Polya "How to Solve It" (1945), formalized by Robert Floyd (1962), and by Dijkstra with his 1959 algorithm design methodology.
+**Inventor / Originator:** George Pólya's *How to Solve It* (1945) taught problem solving through heuristics such as "have you seen a related problem?". Robert Floyd's 1978 Turing Award lecture, *The Paradigms of Programming*, argued that programmers should learn named paradigms. Chase and Simon's 1973 studies of chess experts showed that expertise rests on recognising stored patterns ("chunks").
 
-**Predecessor context:** Before structured pattern recognition, programmers relied on intuition and ad-hoc approaches. Problems were solved by trial-and-error rather than systematic identification of the underlying structure.
+**Predecessor context:** Beginners treated each problem as new and relied on trial and error.
 
-**Evolution narrative:** Polya established problem-solving as a teachable skill with discoverable patterns. Floyd applied this to CS with algorithm verification methodology. Dijkstra formalized the "problem signals → pattern choice" mapping.
+**Evolution narrative:** Algorithm textbooks organised material by technique (divide and conquer, greedy, dynamic programming); interview preparation later reorganised it by *recognisable problem shape*, which is what this folder does.
 
-**Modern practice:** LeetCode, AlgoExpert, and system design courses rely heavily on pattern recognition frameworks. FAANG interviews explicitly test pattern-matching ability.
+**Modern practice:** Pattern lists are a study aid: the skill is matching **constraints and question shape** to a technique, then proving it applies.
 
-- **Polya "How to Solve It" — 1945**: Established problem-solving follows discoverable patterns
-- **Dijkstra 1959**: Formalized algorithm design methodology; constraints drive solution choice
-- **Floyd 1962**: Turing Award paper on algorithm verification; invariant-based reasoning
-- **Modern practice**: LeetCode patterns, Grokking the System Design Interview are standard prep
+- **Pólya — 1945**: *How to Solve It*: heuristics for attacking unfamiliar problems
+- **Chase & Simon — 1973**: Expert performance comes from recognising familiar configurations
+- **Alexander — 1977 / Gamma et al. — 1994**: Pattern languages in architecture and software design
+- **Floyd — 1978**: *The Paradigms of Programming* (Turing Award lecture)
 
 ---
 
@@ -1087,6 +1131,17 @@ Write down: "This is a [pattern] problem because [reason]."
 
 **Master these patterns, and you'll solve 90% of interview problems!**
 
+
+---
+
+## 🏢 Enterprise Lens — Pattern Recognition
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Code review and design discussions where choosing the right approach matters more than writing it |
+| **Failure modes** | Matching on keywords only; ignoring constraints; forcing a favourite pattern |
+| **Testing and verification** | For each recognition rule, keep one counter-example problem where it does not apply |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

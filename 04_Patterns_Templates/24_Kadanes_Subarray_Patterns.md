@@ -1,3 +1,5 @@
+# 🧩 Kadane and Subarray Patterns — Pattern Guide
+
 **Navigation**: [< Previous](23_Knapsack_Family.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](25_Constraint_Based_Pattern_Selection.md)
 
 # Kadane's Algorithm & Subarray Patterns — Complete Guide
@@ -12,20 +14,63 @@
 
 ### ⚠️ Constraint Lens
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [DP Pattern Recognition](16_DP_Pattern_Recognition.md), [Prefix Sum](26_Prefix_Sum_And_Difference_Array.md) |
+| **You will learn** | Best sum ending here, max product with two running values, circular maximum, subarray sum equals k, window variants |
+| **Leads to** | [Constraint-Based Selection](25_Constraint_Based_Pattern_Selection.md) |
+| **Abstraction level** | All subarrays `O(n²)` → **extend or restart** (1D DP) → `O(n)` with `O(1)` space |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Kadane and Subarray Patterns
+
+### 1. The bottom line
+
+At each position, either extend the best subarray ending before it or start a new one — keep the better.
+
+### 2. The textbook core
+
+- `best_here = max(a[i], best_here + a[i])`, `answer = max(answer, best_here)`.
+- Initialise from the first element to handle all-negative arrays.
+- Max product keeps both max and min running values (negatives flip).
+- Circular: `max(ordinary, total − minSubarray)` with an all-negative guard.
+
+### 3. The real-world analogy
+
+A **hiker deciding whether to keep following the trail** or restart from here, depending on whether the trail so far helped.
+
+### 4. Walkthrough
+
+1. `[−2,1,−3,4,−1,2,1,−5,4]`.
+2. best_here: −2, 1, −2, 4, 3, 5, 6, 1, 5.
+3. Maximum seen = 6.
+4. Subarray `[4,−1,2,1]`.
+
+> [!NOTE]
+> **Quick check:** What breaks if you initialise `best_here` to 0? *All-negative arrays wrongly return 0.*
+
+---
+
 ### Historical Evolution
 
-**Inventor / Originator:** Jay Kadane (1984) published the linear-time max subarray algorithm. Jon Bentley (1986) documented it in "Programming Pearls." Andrew Viterbi (1967) applied similar greedy DP to hidden Markov models.
+**Inventor / Originator:** Ulf Grenander posed the maximum-subarray problem around 1977 (pattern analysis in digital images). Michael Shamos found an `O(n log n)` divide-and-conquer solution, and **Jay Kadane** (Carnegie Mellon) then described the linear-time scan; Jon Bentley recounts the story in his *Programming Pearls* column "Algorithm Design Techniques" (CACM, September 1984).
 
-**Predecessor context:** The maximum subarray problem was solved in O(n²) or O(n³) by checking all possible subarrays. No one knew it could be solved in O(n).
+**Predecessor context:** Checking every subarray took `O(n³)`, improved to `O(n²)` with prefix sums.
 
-**Evolution narrative:** Kadane's 1984 algorithm discovered that at each position, you decide: extend the previous subarray or start fresh. This greedy DP insight reduced O(n²) to O(n). Bentley popularized it in his influential column.
+**Evolution narrative:** The linear algorithm keeps the best sum *ending here*: extend the previous run or restart at the current element. It is a dynamic program compressed to one variable.
 
-**Modern practice:** Kadane's algorithm is one of the most elegant in computer science. It appears in stock price problems, signal processing, and any domain requiring maximum subarray sums.
+**Modern practice:** Stock-profit problems, maximum-product and circular variants, and 2D maximum-sum rectangles (reduce to 1D).
 
-- **Kadane 1984**: Published the O(n) max subarray algorithm; simple elegant solution
-- **Bentley 1986**: "Programming Pearls" popularized Kadane's algorithm to wide audience
-- **Viterbi 1967**: Similar greedy DP for HMMs; precursor to Kadane's principle
-- **Modern practice**: Stock buy/sell problems, signal processing, maximum subarray variants
+- **Grenander — c. 1977**: Posed the problem
+- **Shamos — c. 1977**: `O(n log n)` divide and conquer
+- **Kadane — c. 1977**: Linear-time scan (reported by Bentley, 1984)
+- **Bentley — 1984/1986**: Popularised the problem in *Programming Pearls*
 
 ---
 
@@ -513,14 +558,25 @@ Subarray problem?
 
 ---
 
+## 🏢 Enterprise Lens — Kadane and Subarray Patterns
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Profit/loss streaks, signal peaks, anomaly windows in time series |
+| **Failure modes** | Zero initialisation; overflow on large sums; forgetting circular edge cases |
+| **Testing and verification** | Brute-force `O(n²)` on random arrays including all-negative and single-element inputs |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
+
+---
+
 ## Reality Check
 
-**"Kadane is a clever trick"** ? Kadane is 1D DP with the state compressed to one variable: best-ending-HERE = max(x, best-ending-here + x); the global best watches from outside. Seeing it as DP (state: best subarray ending at i) rather than trick unlocks every variant � with-one-deletion adds a second state, circular adds a min-mirror, product swaps in a max/min pair. Trick-memorizers solve exactly one problem; state-thinkers solve the family.
+**"Kadane is a clever trick"** — Kadane is 1D DP with the state compressed to one variable: best-ending-HERE = max(x, best-ending-here + x); the global best watches from outside. Seeing it as DP (state: best subarray ending at i) rather than trick unlocks every variant — with-one-deletion adds a second state, circular adds a min-mirror, product swaps in a max/min pair. Trick-memorizers solve exactly one problem; state-thinkers solve the family.
 
-**"Initialize with zero and it works"** ? Zero-initialization breaks all-negative arrays (reports empty-subarray 0 when the answer is the largest negative). Correct base: best = global = arr[0], iterate from index 1 � the empty subarray is not a legal answer unless the problem SAYS so, and when it does, zero-init becomes right again. This single initialization decision encodes the problem's empty-subarray policy; knowing that is the difference between a bug and a requirements question.
+**"Initialize with zero and it works"** — Zero-initialization breaks all-negative arrays (reports empty-subarray 0 when the answer is the largest negative). Correct base: best = global = arr[0], iterate from index 1 — the empty subarray is not a legal answer unless the problem SAYS so, and when it does, zero-init becomes right again. This single initialization decision encodes the problem's empty-subarray policy; knowing that is the difference between a bug and a requirements question.
 
-**"Maximum product subarray is Kadane with multiplication"** ? Negatives flip extremes � the most negative running product becomes the most positive after one more negative � so the state must carry BOTH running max and running min, updated simultaneously from the same three candidates (x, max�x, min�x). Zeros hard-reset both. The lesson generalizes: when an operation is non-monotone, the compressed state must widen to whatever the future can still use, and "carry both extremes" is the standard widening.
+**"Maximum product subarray is Kadane with multiplication"** — Negatives flip extremes — the most negative running product becomes the most positive after one more negative — so the state must carry BOTH running max and running min, updated simultaneously from the same three candidates (x, max·x, min·x). Zeros hard-reset both. The lesson generalizes: when an operation is non-monotone, the compressed state must widen to whatever the future can still use, and "carry both extremes" is the standard widening.
 
-**"Circular maximum subarray needs new machinery"** ? Two Kadane passes: the answer is either the ordinary max subarray, or total-sum minus the MINIMUM subarray (wrapping means excluding a middle block). One guard: all-negatives makes total - min degenerate to empty, so fall back to the plain max. The transform � solve the wrap by inverting to its complement � recurs across circular problems (houses, gas stations) and is worth naming as a move, not a one-off.
+**"Circular maximum subarray needs new machinery"** — Two Kadane passes: the answer is either the ordinary max subarray, or total-sum minus the MINIMUM subarray (wrapping means excluding a middle block). One guard: all-negatives makes total - min degenerate to empty, so fall back to the plain max. The transform — solve the wrap by inverting to its complement — recurs across circular problems (houses, gas stations) and is worth naming as a move, not a one-off.
 
-**"Kadane-style thinking stops at sums"** ? The extend-or-restart decision shape covers longest-increasing-RUN (contiguous), best-time-to-buy-sell-one (Kadane on daily deltas), maximum-average fixed windows (reduce to sums), and even bitwise-OR subarray counting (bounded distinct values of running OR). The transfer question for any new streaming problem: "can I express the best answer ENDING at i in terms of the best ending at i-1 plus a constant-time decision?" Yes means Kadane-shaped; the accumulator need not be addition.
+**"Kadane-style thinking stops at sums"** — The extend-or-restart decision shape covers longest-increasing-RUN (contiguous), best-time-to-buy-sell-one (Kadane on daily deltas), maximum-average fixed windows (reduce to sums), and even bitwise-OR subarray counting (bounded distinct values of running OR). The transfer question for any new streaming problem: "can I express the best answer ENDING at i in terms of the best ending at i-1 plus a constant-time decision?" Yes means Kadane-shaped; the accumulator need not be addition.

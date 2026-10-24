@@ -1,4 +1,6 @@
-﻿**Navigation**: [< Previous](14_Graph_Plus_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_DP_Pattern_Recognition.md)
+# 🧩 Heap + Greedy Selection — Pattern Guide
+
+**Navigation**: [< Previous](14_Graph_Plus_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_DP_Pattern_Recognition.md)
 
 # Heap + Greedy Selection — Combined Pattern Guide
 
@@ -6,20 +8,63 @@
 
 ### ⚠️ Constraint Lens
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Heaps](../02_Data_Structures/01f_Trees_Heaps.md), [Greedy](../03_Algorithms/12_Greedy_Algorithms_Complete.md) |
+| **You will learn** | Top-K with a bounded heap, merge K sorted lists, scheduling, median from a stream with two heaps |
+| **Leads to** | [Two Heaps & Top-K](31_Top_K_And_Two_Heaps_Pattern.md), [Intervals](21_Intervals_Pattern.md) |
+| **Abstraction level** | Repeated min/max scans → **a priority queue** → always take the best available |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Heap + Greedy Selection
+
+### 1. The bottom line
+
+When the next best choice is always "the smallest/largest remaining", a heap gives it in `O(log n)`.
+
+### 2. The textbook core
+
+- Top-K largest: keep a **min-heap of size K**; the root is the K-th largest.
+- Merge K sorted lists: heap of heads.
+- Greedy scheduling: heap of available tasks by priority/deadline.
+- Median stream: max-heap for the lower half, min-heap for the upper half.
+
+### 3. The real-world analogy
+
+An **emergency-room triage desk**: whoever is most urgent is served next, no matter when they arrived.
+
+### 4. Walkthrough
+
+1. Find the 2nd largest in `[3,2,1,5,6,4]` with a min-heap of size 2.
+2. Push 3 and 2 → heap `{2,3}`; see 1: smaller than the root 2, skip.
+3. See 5: bigger than the root → pop 2, push 5 → `{3,5}`; see 6 → pop 3, push 6 → `{5,6}`; see 4: smaller than the root 5, skip.
+4. The root, 5, is the 2nd largest.
+
+> [!NOTE]
+> **Quick check:** Why a min-heap for the K largest? *Its root is the weakest of the K kept, the one to evict.*
+
+---
+
 ### Historical Evolution
 
-**Inventor / Originator:** Binary heap invented by J.W.J. Williams (1964). Heapify by Floyd (1964). Huffman coding (1952), Kruskal (1956), Prim (1957), and Dijkstra (1959) built greedy selection on heaps.
+**Inventor / Originator:** J. W. J. Williams published the binary heap with heapsort in 1964 (ACM Algorithm 232); Robert Floyd's *Treesort 3* (ACM Algorithm 245, 1964) added the linear-time bottom-up heap construction. The greedy algorithms that use heaps are older: Huffman coding (1952), Kruskal (1956), Prim (1957, after Jarník 1930) and Dijkstra (1959).
 
-**Predecessor context:** Priority queues before heaps used sorted arrays or linked lists — O(n) insertion or removal. Greedy algorithms like Prim's required such data structures.
+**Predecessor context:** Priority queues were sorted lists or arrays with `O(n)` insertion or removal.
 
-**Evolution narrative:** Williams' binary heap provided O(log n) insertion and deletion. Floyd's in-place heapify enabled O(n) heap construction. These structures enabled efficient implementations of Dijkstra, Prim, Huffman, and other greedy algorithms.
+**Evolution narrative:** Heaps give `O(log n)` insert and extract-min, making greedy "pick the best available" loops efficient. Fredman and Tarjan's Fibonacci heaps (1984) improved Dijkstra's bound to `O(E + V log V)`.
 
-**Modern practice:** Priority queues in every language use heap implementations (Java PriorityQueue, C++ priority_queue, Python heapq). Dijkstra's algorithm with a binary heap is the standard for shortest path.
+**Modern practice:** `PriorityQueue` (Java), `heapq` (Python) and `priority_queue` (C++) are binary heaps; they power schedulers, Top-K selection, k-way merges and Dijkstra.
 
-- **Huffman coding — Huffman 1952**: Greedy optimal prefix code construction using a min-heap
-- **Williams binary heap — 1964**: O(log n) insert/delete for priority queues
-- **Floyd heapify — 1964**: O(n) in-place heap construction
-- **Modern practice**: Dijkstra with binary heap for shortest path; Huffman in compression (JPEG, MP3)
+- **Huffman — 1952**: Optimal prefix codes with a greedy merge of the two lightest trees
+- **Williams — 1964**: Binary heap and heapsort
+- **Floyd — 1964**: Linear-time heap construction
+- **Fredman & Tarjan — 1984**: Fibonacci heaps
 
 ---
 
@@ -169,7 +214,7 @@ double findMedian() {
 
 ---
 
-## � FULL WALKTHROUGH: Kth Largest Element in an Array
+## 🔬 FULL WALKTHROUGH: Kth Largest Element in an Array
 
 ```
 Problem: Find the kth largest element. nums = [3,2,1,5,6,4], k = 2
@@ -400,6 +445,17 @@ COMMON MISTAKES:
 
 [← 14 Graph+Traversal](14_Graph_Plus_Traversal.md) | [16 DP Patterns →](16_DP_Pattern_Recognition.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Heap + Greedy Selection
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Schedulers, top-N dashboards, event simulation, k-way merge in databases |
+| **Failure modes** | Using a max-heap of size n (wasted memory); comparator inconsistencies; stale entries after priority changes |
+| **Testing and verification** | Compare with full sort; test K = 1, K = n, duplicates and empty input |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -1,23 +1,71 @@
+# 🧩 Array + Sliding Window — Pattern Guide
+
 **Navigation**: [< Previous](08_Array_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_HashMap_Plus_Counting.md)
 
 # Array + Sliding Window — Combined Pattern Guide
 
 ### 🧠 Deep Intuition — Why Sliding Window Is O(n)
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Sliding Window](01_Sliding_Window.md), [Array + Two Pointers](08_Array_Plus_TwoPointers.md) |
+| **You will learn** | Four question shapes hidden under "window" problems (fixed, longest, shortest, count) and the `right − left + 1` counting formula |
+| **Leads to** | [Prefix Sum](26_Prefix_Sum_And_Difference_Array.md), [Monotonic patterns](11_Stack_Plus_MonotonicPattern.md) |
+| **Abstraction level** | Window mechanics → **which of four question shapes?** |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Array + Sliding Window
+
+### 1. The bottom line
+
+Decide first whether you want the longest, the shortest, a fixed size or a count; the update order follows.
+
+### 2. The textbook core
+
+- Longest: record after shrinking until valid.
+- Shortest: record while valid, then shrink.
+- Count of valid windows ending at `right`: add `right − left + 1`.
+- For character windows use a fixed-size count array plus a "matched" counter.
+
+### 3. The real-world analogy
+
+A **zoom lens**: wide when you need to see enough, narrow when you want the tightest frame.
+
+### 4. Walkthrough
+
+1. Count subarrays with sum < 7 in `[2,3,1,2,4]`.
+2. Move `right`, shrink while sum ≥ 7.
+3. At each `right`, add `right − left + 1` windows ending there.
+4. Total counts every valid subarray exactly once.
+
+> [!NOTE]
+> **Quick check:** Why does `right − left + 1` count windows ending at `right`? *Every start from `left` to `right` yields a valid window.*
+
+---
+
 ### Historical Evolution
 
-**Inventor / Originator:** Same as Sliding Window — signal processing 1960s, Van Jacobson TCP (1988), and CLRS (1990).
+*Shares its roots with [Sliding Window](01_Sliding_Window.md).*
 
-**Predecessor context:** Computing statistics over sliding windows required O(n×k) by re-summing k elements at each position. For real-time systems, this was prohibitively slow.
+**Inventor / Originator:** No single inventor. Moving averages were used in statistics long before computers; windowed protocols appeared in early computer networking (TCP's sliding-window flow control is specified in RFC 793, 1981); Van Jacobson's 1988 paper *Congestion Avoidance and Control* added congestion control on top of it.
 
-**Evolution narrative:** Signal processing engineers realized that overlapping windows share most elements. By maintaining a running sum and adjusting incrementally, each element is processed only twice (add + remove).
+**Predecessor context:** Before the pattern was named, running statistics were recomputed by re-scanning the whole window at each position, `O(n·k)`.
 
-**Modern practice:** Kafka Streams, Apache Flink, and Google Dataflow use sliding window aggregations for real-time analytics. The pattern appears in network monitoring, financial indicators, and sensor data processing.
+**Evolution narrative:** The key observation is that consecutive windows share all but two elements: **add the entering element, remove the leaving one**. The same idea reappeared in image processing (van Herk 1992 and Gil–Werman 1993 give `O(n)` running min/max filters independent of window size) and in data streams (Datar, Gionis, Indyk and Motwani, 2002, analysed statistics over sliding windows). Interview collections later grouped these problems under the name *sliding window*.
 
-- **Signal processing — 1960s**: Moving average filters formalized overlap exploitation
-- **TCP Sliding Window — Jacobson 1988**: Flow control using sliding window protocol
-- **CLRS — 1990**: Codified sliding window as a named algorithmic pattern
-- **Modern practice**: Kafka Streams, Flink, Google Dataflow for real-time analytics
+**Modern practice:** Stream processors such as Apache Flink and Kafka Streams expose window aggregations; TCP uses a window to bound data in flight; analytics dashboards use rolling averages.
+
+- **Moving averages — early 20th century**: Smoothing time series by averaging a fixed-size window
+- **TCP flow control — RFC 793, 1981**: A sender window limits unacknowledged data in flight
+- **Jacobson — 1988**: Slow start and congestion avoidance adapt the window size to network conditions
+- **van Herk 1992 / Gil–Werman 1993**: `O(n)` sliding minimum/maximum, the ancestor of the monotonic-deque technique
+- **Datar et al. — 2002**: Formal treatment of statistics over sliding windows on streams
 
 ---
 
@@ -390,14 +438,25 @@ WHY fixed window? Size is given (k=3), so just slide it.
 
 ---
 
+## 🏢 Enterprise Lens — Array + Sliding Window
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Latency percentiles over recent requests, sensor smoothing, text search with constraints |
+| **Failure modes** | Mixing update order (record before shrink vs after); using it with negative numbers |
+| **Testing and verification** | Brute-force counting on random inputs; verify for each of the four shapes |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
+
+---
+
 ## Reality Check
 
-**"Array + window problems always ask for the maximum window"** ? Four distinct question shapes hide under this pairing, each with a different template detail: longest valid window (shrink only when invalid), shortest valid window (shrink WHILE valid � the inversion trips people), count of valid windows (add right - left + 1 per step, the least intuitive line in the catalog), and exists-a-valid-window (early return). Applying the longest template to a shortest problem produces code that compiles, runs, and returns the wrong extreme.
+**"Array + window problems always ask for the maximum window"** — Four distinct question shapes hide under this pairing, each with a different template detail: longest valid window (shrink only when invalid), shortest valid window (shrink WHILE valid — the inversion trips people), count of valid windows (add right - left + 1 per step, the least intuitive line in the catalog), and exists-a-valid-window (early return). Applying the longest template to a shortest problem produces code that compiles, runs, and returns the wrong extreme.
 
-**"The count-subarrays formula right - left + 1 is a memorized trick"** ? It has a derivation: when the window [left, right] is valid and the property is monotone under shrinking (every suffix-window ending at right is also valid), then exactly right - left + 1 valid subarrays END at right. Summing per right counts each valid subarray exactly once � by its right endpoint. If you can reproduce that sentence, you can also spot when it does NOT apply: properties not preserved under shrinking (exactly-k problems need the atMost(k) - atMost(k-1) transform).
+**"The count-subarrays formula right - left + 1 is a memorized trick"** — It has a derivation: when the window [left, right] is valid and the property is monotone under shrinking (every suffix-window ending at right is also valid), then exactly right - left + 1 valid subarrays END at right. Summing per right counts each valid subarray exactly once — by its right endpoint. If you can reproduce that sentence, you can also spot when it does NOT apply: properties not preserved under shrinking (exactly-k problems need the atMost(k) - atMost(k-1) transform).
 
-**"Character-count windows need a HashMap"** ? For fixed alphabets, a 26-slot int array plus a matched-count integer beats a HashMap in both speed and bug surface. The matched-count refinement (track how many characters currently satisfy their required frequency) turns the per-step validity check from O(26) to O(1) � the difference between passing and TLE on anagram-search problems with 10^5-length strings.
+**"Character-count windows need a HashMap"** — For fixed alphabets, a 26-slot int array plus a matched-count integer beats a HashMap in both speed and bug surface. The matched-count refinement (track how many characters currently satisfy their required frequency) turns the per-step validity check from O(26) to O(1) — the difference between passing and TLE on anagram-search problems with 10^5-length strings.
 
-**"Prefix sums and sliding windows are competing techniques"** ? They are the two halves of one decision: windows handle monotone properties in one pass with O(1) state; prefix sums handle NON-monotone aggregates (negatives, exact-target sums) by trading a HashMap of history for the monotonicity requirement. The interview tell: all-positive constraint means window; "may contain negative" means prefix + map. Constraint lines are the router.
+**"Prefix sums and sliding windows are competing techniques"** — They are the two halves of one decision: windows handle monotone properties in one pass with O(1) state; prefix sums handle NON-monotone aggregates (negatives, exact-target sums) by trading a HashMap of history for the monotonicity requirement. The interview tell: all-positive constraint means window; "may contain negative" means prefix + map. Constraint lines are the router.
 
-**"A correct window solution is insensitive to update order"** ? The add-check-shrink-record cycle has exactly one correct ordering per variant, and swapping two lines produces off-by-one windows that pass half the tests. The stable discipline: expand ALWAYS first, restore the invariant SECOND, record the answer LAST � and for shortest-window variants, record INSIDE the shrink loop instead. Two orderings, two variants, zero improvisation.
+**"A correct window solution is insensitive to update order"** — The add-check-shrink-record cycle has exactly one correct ordering per variant, and swapping two lines produces off-by-one windows that pass half the tests. The stable discipline: expand ALWAYS first, restore the invariant SECOND, record the answer LAST — and for shortest-window variants, record INSIDE the shrink loop instead. Two orderings, two variants, zero improvisation.

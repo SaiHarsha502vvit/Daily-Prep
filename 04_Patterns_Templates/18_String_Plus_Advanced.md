@@ -1,4 +1,6 @@
-﻿**Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
+# 🧩 String + Advanced — Pattern Guide
+
+**Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
 
 # String + Advanced Tricks — Combined Pattern Guide
 
@@ -6,20 +8,65 @@
 
 ### ⚠️ Constraint Lens
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Strings](../02_Data_Structures/01b_Arrays.md), [Hash Maps](10_HashMap_Plus_Counting.md), [String Algorithms](../03_Algorithms/13_String_Algorithms_Complete.md) |
+| **You will learn** | Anagram keys, palindromes by expanding around the centre, tries, Rabin–Karp and Z-algorithm |
+| **Leads to** | [Tries](29_Trie_Pattern.md), [Dynamic Programming](16_DP_Pattern_Recognition.md) |
+| **Abstraction level** | Character loops → **canonical forms and prefix structures** → linear-time matching |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — String + Advanced
+
+### 1. The bottom line
+
+String problems become easy when you choose a canonical representation (sorted letters, counts, hashes, prefixes).
+
+### 2. The textbook core
+
+- Anagram key: sorted string or 26-count signature.
+- Palindrome: expand from each centre (`2n − 1` centres) → `O(n²)`; Manacher gives `O(n)`.
+- Trie: shared prefixes in a tree.
+- Rolling hash/Z-array: pattern matching in linear expected/worst time.
+
+### 3. The real-world analogy
+
+A **library catalogue**: books are filed by a canonical key so equivalent ones land on the same shelf.
+
+### 4. Walkthrough
+
+1. Group anagrams: `eat, tea, tan, ate, nat, bat`.
+2. Key = sorted letters: `aet`, `aet`, `ant`, `aet`, `ant`, `abt`.
+3. Map key → list.
+4. Groups: `{eat,tea,ate}`, `{tan,nat}`, `{bat}`.
+
+> [!NOTE]
+> **Quick check:** Why is expanding around the centre `O(n²)`, not `O(n³)`? *Each expansion step is `O(1)`; there are `O(n)` centres and `O(n)` steps.*
+
+---
+
 ### Historical Evolution
 
-**Inventor / Originator:** KMP (Knuth-Morris-Pratt 1977), Boyer-Moore (1977), Rabin-Karp (1981), and tries (de la Briandais 1959, Fredkin 1960 name).
+**Inventor / Originator:** Key string-matching papers: Morris–Pratt (1970 report) and Knuth–Morris–Pratt (published 1977), Boyer–Moore (1977), Aho–Corasick (1975), Karp–Rabin (1981 report; published 1987). Tries were described by de la Briandais (1959) and named by Edward Fredkin (1960).
 
-**Predecessor context:** Naive string matching was O(n×m) — scanning the entire pattern at each position. Tries weren't used because dictionary lookup was done via hashing or binary search.
+**Predecessor context:** Naive matching compared the pattern at every text position, `O(n·m)` in the worst case.
 
-**Evolution narrative:** KMP preprocessed the pattern to skip re-examining matched characters. Boyer-Moore scanned right-to-left for faster average case. Tries provided O(k) retrieval where k is string length, independent of dictionary size.
+**Evolution narrative:** KMP precomputes a failure function so the text pointer never moves back; Boyer–Moore skips ahead using right-to-left comparison; Rabin–Karp compares rolling hashes; Aho–Corasick matches many patterns in one pass. Suffix trees (Weiner 1973) and suffix arrays (Manber–Myers 1990) support substring queries on a fixed text.
 
-**Modern practice:** String algorithms power search engines, compilers (lexical analysis), bioinformatics (BLAST uses variants), and network intrusion detection (Aho-Corasick).
+**Modern practice:** Editors and `grep`, intrusion detection (Aho–Corasick), plagiarism detection (rolling hashes), autocomplete (tries). Bioinformatics tools such as BLAST (1990) use seed-and-extend heuristics rather than exact KMP-style matching.
 
-- **KMP — Knuth, Morris, Pratt 1977**: O(n+m) worst-case; no repeated text examination
-- **Boyer-Moore — 1977**: Right-to-left scan; often O(n/m) in practice
-- **Rabin-Karp — 1981**: Rolling hash; O(n+m) average; natural multi-pattern extension
-- **Modern practice**: Bioinformatics (BLAST), compilers (lexing), network IDS (Aho-Corasick)
+- **de la Briandais — 1959 / Fredkin — 1960**: Tries (the name comes from *retrieval*)
+- **Weiner — 1973**: Suffix trees
+- **Aho & Corasick — 1975**: Multi-pattern matching automaton
+- **Knuth, Morris, Pratt — 1977**: Linear-time single-pattern matching
+- **Boyer & Moore — 1977**: Sub-linear average-case matching
+- **Karp & Rabin — 1981/1987**: Randomised rolling-hash matching
 
 ---
 
@@ -150,7 +197,7 @@ int[] buildLPS(String pattern) {
 
 ---
 
-## � FULL WALKTHROUGH: Group Anagrams
+## 🔬 FULL WALKTHROUGH: Group Anagrams
 
 ```
 Problem: Group words that are anagrams.
@@ -481,6 +528,17 @@ _Why Z over KMP?_ Both are O(N+M). Z-algorithm is often conceptually easier to u
 
 **Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
 
+
+---
+
+## 🏢 Enterprise Lens — String + Advanced
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Search boxes, spell checkers, log parsing, bioinformatics, plagiarism detection |
+| **Failure modes** | Unicode surprises (code points vs chars); building strings in a loop with `+=`; hash collisions in rolling hashes |
+| **Testing and verification** | Compare to naive matching on random strings with small alphabets (many collisions) |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 
