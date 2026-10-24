@@ -46,34 +46,22 @@ flowchart TD
 
 ### Timeline: evolution of advanced data structures
 
-#### 1962 │ AVL Trees — Adelson-Velsky and Landis (Soviet mathematicians)
-
-|  | First self-balancing BST; named after inventors' initials. |
-| --- | --- |
-|  | Origin: Adelson-Velsky's bouncing-marble balancing game research. |
-| 1968 | Knuth's "Fundamental Algorithms" — formalizes tree balancing analysis; establishes O(log n) guarantees as a field standard. |
-
-1970s│ Monotonic Queue emerges in computational geometry
-
-|  | (Preparata-Shamos, 1985 formalization: convex hull algorithms) |
-| --- | --- |
-|  | Key motivation: sliding-window maximum in O(n) vs O(nk) brute force |
-| 1976 | Splay Trees — Tarjan Self-adjusting BST; amortized O(log n); no explicit balance factor |
-| 1978 | Red-Black Trees — Guibas and Sedgewick Refinement of Bayer's 1972 "symmetric binary B-trees" Adopted by JDK TreeMap (OpenJDK stable permalink) |
-
-1980s│ Treaps — Vuillemin 1980, Aragon-Seidel 1996
-
-|  | Randomized BST; priorities give expected O(log n) without complex |
-| --- | --- |
-|  | rotation logic. Origin: why complex balancing when randomness works? |
-| 1989 | Rope — Boehm et al. Persistent string structure for large text editing (Emacs origin) |
-| 1993 | Skip Lists — Pugh Concurrent alternative to balanced BST; probabilistic layers Apache Kafka uses Skip List for offset indexes. |
-| 1996 | LSM-tree — O'Neil et al. Log-Structured Merge-tree for write-heavy workloads |
-| 2003 | Cache-oblivious B-trees — Bender, Farach-Colton Optimal across all cache levels without explicit tuning |
-| 2006 | Bigtable SSTable — Google Sorted String Table; modern key-value storage foundation |
-| 2013 | Bw-tree — Microsoft Latch-free B-tree for multicore; used in SQL Server Hekaton |
-| 2017 | SageDB — Kraska et al. Learned indexes; replaces B-trees with neural models |
-| 2018 | Learned Bloom Filters — Mitzenmacher Optimal space for approximate membership testing |
+| Year | Structure / event | Notes |
+| ---- | ----------------- | ----- |
+| 1962 | **AVL trees** — Adelson-Velsky and Landis | First self-balancing BST, named after the inventors' initials. |
+| 1968 | Knuth's *The Art of Computer Programming* (vol. 1) | Formalizes tree-balancing analysis and establishes O(log n) guarantees as a field standard. |
+| 1970s | **Monotonic queue** emerges in computational geometry | Preparata–Shamos (1985) formalization of convex-hull algorithms. Motivation: sliding-window maximum in O(n) vs O(nk) brute force. |
+| 1978 | **Red-Black trees** — Guibas and Sedgewick | Refinement of Bayer's 1972 "symmetric binary B-trees". Adopted by the JDK `TreeMap`. |
+| 1980s | **Treaps** — Vuillemin 1980 (Cartesian trees), Aragon–Seidel 1989/1996 | Randomized BST; priorities give expected O(log n) without complex rotation logic. |
+| 1985 | **Splay trees** — Sleator and Tarjan | Self-adjusting BST; amortized O(log n); no explicit balance factor. |
+| 1989–90 | **Skip lists** — Pugh | Probabilistic layers; a simple alternative to balanced BSTs that is easier to make concurrent (Java `ConcurrentSkipListMap`). |
+| 1995 | **Rope** — Boehm, Atkinson and Plass | Balanced-tree string structure for large text editing: O(log n) concatenation and split. |
+| 1996 | **LSM-tree** — O'Neil et al. | Log-structured merge-tree for write-heavy workloads. |
+| 2000 | **Cache-oblivious B-trees** — Bender, Demaine, Farach-Colton | Optimal across all cache levels without explicit tuning. |
+| 2006 | **Bigtable SSTable** — Google | Sorted String Table; foundation of modern key-value storage. |
+| 2013 | **Bw-tree** — Microsoft | Latch-free B-tree for multicore; used in SQL Server Hekaton. |
+| 2017 | **Learned indexes / SageDB** — Kraska et al. | Replace B-trees with learned models. |
+| 2018 | **Learned Bloom filters** — Mitzenmacher | Models combined with Bloom filters for approximate membership. |
 
 **Named Predecessors and Motivations:**
 
@@ -89,8 +77,8 @@ flowchart TD
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Red-Black Tree  | Java TreeMap ([OpenJDK `TreeMap.java`](https://github.com/openjdk/jdk17/blob/master/src/java.base/share/classes/java/util/TreeMap.java)), C++ std::map |
 | ArrayDeque      | Java Deque implementation — resizable array, not linked list                                                                                           |
-| Monotonic Queue | Apache Spark BlockManager for time-windowed aggregations                                                                                               |
-| Skip List       | Apache Kafka offset indexes; ConcurrentSkipListMap in Java                                                                                             |
+| Monotonic Queue | Sliding-window max/min in streaming and stock-span style computations                                                                                               |
+| Skip List       | Redis sorted sets; ConcurrentSkipListMap in Java                                                                                             |
 | B-Tree variants | Most database indexes (PostgreSQL, MySQL InnoDB)                                                                                                       |
 | LSM-tree        | RocksDB, Cassandra, LevelDB                                                                                                                            |
 

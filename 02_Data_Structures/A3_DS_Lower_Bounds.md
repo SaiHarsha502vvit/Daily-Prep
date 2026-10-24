@@ -86,13 +86,15 @@ Consider the difference:
 
 A single data structure problem can be attacked from multiple angles:
 
-```
-"Sorted array search — why is binary search optimal?"
-  Comparison model:    Adversary forces Ω(log n) comparisons  ← prove Ω(log n) time
-  Cell-probe model:    Probing < log₂ n cells can't distinguish all positions  ← same result
-  Information theory:  n+1 possible answers, need log₂(n+1) bits of query info ← same result
-  All three models agree: binary search is optimal!
-```
+**"Sorted array search: why is binary search optimal?"**
+
+| Model | Argument | Result |
+| ----- | -------- | ------ |
+| Comparison model | An adversary forces Ω(log n) comparisons | Ω(log n) time |
+| Cell-probe model | Probing fewer than log₂ n cells cannot distinguish all positions | Same result |
+| Information theory | n+1 possible answers need log₂(n+1) bits of query information | Same result |
+
+All three models agree: **binary search is optimal**.
 
 But sometimes they disagree, revealing the power of the right model:
 
@@ -340,16 +342,16 @@ When storing n keys in a hash table with m buckets using chaining, the load fact
 
 **The Operational Consequence**: When load factor exceeds 1, the average chain length is at least 1. Any lookup in that bucket requires Ω(1) expected work. In the worst case, a hash table with n elements and m = n/2 buckets has a bucket of size at least 2. With m = n/log n buckets (common for dynamic resizing), the maximum bucket size is Ω(log n), which matches the BST lower bound.
 
-```
-Load factor α = n/m
-  α < 1:  average chain length < 1 → Ω(1) expected search
-  α = 1:  average chain length = 1
-  α > 1:  worst-case bucket has Ω(α) elements → Ω(α) worst-case
+| Load factor α = n/m | Average chain length | Consequence |
+| ------------------- | -------------------- | ----------- |
+| α < 1 | < 1 | Ω(1) expected search |
+| α = 1 | = 1 | |
+| α > 1 | worst-case bucket has Ω(α) elements | Ω(α) worst-case |
 
-Hash tables achieve Ω(1) expected (universal hashing), not Ω(1) worst-case.
-  → Load factor > 1 breaks the constant-time guarantee.
-  → Resize when α approaches 1 to maintain O(1) expected.
-```
+Hash tables achieve O(1) **expected** time (universal hashing), not O(1) **worst-case**.
+
+- Load factor > 1 breaks the constant-time guarantee.
+- Resize when α approaches 1 to maintain O(1) expected time.
 
 ### 5.3 Bloom Filter — The Information-Theoretic Optimality
 

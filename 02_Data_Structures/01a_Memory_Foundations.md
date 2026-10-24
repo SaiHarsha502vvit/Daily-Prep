@@ -992,30 +992,13 @@ This must hold on entry to `g`'s prologue and on exit from `g`'s epilogue. The J
 
 Given a problem with constraints `(n, time_budget, memory_budget)`, the layout choice follows this decision tree:
 
-```
-n ≤ 10³    AND  random_access_heavy
-  → contiguous array (cache locality wins; O(1) access)
-  → 01b_Arrays.md
-
-n ≤ 10⁵    AND  insert_delete_at_arbitrary_position_heavy
-  AND  cache_locality_not_critical
-  → linked list (O(1) insert/delete at known node; cache misses accepted)
-  → 01c_LinkedList.md
-
-n bounded by recursion_depth    AND  LIFO_required
-  → stack (stack-frame recursion; bounded depth ≤ 10⁴ typically)
-  → 01d_Stack_Queue.md
-
-n ≤ 10⁶    AND  key_lookup_heavy
-  AND  hash_distributable
-  → hash table (O(1) avg lookup; load-factor invariant ≤ 0.75)
-  → 01e_HashTable.md
-
-n ≥ 10⁵    AND  ordering_required
-  AND  range_queries_needed
-  → balanced tree (O(log n) operations; AVL/Red-Black invariants)
-  → 01f_Trees_Heaps.md
-```
+| If your workload is... | Choose | Why | Chapter |
+| ---------------------- | ------ | --- | ------- |
+| n ≤ 10³ **and** random-access heavy | Contiguous array | Cache locality wins; O(1) access | [01b_Arrays.md](01b_Arrays.md) |
+| n ≤ 10⁵ **and** insert/delete at arbitrary positions heavy **and** cache locality not critical | Linked list | O(1) insert/delete at a known node; cache misses accepted | [01c_LinkedList.md](01c_LinkedList.md) |
+| n bounded by recursion depth **and** LIFO required | Stack | Stack-frame recursion; bounded depth (typically ≤ 10⁴) | [01d_Stack_Queue.md](01d_Stack_Queue.md) |
+| n ≤ 10⁶ **and** key-lookup heavy **and** hash-distributable | Hash table | O(1) average lookup; load-factor invariant ≤ 0.75 | [01e_HashTable.md](01e_HashTable.md) |
+| n ≥ 10⁵ **and** ordering required **and** range queries needed | Balanced tree | O(log n) operations; AVL / Red-Black invariants | [01f_Trees_Heaps.md](01f_Trees_Heaps.md) |
 
 This is the same decision tree at the heart of `02_PROBLEM_SETS.md` Model 1: **read the constraints first, then pick the layout.** The tree above is the implementation view; the algorithm view lives in the problem sets.
 

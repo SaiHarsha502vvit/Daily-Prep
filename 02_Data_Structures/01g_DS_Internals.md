@@ -409,17 +409,23 @@ When you access `list.get(0)`:
 - But actual Integer objects are scattered in heap
 - Each Integer object access may be a CACHE MISS
 
-```text
-Cache line (64 bytes) loaded for the array:
-┌────────┬────────┬────────┬────────┬─────┬─────────┐
-│ ref[0] │ ref[1] │ ref[2] │ ref[3] │ ... │ ref[15] │
-│ 4 bytes│ 4 bytes│ 4 bytes│ 4 bytes│ ... │ 4 bytes │
-└───┬────┴───┬────┴───┬────┴───┬────┴─────┴─────────┘
-    │        │        │        │
-    ▼        ▼        ▼        ▼
- Integer  Integer  Integer  Integer   ← SCATTERED IN HEAP!
- @0x1000  @0x5000  @0x8000  @0x2000   ← EACH IS A CACHE MISS!
+```mermaid
+flowchart TB
+    subgraph LINE["Cache line (64 bytes) loaded for the array"]
+        direction LR
+        r0["ref[0]<br/>4 bytes"] --- r1["ref[1]<br/>4 bytes"] --- r2["ref[2]<br/>4 bytes"] --- r3["ref[3]<br/>4 bytes"] --- rd["..."] --- r15["ref[15]<br/>4 bytes"]
+    end
+    r0 --> i0["Integer @0x1000"]
+    r1 --> i1["Integer @0x5000"]
+    r2 --> i2["Integer @0x8000"]
+    r3 --> i3["Integer @0x2000"]
+    classDef ref fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef obj fill:#ffc9c9,stroke:#c62828,color:#111
+    class r0,r1,r2,r3,r15,rd ref
+    class i0,i1,i2,i3 obj
 ```
+
+**How to read this diagram.** The 16 references load together in one cache line (blue), but each `Integer` they point to is scattered across the heap (red), so every dereference is likely a cache miss.
 
 🔬 **Section Challenge — Arraylist.Get() - What Actually Happens**
 
@@ -800,15 +806,18 @@ This happens because:
 
 **Linked-list collision chain (before 8 nodes):**
 
-```text
-table[bucket]:
-┌──────────────┐      ┌──────────────┐
-│ Node         │      │ Node         │
-│ hash: 2112   │      │ hash: 2112   │
-│ key: "Aa"    │ ───► │ key: "BB"    │ ───► null
-│ value: 1     │      │ value: 2     │
-└──────────────┘      └──────────────┘
+```mermaid
+flowchart LR
+    T(["table[bucket]"]) --> N1["Node<br/>hash: 2112<br/>key: Aa<br/>value: 1"] --> N2["Node<br/>hash: 2112<br/>key: BB<br/>value: 2"] --> NUL(["null"])
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ptr fill:#fff3b0,stroke:#b58900,color:#111
+    classDef nul fill:#e0e0e0,stroke:#616161,color:#111
+    class N1,N2 node
+    class T ptr
+    class NUL nul
 ```
+
+**How to read this diagram.** Both keys hash to 2112, so they share one bucket and are chained through `next`.
 
 `get("BB")` requires:
 
@@ -822,17 +831,26 @@ Time: O(n) where n = chain length.
 
 **Red-Black tree (after 8 nodes in the same bucket, Java 8+):**
 
-```text
-table[bucket]:
-                 TreeNode (BLACK)
-                 hash: 2112
-                 key: "Cc"
-                 /          \
-      TreeNode (RED)      TreeNode (RED)
-      key: "Aa"           key: "Ee"
-       /      \             /      \
-   [node]   [node]      [node]   [node]
+```mermaid
+flowchart TD
+    T(["table[bucket]"]) --> R0["TreeNode (BLACK)<br/>hash: 2112<br/>key: Cc"]
+    R0 --> A["TreeNode (RED)<br/>key: Aa"]
+    R0 --> E["TreeNode (RED)<br/>key: Ee"]
+    A --> a1["node"]
+    A --> a2["node"]
+    E --> e1["node"]
+    E --> e2["node"]
+    classDef black fill:#424242,stroke:#000,color:#fff
+    classDef red fill:#ffc9c9,stroke:#c62828,color:#111
+    classDef leaf fill:#e0e0e0,stroke:#616161,color:#111
+    classDef ptr fill:#fff3b0,stroke:#b58900,color:#111
+    class R0 black
+    class A,E red
+    class a1,a2,e1,e2 leaf
+    class T ptr
 ```
+
+**How to read this diagram.** After 8 nodes land in one bucket, Java 8+ converts the chain into a red-black tree (black root, red children), so lookup becomes O(log n).
 
 Tree lookup: O(log n) instead of O(n)!
 8 nodes: 3 comparisons instead of 8.
@@ -1081,13 +1099,19 @@ tree.put(40, "E");
 
 **Tree structure**:
 
-```text
-           [50,"A"]
-           /      \
-     [30,"B"]    [70,"C"]
-     /      \
-[20,"D"]  [40,"E"]
+```mermaid
+flowchart TD
+    n50["[50, A]"] --> n30["[30, B]"]
+    n50 --> n70["[70, C]"]
+    n30 --> n20["[20, D]"]
+    n30 --> n40["[40, E]"]
+    classDef root fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class n50 root
+    class n30,n70,n20,n40 node
 ```
+
+**How to read this diagram.** Each node is a `[key, value]` pair; keys smaller than a node go left, larger go right.
 
 **Red-Black tree node (`TreeMap.Entry`):**
 
@@ -1182,13 +1206,19 @@ heap.offer(20); heap.offer(40);
 
 **Heap structure (min-heap):**
 
-```text
-          20  (index 0)
-        /    \
-   30 (1)    70 (2)
-   /   \
-50 (3)  40 (4)
+```mermaid
+flowchart TD
+    h20["20<br/>index 0"] --> h30["30<br/>index 1"]
+    h20 --> h70["70<br/>index 2"]
+    h30 --> h50["50<br/>index 3"]
+    h30 --> h40["40<br/>index 4"]
+    classDef root fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class h20 root
+    class h30,h70,h50,h40 node
 ```
+
+**How to read this diagram.** A min-heap: every parent is smaller than its children, so the minimum (20) is at index 0.
 
 **Stored as an array (contiguous — cache friendly!):**
 
@@ -2024,15 +2054,21 @@ T_heapify = O(n)  (proof in 01f_Trees_Heaps.md)
 
 The HotSpot JIT performs **escape analysis** to determine if an object's lifetime is confined to a method or thread. If so, it can replace the allocation with stack allocation or scalar replacement.
 
+```mermaid
+flowchart TD
+    O["Object allocated in method M"] --> Q{"Does M pass the reference<br/>outside (escape)?"}
+    Q -- "No escape" --> S1["Allocate on the stack<br/>(no GC pressure)"]
+    Q -- "No escape" --> S2["Or scalar-replace: decompose into<br/>fields kept in registers / stack"]
+    Q -- "Escapes to another thread" --> H["Must be heap-allocated;<br/>escape analysis cannot optimize"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef good fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef bad fill:#ffc9c9,stroke:#c62828,color:#111
+    class Q ask
+    class S1,S2 good
+    class H bad
 ```
-Object allocated in method M.
-If M does not pass the reference outside (no escape):
-  → Allocate on stack (no GC pressure)
-  → Or scalar-replace: decompose into individual fields, kept in registers/stack
 
-If M passes the reference to another thread:
-  → Must be heap-allocated; escape analysis cannot optimize
-```
+**How to read this diagram.** If the object never escapes method `M`, the JIT can avoid heap allocation entirely (green). If the reference leaves the method, for example to another thread, the object must live on the heap (red).
 
 This is why:
 

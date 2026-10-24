@@ -226,24 +226,20 @@ Recommendation: Use both — AOF for durability, RDB for fast restarts.
 
 ## The History of DS in Computing
 
-```
-1940s: Von Neumann architecture → arrays (contiguous memory) emerge naturally.
-1950s: Linked lists (Allen Newell, Cliff Shaw — for AI research at RAND Corp).
-1956: Hash tables (Arnold Dumey). O(1) lookup changes everything.
-1960s: Trees (AVL tree 1962 — first self-balancing BST, by Adelson-Velsky & Landis).
-1970s: B-Trees (Bayer & McCreight, 1972 — designed for databases and file systems).
-       Red-Black Trees (Rudolf Bayer, 1972 — used in Linux kernel, Java TreeMap).
-1972: Heaps (Williams, heapsort). Priority queues become fundamental.
-1980s: Skip lists (William Pugh, 1989 — probabilistic balanced structure).
-       Bloom filters (Burton Bloom, 1970 — probabilistic set membership).
-1990s: Trie variants (Patricia trees, Radix trees — IP routing, autocomplete).
-2000s: LSM-Trees (widespread via Google BigTable, 2006 → Cassandra, LevelDB).
-       Consistent Hashing (David Karger, 1997 — enables distributed systems).
-2010s: CRDTs (Conflict-free Replicated Data Types — distributed collaboration).
-       Count-Min Sketch (probabilistic frequency estimation for streaming data).
-2020s: Learned indexes (Tim Kraska, 2018 — ML models replacing B-Trees).
-       Vector databases (FAISS, Pinecone — nearest-neighbor for AI embeddings).
-```
+| Era | Milestone |
+| --- | --------- |
+| 1940s | Von Neumann architecture → arrays (contiguous memory) emerge naturally |
+| 1950s | Linked lists (Newell, Shaw & Simon, RAND Corp, for AI research); hash tables (Luhn 1953, Dumey 1956): O(1) lookup changes everything |
+| 1962 | AVL tree (Adelson-Velsky & Landis): the first self-balancing BST |
+| 1964 | Heaps (J. W. J. Williams, heapsort): priority queues become fundamental |
+| 1970 | Bloom filters (Burton Bloom): probabilistic set membership |
+| 1970–72 | B-Trees (Bayer & McCreight): designed for databases and file systems |
+| 1972–78 | Red-Black trees (Bayer 1972 as symmetric binary B-trees; Guibas & Sedgewick 1978): used in Java `TreeMap` and the Linux kernel |
+| 1989–90 | Skip lists (William Pugh): probabilistic balanced structure |
+| 1990s | Trie variants (Patricia trees, radix trees): IP routing, autocomplete; consistent hashing (Karger et al., 1997) enables distributed systems |
+| 2000s | LSM-trees go mainstream via Google Bigtable (2006) → Cassandra, LevelDB |
+| 2010s | CRDTs (conflict-free replicated data types) for distributed collaboration; Count-Min sketch for streaming frequency estimation |
+| 2017+ | Learned indexes (Kraska et al.): ML models replacing B-Trees; vector databases (FAISS, Pinecone) for nearest-neighbour search over embeddings |
 
 ---
 

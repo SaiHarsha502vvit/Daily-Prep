@@ -1194,18 +1194,15 @@ Now reset `slow` to head. Both move at speed 1.
 
 **Worked trace.** List: `1 → 2 → 3 → 4 → 5 → 3` (cycle entry at node 3, μ = 2, C = 3).
 
-```
-Phase 1 (detect):
-  Step 0: slow=1, fast=1
-  Step 1: slow=2, fast=3
-  Step 2: slow=3, fast=5
-  Step 3: slow=4, fast=4  ← meet! (both at node 4)
-
-Phase 2 (find entry):
-  Reset slow to head (node 1). Both move at speed 1.
-  Step 1: slow=2, fast=5
-  Step 2: slow=3, fast=3  ← meet at node 3 = cycle entry ✓
-```
+| Phase | Step | `slow` | `fast` | Note |
+| ----- | ---- | ------ | ------ | ---- |
+| 1 (detect) | 0 | 1 | 1 | start |
+| 1 | 1 | 2 | 3 | |
+| 1 | 2 | 3 | 5 | |
+| 1 | 3 | 4 | 4 | **meet** (both at node 4) |
+| 2 (find entry) | reset | 1 | 4 | reset `slow` to head; both now move at speed 1 |
+| 2 | 1 | 2 | 5 | |
+| 2 | 2 | 3 | 3 | **meet at node 3 = cycle entry** ✓ |
 
 **Why speed 2, specifically?** Any speed ratio where fast is exactly 1 step faster per iteration works — the gap decreases by 1 each step, guaranteeing a meeting within one full cycle. Speed 3 would make the gap decrease by 2, but then on a cycle of odd length, they could *skip* each other (gap goes from 1 to -1 mod C, never hitting 0). Speed 2 is the smallest speed that guarantees meeting for all cycle lengths.
 

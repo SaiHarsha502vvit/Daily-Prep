@@ -1552,24 +1552,36 @@ delete in a SORTED linked list. It's like a "fast lane" over the list!
 
 **Invented:** 1989 by William Pugh
 
-**Visual - multiple layers of linked lists:** 
+**Visual - multiple layers of linked lists:**
 
-Level 3: HEAD ────────────────────────────────────────────> 50 ────> NIL
+```mermaid
+flowchart LR
+    subgraph L3["Level 3"]
+        direction LR
+        h3(["HEAD"]) --> a50["50"]
+    end
+    subgraph L2["Level 2"]
+        direction LR
+        h2(["HEAD"]) --> b25["25"] --> b50["50"]
+    end
+    subgraph L1["Level 1"]
+        direction LR
+        h1(["HEAD"]) --> c10["10"] --> c25["25"] --> c35["35"] --> c50["50"] --> n1(["NIL"])
+    end
+    subgraph L0["Level 0 - every element"]
+        direction LR
+        h0(["HEAD"]) --> d5["5"] --> d10["10"] --> d20["20"] --> d25["25"] --> d30["30"] --> d35["35"] --> d40["40"] --> d50["50"] --> d60["60"] --> n0(["NIL"])
+    end
+    L3 ~~~ L2 ~~~ L1 ~~~ L0
+    classDef head fill:#fff3b0,stroke:#b58900,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef nil fill:#e0e0e0,stroke:#616161,color:#111
+    class h3,h2,h1,h0 head
+    class a50,b25,b50,c10,c25,c35,c50,d5,d10,d20,d25,d30,d35,d40,d50,d60 node
+    class n1,n0 nil
+```
 
-|  |  |  |
-| --- | --- | --- |
-
-Level 2: HEAD ──────────────> 25 ────────────────────────> 50 ────> NIL
-
-|  |  |  |  |
-| --- | --- | --- | --- |
-
-Level 1: HEAD ───> 10 ──────> 25 ──────> 35 ──────────────> 50 ────> NIL
-
-|  |  |  |  |  |  |
-| --- | --- | --- | --- | --- | --- |
-
-Level 0: HEAD ─> 5 ─> 10 ─> 20 ─> 25 ─> 30 ─> 35 ─> 40 ─> 50 ─> 60 ─> NIL
+**How to read this diagram.** Level 0 is the full sorted list; each higher level is a sparser "express lane" that skips ahead. A search starts at the top level and drops down a level whenever the next node would overshoot, which gives O(log n) expected time.
 
 **Key invariants:** 
 
@@ -2000,18 +2012,21 @@ A MultiMap allows multiple values per key. There are two common implementations:
 
 ### Deque vs Queue vs Stack
 
+```mermaid
+flowchart TD
+    Q0{"Need LIFO only?<br/>(push + pop from the same end)"}
+    Q0 -- YES --> A0["Stack<br/>(use ArrayDeque in Java; legacy Stack is slower)"]
+    Q0 -- NO --> Q1{"Need FIFO only?<br/>(enqueue at tail, dequeue at head)"}
+    Q1 -- YES --> A1["Queue<br/>(use ArrayDeque or LinkedList)"]
+    Q1 -- NO --> Q2{"Need both ends?<br/>(add/remove at head and tail)"}
+    Q2 -- YES --> A2["Deque (ArrayDeque)"]
+    classDef ask fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef ans fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class Q0,Q1,Q2 ask
+    class A0,A1,A2 ans
 ```
-Need LIFO only? (push + pop from same end)
-  → YES → Stack (use ArrayDeque in Java; legacy Stack is slower)
-  → NO → continue
 
-Need FIFO only? (enqueue at tail, dequeue at head)
-  → YES → Queue (use ArrayDeque or LinkedList)
-  → NO → continue
-
-Need both ends? (add/remove at both head and tail)
-  → YES → Deque (ArrayDeque)
-```
+**How to read this diagram.** Answer the blue questions in order; the first YES gives the green structure to use.
 
 **Variant selection rationale:**
 

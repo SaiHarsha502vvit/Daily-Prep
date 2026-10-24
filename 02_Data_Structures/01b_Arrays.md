@@ -1728,18 +1728,18 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 
 ### 🧠 Master Keyword → Pattern Map
 
-```
-"contiguous" + "sum/max/min"      → Sliding Window or Kadane's
-"subarray" + "sum equals K"       → Prefix Sum + HashMap
-"subsequence"                     → Recursion or DP
-"pairs/triplets" + "sum"          → Two Pointers (sort first) or HashMap
-"sorted" + "search"               → Binary Search
-"frequency" / "count"             → HashMap
-"rotate" / "circular"             → Modulo arithmetic  (i+k)%n
-"k-th largest/smallest"           → Min-Heap of size k
-"all possible" / "generate all"   → Recursion / Backtracking
-"minimum/maximum" + "global"      → Greedy or DP
-```
+| If the problem says... | Use |
+| ---------------------- | --- |
+| "contiguous" + "sum/max/min" | Sliding window or Kadane's |
+| "subarray" + "sum equals K" | Prefix sum + HashMap |
+| "subsequence" | Recursion or DP |
+| "pairs/triplets" + "sum" | Two pointers (sort first) or HashMap |
+| "sorted" + "search" | Binary search |
+| "frequency" / "count" | HashMap |
+| "rotate" / "circular" | Modulo arithmetic `(i+k)%n` |
+| "k-th largest/smallest" | Min-heap of size k |
+| "all possible" / "generate all" | Recursion / backtracking |
+| "minimum/maximum" + "global" | Greedy or DP |
 
 ---
 

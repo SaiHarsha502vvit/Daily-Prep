@@ -11,7 +11,7 @@
 >
 > **WHY:** Many problems have a NESTING structure — what was opened LAST must be closed FIRST (parentheses, function calls, undo operations). LIFO naturally models this.
 >
-> **HOW THE JVM USES A STACK (Call Stack):**  Every Java THREAD has its own call stack. When you call a method, JVM PUSHES a stack frame: ┌─────────────────────────────────────────┐ │ main()     frame: { args, locals }      │ ← bottom │ calculate() frame: { x=5, y=10 }       │ │ multiply()  frame: { a=5, b=10 }       │ ← top (executing) └─────────────────────────────────────────┘ When multiply() returns, JVM POPS its frame. StackOverflowError = too many frames (infinite recursion). Default stack size: 512KB - 1MB per thread.
+> **HOW THE JVM USES A STACK (Call Stack):** every Java thread has its own call stack. When you call a method, the JVM **pushes** a stack frame (see the diagram below). When the method returns, the JVM **pops** its frame. `StackOverflowError` = too many frames (infinite recursion). Default stack size: 512 KB – 1 MB per thread.
 >
 > **WHERE Stacks appear in production:**
 >
@@ -30,6 +30,20 @@
 > - ✅ Monotonic problems (next greater element)
 > - ❌ When you need FIFO order (use Queue)
 > - ❌ When you need random access (use Array)
+
+```mermaid
+flowchart TB
+    M3["multiply() frame: a=5, b=10<br/>top (executing)"] --> M2["calculate() frame: x=5, y=10"] --> M1["main() frame: args, locals<br/>bottom"]
+    classDef top fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef mid fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef bot fill:#e0e0e0,stroke:#616161,color:#111
+    class M3 top
+    class M2 mid
+    class M1 bot
+```
+
+**How to read this diagram.** Frames are stacked in call order: `main()` at the bottom, `multiply()` on top because it is executing. Returning pops the top frame.
+
 
 ## ⚡ At a Glance — Stack & Queue
 
