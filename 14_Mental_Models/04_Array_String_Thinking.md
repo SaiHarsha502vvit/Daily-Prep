@@ -262,24 +262,6 @@ Works for: Subarrays with Exactly K Distinct Integers (LC 992)
 
 ---
 
-🔬 **Section Challenge — Part 3: Sliding Window — When and How**
-
-**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-
-<details><summary>Answer</summary>
-
-Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-
-<details><summary>Answer</summary>
-
-Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-
-</details>
-
 ## Part 4: Prefix Sum — When and How
 
 ### Mental Model: Running Total
@@ -321,7 +303,7 @@ return count;
 
 🔬 **Section Challenge — Part 4: Prefix Sum — When and How**
 
-**Challenge 1 (Debug):** You are solving "Subarray Sum Equals K" using a HashMap. Your code loops through the array, updates the running `sum`, and checks `if (map.containsKey(sum - k)) count += map.get(sum - k);`. You test it with `arr = [3, 4, 7]`, `k = 7`. It returns `0` instead of `2` (the subarrays `[3, 4]` and `[7]`). What initialization step did you forget?
+**Challenge 2 (Debug):** You are solving "Subarray Sum Equals K" using a HashMap. Your code loops through the array, updates the running `sum`, and checks `if (map.containsKey(sum - k)) count += map.get(sum - k);`. You test it with `arr = [3, 4, 7]`, `k = 7`. It returns `0` instead of `2` (the subarrays `[3, 4]` and `[7]`). What initialization step did you forget?
 
 <details><summary>Answer</summary>
 

@@ -81,16 +81,6 @@ total value ≥ any alternative selection of the same total weight.
 "I believe greedy works here because [greedy choice property holds] —
 choosing the locally best [X] can never make the global answer worse."
 
-🔬 **Section Challenge — Proof Techniques For Greedy**
-
-**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-
-<details><summary>Answer</summary>
-
-Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-
-</details>
-
 ## When Greedy Fails — Classic Traps
 
 - ❌ 0/1 KNAPSACK: Greedy by value/weight ratio FAILS.
@@ -159,7 +149,7 @@ becomes clear during implementation.
 
 🔬 **Section Challenge — The Hybrid Pattern: Greedy + Dp**
 
-**Challenge 1 (Reasoning):** Dijkstra is called "greedy" but also uses "DP relaxation." What exactly is the greedy part and what is the DP part? Why can't pure greedy or pure DP solve it alone?
+**Challenge 2 (Reasoning):** Dijkstra is called "greedy" but also uses "DP relaxation." What exactly is the greedy part and what is the DP part? Why can't pure greedy or pure DP solve it alone?
 
 <details><summary>Answer</summary>
 

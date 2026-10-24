@@ -216,7 +216,7 @@ Rule of thumb: If you need columns from multiple tables in SELECT → use JOIN
 
 🔬 **Section Challenge — Part 5: Subquery vs JOIN — Decision Framework**
 
-**Challenge 1 (Reasoning):** You need to "find employees whose salary is greater than the average salary." Why must you use a subquery for this, rather than a JOIN?
+**Challenge 2 (Reasoning):** You need to "find employees whose salary is greater than the average salary." Why must you use a subquery for this, rather than a JOIN?
 
 <details><summary>Answer</summary>
 
@@ -224,7 +224,7 @@ Because "average salary" is an aggregate value computed over the entire `employe
 
 </details>
 
-**Challenge 2 (Performance):** Correlated subqueries are often described as having `O(N^2)` performance characteristics. Why? How can a JOIN fix this?
+**Challenge 3 (Performance):** Correlated subqueries are often described as having `O(N^2)` performance characteristics. Why? How can a JOIN fix this?
 
 <details><summary>Answer</summary>
 
@@ -334,16 +334,6 @@ WHERE rn <= 3;  -- Top 3 earners per department
 ```
 
 ---
-
-🔬 **Section Challenge — Part 7: Window Functions — "Aggregation Without Losing Rows"**
-
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-
-<details><summary>Answer</summary>
-
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-
-</details>
 
 ## Part 8: SQL Problem Classification
 

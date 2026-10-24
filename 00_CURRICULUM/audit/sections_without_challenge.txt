@@ -115,6 +115,9 @@
 13_Developer_Essentials/09_System_Design.md :: 🔬 **Section Challenge — Microservices vs Monolith**
 13_Developer_Essentials/17_Servers_Ports_Networking.md :: 🔬 **Section Challenge — 7. Firewalls & Security Groups**
 13_Developer_Essentials/19_Concurrency_Models_Coroutines.md :: 🔬 **Section Challenge — 5. How async/await Works In Different Languages**
+14_Mental_Models/04_Array_String_Thinking.md :: 🔬 **Section Challenge — Part 3: Sliding Window — When and How**
+14_Mental_Models/07_SQL_Mental_Pipeline.md :: 🔬 **Section Challenge — Part 7: Window Functions — "Aggregation Without Losing Rows"**
+14_Mental_Models/11_Greedy_vs_DP_Decision.md :: 🔬 **Section Challenge — Proof Techniques For Greedy**
 15_React_Frontend/01_React_Fundamentals.md :: 🔬 **Section Challenge — Part 5: State — useState Hook**
 15_React_Frontend/03_Hooks_Deep_Dive.md :: 🔬 **Section Challenge — useContext — Global State Without Prop Drilling**
 15_React_Frontend/06_React_Router.md :: 🔬 **Section Challenge — Defer & Suspense (Streaming Data)**
