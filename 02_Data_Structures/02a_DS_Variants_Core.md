@@ -58,133 +58,47 @@ flowchart LR
 
 ::: timeline
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║              HISTORICAL EVOLUTION OF DATA STRUCTURE VARIANTS                 ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**Timeline of key inventions:**
 
-TIMELINE OF KEY INVENTIONS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-1955-1956  │  Newell-Shaw-Simon ──► linked lists (IPL-II at RAND Corp)
-           │  First symbolic list processing; the foundation of all dynamic
-           │  pointer-based structures.
-           │
-1962       │  Adelson-Velsky & Landis ──► AVL trees
-           │  First self-balancing BST. Every node: |height(left) - height(right)| ≤ 1.
-           │  Named after inventors: Adelson-Velsky, Landis.
-           │
-1964       │  Bayer & McCreight ──► B-tree
-           │  Why: Disk I/O cost dominated memory cost. B-trees minimize disk
-           │  reads by storing many keys per node (matching block size).
-           │
-1970s      │  Level-linked lists ──► Skip list precursor (Pugh formalizes 1989)
-           │  Skip list invented: 1989 by William Pugh. Probabilistic alternative
-           │  to balanced BST—simpler implementation, easier concurrent access.
-           │
-1978       │  Guibas & Sedgewick ──► Red-Black trees
-           │  Nearly balanced: path from root to leaves ≤ 2x shortest path.
-           │  The workhorse of production tree maps (Java TreeMap).
-           │
-1985       │  Sleator & Tarjan ──► Splay trees
-           │  Self-adjusting: recently accessed elements move to root (temporal
-           │  locality exploited). O(log n) amortized per operation.
-           │
-1989       │  Boehm, Atkinson & Plaxton ──► Rope
-           │  Balanced tree for string storage. Enables O(log n) concatenation
-           │  and substring operations without copying.
-           │
-1998       │  Doug Baskins ──► Judy array
-           │  High-density, cache-friendly: 256-way branching at upper levels.
-           │  Adapts dynamically; no fixed tree shape.
-           │
-1996       │  O'Neil, Chervenek, Delhaney, Wilkie ──► LSM-tree
-           │  Why: SSD write characteristics made B-tree's random writes expensive.
-           │  LSM-tree batches writes, achieving 10-100x write throughput gain.
-           │  Used by RocksDB, Cassandra, LevelDB.
-           │
-1970/2000s │  Bloom (1970) rediscovered ──► Bloom filter for big data
-           │  Why: Space-efficient set membership testing. Uses k hash functions
-           │  to test set membership in O(k) time with configurable FPR.
-           │
-2003       │  Cache-oblivious B-tree (Prokop, Frachtenberg)
-           │  Optimal at ALL cache levels without knowing cache parameters.
-           │  Uses divide-and-conquer layout (van Emde Boas layout).
-           │
-2006       │  Google Bigtable ──► SSTable (Sorted String Table) variant
-           │  Immutable, sorted key-value storage. Foundation of Bigtable,
-           │  LevelDB, Cassandra column families.
-           │
-2015       │  Microsoft BitFunnel ──► Learned indexes evolution
-           │  Kraska et al. 2017 ──► SageDB learned indexes
-           │  Replace tree indices with machine-learned models predicting
-           │  key positions. Combines DS theory with statistical prediction.
-           └─────────────────────────────────────────────────────────────────
-```
+| Year | Who → What | Why it mattered |
+| ---- | ---------- | --------------- |
+| 1955–1956 | Newell, Shaw & Simon → **linked lists** (IPL-II at RAND Corp) | First symbolic list processing; the foundation of all dynamic pointer-based structures. |
+| 1962 | Adelson-Velsky & Landis → **AVL trees** | First self-balancing BST. Every node: `\|height(left) − height(right)\| ≤ 1`. |
+| 1970 (pub. 1972) | Bayer & McCreight → **B-tree** | Disk I/O cost dominated memory cost. B-trees minimize disk reads by storing many keys per node (matching block size). |
+| 1978 | Guibas & Sedgewick → **Red-Black trees** | Nearly balanced: path from root to leaf ≤ 2× the shortest path. The workhorse of production tree maps (Java `TreeMap`). |
+| 1985 | Sleator & Tarjan → **Splay trees** | Self-adjusting: recently accessed elements move to the root (temporal locality). O(log n) amortized per operation. |
+| 1970 / 2000s | Bloom (1970), rediscovered for big data → **Bloom filter** | Space-efficient set membership using k hash functions in O(k) time with a configurable false-positive rate. |
+| 1989–1990 | William Pugh → **Skip list** | Probabilistic alternative to balanced BSTs: simpler to implement and easier to make concurrent. |
+| 1995 | Boehm, Atkinson & Plass → **Rope** | Balanced tree for string storage: O(log n) concatenation and substring without copying. |
+| 1996 | O'Neil, Cheng, Gawlick & O'Neil → **LSM-tree** | Batches writes and merges them sequentially, giving large write-throughput gains over random-write B-trees. Used by RocksDB, Cassandra, LevelDB. |
+| 1999–2000 | Prokop; Bender, Demaine & Farach-Colton → **cache-oblivious structures / B-tree** | Optimal at *all* cache levels without knowing cache parameters, using a recursive (van Emde Boas) layout. |
+| 2000s | Doug Baskins (HP) → **Judy array** | High-density, cache-friendly 256-way branching; adapts dynamically. |
+| 2006 | Google Bigtable → **SSTable** (Sorted String Table) | Immutable, sorted key-value storage; foundation of Bigtable, LevelDB, Cassandra. |
+| 2017 | Kraska et al. → **Learned indexes** (later SageDB) | Replace tree indices with machine-learned models that predict key positions. |
 
 :::
 
 ### Named Predecessors: Why Each Variant Was Invented
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ PRECEDENT          │  MOTIVATION                                           │
-├────────────────────┼───────────────────────────────────────────────────────┤
-│ B-tree             │  Disk I/O cost >> memory cost. Store hundreds of keys │
-│                    │  per node to match OS page/block sizes.               │
-│                    │  Predecessor: 2-3 tree (simple multi-way search).     │
-│                    │                                                      │
-│ LSM-tree           │  SSDs have limited erase cycles; sequential writes    │
-│                    │  far cheaper than random. B-tree does many random     │
-│                    │  writes on update. Predecessor: B-tree.               │
-│                    │                                                      │
-│ Skip list          │  Balanced BSTs are hard to implement correctly and    │
-│                    │  even harder to make concurrent. Pugh (1989) showed   │
-│                    │  that probabilistic layering achieves O(log n)        │
-│                    │  without rebalancing. Predecessor: sorted linked list.│
-│                    │                                                      │
-│ Bloom filter       │  Hash sets store full objects (space-heavy). Bloom    │
-│                    │  uses bit array + k hash functions for O(k) membership│
-│                    │  with tunable false-positive rate. Predecessor: hash  │
-│                    │  set for exact membership.                            │
-│                    │                                                      │
-│ Splay tree         │  Balance trees assume equal access probability. Real  │
-│                    │  workloads have hot/cold keys. Predecessor: AVL tree. │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+| Structure | Motivation | Predecessor |
+| --------- | ---------- | ----------- |
+| **B-tree** | Disk I/O cost ≫ memory cost. Store hundreds of keys per node to match OS page/block sizes. | 2-3 tree (simple multi-way search) |
+| **LSM-tree** | Sequential writes are far cheaper than random writes (and SSDs have limited erase cycles). A B-tree does many random writes on update. | B-tree |
+| **Skip list** | Balanced BSTs are hard to implement correctly and even harder to make concurrent. Pugh showed that probabilistic layering achieves O(log n) without rebalancing. | Sorted linked list |
+| **Bloom filter** | Hash sets store full objects (space-heavy). A Bloom filter uses a bit array + k hash functions for O(k) membership with a tunable false-positive rate. | Hash set for exact membership |
+| **Splay tree** | Balanced trees assume equal access probability, but real workloads have hot and cold keys. | AVL tree |
 
 ### Modern Practice Anchors: Production Implementations
 
-```
-┌─────────────────────────────────┬───────────────────────────────────────────┐
-│ LANGUAGE / SYSTEM               │  DATA STRUCTURE USED                      │
-├─────────────────────────────────┼───────────────────────────────────────────┤
-│ Java java.util.TreeMap          │  Red-Black tree                           │
-│  ↳ https://github.com/openjdk/jdk/blob/jdk17/src/java.base/share/classes/  │
-│    java/util/TreeMap.java (stable permalink, ~line 170-200)               │
-│                                                                             │
-│ Java java.util.concurrent.      │  Skip list (lock-free)                    │
-│  ConcurrentSkipListMap          │                                          │
-│  ↳ https://github.com/openjdk/jdk/blob/jdk17/src/java.base/share/classes/  │
-│    java/util/concurrent/ConcurrentSkipListMap.java                         │
-│                                                                             │
-│ PostgreSQL indexes              │  B-tree (default); also GiST, GIN, BRIN  │
-│  ↳ https://github.com/postgres/postgres/blob/REL_17_STABLE/src/include/    │
-│    utils/builtins.h (b-tree implementation)                                │
-│                                                                             │
-│ Cassandra, RocksDB              │  LSM-tree (log-structured merge)          │
-│  ↳ https://github.com/facebook/rocksdb/blob/main/include/rocksdb/options.h │
-│                                                                             │
-│ Google Bigtable, LevelDB        │  SSTable (Sorted String Table, immutable)│
-│  ↳ https://github.com/google/leveldb/blob/main/include/leveldb/table.h     │
-│                                                                             │
-│ Redis ZSET                      │  Skip list + hash table (dual encoding)  │
-│  ↳ https://github.com/redis/redis/blob/7.0/src/server.c (t_zset.c)        │
-│                                                                             │
-│ Linux kernel page cache         │  Radix tree (prefix tree variant)         │
-│  ↳ https://github.com/torvalds/linux/blob/master/lib/radix-tree.c          │
-└─────────────────────────────────┴───────────────────────────────────────────┘
-```
+| Language / system | Data structure used | Source |
+| ----------------- | ------------------- | ------ |
+| Java `java.util.TreeMap` | Red-Black tree | [TreeMap.java](https://github.com/openjdk/jdk/blob/jdk17/src/java.base/share/classes/java/util/TreeMap.java) |
+| Java `java.util.concurrent.ConcurrentSkipListMap` | Skip list (lock-free) | [ConcurrentSkipListMap.java](https://github.com/openjdk/jdk/blob/jdk17/src/java.base/share/classes/java/util/concurrent/ConcurrentSkipListMap.java) |
+| PostgreSQL indexes | B-tree (default); also GiST, GIN, BRIN | [nbtree README](https://github.com/postgres/postgres/blob/REL_17_STABLE/src/backend/access/nbtree/README) |
+| Cassandra, RocksDB | LSM-tree (log-structured merge) | [rocksdb options.h](https://github.com/facebook/rocksdb/blob/main/include/rocksdb/options.h) |
+| Google Bigtable, LevelDB | SSTable (Sorted String Table, immutable) | [leveldb table.h](https://github.com/google/leveldb/blob/main/include/leveldb/table.h) |
+| Redis ZSET | Skip list + hash table (dual encoding) | [t_zset.c](https://github.com/redis/redis/blob/7.0/src/t_zset.c) |
+| Linux kernel page cache | Radix tree (prefix-tree variant); the XArray API replaced it in newer kernels | [lib/radix-tree.c](https://github.com/torvalds/linux/blob/master/lib/radix-tree.c) |
 
 ---
 
@@ -192,84 +106,73 @@ TIMELINE OF KEY INVENTIONS:
 
 ::: map
 
+```mermaid
+mindmap
+  root((Data Structures))
+    Linear
+      Arrays
+        Static Array
+        Dynamic Array - ArrayList
+        Circular Array
+        Bit Array - BitSet
+        Suffix Array
+      Linked Lists
+        Singly
+        Doubly
+        Circular
+        Circular Doubly
+        Skip List
+        XOR Linked List
+      Stacks
+        Array-based
+        Linked List
+        Min Stack
+        Max Stack
+        Two-Stack Queue
+      Queues
+        Simple
+        Circular
+        Deque
+        Priority Queue
+        Monotonic Queue
+    Non-linear
+      Trees
+        Binary Tree
+        BST
+        AVL
+        Red-Black
+        B-Tree and B+ Tree
+        Segment Tree
+        Fenwick Tree - BIT
+        Trie
+        Suffix Tree
+        N-ary Tree
+        Heap - Min and Max
+        Treap
+      Graphs
+        Directed
+        Undirected
+        Weighted
+        DAG
+        Bipartite
+    Hash-based
+      HashMap - HashTable
+      HashSet
+      LinkedHashMap
+      LinkedHashSet
+      ConcurrentHashMap
+    Specialized
+      Disjoint Set - Union-Find
+      LRU Cache
+      LFU Cache
+      Bloom Filter
+    Probabilistic
+      Skip List
+      Bloom Filter
+      Treap
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║              COMPLETE DATA STRUCTURE VARIANT HIERARCHY                       ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-                         DATA STRUCTURES
-                              │
-     ┌────────────┬──────────┼──────────┬────────────┐
-     │            │          │          │            │
-  LINEAR      NON-LINEAR   HASH-BASED  SPECIALIZED  PROBABILISTIC
-     │            │          │          │            │
-     ▼            ▼          ▼          ▼            ▼
-
-LINEAR DATA STRUCTURES:
-├── ARRAYS
-│   ├── Static Array
-│   ├── Dynamic Array (ArrayList)
-│   ├── Circular Array
-│   ├── Bit Array / BitSet
-│   └── Suffix Array
-│
-├── LINKED LISTS
-│   ├── Singly Linked List
-│   ├── Doubly Linked List
-│   ├── Circular Linked List
-│   ├── Circular Doubly Linked List
-│   ├── Skip List
-│   └── XOR Linked List (Memory Efficient)
-│
-├── STACKS
-│   ├── Array-based Stack
-│   ├── Linked List Stack
-│   ├── Min Stack
-│   ├── Max Stack
-│   └── Two-Stack Queue
-│
-├── QUEUES
-│   ├── Simple Queue
-│   ├── Circular Queue
-│   ├── Deque (Double-ended Queue)
-│   ├── Priority Queue
-│   └── Monotonic Queue
-
-NON-LINEAR DATA STRUCTURES:
-├── TREES
-│   ├── Binary Tree
-│   ├── Binary Search Tree (BST)
-│   ├── AVL Tree (Self-balancing)
-│   ├── Red-Black Tree
-│   ├── B-Tree / B+ Tree
-│   ├── Segment Tree
-│   ├── Fenwick Tree (BIT)
-│   ├── Trie (Prefix Tree)
-│   ├── Suffix Tree
-│   ├── N-ary Tree
-│   ├── Heap (Min/Max)
-│   └── Treap
-│
-└── GRAPHS
-    ├── Directed Graph
-    ├── Undirected Graph
-    ├── Weighted Graph
-    ├── DAG (Directed Acyclic Graph)
-    └── Bipartite Graph
-
-HASH-BASED:
-├── HashMap / HashTable
-├── HashSet
-├── LinkedHashMap
-├── LinkedHashSet
-└── ConcurrentHashMap
-
-SPECIALIZED:
-├── Disjoint Set (Union-Find)
-├── LRU Cache
-├── LFU Cache
-└── Bloom Filter
-```
+**How to read this diagram.** The five top-level branches are the families the rest of this chapter covers: linear, non-linear, hash-based, specialized and probabilistic. Each leaf is a variant with its own section.
 
 ::: invariants
 
