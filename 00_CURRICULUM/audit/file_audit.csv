@@ -1,0 +1,1121 @@
+path,folder,score,klass,lines,words,headings,fences,code_lines,tables,mermaid,mermaid_unexplained,ascii_art,details,odd_fences,why,history,internals,alternatives,when,failure,exercise,output
+00_CONTEXT/AGENT_QUICK_INDEX.md,00_CONTEXT,25,Not a lesson (index),68,509,6,0,0,1,0,0,0,0,0,0,0,1,0,0,1,1,0
+00_CONTEXT/CONTAMINATION_GUARDS.md,00_CONTEXT,41,Superficial,68,1138,4,1,3,1,0,0,0,2,0,0,0,1,1,0,1,1,0
+00_CONTEXT/CONTEXT_SCHEMA.md,00_CONTEXT,17,Superficial,66,159,11,1,17,0,0,0,0,0,0,0,1,0,0,0,0,1,0
+00_CONTEXT/DECISIONS.md,00_CONTEXT,29,Superficial,126,904,15,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0
+00_CONTEXT/PEDAGOGY_AUDIT_2026.md,00_CONTEXT,78,Strong,370,4434,39,2,66,3,0,0,0,1,0,1,1,1,1,0,1,1,0
+00_CONTEXT/PEDAGOGY_STANDARDS.md,00_CONTEXT,62,Needs expansion,231,1808,16,4,20,0,0,0,0,5,0,1,1,1,1,0,1,1,0
+00_CONTEXT/README.md,00_CONTEXT,9,Not a lesson (index),57,230,6,4,4,0,0,0,0,0,0,0,0,0,0,0,0,1,0
+00_CONTEXT/REPO_MAP.md,00_CONTEXT,33,Superficial,74,577,11,1,8,3,0,0,0,0,0,0,1,1,0,0,1,1,0
+00_CONTEXT/UPDATE_PROTOCOL.md,00_CONTEXT,3,Superficial,74,331,6,4,6,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+00_CURRICULUM/AUDIT_REPORT.md,00_CURRICULUM,65,Needs expansion,767,7741,32,0,0,30,0,0,0,0,0,0,1,1,1,0,1,1,0
+00_CURRICULUM/CURRICULUM_OVERVIEW.md,00_CURRICULUM,25,Superficial,204,839,21,2,29,5,0,0,15,0,0,0,1,1,0,0,0,0,0
+00_CURRICULUM/EXAM_BANK.md,00_CURRICULUM,52,Not a lesson (reference),393,1377,20,14,174,0,0,0,0,7,0,1,0,1,1,1,0,1,0
+00_CURRICULUM/HOW_TO_STUDY.md,00_CURRICULUM,43,Superficial,173,780,16,2,26,4,0,0,0,0,0,1,0,1,1,0,1,1,0
+00_CURRICULUM/PROJECTS/CAP01_DSA_Toolkit.md,00_CURRICULUM,24,Not a lesson (reference),235,540,12,3,131,3,0,0,3,0,0,1,0,0,1,0,0,0,0
+00_CURRICULUM/PROJECTS/CAP02_Microservice.md,00_CURRICULUM,10,Not a lesson (reference),379,596,17,8,238,3,0,0,18,0,0,0,0,0,0,0,0,0,0
+00_CURRICULUM/PROJECTS/CAP03_FullStack.md,00_CURRICULUM,17,Not a lesson (reference),284,569,17,4,152,2,0,0,12,0,0,0,1,0,0,0,0,0,0
+00_CURRICULUM/PROJECTS/CAP04_DistributedSystem.md,00_CURRICULUM,17,Not a lesson (reference),288,627,17,5,160,3,0,0,28,0,0,0,0,0,1,0,0,0,0
+00_CURRICULUM/PROJECTS/P01_Frequency_Analyzer.md,00_CURRICULUM,12,Not a lesson (reference),175,278,10,4,99,1,0,0,0,0,0,0,0,0,1,0,0,0,0
+00_CURRICULUM/PROJECTS/P02_FileSystem_Simulator.md,00_CURRICULUM,55,Not a lesson (reference),542,1400,16,5,377,4,0,0,48,1,0,1,1,1,1,0,0,1,0
+00_CURRICULUM/PROJECTS/P03_SQL_Analytics_Dashboard.md,00_CURRICULUM,23,Not a lesson (reference),360,452,13,8,237,2,0,0,26,0,0,0,0,0,1,0,1,0,0
+00_CURRICULUM/PROJECTS/P04_Library_REST_API.md,00_CURRICULUM,31,Not a lesson (reference),389,643,18,6,251,4,0,0,10,0,0,1,1,1,0,0,0,0,0
+00_CURRICULUM/PROJECTS/P05_FoodDelivery_Domain_Model.md,00_CURRICULUM,25,Not a lesson (reference),453,776,22,14,243,2,0,0,5,0,0,1,0,1,0,0,0,0,0
+00_CURRICULUM/PROJECTS/P06_Distributed_Order_System.md,00_CURRICULUM,14,Not a lesson (reference),241,292,9,3,169,2,0,0,7,0,0,0,0,0,1,0,0,0,0
+00_CURRICULUM/PROJECTS/P07_Concurrent_Task_Queue.md,00_CURRICULUM,8,Not a lesson (reference),285,396,10,2,203,2,0,0,6,0,0,0,0,0,0,0,0,0,0
+00_CURRICULUM/PROJECTS/P08_React_Dashboard.md,00_CURRICULUM,8,Not a lesson (reference),407,370,15,7,303,2,0,0,2,0,0,0,0,0,0,0,0,0,0
+00_CURRICULUM/PROJECTS/P09_CICD_Pipeline.md,00_CURRICULUM,16,Not a lesson (reference),247,425,19,4,157,2,0,0,12,0,0,0,1,0,0,0,0,0,0
+00_CURRICULUM/SEMESTER_1_GUIDE.md,00_CURRICULUM,42,Superficial,245,1740,11,0,0,13,0,0,0,0,0,1,0,1,1,0,0,1,0
+00_CURRICULUM/SEMESTER_2_GUIDE.md,00_CURRICULUM,50,Needs expansion,233,1771,8,0,0,14,0,0,0,0,0,1,0,1,1,0,1,1,0
+00_CURRICULUM/SEMESTER_3_GUIDE.md,00_CURRICULUM,43,Superficial,239,1768,10,0,0,14,0,0,0,0,0,0,0,1,1,1,0,1,0
+00_CURRICULUM/SEMESTER_4_GUIDE.md,00_CURRICULUM,32,Superficial,177,1300,8,0,0,10,0,0,0,0,0,0,0,1,1,0,0,1,0
+00_MASTER_INDEX.md,(root),26,Not a lesson (index),86,612,5,0,0,3,0,0,0,0,0,0,0,1,0,0,1,1,0
+00_TEXTBOOK_PREFACE.md,(root),53,Needs expansion,390,736,13,7,244,2,0,0,151,0,0,1,0,1,1,1,1,1,0
+01_Getting_Started/00_INDEX.md,01_Getting_Started,1,Not a lesson (index),21,98,3,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+01_Getting_Started/02_Study_Plan_Calendar.md,01_Getting_Started,64,Needs expansion,1436,7401,102,7,94,77,0,0,0,6,0,1,0,0,1,1,0,1,0
+01_Getting_Started/03_SDET_1Hour_Daily_Path.md,01_Getting_Started,43,Superficial,192,1302,12,4,13,5,0,0,0,3,0,1,0,1,1,0,0,1,0
+02_Data_Structures/00_DS_PROBLEM_BRIDGES.md,02_Data_Structures,80,Strong,706,3377,39,15,204,9,0,0,0,0,0,1,1,1,1,1,1,1,0
+02_Data_Structures/00_INDEX.md,02_Data_Structures,34,Not a lesson (index),91,652,9,1,5,4,0,0,0,0,0,1,1,1,1,0,0,0,0
+02_Data_Structures/01a_Memory_Foundations.md,02_Data_Structures,87,Strong,1338,7470,64,30,473,6,0,0,323,8,0,1,1,1,1,1,1,1,0
+02_Data_Structures/01b_Arrays.md,02_Data_Structures,87,Strong,2093,7388,124,83,706,28,0,0,33,8,0,1,1,1,1,1,1,1,0
+02_Data_Structures/01c_LinkedList.md,02_Data_Structures,87,Broken (unbalanced code fences),1626,5833,73,51,728,12,0,0,17,9,1,1,1,1,1,1,1,1,0
+02_Data_Structures/01d_Stack_Queue.md,02_Data_Structures,94,Strong,1597,6805,77,43,666,18,0,0,39,8,0,1,1,1,1,1,1,1,1
+02_Data_Structures/01e_HashTable.md,02_Data_Structures,87,Strong,1194,7469,75,27,331,12,0,0,24,7,0,1,1,1,1,1,1,1,0
+02_Data_Structures/01f_Trees_Heaps.md,02_Data_Structures,87,Strong,1487,7981,87,37,553,19,0,0,32,7,0,1,1,1,1,1,1,1,0
+02_Data_Structures/01g_DS_Internals.md,02_Data_Structures,87,Strong,1898,12665,80,19,433,17,0,0,297,14,0,1,1,1,1,1,1,1,0
+02_Data_Structures/02_Data_Structures_AUDIT.md,02_Data_Structures,53,Needs expansion,366,2162,31,0,0,5,0,0,0,0,0,1,1,1,1,1,0,0,0
+02_Data_Structures/02_PROBLEM_SETS.md,02_Data_Structures,86,Not a lesson (reference),1201,6343,62,21,297,12,0,0,1,12,0,1,1,1,1,1,1,1,0
+02_Data_Structures/02a_DS_Variants_Core.md,02_Data_Structures,87,Strong,2419,3654,53,29,1798,15,0,0,391,6,0,1,1,1,1,1,1,1,0
+02_Data_Structures/02b_DS_Variants_Advanced.md,02_Data_Structures,87,Strong,2206,5047,70,41,1355,16,0,0,326,7,0,1,1,1,1,1,1,1,0
+02_Data_Structures/03_Collections_Java.md,02_Data_Structures,80,Strong,1350,5711,70,26,522,21,0,0,97,7,0,1,0,1,1,1,1,1,0
+02_Data_Structures/04_2D_Arrays_Matrix.md,02_Data_Structures,80,Strong,1902,4740,93,49,1090,13,0,0,29,5,0,1,1,0,1,1,1,1,0
+02_Data_Structures/05_DS_In_Production.md,02_Data_Structures,87,Strong,1095,6734,70,16,351,7,1,1,125,7,0,1,1,1,1,1,1,1,0
+02_Data_Structures/A1_DS_Correctness_Invariants.md,02_Data_Structures,70,Strong,861,7466,84,27,204,3,0,0,19,0,0,1,0,1,1,0,1,1,0
+02_Data_Structures/A2_DS_Complexity_FirstPrinciples.md,02_Data_Structures,66,Needs expansion,994,6506,69,34,225,3,0,0,55,2,0,0,0,0,1,1,1,1,0
+02_Data_Structures/A3_DS_Lower_Bounds.md,02_Data_Structures,80,Strong,897,7604,46,26,246,6,0,0,24,9,0,1,1,1,1,1,0,1,0
+02_Data_Structures/A4_Randomized_Data_Structures.md,02_Data_Structures,77,Strong,1271,5837,96,31,529,12,0,0,6,0,0,1,1,1,1,1,0,1,0
+02_Data_Structures/A5_Designing_Your_Own_Data_Structures.md,02_Data_Structures,87,Strong,728,6353,52,12,152,13,0,0,38,1,0,1,1,1,1,1,1,1,0
+03_Algorithms/00_ALGORITHM_TIMELINE.md,03_Algorithms,52,Needs expansion,318,2884,54,0,0,1,0,0,0,0,0,0,1,1,1,0,0,1,0
+03_Algorithms/00_CHEAT_SHEETS.md,03_Algorithms,37,Not a lesson (reference),505,1611,17,26,178,7,0,0,0,0,0,0,0,1,0,1,1,0,0
+03_Algorithms/00_CROSS_DOMAIN_BRIDGES.md,03_Algorithms,45,Superficial,177,2017,12,1,5,1,0,0,0,0,0,1,0,1,1,0,0,1,0
+03_Algorithms/00_INDEX.md,03_Algorithms,34,Not a lesson (index),95,687,10,1,5,2,0,0,0,0,0,1,0,1,1,1,0,0,0
+03_Algorithms/00_MASTER_ALGORITHM_SELECTOR.md,03_Algorithms,33,Superficial,199,1247,17,2,23,6,0,0,0,0,0,1,1,1,0,0,0,0,0
+03_Algorithms/01_Algorithm_Thinking.md,03_Algorithms,88,Strong,1082,2909,66,28,535,2,0,0,28,7,0,1,1,1,1,1,1,1,1
+03_Algorithms/02a_Sorting_Fundamentals.md,03_Algorithms,68,Needs expansion,1081,2953,53,22,588,3,0,0,213,2,0,0,1,1,1,0,1,1,0
+03_Algorithms/02b_Sorting_Advanced.md,03_Algorithms,87,Strong,1613,3902,56,41,1105,3,0,0,183,8,0,1,1,1,1,1,0,1,1
+03_Algorithms/02c_Divide_And_Conquer.md,03_Algorithms,76,Strong,885,3167,33,12,577,2,0,0,232,4,0,1,1,1,1,1,0,1,0
+03_Algorithms/03_PROBLEM_SETS.md,03_Algorithms,78,Not a lesson (reference),947,5091,31,18,280,4,0,0,0,22,0,1,1,1,1,0,1,1,0
+03_Algorithms/03a_Recursion_Internals.md,03_Algorithms,71,Strong,692,2482,31,24,312,6,0,0,114,7,0,1,0,1,1,1,1,1,0
+03_Algorithms/03b_Recursion_Fundamentals.md,03_Algorithms,80,Broken (unbalanced code fences),1295,4663,50,38,783,5,0,0,131,15,1,1,1,1,1,0,1,1,0
+03_Algorithms/03c_Recursion_Advanced.md,03_Algorithms,73,Strong,2147,5861,53,79,1370,5,0,0,242,27,0,1,1,1,1,0,0,1,0
+03_Algorithms/04a_DP_Internals.md,03_Algorithms,65,Needs expansion,804,2650,30,23,520,1,0,0,235,1,0,0,1,1,1,0,1,1,0
+03_Algorithms/04b_DP_Fundamentals.md,03_Algorithms,52,Needs expansion,1008,1941,49,19,716,2,0,0,167,2,0,1,1,0,1,0,0,1,0
+03_Algorithms/04c_DP_Advanced.md,03_Algorithms,87,Broken (unbalanced code fences),2092,7985,41,69,552,5,0,0,167,8,1,1,1,0,1,1,1,1,1
+03_Algorithms/05_Trees.md,03_Algorithms,77,Strong,1860,3201,59,39,1369,5,0,0,308,4,0,1,1,1,1,0,1,1,0
+03_Algorithms/05b_Graphs_Internals.md,03_Algorithms,62,Needs expansion,545,2332,27,7,316,0,0,0,181,4,0,1,1,1,1,0,0,1,0
+03_Algorithms/05c_Graphs_Fundamentals.md,03_Algorithms,80,Strong,913,3979,30,20,564,2,0,0,175,11,0,1,0,1,1,1,1,1,0
+03_Algorithms/05d_Graphs_Advanced_Algos.md,03_Algorithms,90,Strong,1588,3112,43,36,1192,3,0,0,28,7,0,1,1,1,1,1,1,1,1
+03_Algorithms/05e_Graphs_Patterns.md,03_Algorithms,87,Broken (unbalanced code fences),1205,4500,37,14,240,8,0,0,254,2,1,1,1,1,1,1,0,1,1
+03_Algorithms/06_Math_Geometry_Java_Complete.md,03_Algorithms,63,Needs expansion,251,1827,21,4,63,2,0,0,0,1,0,1,1,1,1,0,0,1,1
+03_Algorithms/06a_Greedy_BitManip.md,03_Algorithms,76,Strong,489,3316,24,2,23,0,0,0,20,4,0,1,0,1,1,1,0,1,1
+03_Algorithms/06c_Advanced_Algo_Deep.md,03_Algorithms,70,Strong,1241,1528,31,22,996,0,0,0,24,4,0,1,1,0,1,1,1,1,1
+03_Algorithms/06d_String_Algorithms.md,03_Algorithms,75,Strong,1308,2168,29,25,1047,1,0,0,74,4,0,1,1,1,1,1,0,1,1
+03_Algorithms/06e_Algorithm_Patterns.md,03_Algorithms,64,Needs expansion,805,2548,19,15,521,5,0,0,167,3,0,1,1,0,1,1,0,1,0
+03_Algorithms/07a_Advanced_DS_Core.md,03_Algorithms,80,Strong,1217,3706,29,9,698,1,0,0,321,7,0,1,1,1,1,0,0,1,1
+03_Algorithms/07b_Advanced_DS_Patterns.md,03_Algorithms,65,Needs expansion,1736,2636,47,38,1334,3,0,0,120,3,0,1,1,0,1,1,0,1,0
+03_Algorithms/07c_Advanced_Trees_Deep.md,03_Algorithms,87,Strong,669,3802,51,17,122,12,0,0,63,1,0,1,1,1,1,0,1,1,1
+03_Algorithms/07d_Probabilistic_DS_Deep.md,03_Algorithms,82,Strong,583,3051,46,15,101,7,0,0,34,1,0,1,1,1,1,0,1,1,1
+03_Algorithms/07e_Advanced_Algorithm_Engineering_Deep.md,03_Algorithms,70,Strong,952,3429,60,50,129,17,0,0,0,1,0,1,1,0,1,1,0,1,0
+03_Algorithms/08a_NumberTheory_Core.md,03_Algorithms,87,Strong,1208,4890,49,32,673,2,0,0,6,5,0,1,1,0,1,1,1,1,1
+03_Algorithms/08b_NumberTheory_Advanced.md,03_Algorithms,70,Strong,1134,2382,41,19,768,6,0,0,11,6,0,1,1,1,0,1,1,1,0
+03_Algorithms/09_Pattern_Programs_Complete.md,03_Algorithms,48,Superficial,2031,1465,86,115,1306,3,0,0,14,1,0,1,0,0,1,0,1,1,0
+03_Algorithms/10_Bit_Manipulation_Complete.md,03_Algorithms,54,Needs expansion,1312,2997,72,46,813,4,0,0,123,3,0,1,0,0,1,0,0,1,0
+03_Algorithms/11_Backtracking_Complete.md,03_Algorithms,65,Needs expansion,1452,2620,79,47,973,3,0,0,76,1,0,0,1,0,1,1,1,1,0
+03_Algorithms/12_Greedy_Algorithms_Complete.md,03_Algorithms,80,Strong,1936,7179,77,42,1084,7,0,0,131,16,0,1,0,1,1,1,1,1,0
+03_Algorithms/13_Algorithms_In_Production.md,03_Algorithms,72,Strong,320,1818,14,5,137,1,0,0,55,2,0,1,1,1,1,1,1,1,0
+03_Algorithms/13_String_Algorithms_Complete.md,03_Algorithms,87,Strong,1436,3778,64,41,980,1,0,0,71,3,0,1,1,1,1,1,0,1,1
+03_Algorithms/14_Union_Find_DSU_Complete.md,03_Algorithms,64,Needs expansion,1752,2506,59,38,1353,0,0,0,233,5,0,1,0,1,1,1,0,1,0
+03_Algorithms/15_Monotonic_Stack_Queue_Complete.md,03_Algorithms,71,Strong,1597,3347,61,38,1100,0,0,0,149,3,0,1,0,1,1,1,0,1,0
+03_Algorithms/16_DSA_Deep_Reasoning.md,03_Algorithms,85,Strong,1093,4450,43,14,518,6,0,0,0,8,0,1,1,1,1,1,1,1,0
+03_Algorithms/17_DSA_Java_Implementation_Mastery.md,03_Algorithms,76,Strong,900,2315,49,28,503,2,0,0,24,6,0,1,1,1,1,1,1,1,0
+03_Algorithms/18_Bitwise_Trie_Java_Complete.md,03_Algorithms,81,Strong,597,3168,32,8,235,1,0,0,0,3,0,1,1,0,1,1,1,1,1
+03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md,03_Algorithms,85,Strong,623,4547,35,10,176,1,0,0,0,14,0,1,1,1,1,1,0,1,1
+03_Algorithms/20_DSA_Patterns_PDF_Java_Coverage_Map.md,03_Algorithms,44,Superficial,241,1498,19,1,2,0,0,0,0,6,0,1,0,1,1,0,0,1,0
+03_Algorithms/21_Algorithm_War_Stories.md,03_Algorithms,61,Needs expansion,420,4886,30,6,38,3,0,0,0,0,0,1,0,0,1,0,1,1,0
+03_Algorithms/A1_Correctness_Proofs.md,03_Algorithms,73,Strong,522,3696,35,12,105,1,0,0,16,3,0,1,0,1,1,1,0,1,0
+03_Algorithms/A2_Complexity_FirstPrinciples.md,03_Algorithms,78,Strong,732,3326,44,25,239,1,0,0,13,5,0,1,0,1,1,1,1,1,0
+03_Algorithms/A3_Lower_Bounds_And_NP.md,03_Algorithms,85,Strong,656,3374,46,20,202,3,0,0,31,3,0,1,1,1,1,1,1,1,0
+03_Algorithms/A4_Randomized_Algorithms.md,03_Algorithms,73,Strong,647,3831,48,19,151,3,0,0,8,3,0,1,0,1,1,1,0,1,0
+03_Algorithms/A5_Designing_Your_Own_Algorithms.md,03_Algorithms,80,Strong,512,4749,38,8,101,8,0,0,36,1,0,1,1,0,1,1,1,1,0
+04_Patterns_Templates/00_INDEX.md,04_Patterns_Templates,2,Not a lesson (index),43,266,4,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md,04_Patterns_Templates,36,Superficial,395,1252,19,11,117,6,0,0,7,0,0,1,0,0,0,0,1,1,0
+04_Patterns_Templates/01_Sliding_Window.md,04_Patterns_Templates,87,Strong,1154,4157,61,29,556,7,0,0,178,8,0,1,1,1,1,1,1,1,0
+04_Patterns_Templates/02_Code_Templates.md,04_Patterns_Templates,76,Strong,1533,3093,50,32,1078,1,0,0,150,14,0,1,1,1,1,1,0,1,0
+04_Patterns_Templates/03_Visual_Diagrams.md,04_Patterns_Templates,78,Strong,948,2467,33,11,489,3,0,0,148,5,0,1,1,1,1,1,1,1,0
+04_Patterns_Templates/04_Pattern_Recognition.md,04_Patterns_Templates,59,Needs expansion,1104,1962,56,37,694,6,0,0,29,2,0,1,1,0,1,1,0,1,0
+04_Patterns_Templates/05_LeetCode_RealWorld_Map.md,04_Patterns_Templates,65,Needs expansion,1011,1744,45,28,675,2,0,0,75,6,0,1,1,0,1,1,1,1,0
+04_Patterns_Templates/06_Binary_Search_Patterns.md,04_Patterns_Templates,69,Needs expansion,1448,3130,63,44,946,2,0,0,94,9,0,1,1,0,1,0,1,1,0
+04_Patterns_Templates/07_Two_Pointers_Complete.md,04_Patterns_Templates,80,Strong,1453,3582,63,42,970,5,0,0,59,5,0,1,1,1,1,0,1,1,0
+04_Patterns_Templates/08_Array_Plus_TwoPointers.md,04_Patterns_Templates,70,Strong,435,2431,28,9,138,6,0,0,13,4,0,1,1,0,1,1,1,1,0
+04_Patterns_Templates/09_Array_Plus_SlidingWindow.md,04_Patterns_Templates,76,Strong,404,2221,25,9,141,5,0,0,14,3,0,1,1,1,1,1,1,1,0
+04_Patterns_Templates/10_HashMap_Plus_Counting.md,04_Patterns_Templates,78,Strong,432,2500,28,9,127,6,0,0,12,4,0,1,1,1,1,1,1,1,0
+04_Patterns_Templates/11_Stack_Plus_MonotonicPattern.md,04_Patterns_Templates,62,Needs expansion,411,2327,27,9,129,6,0,0,12,3,0,1,1,0,1,0,1,1,0
+04_Patterns_Templates/12_LinkedList_Plus_TwoPointers.md,04_Patterns_Templates,70,Strong,430,2410,27,11,152,8,0,0,12,1,0,1,1,1,1,0,1,1,0
+04_Patterns_Templates/13_Tree_Plus_DFS_BFS.md,04_Patterns_Templates,73,Strong,446,2811,25,9,144,6,0,0,12,1,0,1,1,0,1,1,1,1,0
+04_Patterns_Templates/14_Graph_Plus_Traversal.md,04_Patterns_Templates,72,Strong,440,2599,26,8,150,7,0,0,13,1,0,1,1,0,1,1,1,1,0
+04_Patterns_Templates/15_Heap_Plus_GreedySelection.md,04_Patterns_Templates,72,Strong,417,2593,24,8,128,6,0,0,12,3,0,1,1,1,1,0,1,1,0
+04_Patterns_Templates/16_DP_Pattern_Recognition.md,04_Patterns_Templates,72,Strong,493,2732,30,13,154,7,0,0,1,2,0,1,1,0,1,1,1,1,0
+04_Patterns_Templates/17_Backtracking_Plus_Pruning.md,04_Patterns_Templates,61,Needs expansion,424,2185,25,9,139,6,0,0,12,1,0,1,1,0,1,0,1,1,0
+04_Patterns_Templates/18_String_Plus_Advanced.md,04_Patterns_Templates,76,Strong,498,2374,27,10,196,7,0,0,1,1,0,1,1,1,1,1,1,1,0
+04_Patterns_Templates/19_Matrix_Plus_Grid_Traversal.md,04_Patterns_Templates,58,Needs expansion,364,1814,22,8,149,5,0,0,12,1,0,1,1,0,1,0,1,1,0
+04_Patterns_Templates/20_BitManipulation_Plus_Tricks.md,04_Patterns_Templates,62,Needs expansion,349,2248,24,6,91,8,0,0,3,2,0,1,1,0,1,0,1,1,0
+04_Patterns_Templates/21_Intervals_Pattern.md,04_Patterns_Templates,58,Needs expansion,574,1755,19,25,295,2,0,0,32,1,0,0,1,1,1,0,1,1,0
+04_Patterns_Templates/22_Cyclic_Sort_Pattern.md,04_Patterns_Templates,54,Needs expansion,525,1291,14,23,323,2,0,0,97,1,0,1,1,1,1,0,0,1,0
+04_Patterns_Templates/23_Knapsack_Family.md,04_Patterns_Templates,73,Strong,684,2785,16,25,367,2,0,0,120,4,0,1,1,1,1,0,1,1,0
+04_Patterns_Templates/24_Kadanes_Subarray_Patterns.md,04_Patterns_Templates,71,Strong,527,1988,30,14,270,4,0,0,3,0,0,1,1,1,1,1,1,1,0
+04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md,04_Patterns_Templates,63,Needs expansion,360,2145,17,14,37,10,0,0,0,0,0,1,1,0,1,1,1,1,0
+05_Problem_Solving/00_INDEX.md,05_Problem_Solving,66,Not a lesson (index),195,1970,19,1,6,4,0,0,0,0,0,1,1,1,1,1,1,1,0
+05_Problem_Solving/01_Intro_Checklist.md,05_Problem_Solving,58,Needs expansion,882,1834,28,23,484,1,0,0,10,17,0,1,1,0,1,0,1,1,0
+05_Problem_Solving/02_Math_Numbers.md,05_Problem_Solving,36,Superficial,1015,1151,25,35,722,0,0,0,13,0,0,0,0,0,1,0,1,0,1
+05_Problem_Solving/03_Strings.md,05_Problem_Solving,69,Needs expansion,756,1442,17,19,540,0,0,0,37,2,0,1,1,1,1,0,1,1,1
+05_Problem_Solving/04_Arrays.md,05_Problem_Solving,68,Needs expansion,675,1630,25,15,405,3,0,0,41,0,0,1,1,1,1,0,1,1,1
+05_Problem_Solving/05_Sliding_Window.md,05_Problem_Solving,76,Strong,995,2230,27,36,604,3,0,0,28,8,0,1,1,1,1,1,1,1,0
+05_Problem_Solving/06_Two_Pointers.md,05_Problem_Solving,59,Needs expansion,975,1967,25,33,607,3,0,0,20,5,0,1,0,0,1,0,1,1,1
+05_Problem_Solving/07_Binary_Search.md,05_Problem_Solving,72,Strong,1156,2658,29,37,715,3,0,0,10,10,0,0,1,1,1,0,1,1,1
+05_Problem_Solving/08_Stack_Queue.md,05_Problem_Solving,77,Strong,2162,2376,39,59,1581,3,0,0,627,5,0,1,1,0,1,1,1,1,1
+05_Problem_Solving/09_Trees.md,05_Problem_Solving,73,Strong,2157,2728,46,72,1509,3,0,0,553,4,0,1,1,0,1,1,1,1,0
+05_Problem_Solving/10_Graphs.md,05_Problem_Solving,87,Strong,2205,4606,36,54,1568,3,0,0,501,21,0,1,1,1,1,1,1,1,0
+05_Problem_Solving/11_Dynamic_Programming.md,05_Problem_Solving,70,Strong,1325,3253,32,39,796,3,0,0,367,8,0,1,1,0,1,0,1,1,0
+05_Problem_Solving/12_Backtracking.md,05_Problem_Solving,78,Strong,1127,3396,28,29,646,3,0,0,253,9,0,1,1,0,1,1,1,1,0
+05_Problem_Solving/13_Greedy.md,05_Problem_Solving,80,Strong,1067,4434,28,30,553,3,0,0,226,15,0,1,1,0,1,1,1,1,0
+05_Problem_Solving/14_Mixed_Competitive.md,05_Problem_Solving,69,Needs expansion,1225,2315,77,30,596,0,0,0,183,1,0,1,1,1,1,0,1,1,0
+05_Problem_Solving/15_LinkedList.md,05_Problem_Solving,87,Strong,1934,5233,47,77,952,3,0,0,43,9,0,1,1,1,1,1,1,1,0
+05_Problem_Solving/16_Heap.md,05_Problem_Solving,87,Strong,1577,6300,40,33,754,5,0,0,22,8,0,1,1,1,1,1,1,1,0
+05_Problem_Solving/17_HashMap_Hashing.md,05_Problem_Solving,77,Strong,1398,2614,34,42,897,3,0,0,0,8,0,1,0,1,1,1,1,1,1
+05_Problem_Solving/18_BitManipulation.md,05_Problem_Solving,57,Needs expansion,1462,1713,34,47,1075,0,0,0,454,4,0,1,1,1,0,0,0,1,1
+05_Problem_Solving/19_Matrix.md,05_Problem_Solving,84,Strong,1859,5110,35,53,1133,0,0,0,174,0,0,1,1,1,1,1,1,1,0
+05_Problem_Solving/20_Sorting.md,05_Problem_Solving,48,Superficial,963,1380,21,41,700,3,0,0,96,1,0,0,1,1,1,0,0,1,0
+05_Problem_Solving/21_Design.md,05_Problem_Solving,55,Needs expansion,1170,1427,22,42,859,3,0,0,77,4,0,1,1,1,1,0,0,1,0
+05_Problem_Solving/22_Recursion_Subsets.md,05_Problem_Solving,79,Strong,1203,3515,27,52,659,3,0,0,31,12,0,1,1,0,1,1,1,1,0
+05_Problem_Solving/23_Edge_Cases.md,05_Problem_Solving,78,Strong,802,2568,36,19,408,0,0,0,25,9,0,1,1,1,1,1,1,1,0
+05_Problem_Solving/24_Common_Mistakes.md,05_Problem_Solving,66,Needs expansion,796,1900,19,12,543,0,0,0,130,4,0,1,1,1,1,0,1,1,0
+05_Problem_Solving/25_Problem_Origins.md,05_Problem_Solving,72,Strong,1216,3532,60,28,745,6,0,0,71,19,0,1,1,1,1,0,0,1,0
+06_OOP_Design/00_INDEX.md,06_OOP_Design,14,Not a lesson (index),108,280,6,2,56,2,0,0,30,0,0,0,0,0,1,0,0,0,0
+06_OOP_Design/01_OOPS_Principles.md,06_OOP_Design,85,Strong,1770,3307,60,32,1230,10,0,0,241,5,0,1,1,1,1,1,1,1,0
+06_OOP_Design/02_Design_Patterns.md,06_OOP_Design,87,Strong,1317,4901,51,20,650,11,0,0,197,16,0,1,1,1,1,1,1,1,0
+06_OOP_Design/03_System_Design.md,06_OOP_Design,84,Strong,1496,3207,40,14,923,0,0,0,697,8,0,1,1,1,1,1,1,1,0
+06_OOP_Design/04_User_System_Flows.md,06_OOP_Design,67,Needs expansion,1019,2088,37,14,651,3,0,0,298,2,0,0,1,1,1,1,1,1,0
+06_OOP_Design/05_SD_Interview_Problems.md,06_OOP_Design,76,Strong,665,2233,32,16,394,4,2,2,188,3,0,1,1,1,1,1,1,1,0
+06_OOP_Design/05b_System_Design_Fundamentals.md,06_OOP_Design,87,Strong,637,6064,53,5,110,16,0,0,78,4,0,1,1,1,1,1,1,1,0
+06_OOP_Design/06_Distributed_Systems_Fundamentals.md,06_OOP_Design,68,Needs expansion,688,2110,22,14,440,1,0,0,228,2,0,1,1,1,1,1,0,1,0
+06_OOP_Design/06b_PROBLEM_SETS.md,06_OOP_Design,55,Not a lesson (reference),816,1384,19,18,536,1,0,0,208,7,0,1,0,1,1,0,1,1,0
+06_OOP_Design/07_LLD_Solved_Problems.md,06_OOP_Design,65,Needs expansion,1033,1797,25,17,812,0,0,0,223,4,0,1,1,1,1,1,0,1,0
+06_OOP_Design/08_Design_Patterns_Java.md,06_OOP_Design,80,Strong,1569,2743,33,35,1230,0,0,0,261,8,0,1,1,1,1,1,1,1,0
+07_Modern_Java/00_INDEX.md,07_Modern_Java,23,Not a lesson (index),164,1043,13,0,0,12,0,0,0,0,0,0,0,1,0,0,0,1,0
+07_Modern_Java/07_CONCURRENCY_PROBLEM_SETS.md,07_Modern_Java,48,Not a lesson (reference),326,815,6,11,175,1,0,0,0,3,0,1,1,1,0,0,0,1,1
+07_Modern_Java/07_PROBLEM_SETS.md,07_Modern_Java,61,Not a lesson (reference),533,1547,12,16,246,1,0,0,0,8,0,1,1,1,1,0,0,1,1
+07_Modern_Java/Ch01_Core_Foundations.md,07_Modern_Java,70,Strong,992,2381,29,30,654,0,0,0,50,9,0,1,0,1,1,1,1,1,0
+07_Modern_Java/Ch01b_Java_Type_System.md,07_Modern_Java,58,Needs expansion,724,3056,16,17,477,1,0,0,48,0,0,1,0,1,1,0,0,1,0
+07_Modern_Java/Ch02_Strings_Immutability.md,07_Modern_Java,55,Needs expansion,684,2331,20,17,423,0,0,0,28,12,0,1,0,1,1,0,0,1,0
+07_Modern_Java/Ch03_Enums_Records_Sealed.md,07_Modern_Java,74,Strong,945,2918,30,29,597,0,0,0,69,15,0,1,0,1,1,1,1,1,0
+07_Modern_Java/Ch04_Generics_Exceptions.md,07_Modern_Java,87,Strong,1467,4170,38,42,925,0,0,0,74,23,0,1,1,1,1,1,1,1,0
+07_Modern_Java/Ch05_DateTime_Regex.md,07_Modern_Java,58,Needs expansion,763,2626,26,24,458,0,0,0,71,13,0,0,0,1,1,0,1,1,0
+07_Modern_Java/Ch06_Functional_Programming.md,07_Modern_Java,87,Strong,1325,5155,55,38,621,3,0,0,30,22,0,1,1,1,1,1,1,1,0
+07_Modern_Java/Ch07_Modern_Java_9to21.md,07_Modern_Java,58,Needs expansion,613,1770,18,16,404,0,0,0,81,6,0,1,1,1,1,0,0,1,0
+07_Modern_Java/Ch08_Collections_Internals.md,07_Modern_Java,71,Strong,850,2491,20,26,515,0,0,0,73,14,0,0,1,1,1,1,1,1,0
+07_Modern_Java/Ch09_Serialization_IO.md,07_Modern_Java,51,Needs expansion,730,1852,21,22,428,0,0,0,62,10,0,1,0,0,1,1,0,1,0
+07_Modern_Java/Ch10_Reflection_Annotations.md,07_Modern_Java,82,Strong,1052,2956,37,37,664,0,0,0,76,11,0,1,0,1,1,1,1,1,1
+07_Modern_Java/Ch11_Events_Listeners.md,07_Modern_Java,48,Superficial,964,1434,31,29,681,0,0,0,86,6,0,1,0,0,1,1,0,1,0
+07_Modern_Java/Ch12_ClassLoader_JDBC_Logging.md,07_Modern_Java,68,Not a lesson (practice-log),846,2194,27,24,479,0,0,0,80,12,0,1,0,1,1,1,1,1,0
+07_Modern_Java/Ch13_Networking_NIO.md,07_Modern_Java,76,Strong,740,3127,15,19,471,0,0,0,35,14,0,1,1,1,1,0,1,1,0
+07_Modern_Java/Ch14_Maven_Gradle.md,07_Modern_Java,51,Needs expansion,680,1765,31,22,459,0,0,0,48,3,0,0,1,1,1,0,0,1,0
+07_Modern_Java/Ch15_Concurrency_Core.md,07_Modern_Java,73,Strong,2900,6420,73,92,1788,1,1,1,255,42,0,1,0,1,1,0,1,1,0
+07_Modern_Java/Ch16_Concurrency_Advanced.md,07_Modern_Java,52,Needs expansion,1100,1615,17,35,790,0,3,2,198,11,0,0,1,0,1,0,1,1,0
+07_Modern_Java/Ch17_Concurrency_Synchronizers.md,07_Modern_Java,61,Needs expansion,1290,2172,46,34,905,1,1,1,69,5,0,1,0,1,1,1,0,1,0
+07_Modern_Java/Ch18_JMM_GC_Deep.md,07_Modern_Java,72,Broken (unbalanced code fences),1123,3427,36,34,389,0,3,3,224,8,1,0,0,1,1,1,1,1,0
+07_Modern_Java/Ch19_JVM_Object_Model.md,07_Modern_Java,80,Strong,1004,3279,46,29,615,1,2,1,130,7,0,1,0,1,1,1,1,1,0
+07_Modern_Java/Ch20_AlgoEng_Core.md,07_Modern_Java,87,Strong,1357,6456,52,30,595,0,0,0,24,19,0,1,1,1,1,1,1,1,0
+07_Modern_Java/Ch21_AlgoEng_Advanced.md,07_Modern_Java,83,Strong,1383,3061,34,26,1054,0,0,0,265,12,0,1,1,1,1,1,1,1,0
+07_Modern_Java/Ch22_Java_Deep_Reasoning.md,07_Modern_Java,77,Strong,806,3473,31,21,410,1,0,0,0,18,0,1,0,1,1,1,1,1,0
+07_Modern_Java/Ch23_Streams_Deep_Reasoning.md,07_Modern_Java,79,Strong,1036,3531,54,30,580,1,0,0,54,15,0,1,0,1,1,1,1,1,0
+07_Modern_Java/Ch24_Spring_Boot_Roadmap.md,07_Modern_Java,79,Strong,1057,3461,48,12,361,22,0,0,344,2,0,1,1,1,1,1,0,1,0
+07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md,07_Modern_Java,83,Strong,983,5824,72,2,14,53,0,0,0,8,0,1,1,1,1,1,1,1,0
+07_Modern_Java/Ch26_Pre_Spring_Part1.md,07_Modern_Java,94,Strong,1846,3634,70,56,1312,0,0,0,299,19,0,1,1,1,1,1,1,1,1
+07_Modern_Java/Ch27_Pre_Spring_Part2.md,07_Modern_Java,73,Strong,1910,5146,73,59,1238,0,0,0,392,29,0,1,0,1,1,0,1,1,0
+07_Modern_Java/Ch28_Annotations_Core.md,07_Modern_Java,59,Needs expansion,1480,1869,32,22,1197,0,0,0,78,5,0,1,1,1,1,0,0,1,0
+07_Modern_Java/Ch29_Annotations_Advanced.md,07_Modern_Java,45,Superficial,1441,1027,27,25,1197,0,0,0,112,6,0,0,0,1,1,1,0,1,0
+07_Modern_Java/Ch30_Dependencies_Annotations_Map.md,07_Modern_Java,62,Needs expansion,583,2327,14,4,235,0,0,0,30,2,0,1,1,0,1,0,1,1,0
+07_Modern_Java/Ch31_SB_Core_Part1.md,07_Modern_Java,48,Superficial,1239,1418,39,23,987,0,0,0,367,6,0,0,0,1,1,0,1,1,0
+07_Modern_Java/Ch32_SB_Data_Part2.md,07_Modern_Java,62,Needs expansion,1625,2332,45,29,1250,0,0,0,288,11,0,1,0,1,1,1,0,1,0
+07_Modern_Java/Ch33_SB_Web_Part3.md,07_Modern_Java,59,Needs expansion,1259,1892,51,22,950,0,0,0,174,8,0,1,0,1,1,0,1,1,0
+07_Modern_Java/Ch34_SB_Security_Part4.md,07_Modern_Java,81,Strong,1375,2838,40,22,1025,1,0,0,190,14,0,1,1,1,1,1,1,1,0
+07_Modern_Java/Ch35_SB_Lombok_DTOs.md,07_Modern_Java,42,Superficial,1503,711,43,26,1297,0,0,0,135,1,0,1,0,0,1,0,1,1,0
+07_Modern_Java/Ch36_SB_Service_Repository.md,07_Modern_Java,45,Superficial,1445,1061,20,16,1257,0,0,0,216,5,0,0,0,1,1,0,1,1,0
+07_Modern_Java/Ch37_SB_Controllers_REST.md,07_Modern_Java,43,Superficial,1306,862,14,11,1163,0,0,0,119,4,0,1,0,0,1,0,1,1,0
+07_Modern_Java/Ch38_SB_SOLID_Core.md,07_Modern_Java,42,Superficial,1092,696,20,15,953,0,0,0,120,2,0,0,0,1,0,1,1,1,0
+07_Modern_Java/Ch39_SB_SOLID_Advanced.md,07_Modern_Java,43,Superficial,1150,828,16,11,1000,0,0,0,66,5,0,1,0,0,1,1,0,1,0
+07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md,07_Modern_Java,53,Needs expansion,1457,1158,22,19,1258,0,0,0,250,6,0,1,0,1,1,0,1,1,0
+07_Modern_Java/Ch41_SB_Architecture_Quality.md,07_Modern_Java,44,Superficial,1259,919,24,12,1105,0,0,0,165,1,0,1,1,1,0,0,0,1,0
+07_Modern_Java/Ch42_SB_HTTP_Deep_Dive.md,07_Modern_Java,65,Needs expansion,1650,1793,21,11,1354,0,0,0,426,7,0,1,1,1,1,1,0,1,0
+07_Modern_Java/Ch43_SB_Auth_Security.md,07_Modern_Java,53,Needs expansion,1631,2070,23,13,1328,0,0,0,291,7,0,1,1,0,1,0,0,1,0
+07_Modern_Java/Ch44_SB_Caching_Scheduling.md,07_Modern_Java,40,Superficial,1050,1330,38,21,789,1,0,0,113,4,0,0,1,0,1,0,0,1,0
+07_Modern_Java/Ch45_SB_Actuator_Metrics.md,07_Modern_Java,43,Superficial,1147,820,45,26,926,1,0,0,16,3,0,0,1,0,1,0,1,1,0
+07_Modern_Java/Ch46_SB_Database_Design.md,07_Modern_Java,35,Superficial,1086,744,14,9,957,0,0,0,93,3,0,1,0,0,1,0,0,1,0
+07_Modern_Java/Ch47_SB_Security_Deep.md,07_Modern_Java,29,Superficial,1092,813,14,8,965,0,0,0,15,4,0,1,0,0,0,0,0,1,0
+07_Modern_Java/Ch48_SB_WebFlux_Core.md,07_Modern_Java,28,Superficial,1219,685,23,17,1048,0,0,0,141,3,0,0,0,0,1,0,0,1,0
+07_Modern_Java/Ch49_SB_WebFlux_Advanced.md,07_Modern_Java,49,Superficial,1224,726,16,10,1079,0,0,0,72,3,0,0,0,1,1,1,1,1,0
+07_Modern_Java/Ch50_SB_DSA_Applications.md,07_Modern_Java,68,Needs expansion,1392,2209,14,9,1123,0,0,0,74,10,0,1,1,0,1,1,1,1,0
+07_Modern_Java/Ch51_SB_Industry_Projects.md,07_Modern_Java,61,Needs expansion,1775,2111,16,13,1534,0,0,0,183,6,0,0,1,1,1,1,0,1,0
+07_Modern_Java/Ch52_SB_WebSocket_GraphQL_gRPC.md,07_Modern_Java,80,Strong,1939,4307,120,72,1036,16,0,0,2,8,0,1,1,1,1,1,0,1,0
+07_Modern_Java/Ch53_SB_Distributed_Tracing.md,07_Modern_Java,51,Needs expansion,1750,1857,69,41,1371,2,0,0,78,9,0,1,0,0,1,0,1,1,0
+07_Modern_Java/Ch54_Message_Queues_Kafka.md,07_Modern_Java,61,Needs expansion,326,1375,14,9,117,4,0,0,27,3,0,1,0,1,1,1,1,1,0
+07_Modern_Java/Ch55_Spring_Internals.md,07_Modern_Java,80,Strong,2845,4552,60,67,2189,6,3,3,455,14,0,1,0,1,1,1,1,1,0
+07_Modern_Java/Ch56_Hibernate_JPA_Internals.md,07_Modern_Java,79,Strong,1120,2646,24,20,841,1,2,2,158,8,0,1,1,1,1,1,1,1,0
+07_Modern_Java/Ch57_Spring_Security_Internals.md,07_Modern_Java,62,Needs expansion,958,2271,21,14,724,1,0,0,104,6,0,1,0,1,1,0,1,1,0
+07_Modern_Java/Ch58_SB_Deep_Reasoning.md,07_Modern_Java,80,Strong,919,3728,31,22,534,2,0,0,10,19,0,1,0,1,1,1,1,1,0
+07_Modern_Java/Ch59_SB_Testing_Fundamentals.md,07_Modern_Java,84,Strong,1428,3281,34,18,1102,1,0,0,73,8,0,1,1,1,1,1,1,1,0
+07_Modern_Java/Ch60_SB_Testing_Advanced.md,07_Modern_Java,54,Needs expansion,1353,1291,31,24,1099,0,0,0,48,4,0,1,1,0,1,1,0,1,0
+07_Modern_Java/Ch61_SB_Microservices_Core.md,07_Modern_Java,50,Needs expansion,1283,839,42,32,1032,1,0,0,202,2,0,1,0,1,1,0,1,1,0
+07_Modern_Java/Ch62_SB_Microservices_Patterns.md,07_Modern_Java,56,Needs expansion,1322,755,41,31,1083,0,0,0,201,1,0,1,0,1,1,1,1,1,0
+07_Modern_Java/Ch63_SB_Cloud_Core.md,07_Modern_Java,50,Needs expansion,1129,857,49,17,946,1,0,0,205,6,0,1,0,1,1,0,1,1,0
+07_Modern_Java/Ch64_SB_Cloud_Advanced.md,07_Modern_Java,28,Superficial,1216,744,48,26,1003,0,0,0,92,4,0,0,0,0,1,0,0,1,0
+07_Modern_Java/Ch65_OS_Fundamentals.md,07_Modern_Java,64,Needs expansion,955,1698,16,13,741,0,0,0,195,8,0,1,0,1,1,1,1,1,0
+07_Modern_Java/Ch66_Event_Sourcing_CQRS.md,07_Modern_Java,72,Strong,829,1757,13,12,623,0,0,0,207,9,0,1,1,1,1,1,1,1,0
+07_Modern_Java/Ch67_Kubernetes_Deep_Dive.md,07_Modern_Java,52,Needs expansion,827,1094,27,19,644,0,0,0,215,7,0,1,0,1,1,0,1,1,0
+07_Modern_Java/Ch68_Distributed_Patterns.md,07_Modern_Java,58,Needs expansion,733,1803,13,11,536,0,0,0,143,9,0,1,0,1,1,0,1,1,0
+07_Modern_Java/Ch69_Performance_Engineering.md,07_Modern_Java,48,Superficial,728,1495,15,15,513,0,0,0,90,8,0,1,0,0,1,1,0,1,0
+08_SQL/00_INDEX.md,08_SQL,64,Not a lesson (index),208,2671,23,0,0,2,0,0,0,0,0,0,1,1,1,1,1,1,0
+08_SQL/01_Foundations_Database_Basics.md,08_SQL,72,Strong,470,2611,17,14,228,4,0,0,127,2,0,1,1,1,1,0,1,1,0
+08_SQL/02_DataTypes_Constraints.md,08_SQL,63,Needs expansion,317,2617,22,7,84,6,0,0,0,1,0,1,1,0,1,1,0,1,0
+08_SQL/03_DDL_Creating_Structure.md,08_SQL,61,Needs expansion,413,1556,13,6,289,2,0,0,0,1,0,1,1,1,1,1,0,1,0
+08_SQL/04_DML_Manipulating_Data.md,08_SQL,62,Needs expansion,382,1720,15,7,235,1,0,0,0,1,0,1,1,1,1,0,1,1,0
+08_SQL/05_Queries_SELECT_WHERE.md,08_SQL,49,Superficial,507,1325,15,9,373,0,0,0,0,0,0,1,1,0,1,0,1,1,0
+08_SQL/06_Aggregations_GroupBy.md,08_SQL,45,Superficial,382,1345,11,7,260,4,0,0,0,1,0,0,1,0,1,1,0,1,0
+08_SQL/07_JOINs_Complete.md,08_SQL,63,Needs expansion,397,1607,9,3,286,2,0,0,74,2,0,0,1,1,1,1,1,1,0
+08_SQL/08_Subqueries_CTEs.md,08_SQL,42,Superficial,459,1091,10,5,368,1,0,0,62,0,0,0,1,0,1,1,0,1,0
+08_SQL/08b_PROBLEM_SETS.md,08_SQL,50,Not a lesson (reference),688,1880,16,19,359,4,0,0,0,15,0,1,1,0,1,0,0,1,0
+08_SQL/09_Window_Functions.md,08_SQL,49,Superficial,685,1533,13,11,534,1,0,0,34,2,0,0,1,1,1,0,0,1,0
+08_SQL/10_Normalization.md,08_SQL,35,Superficial,286,1136,11,7,195,0,1,1,177,0,0,0,1,0,1,0,0,1,0
+08_SQL/11_Indexes_Performance.md,08_SQL,60,Needs expansion,348,2043,10,4,206,1,1,1,60,1,0,1,1,1,1,0,0,1,0
+08_SQL/12_Views_StoredProcs_Triggers.md,08_SQL,63,Needs expansion,633,1821,10,4,518,0,0,0,0,1,0,1,1,1,1,0,1,1,0
+08_SQL/13_Transactions_ACID.md,08_SQL,65,Needs expansion,461,1835,14,6,308,1,0,0,65,2,0,0,1,1,1,1,1,1,0
+08_SQL/14_Query_Optimization.md,08_SQL,40,Superficial,316,840,7,4,244,0,1,1,79,0,0,0,1,0,1,0,1,1,0
+08_SQL/15_Analytics_Warehousing_ETL.md,08_SQL,55,Needs expansion,786,1381,5,5,691,0,1,1,18,3,0,0,1,1,1,0,1,1,0
+08_SQL/16_RealWorld_CaseStudies.md,08_SQL,62,Needs expansion,1235,1707,72,35,842,0,0,0,0,1,0,1,1,0,1,1,1,1,0
+08_SQL/17_Practice_100_Problems.md,08_SQL,39,Superficial,464,914,7,3,388,0,0,0,0,0,0,0,1,1,1,0,0,1,0
+08_SQL/18a_SQL_Projects_Beginner.md,08_SQL,51,Needs expansion,1238,1178,39,23,960,0,0,0,0,3,0,1,1,0,1,0,1,1,0
+08_SQL/18b_SQL_Projects_Advanced.md,08_SQL,59,Needs expansion,1249,1893,64,46,858,0,0,0,28,5,0,1,1,1,1,0,0,1,0
+08_SQL/19_Interview_Top50.md,08_SQL,28,Superficial,214,483,3,1,171,0,0,0,0,0,0,0,1,0,0,0,1,1,0
+08_SQL/20_CheatSheet_QuickRef.md,08_SQL,46,Not a lesson (reference),246,1446,5,2,56,0,0,0,0,1,0,1,1,0,1,0,0,1,0
+08_SQL/21_Database_Internals.md,08_SQL,62,Needs expansion,366,1493,17,8,180,3,1,1,26,4,0,1,1,1,1,0,1,1,0
+08_SQL/22_NoSQL_MongoDB.md,08_SQL,56,Needs expansion,356,1082,13,8,225,0,0,0,39,0,0,0,1,1,1,1,1,1,0
+08_SQL/23_SQL_Deep_Reasoning.md,08_SQL,64,Needs expansion,571,2500,27,15,290,1,0,0,9,5,0,0,1,1,1,0,1,1,0
+08_SQL/24_SQL_Data_Analyst_RealWorld.md,08_SQL,48,Superficial,941,1737,45,27,631,14,0,0,0,2,0,1,1,0,1,0,0,1,0
+08_SQL/25_Interview_Patterns_Expanded.md,08_SQL,68,Needs expansion,1079,2140,63,54,563,0,0,0,7,3,0,1,1,0,1,1,1,1,0
+08_SQL/26_Python_SQL_Integration.md,08_SQL,57,Needs expansion,658,1194,80,23,455,1,0,0,23,0,0,0,1,1,1,1,1,1,0
+08_SQL/27_Python_SQL_Visualization.md,08_SQL,40,Superficial,555,1014,44,23,362,0,0,0,1,0,0,0,1,0,1,0,1,1,0
+08_SQL/28_Data_Analytics_Intermediate.md,08_SQL,46,Superficial,626,1214,37,19,419,1,0,0,14,1,0,1,1,0,1,0,0,1,0
+08_SQL/29_Data_Analytics_Advanced.md,08_SQL,46,Superficial,651,1242,50,16,477,0,0,0,6,1,0,1,1,0,1,0,0,1,0
+08_SQL/30_Recursive_Queries_Hierarchical.md,08_SQL,57,Needs expansion,620,1626,30,19,403,0,1,1,9,4,0,1,1,0,1,0,0,1,1
+08_SQL/31_JSON_XML_Modern_SQL.md,08_SQL,49,Superficial,584,1080,28,17,413,0,0,0,20,0,0,0,1,1,1,0,1,1,0
+08_SQL/32_Partitioning_Sharding_Replication.md,08_SQL,48,Superficial,533,1428,27,18,342,0,1,1,86,3,0,0,1,0,1,0,1,1,0
+08_SQL/33_SQL_Security_Injection.md,08_SQL,37,Superficial,537,996,41,18,365,0,0,0,24,1,0,0,1,1,0,0,0,1,0
+08_SQL/34_TimeSeries_Temporal.md,08_SQL,28,Superficial,497,1100,26,13,352,0,0,0,39,0,0,0,1,0,0,0,0,1,0
+08_SQL/35_Database_Migration_Schema.md,08_SQL,40,Superficial,486,862,42,18,329,0,0,0,17,0,0,1,1,1,0,0,0,1,0
+08_SQL/36_Advanced_Data_Modeling.md,08_SQL,68,Needs expansion,530,1276,23,13,357,0,0,0,70,2,0,1,1,0,1,1,1,1,1
+08_SQL/37_SQL_5WH_Deep_Reasoning.md,08_SQL,70,Strong,466,2429,21,12,145,12,0,0,17,3,0,1,1,1,1,1,0,1,0
+08_SQL/38_RealWorld_Production_Scenarios_Part1.md,08_SQL,53,Needs expansion,1559,2286,78,34,1091,7,0,0,0,1,0,1,1,0,1,0,0,1,0
+08_SQL/39_RealWorld_Production_Scenarios_Part2.md,08_SQL,67,Needs expansion,1191,2238,75,34,743,6,0,0,0,1,0,1,1,1,1,0,1,1,0
+08_SQL/40_RealWorld_Production_Scenarios_Part3.md,08_SQL,65,Needs expansion,1216,2870,63,35,770,4,0,0,0,6,0,1,1,1,1,0,0,1,0
+08_SQL/41_RealWorld_Production_Scenarios_Part4.md,08_SQL,52,Needs expansion,1095,2148,69,35,672,3,0,0,0,2,0,0,1,0,1,0,1,1,0
+08_SQL/42_RealWorld_Production_Scenarios_Part5.md,08_SQL,66,Needs expansion,1178,2160,69,37,747,4,0,0,0,4,0,1,1,1,1,0,1,1,0
+08_SQL/43_Interview_Mindset_How_Professionals_Explain.md,08_SQL,60,Needs expansion,539,2056,35,17,268,4,0,0,16,1,0,1,1,0,1,0,1,1,0
+08_SQL/44_Interview_Scenarios_Explained_Part1.md,08_SQL,60,Needs expansion,1129,2269,49,46,662,2,0,0,0,2,0,1,1,0,1,0,1,1,0
+08_SQL/45_Interview_Scenarios_Explained_Part2.md,08_SQL,70,Strong,950,2469,45,31,495,6,0,0,1,3,0,1,1,0,1,1,1,1,0
+08_SQL/46_Interview_Scenarios_Explained_Part3.md,08_SQL,59,Needs expansion,702,1416,39,21,399,3,0,0,10,0,0,1,1,1,1,0,1,1,0
+08_SQL/47_Theory_Deep_Dive_Database_Internals.md,08_SQL,74,Strong,772,2037,30,21,498,3,3,3,19,6,0,1,1,1,1,1,1,1,0
+08_SQL/48_Problem_Variants_Bank.md,08_SQL,84,Strong,734,5149,117,1,23,1,0,0,0,2,0,1,1,1,1,0,1,1,1
+08_SQL/49_SQL_Internals_Deep.md,08_SQL,66,Needs expansion,805,2716,18,13,542,2,0,0,26,1,0,1,1,1,1,0,0,1,0
+08_SQL/50_Schema_Design_From_Requirements.md,08_SQL,84,Strong,637,3990,36,14,199,13,0,0,41,0,0,1,1,1,1,1,1,1,0
+09_Career_Reference/00_INDEX.md,09_Career_Reference,1,Not a lesson (index),36,175,5,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+09_Career_Reference/01_Career_TechnoFunctional.md,09_Career_Reference,57,Needs expansion,1633,2469,98,52,995,11,0,0,407,1,0,1,0,0,1,0,1,1,0
+09_Career_Reference/02_Career_Guide_Part1A.md,09_Career_Reference,27,Superficial,1225,917,39,15,1093,0,0,0,282,0,0,0,0,1,1,0,0,0,0
+09_Career_Reference/03_Career_Guide_Part1B.md,09_Career_Reference,55,Needs expansion,1287,1444,32,24,1039,0,0,0,560,1,0,1,0,1,1,1,0,1,0
+09_Career_Reference/04_Career_Projects_Part1.md,09_Career_Reference,44,Superficial,2215,1007,48,12,2094,0,0,0,459,1,0,1,0,1,1,0,0,1,0
+09_Career_Reference/05_Career_Projects_Part2.md,09_Career_Reference,45,Superficial,2243,1077,71,25,2065,0,0,0,1005,2,0,0,0,1,1,1,0,1,0
+09_Career_Reference/06_Career_Projects_Part3.md,09_Career_Reference,69,Needs expansion,2225,2282,31,27,1891,0,0,0,322,6,0,1,0,1,1,1,1,1,0
+09_Career_Reference/07_DSA_Guide_Foundations.md,09_Career_Reference,58,Needs expansion,1861,1779,72,50,1453,6,0,0,406,3,0,1,0,1,1,1,0,1,0
+09_Career_Reference/08_DSA_Guide_Advanced.md,09_Career_Reference,49,Superficial,1835,1596,81,54,1425,4,0,0,46,1,0,1,0,0,1,0,1,1,0
+09_Career_Reference/09_Ultimate_DSA_Advanced.md,09_Career_Reference,45,Superficial,956,1087,8,38,772,0,0,0,113,2,0,0,0,1,1,1,0,1,0
+09_Career_Reference/10_Ultimate_DSA_JVM.md,09_Career_Reference,47,Superficial,1034,1369,17,19,824,1,0,0,398,3,0,0,0,1,1,0,1,1,0
+09_Career_Reference/11_Quick_Reference.md,09_Career_Reference,49,Not a lesson (reference),1013,1941,66,34,554,3,0,0,99,0,0,0,0,0,1,1,1,1,0
+09_Career_Reference/12_Brain_Psychology.md,09_Career_Reference,60,Needs expansion,1007,2378,55,27,489,0,0,0,85,0,0,1,0,0,1,1,1,1,0
+09_Career_Reference/13_Daily_Habits_Tracking.md,09_Career_Reference,42,Superficial,430,1655,61,0,0,8,0,0,0,0,0,1,0,0,1,0,1,1,0
+09_Career_Reference/14_Resources_Links.md,09_Career_Reference,28,Superficial,1196,1025,58,38,901,0,0,0,42,0,0,0,0,0,1,0,0,1,0
+09_Career_Reference/15_Behavioral_Interview.md,09_Career_Reference,71,Strong,572,2536,26,9,120,0,0,0,39,1,0,1,1,1,1,0,1,1,0
+10_Enterprise_Systems/00_INDEX.md,10_Enterprise_Systems,9,Not a lesson (index),26,225,2,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0
+10_Enterprise_Systems/01_ERP_Fundamentals.md,10_Enterprise_Systems,79,Strong,1828,2671,33,18,1541,1,0,0,212,2,0,1,1,1,1,1,1,1,0
+10_Enterprise_Systems/01b_DDD_Tactical_Patterns.md,10_Enterprise_Systems,93,Strong,759,6785,34,12,242,3,5,2,34,5,0,1,1,1,1,1,1,1,0
+10_Enterprise_Systems/01c_Domain_Driven_Entity_Design.md,10_Enterprise_Systems,73,Strong,243,3369,20,0,0,0,0,0,0,3,0,1,1,1,1,0,1,1,0
+10_Enterprise_Systems/02_ERP_Advanced.md,10_Enterprise_Systems,73,Broken (unbalanced code fences),1774,5618,20,9,135,1,0,0,50,8,1,0,1,1,1,0,1,1,0
+10_Enterprise_Systems/03_ERP_Finance_Core.md,10_Enterprise_Systems,76,Strong,1151,3383,24,8,829,1,0,0,0,6,0,0,1,1,1,1,1,1,0
+10_Enterprise_Systems/04_ERP_Finance_RealWorld.md,10_Enterprise_Systems,75,Strong,1211,2966,21,12,989,1,0,0,248,1,0,1,1,1,1,0,1,1,0
+10_Enterprise_Systems/05_RealWorld_Problems_DSA.md,10_Enterprise_Systems,69,Needs expansion,1388,2262,22,24,1107,0,0,0,5,3,0,1,1,1,1,0,1,1,0
+10_Enterprise_Systems/06_RealWorld_Problems_Part2.md,10_Enterprise_Systems,68,Needs expansion,1485,3164,20,19,1147,0,0,0,1,6,0,1,1,0,1,0,1,1,0
+10_Enterprise_Systems/07_RealWorld_Problems_Part3.md,10_Enterprise_Systems,84,Strong,1509,2681,21,17,1203,1,0,0,0,3,0,1,1,1,1,1,1,1,1
+10_Enterprise_Systems/08_RealWorld_Incidents_DSA.md,10_Enterprise_Systems,87,Strong,1332,4084,67,30,860,0,0,0,157,9,0,1,1,1,1,0,1,1,1
+10_Enterprise_Systems/09_Distributed_Patterns.md,10_Enterprise_Systems,80,Strong,907,4019,20,14,547,4,0,0,46,6,0,1,1,1,1,0,1,1,0
+10_Enterprise_Systems/10_KAFKA_PROBLEM_SETS.md,10_Enterprise_Systems,87,Not a lesson (reference),619,3690,16,14,215,4,0,0,6,12,0,1,1,1,1,1,1,1,0
+10_Enterprise_Systems/10_PROBLEM_SETS.md,10_Enterprise_Systems,78,Not a lesson (reference),498,3569,11,8,147,0,0,0,0,11,0,1,1,1,1,0,1,1,0
+12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md,12_Daily_Practice,13,Not a lesson (index),113,485,7,2,27,2,0,0,0,0,0,0,0,0,0,0,0,1,0
+12_Daily_Practice/00_FTE_CONVERSION_PLAN_2026.md,12_Daily_Practice,65,Not a lesson (practice-log),303,3245,34,1,13,20,0,0,14,0,0,1,0,1,1,0,1,1,0
+12_Daily_Practice/15_DAY_PATTERN_SPRINT_INDEX.md,12_Daily_Practice,1,Not a lesson (index),29,177,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+12_Daily_Practice/DAILY_LOG_TEMPLATE.md,12_Daily_Practice,23,Not a lesson (practice-log),96,231,11,1,1,2,0,0,0,0,0,0,0,0,1,0,1,1,0
+12_Daily_Practice/Week_01/Day_001_Mar03_Mon.md,12_Daily_Practice,58,Not a lesson (practice-log),654,999,31,22,369,0,0,0,12,6,0,1,1,1,1,1,0,1,0
+12_Daily_Practice/Week_01/Day_002_Mar04_Tue.md,12_Daily_Practice,33,Not a lesson (practice-log),499,697,27,18,274,0,0,0,0,6,0,1,0,0,1,0,0,1,0
+12_Daily_Practice/Week_01/Day_003_Mar05_Wed.md,12_Daily_Practice,46,Not a lesson (practice-log),524,649,29,19,297,0,0,0,0,6,0,1,0,1,1,1,0,1,0
+12_Daily_Practice/Week_01/Day_004_Mar06_Thu.md,12_Daily_Practice,39,Not a lesson (practice-log),482,618,30,21,252,0,0,0,0,6,0,1,0,1,1,0,0,1,0
+12_Daily_Practice/Week_01/Day_005_Mar07_Fri.md,12_Daily_Practice,32,Not a lesson (practice-log),568,591,29,22,338,0,0,0,0,6,0,1,0,1,0,0,0,1,0
+12_Daily_Practice/Week_01/Day_006_Mar08_Sat.md,12_Daily_Practice,26,Not a lesson (practice-log),450,445,25,15,273,2,0,0,17,3,0,1,0,0,0,0,0,1,0
+12_Daily_Practice/Week_01/Day_007_Mar09_Sun.md,12_Daily_Practice,18,Not a lesson (practice-log),343,640,18,17,118,0,0,0,0,11,0,0,0,0,0,0,0,1,0
+12_Daily_Practice/Week_02/Day_001_Arrays_TwoPointers.md,12_Daily_Practice,40,Not a lesson (practice-log),759,1113,34,32,387,1,0,0,0,0,0,1,0,0,1,0,1,0,1
+12_Daily_Practice/Week_02/Day_002_Arrays_PrefixSum.md,12_Daily_Practice,17,Not a lesson (practice-log),720,871,31,27,416,1,0,0,0,0,0,0,0,0,0,0,0,0,1
+12_Daily_Practice/Week_02/Day_003_SlidingWindow.md,12_Daily_Practice,22,Not a lesson (practice-log),643,592,28,27,385,1,0,0,0,0,0,0,0,0,1,0,0,0,1
+12_Daily_Practice/Week_02/Day_008_Mar10_Mon.md,12_Daily_Practice,30,Not a lesson (practice-log),531,454,25,16,363,0,0,0,18,0,0,1,0,1,0,0,0,1,0
+12_Daily_Practice/Week_02/Day_009_Mar11_Tue.md,12_Daily_Practice,15,Not a lesson (practice-log),425,313,23,16,281,0,0,0,20,0,0,0,0,0,0,0,0,1,0
+12_Daily_Practice/Week_02/Day_010_Mar12_Wed.md,12_Daily_Practice,14,Not a lesson (practice-log),400,281,22,15,262,0,0,0,7,0,0,0,0,0,0,0,0,1,0
+12_Daily_Practice/Week_02/Day_011_Mar13_Thu.md,12_Daily_Practice,21,Not a lesson (practice-log),417,265,24,17,271,0,0,0,11,0,0,0,0,1,0,0,0,1,0
+12_Daily_Practice/Week_02/Day_012_Mar14_Fri.md,12_Daily_Practice,14,Not a lesson (practice-log),363,233,21,14,232,0,0,0,15,0,0,0,0,0,0,0,0,1,0
+12_Daily_Practice/Week_02/Day_013_Mar15_Sat.md,12_Daily_Practice,14,Not a lesson (practice-log),322,208,14,8,234,0,0,0,18,0,0,0,0,0,0,0,0,1,0
+12_Daily_Practice/Week_02/Day_014_Mar16_Sun.md,12_Daily_Practice,13,Not a lesson (practice-log),211,407,15,10,78,1,0,0,0,0,0,0,0,0,0,0,0,1,0
+12_Daily_Practice/Week_03/Day_015_Mar17_Mon.md,12_Daily_Practice,23,Not a lesson (practice-log),546,508,28,18,362,1,0,0,12,0,0,0,0,0,1,0,0,1,0
+12_Daily_Practice/Week_03/Day_016_Mar18_Tue.md,12_Daily_Practice,22,Not a lesson (practice-log),399,403,25,15,252,0,0,0,21,0,0,0,0,0,1,0,0,1,0
+12_Daily_Practice/Week_03/Day_017_Mar19_Wed.md,12_Daily_Practice,15,Not a lesson (practice-log),451,353,24,17,300,0,0,0,5,0,0,0,0,0,0,0,0,1,0
+12_Daily_Practice/Week_03/Day_018_Mar20_Thu.md,12_Daily_Practice,22,Not a lesson (practice-log),372,309,23,17,223,0,0,0,10,0,0,0,0,0,1,0,0,1,0
+12_Daily_Practice/Week_03/Day_019_Mar21_Fri.md,12_Daily_Practice,29,Not a lesson (practice-log),416,349,25,18,262,0,0,0,4,0,0,0,0,1,1,0,0,1,0
+12_Daily_Practice/Week_03/Day_020_Mar22_Sat.md,12_Daily_Practice,14,Not a lesson (practice-log),459,268,22,16,326,0,0,0,25,0,0,0,0,0,0,0,0,1,0
+12_Daily_Practice/Week_03/Day_021_Mar23_Sun.md,12_Daily_Practice,13,Not a lesson (practice-log),229,333,16,12,96,1,0,0,0,0,0,0,0,0,0,0,0,1,0
+12_Daily_Practice/Week_04/Day_022_Mar24_Mon.md,12_Daily_Practice,20,Not a lesson (practice-log),307,301,19,11,183,1,0,0,0,0,0,1,0,0,0,0,0,1,0
+12_Daily_Practice/Week_04/Day_023_Mar25_Tue.md,12_Daily_Practice,12,Not a lesson (practice-log),248,290,16,8,141,1,0,0,0,0,0,0,0,0,0,0,0,1,0
+12_Daily_Practice/Week_04/Day_024_Mar26_Wed.md,12_Daily_Practice,27,Not a lesson (practice-log),244,306,18,10,125,1,0,0,0,0,0,0,0,0,1,1,0,1,0
+12_Daily_Practice/Week_04/Day_025_Mar27_Thu.md,12_Daily_Practice,13,Not a lesson (practice-log),239,332,17,8,128,1,0,0,0,0,0,0,0,0,0,0,0,1,0
+12_Daily_Practice/Week_04/Day_026_Mar28_Fri.md,12_Daily_Practice,28,Not a lesson (practice-log),267,293,18,10,148,1,0,0,19,0,0,0,0,0,1,1,0,1,0
+12_Daily_Practice/Week_04/Day_027_Mar29_Sat.md,12_Daily_Practice,19,Not a lesson (practice-log),265,297,16,8,159,2,0,0,0,0,0,0,0,0,0,1,0,1,0
+12_Daily_Practice/Week_04/Day_028_Mar30_Sun.md,12_Daily_Practice,16,Not a lesson (practice-log),208,598,17,7,31,5,0,0,3,0,0,0,0,0,0,0,0,1,0
+12_Daily_Practice/Week_05/Day_001_Arrays_TwoPointers_Sprint.md,12_Daily_Practice,15,Not a lesson (practice-log),341,618,36,12,148,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+12_Daily_Practice/Week_05/Day_002_PrefixSum_HashMap_Sprint.md,12_Daily_Practice,14,Not a lesson (practice-log),313,530,36,11,135,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+12_Daily_Practice/Week_05/Day_003_SlidingWindow_Sprint.md,12_Daily_Practice,13,Not a lesson (practice-log),345,402,33,12,188,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+12_Daily_Practice/Week_05/Day_004_BinarySearch_Sprint.md,12_Daily_Practice,14,Not a lesson (practice-log),291,458,33,12,132,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+12_Daily_Practice/Week_05/Day_005_Sorting_Intervals_Sprint.md,12_Daily_Practice,14,Not a lesson (practice-log),320,479,33,12,149,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+12_Daily_Practice/Week_06/Day_006_Hashing_Frequency_Sprint.md,12_Daily_Practice,14,Not a lesson (practice-log),275,436,33,12,107,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+12_Daily_Practice/Week_06/Day_007_Strings_SlidingWindow_Sprint.md,12_Daily_Practice,22,Not a lesson (practice-log),331,563,34,9,165,0,0,0,0,0,0,1,0,0,0,0,0,0,1
+12_Daily_Practice/Week_06/Day_008_LinkedList_Sprint.md,12_Daily_Practice,14,Not a lesson (practice-log),242,519,31,6,95,0,0,0,0,0,0,1,0,0,0,0,0,0,0
+12_Daily_Practice/Week_06/Day_009_Stack_Monotonic_Sprint.md,12_Daily_Practice,13,Not a lesson (practice-log),274,408,28,6,150,0,0,0,0,0,0,1,0,0,0,0,0,0,0
+12_Daily_Practice/Week_06/Day_010_Queue_Deque_PQ_Sprint.md,12_Daily_Practice,14,Not a lesson (practice-log),229,446,30,5,99,0,0,0,0,0,0,1,0,0,0,0,0,0,0
+12_Daily_Practice/Week_07/Day_011_Recursion_Backtracking_Sprint.md,12_Daily_Practice,14,Not a lesson (practice-log),246,435,30,7,113,0,0,0,0,0,0,1,0,0,0,0,0,0,0
+12_Daily_Practice/Week_07/Day_012_Trees_DFS_BFS_Sprint.md,12_Daily_Practice,14,Not a lesson (practice-log),213,431,29,6,88,0,0,0,0,0,0,1,0,0,0,0,0,0,0
+12_Daily_Practice/Week_07/Day_013_Graphs_DSU_Sprint.md,12_Daily_Practice,13,Not a lesson (practice-log),230,412,29,5,110,0,0,0,0,0,0,1,0,0,0,0,0,0,0
+12_Daily_Practice/Week_07/Day_014_DP1_1D_Sprint.md,12_Daily_Practice,13,Not a lesson (practice-log),203,394,30,6,83,0,0,0,0,0,0,1,0,0,0,0,0,0,0
+12_Daily_Practice/Week_07/Day_015_DP2_2D_EditDistance_Sprint.md,12_Daily_Practice,21,Not a lesson (practice-log),236,488,31,5,108,0,0,0,0,0,0,1,0,0,0,1,0,0,0
+13_Developer_Essentials/00_INDEX.md,13_Developer_Essentials,11,Not a lesson (index),71,376,6,4,9,1,0,0,0,0,0,1,0,0,0,0,0,0,0
+13_Developer_Essentials/01_Git_Version_Control.md,13_Developer_Essentials,87,Strong,871,4002,137,32,395,4,5,5,24,10,0,1,1,1,1,1,1,1,0
+13_Developer_Essentials/02_Linux_CLI_Shell.md,13_Developer_Essentials,82,Strong,732,3060,102,25,401,2,0,0,19,11,0,1,1,1,1,1,1,1,0
+13_Developer_Essentials/03_Docker_Containers.md,13_Developer_Essentials,72,Strong,573,2602,69,22,290,1,0,0,22,7,0,1,1,1,1,0,1,1,0
+13_Developer_Essentials/04_CICD_Pipelines.md,13_Developer_Essentials,81,Strong,542,2880,32,14,271,2,0,0,29,5,0,1,1,1,1,1,1,1,0
+13_Developer_Essentials/05_Clean_Code.md,13_Developer_Essentials,78,Strong,604,2574,30,22,333,0,0,0,6,7,0,1,1,1,1,1,1,1,0
+13_Developer_Essentials/06_Testing_Fundamentals.md,13_Developer_Essentials,87,Strong,694,4308,27,18,292,2,0,0,8,14,0,1,1,1,1,1,1,1,0
+13_Developer_Essentials/07_API_Design_REST.md,13_Developer_Essentials,70,Strong,503,2427,25,15,264,2,0,0,20,5,0,1,1,1,1,0,1,1,0
+13_Developer_Essentials/08_Security_Fundamentals.md,13_Developer_Essentials,65,Needs expansion,469,2621,26,15,224,2,0,0,14,3,0,1,1,1,1,0,0,1,0
+13_Developer_Essentials/09_System_Design.md,13_Developer_Essentials,78,Strong,592,3382,26,16,273,1,0,0,33,11,0,1,1,1,1,0,1,1,0
+13_Developer_Essentials/10_Dev_Tools_Productivity.md,13_Developer_Essentials,52,Needs expansion,519,1868,37,19,308,1,0,0,16,2,0,0,1,0,1,0,1,1,0
+13_Developer_Essentials/11_Production_Code_Practices.md,13_Developer_Essentials,87,Strong,821,4086,38,25,367,1,0,0,15,8,0,1,1,1,1,1,1,1,0
+13_Developer_Essentials/12_Monitoring_Observability.md,13_Developer_Essentials,87,Strong,825,5260,63,26,317,3,0,0,53,9,0,1,1,1,1,1,1,1,0
+13_Developer_Essentials/13_Agile_Scrum.md,13_Developer_Essentials,94,Strong,590,4290,29,8,118,0,0,0,41,10,0,1,1,1,1,1,1,1,1
+13_Developer_Essentials/13_PROBLEM_SETS.md,13_Developer_Essentials,80,Not a lesson (reference),777,2741,33,18,374,4,0,0,10,15,0,1,1,1,1,1,1,1,0
+13_Developer_Essentials/14_Code_Review_Practices.md,13_Developer_Essentials,63,Needs expansion,522,2365,32,11,258,0,0,0,15,4,0,0,1,1,1,0,1,1,0
+13_Developer_Essentials/15_Cloud_Services_Guide.md,13_Developer_Essentials,87,Strong,583,3677,24,9,238,1,0,0,86,6,0,1,1,1,1,1,1,1,0
+13_Developer_Essentials/16_IaC_Terraform.md,13_Developer_Essentials,74,Strong,720,2827,47,15,420,1,0,0,10,6,0,1,1,1,1,0,1,1,0
+13_Developer_Essentials/17_Servers_Ports_Networking.md,13_Developer_Essentials,68,Needs expansion,618,2998,17,11,338,0,0,0,125,6,0,1,1,0,1,0,1,1,0
+13_Developer_Essentials/18_Backend_Cloud_Integration.md,13_Developer_Essentials,84,Strong,484,3288,15,8,265,0,0,0,80,6,0,1,1,1,1,1,1,1,0
+13_Developer_Essentials/19_Concurrency_Models_Coroutines.md,13_Developer_Essentials,80,Strong,813,4645,30,17,379,3,0,0,56,10,0,1,1,1,1,1,0,1,0
+13_Developer_Essentials/Reality_Checks_DSA_Java_SQL_Playwright.md,13_Developer_Essentials,83,Strong,1600,7386,105,58,359,5,0,0,1,0,0,1,1,1,1,1,1,1,0
+13_Developer_Essentials/Reality_Checks_How_Tech_Actually_Works.md,13_Developer_Essentials,84,Strong,1497,11645,139,33,257,10,0,0,4,0,0,1,1,1,1,1,1,1,0
+14_Mental_Models/00_INDEX.md,14_Mental_Models,71,Not a lesson (index),267,2040,18,2,66,8,0,0,22,0,0,1,1,1,1,1,1,1,0
+14_Mental_Models/01_Recursion_Tree_Thinking.md,14_Mental_Models,85,Strong,760,3414,58,32,322,4,0,0,52,7,0,1,1,1,1,1,1,1,0
+14_Mental_Models/02_DP_State_Thinking.md,14_Mental_Models,70,Strong,460,1893,37,20,218,3,0,0,36,0,0,1,1,1,1,1,1,1,0
+14_Mental_Models/03_Graph_Tree_Thinking.md,14_Mental_Models,77,Strong,485,2407,35,17,213,4,0,0,41,4,0,1,1,1,1,1,1,1,0
+14_Mental_Models/04_Array_String_Thinking.md,14_Mental_Models,77,Strong,529,2370,33,16,260,4,0,0,50,4,0,1,1,1,1,1,1,1,0
+14_Mental_Models/05_Universal_Problem_Framework.md,14_Mental_Models,75,Strong,486,2146,34,15,236,4,0,0,68,2,0,1,1,1,1,1,1,1,0
+14_Mental_Models/06_Implementation_Checklist.md,14_Mental_Models,63,Needs expansion,475,1962,32,17,245,3,0,0,24,0,0,1,1,1,1,0,1,1,0
+14_Mental_Models/07_SQL_Mental_Pipeline.md,14_Mental_Models,79,Strong,602,2690,43,22,284,6,0,0,53,4,0,1,1,1,1,1,1,1,0
+14_Mental_Models/08_Debugging_DryRun.md,14_Mental_Models,83,Strong,581,2296,39,22,309,2,0,0,35,2,0,1,1,1,1,1,1,1,1
+14_Mental_Models/09_Complexity_Intuition.md,14_Mental_Models,77,Strong,632,2401,42,22,353,3,0,0,57,2,0,1,1,1,1,1,1,1,0
+14_Mental_Models/10_Interview_Thinking.md,14_Mental_Models,72,Strong,700,2658,46,26,380,3,0,0,130,3,0,1,1,1,1,0,1,1,0
+14_Mental_Models/11_Greedy_vs_DP_Decision.md,14_Mental_Models,92,Strong,362,3343,21,1,81,3,0,0,44,3,0,1,1,1,1,1,1,1,1
+14_Mental_Models/12_Space_Time_Tradeoffs.md,14_Mental_Models,84,Strong,345,3255,21,1,63,4,0,0,48,1,0,1,1,1,1,1,1,1,0
+14_Mental_Models/13_Pattern_Composition.md,14_Mental_Models,82,Strong,478,2970,24,7,186,4,0,0,139,3,0,1,1,1,1,1,1,1,0
+14_Mental_Models/14_Optimization_Pipeline.md,14_Mental_Models,87,Strong,580,3601,29,4,140,2,0,0,166,3,0,1,1,1,1,1,1,1,0
+14_Mental_Models/15_System_Design_Thinking.md,14_Mental_Models,74,Strong,460,2379,26,4,168,4,0,0,71,0,0,1,1,1,1,1,1,1,0
+14_Mental_Models/16_Distributed_Systems_Thinking.md,14_Mental_Models,82,Strong,549,2968,25,5,195,3,0,0,111,1,0,1,1,1,1,1,1,1,0
+14_Mental_Models/17_Frontend_Architecture_Thinking.md,14_Mental_Models,74,Strong,504,2405,24,4,188,3,0,0,97,0,0,1,1,1,1,1,1,1,0
+14_Mental_Models/18_Production_Debugging_Thinking.md,14_Mental_Models,78,Strong,657,3300,26,7,271,3,0,0,155,5,0,1,1,1,1,0,1,1,0
+14_Mental_Models/20_Pattern_Trigger_Guide.md,14_Mental_Models,71,Strong,432,2837,20,6,188,6,1,1,106,0,0,1,1,1,1,0,1,1,0
+14_Mental_Models/21_Competitive_Coding_Deep_Thinking.md,14_Mental_Models,77,Strong,1266,3796,72,79,302,11,0,0,52,0,0,1,1,1,1,0,1,1,0
+14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md,14_Mental_Models,77,Strong,582,2701,34,27,155,10,0,0,74,0,0,1,1,1,1,1,1,1,0
+15_React_Frontend/00_INDEX.md,15_React_Frontend,9,Not a lesson (index),33,206,3,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0
+15_React_Frontend/01_React_Fundamentals.md,15_React_Frontend,83,Broken (unbalanced code fences),1164,3700,38,29,628,5,4,3,11,4,1,1,1,1,1,0,1,1,0
+15_React_Frontend/02_Component_Patterns.md,15_React_Frontend,72,Strong,546,2011,21,13,299,5,0,0,0,3,0,1,1,1,1,1,1,1,0
+15_React_Frontend/03_Hooks_Deep_Dive.md,15_React_Frontend,76,Strong,1230,2725,34,32,807,3,1,0,2,6,0,1,1,1,0,1,1,1,0
+15_React_Frontend/04_State_Management.md,15_React_Frontend,80,Strong,831,2882,24,18,460,6,1,1,1,3,0,1,1,1,1,1,1,1,0
+15_React_Frontend/05_React_TypeScript.md,15_React_Frontend,68,Needs expansion,697,2130,19,13,489,3,0,0,15,4,0,1,1,1,1,0,1,1,0
+15_React_Frontend/06_React_Router.md,15_React_Frontend,49,Superficial,562,1535,17,9,388,4,0,0,10,2,0,0,1,0,1,0,1,1,0
+15_React_Frontend/07_React_Testing.md,15_React_Frontend,86,Strong,694,3433,26,15,336,4,1,1,3,3,0,1,1,1,1,1,1,1,0
+15_React_Frontend/08_React_Performance.md,15_React_Frontend,56,Needs expansion,355,1545,15,6,189,3,0,0,17,2,0,1,1,0,1,0,1,1,0
+15_React_Frontend/09_React_Deep_Reasoning.md,15_React_Frontend,83,Strong,1062,3115,53,33,576,3,0,0,126,7,0,1,1,1,1,1,1,1,0
+15_React_Frontend/10_Custom_Hooks_Library.md,15_React_Frontend,56,Needs expansion,1017,1582,23,23,771,3,0,0,19,2,0,0,1,1,1,0,1,1,0
+15_React_Frontend/11_Complex_UI_Pages_Patterns.md,15_React_Frontend,55,Needs expansion,1278,1689,18,15,1068,3,0,0,0,3,0,0,1,1,1,0,1,1,0
+15_React_Frontend/12_Hands_On_React_Projects.md,15_React_Frontend,63,Needs expansion,745,2176,35,22,459,3,0,0,0,0,0,1,1,1,1,0,1,1,0
+15_React_Frontend/15_PROBLEM_SETS.md,15_React_Frontend,53,Not a lesson (reference),417,1426,10,11,217,1,0,0,0,7,0,1,0,1,1,1,0,1,0
+15_React_Frontend/15_React_Frontend_AUDIT.md,15_React_Frontend,56,Needs expansion,195,2133,15,0,0,3,0,0,0,1,0,0,1,1,1,0,1,1,0
+15_React_Frontend/15_React_Frontend_CD_TB_UPGRADE_LOG.md,15_React_Frontend,18,Not a lesson (practice-log),68,427,6,0,0,3,0,0,0,0,0,1,0,0,1,0,0,0,0
+15_React_Frontend/15_React_Frontend_DIAGRAM_INVENTORY.md,15_React_Frontend,65,Needs expansion,397,2206,48,4,56,3,0,0,23,0,0,1,1,1,1,1,1,0,0
+15_React_Frontend/15_React_Frontend_DIAGRAM_UPGRADE_LOG.md,15_React_Frontend,27,Not a lesson (practice-log),125,589,20,1,11,3,0,0,0,0,0,0,0,1,1,0,1,0,0
+15_React_Frontend/15_React_Frontend_HE_UPGRADE_LOG.md,15_React_Frontend,26,Not a lesson (practice-log),55,604,9,0,0,1,0,0,0,0,0,1,1,0,0,0,0,1,0
+15_React_Frontend/15_React_Frontend_PR_UPGRADE_LOG.md,15_React_Frontend,13,Not a lesson (practice-log),69,669,9,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0
+16_JavaScript/00_INDEX.md,16_JavaScript,30,Not a lesson (index),27,181,2,0,0,1,0,0,0,0,0,0,1,1,1,0,1,0,0
+16_JavaScript/01_JS_Foundations.md,16_JavaScript,87,Strong,1225,6937,32,30,360,7,1,1,9,18,0,1,1,1,1,1,1,1,0
+16_JavaScript/02_JS_Functions_Closures.md,16_JavaScript,58,Needs expansion,854,2900,19,16,486,1,2,2,0,4,0,1,0,1,1,0,0,1,0
+16_JavaScript/03_JS_Objects_Prototypes.md,16_JavaScript,70,Strong,691,2313,14,10,375,2,1,0,0,1,0,1,0,1,1,1,1,1,0
+16_JavaScript/04_JS_Async_Promises.md,16_JavaScript,64,Needs expansion,780,2545,19,15,421,2,2,2,6,4,0,1,0,1,1,1,0,1,0
+16_JavaScript/05_JS_DOM_BrowserAPIs.md,16_JavaScript,68,Needs expansion,768,2527,19,16,404,3,2,0,0,1,0,1,0,1,1,1,0,1,0
+16_JavaScript/06_JS_Modern_ES6Plus.md,16_JavaScript,62,Needs expansion,1107,1461,20,18,866,1,0,0,41,1,0,1,1,1,1,0,1,1,0
+16_JavaScript/07_JS_Error_Handling_Debugging.md,16_JavaScript,64,Needs expansion,845,2574,19,20,486,2,0,0,15,13,0,1,0,1,1,0,1,1,0
+16_JavaScript/08_JS_Deep_Reasoning.md,16_JavaScript,78,Strong,1107,5773,56,23,310,1,0,0,0,7,0,1,0,1,1,0,1,1,1
+16_JavaScript/09_Browser_Internals_Rendering.md,16_JavaScript,73,Strong,789,4265,16,13,358,4,1,1,39,10,0,1,0,1,1,0,1,1,0
+16_JavaScript/10_Web_Workers_ServiceWorkers.md,16_JavaScript,78,Strong,889,4153,17,20,430,6,4,4,0,2,0,1,1,1,1,1,0,1,0
+16_JavaScript/11_Advanced_Web_APIs.md,16_JavaScript,83,Strong,925,3387,15,24,500,3,0,0,0,1,0,1,1,1,1,1,1,1,0
+16_JavaScript/12_V8_Engine_Internals.md,16_JavaScript,79,Strong,657,7918,21,20,280,1,4,4,1,3,0,1,1,1,1,0,1,1,0
+16_JavaScript/13_NodeJS_Architecture.md,16_JavaScript,78,Strong,449,4157,15,12,220,2,4,4,0,3,0,1,0,1,1,0,1,1,1
+16_JavaScript/14_Browser_Engines_And_Chromium_Architecture.md,16_JavaScript,81,Strong,483,9830,26,7,156,1,6,5,0,3,0,1,1,1,1,0,1,1,0
+16_JavaScript/16_PROBLEM_SETS.md,16_JavaScript,78,Not a lesson (reference),1132,3736,27,34,647,0,0,0,0,13,0,1,0,1,1,0,1,1,1
+17_TypeScript/00_INDEX.md,17_TypeScript,8,Not a lesson (index),19,98,2,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0
+17_TypeScript/01_TS_Foundations.md,17_TypeScript,65,Needs expansion,770,2936,21,14,410,2,1,1,0,8,0,1,0,1,1,0,1,1,0
+17_TypeScript/02_TS_Advanced_Types.md,17_TypeScript,51,Needs expansion,797,2065,16,13,528,1,0,0,0,4,0,1,0,1,1,0,0,1,0
+17_TypeScript/03_TS_Patterns_BestPractices.md,17_TypeScript,60,Needs expansion,755,2027,16,14,491,1,1,1,2,6,0,1,0,1,1,0,1,1,0
+17_TypeScript/04_TS_Deep_Reasoning.md,17_TypeScript,64,Needs expansion,739,3587,29,11,256,1,0,0,0,3,0,1,0,1,1,0,0,1,0
+17_TypeScript/05_TS_Decorators_Metaprogramming.md,17_TypeScript,78,Strong,1344,3586,33,24,874,1,0,0,0,5,0,1,0,1,1,1,1,1,0
+17_TypeScript/06_TS_Module_System_Performance.md,17_TypeScript,87,Strong,1386,4720,75,42,634,1,0,0,3,6,0,1,1,1,1,1,1,1,0
+17_TypeScript/17_PROBLEM_SETS.md,17_TypeScript,67,Not a lesson (reference),741,3084,24,20,381,1,0,0,0,10,0,1,0,1,1,1,0,1,0
+18_CSS_Complete/00_INDEX.md,18_CSS_Complete,1,Not a lesson (index),19,81,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+18_CSS_Complete/01_CSS_Foundations.md,18_CSS_Complete,61,Needs expansion,942,1302,26,30,690,0,0,0,86,1,0,1,1,1,1,0,1,1,0
+18_CSS_Complete/02_CSS_Layout_Systems.md,18_CSS_Complete,44,Superficial,659,1018,20,15,493,0,0,0,49,2,0,1,0,1,1,0,0,1,0
+18_CSS_Complete/03_CSS_Responsive_Animations.md,18_CSS_Complete,54,Needs expansion,1210,1290,37,38,916,0,0,0,7,2,0,1,0,1,1,0,1,1,0
+18_CSS_Complete/04_CSS_Modern_Architecture.md,18_CSS_Complete,68,Needs expansion,1253,1379,31,32,968,0,0,0,18,3,0,1,1,1,1,1,1,1,0
+18_CSS_Complete/05_CSS_Deep_Reasoning.md,18_CSS_Complete,69,Needs expansion,807,2328,38,29,432,1,0,0,74,3,0,1,0,1,1,1,1,1,0
+18_CSS_Complete/06_CSS_UI_Design_Process.md,18_CSS_Complete,45,Superficial,893,1134,23,22,694,0,0,0,99,1,0,0,0,1,1,1,0,1,0
+18_CSS_Complete/18_PROBLEM_SETS.md,18_CSS_Complete,59,Not a lesson (reference),512,1360,9,14,285,1,0,0,0,7,0,1,0,1,1,1,1,1,0
+19_Frontend_Integration/00_INDEX.md,19_Frontend_Integration,23,Not a lesson (index),32,201,3,0,0,2,0,0,0,0,0,0,0,0,1,0,1,1,0
+19_Frontend_Integration/01_React_JS_CSS_Combined.md,19_Frontend_Integration,51,Needs expansion,826,923,15,11,690,0,0,0,15,2,0,1,0,1,1,0,1,1,0
+19_Frontend_Integration/02_Frontend_Debugging.md,19_Frontend_Integration,60,Needs expansion,495,1247,17,11,321,0,0,0,52,3,0,1,0,1,1,1,1,1,0
+19_Frontend_Integration/03_Build_Tools_Ecosystem.md,19_Frontend_Integration,51,Needs expansion,498,976,20,14,334,0,0,0,83,1,0,1,0,1,1,0,1,1,0
+19_Frontend_Integration/04_Frontend_Mental_Models_UI.md,19_Frontend_Integration,37,Superficial,545,1007,15,12,396,0,0,0,58,2,0,1,0,0,1,0,0,1,0
+19_Frontend_Integration/05_DevTools_Debugging_Mastery.md,19_Frontend_Integration,56,Needs expansion,879,1529,28,22,636,0,0,0,93,3,0,1,0,1,1,0,1,1,0
+19_Frontend_Integration/06_Web_Performance_CoreWebVitals.md,19_Frontend_Integration,37,Superficial,596,972,13,16,458,0,0,0,118,1,0,0,0,0,1,0,1,1,0
+19_Frontend_Integration/07_Web_Accessibility_A11y.md,19_Frontend_Integration,31,Superficial,650,1021,15,19,486,0,0,0,43,3,0,0,0,0,1,0,0,1,0
+19_Frontend_Integration/19_PROBLEM_SETS.md,19_Frontend_Integration,58,Not a lesson (reference),399,2087,11,11,98,5,0,0,0,9,0,1,0,0,1,1,1,1,0
+19_Frontend_Integration/frontend_challenges/README.md,19_Frontend_Integration,42,Not a lesson (index),88,854,10,0,0,2,0,0,0,0,0,1,0,1,1,0,1,1,0
+20_Interview_Mastery/00_INDEX.md,20_Interview_Mastery,38,Not a lesson (index),135,1562,6,1,29,4,0,0,10,0,0,0,0,0,1,0,1,1,0
+20_Interview_Mastery/01_The_Interview_Brain.md,20_Interview_Mastery,85,Strong,1085,2576,51,34,692,5,0,0,184,7,0,1,1,1,1,1,1,1,1
+20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md,20_Interview_Mastery,64,Needs expansion,872,2533,34,25,493,10,0,0,56,4,0,1,0,1,1,0,0,1,1
+20_Interview_Mastery/03_DSA_Pattern_Recognition_Engine.md,20_Interview_Mastery,58,Needs expansion,1222,2671,40,30,833,1,0,0,78,12,0,1,0,0,1,1,0,1,0
+20_Interview_Mastery/04_Complexity_Analysis_Masterclass.md,20_Interview_Mastery,52,Needs expansion,841,1876,39,26,551,0,0,0,96,3,0,1,0,0,1,1,0,1,0
+20_Interview_Mastery/05_SQL_Interview_Thinking.md,20_Interview_Mastery,55,Needs expansion,950,1466,44,37,663,1,0,0,44,2,0,1,0,1,1,0,1,1,0
+20_Interview_Mastery/06_System_Design_Blueprint.md,20_Interview_Mastery,53,Needs expansion,641,1150,29,18,450,1,0,0,57,2,0,1,0,1,1,1,0,1,0
+20_Interview_Mastery/06b_System_Design_Problems.md,20_Interview_Mastery,55,Needs expansion,637,1390,17,11,460,3,0,0,10,1,0,1,0,1,1,1,0,1,0
+20_Interview_Mastery/06c_System_Design_Internals.md,20_Interview_Mastery,54,Needs expansion,362,1045,9,5,259,2,0,0,0,0,0,1,1,1,1,1,1,0,0
+20_Interview_Mastery/06d_System_Design_Problem_Sets.md,20_Interview_Mastery,42,Not a lesson (reference),123,1346,6,0,0,0,0,0,0,4,0,1,0,0,1,0,1,1,0
+20_Interview_Mastery/07_Design_Patterns_Interview_Guide.md,20_Interview_Mastery,64,Needs expansion,826,1694,29,19,604,1,0,0,35,5,0,0,1,1,1,1,1,1,0
+20_Interview_Mastery/07b_Interview_Templates.md,20_Interview_Mastery,24,Superficial,142,881,6,1,96,0,0,0,0,0,0,1,0,0,1,0,0,0,0
+20_Interview_Mastery/08_Problem_Decomposition_Framework.md,20_Interview_Mastery,64,Needs expansion,659,1700,30,25,401,1,0,0,18,6,0,1,1,0,1,0,1,1,1
+20_Interview_Mastery/09_Mock_Interview_Simulations.md,20_Interview_Mastery,40,Superficial,810,1261,35,27,571,1,0,0,49,2,0,1,0,0,1,0,0,1,0
+20_Interview_Mastery/Problem_Sets_DSA/10_DSA_Problems_Arrays_Strings_Hashing.md,20_Interview_Mastery,78,Not a lesson (reference),723,3650,26,21,136,0,0,0,0,2,0,1,0,1,1,1,1,1,0
+20_Interview_Mastery/Problem_Sets_DSA/11_DSA_Problems_LinkedList_Stack_Queue_Heap.md,20_Interview_Mastery,58,Not a lesson (reference),613,2926,26,19,125,2,0,0,0,1,0,1,0,0,1,0,1,1,0
+20_Interview_Mastery/Problem_Sets_DSA/12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md,20_Interview_Mastery,66,Not a lesson (reference),624,2940,26,17,137,1,0,0,0,5,0,1,0,0,1,1,1,1,0
+20_Interview_Mastery/Problem_Sets_DSA/13_DSA_Problems_DP_Greedy_Backtracking.md,20_Interview_Mastery,53,Not a lesson (reference),659,3129,27,23,146,1,0,0,0,4,0,1,0,0,1,0,0,1,0
+20_Interview_Mastery/Problem_Sets_DSA/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md,20_Interview_Mastery,61,Not a lesson (reference),671,3285,26,20,151,1,0,0,0,9,0,1,0,0,1,1,0,1,0
+20_Interview_Mastery/Problem_Sets_DSA/19_DSA_Permutations_Combinations_Interview_Math.md,20_Interview_Mastery,70,Not a lesson (reference),439,2157,47,0,0,0,0,0,0,3,0,1,0,1,1,1,1,1,1
+20_Interview_Mastery/Problem_Sets_DSA/20_Bitwise_Trie_Interview_Guide.md,20_Interview_Mastery,55,Not a lesson (reference),328,1905,25,1,19,0,0,0,0,3,0,1,0,0,1,1,1,1,0
+20_Interview_Mastery/Problem_Sets_DSA/21_Prefix_PrefixXOR_2DPrefix_CheatSheet.md,20_Interview_Mastery,59,Not a lesson (reference),423,2551,38,0,0,0,0,0,0,11,0,1,1,0,1,0,1,1,0
+20_Interview_Mastery/Problem_Sets_DSA/22_DSA_PDF_Topic_to_Workspace_Map.md,20_Interview_Mastery,38,Not a lesson (reference),113,1232,9,0,0,1,0,0,0,0,0,0,0,0,1,1,1,1,0
+20_Interview_Mastery/Problem_Sets_SQL/15_SQL_Problems_Foundations_Intermediate.md,20_Interview_Mastery,60,Not a lesson (reference),539,2272,24,27,127,1,0,0,0,2,0,1,0,0,1,1,1,1,0
+20_Interview_Mastery/Problem_Sets_SQL/16_SQL_Problems_Window_Functions_Advanced.md,20_Interview_Mastery,49,Not a lesson (reference),493,1804,29,23,121,2,0,0,0,2,0,0,0,0,1,1,1,1,0
+20_Interview_Mastery/Problem_Sets_SQL/17_SQL_Problems_Analytics_RealWorld_Design.md,20_Interview_Mastery,37,Not a lesson (reference),528,1555,26,20,192,1,0,0,0,0,0,1,0,0,1,0,0,1,0
+20_Interview_Mastery/Problem_Sets_SQL/18_SQL_Foundations_Commands_Operators_Functions.md,20_Interview_Mastery,78,Not a lesson (reference),1127,5483,75,67,281,1,0,0,0,27,0,1,0,0,1,1,1,1,1
+20_Interview_Mastery/Progressive_Rounds/09b_DSA_x_SystemDesign_Progressive.md,20_Interview_Mastery,83,Strong,767,3492,47,28,265,3,0,0,9,0,0,1,1,1,1,1,1,1,0
+20_Interview_Mastery/Progressive_Rounds/10_Elite_Cross_Domain_Rounds.md,20_Interview_Mastery,72,Strong,1436,2685,36,32,937,3,0,0,35,24,0,1,0,1,1,1,1,1,0
+20_Interview_Mastery/Progressive_Rounds/11_SDET_Plus_DSA_Progressive.md,20_Interview_Mastery,71,Strong,1658,3307,56,44,1065,0,0,0,2,15,0,1,1,1,1,0,0,1,0
+20_Interview_Mastery/Progressive_Rounds/12_SpringBoot_Plus_DSA_Progressive.md,20_Interview_Mastery,54,Needs expansion,981,2126,42,33,542,1,0,0,6,9,0,0,0,1,1,1,0,1,0
+20_Interview_Mastery/Progressive_Rounds/13_SDET_Plus_SpringBoot_Progressive.md,20_Interview_Mastery,70,Strong,1280,2363,43,33,794,2,0,0,2,10,0,1,0,1,1,1,1,1,0
+20_Interview_Mastery/Progressive_Rounds/14_Challenge_Deep_Dives.md,20_Interview_Mastery,77,Strong,1194,3292,27,25,726,3,0,0,14,7,0,1,0,1,1,1,1,1,0
+20_Interview_Mastery/Progressive_Rounds/14_SQL_x_JPA_Progressive.md,20_Interview_Mastery,62,Needs expansion,937,2697,54,51,349,4,0,0,5,0,0,1,0,0,1,1,1,1,0
+20_Interview_Mastery/Progressive_Rounds/15b_JS_x_React_Progressive.md,20_Interview_Mastery,69,Needs expansion,808,2699,42,39,328,3,0,0,8,0,0,1,0,1,1,1,1,1,0
+20_Interview_Mastery/Progressive_Rounds/16b_DSA_x_Java_Collections_Progressive.md,20_Interview_Mastery,66,Needs expansion,831,2236,47,40,353,4,0,0,7,0,0,1,0,1,1,1,1,1,0
+20_Interview_Mastery/Progressive_Rounds/17b_TS_x_Java_TypeSystem_Progressive.md,20_Interview_Mastery,61,Needs expansion,865,2516,47,31,413,6,0,0,6,0,0,1,0,1,1,0,1,1,0
+20_Interview_Mastery/Progressive_Rounds/18b_React_x_SystemDesign_Progressive.md,20_Interview_Mastery,73,Strong,703,3170,44,26,323,1,0,0,10,0,0,1,1,1,1,0,1,1,0
+20_Interview_Mastery/Progressive_Rounds/19b_Java_Concurrency_x_SystemDesign_Progressive.md,20_Interview_Mastery,69,Needs expansion,871,2626,49,31,493,2,0,0,6,0,0,1,0,1,1,1,1,1,0
+20_Interview_Mastery/Reference/15_Quick_Reference_Cards.md,20_Interview_Mastery,46,Not a lesson (reference),452,2390,18,6,140,6,0,0,61,0,0,0,0,0,1,1,0,1,0
+20_Interview_Mastery/Reference/16_Anti_Pattern_Gallery.md,20_Interview_Mastery,63,Needs expansion,1004,2213,63,30,672,1,0,0,0,0,0,1,1,1,1,0,1,1,0
+20_Interview_Mastery/Reference/17_Production_Incident_Lessons.md,20_Interview_Mastery,75,Strong,1136,3729,46,34,617,2,0,0,0,0,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/00_INDEX.md,21_SDET_Playwright_Automation,70,Not a lesson (index),393,3711,14,10,165,2,0,0,12,0,0,1,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/01_Foundations/00_SDET_Foundations_Mindset.md,21_SDET_Playwright_Automation,85,Strong,679,3699,35,20,260,3,2,2,0,3,0,1,1,1,1,1,1,1,0
+21_SDET_Playwright_Automation/01_Foundations/00_Testing_Fundamentals/01_All_Testing_Types_Complete_Guide.md,21_SDET_Playwright_Automation,80,Strong,1354,4054,103,41,559,7,2,2,44,4,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/01_Foundations/00_Testing_Fundamentals/02_Smoke_Sanity_Regression_Deep_Dive.md,21_SDET_Playwright_Automation,58,Needs expansion,1067,2306,51,33,660,0,2,1,13,2,0,0,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/01_Foundations/01_Environment_Setup_and_First_Test.md,21_SDET_Playwright_Automation,71,Strong,576,2532,32,21,186,3,0,0,10,3,0,1,0,1,1,0,1,1,1
+21_SDET_Playwright_Automation/01_Foundations/01_Playwright_TS_Basics.md,21_SDET_Playwright_Automation,83,Strong,1081,4676,42,41,566,3,2,1,15,3,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/01_Foundations/02_Enterprise_Locators_XPath.md,21_SDET_Playwright_Automation,78,Strong,968,3364,50,39,559,1,1,1,5,4,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/01_Foundations/03_Browser_Console_Scripting.md,21_SDET_Playwright_Automation,78,Strong,1364,4241,59,44,858,4,0,0,0,3,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/01_Foundations/04_JS_TS_For_Automation.md,21_SDET_Playwright_Automation,79,Strong,1311,3518,46,40,853,1,0,0,25,4,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/01_Foundations/55_Inspector_TraceViewer_UIMode_Walkthrough.md,21_SDET_Playwright_Automation,68,Needs expansion,333,2575,27,14,60,1,0,0,27,0,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/01_Foundations/56_Playwright_Config_Deep_Dive.md,21_SDET_Playwright_Automation,94,Strong,834,5084,42,42,247,7,2,2,6,4,0,1,1,1,1,1,1,1,1
+21_SDET_Playwright_Automation/01_Foundations/README.md,21_SDET_Playwright_Automation,23,Not a lesson (index),24,225,2,0,0,1,0,0,0,0,0,0,0,0,1,0,1,1,0
+21_SDET_Playwright_Automation/02_Test_Architecture/05_POM_Architecture_Deep_Dive.md,21_SDET_Playwright_Automation,76,Strong,1084,3124,29,33,662,1,1,1,24,5,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/02_Test_Architecture/06_Custom_Fixtures_Architecture.md,21_SDET_Playwright_Automation,66,Needs expansion,1062,2766,26,32,712,0,2,2,10,6,0,1,0,1,1,1,0,1,0
+21_SDET_Playwright_Automation/02_Test_Architecture/07_test_step_E2E_Architecture.md,21_SDET_Playwright_Automation,69,Needs expansion,863,2283,25,22,575,1,0,0,33,5,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/02_Test_Architecture/08_Browser_Internals_for_SDETs.md,21_SDET_Playwright_Automation,80,Strong,1152,3548,41,48,643,1,0,0,13,5,0,1,1,1,1,0,1,1,0
+21_SDET_Playwright_Automation/02_Test_Architecture/09_Parallel_Execution_Workers.md,21_SDET_Playwright_Automation,72,Strong,1049,2737,36,35,671,1,1,1,1,6,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/02_Test_Architecture/64_Dynamic_Locators_And_Data_Structures_In_POMs.md,21_SDET_Playwright_Automation,78,Strong,452,3740,14,27,181,3,1,1,0,3,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/02_Test_Architecture/README.md,21_SDET_Playwright_Automation,8,Not a lesson (index),21,177,2,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0
+21_SDET_Playwright_Automation/03_Real_World_Scenarios/28_Test_Data_Lifecycle_and_Cleanup.md,21_SDET_Playwright_Automation,52,Needs expansion,893,2112,26,23,600,1,2,2,0,5,0,0,1,0,1,0,1,1,0
+21_SDET_Playwright_Automation/03_Real_World_Scenarios/30_Database_Verification_Direct_SQL.md,21_SDET_Playwright_Automation,51,Needs expansion,895,1820,26,23,597,0,1,1,6,5,0,1,0,1,1,0,0,1,0
+21_SDET_Playwright_Automation/03_Real_World_Scenarios/31_API_Mocking_page_route.md,21_SDET_Playwright_Automation,55,Needs expansion,947,2104,30,25,627,0,1,0,0,5,0,0,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/03_Real_World_Scenarios/41_GraphQL_WebSocket_Testing.md,21_SDET_Playwright_Automation,55,Needs expansion,1174,2470,25,19,840,0,1,1,0,5,0,0,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/03_Real_World_Scenarios/42_Polling_Async_Data_Patterns.md,21_SDET_Playwright_Automation,77,Strong,1725,2878,56,54,1198,1,2,1,2,8,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/03_Real_World_Scenarios/49_Feature_Flag_Testing.md,21_SDET_Playwright_Automation,72,Strong,926,3190,61,29,428,5,1,1,0,0,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/03_Real_World_Scenarios/50_Email_Service_Testing.md,21_SDET_Playwright_Automation,75,Strong,1233,5097,61,33,724,6,1,1,0,0,0,0,0,1,1,1,1,1,1
+21_SDET_Playwright_Automation/03_Real_World_Scenarios/57_Login_Taxonomy_OAuth_OIDC_SAML_MFA_mTLS.md,21_SDET_Playwright_Automation,73,Not a lesson (practice-log),902,5685,32,31,336,6,0,0,9,4,0,1,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/03_Real_World_Scenarios/58_File_Uploads_Downloads.md,21_SDET_Playwright_Automation,51,Needs expansion,597,2036,30,38,194,1,0,0,0,4,0,0,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/03_Real_World_Scenarios/61_Emulation_Clock_Network_And_Devices.md,21_SDET_Playwright_Automation,58,Needs expansion,577,3460,29,21,229,6,0,0,2,1,0,0,0,0,1,0,1,1,0
+21_SDET_Playwright_Automation/03_Real_World_Scenarios/67_Payment_Gateway_Testing.md,21_SDET_Playwright_Automation,78,Strong,547,4074,29,21,155,5,0,0,0,5,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/03_Real_World_Scenarios/68_Consent_Overlays_And_CAPTCHA.md,21_SDET_Playwright_Automation,45,Superficial,263,2217,18,8,44,4,0,0,0,4,0,0,0,1,1,0,0,1,0
+21_SDET_Playwright_Automation/03_Real_World_Scenarios/README.md,21_SDET_Playwright_Automation,3,Not a lesson (index),27,306,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/04_Cross_Site_Patterns_And_D365/10_Dynamics365_CRM_Testing.md,21_SDET_Playwright_Automation,69,Needs expansion,980,3151,38,35,565,3,1,1,8,5,0,1,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/04_Cross_Site_Patterns_And_D365/11_CrossSite_Pattern1_Sequential_Flow.md,21_SDET_Playwright_Automation,50,Needs expansion,831,1729,25,22,558,0,1,1,29,4,0,0,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/04_Cross_Site_Patterns_And_D365/12_CrossSite_Pattern2_NewTab_SharedContext.md,21_SDET_Playwright_Automation,55,Needs expansion,1041,2272,32,28,702,0,1,1,6,5,0,1,0,0,1,0,1,1,0
+21_SDET_Playwright_Automation/04_Cross_Site_Patterns_And_D365/13_CrossSite_Pattern3_Dual_BrowserContext.md,21_SDET_Playwright_Automation,42,Superficial,982,1529,25,19,718,1,1,1,4,5,0,0,0,0,1,1,0,1,0
+21_SDET_Playwright_Automation/04_Cross_Site_Patterns_And_D365/14_CrossSite_Pattern4_Token_Magic_Link.md,21_SDET_Playwright_Automation,50,Needs expansion,956,1699,24,22,689,0,0,0,3,5,0,0,0,1,1,1,0,1,0
+21_SDET_Playwright_Automation/04_Cross_Site_Patterns_And_D365/15_CrossSite_Pattern5_UI_API_Side_Effects.md,21_SDET_Playwright_Automation,57,Needs expansion,1053,1661,25,22,769,1,1,1,3,5,0,1,0,1,0,1,1,1,0
+21_SDET_Playwright_Automation/04_Cross_Site_Patterns_And_D365/16_CrossSite_Pattern6_StorageState_Chaining.md,21_SDET_Playwright_Automation,40,Superficial,941,1544,33,24,655,1,2,2,0,5,0,0,0,1,0,0,1,1,0
+21_SDET_Playwright_Automation/04_Cross_Site_Patterns_And_D365/17_D365_Advanced_Timing_Patterns.md,21_SDET_Playwright_Automation,60,Needs expansion,1023,2276,28,27,635,1,2,2,0,5,0,1,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/04_Cross_Site_Patterns_And_D365/README.md,21_SDET_Playwright_Automation,2,Not a lesson (index),23,226,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/05_Enterprise_Framework/18_Mega_POM_Architecture.md,21_SDET_Playwright_Automation,61,Needs expansion,998,2103,30,22,709,2,1,1,4,3,0,1,1,0,1,0,1,1,0
+21_SDET_Playwright_Automation/05_Enterprise_Framework/21_Enterprise_Project_Structure.md,21_SDET_Playwright_Automation,59,Needs expansion,886,1876,23,25,583,0,1,1,2,5,0,1,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/05_Enterprise_Framework/22_Headers_Payloads_Endpoints_Factory.md,21_SDET_Playwright_Automation,49,Superficial,820,1503,23,24,546,0,2,2,18,5,0,1,0,1,1,0,0,1,0
+21_SDET_Playwright_Automation/05_Enterprise_Framework/23_APIUtils_HTTP_Library.md,21_SDET_Playwright_Automation,54,Needs expansion,1024,2108,22,27,694,0,3,3,22,5,0,1,0,1,1,0,0,1,0
+21_SDET_Playwright_Automation/05_Enterprise_Framework/24_Test_Script_Architecture.md,21_SDET_Playwright_Automation,55,Needs expansion,933,1952,25,28,605,2,2,1,50,5,0,1,0,1,1,0,0,1,0
+21_SDET_Playwright_Automation/05_Enterprise_Framework/27_Advanced_TypeScript_for_SDETs.md,21_SDET_Playwright_Automation,49,Superficial,951,1532,39,32,621,0,0,0,8,5,0,1,0,0,1,0,1,1,0
+21_SDET_Playwright_Automation/05_Enterprise_Framework/44_Enterprise_API_Client_Library.md,21_SDET_Playwright_Automation,62,Needs expansion,1822,2310,26,22,1480,1,3,3,58,8,0,1,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/05_Enterprise_Framework/63_Static_Analysis_ESLint_TypeScript_Playwright.md,21_SDET_Playwright_Automation,68,Needs expansion,396,3281,13,20,166,1,2,2,0,3,0,1,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/05_Enterprise_Framework/README.md,21_SDET_Playwright_Automation,2,Not a lesson (index),23,222,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/25_CICD_Integration_GitHub_Azure.md,21_SDET_Playwright_Automation,60,Needs expansion,877,1989,20,18,606,0,1,1,10,5,0,1,0,0,1,1,1,1,0
+21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/26_Flakiness_Diagnosis_and_Fixing.md,21_SDET_Playwright_Automation,62,Needs expansion,915,2522,41,23,553,4,3,3,0,5,0,1,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/43_Real_World_SDET_War_Stories.md,21_SDET_Playwright_Automation,78,Strong,1767,6442,109,60,1001,2,0,0,0,8,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/47_Allure_ReportPortal.md,21_SDET_Playwright_Automation,68,Needs expansion,896,3780,74,34,357,7,0,0,0,0,0,0,1,1,1,0,1,1,0
+21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/48_Sharding_And_Test_Selection.md,21_SDET_Playwright_Automation,69,Needs expansion,1175,3647,89,37,656,5,1,1,1,0,0,0,1,1,1,0,1,1,0
+21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/51_Secrets_Management_For_SDETs.md,21_SDET_Playwright_Automation,55,Needs expansion,411,1780,35,15,170,2,0,0,3,0,0,0,1,1,1,0,1,1,0
+21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/54_Synthetic_Monitoring.md,21_SDET_Playwright_Automation,67,Needs expansion,887,3526,40,12,482,5,0,0,0,0,0,1,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/59_Docker_For_Playwright.md,21_SDET_Playwright_Automation,75,Strong,766,2172,90,37,368,4,0,0,14,4,0,1,1,1,1,1,1,1,0
+21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/62_Enterprise_Test_Operations.md,21_SDET_Playwright_Automation,83,Strong,275,3457,19,5,43,6,0,0,3,0,0,1,1,1,1,1,1,1,0
+21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/65_Chaos_Engineering_For_Playwright.md,21_SDET_Playwright_Automation,46,Superficial,253,2277,10,4,113,1,0,0,0,1,0,0,0,1,1,0,0,1,0
+21_SDET_Playwright_Automation/06_CI_CD_And_Reliability/README.md,21_SDET_Playwright_Automation,2,Not a lesson (index),25,240,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/07_Specialised_Testing/19_Advanced_Console_Scripts_Security.md,21_SDET_Playwright_Automation,39,Superficial,1172,1422,27,22,914,0,0,0,0,4,0,0,0,0,1,0,1,1,0
+21_SDET_Playwright_Automation/07_Specialised_Testing/29_Visual_Regression_Testing.md,21_SDET_Playwright_Automation,73,Strong,989,2597,50,29,625,0,1,0,0,5,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/07_Specialised_Testing/37_Performance_Testing_Lighthouse_k6.md,21_SDET_Playwright_Automation,62,Needs expansion,1005,2567,30,24,663,2,0,0,0,4,0,1,0,0,1,0,1,1,1
+21_SDET_Playwright_Automation/07_Specialised_Testing/38_Contract_Testing_Pact.md,21_SDET_Playwright_Automation,69,Needs expansion,959,2539,51,25,596,1,2,2,0,5,0,1,1,1,1,0,1,1,0
+21_SDET_Playwright_Automation/07_Specialised_Testing/39_Accessibility_Testing_axe_core.md,21_SDET_Playwright_Automation,65,Needs expansion,988,2834,28,21,618,2,0,0,0,5,0,1,0,0,1,1,1,1,0
+21_SDET_Playwright_Automation/07_Specialised_Testing/40_Security_Testing_OWASP.md,21_SDET_Playwright_Automation,54,Needs expansion,1017,2400,28,15,708,1,0,0,0,5,0,1,0,1,1,0,0,1,0
+21_SDET_Playwright_Automation/07_Specialised_Testing/45_AI_Agents_MCP_And_Playwright.md,21_SDET_Playwright_Automation,90,Strong,991,6464,64,35,387,6,2,2,1,0,0,1,1,1,1,1,1,1,1
+21_SDET_Playwright_Automation/07_Specialised_Testing/46_BDD_With_Cucumber.md,21_SDET_Playwright_Automation,69,Needs expansion,1015,4323,48,32,568,3,0,0,1,0,0,0,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/07_Specialised_Testing/52_Component_Testing_With_Playwright_CT.md,21_SDET_Playwright_Automation,77,Strong,1428,6321,65,54,797,9,0,0,2,0,0,0,1,1,1,1,1,1,0
+21_SDET_Playwright_Automation/07_Specialised_Testing/53_Mutation_Testing_With_Stryker.md,21_SDET_Playwright_Automation,61,Needs expansion,981,3685,44,39,460,6,1,1,0,0,0,0,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/07_Specialised_Testing/69_Whats_New_Playwright_1_57_to_1_64.md,21_SDET_Playwright_Automation,64,Needs expansion,685,6290,26,24,251,8,0,0,0,4,0,1,0,0,1,0,1,1,0
+21_SDET_Playwright_Automation/07_Specialised_Testing/README.md,21_SDET_Playwright_Automation,2,Not a lesson (index),26,264,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/08_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md,21_SDET_Playwright_Automation,46,Superficial,1001,1350,31,30,700,2,0,0,1,1,0,1,0,0,0,1,1,1,0
+21_SDET_Playwright_Automation/08_SDET_to_SDE_Bridge/33_SDET_to_SDE_CS_Thinking.md,21_SDET_Playwright_Automation,73,Strong,1112,3949,34,38,588,3,1,1,6,5,0,1,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/08_SDET_to_SDE_Bridge/34_Algorithms_in_Test_Automation.md,21_SDET_Playwright_Automation,85,Strong,1307,6093,26,36,772,2,2,2,0,8,0,1,1,1,1,1,1,1,0
+21_SDET_Playwright_Automation/08_SDET_to_SDE_Bridge/35_OOP_Design_Patterns_for_SDETs.md,21_SDET_Playwright_Automation,50,Needs expansion,1288,1879,25,36,936,0,7,7,0,5,0,1,0,0,1,0,1,1,0
+21_SDET_Playwright_Automation/08_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md,21_SDET_Playwright_Automation,50,Needs expansion,1156,1902,28,42,748,1,1,1,0,5,0,1,0,0,1,0,1,1,0
+21_SDET_Playwright_Automation/08_SDET_to_SDE_Bridge/60_Tool_Comparison_Cypress_Selenium_WDIO.md,21_SDET_Playwright_Automation,72,Strong,701,4268,44,20,171,3,2,2,1,4,0,1,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/08_SDET_to_SDE_Bridge/66_Senior_SDET_Decision_Making.md,21_SDET_Playwright_Automation,62,Needs expansion,144,2703,9,2,21,1,0,0,0,1,0,1,1,1,1,0,0,1,0
+21_SDET_Playwright_Automation/08_SDET_to_SDE_Bridge/README.md,21_SDET_Playwright_Automation,16,Not a lesson (index),22,190,2,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0
+21_SDET_Playwright_Automation/09_Practice_And_Quizzes/README.md,21_SDET_Playwright_Automation,8,Not a lesson (index),14,85,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0
+21_SDET_Playwright_Automation/09_Practice_And_Quizzes/SDET_PROBLEM_SETS.md,21_SDET_Playwright_Automation,21,Not a lesson (reference),355,777,7,9,192,2,0,0,2,5,0,0,0,0,0,0,0,1,0
+21_SDET_Playwright_Automation/09_Practice_And_Quizzes/quiz_01_solutions/README.md,21_SDET_Playwright_Automation,33,Not a lesson (index),72,608,5,0,0,2,0,0,0,0,0,1,0,1,1,0,0,1,0
+21_SDET_Playwright_Automation/09_Practice_And_Quizzes/quiz_01_solutions/solutions.md,21_SDET_Playwright_Automation,68,Not a lesson (reference),755,3974,29,14,85,1,0,0,0,0,0,1,0,1,1,1,0,1,0
+21_SDET_Playwright_Automation/09_Practice_And_Quizzes/quiz_02_solutions/README.md,21_SDET_Playwright_Automation,35,Not a lesson (index),103,774,9,2,8,5,0,0,0,0,0,0,0,0,1,1,1,1,0
+21_SDET_Playwright_Automation/README.md,21_SDET_Playwright_Automation,43,Not a lesson (index),169,1839,17,0,0,6,0,0,0,0,0,0,1,1,0,0,1,1,0
+21_SDET_Playwright_Automation/appendix/README.md,21_SDET_Playwright_Automation,31,Not a lesson (index),24,325,1,0,0,1,0,0,0,0,0,1,0,1,1,1,0,0,0
+21_SDET_Playwright_Automation/appendix/learning_paths/PATHWAY_01_LEARNING.md,21_SDET_Playwright_Automation,54,Needs expansion,218,2221,20,0,0,7,0,0,0,0,0,1,0,0,1,1,1,1,0
+21_SDET_Playwright_Automation/appendix/learning_paths/PATHWAY_02_PROFESSIONAL.md,21_SDET_Playwright_Automation,49,Superficial,208,2470,17,0,0,7,0,0,0,0,0,1,0,0,1,0,1,1,0
+21_SDET_Playwright_Automation/appendix/learning_paths/PATHWAY_03_OFFICE.md,21_SDET_Playwright_Automation,37,Superficial,333,1912,66,1,5,0,0,0,0,0,0,0,0,0,1,1,1,0,0
+21_SDET_Playwright_Automation/appendix/navigation/LENS_INDEX.md,21_SDET_Playwright_Automation,2,Not a lesson (index),30,252,3,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/appendix/navigation/MAP_CODE_TO_CHAPTER.md,21_SDET_Playwright_Automation,30,Superficial,151,1905,11,0,0,9,0,0,0,0,0,0,0,0,0,0,1,1,0
+21_SDET_Playwright_Automation/appendix/navigation/SITEMAP.md,21_SDET_Playwright_Automation,37,Superficial,80,1054,6,0,0,4,0,0,0,0,0,0,0,1,1,1,0,1,0
+21_SDET_Playwright_Automation/appendix/quick_reference/00_Weekly_Patterns.md,21_SDET_Playwright_Automation,4,Not a lesson (reference),97,85,10,8,46,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/appendix/quick_reference/01_quickstart.md,21_SDET_Playwright_Automation,29,Not a lesson (reference),113,302,8,5,51,2,0,0,2,0,0,1,0,0,1,0,1,0,0
+21_SDET_Playwright_Automation/appendix/quick_reference/02_config.md,21_SDET_Playwright_Automation,70,Not a lesson (reference),1991,7200,122,75,796,18,0,0,25,0,0,0,1,1,1,1,1,0,0
+21_SDET_Playwright_Automation/appendix/quick_reference/03_locators.md,21_SDET_Playwright_Automation,80,Not a lesson (reference),1608,6393,121,72,372,19,0,0,3,2,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/appendix/quick_reference/04_fixtures.md,21_SDET_Playwright_Automation,84,Not a lesson (reference),1895,4631,120,79,807,21,0,0,2,0,0,1,0,1,1,1,1,1,1
+21_SDET_Playwright_Automation/appendix/quick_reference/05_auth.md,21_SDET_Playwright_Automation,84,Not a lesson (reference),1658,4639,111,59,696,16,0,0,5,0,0,1,1,1,1,1,1,1,0
+21_SDET_Playwright_Automation/appendix/quick_reference/06_api_testing.md,21_SDET_Playwright_Automation,68,Not a lesson (reference),1577,3420,107,67,792,8,0,0,12,0,0,1,1,0,1,1,1,0,0
+21_SDET_Playwright_Automation/appendix/quick_reference/07_parallelism.md,21_SDET_Playwright_Automation,69,Not a lesson (reference),1038,3949,97,36,225,16,0,0,1,0,0,1,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/appendix/quick_reference/08_reliability.md,21_SDET_Playwright_Automation,76,Not a lesson (reference),1196,4771,98,43,303,15,0,0,1,0,0,1,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/appendix/quick_reference/09_file_io.md,21_SDET_Playwright_Automation,49,Not a lesson (reference),1211,2946,101,66,400,12,0,0,0,0,0,0,0,0,1,1,1,0,0
+21_SDET_Playwright_Automation/appendix/quick_reference/10_ci_docker.md,21_SDET_Playwright_Automation,63,Not a lesson (reference),1319,3024,110,52,518,14,0,0,0,0,0,0,0,1,1,1,1,1,0
+21_SDET_Playwright_Automation/appendix/quick_reference/11_reporting.md,21_SDET_Playwright_Automation,65,Not a lesson (reference),1467,3181,119,65,541,10,0,0,0,0,0,0,1,1,1,1,1,0,0
+21_SDET_Playwright_Automation/appendix/quick_reference/12_data.md,21_SDET_Playwright_Automation,69,Not a lesson (reference),1278,2666,97,55,515,10,0,0,2,0,0,0,1,1,1,1,1,1,0
+21_SDET_Playwright_Automation/appendix/quick_reference/13_mocking.md,21_SDET_Playwright_Automation,52,Not a lesson (reference),1190,2290,97,57,485,6,0,0,2,0,0,0,0,0,1,1,1,1,0
+21_SDET_Playwright_Automation/appendix/quick_reference/14_tool_comparison.md,21_SDET_Playwright_Automation,57,Not a lesson (reference),799,2891,96,21,96,15,0,0,3,0,0,1,1,0,1,0,1,0,0
+21_SDET_Playwright_Automation/appendix/short_course/01_mindset.md,21_SDET_Playwright_Automation,32,Superficial,160,913,11,2,12,2,0,0,5,0,0,1,0,0,1,0,1,0,0
+21_SDET_Playwright_Automation/appendix/short_course/02_typescript_for_tests.md,21_SDET_Playwright_Automation,16,Superficial,278,675,17,11,120,1,0,0,0,0,0,0,0,0,1,0,0,0,0
+21_SDET_Playwright_Automation/appendix/short_course/03_pom.md,21_SDET_Playwright_Automation,22,Superficial,332,564,15,15,157,2,0,0,0,0,0,1,0,0,0,0,1,0,0
+21_SDET_Playwright_Automation/appendix/short_course/04_architecture_walkthrough.md,21_SDET_Playwright_Automation,23,Superficial,269,484,8,6,164,0,0,0,18,0,0,0,0,1,1,0,0,0,0
+21_SDET_Playwright_Automation/appendix/short_course/05_browser_internals.md,21_SDET_Playwright_Automation,40,Superficial,322,1032,21,17,76,1,0,0,0,0,0,1,0,1,1,0,0,1,0
+21_SDET_Playwright_Automation/appendix/short_course/06_enterprise_structure.md,21_SDET_Playwright_Automation,25,Superficial,216,775,13,5,63,2,0,0,19,0,0,1,0,0,1,0,0,0,0
+21_SDET_Playwright_Automation/appendix/short_course/README.md,21_SDET_Playwright_Automation,17,Not a lesson (index),38,314,5,0,0,1,0,0,0,0,0,0,0,1,1,0,0,0,0
+21_SDET_Playwright_Automation/appendix/topic_summaries/accessibility.md,21_SDET_Playwright_Automation,33,Not a lesson (reference),530,1097,35,19,209,5,0,0,0,0,0,0,0,0,1,1,0,1,0
+21_SDET_Playwright_Automation/appendix/topic_summaries/ai_mcp.md,21_SDET_Playwright_Automation,23,Not a lesson (reference),247,827,21,7,30,3,0,0,0,0,0,0,1,0,1,0,0,0,0
+21_SDET_Playwright_Automation/appendix/topic_summaries/bdd_cucumber.md,21_SDET_Playwright_Automation,21,Not a lesson (reference),337,514,17,13,181,2,0,0,0,0,0,0,0,0,1,1,0,0,0
+21_SDET_Playwright_Automation/appendix/topic_summaries/component_testing.md,21_SDET_Playwright_Automation,39,Not a lesson (reference),621,1759,53,20,181,7,0,0,0,0,0,0,0,0,1,1,1,0,0
+21_SDET_Playwright_Automation/appendix/topic_summaries/contract_testing.md,21_SDET_Playwright_Automation,30,Not a lesson (reference),250,546,17,9,88,1,0,0,1,0,0,0,0,1,1,1,0,0,0
+21_SDET_Playwright_Automation/appendix/topic_summaries/cross_site_patterns.md,21_SDET_Playwright_Automation,38,Not a lesson (reference),1120,2293,64,35,610,5,0,0,7,0,0,0,0,0,1,0,1,0,0
+21_SDET_Playwright_Automation/appendix/topic_summaries/d365.md,21_SDET_Playwright_Automation,63,Not a lesson (reference),1367,3621,112,68,423,13,0,0,12,0,0,1,0,1,1,0,1,0,0
+21_SDET_Playwright_Automation/appendix/topic_summaries/email_testing.md,21_SDET_Playwright_Automation,14,Not a lesson (reference),281,502,22,11,118,1,0,0,0,0,0,0,0,0,1,0,0,0,0
+21_SDET_Playwright_Automation/appendix/topic_summaries/feature_flags.md,21_SDET_Playwright_Automation,8,Not a lesson (reference),252,560,15,6,100,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/appendix/topic_summaries/mutation_testing.md,21_SDET_Playwright_Automation,21,Not a lesson (reference),189,512,13,10,37,3,0,0,0,0,0,1,0,0,1,0,0,0,0
+21_SDET_Playwright_Automation/appendix/topic_summaries/performance.md,21_SDET_Playwright_Automation,34,Not a lesson (reference),540,1207,36,20,193,9,0,0,0,0,0,1,0,0,1,1,0,0,0
+21_SDET_Playwright_Automation/appendix/topic_summaries/security.md,21_SDET_Playwright_Automation,10,Not a lesson (reference),614,835,46,25,310,2,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/appendix/topic_summaries/synthetic_monitoring.md,21_SDET_Playwright_Automation,21,Not a lesson (reference),220,497,16,7,71,2,0,0,0,0,0,0,0,1,1,0,0,0,0
+21_SDET_Playwright_Automation/appendix/topic_summaries/visual_regression.md,21_SDET_Playwright_Automation,60,Not a lesson (reference),790,2478,73,31,168,4,0,0,1,0,0,1,1,0,1,1,1,0,0
+21_SDET_Playwright_Automation/career/CODE_REVIEW_RUBRIC.md,21_SDET_Playwright_Automation,32,Superficial,209,1182,18,0,13,6,0,0,0,0,0,0,0,1,1,0,1,0,0
+21_SDET_Playwright_Automation/career/DEVSECOPS_THREAD.md,21_SDET_Playwright_Automation,21,Superficial,60,808,5,0,0,2,0,0,0,0,0,0,0,1,0,0,1,0,0
+21_SDET_Playwright_Automation/career/INTERVIEW_BANK.md,21_SDET_Playwright_Automation,24,Not a lesson (reference),135,1247,16,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0
+21_SDET_Playwright_Automation/career/PORTFOLIO_PLAN.md,21_SDET_Playwright_Automation,15,Superficial,114,564,9,1,17,2,0,0,16,0,0,0,1,0,0,0,0,0,0
+21_SDET_Playwright_Automation/career/PROGRESS.md,21_SDET_Playwright_Automation,20,Superficial,112,728,13,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0
+21_SDET_Playwright_Automation/career/READINESS_RUBRIC.md,21_SDET_Playwright_Automation,54,Needs expansion,242,2172,21,1,11,13,0,0,0,0,0,0,1,1,1,0,1,1,0
+21_SDET_Playwright_Automation/career/README.md,21_SDET_Playwright_Automation,8,Not a lesson (index),14,117,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0
+21_SDET_Playwright_Automation/career/RESUME_BULLETS.md,21_SDET_Playwright_Automation,6,Superficial,80,709,14,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/career/RFC_TEMPLATE.md,21_SDET_Playwright_Automation,45,Superficial,245,1160,42,0,0,8,0,0,0,0,0,1,1,1,1,0,1,0,0
+21_SDET_Playwright_Automation/career/TEST_STRATEGY_TEMPLATE.md,21_SDET_Playwright_Automation,16,Superficial,208,1132,27,0,0,9,0,0,0,0,0,0,1,0,0,0,0,0,0
+21_SDET_Playwright_Automation/career/mock_interviews/ladder_behavioral.md,21_SDET_Playwright_Automation,37,Not a lesson (reference),116,1111,12,0,0,1,0,0,0,0,0,1,0,1,1,0,1,0,0
+21_SDET_Playwright_Automation/career/mock_interviews/ladder_coding.md,21_SDET_Playwright_Automation,41,Not a lesson (reference),587,2062,14,15,336,1,0,0,0,0,0,0,0,0,1,0,1,1,0
+21_SDET_Playwright_Automation/career/mock_interviews/ladder_design.md,21_SDET_Playwright_Automation,19,Not a lesson (reference),79,651,10,0,0,1,0,0,0,0,0,0,0,0,1,0,1,0,0
+21_SDET_Playwright_Automation/career/mock_interviews/ladder_hiring_manager.md,21_SDET_Playwright_Automation,29,Not a lesson (reference),81,990,12,0,0,1,0,0,0,0,0,0,1,0,1,0,1,0,0
+21_SDET_Playwright_Automation/career/mock_interviews/ladder_system.md,21_SDET_Playwright_Automation,65,Not a lesson (reference),237,2792,19,0,0,1,0,0,0,0,0,1,1,1,1,0,1,1,0
+21_SDET_Playwright_Automation/challenges/CAP_C1_Flaky_Test_Detector.md,21_SDET_Playwright_Automation,26,Not a lesson (reference),68,344,8,1,12,0,0,0,1,0,0,1,1,0,1,0,0,0,0
+21_SDET_Playwright_Automation/challenges/CAP_C2_Custom_Reporter.md,21_SDET_Playwright_Automation,25,Not a lesson (reference),62,329,8,1,10,0,0,0,1,0,0,1,0,1,1,0,0,0,0
+21_SDET_Playwright_Automation/challenges/CAP_C3_Test_Analytics_Dashboard.md,21_SDET_Playwright_Automation,20,Not a lesson (reference),86,380,12,1,14,1,0,0,2,0,0,1,1,0,0,0,0,0,0
+21_SDET_Playwright_Automation/challenges/CH01_Core_Infrastructure.md,21_SDET_Playwright_Automation,14,Not a lesson (reference),91,411,13,1,6,1,0,0,0,2,0,0,0,0,0,0,0,1,0
+21_SDET_Playwright_Automation/challenges/CH02_Single_Website_POM.md,21_SDET_Playwright_Automation,15,Not a lesson (reference),101,420,13,2,14,1,0,0,0,2,0,0,0,0,0,0,0,1,0
+21_SDET_Playwright_Automation/challenges/CH03_API_UI_Cross_Validation.md,21_SDET_Playwright_Automation,13,Not a lesson (reference),67,302,9,2,5,0,0,0,0,2,0,0,0,0,0,0,0,1,0
+21_SDET_Playwright_Automation/challenges/CH04_New_Tab_Scenario.md,21_SDET_Playwright_Automation,12,Not a lesson (reference),72,199,10,3,11,0,0,0,0,1,0,0,0,0,0,0,0,1,0
+21_SDET_Playwright_Automation/challenges/CH05_Cross_Website_Data_Bridge.md,21_SDET_Playwright_Automation,20,Not a lesson (reference),59,282,9,1,5,0,0,0,0,1,0,0,0,0,1,0,0,1,0
+21_SDET_Playwright_Automation/challenges/CH06_Understand_Auth_Fixture.md,21_SDET_Playwright_Automation,24,Not a lesson (reference),62,350,8,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,0
+21_SDET_Playwright_Automation/challenges/CH07_Full_Cross_Site_Flow.md,21_SDET_Playwright_Automation,19,Not a lesson (reference),73,393,7,1,8,1,0,0,1,0,0,0,0,0,1,0,0,1,0
+21_SDET_Playwright_Automation/challenges/README.md,21_SDET_Playwright_Automation,16,Not a lesson (index),38,284,4,0,0,2,0,0,0,0,0,1,0,0,0,0,0,1,0
+21_SDET_Playwright_Automation/challenges/solutions/CAP_C1/README.md,21_SDET_Playwright_Automation,6,Not a lesson (index),118,241,12,5,44,5,0,0,1,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/challenges/solutions/CAP_C2/README.md,21_SDET_Playwright_Automation,4,Not a lesson (index),65,345,8,4,14,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/challenges/solutions/CAP_C3/README.md,21_SDET_Playwright_Automation,15,Not a lesson (index),259,387,23,13,102,4,0,0,22,0,0,0,1,0,0,0,0,0,0
+21_SDET_Playwright_Automation/challenges/solutions/CH01/README.md,21_SDET_Playwright_Automation,11,Not a lesson (index),80,304,10,1,18,0,0,0,0,0,0,0,0,0,0,0,0,1,0
+21_SDET_Playwright_Automation/challenges/solutions/CH02/README.md,21_SDET_Playwright_Automation,15,Not a lesson (index),131,310,20,6,39,2,0,0,2,0,0,0,0,0,1,0,0,0,0
+21_SDET_Playwright_Automation/challenges/solutions/CH06/answers.md,21_SDET_Playwright_Automation,37,Not a lesson (reference),61,1056,7,1,8,0,0,0,0,0,0,1,0,1,0,0,1,1,0
+21_SDET_Playwright_Automation/framework/CONTRIBUTING.md,21_SDET_Playwright_Automation,52,Needs expansion,374,1740,34,11,37,6,0,0,0,0,0,0,1,1,1,1,0,1,0
+21_SDET_Playwright_Automation/framework/README.md,21_SDET_Playwright_Automation,26,Not a lesson (index),269,885,19,9,130,3,0,0,18,0,0,1,0,0,0,0,1,0,0
+21_SDET_Playwright_Automation/framework/a11y/README.md,21_SDET_Playwright_Automation,3,Not a lesson (index),89,186,10,6,22,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/framework/docs/adrs/ADR-001-why-playwright.md,21_SDET_Playwright_Automation,34,Superficial,87,679,12,0,0,2,0,0,0,0,0,0,1,1,0,0,1,1,0
+21_SDET_Playwright_Automation/framework/docs/adrs/ADR-002-sqlite-trend-store.md,21_SDET_Playwright_Automation,18,Superficial,49,474,9,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0
+21_SDET_Playwright_Automation/framework/docs/adrs/ADR-003-orangehrm-demo-target.md,21_SDET_Playwright_Automation,18,Superficial,53,515,9,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1,0
+21_SDET_Playwright_Automation/framework/docs/adrs/ADR-004-fixtures-over-hooks.md,21_SDET_Playwright_Automation,18,Superficial,53,451,9,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,0
+21_SDET_Playwright_Automation/framework/docs/adrs/ADR-005-no-bdd-layer.md,21_SDET_Playwright_Automation,24,Superficial,53,396,9,0,0,1,0,0,0,0,0,0,0,0,1,0,1,1,0
+21_SDET_Playwright_Automation/framework/docs/adrs/ADR-006-composed-api-clients.md,21_SDET_Playwright_Automation,18,Superficial,51,440,9,0,0,1,0,0,0,0,0,0,0,1,1,0,0,0,0
+21_SDET_Playwright_Automation/framework/docs/adrs/README.md,21_SDET_Playwright_Automation,33,Not a lesson (index),96,632,12,1,1,3,0,0,0,0,0,1,1,1,1,0,0,0,0
+21_SDET_Playwright_Automation/framework/docs/adrs/adr-template.md,21_SDET_Playwright_Automation,1,Superficial,36,71,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/framework/perf/README.md,21_SDET_Playwright_Automation,17,Not a lesson (index),80,182,10,5,21,1,0,0,0,0,0,1,0,0,0,0,0,0,1
+21_SDET_Playwright_Automation/framework/quiz-solutions/README.md,21_SDET_Playwright_Automation,24,Not a lesson (index),54,376,5,2,2,3,0,0,0,0,0,0,0,0,1,0,1,1,0
+21_SDET_Playwright_Automation/framework/tests/broken/README.md,21_SDET_Playwright_Automation,22,Not a lesson (index),140,865,16,5,6,2,0,0,0,0,0,0,0,0,1,0,1,0,0
+21_SDET_Playwright_Automation/framework/utilities/analytics/README.md,21_SDET_Playwright_Automation,6,Not a lesson (index),131,116,18,11,64,0,0,0,6,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/framework/utilities/api/TELEMETRY_README.md,21_SDET_Playwright_Automation,6,Superficial,138,314,14,7,43,2,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/framework/utilities/matchers/README.md,21_SDET_Playwright_Automation,12,Not a lesson (index),148,239,8,9,55,0,0,0,0,0,0,0,0,0,0,0,0,1,0
+21_SDET_Playwright_Automation/framework/visual/README.md,21_SDET_Playwright_Automation,3,Not a lesson (index),71,153,9,4,17,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+21_SDET_Playwright_Automation/labs/01-first-contact/README.md,21_SDET_Playwright_Automation,38,Not a lesson (index),114,826,12,4,8,1,0,0,0,3,0,0,0,1,1,1,0,1,0
+21_SDET_Playwright_Automation/labs/02-cookie-consent/README.md,21_SDET_Playwright_Automation,24,Not a lesson (index),102,780,10,3,6,1,0,0,0,4,0,1,0,0,0,0,0,1,0
+21_SDET_Playwright_Automation/labs/03-checkout/README.md,21_SDET_Playwright_Automation,38,Not a lesson (index),100,758,11,2,5,1,0,0,0,4,0,1,0,1,1,0,0,1,0
+21_SDET_Playwright_Automation/labs/04-webhook-receiver/README.md,21_SDET_Playwright_Automation,31,Not a lesson (index),132,735,12,7,11,1,0,0,0,4,0,1,0,0,1,0,0,1,0
+21_SDET_Playwright_Automation/labs/05-otp-login/README.md,21_SDET_Playwright_Automation,32,Not a lesson (index),110,886,11,3,4,2,0,0,0,4,0,1,0,1,0,0,0,1,0
+21_SDET_Playwright_Automation/labs/06-virtual-grid/README.md,21_SDET_Playwright_Automation,17,Not a lesson (index),106,819,11,2,3,2,0,0,0,4,0,0,0,0,0,0,0,1,0
+21_SDET_Playwright_Automation/labs/HARNESS_GUIDE.md,21_SDET_Playwright_Automation,43,Superficial,99,1316,12,2,12,1,1,0,0,0,0,0,0,1,1,0,1,1,0
+21_SDET_Playwright_Automation/labs/README.md,21_SDET_Playwright_Automation,14,Not a lesson (index),66,701,7,2,10,2,1,1,0,0,0,0,0,0,0,0,0,1,0
+21_SDET_Playwright_Automation/projects/starter-playwright-ts/README.md,21_SDET_Playwright_Automation,13,Not a lesson (index),79,187,9,3,27,1,0,0,2,0,0,0,0,0,1,0,0,0,0
+22_DevOps/00_DevOps_Fundamentals.md,22_DevOps,56,Needs expansion,817,1076,31,13,653,3,0,0,10,0,0,0,1,1,1,1,1,1,0
+22_DevOps/00_INDEX.md,22_DevOps,33,Not a lesson (index),80,604,6,1,2,4,0,0,0,0,0,0,1,1,1,0,1,0,0
+22_DevOps/01_DevOps_Advanced.md,22_DevOps,37,Superficial,602,747,34,10,499,1,0,0,0,0,0,0,1,1,0,0,1,1,0
+22_DevOps/02_Networking_Security.md,22_DevOps,18,Superficial,553,901,16,9,445,2,0,0,0,0,0,0,0,1,0,0,0,0,0
+22_DevOps/03_ServiceMesh_CloudNative.md,22_DevOps,25,Superficial,342,688,10,6,266,1,0,0,12,0,0,0,0,0,1,0,1,0,0
+22_DevOps/04_Networking_Complete.md,22_DevOps,33,Superficial,690,802,31,12,570,1,0,0,60,0,0,0,1,1,1,0,0,0,0
+22_DevOps/05_IP_Addressing_Subnets.md,22_DevOps,58,Needs expansion,569,956,38,13,432,1,0,0,48,1,0,1,1,1,1,1,0,1,0
+22_DevOps/06_TCP_UDP_Deep_Dive.md,22_DevOps,87,Strong,1052,3254,66,18,728,3,3,2,98,6,0,1,1,1,1,1,1,1,0
+22_DevOps/07_DNS_Complete.md,22_DevOps,71,Strong,701,3317,39,10,416,1,2,2,2,4,0,1,1,1,1,0,0,1,0
+22_DevOps/08_HTTP_Complete.md,22_DevOps,79,Strong,503,2632,33,6,322,1,0,0,6,5,0,1,1,1,1,1,1,1,0
+22_DevOps/09_TLS_Encryption.md,22_DevOps,37,Superficial,446,969,27,10,334,7,0,0,9,1,0,0,0,1,1,0,0,1,0
+22_DevOps/10_Firewalls_Access_Control.md,22_DevOps,39,Superficial,419,777,38,7,333,1,0,0,10,0,0,0,1,1,1,1,0,0,0
+22_DevOps/11_Load_Balancing_Proxies.md,22_DevOps,18,Superficial,388,768,10,5,307,1,0,0,2,0,0,0,0,0,1,0,0,0,0
+22_DevOps/12_WiFi_AP_Enterprise.md,22_DevOps,49,Superficial,812,2454,31,9,592,1,0,0,7,4,0,1,0,0,1,0,0,1,0
+22_DevOps/13_Cloud_Networking_VPC.md,22_DevOps,74,Strong,1105,1983,43,22,840,1,0,0,50,2,0,1,1,1,1,1,1,1,0
+22_DevOps/14_SSH_Remote_Access.md,22_DevOps,72,Strong,439,2046,53,10,265,1,0,0,0,4,0,1,1,1,1,1,1,1,0
+22_DevOps/15_Network_Debugging.md,22_DevOps,51,Needs expansion,608,936,105,9,466,1,0,0,4,3,0,1,0,1,1,0,1,1,0
+22_DevOps/16_Linux_Administration.md,22_DevOps,47,Superficial,550,792,116,12,431,1,0,0,19,0,0,1,1,1,1,0,1,0,0
+22_DevOps/17_Docker_Complete.md,22_DevOps,59,Needs expansion,1081,1930,45,25,800,1,0,0,12,4,0,1,1,1,1,0,0,1,0
+22_DevOps/18_Kubernetes_Complete.md,22_DevOps,26,Superficial,679,846,66,16,544,1,0,0,15,0,0,1,0,1,0,0,0,0,0
+22_DevOps/19_CICD_Pipelines.md,22_DevOps,64,Needs expansion,485,1683,14,9,326,1,0,0,18,2,0,1,1,1,1,0,1,1,0
+22_DevOps/20_Terraform_IaC.md,22_DevOps,69,Needs expansion,617,3120,58,9,387,1,0,0,7,8,0,1,0,1,0,0,1,1,1
+22_DevOps/21_Monitoring_Observability.md,22_DevOps,26,Superficial,419,846,33,11,302,1,0,0,16,0,0,0,0,1,0,0,1,0,0
+22_DevOps/22_PROBLEM_SETS.md,22_DevOps,52,Not a lesson (reference),317,1318,12,9,124,2,0,0,0,7,0,1,0,1,1,0,1,1,0
+22_DevOps/22_SRE_Practices.md,22_DevOps,62,Needs expansion,848,2338,59,13,581,1,0,0,47,4,0,1,0,1,1,0,1,1,0
+22_DevOps/23_GitOps_Deployments.md,22_DevOps,45,Superficial,769,1041,47,18,579,1,0,0,37,3,0,0,1,0,1,0,1,1,0
+22_DevOps/internals/I01_What_Really_Happens_When_You_Type_ls.md,22_DevOps,74,Strong,340,3377,13,15,170,0,3,0,0,0,0,1,1,1,0,0,1,0,1
+22_DevOps/internals/README.md,22_DevOps,48,Not a lesson (index),68,768,7,0,0,4,0,0,0,0,0,1,1,1,1,1,0,1,0
+22_DevOps/jenkins/README.md,22_DevOps,41,Not a lesson (index),63,692,10,0,0,6,0,0,0,0,0,1,1,1,1,1,0,0,0
+23_Mobile_Dev_And_Testing/00_Testing_Fundamentals_MOVED_TO_SDET.md,23_Mobile_Dev_And_Testing,0,Superficial,10,45,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+23_Mobile_Dev_And_Testing/01_Playwright_vs_Appium_Full_Comparison.md,23_Mobile_Dev_And_Testing,83,Strong,922,3553,35,24,457,3,3,2,71,8,0,1,0,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/02_Android_Native_Dev_And_Testing.md,23_Mobile_Dev_And_Testing,72,Strong,1643,3442,51,37,1106,3,0,0,51,8,0,1,0,1,1,1,0,1,0
+23_Mobile_Dev_And_Testing/03_Android/01_Architecture_And_App_Model.md,23_Mobile_Dev_And_Testing,67,Needs expansion,1116,2920,34,33,689,1,0,0,77,3,0,1,0,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/03_Android/02_Activity_Fragment_Lifecycle.md,23_Mobile_Dev_And_Testing,71,Strong,1075,2465,43,37,673,0,0,0,38,2,0,1,0,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/03_Android/03_ViewModel_StateFlow_LiveData.md,23_Mobile_Dev_And_Testing,59,Needs expansion,1136,1975,44,35,809,0,0,0,17,1,0,1,0,0,1,1,1,1,0
+23_Mobile_Dev_And_Testing/03_Android/04_Jetpack_Compose_Deep_Dive.md,23_Mobile_Dev_And_Testing,52,Needs expansion,1085,1729,40,31,810,0,0,0,0,0,0,1,0,1,1,1,1,0,0
+23_Mobile_Dev_And_Testing/03_Android/05_Room_Database_And_DataStore.md,23_Mobile_Dev_And_Testing,52,Needs expansion,1042,1958,32,26,768,0,0,0,29,1,0,0,0,1,1,1,0,1,0
+23_Mobile_Dev_And_Testing/03_Android/06_Networking_Retrofit_OkHttp.md,23_Mobile_Dev_And_Testing,39,Superficial,891,1618,28,20,692,0,0,0,13,0,0,0,1,1,1,0,0,0,0
+23_Mobile_Dev_And_Testing/03_Android/07_Unit_Tests_JUnit_Mockito.md,23_Mobile_Dev_And_Testing,28,Superficial,1339,1877,35,29,1070,0,0,0,32,0,0,0,0,0,1,0,0,0,0
+23_Mobile_Dev_And_Testing/03_Android/08_Instrumented_And_UI_Tests.md,23_Mobile_Dev_And_Testing,25,Superficial,931,1613,31,25,710,0,0,0,3,0,0,0,0,0,1,0,0,0,0
+23_Mobile_Dev_And_Testing/03_Android/09_Dependency_Injection_Hilt.md,23_Mobile_Dev_And_Testing,46,Superficial,631,1583,29,21,431,0,0,0,3,0,0,1,0,0,1,1,0,1,0
+23_Mobile_Dev_And_Testing/03_Android/10_Performance_Memory_And_ANR_Profiling.md,23_Mobile_Dev_And_Testing,50,Needs expansion,430,2327,17,16,249,0,0,0,0,0,0,1,0,1,1,0,1,0,0
+23_Mobile_Dev_And_Testing/03_iOS_Native_Dev_And_Testing.md,23_Mobile_Dev_And_Testing,78,Strong,1888,3372,56,47,1321,3,0,0,37,8,0,1,1,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/04_Flutter_Dev_And_Testing.md,23_Mobile_Dev_And_Testing,87,Strong,1858,3549,52,41,1315,3,0,0,22,6,0,1,1,1,1,1,0,1,1
+23_Mobile_Dev_And_Testing/05_Mobile_Web_And_Hybrid_Playwright.md,23_Mobile_Dev_And_Testing,34,Superficial,227,1644,10,9,95,1,1,1,0,2,0,0,0,0,1,0,1,0,0
+23_Mobile_Dev_And_Testing/06_Mobilewright_Native_Testing.md,23_Mobile_Dev_And_Testing,26,Superficial,161,1084,10,6,66,1,1,1,0,0,0,0,0,0,1,0,1,0,0
+23_Mobile_Dev_And_Testing/06b_Mobilewright_Challenges.md,23_Mobile_Dev_And_Testing,31,Superficial,88,699,6,3,21,0,0,0,0,3,0,0,0,0,1,1,0,1,0
+23_Mobile_Dev_And_Testing/07_Test_Design_And_Documentation.md,23_Mobile_Dev_And_Testing,42,Superficial,159,2064,13,2,12,3,0,0,0,2,0,0,0,1,1,0,1,0,0
+23_Mobile_Dev_And_Testing/08_iOS_Performance_Memory_And_Instruments.md,23_Mobile_Dev_And_Testing,49,Superficial,365,2159,18,13,208,0,0,0,0,0,0,1,0,1,1,0,1,0,0
+23_Mobile_Dev_And_Testing/09_Cross_Platform_Mobile_Testing_Infra_At_Scale.md,23_Mobile_Dev_And_Testing,78,Strong,491,4128,27,21,151,5,2,2,0,3,0,0,1,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/10_Senior_Mobile_Engineering_Judgment.md,23_Mobile_Dev_And_Testing,80,Strong,293,5559,16,4,36,7,1,1,3,1,0,1,0,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/23_PROBLEM_SETS.md,23_Mobile_Dev_And_Testing,57,Not a lesson (reference),135,1471,8,0,0,0,0,0,0,6,0,1,1,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/00_CHALLENGE_TYPES.md,23_Mobile_Dev_And_Testing,26,Superficial,62,586,12,0,0,0,0,0,0,0,0,1,0,1,0,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/00_HISTORY_OF_FLUTTER.md,23_Mobile_Dev_And_Testing,51,Needs expansion,290,1779,16,2,15,2,0,0,0,0,0,1,1,1,1,1,0,0,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/00_MASTER_ROADMAP.md,23_Mobile_Dev_And_Testing,29,Superficial,177,956,17,2,5,7,0,0,0,0,0,0,1,0,1,0,1,0,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_1_Dart_and_Foundations/Phase_1_Overview.md,23_Mobile_Dev_And_Testing,18,Superficial,65,462,6,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_1_Dart_and_Foundations/Week_01_Dart_Language.md,23_Mobile_Dev_And_Testing,68,Needs expansion,1379,3559,30,32,915,2,0,0,0,0,0,1,0,1,1,1,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_1_Dart_and_Foundations/Week_01b_Dart_Coding_Challenges.md,23_Mobile_Dev_And_Testing,71,Strong,1191,4983,38,48,542,0,0,0,0,29,0,1,0,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_1_Dart_and_Foundations/Week_02_Flutter_Core_Concepts.md,23_Mobile_Dev_And_Testing,77,Strong,1426,4921,36,49,819,2,0,0,41,0,0,1,1,1,1,1,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_1_Dart_and_Foundations/Week_02b_Widget_Rebuild_Challenges.md,23_Mobile_Dev_And_Testing,50,Needs expansion,441,1870,12,10,259,0,0,0,0,8,0,0,0,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_1_Dart_and_Foundations/Week_03_Widget_Lifecycle.md,23_Mobile_Dev_And_Testing,76,Strong,1396,3470,34,42,888,2,0,0,24,0,0,1,1,0,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_1_Dart_and_Foundations/Week_03b_Lifecycle_Challenges.md,23_Mobile_Dev_And_Testing,41,Superficial,473,1730,12,14,293,0,0,0,0,8,0,0,0,1,0,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_1_Dart_and_Foundations/Week_04_Layout_and_Constraints.md,23_Mobile_Dev_And_Testing,68,Needs expansion,948,2464,30,38,510,3,0,0,14,0,0,1,1,0,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_1_Dart_and_Foundations/Week_04b_Layout_Challenges.md,23_Mobile_Dev_And_Testing,42,Superficial,363,1833,11,10,192,0,0,0,0,7,0,0,0,0,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_1_Dart_and_Foundations/Week_05_Navigation_and_State.md,23_Mobile_Dev_And_Testing,72,Strong,1131,2967,36,31,678,4,0,0,6,0,0,1,1,1,1,1,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_1_Dart_and_Foundations/Week_05b_Navigation_Challenges.md,23_Mobile_Dev_And_Testing,54,Needs expansion,418,1611,11,13,254,0,0,0,0,7,0,0,0,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_1_Dart_and_Foundations/Week_06_Project_ProfileApp.md,23_Mobile_Dev_And_Testing,33,Superficial,1114,840,16,17,932,1,0,0,38,0,0,1,0,0,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_1_Dart_and_Foundations/Week_06b_ProfileApp_Challenges.md,23_Mobile_Dev_And_Testing,37,Superficial,233,1235,7,4,143,0,0,0,0,4,0,0,0,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_2_Core_UI/Phase_2_Overview.md,23_Mobile_Dev_And_Testing,10,Superficial,63,393,6,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_2_Core_UI/Week_07_Scrolling_and_Slivers.md,23_Mobile_Dev_And_Testing,65,Needs expansion,1014,2194,33,28,685,0,0,0,5,0,0,1,1,1,1,1,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_2_Core_UI/Week_07b_Scrolling_Challenges.md,23_Mobile_Dev_And_Testing,48,Superficial,353,1621,11,9,178,2,0,0,0,7,0,0,0,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_2_Core_UI/Week_08_Forms_and_Input.md,23_Mobile_Dev_And_Testing,76,Strong,1048,2607,33,26,683,2,0,0,2,0,0,1,1,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_2_Core_UI/Week_08b_Forms_Challenges.md,23_Mobile_Dev_And_Testing,49,Superficial,451,1748,11,13,282,0,0,0,0,7,0,1,0,1,0,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_2_Core_UI/Week_09_Animations.md,23_Mobile_Dev_And_Testing,67,Needs expansion,860,2420,29,22,507,2,0,0,7,0,0,0,1,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_2_Core_UI/Week_09b_Animation_Challenges.md,23_Mobile_Dev_And_Testing,48,Superficial,401,1658,11,11,238,0,0,0,0,7,0,1,0,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_2_Core_UI/Week_10_Gestures_and_Custom_Widgets.md,23_Mobile_Dev_And_Testing,54,Needs expansion,1176,1676,32,26,871,1,0,0,3,0,0,1,0,1,1,1,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_2_Core_UI/Week_10b_Gesture_Challenges.md,23_Mobile_Dev_And_Testing,51,Needs expansion,345,2060,11,7,192,0,0,0,0,7,0,1,0,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_2_Core_UI/Week_11_Project_ShoppingApp.md,23_Mobile_Dev_And_Testing,25,Superficial,1055,666,14,10,917,1,0,0,14,0,0,1,0,0,0,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_2_Core_UI/Week_11b_ShoppingApp_Challenges.md,23_Mobile_Dev_And_Testing,37,Superficial,228,1229,8,8,122,0,0,0,0,5,0,0,0,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_3_State_and_APIs/Phase_3_Overview.md,23_Mobile_Dev_And_Testing,17,Superficial,60,358,6,0,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_3_State_and_APIs/Week_12_State_Management_Deep_Dive.md,23_Mobile_Dev_And_Testing,59,Needs expansion,574,1662,20,15,330,2,0,0,0,0,0,1,1,1,1,1,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_3_State_and_APIs/Week_12b_State_Management_Challenges.md,23_Mobile_Dev_And_Testing,42,Superficial,341,1762,11,9,180,0,0,0,0,7,0,0,0,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_3_State_and_APIs/Week_13_Riverpod.md,23_Mobile_Dev_And_Testing,69,Needs expansion,1170,1741,34,35,815,2,0,0,7,0,0,1,1,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_3_State_and_APIs/Week_13b_Riverpod_Challenges.md,23_Mobile_Dev_And_Testing,57,Needs expansion,343,1878,11,8,181,0,0,0,0,7,0,1,0,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_3_State_and_APIs/Week_14_HTTP_and_REST_APIs.md,23_Mobile_Dev_And_Testing,78,Strong,1599,2851,36,35,1165,1,0,0,10,0,0,1,1,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_3_State_and_APIs/Week_14b_HTTP_Challenges.md,23_Mobile_Dev_And_Testing,41,Superficial,347,1656,11,11,190,0,0,0,0,7,0,1,0,0,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_3_State_and_APIs/Week_15_Project_WeatherApp.md,23_Mobile_Dev_And_Testing,33,Superficial,787,810,15,9,653,1,0,0,5,0,0,1,0,1,1,0,0,0,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_3_State_and_APIs/Week_15b_WeatherApp_Challenges.md,23_Mobile_Dev_And_Testing,45,Superficial,219,1372,8,6,111,0,0,0,0,5,0,0,1,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_4_Firebase_and_Storage/Phase_4_Overview.md,23_Mobile_Dev_And_Testing,24,Superficial,321,719,9,10,161,1,0,0,1,0,0,0,0,0,1,1,0,0,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_4_Firebase_and_Storage/Week_16_Firebase_Firestore.md,23_Mobile_Dev_And_Testing,69,Needs expansion,1172,2636,31,30,775,0,0,0,32,0,0,1,1,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_4_Firebase_and_Storage/Week_16b_Firestore_Challenges.md,23_Mobile_Dev_And_Testing,55,Needs expansion,281,1650,11,7,140,0,0,0,0,6,0,1,0,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_4_Firebase_and_Storage/Week_17_Authentication.md,23_Mobile_Dev_And_Testing,60,Needs expansion,1215,2368,29,29,886,1,0,0,12,0,0,1,1,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_4_Firebase_and_Storage/Week_17b_Authentication_Challenges.md,23_Mobile_Dev_And_Testing,56,Needs expansion,340,1749,11,9,193,0,0,0,0,7,0,1,0,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_4_Firebase_and_Storage/Week_18_Local_Storage.md,23_Mobile_Dev_And_Testing,64,Needs expansion,1029,2163,29,32,682,1,0,0,1,0,0,1,1,1,1,1,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_4_Firebase_and_Storage/Week_18b_Storage_Challenges.md,23_Mobile_Dev_And_Testing,64,Needs expansion,263,1947,11,7,114,0,0,0,0,7,0,1,0,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_4_Firebase_and_Storage/Week_19_Project_NotesApp.md,23_Mobile_Dev_And_Testing,33,Superficial,755,878,15,8,624,1,0,0,36,0,0,1,0,1,1,0,0,0,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_4_Firebase_and_Storage/Week_19b_NotesApp_Challenges.md,23_Mobile_Dev_And_Testing,53,Needs expansion,204,1415,8,6,96,0,0,0,0,5,0,1,1,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_5_Advanced_Patterns/Phase_5_Overview.md,23_Mobile_Dev_And_Testing,30,Superficial,305,712,9,9,154,1,0,0,0,0,0,1,0,0,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_5_Advanced_Patterns/Week_20_BLoC_Pattern.md,23_Mobile_Dev_And_Testing,61,Needs expansion,1012,1921,27,27,674,3,0,0,0,0,0,1,1,0,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_5_Advanced_Patterns/Week_20b_BLoC_Challenges.md,23_Mobile_Dev_And_Testing,48,Superficial,344,1708,11,11,187,0,0,0,0,7,0,1,0,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_5_Advanced_Patterns/Week_21_Clean_Architecture.md,23_Mobile_Dev_And_Testing,77,Strong,2192,4293,48,64,1437,8,0,0,24,0,0,1,0,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_5_Advanced_Patterns/Week_21b_Clean_Architecture_Challenges.md,23_Mobile_Dev_And_Testing,41,Superficial,332,1693,11,10,178,0,0,0,0,7,0,1,0,0,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_5_Advanced_Patterns/Week_22_Advanced_Animations_CustomPaint.md,23_Mobile_Dev_And_Testing,55,Needs expansion,842,1802,23,17,592,1,0,0,14,0,0,0,1,0,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_5_Advanced_Patterns/Week_22b_Advanced_Animation_Challenges.md,23_Mobile_Dev_And_Testing,57,Needs expansion,301,1956,11,6,151,0,0,0,0,7,0,1,0,0,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_5_Advanced_Patterns/Week_23_Project_ExpenseTracker.md,23_Mobile_Dev_And_Testing,32,Superficial,1064,1001,17,11,887,1,0,0,0,0,0,1,0,1,0,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_5_Advanced_Patterns/Week_23b_ExpenseTracker_Challenges.md,23_Mobile_Dev_And_Testing,39,Superficial,240,1389,8,6,132,0,0,0,0,5,0,0,0,0,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_6_Quality_and_Deployment/Phase_6_Overview.md,23_Mobile_Dev_And_Testing,38,Superficial,412,878,16,13,208,2,0,0,0,0,0,0,0,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_6_Quality_and_Deployment/Week_24_Testing.md,23_Mobile_Dev_And_Testing,53,Needs expansion,1287,1618,41,28,971,2,0,0,41,0,0,1,0,1,1,1,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_6_Quality_and_Deployment/Week_24b_Testing_Challenges.md,23_Mobile_Dev_And_Testing,55,Needs expansion,341,1633,11,11,192,0,0,0,0,7,0,0,0,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_6_Quality_and_Deployment/Week_25_Performance_and_Profiling.md,23_Mobile_Dev_And_Testing,84,Strong,1934,4330,67,60,1190,5,0,0,15,0,0,1,1,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_6_Quality_and_Deployment/Week_25b_Performance_Challenges.md,23_Mobile_Dev_And_Testing,66,Needs expansion,346,2138,11,8,182,0,0,0,0,7,0,1,0,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_6_Quality_and_Deployment/Week_26_CICD_and_Deployment.md,23_Mobile_Dev_And_Testing,59,Needs expansion,1021,2325,72,33,671,0,0,0,14,0,0,1,1,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_6_Quality_and_Deployment/Week_26b_CICD_Challenges.md,23_Mobile_Dev_And_Testing,57,Needs expansion,293,1955,15,8,133,0,0,0,0,8,0,0,1,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_6_Quality_and_Deployment/Week_27_Project_ChatApp.md,23_Mobile_Dev_And_Testing,69,Needs expansion,1961,4732,51,30,1200,13,0,0,1,0,0,1,0,1,1,1,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Phase_6_Quality_and_Deployment/Week_27b_ChatApp_Challenges.md,23_Mobile_Dev_And_Testing,47,Superficial,244,1576,8,6,138,0,0,0,0,6,0,1,0,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Projects/README.md,23_Mobile_Dev_And_Testing,9,Not a lesson (index),23,183,3,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_01_Rendering_Pipeline.md,23_Mobile_Dev_And_Testing,34,Superficial,504,961,19,19,286,1,0,0,34,0,0,1,0,1,0,1,0,0,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_01b_Rendering_Pipeline_Challenges.md,23_Mobile_Dev_And_Testing,45,Superficial,153,1325,7,4,60,0,0,0,0,4,0,0,0,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_02_Widget_Catalog_Complete.md,23_Mobile_Dev_And_Testing,33,Superficial,1301,1131,62,48,839,4,0,0,0,0,0,0,0,0,1,1,1,0,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_02b_Widget_Catalog_Challenges.md,23_Mobile_Dev_And_Testing,45,Superficial,126,1388,7,2,28,0,0,0,0,4,0,0,1,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_03_Material3_Theming.md,23_Mobile_Dev_And_Testing,22,Superficial,681,369,19,20,520,0,0,0,21,0,0,0,0,0,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_03b_Material3_Theming_Challenges.md,23_Mobile_Dev_And_Testing,44,Superficial,171,1151,7,5,84,0,0,0,0,4,0,1,0,0,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_04_BuildContext_Deep_Dive.md,23_Mobile_Dev_And_Testing,45,Superficial,441,637,14,18,268,1,0,0,15,0,0,1,0,1,1,1,1,0,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_04b_BuildContext_Challenges.md,23_Mobile_Dev_And_Testing,44,Superficial,174,1196,7,6,86,0,0,0,0,4,0,1,0,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_05_InheritedWidget_Keys.md,23_Mobile_Dev_And_Testing,37,Superficial,538,521,20,19,355,2,0,0,2,0,0,0,0,1,1,1,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_05b_InheritedWidget_Keys_Challenges.md,23_Mobile_Dev_And_Testing,45,Superficial,185,1267,7,5,100,0,0,0,0,4,0,1,0,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_06_Async_Patterns_Complete.md,23_Mobile_Dev_And_Testing,24,Superficial,724,582,27,21,530,2,0,0,17,0,0,0,0,0,1,1,0,0,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_06b_Async_Patterns_Challenges.md,23_Mobile_Dev_And_Testing,45,Superficial,182,1377,7,5,95,0,0,0,0,4,0,0,0,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_07_ADB_and_Dev_Tooling.md,23_Mobile_Dev_And_Testing,48,Superficial,204,1635,27,5,87,2,2,1,0,0,0,1,0,1,1,0,1,0,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_07b_ADB_and_Dev_Tooling_Challenges.md,23_Mobile_Dev_And_Testing,53,Needs expansion,109,1774,10,2,5,0,0,0,0,5,0,1,0,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_08_Patterns_and_AntiPatterns.md,23_Mobile_Dev_And_Testing,59,Needs expansion,176,1846,19,6,24,1,2,2,0,0,0,1,0,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_08b_Patterns_and_AntiPatterns_Challenges.md,23_Mobile_Dev_And_Testing,41,Superficial,106,1033,6,3,24,0,0,0,0,3,0,0,0,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_09_Mobile_Debugging_Toolkit.md,23_Mobile_Dev_And_Testing,42,Superficial,176,1271,19,8,60,2,2,2,0,0,0,1,0,0,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/DOC_09b_Mobile_Debugging_Toolkit_Challenges.md,23_Mobile_Dev_And_Testing,51,Needs expansion,105,1453,7,2,10,0,0,0,0,4,0,1,0,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Flutter_Bootcamp/Reference/README.md,23_Mobile_Dev_And_Testing,47,Not a lesson (index),49,576,4,0,0,1,0,0,0,0,0,1,0,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/Mobilewright_TypeScript/00_ROADMAP.md,23_Mobile_Dev_And_Testing,20,Superficial,65,512,5,1,20,1,1,1,0,0,0,1,0,0,1,0,0,0,0
+23_Mobile_Dev_And_Testing/Mobilewright_TypeScript/Level_01_Setup_and_First_Native_Test.md,23_Mobile_Dev_And_Testing,22,Superficial,147,1050,12,8,49,0,0,0,0,2,0,0,0,0,0,0,1,0,0
+23_Mobile_Dev_And_Testing/Mobilewright_TypeScript/Level_02_Cross_Platform_Locators.md,23_Mobile_Dev_And_Testing,29,Superficial,158,1090,9,8,56,0,0,0,0,2,0,0,0,1,1,0,0,0,0
+23_Mobile_Dev_And_Testing/Mobilewright_TypeScript/Level_03_Actions_Locator_vs_Screen_Level.md,23_Mobile_Dev_And_Testing,28,Superficial,129,1007,9,6,39,0,0,0,0,2,0,0,0,1,1,0,0,0,0
+23_Mobile_Dev_And_Testing/Mobilewright_TypeScript/Level_04_Auto_Waiting_and_Assertions.md,23_Mobile_Dev_And_Testing,36,Superficial,132,1062,9,5,40,1,0,0,0,2,0,0,0,0,1,1,1,0,0
+23_Mobile_Dev_And_Testing/Mobilewright_TypeScript/Level_05_Deep_Links_and_Cross_App_Flows.md,23_Mobile_Dev_And_Testing,35,Superficial,124,952,9,6,38,0,0,0,0,2,0,0,0,1,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Mobilewright_TypeScript/Level_06_Multi_Platform_Project_Config.md,23_Mobile_Dev_And_Testing,27,Superficial,160,856,9,7,71,0,0,0,0,2,0,0,0,1,1,0,0,0,0
+23_Mobile_Dev_And_Testing/Mobilewright_TypeScript/Level_07_Sharding_for_CI_Speed.md,23_Mobile_Dev_And_Testing,13,Superficial,108,936,12,5,23,0,0,0,0,2,0,0,0,0,0,0,0,0,0
+23_Mobile_Dev_And_Testing/Mobilewright_TypeScript/Level_08_The_Fixture_Gap.md,23_Mobile_Dev_And_Testing,28,Superficial,158,930,9,7,67,0,0,0,0,2,0,0,0,1,1,0,0,0,0
+23_Mobile_Dev_And_Testing/Mobilewright_TypeScript/Level_09_Screenshots_and_Missing_Visual_Regression.md,23_Mobile_Dev_And_Testing,34,Superficial,123,885,9,4,43,0,0,0,0,2,0,1,0,0,1,0,1,0,0
+23_Mobile_Dev_And_Testing/Mobilewright_TypeScript/Level_10_The_Mobilewright_Inspector.md,23_Mobile_Dev_And_Testing,34,Superficial,112,999,11,5,21,0,0,0,0,2,0,0,0,0,1,1,1,0,0
+23_Mobile_Dev_And_Testing/Mobilewright_TypeScript/Level_11_The_WebView_Bridge_Full_Depth.md,23_Mobile_Dev_And_Testing,34,Superficial,124,833,9,5,43,0,0,0,0,2,0,1,0,1,1,0,0,0,0
+23_Mobile_Dev_And_Testing/Mobilewright_TypeScript/Level_12_Docker_Cloud_Devices_and_Troubleshooting.md,23_Mobile_Dev_And_Testing,42,Superficial,135,1024,10,6,34,1,0,0,0,2,0,0,0,1,1,1,1,0,0
+23_Mobile_Dev_And_Testing/Mobilewright_TypeScript/Level_13_Capstone_Cross_Platform_CI_Pipeline.md,23_Mobile_Dev_And_Testing,38,Superficial,194,1318,11,5,104,0,0,0,0,2,0,1,0,0,1,1,0,0,0
+23_Mobile_Dev_And_Testing/Playwright_Mobile_TypeScript/00_ROADMAP.md,23_Mobile_Dev_And_Testing,34,Superficial,69,499,5,1,20,1,1,1,0,0,0,1,0,0,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Playwright_Mobile_TypeScript/Level_01_Setup_and_First_Mobile_Test.md,23_Mobile_Dev_And_Testing,28,Superficial,144,1016,12,7,38,0,0,0,0,2,0,0,0,0,1,0,1,0,0
+23_Mobile_Dev_And_Testing/Playwright_Mobile_TypeScript/Level_02_Locators_and_Assertions.md,23_Mobile_Dev_And_Testing,54,Needs expansion,244,1589,14,10,108,0,0,0,0,3,0,1,0,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/Playwright_Mobile_TypeScript/Level_03_Device_Emulation_Mastery.md,23_Mobile_Dev_And_Testing,21,Superficial,166,901,9,6,68,1,0,0,0,2,0,1,0,0,0,0,0,0,0
+23_Mobile_Dev_And_Testing/Playwright_Mobile_TypeScript/Level_04_Touch_and_Gesture_Interactions.md,23_Mobile_Dev_And_Testing,35,Superficial,210,937,10,9,109,0,0,0,0,2,0,0,0,1,1,0,1,0,0
+23_Mobile_Dev_And_Testing/Playwright_Mobile_TypeScript/Level_05_Network_Interception_and_Mocking.md,23_Mobile_Dev_And_Testing,27,Superficial,171,783,9,6,83,0,0,0,0,2,0,0,0,1,0,0,1,0,0
+23_Mobile_Dev_And_Testing/Playwright_Mobile_TypeScript/Level_06_Page_Object_Model.md,23_Mobile_Dev_And_Testing,40,Superficial,265,754,9,11,162,0,0,0,0,2,0,1,0,1,1,0,1,0,0
+23_Mobile_Dev_And_Testing/Playwright_Mobile_TypeScript/Level_07_Multi_Device_Config.md,23_Mobile_Dev_And_Testing,34,Superficial,181,853,12,9,80,0,0,0,0,2,0,1,0,0,1,0,0,1,0
+23_Mobile_Dev_And_Testing/Playwright_Mobile_TypeScript/Level_08_Geolocation_Permissions_Storage.md,23_Mobile_Dev_And_Testing,28,Superficial,190,916,9,8,94,0,0,0,0,2,0,0,0,0,1,0,1,0,0
+23_Mobile_Dev_And_Testing/Playwright_Mobile_TypeScript/Level_09_Android_API_Real_Devices.md,23_Mobile_Dev_And_Testing,34,Superficial,132,850,9,4,45,1,0,0,0,2,0,1,0,1,0,0,1,0,0
+23_Mobile_Dev_And_Testing/Playwright_Mobile_TypeScript/Level_10_Hybrid_WebView_Testing.md,23_Mobile_Dev_And_Testing,42,Superficial,177,980,9,6,83,1,1,1,0,2,0,0,0,1,1,1,0,1,0
+23_Mobile_Dev_And_Testing/Playwright_Mobile_TypeScript/Level_11_Visual_Regression_Testing.md,23_Mobile_Dev_And_Testing,43,Superficial,158,1049,10,10,50,0,0,0,0,2,0,0,0,1,1,1,1,0,0
+23_Mobile_Dev_And_Testing/Playwright_Mobile_TypeScript/Level_12_Debugging_Flaky_Tests.md,23_Mobile_Dev_And_Testing,37,Superficial,123,1365,11,6,22,0,0,0,0,2,0,0,0,1,1,0,1,0,0
+23_Mobile_Dev_And_Testing/Playwright_Mobile_TypeScript/Level_13_Capstone_CICD_Pipeline.md,23_Mobile_Dev_And_Testing,38,Superficial,185,1292,12,4,99,0,0,0,0,2,0,1,0,0,1,0,0,1,0
+23_Mobile_Dev_And_Testing/career/CODE_REVIEW_RUBRIC.md,23_Mobile_Dev_And_Testing,46,Superficial,173,2171,17,0,4,8,0,0,0,0,0,1,0,1,0,0,1,1,0
+23_Mobile_Dev_And_Testing/career/READINESS_RUBRIC_SDET.md,23_Mobile_Dev_And_Testing,64,Needs expansion,223,2579,20,1,11,13,0,0,0,0,0,0,1,1,1,1,1,1,0
+23_Mobile_Dev_And_Testing/career/READINESS_RUBRIC_SWE.md,23_Mobile_Dev_And_Testing,60,Needs expansion,223,2888,20,1,11,13,0,0,0,0,0,0,1,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/career/README.md,23_Mobile_Dev_And_Testing,29,Not a lesson (index),68,1007,6,0,0,3,0,0,0,0,0,0,0,0,1,0,1,1,0
+23_Mobile_Dev_And_Testing/career/RELEASE_AND_ROLLOUT_PLAYBOOK.md,23_Mobile_Dev_And_Testing,77,Strong,301,4315,20,3,22,5,1,1,0,3,0,1,1,1,1,0,1,1,0
+23_Mobile_Dev_And_Testing/career/RFC_TEMPLATE.md,23_Mobile_Dev_And_Testing,56,Needs expansion,228,2573,28,0,0,12,0,0,0,0,0,1,1,1,1,0,1,0,0
+23_Mobile_Dev_And_Testing/career/TEST_STRATEGY_TEMPLATE.md,23_Mobile_Dev_And_Testing,58,Needs expansion,207,1928,14,0,0,9,0,0,0,0,0,1,1,0,1,1,1,1,0
+24_Advanced_API_Testing/00_INDEX.md,24_Advanced_API_Testing,14,Not a lesson (index),102,268,9,5,41,1,0,0,7,0,0,0,0,0,1,0,0,0,0
+24_Advanced_API_Testing/01_API_Testing_Foundations.md,24_Advanced_API_Testing,52,Needs expansion,349,1338,19,9,103,1,0,0,0,8,0,1,0,1,1,0,1,1,0
+24_Advanced_API_Testing/02_Complex_JSON_and_SOAP.md,24_Advanced_API_Testing,44,Superficial,419,1255,17,17,158,0,0,0,0,8,0,1,0,0,1,0,1,1,0
+24_Advanced_API_Testing/03_Enterprise_Headers_Auth.md,24_Advanced_API_Testing,46,Superficial,350,1420,15,12,119,0,0,0,0,8,0,1,0,1,1,0,0,1,0
+24_Advanced_API_Testing/04_API_Utils_Factory_Pattern.md,24_Advanced_API_Testing,43,Superficial,540,1073,14,14,328,1,0,0,0,5,0,1,0,1,1,0,0,1,0
+24_Advanced_API_Testing/05_Data_From_API_To_Test.md,24_Advanced_API_Testing,50,Needs expansion,667,878,12,17,466,0,0,0,7,5,0,1,0,1,1,0,1,1,0
+24_Advanced_API_Testing/06_DB_Testing_SQL_Bridge.md,24_Advanced_API_Testing,36,Superficial,646,1036,23,20,412,0,0,0,0,5,0,1,0,1,0,0,0,1,0
+24_Advanced_API_Testing/07_Complex_Nested_API_Assertions.md,24_Advanced_API_Testing,34,Superficial,806,895,19,25,569,1,0,0,0,5,0,0,0,0,1,1,0,1,0
+25_Python_ML_DL_NLP/00_INDEX.md,25_Python_ML_DL_NLP,26,Not a lesson (index),85,352,4,2,33,2,1,1,0,0,0,0,0,1,1,0,1,0,0
+25_Python_ML_DL_NLP/01_Python_Core_Fundamentals.md,25_Python_ML_DL_NLP,36,Superficial,535,1079,97,9,408,2,0,0,0,5,0,0,0,1,1,0,1,0,0
+25_Python_ML_DL_NLP/02_Python_Advanced.md,25_Python_ML_DL_NLP,49,Superficial,551,1956,58,9,335,2,0,0,3,0,0,0,0,1,1,1,1,0,0
+25_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md,25_Python_ML_DL_NLP,33,Superficial,435,812,30,7,354,1,0,0,12,0,0,0,1,1,0,0,1,0,0
+25_Python_ML_DL_NLP/03_NumPy_Pandas_Essentials.md,25_Python_ML_DL_NLP,37,Superficial,482,995,109,12,354,2,0,0,5,5,0,0,0,1,1,0,1,0,0
+25_Python_ML_DL_NLP/04_Math_For_ML.md,25_Python_ML_DL_NLP,49,Superficial,676,1844,44,18,442,5,0,0,0,4,0,1,0,0,1,1,0,1,0
+25_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md,25_Python_ML_DL_NLP,40,Superficial,950,877,49,15,821,1,0,0,41,0,0,1,0,1,1,0,0,1,0
+25_Python_ML_DL_NLP/05_ML_Fundamentals.md,25_Python_ML_DL_NLP,60,Needs expansion,593,1986,42,18,384,3,3,3,34,5,0,1,1,0,1,1,0,1,0
+25_Python_ML_DL_NLP/06_ML_Algorithms.md,25_Python_ML_DL_NLP,52,Needs expansion,1041,1172,52,24,818,3,0,0,1,1,0,1,0,1,1,1,0,1,0
+25_Python_ML_DL_NLP/07_Deep_Learning_Fundamentals.md,25_Python_ML_DL_NLP,64,Needs expansion,892,1714,38,21,652,3,1,1,8,4,0,1,1,1,1,1,0,1,0
+25_Python_ML_DL_NLP/08_NLP_Complete.md,25_Python_ML_DL_NLP,52,Needs expansion,832,1955,58,23,590,2,0,0,7,6,0,1,0,1,1,0,0,1,0
+25_Python_ML_DL_NLP/09_Frameworks_PyTorch_TF.md,25_Python_ML_DL_NLP,39,Superficial,592,1153,73,13,427,4,0,0,3,5,0,0,0,0,1,1,1,0,0
+25_Python_ML_DL_NLP/10_LLM_RAG_Applications.md,25_Python_ML_DL_NLP,61,Needs expansion,627,2347,25,13,386,2,0,0,0,2,0,1,0,1,1,0,1,1,0
+25_Python_ML_DL_NLP/11_Computer_Vision_CNNs.md,25_Python_ML_DL_NLP,69,Needs expansion,797,2261,32,14,534,4,0,0,3,3,0,1,1,1,1,0,1,1,0
+25_Python_ML_DL_NLP/12_Recommender_Systems.md,25_Python_ML_DL_NLP,55,Broken (unbalanced code fences),663,2310,18,10,365,2,0,0,7,3,1,1,1,0,1,0,0,1,0
+25_Python_ML_DL_NLP/13_MLOps_Production.md,25_Python_ML_DL_NLP,61,Needs expansion,614,2410,26,11,385,2,0,0,0,3,0,1,1,0,1,0,1,1,0
+25_Python_ML_DL_NLP/14_Reinforcement_Learning.md,25_Python_ML_DL_NLP,46,Superficial,760,1480,11,13,586,3,0,0,0,3,0,1,0,0,1,1,0,1,0
+25_Python_ML_DL_NLP/25_PROBLEM_SETS.md,25_Python_ML_DL_NLP,60,Not a lesson (reference),391,1354,41,13,204,1,0,0,1,6,0,1,0,0,1,1,1,1,1
+26_Weekend_SDET_Track/00_START_HERE.md,26_Weekend_SDET_Track,18,Superficial,74,493,7,0,0,4,0,0,0,0,0,0,0,0,1,0,0,1,0
+26_Weekend_SDET_Track/01_Block1_Plan.md,26_Weekend_SDET_Track,50,Needs expansion,175,1482,14,0,0,2,0,0,0,1,0,1,0,1,1,0,1,1,0
+26_Weekend_SDET_Track/02_Pace_Log.md,26_Weekend_SDET_Track,10,Not a lesson (practice-log),59,407,5,0,0,2,0,0,0,0,0,0,0,0,1,0,0,0,0
+26_Weekend_SDET_Track/03_Content_Audit_Log.md,26_Weekend_SDET_Track,44,Not a lesson (practice-log),68,1032,7,0,0,1,0,0,0,0,0,1,1,1,1,0,0,1,0
+26_Weekend_SDET_Track/sessions/2026-08-09_JS_Ch01_S3_S8.md,26_Weekend_SDET_Track,25,Superficial,136,868,15,6,20,0,0,0,2,0,0,0,0,1,1,0,0,0,0
+AGENTS.md,(root),1,Not a lesson (index),26,132,3,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+AGENT_HANDOFF.md,(root),38,Not a lesson (index),125,623,9,1,12,7,0,0,1,1,0,0,1,1,0,0,1,1,0
+PATH_FRONTEND.md,(root),30,Superficial,148,1119,11,1,1,5,0,0,0,0,0,0,0,1,1,1,0,0,0
+PATH_JAVA_BACKEND.md,(root),36,Superficial,123,957,10,0,0,5,0,0,0,0,0,1,0,1,1,1,0,0,0
+WHERE_TO_START.md,(root),15,Superficial,148,828,9,5,13,0,0,0,0,0,0,0,0,1,0,0,0,0,0
+_Curriculum/00_AGENT_START.md,_Curriculum,25,Not a lesson (index),62,429,5,1,2,1,0,0,0,0,0,0,0,1,0,0,1,1,0
+_Curriculum/01_FILE_MAP.md,_Curriculum,26,Not a lesson (index),55,542,4,0,0,3,0,0,0,0,0,0,0,1,0,0,1,1,0
+_Curriculum/02_KNOWN_ISSUES.md,_Curriculum,15,Not a lesson (index),26,128,4,1,3,1,0,0,0,0,0,0,1,0,1,0,0,0,0
+_Curriculum/03_BUILDOUT_PLAN.md,_Curriculum,25,Not a lesson (index),56,440,4,0,0,1,0,0,0,0,0,0,1,1,0,0,0,1,0
+_Curriculum/S01/CSE101_Discrete_Mathematics/01_Propositional_Logic.md,_Curriculum,61,Not a lesson (practice-log),597,2402,27,22,132,11,0,0,0,1,0,1,0,1,1,0,1,1,0
+_Curriculum/S01/CSE101_Discrete_Mathematics/02_Predicate_Logic_Quantifiers.md,_Curriculum,50,Not a lesson (practice-log),521,1973,25,21,142,2,0,0,0,1,0,1,0,1,1,0,0,1,0
+_Curriculum/S01/CSE101_Discrete_Mathematics/03_Proof_Techniques.md,_Curriculum,59,Needs expansion,499,2153,30,13,149,0,0,0,0,1,0,1,0,0,1,1,1,1,0
+_Curriculum/S01/CSE101_Discrete_Mathematics/04_Induction_Variants.md,_Curriculum,60,Needs expansion,453,2312,27,11,122,0,0,0,0,1,0,1,0,1,1,0,1,1,0
+_Curriculum/S01/CSE101_Discrete_Mathematics/05_Sets_Operations.md,_Curriculum,52,Needs expansion,509,1928,22,13,164,3,0,0,11,1,0,1,0,0,1,0,1,1,0
+_Curriculum/S01/CSE101_Discrete_Mathematics/06_Relations_Properties.md,_Curriculum,51,Needs expansion,505,1782,19,14,216,1,0,0,12,1,0,1,0,0,1,0,1,1,0
+_Curriculum/S01/CSE101_Discrete_Mathematics/07_Functions_Properties.md,_Curriculum,59,Needs expansion,472,1899,17,11,196,3,0,0,14,1,0,1,0,0,1,0,1,1,1
+_Curriculum/S01/CSE101_Discrete_Mathematics/08_Counting_Combinatorics.md,_Curriculum,52,Needs expansion,412,1861,16,10,129,3,0,0,14,1,0,1,0,0,0,1,1,1,0
+_Curriculum/S01/CSE101_Discrete_Mathematics/09_Pigeonhole_Principle.md,_Curriculum,58,Needs expansion,302,1768,16,4,90,0,0,0,8,1,0,1,0,0,1,1,1,1,0
+_Curriculum/S01/CSE101_Discrete_Mathematics/10_Recurrence_Relations.md,_Curriculum,49,Superficial,432,1586,18,9,144,3,0,0,8,1,0,1,0,0,1,0,1,1,0
+_Curriculum/S01/CSE101_Discrete_Mathematics/11_Graph_Theory_Foundations.md,_Curriculum,51,Needs expansion,455,1854,24,8,158,1,0,0,12,1,0,1,1,0,0,0,1,1,0
+_Curriculum/S01/CSE101_Discrete_Mathematics/12_Boolean_Algebra_Circuits.md,_Curriculum,43,Superficial,474,1724,14,9,171,5,0,0,14,1,0,0,0,0,1,0,1,1,0
+_Curriculum/S01/CSE101_Discrete_Mathematics/README.md,_Curriculum,43,Not a lesson (index),394,1947,20,3,105,8,0,0,0,3,0,1,0,0,1,0,0,1,0
+_Curriculum/S01/CSE102_Programming_Fundamentals/README.md,_Curriculum,40,Not a lesson (index),199,661,29,1,43,2,0,0,0,1,0,1,0,0,1,1,0,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/01_Vectors.md,_Curriculum,41,Superficial,449,1386,22,13,202,1,0,0,10,1,0,1,0,0,0,0,1,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/02_Linear_Independence_Basis.md,_Curriculum,49,Superficial,388,1501,20,9,170,1,0,0,8,1,0,1,0,0,1,0,1,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/03_Subspaces_Rank_Null_Space.md,_Curriculum,57,Needs expansion,490,1733,19,11,223,2,0,0,8,1,0,1,0,1,1,0,1,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/04_Matrices_as_Transformations.md,_Curriculum,45,Superficial,470,1046,24,15,243,0,0,0,8,1,0,0,0,1,1,0,1,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/05_Linear_Systems_Gaussian_Elimination.md,_Curriculum,51,Needs expansion,517,963,14,12,322,1,0,0,4,1,0,1,0,1,1,0,1,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/06_Determinants.md,_Curriculum,30,Superficial,347,956,17,10,146,1,0,0,8,1,0,0,0,0,0,0,1,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/07_Inverse_Rank_Full_Picture.md,_Curriculum,56,Needs expansion,463,1532,20,7,210,2,0,0,8,1,0,1,0,1,1,0,1,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/08_Orthogonality_Gram_Schmidt.md,_Curriculum,47,Superficial,507,1316,18,12,268,0,0,0,14,1,0,1,0,0,1,0,1,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/09_Projections_Least_Squares.md,_Curriculum,47,Superficial,515,1339,22,18,237,0,0,0,8,1,0,1,0,0,1,0,1,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/10_Eigenvalues_Eigenvectors.md,_Curriculum,47,Superficial,462,1358,16,12,218,2,0,0,8,1,0,1,0,0,1,0,1,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/11_Diagonalization.md,_Curriculum,29,Superficial,425,844,14,10,237,0,0,0,8,1,0,0,0,0,0,0,1,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/12_Spectral_Theorem_PCA.md,_Curriculum,46,Superficial,534,1212,19,12,297,1,0,0,9,1,0,0,0,1,0,1,1,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/13_SVD_Definition.md,_Curriculum,45,Superficial,446,1119,16,7,242,1,0,0,8,1,0,0,0,0,1,1,1,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/14_SVD_Applications.md,_Curriculum,55,Needs expansion,595,1456,38,12,313,3,0,0,8,1,0,1,0,0,1,1,1,1,0
+_Curriculum/S01/CSE103_Linear_Algebra/README.md,_Curriculum,59,Not a lesson (index),432,2122,23,3,130,7,0,0,0,3,0,1,0,1,1,1,0,1,0
+_Curriculum/S01/CSE104_Computer_Systems/01_Bits_Bytes_Data_Representation.md,_Curriculum,55,Needs expansion,433,1412,18,12,190,3,0,0,10,1,0,1,1,0,1,0,1,1,0
+_Curriculum/S01/CSE104_Computer_Systems/02_Integer_Arithmetic_Twos_Complement.md,_Curriculum,53,Needs expansion,418,1214,14,14,185,2,0,0,9,1,0,1,0,1,1,0,1,1,0
+_Curriculum/S01/CSE104_Computer_Systems/03_Floating_Point_IEEE754.md,_Curriculum,45,Superficial,461,1123,25,14,238,2,0,0,8,1,0,1,0,0,1,0,1,1,0
+_Curriculum/S01/CSE104_Computer_Systems/04_Machine_Code_Assembly.md,_Curriculum,44,Superficial,469,982,19,16,260,1,0,0,18,1,0,1,0,1,0,0,1,1,0
+_Curriculum/S01/CSE104_Computer_Systems/05_Processor_Architecture_Pipelining.md,_Curriculum,61,Needs expansion,356,1302,14,10,140,0,0,0,11,1,0,1,1,1,1,0,1,1,0
+_Curriculum/S01/CSE104_Computer_Systems/06_Memory_Hierarchy_Caching.md,_Curriculum,40,Superficial,377,1345,16,8,170,1,0,0,12,1,0,0,0,0,1,0,1,1,0
+_Curriculum/S01/CSE104_Computer_Systems/07_Linking_Loading_Build_Process.md,_Curriculum,48,Superficial,531,1463,22,22,231,0,0,0,31,1,0,1,0,0,1,0,1,1,0
+_Curriculum/S01/CSE104_Computer_Systems/08_Processes_System_Calls.md,_Curriculum,56,Needs expansion,566,1515,16,18,290,2,0,0,19,1,0,1,0,1,1,0,1,1,0
+_Curriculum/S01/CSE104_Computer_Systems/09_Virtual_Memory.md,_Curriculum,42,Superficial,434,1589,14,11,220,0,0,0,18,1,0,0,0,1,0,0,1,1,0
+_Curriculum/S01/CSE104_Computer_Systems/10_Dynamic_Memory_Heap.md,_Curriculum,55,Needs expansion,513,1438,22,18,256,0,0,0,10,1,0,1,0,1,1,0,1,1,0
+_Curriculum/S01/CSE104_Computer_Systems/11_Threads_Synchronization.md,_Curriculum,53,Needs expansion,652,1174,18,25,393,0,0,0,10,1,0,1,0,0,1,1,1,1,0
+_Curriculum/S01/CSE104_Computer_Systems/12_IO_Files_Unix_Philosophy.md,_Curriculum,61,Needs expansion,478,1375,21,16,240,1,0,0,21,1,0,1,0,1,1,1,1,1,0
+_Curriculum/S01/CSE104_Computer_Systems/README.md,_Curriculum,25,Not a lesson (index),79,457,6,1,1,2,0,0,0,0,0,1,0,1,0,0,0,1,0
+_Curriculum/S01/README.md,_Curriculum,1,Not a lesson (index),39,159,6,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+_Curriculum/S02/CSE201_Data_Structures/README.md,_Curriculum,57,Not a lesson (index),356,1941,26,2,53,16,0,0,0,2,0,1,0,1,1,1,0,1,0
+_Curriculum/S02/CSE202_Algorithms_And_Complexity/README.md,_Curriculum,53,Not a lesson (index),304,1493,26,2,48,11,0,0,0,2,0,1,0,1,1,1,0,1,0
+_Curriculum/S02/CSE203_Probability_And_Statistics/01_Probability_Axioms_Sample_Spaces.md,_Curriculum,37,Superficial,330,990,11,13,150,0,0,0,12,1,0,1,0,0,0,0,1,1,0
+_Curriculum/S02/CSE203_Probability_And_Statistics/02_Counting_Permutations_Combinations.md,_Curriculum,45,Superficial,395,1054,11,24,171,0,0,0,10,1,0,1,0,0,0,1,1,1,0
+_Curriculum/S02/CSE203_Probability_And_Statistics/03_Conditional_Probability_Independence.md,_Curriculum,45,Superficial,322,1063,13,14,123,0,0,0,10,1,0,1,0,0,1,0,1,1,0
+_Curriculum/S02/CSE203_Probability_And_Statistics/04_Bayes_Theorem_Total_Probability.md,_Curriculum,47,Superficial,366,1268,11,13,166,0,0,0,10,1,0,1,1,0,0,0,1,1,0
+_Curriculum/S02/CSE203_Probability_And_Statistics/05_Discrete_Random_Variables_Expectation.md,_Curriculum,45,Superficial,387,1061,12,21,168,0,0,0,10,1,0,1,0,0,1,0,1,1,0
+_Curriculum/S02/CSE203_Probability_And_Statistics/06_Common_Discrete_Distributions.md,_Curriculum,54,Needs expansion,405,1288,10,15,200,0,0,0,10,1,0,1,0,0,1,1,1,1,0
+_Curriculum/S02/CSE203_Probability_And_Statistics/07_Continuous_Random_Variables_PDF.md,_Curriculum,37,Superficial,356,955,11,14,159,1,0,0,10,1,0,1,0,0,0,0,1,1,0
+_Curriculum/S02/CSE203_Probability_And_Statistics/08_Normal_Distribution_CLT.md,_Curriculum,46,Superficial,389,1148,17,18,170,0,0,0,10,1,0,0,0,0,1,1,1,1,0
+_Curriculum/S02/CSE203_Probability_And_Statistics/09_Joint_Distributions_Covariance.md,_Curriculum,38,Superficial,401,1081,14,19,162,0,0,0,12,1,0,1,0,0,0,0,1,1,0
+_Curriculum/S02/CSE203_Probability_And_Statistics/10_Inequalities_LLN_Convergence.md,_Curriculum,45,Superficial,339,1137,10,13,155,0,0,0,10,1,0,1,0,0,1,0,1,1,0
+_Curriculum/S02/CSE203_Probability_And_Statistics/11_Hypothesis_Testing_P_Values.md,_Curriculum,61,Needs expansion,334,1352,14,9,121,0,0,0,10,1,0,1,1,0,1,1,1,1,0
+_Curriculum/S02/CSE203_Probability_And_Statistics/12_Confidence_Intervals_AB_Testing.md,_Curriculum,50,Needs expansion,480,1625,14,17,194,2,0,0,11,1,0,1,1,0,1,0,0,1,0
+_Curriculum/S02/CSE203_Probability_And_Statistics/README.md,_Curriculum,19,Not a lesson (index),79,376,6,1,19,3,0,0,0,0,0,1,0,0,1,0,0,0,0
+_Curriculum/S02/CSE204_Computer_Architecture/01_ISA_RISC_vs_CISC.md,_Curriculum,51,Needs expansion,397,1782,15,11,156,1,0,0,10,1,0,1,1,0,1,0,0,1,0
+_Curriculum/S02/CSE204_Computer_Architecture/02_Single_Cycle_Datapath.md,_Curriculum,46,Superficial,437,1211,16,11,252,1,0,0,32,1,0,1,0,1,1,0,0,1,0
+_Curriculum/S02/CSE204_Computer_Architecture/03_Pipelining.md,_Curriculum,46,Superficial,366,1153,13,13,159,1,0,0,13,1,0,1,0,1,1,0,0,1,0
+_Curriculum/S02/CSE204_Computer_Architecture/04_Pipeline_Hazards.md,_Curriculum,40,Superficial,431,1364,12,17,212,1,0,0,10,1,0,1,0,0,1,0,0,1,0
+_Curriculum/S02/CSE204_Computer_Architecture/05_Branch_Prediction.md,_Curriculum,47,Superficial,449,1350,13,14,226,0,0,0,10,1,0,1,1,0,1,0,0,1,0
+_Curriculum/S02/CSE204_Computer_Architecture/06_Cache_Design_AMAT.md,_Curriculum,41,Superficial,419,1395,14,11,195,0,0,0,12,1,0,1,0,0,1,0,0,1,0
+_Curriculum/S02/CSE204_Computer_Architecture/07_Cache_Replacement_Write_Policies.md,_Curriculum,57,Needs expansion,438,1627,17,9,206,0,0,0,10,1,0,1,1,1,1,0,0,1,0
+_Curriculum/S02/CSE204_Computer_Architecture/08_Virtual_Memory_Quantitative.md,_Curriculum,49,Superficial,427,1504,13,14,213,0,0,0,10,1,0,1,0,1,0,1,0,1,0
+_Curriculum/S02/CSE204_Computer_Architecture/09_IO_Subsystems_DMA.md,_Curriculum,56,Needs expansion,406,1595,13,10,181,2,0,0,12,1,0,1,0,1,1,1,0,1,0
+_Curriculum/S02/CSE204_Computer_Architecture/10_Performance_Analysis.md,_Curriculum,48,Superficial,512,1478,13,14,268,2,0,0,12,1,0,1,0,0,1,0,0,1,1
+_Curriculum/S02/CSE204_Computer_Architecture/README.md,_Curriculum,10,Not a lesson (index),48,310,6,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0
+_Curriculum/S02/README.md,_Curriculum,2,Not a lesson (index),41,181,6,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+_Curriculum/S03/CSE301_OOP_And_Design_Patterns/README.md,_Curriculum,42,Not a lesson (index),221,1014,19,1,30,8,0,0,0,1,0,1,0,0,1,1,0,1,0
+_Curriculum/S03/CSE302_Databases_And_SQL/README.md,_Curriculum,50,Not a lesson (index),248,1221,28,1,23,7,0,0,0,1,0,1,0,1,1,0,1,1,0
+_Curriculum/S03/CSE303_Theory_Of_Computation/01_DFA_Finite_Automata.md,_Curriculum,40,Superficial,369,1316,13,12,158,0,0,0,10,1,0,1,0,0,0,1,0,1,0
+_Curriculum/S03/CSE303_Theory_Of_Computation/02_NFA_Epsilon_Closure.md,_Curriculum,33,Superficial,399,1261,12,10,194,0,0,0,10,1,0,1,0,0,0,0,0,1,0
+_Curriculum/S03/CSE303_Theory_Of_Computation/03_Regular_Expressions.md,_Curriculum,40,Superficial,440,1297,11,12,220,1,0,0,11,1,0,1,0,0,1,0,0,1,0
+_Curriculum/S03/CSE303_Theory_Of_Computation/04_Pumping_Lemma.md,_Curriculum,41,Superficial,333,1481,12,5,147,0,0,0,12,1,0,1,0,0,0,0,1,1,0
+_Curriculum/S03/CSE303_Theory_Of_Computation/05_Context_Free_Grammars.md,_Curriculum,46,Superficial,649,2282,28,39,162,2,0,0,0,5,0,1,0,0,1,0,0,1,0
+_Curriculum/S03/CSE303_Theory_Of_Computation/06_Pushdown_Automata.md,_Curriculum,51,Needs expansion,538,2850,16,16,95,5,0,0,0,5,0,1,0,0,1,0,0,1,0
+_Curriculum/S03/CSE303_Theory_Of_Computation/07_Pumping_Lemma_CFLs.md,_Curriculum,63,Needs expansion,471,3495,17,10,40,2,0,0,0,5,0,1,0,0,1,1,0,1,0
+_Curriculum/S03/CSE303_Theory_Of_Computation/08_Turing_Machines.md,_Curriculum,51,Needs expansion,478,2897,25,5,47,1,0,0,0,5,0,1,0,0,1,0,0,1,0
+_Curriculum/S03/CSE303_Theory_Of_Computation/09_Decidability_Halting_Problem.md,_Curriculum,48,Superficial,486,2509,16,18,52,1,0,0,0,5,0,1,0,0,1,0,0,1,0
+_Curriculum/S03/CSE303_Theory_Of_Computation/10_Complexity_P_vs_NP.md,_Curriculum,56,Needs expansion,407,2790,20,7,20,2,0,0,0,5,0,1,0,1,1,0,0,1,0
+_Curriculum/S03/CSE303_Theory_Of_Computation/11_NP_Completeness.md,_Curriculum,64,Needs expansion,581,3826,16,11,52,3,0,0,0,5,0,1,0,0,1,0,1,1,0
+_Curriculum/S03/CSE303_Theory_Of_Computation/README.md,_Curriculum,9,Not a lesson (index),39,255,5,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0
+_Curriculum/S03/CSE304_Numerical_Methods/01_Floating_Point_Error_Analysis.md,_Curriculum,44,Superficial,473,2030,21,30,77,2,0,0,0,5,0,1,0,0,1,0,0,1,0
+_Curriculum/S03/CSE304_Numerical_Methods/02_Root_Finding.md,_Curriculum,48,Superficial,447,1691,15,29,70,2,0,0,0,5,0,1,0,1,0,0,1,1,0
+_Curriculum/S03/CSE304_Numerical_Methods/03_Linear_Systems_Direct.md,_Curriculum,65,Needs expansion,561,1985,15,38,128,1,0,0,0,5,0,1,0,1,1,1,1,1,0
+_Curriculum/S03/CSE304_Numerical_Methods/04_Linear_Systems_Iterative.md,_Curriculum,54,Needs expansion,474,2362,17,19,70,4,0,0,0,5,0,1,0,0,1,1,0,1,0
+_Curriculum/S03/CSE304_Numerical_Methods/05_Polynomial_Interpolation.md,_Curriculum,44,Superficial,476,2026,18,29,79,1,0,0,0,5,0,1,0,0,1,0,0,1,0
+_Curriculum/S03/CSE304_Numerical_Methods/06_Least_Squares.md,_Curriculum,56,Needs expansion,454,1816,15,32,72,1,0,0,0,5,0,1,0,1,1,1,0,1,0
+_Curriculum/S03/CSE304_Numerical_Methods/07_Numerical_Differentiation.md,_Curriculum,57,Needs expansion,490,1907,13,36,82,2,0,0,0,5,0,1,0,1,1,0,1,1,0
+_Curriculum/S03/CSE304_Numerical_Methods/08_Numerical_Integration.md,_Curriculum,45,Superficial,518,2171,20,27,81,3,0,0,0,5,0,0,0,0,1,1,0,1,0
+_Curriculum/S03/CSE304_Numerical_Methods/09_ODE_Initial_Value.md,_Curriculum,54,Needs expansion,461,2360,17,22,54,2,0,0,0,5,0,1,0,0,1,1,0,1,0
+_Curriculum/S03/CSE304_Numerical_Methods/10_ODE_Boundary_Value.md,_Curriculum,69,Needs expansion,419,2567,15,19,38,1,0,0,0,5,0,1,0,0,1,1,1,1,1
+_Curriculum/S03/CSE304_Numerical_Methods/11_Eigenvalue_Problems.md,_Curriculum,56,Needs expansion,427,2722,12,18,35,1,0,0,0,5,0,1,0,0,1,1,0,1,0
+_Curriculum/S03/CSE304_Numerical_Methods/12_FFT_Applications.md,_Curriculum,62,Needs expansion,539,3245,16,20,53,3,0,0,1,5,0,1,0,0,1,1,0,1,0
+_Curriculum/S03/CSE304_Numerical_Methods/README.md,_Curriculum,9,Not a lesson (index),40,264,5,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0
+_Curriculum/S03/README.md,_Curriculum,1,Not a lesson (index),17,68,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+_Curriculum/S04/CSE401_Operating_Systems/README.md,_Curriculum,80,Not a lesson (index),1096,6954,35,20,256,27,0,0,6,14,0,1,0,1,1,1,1,1,0
+_Curriculum/S04/CSE402_Computer_Networks/README.md,_Curriculum,80,Not a lesson (index),995,4688,78,24,417,19,0,0,4,4,0,1,0,1,1,1,1,1,0
+_Curriculum/S04/CSE403_Cryptography_And_Security/01_Classical_Ciphers_Cryptanalysis.md,_Curriculum,88,Strong,251,3307,11,6,17,3,0,0,0,3,0,1,1,1,1,1,1,1,1
+_Curriculum/S04/CSE403_Cryptography_And_Security/02_Perfect_Secrecy_One_Time_Pad.md,_Curriculum,66,Needs expansion,196,3296,10,2,10,2,0,0,0,3,0,1,1,0,1,0,0,1,1
+_Curriculum/S04/CSE403_Cryptography_And_Security/03_Block_Ciphers_AES.md,_Curriculum,92,Strong,354,6970,14,10,42,3,0,0,0,3,0,1,1,1,1,1,1,1,1
+_Curriculum/S04/CSE403_Cryptography_And_Security/04_Modes_Of_Operation.md,_Curriculum,85,Strong,250,5226,10,9,37,1,0,0,0,3,0,1,0,1,1,1,1,1,1
+_Curriculum/S04/CSE403_Cryptography_And_Security/05_Number_Theory_Foundations.md,_Curriculum,70,Strong,238,3545,10,7,28,2,0,0,0,3,0,1,0,1,1,0,0,1,1
+_Curriculum/S04/CSE403_Cryptography_And_Security/06_RSA.md,_Curriculum,84,Strong,229,3753,10,8,33,1,0,0,0,3,0,1,1,1,1,0,1,1,1
+_Curriculum/S04/CSE403_Cryptography_And_Security/07_Diffie_Hellman_ECC.md,_Curriculum,68,Needs expansion,198,3359,8,5,33,1,0,0,0,3,0,1,0,0,1,1,0,1,1
+_Curriculum/S04/CSE403_Cryptography_And_Security/08_Cryptographic_Hash_Functions.md,_Curriculum,77,Strong,201,3900,10,8,21,1,0,0,0,3,0,1,1,1,1,0,0,1,1
+_Curriculum/S04/CSE403_Cryptography_And_Security/09_MACs_Digital_Signatures.md,_Curriculum,84,Strong,188,3895,9,4,22,1,0,0,0,3,0,1,0,1,1,1,1,1,1
+_Curriculum/S04/CSE403_Cryptography_And_Security/10_Password_Storage_Key_Derivation.md,_Curriculum,69,Needs expansion,223,3481,10,9,33,1,0,0,0,3,0,1,0,1,1,0,0,1,1
+_Curriculum/S04/CSE403_Cryptography_And_Security/11_TLS_SSL_PKI.md,_Curriculum,61,Needs expansion,150,3557,8,2,10,1,0,0,0,3,0,1,0,1,1,0,0,1,0
+_Curriculum/S04/CSE403_Cryptography_And_Security/12_Web_Vulnerabilities_OWASP.md,_Curriculum,66,Needs expansion,211,3032,9,11,33,1,0,0,0,3,0,1,0,1,1,0,1,1,0
+_Curriculum/S04/CSE403_Cryptography_And_Security/13_Threat_Modeling_Secure_SDLC.md,_Curriculum,70,Strong,180,3666,9,1,22,2,0,0,0,3,0,1,0,1,1,0,1,1,0
+_Curriculum/S04/CSE403_Cryptography_And_Security/README.md,_Curriculum,10,Not a lesson (index),43,300,5,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0
+_Curriculum/S04/CSE404_Information_Retrieval/01_Boolean_Retrieval_Inverted_Index.md,_Curriculum,57,Not a lesson (index),266,2789,13,12,64,2,0,0,0,3,0,1,0,1,1,0,0,1,0
+_Curriculum/S04/CSE404_Information_Retrieval/02_Dictionaries_Wildcards_Spelling_Correction.md,_Curriculum,71,Strong,363,5116,14,24,88,1,0,0,0,3,0,1,0,1,1,0,1,1,0
+_Curriculum/S04/CSE404_Information_Retrieval/03_Vector_Space_Model_TFIDF.md,_Curriculum,78,Strong,316,4596,14,19,100,1,0,0,0,3,0,1,0,1,1,0,1,1,1
+_Curriculum/S04/CSE404_Information_Retrieval/04_BM25_Language_Models.md,_Curriculum,64,Needs expansion,326,3776,13,27,91,1,0,0,0,3,0,1,0,1,1,0,0,1,0
+_Curriculum/S04/CSE404_Information_Retrieval/05_Link_Analysis_PageRank.md,_Curriculum,71,Strong,264,4582,13,14,69,1,0,0,0,3,0,1,0,1,1,0,1,1,0
+_Curriculum/S04/CSE404_Information_Retrieval/06_Evaluating_IR_Systems.md,_Curriculum,63,Needs expansion,270,3496,14,20,64,1,0,0,0,3,0,1,0,1,1,0,0,1,0
+_Curriculum/S04/CSE404_Information_Retrieval/07_Text_Preprocessing.md,_Curriculum,78,Strong,251,3916,13,13,77,1,0,0,0,3,0,1,0,1,1,1,1,1,0
+_Curriculum/S04/CSE404_Information_Retrieval/08_Dense_Retrieval_RAG.md,_Curriculum,71,Strong,239,4282,12,11,81,1,0,0,0,3,0,1,0,1,1,0,1,1,0
+_Curriculum/S04/CSE404_Information_Retrieval/README.md,_Curriculum,2,Not a lesson (index),38,272,5,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+_Curriculum/S04/README.md,_Curriculum,8,Not a lesson (index),17,68,2,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0
+_Curriculum/S05/CSE501_JavaScript_And_TypeScript_Deep_Dive/README.md,_Curriculum,40,Not a lesson (index),192,812,23,1,31,4,0,0,0,1,0,1,0,1,1,0,0,1,0
+_Curriculum/S05/CSE502_React_And_Frontend_Architecture/README.md,_Curriculum,33,Not a lesson (index),192,688,18,1,43,3,0,0,0,1,0,1,0,0,1,0,0,1,0
+_Curriculum/S05/CSE503_CSS_And_Design_Systems/README.md,_Curriculum,40,Not a lesson (index),185,689,21,1,40,3,0,0,0,1,0,1,0,0,1,0,1,1,0
+_Curriculum/S05/CSE504_Frontend_Integration_And_Performance/README.md,_Curriculum,32,Not a lesson (index),181,651,21,1,36,2,0,0,0,1,0,0,0,0,1,0,1,1,0
+_Curriculum/S05/README.md,_Curriculum,1,Not a lesson (index),33,177,4,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+_Curriculum/S06/CSE601_Spring_Boot_And_Microservices/README.md,_Curriculum,33,Not a lesson (index),190,676,25,1,40,3,0,0,0,1,0,0,0,1,1,0,0,1,0
+_Curriculum/S06/CSE602_API_Design_And_Testing/README.md,_Curriculum,47,Not a lesson (index),202,756,26,1,35,3,0,0,0,1,0,0,1,1,1,1,0,1,0
+_Curriculum/S06/CSE603_DevOps_And_CICD/README.md,_Curriculum,27,Not a lesson (index),152,675,28,0,0,2,0,0,0,0,0,0,0,1,1,0,0,1,0
+_Curriculum/S06/CSE604_Java_Concurrency_And_JVM_Internals/README.md,_Curriculum,33,Not a lesson (index),183,663,24,1,40,2,0,0,0,1,0,0,0,1,1,0,0,1,0
+_Curriculum/S06/README.md,_Curriculum,9,Not a lesson (index),34,205,4,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0
+_Curriculum/S07/CSE701_Compilers_And_Language_Processing/01_Lexical_Analysis_Tokens_And_Scanning.md,_Curriculum,59,Needs expansion,264,3022,13,13,32,2,0,0,0,3,0,1,0,1,1,0,0,1,0
+_Curriculum/S07/CSE701_Compilers_And_Language_Processing/02_Recursive_Descent_LL_Parsing.md,_Curriculum,74,Strong,345,3132,12,22,79,1,0,0,0,3,0,1,0,1,1,1,1,1,0
+_Curriculum/S07/CSE701_Compilers_And_Language_Processing/03_Bottom_Up_LR_Parsing.md,_Curriculum,69,Needs expansion,262,3328,13,10,46,1,0,0,0,3,0,1,0,1,1,0,1,1,0
+_Curriculum/S07/CSE701_Compilers_And_Language_Processing/04_AST_And_Visitor_Pattern.md,_Curriculum,59,Needs expansion,273,2987,10,10,60,2,0,0,0,3,0,1,0,0,1,1,0,1,0
+_Curriculum/S07/CSE701_Compilers_And_Language_Processing/05_Semantic_Analysis_Symbol_Tables.md,_Curriculum,70,Strong,245,2616,10,12,42,1,0,0,0,3,0,1,1,1,1,0,1,1,0
+_Curriculum/S07/CSE701_Compilers_And_Language_Processing/06_Type_Checking_And_Inference.md,_Curriculum,63,Needs expansion,237,2786,11,12,22,2,0,0,0,3,0,1,0,0,1,1,1,1,0
+_Curriculum/S07/CSE701_Compilers_And_Language_Processing/07_Intermediate_Representation_CFG.md,_Curriculum,55,Needs expansion,214,2618,11,5,35,2,0,0,0,3,0,1,0,0,1,1,0,1,0
+_Curriculum/S07/CSE701_Compilers_And_Language_Processing/08_Code_Generation_Register_Allocation.md,_Curriculum,55,Needs expansion,218,2578,10,7,39,1,0,0,0,3,0,1,0,1,0,1,0,1,0
+_Curriculum/S07/CSE701_Compilers_And_Language_Processing/09_Optimization_Dataflow_Passes.md,_Curriculum,49,Superficial,246,2701,13,9,33,3,0,0,0,3,0,1,0,0,1,0,0,1,0
+_Curriculum/S07/CSE701_Compilers_And_Language_Processing/10_SSA_Form_And_JIT_Compilation.md,_Curriculum,59,Needs expansion,230,3147,10,7,25,3,0,0,0,3,0,1,0,1,1,0,0,1,0
+_Curriculum/S07/CSE701_Compilers_And_Language_Processing/README.md,_Curriculum,17,Not a lesson (index),55,386,6,0,0,2,0,0,0,0,0,0,0,1,0,0,0,1,0
+_Curriculum/S07/CSE702_Distributed_Systems/01_Fundamentals_Partial_Failure_Timing_Models.md,_Curriculum,52,Needs expansion,130,2468,9,2,8,2,0,0,0,3,0,1,0,0,1,0,1,1,0
+_Curriculum/S07/CSE702_Distributed_Systems/02_CAP_Theorem_PACELC.md,_Curriculum,77,Strong,163,3614,12,6,30,1,0,0,0,3,0,1,0,1,1,1,1,1,0
+_Curriculum/S07/CSE702_Distributed_Systems/03_Logical_Clocks_Lamport_Vector.md,_Curriculum,68,Not a lesson (practice-log),169,3368,11,4,21,2,0,0,0,3,0,1,1,1,1,0,0,1,0
+_Curriculum/S07/CSE702_Distributed_Systems/04_Consensus_Paxos.md,_Curriculum,69,Needs expansion,156,3438,12,5,27,1,0,0,0,3,0,1,1,1,1,0,0,1,0
+_Curriculum/S07/CSE702_Distributed_Systems/05_Consensus_Raft.md,_Curriculum,73,Strong,188,2969,11,9,56,1,0,0,0,3,0,1,1,1,1,1,0,1,0
+_Curriculum/S07/CSE702_Distributed_Systems/06_Replication_Strategies.md,_Curriculum,58,Needs expansion,159,2906,9,6,44,1,0,0,0,3,0,1,0,1,1,0,0,1,0
+_Curriculum/S07/CSE702_Distributed_Systems/07_Partitioning_Consistent_Hashing.md,_Curriculum,67,Needs expansion,121,2494,10,5,16,1,0,0,0,3,0,1,1,1,1,0,1,1,0
+_Curriculum/S07/CSE702_Distributed_Systems/08_Distributed_Transactions_2PC_3PC.md,_Curriculum,61,Needs expansion,174,3187,11,5,52,1,0,0,0,3,0,1,0,0,1,0,1,1,0
+_Curriculum/S07/CSE702_Distributed_Systems/README.md,_Curriculum,17,Not a lesson (index),59,399,7,0,0,2,0,0,0,0,0,0,0,0,1,1,0,0,0
+_Curriculum/S07/CSE703_Machine_Learning/README.md,_Curriculum,39,Not a lesson (index),195,631,27,1,46,2,0,0,0,1,0,0,0,1,1,0,1,1,0
+_Curriculum/S07/CSE704_Advanced_Algorithms/01_SCC_Tarjan_Johnsons_Shortest_Paths.md,_Curriculum,48,Superficial,148,2794,13,3,10,1,0,0,0,3,0,1,0,0,1,0,0,1,0
+_Curriculum/S07/CSE704_Advanced_Algorithms/02_Maximum_Flow_Ford_Fulkerson_Dinic.md,_Curriculum,77,Strong,185,3614,12,8,31,1,0,0,0,3,0,1,1,1,1,1,0,1,0
+_Curriculum/S07/CSE704_Advanced_Algorithms/03_Matchings_Bipartite_Hungarian.md,_Curriculum,54,Needs expansion,143,2529,9,7,25,1,0,0,0,3,0,1,0,0,1,0,1,1,0
+_Curriculum/S07/CSE704_Advanced_Algorithms/04_Linear_Programming_Simplex_Duality.md,_Curriculum,46,Superficial,162,2299,10,8,41,1,0,0,0,3,0,1,0,1,0,0,0,1,0
+_Curriculum/S07/CSE704_Advanced_Algorithms/05_ILP_Branch_And_Bound_Cutting_Planes.md,_Curriculum,50,Needs expansion,134,2027,8,7,24,1,0,0,0,3,0,1,0,1,1,0,0,1,0
+_Curriculum/S07/CSE704_Advanced_Algorithms/06_PTAS_FPTAS.md,_Curriculum,56,Needs expansion,106,2080,8,3,15,1,0,0,0,3,0,1,0,1,1,1,0,1,0
+_Curriculum/S07/CSE704_Advanced_Algorithms/07_Kargers_MinCut_Chernoff_Bounds.md,_Curriculum,47,Superficial,165,2554,13,10,25,1,0,0,0,3,0,1,0,0,1,0,0,1,0
+_Curriculum/S07/CSE704_Advanced_Algorithms/08_Parameterized_Complexity_FPT_Kernelization.md,_Curriculum,52,Needs expansion,104,2334,9,2,21,1,0,0,0,3,0,1,0,1,1,0,0,1,0
+_Curriculum/S07/CSE704_Advanced_Algorithms/README.md,_Curriculum,10,Not a lesson (index),57,415,7,0,0,2,0,0,0,0,0,0,0,0,1,0,0,0,0
+_Curriculum/S07/README.md,_Curriculum,2,Not a lesson (index),31,191,4,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+_Curriculum/S08/CSE801_Capstone_Project/01_Scoping_A_Capstone.md,_Curriculum,71,Strong,212,2920,15,1,18,3,0,0,0,3,0,1,1,1,1,0,1,1,0
+_Curriculum/S08/CSE801_Capstone_Project/02_Architecture_And_Design_Documents.md,_Curriculum,64,Needs expansion,218,2824,17,2,30,4,0,0,0,3,0,1,0,1,1,0,1,1,0
+_Curriculum/S08/CSE801_Capstone_Project/03_Milestones_And_Execution.md,_Curriculum,49,Superficial,194,3027,10,0,0,2,0,0,0,3,0,1,0,1,0,0,0,1,0
+_Curriculum/S08/CSE801_Capstone_Project/04_Testing_And_Quality_Strategy.md,_Curriculum,61,Needs expansion,180,2786,10,0,0,3,0,0,0,3,0,1,0,1,1,0,1,1,0
+_Curriculum/S08/CSE801_Capstone_Project/05_Shipping_And_Reproducibility.md,_Curriculum,57,Needs expansion,202,3081,11,2,2,1,0,0,0,3,0,1,1,0,1,0,0,1,0
+_Curriculum/S08/CSE801_Capstone_Project/06_Documentation_And_Presentation.md,_Curriculum,63,Needs expansion,222,2924,11,2,14,2,0,0,0,3,0,1,0,1,1,0,1,1,0
+_Curriculum/S08/CSE801_Capstone_Project/README.md,_Curriculum,17,Not a lesson (index),51,378,7,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0
+_Curriculum/S08/CSE802_Human_Computer_Interaction/01_HCI_Foundations_Fitts_Hick_Cognitive_Load.md,_Curriculum,68,Needs expansion,205,3373,11,8,22,1,0,0,0,3,0,1,0,1,1,1,0,1,0
+_Curriculum/S08/CSE802_Human_Computer_Interaction/02_User_Centered_Design_Process.md,_Curriculum,82,Strong,151,3718,11,0,0,2,0,0,0,3,0,1,1,1,1,1,1,1,0
+_Curriculum/S08/CSE802_Human_Computer_Interaction/03_Usability_Heuristics_And_Evaluation.md,_Curriculum,62,Needs expansion,164,3680,10,4,16,1,0,0,0,3,0,1,0,1,1,0,0,1,0
+_Curriculum/S08/CSE802_Human_Computer_Interaction/04_Accessibility_POUR_Framework.md,_Curriculum,61,Needs expansion,166,3526,9,4,9,1,0,0,0,3,0,1,0,0,1,0,1,1,0
+_Curriculum/S08/CSE802_Human_Computer_Interaction/05_Prototyping_Methods.md,_Curriculum,66,Needs expansion,122,3341,10,0,0,1,0,0,0,3,0,1,0,1,1,0,1,1,0
+_Curriculum/S08/CSE802_Human_Computer_Interaction/06_Usability_Testing_And_Measurement.md,_Curriculum,69,Needs expansion,171,3902,10,3,16,1,0,0,0,3,0,1,1,1,1,0,0,1,0
+_Curriculum/S08/CSE802_Human_Computer_Interaction/README.md,_Curriculum,17,Not a lesson (index),55,376,7,0,0,2,0,0,0,0,0,0,1,0,0,0,1,0,0
+_Curriculum/S08/CSE803_Ethics_And_Professional_Practice/01_Professional_Ethics_Frameworks_And_Safety_Critical_Systems.md,_Curriculum,74,Strong,141,3203,10,3,28,1,1,1,0,3,0,1,1,1,1,0,1,1,0
+_Curriculum/S08/CSE803_Ethics_And_Professional_Practice/02_Data_Privacy_GDPR_CCPA_And_Surveillance.md,_Curriculum,77,Strong,233,5628,14,2,23,5,1,1,0,3,0,1,1,1,1,0,1,1,0
+_Curriculum/S08/CSE803_Ethics_And_Professional_Practice/03_AI_Ethics_Bias_Fairness_And_Explainability.md,_Curriculum,84,Strong,208,4762,11,3,25,6,1,1,0,3,0,1,1,1,1,1,0,1,1
+_Curriculum/S08/CSE803_Ethics_And_Professional_Practice/04_Intellectual_Property_And_Open_Source_Licensing.md,_Curriculum,77,Strong,222,5446,15,4,24,4,1,1,0,3,0,1,1,1,1,1,0,1,0
+_Curriculum/S08/CSE803_Ethics_And_Professional_Practice/05_Case_Studies_And_Ethical_Decision_Making.md,_Curriculum,78,Strong,237,5498,11,4,35,5,0,0,0,3,0,1,1,1,1,0,1,1,0
+_Curriculum/S08/CSE803_Ethics_And_Professional_Practice/06_Capstone_Ethical_Risk_Assessment.md,_Curriculum,78,Strong,339,5152,31,5,68,7,1,1,0,3,0,1,1,1,1,0,0,1,1
+_Curriculum/S08/CSE803_Ethics_And_Professional_Practice/README.md,_Curriculum,11,Not a lesson (index),50,496,7,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0
+_Curriculum/S08/CSE804_Career_Mastery_And_Interview_Readiness/README.md,_Curriculum,40,Not a lesson (index),195,701,23,1,40,2,0,0,0,1,0,1,0,1,1,0,0,1,0
+_Curriculum/S08/README.md,_Curriculum,9,Not a lesson (index),32,185,4,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0
+_Curriculum/TEMPLATES/assignment_template.md,_Curriculum,7,Not a lesson (reference),30,38,6,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0
+_Curriculum/TEMPLATES/lab_template.md,_Curriculum,7,Not a lesson (reference),33,51,5,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0
+_Curriculum/TEMPLATES/lecture_template.md,_Curriculum,0,Not a lesson (reference),39,52,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+_Curriculum/TEMPLATES/project_template.md,_Curriculum,0,Not a lesson (reference),34,48,6,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+_Curriculum/TEMPLATES/rubric_template.md,_Curriculum,1,Not a lesson (reference),26,61,4,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+knowledge_extraction_agent.prompt.md,(root),9,Superficial,32,184,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
