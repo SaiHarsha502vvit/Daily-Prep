@@ -10,45 +10,48 @@
 **WHERE** — SAP (R/3, ECC, S/4HANA), Oracle ERP Cloud, Workday, Microsoft Dynamics; integration via RFC/BAPI/IDoc/OData/Kafka; AP/AR via FBL5N/FBL1N/SAP t-codes.
 **HOW** — Pattern → integration mechanism → failure mode → debug workflow (WE02, BD87, SMGW); taught via SAP-specific examples and Java code for greenfield integrations.
 
-    /**
-     * Automated Payment Run
-     *
-     * Scheduled job that pays all approved invoices due within X days
-     */
-    @Scheduled(cron = "0 0 9 * * MON,WED,FRI")  // 9 AM on Mon, Wed, Fri
-    @Transactional
-    public PaymentBatch runPaymentBatch() {
+## 💸 Accounts Payable - Automated Payment Run
 
-        LocalDate paymentDate = LocalDate.now();
-        LocalDate dueCutoff = paymentDate.plusDays(3);  // Pay invoices due in 3 days
+```java
+/**
+ * Automated Payment Run
+ *
+ * Scheduled job that pays all approved invoices due within X days
+ */
+@Scheduled(cron = "0 0 9 * * MON,WED,FRI")  // 9 AM on Mon, Wed, Fri
+@Transactional
+public PaymentBatch runPaymentBatch() {
 
-        // Find all approved, unpaid invoices due soon
-        List<VendorInvoice> invoicesToPay = invoiceRepository
-            .findByStatusAndDueDateLessThanEqual(
-                InvoiceStatus.APPROVED,
-                dueCutoff
-            );
+    LocalDate paymentDate = LocalDate.now();
+    LocalDate dueCutoff = paymentDate.plusDays(3);  // Pay invoices due in 3 days
 
-        // Group by vendor (one payment per vendor)
-        Map<Vendor, List<VendorInvoice>> byVendor = invoicesToPay.stream()
-            .collect(Collectors.groupingBy(VendorInvoice::getVendor));
+    // Find all approved, unpaid invoices due soon
+    List<VendorInvoice> invoicesToPay = invoiceRepository
+        .findByStatusAndDueDateLessThanEqual(
+            InvoiceStatus.APPROVED,
+            dueCutoff
+        );
 
-        PaymentBatch batch = new PaymentBatch();
-        batch.setPaymentDate(paymentDate);
+    // Group by vendor (one payment per vendor)
+    Map<Vendor, List<VendorInvoice>> byVendor = invoicesToPay.stream()
+        .collect(Collectors.groupingBy(VendorInvoice::getVendor));
 
-        for (Map.Entry<Vendor, List<VendorInvoice>> entry : byVendor.entrySet()) {
-            Payment payment = createPayment(entry.getKey(), entry.getValue());
-            batch.addPayment(payment);
-        }
+    PaymentBatch batch = new PaymentBatch();
+    batch.setPaymentDate(paymentDate);
 
-        // Generate payment file for bank
-        String paymentFile = generateBankPaymentFile(batch);
-
-        // Upload to bank via API
-        bankService.submitPayments(paymentFile);
-
-        return batch;
+    for (Map.Entry<Vendor, List<VendorInvoice>> entry : byVendor.entrySet()) {
+        Payment payment = createPayment(entry.getKey(), entry.getValue());
+        batch.addPayment(payment);
     }
+
+    // Generate payment file for bank
+    String paymentFile = generateBankPaymentFile(batch);
+
+    // Upload to bank via API
+    bankService.submitPayments(paymentFile);
+
+    return batch;
+}
 }
 ```
 

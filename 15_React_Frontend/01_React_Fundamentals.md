@@ -937,6 +937,8 @@ sequenceDiagram
     New-->>R: [li#b "Banana", li#a "Apple"]
     Note over R: same keys, different order → MOVE existing DOM nodes;<br/>preserve each li's state (input drafts, animations, memo caches).<br/>(If you'd used index as key: React sees "li at index 0" changed<br/>text from "Apple" to "Banana", updates DOM textContent —<br/>silently reassigning state to the wrong row.)
     R->>DOM: reorder existing <li> nodes (no re-mount, no state loss)
+```
+
 ### Hydration: Server HTML → Interactive React
 
 **Trace what happens between "server got the request" and "the user

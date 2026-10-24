@@ -202,6 +202,8 @@ if (ready) {            // Volatile read — REFRESHES everything
 │       volatile read creates a READ BARRIER (LoadLoad + LoadStore)     │
 └───────────────────────────────────────────────────────────────────────┘
 
+```
+
 ```java
 // volatile does NOT make operations atomic!
 private volatile int counter = 0;
