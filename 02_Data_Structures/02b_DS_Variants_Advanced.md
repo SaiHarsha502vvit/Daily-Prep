@@ -822,64 +822,73 @@ Use the potential method / accounting argument: each element is pushed into the 
 
 ::: map
 
+### Binary tree variants overview
+
+```mermaid
+flowchart TD
+    BT["Binary tree"] --> FU["Full"]
+    BT --> CO["Complete"]
+    BT --> PE["Perfect"]
+    BT --> BA["Balanced"]
+    BT --> DE["Degenerate"]
+    classDef root fill:#e0e0e0,stroke:#616161,color:#111
+    classDef good fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef bad fill:#ffc9c9,stroke:#c62828,color:#111
+    class BT root
+    class FU,CO,PE,BA good
+    class DE bad
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    BINARY TREE VARIANTS OVERVIEW                             ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-                        BINARY TREE
-                            │
-    ┌───────────┬───────────┼───────────┬───────────┐
-    │           │           │           │           │
-  FULL      COMPLETE     PERFECT    BALANCED    DEGENERATE
-    │           │           │           │           │
-    │           │           │           │           │
-    ▼           ▼           ▼           ▼           ▼
+| Type | Rule | Example |
+| ---- | ---- | ------- |
+| **Full** | Every node has 0 or 2 children (never 1) | `1` → `2, 3`; `2` → `4, 5` |
+| **Complete** | All levels filled except possibly the last; last level filled as far **left** as possible | `1` → `2, 3`; `2` → `4, 5`; `3` → `6` |
+| **Perfect** | All internal nodes have 2 children and all leaves are at the same level | `1` → `2, 3`; `2` → `4, 5`; `3` → `6, 7` |
+| **Balanced** | Heights of the left and right subtrees differ by at most 1 (AVL is strictly balanced) | `4` → `2, 6`; `2` → `1`; `6` → `5, 7` |
+| **Degenerate** | Each parent has only one child: essentially a linked list | `1` → `2` → `3` (all on one side) |
 
-FULL BINARY TREE:
-Every node has 0 or 2 children (never 1)
-        1
-       / \
-      2   3
-     / \
-    4   5
+Visual examples:
 
-COMPLETE BINARY TREE:
-All levels filled except possibly last
-Last level has all nodes as far LEFT as possible
-        1
-       / \
-      2   3
-     / \  /
-    4  5 6
-
-PERFECT BINARY TREE:
-All internal nodes have 2 children
-All leaves at same level
-        1
-       / \
-      2   3
-     /\   /\
-    4  5 6  7
-
-BALANCED BINARY TREE:
-Height of left and right subtrees differ by at most 1
-(AVL tree is strictly balanced)
-        4
-       / \
-      2   6
-     /   / \
-    1   5   7
-
-DEGENERATE (Pathological):
-Each parent has only one child
-Essentially a linked list!
-    1
-     \
-      2
-       \
-        3
+```mermaid
+flowchart TD
+    subgraph F["Full"]
+        f1((1)) --> f2((2))
+        f1 --> f3((3))
+        f2 --> f4((4))
+        f2 --> f5((5))
+    end
+    subgraph C["Complete"]
+        c1((1)) --> c2((2))
+        c1 --> c3((3))
+        c2 --> c4((4))
+        c2 --> c5((5))
+        c3 --> c6((6))
+    end
+    subgraph P["Perfect"]
+        p1((1)) --> p2((2))
+        p1 --> p3((3))
+        p2 --> p4((4))
+        p2 --> p5((5))
+        p3 --> p6((6))
+        p3 --> p7((7))
+    end
+    subgraph B["Balanced (AVL)"]
+        b4((4)) --> b2((2))
+        b4 --> b6((6))
+        b2 --> b1((1))
+        b6 --> b5((5))
+        b6 --> b7((7))
+    end
+    subgraph D["Degenerate"]
+        d1((1)) --> d2((2)) --> d3((3))
+    end
+    classDef ok fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef bad fill:#ffc9c9,stroke:#c62828,color:#111
+    class f1,f2,f3,f4,f5,c1,c2,c3,c4,c5,c6,p1,p2,p3,p4,p5,p6,p7,b4,b2,b6,b1,b5,b7 ok
+    class d1,d2,d3 bad
 ```
+
+**How to read this diagram.** Each box draws one tree type from the table. Blue trees keep their height near log n; the red degenerate tree is a chain with height n.
 
 :::
 
@@ -1231,58 +1240,52 @@ B = Black, R = Red
 
 ::: pattern
 
+### Heap variants — complete guide
+
+**Heap types**
+
+| # | Type | Rule / property | Notes |
+| - | ---- | --------------- | ----- |
+| 1 | **Min heap** | Parent ≤ children | Minimum at the root |
+| 2 | **Max heap** | Parent ≥ children | Maximum at the root |
+| 3 | **Binary heap** | Complete binary tree | The most common kind |
+| 4 | **D-ary heap** | Each node has D children (not just 2) | Shallower tree; used to optimize Dijkstra's algorithm |
+| 5 | **Fibonacci heap** | Amortized O(1) for many operations | Used in advanced graph algorithms; complex to implement |
+| 6 | **Binomial heap** | Collection of binomial trees | Efficient merge: O(log n) |
+
+```mermaid
+flowchart TD
+    subgraph MIN["Min heap - minimum at the root"]
+        a1((1)) --> a3((3))
+        a1 --> a6((6))
+        a3 --> a5((5))
+        a3 --> a9((9))
+    end
+    subgraph MAX["Max heap - maximum at the root"]
+        b9((9)) --> b6((6))
+        b9 --> b5((5))
+        b6 --> b3((3))
+        b6 --> b1((1))
+    end
+    classDef root fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class a1,b9 root
+    class a3,a6,a5,a9,b6,b5,b3,b1 node
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                       HEAP VARIANTS - COMPLETE GUIDE                         ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ HEAP TYPES                                                                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ 1. MIN HEAP: Parent ≤ Children                                              │
-│         1                                                                   │
-│        / \                                                                  │
-│       3   6                                                                 │
-│      / \                                                                    │
-│     5   9                                                                   │
-│    Min at root!                                                             │
-│                                                                             │
-│ 2. MAX HEAP: Parent ≥ Children                                              │
-│         9                                                                   │
-│        / \                                                                  │
-│       6   5                                                                 │
-│      / \                                                                    │
-│     3   1                                                                   │
-│    Max at root!                                                             │
-│                                                                             │
-│ 3. BINARY HEAP: Most common, complete binary tree                           │
-│                                                                             │
-│ 4. D-ARY HEAP: Each node has D children (not just 2)                        │
-│    - Shallower tree                                                         │
-│    - Used in Dijkstra's algorithm optimization                              │
-│                                                                             │
-│ 5. FIBONACCI HEAP: Amortized O(1) for many operations                       │
-│    - Used in advanced graph algorithms                                      │
-│    - Complex implementation                                                 │
-│                                                                             │
-│ 6. BINOMIAL HEAP: Collection of binomial trees                              │
-│    - Efficient merge: O(log n)                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** In the min heap every parent is ≤ its children; in the max heap every parent is ≥ its children. The orange node is the root, which is always the extreme value.
 
-ARRAY REPRESENTATION OF BINARY HEAP:
-For node at index i:
-• Parent: (i - 1) / 2
-• Left child: 2 * i + 1
-• Right child: 2 * i + 2
+**Array representation of a binary heap** — for the node at index `i`:
 
-Array: [1, 3, 6, 5, 9]
-Tree:      1      (index 0)
-          / \
-         3   6    (index 1, 2)
-        / \
-       5   9      (index 3, 4)
-```
+- Parent: `(i - 1) / 2`
+- Left child: `2 * i + 1`
+- Right child: `2 * i + 2`
+
+| Index | 0 | 1 | 2 | 3 | 4 |
+| ----- | - | - | - | - | - |
+| Value | 1 | 3 | 6 | 5 | 9 |
+
+The tree for `[1, 3, 6, 5, 9]` is the min heap drawn above: `1` at index 0, children `3` and `6` at indices 1 and 2, and `5`, `9` at indices 3 and 4 (children of `3`).
 
 :::
 
@@ -1473,59 +1476,51 @@ IdentityHashMap: Uses == instead of equals()
 
 ::: memory
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    DATA STRUCTURE SELECTION GUIDE                            ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Data structure selection guide
 
-LINKED LIST SELECTION:
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Need                            │ Use                                       │
-│ ──────────────────────────────────────────────────────────────────────────  │
-│ Simple forward traversal        │ Singly Linked List                        │
-│ Delete at tail / backward       │ Doubly Linked List                        │
-│ Round-robin / cycling           │ Circular Linked List                      │
-│ Both directions + cycling       │ Circular Doubly Linked List               │
-│ O(log n) search in sorted list  │ Skip List                                 │
-│ LRU Cache                       │ Doubly Linked + HashMap                   │
-└─────────────────────────────────────────────────────────────────────────────┘
+**Linked list selection**
 
-QUEUE SELECTION:
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Need                            │ Use                                       │
-│ ──────────────────────────────────────────────────────────────────────────  │
-│ Basic FIFO                      │ Simple Queue                              │
-│ Fixed size, no wasted space     │ Circular Queue                            │
-│ Add/remove both ends            │ Deque                                     │
-│ Priority-based access           │ Priority Queue (Heap)                     │
-│ Sliding window max/min          │ Monotonic Queue                           │
-└─────────────────────────────────────────────────────────────────────────────┘
+| Need | Use |
+| ---- | --- |
+| Simple forward traversal | Singly linked list |
+| Delete at tail / backward traversal | Doubly linked list |
+| Round-robin / cycling | Circular linked list |
+| Both directions + cycling | Circular doubly linked list |
+| O(log n) search in a sorted list | Skip list |
+| LRU cache | Doubly linked list + HashMap |
 
-TREE SELECTION:
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Need                            │ Use                                       │
-│ ──────────────────────────────────────────────────────────────────────────  │
-│ Basic sorted structure          │ BST                                       │
-│ Guaranteed O(log n)             │ AVL or Red-Black Tree                     │
-│ Lookup-heavy                    │ AVL Tree                                  │
-│ Insert/Delete-heavy             │ Red-Black Tree                            │
-│ Range queries                   │ Segment Tree                              │
-│ Prefix operations               │ Trie                                      │
-│ Top-k / Priority                │ Heap                                      │
-│ Database index                  │ B-Tree / B+ Tree                          │
-└─────────────────────────────────────────────────────────────────────────────┘
+**Queue selection**
 
-HASH TABLE SELECTION:
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Need                            │ Use                                       │
-│ ──────────────────────────────────────────────────────────────────────────  │
-│ Basic key-value                 │ HashMap                                   │
-│ Maintain insertion order        │ LinkedHashMap                             │
-│ Sorted keys                     │ TreeMap                                   │
-│ Thread-safe                     │ ConcurrentHashMap                         │
-│ Only keys (no values)           │ HashSet                                   │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+| Need | Use |
+| ---- | --- |
+| Basic FIFO | Simple queue |
+| Fixed size, no wasted space | Circular queue |
+| Add/remove at both ends | Deque |
+| Priority-based access | Priority queue (heap) |
+| Sliding-window max/min | Monotonic queue |
+
+**Tree selection**
+
+| Need | Use |
+| ---- | --- |
+| Basic sorted structure | BST |
+| Guaranteed O(log n) | AVL or Red-Black tree |
+| Lookup-heavy | AVL tree |
+| Insert/delete-heavy | Red-Black tree |
+| Range queries | Segment tree |
+| Prefix operations | Trie |
+| Top-k / priority | Heap |
+| Database index | B-tree / B+ tree |
+
+**Hash table selection**
+
+| Need | Use |
+| ---- | --- |
+| Basic key-value | `HashMap` |
+| Maintain insertion order | `LinkedHashMap` |
+| Sorted keys | `TreeMap` |
+| Thread-safe | `ConcurrentHashMap` |
+| Only keys (no values) | `HashSet` |
 
 :::
 

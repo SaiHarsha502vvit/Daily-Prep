@@ -1857,14 +1857,10 @@ public class SkipList<T extends Comparable<T>> {
 
 ::: danger
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║             PRODUCTION FAILURE MODES: WHEN VARIANT CHOICE KILLS YOU         ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Production failure modes: when variant choice kills you
 
-These are REAL failure modes observed in production systems. Choosing the wrong
-variant can degrade performance by 10x to 1000x or cause memory exhaustion.
-```
+> [!WARNING]
+> These are **real failure modes** observed in production systems. Choosing the wrong variant can degrade performance by 10× to 1000× or cause memory exhaustion.
 
 :::
 
