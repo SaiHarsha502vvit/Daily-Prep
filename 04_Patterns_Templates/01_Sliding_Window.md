@@ -1,4 +1,6 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Code_Templates.md)
+# 🧩 Sliding Window — Pattern Guide
+
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Code_Templates.md)
 
 ---
 
@@ -180,20 +182,65 @@ Should shrink `while(valid)` to find the minimum window — this is correct! But
 
 </details>
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Arrays](../02_Data_Structures/01b_Arrays.md), loops, [Algorithm Thinking](../03_Algorithms/01_Algorithm_Thinking.md) |
+| **You will learn** | Fixed and variable windows, the add-check-shrink-record cycle, why the inner `while` is still `O(n)`, and when negatives break the pattern |
+| **Leads to** | [Array + Sliding Window](09_Array_Plus_SlidingWindow.md), [Prefix Sum](26_Prefix_Sum_And_Difference_Array.md), [Monotonic Stack/Queue](11_Stack_Plus_MonotonicPattern.md) |
+| **Abstraction level** | Brute-force re-scan of every window → **reuse the overlap** (add one, remove one) → a window invariant |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Sliding Window
+
+### 1. The bottom line
+
+Instead of re-reading every window from scratch, slide it: add the new element, drop the old one, and keep a running answer.
+
+### 2. The textbook core
+
+- A **window** is a contiguous range `[left, right]` over an array or string.
+- **Fixed window** of size `k`: add `a[right]`, remove `a[right-k]`.
+- **Variable window:** expand `right`; while the window violates the condition, advance `left`; record the best window.
+- Each index enters and leaves the window at most once, so the total work is `O(n)` even with a nested `while`.
+- Requires a **monotone condition**: shrinking never makes an invalid window valid. Negative numbers break "sum ≥ target" windows.
+
+### 3. The real-world analogy
+
+A **train carriage of fixed length** rolling along a platform: each step one passenger boards and one leaves, so you never recount everyone.
+
+### 4. Walkthrough
+
+1. Array `[2, 1, 5, 1, 3, 2]`, `k = 3`, find the maximum window sum.
+2. First window `[2,1,5]` = 8.
+3. Slide: add 1, remove 2 → 7; add 3, remove 1 → 9; add 2, remove 5 → 6.
+4. Best = 9, found with `n − k + 1` constant-time updates.
+
+> [!NOTE]
+> **Quick check:** Why can you not use a variable window for "longest subarray with sum = k" when values can be negative? *Shrinking can make the sum go up, so the monotone property fails — use prefix sums + a hash map.*
+
+---
+
 ### Historical Evolution
 
-**Inventor / Originator:** The sliding window technique evolved across multiple domains — signal processing in the 1960s, TCP congestion control by Van Jacobson (1988), and algorithmic formalization in Cormen-Leiserson-Rivest-Stein (CLRS, 1990).
+**Inventor / Originator:** No single inventor. Moving averages were used in statistics long before computers; windowed protocols appeared in early computer networking (TCP's sliding-window flow control is specified in RFC 793, 1981); Van Jacobson's 1988 paper *Congestion Avoidance and Control* added congestion control on top of it.
 
-**Predecessor context:** Before sliding windows, engineers computed running statistics by re-scanning the entire window for each position — O(n×k) time. This was acceptable for small windows but unacceptable for real-time signal processing or network packet analysis.
+**Predecessor context:** Before the pattern was named, running statistics were recomputed by re-scanning the whole window at each position, `O(n·k)`.
 
-**Evolution narrative:** Signal processing engineers in the 1960s needed efficient ways to compute moving averages and filters over streaming data. They realized consecutive windows overlap significantly, and that overlap could be exploited: instead of recomputing from scratch, subtract the leaving element and add the entering element. This insight migrated into networking ( Jacobson 1988 for TCP retransmission windows) and then into algorithm textbooks as a formal pattern.
+**Evolution narrative:** The key observation is that consecutive windows share all but two elements: **add the entering element, remove the leaving one**. The same idea reappeared in image processing (van Herk 1992 and Gil–Werman 1993 give `O(n)` running min/max filters independent of window size) and in data streams (Datar, Gionis, Indyk and Motwani, 2002, analysed statistics over sliding windows). Interview collections later grouped these problems under the name *sliding window*.
 
-**Modern practice:** Sliding window underpins TCP congestion control, real-time analytics platforms (Apache Flink, Kafka Streams), and is the go-to pattern for any problem asking for statistics over the "last K elements" of a stream.
+**Modern practice:** Stream processors such as Apache Flink and Kafka Streams expose window aggregations; TCP uses a window to bound data in flight; analytics dashboards use rolling averages.
 
-- **Signal processing — 1960s**: Moving average filters and digital signal processing (DSP) formalized the overlap-exploitation insight that became sliding window
-- **TCP Sliding Window — Jacobson 1988**: "Congestion Avoidance and Control" paper introduced TCP windowing for flow control across networks
-- **CLRS — 1990**: Cormen et al. codified the technique in the canonical algorithms textbook, naming it "sliding window"
-- **Modern practice**: Real-time streaming systems (Kafka Streams, Apache Flink) use sliding windows for aggregations over time-series data
+- **Moving averages — early 20th century**: Smoothing time series by averaging a fixed-size window
+- **TCP flow control — RFC 793, 1981**: A sender window limits unacknowledged data in flight
+- **Jacobson — 1988**: Slow start and congestion avoidance adapt the window size to network conditions
+- **van Herk 1992 / Gil–Werman 1993**: `O(n)` sliding minimum/maximum, the ancestor of the monotonic-deque technique
+- **Datar et al. — 2002**: Formal treatment of statistics over sliding windows on streams
 
 ---
 
@@ -1119,7 +1166,7 @@ _Based on your breakthrough understanding_
 | --------------------------------- | ------------------------------------------------------------------------------ |
 | Sliding window practice           | [Problem Solving — Sliding Window](../05_Problem_Solving/05_Sliding_Window.md) |
 | Arrays (underlying DS)            | [Arrays](../02_Data_Structures/01b_Arrays.md)                                  |
-| Two Pointers (related)            | [Two Pointers Patterns](../04_Patterns_Templates/07_TwoPointers.md)            |
+| Two Pointers (related)            | [Two Pointers Patterns](07_Two_Pointers_Complete.md)            |
 | HashMaps in variable window       | [HashTable](../02_Data_Structures/01e_HashTable.md)                            |
 | Sliding window in ML (mini-batch) | [ML Fundamentals](../25_Python_ML_DL_NLP/05_ML_Fundamentals.md)                |
 
@@ -1137,6 +1184,17 @@ The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3S
 
 </details>
 
+
+---
+
+## 🏢 Enterprise Lens — Sliding Window
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Rolling metrics (error rate over the last 5 minutes), rate limiters, stream aggregations, log analysis |
+| **Failure modes** | Using a window when negatives or non-monotone conditions exist; forgetting to reset state between calls; off-by-one in the shrink condition (`<` vs `<=`) |
+| **Testing and verification** | Compare against the `O(n·k)` brute force on random arrays; test `k = 1`, `k = n`, empty input, all-equal values, negatives |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

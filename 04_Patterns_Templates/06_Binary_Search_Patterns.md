@@ -1,21 +1,67 @@
-﻿**Navigation**: [< Previous](05_LeetCode_RealWorld_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Two_Pointers_Complete.md)
+# 🧩 Binary Search Patterns — Pattern Guide
+
+**Navigation**: [< Previous](05_LeetCode_RealWorld_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Two_Pointers_Complete.md)
+
+---
+
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Arrays](../02_Data_Structures/01b_Arrays.md), [Searching & Binary Search](../03_Algorithms/22_Searching_And_Binary_Search_Complete.md) |
+| **You will learn** | Three templates, lower/upper bound, rotated arrays, peaks, binary search on the answer, 2D search, and an invariant-first way to avoid bugs |
+| **Leads to** | [Constraint-Based Selection](25_Constraint_Based_Pattern_Selection.md), [Knapsack/DP on answers](23_Knapsack_Family.md) |
+| **Abstraction level** | Search in a sorted array → **search any monotone predicate** → binary search on the answer |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Binary Search Patterns
+
+### 1. The bottom line
+
+If a yes/no question flips from "no" to "yes" exactly once, binary search finds the flip point in `O(log n)` checks.
+
+### 2. The textbook core
+
+- Define a predicate `ok(x)` that is monotone (all false, then all true).
+- Invariant: the first true index is always inside `[lo, hi]`.
+- Choose the mid so the range always shrinks (`lo + (hi − lo) / 2`).
+- Binary search on the answer: the "array" is the range of possible answers, and `ok` is a feasibility check.
+- Cost: `O(log range × cost of ok)`.
+
+### 3. The real-world analogy
+
+The **"higher or lower" guessing game**: each guess halves the possibilities.
+
+### 4. Walkthrough
+
+1. Ship packages within `D` days: weights `[1..10]`, `D = 5`.
+2. Answer range is `[max weight, sum]`.
+3. `ok(cap)` = can we ship within `D` days using capacity `cap` (greedy simulation).
+4. Binary search the smallest `cap` where `ok` is true.
+
+> [!NOTE]
+> **Quick check:** What must be true for binary search on the answer? *Feasibility must be monotone in the answer.*
 
 ---
 
 ### Historical Evolution
 
-**Inventor / Originator:** Binary search was first published by John Mauchly (1946) for numerical analysis. Donald Knuth formalized it in "The Art of Computer Programming" Vol 3 (1973). Scott Meyers popularized the STL bound/lower_bound trick (2000).
+**Inventor / Originator:** Binary search was described in John Mauchly's 1946 Moore School lectures on sorting and searching. Knuth (*The Art of Computer Programming*, Vol. 3, 1973) notes that the first published version correct for all array sizes appeared in 1962 (H. Bottenbruch).
 
-**Predecessor context:** Linear search O(n) was the default for sorted data. Finding elements required scanning from the start, regardless of how sorted the data was.
+**Predecessor context:** Sequential search `O(n)` was the default for ordered tables.
 
-**Evolution narrative:** Mauchly recognized that sorted data enables logarithmic search by repeatedly halving the search space. Knuth's TAOCP Vol 3 provided the definitive treatment with careful handling of overflow and boundary conditions.
+**Evolution narrative:** The idea is simple but the details are famously error-prone: Bentley reported in *Programming Pearls* that most professional programmers could not write it correctly, and Joshua Bloch (2006) showed that the common `(low + high) / 2` midpoint overflowed in widely used library code. The generalisation to *searching on the answer* over a monotonic predicate came from competitive programming practice.
 
-**Modern practice:** Binary search is built into every standard library (C++ STL, Java Collections, Python bisect). The pattern extends to monotonic predicate search, finding peaks, and searching rotated arrays.
+**Modern practice:** Standard libraries ship binary search (`Arrays.binarySearch`, C++ `lower_bound`/`upper_bound` from the STL designed by Stepanov and Lee, Python `bisect`); databases use the same halving idea inside B-tree pages.
 
-- **Mauchly 1946**: First published description of binary search for numerical analysis
-- **Knuth Vol 3 — 1973**: Definitive treatment with overflow-safe midpoint calculation
-- **Meyers 2000**: "Effective STL" popularized lower_bound/upper_bound idioms
-- **Modern practice**: Built into all standard libraries; core to database index lookups
+- **Mauchly — 1946**: Early description of binary search in the Moore School lectures
+- **Bottenbruch — 1962**: First published version correct for every `n`, according to Knuth
+- **Knuth — 1973**: Definitive analysis in TAOCP Vol. 3
+- **Bloch — 2006**: Midpoint overflow bug found in widely deployed code; use `low + (high - low) / 2`
 
 ---
 
@@ -82,7 +128,7 @@ T3: left <  right, left  = mid+1                  → First pos >  target (Upper
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-🔗 **Practice problems:** [Binary Search PS](../05_Problem_Solving/07_Binary_Search_Patterns.md)
+🔗 **Practice problems:** [Binary Search PS](../05_Problem_Solving/07_Binary_Search.md)
 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](00_PATTERN_MASTER_GUIDE.md)
 
 ---
@@ -1431,6 +1477,17 @@ After coding:
 
 </details>
 
+
+---
+
+## 🏢 Enterprise Lens — Binary Search Patterns
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Database index lookups, version bisecting (`git bisect`), capacity planning, rate-limit tuning |
+| **Failure modes** | Non-monotone predicate; infinite loops from wrong `mid` rounding; overflow in `(lo + hi) / 2` |
+| **Testing and verification** | Test against linear scan on random sorted arrays and predicates; test one-element, all-true and all-false ranges |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

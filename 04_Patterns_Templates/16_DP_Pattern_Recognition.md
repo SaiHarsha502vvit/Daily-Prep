@@ -1,4 +1,6 @@
-﻿**Navigation**: [< Previous](15_Heap_Plus_GreedySelection.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Backtracking_Plus_Pruning.md)
+# 🧩 DP Pattern Recognition — Pattern Guide
+
+**Navigation**: [< Previous](15_Heap_Plus_GreedySelection.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Backtracking_Plus_Pruning.md)
 
 # DP Pattern Recognition — Combined Pattern Guide
 
@@ -6,20 +8,63 @@
 
 ### ⚠️ Constraint Lens
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Recursion](../03_Algorithms/03b_Recursion_Fundamentals.md), [DP Fundamentals](../03_Algorithms/04b_DP_Fundamentals.md) |
+| **You will learn** | A decision tree for spotting DP, eight pattern families, and worked examples (House Robber, LCS, 0/1 knapsack) |
+| **Leads to** | [Knapsack Family](23_Knapsack_Family.md), [Kadane](24_Kadanes_Subarray_Patterns.md) |
+| **Abstraction level** | Overlapping brute-force recursion → **state + transition** → memoised or tabulated DP |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — DP Pattern Recognition
+
+### 1. The bottom line
+
+If the brute force repeats the same sub-question, name the sub-question (state), store its answer, and combine answers with a recurrence.
+
+### 2. The textbook core
+
+- Ask: choices at each step? repeated subproblems? optimal substructure?
+- Define `dp[state]` in one sentence; write the recurrence; fix the base cases and fill order.
+- Families: linear, two-sequence, grid, interval, knapsack, bitmask, tree, digit.
+- Space can often be reduced by keeping only the previous row.
+
+### 3. The real-world analogy
+
+A **spreadsheet**: each cell is computed once from cells you already filled.
+
+### 4. Walkthrough
+
+1. House Robber `[2,7,9,3,1]`.
+2. `dp[i] = max(dp[i-1], dp[i-2] + a[i])`.
+3. dp = `[2, 7, 11, 11, 12]`.
+4. Answer 12.
+
+> [!NOTE]
+> **Quick check:** What is the single most important sentence in a DP solution? *The definition of the state.*
+
+---
+
 ### Historical Evolution
 
-**Inventor / Originator:** Richard Bellman (1957) coined "Dynamic Programming" at RAND. Andrew Viterbi (1967) applied DP to hidden Markov models. Needleman and Wunsch (1970) applied it to bioinformatics.
+**Inventor / Originator:** Richard Bellman developed dynamic programming at RAND in the early 1950s (his book *Dynamic Programming* appeared in 1957). Later landmark applications: Viterbi (1967, decoding convolutional codes, later central to hidden Markov models) and Needleman–Wunsch (1970, sequence alignment).
 
-**Predecessor context:** Before DP, optimization problems required exhaustive search or calculus-based methods. The overlapping subproblems property was not recognized as a general structure.
+**Predecessor context:** Optimisation problems were solved by exhaustive search or calculus.
 
-**Evolution narrative:** Bellman's principle of optimality formalized that optimal solutions have optimal substructures. This insight enabled tractable solutions to scheduling, sequence alignment, and control problems that previously seemed intractable.
+**Evolution narrative:** Bellman's *principle of optimality* showed that optimal solutions can be assembled from optimal sub-solutions. Edit distance (Levenshtein 1965, Wagner–Fischer 1974), knapsack and shortest-path recurrences are all instances.
 
-**Modern practice:** DP is ubiquitous — Viterbi algorithm in speech recognition, Needleman-Wunsch in DNA alignment, Bellman-Ford for routing, and countless LeetCode problems.
+**Modern practice:** Used in speech recognition (Viterbi), bioinformatics (alignment), routing (Bellman–Ford) and resource planning.
 
-- **Bellman 1957**: Coined "Dynamic Programming" at RAND; Bellman optimality principle
-- **Viterbi algorithm — 1967**: DP for hidden Markov models; used in speech recognition and LTE
-- **Needleman-Wunsch — 1970**: DP for global sequence alignment in bioinformatics
-- **Modern practice**: GPS routing, NLP (Viterbi/HMM), bioinformatics, resource scheduling
+- **Bellman — 1950s**: Dynamic programming and the principle of optimality
+- **Viterbi — 1967**: Optimal decoding of convolutional codes
+- **Needleman & Wunsch — 1970**: Global sequence alignment
+- **Wagner & Fischer — 1974**: Edit-distance DP
 
 ---
 
@@ -204,7 +249,7 @@ for each unvisited j:
 
 ---
 
-## � FULL WALKTHROUGH: House Robber (Linear DP Decision)
+## 🔬 FULL WALKTHROUGH: House Robber (Linear DP Decision)
 
 ```
 Problem: Rob houses for max money. Can't rob adjacent houses.
@@ -476,6 +521,17 @@ COMMON MISTAKES:
 
 [← 15 Heap+Greedy](15_Heap_Plus_GreedySelection.md) | [17 Backtracking+Pruning →](17_Backtracking_Plus_Pruning.md)
 
+
+---
+
+## 🏢 Enterprise Lens — DP Pattern Recognition
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Resource allocation, text diffing, route planning, speech and sequence decoding |
+| **Failure modes** | Vague state definition; wrong iteration order; forgetting base cases |
+| **Testing and verification** | Always compare to the brute-force recursion on small inputs |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

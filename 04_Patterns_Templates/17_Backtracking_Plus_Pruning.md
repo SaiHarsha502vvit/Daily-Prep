@@ -1,4 +1,6 @@
-﻿**Navigation**: [< Previous](16_DP_Pattern_Recognition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_String_Plus_Advanced.md)
+# 🧩 Backtracking + Pruning — Pattern Guide
+
+**Navigation**: [< Previous](16_DP_Pattern_Recognition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_String_Plus_Advanced.md)
 
 # Backtracking + Pruning — Combined Pattern Guide
 
@@ -6,20 +8,64 @@
 
 ### ⚠️ Constraint Lens
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Recursion](../03_Algorithms/03b_Recursion_Fundamentals.md), [Backtracking](../03_Algorithms/11_Backtracking_Complete.md) |
+| **You will learn** | Choose-explore-unchoose templates, subsets/permutations/combinations, duplicate handling and pruning rules |
+| **Leads to** | [Knapsack Family](23_Knapsack_Family.md) (turning search into DP), [Graph + Traversal](14_Graph_Plus_Traversal.md) |
+| **Abstraction level** | Enumerate everything → **cut branches that cannot succeed** → still exponential but practical |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Backtracking + Pruning
+
+### 1. The bottom line
+
+Build the answer one choice at a time, undo the choice after exploring it, and abandon any branch that already breaks a constraint.
+
+### 2. The textbook core
+
+- Template: `choose → recurse → unchoose`.
+- Pruning: bounds on remaining sum, sorting to break early, `used[]` arrays, skipping equal siblings.
+- Duplicates: sort, then skip `nums[i] == nums[i-1]` at the same depth.
+- Cost is output-sensitive: the tree size can still be exponential.
+
+### 3. The real-world analogy
+
+A **maze explorer with chalk**: mark a turn, explore, erase the mark if it was a dead end.
+
+### 4. Walkthrough
+
+1. Combination sum, candidates `[2,3,6,7]`, target 7.
+2. Choose 2 → remaining 5; choose 2 → 3; choose 3 → 0 ✓ `[2,2,3]`.
+3. Backtrack, try 7 → 0 ✓ `[7]`.
+4. Prune when remaining < 0.
+
+> [!NOTE]
+> **Quick check:** Why sort before pruning on sums? *Once a candidate is too big, every later one is too.*
+
+---
+
 ### Historical Evolution
 
-**Inventor / Originator:** Backtracking was formalized by Solomon Golomb and Leonard Baumert (1965). Walker (1960) developed early backtracking algorithms. Knuth published Algorithm 245 (1965) for tree traversal. Tarjan (1972) analyzed backtracking complexity.
+**Inventor / Originator:** The word *backtrack* was coined by D. H. Lehmer in the 1950s. R. J. Walker described an enumerative backtracking technique in 1960, and Golomb and Baumert's *Backtrack Programming* (J. ACM, 1965) gave the classic general formulation. Knuth's *Estimating the Efficiency of Backtrack Programs* (1975) introduced a sampling method to predict tree size.
 
-**Predecessor context:** Combinatorial problems (N-Queens, Sudoku, scheduling) required brute-force enumeration. The "try-explore-backtrack" framework was not recognized as a pattern.
+**Predecessor context:** Combinatorial puzzles were enumerated exhaustively without systematic pruning.
 
-**Evolution narrative:** Walker and Golomb-Baumert established backtracking as systematic state-space exploration. Knuth formalized the TreeSort algorithms. Pruning strategies (constraint propagation, forward checking) evolved from AI research in the 1970s-80s.
+**Evolution narrative:** Backtracking builds a solution incrementally and abandons a branch as soon as a constraint fails. Dijkstra (1972) used a depth-first eight-queens solution to teach structured programming; Knuth's *Dancing Links* (2000) made exact-cover search fast; SAT solvers evolved from DPLL (Davis–Putnam–Logemann–Loveland, 1960–62) to conflict-driven clause learning (GRASP 1996, Chaff 2001).
 
-**Modern practice:** Backtracking powers SAT solvers (CDCL algorithm), constraint programming (OR-Tools CP-SAT), and game AI (minimax with alpha-beta pruning).
+**Modern practice:** N-Queens, Sudoku, combination/permutation generation, constraint solvers and game-tree search with alpha-beta pruning.
 
-- **Walker 1960**: Early backtracking algorithm for combinatorial search
-- **Golomb-Baumert 1965**: Formalized backtracking as systematic enumeration with pruning
-- **Knuth Algorithm 245 — 1965**: Tree traversal patterns; foundational backtracking framework
-- **Modern practice**: SAT solvers, Sudoku generators, N-Queens, scheduling with pruning
+- **Walker — 1960**: Enumerative technique for combinatorial problems
+- **Davis, Putnam, Logemann, Loveland — 1960–62**: DPLL search for satisfiability
+- **Golomb & Baumert — 1965**: *Backtrack Programming*
+- **Knuth — 1975**: Estimating backtrack tree sizes
+- **Knuth — 2000**: Dancing Links for exact cover
 
 ---
 
@@ -200,7 +246,7 @@ With PRUNING (target sum = 4, sorted [1,2,3,5]):
 
 ---
 
-## � FULL WALKTHROUGH: Combination Sum with Pruning
+## 🔬 FULL WALKTHROUGH: Combination Sum with Pruning
 
 ```
 Problem: Find combinations that sum to target=7.
@@ -407,6 +453,17 @@ COMMON MISTAKES:
 
 > **Navigation**: [< Previous](16_DP_Pattern_Recognition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_String_Plus_Advanced.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Backtracking + Pruning
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Constraint solvers, puzzle generators, test-case generation, scheduling with hard rules |
+| **Failure modes** | Missing unchoose step; shared mutable state copied incorrectly; no pruning |
+| **Testing and verification** | Count solutions and compare with a known formula (e.g. permutations `n!`); test duplicates and empty input |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

@@ -7,6 +7,9 @@ Own reusable coding patterns, templates, trigger maps, and constraint-based sele
 ## Writing Style
 
 - Pattern signal first.
+- Every pattern page carries the standard blocks: **Bridge**, **study-partner explainer** (bottom line, textbook core, analogy, walkthrough, quick check), **Enterprise Lens**, practice ladder and reality check. Order of reading and dependencies live in [`00_LEARNING_PATH.md`](00_LEARNING_PATH.md).
+- One pattern, one page for new material (e.g. 26–31); older combined pages keep their structure.
+- Compile and compare against a brute force before documenting code. History claims must be attributable; prefer "folklore, no single inventor" over invented names.
 - Constraint lens near the top.
 - Show brute force to optimized rewrite.
 - Include "works when" and "breaks when".

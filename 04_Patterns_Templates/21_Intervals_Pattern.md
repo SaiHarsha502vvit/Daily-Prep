@@ -1,23 +1,67 @@
-﻿**Navigation**: [< Previous](20_BitManipulation_Plus_Tricks.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Cyclic_Sort_Pattern.md)
+# 🧩 Intervals — Pattern Guide
+
+**Navigation**: [< Previous](20_BitManipulation_Plus_Tricks.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Cyclic_Sort_Pattern.md)
 
 **Pattern 21** | [Prev](20_BitManipulation_Plus_Tricks.md) | [Index](../00_MASTER_INDEX.md) | [Next](22_Cyclic_Sort_Pattern.md)
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [Sorting](../03_Algorithms/02a_Sorting_Fundamentals.md), [Heap + Greedy](15_Heap_Plus_GreedySelection.md) |
+| **You will learn** | Sort-and-sweep for merge, insert, meeting rooms, minimum removals and balloon-arrow problems, plus the overlap test |
+| **Leads to** | [Prefix Sum / Difference Array](26_Prefix_Sum_And_Difference_Array.md) (sweep counts), [Two Heaps](31_Top_K_And_Two_Heaps_Pattern.md) |
+| **Abstraction level** | Pairwise overlap checks → **sort once, scan once** |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Intervals
+
+### 1. The bottom line
+
+Sort intervals by start (or end) and decide each interval against the previous one.
+
+### 2. The textbook core
+
+- Two intervals overlap iff `a.start ≤ b.end` and `b.start ≤ a.end`.
+- Merge: sort by start; extend the current interval while the next starts inside it.
+- Min removals / max compatible set: sort by **end**, take earliest finish.
+- Min rooms: sweep events or a min-heap of end times.
+
+### 3. The real-world analogy
+
+A **calendar**: sort the meetings by start time and walk down the day.
+
+### 4. Walkthrough
+
+1. Merge `[1,3],[2,6],[8,10],[15,18]`.
+2. Start with `[1,3]`; `[2,6]` overlaps → `[1,6]`.
+3. `[8,10]` does not overlap → emit.
+4. Result `[1,6],[8,10],[15,18]`.
+
+> [!NOTE]
+> **Quick check:** Why sort by end time for "max non-overlapping"? *Finishing earliest leaves the most room for the rest (exchange argument).*
+
+---
+
 ### Historical Evolution
 
-**Inventor / Originator:** Interval scheduling was formalized by Jon Bentley (1979) in "Programming Pearls." Tarjan developed interval trees. CLRS (1990) provided canonical interval merging algorithms.
+**Inventor / Originator:** Interval problems come from scheduling and computational geometry. The greedy "earliest finish first" strategy for maximum non-overlapping intervals is a textbook result; interval graphs and their colouring were studied from the 1960s; the Shamos–Hoey (1976) and Bentley–Ottmann (1979) sweep-line algorithms process interval events in sorted order. Edelsbrunner (1980) and McCreight (1981) introduced interval and priority-search trees; CLRS augments a red-black tree for interval queries.
 
-**Predecessor context:** Problems involving interval overlaps required O(n²) pairwise comparison. The "sort by start, merge" approach wasn't recognized as optimal.
+**Predecessor context:** Overlap questions were answered by comparing every pair, `O(n²)`.
 
-**Evolution narrative:** Bentley's column in Communications of the ACM popularized interval problems. His greedy algorithm for maximum non-overlapping intervals (sort by end time) became a classic problem. Interval trees provided O(log n) intersection queries.
+**Evolution narrative:** Sorting the endpoints turns most interval problems into a single sweep: merge, insert, count maximum overlap (meeting rooms) or choose a maximum compatible set.
 
-**Modern practice:** Interval problems appear in calendar scheduling, resource allocation, and meeting room booking. The pattern extends to GPU kernel scheduling and CPU interrupt handling.
+**Modern practice:** Calendar scheduling, resource allocation, genomic-range queries and range-based indexes.
 
-- **Bentley 1979**: "Programming Pearls" popularized interval scheduling with greedy optimal algorithm
-- **Interval trees — Tarjan**: Data structure for O(log n) interval intersection queries
-- **CLRS — 1990**: Formalized interval merging with sort-by-start + linear scan
-- **Modern practice**: Calendar apps, meeting room booking, GPU scheduling
+- **Shamos & Hoey — 1976**: Sweep-line intersection detection
+- **Bentley & Ottmann — 1979**: Sweep line for reporting intersections
+- **Edelsbrunner / McCreight — 1980–81**: Interval trees and priority search trees
 
 ---
 
@@ -557,6 +601,17 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 | 11  | [Car Pooling](https://leetcode.com/problems/car-pooling/)                                              | 1094 | Sweep Line        | Google           |
 | 12  | [Remove Covered Intervals](https://leetcode.com/problems/remove-covered-intervals/)                    | 1288 | Sort + Compare    | Amazon           |
 
+
+---
+
+## 🏢 Enterprise Lens — Intervals
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Calendars, booking systems, resource allocation, genomic range queries |
+| **Failure modes** | Treating touching endpoints inconsistently; sorting by the wrong key; integer overflow in endpoints |
+| **Testing and verification** | Compare to an `O(n²)` pairwise check; test touching, nested and identical intervals |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 

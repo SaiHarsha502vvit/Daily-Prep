@@ -1,23 +1,69 @@
-﻿**Navigation**: [< Previous](22_Cyclic_Sort_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_Kadanes_Subarray_Patterns.md)
+# 🧩 Knapsack Family — Pattern Guide
+
+**Navigation**: [< Previous](22_Cyclic_Sort_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_Kadanes_Subarray_Patterns.md)
 
 **Pattern 23** | [Index](../00_MASTER_INDEX.md) | [Next](24_Kadanes_Subarray_Patterns.md)
 
 ---
 
+## 🔗 Bridge — Where This Chapter Fits
+
+| Dimension | This chapter |
+| --- | --- |
+| **Builds on** | [DP Pattern Recognition](16_DP_Pattern_Recognition.md), [DP Fundamentals](../03_Algorithms/04b_DP_Fundamentals.md) |
+| **You will learn** | 0/1 knapsack, partition, target sum, coin change (min and count), multi-dimensional knapsack, and the loop-direction rule |
+| **Leads to** | [Constraint-Based Selection](25_Constraint_Based_Pattern_Selection.md), [Approximation & LP](../03_Algorithms/25_Online_Approximation_And_Linear_Programming.md) |
+| **Abstraction level** | Subset search `O(2ⁿ)` → **take/skip × capacity table** → pseudo-polynomial `O(nW)` |
+
+> [!NOTE]
+> The full gap-free reading order and dependency graph are in the [Learning Path](00_LEARNING_PATH.md).
+
+---
+
+## 💬 Explain It Like a Study Partner — Knapsack Family
+
+### 1. The bottom line
+
+Every "choose items under a budget" problem is the same table: for each item, take it or skip it, for each remaining capacity.
+
+### 2. The textbook core
+
+- 0/1: iterate capacity **downwards** so an item is used once.
+- Unbounded (coin change): iterate capacity **upwards** so items can repeat.
+- Min coins uses `min`, counting ways uses `+`, feasibility uses `or`.
+- `O(nW)` is pseudo-polynomial — exponential in the bit-length of `W`.
+
+### 3. The real-world analogy
+
+Packing a **suitcase with a weight limit**: for every item you decide to bring it or leave it.
+
+### 4. Walkthrough
+
+1. Items `(w,v)`: `(1,15),(3,20),(4,30)`, capacity 4.
+2. `dp[w]` = best value with weight ≤ `w`.
+3. Process item 1: `dp[1..4] = 15`; item 2: `dp[3] = 20, dp[4] = 35`; item 3: `dp[4] = max(35, 30) = 35`.
+4. Answer 35.
+
+> [!NOTE]
+> **Quick check:** Why iterate capacity downwards for 0/1 knapsack? *So `dp[w − wt]` still refers to the previous item's row.*
+
+---
+
 ### Historical Evolution
 
-**Inventor / Originator:** George Dantzig (1957) formalized integer programming for knapsack. Richard Bellman (1957) applied dynamic programming to knapsack. Horowitz and Sahni (1974) introduced meet-in-the-middle.
+**Inventor / Originator:** George Dantzig named and studied the knapsack problem (*Discrete-Variable Extremum Problems*, Operations Research, 1957); Bellman's dynamic-programming formulation appeared in the same period. Gilmore and Gomory (1961) treated cutting stock; Karp (1972) listed knapsack/subset-sum among NP-complete problems; Horowitz and Sahni (1974) gave the `O(2^(n/2))` meet-in-the-middle algorithm; Ibarra and Kim (1975) gave the first FPTAS.
 
-**Predecessor context:** Combinatorial optimization problems like knapsack were solved by exhaustive enumeration. The exponential time complexity was considered unavoidable.
+**Predecessor context:** Selection under a capacity limit was solved by enumerating subsets, `O(2ⁿ)`.
 
-**Evolution narrative:** Dantzig modeled knapsack as integer linear programming. Bellman showed DP could solve bounded knapsack in pseudo-polynomial time. Meet-in-the-middle enabled O(2^(n/2)) solutions for subset sum.
+**Evolution narrative:** The DP table `dp[i][w]` solves it in pseudo-polynomial time `O(n·W)`, which is fast when `W` is small and exponential in the *bit length* of `W` — consistent with NP-hardness.
 
-**Modern practice:** Knapsack variants appear in resource allocation, budget optimization, and cutting stock problems. The 0/1 knapsack pattern is one of LeetCode's core DP patterns.
+**Modern practice:** Budget allocation, cargo loading, partition problems, coin change and subset-sum variants.
 
-- **Dantzig 1957**: Integer programming formulation for knapsack; foundation of combinatorial optimization
-- **Bellman 1957**: DP formulation with state dp[i][w] for bounded knapsack
-- **Horowitz-Sahni meet-in-the-middle — 1974**: O(2^(n/2)) for subset sum
-- **Modern practice**: Resource allocation, budget optimization, cutting stock problems
+- **Dantzig — 1957**: Knapsack formulation and greedy bounds
+- **Bellman — 1957**: DP solution
+- **Karp — 1972**: NP-completeness
+- **Horowitz & Sahni — 1974**: Meet in the middle, `O(2^(n/2))`
+- **Ibarra & Kim — 1975**: Fully polynomial-time approximation scheme
 
 ---
 
@@ -667,6 +713,17 @@ If `k` weren't exactly a sum of distinct powers of 2 (e.g., `k = 10`), we'd use 
 
 **Navigation**: [Back to Index](../00_MASTER_INDEX.md)
 
+
+---
+
+## 🏢 Enterprise Lens — Knapsack Family
+
+| Area | What top-tier engineering looks like |
+| ---- | ------------------------------------ |
+| **Where it runs in production** | Budget allocation, cargo loading, portfolio selection under limits, partition checks |
+| **Failure modes** | Wrong loop direction; confusing "exact weight" with "at most weight"; huge `W` blowing memory |
+| **Testing and verification** | Brute-force subsets for `n ≤ 15`; test zero capacity and items heavier than capacity |
+| **Review checklist** | Complexity stated for time **and** space · invariant stated · edge cases listed (empty, one element, duplicates, extremes) · behaviour at 10× data understood |
 
 ---
 
