@@ -190,24 +190,22 @@ LINKED LIST = Cargo train (cars coupled by hooks)
 
 ### What is a Linked List?
 
-```
-PHYSICAL REALITY:
-┌────────────────────────────────────────────────────┐
-│ Nodes scattered across memory, connected by refs   │
-│                                                    │
-│  ┌────┬────┐    ┌────┬────┐    ┌────┬────┐         │
-│  │ 10 │ ●──┼───→│ 20 │ ●──┼───→│ 30 │null│         │
-│  └────┴────┘    └────┴────┘    └────┴────┘         │
-│  addr: 5000     addr: 2000     addr: 8000          │
-│                                                    │
-│ NOT CONTIGUOUS = Scattered in memory               │
-└────────────────────────────────────────────────────┘
+**Physical reality:** nodes are scattered across memory and connected by references.
 
-WHY NON-CONTIGUOUS IS USEFUL:
-- No need for big continuous memory block
-- Insert/Delete = just change pointers
-- Size can grow infinitely (until memory full)
+```mermaid
+flowchart LR
+    A["addr 5000<br/>data: 10<br/>next"] --> B["addr 2000<br/>data: 20<br/>next"] --> C["addr 8000<br/>data: 30<br/>next: null"]
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class A,B,C node
 ```
+
+**How to read this diagram.** Each box is one node at its own address; the arrows are the `next` references. The addresses are *not* consecutive, so the list is **not contiguous**.
+
+**Why non-contiguous is useful:**
+
+- No need for one big contiguous memory block
+- Insert/delete = just change pointers
+- Size can grow until memory is full
 
 ### Linked List vs Array
 

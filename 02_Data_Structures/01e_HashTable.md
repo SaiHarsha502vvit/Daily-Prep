@@ -277,27 +277,34 @@ So expected lookup = O(1) **regardless of input** — the adversary cannot const
 
 ### What is a Hash Table?
 
-```
-CONCEPT:
-- Transform key into array index using hash function
-- Store value at that index
+**Concept:**
+
+- Transform the key into an array index using a hash function
+- Store the value at that index
 - Retrieve in O(1) average time
 
-EXAMPLE: Phone Book
-┌────────────────────────────────────────────────────┐
-│ Name "Alice" → hash("Alice") → 3                   │
-│                                                    │
-│ Index: 0      1      2      3      4      5        │
-│      ┌──────┬──────┬──────┬──────┬──────┬──────┐   │
-│      │      │ Bob  │      │Alice │      │Carol │   │
-│      │      │555-  │      │555-  │      │555-  │   │
-│      │      │1234  │      │5678  │      │9999  │   │
-│      └──────┴──────┴──────┴──────┴──────┴──────┘   │
-│                                                    │
-│ get("Alice") → hash("Alice") → 3 → return 555-5678 │
-│ Time: O(1)!                                        │
-└────────────────────────────────────────────────────┘
+**Example: phone book.** `"Alice"` → `hash("Alice")` → index `3`.
+
+```mermaid
+flowchart LR
+    K["key: Alice"] -->|"hash('Alice') = 3"| T3
+    subgraph TABLE["Array of buckets"]
+        direction LR
+        T0["0<br/>empty"] --- T1["1<br/>Bob<br/>555-1234"] --- T2["2<br/>empty"] --- T3["3<br/>Alice<br/>555-5678"] --- T4["4<br/>empty"] --- T5["5<br/>Carol<br/>555-9999"]
+    end
+    classDef key fill:#fff3b0,stroke:#b58900,color:#111
+    classDef full fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef empty fill:#e0e0e0,stroke:#616161,color:#111
+    classDef hit fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class K key
+    class T1,T5 full
+    class T0,T2,T4 empty
+    class T3 hit
 ```
+
+**How to read this diagram.** The key is hashed to an index (here 3), and we jump straight to that bucket (green).
+
+`get("Alice")` → `hash("Alice")` → 3 → return `555-5678`. Time: **O(1)**.
 
 ### Collision Handling
 

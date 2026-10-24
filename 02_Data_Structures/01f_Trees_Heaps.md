@@ -317,61 +317,60 @@ nodetool tablestats keyspace1.standard1 | grep -E "Read Latency|Compaction| SSTa
 
 ### What is a Tree?
 
+```mermaid
+flowchart TD
+    A(("A<br/>root")) --> B((B))
+    A --> C((C))
+    B --> D((D))
+    B --> E((E))
+    C --> F((F))
+    C --> G((G))
+    classDef root fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef mid fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef leaf fill:#c8f7c5,stroke:#2e7d32,color:#111
+    class A root
+    class B,C mid
+    class D,E,F,G leaf
 ```
-HIERARCHICAL STRUCTURE:
-┌────────────────────────────────────────────────────┐
-│                                                    │
-│              ┌───┐                                 │
-│              │ A │  ← Root                         │
-│              └─┬─┘                                 │
-│         ┌─────┴─────┐                              │
-│         ▼           ▼                              │
-│      ┌───┐       ┌───┐                             │
-│      │ B │       │ C │  ← Children of A            │
-│      └─┬─┘       └─┬─┘                             │
-│     ┌──┴──┐     ┌──┴──┐                            │
-│     ▼     ▼     ▼     ▼                            │
-│   ┌───┐ ┌───┐ ┌───┐ ┌───┐                          │
-│   │ D │ │ E │ │ F │ │ G │  ← Leaves                │
-│   └───┘ └───┘ └───┘ └───┘                          │
-│                                                    │
-│ Properties:                                        │
-│ - One root node                                    │
-│ - Each node has 0+ children                        │
-│ - No cycles                                        │
-│ - One path from root to any node                   │
-│                                                    │
-└────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Orange is the root, blue are the children of A, green are the leaves (nodes with no children).
+
+**Properties:**
+
+- One root node
+- Each node has 0 or more children
+- No cycles
+- Exactly one path from the root to any node
 
 ### Binary Search Tree (BST)
 
+**BST property:**
+
+- Left subtree: all values **<** node
+- Right subtree: all values **>** node
+
+```mermaid
+flowchart TD
+    n8((8)) --> n3((3))
+    n8 --> n10((10))
+    n3 --> n1((1))
+    n3 --> n6((6))
+    n10 --> n14((14))
+    classDef path fill:#c8f7c5,stroke:#2e7d32,color:#111
+    classDef other fill:#cfe8ff,stroke:#1565c0,color:#111
+    class n8,n3,n6 path
+    class n1,n10,n14 other
 ```
-BST PROPERTY:
-- Left subtree: all values < node
-- Right subtree: all values > node
 
-          ┌───┐
-          │ 8 │
-          └─┬─┘
-      ┌────┴────┐
-      ▼         ▼
-   ┌───┐     ┌───┐
-   │ 3 │     │10 │
-   └─┬─┘     └─┬─┘
-  ┌──┴──┐     └──┐
-  ▼     ▼        ▼
-┌───┐ ┌───┐   ┌───┐
-│ 1 │ │ 6 │   │14 │
-└───┘ └───┘   └───┘
+**How to read this diagram.** Green nodes are the search path for `6`.
 
-Search for 6:
-8 → 6 < 8 → go left
-3 → 6 > 3 → go right
-6 → FOUND!
+**Search for 6:**
 
-Time: O(log n) for balanced tree
-```
+1. `8` → 6 < 8 → go left
+2. `3` → 6 > 3 → go right
+3. `6` → **FOUND!**
+
+Time: O(log n) for a balanced tree.
 
 ### 🔴 Real-World Origin: File Systems (1965)
 
@@ -547,35 +546,34 @@ public class MyBinaryTree {
 
 ### What is a Heap?
 
+**Heap = complete binary tree with the heap property.**
+
+**Max heap** (parent ≥ children):
+
+```mermaid
+flowchart TD
+    h100((100)) --> h90((90))
+    h100 --> h80((80))
+    h90 --> h70((70))
+    h90 --> h60((60))
+    h80 --> h50((50))
+    classDef root fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef node fill:#cfe8ff,stroke:#1565c0,color:#111
+    class h100 root
+    class h90,h80,h70,h60,h50 node
 ```
-HEAP = Complete Binary Tree with Heap Property
 
-MAX HEAP: Parent ≥ Children
-          ┌───┐
-          │100│
-          └─┬─┘
-       ┌───┴───┐
-       ▼       ▼
-     ┌───┐   ┌───┐
-     │ 90│   │ 80│
-     └─┬─┘   └─┬─┘
-    ┌──┴──┐  ┌─┘
-    ▼     ▼  ▼
-  ┌───┐┌───┐┌───┐
-  │70 ││60 ││50 │
-  └───┘└───┘└───┘
+**How to read this diagram.** Every parent is at least as large as its children, so the maximum (orange) is always at the root. In a **min heap** the rule flips (parent ≤ children) and the root is the smallest.
 
-MIN HEAP: Parent ≤ Children
-(Root is smallest)
+**Stored as an array (level order):**
 
-STORED AS ARRAY (Level order):
-[100, 90, 80, 70, 60, 50]
-  0   1   2   3   4   5
+| Index | 0 | 1 | 2 | 3 | 4 | 5 |
+| ----- | - | - | - | - | - | - |
+| Value | 100 | 90 | 80 | 70 | 60 | 50 |
 
-Parent of i: (i-1)/2
-Left child of i: 2*i + 1
-Right child of i: 2*i + 2
-```
+- Parent of `i`: `(i-1)/2`
+- Left child of `i`: `2*i + 1`
+- Right child of `i`: `2*i + 2`
 
 ### Why a Tree Fits in a Flat Array With No Pointers
 

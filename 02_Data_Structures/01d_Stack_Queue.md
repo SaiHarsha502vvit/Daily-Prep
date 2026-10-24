@@ -105,28 +105,25 @@ Before compilers and managed runtimes existed, programmers manually calculated r
 - 1990s: Managed runtimes needed safety (stack overflow detection) and memory isolation
 - 2010s-2020s: High-frequency trading and async programming exposed limits of OS-thread stacks → virtual threads and lock-free queues
 
+**Physical reality** — like a stack of plates:
+
+```mermaid
+flowchart TB
+    TOP(["TOP"]) --> V5["5<br/>Last In, First Out (LIFO)"]
+    V5 --- V4["4"] --- V3["3"] --- V2["2"] --- V1["1<br/>bottom"]
+    classDef top fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef item fill:#cfe8ff,stroke:#1565c0,color:#111
+    class V5 top
+    class V4,V3,V2,V1 item
 ```
-PHYSICAL REALITY - Like a stack of plates:
-┌────────────────────────────────────────────────────┐
-│                                                    │
-│   TOP →  ┌─────┐                                   │
-│          │  5  │  ← Last In, First Out (LIFO)      │
-│          ├─────┤                                   │
-│          │  4  │                                   │
-│          ├─────┤                                   │
-│          │  3  │                                   │
-│          ├─────┤                                   │
-│          │  2  │                                   │
-│          ├─────┤                                   │
-│          │  1  │                                   │
-│          └─────┘                                   │
-│                                                    │
-│   PUSH: Add to top                                 │
-│   POP: Remove from top                             │
-│   PEEK: Look at top without removing               │
-│                                                    │
-└────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Only the top plate (orange) can be touched.
+
+| Operation | Meaning |
+| --------- | ------- |
+| `push` | Add to top |
+| `pop` | Remove from top |
+| `peek` | Look at top without removing |
 
 ### Stack Operations
 
@@ -151,17 +148,16 @@ PHYSICAL REALITY - Like a stack of plates:
 
 **Solution — Call Stack:**
 
+```mermaid
+flowchart TB
+    C["C() addr  - top (current)"] --> B["B() addr"] --> A["A() addr"] --> M["main() addr"]
+    classDef top fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef rest fill:#cfe8ff,stroke:#1565c0,color:#111
+    class C top
+    class B,A,M rest
 ```
-┌─────────────┐
-│ C() addr    │ ← Top (current)
-├─────────────┤
-│ B() addr    │
-├─────────────┤
-│ A() addr    │
-├─────────────┤
-│ main() addr │
-└─────────────┘
-```
+
+**How to read this diagram.** Each method call pushes a frame; `C()` is running now, and returning pops back to `B()`.
 
 When `C()` returns → pop → go to `B()`. When `B()` returns → pop → go to `A()`.
 
@@ -422,24 +418,23 @@ Before compilers and managed runtimes existed, programmers manually calculated r
 - 1990s: Managed runtimes needed safety (stack overflow detection) and memory isolation
 - 2010s-2020s: High-frequency trading and async programming exposed limits of OS-thread stacks → virtual threads and lock-free queues
 
+**Physical reality** — like a line at a store:
+
+```mermaid
+flowchart LR
+    OUT(["Dequeue<br/>(remove)"]) --- Q1["1<br/>FRONT"] --- Q2["2"] --- Q3["3"] --- Q4["4"] --- Q5["5<br/>BACK"] --- IN(["Enqueue<br/>(add)"])
+    classDef end1 fill:#ffd9b3,stroke:#e65100,color:#111
+    classDef item fill:#cfe8ff,stroke:#1565c0,color:#111
+    classDef io fill:#e0e0e0,stroke:#616161,color:#111
+    class Q1,Q5 end1
+    class Q2,Q3,Q4 item
+    class OUT,IN io
 ```
-PHYSICAL REALITY - Like a line at a store:
-┌────────────────────────────────────────────────────┐
-│                                                    │
-│  FRONT                               BACK          │
-│    ↓                                  ↓            │
-│  ┌───┬───┬───┬───┬───┐                             │
-│  │ 1 │ 2 │ 3 │ 4 │ 5 │                             │
-│  └───┴───┴───┴───┴───┘                             │
-│    ↑                 ↑                             │
-│  Dequeue          Enqueue                          │
-│  (Remove)         (Add)                            │
-│                                                    │
-│  FIFO = First In, First Out                        │
-│  "First come, first served"                        │
-│                                                    │
-└────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Items leave from the front and join at the back.
+
+> [!NOTE]
+> **FIFO = First In, First Out** — "first come, first served".
 
 ### Queue Operations
 

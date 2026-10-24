@@ -448,26 +448,24 @@ flowchart LR
 
 ## WHY ARRAYS ARE FAST — Memory Layout Explained
 
+```java
+int[] arr = {10, 20, 30, 40, 50};   // 5 integers, contiguous on the heap
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                  ARRAY MEMORY LAYOUT — THE SPEED SECRET                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  int[] arr = {10, 20, 30, 40, 50}; // 5 integers, contiguous on the heap       │
-│                                                                                 │
-│  HEAP (all elements side by side, 4 bytes each):                                │
-│  ┌──────────────────────────────────────────────────────────────────────────┐   │
-│  │  Address:  │  0x1000  │  0x1004  │  0x1008  │  0x100C  │  0x1010   │     │
-│  │  Index:    │   [0]    │   [1]    │   [2]    │   [3]    │   [4]     │     │
-│  │  Value:    │    10    │    20    │    30    │    40    │    50     │     │
-│  └──────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                 │
-│  KEY PROPERTY: CONTIGUOUS                                                       │
-│  ─────────────────────────                                                      │
-│  Every element sits RIGHT NEXT to its neighbour. No pointers. No chasing.      │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+```mermaid
+flowchart LR
+    subgraph HEAP["HEAP - all elements side by side, 4 bytes each"]
+        direction LR
+        e0["0x1000<br/>arr[0]<br/>10"] --- e1["0x1004<br/>arr[1]<br/>20"] --- e2["0x1008<br/>arr[2]<br/>30"] --- e3["0x100C<br/>arr[3]<br/>40"] --- e4["0x1010<br/>arr[4]<br/>50"]
+    end
+    classDef cell fill:#cfe8ff,stroke:#1565c0,color:#111
+    class e0,e1,e2,e3,e4 cell
 ```
+
+**How to read this diagram.** Every element sits right next to its neighbour; addresses grow by 4 bytes per `int`.
+
+> [!IMPORTANT]
+> **Key property: CONTIGUOUS.** No pointers, no chasing, which is the speed secret of arrays.
 
 ### O(1) Random Access — How It Works
 
