@@ -145,6 +145,30 @@ The art of DS lower-bound proving lies in choosing the right model: powerful eno
 
 ## 2. Comparison Model — BST, Sorted Array, and Heap Lower Bounds
 
+### 💬 Study-Partner View — Comparison-Model Lower Bounds
+
+**1. The bottom line:** If an algorithm can only compare items, each comparison gives one yes/no answer, so it needs enough comparisons to tell all possible outcomes apart.
+
+**2. The textbook core:**
+
+- A **decision tree** has one leaf per possible output; its height is the worst-case number of comparisons.
+- Sorting `n` items has `n!` outcomes → height ≥ log₂(n!) = **Ω(n log n)**.
+- Searching a sorted array has `n + 1` outcomes → **Ω(log n)**.
+- Heaps and BSTs therefore cannot beat O(log n) for their comparison-based operations.
+
+**3. The real-world analogy:** **Twenty Questions**: each yes/no question can at most halve the candidates, so identifying one of 2²⁰ items needs about 20 questions.
+
+**4. Walkthrough:**
+
+1. Sort 3 items: there are 3! = 6 possible orders.
+2. Each comparison splits the possible orders into two groups.
+3. To separate 6 orders you need `⌈log₂ 6⌉ = 3` comparisons in the worst case.
+4. For n items the same counting gives about n log₂ n comparisons.
+
+> [!NOTE]
+> **Quick check:** Which sorts escape this bound? *Counting and radix sort, because they do not rely on comparisons.*
+
+
 The **comparison model** is the classic framework: the data structure may only ask questions of the form "is a[i] ≤ a[j]?" (or equivalently "a[i] < a[j]?"). No direct array indexing, no bit-shifting, no hash function — only pairwise comparisons. This model captures BSTs, heaps, and sorted arrays.
 
 ### 2.1 Binary Search Trees — Ω(log n) per Operation
@@ -241,6 +265,30 @@ Interestingly, leftist heaps and skew heaps achieve the same Ω(log n) amortized
 
 ## 3. The Cell-Probe Model
 
+### 💬 Study-Partner View — Cell-Probe Model
+
+**1. The bottom line:** Pretend computation is free and only count how many memory cells you read; if you still need many reads, no algorithm can be faster.
+
+**2. The textbook core:**
+
+- Memory is an array of `w`-bit cells; an operation is charged **one unit per cell read or written**.
+- It lower-bounds data structures even when arbitrary computation between reads is allowed.
+- Known results: dynamic partial sums Ω(log n), predecessor search Ω(log log n) for integer keys in certain regimes, Union-Find Ω(α(n)).
+- Stronger than comparison bounds because it applies to any word-RAM algorithm.
+
+**3. The real-world analogy:** Judging a **library visit only by how many shelves you must walk to**, ignoring how fast you read: if the answer needs facts from many shelves, the trip is long no matter how clever you are.
+
+**4. Walkthrough:**
+
+1. Claim: a dynamic prefix-sum structure needs Ω(log n) probes per operation.
+2. Intuition: an update changes information that many different queries depend on.
+3. To make both fast the structure would need to store that information in few cells, but a counting argument shows it cannot.
+4. The Fenwick tree achieves O(log n), so it is optimal.
+
+> [!NOTE]
+> **Quick check:** Why use a stronger model than comparisons? *Hash tables and van Emde Boas trees do more than compare, so comparison bounds do not apply to them.*
+
+
 The **cell-probe model**, introduced by Yao in 1981, is the most powerful model for data structure lower bounds. The rules are simple:
 
 1. Memory is divided into cells of size S bits each.
@@ -293,6 +341,30 @@ Consider a problem where the comparison model gives Ω(log n) per operation, but
 ---
 
 ## 4. Information-Theoretic Lower Bounds
+
+### 💬 Study-Partner View — Information-Theoretic Lower Bounds
+
+**1. The bottom line:** If there are N different answers to tell apart, any scheme needs at least log₂ N bits (or yes/no questions) to name one.
+
+**2. The textbook core:**
+
+- **Counting argument:** `k` bits distinguish at most `2^k` cases.
+- Storing an arbitrary subset of `[0, U)` of size n needs `log₂ C(U, n)` ≈ `n log₂(U/n)` bits.
+- Exact membership of a static set needs Ω(n) bits; with false-positive rate ε it needs ≈ `n log₂(1/ε)` bits.
+- These bounds hold for *any* algorithm and *any* model.
+
+**3. The real-world analogy:** You cannot **write down a license plate with fewer symbols than the number of distinct plates allows**: there must be a distinct code for every possibility.
+
+**4. Walkthrough:**
+
+1. How many bits to store which 3 of 8 lockers are taken?
+2. Number of choices: C(8, 3) = 56.
+3. `log₂ 56 ≈ 5.8`, so you need at least 6 bits.
+4. A bitmap uses 8 bits: close, and optimal up to a small factor.
+
+> [!NOTE]
+> **Quick check:** Why do Bloom filters fit this bound? *Their size is within a constant factor (≈1.44×) of `n log₂(1/ε)`.*
+
 
 Information theory gives us lower bounds that are model-independent: they apply to *any* representation, in *any* model, because they are based on counting information content.
 
@@ -503,6 +575,30 @@ The comparison lower bound of Ω(log n) for `extract-min` applies to any data st
 ---
 
 ## 7. Union-Find Lower Bounds
+
+### 💬 Study-Partner View — Union-Find Lower Bounds
+
+**1. The bottom line:** No pointer-based disjoint-set structure can do better than the inverse-Ackermann bound, so Tarjan's union-find is already optimal.
+
+**2. The textbook core:**
+
+- Tarjan (1975): union by rank + path compression gives **O(m · α(n))** for `m` operations on `n` elements.
+- Fredman–Saks (1989): in the cell-probe model, any such structure needs **Ω(m · α(n))**.
+- α(n) is the inverse Ackermann function: below 5 for any practical `n`.
+- So the upper and lower bounds match: the problem is **solved**.
+
+**3. The real-world analogy:** Finding someone's team captain by asking around: the proof says that even a very clever company cannot make this meaningfully faster than the standard "ask upward and remember the answer" trick.
+
+**4. Walkthrough:**
+
+1. Take `n = 2⁶⁵⁵³⁶`, far more than atoms in the universe.
+2. Even then `α(n) ≤ 5`.
+3. So every union/find costs at most about 5 steps amortized.
+4. The lower bound says no structure can get under that, up to constants.
+
+> [!NOTE]
+> **Quick check:** Is α(n) effectively constant? *Yes for all real inputs, but it is not exactly O(1).*
+
 
 ### 7.1 Tarjan's Ω(α(n)) Lower Bound
 

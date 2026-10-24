@@ -171,6 +171,30 @@ flowchart TD
 
 ## 3. Tool 1: Augmentation — The 80% Tool
 
+### 💬 Study-Partner View — Augmentation
+
+**1. The bottom line:** Take a structure you already trust and store one extra piece of information in each node so a new question becomes cheap.
+
+**2. The textbook core:**
+
+- Pick a base (balanced BST, hash map, linked list) and add a field (subtree size, max end point, min so far).
+- Define the field with a **local rule** from children (e.g. `size = size(left) + size(right) + 1`) so updates stay O(1) per node on the path.
+- Update the field on every insert, delete and rotation.
+- Examples: order-statistic tree, interval tree, LRU cache (hash map + list), Min Stack.
+
+**3. The real-world analogy:** A **filing cabinet with a count written on each drawer**: you no longer open every drawer to know how many files are on the left.
+
+**4. Walkthrough:**
+
+1. Goal: `rank(x)` in a BST in O(log n).
+2. Augment each node with `size` of its subtree.
+3. Search for x; each time you go right, add `size(left) + 1` to a running rank.
+4. At x add `size(left) + 1`; total work is the path length, O(log n).
+
+> [!NOTE]
+> **Quick check:** What must you verify after adding a field? *That every mutation (including rotations) keeps the field correct.*
+
+
 **The most practical design tool by a wide margin.** Most "new" structures you will ever need in production are an existing structure carrying extra bookkeeping.
 
 ### 3.1 The recipe (CLRS Chapter 14, formalized)
@@ -356,6 +380,30 @@ Naming which of these two systems you are building — before choosing the struc
 
 ## 6. Tool 4: Randomization — Buying Simplicity With Probability
 
+### 💬 Study-Partner View — Randomization as a Design Tool
+
+**1. The bottom line:** When the deterministic fix is complicated, a random choice can give the same expected performance with much simpler code.
+
+**2. The textbook core:**
+
+- Randomness replaces bookkeeping: random priorities (treap), random levels (skip list), random hash functions (universal hashing).
+- You trade a **worst-case** guarantee for an **expected** or **high-probability** one.
+- Analyse with expectation and tail bounds, not examples.
+- Document the failure mode (extremely unlikely, but possible) and consider seeding for reproducibility in tests.
+
+**3. The real-world analogy:** Shuffling a deck before dealing: instead of arranging cards cleverly to avoid a bad hand, you let the shuffle make a bad arrangement unlikely.
+
+**4. Walkthrough:**
+
+1. Need: a balanced search tree with minimal code.
+2. Give each key a random priority; keep the heap order with rotations (treap).
+3. The tree has the same shape as a random BST, so expected height is O(log n).
+4. Total code is far shorter than red-black deletion logic.
+
+> [!NOTE]
+> **Quick check:** What do you give up? *The strict worst-case guarantee; you rely on probability.*
+
+
 ### 6.1 The trade
 
 Deterministic balanced trees (AVL, Red-Black) achieve O(log n) worst case at the cost of substantial rebalancing machinery: rotation cases, colour rules, and deletion logic that is famously fiddly to get right.
@@ -395,6 +443,30 @@ The insight worth extracting: **a random process can produce a good structure in
 ---
 
 ## 7. Tool 5: Laziness — Deferring Work Until It Pays
+
+### 💬 Study-Partner View — Laziness (Deferred Work)
+
+**1. The bottom line:** Do not pay for work until a query actually needs it, and then do it once for many updates.
+
+**2. The textbook core:**
+
+- **Lazy deletion:** mark items deleted and clean up later (tombstones, lazy heaps).
+- **Lazy propagation:** a segment tree delays pushing range updates to children until a query descends there.
+- **Lazy rebuild:** collect many changes, rebuild once (e.g. batch-resize).
+- Cost: extra state and the invariant must say "pending work is recorded in `lazy`".
+
+**3. The real-world analogy:** A **mailroom that sorts mail only when someone asks for their post**: if nobody asks for a department's mail all day, that sorting is never done.
+
+**4. Walkthrough:**
+
+1. Range-add +5 on `[2, 7]` in a segment tree.
+2. Update only the O(log n) nodes fully covered and store `lazy = +5` there.
+3. A later query touching a covered node pushes the pending +5 down to its two children.
+4. Many updates cost O(log n) each instead of O(range size).
+
+> [!NOTE]
+> **Quick check:** What invariant do you maintain? *A node's stored value is correct once all `lazy` tags above it are applied.*
+
 
 **The design move:** do not do work when asked; record that it *needs* doing, and do it when the answer is actually required — or never, if the request is superseded.
 
@@ -520,6 +592,30 @@ This case study is the clearest illustration that **there is no universally best
 ---
 
 ## 10. Worked Invention: Deriving the Fenwick Tree From Nothing
+
+### 💬 Study-Partner View — Fenwick Tree (Binary Indexed Tree)
+
+**1. The bottom line:** A Fenwick tree stores partial sums in a clever layout so both "prefix sum" and "update" take O(log n) with a tiny array.
+
+**2. The textbook core:**
+
+- Array `bit[1..n]` where `bit[i]` stores the sum of the `lowbit(i)` elements ending at `i` (`lowbit(i) = i & -i`).
+- `update(i, δ)`: `while i <= n: bit[i] += δ; i += i & -i`.
+- `prefix(i)`: `sum = 0; while i > 0: sum += bit[i]; i -= i & -i`.
+- O(log n) per operation, O(n) space, optimal for dynamic prefix sums (cell-probe bound Ω(log n)).
+
+**3. The real-world analogy:** Keeping **running totals for blocks of different sizes** (a block of 1, 2, 4, 8 days...) so any total can be made by adding a few non-overlapping blocks.
+
+**4. Walkthrough:**
+
+1. n = 8. `prefix(7)`: i = 7 (111) → add `bit[7]` (covers 7); i = 6 (110) → add `bit[6]` (covers 5–6); i = 4 (100) → add `bit[4]` (covers 1–4); i = 0 stop.
+2. Three additions cover positions 1–7 exactly.
+3. `update(5, +3)`: i = 5 → `bit[5]`; i = 6 → `bit[6]`; i = 8 → `bit[8]`; i = 16 stop.
+4. Only the blocks containing position 5 are changed.
+
+> [!NOTE]
+> **Quick check:** Why `i & -i`? *It isolates the lowest set bit, which is the size of the block that `bit[i]` covers.*
+
 
 This section is the chapter in miniature. **Do not read ahead — try each step first.** The Fenwick tree (Binary Indexed Tree, Peter Fenwick, 1994) is the best available exercise because it is genuinely derivable, and because most people memorize it without ever seeing where it comes from.
 

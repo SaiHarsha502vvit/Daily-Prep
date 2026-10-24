@@ -281,6 +281,30 @@ The invariant tells you what the structure _must_ guarantee. The implementation 
 
 ## 📊 1. Arraylist Deep Internals
 
+### 💬 Study-Partner View — ArrayList Internals
+
+**1. The bottom line:** An `ArrayList` is a thin wrapper around an `Object[]` that doubles as it fills, and each element is a separate object if you store boxed types.
+
+**2. The textbook core:**
+
+- Fields: `elementData` (the array), `size`, `modCount`.
+- Default capacity 10 (lazily allocated); growth `newCap = oldCap + (oldCap >> 1)` (≈1.5×).
+- `get(i)`: range check then array read, O(1). `add(x)`: amortized O(1). `add(i, x)`/`remove(i)`: `System.arraycopy`, O(n).
+- `ArrayList<Integer>` stores references to `Integer` objects (16 bytes each plus a reference).
+
+**3. The real-world analogy:** A **bookshelf that gets replaced by a bigger one** when it is full: you move every book across once, but you do it rarely.
+
+**4. Walkthrough:**
+
+1. `new ArrayList<>()`; add 11 integers.
+2. The first add allocates capacity 10; the 11th add triggers growth to 15.
+3. `Arrays.copyOf` copies 10 references into the new array.
+4. The old array is garbage; `size = 11`, capacity 15.
+
+> [!NOTE]
+> **Quick check:** What does `modCount` do? *It lets iterators detect structural changes and throw `ConcurrentModificationException`.*
+
+
 🔬 **Section Challenge — 📊 1. Arraylist Deep Internals**
 
 **Challenge 1 (Reasoning):** `ArrayList.remove(Object o)` vs `ArrayList.remove(int index)` — you call `list.remove(1)`. Which overload is called and why?
@@ -539,6 +563,30 @@ Use the geometric series argument. After `n` adds starting from capacity 10, tot
 </details>
 
 ## #️⃣ 2. Hashmap Deep Internals
+
+### 💬 Study-Partner View — HashMap Internals
+
+**1. The bottom line:** A `HashMap` is an array of buckets; each key is spread, masked into a bucket, and collisions are chained (and treeified when long).
+
+**2. The textbook core:**
+
+- `hash = h ^ (h >>> 16)`, `index = hash & (n - 1)`; `n` is always a power of two.
+- Buckets hold `Node`s (chains); at ≥ 8 entries (and table ≥ 64) a bucket becomes a red-black tree; it reverts at ≤ 6.
+- Resize when `size > capacity × 0.75`: capacity doubles and each node goes to its old index or old index + oldCapacity.
+- `get`/`put` average O(1); worst O(log n) with tree bins.
+
+**3. The real-world analogy:** A **post-office wall of pigeonholes**: the address decides the pigeonhole; if too many letters pile into one, they are sorted into a tidy tree inside it.
+
+**4. Walkthrough:**
+
+1. `put("Alice", 25)` in a 16-bucket table.
+2. `hash("Alice")` spread → `index = hash & 15`.
+3. Bucket empty → store `Node(hash, "Alice", 25, null)`; `size = 1`.
+4. When `size` reaches 13 (> 12), resize to 32 and redistribute.
+
+> [!NOTE]
+> **Quick check:** Why a power-of-two capacity? *So `hash & (n-1)` replaces a slow modulo.*
+
 
 🔬 **Section Challenge — #️⃣ 2. Hashmap Deep Internals**
 
@@ -908,6 +956,30 @@ Tree lookup: O(log n) instead of O(n)!
 
 ## 🔬 3. Linkedlist Deep Internals
 
+### 💬 Study-Partner View — LinkedList Internals
+
+**1. The bottom line:** Each `LinkedList` element is its own 32-byte node, so every hop is a likely cache miss.
+
+**2. The textbook core:**
+
+- `LinkedList` keeps `first`, `last`, `size`; each `Node` holds `item`, `next`, `prev`.
+- `add(i, x)` first finds the position (O(n), starting from the nearer end), then relinks 4 pointers (O(1)).
+- Memory: ~32 bytes per node plus the boxed value, versus 4 bytes per `int` in an array.
+- Better choices for queue/stack: `ArrayDeque`.
+
+**3. The real-world analogy:** A **treasure hunt** where every clue is hidden somewhere else in town: following the chain costs travel time even though each step is simple.
+
+**4. Walkthrough:**
+
+1. `list.add(1, "X")` on `[A, B, C]`.
+2. Index 1 < size/2 → start at `first`, walk 1 step to `B`.
+3. Create `X`; set `X.prev = A`, `X.next = B`, `A.next = X`, `B.prev = X`.
+4. Result `[A, X, B, C]`; pointer updates were O(1), finding the spot was O(n).
+
+> [!NOTE]
+> **Quick check:** Why can `LinkedList.get(i)` start from either end? *It is doubly linked, so it picks the nearer end.*
+
+
 ### LinkedList — complete internal view
 
 ```java
@@ -1119,6 +1191,30 @@ CPU cycles: ~15-20 (if JIT inlined and cache hit).
 
 ## 🌳 5. Binary Tree / Bst Deep Internals
 
+### 💬 Study-Partner View — TreeMap (Red-Black Tree) Internals
+
+**1. The bottom line:** `TreeMap` stores each entry in a red-black tree node, which keeps keys sorted at the cost of one pointer-hop (and likely cache miss) per level.
+
+**2. The textbook core:**
+
+- `TreeMap.Entry` holds `key`, `value`, `left`, `right`, `parent`, `color` (~40 bytes).
+- Search/insert/delete **O(log n)**, height ≤ 2·log₂(n+1).
+- Extra operations: `firstKey`, `floorKey`, `ceilingKey`, `subMap`, `headMap`, `tailMap`.
+- Compared with `HashMap`: slower point lookups, but sorted order and range queries.
+
+**3. The real-world analogy:** Looking up a word in a **printed dictionary**: you flip to the middle, decide left or right, and repeat, a few page flips, each to a different page.
+
+**4. Walkthrough:**
+
+1. Find key 40 in the tree with root 50 (left 30 → right 40).
+2. Visit 50: 40 < 50 → left.
+3. Visit 30: 40 > 30 → right.
+4. Visit 40: found after 3 node visits (3 potential cache misses).
+
+> [!NOTE]
+> **Quick check:** When would you choose `TreeMap` over `HashMap`? *When you need sorted keys or range/nearest-key queries.*
+
+
 ## Binary Search Tree - Complete Internal View
 
 ```java
@@ -1228,6 +1324,30 @@ TreeMap.Entry has 5 reference fields (key, value, left, right, parent) + 1 boole
 </details>
 
 ## 📦 6. Heap / Priority Queue Deep Internals
+
+### 💬 Study-Partner View — PriorityQueue Internals
+
+**1. The bottom line:** `PriorityQueue` is a binary min-heap stored in a plain array, using index arithmetic instead of pointers.
+
+**2. The textbook core:**
+
+- Array `queue[]`; parent of `i` is `(i-1)/2`, children `2i+1` and `2i+2`.
+- `offer`: append then sift-up, O(log n). `poll`: take the root, move the last element to the root, sift-down, O(log n). `peek`: O(1).
+- Contiguous layout → good cache behaviour.
+- Iteration order is the array order, **not** sorted.
+
+**3. The real-world analogy:** A **hospital triage board**: the most urgent patient is always at the top; when they leave, the board quickly reshuffles.
+
+**4. Walkthrough:**
+
+1. Heap `[20, 30, 70, 50, 40]`; `offer(10)`.
+2. Append at index 5; parent is index 2 (70) → swap.
+3. Now at index 2; parent is index 0 (20) → swap.
+4. Heap `[10, 30, 20, 50, 40, 70]`; root is 10.
+
+> [!NOTE]
+> **Quick check:** Why does `poll` move the last element to the root? *It keeps the tree complete (no holes) before sifting down.*
+
 
 ## Heap (Priority Queue) - Complete Internal View
 

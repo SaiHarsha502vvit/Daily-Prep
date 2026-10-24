@@ -249,6 +249,30 @@ Let's go DEEP into how computers actually work!
 
 ## THE MEMORY HIERARCHY - Why Some Operations Are Faster
 
+### 💬 Study-Partner View — The Memory Hierarchy
+
+**1. The bottom line:** Computers keep a small, fast memory close to the CPU and a large, slow one further away, and your program is fast when it stays in the small one.
+
+**2. The textbook core:**
+
+- Levels: registers → L1 → L2 → L3 → RAM → SSD/disk; each is larger and slower (≈1 ns for L1, ≈100 ns for RAM, ≈100 µs for SSD).
+- Data moves in **cache lines** (64 bytes), not single bytes.
+- **Hit** = found in cache; **miss** = fetch from the next level.
+- Locality of reference (spatial and temporal) is what makes this work.
+
+**3. The real-world analogy:** A **desk, a shelf, a library and a warehouse**: you can work quickly only with what is on the desk.
+
+**4. Walkthrough:**
+
+1. Loop over `int[1000]`: reading `a[0]` misses and loads 16 ints.
+2. `a[1]`…`a[15]` are hits.
+3. `a[16]` misses and loads the next line, and so on: about 63 misses for 1000 reads.
+4. The same loop over scattered nodes would miss on almost every element.
+
+> [!NOTE]
+> **Quick check:** How many `int`s fit in one 64-byte cache line? *16.*
+
+
 ```mermaid
 flowchart TB
     CPU(["CPU core"]) --> REG["REGISTERS - 64 bytes<br/>~1 cycle, 0.5 ns<br/>variables being computed"]
@@ -368,6 +392,30 @@ flowchart TB
 > **Why does this matter?** Network protocols use big endian while your CPU is likely little endian, so you must convert when sending multi-byte values over a network.
 
 ## JAVA MEMORY MODEL - Stack vs Heap
+
+### 💬 Study-Partner View — Stack vs Heap
+
+**1. The bottom line:** Local variables and method calls live on a fast, automatically cleaned stack; objects live on a larger heap that the garbage collector cleans.
+
+**2. The textbook core:**
+
+- **Stack:** one per thread; each call pushes a frame with locals, parameters and the return address; freed on return.
+- **Heap:** shared by all threads; all objects and arrays; reclaimed by the garbage collector.
+- A local variable of object type holds a **reference** (pointer) into the heap.
+- `StackOverflowError` = too many frames; `OutOfMemoryError` = heap exhausted.
+
+**3. The real-world analogy:** The **stack** is a pile of sticky notes on your desk (quick, thrown away when finished); the **heap** is a storage room where bigger items are kept and a janitor clears out whatever nobody uses.
+
+**4. Walkthrough:**
+
+1. `int[] arr = new int[5];` inside `calculate()`.
+2. The reference `arr` (4 or 8 bytes) is a local variable in the stack frame.
+3. The array object (header + length + 20 bytes) is allocated on the heap.
+4. When `calculate()` returns, the frame is popped; the array becomes garbage once nothing references it.
+
+> [!NOTE]
+> **Quick check:** Where does `new Node()` live? *On the heap; the variable holding it is on the stack.*
+
 
 ### JVM memory layout
 
@@ -834,6 +882,29 @@ Look for call chains with >10,000 frames — those indicate pathological recursi
 ---
 
 ## BIT MANIPULATION - The Fastest Operations
+
+### 💬 Study-Partner View — Bit Manipulation
+
+**1. The bottom line:** Integers are rows of bits, and a few operators let you test, set, clear and flip individual bits in one CPU step.
+
+**2. The textbook core:**
+
+- `&` AND, `|` OR, `^` XOR, `~` NOT, `<<` left shift (×2ⁿ), `>>` arithmetic right shift (÷2ⁿ), `>>>` logical right shift.
+- Test bit `i`: `(n >> i) & 1`. Set: `n | (1 << i)`. Clear: `n & ~(1 << i)`. Toggle: `n ^ (1 << i)`.
+- `n & (n - 1)` clears the lowest set bit; `n & -n` isolates it; power of two ⇔ `n > 0 && (n & (n-1)) == 0`.
+- XOR properties: `a ^ a = 0`, `a ^ 0 = a`.
+
+**3. The real-world analogy:** A **bank of light switches**: each bit is one switch; AND/OR/XOR are rules for combining two panels of switches.
+
+**4. Walkthrough:**
+
+1. Is 12 (`1100`) a power of two? Compute `12 & 11` = `1100 & 1011` = `1000` ≠ 0 → no.
+2. Is 8 (`1000`) a power of two? `8 & 7` = `1000 & 0111` = 0 → yes.
+3. Count set bits of 13 (`1101`) with Kernighan: 13 → `13 & 12 = 12` → `12 & 11 = 8` → `8 & 7 = 0`: 3 steps → 3 bits.
+
+> [!NOTE]
+> **Quick check:** Why does `a ^ b ^ a` equal `b`? *XOR is commutative and associative, and `a ^ a = 0`.*
+
 
 ## Bit-Level Operations - Complete Guide
 

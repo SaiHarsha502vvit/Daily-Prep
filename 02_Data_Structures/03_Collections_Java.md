@@ -183,6 +183,30 @@ flowchart TD
 
 # 📌 Section 1: List Interface
 
+### 💬 Study-Partner View — List Interface
+
+**1. The bottom line:** `List` is an ordered collection with positions: you can ask for the item at index `i` and duplicates are allowed.
+
+**2. The textbook core:**
+
+- `ArrayList`: array-backed; `get(i)` O(1), `add(x)` amortized O(1), `add(i, x)`/`remove(i)` O(n).
+- `LinkedList`: doubly linked; `get(i)` O(n), add/remove at ends O(1); also a `Deque`.
+- `List.of(...)` is immutable; `Arrays.asList(...)` is fixed-size.
+- Prefer `ArrayList` by default; use `ArrayDeque` for queue/stack use.
+
+**3. The real-world analogy:** A **numbered to-do list**: you can jump to item 5, repeat items, and insert in the middle (everything below moves down).
+
+**4. Walkthrough:**
+
+1. `List<String> xs = new ArrayList<>();`
+2. `xs.add("a"); xs.add("b"); xs.add(1, "x");` → `[a, x, b]`.
+3. `xs.get(2)` → `"b"` in O(1).
+4. `xs.remove("x")` removes by value (O(n) search), `xs.remove(0)` removes by index.
+
+> [!NOTE]
+> **Quick check:** Why is `ArrayList.remove(0)` slow? *Every later element shifts one place left.*
+
+
 ## ArrayList Methods (Most Used for Arrays/DSA)
 
 | Method        | Return Type | Signature                   | Description                           | Time       |
@@ -298,6 +322,30 @@ list.removeLast();  // Remove from back
 ---
 
 # 📌 Section 2: Map Interface
+
+### 💬 Study-Partner View — Map Interface
+
+**1. The bottom line:** `Map` stores key → value pairs so you can look up a value by its key instead of by position.
+
+**2. The textbook core:**
+
+- `HashMap`: average O(1), unordered. `LinkedHashMap`: O(1), keeps insertion (or access) order. `TreeMap`: O(log n), sorted by key, supports `floorKey`/`ceilingKey`/`subMap`.
+- `ConcurrentHashMap` for thread-safe access.
+- Common methods: `put`, `get`, `getOrDefault`, `containsKey`, `merge`, `computeIfAbsent`, `entrySet`.
+- `Map` is **not** a `Collection`.
+
+**3. The real-world analogy:** A **dictionary or contact list**: you look up a name (key) and get a number (value); two entries cannot have the same name.
+
+**4. Walkthrough:**
+
+1. `Map<String,Integer> count = new HashMap<>();`
+2. For each word `w`: `count.merge(w, 1, Integer::sum);`
+3. After "a b a": `{a=2, b=1}`.
+4. Print in sorted key order by copying into `new TreeMap<>(count)`.
+
+> [!NOTE]
+> **Quick check:** When do you need `LinkedHashMap`? *For predictable iteration order, or as an LRU cache with access order.*
+
 
 ## HashMap Methods (CRITICAL for DSA!)
 
@@ -454,6 +502,30 @@ treeMap.floorKey(7);      // 5 (largest <= 7)
 
 # 📌 Section 3: Set Interface
 
+### 💬 Study-Partner View — Set Interface
+
+**1. The bottom line:** `Set` is a collection that refuses duplicates, so "is it in there?" is its main question.
+
+**2. The textbook core:**
+
+- `HashSet`: O(1) average, unordered. `LinkedHashSet`: insertion order. `TreeSet`: sorted, O(log n), with `first`, `last`, `floor`, `ceiling`.
+- A `HashSet` is backed by a `HashMap` (elements are keys).
+- Duplicates are detected with `equals` and `hashCode`.
+- Set operations: `retainAll` (intersection), `addAll` (union), `removeAll` (difference).
+
+**3. The real-world analogy:** A **guest list at a club**: your name is either on it or not, and writing it twice makes no difference.
+
+**4. Walkthrough:**
+
+1. `Set<Integer> seen = new HashSet<>();`
+2. `seen.add(3)` → true (new). `seen.add(3)` → false (already there).
+3. `seen.contains(3)` → true in O(1).
+4. Use the return value of `add` to detect duplicates in a single pass.
+
+> [!NOTE]
+> **Quick check:** Which set gives sorted iteration? *`TreeSet`.*
+
+
 ## HashSet Methods
 
 | Method     | Return Type | Signature            | Description                   | Time |
@@ -536,6 +608,30 @@ treeSet.floor(7);     // 5 (largest <= 7)
 ---
 
 # 📬 Section 4: Queue Interface
+
+### 💬 Study-Partner View — Queue Interface
+
+**1. The bottom line:** `Queue` is for "process in order": add at the back, take from the front (or by priority).
+
+**2. The textbook core:**
+
+- Methods come in two flavours: throwing (`add`, `remove`, `element`) and safe (`offer`, `poll`, `peek` return `false`/`null`).
+- `ArrayDeque`: fast FIFO/LIFO, no nulls. `LinkedList`: allows nulls, slower. `PriorityQueue`: min-heap by default, `poll` returns the smallest, O(log n).
+- `BlockingQueue` implementations coordinate producer/consumer threads.
+- Iterating a `PriorityQueue` is **not** in sorted order.
+
+**3. The real-world analogy:** A **ticket line**: `offer` joins the back, `poll` serves the front; a priority queue is an **emergency room** where the most urgent patient is served first.
+
+**4. Walkthrough:**
+
+1. `Queue<Integer> q = new ArrayDeque<>();`
+2. `q.offer(1); q.offer(2); q.offer(3);`
+3. `q.poll()` → 1, `q.peek()` → 2.
+4. With `PriorityQueue` and offers 5, 1, 3, `poll()` returns 1, then 3, then 5.
+
+> [!NOTE]
+> **Quick check:** Why prefer `offer`/`poll` over `add`/`remove`? *They signal failure with a return value instead of throwing exceptions.*
+
 
 ## Queue/Deque Methods (Using ArrayDeque)
 

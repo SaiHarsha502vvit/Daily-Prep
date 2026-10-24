@@ -190,6 +190,30 @@ Use case: the probability that a skip list has height > 10 log n is bounded by s
 
 ## 3. Skip Lists — Randomized Balanced Search
 
+### 💬 Study-Partner View — Skip Lists (Randomized)
+
+**1. The bottom line:** A skip list uses coin flips to build express lanes, so it behaves like a balanced tree without any rebalancing code.
+
+**2. The textbook core:**
+
+- Each inserted node gets height `h` with probability `p^(h-1)(1-p)` (usually `p = 1/2`).
+- Expected height O(log n); expected search/insert/delete **O(log n)**; expected space O(n).
+- High-probability bound: search is O(log n) with probability ≥ `1 - 1/n^c`.
+- The adversary cannot predict the coin flips, so no input is consistently bad.
+
+**3. The real-world analogy:** A **building with elevators**: some floors have express stops (decided at random when built), and from any floor you jump up the express levels then walk down.
+
+**4. Walkthrough:**
+
+1. Insert 30: flip coins: heads, heads, tails → height 3.
+2. Link 30 into levels 1, 2 and 3 at the correct sorted position (found by the search path).
+3. Later, searching for 30 starts at the top level and drops down whenever the next key would overshoot.
+4. Expected number of steps stays O(log n).
+
+> [!NOTE]
+> **Quick check:** Why is the worst case still O(n)? *Unlucky coins could build no express lanes, but the probability is astronomically small.*
+
+
 ### Historical Context
 
 Skip lists were introduced by **William Pugh in 1989** (University of Maryland) as a probabilistic alternative to balanced binary search trees. The paper — *"Skip Lists: A Probabilistic Alternative to Balanced Trees"* — argued that skip lists are simpler to implement, easier to understand, and competitive in performance. Today they power `ConcurrentSkipListMap` in Java and sorted sets in Redis (ZSET uses a skip list for scores + a hash for lookups).
@@ -290,6 +314,30 @@ The skip list has **no explicit rebalancing** — the random height naturally ke
 ---
 
 ## 4. Treaps — Randomized BST
+
+### 💬 Study-Partner View — Treaps
+
+**1. The bottom line:** A treap is a BST by key and a heap by random priority; the random priorities make the tree balanced in expectation.
+
+**2. The textbook core:**
+
+- Each node has a **key** (BST order) and a random **priority** (heap order).
+- Given distinct keys and priorities, the shape is unique: it is the BST you would get by inserting keys in priority order.
+- Expected depth O(log n); insert/delete use rotations to restore heap order.
+- Supports `split` and `merge` in O(log n), which makes range operations easy.
+
+**3. The real-world analogy:** A **randomly seeded tournament**: ranks (keys) decide left/right order, but who sits near the top is decided by a random draw (priority), so no particular order of entries can build a bad tree.
+
+**4. Walkthrough:**
+
+1. Insert key 5 with priority 0.1, then key 7 with priority 0.3.
+2. 7 > 5 goes right of 5; 0.3 > 0.1 keeps heap order (min-heap), so no rotation.
+3. Insert key 3 with priority 0.05: goes left of 5, but 0.05 < 0.1 violates heap order → rotate 3 up above 5.
+4. Now the root is 3 with right child 5, and 7 is below 5.
+
+> [!NOTE]
+> **Quick check:** What do the priorities buy us? *A random shape, i.e. expected balance, without tracking heights or colours.*
+
 
 ### Historical Context
 
@@ -446,6 +494,30 @@ Treaps are **randomized BSTs**: simpler to implement than Red-Black trees but gi
 
 ## 5. Bloom Filters — Membership with False Positives
 
+### 💬 Study-Partner View — Bloom Filters
+
+**1. The bottom line:** A Bloom filter says "definitely not here" or "probably here" using a tiny bit array and a few hash functions.
+
+**2. The textbook core:**
+
+- Bit array of `m` bits and `k` hash functions; `add(x)` sets `k` bits; `contains(x)` checks `k` bits.
+- **No false negatives**; false-positive rate ≈ `(1 - e^(-kn/m))^k`.
+- Optimal `k = (m/n) ln 2`; then `m ≈ -n ln ε / (ln 2)²` bits for rate ε.
+- Cannot delete (use counting Bloom or cuckoo filters); cannot list items.
+
+**3. The real-world analogy:** A **bouncer's blurry "known troublemakers" board**: if your face is clearly not on it, you are in; if it looks similar, they check the real list.
+
+**4. Walkthrough:**
+
+1. `m = 16`, `k = 2`. Add "cat": hashes → bits 3 and 10 set.
+2. Add "dog": hashes → bits 7 and 10 set.
+3. Query "bird": bits 3 and 12. Bit 12 is 0 → definitely absent.
+4. Query "fox": bits 7 and 3 (both set by others) → "probably present": a false positive.
+
+> [!NOTE]
+> **Quick check:** Where is a Bloom filter used? *In LSM databases (Cassandra, RocksDB) to skip SSTables that cannot contain a key.*
+
+
 ### Historical Context
 
 **Burton Bloom (1970, General Electric)** published *"Space/Time Trade-offs in Hash Coding with Allowable Errors"* in Communications of the ACM. His original application was spell-checking in editors. The insight: for membership queries, allowing a small controlled false positive rate trades memory for speed and space in a mathematically precise way. Fifty years later, Bloom filters are the backbone of database internals, CDN caching, browser security, and blockchain SPV nodes.
@@ -572,6 +644,30 @@ public class BloomFilter<T> {
 
 ## 6. Cuckoo Hashing — Worst-Case O(1) Lookup
 
+### 💬 Study-Partner View — Cuckoo Hashing
+
+**1. The bottom line:** Every key has exactly two possible homes, so a lookup checks at most two slots; inserts kick the current occupant to its other home.
+
+**2. The textbook core:**
+
+- Two hash functions `h₁`, `h₂` (two tables or one); `x` is stored at `h₁(x)` or `h₂(x)`.
+- **Lookup and delete: worst-case O(1)** (two probes).
+- Insert: place `x` at `h₁(x)`; if occupied, evict the occupant to *its* other slot, and repeat. On a long cycle, rehash with new functions.
+- Expected insert O(1) while load stays below about 50% (higher with more hash functions or buckets).
+
+**3. The real-world analogy:** The cuckoo bird **pushing eggs out of the nest**: a newcomer takes a spot and the previous owner has to move to their backup spot, which may push someone else.
+
+**4. Walkthrough:**
+
+1. `h₁(A) = 1`, `h₂(A) = 4`; `h₁(B) = 1`, `h₂(B) = 2`.
+2. Insert A at slot 1. Insert B: slot 1 is taken → evict A to its other slot 4; B sits in 1.
+3. Lookup A: check slot 1 (B) then slot 4 (A) → found in 2 probes.
+4. If the eviction chain loops, rebuild the table with new hash functions.
+
+> [!NOTE]
+> **Quick check:** Why is lookup worst-case O(1) here but not in chaining? *A key can only be in one of two known slots.*
+
+
 ### Historical Context
 
 **Pagh and Rodler (2001, Aarhus University)** introduced cuckoo hashing in *"Cuckoo Hashing"*. The name comes from the cuckoo bird, which kicks other birds' eggs out of nests — the same behavior the algorithm performs with keys. The key result: **O(1) worst-case lookup**, not just expected. This is remarkable because chained hashing and linear probing both have Ω(n) worst-case lookups.
@@ -671,6 +767,30 @@ Cuckoo hashing excels in **write-heavy, latency-critical** workloads where consi
 ---
 
 ## 7. Count-Min Sketch — Frequency Estimation
+
+### 💬 Study-Partner View — Count-Min Sketch
+
+**1. The bottom line:** A Count-Min sketch estimates how often each item appeared in a stream using a small grid of counters, and it never underestimates.
+
+**2. The textbook core:**
+
+- A `d × w` array of counters with `d` hash functions; `update(x)` increments `c[i][hᵢ(x)]` for each row.
+- `estimate(x) = min over rows of c[i][hᵢ(x)]`.
+- Error: estimate ≤ true count + ε·N with probability ≥ 1 - δ, using `w = ⌈e/ε⌉`, `d = ⌈ln(1/δ)⌉`.
+- Space is independent of the number of distinct items; only overestimates are possible.
+
+**3. The real-world analogy:** A **set of tally boards shared by many items**: if two different items land in the same square, the count is inflated. Checking several boards and taking the smallest reading gets close to the truth.
+
+**4. Walkthrough:**
+
+1. `d = 2` rows. Items seen: "a" ×3, "b" ×1.
+2. Row 1: a and b collide in one cell (count 4). Row 2: a alone (3), b alone (1).
+3. `estimate(a) = min(4, 3) = 3` (correct). `estimate(b) = min(4, 1) = 1` (correct).
+4. Without the second row, `b` would have been overestimated as 4.
+
+> [!NOTE]
+> **Quick check:** Why can it only overestimate? *Collisions only add to a counter, never subtract.*
+
 
 ### Historical Context
 
@@ -776,6 +896,30 @@ The basic Count-Min overestimates for heavy hitters (collisions from all other i
 ---
 
 ## 8. HyperLogLog — Cardinality Estimation
+
+### 💬 Study-Partner View — HyperLogLog
+
+**1. The bottom line:** HyperLogLog counts how many different items you saw by watching for unusually rare hash patterns, using only kilobytes of memory.
+
+**2. The textbook core:**
+
+- Hash each item; use the first bits to pick one of `m` registers, and store the maximum number of **leading zeros** (+1) seen in the rest.
+- The estimate uses the harmonic mean of `2^register` values, scaled by a correction constant.
+- Standard error ≈ `1.04 / √m` (about 0.8% with 16,384 registers, ~12 KB).
+- Mergeable: the union of two sketches is the element-wise max.
+
+**3. The real-world analogy:** Counting **how many coins were flipped by checking the longest run of heads you saw**: if somebody got 10 heads in a row, they probably flipped about 2¹⁰ coins.
+
+**4. Walkthrough:**
+
+1. Stream of user IDs, hashed to random bits.
+2. An item whose hash starts with `0001...` has 3 leading zeros, which appears about 1 in 8 times.
+3. If the largest leading-zero count seen in a bucket is 3, that bucket has probably seen about 2³ = 8 distinct items.
+4. Averaging across many buckets removes the noise and gives the final estimate.
+
+> [!NOTE]
+> **Quick check:** Can HyperLogLog tell whether a specific item was seen? *No; it only estimates the count of distinct items.*
+
 
 ### Historical Context
 
@@ -883,6 +1027,30 @@ For a 16-bit HyperLogLog (64 KB), the standard error is 0.41%. This means a card
 ---
 
 ## 9. Consistent Hashing — Distributed Hashing Without Rehash
+
+### 💬 Study-Partner View — Consistent Hashing
+
+**1. The bottom line:** Hash both servers and keys onto a ring so that adding or removing a server moves only a small share of the keys.
+
+**2. The textbook core:**
+
+- Place servers (and often many **virtual nodes** per server) on a ring by hash; a key goes to the first server clockwise from its hash.
+- Adding/removing a server moves about **1/N** of the keys, versus almost all keys with `hash(key) mod N`.
+- Virtual nodes smooth out load imbalance.
+- Used in Dynamo, Cassandra, memcached clients and CDNs.
+
+**3. The real-world analogy:** A **round table with seat markers**: each guest is served by the next waiter clockwise from their seat; if one waiter leaves, only the guests between that waiter and the previous one need a new waiter.
+
+**4. Walkthrough:**
+
+1. Servers A (hash 20), B (hash 50), C (hash 80) on a 0–99 ring.
+2. Key with hash 60 → next clockwise server is C (80). Key with hash 10 → A.
+3. Add server D at hash 65.
+4. Only keys with hashes between 50 and 65 move (from C to D); everything else stays.
+
+> [!NOTE]
+> **Quick check:** What goes wrong with `hash(key) % N`? *Changing N remaps nearly every key, causing a cache stampede.*
+
 
 ### Historical Context
 
@@ -1000,6 +1168,30 @@ When a node is added/removed, only the keys that were mapped to that node (and t
 ---
 
 ## 10. Min-Wise Hashing — Similarity Estimation
+
+### 💬 Study-Partner View — Min-Wise Hashing (MinHash)
+
+**1. The bottom line:** MinHash compresses a big set into a tiny signature so that you can estimate how similar two sets are.
+
+**2. The textbook core:**
+
+- Jaccard similarity: `J(A, B) = |A ∩ B| / |A ∪ B|`.
+- For a random hash function, `P[min h(A) = min h(B)] = J(A, B)`.
+- Use `k` hash functions; the fraction of matching minima estimates J with error ≈ `1/√k`.
+- Locality-sensitive hashing groups similar signatures for near-duplicate detection.
+
+**3. The real-world analogy:** Comparing two **playlists** by checking whether their "alphabetically first song under a random shuffle" matches. Similar playlists agree often; different ones rarely do.
+
+**4. Walkthrough:**
+
+1. A = {a, b, c}, B = {b, c, d}: J = 2/4 = 0.5.
+2. Apply a random ordering, say d < b < a < c: min of A is b, min of B is d → mismatch.
+3. Apply another ordering b < a < c < d: min of A is b, min of B is b → match.
+4. Over many orderings, about half match, estimating J ≈ 0.5.
+
+> [!NOTE]
+> **Quick check:** Where is MinHash used? *Web-page near-duplicate detection and document similarity search.*
+
 
 ### The Problem
 

@@ -256,6 +256,29 @@ Let n = 16. Resizes at sizes: 1, 2, 4, 8.
 
 ## 4. Accounting Method — Stack with Multipop
 
+### 💬 Study-Partner View — Accounting Method
+
+**1. The bottom line:** Charge each cheap operation a little extra and bank the surplus as credit, so expensive operations are already paid for.
+
+**2. The textbook core:**
+
+- Assign each operation an **amortized charge**; the difference from the actual cost goes to (or comes from) a credit stored on the structure.
+- Rule: credit must **never go negative**.
+- If total amortized charges ≥ total actual costs, the amortized charge is a valid upper bound.
+- Multipop stack: charge 2 per `push` (1 pays the push, 1 prepaid for the pop); `pop` and `multipop` cost 0 amortized.
+
+**3. The real-world analogy:** A **prepaid transit card**: you top up a bit every time you ride the bus, so when a long journey needs a big fare the balance is already there.
+
+**4. Walkthrough:**
+
+1. Push a, b, c: each charged 2, actual 1, so each element carries 1 credit (total 3).
+2. `multipop(5)` pops 3 elements: actual cost 3, charged 0, paid by the 3 credits; balance returns to 0.
+3. Total charged 6 = total actual 6 over 4 operations, so the amortized cost is 1.5 = O(1).
+
+> [!NOTE]
+> **Quick check:** What would break the argument? *If credit could go negative, we would have spent money we never collected.*
+
+
 ### Setup
 
 A stack supports three operations:
@@ -329,6 +352,30 @@ Sequence: push(a), push(b), push(c), multipop(5)
 ---
 
 ## 5. Potential Method — Binary Counter, Dynamic Array Formal
+
+### 💬 Study-Partner View — Potential Method
+
+**1. The bottom line:** Define an "energy" for the structure; cheap operations store energy, expensive ones spend it, and the amortized cost is actual cost plus the change in energy.
+
+**2. The textbook core:**
+
+- Pick a potential function Φ with `Φ(D₀) = 0` and `Φ(Dᵢ) >= 0`.
+- Amortized cost `â = c + Φ(Dᵢ) - Φ(Dᵢ₋₁)`.
+- Then `Σ â >= Σ c`, so amortized bounds the real total.
+- Binary counter: Φ = number of 1-bits; each increment has `â = 2`.
+
+**3. The real-world analogy:** A **spring or a battery**: charging it (potential goes up) is cheap per step, and a big task that discharges it is "free" because the energy was saved earlier.
+
+**4. Walkthrough:**
+
+1. Counter at `011` (Φ = 2) increments to `100` (Φ = 1).
+2. Actual cost c = 3 bits flipped.
+3. ΔΦ = 1 - 2 = -1, so `â = 3 + (-1) = 2`.
+4. Every increment has `â = 2`, so n increments cost at most 2n.
+
+> [!NOTE]
+> **Quick check:** How is it related to accounting? *Φ is the total credit stored in the structure, just expressed as one function.*
+
 
 ### The Binary Counter
 
@@ -681,6 +728,30 @@ where `rank(v) = O(log n)` by the degree bound lemma.
 
 ## 7. Space Complexity — The Hidden Half
 
+### 💬 Study-Partner View — Space Complexity
+
+**1. The bottom line:** Memory is half the cost: count both the data you store and the extra working space your operation needs.
+
+**2. The textbook core:**
+
+- **Auxiliary space** = extra memory beyond the input; **total space** includes the input.
+- Recursion adds **stack space** equal to the depth (DFS on a graph can be O(n)).
+- There are time/space trade-offs: hash tables use more space for faster lookup; Bloom filters use less space for approximate answers.
+- In Java, object headers, references and boxing multiply the "nominal" size.
+
+**3. The real-world analogy:** **Packing for a trip**: you can carry fewer items by repacking carefully (more time), or take a bigger suitcase and throw things in (more space, less time).
+
+**4. Walkthrough:**
+
+1. Reverse an array of size n.
+2. In place: swap `a[i]` and `a[n-1-i]` → O(1) extra space.
+3. With a copy: allocate a new array → O(n) extra space.
+4. Same time O(n), different space; recursive reversal would add O(n) stack depth.
+
+> [!NOTE]
+> **Quick check:** Does recursion use memory? *Yes: each active call has a stack frame.*
+
+
 Space complexity is the **other half** of DS complexity analysis, yet it is often treated as an afterthought. For mutable data structures, space and time interact in subtle ways.
 
 ### 7.1 Amortized Space
@@ -739,6 +810,30 @@ For recursive DS implementations (tree traversals, recursive sorts), the call st
 ---
 
 ## 8. Why Amortized ≠ Average-Case
+
+### 💬 Study-Partner View — Amortized vs Average-Case
+
+**1. The bottom line:** Amortized is a guarantee about any sequence of operations; average-case is an expectation over random inputs. They answer different questions.
+
+**2. The textbook core:**
+
+- **Amortized:** worst-case sequence, no probability involved.
+- **Average-case:** expected cost over a distribution of inputs (e.g. random keys).
+- **Expected (randomized):** expectation over the algorithm's own coin flips (skip lists, treaps).
+- Hash table lookup is average/expected O(1); dynamic-array append is amortized O(1).
+
+**3. The real-world analogy:** A **gym membership**: amortized is "over any full year you will pay at most X per month". Average-case is "a typical member pays about Y", which depends on who the members are.
+
+**4. Walkthrough:**
+
+1. Dynamic array: an adversary picks the worst sequence of appends.
+2. Total cost of n appends is still < 3n regardless of the choice → amortized O(1).
+3. Hash table: an adversary picks keys that all collide → O(n) per lookup, so the average-case claim fails.
+4. Fix: randomize the hash function so the expectation holds for any input.
+
+> [!NOTE]
+> **Quick check:** Can a single amortized O(1) operation take O(n)? *Yes, once in a while; it is the average over the sequence that is O(1).*
+
 
 This is the most misunderstood distinction in complexity analysis. Let us be precise.
 
