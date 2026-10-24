@@ -271,7 +271,7 @@ On the 4-vertex graph with edges `1-2, 1-3, 1-4, 3-4` it returns `3`; on complet
 | Theorem | Statement | Practical use | Caveat |
 | --- | --- | --- | --- |
 | **Wilson** | `n` prime ⇔ `(n−1)! ≡ −1 (mod n)` | Elegant proofs, modular identities | `O(n)` multiplications — use Miller–Rabin ([08b](08b_NumberTheory_Advanced.md)) for real primality tests |
-| **Pick** | `A = I + B/2 − 1` for lattice polygons | Count interior lattice points: `I = A − B/2 + 1`, with `B = Σ gcd(|Δx|, |Δy|)` over edges and `2A` from the shoelace formula | Vertices must be lattice points; the polygon must be simple |
+| **Pick** | `A = I + B/2 − 1` for lattice polygons | Count interior lattice points: `I = A − B/2 + 1`, with `B = Σ gcd(\|Δx\|, \|Δy\|)` over edges and `2A` from the shoelace formula | Vertices must be lattice points; the polygon must be simple |
 | **Dilworth** | Max antichain = min chain cover | Scheduling: minimum number of workers = largest set of mutually conflicting jobs | For the "minimum *general* path cover" compute the transitive closure first, then `n − maximum bipartite matching` |
 | **Josephus** | `J(1)=0`, `J(i) = (J(i−1) + k) mod i` (0-indexed survivor) | Elimination games, circular-list simulation in `O(n)` instead of `O(nk)` | Add 1 for 1-indexed answers; `J(7,3) = 3` (0-indexed) |
 

@@ -8,27 +8,24 @@
 **Template:** `while (!stack.isEmpty() && arr[i] > arr[stack.peek()]) { popped = stack.pop(); answer[popped] = arr[i]; } stack.push(i);`
 **Key insight:** Each element is pushed and popped AT MOST once → O(n) total, not O(n²).
 
+### MONOTONIC STACK - Elements in sorted order
+
+DECREASING Stack (for Next Greater Element):
+
+```text
+Array: [2, 1, 2, 4, 3]
+
+i=0: stack=[2]
+i=1: 1 < 2, stack=[2,1]
+i=2: 2 > 1, pop→NGE[1]=2, 2==2 push, stack=[2,2]
+i=3: 4 > 2, pop→NGE[2]=4, 4>2 pop→NGE[0]=4, stack=[4]
+i=4: 3 < 4, stack=[4,3]
+
+NGE = [4, 2, 4, -1, -1]
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  MONOTONIC STACK - Elements in sorted order                    │
-├────────────────────────────────────────────────────────────────┤
-│  DECREASING Stack (for Next Greater Element):                  │
-│  ┌───────────────────────────────────────────────────────────┐ │
-│  │ Array: [2, 1, 2, 4, 3]                                    │ │
-│  │                                                           │ │
-│  │ i=0: stack=[2]                                            │ │
-│  │ i=1: 1 < 2, stack=[2,1]                                   │ │
-│  │ i=2: 2 > 1, pop→NGE[1]=2, 2==2 push, stack=[2,2]          │ │
-│  │ i=3: 4 > 2, pop→NGE[2]=4, 4>2 pop→NGE[0]=4, stack=[4]     │ │
-│  │ i=4: 3 < 4, stack=[4,3]                                   │ │
-│  │                                                           │ │
-│  │ NGE = [4, 2, 4, -1, -1]                                   │ │
-│  └───────────────────────────────────────────────────────────┘ │
-│                                                                │
-│  INCREASING Stack (for Next Smaller Element):                  │
-│  Same concept, but pop when current < stack top                │
-└────────────────────────────────────────────────────────────────┘
-```
+
+INCREASING Stack (for Next Smaller Element):  
+Same concept, but pop when current < stack top
 
 ---
 
@@ -36,29 +33,24 @@
 
 **LeetCode 739** 🔗 https://leetcode.com/problems/daily-temperatures/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  DAILY TEMPERATURES - Days until warmer temperature            │
-├────────────────────────────────────────────────────────────────┤
-│  temperatures = [73, 74, 75, 71, 69, 72, 76, 73]               │
-│                                                                │
-│  Visual Process (Monotonic Decreasing Stack by index):         │
-│  ┌─────┬──────┬─────────────────────┬─────────────┐            │
-│  │  i  │ temp │ Stack (indices)     │ Result      │            │
-│  ├─────┼──────┼─────────────────────┼─────────────┤            │
-│  │  0  │  73  │ [0]                 │ [_,_,_,_,_,_,_,_]        │
-│  │  1  │  74  │ 74>73, pop, [1]     │ [1,_,_,_,_,_,_,_]        │
-│  │  2  │  75  │ 75>74, pop, [2]     │ [1,1,_,_,_,_,_,_]        │
-│  │  3  │  71  │ 71<75, [2,3]        │ [1,1,_,_,_,_,_,_]        │
-│  │  4  │  69  │ 69<71, [2,3,4]      │ [1,1,_,_,_,_,_,_]        │
-│  │  5  │  72  │ 72>69,71 pop×2 [2,5]│ [1,1,_,2,1,_,_,_]        │
-│  │  6  │  76  │ 76>72,75 pop×2 [6] │ [1,1,4,2,1,1,_,_]         │
-│  │  7  │  73  │ 73<76, [6,7]        │ [1,1,4,2,1,1,_,_]        │
-│  └─────┴──────┴─────────────────────┴─────────────┘            │
-│                                                                │
-│  Output: [1, 1, 4, 2, 1, 1, 0, 0]                              │
-└────────────────────────────────────────────────────────────────┘
-```
+### DAILY TEMPERATURES - Days until warmer temperature
+
+temperatures = [73, 74, 75, 71, 69, 72, 76, 73]
+
+Visual Process (Monotonic Decreasing Stack by index):
+
+| i | temp | Stack (indices) | Result |
+| --- | --- | --- | --- |
+| 0 | 73 | [0] | [_,_,_,_,_,_,_,_] |
+| 1 | 74 | 74>73, pop, [1] | [1,_,_,_,_,_,_,_] |
+| 2 | 75 | 75>74, pop, [2] | [1,1,_,_,_,_,_,_] |
+| 3 | 71 | 71<75, [2,3] | [1,1,_,_,_,_,_,_] |
+| 4 | 69 | 69<71, [2,3,4] | [1,1,_,_,_,_,_,_] |
+| 5 | 72 | 72>69,71 pop×2 [2,5] | [1,1,_,2,1,_,_,_] |
+| 6 | 76 | 76>72,75 pop×2 [6] | [1,1,4,2,1,1,_,_] |
+| 7 | 73 | 73<76, [6,7] | [1,1,4,2,1,1,_,_] |
+
+Output: [1, 1, 4, 2, 1, 1, 0, 0]
 
 **Solution:**
 
@@ -87,25 +79,23 @@ public int[] dailyTemperatures(int[] temperatures) {
 
 **LeetCode 496** 🔗 https://leetcode.com/problems/next-greater-element-i/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  NEXT GREATER ELEMENT I                                        │
-├────────────────────────────────────────────────────────────────┤
-│  nums1 = [4, 1, 2]  (subset of nums2)                          │
-│  nums2 = [1, 3, 4, 2]                                          │
-│                                                                │
-│  Find NGE in nums2 for each element in nums1:                  │
-│                                                                │
-│  nums2:  [1,  3,  4,  2]                                       │
-│  NGE:    [3,  4, -1, -1]                                       │
-│                                                                │
-│  For nums1 = [4, 1, 2]:                                        │
-│  - 4 → NGE in nums2 = -1                                       │
-│  - 1 → NGE in nums2 = 3                                        │
-│  - 2 → NGE in nums2 = -1                                       │
-│                                                                │
-│  Output: [-1, 3, -1]                                           │
-└────────────────────────────────────────────────────────────────┘
+**NEXT GREATER ELEMENT I**
+
+```text
+nums1 = [4, 1, 2]  (subset of nums2)
+nums2 = [1, 3, 4, 2]
+
+Find NGE in nums2 for each element in nums1:
+
+nums2:  [1,  3,  4,  2]
+NGE:    [3,  4, -1, -1]
+
+For nums1 = [4, 1, 2]:
+- 4 → NGE in nums2 = -1
+- 1 → NGE in nums2 = 3
+- 2 → NGE in nums2 = -1
+
+Output: [-1, 3, -1]
 ```
 
 **Solution:**
@@ -144,26 +134,21 @@ public int[] nextGreaterElement(int[] nums1, int[] nums2) {
 
 **LeetCode 503** 🔗 https://leetcode.com/problems/next-greater-element-ii/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  NEXT GREATER ELEMENT II - Circular Array                      │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [1, 2, 1]  (circular: ...1, 2, 1, 1, 2, 1...)          │
-│                                                                │
-│  For each element, search circularly:                          │
-│  ┌───────┬─────────────────────┬─────────┐                     │
-│  │ Index │ Element → Search    │   NGE   │                     │
-│  ├───────┼─────────────────────┼─────────┤                     │
-│  │   0   │ 1 → 2,1,1,2 → 2     │    2    │                     │
-│  │   1   │ 2 → 1,1,2 → -1      │   -1    │                     │
-│  │   2   │ 1 → 1,2 → 2         │    2    │                     │
-│  └───────┴─────────────────────┴─────────┘                     │
-│                                                                │
-│  Trick: Iterate 2n times, use i % n                            │
-│                                                                │
-│  Output: [2, -1, 2]                                            │
-└────────────────────────────────────────────────────────────────┘
-```
+### NEXT GREATER ELEMENT II - Circular Array
+
+nums = [1, 2, 1]  (circular: ...1, 2, 1, 1, 2, 1...)
+
+For each element, search circularly:
+
+| Index | Element → Search | NGE |
+| --- | --- | --- |
+| 0 | 1 → 2,1,1,2 → 2 | 2 |
+| 1 | 2 → 1,1,2 → -1 | -1 |
+| 2 | 1 → 1,2 → 2 | 2 |
+
+Trick: Iterate 2n times, use i % n
+
+Output: [2, -1, 2]
 
 **Solution:**
 
@@ -198,32 +183,19 @@ public int[] nextGreaterElements(int[] nums) {
 
 **LeetCode 84** 🔗 https://leetcode.com/problems/largest-rectangle-in-histogram/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  LARGEST RECTANGLE IN HISTOGRAM                                │
-├────────────────────────────────────────────────────────────────┤
-│  heights = [2, 1, 5, 6, 2, 3]                                  │
-│                                                                │
-│       6                                                        │
-│     ┌───┐                                                      │
-│   5 │   │                                                      │
-│  ┌──┤   │                                                      │
-│  │  │   │     3                                                │
-│  │  │   │   ┌───┐                                              │
-│  │  │   │ 2 │   │                                              │
-│  │  │   ├───┤   │                                              │
-│  │1 │   │   │   │                                              │
-│ ─┴──┴───┴───┴───┴───                                           │
-│  2  1  5   6   2   3                                           │
-│                                                                │
-│  Largest rectangle = 10 (5×2 using heights 5,6)                │
-│     ┌──────────┐                                               │
-│     │██████████│ ← Area = 5 × 2 = 10                           │
-│  ┌──┤██████████│                                               │
-│  │  │██████████│                                               │
-│  ...                                                           │
-└────────────────────────────────────────────────────────────────┘
-```
+**Largest rectangle in histogram**
+
+Heights: `[2, 1, 5, 6, 2, 3]`.
+
+| Height ↓ / Bar → | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 6 | | | | █ | | |
+| 5 | | | █ | █ | | |
+| 3 | | | █ | █ | | █ |
+| 2 | █ | | █ | █ | █ | █ |
+| 1 | █ | █ | █ | █ | █ | █ |
+
+The largest rectangle has area **10**: it uses the two bars of heights 5 and 6 (width 2) at height 5, so `5 × 2 = 10`.
 
 **Key Insight:** For each bar, find how far it can extend left and right.
 
@@ -253,22 +225,15 @@ public int largestRectangleArea(int[] heights) {
 
 **Visual Stack Trace:**
 
-```
-┌─────┬────────┬──────────────┬────────────────┬──────────┐
-│  i  │ height │ Stack        │ Calculation    │ maxArea  │
-├─────┼────────┼──────────────┼────────────────┼──────────┤
-│  0  │   2    │ [0]          │ -              │    0     │
-│  1  │   1    │ [1]          │ h=2,w=1,a=2    │    2     │
-│  2  │   5    │ [1,2]        │ -              │    2     │
-│  3  │   6    │ [1,2,3]      │ -              │    2     │
-│  4  │   2    │ [1,4]        │ h=6,w=1,a=6    │    6     │
-│     │        │              │ h=5,w=2,a=10   │   10     │
-│  5  │   3    │ [1,4,5]      │ -              │   10     │
-│  6  │   0    │ []           │ h=3,w=1,a=3    │   10     │
-│     │        │              │ h=2,w=4,a=8    │   10     │
-│     │        │              │ h=1,w=6,a=6    │   10     │
-└─────┴────────┴──────────────┴────────────────┴──────────┘
-```
+| i | height | Stack | Calculation | maxArea |
+| --- | --- | --- | --- | --- |
+| 0 | 2 | [0] | - | 0 |
+| 1 | 1 | [1] | h=2,w=1,a=2 | 2 |
+| 2 | 5 | [1,2] | - | 2 |
+| 3 | 6 | [1,2,3] | - | 2 |
+| 4 | 2 | [1,4] | h=6,w=1,a=6 h=5,w=2,a=10 | 6<br>10 |
+| 5 | 3 | [1,4,5] | - | 10 |
+| 6 | 0 | [] | h=3,w=1,a=3 h=2,w=4,a=8 h=1,w=6,a=6 | 10<br>10<br>10 |
 
 ---
 
@@ -276,29 +241,29 @@ public int largestRectangleArea(int[] heights) {
 
 **LeetCode 85** 🔗 https://leetcode.com/problems/maximal-rectangle/
 
+### MAXIMAL RECTANGLE - Largest rectangle of 1s in binary matrix
+
+Matrix:
+
+| | c0 | c1 | c2 | c3 | c4 |
+| --- | --- | --- | --- | --- | --- |
+| **r0** | 1 | 0 | 1 | 0 | 0 |
+| **r1** | 1 | 0 | 1 | 1 | 1 |
+| **r2** | 1 | 1 | 1 | 1 | 1 |
+| **r3** | 1 | 0 | 0 | 1 | 0 |
+
+
+Convert each row to histogram heights:
+
+```text
+Row 0: heights = [1, 0, 1, 0, 0] → maxRect in hist
+Row 1: heights = [2, 0, 2, 1, 1] → maxRect in hist
+Row 2: heights = [3, 1, 3, 2, 2] → maxRect in hist = 6
+Row 3: heights = [4, 0, 0, 3, 0] → maxRect in hist
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  MAXIMAL RECTANGLE - Largest rectangle of 1s in binary matrix  │
-├────────────────────────────────────────────────────────────────┤
-│  matrix = [                                                    │
-│    ["1","0","1","0","0"],                                      │
-│    ["1","0","1","1","1"],                                      │
-│    ["1","1","1","1","1"],                                      │
-│    ["1","0","0","1","0"]                                       │
-│  ]                                                             │
-│                                                                │
-│  Convert each row to histogram heights:                        │
-│  ┌───────────────────────────────────────────────────────────┐ │
-│  │ Row 0: heights = [1, 0, 1, 0, 0] → maxRect in hist        │ │
-│  │ Row 1: heights = [2, 0, 2, 1, 1] → maxRect in hist        │ │
-│  │ Row 2: heights = [3, 1, 3, 2, 2] → maxRect in hist = 6    │ │
-│  │ Row 3: heights = [4, 0, 0, 3, 0] → maxRect in hist        │ │
-│  └───────────────────────────────────────────────────────────┘ │
-│                                                                │
-│  The maximum rectangle of 6 comes from row 2:                  │
-│  heights [3, 1, 3, 2, 2] → use [2, 2, 2] with height 2 = 6     │
-└────────────────────────────────────────────────────────────────┘
-```
+
+The maximum rectangle of 6 comes from row 2:  
+heights [3, 1, 3, 2, 2] → use [2, 2, 2] with height 2 = 6
 
 **Solution:**
 
@@ -350,24 +315,18 @@ private int largestRectangleArea(int[] heights) {
 
 **LeetCode 42** 🔗 https://leetcode.com/problems/trapping-rain-water/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  TRAPPING RAIN WATER                                           │
-├────────────────────────────────────────────────────────────────┤
-│  height = [0,1,0,2,1,0,1,3,2,1,2,1]                            │
-│                                                                │
-│          3 │                 █                                 │
-│          2 │         █ ░ ░ ░ █ █ ░ █                           │
-│          1 │     █ ░ █ █ ░ █ █ █ █ █ █                         │
-│          0 └───────────────────────────                        │
-│              0 1 0 2 1 0 1 3 2 1 2 1                           │
-│                                                                │
-│  ░ = Trapped water = 6 units                                   │
-│                                                                │
-│  For each position i:                                          │
-│  water[i] = min(maxLeft[i], maxRight[i]) - height[i]           │
-└────────────────────────────────────────────────────────────────┘
-```
+**TRAPPING RAIN WATER**
+
+`height = [0,1,0,2,1,0,1,3,2,1,2,1]`
+
+| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| **Height** | 0 | 1 | 0 | 2 | 1 | 0 | 1 | 3 | 2 | 1 | 2 | 1 |
+| **Trapped water** | 0 | 0 | 1 | 0 | 1 | 2 | 1 | 0 | 0 | 1 | 0 | 0 |
+
+Total trapped water = **6 units**.
+
+For each position `i`: `water[i] = min(maxLeft[i], maxRight[i]) - height[i]`.
 
 **Solution 1: Two Pointers (O(n) time, O(1) space)**
 

@@ -11,31 +11,26 @@
 
 **LeetCode 200** 🔗 https://leetcode.com/problems/number-of-islands/
 
+### NUMBER OF ISLANDS - Count connected components of '1's
+
+```java
+grid = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  NUMBER OF ISLANDS - Count connected components of '1's        │
-├────────────────────────────────────────────────────────────────┤
-│  grid = [                                                      │
-│    ["1","1","0","0","0"],                                      │
-│    ["1","1","0","0","0"],   Island 1: top-left 1s              │
-│    ["0","0","1","0","0"],   Island 2: middle 1                 │
-│    ["0","0","0","1","1"]    Island 3: bottom-right 1s          │
-│  ]                                                             │
-│                                                                │
-│  Visual:                                                       │
-│  ┌───┬───┬───┬───┬───┐                                         │
-│  │ 1 │ 1 │ 0 │ 0 │ 0 │   🏝️ Island 1                           │
-│  ├───┼───┼───┼───┼───┤                                         │
-│  │ 1 │ 1 │ 0 │ 0 │ 0 │                                         │
-│  ├───┼───┼───┼───┼───┤                                         │
-│  │ 0 │ 0 │ 1 │ 0 │ 0 │   🏝️ Island 2                           │
-│  ├───┼───┼───┼───┼───┤                                         │
-│  │ 0 │ 0 │ 0 │ 1 │ 1 │   🏝️ Island 3                           │
-│  └───┴───┴───┴───┴───┘                                         │
-│                                                                │
-│  Output: 3                                                     │
-└────────────────────────────────────────────────────────────────┘
-```
+
+| | c0 | c1 | c2 | c3 | c4 | Island |
+| --- | --- | --- | --- | --- | --- | --- |
+| **r0** | 1 | 1 | 0 | 0 | 0 | 🏝️ Island 1 (top-left 1s) |
+| **r1** | 1 | 1 | 0 | 0 | 0 | |
+| **r2** | 0 | 0 | 1 | 0 | 0 | 🏝️ Island 2 (the middle 1) |
+| **r3** | 0 | 0 | 0 | 1 | 1 | 🏝️ Island 3 (bottom-right 1s) |
+
+
+Output: 3
 
 **Solution (DFS):**
 
@@ -122,23 +117,21 @@ public int numIslandsBFS(char[][] grid) {
 
 **LeetCode 695** 🔗 https://leetcode.com/problems/max-area-of-island/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MAX AREA OF ISLAND                                            │
-├────────────────────────────────────────────────────────────────┤
-│  grid = [                                                      │
-│    [0,0,1,0,0,0,0,1,0,0,0,0,0],                                │
-│    [0,0,0,0,0,0,0,1,1,1,0,0,0],                                │
-│    [0,1,1,0,1,0,0,0,0,0,0,0,0],                                │
-│    [0,1,0,0,1,1,0,0,1,0,1,0,0],                                │
-│    [0,1,0,0,1,1,0,0,1,1,1,0,0],                                │
-│    [0,0,0,0,0,0,0,0,0,0,1,0,0],                                │
-│    [0,0,0,0,0,0,0,1,1,1,0,0,0],                                │
-│    [0,0,0,0,0,0,0,1,1,0,0,0,0]                                 │
-│  ]                                                             │
-│                                                                │
-│  Maximum area = 6 (the island in middle-right)                 │
-└────────────────────────────────────────────────────────────────┘
+**MAX AREA OF ISLAND**
+
+```text
+grid = [
+  [0,0,1,0,0,0,0,1,0,0,0,0,0],
+  [0,0,0,0,0,0,0,1,1,1,0,0,0],
+  [0,1,1,0,1,0,0,0,0,0,0,0,0],
+  [0,1,0,0,1,1,0,0,1,0,1,0,0],
+  [0,1,0,0,1,1,0,0,1,1,1,0,0],
+  [0,0,0,0,0,0,0,0,0,0,1,0,0],
+  [0,0,0,0,0,0,0,1,1,1,0,0,0],
+  [0,0,0,0,0,0,0,1,1,0,0,0,0]
+]
+
+Maximum area = 6 (the island in middle-right)
 ```
 
 **Solution:**
@@ -177,22 +170,28 @@ private int dfs(int[][] grid, int i, int j) {
 
 **LeetCode 133** 🔗 https://leetcode.com/problems/clone-graph/
 
+**CLONE GRAPH - Deep copy of undirected graph**
+
+```mermaid
+flowchart LR
+  subgraph IN["Input"]
+    a1((1)) --- a2((2))
+    a2 --- a3((3))
+    a3 --- a4((4))
+    a4 --- a1
+  end
+  subgraph OUT["Output (clone)"]
+    b1(("1'")) --- b2(("2'"))
+    b2 --- b3(("3'"))
+    b3 --- b4(("4'"))
+    b4 --- b1
+  end
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  CLONE GRAPH - Deep copy of undirected graph                   │
-├────────────────────────────────────────────────────────────────┤
-│  Input:                   Output (Clone):                      │
-│      1 ─── 2                  1' ─── 2'                        │
-│      │     │                  │      │                         │
-│      │     │                  │      │                         │
-│      4 ─── 3                  4' ─── 3'                        │
-│                                                                │
-│  Each node has: val, List<Node> neighbors                      │
-│                                                                │
-│  Key: Use HashMap to track original → clone mapping            │
-│  Prevents infinite loop when graph has cycles                  │
-└────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The clone has the same shape as the input, but every node is a new object.
+
+- Each node has `val` and `List<Node> neighbors`.
+- **Key:** use a HashMap to track the original → clone mapping. It prevents an infinite loop when the graph has cycles.
 
 **Solution:**
 
@@ -226,26 +225,20 @@ public Node cloneGraph(Node node) {
 
 **LeetCode 733** 🔗 https://leetcode.com/problems/flood-fill/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  FLOOD FILL - Like paint bucket tool                           │
-├────────────────────────────────────────────────────────────────┤
-│  image = [[1,1,1],    sr=1, sc=1, color=2                      │
-│           [1,1,0],                                             │
-│           [1,0,1]]                                             │
-│                                                                │
-│  Start at (1,1), change all connected 1s to 2:                 │
-│                                                                │
-│  Before:          After:                                       │
-│  ┌───┬───┬───┐    ┌───┬───┬───┐                                │
-│  │ 1 │ 1 │ 1 │    │ 2 │ 2 │ 2 │                                │
-│  ├───┼───┼───┤    ├───┼───┼───┤                                │
-│  │ 1 │ 1 │ 0 │ →  │ 2 │ 2 │ 0 │                                │
-│  ├───┼───┼───┤    ├───┼───┼───┤                                │
-│  │ 1 │ 0 │ 1 │    │ 2 │ 0 │ 1 │                                │
-│  └───┴───┴───┘    └───┴───┴───┘                                │
-└────────────────────────────────────────────────────────────────┘
-```
+### FLOOD FILL - Like paint bucket tool
+
+image = [[1,1,1],    sr=1, sc=1, color=2  
+[1,1,0],  
+[1,0,1]]
+
+Start at (1,1), change all connected 1s to 2:
+
+Before:          After:
+
+| 1 | 1 | 1 |  | 2 | 2 | 2 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 1 | 0 | → | 2 | 2 | 0 |
+| 1 | 0 | 1 |  | 2 | 0 | 1 |
 
 **Solution:**
 
@@ -282,29 +275,23 @@ private void dfs(int[][] image, int r, int c, int original, int newColor) {
 
 **LeetCode 994** 🔗 https://leetcode.com/problems/rotting-oranges/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  ROTTING ORANGES - Multi-source BFS                            │
-├────────────────────────────────────────────────────────────────┤
-│  0 = empty, 1 = fresh orange, 2 = rotten orange                │
-│  Each minute, fresh oranges adjacent to rotten become rotten   │
-│                                                                │
-│  grid = [[2,1,1],                                              │
-│          [1,1,0],                                              │
-│          [0,1,1]]                                              │
-│                                                                │
-│  Minute 0:    Minute 1:    Minute 2:    Minute 3:    Minute 4: │
-│  ┌───┬───┬───┐ ┌───┬───┬───┐ ┌───┬───┬───┐ ┌───┬───┬───┐ ┌───┬───┬───┐
-│  │ 2 │ 1 │ 1 │ │ 2 │ 2 │ 1 │ │ 2 │ 2 │ 2 │ │ 2 │ 2 │ 2 │ │ 2 │ 2 │ 2 │
-│  ├───┼───┼───┤ ├───┼───┼───┤ ├───┼───┼───┤ ├───┼───┼───┤ ├───┼───┼───┤
-│  │ 1 │ 1 │ 0 │ │ 2 │ 1 │ 0 │ │ 2 │ 2 │ 0 │ │ 2 │ 2 │ 0 │ │ 2 │ 2 │ 0 │
-│  ├───┼───┼───┤ ├───┼───┼───┤ ├───┼───┼───┤ ├───┼───┼───┤ ├───┼───┼───┤
-│  │ 0 │ 1 │ 1 │ │ 0 │ 1 │ 1 │ │ 0 │ 1 │ 1 │ │ 0 │ 2 │ 1 │ │ 0 │ 2 │ 2 │
-│  └───┴───┴───┘ └───┴───┴───┘ └───┴───┴───┘ └───┴───┴───┘ └───┴───┴───┘
-│                                                                │
-│  Output: 4 minutes                                             │
-└────────────────────────────────────────────────────────────────┘
-```
+### ROTTING ORANGES - Multi-source BFS
+
+0 = empty, 1 = fresh orange, 2 = rotten orange  
+Each minute, fresh oranges adjacent to rotten become rotten
+
+grid = [[2,1,1],  
+[1,1,0],  
+[0,1,1]]
+
+Minute 0:    Minute 1:    Minute 2:    Minute 3:    Minute 4:
+
+| 2 | 1 | 1 |  | 2 | 2 | 1 |  | 2 | 2 | 2 |  | 2 | 2 | 2 |  | 2 | 2 | 2 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 1 | 0 |  | 2 | 1 | 0 |  | 2 | 2 | 0 |  | 2 | 2 | 0 |  | 2 | 2 | 0 |
+| 0 | 1 | 1 |  | 0 | 1 | 1 |  | 0 | 1 | 1 |  | 0 | 2 | 1 |  | 0 | 2 | 2 |
+
+Output: 4 minutes
 
 **Solution:**
 
@@ -362,32 +349,25 @@ public int orangesRotting(int[][] grid) {
 
 ## Problem 141: 🔒 Walls and Gates (LeetCode 286 - Premium)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  WALLS AND GATES - Multi-source BFS from gates                 │
-├────────────────────────────────────────────────────────────────┤
-│  Given m x n grid:                                             │
-│  -1 = Wall, 0 = Gate, INF = Empty room                         │
-│                                                                │
-│  Fill each empty room with distance to nearest gate.           │
-│                                                                │
-│  Input:                        Output:                         │
-│  ┌─────┬─────┬─────┬─────┐    ┌─────┬─────┬─────┬─────┐        │
-│  │ INF │  -1 │  0  │ INF │    │  3  │  -1 │  0  │  1  │        │
-│  ├─────┼─────┼─────┼─────┤    ├─────┼─────┼─────┼─────┤        │
-│  │ INF │ INF │ INF │  -1 │ →  │  2  │  2  │  1  │  -1 │        │
-│  ├─────┼─────┼─────┼─────┤    ├─────┼─────┼─────┼─────┤        │
-│  │ INF │  -1 │ INF │  -1 │    │  1  │  -1 │  2  │  -1 │        │
-│  ├─────┼─────┼─────┼─────┤    ├─────┼─────┼─────┼─────┤        │
-│  │  0  │  -1 │ INF │ INF │    │  0  │  -1 │  3  │  4  │        │
-│  └─────┴─────┴─────┴─────┘    └─────┴─────┴─────┴─────┘        │
-│                                                                │
-│  Constraints:                                                  │
-│  - m == rooms.length, n == rooms[i].length                     │
-│  - 1 <= m, n <= 250                                            │
-│  - rooms[i][j] is -1, 0, or 2^31 - 1                           │
-└────────────────────────────────────────────────────────────────┘
-```
+### WALLS AND GATES - Multi-source BFS from gates
+
+Given m x n grid:  
+-1 = Wall, 0 = Gate, INF = Empty room
+
+Fill each empty room with distance to nearest gate.
+
+Input:                        Output:
+
+| INF | -1 | 0 | INF |  | 3 | -1 | 0 | 1 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| INF | INF | INF | -1 | → | 2 | 2 | 1 | -1 |
+| INF | -1 | INF | -1 |  | 1 | -1 | 2 | -1 |
+| 0 | -1 | INF | INF |  | 0 | -1 | 3 | 4 |
+
+Constraints:
+- m == rooms.length, n == rooms[i].length
+- 1 <= m, n <= 250
+- rooms[i][j] is -1, 0, or 2^31 - 1
 
 **Solution:**
 
@@ -437,7 +417,8 @@ public void wallsAndGates(int[][] rooms) {
 **Who uses recursive DFS:** Code that processes tree-like graphs with bounded depth (depth < ~5000). Interview solutions where clarity matters. NOT production code on arbitrary graphs (StackOverflow risk). **Iterative DFS vs recursive DFS order:** Iterative DFS using a stack processes nodes differently than recursive DFS. If you push all neighbors left-to-right, the LAST pushed is processed first (LIFO stack). To match recursive DFS order exactly, push neighbors RIGHT-TO-LEFT. This is a subtle, common interview gotcha. **Visited tracking (graph vs tree):** Trees have no cycles — no visited tracking needed. Graphs can have cycles — without a `boolean[] visited` array, DFS loops infinitely. Mark visited BEFORE or IMMEDIATELY AFTER pushing/enqueueing a node. Marking AFTER processing (at the visit site) leaves a window where duplicate work occurs in multi-path graphs. **BFS visited timing:** Mark `visited[neighbor] = true` when ENQUEUEING (not when dequeuing). Otherwise, in dense graphs, the same node gets enqueued multiple times before it's ever dequeued, causing O(E) enqueue operations instead of O(V).
 
 </details>
-<details><summary>Answer</summary>
+
+<details><summary>More detail</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
 

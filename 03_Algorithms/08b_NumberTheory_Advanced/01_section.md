@@ -1,7 +1,7 @@
-# ═══════════════════════════════════════════════════════════
+# Part 5 — More Essential Algorithms
 
-> **Navigation**: [Chapter overview](../08b_NumberTheory_Advanced.md) | [═══════════════════════════════════════════════════════════ →](02_section.md)
-> Page 1 of 4 in **NumberTheory Advanced**
+> **Navigation**: [Chapter overview](../08b_NumberTheory_Advanced.md) | [Part 6 — Data Structure Problems: Why and How →](02_section.md)
+> Page 1 of 4 in **Essential Algorithms, Data-Structure Problems and a Study Plan**
 
 
 ## Algorithm: Kadane's Algorithm (Maximum Subarray Sum) ⭐⭐⭐
@@ -446,4 +446,4 @@ public static int[] reconstructFromDiff(int[] diff) {
 
 ---
 
-[Chapter overview](../08b_NumberTheory_Advanced.md) | [═══════════════════════════════════════════════════════════ →](02_section.md)
+[Chapter overview](../08b_NumberTheory_Advanced.md) | [Part 6 — Data Structure Problems: Why and How →](02_section.md)

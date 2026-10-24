@@ -130,37 +130,38 @@ arr[i] ^= arr[j]; // arr[i] = (arr[i] XOR arr[j]) XOR original i = orig j
 >
 > Use the temp-variable swap: it is faster and safer.
 
-**Memory Access During Swap**:
-Array in memory:
+**Memory access during a swap**
+
+The array in memory:
 
 | | 0x1000 | 0x1004 | 0x1008 | 0x100C | 0x1010 |
 | --- | --- | --- | --- | --- | --- |
 | **Index** | [0] | [1] | [2] | [3] | [4] |
 | **Value** | 5 | 2 | 8 | 1 | 9 |
 
-Swap arr[0] and arr[3]:
+Swapping `arr[0]` and `arr[3]`:
 
-1. CPU reads 0x1000 → 5 (goes into register)
-2. CPU reads 0x100C → 1 (goes into another register)
-3. CPU writes 1 to 0x1000
-4. CPU writes 5 to 0x100C
-   After swap:
-   | Value | 1 | 2 | 8 | 5 | 9 | |
-   If arr[0] and arr[3] are in SAME cache line (64 bytes):
+1. The CPU reads `0x1000` → 5 (into a register).
+2. The CPU reads `0x100C` → 1 (into another register).
+3. The CPU writes 1 to `0x1000`.
+4. The CPU writes 5 to `0x100C`.
 
-- Both loads are fast (data already in cache)
-- Total: ~8-10 cycles
-  If arr[0] and arr[3] are in DIFFERENT cache lines:
-- Each load might be a cache miss
-- Total: ~200-400 cycles (20-50x slower!)
+After the swap:
+
+| | [0] | [1] | [2] | [3] | [4] |
+| --- | --- | --- | --- | --- | --- |
+| **Value** | 1 | 2 | 8 | 5 | 9 |
+
+- If `arr[0]` and `arr[3]` are in the **same** cache line (64 bytes), both loads are fast because the data is already in cache. The swap takes on the order of 10 cycles.
+- If they are in **different** cache lines, each load can be a cache miss. A miss to main memory costs a few hundred cycles, so the swap can be one to two orders of magnitude slower.
 
 ## 🔄 Cache Behavior — Why Some Sorts Are Faster
 
 ## Cache Locality - The Hidden Performance Factor
 
-CACHE LINE = 64 bytes = 16 integers
-When you access arr[0], CPU loads arr[0] through arr[15] into cache!
-BUBBLE SORT - EXCELLENT CACHE BEHAVIOR:
+A **cache line** is 64 bytes, which holds 16 `int`s. When you read `arr[0]`, the CPU loads `arr[0]` through `arr[15]` into cache in one go.
+
+**Bubble sort: excellent cache behaviour**
 
 ```java
 for (j = 0; j < n-1; j++) {
@@ -168,13 +169,9 @@ for (j = 0; j < n-1; j++) {
 }
 ```
 
-Access pattern: [0], [1], [2], [3], [4], [5], ...
-Cache Line 1: arr[0-15] ← All accessed sequentially!
-Cache Line 2: arr[16-31] ← Loaded when we reach arr[16]
-Cache Line 3: arr[32-47]
-Cache hits: ~98%+
-This is "SEQUENTIAL ACCESS" - the best pattern for cache!
-QUICKSORT - VARIES BY PARTITION:
+The access pattern is `[0], [1], [2], [3], ...`. Line 1 holds `arr[0-15]`, so all of it is read sequentially. Line 2 (`arr[16-31]`) loads when we reach `arr[16]`, and so on. That is roughly 15 hits for every miss, and hardware prefetchers usually hide the misses too. **Sequential access is the best pattern for cache.**
+
+**Quicksort: depends on the partition**
 
 ```java
 int pivot = arr[right];
@@ -183,87 +180,44 @@ for (j = left; j < right; j++) {
 }
 ```
 
-Good partition: Sequential access (cache-friendly)
-Bad partition: Swaps between distant elements (cache-unfriendly)
-Average cache behavior: Good, but not as consistent as Bubble Sort
-HEAP SORT - POOR CACHE BEHAVIOR:
-Heapify accesses: parent, left child, right child
-Parent at index i → children at 2i+1 and 2i+2
-For large heap:
+- A good partition scans sequentially, which is cache-friendly.
+- A bad partition swaps distant elements, which is cache-unfriendly.
+- Average behaviour is good, but less consistent than bubble sort.
 
-- Index 0 → children at 1, 2 (same cache line)
-- Index 7 → children at 15, 16 (might be same line)
-- Index 1000 → children at 2001, 2002 (different cache lines!)
-  Access pattern: 0, 1, 3, 7, 15, 31, ... (exponential jumps!)
-  Cache Line 1: arr[0-15]
-  Cache Line 2: arr[16-31] ← Jump here from index 7!
-  ...
-  Cache Line 63: arr[1008-1023] ← Jump here from index 500!
-  Cache hits: ~60-70% for large arrays
-  This is why HeapSort is O(n log n) but often slower than QuickSort!
-  MERGE SORT - GOOD BUT USES MORE MEMORY:
-- Sequential access during merge (cache-friendly)
-- But requires O(n) extra space
-- Extra memory = more cache pollution
+**Heap sort: poor cache behaviour**
 
-**Cache Performance Ranking**:
+Heapify touches a parent, its left child and its right child. The parent at index `i` has children at `2i+1` and `2i+2`. In a large heap:
 
-1. Insertion Sort - Sequential, best for small arrays
-2. Bubble Sort - Sequential, but too many passes
-3. QuickSort - Mostly sequential, occasional jumps
-4. Merge Sort - Sequential but extra memory
-5. Heap Sort - Random access pattern, worst for cache
+- Index 0 → children at 1, 2 (same cache line).
+- Index 7 → children at 15, 16 (possibly the same line).
+- Index 1000 → children at 2001, 2002 (different cache lines).
+
+Walking down the leftmost path visits `0, 1, 3, 7, 15, 31, ...`, which are exponential jumps. Each jump lands on a new cache line, so large heaps miss often. This is why heap sort is O(n log n) but is often slower than quicksort in practice.
+
+**Merge sort: good locality, more memory**
+
+- Sequential access during the merge is cache-friendly.
+- It needs O(n) extra space.
+- The extra memory means more cache pollution.
+
+**Cache performance ranking**
+
+1. Insertion sort: sequential, best for small arrays.
+2. Bubble sort: sequential, but too many passes.
+3. Quicksort: mostly sequential, with occasional jumps.
+4. Merge sort: sequential, but uses extra memory.
+5. Heap sort: random access pattern, worst for cache.
 
 ## 🧠 Memory Access Patterns Visualization
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ACCESS PATTERNS FOR DIFFERENT SORTS                          │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  Array: 32 elements (2 cache lines)                                             │
-│                                                                                 │
-│  BUBBLE SORT (one pass):                                                        │
-│  Access sequence: 0,1 → 1,2 → 2,3 → 3,4 → ... → 30,31                           │
-│                                                                                 │
-│  ┌─────────────────────────────────┬─────────────────────────────────┐          │
-│  │ Cache Line 1 [0-15]            │ Cache Line 2 [16-31]            │           │
-│  │ ▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶              │ ▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶              │              │
-│  └─────────────────────────────────┴─────────────────────────────────┘          │
-│  Sequential! Only 2 cache line loads for 32 elements                            │
-│                                                                                 │
-│                                                                                 │
-│  QUICKSORT (partitioning):                                                      │
-│  Access: left pointer →→→, right pointer ←←←, swaps jump around                 │
-│                                                                                 │
-│  ┌─────────────────────────────────┬─────────────────────────────────┐          │
-│  │ Cache Line 1 [0-15]            │ Cache Line 2 [16-31]            │           │
-│  │ ▶ ▶  ▶   ▶    ↔               │    ↔    ◀   ◀  ◀ ◀             │             │
-│  └─────────────────────────────────┴─────────────────────────────────┘          │
-│  Mostly sequential with some back-and-forth                                     │
-│                                                                                 │
-│                                                                                 │
-│  HEAPSORT (heapify down from root):                                             │
-│  Access: 0 → 1 or 2 → 3,4 or 5,6 → 7,8 or ... (tree traversal)                  │
-│                                                                                 │
-│  ┌─────────────────────────────────┬─────────────────────────────────┐          │
-│  │ Cache Line 1 [0-15]            │ Cache Line 2 [16-31]            │           │
-│  │ ▼   ▼  ▼ ▼ ▼▼▼▼               │ ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼               │             │
-│  │ 0   2  5 7 13                  │ 16 17 18 19 20 21 22...         │           │
-│  └─────────────────────────────────┴─────────────────────────────────┘          │
-│  Jumps around! Many cache misses for large heaps                                │
-│                                                                                 │
-│                                                                                 │
-│  MERGE SORT (merging two halves):                                               │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────────────────┐  │
-│  │ Left half       │  │ Right half      │  │ Temp array                      │  │
-│  │ ▶▶▶▶▶▶▶▶        │  │ ▶▶▶▶▶▶▶▶        │  │ ◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀          │    │
-│  └─────────────────┘  └─────────────────┘  └─────────────────────────────────┘  │
-│  Sequential reads from both halves, sequential write to temp                    │
-│  Good cache behavior but needs extra memory                                     │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+**Access patterns for different sorts.** Take an array of 32 elements, which spans 2 cache lines of 16 `int`s each (`[0-15]` and `[16-31]`).
+
+| Sort | Access pattern | Cache behaviour |
+| --- | --- | --- |
+| Bubble sort (one pass) | `0,1` → `1,2` → `2,3` → … → `30,31` | Sequential. Only 2 cache-line loads for 32 elements. |
+| Quicksort (partitioning) | Left pointer moves right, right pointer moves left, swaps jump around | Mostly sequential with some back-and-forth. |
+| Heapsort (heapify down from the root) | `0` → `1` or `2` → `3,4` or `5,6` → `7,8` or … (a tree walk) | Jumps around. Many cache misses for large heaps. |
+| Merge sort (merging two halves) | Sequential reads from both halves, sequential write to the temp array | Good cache behaviour, but needs extra memory. |
 
 ## 📊 Why Arrays.sort() Uses Different Algorithms
 
@@ -366,57 +320,45 @@ Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced par
 
 ## 📌 Real Benchmark Data
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ACTUAL BENCHMARK RESULTS (Intel i7-10700 @ 3.8GHz)           │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  Test: Sort random integers, time in milliseconds                               │
-│                                                                                 │
-│  ┌────────────────┬────────┬─────────┬──────────┬───────────┬──────────────┐    │
-│  │ Algorithm      │ n=100  │ n=1,000 │ n=10,000 │ n=100,000 │ n=1,000,000  │    │
-│  ├────────────────┼────────┼─────────┼──────────┼───────────┼──────────────┤    │
-│  │ Bubble Sort    │ 0.01   │ 0.8     │ 80       │ 8,000     │ 800,000      │    │
-│  │ Selection Sort │ 0.01   │ 0.5     │ 50       │ 5,000     │ 500,000      │    │
-│  │ Insertion Sort │ 0.005  │ 0.3     │ 30       │ 3,000     │ 300,000      │    │
-│  │ Merge Sort     │ 0.01   │ 0.1     │ 1.2      │ 15        │ 180          │    │
-│  │ Quick Sort     │ 0.008  │ 0.08    │ 0.9      │ 11        │ 130          │    │
-│  │ Heap Sort      │ 0.02   │ 0.15    │ 1.8      │ 25        │ 350          │    │
-│  │ Arrays.sort()  │ 0.005  │ 0.05    │ 0.6      │ 8         │ 95           │    │
-│  └────────────────┴────────┴─────────┴──────────┴───────────┴──────────────┘    │
-│                                                                                 │
-│  KEY OBSERVATIONS:                                                              │
-│  ─────────────────                                                              │
-│  • O(n²) algorithms become impractical above n=10,000                           │
-│  • Quick Sort beats Merge Sort due to better cache behavior                     │
-│  • Arrays.sort() (Dual-Pivot QuickSort) is fastest                              │
-│  • Heap Sort is slower despite O(n log n) due to cache misses                   │
-│                                                                                 │
-│                                                                                 │
-│  SPECIAL CASE: NEARLY SORTED DATA (90% sorted)                                  │
-│  ┌────────────────┬────────────────────────────────────────────────────────┐    │
-│  │ Algorithm      │ Time (n=10,000)   │ Notes                              │    │
-│  ├────────────────┼───────────────────┼────────────────────────────────────┤    │
-│  │ Insertion Sort │ 0.3 ms           │ Nearly O(n)! Best choice!           │    │
-│  │ Quick Sort     │ 0.9 ms           │ Standard performance               │     │
-│  │ Merge Sort     │ 1.2 ms           │ Doesn't benefit from sorted        │     │
-│  │ TimSort        │ 0.2 ms           │ Designed for this! Finds runs      │     │
-│  └────────────────┴───────────────────┴────────────────────────────────────┘    │
-│                                                                                 │
-│                                                                                 │
-│  SPECIAL CASE: SMALL ARRAYS (n < 50)                                            │
-│  ┌────────────────┬────────────────────────────────────────────────────────┐    │
-│  │ Algorithm      │ Time (n=20)       │ Notes                              │    │
-│  ├────────────────┼───────────────────┼────────────────────────────────────┤    │
-│  │ Insertion Sort │ 50 ns            │ Fastest! No overhead                │    │
-│  │ Quick Sort     │ 200 ns           │ Recursion overhead hurts           │     │
-│  │ Merge Sort     │ 300 ns           │ Allocation overhead                │     │
-│  └────────────────┴───────────────────┴────────────────────────────────────┘    │
-│                                                                                 │
-│  This is why Arrays.sort() switches to Insertion Sort for small subarrays!      │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### ACTUAL BENCHMARK RESULTS (Intel i7-10700 @ 3.8GHz)
+
+Test: Sort random integers, time in milliseconds
+
+| Algorithm | n=100 | n=1,000 | n=10,000 | n=100,000 | n=1,000,000 |
+| --- | --- | --- | --- | --- | --- |
+| Bubble Sort | 0.01 | 0.8 | 80 | 8,000 | 800,000 |
+| Selection Sort | 0.01 | 0.5 | 50 | 5,000 | 500,000 |
+| Insertion Sort | 0.005 | 0.3 | 30 | 3,000 | 300,000 |
+| Merge Sort | 0.01 | 0.1 | 1.2 | 15 | 180 |
+| Quick Sort | 0.008 | 0.08 | 0.9 | 11 | 130 |
+| Heap Sort | 0.02 | 0.15 | 1.8 | 25 | 350 |
+| Arrays.sort() | 0.005 | 0.05 | 0.6 | 8 | 95 |
+
+**KEY Observations**:
+
+- O(n²) algorithms become impractical above n=10,000
+- Quick Sort beats Merge Sort due to better cache behavior
+- Arrays.sort() (Dual-Pivot QuickSort) is fastest
+- Heap Sort is slower despite O(n log n) due to cache misses
+
+SPECIAL CASE: NEARLY SORTED DATA (90% sorted)
+
+| Algorithm | Time (n=10,000) | Notes |
+| --- | --- | --- |
+| Insertion Sort | 0.3 ms | Nearly O(n)! Best choice! |
+| Quick Sort | 0.9 ms | Standard performance |
+| Merge Sort | 1.2 ms | Doesn't benefit from sorted |
+| TimSort | 0.2 ms | Designed for this! Finds runs |
+
+SPECIAL CASE: SMALL ARRAYS (n < 50)
+
+| Algorithm | Time (n=20) | Notes |
+| --- | --- | --- |
+| Insertion Sort | 50 ns | Fastest! No overhead |
+| Quick Sort | 200 ns | Recursion overhead hurts |
+| Merge Sort | 300 ns | Allocation overhead |
+
+This is why Arrays.sort() switches to Insertion Sort for small subarrays!
 
 ---
 

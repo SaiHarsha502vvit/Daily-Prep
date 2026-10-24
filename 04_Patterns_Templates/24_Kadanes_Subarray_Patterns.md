@@ -524,27 +524,25 @@ Step-by-step:
 
 ## 🛑 WHEN TO USE WHAT — Decision Tree
 
-```
-Subarray problem?
-│
-├── "Maximum/minimum subarray SUM"
-│   ├── Find the single best subarray → KADANE'S
-│   ├── Circular array → KADANE'S MAX + (TOTAL - KADANE'S MIN)
-│   └── Count subarrays with sum = K → PREFIX SUM + HASHMAP
-│
-├── "Maximum subarray PRODUCT"
-│   └── Track both maxSoFar AND minSoFar → MODIFIED KADANE'S
-│
-├── "Longest subarray with sum ≤/≥ K"
-│   ├── All non-negative? → SLIDING WINDOW (monotonic!)
-│   └── Has negatives? → PREFIX SUM + SORTED STRUCTURE (TreeMap)
-│
-├── "Subarray with given XOR"
-│   └── PREFIX XOR + HASHMAP
-│
-└── "Sum divisible by K"
-    └── PREFIX SUM MODULO + HASHMAP
-```
+**Subarray problem?**
+
+- "Maximum/minimum subarray SUM"
+- Find the single best subarray → KADANE'S
+- Circular array → KADANE'S MAX + (TOTAL - KADANE'S MIN)
+- Count subarrays with sum = K → PREFIX SUM + HASHMAP
+
+- "Maximum subarray PRODUCT"
+- Track both maxSoFar AND minSoFar → MODIFIED KADANE'S
+
+- "Longest subarray with sum ≤/≥ K"
+- All non-negative? → SLIDING WINDOW (monotonic!)
+- Has negatives? → PREFIX SUM + SORTED STRUCTURE (TreeMap)
+
+- "Subarray with given XOR"
+- PREFIX XOR + HASHMAP
+
+- "Sum divisible by K"
+  - PREFIX SUM MODULO + HASHMAP
 
 ---
 

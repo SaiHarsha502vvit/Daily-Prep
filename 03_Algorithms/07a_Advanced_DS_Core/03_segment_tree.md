@@ -6,175 +6,153 @@
 
 ## Concept
 
+**Segment Tree - Complete Understanding**
+
+### What IS a Segment Tree?
+
+A segment tree is a binary tree where each node represents an INTERVAL  
+(segment) of the array and stores an aggregate value (sum, min, max, etc.)  
+for that interval.
+
+**Structure**:
+
+- Root: Represents the ENTIRE array [0, n-1]
+- Each internal node: Represents [l, r] = [l, mid] + [mid+1, r]
+- Leaves: Each represents a SINGLE element [i, i]
+
+INVENTED: Used in computational geometry since 1970s (Bentley)  
+POPULARIZED: In competitive programming in 2000s
+
+### What Problem Does Segment Tree Solve?
+
+CORE PROBLEM: Efficient range queries + point/range updates
+
+**Without Segment Tree**:
+
+"Find sum of elements from index 2 to 1000"
+- Array: O(n) to sum each time → 10 queries on 1M elements = 10M ops
+- Prefix sum: O(1) query BUT O(n) if you need to update an element
+
+**With Segment Tree**:
+
+- Query: O(log n)
+- Update: O(log n)
+- 10 queries + 5 updates = 15 × log(1M) ≈ 300 ops!
+
+**Real-world Examples**:
+
+- Databases: Range queries on changing data
+- Finance: Rolling statistics (min/max/avg over time windows)
+- Gaming: Leaderboard queries ("players ranked 50-100")
+- GIS: Geographic range queries
+- Image Processing: 2D range queries (with 2D segment trees)
+
+**WHY USE SEGMENT TREE OVER ALTERNATIVES?**
+
+|  | Data Structure | Query Time | Update Time | Use Case |  |
+| --- | --- | --- | --- | --- | --- |
+|  | Plain Array<br>Prefix Sum Array<br>Segment Tree<br>Fenwick/BIT<br>Sqrt Decomposition | O(n)<br>O(1)<br>O(log n)<br>O(log n)<br>O(√n) | O(1)<br>O(n)<br>O(log n)<br>O(log n)<br>O(1) | Few queries<br>No updates<br>Both! ⭐<br>Simpler, sum only<br>Simpler to code |  |
+| SEGMENT TREE ADVANTAGES:<br>• Handles ANY associative operation (sum, min, max, gcd, AND, OR, XOR)<br>• Supports lazy propagation for range updates<br>• More flexible than Fenwick Tree (BIT)<br>• Generalizes to 2D, merge sort tree, etc. |  |  |  |  |  |
+
+### When to USE Segment Tree?
+
+**✅ USE Segment Tree When**:
+
+- Need BOTH range queries AND point/range updates
+- Operation is ASSOCIATIVE (a⊕(b⊕c) = (a⊕b)⊕c)
+- Many queries (more than O(n) total)
+- Array is fixed size (or use dynamic segment tree)
+
+**❌ Don't USE When**:
+
+- Only queries, no updates → use prefix sum (simpler)
+- Only updates, no queries → just use array
+- Few queries → brute force is fine
+- Operation isn't associative → segment tree won't work
+
+**Interview Signals**:
+
+- "Range sum query" + "update element" = SEGMENT TREE
+- "Range minimum query" + "modifications" = SEGMENT TREE
+- "Query multiple times" on "changing array" = SEGMENT TREE
+
+### HOW Does Segment Tree Work?
+
+Array: [1, 3, 5, 7, 9, 11]
+
+Segment Tree for SUM:
+
+```mermaid
+flowchart TD
+  r["[0,5] sum = 36"] --> a["[0,2] sum = 9"]
+  r --> b["[3,5] sum = 27"]
+  a --> c["[0,1] sum = 4"]
+  a --> d["[2] = 5"]
+  b --> e["[3,4] sum = 16"]
+  b --> g["[5] = 11"]
+  c --> h["[0] = 1"]
+  c --> i["[1] = 3"]
+  e --> j["[3] = 7"]
+  e --> k["[4] = 9"]
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    SEGMENT TREE - COMPLETE UNDERSTANDING                     ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS A SEGMENT TREE?                                                      │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ A segment tree is a binary tree where each node represents an INTERVAL       │
-│ (segment) of the array and stores an aggregate value (sum, min, max, etc.)   │
-│ for that interval.                                                           │
-│                                                                              │
-│ STRUCTURE:                                                                   │
-│ • Root: Represents the ENTIRE array [0, n-1]                                 │
-│ • Each internal node: Represents [l, r] = [l, mid] + [mid+1, r]              │
-│ • Leaves: Each represents a SINGLE element [i, i]                            │
-│                                                                              │
-│ INVENTED: Used in computational geometry since 1970s (Bentley)               │
-│ POPULARIZED: In competitive programming in 2000s                             │
-└──────────────────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** Each node stores the sum of one range of the array. The root `[0,5]` is the whole array (1+3+5+7+9+11 = 36). Each node splits its range in half, and the leaves are the individual elements.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES SEGMENT TREE SOLVE?                                        │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ CORE PROBLEM: Efficient range queries + point/range updates                  │
-│                                                                              │
-│ WITHOUT SEGMENT TREE:                                                        │
-│ "Find sum of elements from index 2 to 1000"                                  │
-│ • Array: O(n) to sum each time → 10 queries on 1M elements = 10M ops         │
-│ • Prefix sum: O(1) query BUT O(n) if you need to update an element           │
-│                                                                              │
-│ WITH SEGMENT TREE:                                                           │
-│ • Query: O(log n)                                                            │
-│ • Update: O(log n)                                                           │
-│ • 10 queries + 5 updates = 15 × log(1M) ≈ 300 ops!                           │
-│                                                                              │
-│ REAL-WORLD EXAMPLES:                                                         │
-│ • Databases: Range queries on changing data                                  │
-│ • Finance: Rolling statistics (min/max/avg over time windows)                │
-│ • Gaming: Leaderboard queries ("players ranked 50-100")                      │
-│ • GIS: Geographic range queries                                              │
-│ • Image Processing: 2D range queries (with 2D segment trees)                 │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Query: "sum from index 1 to 4"**
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY USE SEGMENT TREE OVER ALTERNATIVES?                                      │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ┌──────────────────────┬──────────────┬──────────────┬────────────────────┐  │
-│ │ Data Structure       │ Query Time   │ Update Time  │ Use Case           │  │
-│ ├──────────────────────┼──────────────┼──────────────┼────────────────────┤  │
-│ │ Plain Array          │ O(n)         │ O(1)         │ Few queries        │  │
-│ │ Prefix Sum Array     │ O(1)         │ O(n)         │ No updates         │  │
-│ │ Segment Tree         │ O(log n)     │ O(log n)     │ Both! ⭐           │   │
-│ │ Fenwick/BIT          │ O(log n)     │ O(log n)     │ Simpler, sum only  │  │
-│ │ Sqrt Decomposition   │ O(√n)        │ O(1)         │ Simpler to code    │  │
-│ └──────────────────────┴──────────────┴──────────────┴────────────────────┘  │
-│                                                                              │
-│ SEGMENT TREE ADVANTAGES:                                                     │
-│ • Handles ANY associative operation (sum, min, max, gcd, AND, OR, XOR)       │
-│ • Supports lazy propagation for range updates                                │
-│ • More flexible than Fenwick Tree (BIT)                                      │
-│ • Generalizes to 2D, merge sort tree, etc.                                   │
-└──────────────────────────────────────────────────────────────────────────────┘
+Start at the root:
+- Node [0,5]: Range [1,4] partially overlaps → go to both children
+- Node [0,2]: Range [1,2] partially overlaps → go to both children
+- Node [0,1]: Range [1,1] partially overlaps → check children
+- Node [0]: outside [1,4], ignore
+- Node [1]: completely inside [1,4], return 3
+- Node [2]: completely inside [1,4], return 5
+- Node [3,5]: Range [3,4] partially overlaps
+- Node [3,4]: completely inside [1,4], return 16
+- Node [5]: outside [1,4], ignore
+- Answer: 3 + 5 + 16 = 24 ✓
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE SEGMENT TREE?                                                    │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ ✅ USE SEGMENT TREE WHEN:                                                     │
-│    • Need BOTH range queries AND point/range updates                         │
-│    • Operation is ASSOCIATIVE (a⊕(b⊕c) = (a⊕b)⊕c)                            │
-│    • Many queries (more than O(n) total)                                     │
-│    • Array is fixed size (or use dynamic segment tree)                       │
-│                                                                              │
-│ ❌ DON'T USE WHEN:                                                            │
-│    • Only queries, no updates → use prefix sum (simpler)                     │
-│    • Only updates, no queries → just use array                               │
-│    • Few queries → brute force is fine                                       │
-│    • Operation isn't associative → segment tree won't work                   │
-│                                                                              │
-│ INTERVIEW SIGNALS:                                                           │
-│ • "Range sum query" + "update element" = SEGMENT TREE                        │
-│ • "Range minimum query" + "modifications" = SEGMENT TREE                     │
-│ • "Query multiple times" on "changing array" = SEGMENT TREE                  │
-└──────────────────────────────────────────────────────────────────────────────┘
+### Difficulties & Common Mistakes
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ HOW DOES SEGMENT TREE WORK?                                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ Array: [1, 3, 5, 7, 9, 11]                                                   │
-│                                                                              │
-│ Segment Tree for SUM:                                                        │
-│                                                                              │
-│                     [36]              ← Root: sum of [0,5] = 1+3+5+7+9+11    │
-│                    /    \                                                    │
-│                [9]      [27]          ← [0,2]=9, [3,5]=27                    │
-│               /   \    /    \                                                │
-│             [4]  [5]  [16]  [11]      ← [0,1]=4, [2]=5, [3,4]=16, [5]=11     │
-│            /  \       /  \                                                   │
-│          [1] [3]    [7]  [9]          ← Individual elements                  │
-│                                                                              │
-│ QUERY: "Sum from index 1 to 4"                                               │
-│ • Start at root                                                              │
-│ • Node [0,5]: Range [1,4] partially overlaps → go to both children           │
-│ • Node [0,2]: Range [1,2] partially overlaps → go to both children           │
-│   • Node [0,1]: Range [1,1] partially overlaps → check children              │
-│     • Node [0]: outside [1,4], ignore                                        │
-│     • Node [1]: completely inside [1,4], return 3                            │
-│   • Node [2]: completely inside [1,4], return 5                              │
-│ • Node [3,5]: Range [3,4] partially overlaps                                 │
-│   • Node [3,4]: completely inside [1,4], return 16                           │
-│   • Node [5]: outside [1,4], ignore                                          │
-│ • Answer: 3 + 5 + 16 = 24 ✓                                                  │
-└──────────────────────────────────────────────────────────────────────────────┘
+**1. Tree Size Calculation**:
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ DIFFICULTIES & COMMON MISTAKES                                               │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. TREE SIZE CALCULATION:                                                    │
-│    Size needed: 4×n (safe) or 2×2^(ceil(log2(n))) (exact)                    │
-│    Common mistake: Using 2n (not enough for non-powers of 2)                 │
-│                                                                              │
-│ 2. INDEX CONFUSION:                                                          │
-│    Left child: 2*i, Right child: 2*i+1 (1-indexed)                           │
-│    Left child: 2*i+1, Right child: 2*i+2 (0-indexed)                         │
-│    Pick one and stick to it!                                                 │
-│                                                                              │
-│ 3. BOUNDARY CONDITIONS:                                                      │
-│    Query [l,r] where l > r? Return identity element                          │
-│    Segment [start,end] where start > end? Should not happen!                 │
-│                                                                              │
-│ 4. FORGETTING TO UPDATE ALL ANCESTORS:                                       │
-│    When updating a leaf, must update all nodes up to root                    │
-│                                                                              │
-│ 5. LAZY PROPAGATION ERRORS:                                                  │
-│    Forgetting to push down lazy values before splitting                      │
-│    Not handling lazy values when query visits a node                         │
-│                                                                              │
-│ 6. WRONG MERGE OPERATION:                                                    │
-│    Sum: merge(a,b) = a + b                                                   │
-│    Min: merge(a,b) = min(a,b)                                                │
-│    Be consistent!                                                            │
-└──────────────────────────────────────────────────────────────────────────────┘
+Size needed: 4×n (safe) or 2×2^(ceil(log2(n))) (exact)  
+Common mistake: Using 2n (not enough for non-powers of 2)
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ EXPECTED OUTPUTS & COMPLEXITY                                                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ OPERATION        │ TIME         │ SPACE        │ OUTPUT                      │
-│ ─────────────────┼──────────────┼──────────────┼──────────────────────────── │
-│ Build            │ O(n)         │ O(n)         │ Segment tree array          │
-│ Point Query      │ O(log n)     │ O(log n)*    │ Value at index              │
-│ Range Query      │ O(log n)     │ O(log n)*    │ Aggregate over range        │
-│ Point Update     │ O(log n)     │ O(log n)*    │ void (modifies tree)        │
-│ Range Update**   │ O(log n)     │ O(log n)*    │ void (with lazy prop)       │
-│                                                                              │
-│ * Stack space for recursion                                                  │
-│ ** With lazy propagation                                                     │
-│                                                                              │
-│ SPACE: O(4n) ≈ O(n) for tree storage                                         │
-│                                                                              │
-│ EXAMPLE OUTPUT:                                                              │
-│ arr = [1, 3, 5, 7, 9, 11]                                                    │
-│ query(1, 4) → 24 (3+5+7+9)                                                   │
-│ update(2, 10)  → arr becomes [1, 3, 10, 7, 9, 11]                            │
-│ query(1, 4) → 29 (3+10+7+9)                                                  │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+**2. Index Confusion**:
+
+Left child: 2*i, Right child: 2*i+1 (1-indexed)  
+Left child: 2*i+1, Right child: 2*i+2 (0-indexed)  
+Pick one and stick to it!
+
+**3. Boundary Conditions**:
+
+Query [l,r] where l > r? Return identity element  
+Segment [start,end] where start > end? Should not happen!
+
+**4. Forgetting to Update ALL Ancestors**:
+
+When updating a leaf, must update all nodes up to root
+
+**5. Lazy Propagation Errors**:
+
+Forgetting to push down lazy values before splitting  
+Not handling lazy values when query visits a node
+
+**6. Wrong Merge Operation**:
+
+Sum: merge(a,b) = a + b  
+Min: merge(a,b) = min(a,b)  
+Be consistent!
+
+**EXPECTED OUTPUTS & COMPLEXITY**
+
+| OPERATION | TIME | SPACE | OUTPUT |
+| --- | --- | --- | --- |
+| Build<br>Point Query<br>Range Query<br>Point Update<br>Range Update** | O(n)<br>O(log n)<br>O(log n)<br>O(log n)<br>O(log n) | O(n)<br>O(log n)*<br>O(log n)*<br>O(log n)*<br>O(log n)* | Segment tree array<br>Value at index<br>Aggregate over range void (modifies tree) void (with lazy prop) |
+| * Stack space for recursion<br>** With lazy propagation |  |  |  |
+| SPACE: O(4n) ≈ O(n) for tree storage |  |  |  |
+| EXAMPLE OUTPUT: arr = [1, 3, 5, 7, 9, 11] query(1, 4) → 24 (3+5+7+9) update(2, 10)  → arr becomes [1, 3, 10, 7, 9, 11] query(1, 4) → 29 (3+10+7+9) |  |  |  |
 
 ## Implementation
 

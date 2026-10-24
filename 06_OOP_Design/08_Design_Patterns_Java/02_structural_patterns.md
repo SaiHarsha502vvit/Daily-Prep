@@ -6,12 +6,10 @@
 
 ## 4. Adapter — Make Incompatible Interfaces Work Together
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: You have an existing interface but need a different one.   ║
-║  ANALOGY: A power adapter that converts US plug → EU socket.         ║
-║  USE: Integrating third-party libraries, legacy system wrappers.     ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: You have an existing interface but need a different one.
+ANALOGY: A power adapter that converts US plug → EU socket.
+USE: Integrating third-party libraries, legacy system wrappers.
 ```
 
 ```java
@@ -57,13 +55,11 @@ processor.charge("cust_123", 49.99);
 
 ## 5. Decorator — Add Behavior Dynamically
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Need to add features to objects without modifying them.    ║
-║  ANALOGY: A coffee with milk, sugar, whipped cream — each is a       ║
-║           decorator wrapping the base coffee.                        ║
-║  USE: Java I/O streams, logging, caching, validation layers.         ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Need to add features to objects without modifying them.
+ANALOGY: A coffee with milk, sugar, whipped cream — each is a
+         decorator wrapping the base coffee.
+USE: Java I/O streams, logging, caching, validation layers.
 ```
 
 ```java
@@ -141,13 +137,11 @@ source.write("sensitive data");  // compressed → encrypted → file
 
 ## 6. Facade — Simplify Complex Subsystems
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Complex subsystem with many classes — need simple API.     ║
-║  ANALOGY: A hotel concierge — one person handles restaurant,         ║
-║           taxi, and room service instead of you calling each.        ║
-║  USE: Wrapping complex libraries, simplifying microservice calls.    ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Complex subsystem with many classes — need simple API.
+ANALOGY: A hotel concierge — one person handles restaurant,
+         taxi, and room service instead of you calling each.
+USE: Wrapping complex libraries, simplifying microservice calls.
 ```
 
 ```java
@@ -193,14 +187,12 @@ OrderResult result = orderFacade.placeOrder(order);
 
 ## 7. Proxy — Control Access to an Object
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Need to add control (caching, access, logging) around      ║
-║           an object without changing it.                             ║
-║  ANALOGY: A security guard (proxy) controlling access to a           ║
-║           building (real object).                                    ║
-║  USE: Caching proxy, lazy initialization, access control, logging    ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Need to add control (caching, access, logging) around
+         an object without changing it.
+ANALOGY: A security guard (proxy) controlling access to a
+         building (real object).
+USE: Caching proxy, lazy initialization, access control, logging
 ```
 
 ```java

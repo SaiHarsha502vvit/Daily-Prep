@@ -12,18 +12,16 @@
 
 **LeetCode 131** 🔗 https://leetcode.com/problems/palindrome-partitioning/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  PALINDROME PARTITIONING                                       │
-├────────────────────────────────────────────────────────────────┤
-│  s = "aab"                                                     │
-│                                                                │
-│  Partitions where each part is palindrome:                     │
-│  "a" | "a" | "b" ✓                                             │
-│  "aa" | "b" ✓                                                  │
-│                                                                │
-│  Output: [["a","a","b"], ["aa","b"]]                           │
-└────────────────────────────────────────────────────────────────┘
+**PALINDROME PARTITIONING**
+
+```text
+s = "aab"
+
+Partitions where each part is palindrome:
+"a" | "a" | "b" ✓
+"aa" | "b" ✓
+
+Output: [["a","a","b"], ["aa","b"]]
 ```
 
 **Solution:**
@@ -65,23 +63,23 @@ private boolean isPalindrome(String s, int left, int right) {
 
 **LeetCode 17** 🔗 https://leetcode.com/problems/letter-combinations-of-a-phone-number/
 
+**Letter combinations of a phone number**
+
+`digits = "23"`, where `2 → "abc"` and `3 → "def"`.
+
+```mermaid
+flowchart TD
+  root(("start")) --> a["a"]
+  root --> b["b"]
+  root --> c["c"]
+  a --> a3["d, e, f"]
+  b --> b3["d, e, f"]
+  c --> c3["d, e, f"]
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  LETTER COMBINATIONS OF PHONE NUMBER                           │
-├────────────────────────────────────────────────────────────────┤
-│  digits = "23"                                                 │
-│                                                                │
-│  2 → "abc", 3 → "def"                                          │
-│                                                                │
-│       ┌───┬───┬───┐                                            │
-│       │ a │ b │ c │  ← digit 2                                 │
-│       └─┬─┴─┬─┴─┬─┘                                            │
-│    ┌────┴┐ ┌┴───┐ ┌┴────┐                                      │
-│  d,e,f  d,e,f  d,e,f     ← digit 3                             │
-│                                                                │
-│  Output: ["ad","ae","af","bd","be","bf","cd","ce","cf"]        │
-└────────────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The first level chooses a letter for digit 2 (`a`, `b` or `c`); the second level chooses a letter for digit 3 (`d`, `e` or `f`).
+
+Output: `["ad","ae","af","bd","be","bf","cd","ce","cf"]`.
 
 **Solution:**
 
@@ -119,18 +117,16 @@ private void backtrack(String digits, int index, StringBuilder path,
 
 **LeetCode 22** 🔗 https://leetcode.com/problems/generate-parentheses/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  GENERATE PARENTHESES                                          │
-├────────────────────────────────────────────────────────────────┤
-│  n = 3 (3 pairs)                                               │
-│                                                                │
-│  Rules:                                                        │
-│  - Can add '(' if open < n                                     │
-│  - Can add ')' if close < open                                 │
-│                                                                │
-│  Output: ["((()))","(()())","(())()","()(())","()()()"]        │
-└────────────────────────────────────────────────────────────────┘
+**GENERATE PARENTHESES**
+
+```text
+n = 3 (3 pairs)
+
+Rules:
+- Can add '(' if open < n
+- Can add ')' if close < open
+
+Output: ["((()))","(()())","(())()","()(())","()()()"]
 ```
 
 **Solution:**

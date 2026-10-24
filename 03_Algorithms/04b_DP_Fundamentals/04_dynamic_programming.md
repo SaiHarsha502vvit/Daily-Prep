@@ -187,26 +187,22 @@ TRANSITION: Try all split points k between i and j
 
 ## 🧠 Part 7: Memoization vs Tabulation
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    MEMOIZATION (Top-Down)                       │
-├─────────────────────────────────────────────────────────────────┤
-│ Approach:    Recursive with caching                             │
-│ Direction:   Start from main problem, recurse to subproblems    │
-│ When used:   Only computes needed subproblems                   │
-│ Space:       Recursion stack + memo table                       │
-│ Pros:        Natural, easy to write, lazy evaluation            │
-│ Cons:        Recursion overhead, stack overflow risk            │
-├─────────────────────────────────────────────────────────────────┤
-│                    TABULATION (Bottom-Up)                       │
-├─────────────────────────────────────────────────────────────────┤
-│ Approach:    Iterative with table                               │
-│ Direction:   Start from base cases, build up to main problem    │
-│ When used:   Computes ALL subproblems                           │
-│ Space:       Just the table (no stack)                          │
-│ Pros:        No recursion overhead, can optimize space          │
-│ Cons:        Need to think about computation order              │
-└─────────────────────────────────────────────────────────────────┘
+**MEMOIZATION (Top-Down)**
+
+```text
+Approach:    Recursive with caching
+Direction:   Start from main problem, recurse to subproblems
+When used:   Only computes needed subproblems
+Space:       Recursion stack + memo table
+Pros:        Natural, easy to write, lazy evaluation
+Cons:        Recursion overhead, stack overflow risk
+                   TABULATION (Bottom-Up)
+Approach:    Iterative with table
+Direction:   Start from base cases, build up to main problem
+When used:   Computes ALL subproblems
+Space:       Just the table (no stack)
+Pros:        No recursion overhead, can optimize space
+Cons:        Need to think about computation order
 
 WHEN TO USE WHICH?
 
@@ -334,18 +330,22 @@ public int lcsOptimized(String s1, String s2) {
 ### When DP Breaks
 
 #### 1. Identifying the Wrong State — Missing a Dimension
+
 **What breaks**: Coin change with coin limit — "minimum coins to make amount A, using each coin at most k times." Naive state `dp[a]` loses track of how many times each coin was used. The correct state is `dp[a][coin_index]` or `dp[a][count]`.
 **Rule**: If the recurrence's "remaining choice" doesn't fit in a single integer, add a dimension. Missing state dimensions cause silently wrong answers, not runtime errors.
 
 #### 2. Memoizing with Mutable State (Wrong Cache Key)
+
 **What breaks**: Using an array reference as a HashMap key in top-down memoization. Two calls with arrays `{1,2,3}` and `{1,2,3}` (different objects, same values) produce different keys → cache is never hit → exponential time despite the memo table.
 **Fix**: Serialize state to a canonical key (e.g., `Arrays.toString(arr) + "," + index`) or convert to an `int` index if state space is bounded.
 
 #### 3. Off-by-One in Base Case Initialization
+
 **What breaks**: `dp[0] = 1` vs `dp[0] = 0` is the most common DP bug. For coin change (minimum coins): `dp[0] = 0` (0 coins for amount 0). For count of ways: `dp[0] = 1` (one way to make 0: use no coins). Mixing these gives answers off by 1 or wrong by a factor.
 **Debug technique**: Trace the base case by hand for amount=0 and amount=1 before running. These two values exercise the init and the first step.
 
 #### 4. Unbounded vs 0/1 vs Bounded — Wrong Loop Direction
+
 **What breaks**: 0/1 Knapsack requires iterating the weight dimension *backwards* (to prevent reusing the same item). Iterating forwards accidentally makes it unbounded knapsack (each item usable many times). This is the single most common knapsack implementation bug.
 **Fix**: 0/1 → inner loop `for (w = capacity; w >= weight[i]; w--)`. Unbounded → inner loop `for (w = weight[i]; w <= capacity; w++)`.
 

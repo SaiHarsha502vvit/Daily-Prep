@@ -8,26 +8,22 @@
 
 **Difficulty:** Easy | **Category:** Basic Math
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  GCD - GREATEST COMMON DIVISOR                                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find the largest number that divides both a and b.                       ║
-║                                                                           ║
-║  Input: a = 48, b = 18                                                    ║
-║  Output: 6                                                                ║
-║  Explanation: Divisors of 48: 1,2,3,4,6,8,12,16,24,48                     ║
-║               Divisors of 18: 1,2,3,6,9,18                                ║
-║               Common: 1,2,3,6 → GCD = 6                                   ║
-║                                                                           ║
-║  EUCLIDEAN ALGORITHM:                                                     ║
-║  GCD(a, b) = GCD(b, a % b)                                                ║
-║  GCD(a, 0) = a                                                            ║
-║                                                                           ║
-║  48, 18 → 18, 12 → 12, 6 → 6, 0 → GCD = 6                                 ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**GCD - GREATEST COMMON DIVISOR**
+
+```text
+Find the largest number that divides both a and b.
+
+Input: a = 48, b = 18
+Output: 6
+Explanation: Divisors of 48: 1,2,3,4,6,8,12,16,24,48
+             Divisors of 18: 1,2,3,6,9,18
+             Common: 1,2,3,6 → GCD = 6
+
+EUCLIDEAN ALGORITHM:
+GCD(a, b) = GCD(b, a % b)
+GCD(a, 0) = a
+
+48, 18 → 18, 12 → 12, 6 → 6, 0 → GCD = 6
 ```
 
 ```java
@@ -59,48 +55,43 @@ public int lcm(int a, int b) {
 
 **LeetCode 1979** | **Difficulty:** Easy | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  FIND GREATEST COMMON DIVISOR OF ARRAY                                    ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given an integer array nums, return the greatest common divisor of the   ║
-║  smallest number and largest number in nums.                              ║
-║                                                                           ║
-║  The GCD of two numbers is the largest positive integer that evenly       ║
-║  divides both numbers.                                                    ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: nums = [2, 5, 6, 9, 10]                                           ║
-║  Output: 2                                                                ║
-║  Explanation:                                                             ║
-║  Smallest = 2, Largest = 10                                               ║
-║  GCD(2, 10) = 2                                                           ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: nums = [7, 5, 6, 8, 3]                                            ║
-║  Output: 1                                                                ║
-║  Explanation:                                                             ║
-║  Smallest = 3, Largest = 8                                                ║
-║  GCD(3, 8) = 1                                                            ║
-║                                                                           ║
-║  Example 3:                                                               ║
-║  Input: nums = [3, 3]                                                     ║
-║  Output: 3                                                                ║
-║  Explanation:                                                             ║
-║  Smallest = 3, Largest = 3                                                ║
-║  GCD(3, 3) = 3                                                            ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 2 <= nums.length <= 1000                                               ║
-║  - 1 <= nums[i] <= 1000                                                   ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**FIND GREATEST COMMON DIVISOR OF ARRAY — (LeetCode Premium - Full Problem Description)**
+
+```text
+Given an integer array nums, return the greatest common divisor of the
+smallest number and largest number in nums.
+
+The GCD of two numbers is the largest positive integer that evenly
+divides both numbers.
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: nums = [2, 5, 6, 9, 10]
+Output: 2
+Explanation:
+Smallest = 2, Largest = 10
+GCD(2, 10) = 2
+
+Example 2:
+Input: nums = [7, 5, 6, 8, 3]
+Output: 1
+Explanation:
+Smallest = 3, Largest = 8
+GCD(3, 8) = 1
+
+Example 3:
+Input: nums = [3, 3]
+Output: 3
+Explanation:
+Smallest = 3, Largest = 3
+GCD(3, 3) = 3
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 2 <= nums.length <= 1000
+- 1 <= nums[i] <= 1000
 ```
 
 ```java

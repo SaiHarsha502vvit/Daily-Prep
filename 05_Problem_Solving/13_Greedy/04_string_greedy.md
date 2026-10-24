@@ -12,20 +12,18 @@
 
 **LeetCode 763** 🔗 https://leetcode.com/problems/partition-labels/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  PARTITION LABELS - Max partitions with unique chars           │
-├────────────────────────────────────────────────────────────────┤
-│  s = "ababcbacadefegdehijhklij"                                │
-│                                                                │
-│  Partition such that each letter appears in at most one part:  │
-│  "ababcbaca" | "defegde" | "hijhklij"                          │
-│       9           7           8                                │
-│                                                                │
-│  Output: [9, 7, 8]                                             │
-│                                                                │
-│  Greedy: Track last occurrence of each char                    │
-└────────────────────────────────────────────────────────────────┘
+**PARTITION LABELS - Max partitions with unique chars**
+
+```text
+s = "ababcbacadefegdehijhklij"
+
+Partition such that each letter appears in at most one part:
+"ababcbaca" | "defegde" | "hijhklij"
+     9           7           8
+
+Output: [9, 7, 8]
+
+Greedy: Track last occurrence of each char
 ```
 
 **Solution:**
@@ -60,22 +58,20 @@ public List<Integer> partitionLabels(String s) {
 
 **LeetCode 621** 🔗 https://leetcode.com/problems/task-scheduler/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  TASK SCHEDULER - Min time with cooldown                       │
-├────────────────────────────────────────────────────────────────┤
-│  tasks = ["A","A","A","B","B","B"], n = 2                      │
-│                                                                │
-│  Must wait n intervals before same task again                  │
-│                                                                │
-│  A → _ → _ → A → _ → _ → A                                     │
-│  A → B → _ → A → B → _ → A → B                                 │
-│  A → B → idle → A → B → idle → A → B                           │
-│                                                                │
-│  Output: 8 intervals                                           │
-│                                                                │
-│  Formula: (maxFreq - 1) * (n + 1) + countMaxFreq               │
-└────────────────────────────────────────────────────────────────┘
+**TASK SCHEDULER - Min time with cooldown**
+
+```text
+tasks = ["A","A","A","B","B","B"], n = 2
+
+Must wait n intervals before same task again
+
+A → _ → _ → A → _ → _ → A
+A → B → _ → A → B → _ → A → B
+A → B → idle → A → B → idle → A → B
+
+Output: 8 intervals
+
+Formula: (maxFreq - 1) * (n + 1) + countMaxFreq
 ```
 
 **Solution:**
@@ -117,7 +113,8 @@ public int leastInterval(char[] tasks, int n) {
 **Greedy choice:** Always schedule the task with the HIGHEST remaining frequency. After each task, wait for cooldown before scheduling the same task again. Fill idle slots with the next most frequent tasks. **Formula (no simulation needed):** `time = max(n_tasks, (max_freq - 1) * (n + 1) + count_max_freq)`. Where `max_freq` = frequency of most common task, `count_max_freq` = number of tasks with that frequency, `n` = cooldown. **Why:** The most frequent task creates "mandatory idle" slots: you need `(max_freq - 1)` cooldown gaps of size `n`. Each gap can be filled with other tasks. If total tasks exceed the formula (many different tasks fill all gaps), no idle time is needed. **Who determines minimum:** The most frequent task acts as the bottleneck. All other tasks either fill gaps or extend beyond the minimum frame. **Example:** Tasks `[A=3, B=3, C=2]`, n=2. `max_freq=3`, `count_max=2`. Answer = `max(8, (3-1)*(2+1)+2) = max(8, 8) = 8`. Sequence: `A B C A B C A B`.
 
 </details>
-<details><summary>Answer</summary>
+
+<details><summary>More detail</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
 
@@ -129,20 +126,18 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 
 **LeetCode 53** 🔗 https://leetcode.com/problems/maximum-subarray/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MAXIMUM SUBARRAY - Kadane's as Greedy                         │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]                        │
-│                                                                │
-│  Greedy choice: At each position, decide to:                   │
-│  - Extend previous subarray, OR                                │
-│  - Start fresh from current element                            │
-│                                                                │
-│  If previous sum is negative, start fresh!                     │
-│                                                                │
-│  Max subarray: [4, -1, 2, 1] = 6                               │
-└────────────────────────────────────────────────────────────────┘
+**MAXIMUM SUBARRAY - Kadane's as Greedy**
+
+```text
+nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+
+Greedy choice: At each position, decide to:
+- Extend previous subarray, OR
+- Start fresh from current element
+
+If previous sum is negative, start fresh!
+
+Max subarray: [4, -1, 2, 1] = 6
 ```
 
 **Solution:**
@@ -168,24 +163,22 @@ public int maxSubArray(int[] nums) {
 
 **LeetCode 122** 🔗 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  STOCK II - Multiple transactions allowed                      │
-├────────────────────────────────────────────────────────────────┤
-│  prices = [7, 1, 5, 3, 6, 4]                                   │
-│                                                                │
-│      7                                                         │
-│       \    5       6                                           │
-│        \  /\      /\                                           │
-│         1   \   /    4                                         │
-│              3                                                 │
-│                                                                │
-│  Buy at 1, sell at 5: profit = 4                               │
-│  Buy at 3, sell at 6: profit = 3                               │
-│  Total: 7                                                      │
-│                                                                │
-│  Greedy: Collect ALL positive differences                      │
-└────────────────────────────────────────────────────────────────┘
+**STOCK II - Multiple transactions allowed**
+
+```text
+prices = [7, 1, 5, 3, 6, 4]
+
+    7
+     \    5       6
+      \  /\      /\
+       1   \   /    4
+            3
+
+Buy at 1, sell at 5: profit = 4
+Buy at 3, sell at 6: profit = 3
+Total: 7
+
+Greedy: Collect ALL positive differences
 ```
 
 **Solution:**
@@ -218,7 +211,8 @@ public int maxProfit(int[] prices) {
 **Greedy choice:** To maximize, we want the LARGEST possible digit in each position from left to right. Use a monotonic decreasing stack: scan digits left to right. While the stack is non-empty AND top of stack < current digit AND we still have removals left — pop the stack (remove that digit). Push the current digit. **Why this is locally optimal = globally optimal:** If digit `d[i]` > `d[i-1]` (current digit is larger than the previous), removing `d[i-1]` gives us a larger leading digit in that position. A larger leading digit is ALWAYS better than any combination of smaller digits later. **Example:** `n = 1432219`, `k = 3`. Stack trace: push 1, push 4 (4>1, push), pop 4 and push 3? No — 3<4, push 3. Push 2... pop 3 (3>2, remove count=1), pop 4... wait: scan: `1 4 3 2 2 1 9`. On seeing `9`: pop `1` (k--), pop `2` (k--), pop `2` (k--). Result: `4 3 9` → `439`. **Who makes the choice:** A monotonic decreasing stack scan, O(n). Remove the smallest-place digit when a larger digit appears to its right.
 
 </details>
-<details><summary>Answer</summary>
+
+<details><summary>More detail</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
 
@@ -272,7 +266,8 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 **Who proves it optimal:** Exchange argument. In any optimal code tree, the two symbols with lowest frequency must be deepest (assigned longest codes). Swapping shallower symbols with the two lowest-frequency symbols into deeper positions reduces or maintains total weighted path length. Therefore always merging the two lowest first is optimal. **Greedy algorithm:** Min-heap of (frequency, node). Pop two minimums, merge into parent with combined frequency, push back. Repeat until one node. This is O(n log n) with a heap. **Prefix-free property:** In the Huffman tree, codes are only assigned to LEAF nodes. Since no leaf is an ancestor of another leaf, no code is a prefix of another. Bit strings are read left (0) / right (1) until a leaf is reached — unambiguous decoding. **Why greedy works here:** The cost function (sum of frequency \* depth) has "optimal substructure" — an optimal tree for n symbols contains optimal sub-trees for any subset. Combined with the greedy-choice property (always merge cheapest pair), this guarantees global optimality. Huffman is one of the few greedy algorithms with a formal optimality proof.
 
 </details>
-<details><summary>Answer</summary>
+
+<details><summary>More detail</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
 

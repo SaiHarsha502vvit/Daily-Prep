@@ -559,23 +559,21 @@ Example: "This stack maintains LIFO discipline. Push preserves it by writing to 
 
 ## Summary
 
-```
-Data Structure        │ Structural Invariant                        │ Key Proof Technique
-──────────────────────┼─────────────────────────────────────────────┼──────────────────────────────
-ArrayList             │ data[0..size-1] = live elements in order    │ Induction on operation count
-Singly Linked List    │ reachable nodes = live elements, no cycles  │ Reachability + graph induction
-Doubly Linked List    │ next/prev pointers form consistent chain    │ Pairwise consistency per operation
-Stack                 │ data[top] = most-recently-pushed element    │ LIFO discipline + array layout
-Circular Queue        │ head/tail pointers track FIFO order         │ Circular arithmetic + modulo bounds
-Hash Table (chaining) │ key in bucket = hash(k) mod capacity        │ Deterministic hash + reachability
-Hash Table (open addr)│ probe sequence visits each slot at most once│ Number theory (coprimality)
-BST                   │ left subtree keys < node.key < right        │ Structural induction on tree
-AVL Tree              │ BST property + |height(L)-height(R)| ≤ 1    │ Rotation preserves BST + balance
-Red-Black Tree        │ BST property + 5 color/black-height rules   │ Case analysis per recolor/rotate
-Min-Heap              │ parent.key ≤ children.keys + complete tree   │ siftUp/siftDown preserves heap-order
-Trie                  │ root-to-leaf path = inserted key            │ Prefix property + structural induction
-Union-Find            │ parent pointers lead to unique root per set │ Induction on union count + find
-```
+| Data Structure | Structural Invariant | Key Proof Technique |
+| --- | --- | --- |
+| ArrayList | data[0..size-1] = live elements in order | Induction on operation count |
+| Singly Linked List | reachable nodes = live elements, no cycles | Reachability + graph induction |
+| Doubly Linked List | next/prev pointers form consistent chain | Pairwise consistency per operation |
+| Stack | data[top] = most-recently-pushed element | LIFO discipline + array layout |
+| Circular Queue | head/tail pointers track FIFO order | Circular arithmetic + modulo bounds |
+| Hash Table (chaining) | key in bucket = hash(k) mod capacity | Deterministic hash + reachability |
+| Hash Table (open addr) | probe sequence visits each slot at most once | Number theory (coprimality) |
+| BST | left subtree keys < node.key < right | Structural induction on tree |
+| AVL Tree | BST property + \|height(L)-height(R)\| ≤ 1 | Rotation preserves BST + balance |
+| Red-Black Tree | BST property + 5 color/black-height rules | Case analysis per recolor/rotate |
+| Min-Heap | parent.key ≤ children.keys + complete tree | siftUp/siftDown preserves heap-order |
+| Trie | root-to-leaf path = inserted key | Prefix property + structural induction |
+| Union-Find | parent pointers lead to unique root per set | Induction on union count + find |
 
 *[Back to DS Index](../00_INDEX.md) | [A2: DS Complexity from First Principles →](../A2_DS_Complexity_FirstPrinciples.md)*
 

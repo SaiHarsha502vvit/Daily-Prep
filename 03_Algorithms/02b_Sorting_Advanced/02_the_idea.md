@@ -102,18 +102,14 @@ private void heapify(int[] arr, int n, int i) {
 
 ## ⚖️ Part 8: Comparison Table
 
-```
-┌─────────────┬──────────┬───────────┬───────────┬────────┬─────────┐
-│  Algorithm  │  Best    │  Average  │  Worst    │ Space  │ Stable  │
-├─────────────┼──────────┼───────────┼───────────┼────────┼─────────┤
-│ Bubble      │ O(n)     │ O(n²)     │ O(n²)     │ O(1)   │ Yes     │
-│ Selection   │ O(n²)    │ O(n²)     │ O(n²)     │ O(1)   │ No      │
-│ Insertion   │ O(n)     │ O(n²)     │ O(n²)     │ O(1)   │ Yes     │
-│ Merge       │ O(n logn)│ O(n logn) │ O(n logn) │ O(n)   │ Yes     │
-│ Quick       │ O(n logn)│ O(n logn) │ O(n²)     │ O(logn)│ No      │
-│ Heap        │ O(n logn)│ O(n logn) │ O(n logn) │ O(1)   │ No      │
-└─────────────┴──────────┴───────────┴───────────┴────────┴─────────┘
-```
+| Algorithm | Best | Average | Worst | Space | Stable |
+| --- | --- | --- | --- | --- | --- |
+| Bubble | O(n) | O(n²) | O(n²) | O(1) | Yes |
+| Selection | O(n²) | O(n²) | O(n²) | O(1) | No |
+| Insertion | O(n) | O(n²) | O(n²) | O(1) | Yes |
+| Merge | O(n logn) | O(n logn) | O(n logn) | O(n) | Yes |
+| Quick | O(n logn) | O(n logn) | O(n²) | O(logn) | No |
+| Heap | O(n logn) | O(n logn) | O(n logn) | O(1) | No |
 
 ---
 

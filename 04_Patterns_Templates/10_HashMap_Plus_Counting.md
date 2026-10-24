@@ -331,20 +331,15 @@ CRITICAL: Always initialize map with {0: 1}!
 
 ## 🛡️ EDGE CASES
 
-```
-┌─────────────────────────────┬──────────────────────────────────────────┐
-│ Edge Case                   │ Handling                                 │
-├─────────────────────────────┼──────────────────────────────────────────┤
-│ Duplicate values [1,1,1]    │ Two Sum: need DIFFERENT indices (check!) │
-│ Single element = target     │ Subarray of length 1 is valid            │
-│ Negative numbers            │ Prefix Sum + HashMap (NOT sliding window)│
-│ All zeros, target=0         │ Every subarray of any length sums to 0   │
-│ Empty array                 │ Return 0 / empty                         │
-│ Large values (overflow)     │ Use long for prefix sums if needed       │
-│ HashMap collision concern   │ Java handles internally, but int[26]     │
-│                             │ is faster for lowercase-only problems    │
-└─────────────────────────────┴──────────────────────────────────────────┘
-```
+| Edge Case | Handling |
+| --- | --- |
+| Duplicate values [1,1,1] | Two Sum: need DIFFERENT indices (check!) |
+| Single element = target | Subarray of length 1 is valid |
+| Negative numbers | Prefix Sum + HashMap (NOT sliding window) |
+| All zeros, target=0 | Every subarray of any length sums to 0 |
+| Empty array | Return 0 / empty |
+| Large values (overflow) | Use long for prefix sums if needed |
+| HashMap collision concern | Java handles internally, but int[26] is faster for lowercase-only problems |
 
 ---
 
@@ -367,6 +362,8 @@ CRITICAL: Always initialize map with {0: 1}!
 
 ### Easy
 
+| # | Problem | Companies | Approach |
+| --- | --- | --- | --- |
 | 3 | [Missing Number](https://leetcode.com/problems/missing-number/) | Amazon | XOR trick or math sum |
 | 4 | [Happy Number](https://leetcode.com/problems/happy-number/) | Salesforce | HashSet for cycle detection |
 | 5 | [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/) | Salesforce | Stack + HashMap for matching |

@@ -39,20 +39,25 @@ When we reach the end of the array, we wrap around to the beginning!
 
 WHY CIRCULAR?
 
-**Linear queue problem:** 
+**Linear queue problem:**
 
-After many enqueue/dequeue operations:
-[_, _, _, _, 5, 6, 7, _]
-↑        ↑
-front    rear
-Wasted space at beginning!
+After many enqueue/dequeue operations the front has moved right, and the cells before it can never be reused:
 
-**Circular queue solution:** 
+| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Value | _ | _ | _ | _ | 5 | 6 | 7 | _ |
+| Marker | | | | | front | | | rear |
 
-[8, 9, _, _, 5, 6, 7]
-↑     ↑
-rear  front
-rear wraps around to use empty space!
+Wasted space at the beginning.
+
+**Circular queue solution:**
+
+When `rear` reaches the end it wraps around to index 0 and reuses the empty cells:
+
+| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Value | 8 | 9 | _ | _ | 5 | 6 | 7 |
+| Marker | | | rear | | front | | |
 
 VISUAL (as a circle):
 

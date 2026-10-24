@@ -2,11 +2,14 @@
 
 # 19. Matrix / Grid — Complete Problem Guide
 
-> MATRIX / GRID MASTERY GUIDE
-> From Theory to Hard Problems — MIT/KTH Academic Style
-> Part 0: Theory & Grid Fundamentals │ Part 1: Easy (4 problems)
-> Part 2: Medium (10 problems) │ Part 3: Hard (4 problems)
-> Part 4: Cheat Sheet & Pattern Ref │
+> **Matrix / grid mastery guide**: from theory to hard problems, in an academic style.
+>
+> - Part 0: theory and grid fundamentals
+> - Part 1: easy (4 problems)
+> - Part 2: medium (10 problems)
+> - Part 3: hard (4 problems)
+> - Part 4: cheat sheet and pattern reference
+
 
 ---
 

@@ -356,17 +356,18 @@ Time: O(n) | Space: O(1)
 
 ```
 EDGE CASES:
-┌────────────────────────────┬─────────────────────────────────────────────┐
-│ Edge Case                  │ Handling                                    │
-├────────────────────────────┼─────────────────────────────────────────────┤
-│ Empty list (null)          │ Return immediately                          │
-│ Single node, no cycle      │ fast.next is null → no cycle                │
-│ Single node, self-cycle    │ 1 → 1. fast == slow after 1 step            │
-│ Cycle at head              │ a = 0, cycle start = head                   │
-│ Cycle at tail              │ Long path before cycle                      │
-│ Even vs odd length         │ Fast/slow still works for middle finding    │
-└────────────────────────────┴─────────────────────────────────────────────┘
+```
 
+| Edge Case | Handling |
+| --- | --- |
+| Empty list (null) | Return immediately |
+| Single node, no cycle | fast.next is null → no cycle |
+| Single node, self-cycle | 1 → 1. fast == slow after 1 step |
+| Cycle at head | a = 0, cycle start = head |
+| Cycle at tail | Long path before cycle |
+| Even vs odd length | Fast/slow still works for middle finding |
+
+```
 COMMON MISTAKES:
 1. Forgetting NULL check: while (fast != null && fast.next != null)
    Missing fast.next check → NullPointerException

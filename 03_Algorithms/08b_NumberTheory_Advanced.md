@@ -1,18 +1,12 @@
-# NumberTheory Advanced
+# 🧰 Essential Algorithms, Data-Structure Problems and a Study Plan
 
 > **Navigation**: [← GCD, Number Theory & Pattern…](08a_NumberTheory_Core.md) | [Chapter index](00_INDEX.md) | [Matrix Exponentiation & Linear… →](23_Matrix_Exponentiation_And_Linear_Recurrences.md)
 
-﻿**Navigation**: [< Previous Chapter](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
-
----
-
 ## Historical Evolution
 
-Advanced number theory algorithms bridge ancient mathematical discoveries and modern cryptographic infrastructure. **The Chinese Remainder Theorem (CRT)** was first described in the Chinese text **Sunzi Suanjing** ("Master Sun's Mathematical Manual", roughly 3rd–5th century AD; not the author of *The Art of War*), with a complete algorithm appearing in **Brahmagupta's Brahmasphutasiddhanta (628 AD)** in India — it solves the problem of finding a number that gives specific remainders when divided by several coprime moduli, enabling large-integer arithmetic via small-component computation. **Fermat's Little Theorem (1640)** established that $a^{p-1} \equiv 1 \pmod{p}$ for prime $p$, and **Euler (1760s)** extended this with the totient function $\phi(n)$ — both theorems are the theoretical backbone of RSA encryption. **Miller (1976)** and **Rabin (1976/1980)** developed the probabilistic primality test that makes large prime generation practical for cryptography; **AKS primality test (2002)** by Agrawal, Kayal, and Saxena at IIT Kanpur finally gave a deterministic polynomial-time primality proof, demonstrating that "prime or composite" can be answered without randomness. Modern practice (post-2010): RSA (1977, Rivest-Shamir-Adleman) remains the foundation of HTTPS/TLS, the Chinese Remainder Theorem is used in RSA decryption for speedup (using the Chinese Remainder representation), and modular arithmetic underpins virtually all cryptocurrency signature schemes (ECDSA in Bitcoin, Ed25519).
+Four ideas in this chapter have well-documented origins. **Maximum subarray (Kadane)**: Ulf Grenander posed the problem in 1977 for pattern analysis in images; Michael Shamos found an O(n log n) divide-and-conquer solution, and Jay Kadane then gave the linear-time scan, recounted in Jon Bentley's *Programming Pearls* column (1984). **Dutch national flag**: Edsger Dijkstra's three-way partition problem, in *A Discipline of Programming* (1976). **Boyer–Moore majority vote**: Robert Boyer and J Strother Moore developed it in 1981 and published it in 1991. **Floyd cycle detection** (tortoise and hare) is attributed to Robert Floyd and appears in Knuth's *The Art of Computer Programming*, volume 2 (1969). All four replace a nested loop or an extra table with one pass and a small amount of state, which is why they recur in interviews.
 
 ---
-
-## 📌 Part 5: More Essential Algorithms
 
 ## 🔗 Bridge — Where This Chapter Fits
 
@@ -55,7 +49,6 @@ A **running tally**: instead of re-adding every number, keep a total and adjust 
 > [!NOTE]
 > **Quick check:** Why verify the Boyer–Moore candidate? *If no majority exists, the candidate is arbitrary.*
 
-
 ### 5. Check yourself
 
 **Q1.** Inverse of 3 modulo 7?
@@ -76,29 +69,16 @@ If `p` is prime and `p ∤ a`, then `a^(p−1) ≡ 1 (mod p)`; hence `a^(p−2)`
 
 ---
 
-
 ## 📚 Topic Pages in This Chapter
 
 This chapter is split into focused pages so each topic can be read on its own. Read them in order the first time; use the table to jump back later.
 
 | # | Page | What is inside | Lines |
 | --- | --- | --- | --- |
-| 1 | [═══════════════════════════════════════════════════════════](08b_NumberTheory_Advanced/01_section.md) | ═══════════════════════════════════════════════════════════ | 444 |
-| 2 | [═══════════════════════════════════════════════════════════](08b_NumberTheory_Advanced/02_section.md) | ═══════════════════════════════════════════════════════════ | 294 |
-| 3 | [═══════════════════════════════════════════════════════════](08b_NumberTheory_Advanced/03_section.md) | ═══════════════════════════════════════════════════════════ | 45 |
-| 4 | [═══════════════════════════════════════════════════════════](08b_NumberTheory_Advanced/04_section.md) | ═══════════════════════════════════════════════════════════ | 127 |
-
-## ═══════════════════════════════════════════════════════════
-
-## 🧩 Part 6: Data Structure Problems With Why — How
-
-## ═══════════════════════════════════════════════════════════
-
-## 📌 Part 7: Real — Life Incident → DSA Mapping Table
-
-## ═══════════════════════════════════════════════════════════
-
-## PART 8: STUDY PLAN (Starting Feb 10, 2026)
+| 1 | [Part 5 — More Essential Algorithms](08b_NumberTheory_Advanced/01_section.md) | Algorithm: Kadane's Algorithm (Maximum Subarray Sum) · Algorithm: Dutch National Flag (3-Way Partition) · Algorithm: Boyer-Moore Voting (Majority Element) | 444 |
+| 2 | [Part 6 — Data Structure Problems: Why and How](08b_NumberTheory_Advanced/02_section.md) | Stack Problems · Queue & Deque Problems · HashMap Problems | 294 |
+| 3 | [Part 7 — Real-Life Incident → DSA Mapping](08b_NumberTheory_Advanced/03_section.md) | Part 7 — Real-Life Incident → DSA Mapping | 45 |
+| 4 | [Part 8 — Four-Week Study Plan](08b_NumberTheory_Advanced/04_section.md) | Part 8 — Four-Week Study Plan | 127 |
 
 ## 💪 Curated Practice Problems — Number Theory & Math
 
@@ -160,8 +140,6 @@ Section 1 = fundamentals. Section 2 = medium applications. Section 3 = advanced/
 | 5   | Distribute Candies to People (LC 1103)         | LeetCode | Simulation with modular index       |
 
 ---
-
-
 
 ---
 
@@ -235,7 +213,6 @@ static long modPow(long base, long exp, long mod) {
 | GCD(a, b) | Subtract smaller from larger | O(max(a,b)) | Euclidean algorithm | O(log(min(a,b))) |
 | Modular inverse | Extended Euclid | O(log m) | Fermat (prime mod only) | O(log p) |
 | Factorisation | Trial division | O(sqrt(n)) | Pollard's rho | O(n^{1/4}) |
-
 
 ---
 

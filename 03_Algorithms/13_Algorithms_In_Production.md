@@ -52,78 +52,21 @@ Reading the **engine specs after learning how engines work**: now you can see wh
 
 ## The Algorithm → Production System Map
 
-```
-ALGORITHM                │ WHERE IT RUNS IN PRODUCTION (2024)
-─────────────────────────┼───────────────────────────────────────────────────────
-BINARY SEARCH            │ • Database index lookups (B-Tree traversal)
-                         │ • Git bisect (find the commit that broke the build)
-                         │ • IP forwarding tables: longest-prefix match (tries) and binary search over sorted ranges
-                         │ • V8: binary search over descriptor arrays for property lookup
-─────────────────────────┼───────────────────────────────────────────────────────
-QUICKSORT / TIMSORT      │ • JavaScript Array.prototype.sort() → TimSort (V8)
-                         │ • Python sorted() / list.sort() → TimSort
-                         │ • Java Arrays.sort(): dual-pivot QuickSort (primitives)
-                         │ • C++ std::sort(): IntroSort (QuickSort + HeapSort fallback)
-                         │ • Database ORDER BY: external merge sort for large results
-─────────────────────────┼───────────────────────────────────────────────────────
-BFS / DFS                │ • Web crawlers: frontier-based breadth-first style traversal of the link graph
-                         │ • React reconciliation: DFS diffing of Virtual DOM trees
-                         │ • Package managers: dependency resolution (DFS + topological sort)
-                         │ • Network protocols: OSPF / IS-IS run Dijkstra on the link-state graph
-                         │ • Social networks: "People You May Know" = BFS from your node
-─────────────────────────┼───────────────────────────────────────────────────────
-DIJKSTRA / A*            │ • Google Maps / Apple Maps / Waze: shortest path
-                         │ • Network routing protocols (IS-IS, OSPF)
-                         │ • Game pathfinding: A* in every game with NPC movement
-                         │ • Robot navigation: A* for autonomous vehicles
-─────────────────────────┼───────────────────────────────────────────────────────
-DYNAMIC PROGRAMMING      │ • Sequence alignment: Needleman–Wunsch / Smith–Waterman (BLAST is a faster heuristic built on seeds)
-                         │ • NLP: Viterbi algorithm (POS tagging, speech recognition)
-                         │ • Finance: option pricing (binomial tree model)
-                         │ • Compression: optimal parsing in encoders such as zopfli and LZMA is DP-like
-                         │ • Spell check: edit distance (Levenshtein) for suggestions
-─────────────────────────┼───────────────────────────────────────────────────────
-HASHING                  │ • Password storage: bcrypt/scrypt/Argon2 (salted, deliberately slow hashing)
-                         │ • Git: SHA-1 identifies every commit, blob, tree
-                         │ • Blockchain: SHA-256 mining, block chaining
-                         │ • CDN: content-based addressing (hash of file = cache key)
-                         │ • Consistent hashing: distribute data across server cluster
-─────────────────────────┼───────────────────────────────────────────────────────
-TOPOLOGICAL SORT         │ • Build systems: Makefile, Webpack, Gradle dependency ordering
-                         │ • CI/CD: pipeline stage ordering (test before deploy)
-                         │ • Spreadsheets: cell recalculation order (A1=B1+C1)
-                         │ • Course scheduling: prerequisite ordering
-─────────────────────────┼───────────────────────────────────────────────────────
-BACKTRACKING             │ • Regex engines (NFA-based regex uses backtracking)
-                         │ • Constraint solvers: Sudoku, N-Queens, SAT solvers
-                         │ • Compilers: parsing ambiguous grammars
-                         │ • React Router: route matching (try each pattern)
-─────────────────────────┼───────────────────────────────────────────────────────
-GREEDY                   │ • Huffman coding → JPEG, MP3, ZIP compression
-                         │ • Dijkstra IS a greedy algorithm (always pick shortest edge)
-                         │ • OS scheduling: Shortest Job First (greedy for min wait)
-                         │ • Compression: Huffman and canonical prefix codes in DEFLATE
-─────────────────────────┼───────────────────────────────────────────────────────
-UNION-FIND               │ • Kruskal's MST: network cable routing, circuit design
-                         │ • Image segmentation: connected components
-                         │ • Social networks: "are these users in the same group?"
-                         │ • Account merging and entity resolution in data pipelines
-─────────────────────────┼───────────────────────────────────────────────────────
-SLIDING WINDOW           │ • Network: TCP sliding window for flow control
-                         │ • Time-series: moving averages (stock prices, metrics)
-                         │ • Streaming: Apache Flink windowed aggregations
-                         │ • Rate limiting: fixed/sliding window algorithms
-─────────────────────────┼───────────────────────────────────────────────────────
-TWO POINTERS             │ • Merging sorted arrays: merge step of MergeSort
-                         │ • Database merge join: O(N+M) if both sorted
-                         │ • Sorted-set intersection in search engines (posting-list merge)
-                         │ • In-place partitioning inside library sort routines
-─────────────────────────┼───────────────────────────────────────────────────────
-PAGERANK                 │ • Original Google search ranking (Larry Page, 1998)
-                         │ • Recommendation systems: personalised-PageRank-style random walks (e.g. Twitter's early who-to-follow, Pinterest Pixie)
-                         │ • Citation networks: rank academic papers by importance
-                         │ • Fraud detection: rank suspicious transaction links
-```
+| ALGORITHM | WHERE IT RUNS IN PRODUCTION (2024) |
+| --- | --- |
+| BINARY SEARCH<br>• Git bisect (find the commit that broke the build)<br>• IP forwarding tables: longest-prefix match (tries) and binary search over sorted ranges<br>• V8: binary search over descriptor arrays for property lookup | • Database index lookups (B-Tree traversal) |
+| QUICKSORT / TIMSORT<br>• Python sorted() / list.sort() → TimSort<br>• Java Arrays.sort(): dual-pivot QuickSort (primitives)<br>• C++ std::sort(): IntroSort (QuickSort + HeapSort fallback)<br>• Database ORDER BY: external merge sort for large results | • JavaScript Array.prototype.sort() → TimSort (V8) |
+| BFS / DFS<br>• React reconciliation: DFS diffing of Virtual DOM trees<br>• Package managers: dependency resolution (DFS + topological sort)<br>• Network protocols: OSPF / IS-IS run Dijkstra on the link-state graph<br>• Social networks: "People You May Know" = BFS from your node | • Web crawlers: frontier-based breadth-first style traversal of the link graph |
+| DIJKSTRA / A*<br>• Network routing protocols (IS-IS, OSPF)<br>• Game pathfinding: A* in every game with NPC movement<br>• Robot navigation: A* for autonomous vehicles | • Google Maps / Apple Maps / Waze: shortest path |
+| DYNAMIC PROGRAMMING<br>• NLP: Viterbi algorithm (POS tagging, speech recognition)<br>• Finance: option pricing (binomial tree model)<br>• Compression: optimal parsing in encoders such as zopfli and LZMA is DP-like<br>• Spell check: edit distance (Levenshtein) for suggestions | • Sequence alignment: Needleman–Wunsch / Smith–Waterman (BLAST is a faster heuristic built on seeds) |
+| HASHING<br>• Git: SHA-1 identifies every commit, blob, tree<br>• Blockchain: SHA-256 mining, block chaining<br>• CDN: content-based addressing (hash of file = cache key)<br>• Consistent hashing: distribute data across server cluster | • Password storage: bcrypt/scrypt/Argon2 (salted, deliberately slow hashing) |
+| TOPOLOGICAL SORT<br>• CI/CD: pipeline stage ordering (test before deploy)<br>• Spreadsheets: cell recalculation order (A1=B1+C1)<br>• Course scheduling: prerequisite ordering | • Build systems: Makefile, Webpack, Gradle dependency ordering |
+| BACKTRACKING<br>• Constraint solvers: Sudoku, N-Queens, SAT solvers<br>• Compilers: parsing ambiguous grammars<br>• React Router: route matching (try each pattern) | • Regex engines (NFA-based regex uses backtracking) |
+| GREEDY<br>• Dijkstra IS a greedy algorithm (always pick shortest edge)<br>• OS scheduling: Shortest Job First (greedy for min wait)<br>• Compression: Huffman and canonical prefix codes in DEFLATE | • Huffman coding → JPEG, MP3, ZIP compression |
+| UNION-FIND<br>• Image segmentation: connected components<br>• Social networks: "are these users in the same group?"<br>• Account merging and entity resolution in data pipelines | • Kruskal's MST: network cable routing, circuit design |
+| SLIDING WINDOW<br>• Time-series: moving averages (stock prices, metrics)<br>• Streaming: Apache Flink windowed aggregations<br>• Rate limiting: fixed/sliding window algorithms | • Network: TCP sliding window for flow control |
+| TWO POINTERS<br>• Database merge join: O(N+M) if both sorted<br>• Sorted-set intersection in search engines (posting-list merge)<br>• In-place partitioning inside library sort routines | • Merging sorted arrays: merge step of MergeSort |
+| PAGERANK<br>• Recommendation systems: personalised-PageRank-style random walks (e.g. Twitter's early who-to-follow, Pinterest Pixie)<br>• Citation networks: rank academic papers by importance<br>• Fraud detection: rank suspicious transaction links | • Original Google search ranking (Larry Page, 1998) |
 
 ---
 

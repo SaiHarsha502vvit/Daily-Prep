@@ -165,19 +165,13 @@ Understanding _why_ each system was built — and what it was designed to replac
 
 **PostgreSQL index variants (and when to override B-Tree):**
 
-```
-Index Type  │ When It Was Added │ Use Case                          │ DS Internals
-────────────┼───────────────────┼───────────────────────────────────┼──────────────────
-B-Tree      │ 1997 (v6.0)       │ Primary keys, equality, range     │ Multi-level B+
-            │                   │ queries on sortable data          │ tree, 4 KB pages
-GIN         │ 200200517 (v7.2)  │ Full-text search, JSONB, arrays   │ Inverted index
-GiST        │ 2001 (v7.1)       │ Geometric types, ranges, full-text│ Generalized search
-            │                   │                                   │ tree (balanced)
-BRIN        │ 2015 (v9.5)       │ Time-series, append-only tables   │ Block range index
-            │                   │ (log entries, sensor data)        │ (O(n) scan, tiny)
-Hash        │ 2017 (v10)        │ Equality-only on large keys       │ Non-sorted hash
-            │                   │ (UUID, JSON)                      │ table, no range qry
-```
+| Index Type | When It Was Added | Use Case | DS Internals |
+| --- | --- | --- | --- |
+| B-Tree | Original index type | Primary keys, equality, range queries on sortable data | Multi-level B+ tree, 8 KB pages by default |
+| GIN | 2006 (v8.2) | Full-text search, JSONB, arrays | Inverted index |
+| GiST | Early 2000s (v7.x) | Geometric types, ranges, full-text | Generalized search tree (balanced) |
+| BRIN | 2016 (v9.5) | Time-series, append-only tables (log entries, sensor data) | Block range index (O(n) scan, tiny) |
+| Hash | Crash-safe (WAL-logged) since 2017 (v10) | Equality-only on large keys (UUID, JSON) | Unsorted hash table, no range queries |
 
 **Redis persistence (RDB vs AOF):**
 

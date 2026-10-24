@@ -139,49 +139,47 @@ Step 1 (node=5, i=1): `nextInt(1)=0` always → `result=5`, i→2. Step 2 (node=
 
 ## 🏆 MASTERY CHECKLIST
 
-```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ ✅ LINKED LIST MASTERY — TRACK YOUR PROGRESS                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ FUNDAMENTALS:                                                                │
-│ - [ ] Can reverse a linked list in your sleep (iterative + recursive)        │
-│ - [ ] Can detect and find cycle start (prove Floyd's theorem)                │
-│ - [ ] Can find the middle using slow/fast runner                             │
-│ - [ ] Can merge two sorted lists with dummy head                             │
-│ - [ ] Can remove nth from end using two-pointer gap                          │
-│                                                                              │
-│ INTERMEDIATE:                                                                │
-│ - [ ] Can reverse a sublist (positions left to right)                        │
-│ - [ ] Can copy a list with random pointers (3-pass interleave)               │
-│ - [ ] Can partition a list around a value (two dummy heads)                  │
-│ - [ ] Can add two numbers represented as linked lists                        │
-│                                                                              │
-│ ADVANCED:                                                                    │
-│ - [ ] Can merge K sorted lists using min-heap                                │
-│ - [ ] Can handle K-group reversal operations                                 │
-│ - [ ] Understand when LL merge sort beats array merge sort                   │
-│ - [ ] Can explain reservoir sampling for random node selection               │
-│                                                                              │
-│ PROOF & THEORY:                                                              │
-│ - [ ] Can state and prove the loop invariant for iterative reversal          │
-│ - [ ] Can prove Floyd's cycle detection theorem                              │
-│ - [ ] Can derive O(N log k) for merge-K-sorted-lists                         │
-│ - [ ] Can explain why merge sort is natural for linked lists                 │
-│                                                                              │
-│ SPEED TARGETS:                                                               │
-│ ┌───────────────────────────┬────────────┐                                   │
-│ │ Problem                   │ Target     │                                   │
-│ ├───────────────────────────┼────────────┤                                   │
-│ │ Reverse LL (iterative)    │ < 2 min    │                                   │
-│ │ Detect Cycle (Floyd's)    │ < 3 min    │                                   │
-│ │ Merge Two Sorted          │ < 3 min    │                                   │
-│ │ Remove Nth from End       │ < 4 min    │                                   │
-│ │ Reverse K-Group           │ < 8 min    │                                   │
-│ │ Merge K Sorted            │ < 8 min    │                                   │
-│ └───────────────────────────┴────────────┘                                   │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+### ✅ Linked List Mastery — Track Your Progress
+
+**Fundamentals**:
+
+- [ ] Can reverse a linked list in your sleep (iterative + recursive)
+- [ ] Can detect and find cycle start (prove Floyd's theorem)
+- [ ] Can find the middle using slow/fast runner
+- [ ] Can merge two sorted lists with dummy head
+- [ ] Can remove nth from end using two-pointer gap
+
+**Intermediate**:
+
+- [ ] Can reverse a sublist (positions left to right)
+- [ ] Can copy a list with random pointers (3-pass interleave)
+- [ ] Can partition a list around a value (two dummy heads)
+- [ ] Can add two numbers represented as linked lists
+
+**Advanced**:
+
+- [ ] Can merge K sorted lists using min-heap
+- [ ] Can handle K-group reversal operations
+- [ ] Understand when LL merge sort beats array merge sort
+- [ ] Can explain reservoir sampling for random node selection
+
+**Proof & Theory**:
+
+- [ ] Can state and prove the loop invariant for iterative reversal
+- [ ] Can prove Floyd's cycle detection theorem
+- [ ] Can derive O(N log k) for merge-K-sorted-lists
+- [ ] Can explain why merge sort is natural for linked lists
+
+**Speed Targets**:
+
+| Problem | Target |
+| --- | --- |
+| Reverse LL (iterative) | < 2 min |
+| Detect Cycle (Floyd's) | < 3 min |
+| Merge Two Sorted | < 3 min |
+| Remove Nth from End | < 4 min |
+| Reverse K-Group | < 8 min |
+| Merge K Sorted | < 8 min |
 
 ---
 

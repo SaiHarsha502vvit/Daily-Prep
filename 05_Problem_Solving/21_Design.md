@@ -51,34 +51,29 @@ Combining **a phone book and a to-do list** so both lookups and ordering are fas
 ---
 
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                DESIGN PROBLEMS FUNDAMENTALS                     │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  WHAT "DESIGN" MEANS IN INTERVIEWS:                             │
-│  Not system design (that's a separate round).                   │
-│  These are DATA STRUCTURE DESIGN problems:                      │
-│  "Implement class X with operations A, B, C in O(?) time"       │
-│                                                                 │
-│  THE 5 CATEGORIES:                                              │
-│  ┌──────────────┬─────────────────────────────────────────────┐ │
-│  │ Cache Design  │ LRU, LFU, TTL Cache                       │  │
-│  │ Stack/Queue   │ Min Stack, Max Queue, Stack using Queues   │ │
-│  │ Iterator      │ Flatten 2D, Peeking Iterator, Zigzag       │ │
-│  │ Trie/Search   │ Autocomplete, Word Dictionary, File System │ │
-│  │ Composite     │ Twitter Feed, Browser History, Spreadsheet │ │
-│  └──────────────┴─────────────────────────────────────────────┘ │
-│                                                                 │
-│  DECISION FRAMEWORK:                                            │
-│  • Need O(1) get + O(1) put?     → HashMap + LinkedList         │
-│  • Need O(1) min/max?            → Two stacks / Monotonic       │
-│  • Need prefix search?           → Trie                         │
-│  • Need ordered iteration?       → TreeMap / BST                │
-│  • Need O(1) random access + insert? → HashMap + ArrayList      │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+### Design Problems Fundamentals
+
+WHAT "DESIGN" MEANS IN INTERVIEWS:  
+Not system design (that's a separate round).  
+These are DATA STRUCTURE DESIGN problems:  
+"Implement class X with operations A, B, C in O(?) time"
+
+**The 5 Categories**:
+
+| Cache Design | LRU, LFU, TTL Cache |
+| --- | --- |
+| Stack/Queue | Min Stack, Max Queue, Stack using Queues |
+| Iterator | Flatten 2D, Peeking Iterator, Zigzag |
+| Trie/Search | Autocomplete, Word Dictionary, File System |
+| Composite | Twitter Feed, Browser History, Spreadsheet |
+
+**Decision Framework**:
+
+- Need O(1) get + O(1) put?     → HashMap + LinkedList
+- Need O(1) min/max?            → Two stacks / Monotonic
+- Need prefix search?           → Trie
+- Need ordered iteration?       → TreeMap / BST
+- Need O(1) random access + insert? → HashMap + ArrayList
 
 
 ### 5. Check yourself

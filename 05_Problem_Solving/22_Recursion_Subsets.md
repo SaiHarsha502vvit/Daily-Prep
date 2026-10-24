@@ -51,36 +51,32 @@ A **set of Russian dolls**.
 ---
 
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│          RECURSION & SUBSETS FUNDAMENTALS                       │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  WHY COMBINED? Subsets are THE classic recursion application.   │
-│  Every subset problem is a recursion tree of include/exclude.   │
-│                                                                 │
-│  THE SUBSET UNIVERSE:                                           │
-│  ┌─────────────┬────────────────────────────────────────────┐   │
-│  │ Generate    │ Power Set, Combinations, Permutations      │   │
-│  │ Count       │ Count subsets with sum K, Target Sum        │  │
-│  │ Optimize    │ Partition Equal Subset, Min Diff Partition  │  │
-│  │ Constrain   │ Subsets without duplicates, K-size subsets  │  │
-│  └─────────────┴────────────────────────────────────────────┘   │
-│                                                                 │
-│  RECURSION → MEMOIZATION → DP PIPELINE:                         │
-│  Every subset counting/optimization problem follows:            │
-│  1. Write recursive solution (exponential)                      │
-│  2. Identify overlapping subproblems                            │
-│  3. Add memoization (top-down DP)                               │
-│  4. Convert to iterative DP (bottom-up)                         │
-│  5. Optimize space if possible                                  │
-│                                                                 │
-│  KEY FORMULA:                                                   │
-│  n elements → 2^n subsets (each element: include or exclude)    │
-│  Think of it as n-bit binary number: 000...0 to 111...1         │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+### Recursion & Subsets Fundamentals
+
+WHY COMBINED? Subsets are THE classic recursion application.  
+Every subset problem is a recursion tree of include/exclude.
+
+**The Subset Universe**:
+
+| Generate | Power Set, Combinations, Permutations |
+| --- | --- |
+| Count | Count subsets with sum K, Target Sum |
+| Optimize | Partition Equal Subset, Min Diff Partition |
+| Constrain | Subsets without duplicates, K-size subsets |
+
+**Recursion → Memoization → DP Pipeline**:
+
+Every subset counting/optimization problem follows:  
+1. Write recursive solution (exponential)
+2. Identify overlapping subproblems
+3. Add memoization (top-down DP)
+4. Convert to iterative DP (bottom-up)
+5. Optimize space if possible
+
+**KEY Formula**:
+
+n elements → 2^n subsets (each element: include or exclude)  
+Think of it as n-bit binary number: 000...0 to 111...1
 
 
 ### 5. Check yourself

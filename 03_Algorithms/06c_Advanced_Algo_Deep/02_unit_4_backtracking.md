@@ -6,28 +6,19 @@
 
 ## The General Method
 
-```
-BACKTRACKING:
-Systematic way to try all possible solutions.
-Build solution incrementally, abandon ("backtrack") when
-solution cannot possibly be completed.
+**BACKTRACKING: — Systematic way to try all possible solutions. — Build solution incrementally, abandon ("backtrack") when — solution cannot possibly be completed. — BACKTRACKING TEMPLATE**
 
-┌─────────────────────────────────────────┐
-│           BACKTRACKING TEMPLATE         │
-├─────────────────────────────────────────┤
-│                                         │
-│  void backtrack(state, choices):        │
-│      if (isSolution(state)):            │
-│          processSolution(state)         │
-│          return                         │
-│                                         │
-│      for each choice in choices:        │
-│          if (isValid(choice)):          │
-│              makeChoice(choice)         │
-│              backtrack(newState)        │
-│              undoChoice(choice)  ← KEY! │
-│                                         │
-└─────────────────────────────────────────┘
+```text
+ void backtrack(state, choices):
+     if (isSolution(state)):
+         processSolution(state)
+         return
+
+     for each choice in choices:
+         if (isValid(choice)):
+             makeChoice(choice)
+             backtrack(newState)
+             undoChoice(choice)  ← KEY!
 
 STATE SPACE TREE:
                     []

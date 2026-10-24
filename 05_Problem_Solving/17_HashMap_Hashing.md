@@ -74,13 +74,13 @@ Many keys land in one bucket, so lookups degrade toward `O(n)`.
 **Which HashMap pattern should I use?**
 
 | Signal / Problem Type                 | Pattern                  | Core Idea                                                |
-| ------------------------------------- | ------------------------ | -------------------------------------------------------- | --- | --------------------- |
+| ------------------------------------- | ------------------------ | -------------------------------------------------------- |
 | `two numbers that sum to target`      | **Two-Sum (complement)** | Store `val→idx`; look up `target-num` before inserting   |
 | `count occurrences / top-k frequency` | **Frequency Count**      | `map.merge(key, 1, Integer::sum)`                        |
 | `how many subarrays sum to K?`        | **Prefix Sum + HashMap** | `prefixCount.get(prefixSum - k)`                         |
 | `group items by property`             | **Grouping**             | `map.computeIfAbsent(key, k→new ArrayList<>()).add(val)` |
 | `check if element seen before`        | **HashSet visited**      | `set.add(x)` → false if already present                  |
-| `find duplicates in O(n) O(1) space`  | **In-place Hashing**     | Negate at index `                                        | val | -1` as visited marker |
+| `find duplicates in O(n) O(1) space`  | **In-place Hashing**     | Negate at index `\|val\| - 1` as the visited marker |
 
 **The Golden Rule:**
 

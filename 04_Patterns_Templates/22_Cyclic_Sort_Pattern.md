@@ -123,110 +123,79 @@ Each swap places at least one value permanently at its home index, so there are 
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                  CYCLIC SORT PATTERN                            │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  WHEN YOU SEE: "Find the missing/duplicate number in range      │
-│  [1..n] using O(1) extra space"  →  CYCLIC SORT.                │
-│                                                                 │
-│  CORE IDEA: Numbers in range [1..n] or [0..n] should each       │
-│  sit at their "correct" index. Place each number at its home    │
-│  index, then scan for mismatches.                               │
-│                                                                 │
-│  TEMPLATE:                                                      │
-│    1. While nums[i] isn't at correct position → SWAP to home    │
-│    2. Scan array: where nums[i] ≠ expected → that's answer      │
-│                                                                 │
-│  TIME: O(n)  |  SPACE: O(1)  ← the magic of this pattern        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**CYCLIC SORT PATTERN**
+
+```text
+WHEN YOU SEE: "Find the missing/duplicate number in range
+[1..n] using O(1) extra space"  →  CYCLIC SORT.
+
+CORE IDEA: Numbers in range [1..n] or [0..n] should each
+sit at their "correct" index. Place each number at its home
+index, then scan for mismatches.
+
+TEMPLATE:
+  1. While nums[i] isn't at correct position → SWAP to home
+  2. Scan array: where nums[i] ≠ expected → that's answer
+
+TIME: O(n)  |  SPACE: O(1)  ← the magic of this pattern
 ```
 
 ---
 
 ### PART 0: THE MENTAL MODEL — "Everyone Go Home"
 
+### Cyclic sort: complete theory and pattern
+
+**The real-world origin** (illustrative)
+
+- 📖 **Roll call:** a teacher with 30 students numbered 1 to 30 asks each to stand at their numbered desk. Afterwards, an empty desk is an absent student and two students at one desk is a duplicate. This *is* cyclic sort.
+- 📖 **Library shelving:** books numbered 1 to 1000 go to their shelf position. Rather than sorting them, place each at its designated slot. Missing books are gaps; two copies are duplicates.
+- 📖 **Packet reassembly:** TCP segments are numbered. Place each at its sequence-number slot; missing slots are lost packets.
+
+**Why cyclic sort instead of a hash set?**
+
+| Approach | Time | Space | Note |
+| --- | --- | --- | --- |
+| Hash set | O(n) | O(n) | Easy but uses extra memory |
+| Sorting | O(n log n) | O(1) | Does not use the range constraint |
+| **Cyclic sort** | **O(n)** | **O(1)** | Optimal when the numbers lie in `[1..n]` |
+
+**Recognise it** whenever you see:
+
+- "Given an array of n numbers from the range [1..n]" (or [0..n]).
+- "Find the missing / duplicate / corrupt number".
+- "O(1) extra space".
+
+**Why O(n)?** Each swap puts one element in its final position, so the total number of swaps is at most `n`, even though there is a `while` inside a `for`.
+
+**The base template.** For numbers in `[1..n]` the correct index is `nums[i] - 1`; for numbers in `[0..n]` it is `nums[i]`.
+
+*Step 1: place each number at its correct index.*
+
+```java
+for (int i = 0; i < n; i++) {
+    while (nums[i] != nums[correctIdx])   // swap until correct
+        swap(nums, i, correctIdx);
+}
 ```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│            CYCLIC SORT — COMPLETE THEORY & PATTERN                           │
-└──────────────────────────────────────────────────────────────────────────────┘
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE REAL-WORLD ORIGIN                                                        │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 📖 ROLL CALL: Imagine a teacher with 30 students numbered 1-30.               │
-│    She asks each to stand at their numbered desk. After everyone             │
-│    moves, empty desks = absent students, two at one desk = duplicate.        │
-│    This IS cyclic sort.                                                      │
-│                                                                              │
-│ 📖 LIBRARY SHELVING: Books numbered 1-1000 need to go to their                │
-│    shelf position. Rather than sort them, place each at its                  │
-│    designated slot. Missing books = gaps. Two copies = duplicates.           │
-│                                                                              │
-│ 📖 NETWORK PACKET REASSEMBLY: TCP packets numbered sequentially.              │
-│    Place each at its sequence number slot. Missing slots = lost packets.     │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+*Step 2: scan for mismatches.*
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY CYCLIC SORT INSTEAD OF HASH SET?                                         │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  HASH SET: O(n) time, O(n) space  ← easy but uses extra memory               │
-│  SORTING:  O(n log n) time, O(1) space  ← doesn't leverage range constraint  │
-│  CYCLIC:   O(n) time, O(1) space  ← optimal when numbers ∈ [1..n]            │
-│                                                                              │
-│  RECOGNIZE IT: Anytime you see:                                              │
-│    • "Given array of n numbers from range [1..n]" (or [0..n])                │
-│    • "Find missing / duplicate / correction"                                 │
-│    • "O(1) extra space"                                                      │
-│    → Cyclic Sort.                                                            │
-│                                                                              │
-│  WHY O(n)? Each element swaps at most once to its correct position.          │
-│  Even though there's a while loop inside a for loop, total swaps ≤ n.        │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE BASE TEMPLATE                                                            │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  For numbers in range [1..n], correct index = nums[i] - 1                    │
-│  For numbers in range [0..n], correct index = nums[i]                        │
-│                                                                              │
-│  STEP 1: Place each number at correct index                                  │
-│  ┌─────────────────────────────────────────┐                                 │
-│  │ for (int i = 0; i < n; i++) {           │                                 │
-│  │     while (nums[i] != nums[correctIdx]) │  ← swap until correct           │
-│  │         swap(nums, i, correctIdx);      │                                 │
-│  │ }                                       │                                 │
-│  └─────────────────────────────────────────┘                                 │
-│                                                                              │
-│  STEP 2: Scan for mismatches                                                 │
-│  ┌─────────────────────────────────────────┐                                 │
-│  │ for (int i = 0; i < n; i++) {           │                                 │
-│  │     if (nums[i] != i + 1)               │  ← this position is wrong       │
-│  │         // i+1 is missing/duplicate     │                                 │
-│  │ }                                       │                                 │
-│  └─────────────────────────────────────────┘                                 │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ COMMON MISTAKES                                                              │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. Off-by-one: [1..n] → index = val-1, but [0..n-1] → index = val            │
-│ 2. Infinite loop: must check nums[i] != nums[correctIdx], NOT nums[i] != i+1 │
-│    (if duplicate exists, swapping back and forth forever)                    │
-│ 3. Ignoring out-of-range values: if val < 1 or val > n, SKIP the swap        │
-│ 4. Trying to use this on ranges that aren't [0..n] or [1..n]                 │
-│ 5. Forgetting step 2: the sort itself doesn't produce the answer, the        │
-│    subsequent scan does                                                      │
-└──────────────────────────────────────────────────────────────────────────────┘
+```java
+for (int i = 0; i < n; i++) {
+    if (nums[i] != i + 1) {
+        // i + 1 is missing or duplicated
+    }
+}
 ```
+
+**Common mistakes**
+
+1. **Off-by-one:** for `[1..n]` the index is `val - 1`, but for `[0..n-1]` it is `val`.
+2. **Infinite loop:** compare `nums[i]` with `nums[correctIdx]`, not with `i + 1`. Otherwise a duplicate makes you swap back and forth forever.
+3. **Ignoring out-of-range values:** if `val < 1` or `val > n`, skip the swap.
+4. **Using it on ranges other than `[0..n]` or `[1..n]`.**
+5. **Forgetting step 2:** the placement alone does not produce the answer; the scan does.
 
 ---
 
@@ -520,32 +489,27 @@ COMPLEXITY: Time O(n) | Space O(1)
 
 ### 🔄 Summary: Cyclic Sort Decision Table
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    CYCLIC SORT CHEATSHEET                               │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  TRIGGER: "n numbers in range [0..n] or [1..n]" + "O(1) space"          │
-│                                                                         │
-│  PROBLEM              │ RANGE   │ SCAN FOR           │ LC#              │
-│  ═════════════════════╪═════════╪════════════════════╪═════════════════ │
-│  Missing Number       │ [0..n]  │ nums[i] ≠ i      │ 268                │
-│  All Disappeared      │ [1..n]  │ nums[i] ≠ i+1    │ 448                │
-│  All Duplicates       │ [1..n]  │ nums[i] ≠ i+1    │ 442                │
-│  First Missing +ve    │ [1..n]  │ nums[i] ≠ i+1    │ 41                 │
-│  Find Duplicate       │ [1..n]  │ nums[i] ≠ i+1    │ 287                │
-│  Set Mismatch         │ [1..n]  │ nums[i] ≠ i+1    │ 645                │
-│                                                                         │
-│  TEMPLATE:                                                              │
-│  1. while (nums[i] out of range) skip                                   │
-│  2. while (nums[i] != nums[correctIdx]) swap                            │
-│  3. Scan: where nums[i] ≠ expected → answer                             │
-│                                                                         │
-│  THE SWAP GUARD: Always compare nums[i] with nums[correctIdx]           │
-│  NOT nums[i] with i+1. This prevents infinite loops on duplicates.      │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+**CYCLIC SORT CHEATSHEET**
+
+**Trigger:** "n numbers in range [0..n] or [1..n]" plus "O(1) space".
+
+| Problem | Range | Scan for | LC # |
+| --- | --- | --- | --- |
+| Missing Number | [0..n] | `nums[i] ≠ i` | 268 |
+| Find All Disappeared Numbers | [1..n] | `nums[i] ≠ i + 1` | 448 |
+| Find All Duplicates | [1..n] | `nums[i] ≠ i + 1` | 442 |
+| First Missing Positive | [1..n] | `nums[i] ≠ i + 1` | 41 |
+| Find the Duplicate Number | [1..n] | `nums[i] ≠ i + 1` (modifies the array; LC 287 forbids that, so Floyd's cycle detection is the usual answer) | 287 |
+| Set Mismatch | [1..n] | `nums[i] ≠ i + 1` | 645 |
+
+**Template**
+
+1. Skip values that are out of range.
+2. `while (nums[i] != nums[correctIdx])` swap.
+3. Scan: where `nums[i]` differs from the expected value, that position is the answer.
+
+> [!WARNING]
+> **The swap guard:** always compare `nums[i]` with `nums[correctIdx]`, not with `i + 1`. This prevents infinite loops on duplicates.
 
 ---
 

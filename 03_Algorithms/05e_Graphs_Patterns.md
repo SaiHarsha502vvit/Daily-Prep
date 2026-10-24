@@ -240,36 +240,34 @@ These problems are less commonly seen in "Top 100" lists but teach deep graph in
 
 #### Graph Problem-Solving Decision Tree
 
-```
-Which graph problem type am I facing?
-│
-├── Need shortest/minimum path?
-│   ├── Unweighted edges → BFS
-│   ├── Weighted (non-negative) → Dijkstra
-│   ├── Weighted (negative okay) → Bellman-Ford
-│   ├── All-pairs shortest → Floyd-Warshall
-│   └── Know the target + have heuristic → A*
-│
-├── Need ordering/dependencies?
-│   └── Topological Sort (Kahn's BFS or DFS)
-│
-├── Need components/connectivity?
-│   ├── Static graph → DFS/BFS count components
-│   ├── Dynamic (add edges) → Union-Find
-│   └── Directed → Kosaraju's/Tarjan's (SCC)
-│
-├── Need minimum cost to connect all?
-│   └── MST (Kruskal + UF or Prim + PQ)
-│
-├── Cycle detection?
-│   ├── Undirected → UF or DFS with parent
-│   └── Directed → DFS with 3 colors (white/gray/black)
-│
-└── Grid problem?
-    ├── Connected regions → Flood fill DFS/BFS
-    ├── Shortest path on grid → BFS (or Dijkstra if weighted)
-    └── Multi-source → Start BFS from all sources simultaneously
-```
+**Which graph problem type am I facing?**
+
+- Need shortest/minimum path?
+- Unweighted edges → BFS
+- Weighted (non-negative) → Dijkstra
+- Weighted (negative okay) → Bellman-Ford
+- All-pairs shortest → Floyd-Warshall
+- Know the target + have heuristic → A*
+
+- Need ordering/dependencies?
+- Topological Sort (Kahn's BFS or DFS)
+
+- Need components/connectivity?
+- Static graph → DFS/BFS count components
+- Dynamic (add edges) → Union-Find
+- Directed → Kosaraju's/Tarjan's (SCC)
+
+- Need minimum cost to connect all?
+- MST (Kruskal + UF or Prim + PQ)
+
+- Cycle detection?
+- Undirected → UF or DFS with parent
+- Directed → DFS with 3 colors (white/gray/black)
+
+- Grid problem?
+  - Connected regions → Flood fill DFS/BFS
+  - Shortest path on grid → BFS (or Dijkstra if weighted)
+  - Multi-source → Start BFS from all sources simultaneously
 
 ---
 
@@ -286,13 +284,16 @@ Which graph problem type am I facing?
 ### When It Breaks -- Graph Patterns
 
 #### 1. Flood Fill — Modifying Grid During BFS Causes Re-Visit
+
 **What breaks**: Flood fill that marks cells as visited by changing their value (e.g., `grid[r][c] = 2`) but then checks `grid[r][c] != original` — if the original value was the same as the "visited" marker, all cells are skipped.
 **Fix**: Use a separate `boolean[][] visited` matrix. Don't encode visited state into the grid value unless you're certain the marker value can't appear in valid input.
 
 #### 2. Multi-Source BFS — Wrong Initial Distance
+
 **What breaks**: Seeding all source nodes with `dist = 1` instead of `dist = 0`. All computed distances are off by 1. The source nodes themselves should have distance 0 to themselves.
 
 #### 3. Topological Sort — Processing in Wrong Order Breaks Dependency
+
 **What breaks**: In topological sort for course scheduling, adding a course to the result before removing its edges. Subsequent in-degree decrements use a stale queue, possibly re-adding already-added courses or missing others.
 **Fix**: Kahn's algorithm: poll from queue → add to result → decrement in-degrees of neighbors → enqueue any new in-degree-0 nodes. The order is strict.
 

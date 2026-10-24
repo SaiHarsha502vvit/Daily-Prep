@@ -105,185 +105,157 @@ int coinChangeBottomUp(int[] coins, int amount) {
 }
 ```
 
+### TOP-DOWN vs BOTTOM-UP — WHEN TO USE WHICH
+
+| Factor | Top-Down (memo) | Bottom-Up (tabulation) |
+| --- | --- | --- |
+| Ease of writing | ✅ Easier | Harder (need build order) |
+| Stack overflow? | ❌ Risk for deep | ✅ No recursion |
+| Speed (constant) | Slower (overhead) | ✅ Faster (no function call overhead) |
+| Space optimization | Harder | ✅ Can reduce to O(1) if dp[i] depends on only last 1-2 values |
+| Computes all states | ✅ Only needed | ❌ Computes all |
+| Interview use | Start here | Optimize if asked |
+
+Interview strategy:  
+1. Explain the recurrence first (state + transition)
+2. Code top-down if time is tight (faster to write)
+3. Convert to bottom-up if asked to optimize
+4. Optimize space if possible (dp[i] = f(dp[i-1]) → just 2 variables)
+
+### THE 5 DP CATEGORIES (Pattern → Template → Problems)
+
+| Category | State Definition | Problems Here |
+| --- | --- | --- |
+| 1. LINEAR 1D | dp[i] = answer for first i elements or ending at index i | Climbing Stairs, House<br>Robber, Max Subarray, Coin Change, Decode Ways |
+| 2. GRID 2D | dp[i][j] = answer at cell (i,j) from (0,0) | Unique Paths, Min Path<br>Sum, Maximal Square |
+| 3. TWO SEQUENCE | dp[i][j] = matching first i of s1 & j of s2 | LCS, Edit Distance, Interleaving String |
+| 4. KNAPSACK | dp[i][w] = best with first i items & cap w | 0/1 Knapsack, Partition<br>Equal Subset, Target Sum |
+| 5. SUBSEQUENCE | dp[i] = best ending at i or dp[i][j] = interval | LIS, Word Break, Palindrome Subsequence |
+
+**Recognizing the Category**:
+
+"1D array + choices at each index" → LINEAR 1D  
+"Grid + reach from top-left to bottom-right" → GRID 2D  
+"Two strings + matching/editing" → TWO SEQUENCE  
+"Items + capacity/budget" → KNAPSACK  
+"Best subsequence" → SUBSEQUENCE
+
+### "Wrong State" — a Full Worked Example
+
+House Robber (LC 198): rob houses in a line, but you cannot rob two adjacent houses. `houses = [2, 7, 9, 3, 1]`.
+
+**Wrong state:** `dp[i]` = the most money robbing houses `0..i` **including** house `i`.
+
+```text
+dp[0] = 2, dp[1] = 7, dp[2] = 9 + dp[0] = 11, dp[3] = 3 + dp[1] = 10, ...
 ```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ TOP-DOWN vs BOTTOM-UP — WHEN TO USE WHICH                                    │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ┌────────────────────┬───────────────────┬───────────────────────────┐       │
-│ │ Factor             │ Top-Down (memo)   │ Bottom-Up (tabulation)   │        │
-│ ├────────────────────┼───────────────────┼───────────────────────────┤       │
-│ │ Ease of writing    │ ✅ Easier         │ Harder (need build order)│         │
-│ │ Stack overflow?    │ ❌ Risk for deep  │ ✅ No recursion          │          │
-│ │ Speed (constant)   │ Slower (overhead) │ ✅ Faster (no function   │         │
-│ │                    │                   │    call overhead)         │       │
-│ │ Space optimization │ Harder            │ ✅ Can reduce to O(1)   │          │
-│ │                    │                   │    if dp[i] depends on   │        │
-│ │                    │                   │    only last 1-2 values  │        │
-│ │ Computes all states│ ✅ Only needed    │ ❌ Computes all          │          │
-│ │ Interview use      │ Start here        │ Optimize if asked       │         │
-│ └────────────────────┴───────────────────┴───────────────────────────┘       │
-│                                                                              │
-│ Interview strategy:                                                          │
-│ 1. Explain the recurrence first (state + transition)                         │
-│ 2. Code top-down if time is tight (faster to write)                          │
-│ 3. Convert to bottom-up if asked to optimize                                 │
-│ 4. Optimize space if possible (dp[i] = f(dp[i-1]) → just 2 variables)        │
-└──────────────────────────────────────────────────────────────────────────────┘
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE 5 DP CATEGORIES (Pattern → Template → Problems)                          │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ┌──────────────────┬─────────────────────────┬──────────────────────────┐    │
-│ │ Category         │ State Definition        │ Problems Here            │    │
-│ ├──────────────────┼─────────────────────────┼──────────────────────────┤    │
-│ │ 1. LINEAR 1D     │ dp[i] = answer for      │ Climbing Stairs, House   │    │
-│ │                  │ first i elements or     │ Robber, Max Subarray,    │    │
-│ │                  │ ending at index i       │ Coin Change, Decode Ways │    │
-│ ├──────────────────┼─────────────────────────┼──────────────────────────┤    │
-│ │ 2. GRID 2D       │ dp[i][j] = answer at    │ Unique Paths, Min Path   │    │
-│ │                  │ cell (i,j) from (0,0)   │ Sum, Maximal Square      │    │
-│ ├──────────────────┼─────────────────────────┼──────────────────────────┤    │
-│ │ 3. TWO SEQUENCE  │ dp[i][j] = matching     │ LCS, Edit Distance,      │    │
-│ │                  │ first i of s1 & j of s2 │ Interleaving String      │    │
-│ ├──────────────────┼─────────────────────────┼──────────────────────────┤    │
-│ │ 4. KNAPSACK      │ dp[i][w] = best with    │ 0/1 Knapsack, Partition  │    │
-│ │                  │ first i items & cap w   │ Equal Subset, Target Sum │    │
-│ ├──────────────────┼─────────────────────────┼──────────────────────────┤    │
-│ │ 5. SUBSEQUENCE   │ dp[i] = best ending at i│ LIS, Word Break,         │    │
-│ │                  │ or dp[i][j] = interval  │ Palindrome Subsequence   │    │
-│ └──────────────────┴─────────────────────────┴──────────────────────────┘    │
-│                                                                              │
-│ RECOGNIZING THE CATEGORY:                                                    │
-│   "1D array + choices at each index" → LINEAR 1D                             │
-│   "Grid + reach from top-left to bottom-right" → GRID 2D                     │
-│   "Two strings + matching/editing" → TWO SEQUENCE                            │
-│   "Items + capacity/budget" → KNAPSACK                                       │
-│   "Best subsequence" → SUBSEQUENCE                                           │
-└──────────────────────────────────────────────────────────────────────────────┘
+Problem: `dp[3] = 3 + dp[1] = 10`, but what if **not** robbing house 2 was better? This state forces us to rob house `i`.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ "WRONG STATE" — A FULL WORKED EXAMPLE                                        │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ House Robber (LC 198): Rob houses in a line, can't rob adjacent.             │
-│ houses = [2, 7, 9, 3, 1]                                                     │
-│                                                                              │
-│ WRONG STATE: dp[i] = max money robbing houses 0..i INCLUDING house i         │
-│   dp[0]=2, dp[1]=7, dp[2]=9+dp[0]=11, dp[3]=3+dp[1]=10...                    │
-│   Problem: dp[3] = 3 + dp[1] = 10, but what if NOT robbing house 2           │
-│   was better? This state FORCES us to rob house i.                           │
-│                                                                              │
-│ RIGHT STATE: dp[i] = max money from houses 0..i (may or may NOT rob i)       │
-│   dp[i] = max(                                                               │
-│     dp[i-1],                    // Skip house i                              │
-│     dp[i-2] + houses[i]         // Rob house i (must skip i-1)               │
-│   )                                                                          │
-│   dp[0]=2, dp[1]=max(2,7)=7, dp[2]=max(7,2+9)=11,                            │
-│   dp[3]=max(11,7+3)=11, dp[4]=max(11,11+1)=12 ✅                              │
-│                                                                              │
-│ LESSON: The state must capture ENOUGH information to make the                │
-│ recurrence work. If your recurrence has "it depends" cases, your             │
-│ state is probably wrong — add a dimension.                                   │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Right state:** `dp[i]` = the most money from houses `0..i` (we may or may not rob `i`).
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE DP vs GREEDY vs BACKTRACKING                                     │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ "Find MINIMUM/MAXIMUM value"     → DP (optimization)                         │
-│ "Count NUMBER OF WAYS"           → DP (counting)                             │
-│ "Can you reach / is it possible" → DP (feasibility)                          │
-│ "List ALL valid answers"         → Backtracking (NOT DP!)                    │
-│ "Always pick locally best"       → Greedy (if exchange argument works)       │
-│                                                                              │
-│ CONFIRMATION TEST: If you can write dp[i] = f(dp[j] for j < i),              │
-│ it's DP. If you can't define overlapping subproblems, reconsider.            │
-│                                                                              │
-│ DP SIGNALS in problem statements:                                            │
-│   "minimum cost", "maximum profit", "number of ways", "longest/shortest",    │
-│   "can you reach", "partition into", "subsequence", "subset sum"             │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⚠️  COMMON MISTAKES IN DP                                                    │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ MISTAKE 1: Wrong state definition (see worked example above)                 │
-│   Fix: Verify your state captures ALL info needed for the recurrence.        │
-│   Test: Can you compute dp[i] knowing ONLY dp[0..i-1]? If not, add dims.     │
-│                                                                              │
-│ MISTAKE 2: Forgetting base cases                                             │
-│   dp[0] is almost always needed. For 2D: initialize first row + first col.   │
-│   Common bug: dp[0][0] not set → everything cascades wrong.                  │
-│                                                                              │
-│ MISTAKE 3: Wrong build order (bottom-up)                                     │
-│   If dp[i] depends on dp[i+1], you must iterate i from HIGH to LOW.          │
-│   If dp[i][j] depends on dp[i-1][j-1], iterate i low→high, j low→high.       │
-│   Fix: Draw dependency arrows, fill in order of arrows.                      │
-│                                                                              │
-│ MISTAKE 4: Not considering space optimization                                │
-│   dp[i] depends on only dp[i-1]? → Use 2 variables instead of array.         │
-│   dp[i][j] depends on only current and previous row? → Use 2 rows.           │
-│   This can reduce O(n²) space to O(n) or even O(1).                          │
-│                                                                              │
-│ MISTAKE 5: Confusing "subarray" vs "subsequence" in state                    │
-│   Subarray: CONTIGUOUS → dp[i] = answer ENDING at i (must include i)         │
-│   Subsequence: NON-contiguous → dp[i] = answer for first i elements          │
-│   Using wrong one = completely wrong recurrence.                             │
-│                                                                              │
-│ MISTAKE 6: Integer overflow in counting problems                             │
-│   "Count number of ways" often needs modulo 10⁹+7.                           │
-│   Intermediate sums can overflow int. Use long in Java.                      │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ DIFFICULTIES IN LEARNING DP                                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 1. "I CAN'T FIGURE OUT THE STATE"                                            │
-│    Strategy: Start with BRUTE FORCE recursion. What parameters change?       │
-│    Those parameters ARE your state dimensions.                               │
-│    E.g., knapsack brute force: recurse(index, remainingCapacity)             │
-│    → State: dp[index][capacity]                                              │
-│                                                                              │
-│ 2. "I CAN'T WRITE THE RECURRENCE"                                            │
-│    Think about the LAST element. What are the choices for the last item?     │
-│    Include it or exclude it? That gives you dp[i] = max/min/sum of options.  │
-│                                                                              │
-│ 3. "I DON'T KNOW IF IT'S DP OR GREEDY"                                       │
-│    Ask: "Can I prove exchange argument?" Yes → Greedy. No → DP.              │
-│    Ask: "Are subproblems overlapping?" Yes → DP. No → Divide & Conquer.      │
-│                                                                              │
-│ 4. "BOTTOM-UP IS CONFUSING"                                                  │
-│    Start with top-down (recursive + memo). It's the SAME logic.              │
-│    Then convert: memo parameters → array dimensions, recursion → loops.      │
-│                                                                              │
-│ 5. "TOO MANY DP TYPES"                                                       │
-│    Master the 5 categories above. 95% of interview DP falls into one.        │
-│    Practice 3-4 problems per category = 15-20 total = interview-ready.       │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ EXPECTED OUTPUTS OF MASTERING DP PROBLEMS ⭐                                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ✅ Recognize DP in 1 minute: "overlapping subproblems + optimal substructure" │
-│ ✅ Define state for any problem using the "what changes in recursion" trick   │
-│ ✅ Write recurrence from state definition in 2-3 minutes                      │
-│ ✅ Convert top-down ↔ bottom-up fluently                                      │
-│ ✅ Optimize space (2D→1D, 1D→two variables) when possible                     │
-│ ✅ Handle all 5 categories (linear, grid, two-seq, knapsack, subsequence)     │
-│ ✅ Explain time/space complexity of any DP solution                           │
-│                                                                              │
-│ THE TRANSFORMATION:                                                          │
-│ FROM: "DP is scary, I'll try to avoid these problems"                        │
-│   TO: "I see overlapping subproblems. State = dp[i] = answer for first i.    │
-│        Recurrence: dp[i] = max(dp[i-1], dp[i-2]+val[i]). Base: dp[0]=0.      │
-│        Bottom-up loop: O(n) time, O(1) space with 2 variables."              │
-└──────────────────────────────────────────────────────────────────────────────┘
+```text
+dp[i] = max(
+    dp[i-1],                // skip house i
+    dp[i-2] + houses[i]     // rob house i (must skip i-1)
+)
+dp[0] = 2, dp[1] = max(2, 7) = 7, dp[2] = max(7, 2 + 9) = 11,
+dp[3] = max(11, 7 + 3) = 11, dp[4] = max(11, 11 + 1) = 12 ✅
 ```
+
+**Lesson:** the state must capture enough information to make the recurrence work. If your recurrence has "it depends" cases, your state is probably wrong, so add a dimension.
+
+
+### WHEN TO USE DP vs GREEDY vs BACKTRACKING
+
+"Find MINIMUM/MAXIMUM value"     → DP (optimization)  
+"Count NUMBER OF WAYS"           → DP (counting)  
+"Can you reach / is it possible" → DP (feasibility)  
+"List ALL valid answers"         → Backtracking (NOT DP!)  
+"Always pick locally best"       → Greedy (if exchange argument works)
+
+CONFIRMATION TEST: If you can write dp[i] = f(dp[j] for j < i),  
+it's DP. If you can't define overlapping subproblems, reconsider.
+
+DP SIGNALS in problem statements:  
+"minimum cost", "maximum profit", "number of ways", "longest/shortest",  
+"can you reach", "partition into", "subsequence", "subset sum"
+
+### ⚠️  Common Mistakes in DP
+
+**Mistake 1: Wrong state definition (see worked example above)**
+
+Fix: Verify your state captures ALL info needed for the recurrence.  
+Test: Can you compute dp[i] knowing ONLY dp[0..i-1]? If not, add dims.
+
+**Mistake 2: Forgetting base cases**
+
+dp[0] is almost always needed. For 2D: initialize first row + first col.  
+Common bug: dp[0][0] not set → everything cascades wrong.
+
+**Mistake 3: Wrong build order (bottom-up)**
+
+If dp[i] depends on dp[i+1], you must iterate i from HIGH to LOW.  
+If dp[i][j] depends on dp[i-1][j-1], iterate i low→high, j low→high.  
+Fix: Draw dependency arrows, fill in order of arrows.
+
+**Mistake 4: Not considering space optimization**
+
+dp[i] depends on only dp[i-1]? → Use 2 variables instead of array.  
+dp[i][j] depends on only current and previous row? → Use 2 rows.  
+This can reduce O(n²) space to O(n) or even O(1).
+
+**Mistake 5: Confusing "subarray" vs "subsequence" in state**
+
+Subarray: CONTIGUOUS → dp[i] = answer ENDING at i (must include i)  
+Subsequence: NON-contiguous → dp[i] = answer for first i elements  
+Using wrong one = completely wrong recurrence.
+
+**Mistake 6: Integer overflow in counting problems**
+
+"Count number of ways" often needs modulo 10⁹+7.  
+Intermediate sums can overflow int. Use long in Java.
+
+### Difficulties in Learning DP
+
+1. "I CAN'T FIGURE OUT THE STATE"
+Strategy: Start with BRUTE FORCE recursion. What parameters change?  
+Those parameters ARE your state dimensions.  
+E.g., knapsack brute force: recurse(index, remainingCapacity)  
+→ State: dp[index][capacity]
+
+2. "I CAN'T WRITE THE RECURRENCE"
+Think about the LAST element. What are the choices for the last item?  
+Include it or exclude it? That gives you dp[i] = max/min/sum of options.
+
+3. "I DON'T KNOW IF IT'S DP OR GREEDY"
+Ask: "Can I prove exchange argument?" Yes → Greedy. No → DP.  
+Ask: "Are subproblems overlapping?" Yes → DP. No → Divide & Conquer.
+
+4. "BOTTOM-UP IS CONFUSING"
+Start with top-down (recursive + memo). It's the SAME logic.  
+Then convert: memo parameters → array dimensions, recursion → loops.
+
+5. "TOO MANY DP TYPES"
+Master the 5 categories above. 95% of interview DP falls into one.  
+Practice 3-4 problems per category = 15-20 total = interview-ready.
+
+### ⭐ Expected Outputs of Mastering DP Problems ⭐
+
+- ✅ Recognize DP in 1 minute: "overlapping subproblems + optimal substructure"
+- ✅ Define state for any problem using the "what changes in recursion" trick
+- ✅ Write recurrence from state definition in 2-3 minutes
+- ✅ Convert top-down ↔ bottom-up fluently
+- ✅ Optimize space (2D→1D, 1D→two variables) when possible
+- ✅ Handle all 5 categories (linear, grid, two-seq, knapsack, subsequence)
+- ✅ Explain time/space complexity of any DP solution
+
+**The Transformation**:
+
+FROM: "DP is scary, I'll try to avoid these problems"  
+TO: "I see overlapping subproblems. State = dp[i] = answer for first i.  
+Recurrence: dp[i] = max(dp[i-1], dp[i-2]+val[i]). Base: dp[0]=0.  
+Bottom-up loop: O(n) time, O(1) space with 2 variables."
 
 📖 **Related theory:** [03_Algorithms/04b_DP_Fundamentals.md](../../03_Algorithms/04b_DP_Fundamentals.md) — Full DP theory with visual state diagrams
 

@@ -1,7 +1,7 @@
-# ═══════════════════════════════════════════════════════════
+# Part 6 — Data Structure Problems: Why and How
 
-> **Navigation**: [← ═══════════════════════════════════════════════════════════](01_section.md) | [Chapter overview](../08b_NumberTheory_Advanced.md) | [═══════════════════════════════════════════════════════════ →](03_section.md)
-> Page 2 of 4 in **NumberTheory Advanced**
+> **Navigation**: [← Part 5 — More Essential Algorithms](01_section.md) | [Chapter overview](../08b_NumberTheory_Advanced.md) | [Part 7 — Real-Life Incident → DSA Mapping →](03_section.md)
+> Page 2 of 4 in **Essential Algorithms, Data-Structure Problems and a Study Plan**
 
 
 ## Stack Problems
@@ -296,4 +296,4 @@ private static TreeNode deserializeHelper(Queue<String> queue) {
 
 ---
 
-[← ═══════════════════════════════════════════════════════════](01_section.md) | [Chapter overview](../08b_NumberTheory_Advanced.md) | [═══════════════════════════════════════════════════════════ →](03_section.md)
+[← Part 5 — More Essential Algorithms](01_section.md) | [Chapter overview](../08b_NumberTheory_Advanced.md) | [Part 7 — Real-Life Incident → DSA Mapping →](03_section.md)

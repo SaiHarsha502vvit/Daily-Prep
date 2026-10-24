@@ -93,6 +93,7 @@ Assumes 10⁸–10⁹ simple operations per second on a modern JVM with JIT.
 ## Dimension 5 — Problem Archetype → Algorithm Template
 
 ### Archetype A: "Count / Find ways to reach a goal"
+
 → **Dynamic Programming**. Start with brute-force recursion, add memoization.
 ```java
 // Top-down template
@@ -104,25 +105,32 @@ int dp(int state, int[] memo) {
 ```
 
 ### Archetype B: "Find optimal partition / assignment"
+
 → **DP if O(n²) acceptable**; **Greedy if exchange argument holds**.
 Greedy test: can you always take the locally best choice without regret? If yes → greedy. If swapping a greedy choice can improve the result → DP.
 
 ### Archetype C: "Find if path exists / shortest path"
+
 → **BFS** for unweighted; **Dijkstra** for non-negative weighted; **Bellman-Ford** for negative weights; **Floyd-Warshall** for all-pairs.
 
 ### Archetype D: "Process elements in order, maintain running property"
+
 → **Monotonic stack/queue**. Decreasing stack for "next greater element"; deque for sliding window.
 
 ### Archetype E: "Choose from options, explore, backtrack"
+
 → **Backtracking**. Always: choose → recurse → unchoose. Prune early when partial solution already violates constraints.
 
 ### Archetype F: "Connect / group / merge components"
+
 → **Union-Find** for offline; **BFS/DFS** for online exploration.
 
 ### Archetype G: "Sort + scan"
+
 → **Greedy + sorting**. Sort by one dimension, scan with a stack/heap/set for the other. Activity selection, interval merging, skyline problem.
 
 ### Archetype H: "Repeated min/max extraction from dynamic set"
+
 → **PriorityQueue**. Dijkstra, k-way merge, median maintenance, scheduling.
 
 ---

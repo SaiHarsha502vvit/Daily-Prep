@@ -54,23 +54,19 @@ public int search(int[] nums, int target) {
 **LeetCode 35** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/search-insert-position/](https://leetcode.com/problems/search-insert-position/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  SEARCH INSERT POSITION                                                   ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find index where target should be inserted to keep array sorted.         ║
-║                                                                           ║
-║  Input: nums = [1, 3, 5, 6], target = 5                                   ║
-║  Output: 2                                                                ║
-║                                                                           ║
-║  Input: nums = [1, 3, 5, 6], target = 2                                   ║
-║  Output: 1                                                                ║
-║                                                                           ║
-║  Input: nums = [1, 3, 5, 6], target = 7                                   ║
-║  Output: 4                                                                ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**SEARCH INSERT POSITION**
+
+```text
+Find index where target should be inserted to keep array sorted.
+
+Input: nums = [1, 3, 5, 6], target = 5
+Output: 2
+
+Input: nums = [1, 3, 5, 6], target = 2
+Output: 1
+
+Input: nums = [1, 3, 5, 6], target = 7
+Output: 4
 ```
 
 ```java
@@ -99,22 +95,18 @@ public int searchInsert(int[] nums, int target) {
 **LeetCode 278** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/first-bad-version/](https://leetcode.com/problems/first-bad-version/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  FIRST BAD VERSION                                                        ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Versions 1, 2, ..., n. One is bad. All after it are bad too.             ║
-║  Find the first bad version.                                              ║
-║                                                                           ║
-║  Input: n = 5, bad = 4                                                    ║
-║  Versions: [G, G, G, B, B]                                                ║
-║             1  2  3  4  5                                                 ║
-║  Output: 4                                                                ║
-║                                                                           ║
-║  Pattern: Find leftmost true (first bad)                                  ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**FIRST BAD VERSION**
+
+```text
+Versions 1, 2, ..., n. One is bad. All after it are bad too.
+Find the first bad version.
+
+Input: n = 5, bad = 4
+Versions: [G, G, G, B, B]
+           1  2  3  4  5
+Output: 4
+
+Pattern: Find leftmost true (first bad)
 ```
 
 ```java
@@ -143,22 +135,18 @@ public int firstBadVersion(int n) {
 **LeetCode 34** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  FIND FIRST AND LAST POSITION                                             ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find starting and ending position of target in sorted array.             ║
-║                                                                           ║
-║  Input: nums = [5, 7, 7, 8, 8, 10], target = 8                            ║
-║  Output: [3, 4]                                                           ║
-║                                                                           ║
-║  Input: nums = [5, 7, 7, 8, 8, 10], target = 6                            ║
-║  Output: [-1, -1]                                                         ║
-║                                                                           ║
-║  Two binary searches: Find leftmost, find rightmost                       ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**FIND FIRST AND LAST POSITION**
+
+```text
+Find starting and ending position of target in sorted array.
+
+Input: nums = [5, 7, 7, 8, 8, 10], target = 8
+Output: [3, 4]
+
+Input: nums = [5, 7, 7, 8, 8, 10], target = 6
+Output: [-1, -1]
+
+Two binary searches: Find leftmost, find rightmost
 ```
 
 ```java
@@ -214,24 +202,20 @@ private int findLast(int[] nums, int target) {
 **LeetCode 744** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/find-smallest-letter-greater-than-target/](https://leetcode.com/problems/find-smallest-letter-greater-than-target/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  FIND SMALLEST LETTER GREATER THAN TARGET                                 ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Sorted array of letters. Find smallest letter GREATER than target.       ║
-║  Letters wrap around (if none greater, return first letter).              ║
-║                                                                           ║
-║  Input: letters = ["c","f","j"], target = "a"                             ║
-║  Output: "c"                                                              ║
-║                                                                           ║
-║  Input: letters = ["c","f","j"], target = "c"                             ║
-║  Output: "f"                                                              ║
-║                                                                           ║
-║  Input: letters = ["c","f","j"], target = "k"                             ║
-║  Output: "c" (wrap around)                                                ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**FIND SMALLEST LETTER GREATER THAN TARGET**
+
+```text
+Sorted array of letters. Find smallest letter GREATER than target.
+Letters wrap around (if none greater, return first letter).
+
+Input: letters = ["c","f","j"], target = "a"
+Output: "c"
+
+Input: letters = ["c","f","j"], target = "c"
+Output: "f"
+
+Input: letters = ["c","f","j"], target = "k"
+Output: "c" (wrap around)
 ```
 
 ```java

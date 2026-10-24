@@ -121,59 +121,63 @@ sum(4);
 
 Here's what the stack looks like when `sum(4)` is called — it grows **downward** on most architectures:
 
-```
-  STACK MEMORY (grows downward on most architectures):
+STACK MEMORY (grows downward on most architectures):
 
 HIGH ADDRESSES
-┌────────────────────────────────────────────────────────────────────────────┐
-│                    ... other stack data ...                                │
-├────────────────────────────────────────────────────────────────────────────┤
-│  FRAME: main()                                                             │
-│  ┌──────────────────────────────────────────────────────────────────────┐  │
-│  │ Local variables of main                                              │  │
-│  │ Return address (to JVM/OS)                                           │  │
-│  │ Previous frame pointer                                               │  │
-│  └──────────────────────────────────────────────────────────────────────┘  │
-├────────────────────────────────────────────────────────────────────────────┤
-│  FRAME: sum(4)                                   OFFSET FROM FP           │
-│  ┌──────────────────────────────────────────────────────────────────────┐  │
-│  │ [FP+16] Return address → main+42              (8 bytes)              │  │
-│  │ [FP+8]  Previous frame pointer                (8 bytes)              │  │
-│  │ [FP+0]  Frame pointer (FP) ─────────────────────────                 │  │
-│  │ [FP-4]  Parameter n = 4                       (4 bytes)              │  │
-│  │ [FP-8]  Local temp for n-1 = 3                (4 bytes)              │  │
-│  │ [FP-12] Space for return value                (4 bytes)              │  │
-│  └──────────────────────────────────────────────────────────────────────┘  │
-├────────────────────────────────────────────────────────────────────────────┤
-│  FRAME: sum(3)                                                             │
-│  ┌──────────────────────────────────────────────────────────────────────┐  │
-│  │ Return address → sum+15 (return point in sum(4))                     │  │
-│  │ Previous frame pointer → sum(4)'s FP                                 │  │
-│  │ Frame pointer (FP)                                                   │  │
-│  │ Parameter n = 3                                                      │  │
-│  │ Local temp for n-1 = 2                                               │  │
-│  │ Space for return value                                               │  │
-│  └──────────────────────────────────────────────────────────────────────┘  │
-├────────────────────────────────────────────────────────────────────────────┤
-│  FRAME: sum(2)                                                             │
-│  ┌──────────────────────────────────────────────────────────────────────┐  │
-│  │ ... same structure ...                                               │  │
-│  │ Parameter n = 2                                                      │  │
-│  └──────────────────────────────────────────────────────────────────────┘  │
-├────────────────────────────────────────────────────────────────────────────┤
-│  FRAME: sum(1)                                                             │
-│  ┌──────────────────────────────────────────────────────────────────────┐  │
-│  │ Parameter n = 1                                                      │  │
-│  └──────────────────────────────────────────────────────────────────────┘  │
-├────────────────────────────────────────────────────────────────────────────┤
-│  FRAME: sum(0) ← Stack Pointer (SP)                                       │
-│  ┌──────────────────────────────────────────────────────────────────────┐  │
-│  │ Parameter n = 0                                                      │  │
-│  │ BASE CASE! Returns 0, no more recursion                             │  │
-│  └──────────────────────────────────────────────────────────────────────┘  │
-└────────────────────────────────────────────────────────────────────────────┘
-  LOW ADDRESSES
+
+### ... other stack data ...
+
+FRAME: main()
+
+```text
+Local variables of main
+Return address (to JVM/OS)
+Previous frame pointer
 ```
+
+FRAME: sum(4)                                   OFFSET FROM FP
+
+```text
+[FP+16] Return address → main+42              (8 bytes)
+[FP+8]  Previous frame pointer                (8 bytes)
+[FP+0]  Frame pointer (FP) ─────────────────────────
+[FP-4]  Parameter n = 4                       (4 bytes)
+[FP-8]  Local temp for n-1 = 3                (4 bytes)
+[FP-12] Space for return value                (4 bytes)
+```
+
+FRAME: sum(3)
+
+```text
+Return address → sum+15 (return point in sum(4))
+Previous frame pointer → sum(4)'s FP
+Frame pointer (FP)
+Parameter n = 3
+Local temp for n-1 = 2
+Space for return value
+```
+
+FRAME: sum(2)
+
+```text
+... same structure ...
+Parameter n = 2
+```
+
+FRAME: sum(1)
+
+```text
+Parameter n = 1
+```
+
+FRAME: sum(0) ← Stack Pointer (SP)
+
+```text
+Parameter n = 0
+BASE CASE! Returns 0, no more recursion
+```
+
+LOW ADDRESSES
 
 💡 **Key Insight:** Total stack size for `sum(4)` = 5 frames × ~32 bytes = **~160 bytes**
 
@@ -259,29 +263,20 @@ Compare with iterative: **~3,000 cycles** (mostly loop overhead + adds)
 
 Here's what it looks like when the stack is about to overflow:
 
-```
-  Stack Memory:  0x7fff0000 (top/high)
-  ┌────────────────────────────────────────────────────────────────────┐
-  │ Thread local storage, etc.                                        │
-  ├────────────────────────────────────────────────────────────────────┤
-  │ main() frame                                                      │
-  ├────────────────────────────────────────────────────────────────────┤
-  │ sum(10000) frame                                                  │
-  ├────────────────────────────────────────────────────────────────────┤
-  │ sum(9999) frame                                                   │
-  ├────────────────────────────────────────────────────────────────────┤
-  │                       ...                                         │
-  │               (9998 more frames)                                  │
-  │                       ...                                         │
-  ├────────────────────────────────────────────────────────────────────┤
-  │ sum(1) frame                                                      │
-  ├────────────────────────────────────────────────────────────────────┤
-  │ sum(0) frame ← Stack Pointer                                      │
-  ├────────────────────────────────────────────────────────────────────┤
-  │ ████████████████████████████████████████████████████████████████  │
-  │ █████████ GUARD PAGE (triggers StackOverflowError) █████████████  │
-  │ ████████████████████████████████████████████████████████████████  │
-  └────────────────────────────────────────────────────────────────────┘
+**Stack Memory:  0x7fff0000 (top/high) — Thread local storage, etc.**
+
+```text
+main() frame
+sum(10000) frame
+sum(9999) frame
+                      ...
+              (9998 more frames)
+                      ...
+sum(1) frame
+sum(0) frame ← Stack Pointer
+████████████████████████████████████████████████████████████████
+█████████ GUARD PAGE (triggers StackOverflowError) █████████████
+████████████████████████████████████████████████████████████████
   Stack Limit:   0x7ffe0000 (bottom/low)
 ```
 

@@ -79,25 +79,27 @@ private void swap(int[] nums, int i, int j) {
 
 ## Visual: Swap Method
 
-```
-Initial: [1, 2, 3], start = 0
+**Initial: [1, 2, 3], start = 0**
 
-Level 0: Fix position 0
-├── swap(0,0): [1, 2, 3]
-│   └── Level 1: Fix position 1
-│       ├── swap(1,1): [1, 2, 3]
-│       │   └── Level 2: Fix position 2
-│       │       └── swap(2,2): [1, 2, 3] → Add [1,2,3]
-│       └── swap(1,2): [1, 3, 2]
-│           └── Level 2: [1, 3, 2] → Add [1,3,2]
-│           └── swap(1,2) back: [1, 2, 3]
-├── swap(0,1): [2, 1, 3]
-│   └── Level 1: ...
-│       → Add [2,1,3], [2,3,1]
-└── swap(0,2): [3, 2, 1]
-    └── Level 1: ...
-        → Add [3,2,1], [3,1,2]
-```
+**Level 0: Fix position 0**
+
+- swap(0,0): [1, 2, 3]
+- Level 1: Fix position 1
+  - swap(1,1): [1, 2, 3]
+    - Level 2: Fix position 2
+      - swap(2,2): [1, 2, 3] → Add [1,2,3]
+  - swap(1,2): [1, 3, 2]
+    - Level 2: [1, 3, 2] → Add [1,3,2]
+    - swap(1,2) back: [1, 2, 3]
+- swap(0,1): [2, 1, 3]
+- Level 1: ...
+
+**→ Add [2,1,3], [2,3,1]**
+
+- swap(0,2): [3, 2, 1]
+  - Level 1: ...
+
+**→ Add [3,2,1], [3,1,2]**
 
 ## Permutations II - With Duplicates (LeetCode 47)
 

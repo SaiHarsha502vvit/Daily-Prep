@@ -6,224 +6,140 @@
 
 ## Diagram 1: Parking Lot Class Diagram
 
+### Parking lot system design
+
+```mermaid
+classDiagram
+  class VehicleType { <<enumeration>> MOTORCYCLE CAR BUS }
+  class SpotSize { <<enumeration>> SMALL MEDIUM LARGE }
+  class PricingStrategy { <<interface>> +calculate(Duration, SpotSize) }
+  class HourlyPricing
+  class WeekendSurge
+  class ParkingLot {
+    -PricingStrategy pricing
+    -Map activeTickets
+    -List spots
+  }
+  class Level { -int floorNum -List spots }
+  class ParkingSpot { -int id -SpotSize size -boolean isOccupied }
+  class Vehicle { <<abstract>> -String plate -VehicleType type }
+  class Ticket { -String ticketId -Instant entryTime -Instant exitTime }
+  class EntranceGate { +park() +issueTicket() }
+  class ExitGate { +vacate() +calculateFee() }
+  PricingStrategy <|.. HourlyPricing
+  PricingStrategy <|.. WeekendSurge
+  ParkingLot o-- Level : has many
+  Level o-- ParkingSpot : has many
+  ParkingLot --> PricingStrategy : uses
+  ParkingLot --> Ticket : issues
+  Ticket --> Vehicle
+  Ticket --> ParkingSpot
+  ParkingSpot --> Vehicle : occupied by
+  Vehicle <|-- Car
+  Vehicle <|-- Motorcycle
+  Vehicle <|-- Bus
+  EntranceGate --> ParkingLot
+  ExitGate --> ParkingLot
 ```
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │                         PARKING LOT SYSTEM DESIGN                        │
-  └──────────────────────────────────────────────────────────────────────────┘
 
-  CLASSES:
-  ════════
+**How to read this diagram.** The lot owns levels, levels own spots, and a ticket links a vehicle to the spot it occupies. Pricing is an interface, so a new pricing rule (such as weekend surge) is a new class and the rest stays unchanged (Open/Closed). The gates are thin clients of `ParkingLot`.
 
-  ┌────────────────────────┐          ┌──────────────────────────┐
-  │      <<enums>>          │          │      <<interface>>        │
-  │    VehicleType          │          │    PricingStrategy        │
-  │───────────────────────  │          │─────────────────────────  │
-  │ MOTORCYCLE              │          │ +calculate(Duration,Spot)│
-  │ CAR                     │          └─────────────┬────────────┘
-  │ BUS                     │                        │ implements
-  │                         │                        │
-  │    SpotSize             │              ┌─────────┴──────────┐
-  │───────────────────────  │              ▼                  ▼
-  │ SMALL                   │     ┌────────────────┐  ┌─────────────────┐
-  │ MEDIUM                  │     │HourlyPricing   │  │ WeekendSurge    │
-  │ LARGE                   │     └────────────────┘  │ (OCP: add new   │
-  └────────────────────────┘                          │  strategy w/o   │
-                                                       │  modifying code)│
-                                                       └─────────────────┘
+**Patterns used**
 
-  RELATIONSHIPS (arrows show direction of dependency):
-  ═══════════════════════════════════════════════════
-
-  ┌──────────────┐  has-many    ┌──────────────┐  has-many  ┌────────────────┐
-  │  ParkingLot  │──────────────▶│   Level      │───────────▶│  ParkingSpot   │
-  │              │              │              │            │                │
-  │ - pricing    │uses          │ - floorNum   │parked in  │ - id           │
-  │   strategy   │─────────────▶│ - spots[]    │            │ - size         │
-  │ - activeTkt  │              └──────────────┘            │ - isOccupied   │
-  │ - spots      │                                         └───────┬────────┘
-  └───────┬──────┘                                                 │
-          │ HAS-A (uses)                          occupied by      │ IS-A (vehicle)
-          │                                      parking          ▼
-          │                                                     ┌──────────────┐
-          ▼                                                     │   Vehicle    │
-  ┌──────────────┐  has-many                        ┌───────────│ (abstract)   │
-  │    Ticket    │                                  │           │              │
-  │              │                                  │           │- plate       │
-  │ - ticketId   │                                  │           │- type        │
-  │ - entryTime  │                                  │           └──────┬───────┘
-  │ - exitTime   │                                  │                  │
-  │ - vehicle    │                                  │          ┌───────┴───────┐
-  │ - spot       │                                  │          ▼       ▼       ▼
-  └──────────────┘                                  │    ┌────────┐ ┌───────┐ ┌─────┐
-                                                     │    │  Car   │ │Motor- │ │ Bus │
-                                                     │    │        │ │cycle  │ │     │
-                                                     │    └────────┘ │       │ └─────┘
-  GATES (USES ParkingLot):                                   └───────┘ └───────┘
-  ══════════════════════
-  ┌──────────────┐    ┌──────────────┐       ┌──────────────┐
-  │ EntranceGate │◀───│ ParkingLot   │──────▶│  ExitGate    │
-  │              │    │  (core)      │       │              │
-  │ - park()     │    │              │       │ - vacate()   │
-  │ - issueTicket│    │              │       │ - calculateFee│
-  └──────────────┘    └──────────────┘       └──────────────┘
-
-  PATTERNS USED:
-  Strategy   → PricingStrategy (hourly, flat, surge)
-  Factory    → VehicleFactory from license plate scan
-  Observer   → DisplayBoard updates on spot availability
-  Singleton  → ParkingLot (one instance, but prefer DI)
-```
+- **Strategy:** `PricingStrategy` (hourly, flat, surge)
+- **Factory:** `VehicleFactory`, for example from a licence-plate scan
+- **Observer:** `DisplayBoard` updates when spot availability changes
+- **Singleton:** one `ParkingLot` instance, though dependency injection is preferred
 
 ## Diagram 2: Elevator LOOK Algorithm State Diagram
 
+### Elevator state machine
+
+```mermaid
+stateDiagram-v2
+  [*] --> IDLE
+  IDLE --> MOVING_UP : floor request above
+  IDLE --> MOVING_DOWN : floor request below
+  MOVING_UP --> REVERSAL : last request in direction served
+  MOVING_DOWN --> REVERSAL : last request in direction served
+  REVERSAL --> MOVING_UP : requests remain above
+  REVERSAL --> MOVING_DOWN : requests remain below
+  REVERSAL --> IDLE : no requests at all
+  MOVING_UP --> IDLE : queue empty
+  MOVING_DOWN --> IDLE : queue empty
 ```
-  ┌─────────────────────────────────────────────────────────────────────────┐
-  │                       ELEVATOR STATE MACHINE                            │
-  └─────────────────────────────────────────────────────────────────────────┘
 
-                     ┌──────────────────────────────────────────────────┐
-                     │                                                  │
-  ┌─────────────┐  floor   ┌─────────────────┐  queue empty   ┌────────┴───┐
-  │   IDLE      │request  │  MOVING_UP       │───────────────▶│   IDLE    │
-  │             │────────▶│                 │               │           │
-  │ Waiting for │         │ Serving requests │               └───────────┘
-  │ requests.   │         │ in UP direction  │                     ▲
-  │ No direction│         │                  │                     │
-  └──────┬──────┘         └────────┬─────────┘                     │
-         │                          │                               │
-         │ floor                    │ last request                   │
-         │ request                  │ in direction                   │
-         │ up                       │ served                         │
-         ▼                          ▼                               │
-  ┌─────────────┐            ┌─────────────────┐                    │
-  │MOVING_DOWN  │            │  DIRECTION      │                    │
-  │             │            │  REVERSAL       │                    │
-  │ Serving     │◀──────────│  (internal)     │────────────────────┘
-  │ requests    │            │                  │
-  │ in DOWN     │            │ Checks: all requests in current direction
-  │ direction   │            │ served? → reverse direction
-  └─────────────┘            │ no requests at all? → IDLE
-                             └───────────────────────────────────────
+**How to read this diagram.** `REVERSAL` is an internal decision state: if no request remains in the current direction, check the other direction, and go idle if there is nothing to do.
 
-  LOOK ALGORITHM VISUALIZATION:
-  ════════════════════════════
+**LOOK algorithm walk-through** (building with floors 1 to 6; the user presses 4, then 2, then 5):
 
-  Building: Floor 1 ─────── Floor 2 ─────── Floor 3 ─────── Floor 4 ─────── Floor 5 ─────── Floor 6
+| Step | State | Request queue | What the elevator does |
+| --- | --- | --- | --- |
+| 1 | MOVING_UP | [4] | Travels 1 → 2 → 3 → 4, stops, opens doors, removes 4 |
+| 2 | REVERSAL | [2] | At floor 4 nothing remains above, but a request for 2 is below, so it reverses to MOVING_DOWN |
+| 3 | MOVING_DOWN | [2] | Travels 4 → 3 → 2, stops, removes 2 |
+| 4 | REVERSAL | [5] | At floor 2 the pending request for 5 is above, so it reverses to MOVING_UP |
+| 5 | MOVING_UP | [5] | Travels 2 → 3 → 4 → 5, stops, done |
 
-  Scenario: User presses 4, then 2, then 5
+**Why LOOK and not SCAN?**
 
-  State: MOVING_UP
-  Request Queue: [4]
+- **SCAN** sweeps all the way to the last floor (floor 6) before reversing, even with no requests there.
+- **LOOK** reverses as soon as there are no more requests in the current direction.
+- Result: LOOK saves travel time.
 
-  Elevator at 1: 1 → 2 → 3 → 4 (stops, opens doors, removes 4 from queue)
-  At floor 4:    Queue now empty in UP direction, but 2 < 4 (request in DOWN direction)
-  State: REVERSAL → MOVING_DOWN
-  Request Queue: [2]
-
-  Elevator at 4: 4 → 3 → 2 (stops at 2, removes 2 from queue)
-  At floor 2:    Queue: [5] (5 > 2, request is in UP direction)
-  State: REVERSAL → MOVING_UP
-  Request Queue: [5]
-
-  Elevator at 2: 2 → 3 → 4 → 5 (stops at 5, done)
-
-  WHY LOOK (not SCAN):
-  ────────────────────
-  SCAN:  sweeps all the way to floor 6 before reversing (even with no requests)
-  LOOK:  reverses as soon as no more requests in current direction
-  Result: LOOK saves floor-travelling time = better performance
-
-  MODERN VARIANTS: SCAN-LOOK hybrid with AI traffic prediction
-  (Burj Khalifa, modern high-rises use LOOK + zone allocation)
-```
+Real elevator controllers add zoning and destination dispatch on top of this basic idea.
 
 ## Diagram 3: BookMyShow Seat-Locking Sequence
 
+### Concurrent seat booking timeline
+
+```mermaid
+sequenceDiagram
+  participant A as User A (t = 0)
+  participant B as User B (t = 50 ms)
+  participant DB as Database
+  participant S as Scheduler
+  A->>DB: lockSeats(A1, userA): SELECT ... WHERE seat_id='A1' AND status='AVAILABLE'
+  A->>DB: UPDATE seats SET status='LOCKED', user_id='A', locked_until=NOW+5min WHERE seat_id='A1' AND status='AVAILABLE'
+  Note over DB: row lock acquired, 1 row updated
+  DB-->>A: success: Seat A1 locked
+  B->>DB: lockSeats(A1, userB): same UPDATE
+  Note over DB: A1 is now LOCKED, so 0 rows updated
+  DB-->>B: SeatUnavailableException: Seat A1 taken
+  S->>DB: at t = 5 min: if not paid, set status='AVAILABLE'
+  Note over DB: Seat A1 is back in the pool
 ```
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │                  CONCURRENT SEAT BOOKING TIMELINE                        │
-  └──────────────────────────────────────────────────────────────────────────┘
 
-  User A (t=0)                        User B (t=50ms)                        System
-  ──────────────                      ──────────────                         ──────
-       │                                  │                                    │
-       ▼                                  │                                    │
-  ┌──────────────────┐                    │                                    │
-  │lockSeats(A1, userA)│                  │                                    │
-  └──────────┬─────────┘                  │                                    │
-             │                            │                                    │
-             ▼ DB lock                    │                                    │
-  SELECT * FROM seats                                                │
-  WHERE seat_id='A1' AND status='AVAILABLE'
-             │                            │                                    │
-             ▼                            ▼                                    │
-         ┌────────────────────────────────────────────────────┐                │
-         │ UPDATE seats SET status='LOCKED', user_id='A',     │                │
-         │ locked_until=NOW+5min WHERE seat_id='A1' AND       │                │
-         │ status='AVAILABLE'                                 │                │
-         │ ── ROW LOCK acquired ──                            │                │
-         └──────────────┬─────────────────────────────────────┘                │
-                        │                                                    │
-                        ▼ RETURN: success                                    │
-  ┌─────────────────────────────────┐                                        │
-  │ lockSeats() → ["A1"] SUCCESS   │                                        │
-  │ User A sees: "Seat A1 locked"  │                                        │
-  └─────────────────────────────────┘                                        │
-                                                  ▼                            │
-                                        ┌──────────────────┐                  │
-                                        │lockSeats(A1, userB)│                 │
-                                        └──────────┬─────────┘                 │
-                                                   │                           │
-                                                   ▼ DB lock                   │
-                                        SELECT * FROM seats                     │
-                                        WHERE seat_id='A1'
-                                        (A1 is now LOCKED)                     │
-                                                   │                           │
-                                                   ▼                            │
-                                        ┌──────────────────────────┐            │
-                                        │ UPDATE seats ... FAIL    │            │
-                                        │ WHERE status='AVAILABLE' │            │
-                                        │ → 0 rows updated         │            │
-                                        └──────────────┬───────────┘            │
-                                                       │                        │
-                                                       ▼ RETURN: FAIL           │
-                                        ┌──────────────────────────────┐        │
-                                        │ SeatUnavailableException     │        │
-                                        │ User B sees: "Seat A1 taken" │        │
-                                        └──────────────────────────────┘        │
-                                                                          ▼
-  At t=5min:                                    ┌──────────────────────────────┐
-  ┌──────────────────────────┐                   │ Timer fires:                 │
-  │ Scheduler releases lock  │                   │ if !paid → status='AVAILABLE'│
-  │ for user A (payment not  │                   │ Seat A1 back to pool         │
-  │ completed)               │                   └──────────────────────────────┘
-  └──────────────────────────┘
+**How to read this diagram.** The conditional `UPDATE ... WHERE status='AVAILABLE'` is the whole trick: the database applies it atomically, so exactly one of the two users updates a row. A timer releases the lock if payment never completes.
 
-  THREE LOCKING STRATEGIES COMPARED:
-  ══════════════════════════════
+### Three locking strategies compared
 
-  Pessimistic (SELECT ... FOR UPDATE):
-  ──────────────────────────────────────
-  SELECT * FROM seats WHERE seat_id='A1' FOR UPDATE;
-  -- Acquires row-level lock. Other transactions WAIT.
-  -- Strong guarantee, blocks concurrent reads
-  -- Used in: PostgreSQL, MySQL InnoDB row locks
+**Pessimistic: `SELECT ... FOR UPDATE`**
 
-  Optimistic (version column):
-  ──────────────────────────────
-  UPDATE seats SET status='LOCKED', version=version+1
-  WHERE seat_id='A1' AND version=5 AND status='AVAILABLE';
-  -- Returns 0 if version changed → retry or fail
-  -- No lock held, allows concurrency
-  -- Used in: Cassandra, Redis with WATCH/MULTI/EXEC
-
-  Distributed lock (Redis SETNX):
-  ────────────────────────────────
-  SETNX seat:A1:lock userA
-  -- Atomic set-if-not-exists. TTL=300s auto-release.
-  -- No DB round-trip for check. Extremely fast.
-  -- Used in: Redisson, SeatGeek, Ticketmaster (in-memory locks)
+```sql
+SELECT * FROM seats WHERE seat_id = 'A1' FOR UPDATE;
+-- Acquires a row-level lock. Other transactions that try to lock or update the row WAIT.
 ```
+
+Strong guarantee, but waiters queue up and a long transaction hurts throughput. Supported by PostgreSQL, MySQL InnoDB and most SQL databases. (Plain reads under MVCC are not blocked.)
+
+**Optimistic: version column**
+
+```sql
+UPDATE seats SET status = 'LOCKED', version = version + 1
+WHERE seat_id = 'A1' AND version = 5 AND status = 'AVAILABLE';
+-- Returns 0 rows if the version changed: retry or fail.
+```
+
+No lock is held, so concurrency is high; the cost is retries under contention. This is the idea behind JPA's `@Version`, and Redis offers a similar check-and-set with `WATCH`/`MULTI`/`EXEC`.
+
+**Distributed lock: Redis `SET ... NX EX`**
+
+```text
+SET seat:A1:lock userA NX EX 300
+```
+
+Atomic set-if-not-exists with a TTL of 300 seconds, so the lock releases itself. It avoids a database round trip for the check and is very fast, but a TTL lock alone is not a correctness guarantee (a paused client can outlive its TTL): keep the database constraint as the final authority, or use fencing tokens.
 
 ## Mechanism Deep-Dive: Concurrent Seat Booking — Three Locking Strategies
 
@@ -315,182 +231,86 @@ if (acquired) {
 
 ## Why-This-Not-That: Queue vs Stack in Elevator Scheduling
 
-```
-  QUEUE (FIFO — LOOK Algorithm):
-  ════════════════════════════════
+### Why a queue (not a stack) for elevator requests
 
-  Request queue for floor requests [4, 2, 5, 3]:
-  ┌────┬────┬────┬────┐
-  │ 4  │ 2  │ 5  │ 3  │  head → tail (dequeue from head)
-  └────┴────┴────┴────┘
+**Queue (FIFO), as used by the LOOK algorithm.** Requests for floors `[4, 2, 5, 3]` are served from the head:
 
-  Elevator moving UP: serves 4 first (dequeue 4)
-  Queue becomes: [2, 5, 3]
+| Position | head → | | | tail |
+| --- | --- | --- | --- | --- |
+| Queue | 4 | 2 | 5 | 3 |
 
-  WHY QUEUE:
-  ✓ Preserves arrival order (fairness) — user who pressed first is served first
-  ✓ LOOK algorithm uses a sorted-by-floor queue, sorted by direction
-  ✓ Predictable: you can reason about elevator behavior
-  ✓ Easy to implement: just an ordered set per direction
+The elevator is moving up, so it serves 4 first (dequeue 4) and the queue becomes `[2, 5, 3]`.
 
-  STACK (LIFO — reverse LOOK):
-  ════════════════════════════════
+Why a queue works:
 
-  Request stack: push 4, push 2, push 5, push 3
-  ┌────┐
-  │ 3  │  ← top (pop first)
-  │ 5  │
-  │ 2  │
-  │ 4  │
-  └────┘
+- ✅ Preserves arrival order (fairness): whoever pressed first is served first.
+- ✅ LOOK keeps requests sorted by floor for each direction.
+- ✅ Predictable: you can reason about the elevator's behaviour.
+- ✅ Easy to implement: an ordered set per direction.
 
-  Elevator moving UP: serves 3 first (last pressed = top)
-  PROBLEM: User at floor 4 pressed first but gets served LAST!
-  → Unfair — counter-intuitive passenger experience
-  → The elevator would go UP past floor 4 to serve floor 3 first
+**Stack (LIFO) is wrong here.** Push 4, 2, 5, 3 and pop: the top, 3, is served first even though the passenger at floor 4 pressed first.
 
-  WHY STACK IS WRONG FOR ELEVATORS:
-  ──────────────────────────────────────
-  1. VIOLATES FIFO fairness — first request = last service
-  2. MOVEMENT WASTE — elevator travels past requests to serve LIFO top
-  3. UNPREDICTABLE — users can't reason about when they'll be served
-  4. PSYCHOLOGICAL CONFUSION — "I pressed first, why did the person at 5 get served first?"
+- ❌ Violates FIFO fairness: the first request is served last.
+- ❌ Wastes movement: the elevator travels past waiting floors to serve the top of the stack.
+- ❌ Unpredictable: passengers cannot reason about when they will be served.
 
-  ANALOGY: Think of elevator like a BUS, not a STACK
-  Buses: first passenger at stop = first to board (queue)
-  Not: last passenger at stop = first to board (stack)
+**Analogy.** Think of an elevator like a bus stop, not a stack of plates: the first passenger at the stop boards first.
 
-  REAL-WORLD ELEVATOR VARIANTS:
-  ──────────────────────────────
-  SCAN:    Elevator goes to extreme (floor 10) then reverses — like a STACK push-all-then-pop-all
-           Problem: wasted travel to floors with no requests
-  LOOK:    Queue of sorted requests — serves nearest in current direction, then reverses
-           Best: minimizes travel distance + maintains fairness
-  FIFO:    Pure queue (rarely used — doesn't consider floor proximity)
-  PRIORITY: VIP floors served first (military/government buildings)
+**Real-world scheduling variants**
 
-  QUEUE + DIRECTION SORT = LOOK:
-  ──────────────────────────────
-  When direction is UP: queue contains only floors above current floor, sorted ascending
-  When direction is DOWN: queue contains only floors below current floor, sorted descending
-  When queue empty: reverse direction
-  This is WHY LOOK uses a queue (sorted by floor number), not a stack.
-```
+| Variant | Behaviour | Note |
+| --- | --- | --- |
+| SCAN | Goes to the extreme floor, then reverses | Wasted travel to floors with no requests |
+| LOOK | Serves the nearest requests in the current direction, then reverses | Minimises travel and stays fair |
+| FIFO | Pure queue | Rarely used: ignores floor proximity |
+| Priority | VIP floors first | Special-purpose buildings |
+
+**Queue plus direction sort = LOOK**
+
+- Direction up: the queue holds only floors above the current floor, sorted ascending.
+- Direction down: the queue holds only floors below, sorted descending.
+- Queue empty: reverse direction (or go idle).
 
 ## Breadth Comparison 1: LLD Problem Pattern Mapping Table
 
-```
-┌───────────────────┬────────────────────────────────────────────┬──────────────────────────────┐
-│  PROBLEM          │  DESIGN PATTERNS USED                      │  KEY OOP PRINCIPLE           │
-├───────────────────┼────────────────────────────────────────────┼──────────────────────────────┤
-│  Parking Lot      │  Strategy (pricing: hourly/flat/surge)     │  OCP: new strategy = new     │
-│                   │  Factory (VehicleFactory from scan)        │  class, no existing code mod  │
-│                   │  Observer (display board updates)          │                              │
-│                   │  Singleton (debatable, prefer DI)          │  SRP: parking logic ≠        │
-│                   │                                            │  pricing logic ≠ display logic│
-├───────────────────┼────────────────────────────────────────────┼──────────────────────────────┤
-│  BookMyShow       │  Observer (seat availability → UI update)  │  OCP: new payment gateway =  │
-│                   │  State (SeatStatus: AVAIL→LOCKED→BOOKED)   │  new class, existing code    │
-│                   │  Locking (pessimistic/optimistic/distrib)  │  unchanged                   │
-│                   │  Strategy (payment processing)             │                              │
-│                   │                                            │  SRP: BookingService only    │
-│                   │                                            │  books, PaymentService only  │
-│                   │                                            │  processes                   │
-├───────────────────┼────────────────────────────────────────────┼──────────────────────────────┤
-│  Splitwise        │  Strategy (Split: Equal/Exact/Percent)     │  LSP: any Split implementation│
-│                   │  Composite (Expense contains many Splits)   │  works in ExpenseService     │
-│                   │  Graph algorithm (debt simplification)      │                              │
-│                   │                                            │  OCP: new split type = new   │
-│                   │                                            │  class, no Expense changes   │
-├───────────────────┼────────────────────────────────────────────┼──────────────────────────────┤
-│  Elevator         │  Strategy (SchedulingStrategy: LOOK/SCAN)  │  OCP: new algorithm = new    │
-│                   │  State (ElevatorState: IDLE/MOVING_*)      │  class, controller unchanged │
-│                   │  Template Method (move sequence)            │                              │
-│                   │                                            │  DIP: ElevatorController     │
-│                   │                                            │  depends on abstract         │
-│                   │                                            │  SchedulingStrategy, not     │
-│                   │                                            │  concrete LOOKStrategy       │
-├───────────────────┼────────────────────────────────────────────┼──────────────────────────────┤
-│  Logger/          │  Chain of Responsibility (DEBUG→INFO→ERR) │  SRP: Logger chains don't     │
-│  Logging          │  Strategy (LogAppender: console/file/DB)   │  know about each other's     │
-│                   │  Singleton (Logger, but DI preferred)      │  details                     │
-│                   │  Builder (LoggerConfig for fluent build)   │                              │
-│                   │                                            │  ISP: LogAppender has one    │
-│                   │                                            │  method: append(String)      │
-└───────────────────┴────────────────────────────────────────────┴──────────────────────────────┘
+| PROBLEM | DESIGN PATTERNS USED | KEY OOP PRINCIPLE |
+| --- | --- | --- |
+| Parking Lot | Strategy (pricing: hourly/flat/surge)<br>Factory (VehicleFactory from scan)<br>Observer (display board updates)<br>Singleton (debatable, prefer DI) | OCP: new strategy = new class, no existing code mod<br>SRP: parking logic ≠ pricing logic ≠ display logic |
+| BookMyShow | Observer (seat availability → UI update)<br>State (SeatStatus: AVAIL→LOCKED→BOOKED)<br>Locking (pessimistic/optimistic/distrib)<br>Strategy (payment processing) | OCP: new payment gateway = new class, existing code unchanged<br>SRP: BookingService only books, PaymentService only processes |
+| Splitwise | Strategy (Split: Equal/Exact/Percent)<br>Composite (Expense contains many Splits)<br>Graph algorithm (debt simplification) | LSP: any Split implementation works in ExpenseService<br>OCP: new split type = new class, no Expense changes |
+| Elevator | Strategy (SchedulingStrategy: LOOK/SCAN)<br>State (ElevatorState: IDLE/MOVING_*)<br>Template Method (move sequence) | OCP: new algorithm = new class, controller unchanged<br>DIP: ElevatorController depends on abstract<br>SchedulingStrategy, not concrete LOOKStrategy |
+| Logger/Logging | Chain of Responsibility (DEBUG→INFO→ERR)<br>Strategy (LogAppender: console/file/DB)<br>Singleton (Logger, but DI preferred)<br>Builder (LoggerConfig for fluent build) | SRP: Logger chains don't know about each other's details<br>ISP: LogAppender has one method: append(String) |
 
-  RECURRING PATTERN ACROSS ALL 5 PROBLEMS:
-  ══════════════════════════════════════
-  1. Every problem uses AT LEAST 2 GoF patterns (Strategy appears in 4/5)
-  2. Every problem satisfies SRP (one class = one responsibility)
-  3. Every problem is OCP (new behavior = new class, never modify existing)
-  4. Every problem is DIP-compliant (high-level modules depend on abstractions)
-```
+**Recurring pattern across all 5 problems**
+
+1. Every problem uses AT LEAST 2 GoF patterns (Strategy appears in 4 of 5).
+2. Every problem satisfies SRP (one class = one responsibility).
+3. Every problem is OCP-friendly (new behavior = new class, never modify existing code).
+4. Every problem is DIP-compliant (high-level modules depend on abstractions).
 
 ## Breadth Comparison 2: Concurrency Control Strategies Table
 
-```
-┌────────────────┬──────────────────┬──────────────────┬──────────────────────┐
-│  STRATEGY      │  MECHANISM       │  BEST FOR        │  RISKS               │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  synchronized  │  Intrinsic lock  │  Simple shared   │  Over-synchronization│
-│  (method)      │  on 'this'       │  state, low      │  (all threads wait)  │
-│                │                  │  concurrency     │  Deadlock if A locks │
-│                │                  │  needs           │  X and waits for Y   │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  synchronized  │  Intrinsic lock  │  Multiple shared │  Must release all    │
-│  (block)       │  on specific obj │  resources that  │  locks in same order │
-│  (more control)│  (e.g., spots[i])│  need atomicity  │  to avoid deadlock   │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  ReentrantLock │  Explicit lock   │  Try-lock        │  MUST unlock in      │
-│  (java.util    │  tryLock() with  │  (non-blocking   │  finally block or    │
-│  .concurrent)  │  timeout,        │  failure),       │  lock persists       │
-│                │  fairness param  │  read-write      │  (unlike synch)      │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  ReadWriteLock │  Shared read,    │  Read-heavy      │  Writers may starve │
-│                │  exclusive write │  workloads       │  if readers keep     │
-│                │                  │  (parking spots) │  coming              │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  AtomicInteger │  CAS (Compare-   │  Simple counter  │  Only works for      │
-│  AtomicLong    │  And-Swap, no    │  increments,     │  single variables    │
-│                │  locking)        │  flags           │  (not compound ops) │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  Concurrent    │  Lock-free queue │  Producer-       │  Iteration requires  │
-│  LinkedQueue   │  (CAS-based)     │  consumer (event │  snapshot or iterator│
-│  Concurrent    │                  │  processing,     │  from queue          │
-│  HashMap       │                  │  request queues) │                      │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  volatile      │  Read/write      │  Flags, caches   │  NOT atomic for      │
-│  (fields)      │  visibility      │  (no compound    │  compound operations │
-│                │  (no lock)       │  operations)     │  (volatile++ is NOT  │
-│                │                  │                  │  thread-safe!)       │
-├────────────────┼──────────────────┼──────────────────┼──────────────────────┤
-│  StampedLock   │  Optimistic read │  Read-heavy      │  Must validate stamp │
-│  (Java 8+)     │  with validate   │  with rare writes│  after read or       │
-│                │                  │  (cache)         │  retry               │
-└────────────────┴──────────────────┴──────────────────┴──────────────────────┘
+| STRATEGY | MECHANISM | BEST FOR | RISKS |
+| --- | --- | --- | --- |
+| synchronized (method) | Intrinsic lock on 'this' | Simple shared state, low concurrency needs | Over-synchronization (all threads wait)<br>Deadlock if A locks<br>X and waits for Y |
+| synchronized (block) (more control) | Intrinsic lock on specific obj (e.g., spots[i]) | Multiple shared resources that need atomicity | Must release all locks in same order to avoid deadlock |
+| ReentrantLock (java.util .concurrent) | Explicit lock tryLock() with timeout, fairness param | Try-lock (non-blocking failure), read-write | MUST unlock in finally block or lock persists (unlike synch) |
+| ReadWriteLock | Shared read, exclusive write | Read-heavy workloads (parking spots) | Writers may starve if readers keep coming |
+| AtomicInteger<br>AtomicLong | CAS (Compare-And-Swap, no locking) | Simple counter increments, flags | Only works for single variables (not compound ops) |
+| Concurrent<br>LinkedQueue<br>Concurrent<br>HashMap | Lock-free queue (CAS-based) | Producer-consumer (event processing, request queues) | Iteration requires snapshot or iterator from queue |
+| volatile (fields) | Read/write visibility (no lock) | Flags, caches (no compound operations) | NOT atomic for compound operations (volatile++ is NOT thread-safe!) |
+| StampedLock (Java 8+) | Optimistic read with validate | Read-heavy with rare writes (cache) | Must validate stamp after read or retry |
 
-  DECISION GUIDE FOR LLD PROBLEMS:
-  ════════════════════════════════════
+**Decision guide for LLD problems**
 
-  Need to protect simple counter (active tickets count)?
-  → AtomicInteger / AtomicLong (no lock needed)
-
-  Need to protect a data structure (available spots)?
-  → synchronized block OR ConcurrentHashMap + computeIfAbsent
-
-  Need try-lock with timeout (deadlock recovery)?
-  → ReentrantLock with tryLock(timeout, unit)
-
-  Need many readers, rare writers (parking lot availability)?
-  → ReadWriteLock (multiple readers, exclusive writer)
-
-  Need distributed lock across machines?
-  → Redis SETNX + TTL (Redisson RLock)
-
-  Need DB-level lock?
-  → SELECT ... FOR UPDATE (pessimistic) or version column (optimistic)
-```
+| Need | Use |
+| --- | --- |
+| Protect a simple counter (active tickets count) | `AtomicInteger` / `AtomicLong` (no lock needed) |
+| Protect a data structure (available spots) | `synchronized` block, or `ConcurrentHashMap` + `computeIfAbsent` |
+| Try-lock with timeout (deadlock recovery) | `ReentrantLock` with `tryLock(timeout, unit)` |
+| Many readers, rare writers (parking lot availability) | `ReadWriteLock` (multiple readers, exclusive writer) |
+| Distributed lock across machines | Redis `SETNX` + TTL (Redisson `RLock`) |
+| DB-level lock | `SELECT ... FOR UPDATE` (pessimistic) or a version column (optimistic) |
 
 **Navigation**: [< Previous](../06_Distributed_Systems_Fundamentals.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](../08_Design_Patterns_Java.md)
 

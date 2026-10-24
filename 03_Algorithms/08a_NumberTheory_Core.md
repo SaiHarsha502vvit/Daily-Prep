@@ -51,7 +51,6 @@ A **clock**: after 12 comes 1 again; modular arithmetic is arithmetic on a clock
 
 ---
 
-
 > WHY THIS FILE EXISTS
 >
 > GCD, LCM, Primes, Modular Arithmetic → appear in:
@@ -70,7 +69,6 @@ A **clock**: after 12 comes 1 again; modular arithmetic is arithmetic on a clock
 ### Historical Evolution
 
 Number theory algorithms trace back to the ancient world, with **Euclid's algorithm for GCD (circa 300 BC)** appearing in Euclid's Elements (Book VII, Proposition 2) — remarkably, the Euclidean algorithm for finding the greatest common divisor using repeated division remains essentially unchanged and is still the most efficient practical method for computing GCD, over 2,300 years later. The **Sieve of Eratosthenes** (circa 240 BC) was the first systematic method for finding all prime numbers up to a given limit — Eratosthenes, the chief librarian of Alexandria, is credited with the method of crossing out the multiples of each prime (the name "sieve" refers to filtering out composites). **Fermat's Little Theorem (1640)** established that $a^p \equiv a \pmod{p}$ for prime $p$, foundational to modern primality testing and the entire field of cryptography. **Euler (1760s)** generalized this to $\phi(n)$ (Euler's totient function), proving that the number of integers less than $n$ that are coprime to $n$ follows $n \prod(1 - 1/p)$. **Miller (1976)** and **Rabin (1976/1980)** transformed Euler's and Fermat's theoretical work into a practical randomized primality test that runs in $O(k \log^3 n)$ time. Modern practice (post-2010): RSA encryption, Bitcoin address generation, and hash-based commitments all rely on the intractability of integer factorization — the same mathematical foundation Euclid discovered.
-
 
 ### 5. Check yourself
 
@@ -92,27 +90,15 @@ Number theory algorithms trace back to the ancient world, with **Euclid's algori
 
 ---
 
-## ═══════════════════════════════════════════════════════════
-
-## PART 1: GCD (Greatest Common Divisor) - COMPLETE
-
 ## 📚 Topic Pages in This Chapter
 
 This chapter is split into focused pages so each topic can be read on its own. Read them in order the first time; use the table to jump back later.
 
 | # | Page | What is inside | Lines |
 | --- | --- | --- | --- |
-| 1 | [═══════════════════════════════════════════════════════════](08a_NumberTheory_Core/01_section.md) | ═══════════════════════════════════════════════════════════ | 474 |
-| 2 | [═══════════════════════════════════════════════════════════](08a_NumberTheory_Core/02_section.md) | ═══════════════════════════════════════════════════════════ | 280 |
-| 3 | [═══════════════════════════════════════════════════════════](08a_NumberTheory_Core/03_section.md) | ═══════════════════════════════════════════════════════════ | 399 |
-
-## ═══════════════════════════════════════════════════════════
-
-## 📚 Part 2: Prime Numbers — Complete
-
-## ═══════════════════════════════════════════════════════════
-
-## 📌 Part 3: Modular Arithmetic
+| 1 | [Part 1 — GCD (Greatest Common Divisor)](08a_NumberTheory_Core/01_section.md) | WHY GCD Matters · Algorithm 1: Brute Force GCD · Algorithm 2: Euclid's Algorithm (Subtraction) | 474 |
+| 2 | [Part 2 — Prime Numbers](08a_NumberTheory_Core/02_section.md) | Why Primes Matter · Algorithm P1: Check if Prime · Algorithm P2: Sieve of Eratosthenes | 280 |
+| 3 | [Part 3 — Modular Arithmetic and Proofs](08a_NumberTheory_Core/03_section.md) | Why Fermat's Little Theorem Works — and Why a^(p-2) Is the Modular Inverse · Euler's Theorem — Generalizing Fermat to Composite Moduli · Proof Corner -- Sieve of Eratosthenes O(n log log n) | 399 |
 
 ## 🏢 Enterprise Lens — Number Theory Core
 

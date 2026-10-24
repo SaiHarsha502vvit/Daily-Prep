@@ -6,184 +6,99 @@
 
 ## Step-by-Step Feature Flow Creation
 
+```text
+HOW TO CREATE A FLOW FOR ANY FEATURE
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    HOW TO CREATE A FLOW FOR ANY FEATURE                      ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-STEP 1: IDENTIFY THE GOAL
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Ask: "What is the user trying to achieve?"                                  │
-│                                                                             │
-│ Example: "User wants to share a post to multiple social media platforms"    │
-│                                                                             │
-│ • Primary Goal: Share content                                               │
-│ • Success Criteria: Post appears on selected platforms                      │
-│ • Failure Criteria: User is informed of what failed and why                 │
-└─────────────────────────────────────────────────────────────────────────────┘
+**Step 1: identify the goal**
 
-STEP 2: IDENTIFY ALL ACTORS
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Ask: "Who/What is involved in this flow?"                                   │
-│                                                                             │
-│ Example:                                                                    │
-│ • User (starts the action)                                                  │
-│ • Frontend (UI)                                                             │
-│ • Backend API                                                               │
-│ • External APIs (Twitter, Facebook, LinkedIn)                               │
-│ • Database (logging, history)                                               │
-│ • Message Queue (async processing)                                          │
-└─────────────────────────────────────────────────────────────────────────────┘
+```text
+Ask: "What is the user trying to achieve?"
 
-STEP 3: MAP THE HAPPY PATH
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Ask: "What happens when everything works perfectly?"                        │
-│                                                                             │
-│ Example Happy Path:                                                         │
-│ 1. User clicks "Share" button                                               │
-│ 2. Modal opens with platform options                                        │
-│ 3. User selects Twitter, LinkedIn                                           │
-│ 4. User clicks "Share Now"                                                  │
-│ 5. Request goes to backend                                                  │
-│ 6. Backend posts to both platforms                                          │
-│ 7. Both succeed                                                             │
-│ 8. User sees "Shared successfully!"                                         │
-└─────────────────────────────────────────────────────────────────────────────┘
+Example: "User wants to share a post to multiple social media platforms"
 
-STEP 4: IDENTIFY ERROR CASES
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ Ask: "What could go wrong?"                                                 │
-│                                                                             │
-│ Example Error Cases:                                                        │
-│ • User not connected to platform                                            │
-│ • Platform API is down                                                      │
-│ • Content exceeds character limit                                           │
-│ • Network timeout                                                           │
-│ • Rate limit exceeded                                                       │
-│ • Partial failure (Twitter works, LinkedIn fails)                           │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-STEP 5: DRAW THE COMPLETE FLOW
+• Primary Goal: Share content
+• Success Criteria: Post appears on selected platforms
+• Failure Criteria: User is informed of what failed and why
 ```
+
+**Step 2: identify all actors**
+
+```text
+Ask: "Who/What is involved in this flow?"
+
+Example:
+• User (starts the action)
+• Frontend (UI)
+• Backend API
+• External APIs (Twitter, Facebook, LinkedIn)
+• Database (logging, history)
+• Message Queue (async processing)
+```
+
+**Step 3: map the happy path**
+
+```text
+Ask: "What happens when everything works perfectly?"
+
+Example Happy Path:
+1. User clicks "Share" button
+2. Modal opens with platform options
+3. User selects Twitter, LinkedIn
+4. User clicks "Share Now"
+5. Request goes to backend
+6. Backend posts to both platforms
+7. Both succeed
+8. User sees "Shared successfully!"
+```
+
+**Step 4: identify error cases**
+
+```text
+Ask: "What could go wrong?"
+
+Example Error Cases:
+• User not connected to platform
+• Platform API is down
+• Content exceeds character limit
+• Network timeout
+• Rate limit exceeded
+• Partial failure (Twitter works, LinkedIn fails)
+```
+
+**Step 5: draw the complete flow**
 
 ## Complete Feature Flow Example: Social Share
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    SOCIAL SHARE FEATURE - COMPLETE FLOW                      ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Social share feature: complete flow
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                                                                             │
-│    (Start: User on content page)                                            │
-│                │                                                            │
-│                ▼                                                            │
-│    ┌───────────────────────┐                                                │
-│    │   Click Share Button  │                                                │
-│    └───────────┬───────────┘                                                │
-│                │                                                            │
-│                ▼                                                            │
-│    ┌───────────────────────┐                                                │
-│    │   Load Connected      │                                                │
-│    │   Accounts            │──────────▶ [API: GET /user/connections]        │
-│    └───────────┬───────────┘                                                │
-│                │                                                            │
-│         ┌──────┴──────┐                                                     │
-│         ▼             ▼                                                     │
-│    ◇ Has accounts?                                                          │
-│    │NO              │YES                                                    │
-│    ▼                ▼                                                       │
-│ ┌─────────────┐ ┌─────────────────────┐                                     │
-│ │ Show        │ │ Show Platform       │                                     │
-│ │ "Connect    │ │ Selection Modal     │                                     │
-│ │  Account"   │ │ □ Twitter (✓conn)   │                                     │
-│ │  Prompt     │ │ □ LinkedIn (✓conn)  │                                     │
-│ └──────┬──────┘ │ □ Facebook (✗)      │                                     │
-│        │        └───────────┬─────────┘                                     │
-│        │                    │                                               │
-│        │                    ▼                                               │
-│        │        ┌───────────────────────┐                                   │
-│        │        │ User Selects          │                                   │
-│        │        │ Twitter + LinkedIn    │                                   │
-│        │        └───────────┬───────────┘                                   │
-│        │                    │                                               │
-│        │                    ▼                                               │
-│        │        ┌───────────────────────┐                                   │
-│        │        │ Validate Content      │                                   │
-│        │        │ - Check length        │                                   │
-│        │        │ - Check attachments   │                                   │
-│        │        └───────────┬───────────┘                                   │
-│        │                    │                                               │
-│        │             ◇──────┴──────◇                                        │
-│        │         Valid?         Invalid?                                    │
-│        │            │               │                                       │
-│        │            ▼               ▼                                       │
-│        │    ┌─────────────┐  ┌─────────────┐                                │
-│        │    │ Click Share │  │ Show Error  │                                │
-│        │    │ Confirm     │  │ "Too long   │                                │
-│        │    └──────┬──────┘  │  for Twitter│                                │
-│        │           │         └──────┬──────┘                                │
-│        │           │                │                                       │
-│        │           │                ▼                                       │
-│        │           │         ┌─────────────┐                                │
-│        │           │         │ Allow Edit  │                                │
-│        │           │         └──────┬──────┘                                │
-│        │           │                │                                       │
-│        │           ◀────────────────┘                                       │
-│        │           │                                                        │
-│        │           ▼                                                        │
-│        │    [API: POST /share]                                              │
-│        │           │                                                        │
-│        │           ▼                                                        │
-│        │    ┌───────────────────────┐                                       │
-│        │    │   BACKEND PROCESSING  │                                       │
-│        │    │                       │                                       │
-│        │    │  ┌─────────────────┐  │                                       │
-│        │    │  │ Queue jobs for  │  │                                       │
-│        │    │  │ each platform   │  │                                       │
-│        │    │  └────────┬────────┘  │                                       │
-│        │    │           │           │                                       │
-│        │    │     ┌─────┴─────┐     │                                       │
-│        │    │     ▼           ▼     │                                       │
-│        │    │  ┌───────┐  ┌───────┐ │                                       │
-│        │    │  │Twitter│  │LinkedIn│ │                                      │
-│        │    │  │ API   │  │  API  │ │                                       │
-│        │    │  └───┬───┘  └───┬───┘ │                                       │
-│        │    │      │          │     │                                       │
-│        │    └──────┼──────────┼─────┘                                       │
-│        │           │          │                                             │
-│        │      ◇────┴────◇  ◇──┴───◇                                         │
-│        │    Success  Fail  Success Fail                                     │
-│        │       │       │      │      │                                      │
-│        │       └───┬───┘      └──┬───┘                                      │
-│        │           │             │                                          │
-│        │           └──────┬──────┘                                          │
-│        │                  │                                                 │
-│        │                  ▼                                                 │
-│        │    ┌───────────────────────┐                                       │
-│        │    │   Aggregate Results   │                                       │
-│        │    │   - Twitter: ✓        │                                       │
-│        │    │   - LinkedIn: ✗       │                                       │
-│        │    └───────────┬───────────┘                                       │
-│        │                │                                                   │
-│        │         ┌──────┴──────┐                                            │
-│        │         ▼             ▼                                            │
-│        │    ALL SUCCESS   PARTIAL/FAIL                                      │
-│        │         │             │                                            │
-│        │         ▼             ▼                                            │
-│        │    ┌─────────┐  ┌─────────────┐                                    │
-│        │    │ "Shared │  │ "Shared to  │                                    │
-│        │    │  to all │  │  Twitter.   │                                    │
-│        │    │  !"     │  │  LinkedIn   │                                    │
-│        │    └─────────┘  │  failed:    │                                    │
-│        │                 │  [Reason]"  │                                    │
-│        │                 │  [Retry]    │                                    │
-│        │                 └─────────────┘                                    │
-│        │                                                                    │
-│    (End: User informed of result)                                           │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  S(["Start: user on content page"]) --> B["Click Share button"]
+  B --> LA["Load connected accounts<br/>API: GET /user/connections"]
+  LA --> HA{"Has accounts?"}
+  HA -->|No| CP["Show 'Connect account' prompt"]
+  HA -->|Yes| PM["Show platform selection modal<br/>Twitter (connected), LinkedIn (connected), Facebook (not connected)"]
+  PM --> US["User selects Twitter + LinkedIn"]
+  US --> VC["Validate content<br/>check length, check attachments"]
+  VC --> V{"Valid?"}
+  V -->|Invalid| ER["Show error: too long for Twitter"] --> AE["Allow edit"] --> VC
+  V -->|Valid| CS["Click Share / confirm"]
+  CS --> API["API: POST /share"]
+  API --> Q["Backend: queue a job per platform"]
+  Q --> TW["Twitter API"]
+  Q --> LI["LinkedIn API"]
+  TW --> AG["Aggregate results<br/>Twitter: OK, LinkedIn: failed"]
+  LI --> AG
+  AG --> R{"All succeeded?"}
+  R -->|Yes| OK["'Shared to all!'"]
+  R -->|Partial or fail| PF["'Shared to Twitter. LinkedIn failed: [reason]' with [Retry]"]
+  OK --> E(["End: user informed of result"])
+  PF --> E
+  CP --> E
 ```
+
+**How to read this diagram.** The flow branches at three decisions: whether the user has connected accounts, whether the content is valid for every selected platform, and whether every platform call succeeded. The partial-failure branch is the one most often forgotten: tell the user exactly which platform failed and offer a retry.
 
 ---
 
@@ -270,43 +185,23 @@ public class SocialShareService {
 
 ## 💪 Part 6: Flow Practice Exercises
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                         FLOW DESIGN EXERCISES                                ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Flow design exercises
 
-EXERCISE 1: Password Reset Flow
-Design the complete user flow for "Forgot Password" feature.
-Include: Email input, verification, new password creation, error cases
-
-EXERCISE 2: File Upload Flow
-Design the data flow for uploading a large file with progress tracking.
-Include: Chunking, progress updates, retry on failure, virus scan
-
-EXERCISE 3: Real-time Chat Flow
-Design the system flow for sending a message in a chat application.
-Include: WebSocket, message delivery, read receipts, offline handling
-
-EXERCISE 4: Shopping Cart Sync Flow
-Design the data flow for syncing shopping cart across devices.
-Include: Local storage, server sync, conflict resolution
-
-EXERCISE 5: Two-Factor Authentication Flow
-Design the complete flow for enabling and using 2FA.
-Include: Setup, QR code, backup codes, login with 2FA
-
-EXERCISE 6: Payment Processing Flow
-Design the complete system flow for processing a payment.
-Include: Validation, fraud check, payment gateway, retry, refund path
+1. **Password reset flow.** Design the complete user flow for "Forgot password". Include email input, verification, new-password creation and error cases.
+2. **File upload flow.** Design the data flow for uploading a large file with progress tracking. Include chunking, progress updates, retry on failure and a virus scan.
+3. **Real-time chat flow.** Design the system flow for sending a message in a chat application. Include WebSocket, message delivery, read receipts and offline handling.
+4. **Shopping cart sync flow.** Design the data flow for syncing a shopping cart across devices. Include local storage, server sync and conflict resolution.
+5. **Two-factor authentication flow.** Design the complete flow for enabling and using 2FA. Include setup, QR code, backup codes and login with 2FA.
+6. **Payment processing flow.** Design the complete system flow for processing a payment. Include validation, fraud check, payment gateway, retry and a refund path.
 
 For each exercise:
-1. Identify the goal
-2. List all actors
-3. Draw the happy path
-4. Add error cases
-5. Add data transformations
-6. Consider edge cases
-```
+
+1. Identify the goal.
+2. List all actors.
+3. Draw the happy path.
+4. Add error cases.
+5. Add data transformations.
+6. Consider edge cases.
 
 ---
 

@@ -38,10 +38,7 @@ A linked list where each node has TWO pointers:
 2. PREV - Reference to PREVIOUS node
 3. NEXT - Reference to NEXT node
 
-**Visual:** 
-
-null                                                           null
-↑                                                              ↑
+**Visual:**
 
 ```mermaid
 flowchart LR

@@ -37,36 +37,39 @@ The fastest skill you can build is: see a problem → immediately know which pat
 
 ## 🔑 Step 2: Check the Input Type
 
-```
-Input is ARRAY?
-  ├── Sorted? → Binary Search / Two Pointers
-  ├── Unsorted, find pairs? → HashMap O(n) or Sort+TwoPtr O(n log n)
-  ├── Window problem? → Sliding Window
-  └── Max/min subarray? → Kadane's
+**Input is ARRAY?**
 
-Input is STRING?
-  ├── Substring constraints? → Sliding Window
-  ├── Frequency? → int[26] or HashMap
-  ├── Prefix/suffix? → String DP
-  └── Pattern matching? → KMP / Rolling Hash
+- Sorted? → Binary Search / Two Pointers
+- Unsorted, find pairs? → HashMap O(n) or Sort+TwoPtr O(n log n)
+- Window problem? → Sliding Window
+- Max/min subarray? → Kadane's
 
-Input is TREE?
-  ├── Path problems? → DFS
-  ├── Level problems? → BFS
-  └── BST + ordered? → Inorder traversal
+**Input is STRING?**
 
-Input is GRAPH?
-  ├── Shortest path (unweighted)? → BFS
-  ├── All paths / connected? → DFS
-  ├── Shortest path (weighted)? → Dijkstra's (Heap)
-  └── No cycles guaranteed? → Topological Sort
+- Substring constraints? → Sliding Window
+- Frequency? → int[26] or HashMap
+- Prefix/suffix? → String DP
+- Pattern matching? → KMP / Rolling Hash
 
-Input is LINKED LIST?
-  ├── Cycle? → Fast/Slow Pointers
-  ├── Nth from end? → Gap of N (Fast/Slow)
-  ├── Middle? → Fast/Slow
-  └── Reverse? → 3-pointer iterative
-```
+**Input is TREE?**
+
+- Path problems? → DFS
+- Level problems? → BFS
+- BST + ordered? → Inorder traversal
+
+**Input is GRAPH?**
+
+- Shortest path (unweighted)? → BFS
+- All paths / connected? → DFS
+- Shortest path (weighted)? → Dijkstra's (Heap)
+- No cycles guaranteed? → Topological Sort
+
+**Input is LINKED LIST?**
+
+- Cycle? → Fast/Slow Pointers
+- Nth from end? → Gap of N (Fast/Slow)
+- Middle? → Fast/Slow
+- Reverse? → 3-pointer iterative
 
 ## 🔑 Step 3: Check the Constraints
 

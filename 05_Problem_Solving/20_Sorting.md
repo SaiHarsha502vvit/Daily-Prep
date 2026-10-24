@@ -51,34 +51,29 @@ Sorting **a hand of cards** before looking for runs.
 ---
 
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│               SORTING PROBLEMS FUNDAMENTALS                     │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  WHY SORTING MATTERS:                                           │
-│  - Foundation for Binary Search, Two Pointers, Merge patterns   │
-│  - ~30% of interview problems need sorting as a preprocessing   │
-│  - Understanding sort internals = understanding divide & conquer│
-│                                                                 │
-│  THE 4 SORTING FAMILIES:                                        │
-│  ┌──────────────┬───────────────┬────────────┬────────────────┐ │
-│  │ Comparison   │ D&C           │ Non-Compare│ Hybrid         │ │
-│  ├──────────────┼───────────────┼────────────┼────────────────┤ │
-│  │ Bubble O(n²) │ Merge O(nlogn)│ Counting   │ TimSort        │ │
-│  │ Selection    │ Quick O(nlogn)│ Radix      │ IntroSort      │ │
-│  │ Insertion    │ Heap  O(nlogn)│ Bucket     │ BlockSort       ││
-│  └──────────────┴───────────────┴────────────┴────────────────┘ │
-│                                                                 │
-│  DECISION FRAMEWORK:                                            │
-│  • Nearly sorted? → Insertion Sort O(n)                         │
-│  • Need stable? → Merge Sort                                    │
-│  • Need in-place? → Quick Sort / Heap Sort                      │
-│  • Small range integers? → Counting Sort O(n+k)                 │
-│  • Linked list? → Merge Sort (no random access needed)          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+### Sorting Problems Fundamentals
+
+**WHY Sorting Matters**:
+
+- Foundation for Binary Search, Two Pointers, Merge patterns
+- ~30% of interview problems need sorting as a preprocessing
+- Understanding sort internals = understanding divide & conquer
+
+**The 4 Sorting Families**:
+
+| Comparison | D&C | Non-Compare | Hybrid |
+| --- | --- | --- | --- |
+| Bubble O(n²) | Merge O(nlogn) | Counting | TimSort |
+| Selection | Quick O(nlogn) | Radix | IntroSort |
+| Insertion | Heap  O(nlogn) | Bucket | BlockSort |
+
+**Decision Framework**:
+
+- Nearly sorted? → Insertion Sort O(n)
+- Need stable? → Merge Sort
+- Need in-place? → Quick Sort / Heap Sort
+- Small range integers? → Counting Sort O(n+k)
+- Linked list? → Merge Sort (no random access needed)
 
 
 ### 5. Check yourself

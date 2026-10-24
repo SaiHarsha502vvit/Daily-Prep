@@ -6,37 +6,35 @@
 
 ## Visual Concept
 
+### Backtracking visualisation
+
+Problem: generate all subsets of `[1, 2, 3]`. The decision tree includes or excludes each element in turn.
+
+```mermaid
+flowchart TD
+  R["[]"] -->|include 1| A["[1]"]
+  R -->|exclude 1| B["[]"]
+  A -->|include 2| A1["[1,2]"]
+  A -->|exclude 2| A2["[1]"]
+  B -->|include 2| B1["[2]"]
+  B -->|exclude 2| B2["[]"]
+  A1 -->|include 3| L1["[1,2,3]"]
+  A1 -->|exclude 3| L2["[1,2]"]
+  A2 -->|include 3| L3["[1,3]"]
+  A2 -->|exclude 3| L4["[1]"]
+  B1 -->|include 3| L5["[2,3]"]
+  B1 -->|exclude 3| L6["[2]"]
+  B2 -->|include 3| L7["[3]"]
+  B2 -->|exclude 3| L8["[]"]
 ```
-                  BACKTRACKING VISUALIZATION
-──────────────────────────────────────────────────
 
-Problem: Generate all subsets of [1, 2, 3]
+**How to read this diagram.** The leaves are all 8 subsets.
 
-Decision tree (include or exclude each element):
+**The backtracking pattern**
 
-                          []
-                         /  \
-                 include 1   exclude 1
-                       /       \
-                    [1]        []
-                   /   \      /   \
-                 +2    -2   +2    -2
-                /       \   /       \
-             [1,2]     [1] [2]      []
-            /    \     / \  / \    / \
-          +3    -3  +3 -3 +3 -3 +3 -3
-         /        \
-    [1,2,3]    [1,2]  [1,3] [1] [2,3] [2] [3] []
-
-Leaf nodes = all 8 subsets!
-
-BACKTRACKING PATTERN:
-┌────────────────────────────────────────────────────────────────────┐
-│ 1. CHOOSE: Make a choice (add element to current path)             │
-│ 2. EXPLORE: Recurse with this choice                               │
-│ 3. UNCHOOSE: Remove the choice (backtrack) to try other options    │
-└────────────────────────────────────────────────────────────────────┘
-```
+1. **Choose:** make a choice (add an element to the current path).
+2. **Explore:** recurse with this choice.
+3. **Unchoose:** remove the choice (backtrack) to try the other options.
 
 ## Template: Generate All Subsets
 

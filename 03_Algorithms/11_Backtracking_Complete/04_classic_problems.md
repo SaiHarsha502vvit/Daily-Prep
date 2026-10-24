@@ -405,27 +405,23 @@ for (int end = 0; end < n; end++) {
 
 ### Quick Classification
 
-```
-┌───────────────────────────────────────────────────────────────────┐
-│                  BACKTRACKING PROBLEM TYPES                       │
-├───────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  SUBSETS:                    PERMUTATIONS:                        │
-│  - Subsets I, II             - Permutations I, II                 │
-│  - Combination Sum 1-3       - Next Permutation                   │
-│  - Palindrome Partitioning   - Permutation Sequence               │
-│                                                                   │
-│  COMBINATIONS:               GRID/MATRIX:                         │
-│  - Combinations (n,k)        - N-Queens                           │
-│  - Letter Combinations       - Sudoku Solver                      │
-│  - Generate Parentheses      - Word Search                        │
-│                                                                   │
-│  STRING:                     PATH FINDING:                        │
-│  - Restore IP Addresses      - Path Sum II                        │
-│  - Word Break II             - All Paths from Source to Target    │
-│  - Decode Ways               - Unique Paths III                   │
-│                                                                   │
-└───────────────────────────────────────────────────────────────────┘
+**BACKTRACKING PROBLEM TYPES**
+
+```text
+SUBSETS:                    PERMUTATIONS:
+- Subsets I, II             - Permutations I, II
+- Combination Sum 1-3       - Next Permutation
+- Palindrome Partitioning   - Permutation Sequence
+
+COMBINATIONS:               GRID/MATRIX:
+- Combinations (n,k)        - N-Queens
+- Letter Combinations       - Sudoku Solver
+- Generate Parentheses      - Word Search
+
+STRING:                     PATH FINDING:
+- Restore IP Addresses      - Path Sum II
+- Word Break II             - All Paths from Source to Target
+- Decode Ways               - Unique Paths III
 ```
 
 ### Restore IP Addresses (LeetCode 93) ⭐⭐
@@ -540,25 +536,21 @@ private List<String> backtrack(String s, int start,
 
 ### The Decision Flow
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              WHICH PATTERN TO USE?                              │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  "Generate all subsets" → SUBSETS PATTERN                       │
-│      start = i + 1, every state valid                           │
-│                                                                 │
-│  "Generate all permutations" → PERMUTATIONS PATTERN             │
-│      Use visited[], iterate from 0                              │
-│                                                                 │
-│  "Find k numbers that sum to n" → COMBINATIONS PATTERN          │
-│      start = i + 1, size = k is base case                       │
-│                                                                 │
-│  "Can reuse elements" → start = i (not i + 1)                   │
-│                                                                 │
-│  "Has duplicates" → Sort first + skip condition                 │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**WHICH PATTERN TO USE?**
+
+```text
+"Generate all subsets" → SUBSETS PATTERN
+    start = i + 1, every state valid
+
+"Generate all permutations" → PERMUTATIONS PATTERN
+    Use visited[], iterate from 0
+
+"Find k numbers that sum to n" → COMBINATIONS PATTERN
+    start = i + 1, size = k is base case
+
+"Can reuse elements" → start = i (not i + 1)
+
+"Has duplicates" → Sort first + skip condition
 ```
 
 ### Skip Duplicates Cheat Sheet
@@ -576,16 +568,14 @@ Arrays.sort(nums);
 
 ### Complexity Analysis
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              TIME COMPLEXITIES                                  │
-├─────────────────────────────────────────────────────────────────┤
-│  Subsets:           O(n × 2^n)  - 2^n subsets, O(n) to copy     │
-│  Permutations:      O(n × n!)   - n! permutations, O(n) copy    │
-│  Combinations (k):  O(k × C(n,k))                               │
-│  N-Queens:          O(n!)       - roughly                       │
-│  Sudoku:            O(9^m)      - m = empty cells               │
-└─────────────────────────────────────────────────────────────────┘
+**TIME COMPLEXITIES**
+
+```text
+ Subsets:           O(n × 2^n)  - 2^n subsets, O(n) to copy
+ Permutations:      O(n × n!)   - n! permutations, O(n) copy
+ Combinations (k):  O(k × C(n,k))
+ N-Queens:          O(n!)       - roughly
+ Sudoku:            O(9^m)      - m = empty cells
 
 Space: O(n) for recursion stack (excluding output)
 ```
@@ -616,24 +606,20 @@ Space: O(n) for recursion stack (excluding output)
 
 ## Summary: Master These 3 Templates
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║              THE 3 ESSENTIAL TEMPLATES                        ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  1. SUBSETS (every state is answer)                           ║
-║     result.add(copy); // at start                             ║
-║     for i = start to n, start = i+1                           ║
-║                                                               ║
-║  2. PERMUTATIONS (full length is answer)                      ║
-║     if size == n: add;                                        ║
-║     for i = 0 to n, use visited[]                             ║
-║                                                               ║
-║  3. COMBINATIONS (fixed size k is answer)                     ║
-║     if size == k: add;                                        ║
-║     for i = start to n, start = i+1                           ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
+**THE 3 ESSENTIAL TEMPLATES**
+
+```text
+ 1. SUBSETS (every state is answer)
+    result.add(copy); // at start
+    for i = start to n, start = i+1
+
+ 2. PERMUTATIONS (full length is answer)
+    if size == n: add;
+    for i = 0 to n, use visited[]
+
+ 3. COMBINATIONS (fixed size k is answer)
+    if size == k: add;
+    for i = start to n, start = i+1
 
 All three share: CHOOSE → EXPLORE → UNCHOOSE
 ```
@@ -658,14 +644,17 @@ All three share: CHOOSE → EXPLORE → UNCHOOSE
 ## When Backtracking Breaks
 
 ### 1. Forgetting to Unchoose — State Leaks Between Branches
+
 **What breaks**: Adding an element to `currentPath` and recursing, but forgetting `currentPath.remove(currentPath.size()-1)` before the next branch. Result: subsequent branches inherit polluted state → wrong subsets/permutations.
 **Fix**: The choose/recurse/unchoose triple is atomic. Write all three before testing. Alternatively, pass a new list copy to each recursive call (cleaner but uses O(n) extra space per level).
 
 ### 2. Generating Duplicates from Duplicate Input
+
 **What breaks**: Subsets of `[1,1,2]` without deduplication produces `{1,2}` twice (once for each `1`). The backtracking tree visits both `1`s identically.
 **Fix**: Sort the input. Skip `nums[i]` if `i > start && nums[i] == nums[i-1]` within the same recursion level.
 
 ### 3. Pruning Too Late — Exponential Work Before Pruning
+
 **What breaks**: Generating a complete candidate and then checking validity at the leaf. For N-Queens, this means generating all N! arrangements and filtering — O(N! × N) instead of O(N!/(N/3)!) with diagonal pruning.
 **Fix**: Check constraints incrementally at each step (is this column/diagonal safe?) and prune the whole branch early.
 

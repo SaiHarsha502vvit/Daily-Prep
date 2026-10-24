@@ -141,15 +141,13 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 
 ## PART 0: THE MENTAL MODEL — "The Delegation Strategy"
 
-```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE REAL-WORLD ORIGIN                                                        │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ Roman emperor Julius Caesar famously used the strategy "divide et impera"    │
-│ (divide and rule) to defeat large enemy alliances by fighting them one small │
-│ tribe at a time. In computer science, John von Neumann applied this exact    │
-│ principle to sorting in 1945 to create Merge Sort.                           │
-└──────────────────────────────────────────────────────────────────────────────┘
+**THE REAL-WORLD ORIGIN**
+
+```text
+Roman emperor Julius Caesar famously used the strategy "divide et impera"
+(divide and rule) to defeat large enemy alliances by fighting them one small
+tribe at a time. In computer science, John von Neumann applied this exact
+principle to sorting in 1945 to create Merge Sort.
 ```
 
 ### The 5W+H Framework
@@ -232,160 +230,119 @@ int[][] matrix = new int[n][n];  // O(n²) space
 
 ### The General Method
 
+**Divide and conquer: complete understanding**
+
+### What is divide and conquer?
+
+A problem-solving paradigm that breaks a problem into **smaller, independent subproblems of the same type**, solves them recursively, then **combines** their solutions.
+
+**Historical context**
+
+- Named after the military strategy *divide et impera* ("divide and rule").
+- Merge sort, one of its best-known uses, dates to John von Neumann in 1945.
+- It is the foundation of many efficient algorithms.
+
+### What problem does it solve?
+
+**Core problem:** large problems that are too complex to solve directly.
+
+**Example: sorting 1 million numbers**
+
+- **Brute force:** compare all pairs, O(n²) = 10¹² comparisons.
+- **D&C (merge sort):** split, sort the halves, merge, O(n log n) ≈ 2 × 10⁷ comparisons.
+
+**Why does D&C work better?**
+
+- It reduces the problem size exponentially (n → n/2 → n/4 → ...).
+- Each level does O(n) work, but there are only log n levels.
+- Total: O(n) × O(log n) = O(n log n).
+
+**Real-world analogy.** Organizing a library of 1,000 books alphabetically:
+
+- One person doing everything: very slow.
+- Split the books in half, give each half to a helper, merge the results: faster.
+- Keep splitting until each person has about 10 books: fastest.
+
+### The three steps (how it works)
+
+1. **Divide:** break the problem into smaller subproblems of the same type. The subproblems must be **independent** (no overlap).
+2. **Conquer:** solve the subproblems recursively. The base case is a problem small enough to solve directly.
+3. **Combine:** merge the solutions to get the final answer. This is often where the "magic" happens.
+
+```mermaid
+flowchart TD
+  P["Original problem"] -->|"divide"| S1["Subproblem 1"]
+  P -->|"divide"| S2["Subproblem 2"]
+  S1 -->|"conquer"| R1["Solution 1"]
+  S2 -->|"conquer"| R2["Solution 2"]
+  R1 -->|"combine"| F["Final solution"]
+  R2 -->|"combine"| F
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    DIVIDE AND CONQUER - COMPLETE UNDERSTANDING               ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS DIVIDE AND CONQUER?                                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ A problem-solving paradigm that breaks a problem into SMALLER INDEPENDENT   │
-│ subproblems of the SAME TYPE, solves them recursively, then COMBINES        │
-│ their solutions.                                                            │
-│                                                                             │
-│ HISTORICAL CONTEXT:                                                         │
-│ - Named after military strategy "divide et impera" (divide and rule)        │
-│ - Formalized in computer science in 1960s                                   │
-│ - Foundation for many efficient algorithms                                  │
-└─────────────────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** The original problem is divided into two subproblems. Each is conquered (solved recursively) into its own solution, and the two solutions are combined into the final answer.
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES IT SOLVE?                                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ CORE PROBLEM: Large problems that are too complex to solve directly         │
-│                                                                             │
-│ EXAMPLE - Sorting 1 million numbers:                                        │
-│ BRUTE FORCE: Compare all pairs → O(n²) = 10¹² comparisons                   │
-│ D&C (Merge Sort): Split, sort halves, merge → O(n log n) = 2×10⁷            │
-│                                                                             │
-│ WHY DOES D&C WORK BETTER?                                                   │
-│ • Reduces problem size EXPONENTIALLY (n → n/2 → n/4 → ...)                  │
-│ • Each level does O(n) work, but only log(n) levels                         │
-│ • Total: O(n) × O(log n) = O(n log n)                                       │
-│                                                                             │
-│ REAL-WORLD ANALOGY:                                                         │
-│ Organizing a library of 1000 books alphabetically:                          │
-│ • One person doing everything: VERY SLOW                                    │
-│ • Split books in half, give each half to a helper, merge results: FASTER    │
-│ • Keep splitting until each person has ~10 books: FASTEST                   │
-└─────────────────────────────────────────────────────────────────────────────┘
+### When to use divide and conquer
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ THE THREE STEPS (HOW IT WORKS)                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ 1. DIVIDE:   Break problem into smaller subproblems of SAME TYPE            │
-│              Key: Subproblems must be INDEPENDENT (no overlap)              │
-│                                                                             │
-│ 2. CONQUER:  Solve subproblems recursively                                  │
-│              Base case: Problem small enough to solve directly              │
-│                                                                             │
-│ 3. COMBINE:  Merge solutions to get final answer                            │
-│              This is often where the "magic" happens                        │
-│                                                                             │
-│ ┌─────────────────────────────────────────┐                                 │
-│ │              ORIGINAL PROBLEM           │                                 │
-│ └───────────────────┬─────────────────────┘                                 │
-│                     │ DIVIDE                                                │
-│         ┌───────────┴───────────┐                                           │
-│         ▼                       ▼                                           │
-│ ┌───────────────┐       ┌───────────────┐                                   │
-│ │  SUBPROBLEM 1 │       │  SUBPROBLEM 2 │                                   │
-│ └───────┬───────┘       └───────┬───────┘                                   │
-│         │ CONQUER               │ CONQUER                                   │
-│         ▼                       ▼                                           │
-│ ┌───────────────┐       ┌───────────────┐                                   │
-│ │   SOLUTION 1  │       │   SOLUTION 2  │                                   │
-│ └───────┬───────┘       └───────┬───────┘                                   │
-│         │                       │                                           │
-│         └───────────┬───────────┘                                           │
-│                     │ COMBINE                                               │
-│                     ▼                                                       │
-│         ┌───────────────────────┐                                           │
-│         │    FINAL SOLUTION     │                                           │
-│         └───────────────────────┘                                           │
-└─────────────────────────────────────────────────────────────────────────────┘
+> [!TIP]
+> **Use D&C when:**
+>
+> - The problem can be broken into similar subproblems.
+> - The subproblems are independent (they don't share data or state).
+> - The solutions can be combined efficiently.
+> - The problem has a natural recursive structure.
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE DIVIDE AND CONQUER?                                             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ ✅ USE D&C WHEN:                                                             │
-│    • Problem can be broken into SIMILAR subproblems                         │
-│    • Subproblems are INDEPENDENT (don't share data/state)                   │
-│    • Solutions can be COMBINED efficiently                                  │
-│    • Problem has a NATURAL recursive structure                              │
-│                                                                             │
-│ ❌ DON'T USE D&C WHEN:                                                       │
-│    • Subproblems OVERLAP (use Dynamic Programming instead)                  │
-│    • Problem doesn't break into similar subproblems                         │
-│    • Combining solutions is as expensive as solving original                │
-│                                                                             │
-│ D&C vs DYNAMIC PROGRAMMING:                                                 │
-│ ┌───────────────────────────────────────────────────────────────────────┐   │
-│ │ Divide & Conquer          │ Dynamic Programming                       │   │
-│ ├───────────────────────────┼───────────────────────────────────────────┤   │
-│ │ Independent subproblems   │ Overlapping subproblems                   │   │
-│ │ Top-down recursive        │ Bottom-up iterative (usually)             │   │
-│ │ Merge Sort, Quick Sort    │ Fibonacci, Knapsack, LCS                  │   │
-│ │ No memoization needed     │ Memoization essential                     │   │
-│ └───────────────────────────┴───────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────────┘
+> [!WARNING]
+> **Don't use D&C when:**
+>
+> - The subproblems overlap (use dynamic programming instead).
+> - The problem doesn't break into similar subproblems.
+> - Combining solutions is as expensive as solving the original.
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ DIFFICULTIES & COMMON MISTAKES                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 1. CHOOSING WRONG BASE CASE:                                                │
-│    Wrong: if (n == 0) → causes infinite recursion for n=1                   │
-│    Right: if (n <= 1) → handles both 0 and 1                                │
-│                                                                             │
-│ 2. NOT REDUCING PROBLEM SIZE:                                               │
-│    Wrong: mergeSort(arr, 0, n) recursively with same range                  │
-│    Right: mergeSort(arr, 0, mid) and mergeSort(arr, mid+1, n)               │
-│                                                                             │
-│ 3. STACK OVERFLOW:                                                          │
-│    Problem: Too deep recursion (n = 10^6)                                   │
-│    Solution: Convert to iterative or increase stack size                    │
-│                                                                             │
-│ 4. INEFFICIENT COMBINE STEP:                                                │
-│    If combine is O(n²), overall becomes O(n² log n) - defeats purpose!      │
-│                                                                             │
-│ 5. OVERLAPPING SUBPROBLEMS (misusing D&C):                                  │
-│    Fibonacci with D&C → O(2ⁿ) because subproblems overlap                   │
-│    Solution: Use DP with memoization instead                                │
-└─────────────────────────────────────────────────────────────────────────────┘
+**D&C vs dynamic programming**
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ EXPECTED OUTPUTS & COMPLEXITY ANALYSIS                                      │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ RECURRENCE RELATION:                                                        │
-│ T(n) = aT(n/b) + f(n)                                                       │
-│ where:                                                                      │
-│   a = number of subproblems                                                 │
-│   b = size reduction factor                                                 │
-│   f(n) = work done outside recursion (divide + combine)                     │
-│                                                                             │
-│ COMMON D&C ALGORITHMS & THEIR COMPLEXITY:                                   │
-│ ┌────────────────────┬──────────┬───────────────────┬────────────────────┐  │
-│ │ Algorithm          │ a  │ b  │ f(n)  │ T(n)                            │  │
-│ ├────────────────────┼────┼────┼───────┼────────────────────────────────┤   │
-│ │ Binary Search      │ 1  │ 2  │ O(1)  │ O(log n)                        │  │
-│ │ Merge Sort         │ 2  │ 2  │ O(n)  │ O(n log n)                      │  │
-│ │ Quick Sort (avg)   │ 2  │ 2  │ O(n)  │ O(n log n)                      │  │
-│ │ Strassen's Matrix  │ 7  │ 2  │ O(n²) │ O(n^2.807) [log₂7]             │   │
-│ │ Karatsuba Multiply │ 3  │ 2  │ O(n)  │ O(n^1.585) [log₂3]             │   │
-│ └────────────────────┴────┴────┴───────┴────────────────────────────────┘   │
-│                                                                             │
-│ EXAMPLE OUTPUT (Merge Sort):                                                │
-│ Input:  [38, 27, 43, 3, 9, 82, 10]                                          │
-│ Divide: [38, 27, 43, 3] | [9, 82, 10]                                       │
-│ Divide: [38, 27] | [43, 3] | [9, 82] | [10]                                 │
-│ Conquer: [27, 38] | [3, 43] | [9, 82] | [10]                                │
-│ Combine: [3, 27, 38, 43] | [9, 10, 82]                                      │
-│ Output: [3, 9, 10, 27, 38, 43, 82]                                          │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+| Divide & conquer | Dynamic programming |
+| --- | --- |
+| Independent subproblems | Overlapping subproblems |
+| Top-down recursive | Bottom-up iterative (usually) |
+| Merge sort, quicksort | Fibonacci, knapsack, LCS |
+| No memoization needed | Memoization essential |
+
+### Difficulties and common mistakes
+
+1. **Choosing the wrong base case.** Wrong: `if (n == 0)` causes infinite recursion for `n = 1`. Right: `if (n <= 1)` handles both 0 and 1.
+2. **Not reducing the problem size.** Wrong: `mergeSort(arr, 0, n)` recursing with the same range. Right: `mergeSort(arr, 0, mid)` and `mergeSort(arr, mid+1, n)`.
+3. **Stack overflow.** Problem: recursion that is too deep (n = 10⁶ on a degenerate split). Solution: convert to iteration or increase the stack size.
+4. **An inefficient combine step.** If the combine is O(n²), the overall cost becomes O(n² log n), which defeats the purpose.
+5. **Overlapping subproblems (misusing D&C).** Fibonacci with plain D&C is O(2ⁿ) because the subproblems overlap. Use DP with memoization instead.
+
+### Expected outputs and complexity analysis
+
+**Recurrence relation:** `T(n) = a·T(n/b) + f(n)`, where:
+
+- `a` = number of subproblems,
+- `b` = size reduction factor,
+- `f(n)` = work done outside the recursion (divide + combine).
+
+**Common D&C algorithms and their complexity**
+
+| Algorithm | a | b | f(n) | T(n) |
+| --- | --- | --- | --- | --- |
+| Binary search | 1 | 2 | O(1) | O(log n) |
+| Merge sort | 2 | 2 | O(n) | O(n log n) |
+| Quicksort (average) | 2 | 2 | O(n) | O(n log n) |
+| Strassen's matrix multiply | 7 | 2 | O(n²) | O(n^2.807) [log₂7] |
+| Karatsuba multiply | 3 | 2 | O(n) | O(n^1.585) [log₂3] |
+
+**Example output (merge sort)**
+
+| Phase | State |
+| --- | --- |
+| Input | `[38, 27, 43, 3, 9, 82, 10]` |
+| Divide | `[38, 27, 43, 3]` \| `[9, 82, 10]` |
+| Divide | `[38, 27]` \| `[43, 3]` \| `[9, 82]` \| `[10]` |
+| Conquer | `[27, 38]` \| `[3, 43]` \| `[9, 82]` \| `[10]` |
+| Combine | `[3, 27, 38, 43]` \| `[9, 10, 82]` |
+| Output | `[3, 9, 10, 27, 38, 43, 82]` |
 
 🧠 **Mental Model**: See [11_Greedy_vs_DP_Decision](../14_Mental_Models/11_Greedy_vs_DP_Decision.md) — D&C vs DP decision framework
 
@@ -393,135 +350,128 @@ int[][] matrix = new int[n][n];  // O(n²) space
 
 ## Binary Search — Complete Understanding
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    BINARY SEARCH - COMPLETE UNDERSTANDING                    ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**Binary Search - Complete Understanding**
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS BINARY SEARCH?                                                       │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ A search algorithm that finds a target value in a SORTED array by            │
-│ repeatedly dividing the search interval in half.                             │
-│                                                                              │
-│ INVENTOR: While the concept is ancient, the first bug-free implementation    │
-│ took 16 years after the algorithm was published (1946-1962)!                 │
-│                                                                              │
-│ FUN FACT: Even experienced programmers often write buggy binary search.      │
-│ Jon Bentley found that 90% of professional programmers couldn't write        │
-│ a correct binary search in 2 hours!                                          │
-└──────────────────────────────────────────────────────────────────────────────┘
+### What IS Binary Search?
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES IT SOLVE?                                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ CORE PROBLEM: Finding an element in sorted data FAST                         │
-│                                                                              │
-│ LINEAR SEARCH: Check every element → O(n)                                    │
-│ BINARY SEARCH: Eliminate half each step → O(log n)                           │
-│                                                                              │
-│ DRAMATIC DIFFERENCE:                                                         │
-│ Array size 1,000,000:                                                        │
-│ • Linear: Up to 1,000,000 comparisons                                        │
-│ • Binary: Up to 20 comparisons (log₂ 1,000,000 ≈ 20)                         │
-│                                                                              │
-│ That's 50,000x fewer comparisons!                                            │
-│                                                                              │
-│ REAL-WORLD ANALOGY:                                                          │
-│ Dictionary lookup: You don't start from page 1!                              │
-│ • Open to middle                                                             │
-│ • Word comes before? Check first half                                        │
-│ • Word comes after? Check second half                                        │
-│ • Repeat until found                                                         │
-└──────────────────────────────────────────────────────────────────────────────┘
+A search algorithm that finds a target value in a SORTED array by  
+repeatedly dividing the search interval in half.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY DOES BINARY SEARCH WORK?                                                 │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ PREREQUISITE: Array MUST be sorted!                                          │
-│                                                                              │
-│ THE LOGIC:                                                                   │
-│ If array is sorted and middle element is:                                    │
-│ • Equal to target → FOUND!                                                   │
-│ • Greater than target → Target must be in LEFT half (all right are bigger)   │
-│ • Less than target → Target must be in RIGHT half (all left are smaller)     │
-│                                                                              │
-│ Each comparison eliminates HALF of remaining elements!                       │
-│ n → n/2 → n/4 → n/8 → ... → 1                                                │
-│ This takes log₂(n) steps                                                     │
-└──────────────────────────────────────────────────────────────────────────────┘
+INVENTOR: While the concept is ancient, the first bug-free implementation  
+took 16 years after the algorithm was published (1946-1962)!
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE BINARY SEARCH?                                                   │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ ✅ USE WHEN:                                                                  │
-│    • Data is SORTED (or can be sorted once, searched many times)             │
-│    • Random access is possible (arrays, not linked lists)                    │
-│    • Finding exact match                                                     │
-│    • Finding insertion point                                                 │
-│    • Finding first/last occurrence of a value                                │
-│    • Search space can be divided (not just arrays - see variations!)         │
-│                                                                              │
-│ ❌ DON'T USE WHEN:                                                            │
-│    • Data is unsorted and won't be searched again                            │
-│    • Data changes frequently (maintain sorted = expensive)                   │
-│    • Sequential access only (linked lists)                                   │
-│    • Very small arrays (linear search is fine for n < 10)                    │
-│                                                                              │
-│ INTERVIEW SIGNAL: "Find in sorted array" or "Search space" = BINARY SEARCH   │
-└──────────────────────────────────────────────────────────────────────────────┘
+FUN FACT: Even experienced programmers often write buggy binary search.  
+Jon Bentley found that 90% of professional programmers couldn't write  
+a correct binary search in 2 hours!
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ DIFFICULTIES & COMMON BUGS                                                   │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. INTEGER OVERFLOW IN MID CALCULATION:                                      │
-│    WRONG: int mid = (left + right) / 2;  // Can overflow!                    │
-│    RIGHT: int mid = left + (right - left) / 2;                               │
-│                                                                              │
-│ 2. INFINITE LOOP (Wrong termination):                                        │
-│    WRONG: while (left < right)  with mid = left + (right-left)/2             │
-│           If left=4, right=5: mid=4, never terminates!                       │
-│    RIGHT: Match loop condition with update logic                             │
-│                                                                              │
-│ 3. OFF-BY-ONE ERRORS:                                                        │
-│    When to use left = mid vs left = mid + 1?                                 │
-│    When to use right = mid vs right = mid - 1?                               │
-│    Solution: Think about whether mid could be the answer                     │
-│                                                                              │
-│ 4. EMPTY ARRAY:                                                              │
-│    Always check if array is empty before searching!                          │
-│                                                                              │
-│ 5. DUPLICATES:                                                               │
-│    Standard binary search finds ANY occurrence                               │
-│    For first/last, need modified versions (see below)                        │
-└──────────────────────────────────────────────────────────────────────────────┘
+### What Problem Does IT Solve?
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ EXPECTED OUTPUTS & COMPLEXITY                                                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ TIME COMPLEXITY:  O(log n) - halving each iteration                          │
-│ SPACE COMPLEXITY: O(1) iterative, O(log n) recursive                         │
-│                                                                              │
-│ OUTPUTS:                                                                     │
-│ • Found: Return index of target                                              │
-│ • Not found: Return -1 OR insertion point (depends on variant)               │
-│                                                                              │
-│ NUMBER OF COMPARISONS:                                                       │
-│ • Best case: 1 (target is at mid)                                            │
-│ • Worst case: ⌈log₂(n+1)⌉                                                    │
-│ • Average case: log₂(n) - 1                                                  │
-│                                                                              │
-│ ┌────────────────┬──────────────────────────────────────────────────────────┐│
-│ │ Array Size     │ Max Comparisons                                          ││
-│ ├────────────────┼──────────────────────────────────────────────────────────┤│
-│ │ 10             │ 4                                                        ││
-│ │ 100            │ 7                                                        ││
-│ │ 1,000          │ 10                                                       ││
-│ │ 1,000,000      │ 20                                                       ││
-│ │ 1,000,000,000  │ 30                                                       ││
-│ └────────────────┴──────────────────────────────────────────────────────────┘│
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+CORE PROBLEM: Finding an element in sorted data FAST
+
+LINEAR SEARCH: Check every element → O(n)  
+BINARY SEARCH: Eliminate half each step → O(log n)
+
+**Dramatic Difference**:
+
+Array size 1,000,000:
+- Linear: Up to 1,000,000 comparisons
+- Binary: Up to 20 comparisons (log₂ 1,000,000 ≈ 20)
+
+That's 50,000x fewer comparisons!
+
+**Real-world Analogy**:
+
+Dictionary lookup: You don't start from page 1!
+- Open to middle
+- Word comes before? Check first half
+- Word comes after? Check second half
+- Repeat until found
+
+### WHY Does Binary Search Work?
+
+PREREQUISITE: Array MUST be sorted!
+
+**The Logic**:
+
+If array is sorted and middle element is:
+- Equal to target → FOUND!
+- Greater than target → Target must be in LEFT half (all right are bigger)
+- Less than target → Target must be in RIGHT half (all left are smaller)
+
+Each comparison eliminates HALF of remaining elements!  
+n → n/2 → n/4 → n/8 → ... → 1  
+This takes log₂(n) steps
+
+### When to USE Binary Search?
+
+**✅ USE When**:
+
+- Data is SORTED (or can be sorted once, searched many times)
+- Random access is possible (arrays, not linked lists)
+- Finding exact match
+- Finding insertion point
+- Finding first/last occurrence of a value
+- Search space can be divided (not just arrays - see variations!)
+
+**❌ Don't USE When**:
+
+- Data is unsorted and won't be searched again
+- Data changes frequently (maintain sorted = expensive)
+- Sequential access only (linked lists)
+- Very small arrays (linear search is fine for n < 10)
+
+INTERVIEW SIGNAL: "Find in sorted array" or "Search space" = BINARY SEARCH
+
+### Difficulties & Common Bugs
+
+**1. Integer Overflow in MID Calculation**:
+
+WRONG: int mid = (left + right) / 2;  // Can overflow!  
+RIGHT: int mid = left + (right - left) / 2;
+
+2. INFINITE LOOP (Wrong termination):
+WRONG: while (left < right)  with mid = left + (right-left)/2  
+If left=4, right=5: mid=4, never terminates!  
+RIGHT: Match loop condition with update logic
+
+**3. Off-by-one Errors**:
+
+When to use left = mid vs left = mid + 1?  
+When to use right = mid vs right = mid - 1?  
+Solution: Think about whether mid could be the answer
+
+**4. Empty Array**:
+
+Always check if array is empty before searching!
+
+**5. Duplicates**:
+
+Standard binary search finds ANY occurrence  
+For first/last, need modified versions (see below)
+
+### Expected Outputs & Complexity
+
+TIME COMPLEXITY:  O(log n) - halving each iteration  
+SPACE COMPLEXITY: O(1) iterative, O(log n) recursive
+
+**Outputs**:
+
+- Found: Return index of target
+- Not found: Return -1 OR insertion point (depends on variant)
+
+**Number of Comparisons**:
+
+- Best case: 1 (target is at mid)
+- Worst case: ⌈log₂(n+1)⌉
+- Average case: log₂(n) - 1
+
+| Array Size | Max Comparisons |
+| --- | --- |
+| 10 | 4 |
+| 100 | 7 |
+| 1,000 | 10 |
+| 1,000,000 | 20 |
+| 1,000,000,000 | 30 |
 
 ```java
 // STANDARD BINARY SEARCH
@@ -903,19 +853,23 @@ T(n) = Θ(n¹ · (1 + ∫₁ⁿ u / u² du))
 ## When Divide & Conquer Breaks
 
 ### 1. Incorrect Base Case — Off-by-One or Missing Return
+
 **What breaks**: Merge sort / binary search missing the `lo >= hi` (or `lo == hi`) base case causes infinite recursion. Extremely common first-time bug: `while (lo < hi)` vs `while (lo <= hi)` produces different termination — one loses the last element.
 **Rule**: Prove the base case terminates and is correct before proving the recursive step. The invariant must hold *at* the base case, not just in the inductive step.
 
 ### 2. Overflow in `mid` Computation
+
 **What breaks**: `int mid = (lo + hi) / 2` overflows when `lo + hi > Integer.MAX_VALUE` (2.1 billion). Classic bug filed against JDK's own `Arrays.binarySearch()` in 2006, present since 1946 in the research literature.
 **Fix**: `int mid = lo + (hi - lo) / 2`. The subtraction stays bounded because `hi - lo <= Integer.MAX_VALUE`.
 **Reference**: Josh Bloch's "Nearly All Binary Searches and Mergesorts are Broken" (Google AI Blog, 2006).
 
 ### 3. Merge Step O(n) Ignored in Complexity Analysis
+
 **What breaks**: Students write T(n) = 2T(n/2) and forget the merge cost. The correct recurrence is T(n) = 2T(n/2) + O(n). Forgetting the merge makes the recurrence solve to O(n) — which contradicts the Ω(n log n) comparison sort lower bound.
 **Fix**: Always include the combine cost in the recurrence. For D&C correctness: conquer ≠ merge.
 
 ### 4. Strassen Practical Crossover
+
 **What breaks**: Strassen's O(n^2.807) matrix multiplication has a large constant factor and poor cache behaviour. For n < ~1000 it is *slower* than the O(n³) naive algorithm due to recursion overhead, extra memory, and cache misses.
 **Real usage**: BLAS/LAPACK use naive blocked multiplication for n < 512; Strassen (or Winograd variant) only kicks in for very large matrices. Using Strassen blindly for small matrices is a performance regression, not an optimization.
 

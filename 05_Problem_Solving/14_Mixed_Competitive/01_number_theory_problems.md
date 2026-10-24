@@ -6,22 +6,20 @@
 
 ## Problem 202: Sieve of Eratosthenes (HackerEarth Classic)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SIEVE OF ERATOSTHENES - Find all primes up to N               │
-├────────────────────────────────────────────────────────────────┤
-│  n = 30                                                        │
-│                                                                │
-│  Initial: 2  3  4  5  6  7  8  9 10 11 12 ... 30               │
-│                                                                │
-│  Mark multiples of 2: ✗4 ✗6 ✗8 ✗10 ✗12...                      │
-│  Mark multiples of 3: ✗9 ✗15 ✗21 ✗27...                        │
-│  Mark multiples of 5: ✗25...                                   │
-│                                                                │
-│  Primes: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29                    │
-│                                                                │
-│  Time: O(n log log n), Space: O(n)                             │
-└────────────────────────────────────────────────────────────────┘
+**SIEVE OF ERATOSTHENES - Find all primes up to N**
+
+```text
+n = 30
+
+Initial: 2  3  4  5  6  7  8  9 10 11 12 ... 30
+
+Mark multiples of 2: ✗4 ✗6 ✗8 ✗10 ✗12...
+Mark multiples of 3: ✗9 ✗15 ✗21 ✗27...
+Mark multiples of 5: ✗25...
+
+Primes: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29
+
+Time: O(n log log n), Space: O(n)
 ```
 
 **Solution:**
@@ -52,21 +50,19 @@ public List<Integer> sieveOfEratosthenes(int n) {
 
 ## Problem 203: Prime Factorization (Codeforces Style)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  PRIME FACTORIZATION - Find all prime factors                  │
-├────────────────────────────────────────────────────────────────┤
-│  n = 84                                                        │
-│                                                                │
-│  84 ÷ 2 = 42                                                   │
-│  42 ÷ 2 = 21                                                   │
-│  21 ÷ 3 = 7                                                    │
-│  7 ÷ 7 = 1                                                     │
-│                                                                │
-│  84 = 2² × 3 × 7                                               │
-│                                                                │
-│  Output: {2: 2, 3: 1, 7: 1}                                    │
-└────────────────────────────────────────────────────────────────┘
+**PRIME FACTORIZATION - Find all prime factors**
+
+```text
+n = 84
+
+84 ÷ 2 = 42
+42 ÷ 2 = 21
+21 ÷ 3 = 7
+7 ÷ 7 = 1
+
+84 = 2² × 3 × 7
+
+Output: {2: 2, 3: 1, 7: 1}
 ```
 
 **Solution:**
@@ -102,25 +98,23 @@ public Map<Integer, Integer> primeFactors(int n) {
 
 ## Problem 204: Modular Exponentiation (HackerEarth)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MODULAR EXPONENTIATION - Calculate (base^exp) % mod           │
-├────────────────────────────────────────────────────────────────┤
-│  base = 2, exp = 10, mod = 1000                                │
-│                                                                │
-│  Naive: 2^10 = 1024 → 1024 % 1000 = 24                         │
-│                                                                │
-│  Fast (Binary Exponentiation):                                 │
-│  2^10 = 2^8 × 2^2 = 256 × 4 = 1024                             │
-│                                                                │
-│  10 in binary = 1010                                           │
-│  2^1 = 2 (bit 1: skip)                                         │
-│  2^2 = 4 (bit 2: use) → result = 4                             │
-│  2^4 = 16 (bit 3: skip)                                        │
-│  2^8 = 256 (bit 4: use) → result = 4 × 256 = 1024              │
-│                                                                │
-│  Time: O(log exp)                                              │
-└────────────────────────────────────────────────────────────────┘
+**MODULAR EXPONENTIATION - Calculate (base^exp) % mod**
+
+```text
+base = 2, exp = 10, mod = 1000
+
+Naive: 2^10 = 1024 → 1024 % 1000 = 24
+
+Fast (Binary Exponentiation):
+2^10 = 2^8 × 2^2 = 256 × 4 = 1024
+
+10 in binary = 1010
+2^1 = 2 (bit 1: skip)
+2^2 = 4 (bit 2: use) → result = 4
+2^4 = 16 (bit 3: skip)
+2^8 = 256 (bit 4: use) → result = 4 × 256 = 1024
+
+Time: O(log exp)
 ```
 
 **Solution:**
@@ -149,21 +143,19 @@ public long modPow(long base, long exp, long mod) {
 
 ## Problem 205: GCD and LCM (Codeforces)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  GCD (Greatest Common Divisor) using Euclidean Algorithm       │
-├────────────────────────────────────────────────────────────────┤
-│  a = 48, b = 18                                                │
-│                                                                │
-│  48 = 18 × 2 + 12                                              │
-│  18 = 12 × 1 + 6                                               │
-│  12 = 6 × 2 + 0                                                │
-│                                                                │
-│  GCD(48, 18) = 6                                               │
-│                                                                │
-│  LCM(a, b) = (a × b) / GCD(a, b)                               │
-│  LCM(48, 18) = 864 / 6 = 144                                   │
-└────────────────────────────────────────────────────────────────┘
+**GCD (Greatest Common Divisor) using Euclidean Algorithm**
+
+```text
+a = 48, b = 18
+
+48 = 18 × 2 + 12
+18 = 12 × 1 + 6
+12 = 6 × 2 + 0
+
+GCD(48, 18) = 6
+
+LCM(a, b) = (a × b) / GCD(a, b)
+LCM(48, 18) = 864 / 6 = 144
 ```
 
 **Solution:**

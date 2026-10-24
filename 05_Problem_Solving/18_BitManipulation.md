@@ -50,27 +50,24 @@ A **panel of light switches**.
 ---
 
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              BIT MANIPULATION & MATH PATTERNS                   │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  BITS ARE THE ATOMS OF COMPUTATION                              │
-│                                                                 │
-│  Every integer in memory is already a sequence of bits.         │
-│  Bit operations are single CPU instructions — O(1) each,        │
-│  the fastest operations possible on any processor.              │
-│                                                                 │
-│   Decimal 13  →  Binary 1101                                    │
-│                        ↑↑↑↑                                     │
-│                  bit:  3210                                     │
-│                                                                 │
-│   13 = 1×2³ + 1×2² + 0×2¹ + 1×2⁰                                │
-│      = 8   +  4   +  0   +  1                                   │
-│                                                                 │
-│  INTERVIEW FREQUENCY: ~5-8% of coding problems                  │
-│  DIFFICULTY: Easy-Medium (tricks), Hard (bitmask DP)            │
-└─────────────────────────────────────────────────────────────────┘
+**BIT MANIPULATION & MATH PATTERNS**
+
+```text
+BITS ARE THE ATOMS OF COMPUTATION
+
+Every integer in memory is already a sequence of bits.
+Bit operations are single CPU instructions — O(1) each,
+the fastest operations possible on any processor.
+
+ Decimal 13  →  Binary 1101
+                      ↑↑↑↑
+                bit:  3210
+
+ 13 = 1×2³ + 1×2² + 0×2¹ + 1×2⁰
+    = 8   +  4   +  0   +  1
+
+INTERVIEW FREQUENCY: ~5-8% of coding problems
+DIFFICULTY: Easy-Medium (tricks), Hard (bitmask DP)
 ```
 
 

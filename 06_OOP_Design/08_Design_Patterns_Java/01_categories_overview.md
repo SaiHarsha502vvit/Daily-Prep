@@ -8,23 +8,22 @@
 
 Design patterns as a named discipline began with **Christopher Alexander's _A Pattern Language_ (1977)**, which described recurring design problems in architecture as named patterns with context, forces and a solution. **Kent Beck and Ward Cunningham carried the idea to software in 1987** ("Using Pattern Languages for Object-Oriented Programs", OOPSLA '87). **The Gang of Four (Gamma, Helm, Johnson, Vlissides) published _Design Patterns: Elements of Reusable Object-Oriented Software_ in 1994**, cataloguing 23 patterns in three categories (5 creational, 7 structural, 11 behavioural); it became the shared vocabulary. **POSA volume 1 (Buschmann et al., 1996)** added architectural patterns, and **POSA volume 2 (Schmidt et al., 2000)** added concurrency and networking patterns such as Reactor, which underlie servers like Netty. **Joshua Bloch's _Effective Java_ (Item 3)** recommends a single-element enum as the preferred Singleton in Java because the JVM guarantees one instance even under serialization and reflection. Later catalogues applied the idea at larger scales: Fowler's _Patterns of Enterprise Application Architecture_ (2002), Nygard's circuit breaker in _Release It!_ (2007), and the service-level patterns in Newman's _Building Microservices_ (2015).
 
-CREATIONAL (5) STRUCTURAL (7) BEHAVIORAL (11)
-How objects are How objects are How objects
-CREATED COMPOSED COMMUNICATE
-───────────── ───────────── ─────────────
-Singleton ★ Adapter ★ Strategy ★
-Factory Method ★ Decorator ★ Observer ★
-Abstract Factory Facade ★ Template Method ★
-Builder ★ Proxy ★ Iterator
-Prototype Composite Command
-Bridge Chain of Resp ★
-Flyweight State
-Mediator
-Memento
-Visitor
-Interpreter
+| Creational (5): how objects are **created** | Structural (7): how objects are **composed** | Behavioural (11): how objects **communicate** |
+| --- | --- | --- |
+| Singleton ★ | Adapter ★ | Strategy ★ |
+| Factory Method ★ | Decorator ★ | Observer ★ |
+| Abstract Factory | Facade ★ | Template Method ★ |
+| Builder ★ | Proxy ★ | Iterator |
+| Prototype | Composite | Command |
+| | Bridge | Chain of Responsibility ★ |
+| | Flyweight | State |
+| | | Mediator |
+| | | Memento |
+| | | Visitor |
+| | | Interpreter |
 
-★ = Most commonly asked in interviews / used in practice
+★ = most commonly asked in interviews and used in practice.
+
 
 ---
 
@@ -97,12 +96,10 @@ public class Logger {
 
 ### 2. Factory Method — Let Subclasses Decide
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Need to create objects without specifying exact class.     ║
-║  ANALOGY: You order "a pizza" — the kitchen decides which type.      ║
-║  USE: When a class can't anticipate which objects to create.         ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Need to create objects without specifying exact class.
+ANALOGY: You order "a pizza" — the kitchen decides which type.
+USE: When a class can't anticipate which objects to create.
 ```
 
 ```java
@@ -153,12 +150,10 @@ n.send("Your order has shipped!");
 
 ### 3. Builder — Complex Object Construction
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Constructor with too many parameters (telescoping).        ║
-║  ANALOGY: Ordering a customized burger — pick each component.        ║
-║  USE: Objects with many optional fields (HttpRequest, User, etc.)    ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Constructor with too many parameters (telescoping).
+ANALOGY: Ordering a customized burger — pick each component.
+USE: Objects with many optional fields (HttpRequest, User, etc.)
 ```
 
 ```java

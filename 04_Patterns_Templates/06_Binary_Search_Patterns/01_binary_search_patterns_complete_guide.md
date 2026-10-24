@@ -35,46 +35,43 @@ Time: O(log n) — From 1 billion → 30 comparisons
 
 ### Visual: Why Binary Search is Fast
 
-```
-Linear Search on 1,000,000 elements:
-┌────────────────────────────────────────────────────┐
-│ Worst case: 1,000,000 comparisons                  │
-│ Average: 500,000 comparisons                       │
-└────────────────────────────────────────────────────┘
+**Linear Search on 1,000,000 elements**
 
-Binary Search on 1,000,000 elements:
-┌────────────────────────────────────────────────────┐
-│ 1,000,000 → 500,000 → 250,000 → 125,000 →          │
-│ 62,500 → 31,250 → 15,625 → 7,812 → 3,906 →         │
-│ 1,953 → 976 → 488 → 244 → 122 → 61 →               │
-│ 30 → 15 → 7 → 3 → 1                                │
-│                                                    │
-│ Only ~20 comparisons! (log₂(1,000,000) ≈ 20)       │
-└────────────────────────────────────────────────────┘
+```text
+Worst case: 1,000,000 comparisons
+Average: 500,000 comparisons
+```
+
+**Binary Search on 1,000,000 elements**
+
+**1,000,000 → 500,000 → 250,000 → 125,000 →**
+
+```text
+62,500 → 31,250 → 15,625 → 7,812 → 3,906 →
+1,953 → 976 → 488 → 244 → 122 → 61 →
+30 → 15 → 7 → 3 → 1
+
+Only ~20 comparisons! (log₂(1,000,000) ≈ 20)
 ```
 
 ### Prerequisites for Binary Search
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│           BINARY SEARCH APPLICABILITY                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  You need ONE of these properties:                              │
-│                                                                 │
-│  1. SORTED ARRAY                                                │
-│     - Ascending or descending                                   │
-│     - Search for specific value or boundary                     │
-│                                                                 │
-│  2. MONOTONIC FUNCTION                                          │
-│     - f(x) is always increasing or always decreasing            │
-│     - Search for value where f(x) crosses threshold             │
-│                                                                 │
-│  3. SEARCH SPACE WITH BINARY PROPERTY                           │
-│     - Can eliminate half based on some condition                │
-│     - "Binary search on answer"                                 │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**BINARY SEARCH APPLICABILITY**
+
+```text
+You need ONE of these properties:
+
+1. SORTED ARRAY
+   - Ascending or descending
+   - Search for specific value or boundary
+
+2. MONOTONIC FUNCTION
+   - f(x) is always increasing or always decreasing
+   - Search for value where f(x) crosses threshold
+
+3. SEARCH SPACE WITH BINARY PROPERTY
+   - Can eliminate half based on some condition
+   - "Binary search on answer"
 ```
 
 ---

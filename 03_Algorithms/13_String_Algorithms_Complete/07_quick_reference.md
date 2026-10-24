@@ -6,46 +6,38 @@
 
 ## Algorithm Comparison
 
-```
-┌──────────────┬────────────┬───────────┬─────────────────────────────┐
-│  Algorithm   │   Time     │   Space   │        Best For             │
-├──────────────┼────────────┼───────────┼─────────────────────────────┤
-│  Naive       │ O(n*m)     │ O(1)      │ Very short patterns         │
-│  KMP         │ O(n+m)     │ O(m)      │ Single pattern, streaming   │
-│  Z-Algorithm │ O(n+m)     │ O(n+m)    │ Single pattern, intuitive   │
-│  Rabin-Karp  │ O(n+m) avg │ O(m)      │ Multiple patterns           │
-│  Trie        │ O(m) query │ O(total)  │ Prefix search, autocomplete │
-│  Suffix Array│ O(n log n) │ O(n)      │ All substring queries       │
-│  Manacher    │ O(n)       │ O(n)      │ Palindrome problems         │
-└──────────────┴────────────┴───────────┴─────────────────────────────┘
-```
+| Algorithm | Time | Space | Best For |
+| --- | --- | --- | --- |
+| Naive | O(n*m) | O(1) | Very short patterns |
+| KMP | O(n+m) | O(m) | Single pattern, streaming |
+| Z-Algorithm | O(n+m) | O(n+m) | Single pattern, intuitive |
+| Rabin-Karp | O(n+m) avg | O(m) | Multiple patterns |
+| Trie | O(m) query | O(total) | Prefix search, autocomplete |
+| Suffix Array | O(n log n) | O(n) | All substring queries |
+| Manacher | O(n) | O(n) | Palindrome problems |
 
 ## When to Use What
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              ALGORITHM SELECTION GUIDE                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  "Find pattern in text"                                         │
-│    → KMP or Z-algorithm (single pattern)                        │
-│    → Rabin-Karp (multiple patterns)                             │
-│                                                                 │
-│  "Check if prefix exists" / "Autocomplete"                      │
-│    → Trie                                                       │
-│                                                                 │
-│  "Longest palindrome"                                           │
-│    → Manacher's (O(n))                                          │
-│    → DP with memo (O(n²) but simpler)                           │
-│                                                                 │
-│  "Repeated substring" / "Count substrings"                      │
-│    → Rolling hash + Binary search                               │
-│    → Suffix array                                               │
-│                                                                 │
-│  "Is X a rotation of Y?"                                        │
-│    → KMP: search Y in X+X                                       │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**ALGORITHM SELECTION GUIDE**
+
+```text
+"Find pattern in text"
+  → KMP or Z-algorithm (single pattern)
+  → Rabin-Karp (multiple patterns)
+
+"Check if prefix exists" / "Autocomplete"
+  → Trie
+
+"Longest palindrome"
+  → Manacher's (O(n))
+  → DP with memo (O(n²) but simpler)
+
+"Repeated substring" / "Count substrings"
+  → Rolling hash + Binary search
+  → Suffix array
+
+"Is X a rotation of Y?"
+  → KMP: search Y in X+X
 ```
 
 ## Common String Tricks
@@ -110,27 +102,23 @@ Select **KMP** when you need a guaranteed O(n+m) bound and the pattern is known 
 
 Summary
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║            STRING ALGORITHMS - MASTER THESE                   ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  1. KMP - Pattern matching in O(n+m)                          ║
-║     Key: LPS array, never recheck matched characters          ║
-║                                                               ║
-║  2. RABIN-KARP - Rolling hash for multiple patterns           ║
-║     Key: Hash comparison, verify on match                     ║
-║                                                               ║
-║  3. Z-ALGORITHM - Alternative to KMP, more intuitive          ║
-║     Key: Z[i] = prefix match length at position i             ║
-║                                                               ║
-║  4. TRIE - Prefix search & autocomplete                       ║
-║     Key: Tree of characters, end-of-word markers              ║
-║                                                               ║
-║  Interview Tip: KMP is asked most often.                      ║
-║  Know how to build LPS and explain the skip logic.            ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
+**STRING ALGORITHMS - MASTER THESE**
+
+```text
+1. KMP - Pattern matching in O(n+m)
+   Key: LPS array, never recheck matched characters
+
+2. RABIN-KARP - Rolling hash for multiple patterns
+   Key: Hash comparison, verify on match
+
+3. Z-ALGORITHM - Alternative to KMP, more intuitive
+   Key: Z[i] = prefix match length at position i
+
+4. TRIE - Prefix search & autocomplete
+   Key: Tree of characters, end-of-word markers
+
+Interview Tip: KMP is asked most often.
+Know how to build LPS and explain the skip logic.
 ```
 
 **Pro Tip:** When explaining string algorithms in interviews, draw out the arrays (LPS, Z) step by step. Interviewers love to see you work through examples visually!
@@ -154,14 +142,17 @@ Summary
 ## When It Breaks -- String Algorithms
 
 ### 1. KMP — Wrong Failure Function Computation
+
 **What breaks**: Computing `fail[]` (partial match table) with off-by-one: starting at `fail[0] = -1` vs `fail[0] = 0` differs by convention. Code from two different KMP implementations can have inconsistent base cases, causing wrong shifts.
 **Fix**: Commit to one convention. Common: `fail[0] = 0` where `fail[i]` = length of longest proper prefix of `pat[0..i]` that is also a suffix. Verify by hand on `"ABACABA"`.
 
 ### 2. Rolling Hash — Collision Giving Wrong Results
+
 **What breaks**: Rabin-Karp compares hash values first, then the actual string only on match. If the hash modulus is small, many collisions occur. Rabin-Karp with `mod = 10⁹+7` has collision probability ≈ 1/10⁹ per comparison — negligible. Using `mod = 1000` causes ~1/1000 false positives and wrong match results.
 **Fix**: Use a large prime (10⁹+7 or 10¹⁸+9). For competitive programming, use double hashing (two different primes) to reduce collision probability to 1/(mod1 × mod2).
 
 ### 3. Trie — Not Marking End of Word
+
 **What breaks**: Inserting `"app"` and `"apple"`. Searching for `"app"` without an `isEnd` flag returns `false` (because the node for 'p' exists but isn't marked as a word ending) — the trie finds the prefix but can't distinguish prefix from complete word.
 **Fix**: Always set `node.isEnd = true` after the last character of each inserted word.
 

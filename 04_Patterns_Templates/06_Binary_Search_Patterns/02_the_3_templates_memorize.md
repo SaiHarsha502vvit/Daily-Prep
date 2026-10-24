@@ -96,29 +96,25 @@ Uses:
 
 ## Template Cheat Sheet
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              TEMPLATE QUICK REFERENCE                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  TEMPLATE 1: left <= right, left/right = mid ± 1                │
-│  Use for: Exact match                                           │
-│  Returns: Index of element or -1                                │
-│                                                                 │
-│  TEMPLATE 2: left < right, right = mid                          │
-│  Use for: First position >= target                              │
-│  Returns: Insert position (0 to n)                              │
-│                                                                 │
-│  TEMPLATE 3: left < right, left = mid + 1                       │
-│  Use for: First position > target                               │
-│  Returns: Insert position (0 to n)                              │
-│                                                                 │
-│  KEY DIFFERENCES:                                               │
-│  • while condition: <= for T1, < for T2/T3                      │
-│  • right init: length-1 for T1, length for T2/T3                │
-│  • mid assignment: right = mid for T2, left = mid+1 for T3      │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**TEMPLATE QUICK REFERENCE**
+
+```text
+TEMPLATE 1: left <= right, left/right = mid ± 1
+Use for: Exact match
+Returns: Index of element or -1
+
+TEMPLATE 2: left < right, right = mid
+Use for: First position >= target
+Returns: Insert position (0 to n)
+
+TEMPLATE 3: left < right, left = mid + 1
+Use for: First position > target
+Returns: Insert position (0 to n)
+
+KEY DIFFERENCES:
+• while condition: <= for T1, < for T2/T3
+• right init: length-1 for T1, length for T2/T3
+• mid assignment: right = mid for T2, left = mid+1 for T3
 ```
 
 ---

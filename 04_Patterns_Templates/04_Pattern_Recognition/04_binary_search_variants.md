@@ -392,41 +392,41 @@ public List<List<Integer>> subsets(int[] nums) {
 
 ## 🎯 WHEN TO USE WHAT
 
-```
-┌────────────────────────────────────────────────────────────┐
-│                    DECISION TREE                           │
-├────────────────────────────────────────────────────────────┤
-│                                                            │
-│  Is array SORTED?                                          │
-│  ├── YES → Binary Search / Two Pointers                    │
-│  └── NO → Continue...                                      │
-│                                                            │
-│  Need CONTIGUOUS subarray?                                 │
-│  ├── YES → Sliding Window / Prefix Sum                     │
-│  └── NO → Continue...                                      │
-│                                                            │
-│  Need to find PAIRS/COMPLEMENTS?                           │
-│  ├── YES → HashMap / Two Pointers (if sorted)              │
-│  └── NO → Continue...                                      │
-│                                                            │
-│  Is it a GRAPH problem?                                    │
-│  ├── YES:                                                  │
-│  │   ├── Shortest path → BFS (unweighted) / Dijkstra       │
-│  │   ├── Connected components → DFS / Union-Find           │
-│  │   ├── Cycle detection → DFS                             │
-│  │   └── Dependency order → Topological Sort               │
-│  └── NO → Continue...                                      │
-│                                                            │
-│  Need ALL possibilities?                                   │
-│  ├── YES → Backtracking                                    │
-│  └── NO → Continue...                                      │
-│                                                            │
-│  Ask for OPTIMAL (min/max/count)?                          │
-│  ├── YES → Dynamic Programming                             │
-│  └── NO → Try brute force first, then optimize             │
-│                                                            │
-└────────────────────────────────────────────────────────────┘
-```
+**DECISION TREE**
+
+**Is array SORTED?**
+
+- YES → Binary Search / Two Pointers
+- NO → Continue...
+
+**Need CONTIGUOUS subarray?**
+
+- YES → Sliding Window / Prefix Sum
+- NO → Continue...
+
+**Need to find PAIRS/COMPLEMENTS?**
+
+- YES → HashMap / Two Pointers (if sorted)
+- NO → Continue...
+
+**Is it a GRAPH problem?**
+
+- YES:
+  - Shortest path → BFS (unweighted) / Dijkstra
+  - Connected components → DFS / Union-Find
+  - Cycle detection → DFS
+  - Dependency order → Topological Sort
+- NO → Continue...
+
+**Need ALL possibilities?**
+
+- YES → Backtracking
+- NO → Continue...
+
+**Ask for OPTIMAL (min/max/count)?**
+
+- YES → Dynamic Programming
+- NO → Try brute force first, then optimize
 
 ---
 

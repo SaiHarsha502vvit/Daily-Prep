@@ -6,35 +6,31 @@
 
 ## Problem Categories
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              TWO POINTER PROBLEM MAP                            │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  PAIR FINDING (Opposite Direction):                             │
-│  • Two Sum II, 3Sum, 4Sum, 3Sum Closest                         │
-│  • Container With Most Water                                    │
-│                                                                 │
-│  PALINDROME/REVERSE:                                            │
-│  • Valid Palindrome I/II, Reverse String                        │
-│                                                                 │
-│  ARRAY MODIFICATION (Same Direction):                           │
-│  • Remove Duplicates I/II, Remove Element                       │
-│  • Move Zeroes, Sort Colors                                     │
-│                                                                 │
-│  LINKED LIST (Fast/Slow):                                       │
-│  • Cycle Detection I/II, Middle of List                         │
-│  • Find Duplicate Number, Happy Number                          │
-│                                                                 │
-│  MERGE OPERATIONS:                                              │
-│  • Merge Sorted Arrays, Intersection                            │
-│  • Compare Strings                                              │
-│                                                                 │
-│  ADVANCED:                                                      │
-│  • Trapping Rain Water, Partition Labels                        │
-│  • Boats to Save People                                         │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**TWO POINTER PROBLEM MAP**
+
+```text
+PAIR FINDING (Opposite Direction):
+• Two Sum II, 3Sum, 4Sum, 3Sum Closest
+• Container With Most Water
+
+PALINDROME/REVERSE:
+• Valid Palindrome I/II, Reverse String
+
+ARRAY MODIFICATION (Same Direction):
+• Remove Duplicates I/II, Remove Element
+• Move Zeroes, Sort Colors
+
+LINKED LIST (Fast/Slow):
+• Cycle Detection I/II, Middle of List
+• Find Duplicate Number, Happy Number
+
+MERGE OPERATIONS:
+• Merge Sorted Arrays, Intersection
+• Compare Strings
+
+ADVANCED:
+• Trapping Rain Water, Partition Labels
+• Boats to Save People
 ```
 
 ## Squares of a Sorted Array (LeetCode 977)
@@ -145,30 +141,26 @@ private int getNextValidIndex(String str, int index) {
 
 ### Pattern Selection Guide
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              WHICH TWO POINTER PATTERN?                         │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  "Find pair/triplet with sum"                                   │
-│    → Opposite direction (sorted array)                          │
-│                                                                 │
-│  "Remove/Move elements in-place"                                │
-│    → Same direction (reader-writer)                             │
-│                                                                 │
-│  "Detect cycle" or "Find middle"                                │
-│    → Fast & slow pointers                                       │
-│                                                                 │
-│  "Substring/Subarray with condition"                            │
-│    → Sliding window (same direction)                            │
-│                                                                 │
-│  "Merge/Compare two arrays"                                     │
-│    → Multi-array two pointers                                   │
-│                                                                 │
-│  "Maximize/Minimize something between two ends"                 │
-│    → Opposite direction with greedy                             │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**WHICH TWO POINTER PATTERN?**
+
+```text
+"Find pair/triplet with sum"
+  → Opposite direction (sorted array)
+
+"Remove/Move elements in-place"
+  → Same direction (reader-writer)
+
+"Detect cycle" or "Find middle"
+  → Fast & slow pointers
+
+"Substring/Subarray with condition"
+  → Sliding window (same direction)
+
+"Merge/Compare two arrays"
+  → Multi-array two pointers
+
+"Maximize/Minimize something between two ends"
+  → Opposite direction with greedy
 ```
 
 ### Two Pointer Templates
@@ -211,57 +203,49 @@ while (p1 < m && p2 < n) {
 
 ### Complexity Summary
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              TWO POINTER COMPLEXITIES                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Two Sum II (sorted):        O(n) time, O(1) space              │
-│  3Sum:                       O(n²) time, O(1) space             │
-│  4Sum:                       O(n³) time, O(1) space             │
-│  Container With Most Water:  O(n) time, O(1) space              │
-│  Trapping Rain Water:        O(n) time, O(1) space              │
-│  Remove Duplicates:          O(n) time, O(1) space              │
-│  Linked List Cycle:          O(n) time, O(1) space              │
-│  Merge Sorted Arrays:        O(m+n) time, O(1) space            │
-│                                                                 │
-│  Note: Two pointers often reduces O(n²) brute force to O(n)     │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**TWO POINTER COMPLEXITIES**
+
+```text
+Two Sum II (sorted):        O(n) time, O(1) space
+3Sum:                       O(n²) time, O(1) space
+4Sum:                       O(n³) time, O(1) space
+Container With Most Water:  O(n) time, O(1) space
+Trapping Rain Water:        O(n) time, O(1) space
+Remove Duplicates:          O(n) time, O(1) space
+Linked List Cycle:          O(n) time, O(1) space
+Merge Sorted Arrays:        O(m+n) time, O(1) space
+
+Note: Two pointers often reduces O(n²) brute force to O(n)
 ```
 
 ---
 
 ## Summary
 
-```
-┌───────────────────────────────────────────────────────────────┐
-│            TWO POINTERS - MASTER CHECKLIST                    │
-├───────────────────────────────────────────────────────────────┤
-│                                                               │
-│  1. IDENTIFY THE PATTERN                                      │
-│     - Pair with sum → Opposite direction                      │
-│     - In-place modify → Same direction (reader-writer)        │
-│     - Cycle/Middle → Fast & slow                              │
-│     - Merge/Compare → Multi-array                             │
-│                                                               │
-│  2. KEY INSIGHTS                                              │
-│     - SORTED array often enables two pointers                 │
-│     - Move pointer based on current state                     │
-│     - Think: "Can I eliminate options by moving pointer?"     │
-│                                                               │
-│  3. COMMON OPTIMIZATIONS                                      │
-│     - Skip duplicates after finding match                     │
-│     - Early termination when impossible                       │
-│     - Process from END when merging in-place                  │
-│                                                               │
-│  4. EDGE CASES                                                │
-│     - Empty array                                             │
-│     - Single element                                          │
-│     - All same elements                                       │
-│     - No valid answer exists                                  │
-│                                                               │
-└───────────────────────────────────────────────────────────────┘
+**TWO POINTERS - MASTER CHECKLIST**
+
+```text
+1. IDENTIFY THE PATTERN
+   - Pair with sum → Opposite direction
+   - In-place modify → Same direction (reader-writer)
+   - Cycle/Middle → Fast & slow
+   - Merge/Compare → Multi-array
+
+2. KEY INSIGHTS
+   - SORTED array often enables two pointers
+   - Move pointer based on current state
+   - Think: "Can I eliminate options by moving pointer?"
+
+3. COMMON OPTIMIZATIONS
+   - Skip duplicates after finding match
+   - Early termination when impossible
+   - Process from END when merging in-place
+
+4. EDGE CASES
+   - Empty array
+   - Single element
+   - All same elements
+   - No valid answer exists
 ```
 
 **Pro Tip:** When you see a problem asking about pairs, subarrays, or in-place operations on sorted/sequential data, think two pointers first!

@@ -8,25 +8,20 @@
 
 **Difficulty:** Easy | **Category:** Sliding Window
 
-```
-MAXIMUM SUM SUBARRAY OF SIZE K
-──────────────────────────────────────────────────
+**Maximum sum subarray of size K**
 
-Given array and integer k, find maximum sum of any contiguous subarray
-of size k.
+Given an array and an integer `k`, find the maximum sum of any contiguous subarray of size `k`.
 
-Input: arr = [2, 1, 5, 1, 3, 2], k = 3
-Output: 9
-Explanation: Subarray [5, 1, 3] has maximum sum = 9
+- **Input:** `arr = [2, 1, 5, 1, 3, 2]`, `k = 3`
+- **Output:** `9`
+- **Explanation:** the subarray `[5, 1, 3]` has the maximum sum, 9.
 
-Visual:
-[2, 1, 5, 1, 3, 2]
- └──┘  sum=8
-    └──┘  sum=7
-       └──┘  sum=9 ← MAX
-          └──┘  sum=6
-
-```
+| Window | Elements | Sum |
+| --- | --- | --- |
+| `arr[0..2]` | `[2, 1, 5]` | 8 |
+| `arr[1..3]` | `[1, 5, 1]` | 7 |
+| `arr[2..4]` | `[5, 1, 3]` | **9** ← max |
+| `arr[3..5]` | `[1, 3, 2]` | 6 |
 
 ```java
 public int maxSumSubarray(int[] arr, int k) {
@@ -51,18 +46,14 @@ public int maxSumSubarray(int[] arr, int k) {
 **LeetCode 643** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/maximum-average-subarray-i/](https://leetcode.com/problems/maximum-average-subarray-i/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MAXIMUM AVERAGE SUBARRAY I                                               ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find contiguous subarray of length k with maximum average value.         ║
-║                                                                           ║
-║  Input: nums = [1,12,-5,-6,50,3], k = 4                                   ║
-║  Output: 12.75                                                            ║
-║  Explanation: Max avg is (12-5-6+50)/4 = 51/4 = 12.75                     ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**MAXIMUM AVERAGE SUBARRAY I**
+
+```text
+Find contiguous subarray of length k with maximum average value.
+
+Input: nums = [1,12,-5,-6,50,3], k = 4
+Output: 12.75
+Explanation: Max avg is (12-5-6+50)/4 = 51/4 = 12.75
 ```
 
 ```java
@@ -86,18 +77,14 @@ public double findMaxAverage(int[] nums, int k) {
 **LeetCode 1343** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/number-of-sub-arrays-of-size-k-and-average-greater-than-or-equal-to-threshold/](https://leetcode.com/problems/number-of-sub-arrays-of-size-k-and-average-greater-than-or-equal-to-threshold/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  SUBARRAYS WITH AVG >= THRESHOLD                                          ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Count subarrays of size k where average >= threshold.                    ║
-║                                                                           ║
-║  Input: arr = [2,2,2,2,5,5,5,8], k = 3, threshold = 4                     ║
-║  Output: 3                                                                ║
-║  Explanation: [2,5,5], [5,5,5], [5,5,8] have avg >= 4                     ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**SUBARRAYS WITH AVG >= THRESHOLD**
+
+```text
+Count subarrays of size k where average >= threshold.
+
+Input: arr = [2,2,2,2,5,5,5,8], k = 3, threshold = 4
+Output: 3
+Explanation: [2,5,5], [5,5,5], [5,5,8] have avg >= 4
 ```
 
 ```java
@@ -122,39 +109,34 @@ public int numOfSubarrays(int[] arr, int k, int threshold) {
 
 **LeetCode 2461** | **Difficulty:** Medium | **Premium Problem**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MAX SUM OF DISTINCT SUBARRAYS WITH LENGTH K                              ║
-║  (LeetCode Premium - Full Problem Description)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find maximum sum among all subarrays of length k where ALL elements      ║
-║  are DISTINCT (no duplicates in window).                                  ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Example 1:                                                               ║
-║  Input: nums = [1,5,4,2,9,9,9], k = 3                                     ║
-║  Output: 15                                                               ║
-║  Explanation:                                                             ║
-║  [1,5,4] sum=10, all distinct ✓                                           ║
-║  [5,4,2] sum=11, all distinct ✓                                           ║
-║  [4,2,9] sum=15, all distinct ✓ ← MAX                                     ║
-║  [2,9,9] has duplicate 9, skip                                            ║
-║  [9,9,9] has duplicates, skip                                             ║
-║                                                                           ║
-║  Example 2:                                                               ║
-║  Input: nums = [4,4,4], k = 3                                             ║
-║  Output: 0                                                                ║
-║  Explanation: No subarray of length 3 has all distinct elements           ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  Constraints:                                                             ║
-║  - 1 <= k <= nums.length <= 10^5                                          ║
-║  - 1 <= nums[i] <= 10^5                                                   ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**MAX SUM OF DISTINCT SUBARRAYS WITH LENGTH K — (LeetCode Premium - Full Problem Description)**
+
+```text
+Find maximum sum among all subarrays of length k where ALL elements
+are DISTINCT (no duplicates in window).
+
+─────────────────────────────────────────────────────────────────────
+
+Example 1:
+Input: nums = [1,5,4,2,9,9,9], k = 3
+Output: 15
+Explanation:
+[1,5,4] sum=10, all distinct ✓
+[5,4,2] sum=11, all distinct ✓
+[4,2,9] sum=15, all distinct ✓ ← MAX
+[2,9,9] has duplicate 9, skip
+[9,9,9] has duplicates, skip
+
+Example 2:
+Input: nums = [4,4,4], k = 3
+Output: 0
+Explanation: No subarray of length 3 has all distinct elements
+
+─────────────────────────────────────────────────────────────────────
+
+Constraints:
+- 1 <= k <= nums.length <= 10^5
+- 1 <= nums[i] <= 10^5
 ```
 
 ```java

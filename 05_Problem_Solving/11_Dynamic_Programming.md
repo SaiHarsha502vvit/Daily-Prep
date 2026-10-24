@@ -108,24 +108,22 @@ State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + 
 
 ## 📚 SECTION 10: DYNAMIC PROGRAMMING PATTERNS
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    DP FUNDAMENTALS                              │
-├─────────────────────────────────────────────────────────────────┤
-│  KEY PATTERNS:                                                  │
-│  1. 1D DP: Single array/sequence                                │
-│  2. 2D DP: Two sequences or grid                                │
-│  3. Interval DP: Subarray/substring problems                    │
-│  4. State Machine DP: Multiple states                           │
-│  5. Knapsack: Selection problems                                │
-│                                                                 │
-│  APPROACH:                                                      │
-│  1. Define state: dp[i] = ?                                     │
-│  2. Find recurrence: dp[i] = f(dp[i-1], ...)                    │
-│  3. Base case: dp[0] = ?                                        │
-│  4. Build order: Bottom-up or Top-down                          │
-│  5. Optimize space if possible                                  │
-└─────────────────────────────────────────────────────────────────┘
+**DP FUNDAMENTALS**
+
+```text
+KEY PATTERNS:
+1. 1D DP: Single array/sequence
+2. 2D DP: Two sequences or grid
+3. Interval DP: Subarray/substring problems
+4. State Machine DP: Multiple states
+5. Knapsack: Selection problems
+
+APPROACH:
+1. Define state: dp[i] = ?
+2. Find recurrence: dp[i] = f(dp[i-1], ...)
+3. Base case: dp[0] = ?
+4. Build order: Bottom-up or Top-down
+5. Optimize space if possible
 ```
 
 ---

@@ -346,11 +346,15 @@ Adjacency list, overwhelmingly. Matrix: 10^9 × 10^9 × 1 bit = 10^18 bits ≈ 1
 
 **Graph**:
 
-```text
-0 ─── 1
-│     │
-3 ─── 2
+```mermaid
+flowchart LR
+  v0((0)) --- v1((1))
+  v1 --- v2((2))
+  v2 --- v3((3))
+  v3 --- v0
 ```
+
+**How to read this diagram.** A square: 0—1, 1—2, 2—3 and 3—0. Each vertex has exactly two neighbours.
 
 **Representation 1: adjacency matrix**
 

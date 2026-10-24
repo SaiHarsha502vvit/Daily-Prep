@@ -157,13 +157,15 @@ A B-tree of order $m$ (maximum children per node):
 
 #### Visualizing a B-Tree Node (Order 4)
 
-```text
-┌───────────────────────────────────────────┐
-│               [ 15 | 30 | 45 ]            │
-└──────┬───────────┬────────┬─────────┬─────┘
-       │           │        │         │
-    < 15       15-29      30-44      > 45
+```mermaid
+flowchart TD
+  n["15 | 30 | 45"] -->|"keys below 15"| c1["child 1"]
+  n -->|"15 to 29"| c2["child 2"]
+  n -->|"30 to 44"| c3["child 3"]
+  n -->|"45 and above"| c4["child 4"]
 ```
+
+**How to read this diagram.** A node with three keys has four children. Each child holds the keys that fall in the range between neighbouring keys.
 
 ---
 
@@ -185,24 +187,22 @@ In modern databases (MySQL InnoDB, PostgreSQL), **B+ Trees** universally replace
 
 Let's calculate capacity using a standard **4KB Disk Page**.
 
+**B+ TREE CAPACITY MATH (4KB Disk Page)**
+
 ```text
-┌─────────────────────────────────────────────────────────────┐
-│ B+ TREE CAPACITY MATH (4KB Disk Page)                       │
-├─────────────────────────────────────────────────────────────┤
-│ Page Size:     4096 bytes                                   │
-│ Key Size:      8 bytes (e.g., BIGINT UUID)                  │
-│ Pointer:       8 bytes (to child node)                      │
-│ Total/Entry:   16 bytes                                     │
-│                                                             │
-│ Branching Factor (m): 4096 / 16 = 256 children per node     │
-│                                                             │
-│ Level 1 (Root):   1 node      => 256 ranges                 │
-│ Level 2:          256 nodes   => 65,536 ranges              │
-│ Level 3:          65,536      => 16.7 Million ranges        │
-│ Level 4:          16.7M       => 4.2 Billion ranges         │
-│                                                             │
-│ RESULT: Finding 1 in 4.2 BILLION rows takes exactly 4 reads!│
-└─────────────────────────────────────────────────────────────┘
+Page Size:     4096 bytes
+Key Size:      8 bytes (e.g., BIGINT UUID)
+Pointer:       8 bytes (to child node)
+Total/Entry:   16 bytes
+
+Branching Factor (m): 4096 / 16 = 256 children per node
+
+Level 1 (Root):   1 node      => 256 ranges
+Level 2:          256 nodes   => 65,536 ranges
+Level 3:          65,536      => 16.7 Million ranges
+Level 4:          16.7M       => 4.2 Billion ranges
+
+RESULT: Finding 1 in 4.2 BILLION rows takes exactly 4 reads!
 ```
 
 ---

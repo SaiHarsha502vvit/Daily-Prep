@@ -43,33 +43,30 @@ public int singleNumber(int[] nums) {
 
 ## Problem #287: [Missing Number](https://leetcode.com/problems/missing-number/) (LC 268)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MISSING NUMBER — Array of [0..n] with one number missing      │
-├────────────────────────────────────────────────────────────────┤
-│                                                                │
-│  Input:  [3, 0, 1]   (n = 3, range [0..3])                     │
-│  Output: 2                                                     │
-│                                                                │
-│  APPROACH: XOR all indices [0..n] with all values.             │
-│  Paired index-value cancel, missing number remains.            │
-│                                                                │
-│  TRACE:                                                        │
-│    Index: 0  1  2  (plus n=3)                                  │
-│    Value: 3  0  1                                              │
-│                                                                │
-│    XOR of indices+n: 0 ^ 1 ^ 2 ^ 3                             │
-│    XOR of values:    3 ^ 0 ^ 1                                 │
-│    Combined: 0^1^2^3 ^ 3^0^1                                   │
-│            = (0^0) ^ (1^1) ^ (3^3) ^ 2                         │
-│            = 0 ^ 0 ^ 0 ^ 2 = 2  ✓                              │
-│                                                                │
-│  PROOF: Every number except the missing one appears as both    │
-│  an index and a value → cancels. The missing one appears only  │
-│  as an index → remains.  ∎                                     │
-│                                                                │
-│  Time: O(n)   Space: O(1)                                      │
-└────────────────────────────────────────────────────────────────┘
+**MISSING NUMBER — Array of [0..n] with one number missing**
+
+```text
+Input:  [3, 0, 1]   (n = 3, range [0..3])
+Output: 2
+
+APPROACH: XOR all indices [0..n] with all values.
+Paired index-value cancel, missing number remains.
+
+TRACE:
+  Index: 0  1  2  (plus n=3)
+  Value: 3  0  1
+
+  XOR of indices+n: 0 ^ 1 ^ 2 ^ 3
+  XOR of values:    3 ^ 0 ^ 1
+  Combined: 0^1^2^3 ^ 3^0^1
+          = (0^0) ^ (1^1) ^ (3^3) ^ 2
+          = 0 ^ 0 ^ 0 ^ 2 = 2  ✓
+
+PROOF: Every number except the missing one appears as both
+an index and a value → cancels. The missing one appears only
+as an index → remains.  ∎
+
+Time: O(n)   Space: O(1)
 ```
 
 **Full Solution:**
@@ -88,34 +85,31 @@ public int missingNumber(int[] nums) {
 
 ## Problem #288: [Single Number II](https://leetcode.com/problems/single-number-ii/) (LC 137)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SINGLE NUMBER II — Every element appears 3 times except one   │
-├────────────────────────────────────────────────────────────────┤
-│                                                                │
-│  Input:  [2, 2, 3, 2]                                          │
-│  Output: 3                                                     │
-│                                                                │
-│  XOR won't work (a^a^a = a, not 0)!                            │
-│                                                                │
-│  APPROACH: Count bits mod 3                                    │
-│  For each bit position (0 to 31):                              │
-│    Count how many numbers have that bit set.                   │
-│    If count % 3 ≠ 0, the unique number has that bit set.       │
-│                                                                │
-│  TRACE (bit-by-bit):                                           │
-│    nums = [2(10), 2(10), 3(11), 2(10)]                         │
-│                                                                │
-│    Bit 0: counts = 0+0+1+0 = 1.  1 % 3 = 1 → bit 0 is SET      │
-│    Bit 1: counts = 1+1+1+1 = 4.  4 % 3 = 1 → bit 1 is SET      │
-│    Result = 11₂ = 3  ✓                                         │
-│                                                                │
-│  PROOF: If a number appears 3 times, its contribution to each  │
-│  bit position is divisible by 3 → vanishes under mod 3.        │
-│  The unique number's bits remain.  ∎                           │
-│                                                                │
-│  Time: O(32n) = O(n)   Space: O(1)                             │
-└────────────────────────────────────────────────────────────────┘
+**SINGLE NUMBER II — Every element appears 3 times except one**
+
+```text
+Input:  [2, 2, 3, 2]
+Output: 3
+
+XOR won't work (a^a^a = a, not 0)!
+
+APPROACH: Count bits mod 3
+For each bit position (0 to 31):
+  Count how many numbers have that bit set.
+  If count % 3 ≠ 0, the unique number has that bit set.
+
+TRACE (bit-by-bit):
+  nums = [2(10), 2(10), 3(11), 2(10)]
+
+  Bit 0: counts = 0+0+1+0 = 1.  1 % 3 = 1 → bit 0 is SET
+  Bit 1: counts = 1+1+1+1 = 4.  4 % 3 = 1 → bit 1 is SET
+  Result = 11₂ = 3  ✓
+
+PROOF: If a number appears 3 times, its contribution to each
+bit position is divisible by 3 → vanishes under mod 3.
+The unique number's bits remain.  ∎
+
+Time: O(32n) = O(n)   Space: O(1)
 ```
 
 **Full Solution (Bit Counting):**
@@ -164,33 +158,30 @@ public int singleNumberStateMachine(int[] nums) {
 
 ## Problem #289: [Single Number III](https://leetcode.com/problems/single-number-iii/) (LC 260)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SINGLE NUMBER III — TWO elements appear once, rest twice      │
-├────────────────────────────────────────────────────────────────┤
-│                                                                │
-│  Input:  [1, 2, 1, 3, 2, 5]                                    │
-│  Output: [3, 5]                                                │
-│                                                                │
-│  STEP 1: XOR all → get xorAll = 3 ^ 5 = 6 (110)                │
-│          This is XOR of the two unique numbers.                │
-│                                                                │
-│  STEP 2: Find rightmost set bit of xorAll.                     │
-│          6 = 110 → rightmost set bit = 010 (bit 1)             │
-│          diff = xorAll & (-xorAll) = 6 & (-6) = 2              │
-│          This bit DIFFERS between the two unique numbers.      │
-│                                                                │
-│  STEP 3: Partition array into two groups based on that bit:    │
-│          Group A (bit 1 = 0): [1, 1, 3]  → XOR = 3             │
-│          Group B (bit 1 = 1): [2, 2, 5]  → XOR = 5             │
-│                                                                │
-│  PROOF: The two unique numbers differ in at least one bit.     │
-│  Using that bit to partition ensures they land in DIFFERENT    │
-│  groups. All duplicate pairs land in the SAME group (same      │
-│  bits). Each group reduces to the standard Single Number.  ∎   │
-│                                                                │
-│  Time: O(n)   Space: O(1)                                      │
-└────────────────────────────────────────────────────────────────┘
+**SINGLE NUMBER III — TWO elements appear once, rest twice**
+
+```text
+Input:  [1, 2, 1, 3, 2, 5]
+Output: [3, 5]
+
+STEP 1: XOR all → get xorAll = 3 ^ 5 = 6 (110)
+        This is XOR of the two unique numbers.
+
+STEP 2: Find rightmost set bit of xorAll.
+        6 = 110 → rightmost set bit = 010 (bit 1)
+        diff = xorAll & (-xorAll) = 6 & (-6) = 2
+        This bit DIFFERS between the two unique numbers.
+
+STEP 3: Partition array into two groups based on that bit:
+        Group A (bit 1 = 0): [1, 1, 3]  → XOR = 3
+        Group B (bit 1 = 1): [2, 2, 5]  → XOR = 5
+
+PROOF: The two unique numbers differ in at least one bit.
+Using that bit to partition ensures they land in DIFFERENT
+groups. All duplicate pairs land in the SAME group (same
+bits). Each group reduces to the standard Single Number.  ∎
+
+Time: O(n)   Space: O(1)
 ```
 
 **Full Solution:**

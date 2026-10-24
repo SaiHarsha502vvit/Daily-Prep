@@ -4,231 +4,174 @@
 > Page 5 of 5 in **19. Matrix / Grid — Complete Problem Guide**
 
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                   GRID TRAVERSAL PATTERNS — CHEAT SHEET                      ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  PATTERN              │ WHEN TO USE              │ KEY TEMPLATE              ║
-║  ─────────────────────┼──────────────────────────┼────────────────────       ║
-║  DFS Flood Fill       │ Connected components,    │ Recursive DFS with        ║
-║                       │ island counting          │ in-place marking          ║
-║                       │                          │                           ║
-║  Multi-source BFS     │ Simultaneous spread,     │ Enqueue ALL sources,      ║
-║                       │ shortest from any source │ BFS level-by-level        ║
-║                       │                          │                           ║
-║  Backtracking DFS     │ Path finding with        │ Mark → recurse →          ║
-║                       │ constraints (word search)│ unmark (restore)          ║
-║                       │                          │                           ║
-║  Border DFS/BFS       │ Surrounded regions,      │ Start from edges,         ║
-║                       │ ocean flow               │ work inward               ║
-║                       │                          │                           ║
-║  Spiral Traversal     │ Matrix output ordering   │ 4 boundaries:             ║
-║                       │                          │ top/bot/left/right        ║
-║                       │                          │                           ║
-║  Layer Rotation       │ Rotate 90°/180°/270°    │ Transpose + reverse        ║
-║                       │                          │                           ║
-║  State Encoding       │ In-place simultaneous    │ Encode old+new in         ║
-║                       │ updates (Game of Life)   │ same cell, finalize       ║
-║                       │                          │                           ║
-║  Min-Heap BFS         │ Minimax paths, 3D water  │ Priority queue,           ║
-║  (Dijkstra on Grid)   │ trapping, weighted grid  │ process lowest first      ║
-║                       │                          │                           ║
-║  Binary Search + BFS  │ "Minimum t such that     │ BS on answer,             ║
-║                       │  path exists at time t"  │ BFS to validate           ║
-║                       │                          │                           ║
-║  Union-Find on Grid   │ Dynamic connectivity,    │ Flatten 2D → 1D,          ║
-║                       │ merging islands          │ union adjacent cells      ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**GRID TRAVERSAL PATTERNS — CHEAT SHEET**
+
+| PATTERN | WHEN TO USE | KEY TEMPLATE |
+| --- | --- | --- |
+| DFS Flood Fill | Connected components, island counting | Recursive DFS with in-place marking |
+| Multi-source BFS | Simultaneous spread, shortest from any source | Enqueue ALL sources, BFS level-by-level |
+| Backtracking DFS | Path finding with constraints (word search) | Mark → recurse → unmark (restore) |
+| Border DFS/BFS | Surrounded regions, ocean flow | Start from edges, work inward |
+| Spiral Traversal | Matrix output ordering | 4 boundaries: top/bot/left/right |
+| Layer Rotation | Rotate 90°/180°/270° | Transpose + reverse |
+| State Encoding | In-place simultaneous updates (Game of Life) | Encode old+new in same cell, finalize |
+| Min-Heap BFS (Dijkstra on Grid) | Minimax paths, 3D water trapping, weighted grid | Priority queue, process lowest first |
+| Binary Search + BFS | "Minimum t such that path exists at time t" | BS on answer, BFS to validate |
+| Union-Find on Grid | Dynamic connectivity, merging islands | Flatten 2D → 1D, union adjacent cells |
+
+**DIRECTION ARRAYS — QUICK REFERENCE**
+
+```text
+4-DIRECTIONAL (Up, Down, Left, Right):
+───────────────────────────────────────
+int[] dr = {-1, 1, 0, 0};
+int[] dc = {0, 0, -1, 1};
+
+Alternative (array of pairs):
+int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1}};
+
+──────────────────────────────────────────────────────────────────────
+
+8-DIRECTIONAL (Including diagonals):
+─────────────────────────────────────
+int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
+int[] dc = {-1,  0,  1,-1, 1,-1, 0, 1};
+
+Alternative (nested loop, generates all 8):
+for (int di = -1; di <= 1; di++)
+    for (int dj = -1; dj <= 1; dj++)
+        if (di != 0 || dj != 0)  // skip (0,0) = self
+            process(r + di, c + dj);
+
+──────────────────────────────────────────────────────────────────────
+
+KNIGHT MOVES (chess):
+─────────────────────
+int[] dr = {-2,-2,-1,-1, 1, 1, 2, 2};
+int[] dc = {-1, 1,-2, 2,-2, 2,-1, 1};
+
+──────────────────────────────────────────────────────────────────────
+
+BOUNDARY CHECK (always use before accessing grid[nr][nc]):
+──────────────────────────────────────────────────────────
+boolean inBounds(int r, int c, int m, int n) {
+    return r >= 0 && r < m && c >= 0 && c < n;
+}
+
+──────────────────────────────────────────────────────────────────────
+
+2D → 1D INDEX MAPPING (for Union-Find, visited sets):
+──────────────────────────────────────────────────────
+int flatIndex = row * numCols + col;
+int row = flatIndex / numCols;
+int col = flatIndex % numCols;
 ```
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    DIRECTION ARRAYS — QUICK REFERENCE                        ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  4-DIRECTIONAL (Up, Down, Left, Right):                                      ║
-║  ───────────────────────────────────────                                     ║
-║  int[] dr = {-1, 1, 0, 0};                                                   ║
-║  int[] dc = {0, 0, -1, 1};                                                   ║
-║                                                                              ║
-║  Alternative (array of pairs):                                               ║
-║  int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1}};                                 ║
-║                                                                              ║
-║  ──────────────────────────────────────────────────────────────────────      ║
-║                                                                              ║
-║  8-DIRECTIONAL (Including diagonals):                                        ║
-║  ─────────────────────────────────────                                       ║
-║  int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};                                     ║
-║  int[] dc = {-1,  0,  1,-1, 1,-1, 0, 1};                                     ║
-║                                                                              ║
-║  Alternative (nested loop, generates all 8):                                 ║
-║  for (int di = -1; di <= 1; di++)                                            ║
-║      for (int dj = -1; dj <= 1; dj++)                                        ║
-║          if (di != 0 || dj != 0)  // skip (0,0) = self                       ║
-║              process(r + di, c + dj);                                        ║
-║                                                                              ║
-║  ──────────────────────────────────────────────────────────────────────      ║
-║                                                                              ║
-║  KNIGHT MOVES (chess):                                                       ║
-║  ─────────────────────                                                       ║
-║  int[] dr = {-2,-2,-1,-1, 1, 1, 2, 2};                                       ║
-║  int[] dc = {-1, 1,-2, 2,-2, 2,-1, 1};                                       ║
-║                                                                              ║
-║  ──────────────────────────────────────────────────────────────────────      ║
-║                                                                              ║
-║  BOUNDARY CHECK (always use before accessing grid[nr][nc]):                  ║
-║  ──────────────────────────────────────────────────────────                  ║
-║  boolean inBounds(int r, int c, int m, int n) {                              ║
-║      return r >= 0 && r < m && c >= 0 && c < n;                              ║
-║  }                                                                           ║
-║                                                                              ║
-║  ──────────────────────────────────────────────────────────────────────      ║
-║                                                                              ║
-║  2D → 1D INDEX MAPPING (for Union-Find, visited sets):                       ║
-║  ──────────────────────────────────────────────────────                      ║
-║  int flatIndex = row * numCols + col;                                        ║
-║  int row = flatIndex / numCols;                                              ║
-║  int col = flatIndex % numCols;                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**PROBLEM → PATTERN DECISION TREE**
+
+```text
+"Count connected components"          → DFS/BFS flood fill (LC 200)
+"Shortest path, unweighted grid"      → BFS (LC 1091, LC 542)
+"Simultaneous spread / minimum time"  → Multi-source BFS (LC 994)
+"Path exists with constraint?"        → Backtracking DFS (LC 79)
+"Border vs interior classification"   → Border DFS, reverse (LC 130)
+"Flow from multiple sources"          → Reverse BFS from edges (LC 417)
+"Output in spiral order"              → Boundary simulation (LC 54)
+"Rotate matrix"                       → Transpose + Reverse (LC 48)
+"Simultaneous state update"           → State encoding (LC 289)
+"Set row/col to zero"                 → First row/col markers (LC 73)
+"Minimax path / weighted shortest"    → Dijkstra min-heap (LC 778)
+"3D water trapping"                   → Min-heap from borders (LC 407)
+"Flip one cell, largest component"    → Label + merge (LC 827)
+"Reshape/transpose matrix"            → Index mapping (LC 566, 867)
+"Compute perimeter"                   → Neighbor counting (LC 463)
+"Color connected region"              → Flood fill DFS (LC 733)
 ```
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    PROBLEM → PATTERN DECISION TREE                           ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  "Count connected components"          → DFS/BFS flood fill (LC 200)         ║
-║  "Shortest path, unweighted grid"      → BFS (LC 1091, LC 542)               ║
-║  "Simultaneous spread / minimum time"  → Multi-source BFS (LC 994)           ║
-║  "Path exists with constraint?"        → Backtracking DFS (LC 79)            ║
-║  "Border vs interior classification"   → Border DFS, reverse (LC 130)        ║
-║  "Flow from multiple sources"          → Reverse BFS from edges (LC 417)     ║
-║  "Output in spiral order"              → Boundary simulation (LC 54)         ║
-║  "Rotate matrix"                       → Transpose + Reverse (LC 48)         ║
-║  "Simultaneous state update"           → State encoding (LC 289)             ║
-║  "Set row/col to zero"                 → First row/col markers (LC 73)       ║
-║  "Minimax path / weighted shortest"    → Dijkstra min-heap (LC 778)          ║
-║  "3D water trapping"                   → Min-heap from borders (LC 407)      ║
-║  "Flip one cell, largest component"    → Label + merge (LC 827)              ║
-║  "Reshape/transpose matrix"            → Index mapping (LC 566, 867)         ║
-║  "Compute perimeter"                   → Neighbor counting (LC 463)          ║
-║  "Color connected region"              → Flood fill DFS (LC 733)             ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**BFS TEMPLATE FOR GRIDS**
+
+```text
+int bfs(int[][] grid, int startR, int startC) {
+    int m = grid.length, n = grid[0].length;
+    boolean[][] visited = new boolean[m][n];
+    Queue<int[]> queue = new LinkedList<>();
+
+    queue.offer(new int[]{startR, startC});
+    visited[startR][startC] = true;  // ← MARK BEFORE ENQUEUE
+    int steps = 0;
+
+    int[] dr = {-1, 1, 0, 0};
+    int[] dc = {0, 0, -1, 1};
+
+    while (!queue.isEmpty()) {
+        int size = queue.size();      // Level-by-level
+        for (int i = 0; i < size; i++) {
+            int[] cell = queue.poll();
+            int r = cell[0], c = cell[1];
+
+            // Process cell (check if target, etc.)
+
+            for (int d = 0; d < 4; d++) {
+                int nr = r + dr[d], nc = c + dc[d];
+                if (nr >= 0 && nr < m && nc >= 0 && nc < n
+                    && !visited[nr][nc] && grid[nr][nc] == valid) {
+                    visited[nr][nc] = true;  // MARK HERE
+                    queue.offer(new int[]{nr, nc});
+                }
+            }
+        }
+        steps++;
+    }
+    return steps;
+}
 ```
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                         BFS TEMPLATE FOR GRIDS                               ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  int bfs(int[][] grid, int startR, int startC) {                             ║
-║      int m = grid.length, n = grid[0].length;                                ║
-║      boolean[][] visited = new boolean[m][n];                                ║
-║      Queue<int[]> queue = new LinkedList<>();                                ║
-║                                                                              ║
-║      queue.offer(new int[]{startR, startC});                                 ║
-║      visited[startR][startC] = true;  // ← MARK BEFORE ENQUEUE               ║
-║      int steps = 0;                                                          ║
-║                                                                              ║
-║      int[] dr = {-1, 1, 0, 0};                                               ║
-║      int[] dc = {0, 0, -1, 1};                                               ║
-║                                                                              ║
-║      while (!queue.isEmpty()) {                                              ║
-║          int size = queue.size();      // Level-by-level                     ║
-║          for (int i = 0; i < size; i++) {                                    ║
-║              int[] cell = queue.poll();                                      ║
-║              int r = cell[0], c = cell[1];                                   ║
-║                                                                              ║
-║              // Process cell (check if target, etc.)                         ║
-║                                                                              ║
-║              for (int d = 0; d < 4; d++) {                                   ║
-║                  int nr = r + dr[d], nc = c + dc[d];                         ║
-║                  if (nr >= 0 && nr < m && nc >= 0 && nc < n                  ║
-║                      && !visited[nr][nc] && grid[nr][nc] == valid) {         ║
-║                      visited[nr][nc] = true;  // MARK HERE                   ║
-║                      queue.offer(new int[]{nr, nc});                         ║
-║                  }                                                           ║
-║              }                                                               ║
-║          }                                                                   ║
-║          steps++;                                                            ║
-║      }                                                                       ║
-║      return steps;                                                           ║
-║  }                                                                           ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**DFS TEMPLATE FOR GRIDS**
+
+```text
+// Recursive DFS (flood fill style)
+void dfs(int[][] grid, int r, int c) {
+    if (r < 0 || r >= grid.length ||
+        c < 0 || c >= grid[0].length) return;  // Out of bounds
+    if (grid[r][c] != TARGET) return;           // Not valid cell
+
+    grid[r][c] = VISITED;  // Mark (in-place)
+
+    dfs(grid, r - 1, c);  // Up
+    dfs(grid, r + 1, c);  // Down
+    dfs(grid, r, c - 1);  // Left
+    dfs(grid, r, c + 1);  // Right
+}
+
+// Iterative DFS (avoids stack overflow on large grids)
+void dfsIterative(int[][] grid, int startR, int startC) {
+    Deque<int[]> stack = new ArrayDeque<>();
+    stack.push(new int[]{startR, startC});
+    grid[startR][startC] = VISITED;
+
+    int[] dr = {-1, 1, 0, 0};
+    int[] dc = {0, 0, -1, 1};
+
+    while (!stack.isEmpty()) {
+        int[] cell = stack.pop();
+        for (int d = 0; d < 4; d++) {
+            int nr = cell[0] + dr[d], nc = cell[1] + dc[d];
+            if (nr >= 0 && nr < grid.length &&
+                nc >= 0 && nc < grid[0].length &&
+                grid[nr][nc] == TARGET) {
+                grid[nr][nc] = VISITED;
+                stack.push(new int[]{nr, nc});
+            }
+        }
+    }
+}
 ```
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                         DFS TEMPLATE FOR GRIDS                               ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  // Recursive DFS (flood fill style)                                         ║
-║  void dfs(int[][] grid, int r, int c) {                                      ║
-║      if (r < 0 || r >= grid.length ||                                        ║
-║          c < 0 || c >= grid[0].length) return;  // Out of bounds             ║
-║      if (grid[r][c] != TARGET) return;           // Not valid cell           ║
-║                                                                              ║
-║      grid[r][c] = VISITED;  // Mark (in-place)                               ║
-║                                                                              ║
-║      dfs(grid, r - 1, c);  // Up                                             ║
-║      dfs(grid, r + 1, c);  // Down                                           ║
-║      dfs(grid, r, c - 1);  // Left                                           ║
-║      dfs(grid, r, c + 1);  // Right                                          ║
-║  }                                                                           ║
-║                                                                              ║
-║  // Iterative DFS (avoids stack overflow on large grids)                     ║
-║  void dfsIterative(int[][] grid, int startR, int startC) {                   ║
-║      Deque<int[]> stack = new ArrayDeque<>();                                ║
-║      stack.push(new int[]{startR, startC});                                  ║
-║      grid[startR][startC] = VISITED;                                         ║
-║                                                                              ║
-║      int[] dr = {-1, 1, 0, 0};                                               ║
-║      int[] dc = {0, 0, -1, 1};                                               ║
-║                                                                              ║
-║      while (!stack.isEmpty()) {                                              ║
-║          int[] cell = stack.pop();                                           ║
-║          for (int d = 0; d < 4; d++) {                                       ║
-║              int nr = cell[0] + dr[d], nc = cell[1] + dc[d];                 ║
-║              if (nr >= 0 && nr < grid.length &&                              ║
-║                  nc >= 0 && nc < grid[0].length &&                           ║
-║                  grid[nr][nc] == TARGET) {                                   ║
-║                  grid[nr][nc] = VISITED;                                     ║
-║                  stack.push(new int[]{nr, nc});                              ║
-║              }                                                               ║
-║          }                                                                   ║
-║      }                                                                       ║
-║  }                                                                           ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+**COMPLEXITY SUMMARY — ALL 18 PROBLEMS**
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                COMPLEXITY SUMMARY — ALL 18 PROBLEMS                          ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  #  │ Problem                     │ Time        │ Space   │ Pattern          ║
-║  ───┼─────────────────────────────┼─────────────┼─────────┼──────────────    ║
-║  E1 │ Flood Fill (733)            │ O(m·n)      │ O(m·n)  │ DFS fill         ║
-║  E2 │ Island Perimeter (463)      │ O(m·n)      │ O(1)    │ Count            ║
-║  E3 │ Reshape Matrix (566)        │ O(m·n)      │ O(m·n)  │ Index map        ║
-║  E4 │ Transpose Matrix (867)      │ O(m·n)      │ O(m·n)  │ Transform        ║
-║  M1 │ Number of Islands (200)     │ O(m·n)      │ O(m·n)  │ DFS flood        ║
-║  M2 │ Rotting Oranges (994)       │ O(m·n)      │ O(m·n)  │ Multi-BFS        ║
-║  M3 │ 01 Matrix (542)             │ O(m·n)      │ O(m·n)  │ Multi-BFS        ║
-║  M4 │ Spiral Matrix (54)          │ O(m·n)      │ O(1)    │ Boundary         ║
-║  M5 │ Rotate Image (48)           │ O(n²)       │ O(1)    │ Transpose+Rev    ║
-║  M6 │ Set Matrix Zeroes (73)      │ O(m·n)      │ O(1)    │ Marker trick     ║
-║  M7 │ Word Search (79)            │ O(m·n·3^L)  │ O(L)    │ Backtrack        ║
-║  M8 │ Surrounded Regions (130)    │ O(m·n)      │ O(m·n)  │ Border DFS       ║
-║  M9 │ Pacific Atlantic (417)      │ O(m·n)      │ O(m·n)  │ Reverse BFS      ║
-║  M10│ Game of Life (289)          │ O(m·n)      │ O(1)    │ State encode     ║
-║  H1 │ Shortest Path Binary (1091) │ O(n²)       │ O(n²)   │ BFS 8-dir        ║
-║  H2 │ Large Island (827)          │ O(n²)       │ O(n²)   │ Label+merge      ║
-║  H3 │ Swim Rising Water (778)     │ O(n²·log n) │ O(n²)   │ Dijkstra         ║
-║  H4 │ Trapping Rain II (407)      │ O(mn·log mn)│ O(m·n)  │ Heap border      ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+| # | Problem | Time | Space | Pattern |
+| --- | --- | --- | --- | --- |
+| E1<br>E2<br>E3<br>E4<br>M1<br>M2<br>M3<br>M4<br>M5<br>M6<br>M7<br>M8<br>M9<br>M10<br>H1<br>H2<br>H3<br>H4 | Flood Fill (733)<br>Island Perimeter (463)<br>Reshape Matrix (566)<br>Transpose Matrix (867)<br>Number of Islands (200)<br>Rotting Oranges (994)<br>01 Matrix (542)<br>Spiral Matrix (54)<br>Rotate Image (48)<br>Set Matrix Zeroes (73)<br>Word Search (79)<br>Surrounded Regions (130)<br>Pacific Atlantic (417)<br>Game of Life (289)<br>Shortest Path Binary (1091)<br>Large Island (827)<br>Swim Rising Water (778)<br>Trapping Rain II (407) | O(m·n)<br>O(m·n)<br>O(m·n)<br>O(m·n)<br>O(m·n)<br>O(m·n)<br>O(m·n)<br>O(m·n)<br>O(n²)<br>O(m·n)<br>O(m·n·3^L)<br>O(m·n)<br>O(m·n)<br>O(m·n)<br>O(n²)<br>O(n²)<br>O(n²·log n)<br>O(mn·log mn) | O(m·n)<br>O(1)<br>O(m·n)<br>O(m·n)<br>O(m·n)<br>O(m·n)<br>O(m·n)<br>O(1)<br>O(1)<br>O(1)<br>O(L)<br>O(m·n)<br>O(m·n)<br>O(1)<br>O(n²)<br>O(n²)<br>O(n²)<br>O(m·n) | DFS fill<br>Count<br>Index map<br>Transform<br>DFS flood<br>Multi-BFS<br>Multi-BFS<br>Boundary<br>Transpose+Rev<br>Marker trick<br>Backtrack<br>Border DFS<br>Reverse BFS<br>State encode<br>BFS 8-dir<br>Label+merge<br>Dijkstra<br>Heap border |
 
 ---
 

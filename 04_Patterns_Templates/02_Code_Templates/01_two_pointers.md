@@ -6,43 +6,40 @@
 
 ## Visual Concept
 
-```
-                  TWO POINTERS VISUALIZATION
-──────────────────────────────────────────────────
+### Two pointers visualisation
 
-TYPE 1: OPPOSITE ENDS (converging)
-───────────────────────────────────
-Use for: Two Sum (sorted), Palindrome check, Container with water
+**Type 1: opposite ends (converging)**
 
-[1, 2, 3, 4, 5, 6, 7, 8, 9]
- ↑                       ↑
-left                   right
- └─────────→   ←─────────┘
-      Move towards each other
+Use for: Two Sum (sorted), palindrome check, container with most water.
 
-─────────────────────────────────────────────────────────────────────
+| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Value | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+| Pointer | **left →** | | | | | | | | **← right** |
 
-TYPE 2: SAME DIRECTION (fast/slow)
-───────────────────────────────────
-Use for: Remove duplicates, Partition, Cycle detection
+Both pointers move towards each other.
 
-[1, 1, 2, 2, 2, 3, 4, 4, 5]
- ↑  ↑
-slow fast
- └──→──→──→──→
-      Both move same direction
+**Type 2: same direction (slow and fast)**
 
-─────────────────────────────────────────────────────────────────────
+Use for: remove duplicates, partition, cycle detection.
 
-TYPE 3: TWO ARRAYS
-─────────────────
-Use for: Merge sorted arrays, Find intersection
+| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Value | 1 | 1 | 2 | 2 | 2 | 3 | 4 | 4 | 5 |
+| Pointer | **slow →** | **fast →** | | | | | | | |
 
-Array1: [1, 3, 5, 7]     Array2: [2, 3, 6, 8]
-         ↑                        ↑
-        i                        j
- Compare arr1[i] vs arr2[j], move smaller pointer
-```
+Both pointers move in the same direction, at different speeds or under different conditions.
+
+**Type 3: two arrays**
+
+Use for: merge sorted arrays, find an intersection.
+
+| | Pointer | Elements |
+| --- | --- | --- |
+| `Array1` | `i` at index 0 | `[1, 3, 5, 7]` |
+| `Array2` | `j` at index 0 | `[2, 3, 6, 8]` |
+
+Compare `arr1[i]` with `arr2[j]` and move the pointer at the smaller value.
 
 ## Template: Two Sum (Sorted Array)
 
@@ -143,42 +140,18 @@ public boolean isPalindrome(String s) {
 
 ### Visual Concept
 
-```
-                  FIXED SLIDING WINDOW
-──────────────────────────────────────────────────
+### Fixed sliding window
 
-Problem: Find max sum of any subarray of size K=3
-Array: [2, 1, 5, 1, 3, 2]
+Problem: find the maximum sum of any subarray of size `K = 3` in `[2, 1, 5, 1, 3, 2]`.
 
-Step 1: Build first window of size K
-┌───────────────────────┐
-│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
-└───────────────────────┘
-└─────────┘
- window sum = 8
+| Step | Window | What changes | Window sum |
+| --- | --- | --- | --- |
+| 1. Build the first window of size K | `[2, 1, 5]` 1 3 2 | | 2 + 1 + 5 = 8 |
+| 2. Slide: remove leftmost, add rightmost | 2 `[1, 5, 1]` 3 2 | −2, +1 | 8 − 2 + 1 = 7 |
+| 3. Continue sliding | 2 1 `[5, 1, 3]` 2 | −1, +3 | 7 − 1 + 3 = **9** (max) |
+| 4. Continue | 2 1 5 `[1, 3, 2]` | −5, +2 | 9 − 5 + 2 = 6 |
 
-Step 2: Slide - Remove leftmost, Add rightmost
-    ┌─────────────┐
-│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
-    └─────────────┘
-    └─────────┘
- -2        +1
- window sum = 8 - 2 + 1 = 7
-
-Step 3: Continue sliding
-        ┌─────────────┐
-│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
-        └─────────────┘
- window sum = 7 - 1 + 3 = 9 ⭐ MAX
-
-Step 4: Continue
-            ┌─────────────┐
-│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
-            └─────────────┘
- window sum = 9 - 5 + 2 = 6
-
-Answer: Maximum sum = 9
-```
+**Answer:** maximum sum = 9.
 
 ### Template: Max Sum of Size K Subarray
 

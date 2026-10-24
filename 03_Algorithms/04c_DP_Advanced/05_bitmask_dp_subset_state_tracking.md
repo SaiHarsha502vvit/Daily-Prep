@@ -4,32 +4,26 @@
 > Page 5 of 7 in **Advanced DP Patterns**
 
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ BITMASK DP - COMPLETE GUIDE                                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ WHEN TO USE: Small n (≤ 20), need to track which elements are "used"            │
-│                                                                                 │
-│ BITMASK OPERATIONS:                                                             │
-│ ┌──────────────────────────────────────────────────────────────────────────┐    │
-│ │ Operation │ Code │ Example │                                                  │
-│ ├────────────────────────────┼─────────────────────┼───────────────────────┤    │
-│ │ Check if bit i is set │ (mask >> i) & 1 │ mask=5: bit 0,2 set │               │
-│ │ Set bit i │ mask | (1 << i) │ 5|2=7 (set bit 1) │                             │
-│ │ Clear bit i │ mask & ~(1 << i) │ 7&~2=5 (clear bit 1) │                       │
-│ │ Toggle bit i │ mask ^ (1 << i) │ 5^4=1 (toggle bit 2) │                       │
-│ │ Count set bits │ Integer.bitCount() │ bitCount(5)=2 │                         │
-│ │ Lowest set bit │ mask & (-mask) │ 12&(-12)=4 │                                │
-│ │ Clear lowest set bit │ mask & (mask-1) │ 12&11=8 │                            │
-│ │ Check if power of 2 │ (mask & (mask-1))==0│ isPow2(8)=true │                  │
-│ │ Iterate all subsets of mask│ See code below │ │                               │
-│ └──────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                 │
-│                                                                                 │
-│ TRAVELING SALESMAN PROBLEM (TSP):                                               │
-│ ──────────────────────────────────                                              │
-```
+## Bitmask DP: complete guide
+
+> [!TIP]
+> **When to use:** small `n` (≤ 20) where you need to track which elements are "used".
+
+### Bitmask operations
+
+| Operation | Code | Example |
+| --- | --- | --- |
+| Check if bit `i` is set | `(mask >> i) & 1` | `mask = 5`: bits 0 and 2 are set |
+| Set bit `i` | `mask \| (1 << i)` | `5 \| 2 = 7` (set bit 1) |
+| Clear bit `i` | `mask & ~(1 << i)` | `7 & ~2 = 5` (clear bit 1) |
+| Toggle bit `i` | `mask ^ (1 << i)` | `5 ^ 4 = 1` (toggle bit 2) |
+| Count set bits | `Integer.bitCount(mask)` | `bitCount(5) = 2` |
+| Lowest set bit | `mask & (-mask)` | `12 & (-12) = 4` |
+| Clear lowest set bit | `mask & (mask - 1)` | `12 & 11 = 8` |
+| Check if power of 2 | `(mask & (mask - 1)) == 0` | `isPow2(8) = true` (for `mask > 0`) |
+| Iterate all subsets of `mask` | see the loop below | |
+
+### Traveling salesman problem (TSP)
 
 ```java
 // dp[mask][i] = min cost to visit cities in mask, ending at city i
@@ -69,12 +63,7 @@ int tsp(int[][] dist) {
 }
 ```
 
-```
-│ │
-│ │
-│ ITERATING OVER ALL SUBSETS OF A MASK: │
-│ ───────────────────────────────────── │
-```
+### Iterating over all subsets of a mask
 
 ```java
 // Iterate all subsets of mask (including empty and mask itself)
@@ -88,12 +77,7 @@ for (int subset = mask; subset > 0; subset = (subset - 1) & mask) {
 // Loop generates: 5 → 4 → 1 → (stops, handle 0 separately)
 ```
 
-```
-│ │
-│ │
-│ ASSIGNMENT PROBLEM (HUNGARIAN ALTERNATIVE): │
-│ ─────────────────────────────────────────── │
-```
+### Assignment problem (bitmask alternative to the Hungarian algorithm)
 
 ```java
 // Assign n workers to n tasks, minimize total cost
@@ -117,11 +101,6 @@ int assignmentProblem(int[][] cost) {
 
     return dp[(1 << n) - 1];
 }
-```
-
-```
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

@@ -124,44 +124,37 @@ Finishing earliest leaves the most room for the rest; an exchange argument shows
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                 INTERVALS FUNDAMENTALS                           │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  AN INTERVAL = [start, end] representing a continuous range      │
-│                                                                  │
-│  WHY A DEDICATED PATTERN?                                        │
-│  Intervals appear in scheduling, calendars, bandwidth,           │
-│  resource allocation, genomics ... ~15 LC problems form a        │
-│  tight family where ONE core technique solves them all.          │
-│                                                                  │
-│  THE 6 INTERVAL RELATIONSHIPS between [a,b] and [c,d]:           │
-│                                                                  │
-│  1. No overlap (a before c):  a──b     c──d                      │
-│  2. Overlap (partial):        a────b                             │
-│                                  c────d                          │
-│  3. a contains c:             a────────b                         │
-│                                 c──d                             │
-│  4. c contains a:               a──b                             │
-│                               c────────d                         │
-│  5. Overlap (reverse):          a────b                           │
-│                               c────d                             │
-│  6. No overlap (c before a):  c──d     a──b                      │
-│                                                                  │
-│  KEY INSIGHT: Sort by start → reduces 6 cases to 2-3 checks.     │
-│                                                                  │
-│  DECISION TREE:                                                  │
-│  ┌── Merge overlapping?     → Merge Intervals (LC 56)            │
-│  ├── Insert into sorted?    → Insert Interval (LC 57)            │
-│  ├── Max simultaneous?      → Meeting Rooms II (LC 253)          │
-│  ├── Can I attend all?      → Meeting Rooms (LC 252)             │
-│  ├── Remove min to avoid?   → Non-overlapping Intervals (LC 435) │
-│  ├── Find intersection?     → Interval List Intersections(LC 986)│
-│  └── Min platforms/rooms?   → Sweep Line / Min Heap              │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+### Intervals fundamentals
+
+An **interval** is `[start, end]`, a continuous range.
+
+**Why a dedicated pattern?** Intervals appear in scheduling, calendars, bandwidth, resource allocation and genomics. About 15 LeetCode problems form a tight family where one core technique solves them all.
+
+**The six relationships between `[a, b]` and `[c, d]`**
+
+| # | Relationship | Picture |
+| --- | --- | --- |
+| 1 | No overlap (`a` before `c`) | `a──b` then `c──d` |
+| 2 | Partial overlap | `a────b` overlapping the start of `c────d` |
+| 3 | `a` contains `c` | `a────────b` around `c──d` |
+| 4 | `c` contains `a` | `c────────d` around `a──b` |
+| 5 | Partial overlap (reverse) | `c────d` overlapping the start of `a────b` |
+| 6 | No overlap (`c` before `a`) | `c──d` then `a──b` |
+
+> [!IMPORTANT]
+> **Key insight:** sort by start. That reduces the six cases to two or three checks.
+
+**Decision guide**
+
+| Question | Problem |
+| --- | --- |
+| Merge overlapping intervals? | Merge Intervals (LC 56) |
+| Insert into a sorted list? | Insert Interval (LC 57) |
+| Maximum simultaneous? | Meeting Rooms II (LC 253) |
+| Can I attend all? | Meeting Rooms (LC 252) |
+| Remove the minimum to avoid overlap? | Non-overlapping Intervals (LC 435) |
+| Find intersections? | Interval List Intersections (LC 986) |
+| Minimum platforms or rooms? | Sweep line or min-heap |
 
 ---
 
@@ -566,31 +559,26 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 
 ### 📋 Summary: the Interval Pattern Cheatsheet
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    INTERVAL PROBLEMS CHEATSHEET                         │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  PROBLEM TYPE        │ SORT BY  │ TECHNIQUE        │ LC#                │
-│  ════════════════════╪══════════╪══════════════════╪═══════════════════ │
-│  Merge overlapping   │ START    │ Linear scan      │ 56                 │
-│  Insert + merge      │ (sorted) │ 3-phase scan     │ 57                 │
-│  Can attend all?     │ START    │ Adjacent check   │ 252                │
-│  Min rooms needed    │ START    │ Min-Heap / Sweep │ 253                │
-│  Min removals        │ END      │ Greedy keep early│ 435                │
-│  List intersections  │ (sorted) │ Two pointers     │ 986                │
-│  Min arrows          │ END      │ Greedy groups    │ 452                │
-│  Employee free time  │ START    │ Merge + gaps     │ 759                │
-│                                                                         │
-│  GOLDEN RULES:                                                          │
-│  1. Sort by START for merge/overlap problems                            │
-│  2. Sort by END for greedy selection/removal problems                   │
-│  3. Overlap check: next.start ≤ curr.end (after sorting by start)       │
-│  4. For "max simultaneous": use Sweep Line or Min-Heap                  │
-│  5. Use Integer.compare() to avoid overflow in comparators              │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+**INTERVAL PROBLEMS CHEATSHEET**
+
+| Problem type | Sort by | Technique | LC # |
+| --- | --- | --- | --- |
+| Merge overlapping | Start | Linear scan | 56 |
+| Insert and merge | (already sorted) | Three-phase scan | 57 |
+| Can attend all? | Start | Adjacent check | 252 |
+| Min rooms needed | Start | Min-heap or sweep | 253 |
+| Min removals | End | Greedy: keep the earliest end | 435 |
+| List intersections | (already sorted) | Two pointers | 986 |
+| Min arrows | End | Greedy groups | 452 |
+| Employee free time | Start | Merge, then find gaps | 759 |
+
+**Golden rules**
+
+1. Sort by **start** for merge and overlap problems.
+2. Sort by **end** for greedy selection and removal problems.
+3. Overlap check: `next.start <= curr.end` (after sorting by start).
+4. For "max simultaneous", use a sweep line or a min-heap.
+5. Use `Integer.compare()` in comparators to avoid overflow.
 
 ---
 

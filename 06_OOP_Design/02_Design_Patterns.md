@@ -183,356 +183,296 @@ Section 3 = LeetCode design class problems.
 
 #### Diagram 1: Pattern Categories — Full Map
 
+**GoF design patterns — category map**
+
+```mermaid
+flowchart TB
+  ROOT["23 GoF patterns"] --> CR["Creational<br/>how to create objects"]
+  ROOT --> ST["Structural<br/>how to compose"]
+  ROOT --> BE["Behavioural<br/>how to communicate"]
+  CR --> c1["Singleton: one instance only"]
+  CR --> c2["Factory: create by type"]
+  CR --> c3["Builder: step-by-step construction"]
+  CR --> c4["Abstract Factory: family of related products"]
+  CR --> c5["Prototype: clone to create"]
+  ST --> s1["Adapter: convert an interface"]
+  ST --> s2["Decorator: add behaviour dynamically"]
+  ST --> s3["Proxy: control access, lazy or caching"]
+  ST --> s4["Facade: simple entry point to a subsystem"]
+  ST --> s5["Composite: tree of parts"]
+  BE --> b1["Observer: notify many"]
+  BE --> b2["Strategy: swap an algorithm"]
+  BE --> b3["Command: encapsulate a request, undo/redo"]
+  BE --> b4["State: behaviour by internal state"]
+  BE --> b5["Template Method: algorithm skeleton"]
+  classDef r fill:#e5e7eb,stroke:#6b7280,color:#111;
+  classDef c fill:#dbeafe,stroke:#2563eb,color:#0c1a4a;
+  classDef s fill:#dcfce7,stroke:#16a34a,color:#052e16;
+  classDef b fill:#fef3c7,stroke:#d97706,color:#451a03;
+  class ROOT r;
+  class CR,c1,c2,c3,c4,c5 c;
+  class ST,s1,s2,s3,s4,s5 s;
+  class BE,b1,b2,b3,b4,b5 b;
 ```
-┌────────────────────────────────────────────────────────────────────────────┐
-│                  GoF DESIGN PATTERNS — Category Map                        │
-└────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─────────────────────────────────────────────────────────────────────┐
-  │                    23 GoF Patterns                                   │
-  │                                                                     │
-  │  CREATIONAL               STRUCTURAL              BEHAVIORAL        │
-  │  "How to create objects"  "How to compose"        "How to communicate"│
-  │                                                                     │
-  │  ┌───────────────────┐   ┌───────────────────┐  ┌─────────────────┐│
-  │  │    Singleton      │   │    Adapter        │  │    Observer     ││
-  │  │ One instance only │   │ Convert interface │  │ Notify many     ││
-  │  └───────────────────┘   └───────────────────┘  └─────────────────┘│
-  │  ┌───────────────────┐   ┌───────────────────┐  ┌─────────────────┐│
-  │  │    Factory       │   │    Decorator      │  │    Strategy     ││
-  │  │ Create by type   │   │ Add behavior dyn. │  │ Swap algorithm  ││
-  │  └───────────────────┘   └───────────────────┘  └─────────────────┘│
-  │  ┌───────────────────┐   ┌───────────────────┐  ┌─────────────────┐│
-  │  │    Builder       │   │    Proxy          │  │    Command      ││
-  │  │ Step-by-step     │   │ Control access    │  │ Encapsulate req ││
-  │  │ construction     │   │ (lazy/caching)    │  │ (undo/redo)     ││
-  │  └───────────────────┘   └───────────────────┘  └─────────────────┘│
-  │  ┌───────────────────┐   ┌───────────────────┐  ┌─────────────────┐│
-  │  │ Abstract Factory │   │    Facade         │  │    State        ││
-  │  │ Family of related│   │ Simplified entry  │  │ Behavior by     ││
-  │  │ products         │   │ point to subsystem│  │ internal state  ││
-  │  └───────────────────┘   └───────────────────┘  └─────────────────┘│
-  │  ┌───────────────────┐   ┌───────────────────┐  ┌─────────────────┐│
-  │  │   Prototype      │   │    Composite      │  │  Template Method││
-  │  │ Clone to create  │   │ Tree of parts     │  │ Algorithm       ││
-  │  │                  │   │ (part-whole)      │  │ skeleton        ││
-  │  └───────────────────┘   └───────────────────┘  └─────────────────┘│
-  └─────────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** Only 15 of the 23 patterns are shown (the most common ones); the rest are in [The Remaining GoF Patterns](12_Remaining_GoF_Patterns.md).
 
-  Pattern selection decision tree:
+**Pattern selection guide**
 
-  Need to CREATE?  ──► Single instance      ──► Singleton
-                   ──► By type family       ──► Factory
-                   ──► Complex steps        ──► Builder
-                   ──► Clone existing       ──► Prototype
-
-  Need to COMPOSE?  ──► Interface mismatch   ──► Adapter
-                    ──► Add features dyn     ──► Decorator
-                    ──► Simplify subsystem   ──► Facade
-                    ──► Control access       ──► Proxy
-                    ──► Tree structure       ──► Composite
-
-  Need to COMMUNICATE? ──► Notify dependents  ──► Observer
-                       ──► Swap algorithm     ──► Strategy
-                       ──► Undo/redo          ──► Command
-                       ──► Internal state     ──► State
-                       ──► Algorithm steps    ──► Template Method
-```
+| You need to… | Situation | Pattern |
+| --- | --- | --- |
+| **Create** | A single instance | Singleton |
+| | By type family | Factory |
+| | Complex step-by-step construction | Builder |
+| | Clone an existing object | Prototype |
+| **Compose** | Interface mismatch | Adapter |
+| | Add features dynamically | Decorator |
+| | Simplify a subsystem | Facade |
+| | Control access | Proxy |
+| | Tree structure | Composite |
+| **Communicate** | Notify dependents | Observer |
+| | Swap an algorithm | Strategy |
+| | Undo/redo | Command |
+| | Behaviour depends on internal state | State |
+| | Fixed algorithm steps | Template Method |
 
 #### Diagram 2: Observer Pattern — Sequence Diagram
 
+**Observer pattern — sequence diagram**
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant N as NewsAgency (Subject)
+  participant A as Alice
+  participant B as Bob
+  participant H as Charlie
+  C->>A: new Subscriber("Alice")
+  C->>B: new Subscriber("Bob")
+  C->>H: new Subscriber("Charlie")
+  C->>N: attach(alice)
+  C->>N: attach(bob)
+  C->>N: attach(charlie)
+  C->>N: publishNews("Java 21 released!")
+  N->>N: notifyObservers()
+  N->>A: update(news)
+  N->>B: update(news)
+  N->>H: update(news)
 ```
-┌────────────────────────────────────────────────────────────────────────────┐
-│                   OBSERVER PATTERN — Sequence Diagram                      │
-└────────────────────────────────────────────────────────────────────────────┘
 
-  Client                    NewsAgency (Subject)              Subscriber A/B/C
-     │                             │                              │
-     │  new Subscriber("Alice")    │                              │
-     │─────────────────────────────▶│                              │
-     │                             │                              │
-     │  new Subscriber("Bob")      │                              │
-     │────────────────────────────────────────────────────────────▶│
-     │                             │                              │
-     │  new Subscriber("Charlie")  │                              │
-     │────────────────────────────────────────────────────────────────▶│
-     │                             │                              │
-     │  agency.attach(alice)       │                              │
-     │─────────────────────────────▶│                              │
-     │  agency.attach(bob)         │                              │
-     │─────────────────────────────▶│                              │
-     │  agency.attach(charlie)     │                              │
-     │─────────────────────────────▶│                              │
-     │                             │                              │
-     │  agency.publishNews(...)    │                              │
-     │─────────────────────────────▶│                              │
-     │                             │  notifyObservers()           │
-     │                             │──────────┐                   │
-     │                             │  for each observer:         │
-     │                             │──────────┘                   │
-     │                             │                              │
-     │                             │  alice.update(news)         │
-     │                             │─────────────────────────────▶│
-     │                             │                              │
-     │                             │  bob.update(news)           │
-     │                             │────────────────────────────────────────────────▶│
-     │                             │                              │
-     │                             │  charlie.update(news)       │
-     │                             │────────────────────────────────────────────────────────────────▶│
-     │                             │                              │
+**How to read this diagram.** Time runs downward. The client wires up the subscribers first; a single `publishNews` call then makes the subject loop over its observer list and call `update` on each one.
 
-  Internal state of NewsAgency (Subject):
+**Internal state of the subject**
 
-  ┌──────────────────────────────────────────────────────────┐
-  │  NewsAgency                                               │
-  │  ┌────────────────────────────────────────────────────┐  │
-  │  │ List<Observer> observers                           │  │
-  │  │  ┌──────┐  ┌──────┐  ┌──────┐                      │  │
-  │  │  │Alice │  │ Bob  │  │Charlie│                     │  │
-  │  │  └──────┘  └──────┘  └──────┘                      │  │
-  │  │    0x10    0x14    0x18                           │  │
-  │  └────────────────────────────────────────────────────┘  │
-  │  String news = "Java 21 released!"                        │
-  └──────────────────────────────────────────────────────────┘
+| Field | Value |
+| --- | --- |
+| `List<Observer> observers` | `[Alice, Bob, Charlie]` |
+| `String news` | `"Java 21 released!"` |
 
-  Flow: publishNews()  →  set news field  →  notifyObservers()
-                                   │                    │
-                                   ▼                    ▼
-                            Iterates list     Calls update(news)
-                            of observers      on each subscriber
+**Flow:** `publishNews()` sets the `news` field, then `notifyObservers()` iterates the list and calls `update(news)` on each subscriber.
 
-  Memory leak danger: If subscriber never calls detach(), the Subject
-  holds a strong reference → subscriber cannot be garbage collected!
-  Fix: Use WeakHashMap<Observer, Object> or explicit lifecycle detach().
-```
+> [!WARNING]
+> **Memory-leak danger.** If a subscriber never calls `detach()`, the subject keeps a strong reference to it and the subscriber cannot be garbage collected. Fix: detach explicitly when the subscriber's lifecycle ends, or hold observers through weak references.
 
 #### Diagram 3: Strategy Pattern — Class Structure
 
+**Strategy pattern — class diagram**
+
+```mermaid
+classDiagram
+  class ShoppingCart {
+    -List~Item~ items
+    -PaymentStrategy paymentStrategy
+    +setPaymentStrategy(strategy) void
+    +checkout(amount) void
+    +getTotal() double
+  }
+  class PaymentStrategy {
+    <<interface>>
+    +pay(amount) void
+    +refund(amount) void
+  }
+  class CreditCardPayment {
+    -cardNumber
+    -cvv
+  }
+  class PayPalPayment {
+    -email
+  }
+  ShoppingCart o-- PaymentStrategy : has-a (composition)
+  PaymentStrategy <|.. CreditCardPayment
+  PaymentStrategy <|.. PayPalPayment
+  PaymentStrategy <|.. UPIPayment : plug in new strategies
+  PaymentStrategy <|.. CryptoPayment
 ```
-┌────────────────────────────────────────────────────────────────────────────┐
-│                    STRATEGY PATTERN — Class Diagram                        │
-└────────────────────────────────────────────────────────────────────────────┘
 
-  ┌────────────────────────────────────────────────────────────────────────┐
-  │                        CLIENT (main / service)                          │
-  │  ShoppingCart cart = new ShoppingCart();                                │
-  │  cart.setPaymentStrategy(new CreditCardPayment());  // ← selects here  │
-  │  cart.checkout(100);                                                    │
-  └────────────────────────────────────────────────────────────────────────┘
+**How to read this diagram.** `ShoppingCart` (the context) holds a `PaymentStrategy` and delegates `checkout` to `paymentStrategy.pay(amount)`. Each payment method is a separate class behind the interface.
 
-  ┌───────────────────────────────────────────┐
-  │           <<interface>>                    │
-  │        PaymentStrategy                    │
-  ├───────────────────────────────────────────┤
-  │ + pay(amount: double): void               │
-  │ + refund(amount: double): void            │
-  └───────────────────┬───────────────────────┘
-                      │ implements
-        ┌─────────────┴─────────────┐
-        ▼                           ▼
-  ┌───────────────────┐    ┌───────────────────┐
-  │ CreditCardPayment │    │   PayPalPayment   │
-  ├───────────────────┤    ├───────────────────┤
-  │ - cardNumber      │    │ - email           │
-  │ - cvv             │    │ - password        │
-  ├───────────────────┤    ├───────────────────┤
-  │ + pay(amount)     │    │ + pay(amount)     │
-  │ + refund(amount)  │    │ + refund(amount)  │
-  └───────────────────┘    └───────────────────┘
-        ▲                           ▲
-        │                           │
-  ┌─────┴───────────────────────────┴─────┐
-  │   UPIPayment / CryptoPayment /        │
-  │   BankTransferPayment / GiftCard...   │  ← plug in new strategies
-  └───────────────────────────────────────┘
+The client chooses the strategy:
 
-  ┌───────────────────────────────────────────┐
-  │              ShoppingCart (Context)        │
-  ├───────────────────────────────────────────┤
-  │ - items: List<Item>                       │
-  │ - paymentStrategy: PaymentStrategy ◀── COMPOSITION (has-a) │
-  ├───────────────────────────────────────────┤
-  │ + setPaymentStrategy(strategy): void      │
-  │ + checkout(amount): void                  │
-  │   └── paymentStrategy.pay(amount)         │
-  │ + getTotal(): double                      │
-  └───────────────────────────────────────────┘
-
-  KEY INSIGHT: The strategy is set at RUNTIME, not compile time.
-  The Context (ShoppingCart) doesn't know which strategy it has.
-  This is the Open/Closed Principle in action:
-  Add UPI payment → create new class, ZERO changes to ShoppingCart.
-
-  Lambda variant (Java 8+):
-    cart.setPaymentStrategy(amount ->
-        System.out.println("Paid " + amount + " via Credit Card"));
-  No interface implementation needed — lambda IS the strategy!
+```java
+ShoppingCart cart = new ShoppingCart();
+cart.setPaymentStrategy(new CreditCardPayment());  // selected here
+cart.checkout(100);
 ```
+
+> [!IMPORTANT]
+> **Key insight:** the strategy is set at **run time**, not compile time, and the cart does not know which strategy it has. This is the Open/Closed Principle in action: adding UPI payment means creating a new class with **zero changes** to `ShoppingCart`.
+
+**Lambda variant (Java 8+).** Because `PaymentStrategy` has a single method, a lambda can be the strategy, with no implementing class:
+
+```java
+cart.setPaymentStrategy(amount ->
+    System.out.println("Paid " + amount + " via Credit Card"));
+```
+
+(This works as written only if the interface declares one abstract method; the two-method interface above would need `refund` as a `default` method.)
 
 #### Deep-Dive 1: Singleton's volatile Keyword — JVM Memory Model
 
+### Double-checked locking: why `volatile` is mandatory in Java
+
+**The naive (broken) implementation**
+
+```java
+public class DatabaseConnection {
+    private static DatabaseConnection instance;   // NOT volatile
+
+    public static DatabaseConnection getInstance() {
+        if (instance == null) {                    // check 1: fast path
+            synchronized (DatabaseConnection.class) {
+                if (instance == null) {
+                    instance = new DatabaseConnection();   // problem here!
+                }
+            }
+        }
+        return instance;
+    }
+}
 ```
-┌────────────────────────────────────────────────────────────────────────────┐
-│        DOUBLE-CHECKED LOCKING — Why volatile Is Mandatory in Java         │
-└────────────────────────────────────────────────────────────────────────────┘
 
-  The naive (broken) implementation:
+**Why it fails without `volatile`.** `instance = new DatabaseConnection()` is **not atomic**. It decomposes into these bytecode steps:
 
-  public class DatabaseConnection {
-      private static DatabaseConnection instance;  // NOT volatile
+| Step | Bytecode | Effect |
+| --- | --- | --- |
+| 1 | `new DatabaseConnection` | Allocate memory (the object exists in the heap, fields are defaults) |
+| 2 | `dup` | Duplicate the reference on the stack |
+| 3 | `invokespecial <init>` | Run the constructor (set fields to real values) |
+| 4 | `astore instance` | Store the reference (make `instance` point to the object) |
 
-      public static DatabaseConnection getInstance() {
-          if (instance == null) {           // Check 1: fast path
-              synchronized (DatabaseConnection.class) {
-                  if (instance == null) {
-                      instance = new DatabaseConnection();  // Problem here!
-                  }
-              }
-          }
-          return instance;
-      }
-  }
+The JIT compiler and the CPU may **reorder** the constructor call and the store. The effective order can become: allocate → store reference (now non-null!) → run constructor.
 
-  WHY THIS FAILS WITHOUT volatile:
+Thread A has stored the reference but not finished the constructor. Thread B sees `instance != null`, skips the lock and returns an object with **half-initialised fields**.
 
-  instance = new DatabaseConnection() is NOT atomic in bytecode.
-  It decomposes into 4 steps:
+**What the Java Memory Model says.** Thread 1's writes are visible to Thread 2 only if a *happens-before* relationship exists.
 
-  ┌─────────────────────────────────────────────────────────────────┐
-  │  bytecode for:  instance = new DatabaseConnection()             │
-  │                                                                  │
-  │  Step 1:  new DatabaseConnection    // Allocate memory          │
-  │           (object exists in heap, fields set to defaults)        │
-  │  Step 2:  dup                         // Duplicate ref on stack │
-  │  Step 3:  invokespecial <init>       // Run constructor         │
-  │           (set fields to real values)                            │
-  │  Step 4:  astore instance             // STORE reference         │
-  │           (make instance point to this object)                   │
-  └─────────────────────────────────────────────────────────────────┘
+- **Without `volatile`:** the constructor's writes may be reordered past the store, so Thread 2 can read uninitialised fields.
+- **With `volatile`:** a volatile write happens-before every later volatile read of the same variable, so everything written before the store (including the constructor) is visible to a thread that reads the reference.
 
-  The JIT compiler and CPU can REORDER steps 2-4 (instruction reordering).
-  The actual order might become:
+**Correct implementation**
 
-    1. new DatabaseConnection       (allocate memory)
-    2. astore instance               (reference is NOW non-null!)
-    3. invokespecial <init>          (constructor runs)
+```java
+public class DatabaseConnection {
+    private static volatile DatabaseConnection instance;   // volatile is mandatory
 
-  Thread A sees instance != null (because of step 2) and returns it.
-  But Thread B might see the object BEFORE constructor finished (step 3).
-  Result: Thread B gets an object with HALF-INITIALIZED fields!
+    public static DatabaseConnection getInstance() {
+        if (instance == null) {                    // check 1: fast path
+            synchronized (DatabaseConnection.class) {
+                if (instance == null) {            // check 2: under the lock
+                    instance = new DatabaseConnection();
+                }
+            }
+        }
+        return instance;
+    }
+}
+```
 
-  JMM (Java Memory Model) happens-before guarantee:
+**Why two checks?**
 
-  Without volatile:
-    Thread 1: constructor may reorder past astore  ──► Thread 2 reads uninitialized
+- The first check avoids taking the lock on every call after initialisation (performance).
+- The second check ensures only one thread creates the instance (correctness).
 
-  With volatile:
-    Thread 1: volatile write (astore instance)  happens-before
-    Thread 2: volatile read (load instance)
-                                                    │
-    Thread 1's write is visible to Thread 2 only if a happens-before          │
-    relationship exists. Volatile creates that relationship:                 │
-    volatile write ──► happens-before ──► volatile read of same variable.    │
+**Even better: the holder idiom** (the JVM handles synchronisation)
 
-  CORRECT IMPLEMENTATION:
+```java
+private static class Holder {
+    private static final DatabaseConnection INSTANCE = new DatabaseConnection();
+}
 
-  public class DatabaseConnection {
-      private static volatile DatabaseConnection instance;  // ← MANDATORY
-
-      public static DatabaseConnection getInstance() {
-          if (instance == null) {           // Check 1: fast path
-              synchronized (DatabaseConnection.class) {
-                  if (instance == null) {   // Check 2: synchronized path
-                      instance = new DatabaseConnection();
-                  }
-              }
-          }
-          return instance;
-      }
-  }
-
-  Why two checks?
-    First check: avoids synchronized lock on every call after init (performance)
-    Second check: ensures only one thread creates the instance (correctness)
-
-  Even better: use holder pattern (JVM handles synchronization):
-
-  private static class Holder {
-      private static final DatabaseConnection INSTANCE = new DatabaseConnection();
-  }
-  // INSTANCE is created lazily — only when getInstance() first calls Holder.INSTANCE
-  // JVM guarantees thread-safe init with no explicit synchronization needed.
+public static DatabaseConnection getInstance() { return Holder.INSTANCE; }
+// INSTANCE is created lazily, only when getInstance() first touches Holder.
+// The JVM guarantees thread-safe class initialisation with no explicit synchronisation.
 ```
 
 #### Deep-Dive 2: Factory vs Builder — When to Use Which
 
+### Factory versus Builder: decision framework
+
+**Factory:** "Give me one of N similar things by specifying a type or name."
+
+Use it when:
+
+- You need to create **one** object from a set of known alternatives.
+- The client should not know the concrete class names.
+- Creation logic involves branching (`if/else` or `switch`).
+- The objects are the same kind of thing with different implementations.
+
+Examples:
+
+```java
+AnimalFactory.createAnimal("dog");      // Dog or Cat: same kind
+NotificationFactory.create("email");    // email or SMS notification
+DocumentFactory.open("pdf");            // PDF or Word document
 ```
-┌────────────────────────────────────────────────────────────────────────────┐
-│              FACTORY vs BUILDER — Decision Framework                       │
-└────────────────────────────────────────────────────────────────────────────┘
 
-  FACTORY: "Give me one of N similar things by specifying a type/name"
+**Builder:** "Construct **one** complex object step by step, some parts optional."
 
-  Use when:
-    - You need to CREATE ONE object from a set of known alternatives
-    - Client should NOT know the concrete class names
-    - Creation logic involves branching (if/else or switch)
-    - Objects are of the same "kind" with different implementations
+Use it when:
 
-  Examples:
-    AnimalFactory.createAnimal("dog")      // Dog or Cat — same kind
-    NotificationFactory.create("email")    // Email or SMS notification
-    DocumentFactory.open("pdf")            // PDF or Word document
+- The object has many fields (5 or more) with validation.
+- Some fields are required and some are optional.
+- The order of setting fields should not matter.
+- You want a fluent (chainable) API.
+- The object should be immutable after construction.
 
-  ─────────────────────────────────────────────────────────────────────────────
+Examples:
 
-  BUILDER: "Construct ONE complex object step by step, some optional"
+```java
+User.builder("John", "john@email.com").age(25).phone("123").build();
+HttpRequest.newBuilder().uri(url).timeout(Duration.ofSeconds(5)).header(k, v).build();
+// StringBuilder is a builder for String
+```
 
-  Use when:
-    - The object has MANY fields (5+) with validations
-    - Some fields are REQUIRED, some are OPTIONAL
-    - Order of setting fields shouldn't matter
-    - You want a FLUENT (chainable) API
-    - The object should be IMMUTABLE after construction
+**Comparison**
 
-  Examples:
-    User.builder("John", "john@email.com").age(25).phone("123").build()
-    HttpRequest.newBuilder().uri(url).timeout(5s).header(k,v).build()
-    StringBuilder — Builder for String
+| Dimension | Factory | Builder |
+| --- | --- | --- |
+| Purpose | Choose **which** class | **How** to construct one class |
+| Number of parameters | 1 (type or name) | Many (all object fields) |
+| Object count | Creates one object | Creates one complex object |
+| Optionality | Not applicable | Required plus optional fields |
+| Return type | Interface or superclass | The specific class being built |
+| Mutability | Returns whatever the class is | Typically produces an immutable object |
+| Real-world Java | `BeanFactory` | `StringBuilder`, `HttpClient.newBuilder()` |
 
-  ─────────────────────────────────────────────────────────────────────────────
+**Using both together.** A payment system with many types *and* many optional fields:
 
-  COMPARISON TABLE:
+```java
+PaymentFactory.create("credit_card")     // Factory: which type
+    .cardNumber("...")                   // Builder: how to configure it
+    .expiry("...")
+    .build();
+```
 
-  ┌────────────────────┬─────────────────────┬──────────────────────────────┐
-  │ Dimension          │ Factory             │ Builder                      │
-  ├────────────────────┼─────────────────────┼──────────────────────────────┤
-  │ Purpose            │ Choose WHICH class  │ HOW to construct one class   │
-  │ Number of params   │ 1 (type/name)       │ Many (all object fields)     │
-  │ Object count       │ Creates ONE object  │ Creates ONE complex object   │
-  │ Optionality        │ N/A                 │ Required + optional fields   │
-  │ Return type        │ Interface/superclass│ The specific class being     │
-  │                    │                     │ built                        │
-  │ Mutability         │ Returns mutable obj │ Produces immutable object    │
-  │ Real-world Java    │ BeanFactory         │ StringBuilder, HttpClient    │
-  └────────────────────┴─────────────────────┴──────────────────────────────┘
+Or a nested builder for a complex product:
 
-  WHEN TO USE FACTORY + BUILDER TOGETHER:
-
-  Scenario: Payment system with many types AND many optional fields
-
-    PaymentFactory.create("credit_card")          // Factory: which type
-        .cardNumber("...")                         // Builder: how to configure it
-        .expiry("...")
-        .build()
-
-  OR: nested builder for a complex product:
-
-    Order.builder()
-        .customer(customerBuilder.build())   // Builder as a field
-        .items(itemBuilder.buildList())      // of another builder
-        .shipping(addressBuilder.build())
-        .build()
+```java
+Order.builder()
+    .customer(customerBuilder.build())   // a builder used as a field
+    .items(itemBuilder.buildList())      // of another builder
+    .shipping(addressBuilder.build())
+    .build();
 ```
 
 #### Breadth Comparison 1: Pattern Selection by Problem Type

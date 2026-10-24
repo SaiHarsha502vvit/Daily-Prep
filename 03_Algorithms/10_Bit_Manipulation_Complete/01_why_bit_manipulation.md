@@ -6,16 +6,14 @@
 
 ## Interview Reality
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  WHY COMPANIES ASK BIT MANIPULATION                         │
-├─────────────────────────────────────────────────────────────┤
-│  1. Tests low-level understanding                           │
-│  2. O(1) space solutions where others use O(n)              │
-│  3. Faster than arithmetic operations                       │
-│  4. Essential for systems programming                       │
-│  5. Shows mathematical thinking                             │
-└─────────────────────────────────────────────────────────────┘
+**WHY COMPANIES ASK BIT MANIPULATION**
+
+```text
+1. Tests low-level understanding
+2. O(1) space solutions where others use O(n)
+3. Faster than arithmetic operations
+4. Essential for systems programming
+5. Shows mathematical thinking
 ```
 
 ## Where It's Used in Real World
@@ -35,11 +33,13 @@
 
 ```
 Decimal 13 in Binary:
-┌────┬────┬────┬────┬────┬────┬────┬────┐
-│ 128│ 64 │ 32 │ 16 │  8 │  4 │  2 │  1 │  ← Powers of 2
-├────┼────┼────┼────┼────┼────┼────┼────┤
-│  0 │  0 │  0 │  0 │  1 │  1 │  0 │  1 │  ← Binary: 00001101
-└────┴────┴────┴────┴────┴────┴────┴────┘
+```
+
+| 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 | ← Powers of 2 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | 0 | 1 | 1 | 0 | 1 | ← Binary: 00001101 |
+
+```
                         8 + 4     + 1 = 13
 
 Position:  7    6    5    4    3    2    1    0  (right to left, 0-indexed)
@@ -47,14 +47,13 @@ Position:  7    6    5    4    3    2    1    0  (right to left, 0-indexed)
 
 ### Java Integer Representation (32-bit)
 
+| Sign | 31 Value Bits |  |
+| --- | --- | --- |
+| Bit |  |  |
+| 0 | 0000000 00000000 00000000 00001101 | = +13 |
+| 1 | 1111111 11111111 11111111 11110011 | = -13 |
+
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│ Sign │                    31 Value Bits                         │
-│  Bit │                                                          │
-├──────┼──────────────────────────────────────────────────────────┤
-│   0  │ 0000000 00000000 00000000 00001101                       │  = +13
-│   1  │ 1111111 11111111 11111111 11110011                       │  = -13
-└──────┴──────────────────────────────────────────────────────────┘
          ↑
     MSB (Most Significant Bit)
     0 = positive, 1 = negative
@@ -77,17 +76,14 @@ Position:  7    6    5    4    3    2    1    0  (right to left, 0-indexed)
 
 ### Important Ranges to Remember
 
-```
-┌─────────────┬─────────────────────────────────────┐
-│   Type      │           Range                     │
-├─────────────┼─────────────────────────────────────┤
-│   byte      │  -128 to 127                        │
-│   short     │  -32,768 to 32,767                  │
-│   int       │  -2^31 to 2^31 - 1                  │
-│             │  ≈ -2.1 billion to 2.1 billion      │
-│   long      │  -2^63 to 2^63 - 1                  │
-└─────────────┴─────────────────────────────────────┘
+| Type | Range |
+| --- | --- |
+| byte | -128 to 127 |
+| short | -32,768 to 32,767 |
+| int | -2^31 to 2^31 - 1<br>≈ -2.1 billion to 2.1 billion |
+| long | -2^63 to 2^63 - 1 |
 
+```
 Key Values:
 Integer.MAX_VALUE = 2147483647  (0x7FFFFFFF)
 Integer.MIN_VALUE = -2147483648 (0x80000000)
@@ -99,43 +95,31 @@ Integer.MIN_VALUE = -2147483648 (0x80000000)
 
 ### The 6 Bitwise Operators
 
-```
-┌──────────┬────────┬─────────────────────────────────────────┐
-│ Operator │ Symbol │              Description                │
-├──────────┼────────┼─────────────────────────────────────────┤
-│   AND    │   &    │ Both bits must be 1                     │
-│   OR     │   |    │ At least one bit must be 1              │
-│   XOR    │   ^    │ Exactly one bit must be 1               │
-│   NOT    │   ~    │ Flip all bits                           │
-│  L-Shift │  <<    │ Shift bits left (multiply by 2)         │
-│  R-Shift │  >>    │ Shift bits right (divide by 2)          │
-│  UR-Shift│  >>>   │ Unsigned right shift (fill with 0s)     │
-└──────────┴────────┴─────────────────────────────────────────┘
-```
+| Operator | Symbol | Description |
+| --- | --- | --- |
+| AND | & | Both bits must be 1 |
+| OR | \| | At least one bit must be 1 |
+| XOR | ^ | Exactly one bit must be 1 |
+| NOT | ~ | Flip all bits |
+| L-Shift | << | Shift bits left (multiply by 2) |
+| R-Shift | >> | Shift bits right (divide by 2) |
+| UR-Shift | >>> | Unsigned right shift (fill with 0s) |
 
 ### Visual Truth Tables
 
-```
-AND (&) - Both must be 1        OR (|) - At least one is 1
-┌───┬───┬───────┐               ┌───┬───┬───────┐
-│ A │ B │ A & B │               │ A │ B │ A | B │
-├───┼───┼───────┤               ├───┼───┼───────┤
-│ 0 │ 0 │   0   │               │ 0 │ 0 │   0   │
-│ 0 │ 1 │   0   │               │ 0 │ 1 │   1   │
-│ 1 │ 0 │   0   │               │ 1 │ 0 │   1   │
-│ 1 │ 1 │   1   │               │ 1 │ 1 │   1   │
-└───┴───┴───────┘               └───┴───┴───────┘
+| A | B | A & B (AND: both must be 1) | A \| B (OR: at least one is 1) | A ^ B (XOR: exactly one is 1) |
+| --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | 0 | 0 |
+| 0 | 1 | 0 | 1 | 1 |
+| 1 | 0 | 0 | 1 | 1 |
+| 1 | 1 | 1 | 1 | 0 |
 
-XOR (^) - Exactly one is 1      NOT (~) - Flip the bit
-┌───┬───┬───────┐               ┌───┬───────┐
-│ A │ B │ A ^ B │               │ A │  ~A   │
-├───┼───┼───────┤               ├───┼───────┤
-│ 0 │ 0 │   0   │               │ 0 │   1   │
-│ 0 │ 1 │   1   │               │ 1 │   0   │
-│ 1 │ 0 │   1   │               └───┴───────┘
-│ 1 │ 1 │   0                               │
-└───┴───┴───────────────────────────────────┘
-```
+**NOT (`~`): flip the bit**
+
+| A | ~A |
+| --- | --- |
+| 0 | 1 |
+| 1 | 0 |
 
 ### Practical Examples
 
@@ -183,36 +167,26 @@ public class BitwiseDemo {
 
 ### Left Shift vs Right Shift Visualization
 
-```
-LEFT SHIFT (<<) - Multiply by 2^n
-┌─────────────────────────────────────────┐
-│  5 << 1  =  10                          │
-│                                         │
-│  Before: 0 0 0 0 0 1 0 1  (5)           │
-│                    ↓ ↓ ↓                │
-│  After:  0 0 0 0 1 0 1 0  (10)          │
-│                                         │
-│  Bits shift LEFT, 0s fill from right    │
-└─────────────────────────────────────────┘
+**Left shift (`<<`): multiply by 2ⁿ.** `5 << 1 = 10`.
 
-RIGHT SHIFT (>>) - Divide by 2^n
-┌─────────────────────────────────────────┐
-│  20 >> 2  =  5                          │
-│                                         │
-│  Before: 0 0 0 1 0 1 0 0  (20)          │
-│            ↓ ↓ ↓ ↓                      │
-│  After:  0 0 0 0 0 1 0 1  (5)           │
-│                                         │
-│  Bits shift RIGHT, sign bit fills left  │
-└─────────────────────────────────────────┘
+| | Bits | Value |
+| --- | --- | --- |
+| Before | `0 0 0 0 0 1 0 1` | 5 |
+| After | `0 0 0 0 1 0 1 0` | 10 |
 
-UNSIGNED RIGHT SHIFT (>>>) - Always fills with 0s
-┌─────────────────────────────────────────┐
-│  Used for negative numbers              │
-│  -8 >>> 2 = 1073741822                  │
-│  (Treats as unsigned, fills 0s)         │
-└─────────────────────────────────────────┘
-```
+Bits shift left and zeros fill in from the right.
+
+**Right shift (`>>`): divide by 2ⁿ.** `20 >> 2 = 5`.
+
+| | Bits | Value |
+| --- | --- | --- |
+| Before | `0 0 0 1 0 1 0 0` | 20 |
+| After | `0 0 0 0 0 1 0 1` | 5 |
+
+Bits shift right and the sign bit fills in on the left.
+
+**Unsigned right shift (`>>>`): always fills with 0s.** For a negative `int`, the bits are treated as unsigned: `-8 >>> 2 = 1073741822`.
+
 
 ---
 

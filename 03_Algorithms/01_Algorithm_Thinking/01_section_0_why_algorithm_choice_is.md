@@ -162,19 +162,16 @@ Computers need PRECISE, COMPLETE instructions.
 
 **How Algorithms Get Invented**:
 
-1. OBSERVATION: "I keep doing the same work repeatedly"
-   ↓
-2. QUESTION: "Can I eliminate this repetition?"
-   ↓
-3. EXPERIMENT: "What if I store/precompute/organize differently?"
-   ↓
-4. GENERALIZE: "This works for other problems too!"
-   ↓
-5. PATTERN BORN: Now it's a named algorithm!
-   YOU CAN DO THIS TOO!
-   EXAMPLE - How you might "invent" Sliding Window:
-   Problem: "Find max sum of 3 consecutive elements"
-   Brute force: For each start, sum next 3 elements → O(n\*k)
+1. **Observation:** "I keep doing the same work repeatedly."
+2. **Question:** "Can I eliminate this repetition?"
+3. **Experiment:** "What if I store, precompute or organize differently?"
+4. **Generalize:** "This works for other problems too!"
+5. **Pattern born:** now it is a named algorithm. You can do this too!
+
+**Example: how you might "invent" Sliding Window**
+
+- Problem: find the max sum of 3 consecutive elements.
+- Brute force: for each start, sum the next 3 elements, O(n·k).
 
 **Observation**: "I'm adding same numbers multiple times!"
 sum(0,1,2) = a + b + c

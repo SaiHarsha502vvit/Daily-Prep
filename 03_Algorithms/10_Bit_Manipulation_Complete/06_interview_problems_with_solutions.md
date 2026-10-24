@@ -358,59 +358,51 @@ clearBit: n & ~(1 << i)
 
 ### Common Edge Cases
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    EDGE CASES TO WATCH                          │
-├─────────────────────────────────────────────────────────────────┤
-│  • Negative numbers (sign bit handling)                         │
-│  • Integer overflow (when shifting)                             │
-│  • Empty array (XOR of nothing = 0)                             │
-│  • n = 0 (special case for many operations)                     │
-│  • n = Integer.MIN_VALUE (-2^31, cannot negate)                 │
-│  • Shift by 32 or more (undefined behavior)                     │
-│  • Java >> vs >>> (signed vs unsigned shift)                    │
-└─────────────────────────────────────────────────────────────────┘
+**EDGE CASES TO WATCH**
+
+```text
+• Negative numbers (sign bit handling)
+• Integer overflow (when shifting)
+• Empty array (XOR of nothing = 0)
+• n = 0 (special case for many operations)
+• n = Integer.MIN_VALUE (-2^31, cannot negate)
+• Shift by 32 or more (undefined behavior)
+• Java >> vs >>> (signed vs unsigned shift)
 ```
 
 ### Interview Tips
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    INTERVIEW STRATEGIES                         │
-├─────────────────────────────────────────────────────────────────┤
-│  1. When you see "O(1) space" - think bits                      │
-│  2. When elements appear k times - think XOR or bit counting    │
-│  3. When dealing with subsets - think bitmask                   │
-│  4. When finding unique/missing - think XOR                     │
-│  5. When asked "power of 2" - think n & (n-1)                   │
-│  6. When optimizing arithmetic - think shifts                   │
-│  7. Always mention time/space complexity                        │
-│  8. Test with examples: 0, 1, negative, MAX_VALUE               │
-└─────────────────────────────────────────────────────────────────┘
+**INTERVIEW STRATEGIES**
+
+```text
+1. When you see "O(1) space" - think bits
+2. When elements appear k times - think XOR or bit counting
+3. When dealing with subsets - think bitmask
+4. When finding unique/missing - think XOR
+5. When asked "power of 2" - think n & (n-1)
+6. When optimizing arithmetic - think shifts
+7. Always mention time/space complexity
+8. Test with examples: 0, 1, negative, MAX_VALUE
 ```
 
 ---
 
 ## Summary: The 3 Most Important Things
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║     MASTER THESE 3 AND YOU'LL SOLVE 80% OF BIT PROBLEMS       ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  1. XOR PROPERTIES                                            ║
-║     a ^ a = 0, a ^ 0 = a                                      ║
-║     → Find single/missing numbers                             ║
-║                                                               ║
-║  2. n & (n-1) TRICK                                           ║
-║     Clears rightmost set bit                                  ║
-║     → Count bits, check power of 2                            ║
-║                                                               ║
-║  3. BITMASK FOR SUBSETS                                       ║
-║     n-bit number represents subset of n elements              ║
-║     → Subset DP, permutations, combinations                   ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
+**MASTER THESE 3 AND YOU'LL SOLVE 80% OF BIT PROBLEMS**
+
+```text
+1. XOR PROPERTIES
+   a ^ a = 0, a ^ 0 = a
+   → Find single/missing numbers
+
+2. n & (n-1) TRICK
+   Clears rightmost set bit
+   → Count bits, check power of 2
+
+3. BITMASK FOR SUBSETS
+   n-bit number represents subset of n elements
+   → Subset DP, permutations, combinations
 ```
 
 ---
@@ -518,18 +510,22 @@ int singleNumber(int[] nums) {
 ## When Bit Manipulation Breaks
 
 ### 1. Operator Precedence — Bitwise vs Comparison
+
 **What breaks**: `if (n & 1 == 0)` evaluates as `if (n & (1 == 0))` = `if (n & 0)` = always false. Comparison operators have HIGHER precedence than bitwise `&`, `|`, `^` in Java.
 **Fix**: Always parenthesize: `if ((n & 1) == 0)`. This is the #1 silent bug in bit manipulation.
 
 ### 2. Signed Right Shift on Negative Numbers
+
 **What breaks**: `n >>= 1` on negative n fills with 1 (arithmetic shift). `while (n != 0) { n >>= 1; }` is an infinite loop for any negative n.
 **Fix**: Use `n >>>= 1` (unsigned shift) for bit-counting loops.
 
 ### 3. Integer Overflow in Left Shift
+
 **What breaks**: `1 << 31` = `Integer.MIN_VALUE` in Java (−2147483648), not 2³¹ = 2147483648. `1 << 32` = 1 (shift amount is mod 32). Both are silent — no exception.
 **Fix**: Use `1L << n` when you need bit positions beyond 30.
 
 ### 4. XOR Swap Aliasing
+
 **What breaks**: `a ^= b; b ^= a; a ^= b;` when a and b are the SAME variable. `a ^= a` sets it to 0; all three operations produce 0.
 **Fix**: Guard with `if (a != b)` or use a temp variable.
 

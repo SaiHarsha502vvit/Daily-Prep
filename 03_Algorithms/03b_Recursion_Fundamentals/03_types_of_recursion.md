@@ -226,6 +226,7 @@ public void printArray(int[] arr, int index) {
     printArray(arr, index + 1);        // Recurse on rest
 }
 ```
+
 ### Pattern 2: Recurse then Process
 
 ```java
@@ -438,6 +439,7 @@ public int sum(int n) {
     return n + sum(n - 1);
 }
 ```
+
 ### Mistake 2: Not Making Progress
 
 ```java

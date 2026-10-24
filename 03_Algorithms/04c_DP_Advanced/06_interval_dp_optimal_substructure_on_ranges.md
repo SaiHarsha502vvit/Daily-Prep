@@ -4,23 +4,20 @@
 > Page 6 of 7 in **Advanced DP Patterns**
 
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ INTERVAL DP - THE PATTERN                                                       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ WHEN TO USE: Optimal solution for range [i,j] depends on smaller ranges         │
-│                                                                                 │
-│ CLASSIC PROBLEMS:                                                               │
-│ • Matrix chain multiplication                                                   │
-│ • Optimal BST                                                                   │
-│ • Palindrome partitioning                                                       │
-│ • Burst balloons                                                                │
-│ • Stone game                                                                    │
-│                                                                                 │
-│                                                                                 │
-│ TEMPLATE:                                                                       │
-│ ───────────                                                                     │
+**INTERVAL DP - THE PATTERN**
+
+```text
+WHEN TO USE: Optimal solution for range [i,j] depends on smaller ranges
+
+CLASSIC PROBLEMS:
+• Matrix chain multiplication
+• Optimal BST
+• Palindrome partitioning
+• Burst balloons
+• Stone game
+
+TEMPLATE:
+───────────
 ```
 
 ```java
@@ -54,12 +51,7 @@ int intervalDP(int[] arr) {
 }
 ```
 
-```
-│ │
-│ │
-│ MATRIX CHAIN MULTIPLICATION: │
-│ ──────────────────────────── │
-```
+**Matrix chain multiplication**
 
 ```java
 // dims[i-1] x dims[i] = dimensions of matrix i (0-indexed)
@@ -89,12 +81,7 @@ int matrixChain(int[] dims) {
 }
 ```
 
-```
-│ │
-│ │
-│ BURST BALLOONS (LeetCode 312): │
-│ ────────────────────────────── │
-```
+**BURST BALLOONS (LeetCode 312)**
 
 ```java
 // Burst all balloons, maximize coins collected
@@ -125,12 +112,7 @@ int maxCoins(int[] nums) {
 // Key insight: Think of k as LAST to burst, not first!
 ```
 
-```
-│ │
-│ │
-│ MINIMUM COST TO CUT A STICK (LeetCode 1547): │
-│ ──────────────────────────────────────────── │
-```
+**MINIMUM COST TO CUT A STICK (LeetCode 1547)**
 
 ```java
 // Given stick of length n, cuts[] = positions to cut at.
@@ -167,42 +149,31 @@ int minCost(int n, int[] cuts) {
 // This is the DUAL of Burst Balloons — same template, different cost!
 ```
 
-```
-│ │
-│ │
-│ INTERVAL DP DECISION GUIDE: │
-│ ──────────────────────────── │
-│ │
-│ ╔══════════════════════════╦═══════════════════════════════════════╗ │
-│ ║ Signal                   ║ It's Interval DP                     ║ │
-│ ╠══════════════════════════╬═══════════════════════════════════════╣ │
-│ ║ "Merge" or "split"      ║ Matrix chain, cut a stick             ║ │
-│ ║ "Remove from ends"      ║ Stone game, burst balloons            ║ │
-│ ║ "Optimal over range"    ║ Any [i..j] optimization               ║ │
-│ ║ Answer for [i,j] uses   ║ O(n³) — try all split points k       ║ │
-│ ║   answers for sub-ranges ║                                      ║ │
-│ ╠══════════════════════════╬═══════════════════════════════════════╣ │
-│ ║ Trick: "LAST to remove" ║ Burst Balloons thinking               ║ │
-│ ║ Trick: add boundaries   ║ +1 at ends (balloons, cut a stick)    ║ │
-│ ║ Loop order              ║ ALWAYS by increasing length            ║ │
-│ ╚══════════════════════════╩═══════════════════════════════════════╝ │
-│ │
-│ COMMON MISTAKE: Trying to process left-to-right instead of │
-│ by increasing interval length. Interval DP MUST iterate by │
-│ length so shorter intervals are solved before longer ones. │
-│ │
-│ 📝 CURATED PRACTICE: │
-│ 1. Burst Balloons (LC 312) — https://leetcode.com/problems/burst-balloons/ │
-│ 2. Min Cost to Cut Stick (LC 1547) — https://leetcode.com/problems/minimum-cost-to-cut-a-stick/ │
-│ 3. Stone Game V (LC 1563) — https://leetcode.com/problems/stone-game-v/ │
-│ 4. Minimum Score Triangulation (LC 1039) — https://leetcode.com/problems/minimum-score-triangulation-of-polygon/ │
-│ 5. Palindrome Partitioning II (LC 132) — https://leetcode.com/problems/palindrome-partitioning-ii/ │
-│ 6. Strange Printer (LC 664) — https://leetcode.com/problems/strange-printer/ │
-│ 7. Remove Boxes (LC 546) — https://leetcode.com/problems/remove-boxes/ │
-│ 8. Minimum Cost Tree From Leaf Values (LC 1130) — https://leetcode.com/problems/minimum-cost-tree-from-leaf-values/ │
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### Interval DP decision guide
+
+| Signal | It's interval DP |
+| --- | --- |
+| "Merge" or "split" | Matrix chain, cut a stick |
+| "Remove from ends" | Stone game, burst balloons |
+| "Optimal over range" | Any `[i..j]` optimization |
+| Answer for `[i,j]` uses answers for sub-ranges | O(n³): try all split points `k` |
+| Trick: "LAST to remove" | Burst Balloons thinking |
+| Trick: add boundaries | +1 at the ends (balloons, cut a stick) |
+| Loop order | ALWAYS by increasing length |
+
+> [!WARNING]
+> **Common mistake:** processing left to right instead of by increasing interval length. Interval DP MUST iterate by length, so that shorter intervals are solved before longer ones.
+
+### 📝 Curated practice
+
+1. Burst Balloons (LC 312): https://leetcode.com/problems/burst-balloons/
+2. Min Cost to Cut Stick (LC 1547): https://leetcode.com/problems/minimum-cost-to-cut-a-stick/
+3. Stone Game V (LC 1563): https://leetcode.com/problems/stone-game-v/
+4. Minimum Score Triangulation (LC 1039): https://leetcode.com/problems/minimum-score-triangulation-of-polygon/
+5. Palindrome Partitioning II (LC 132): https://leetcode.com/problems/palindrome-partitioning-ii/
+6. Strange Printer (LC 664): https://leetcode.com/problems/strange-printer/
+7. Remove Boxes (LC 546): https://leetcode.com/problems/remove-boxes/
+8. Minimum Cost Tree From Leaf Values (LC 1130): https://leetcode.com/problems/minimum-cost-tree-from-leaf-values/
 
 ---
 

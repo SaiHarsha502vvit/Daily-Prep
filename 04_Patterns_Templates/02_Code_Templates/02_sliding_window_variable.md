@@ -6,44 +6,20 @@
 
 ## Visual Concept
 
-```
-                  VARIABLE SLIDING WINDOW
-──────────────────────────────────────────────────
+**Variable sliding window**
 
-Problem: Find longest substring with at most K=2 distinct characters
-String: "eceba"
+Problem: find the longest substring with at most `K = 2` distinct characters in `"eceba"`.
 
-Step 1: Expand while valid (≤2 distinct)
-┌───┐
-│ e │ c │ e │ b │ a │  distinct: {e}=1 ≤2 ✓
-└───┘
-
-Step 2: Keep expanding
-┌───────┐
-│ e │ c │ e │ b │ a │  distinct: {e,c}=2 ≤2 ✓
-└───────┘
-
-Step 3: Keep expanding
-┌───────────┐
-│ e │ c │ e │ b │ a │  distinct: {e,c}=2 ≤2 ✓  maxLen=3
-└───────────┘
-
-Step 4: Expand - becomes invalid
-┌───────────────┐
-│ e │ c │ e │ b │ a │  distinct: {e,c,b}=3 >2 ✗
-└───────────────┘
-
-Step 5: SHRINK from left until valid
-    ┌───────────┐
-│ e │ c │ e │ b │ a │  distinct: {c,e,b}=3 >2 ✗ (shrink more)
-    └───────────┘
-
-        ┌───────┐
-│ e │ c │ e │ b │ a │  distinct: {e,b}=2 ≤2 ✓
-        └───────┘
+| Step | Window | Distinct characters | Valid (≤ 2)? | Action |
+| --- | --- | --- | --- | --- |
+| 1 | `e` | {e} = 1 | ✅ | Expand while valid |
+| 2 | `ec` | {e, c} = 2 | ✅ | Keep expanding |
+| 3 | `ece` | {e, c} = 2 | ✅ | Keep expanding; maxLen = 3 |
+| 4 | `eceb` | {e, c, b} = 3 | ❌ | Expanding made it invalid |
+| 5 | `ceb` | {c, e, b} = 3 | ❌ | Shrink from the left; still invalid, shrink more |
+| 6 | `eb` | {e, b} = 2 | ✅ | Valid again |
 
 Answer: Maximum length = 3 ("ece")
-```
 
 ## Template: Longest Substring with At Most K Distinct
 

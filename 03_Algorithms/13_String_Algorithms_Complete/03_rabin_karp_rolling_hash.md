@@ -99,28 +99,24 @@ Window 3: "BCD" (slide right)
 
 ## When to Use Rabin-Karp
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              RABIN-KARP USE CASES                               │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ✓ Multiple pattern search (efficient)                          │
-│    Same text, many patterns → compute text hashes once          │
-│                                                                 │
-│  ✓ 2D pattern matching                                          │
-│    Find matrix in larger matrix                                 │
-│                                                                 │
-│  ✓ Finding repeated substrings                                  │
-│    Hash all substrings of length k, find duplicates             │
-│                                                                 │
-│  ✓ Plagiarism detection                                         │
-│    Hash sentences/paragraphs, compare across documents          │
-│                                                                 │
-│  Complexity:                                                    │
-│  Average: O(n + m)                                              │
-│  Worst (many collisions): O(n * m)                              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**RABIN-KARP USE CASES**
+
+```text
+✓ Multiple pattern search (efficient)
+  Same text, many patterns → compute text hashes once
+
+✓ 2D pattern matching
+  Find matrix in larger matrix
+
+✓ Finding repeated substrings
+  Hash all substrings of length k, find duplicates
+
+✓ Plagiarism detection
+  Hash sentences/paragraphs, compare across documents
+
+Complexity:
+Average: O(n + m)
+Worst (many collisions): O(n * m)
 ```
 
 ## Multiple Pattern Search

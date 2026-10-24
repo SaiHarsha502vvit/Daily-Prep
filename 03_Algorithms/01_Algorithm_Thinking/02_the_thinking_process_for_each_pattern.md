@@ -8,8 +8,9 @@
 
 ### When to Think Two Pointers
 
-```
-SIGNAL PHRASES:
+**SIGNAL PHRASES:**
+
+```text
 - "Find two elements that..."
 - "Sorted array"
 - "Remove duplicates"
@@ -17,16 +18,14 @@ SIGNAL PHRASES:
 - "Palindrome"
 
 MENTAL MODEL:
-┌─────────────────────────────────────────┐
-│ Instead of checking ALL pairs O(n²)     │
-│                                         │
-│ Use TWO pointers that MOVE based on     │
-│ some CONDITION                          │
-│                                         │
-│ left →────────────────────────── ← right│
-│                                         │
-│ Movement reduces search space!          │
-└─────────────────────────────────────────┘
+Instead of checking ALL pairs O(n²)
+
+Use TWO pointers that MOVE based on
+some CONDITION
+
+left →────────────────────────── ← right
+
+Movement reduces search space!
 ```
 
 ### Thinking Example: Container With Most Water
@@ -71,28 +70,25 @@ Time: O(n) ✓
 
 ### When to Think Sliding Window
 
-```
-SIGNAL PHRASES:
+**Signal phrases**
+
 - "Subarray/substring of size K"
 - "Longest/shortest subarray with condition"
 - "Consecutive elements"
 - "Sum of K elements"
 
-MENTAL MODEL:
-┌─────────────────────────────────────────┐
-│ Instead of recalculating for each       │
-│ starting position...                    │
-│                                         │
-│ SLIDE a window and UPDATE incrementally │
-│                                         │
-│ [1, 2, 3, 4, 5, 6, 7, 8]                │
-│  └─────┘                window size 3   │
-│     └─────┘              slide right    │
-│        └─────┘           slide right    │
-│                                         │
-│ Add new element, remove old element     │
-└─────────────────────────────────────────┘
-```
+**Mental model**
+
+> [!TIP]
+> Instead of recalculating for each starting position, **slide** a window and **update incrementally**: add the new element, remove the old one.
+
+For the array `[1, 2, 3, 4, 5, 6, 7, 8]` with window size 3:
+
+| Step | Window | Move |
+| --- | --- | --- |
+| 1 | `[1, 2, 3]` | Start |
+| 2 | `[2, 3, 4]` | Slide right: add 4, remove 1 |
+| 3 | `[3, 4, 5]` | Slide right: add 5, remove 2 |
 
 ### Fixed vs Variable Window
 
@@ -184,8 +180,9 @@ Should shrink `while(valid)` to find the minimum window — this is correct! But
 
 ### When to Think Binary Search
 
-```
-SIGNAL PHRASES:
+**SIGNAL PHRASES:**
+
+```text
 - "Sorted array"
 - "Find target"
 - "Search in O(log n)"
@@ -193,19 +190,17 @@ SIGNAL PHRASES:
 - "Find minimum/maximum that satisfies condition"
 
 MENTAL MODEL:
-┌─────────────────────────────────────────┐
-│ Can I eliminate HALF the search space   │
-│ with one comparison?                    │
-│                                         │
-│ YES → Binary Search possible!           │
-│                                         │
-│ [1, 3, 5, 7, 9, 11, 13, 15]             │
-│              ↑                          │
-│           middle                        │
-│                                         │
-│ Target < middle → search LEFT half      │
-│ Target > middle → search RIGHT half     │
-└─────────────────────────────────────────┘
+Can I eliminate HALF the search space
+with one comparison?
+
+YES → Binary Search possible!
+
+[1, 3, 5, 7, 9, 11, 13, 15]
+             ↑
+          middle
+
+Target < middle → search LEFT half
+Target > middle → search RIGHT half
 ```
 
 ### Binary Search Variants

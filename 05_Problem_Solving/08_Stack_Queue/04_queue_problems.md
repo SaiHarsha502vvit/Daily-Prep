@@ -11,28 +11,16 @@
 
 **LeetCode 232** 🔗 https://leetcode.com/problems/implement-queue-using-stacks/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  IMPLEMENT QUEUE USING STACKS                                  │
-├────────────────────────────────────────────────────────────────┤
-│  Use 2 stacks: inputStack and outputStack                      │
-│                                                                │
-│  push(1), push(2), push(3):                                    │
-│  ┌──────────────┐    ┌──────────────┐                          │
-│  │ inputStack   │    │ outputStack  │                          │
-│  │    [1,2,3]   │    │    []        │                          │
-│  └──────────────┘    └──────────────┘                          │
-│                                                                │
-│  pop() → need front (1):                                       │
-│  Transfer input→output:                                        │
-│  ┌──────────────┐    ┌──────────────┐                          │
-│  │ inputStack   │    │ outputStack  │                          │
-│  │    []        │    │   [3,2,1]    │ ← pop returns 1          │
-│  └──────────────┘    └──────────────┘                          │
-│                                                                │
-│  Now outputStack has correct order for FIFO                    │
-└────────────────────────────────────────────────────────────────┘
-```
+**Implement a queue using stacks**
+
+Use two stacks, `inputStack` and `outputStack`.
+
+| Operation | `inputStack` | `outputStack` | Note |
+| --- | --- | --- | --- |
+| `push(1)`, `push(2)`, `push(3)` | `[1, 2, 3]` | `[]` | New elements go to `inputStack` |
+| `pop()`: we need the front (1), so transfer input → output | `[]` | `[3, 2, 1]` | `pop` returns 1 from the top of `outputStack` |
+
+Now `outputStack` has the elements in the correct order for FIFO.
 
 **Solution:**
 
@@ -76,22 +64,20 @@ class MyQueue {
 
 **LeetCode 225** 🔗 https://leetcode.com/problems/implement-stack-using-queues/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  IMPLEMENT STACK USING QUEUES                                  │
-├────────────────────────────────────────────────────────────────┤
-│  Approach: Make push O(n) to keep LIFO order                   │
-│                                                                │
-│  push(1): queue = [1]                                          │
-│  push(2): add 2, rotate 1 time                                 │
-│           [1,2] → poll 1, add 1 → [2,1]                        │
-│  push(3): add 3, rotate 2 times                                │
-│           [2,1,3] → [1,3,2] → [3,2,1]                          │
-│                                                                │
-│  Now front of queue is top of stack!                           │
-│  pop() → returns 3                                             │
-│  top() → returns 2                                             │
-└────────────────────────────────────────────────────────────────┘
+**IMPLEMENT STACK USING QUEUES**
+
+```text
+Approach: Make push O(n) to keep LIFO order
+
+push(1): queue = [1]
+push(2): add 2, rotate 1 time
+         [1,2] → poll 1, add 1 → [2,1]
+push(3): add 3, rotate 2 times
+         [2,1,3] → [1,3,2] → [3,2,1]
+
+Now front of queue is top of stack!
+pop() → returns 3
+top() → returns 2
 ```
 
 **Solution:**
@@ -133,31 +119,26 @@ class MyStack {
 
 **LeetCode 239** 🔗 https://leetcode.com/problems/sliding-window-maximum/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SLIDING WINDOW MAXIMUM - Max in each window of size k         │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3                      │
-│                                                                │
-│  Use Monotonic Decreasing Deque (store indices):               │
-│  ┌────────────────────────────────────────────────────────────┐│
-│  │ Window      │ Deque (indices)  │ Max │                     ││
-│  ├─────────────┼──────────────────┼─────┤                     ││
-│  │ [1,3,-1]    │ [1,2]→vals[3,-1] │  3  │                     ││
-│  │ [3,-1,-3]   │ [1,2,3]→[3,-1,-3]│  3  │                     ││
-│  │ [-1,-3,5]   │ [4]→[5]          │  5  │                     ││
-│  │ [-3,5,3]    │ [4,5]→[5,3]      │  5  │                     ││
-│  │ [5,3,6]     │ [6]→[6]          │  6  │                     ││
-│  │ [3,6,7]     │ [7]→[7]          │  7  │                     ││
-│  └────────────────────────────────────────────────────────────┘│
-│                                                                │
-│  Output: [3, 3, 5, 5, 6, 7]                                    │
-│                                                                │
-│  Why Monotonic Decreasing?                                     │
-│  - Front always has maximum                                    │
-│  - Smaller elements behind larger can never be max             │
-└────────────────────────────────────────────────────────────────┘
-```
+### SLIDING WINDOW MAXIMUM - Max in each window of size k
+
+nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3
+
+Use Monotonic Decreasing Deque (store indices):
+
+| Window | Deque (indices) | Max |  |
+| --- | --- | --- | --- |
+| [1,3,-1] | [1,2]→vals[3,-1] | 3 |  |
+| [3,-1,-3] | [1,2,3]→[3,-1,-3] | 3 |  |
+| [-1,-3,5] | [4]→[5] | 5 |  |
+| [-3,5,3] | [4,5]→[5,3] | 5 |  |
+| [5,3,6] | [6]→[6] | 6 |  |
+| [3,6,7] | [7]→[7] | 7 |  |
+
+Output: [3, 3, 5, 5, 6, 7]
+
+Why Monotonic Decreasing?
+- Front always has maximum
+- Smaller elements behind larger can never be max
 
 **Solution:**
 
@@ -194,27 +175,25 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 
 ## Problem 93: 🔒 Shortest Subarray with Sum at Least K (LeetCode 862 - Hard)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SHORTEST SUBARRAY WITH SUM AT LEAST K                         │
-├────────────────────────────────────────────────────────────────┤
-│  Return the length of the shortest non-empty subarray with     │
-│  sum at least k. If no such subarray exists, return -1.        │
-│  Note: Array can have NEGATIVE numbers!                        │
-│                                                                │
-│  Examples:                                                     │
-│  Input: nums = [1], k = 1        → Output: 1                   │
-│  Input: nums = [1,2], k = 4      → Output: -1                  │
-│  Input: nums = [2,-1,2], k = 3   → Output: 3                   │
-│                                                                │
-│  Constraints:                                                  │
-│  - 1 <= nums.length <= 10^5                                    │
-│  - -10^5 <= nums[i] <= 10^5                                    │
-│  - 1 <= k <= 10^9                                              │
-│                                                                │
-│  Key Insight: Use prefix sum + monotonic deque                 │
-│  prefix[j] - prefix[i] >= k means subarray (i,j] has sum >= k  │
-└────────────────────────────────────────────────────────────────┘
+**SHORTEST SUBARRAY WITH SUM AT LEAST K**
+
+```text
+Return the length of the shortest non-empty subarray with
+sum at least k. If no such subarray exists, return -1.
+Note: Array can have NEGATIVE numbers!
+
+Examples:
+Input: nums = [1], k = 1        → Output: 1
+Input: nums = [1,2], k = 4      → Output: -1
+Input: nums = [2,-1,2], k = 3   → Output: 3
+
+Constraints:
+- 1 <= nums.length <= 10^5
+- -10^5 <= nums[i] <= 10^5
+- 1 <= k <= 10^9
+
+Key Insight: Use prefix sum + monotonic deque
+prefix[j] - prefix[i] >= k means subarray (i,j] has sum >= k
 ```
 
 **Solution:**
@@ -255,43 +234,23 @@ public int shortestSubarray(int[] nums, int k) {
 
 ## Problem 94: 🔒 Design Circular Queue (LeetCode 622)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  DESIGN CIRCULAR QUEUE                                         │
-├────────────────────────────────────────────────────────────────┤
-│  Design your implementation of the circular queue.             │
-│                                                                │
-│  Circular Queue visualization (capacity=5):                    │
-│       ┌───┬───┬───┬───┬───┐                                    │
-│       │ 1 │ 2 │ 3 │   │   │                                    │
-│       └───┴───┴───┴───┴───┘                                    │
-│         ↑           ↑                                          │
-│       front       rear                                         │
-│                                                                │
-│  After enQueue(4), enQueue(5):                                 │
-│       ┌───┬───┬───┬───┬───┐                                    │
-│       │ 1 │ 2 │ 3 │ 4 │ 5 │  (Full!)                           │
-│       └───┴───┴───┴───┴───┘                                    │
-│         ↑               ↑                                      │
-│       front           rear                                     │
-│                                                                │
-│  deQueue() twice, then enQueue(6):                             │
-│       ┌───┬───┬───┬───┬───┐                                    │
-│       │ 6 │   │ 3 │ 4 │ 5 │  (Wraps around!)                   │
-│       └───┴───┴───┴───┴───┘                                    │
-│         ↑   ↑                                                  │
-│       rear front                                               │
-│                                                                │
-│  Operations:                                                   │
-│  - MyCircularQueue(k): Initialize with size k                  │
-│  - enQueue(value): Insert element, return success              │
-│  - deQueue(): Delete front element, return success             │
-│  - Front(): Get front item                                     │
-│  - Rear(): Get rear item                                       │
-│  - isEmpty(): Check if empty                                   │
-│  - isFull(): Check if full                                     │
-└────────────────────────────────────────────────────────────────┘
-```
+**Design circular queue.** Design your own implementation of a circular queue (capacity 5).
+
+| Step | Slot 0 | Slot 1 | Slot 2 | Slot 3 | Slot 4 | `front` | `rear` | Note |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Start | 1 | 2 | 3 | | | 0 | 2 | |
+| After `enQueue(4)`, `enQueue(5)` | 1 | 2 | 3 | 4 | 5 | 0 | 4 | Full |
+| After `deQueue()` twice, then `enQueue(6)` | 6 | | 3 | 4 | 5 | 2 | 0 | `rear` wraps around |
+
+Operations:
+
+- `MyCircularQueue(k)`: initialise with size `k`
+- `enQueue(value)`: insert an element, return success
+- `deQueue()`: delete the front element, return success
+- `Front()`: get the front item
+- `Rear()`: get the rear item
+- `isEmpty()`: check if empty
+- `isFull()`: check if full
 
 **Solution:**
 
@@ -347,37 +306,35 @@ class MyCircularQueue {
 
 ## Problem 95: 🔒 Design Circular Deque (LeetCode 641)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  DESIGN CIRCULAR DEQUE (Double-ended Queue)                    │
-├────────────────────────────────────────────────────────────────┤
-│  Design a circular deque with these operations:                │
-│  - insertFront(): Add at front                                 │
-│  - insertLast(): Add at rear                                   │
-│  - deleteFront(): Remove from front                            │
-│  - deleteLast(): Remove from rear                              │
-│  - getFront(): Get front element                               │
-│  - getRear(): Get rear element                                 │
-│  - isEmpty(): Check if empty                                   │
-│  - isFull(): Check if full                                     │
-│                                                                │
-│  Example:                                                      │
-│  MyCircularDeque deque = new MyCircularDeque(3);               │
-│  deque.insertLast(1);  // return true                          │
-│  deque.insertLast(2);  // return true                          │
-│  deque.insertFront(3); // return true                          │
-│  deque.insertFront(4); // return false (full)                  │
-│  deque.getRear();      // return 2                             │
-│  deque.isFull();       // return true                          │
-│  deque.deleteLast();   // return true                          │
-│  deque.insertFront(4); // return true                          │
-│  deque.getFront();     // return 4                             │
-│                                                                │
-│  Constraints:                                                  │
-│  - 1 <= k <= 1000                                              │
-│  - 0 <= value <= 1000                                          │
-│  - At most 2000 calls to operations                            │
-└────────────────────────────────────────────────────────────────┘
+**DESIGN CIRCULAR DEQUE (Double-ended Queue)**
+
+```text
+Design a circular deque with these operations:
+- insertFront(): Add at front
+- insertLast(): Add at rear
+- deleteFront(): Remove from front
+- deleteLast(): Remove from rear
+- getFront(): Get front element
+- getRear(): Get rear element
+- isEmpty(): Check if empty
+- isFull(): Check if full
+
+Example:
+MyCircularDeque deque = new MyCircularDeque(3);
+deque.insertLast(1);  // return true
+deque.insertLast(2);  // return true
+deque.insertFront(3); // return true
+deque.insertFront(4); // return false (full)
+deque.getRear();      // return 2
+deque.isFull();       // return true
+deque.deleteLast();   // return true
+deque.insertFront(4); // return true
+deque.getFront();     // return 4
+
+Constraints:
+- 1 <= k <= 1000
+- 0 <= value <= 1000
+- At most 2000 calls to operations
 ```
 
 **Solution:**

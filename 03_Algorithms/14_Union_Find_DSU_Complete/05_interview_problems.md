@@ -6,34 +6,30 @@
 
 ## Problem Categories
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              UNION-FIND PROBLEM TYPES                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  CONNECTED COMPONENTS:                                          │
-│  • Number of Connected Components                               │
-│  • Number of Provinces                                          │
-│  • Making a Large Island                                        │
-│                                                                 │
-│  CYCLE DETECTION:                                               │
-│  • Redundant Connection I/II                                    │
-│  • Graph Valid Tree                                             │
-│                                                                 │
-│  DYNAMIC CONNECTIVITY:                                          │
-│  • Number of Islands II                                         │
-│  • Accounts Merge                                               │
-│  • Longest Consecutive Sequence                                 │
-│                                                                 │
-│  MST/GRAPH OPTIMIZATION:                                        │
-│  • Minimum Cost to Connect All Points                           │
-│  • Connecting Cities With Minimum Cost                          │
-│                                                                 │
-│  WEIGHTED/RATIO PROBLEMS:                                       │
-│  • Evaluate Division                                            │
-│  • Smallest String With Swaps                                   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**UNION-FIND PROBLEM TYPES**
+
+```text
+CONNECTED COMPONENTS:
+• Number of Connected Components
+• Number of Provinces
+• Making a Large Island
+
+CYCLE DETECTION:
+• Redundant Connection I/II
+• Graph Valid Tree
+
+DYNAMIC CONNECTIVITY:
+• Number of Islands II
+• Accounts Merge
+• Longest Consecutive Sequence
+
+MST/GRAPH OPTIMIZATION:
+• Minimum Cost to Connect All Points
+• Connecting Cities With Minimum Cost
+
+WEIGHTED/RATIO PROBLEMS:
+• Evaluate Division
+• Smallest String With Swaps
 ```
 
 ## Longest Consecutive Sequence (LeetCode 128)
@@ -238,32 +234,28 @@ public int largestIsland(int[][] grid) {
 
 ### When to Use Union-Find
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              UNION-FIND vs OTHER APPROACHES                     │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  USE UNION-FIND WHEN:                                           │
-│  • Need to merge groups dynamically                             │
-│  • Need to query if elements are in same group                  │
-│  • Process edges to build connected components                  │
-│  • Need MST with Kruskal's algorithm                            │
-│                                                                 │
-│  USE DFS/BFS INSTEAD WHEN:                                      │
-│  • Need to find actual path between nodes                       │
-│  • Need to process all nodes in component                       │
-│  • Graph is static (not changing)                               │
-│  • Need shortest path                                           │
-│                                                                 │
-│  COMPARISON:                                                    │
-│                                                                 │
-│  Operation          Union-Find    DFS/BFS                       │
-│  ─────────────────────────────────────────                      │
-│  Query connected    O(α(n)) ≈ O(1)   O(V+E)                     │
-│  Add edge           O(α(n)) ≈ O(1)   O(1)                       │
-│  Build components   O(E·α(n))         O(V+E)                    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**UNION-FIND vs OTHER APPROACHES**
+
+```text
+USE UNION-FIND WHEN:
+• Need to merge groups dynamically
+• Need to query if elements are in same group
+• Process edges to build connected components
+• Need MST with Kruskal's algorithm
+
+USE DFS/BFS INSTEAD WHEN:
+• Need to find actual path between nodes
+• Need to process all nodes in component
+• Graph is static (not changing)
+• Need shortest path
+
+COMPARISON:
+
+Operation          Union-Find    DFS/BFS
+─────────────────────────────────────────
+Query connected    O(α(n)) ≈ O(1)   O(V+E)
+Add edge           O(α(n)) ≈ O(1)   O(1)
+Build components   O(E·α(n))         O(V+E)
 ```
 
 ### Code Template (Copy-Paste Ready)
@@ -302,61 +294,53 @@ class UnionFind {
 
 ### Complexity Summary
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              UNION-FIND COMPLEXITIES                            │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  OPERATION        NAIVE      PATH COMP   RANK    BOTH           │
-│  ─────────────────────────────────────────────────────────────  │
-│  Find             O(n)       O(log n)*   O(log n) O(α(n))       │
-│  Union            O(n)       O(log n)*   O(log n) O(α(n))       │
-│  Build (m ops)    O(mn)      O(m log n)  O(m log n) O(m·α(n))   │
-│                                                                 │
-│  * Amortized                                                    │
-│                                                                 │
-│  Space: O(n) for parent and rank arrays                         │
-│                                                                 │
-│  α(n) = Inverse Ackermann, practically O(1):                    │
-│  α(10^80) = 4  (# of atoms in universe!)                        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**UNION-FIND COMPLEXITIES**
+
+```text
+OPERATION        NAIVE      PATH COMP   RANK    BOTH
+─────────────────────────────────────────────────────────────
+Find             O(n)       O(log n)*   O(log n) O(α(n))
+Union            O(n)       O(log n)*   O(log n) O(α(n))
+Build (m ops)    O(mn)      O(m log n)  O(m log n) O(m·α(n))
+
+* Amortized
+
+Space: O(n) for parent and rank arrays
+
+α(n) = Inverse Ackermann, practically O(1):
+α(10^80) = 4  (# of atoms in universe!)
 ```
 
 ---
 
 ## Summary
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║            UNION-FIND - MASTER CHECKLIST                      ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  1. CORE OPERATIONS                                           ║
-║     • find(x): Get representative of x's group                ║
-║     • union(x,y): Merge groups of x and y                     ║
-║     • connected(x,y): Check if same group                     ║
-║                                                               ║
-║  2. OPTIMIZATIONS (ALWAYS USE BOTH!)                          ║
-║     • Path Compression: On find, make nodes point to root     ║
-║     • Union by Rank/Size: Attach smaller tree to larger       ║
-║                                                               ║
-║  3. COMMON PATTERNS                                           ║
-║     • Count components: Track count, decrement on union       ║
-║     • Detect cycles: union() returns false                    ║
-║     • MST: Kruskal's algorithm with sorted edges              ║
-║                                                               ║
-║  4. PROBLEM RECOGNITION                                       ║
-║     • "Group", "Connect", "Component"                         ║
-║     • "Same group/set", "Merge", "Union"                      ║
-║     • Dynamic connectivity queries                            ║
-║                                                               ║
-║  5. EDGE CASES                                                ║
-║     • Self-loops (union(x,x) should be no-op)                 ║
-║     • Already connected elements                              ║
-║     • Empty graph                                             ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
+**UNION-FIND - MASTER CHECKLIST**
+
+```text
+1. CORE OPERATIONS
+   • find(x): Get representative of x's group
+   • union(x,y): Merge groups of x and y
+   • connected(x,y): Check if same group
+
+2. OPTIMIZATIONS (ALWAYS USE BOTH!)
+   • Path Compression: On find, make nodes point to root
+   • Union by Rank/Size: Attach smaller tree to larger
+
+3. COMMON PATTERNS
+   • Count components: Track count, decrement on union
+   • Detect cycles: union() returns false
+   • MST: Kruskal's algorithm with sorted edges
+
+4. PROBLEM RECOGNITION
+   • "Group", "Connect", "Component"
+   • "Same group/set", "Merge", "Union"
+   • Dynamic connectivity queries
+
+5. EDGE CASES
+   • Self-loops (union(x,x) should be no-op)
+   • Already connected elements
+   • Empty graph
 ```
 
 **Pro Tip:** When you see problems involving merging groups, checking connectivity, or building spanning trees, Union-Find should be your first thought!
@@ -379,13 +363,16 @@ class UnionFind {
 ## When Union-Find Breaks
 
 ### 1. Calling `union()` Without Path Compression in `find()` — O(n) Degeneration
+
 **What breaks**: Union by rank without path compression keeps trees shallow, but without either optimization, a chain of unions produces a bamboo (linear chain) with O(n) `find()`. Without both optimizations together, worst case is O(log n) not O(α(n)).
 **Fix**: Always implement BOTH — path compression in `find()` AND union by rank/size in `union()`.
 
 ### 2. Using `parent[x] == x` to Check for Roots After Merging
+
 **What breaks**: After `union(x, y)`, if y becomes the root of x, then `parent[x] = y`. Checking `parent[x] == x` returns false, which you might interpret as "x is not in the set" — but x IS in the set, it's just not a root. The root check is `find(x) == x`, not `parent[x] == x`.
 
 ### 3. Forgetting to Initialize All Nodes
+
 **What breaks**: Calling `union(3, 7)` before initializing all nodes 0..n-1 leaves `parent[5]`, `parent[6]`, etc. as 0 (Java default) instead of pointing to themselves. Subsequent `find(5)` follows the chain `5 → 0 → 0` (a loop!) and diverges.
 **Fix**: Always `for (int i = 0; i < n; i++) parent[i] = i;` before any `union()` or `find()` calls.
 

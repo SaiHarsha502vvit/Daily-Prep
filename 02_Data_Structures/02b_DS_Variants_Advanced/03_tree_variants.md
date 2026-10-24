@@ -174,35 +174,77 @@ Implications:
 
 #### ROTATIONS (The Key to Balance)
 
-4 CASES OF IMBALANCE:
+There are four cases of imbalance. Each diagram shows the tree before and after the fix.
 
-1. LEFT-LEFT (LL) → Single Right Rotation
-   30                     20
-   /                      /  \
-   20          →         10    30
-   /
-   10
+**1. Left-left (LL) → single right rotation**
 
-2. RIGHT-RIGHT (RR) → Single Left Rotation
-   10                         20
-   \                       /  \
-   20         →         10    30
-   \
-   30
+```mermaid
+flowchart LR
+  subgraph B1["Before"]
+    b30((30)) --> b20((20)) --> b10((10))
+  end
+  subgraph A1["After"]
+    a20((20)) --> a10((10))
+    a20 --> a30((30))
+  end
+  B1 -->|rotate right at 30| A1
+```
 
-3. LEFT-RIGHT (LR) → Left then Right Rotation
-   30                    30                      25
-   /                     /                       /  \
-   20          →        25         →           20    30
-   \                 /
-   25             20
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
 
-4. RIGHT-LEFT (RL) → Right then Left Rotation
-   10                    10                         15
-   \                     \                       /  \
-   20        →           15       →           10    20
-   /                        \
-   15                         20
+**2. Right-right (RR) → single left rotation**
+
+```mermaid
+flowchart LR
+  subgraph B2["Before"]
+    b10((10)) --> b20((20)) --> b30((30))
+  end
+  subgraph A2["After"]
+    a20((20)) --> a10((10))
+    a20 --> a30((30))
+  end
+  B2 -->|rotate left at 10| A2
+```
+
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
+
+**3. Left-right (LR) → left rotation at the child, then right rotation at the root**
+
+```mermaid
+flowchart LR
+  subgraph B3["Before"]
+    b30((30)) --> b20((20)) --> b25((25))
+  end
+  subgraph M3["After left rotation at 20"]
+    m30((30)) --> m25((25)) --> m20((20))
+  end
+  subgraph A3["After right rotation at 30"]
+    a25((25)) --> a20((20))
+    a25 --> a30((30))
+  end
+  B3 --> M3 --> A3
+```
+
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
+
+**4. Right-left (RL) → right rotation at the child, then left rotation at the root**
+
+```mermaid
+flowchart LR
+  subgraph B4["Before"]
+    b10((10)) --> b20((20)) --> b15((15))
+  end
+  subgraph M4["After right rotation at 20"]
+    m10((10)) --> m15((15)) --> m20((20))
+  end
+  subgraph A4["After left rotation at 10"]
+    a15((15)) --> a10((10))
+    a15 --> a20((20))
+  end
+  B4 --> M4 --> A4
+```
+
+**How to read these diagrams.** Arrows inside a box point from parent to child, drawn left-heavy or right-heavy exactly as the tree leans. The arrow between boxes is the rotation. Every case ends with the middle value of the three nodes at the top.
 
 
 ```java
@@ -434,15 +476,23 @@ A self-balancing BST where each node has a COLOR (Red or Black)
 
 **Visual:** 
 
-[13:B]
-/      \
-[8:R]      [17:R]
-/   \      /    \
-[1:B] [11:B] [15:B] [25:B]
-/             \
-[6:R]          [22:R]
+```mermaid
+flowchart TB
+  n13["13 B"] --> n8["8 R"]
+  n13 --> n17["17 R"]
+  n8 --> n1["1 B"]
+  n8 --> n11["11 B"]
+  n17 --> n15["15 B"]
+  n17 --> n25["25 B"]
+  n1 --> n6["6 R"]
+  n25 --> n22["22 R"]
+  classDef b fill:#374151,stroke:#111827,color:#fff;
+  classDef r fill:#ef4444,stroke:#991b1b,color:#fff;
+  class n13,n1,n11,n15,n25 b;
+  class n8,n17,n6,n22 r;
+```
 
-B = Black, R = Red
+**How to read this diagram.** Dark nodes are black, red nodes are red. Every path from the root to an empty child passes through two black nodes (13 and one of 1, 11, 15, 25), and no red node has a red child.
 
 #### AVL vs RED-BLACK
 

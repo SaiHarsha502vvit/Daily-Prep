@@ -224,21 +224,19 @@ class BookingService {
 
 #### Race Condition Solution
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  Timeline of concurrent booking:                                                 ║
-║                                                                                  ║
-║  User A selects seat A1 at t=0    →  lockSeats("A1") → SUCCESS (locked for A)    ║
-║  User B selects seat A1 at t=1    →  lockSeats("A1") → FAIL (already LOCKED)     ║
-║                                                                                  ║
-║  User A pays at t=3              →  confirmBooking → BOOKED                      ║
-║  OR User A doesn't pay by t=5   →  auto-release → AVAILABLE again                ║
-║                                                                                  ║
-║  DATABASE-LEVEL: Use SELECT ... FOR UPDATE (pessimistic lock)                    ║
-║  OR optimistic lock with version column:                                         ║
-║  UPDATE seat_status SET status='LOCKED', version=version+1                       ║
-║  WHERE seat_id='A1' AND status='AVAILABLE' AND version=current_version           ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+```text
+Timeline of concurrent booking:
+
+User A selects seat A1 at t=0    →  lockSeats("A1") → SUCCESS (locked for A)
+User B selects seat A1 at t=1    →  lockSeats("A1") → FAIL (already LOCKED)
+
+User A pays at t=3              →  confirmBooking → BOOKED
+OR User A doesn't pay by t=5   →  auto-release → AVAILABLE again
+
+DATABASE-LEVEL: Use SELECT ... FOR UPDATE (pessimistic lock)
+OR optimistic lock with version column:
+UPDATE seat_status SET status='LOCKED', version=version+1
+WHERE seat_id='A1' AND status='AVAILABLE' AND version=current_version
 ```
 
 ---
@@ -475,17 +473,13 @@ class LoggerConfig {
 
 ### SOLID Principles in Every Solution
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  PRINCIPLE          │ WHERE WE APPLIED IT                                        ║
-║─────────────────────┼─────────────────────────────────────────────────────────   ║
-║  S - Single Resp.   │ BookingService only books, PricingStrategy only prices     ║
-║  O - Open/Closed    │ New split types without changing ExpenseService            ║
-║  L - Liskov Sub.    │ EqualSplit/ExactSplit both work wherever Split is used     ║
-║  I - Interface Seg. │ Small interfaces: PricingStrategy, LogAppender             ║
-║  D - Dependency Inv.│ ParkingLot depends on PricingStrategy interface, not impl  ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+| Principle | Where we applied it |
+| --- | --- |
+| **S** — Single Responsibility | `BookingService` only books, `PricingStrategy` only prices |
+| **O** — Open/Closed | New split types without changing `ExpenseService` |
+| **L** — Liskov Substitution | `EqualSplit` and `ExactSplit` both work wherever `Split` is used |
+| **I** — Interface Segregation | Small interfaces: `PricingStrategy`, `LogAppender` |
+| **D** — Dependency Inversion | `ParkingLot` depends on the `PricingStrategy` interface, not an implementation |
 
 ---
 

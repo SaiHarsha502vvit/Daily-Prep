@@ -274,29 +274,14 @@ public boolean lemonadeChange(int[] bills) {
 
 ### When to Use Which?
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                  GREEDY vs DYNAMIC PROGRAMMING                  │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  GREEDY                       │  DYNAMIC PROGRAMMING            │
-│  ─────────────────────────────┼───────────────────────────────  │
-│  Makes ONE choice at each     │  Considers ALL choices at each  │
-│  step, never reconsiders      │  step, picks best via recursion │
-│                               │                                 │
-│  O(n) or O(n log n) usually   │  O(n²) or O(n³) typically       │
-│                               │                                 │
-│  Doesn't always work          │  Always gives optimal (if       │
-│                               │  correct recurrence)            │
-│                               │                                 │
-│  Examples:                    │  Examples:                      │
-│  - Activity Selection         │  - 0/1 Knapsack                 │
-│  - Huffman Coding             │  - Longest Common Subsequence   │
-│  - Dijkstra's Algorithm       │  - Edit Distance                │
-│  - Fractional Knapsack        │  - Matrix Chain Multiplication  │
-│                               │                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+**GREEDY vs DYNAMIC PROGRAMMING**
+
+| GREEDY | DYNAMIC PROGRAMMING |
+| --- | --- |
+| Makes ONE choice at each step, never reconsiders | Considers ALL choices at each step, picks best via recursion |
+| O(n) or O(n log n) usually | O(n²) or O(n³) typically |
+| Doesn't always work | Always gives optimal (if correct recurrence) |
+| Examples: - Activity Selection - Huffman Coding - Dijkstra's Algorithm - Fractional Knapsack | Examples: - 0/1 Knapsack - Longest Common Subsequence - Edit Distance - Matrix Chain Multiplication |
 
 ### Same Problem, Different Approaches
 
@@ -375,35 +360,31 @@ public int dpCoinChange(int[] coins, int amount) {
 
 ### Greedy Choice Patterns
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│               COMMON GREEDY STRATEGIES                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  1. SORT BY END TIME                                            │
-│     → Max non-overlapping intervals                             │
-│     → Activity selection                                        │
-│                                                                 │
-│  2. SORT BY START TIME                                          │
-│     → Merge intervals                                           │
-│     → Cover range with min intervals                            │
-│                                                                 │
-│  3. SORT BY RATIO (value/weight)                                │
-│     → Fractional knapsack                                       │
-│                                                                 │
-│  4. SORT BY ONE, SECONDARY BY ANOTHER                           │
-│     → Job scheduling (profit desc, deadline)                    │
-│     → Queue reconstruction (height desc, k asc)                 │
-│                                                                 │
-│  5. TWO POINTERS (heaviest + lightest)                          │
-│     → Boat problem                                              │
-│     → Two sum variants                                          │
-│                                                                 │
-│  6. TRACK FARTHEST/EARLIEST ENDING                              │
-│     → Jump game                                                 │
-│     → Interval covering                                         │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**COMMON GREEDY STRATEGIES**
+
+```text
+1. SORT BY END TIME
+   → Max non-overlapping intervals
+   → Activity selection
+
+2. SORT BY START TIME
+   → Merge intervals
+   → Cover range with min intervals
+
+3. SORT BY RATIO (value/weight)
+   → Fractional knapsack
+
+4. SORT BY ONE, SECONDARY BY ANOTHER
+   → Job scheduling (profit desc, deadline)
+   → Queue reconstruction (height desc, k asc)
+
+5. TWO POINTERS (heaviest + lightest)
+   → Boat problem
+   → Two sum variants
+
+6. TRACK FARTHEST/EARLIEST ENDING
+   → Jump game
+   → Interval covering
 ```
 
 ### Common Mistakes to Avoid
@@ -429,16 +410,14 @@ public int dpCoinChange(int[] coins, int amount) {
 
 **Master These 3 Greedy Patterns:**
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║     GREEDY ESSENTIALS                                         ║
-╠═══════════════════════════════════════════════════════════════╣
-║  1. INTERVAL SELECTION: Sort by end time, pick earliest       ║
-║                                                               ║
-║  2. INTERVAL MERGING: Sort by start time, extend end          ║
-║                                                               ║
-║  3. TWO POINTER: Sort both, match greedily                    ║
-╚═══════════════════════════════════════════════════════════════╝
+**GREEDY ESSENTIALS**
+
+```text
+1. INTERVAL SELECTION: Sort by end time, pick earliest
+
+2. INTERVAL MERGING: Sort by start time, extend end
+
+3. TWO POINTER: Sort both, match greedily
 ```
 
 **Pro Tip:** If greedy doesn't work for a problem, try DP. If you can prove the greedy choice property (exchange argument), greedy is usually faster!
@@ -448,19 +427,23 @@ public int dpCoinChange(int[] coins, int amount) {
 ## When Greedy Breaks
 
 ### 1. Exchange Argument Fails — Greedy Picks a Locally Optimal but Globally Suboptimal Choice
+
 **What breaks**: Coin change with non-canonical denominations. `{1, 3, 4}`, target = 6: greedy picks 4 → then 1 → then 1 = **3 coins**. DP finds 3 + 3 = **2 coins**. The greedy choice property fails because picking the largest coin forecloses a better partition.
 **Test**: Always try the adversarial case before committing to greedy. If you can construct a counterexample in 2 minutes, use DP.
 
 ### 2. Interval Scheduling — Greedy on Wrong Attribute
+
 **What breaks**: "Maximize number of non-overlapping intervals" — greedy by *earliest start* gives wrong answers when an early-starting interval spans the whole range. Correct attribute is *earliest finish*.
 **Proof it's wrong**: `[(0,10), (1,2), (3,4)]` — earliest-start picks `(0,10)`, leaving only 0 more. Earliest-finish picks `(1,2)` then `(3,4)` = 2 intervals.
 **Fix**: Always sort by *finish time* for interval scheduling; sort by *start time* for interval merging. The attributes differ and the choice is load-bearing.
 
 ### 3. Huffman Coding — Wrong Priority Queue Direction
+
 **What breaks**: Building a Huffman tree with a *max*-heap instead of a *min*-heap. The greedy insight is to always merge the two *lowest*-frequency nodes. Using max-heap reverses this, producing a tree with higher total code length.
 **Java gotcha**: `new PriorityQueue<>()` is a min-heap; `new PriorityQueue<>(Comparator.reverseOrder())` is max-heap. Confusing the two produces silently wrong trees with no exception.
 
 ### 4. Greedy Activity Selection with Weights — Must Use DP
+
 **What breaks**: Weighted job scheduling ("maximize total value of non-overlapping intervals"). Greedy by earliest finish no longer works because a low-value early-finishing job might displace a high-value later job. This problem requires DP + binary search (O(n log n)).
 **Signal**: As soon as intervals carry weights and you want maximum total weight — not maximum count — greedy fails; DP is required.
 

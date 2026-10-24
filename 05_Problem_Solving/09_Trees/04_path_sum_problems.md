@@ -13,22 +13,20 @@
 
 **LeetCode 112** 🔗 https://leetcode.com/problems/path-sum/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  PATH SUM - Root to leaf path with target sum                  │
-├────────────────────────────────────────────────────────────────┤
-│  targetSum = 22                                                │
-│                                                                │
-│         5                                                      │
-│        / \                                                     │
-│       4   8         Path: 5→4→11→2 = 22 ✓                      │
-│      /   / \                                                   │
-│     11  13  4                                                  │
-│    /  \      \                                                 │
-│   7    2      1                                                │
-│                                                                │
-│  ⚠️ Must reach a LEAF node (no children)                       │
-└────────────────────────────────────────────────────────────────┘
+**PATH SUM - Root to leaf path with target sum**
+
+```text
+targetSum = 22
+
+       5
+      / \
+     4   8         Path: 5→4→11→2 = 22 ✓
+    /   / \
+   11  13  4
+  /  \      \
+ 7    2      1
+
+⚠️ Must reach a LEAF node (no children)
 ```
 
 **Solution:**
@@ -55,22 +53,20 @@ public boolean hasPathSum(TreeNode root, int targetSum) {
 
 **LeetCode 113** 🔗 https://leetcode.com/problems/path-sum-ii/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  PATH SUM II - Find ALL paths with target sum                  │
-├────────────────────────────────────────────────────────────────┤
-│  targetSum = 22                                                │
-│                                                                │
-│         5                                                      │
-│        / \                                                     │
-│       4   8                                                    │
-│      /   / \                                                   │
-│     11  13  4                                                  │
-│    /  \    / \                                                 │
-│   7    2  5   1                                                │
-│                                                                │
-│  Output: [[5,4,11,2], [5,8,4,5]]                               │
-└────────────────────────────────────────────────────────────────┘
+**PATH SUM II - Find ALL paths with target sum**
+
+```text
+targetSum = 22
+
+       5
+      / \
+     4   8
+    /   / \
+   11  13  4
+  /  \    / \
+ 7    2  5   1
+
+Output: [[5,4,11,2], [5,8,4,5]]
 ```
 
 **Solution:**
@@ -113,29 +109,26 @@ At each node: `count += map.get(currentSum - target)`.
 
 **LeetCode 437** 🔗 https://leetcode.com/problems/path-sum-iii/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  PATH SUM III - Path doesn't need to start at root or end      │
-│  at leaf, but must go downwards                                │
-├────────────────────────────────────────────────────────────────┤
-│  targetSum = 8                                                 │
-│                                                                │
-│        10                                                      │
-│       /  \                                                     │
-│      5   -3                                                    │
-│     / \    \                                                   │
-│    3   2   11                                                  │
-│   / \   \                                                      │
-│  3  -2   1                                                     │
-│                                                                │
-│  Paths that sum to 8:                                          │
-│  1. 5→3 = 8                                                    │
-│  2. 5→2→1 = 8                                                  │
-│  3. -3→11 = 8                                                  │
-│  Output: 3                                                     │
-│                                                                │
-│  Use Prefix Sum technique with HashMap!                        │
-└────────────────────────────────────────────────────────────────┘
+**PATH SUM III - Path doesn't need to start at root or end — at leaf, but must go downwards**
+
+```text
+targetSum = 8
+
+      10
+     /  \
+    5   -3
+   / \    \
+  3   2   11
+ / \   \
+3  -2   1
+
+Paths that sum to 8:
+1. 5→3 = 8
+2. 5→2→1 = 8
+3. -3→11 = 8
+Output: 3
+
+Use Prefix Sum technique with HashMap!
 ```
 
 **Solution:**
@@ -183,26 +176,24 @@ But also check if using BOTH arms (left + node + right) beats the global max.
 
 **LeetCode 124** 🔗 https://leetcode.com/problems/binary-tree-maximum-path-sum/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MAXIMUM PATH SUM - Path can start and end at any node         │
-├────────────────────────────────────────────────────────────────┤
-│      -10                                                       │
-│      /  \                                                      │
-│     9   20                                                     │
-│        /  \                                                    │
-│       15   7                                                   │
-│                                                                │
-│  Max path: 15→20→7 = 42                                        │
-│                                                                │
-│  At each node, we can:                                         │
-│  1. Include node + left path                                   │
-│  2. Include node + right path                                  │
-│  3. Include node + both paths (forms arch)                     │
-│  4. Just the node itself                                       │
-│                                                                │
-│  ⚠️ Path that goes through root can't extend further up        │
-└────────────────────────────────────────────────────────────────┘
+**MAXIMUM PATH SUM - Path can start and end at any node**
+
+```text
+    -10
+    /  \
+   9   20
+      /  \
+     15   7
+
+Max path: 15→20→7 = 42
+
+At each node, we can:
+1. Include node + left path
+2. Include node + right path
+3. Include node + both paths (forms arch)
+4. Just the node itself
+
+⚠️ Path that goes through root can't extend further up
 ```
 
 **Solution:**
@@ -238,28 +229,26 @@ private int maxGain(TreeNode node) {
 
 **LeetCode 543** 🔗 https://leetcode.com/problems/diameter-of-binary-tree/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  DIAMETER - Longest path between any two nodes (in edges)      │
-├────────────────────────────────────────────────────────────────┤
-│          1                                                     │
-│         / \                                                    │
-│        2   3                                                   │
-│       / \                                                      │
-│      4   5                                                     │
-│                                                                │
-│  Longest path: 4→2→1→3 or 5→2→1→3 = 3 edges                    │
-│  Diameter = 3                                                  │
-│                                                                │
-│  Note: Path may NOT pass through root!                         │
-│          1                                                     │
-│         /                                                      │
-│        2        Diameter = 4→2→5→6→7 = 4                       │
-│       / \                                                      │
-│      4   5                                                     │
-│         / \                                                    │
-│        6   7                                                   │
-└────────────────────────────────────────────────────────────────┘
+**DIAMETER - Longest path between any two nodes (in edges)**
+
+```text
+        1
+       / \
+      2   3
+     / \
+    4   5
+
+Longest path: 4→2→1→3 or 5→2→1→3 = 3 edges
+Diameter = 3
+
+Note: Path may NOT pass through root!
+        1
+       /
+      2        Diameter = 4→2→5→6→7 = 4
+     / \
+    4   5
+       / \
+      6   7
 ```
 
 **Solution:**

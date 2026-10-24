@@ -332,17 +332,18 @@ Time: O(n! × n) | Space: O(n)
 
 ```
 EDGE CASES:
-┌────────────────────────────────┬───────────────────────────────────────────┐
-│ Edge Case                      │ Handling                                  │
-├────────────────────────────────┼───────────────────────────────────────────┤
-│ Empty candidates/array         │ Return [[]] (one empty subset) or []      │
-│ Target = 0                     │ Return [[]] (empty combination works)     │
-│ All candidates > target        │ Return [] (no valid combination)          │
-│ Single element                 │ Subsets: [[], [x]]. Perms: [[x]]          │
-│ All duplicates [2,2,2]         │ Subsets: [[], [2], [2,2], [2,2,2]]        │
-│ n=0 for N-Queens              │ Return [[]] (vacuously true)               │
-└────────────────────────────────┴───────────────────────────────────────────┘
+```
 
+| Edge Case | Handling |
+| --- | --- |
+| Empty candidates/array | Return [[]] (one empty subset) or [] |
+| Target = 0 | Return [[]] (empty combination works) |
+| All candidates > target | Return [] (no valid combination) |
+| Single element | Subsets: [[], [x]]. Perms: [[x]] |
+| All duplicates [2,2,2] | Subsets: [[], [2], [2,2], [2,2,2]] |
+| n=0 for N-Queens | Return [[]] (vacuously true) |
+
+```
 COMMON MISTAKES:
 1. Not sorting before duplicate elimination → skip logic fails
 2. Forgetting result.add(new ArrayList<>(current))

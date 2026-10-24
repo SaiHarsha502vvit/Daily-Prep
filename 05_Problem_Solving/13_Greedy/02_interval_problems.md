@@ -12,25 +12,23 @@
 
 **LeetCode 252 (Premium)** 🔒
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MEETING ROOMS - Can attend all meetings?                      │
-├────────────────────────────────────────────────────────────────┤
-│  intervals = [[0,30], [5,10], [15,20]]                         │
-│                                                                │
-│  Timeline:                                                     │
-│  0────────────────────────────30  Meeting 1                    │
-│       5────10                      Meeting 2 (overlaps!)       │
-│            15────20                Meeting 3 (overlaps!)       │
-│                                                                │
-│  Output: false (meetings overlap)                              │
-│                                                                │
-│  Constraints:                                                  │
-│  - 0 <= intervals.length <= 10^4                               │
-│  - intervals[i].length == 2                                    │
-│  - 0 <= start < end <= 10^6                                    │
-└────────────────────────────────────────────────────────────────┘
-```
+**MEETING ROOMS - Can attend all meetings?**
+
+`intervals = [[0,30], [5,10], [15,20]]`
+
+| Meeting | Interval | Overlap |
+| --- | --- | --- |
+| Meeting 1 | `[0,30]` | |
+| Meeting 2 | `[5,10]` | Overlaps meeting 1 |
+| Meeting 3 | `[15,20]` | Overlaps meeting 1 |
+
+Output: `false` (meetings overlap)
+
+**Constraints**
+
+- `0 <= intervals.length <= 10^4`
+- `intervals[i].length == 2`
+- `0 <= start < end <= 10^6`
 
 **Solution:**
 
@@ -56,21 +54,18 @@ public boolean canAttendMeetings(int[][] intervals) {
 
 **LeetCode 253 (Premium)** 🔒
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MEETING ROOMS II - Minimum rooms needed                       │
-├────────────────────────────────────────────────────────────────┤
-│  intervals = [[0,30], [5,10], [15,20]]                         │
-│                                                                │
-│  Room 1: |═══════════════════════════════| [0,30]              │
-│  Room 2:      |════|      |═════|          [5,10], [15,20]     │
-│                                                                │
-│  Output: 2 rooms needed                                        │
-│                                                                │
-│  Approach: Track concurrent meetings using min-heap            │
-│  Heap stores end times of ongoing meetings                     │
-└────────────────────────────────────────────────────────────────┘
-```
+**MEETING ROOMS II - Minimum rooms needed**
+
+`intervals = [[0,30], [5,10], [15,20]]`
+
+| Room | Meetings |
+| --- | --- |
+| Room 1 | `[0,30]` |
+| Room 2 | `[5,10]`, `[15,20]` |
+
+Output: **2** rooms needed.
+
+**Approach:** track concurrent meetings using a min-heap. The heap stores the end times of ongoing meetings.
 
 **Solution:**
 
@@ -103,20 +98,18 @@ public int minMeetingRooms(int[][] intervals) {
 
 **LeetCode 435** 🔗 https://leetcode.com/problems/non-overlapping-intervals/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  NON-OVERLAPPING INTERVALS - Min removals for no overlap       │
-├────────────────────────────────────────────────────────────────┤
-│  intervals = [[1,2], [2,3], [3,4], [1,3]]                      │
-│                                                                │
-│  1──2  2──3  3──4                                              │
-│  1─────3     (overlaps with both above)                        │
-│                                                                │
-│  Remove [1,3] → No overlaps                                    │
-│  Output: 1                                                     │
-│                                                                │
-│  Greedy: Sort by end time, keep non-overlapping                │
-└────────────────────────────────────────────────────────────────┘
+**NON-OVERLAPPING INTERVALS - Min removals for no overlap**
+
+```text
+intervals = [[1,2], [2,3], [3,4], [1,3]]
+
+1──2  2──3  3──4
+1─────3     (overlaps with both above)
+
+Remove [1,3] → No overlaps
+Output: 1
+
+Greedy: Sort by end time, keep non-overlapping
 ```
 
 **Solution:**
@@ -150,22 +143,18 @@ public int eraseOverlapIntervals(int[][] intervals) {
 
 **LeetCode 56** 🔗 https://leetcode.com/problems/merge-intervals/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  MERGE INTERVALS                                               │
-├────────────────────────────────────────────────────────────────┤
-│  intervals = [[1,3], [2,6], [8,10], [15,18]]                   │
-│                                                                │
-│  1───3                                                         │
-│    2─────6                                                     │
-│              8──10                                             │
-│                     15──18                                     │
-│  └───────┘                                                     │
-│  Merged: [1,6]                                                 │
-│                                                                │
-│  Output: [[1,6], [8,10], [15,18]]                              │
-└────────────────────────────────────────────────────────────────┘
-```
+**MERGE INTERVALS**
+
+`intervals = [[1,3], [2,6], [8,10], [15,18]]`
+
+| Step | Intervals | Result |
+| --- | --- | --- |
+| Sorted by start | `[1,3]`, `[2,6]`, `[8,10]`, `[15,18]` | |
+| `[1,3]` and `[2,6]` overlap (2 ≤ 3) | merge | `[1,6]` |
+| `[8,10]` starts after 6 | keep | `[8,10]` |
+| `[15,18]` starts after 10 | keep | `[15,18]` |
+
+Output: `[[1,6], [8,10], [15,18]]`
 
 **Solution:**
 
@@ -201,20 +190,13 @@ public int[][] merge(int[][] intervals) {
 
 **LeetCode 57** 🔗 https://leetcode.com/problems/insert-interval/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  INSERT INTERVAL                                               │
-├────────────────────────────────────────────────────────────────┤
-│  intervals = [[1,3], [6,9]], newInterval = [2,5]               │
-│                                                                │
-│  1───3    6───9                                                │
-│    2─────5                                                     │
-│  └─────┘                                                       │
-│  Merge [1,3] and [2,5] → [1,5]                                 │
-│                                                                │
-│  Output: [[1,5], [6,9]]                                        │
-└────────────────────────────────────────────────────────────────┘
-```
+**INSERT INTERVAL**
+
+`intervals = [[1,3], [6,9]]`, `newInterval = [2,5]`
+
+`[1,3]` and `[2,5]` overlap, so they merge into `[1,5]`. `[6,9]` starts after 5, so it stays.
+
+Output: `[[1,5], [6,9]]`
 
 **Solution:**
 

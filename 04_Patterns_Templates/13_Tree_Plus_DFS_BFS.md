@@ -322,17 +322,18 @@ Time: O(n) | Space: O(w) where w = max width of tree
 
 ```
 EDGE CASES:
-┌──────────────────────────────┬────────────────────────────────────────┐
-│ Edge Case                    │ Handling                               │
-├──────────────────────────────┼────────────────────────────────────────┤
-│ Null root                    │ Return empty list / false / 0          │
-│ Single node (leaf)           │ Height=0, depth=0, is balanced         │
-│ Skewed tree (like linked list)│ Height = n, BFS space = O(1)          │
-│ Complete binary tree          │ BFS space = O(n/2) for last level     │
-│ Duplicate values in BST      │ Convention: left < root ≤ right        │
-│ Integer.MIN/MAX in BST ranges│ Use Long.MIN/MAX for range bounds      │
-└──────────────────────────────┴────────────────────────────────────────┘
+```
 
+| Edge Case | Handling |
+| --- | --- |
+| Null root | Return empty list / false / 0 |
+| Single node (leaf) | Height=0, depth=0, is balanced |
+| Skewed tree (like linked list) | Height = n, BFS space = O(1) |
+| Complete binary tree | BFS space = O(n/2) for last level |
+| Duplicate values in BST | Convention: left < root ≤ right |
+| Integer.MIN/MAX in BST ranges | Use Long.MIN/MAX for range bounds |
+
+```
 COMMON MISTAKES:
 1. BST validation: checking only parent, not full ancestor range
    Node must be within (min, max) inherited from ALL ancestors above!
@@ -365,6 +366,8 @@ COMMON MISTAKES:
 > [!NOTE]
 > The *Companies* column lists employers that candidates have reported asking the problem. These tags are community-reported, change over time and are **not verified** — use them as hints about relevance, not as facts.
 
+| # | Problem | Companies | Approach |
+| --- | --- | --- | --- |
 | 1 | [Maximum Depth](https://leetcode.com/problems/maximum-depth-of-binary-tree/) | — | DFS: 1 + max(left, right) |
 | 2 | [Diameter of Binary Tree](https://leetcode.com/problems/diameter-of-binary-tree/) | — | DFS: track leftH + rightH at each node |
 | 3 | [Invert Binary Tree](https://leetcode.com/problems/invert-binary-tree/) | Amazon, Walmart | DFS: swap left and right |

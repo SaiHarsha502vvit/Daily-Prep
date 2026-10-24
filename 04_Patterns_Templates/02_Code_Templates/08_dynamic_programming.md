@@ -6,49 +6,30 @@
 
 ## Visual Concept
 
-```
-                  DYNAMIC PROGRAMMING
-──────────────────────────────────────────────────
+### Dynamic programming: five steps
 
-STEP 1: Identify if DP applies
-─────────────────────────────────
-✓ Optimal substructure (optimal solution uses optimal sub-solutions)
-✓ Overlapping subproblems (same subproblems solved multiple times)
+1. **Identify whether DP applies.**
+   - ✓ Optimal substructure (an optimal solution uses optimal sub-solutions).
+   - ✓ Overlapping subproblems (the same subproblems are solved many times).
+2. **Define the state.**
+   - `dp[i]` = "answer for the first `i` elements", or
+   - `dp[i][j]` = "answer for range `[i, j]`", or
+   - `dp[i][w]` = "answer considering `i` items with capacity `w`".
+3. **Find the recurrence (transition).** `dp[i] = f(dp[i-1], dp[i-2], …)`: how to build from smaller problems.
+4. **Identify the base cases.** `dp[0] = ?`, `dp[1] = ?`: the smallest problems with known answers.
+5. **Determine the order of computation.** Usually smaller subproblems first (bottom-up).
 
-STEP 2: Define state
-────────────────────────
-dp[i] = "answer for first i elements" or
-dp[i][j] = "answer for range [i, j]" or
-dp[i][w] = "answer considering i items with capacity w"
+**Example: Climbing Stairs** (`n` steps, take 1 or 2 at a time)
 
-STEP 3: Find recurrence (transition)
-────────────────────────────────────
-dp[i] = f(dp[i-1], dp[i-2], ...)  "How to build from smaller problems"
+- State: `dp[i]` = number of ways to reach step `i`.
+- Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (ways from step `i-1` plus ways from step `i-2`).
+- Base: `dp[0] = 1`, `dp[1] = 1`.
 
-STEP 4: Identify base cases
-───────────────────────────
-dp[0] = ?, dp[1] = ?  "Smallest problems with known answers"
+| `i` | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `dp[i]` | 1 | 1 | 2 | 3 | 5 | 8 |
 
-STEP 5: Determine order of computation
-─────────────────────────────────────
-Usually: smaller subproblems first (bottom-up)
-
-════════════════════════════════════════════════════════════════════
-
-Example: Climbing Stairs (n steps, can take 1 or 2 at a time)
-
-State:    dp[i] = number of ways to reach step i
-Recurrence: dp[i] = dp[i-1] + dp[i-2]
-            (ways from step i-1 + ways from step i-2)
-Base:    dp[0] = 1, dp[1] = 1
-
-┌───┬───┬───┬───┬───┬───┐
-│ 1 │ 1 │ 2 │ 3 │ 5 │ 8 │
-└───┴───┴───┴───┴───┴───┘
- 0   1   2   3   4   5
-
-Answer: dp[5] = 8 ways to climb 5 stairs
-```
+Answer: `dp[5] = 8` ways to climb 5 stairs.
 
 ## Template: 1D DP (Climbing Stairs)
 

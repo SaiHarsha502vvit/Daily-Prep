@@ -421,6 +421,7 @@ This is why databases use B-trees: each disk access fetches many keys, so the di
 > These failure modes are what separate an engineer who "knows BSTs" from one who has shipped them in production.
 
 ### 1. BST Degenerates to O(n) Linked List on Sorted Input
+
 **What breaks**: Inserting keys in sorted (or reverse-sorted) order into a plain BST. Every new key goes to the rightmost (or leftmost) child → the tree becomes a linked list → O(n) search.
 **Trigger constraint**: Any sorted dataset — database records inserted in ID order, log entries by timestamp, alphabetically sorted config keys.
 **Example**: Insert 1, 2, 3, 4, 5 → right-skewed tree; `get(5)` takes 5 comparisons, not log₂5 ≈ 2.3.
@@ -431,6 +432,7 @@ This is why databases use B-trees: each disk access fetches many keys, so the di
 **Constraint warning**: TreeMap requires keys to be `Comparable` or a `Comparator` to be provided. Using a comparator that violates the total-order contract (anti-symmetry, transitivity) produces non-deterministic behaviour — no exception thrown.
 
 ### 2. Non-Total-Order Comparator → Silent Data Corruption
+
 **What breaks**: A `TreeMap` or `PriorityQueue` with a comparator that is not a strict total order (e.g., returns 0 for unequal objects, or is non-transitive).
 ```java
 // BUG — this comparator can return 0 for different strings:
@@ -441,15 +443,18 @@ Comparator<String> buggy = (a, b) -> a.length() - b.length();
 **Fix**: Compare by primary key first, then break ties with a secondary criterion (e.g., `Comparator.comparingInt(String::length).thenComparing(Comparator.naturalOrder())`).
 
 ### 3. Heap: Equal Priorities → Non-Deterministic Ordering
+
 **What breaks**: Using a `PriorityQueue` for task scheduling with tasks that share priority. The queue gives no guarantee about which equal-priority task is returned first — it is not a stable sort.
 **Fix**: Add a tie-breaking field (insertion sequence number): `Comparator.comparingInt(Task::priority).thenComparingLong(Task::insertionOrder)`.
 
 ### 4. `heapify` vs Repeated `insert` — Complexity Trap
+
 **What breaks**: Building a heap by n successive `insert()` calls costs O(n log n). If the data is known upfront, this is avoidable.
 **Fix**: Use `heapify` (also called "Floyd's build-heap"): build bottom-up by calling `siftDown` on all non-leaf nodes from right to left. Total cost = O(n) — proved by summing the geometric series of sift-down heights.
 **Java**: `PriorityQueue(Collection<>)` constructor uses heapify internally → O(n). Use it when all elements are known upfront.
 
 ### 5. Recursive Tree Traversal Stack Overflow on Deep Trees
+
 **What breaks**: Recursive in-order traversal on a degenerate (right-skewed) BST with 1M+ nodes.
 **Root cause**: Each recursive call adds a frame to the JVM call stack. At ~10K depth, `StackOverflowError`.
 **Fix**: Use iterative traversal with an explicit stack:

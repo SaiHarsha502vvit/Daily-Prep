@@ -589,6 +589,7 @@ After processing all elements, remaining stack indices have **no greater element
 **Maximum = 10** ✓
 
 </details>
+
 ## Problem Pattern Catalog
 
 This catalog maps every problem type in this file to its canonical solution approaches. Use it when you see a new problem — classify it first, then apply the matching pattern.

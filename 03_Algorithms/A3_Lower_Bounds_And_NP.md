@@ -269,35 +269,28 @@ NP-complete = in NP AND NP-hard
 
 The most important open problem in mathematics and computer science (Millennium Prize, $1M):
 
-```
-If P = NP:  Every problem whose solution can be quickly verified
-            can also be quickly solved. Cryptography breaks down.
-            Protein folding, drug design become easy.
-            
-If P ≠ NP:  (widely believed) There are problems easy to verify
-            but hard to solve. Cryptography is secure.
-            NP-complete problems have no polynomial algorithm.
-```
+| Case | Consequence |
+| --- | --- |
+| **P = NP** | Every problem whose solution can be quickly verified can also be quickly solved. Public-key cryptography as we know it would break, and many hard optimization problems would become tractable. |
+| **P ≠ NP** (widely believed) | There are problems that are easy to verify but hard to solve. Cryptography stays plausible, and NP-complete problems have no polynomial-time algorithm. |
 
 ### The Complexity Hierarchy
 
+```mermaid
+flowchart TB
+  subgraph PSP["PSPACE: solvable in polynomial space"]
+    subgraph NPS["NP: solutions verifiable in polynomial time"]
+      subgraph PS["P: solvable in polynomial time"]
+        p1["Sorting, shortest path, ..."]
+      end
+      npc["NP-complete = NP ∩ NP-hard"]
+    end
+  end
+  nph["NP-hard: at least as hard as everything in NP (may lie outside NP and even outside PSPACE)"]
+  nph --- npc
 ```
-┌─────────────────────────────────────────────────────┐
-│  PSPACE (problems solvable in polynomial SPACE)      │
-│  ┌─────────────────────────────────────────────┐    │
-│  │  NP-hard (at least as hard as everything)    │    │
-│  │  ┌─────────────────────────────────────┐   │    │
-│  │  │  NP-complete (NP ∩ NP-hard)         │   │    │
-│  │  │  ┌───────────────────────────┐     │   │    │
-│  │  │  │  NP (verifiable in poly) │     │   │    │
-│  │  │  │  ┌─────────────────┐    │     │   │    │
-│  │  │  │  │  P (solvable)  │    │     │   │    │
-│  │  │  │  └─────────────────┘    │     │   │    │
-│  │  │  └───────────────────────────┘     │   │    │
-│  │  └─────────────────────────────────────┘   │    │
-│  └─────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** The nested boxes show the classes P ⊆ NP ⊆ PSPACE (assuming P ≠ NP, the inclusion P ⊂ NP is strict). NP-hard is *not* contained in PSPACE: it overlaps NP exactly in the NP-complete problems, and it also contains harder problems outside NP.
 
 ---
 
@@ -406,17 +399,15 @@ Unless P = NP, Set Cover cannot be approximated better than (1 - ε) ln n for an
 
 ### The Approximability Landscape
 
-```
-Problem            │ Best known approximation    │ Hardness (unless P=NP)
-───────────────────┼─────────────────────────────┼──────────────────────
-Vertex Cover       │ 2                           │ No factor < 1.36
-Set Cover          │ H(n) ≈ ln n                 │ No factor < (1-ε)ln n
-Metric TSP         │ 1.5 (Christofides)          │ No PTAS
-General TSP        │ None!                       │ No constant factor
-Knapsack           │ FPTAS (1+ε, poly in 1/ε)   │ No FPTAS for 0/1 unless P=NP
-Max-3-SAT          │ 7/8 (optimal!)              │ No factor > 7/8
-Independent Set    │ O(n / log² n)               │ No n^(1-ε) approx
-```
+| Problem | Best known approximation | Hardness (unless P=NP) |
+| --- | --- | --- |
+| Vertex Cover | 2 | No factor < 1.36 |
+| Set Cover | H(n) ≈ ln n | No factor < (1-ε)ln n |
+| Metric TSP | 1.5 (Christofides) | No PTAS |
+| General TSP | None! | No constant factor |
+| Knapsack | FPTAS (1+ε, poly in 1/ε) | No FPTAS for 0/1 unless P=NP |
+| Max-3-SAT | 7/8 (optimal!) | No factor > 7/8 |
+| Independent Set | O(n / log² n) | No n^(1-ε) approx |
 
 ---
 
@@ -464,22 +455,20 @@ Can you solve it in polynomial time?
 
 ## Summary
 
-```
-Concept                      │ Key Fact
-─────────────────────────────┼─────────────────────────────────────────────
-Comparison sort lower bound  │ Ω(n log n) — decision tree with n! leaves
-Binary search lower bound    │ Ω(log n) — adversary halves candidates
-Reduction A ≤_p B            │ "B is at least as hard as A"
-P                            │ Exactly solvable in polynomial time
-NP                           │ YES-certificates verifiable in polynomial time
-NP-complete                  │ In NP AND NP-hard (all of NP reduces to it)
-NP-hard                      │ At least as hard as everything in NP
-Proving NP-completeness      │ Show ∈ NP + reduce known NP-complete ≤_p it
-2-approx for Vertex Cover    │ Greedy matching + take both endpoints
-ln n-approx for Set Cover    │ Greedy pick max coverage per cost
-General TSP                  │ No constant approximation unless P=NP
-FPTAS                        │ (1+ε)-approximation in poly(n, 1/ε) time
-```
+| Concept | Key Fact |
+| --- | --- |
+| Comparison sort lower bound | Ω(n log n) — decision tree with n! leaves |
+| Binary search lower bound | Ω(log n) — adversary halves candidates |
+| Reduction A ≤_p B | "B is at least as hard as A" |
+| P | Exactly solvable in polynomial time |
+| NP | YES-certificates verifiable in polynomial time |
+| NP-complete | In NP AND NP-hard (all of NP reduces to it) |
+| NP-hard | At least as hard as everything in NP |
+| Proving NP-completeness | Show ∈ NP + reduce known NP-complete ≤_p it |
+| 2-approx for Vertex Cover | Greedy matching + take both endpoints |
+| ln n-approx for Set Cover | Greedy pick max coverage per cost |
+| General TSP | No constant approximation unless P=NP |
+| FPTAS | (1+ε)-approximation in poly(n, 1/ε) time |
 
 ---
 

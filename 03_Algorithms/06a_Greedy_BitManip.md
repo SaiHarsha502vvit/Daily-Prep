@@ -355,53 +355,41 @@ Then T(n) = Θ(f(n))
 
 ### Amortized Analysis - Deep Understanding
 
-WHAT IS AMORTIZED ANALYSIS?
-Average cost per operation over a sequence of operations.
-NOT the same as average-case analysis!
-Key difference:
+**What is amortized analysis?** The average cost per operation over a *sequence* of operations. It is **not** the same as average-case analysis:
 
-- Average-case: Random input distribution
-- Amortized: Worst-case over sequence, any input
-  DYNAMIC ARRAY (ArrayList) EXAMPLE:
-  ArrayList starts with capacity 10. When full, doubles capacity.
-  Cost of n insertions:
-  | Insert # | Capacity | Is Resize? | Cost (copies + 1 insert) |
-  | 1-10 | 10 | No | 1 each = 10 total |
-  | 11 | 10→20 | Yes | 10 copies + 1 = 11 |
-  | 12-20 | 20 | No | 1 each = 9 |
-  | 21 | 20→40 | Yes | 20 copies + 1 = 21 |
-  | 22-40 | 40 | No | 1 each = 19 |
-  | 41 | 40→80 | Yes | 40 copies + 1 = 41 |
-  | ... | ... | ... | ... |
-  Total cost for n inserts:
-  = n (for n inserts)
+- **Average-case:** assumes a random input distribution.
+- **Amortized:** a worst-case guarantee over any sequence of operations, for any input.
 
-* 10 + 20 + 40 + 80 + ... (for resizes)
-  = n + (10 + 20 + 40 + ... + n/2)
-  = n + n (geometric series ≈ n)
-  = 2n
-  Amortized cost per insert: 2n / n = O(1) amortized!
+**Dynamic array (`ArrayList`) example.** Suppose the list starts with capacity 10 and doubles its capacity when full. The cost of n insertions:
 
-**Three Methods For Amortized Analysis**:
+| Insert # | Capacity | Resize? | Cost (copies + 1 insert) |
+| --- | --- | --- | --- |
+| 1-10 | 10 | No | 1 each = 10 total |
+| 11 | 10 → 20 | Yes | 10 copies + 1 = 11 |
+| 12-20 | 20 | No | 1 each = 9 total |
+| 21 | 20 → 40 | Yes | 20 copies + 1 = 21 |
+| 22-40 | 40 | No | 1 each = 19 total |
+| 41 | 40 → 80 | Yes | 40 copies + 1 = 41 |
+| ... | ... | ... | ... |
 
-1. AGGREGATE METHOD:
-   Total cost for n operations / n
-2. ACCOUNTING METHOD:
-   Charge each operation a fixed amount (amortized cost)
-   Save surplus as "credit" for expensive operations
-   For ArrayList: charge 3 per insert
+Total cost for n inserts:
 
-- 1 for the insert itself
-- 2 saved for future resize (pay for moving this element twice)
+- n for the inserts themselves,
+- plus 10 + 20 + 40 + 80 + ... for the resizes, a geometric series that sums to less than n,
+- so the total is at most about 2n.
 
-3. POTENTIAL METHOD:
-   Define potential function Φ(state)
-   Amortized cost = actual cost + ΔΦ
-   For ArrayList: Φ = 2(size - capacity/2)
+Amortized cost per insert: 2n / n = **O(1)**.
 
-- After resize: Φ = 2(n/2 - n/2) = 0
-- Just before resize: Φ = 2(n - n/2) = n
-- Resize cost n, but Φ drops by n, so amortized = 0
+**Three methods for amortized analysis**
+
+1. **Aggregate method:** total cost of n operations, divided by n.
+2. **Accounting method:** charge each operation a fixed amount (the amortized cost) and save the surplus as "credit" for expensive operations. For `ArrayList`, charge 3 per insert:
+   - 1 pays for the insert itself.
+   - 2 are saved to pay for copying later (this element and one older element).
+3. **Potential method:** define a potential function Φ(state). Amortized cost = actual cost + ΔΦ. For `ArrayList`, Φ = 2·size − capacity:
+   - Right after a resize, size = capacity/2, so Φ = 0.
+   - Just before a resize, size = capacity = n, so Φ = n.
+   - The resize copies n elements and inserts 1 (actual cost n + 1), but Φ drops by n. The amortized cost is (n + 1) − n = 1, which is O(1).
 
 ---
 
@@ -427,20 +415,12 @@ has been extracted to its own dedicated file for discoverability:
 
 ### The General Method
 
-```
-GREEDY APPROACH:
-Make the locally optimal choice at each step,
-hoping to find a global optimum.
+**GREEDY APPROACH: — Make the locally optimal choice at each step, — hoping to find a global optimum. — GREEDY STRATEGY**
 
-┌─────────────────────────────────────────┐
-│           GREEDY STRATEGY               │
-├─────────────────────────────────────────┤
-│                                         │
-│  1. FEASIBILITY: Check if choice valid  │
-│  2. LOCAL OPTIMUM: Pick best option NOW │
-│  3. IRREVOCABLE: Never reconsider       │
-│                                         │
-└─────────────────────────────────────────┘
+```text
+ 1. FEASIBILITY: Check if choice valid
+ 2. LOCAL OPTIMUM: Pick best option NOW
+ 3. IRREVOCABLE: Never reconsider
 
 WHEN GREEDY WORKS:
 ✓ Greedy Choice Property: Local optimal → Global optimal
@@ -505,10 +485,12 @@ In Fractional Knapsack, the domain of items is infinitely divisible. If we have 
 ### When It Breaks -- Greedy + Bit Manipulation
 
 #### 1. Greedy — Exchange Argument Assumed Without Verification
+
 **What breaks**: Applying greedy to a problem where the greedy choice property does NOT hold. E.g., "minimum number of operations to reduce n to 1" — greedy "always halve if even, subtract 1 if odd" fails for n=15: greedy does 15→14→7→6→3→2→1 (6 steps), but optimal is 15→16→8→4→2→1 (5 steps via +1 first).
 **Fix**: Always try to construct a counterexample before committing to greedy. If you can't find one in 5 minutes AND you can sketch an exchange argument, then trust greedy.
 
 #### 2. Bit Shift Precedence in Compound Expressions
+
 **What breaks**: `int result = 1 << n + 1` evaluates as `1 << (n+1)` not `(1 << n) + 1` — addition has higher precedence than `<<`. This is correct if you want `2^(n+1)`, but wrong if you want `2^n + 1`.
 **Fix**: Always parenthesize shift expressions: `(1 << n) + 1`.
 

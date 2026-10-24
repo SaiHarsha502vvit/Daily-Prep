@@ -8,26 +8,22 @@
 
 ### 📌 1. Lowest Common Ancestor (lca) — Multiple Approaches
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    LCA ALGORITHMS - COMPLETE COMPARISON                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  Problem: Find the lowest common ancestor of two nodes p and q in a tree        │
-│                                                                                 │
-│  Tree:         3                                                                │
-│              /   \                                                              │
-│             5     1                                                             │
-│            / \   / \                                                            │
-│           6   2 0   8                                                           │
-│              / \                                                                │
-│             7   4                                                               │
-│                                                                                 │
-│  LCA(5, 1) = 3                                                                  │
-│  LCA(5, 4) = 5                                                                  │
-│  LCA(6, 4) = 5                                                                  │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**LCA ALGORITHMS - COMPLETE COMPARISON**
+
+```text
+Problem: Find the lowest common ancestor of two nodes p and q in a tree
+
+Tree:         3
+            /   \
+           5     1
+          / \   / \
+         6   2 0   8
+            / \
+           7   4
+
+LCA(5, 1) = 3
+LCA(5, 4) = 5
+LCA(6, 4) = 5
 ```
 
 ```java

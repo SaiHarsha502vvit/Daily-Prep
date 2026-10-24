@@ -94,18 +94,13 @@ PROBLEM: Container With Most Water
 Given array of heights, find two lines that form container with
 maximum water.
 
-Visual:
+Visual (heights `[1, 8, 6, 2, 5, 4, 8, 3, 7]`):
 
-|
-| | |
-| | | | | |
-| | | | | | | |
+| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Height | 1 | **8** | 6 | 2 | 5 | 4 | **8** | 3 | **7** |
 
-─────────────────────
-1 8 6 2 5 4 8 3 7
-↑ ↑
-These two lines form max area
-Area = min(8, 7) × distance = 7 × 7 = 49
+The best container uses the lines of height 8 (index 1) and 7 (index 8): width = 8 − 1 = 7, height = min(8, 7) = 7, so area = 7 × 7 = 49.
 
 **Try it yourself first!**
 
@@ -148,25 +143,21 @@ public int maxArea(int[] height) {
 
 ### Problem 2: 3Sum (Find triplets that sum to zero)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: 3Sum                                                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find all unique triplets that sum to zero.                               ║
-║                                                                           ║
-║  Input: [-1, 0, 1, 2, -1, -4]                                             ║
-║  Output: [[-1, -1, 2], [-1, 0, 1]]                                        ║
-║                                                                           ║
-║  Approach:                                                                ║
-║  1. Sort array                                                            ║
-║  2. For each element, use two pointers to find pairs                      ║
-║                                                                           ║
-║  Sorted: [-4, -1, -1, 0, 1, 2]                                            ║
-║            ↑                                                              ║
-║           fix one, find pair that sums to -nums[i]                        ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: 3Sum**
+
+```text
+Find all unique triplets that sum to zero.
+
+Input: [-1, 0, 1, 2, -1, -4]
+Output: [[-1, -1, 2], [-1, 0, 1]]
+
+Approach:
+1. Sort array
+2. For each element, use two pointers to find pairs
+
+Sorted: [-4, -1, -1, 0, 1, 2]
+          ↑
+         fix one, find pair that sums to -nums[i]
 ```
 
 **Try it yourself first!**
@@ -230,24 +221,25 @@ The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3S
 
 ### Problem 3: Longest Substring Without Repeating Characters
 
-```
-PROBLEM: Longest Substring Without Repeating Characters
-──────────────────────────────────────────────────
+**Problem:** Longest Substring Without Repeating Characters
 
-Input: "abcabcbb"
-Output: 3 ("abc")
+- **Input:** `"abcabcbb"`
+- **Output:** `3` (`"abc"`)
 
-Visual:
-a b c a b c b b
-↑─────↑
-└─────┘ "abc" length 3
+When we see a repeat, shrink the window from the left.
 
-  ↑───────↑
-  └───────┘ "bca" length 3
+| `right` | Char | Window after the step | Length |
+| --- | --- | --- | --- |
+| 0 | a | `a` | 1 |
+| 1 | b | `ab` | 2 |
+| 2 | c | `abc` | 3 |
+| 3 | a | `bca` (dropped the old `a`) | 3 |
+| 4 | b | `cab` (dropped the old `b`) | 3 |
+| 5 | c | `abc` (dropped the old `c`) | 3 |
+| 6 | b | `cb` (dropped through the old `b`) | 2 |
+| 7 | b | `b` | 1 |
 
-When we see repeat, shrink window from left
-
-```
+The maximum length is 3.
 
 **Try it yourself first!**
 
@@ -286,27 +278,17 @@ public int lengthOfLongestSubstring(String s) {
 
 ### Problem 4: Maximum Sum of Subarray of Size K
 
-```
-PROBLEM: Maximum Sum Subarray of Size K
-──────────────────────────────────────────────────
+**Problem:** Maximum Sum Subarray of Size K
 
-Input: arr = [2, 1, 5, 1, 3, 2], k = 3
-Output: 9 (subarray [5, 1, 3])
+- **Input:** `arr = [2, 1, 5, 1, 3, 2]`, `k = 3`
+- **Output:** `9` (subarray `[5, 1, 3]`)
 
-Visual:
-┌─────────┐
-2  1  5  1  3  2     sum = 8
-└─────────┘
-
-   ┌─────────┐
-2  1  5  1  3  2     sum = 7
-   └─────────┘
-
-      ┌─────────┐
-2  1  5  1  3  2     sum = 9 ⭐ MAX
-      └─────────┘
-
-```
+| Window | Sum |
+| --- | --- |
+| `[2, 1, 5]` | 8 |
+| `[1, 5, 1]` | 7 |
+| `[5, 1, 3]` | **9** ⭐ max |
+| `[1, 3, 2]` | 6 |
 
 **Try it yourself first!**
 
@@ -359,29 +341,25 @@ Should shrink `while(valid)` to find the minimum window — this is correct! But
 
 ### Problem 5: Search in Rotated Sorted Array
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Search in Rotated Sorted Array                                  ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Array was sorted, then rotated at some pivot.                            ║
-║  Find target in O(log N).                                                 ║
-║                                                                           ║
-║  Original: [0, 1, 2, 4, 5, 6, 7]                                          ║
-║  Rotated:  [4, 5, 6, 7, 0, 1, 2]  (rotated at pivot 4)                    ║
-║  Target: 0                                                                ║
-║  Output: 4 (index of 0)                                                   ║
-║                                                                           ║
-║  Key insight: One half is ALWAYS sorted!                                  ║
-║                                                                           ║
-║  [4, 5, 6, 7, 0, 1, 2]                                                    ║
-║   ↑        ↑        ↑                                                     ║
-║  low      mid     high                                                    ║
-║                                                                           ║
-║  Left half [4,5,6,7] is sorted (arr[low] <= arr[mid])                     ║
-║  Check if target is in sorted half, else search other half                ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Search in Rotated Sorted Array**
+
+```text
+Array was sorted, then rotated at some pivot.
+Find target in O(log N).
+
+Original: [0, 1, 2, 4, 5, 6, 7]
+Rotated:  [4, 5, 6, 7, 0, 1, 2]  (rotated at pivot 4)
+Target: 0
+Output: 4 (index of 0)
+
+Key insight: One half is ALWAYS sorted!
+
+[4, 5, 6, 7, 0, 1, 2]
+ ↑        ↑        ↑
+low      mid     high
+
+Left half [4,5,6,7] is sorted (arr[low] <= arr[mid])
+Check if target is in sorted half, else search other half
 ```
 
 **Try it yourself first!**
@@ -426,29 +404,25 @@ public int search(int[] nums, int target) {
 
 ### Problem 6: Find Peak Element
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Find Peak Element                                               ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Peak = element greater than its neighbors.                               ║
-║  nums[-1] and nums[n] are considered -∞.                                  ║
-║                                                                           ║
-║  Input: [1, 2, 3, 1]                                                      ║
-║  Output: 2 (index of element 3)                                           ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║         3 ← peak                                                          ║
-║        /\                                                                 ║
-║       2  \                                                                ║
-║      /    1                                                               ║
-║     1                                                                     ║
-║                                                                           ║
-║  Binary Search approach:                                                  ║
-║  - If arr[mid] < arr[mid+1], peak is on RIGHT                             ║
-║  - If arr[mid] > arr[mid+1], peak is on LEFT (including mid)              ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Find Peak Element**
+
+```text
+Peak = element greater than its neighbors.
+nums[-1] and nums[n] are considered -∞.
+
+Input: [1, 2, 3, 1]
+Output: 2 (index of element 3)
+
+Visual:
+       3 ← peak
+      /\
+     2  \
+    /    1
+   1
+
+Binary Search approach:
+- If arr[mid] < arr[mid+1], peak is on RIGHT
+- If arr[mid] > arr[mid+1], peak is on LEFT (including mid)
 ```
 
 **Try it yourself first!**
@@ -492,24 +466,20 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 
 ### Problem 7: Rotate Array
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Rotate Array                                                    ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Rotate array to the right by k steps.                                    ║
-║                                                                           ║
-║  Input: [1, 2, 3, 4, 5, 6, 7], k = 3                                      ║
-║  Output: [5, 6, 7, 1, 2, 3, 4]                                            ║
-║                                                                           ║
-║  Approach: Three reverses                                                 ║
-║                                                                           ║
-║  Original:    [1, 2, 3, 4, 5, 6, 7]                                       ║
-║  Reverse all: [7, 6, 5, 4, 3, 2, 1]                                       ║
-║  Reverse [0, k-1]: [5, 6, 7, 4, 3, 2, 1]                                  ║
-║  Reverse [k, n-1]: [5, 6, 7, 1, 2, 3, 4] ✓                                ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Rotate Array**
+
+```text
+Rotate array to the right by k steps.
+
+Input: [1, 2, 3, 4, 5, 6, 7], k = 3
+Output: [5, 6, 7, 1, 2, 3, 4]
+
+Approach: Three reverses
+
+Original:    [1, 2, 3, 4, 5, 6, 7]
+Reverse all: [7, 6, 5, 4, 3, 2, 1]
+Reverse [0, k-1]: [5, 6, 7, 4, 3, 2, 1]
+Reverse [k, n-1]: [5, 6, 7, 1, 2, 3, 4] ✓
 ```
 
 **Try it yourself first!**
@@ -544,29 +514,25 @@ private void reverse(int[] nums, int start, int end) {
 
 ### Problem 8: Product of Array Except Self
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Product of Array Except Self                                    ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Return array where each element is product of all OTHER elements.        ║
-║  Cannot use division.                                                     ║
-║                                                                           ║
-║  Input: [1, 2, 3, 4]                                                      ║
-║  Output: [24, 12, 8, 6]                                                   ║
-║                                                                           ║
-║  output[0] = 2 * 3 * 4 = 24                                               ║
-║  output[1] = 1 * 3 * 4 = 12                                               ║
-║  output[2] = 1 * 2 * 4 = 8                                                ║
-║  output[3] = 1 * 2 * 3 = 6                                                ║
-║                                                                           ║
-║  Approach: Left products × Right products                                 ║
-║                                                                           ║
-║  Left products:  [1, 1, 2, 6]    (product of all to the left)             ║
-║  Right products: [24, 12, 4, 1]  (product of all to the right)            ║
-║  Result:         [24, 12, 8, 6]  (multiply left × right)                  ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Product of Array Except Self**
+
+```text
+Return array where each element is product of all OTHER elements.
+Cannot use division.
+
+Input: [1, 2, 3, 4]
+Output: [24, 12, 8, 6]
+
+output[0] = 2 * 3 * 4 = 24
+output[1] = 1 * 3 * 4 = 12
+output[2] = 1 * 2 * 4 = 8
+output[3] = 1 * 2 * 3 = 6
+
+Approach: Left products × Right products
+
+Left products:  [1, 1, 2, 6]    (product of all to the left)
+Right products: [24, 12, 4, 1]  (product of all to the right)
+Result:         [24, 12, 8, 6]  (multiply left × right)
 ```
 
 **Try it yourself first!**
@@ -605,24 +571,20 @@ public int[] productExceptSelf(int[] nums) {
 
 ### Problem 9: Valid Palindrome
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Valid Palindrome                                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Check if string is palindrome (considering only alphanumeric, ignore     ║
-║  case).                                                                   ║
-║                                                                           ║
-║  Input: "A man, a plan, a canal: Panama"                                  ║
-║  Output: true                                                             ║
-║                                                                           ║
-║  After cleaning: "amanaplanacanalpanama"                                  ║
-║                   ↑                   ↑                                   ║
-║                  left              right                                  ║
-║                                                                           ║
-║  Two pointers from both ends, skip non-alphanumeric                       ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Valid Palindrome**
+
+```text
+Check if string is palindrome (considering only alphanumeric, ignore
+case).
+
+Input: "A man, a plan, a canal: Panama"
+Output: true
+
+After cleaning: "amanaplanacanalpanama"
+                 ↑                   ↑
+                left              right
+
+Two pointers from both ends, skip non-alphanumeric
 ```
 
 **Try it yourself first!**
@@ -664,24 +626,20 @@ public boolean isPalindrome(String s) {
 
 ### Problem 10: Group Anagrams
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Group Anagrams                                                  ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Group words that are anagrams of each other.                             ║
-║                                                                           ║
-║  Input: ["eat", "tea", "tan", "ate", "nat", "bat"]                        ║
-║  Output: [["eat","tea","ate"], ["tan","nat"], ["bat"]]                    ║
-║                                                                           ║
-║  Key insight: Anagrams have same SORTED form                              ║
-║  eat → aet                                                                ║
-║  tea → aet  (same!)                                                       ║
-║  ate → aet  (same!)                                                       ║
-║                                                                           ║
-║  Use sorted form as HashMap key                                           ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Group Anagrams**
+
+```text
+Group words that are anagrams of each other.
+
+Input: ["eat", "tea", "tan", "ate", "nat", "bat"]
+Output: [["eat","tea","ate"], ["tan","nat"], ["bat"]]
+
+Key insight: Anagrams have same SORTED form
+eat → aet
+tea → aet  (same!)
+ate → aet  (same!)
+
+Use sorted form as HashMap key
 ```
 
 **Try it yourself first!**
@@ -738,25 +696,21 @@ public List<List<String>> groupAnagramsV2(String[] strs) {
 
 ### Problem 11: Missing Number
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Missing Number                                                  ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Array contains n distinct numbers from [0, n]. Find missing one.         ║
-║                                                                           ║
-║  Input: [3, 0, 1]                                                         ║
-║  Output: 2                                                                ║
-║                                                                           ║
-║  Method 1: Math (Sum formula)                                             ║
-║  Expected sum = n * (n + 1) / 2                                           ║
-║  Missing = Expected sum - Actual sum                                      ║
-║                                                                           ║
-║  Method 2: XOR                                                            ║
-║  XOR all indices 0 to n, XOR all array elements                           ║
-║  Missing number will remain (duplicates cancel)                           ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Missing Number**
+
+```text
+Array contains n distinct numbers from [0, n]. Find missing one.
+
+Input: [3, 0, 1]
+Output: 2
+
+Method 1: Math (Sum formula)
+Expected sum = n * (n + 1) / 2
+Missing = Expected sum - Actual sum
+
+Method 2: XOR
+XOR all indices 0 to n, XOR all array elements
+Missing number will remain (duplicates cancel)
 ```
 
 **Try it yourself first!**
@@ -794,26 +748,22 @@ public int missingNumberXOR(int[] nums) {
 
 ### Problem 12: Single Number
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Single Number                                                   ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Every element appears twice except one. Find that one.                   ║
-║                                                                           ║
-║  Input: [4, 1, 2, 1, 2]                                                   ║
-║  Output: 4                                                                ║
-║                                                                           ║
-║  XOR property:                                                            ║
-║  a ^ a = 0  (same numbers cancel)                                         ║
-║  a ^ 0 = a  (XOR with 0 gives same number)                                ║
-║                                                                           ║
-║  4 ^ 1 ^ 2 ^ 1 ^ 2                                                        ║
-║  = 4 ^ (1 ^ 1) ^ (2 ^ 2)                                                  ║
-║  = 4 ^ 0 ^ 0                                                              ║
-║  = 4                                                                      ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+**PROBLEM: Single Number**
+
+```text
+Every element appears twice except one. Find that one.
+
+Input: [4, 1, 2, 1, 2]
+Output: 4
+
+XOR property:
+a ^ a = 0  (same numbers cancel)
+a ^ 0 = a  (XOR with 0 gives same number)
+
+4 ^ 1 ^ 2 ^ 1 ^ 2
+= 4 ^ (1 ^ 1) ^ (2 ^ 2)
+= 4 ^ 0 ^ 0
+= 4
 ```
 
 **Try it yourself first!**

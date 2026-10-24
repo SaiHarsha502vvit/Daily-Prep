@@ -437,6 +437,7 @@ LL search is always O(n); there is no shortcut. Compare to array: same O(n), but
 > These are the exact failure modes that cause production bugs. Each one has a specific root cause and fix.
 
 ### 1. Cache Thrashing — 16× Slower Than Array for Sequential Access
+
 **What breaks**: Iterating a linked list to compute a sum, find a max, or copy to another structure.
 **Why**: Each node lives at an arbitrary heap address. The CPU prefetcher cannot predict the next address — every node access is a cache miss (~100ns vs ~4ns for array). At 500K nodes, this difference is measurable seconds.
 **Fix**: If random access or sequential scan dominates, use `ArrayList`. Use `LinkedList` only when O(1) insertions/deletions at arbitrary positions via an iterator are the dominant operation.
@@ -447,6 +448,7 @@ LL search is always O(n); there is no shortcut. Compare to array: same O(n), but
 **Constraint warning**: Java's `LinkedList` implements both `List` and `Deque` — but its `get(i)` is O(n) since it traverses from head or tail. Never use it as a `List` with index access.
 
 ### 2. Losing the Head Pointer During In-Place Reversal
+
 **What breaks**: Reversing a linked list by moving `head` without saving the rest of the list first.
 ```java
 // BUG — head.next is lost before it's saved:
@@ -462,6 +464,7 @@ curr = next;                 // advance
 **Invariant**: At the start of each iteration, `prev` points to the already-reversed portion and `curr` is the next node to process.
 
 ### 3. Infinite Loop Without Cycle Detection
+
 **What breaks**: Traversing a corrupt or cyclic linked list without a visited-set or two-pointer check.
 **Example**: A `next` pointer is accidentally set to an earlier node (common in LRU cache bugs or manual node manipulation). A naive `while (curr != null)` loop runs forever.
 **Fix — Floyd's Tortoise and Hare**:
@@ -477,10 +480,12 @@ return false;
 **Why it works**: If a cycle of length L exists, fast gains 1 step per iteration on slow → they meet in at most L iterations. If no cycle, fast reaches null in O(n) steps.
 
 ### 4. Memory Leak via Strong Reference Cycle (Java)
+
 **What breaks**: An LRU cache or object pool backed by a custom linked list holds strong references to values. Even after "eviction," the GC cannot collect the node if it's referenced elsewhere.
 **Fix**: Use `WeakReference<V>` for cache values, or use `LinkedHashMap` with `removeEldestEntry` override which Java GC handles correctly.
 
 ### 5. `ConcurrentModificationException` During Iteration
+
 **What breaks**: Modifying the list (add/remove) while iterating via a `for-each` loop in Java.
 **Root cause**: Iterator stores `expectedModCount` at construction; any structural change increments `modCount`; iterator checks on each `next()` call.
 **Fix**: Use `Iterator.remove()` for safe remove during iteration, or collect nodes to remove in a separate list and remove after the loop.

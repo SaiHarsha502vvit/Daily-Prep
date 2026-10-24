@@ -76,11 +76,10 @@ Merge two at a time: each merge costs O(total_elements). K iterations = O(K × N
 
 ## 🧩 Part 3: Hard Problems
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                         HARD — 5 PROBLEMS                                    ║
-║  Advanced patterns: monotonic deque, two-heap greedy, 3D BFS                 ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**HARD — 5 PROBLEMS**
+
+```text
+Advanced patterns: monotonic deque, two-heap greedy, 3D BFS
 ```
 
 ### 1. [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) (LC 239) ⭐ Hard
@@ -424,62 +423,47 @@ class Solution {
 
 ```
                   HEAP COMPLEXITY CHEAT SHEET
-──────────────────────────────────────────────────
-Operation            │ Binary Heap  │ Java PriorityQueue  │ Notes
-─────────────────────┼──────────────┼─────────────────────┼─────────────
-insert / offer       │ O(log n)     │ O(log n)            │ Sift-up
-extractMin / poll    │ O(log n)     │ O(log n)            │ Sift-down
-peek                 │ O(1)         │ O(1)                │ Root access
-remove(object)       │ O(n)         │ O(n)                │ Linear search!
-contains             │ O(n)         │ O(n)                │ Linear search!
-heapify (build)      │ O(n)         │ O(n) via constructor│ Bottom-up
-size                 │ O(1)         │ O(1)                │
-──────────────────────────────────────────────────
-
-Pattern                        │ Time           │ Space
-───────────────────────────────┼────────────────┼───────────────────────
-Top K (min-heap size k)        │ O(n log k)     │ O(k)
-K-way merge (heap size k)      │ O(N log k)     │ O(k)
-Two heaps (median)             │ O(n log n)     │ O(n)
-Greedy + heap                  │ O(n log n)     │ O(n)
-Sort via heap (heapsort)       │ O(n log n)     │ O(1) in-place
-
 ```
+
+| Operation | Binary Heap | Java PriorityQueue | Notes |
+| --- | --- | --- | --- |
+| insert / offer | O(log n) | O(log n) | Sift-up |
+| extractMin / poll | O(log n) | O(log n) | Sift-down |
+| peek | O(1) | O(1) | Root access |
+| remove(object) | O(n) | O(n) | Linear search! |
+| contains | O(n) | O(n) | Linear search! |
+| heapify (build) | O(n) | O(n) via constructor | Bottom-up |
+| size | O(1) | O(1) |  |
+
+| Pattern | Time | Space |
+| --- | --- | --- |
+| Top K (min-heap size k) | O(n log k) | O(k) |
+| K-way merge (heap size k) | O(N log k) | O(k) |
+| Two heaps (median) | O(n log n) | O(n) |
+| Greedy + heap | O(n log n) | O(n) |
+| Sort via heap (heapsort) | O(n log n) | O(1) in-place |
 
 ### WHEN TO USE HEAP — Decision Flowchart
 
-```
-            WHEN TO USE A HEAP — DECISION FLOWCHART
-──────────────────────────────────────────────────
+**WHEN TO USE A HEAP — DECISION FLOWCHART**
 
-Need to repeatedly find min/max of a dynamic collection?
-  │
-  ├── YES ─→ Use a Heap (PriorityQueue)
-  │    │
-  │    ├── Need BOTH min and max? ─→ Two heaps or TreeMap
-  │    ├── Need fast delete(obj)?  ─→ TreeMap (not heap — O(n) remove!)
-  │    └── Need median?           ─→ Two heaps pattern
-  │
-  └── NO
-       │
-       ├── Need top K elements? ─────────────────────────────────────
-       │    ├── K is small, N is large? ─→ Min-heap of size K: O(n log k)
-       │    ├── K ≈ N?                  ─→ Just sort: O(n log n)
-       │    └── Online/streaming?       ─→ Heap (can't sort unseen data)
-       │
-       ├── Merging K sorted sequences?  ─→ Min-heap of K heads
-       │
-       ├── Greedy: always pick best available?
-       │    ├── Fixed priority? ─→ Sort once
-       │    └── Dynamic priority / reinsertions? ─→ Heap
-       │
-       ├── Sliding window min/max?
-       │    ├── O(n) needed?   ─→ Monotonic Deque (not heap!)
-       │    └── O(n log n) OK? ─→ Heap with lazy deletion
-       │
-       └── Dijkstra / Prim?    ─→ Min-heap for edge relaxation
-
+```mermaid
+flowchart TD
+  Q{"Need to repeatedly find the min or max of a dynamic collection?"}
+  Q -->|Yes| H["Use a heap (PriorityQueue)"]
+  H --> B1["Need BOTH min and max? Two heaps or a TreeMap"]
+  H --> B2["Need fast delete(obj)? TreeMap (a heap's remove is O(n))"]
+  H --> B3["Need the median? Two-heaps pattern"]
+  Q -->|No| N["Check the specific situation"]
+  N --> K["Top K elements: min-heap of size K, O(n log k) when K is small and N large; just sort, O(n log n), when K is close to N; a heap if the data is streaming"]
+  N --> M["Merging K sorted sequences: min-heap of the K heads"]
+  N --> G["Greedy, always pick the best available: sort once if priority is fixed; heap if priorities change or items are reinserted"]
+  N --> W["Sliding-window min or max: monotonic deque for O(n); heap with lazy deletion if O(n log n) is fine"]
+  N --> D["Dijkstra or Prim: min-heap for edge relaxation"]
 ```
+
+**How to read this diagram.** Start with the question. Yes leads to a heap and its refinements; No leads to the situations where a heap is still, or is not, the right tool.
+
 
 ### Problem Pattern Quick Reference
 
@@ -510,22 +494,18 @@ Need to repeatedly find min/max of a dynamic collection?
 
 ### Final Tips
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                         INTERVIEW TIPS                                       ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  1. Always clarify: "Do I need min or max?" before coding                    ║
-║  2. Java PQ is MIN heap — say this out loud in interviews                    ║
-║  3. For "top K" → think min-heap of size K (counterintuitive!)               ║
-║  4. For "median" → think TWO heaps immediately                               ║
-║  5. For "merge K sorted" → think min-heap of K heads                         ║
-║  6. For "greedy + dynamic choices" → think heap                              ║
-║  7. Don't use heap when sorting once suffices                                ║
-║  8. Integer.compare(a,b) is safer than a - b (overflow!)                     ║
-║  9. TreeMap is a viable alternative when you need remove(obj) in O(log n)    ║
-║  10. Practice drawing the heap array ↔ tree correspondence                   ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+> [!TIP]
+> **INTERVIEW TIPS**
+> 1. Always clarify: "Do I need min or max?" before coding  
+> 2. Java PQ is MIN heap — say this out loud in interviews  
+> 3. For "top K" → think min-heap of size K (counterintuitive!)  
+> 4. For "median" → think TWO heaps immediately  
+> 5. For "merge K sorted" → think min-heap of K heads  
+> 6. For "greedy + dynamic choices" → think heap  
+> 7. Don't use heap when sorting once suffices  
+> 8. Integer.compare(a,b) is safer than a - b (overflow!)  
+> 9. TreeMap is a viable alternative when you need remove(obj) in O(log n)  
+> 10. Practice drawing the heap array ↔ tree correspondence  
 
 ---
 

@@ -12,28 +12,23 @@
 
 **LeetCode 402** 🔗 https://leetcode.com/problems/remove-k-digits/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  REMOVE K DIGITS - Make smallest number by removing k digits   │
-├────────────────────────────────────────────────────────────────┤
-│  num = "1432219", k = 3                                        │
-│                                                                │
-│  Use monotonic increasing stack:                               │
-│  ┌───────┬─────────────────────────┬─────────┐                 │
-│  │ Digit │ Stack                   │ k       │                 │
-│  ├───────┼─────────────────────────┼─────────┤                 │
-│  │   1   │ [1]                     │ 3       │                 │
-│  │   4   │ [1,4]                   │ 3       │                 │
-│  │   3   │ [1,3] (pop 4)           │ 2       │                 │
-│  │   2   │ [1,2] (pop 3)           │ 1       │                 │
-│  │   2   │ [1,2,2]                 │ 1       │                 │
-│  │   1   │ [1,2,1] (pop 2)         │ 0       │                 │
-│  │   9   │ [1,2,1,9]               │ 0       │                 │
-│  └───────┴─────────────────────────┴─────────┘                 │
-│                                                                │
-│  Result: "1219"                                                │
-└────────────────────────────────────────────────────────────────┘
-```
+### REMOVE K DIGITS - Make smallest number by removing k digits
+
+num = "1432219", k = 3
+
+Use monotonic increasing stack:
+
+| Digit | Stack | k |
+| --- | --- | --- |
+| 1 | [1] | 3 |
+| 4 | [1,4] | 3 |
+| 3 | [1,3] (pop 4) | 2 |
+| 2 | [1,2] (pop 3) | 1 |
+| 2 | [1,2,2] | 1 |
+| 1 | [1,2,1] (pop 2) | 0 |
+| 9 | [1,2,1,9] | 0 |
+
+Result: "1219"
 
 **Solution:**
 
@@ -76,32 +71,27 @@ public String removeKdigits(String num, int k) {
 
 **LeetCode 316** 🔗 https://leetcode.com/problems/remove-duplicate-letters/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  REMOVE DUPLICATE LETTERS - Smallest lexicographic result      │
-├────────────────────────────────────────────────────────────────┤
-│  s = "cbacdcbc"                                                │
-│                                                                │
-│  Goal: Remove duplicates, keep smallest lex order              │
-│  Each letter appears exactly once in result                    │
-│                                                                │
-│  Process:                                                      │
-│  ┌───────┬──────────────┬──────────────────────────┐           │
-│  │ Char  │ Stack        │ Reason                   │           │
-│  ├───────┼──────────────┼──────────────────────────┤           │
-│  │   c   │ [c]          │ push                     │           │
-│  │   b   │ [b]          │ b<c, c appears later,pop │           │
-│  │   a   │ [a]          │ a<b, b appears later,pop │           │
-│  │   c   │ [a,c]        │ push                     │           │
-│  │   d   │ [a,c,d]      │ push                     │           │
-│  │   c   │ [a,c,d]      │ c already in stack, skip │           │
-│  │   b   │ [a,b,c,d]    │ b<d but d last, b<c...   │           │
-│  │   c   │ [a,b,c,d]    │ c already in stack, skip │           │
-│  └───────┴──────────────┴──────────────────────────┘           │
-│                                                                │
-│  Wait... let me redo: Final = "acdb"                           │
-└────────────────────────────────────────────────────────────────┘
-```
+### REMOVE DUPLICATE LETTERS - Smallest lexicographic result
+
+s = "cbacdcbc"
+
+Goal: Remove duplicates, keep smallest lex order  
+Each letter appears exactly once in result
+
+Process:
+
+| Char | Stack | Reason |
+| --- | --- | --- |
+| c | [c] | push |
+| b | [b] | b<c, c appears later,pop |
+| a | [a] | a<b, b appears later,pop |
+| c | [a,c] | push |
+| d | [a,c,d] | push |
+| c | [a,c,d] | c already in stack, skip |
+| b | [a,b,c,d] | b<d but d last, b<c... |
+| c | [a,b,c,d] | c already in stack, skip |
+
+Wait... let me redo: Final = "acdb"
 
 **Solution:**
 
@@ -150,26 +140,11 @@ public String removeDuplicateLetters(String s) {
 
 **LeetCode 456** 🔗 https://leetcode.com/problems/132-pattern/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  132 PATTERN - Find i < j < k where a[i] < a[k] < a[j]         │
-├────────────────────────────────────────────────────────────────┤
-│  Example: [3, 1, 4, 2]                                         │
-│           a[i]=1, a[j]=4, a[k]=2 → 1 < 2 < 4 ✓                 │
-│                                                                │
-│  Pattern Visualization:                                        │
-│       4 ┌───┐                                                  │
-│         │   │                                                  │
-│     3 ──┤   │                                                  │
-│       2 │   └───┐                                              │
-│         │       │                                              │
-│     1 ──┴───────┴──                                            │
-│         i   j   k                                              │
-│                                                                │
-│  Approach: Iterate from right, track "a[k]" candidates         │
-│  using monotonic decreasing stack                              │
-└────────────────────────────────────────────────────────────────┘
-```
+**The 132 pattern.** Find `i < j < k` with `a[i] < a[k] < a[j]`.
+
+Example: `[3, 1, 4, 2]` has `a[i] = 1`, `a[j] = 4`, `a[k] = 2`, and `1 < 2 < 4` ✓.
+
+**Approach:** iterate from the right and track the best "`a[k]`" candidates with a monotonic decreasing stack.
 
 **Solution:**
 
@@ -204,30 +179,24 @@ public boolean find132pattern(int[] nums) {
 
 **LeetCode 901** 🔗 https://leetcode.com/problems/online-stock-span/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  ONLINE STOCK SPAN - Days before with price <= today           │
-├────────────────────────────────────────────────────────────────┤
-│  Prices: [100, 80, 60, 70, 60, 75, 85]                         │
-│                                                                │
-│  For each day, count consecutive days before (including today) │
-│  where price <= today's price:                                 │
-│                                                                │
-│  ┌───────┬───────┬─────────────────────────────┬───────┐       │
-│  │ Day   │ Price │ Explanation                 │ Span  │       │
-│  ├───────┼───────┼─────────────────────────────┼───────┤       │
-│  │  0    │  100  │ Just today                  │   1   │       │
-│  │  1    │   80  │ Just today (100>80)         │   1   │       │
-│  │  2    │   60  │ Just today (80>60)          │   1   │       │
-│  │  3    │   70  │ [60,70]                     │   2   │       │
-│  │  4    │   60  │ Just today (70>60)          │   1   │       │
-│  │  5    │   75  │ [60,70,60,75]               │   4   │       │
-│  │  6    │   85  │ [60,70,60,75,85]            │   6   │       │
-│  └───────┴───────┴─────────────────────────────┴───────┘       │
-│                                                                │
-│  Use stack of (price, span) pairs                              │
-└────────────────────────────────────────────────────────────────┘
-```
+### ONLINE STOCK SPAN - Days before with price <= today
+
+Prices: [100, 80, 60, 70, 60, 75, 85]
+
+For each day, count consecutive days before (including today)  
+where price <= today's price:
+
+| Day | Price | Explanation | Span |
+| --- | --- | --- | --- |
+| 0 | 100 | Just today | 1 |
+| 1 | 80 | Just today (100>80) | 1 |
+| 2 | 60 | Just today (80>60) | 1 |
+| 3 | 70 | [60,70] | 2 |
+| 4 | 60 | Just today (70>60) | 1 |
+| 5 | 75 | [60,70,60,75] | 4 |
+| 6 | 85 | [60,70,60,75,85] | 6 |
+
+Use stack of (price, span) pairs
 
 **Solution:**
 

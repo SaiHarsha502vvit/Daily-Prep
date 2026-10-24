@@ -176,27 +176,21 @@ public int largestRectangleAreaOnePass(int[] heights) {
 
 ### Visual: Largest Rectangle in Histogram
 
-```
-heights = [2, 1, 5, 6, 2, 3]
+`heights = [2, 1, 5, 6, 2, 3]`
 
-      ┌───┐
-      │   │
-  ┌───┼───┤
-  │   │   │       ┌───┐
-──┼───┤   │   ┌───┼───┤
-  │   │   │   │   │   │
-  │   │   │   │   │   │
-──┴───┴───┴───┴───┴───┴──
-  2   1   5   6   2   3
+| Index | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| **Height** | 2 | 1 | 5 | 6 | 2 | 3 |
+| **Bar** | ██ | █ | █████ | ██████ | ██ | ███ |
 
-For bar at index 2 (height 5):
-- Can extend left until bar at index 1 (height 1 < 5)
-- Can extend right until bar at index 4 (height 2 < 5)
-- Width = 4 - 1 - 1 = 2
-- Area = 5 * 2 = 10
+For the bar at index 2 (height 5):
 
-Maximum rectangle has area 10 (using bars at indices 2,3)
-```
+- It can extend left until the bar at index 1 (height 1 < 5).
+- It can extend right until the bar at index 4 (height 2 < 5).
+- Width = 4 - 1 - 1 = 2.
+- Area = 5 × 2 = 10.
+
+The maximum rectangle has area **10** (using the bars at indices 2 and 3).
 
 ### Maximal Rectangle (LeetCode 85)
 

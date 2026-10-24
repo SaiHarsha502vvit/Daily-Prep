@@ -81,59 +81,47 @@ If subproblems DON'T overlap → Use Divide & Conquer instead!
 
 **Signal 5:** Same question repeated with different parameters → Recursive structure with overlapping = DP
 
-```text
-┌────────────────────────────────┬─────────────────────────────────────────┐
-│ USE DP WHEN │ DON'T USE DP WHEN │
-├────────────────────────────────┼─────────────────────────────────────────┤
-│ Need optimal solution │ Just need any valid solution │
-│ Subproblems overlap │ Subproblems independent (use D&C) │
-│ Problem has optimal structure │ Local choices don't build global optimal│
-│ Can define clear state │ State space is too large │
-└────────────────────────────────┴─────────────────────────────────────────┘
-```
+| USE DP WHEN | DON'T USE DP WHEN |
+| --- | --- |
+| Need optimal solution | Just need any valid solution |
+| Subproblems overlap | Subproblems independent (use D&C) |
+| Problem has optimal structure | Local choices don't build global optimal |
+| Can define clear state | State space is too large |
 
 ### How does dp work? (two approaches)
 
 **Approach 1:** TOP-DOWN (MEMOIZATION)
 
 ```text
-┌─────────────────────────────────────────────────────────────┐
-│ 1. Start with original problem │
-│ 2. Recursively break into subproblems │
-│ 3. Before computing, check if answer already cached │
-│ 4. If cached: return it | If not: compute and cache │
-│ │
-│ ANALOGY: You're asked a hard question. You think recursively │
-│ but write down answers you've figured out on a notepad. │
-└─────────────────────────────────────────────────────────────┘
+1. Start with original problem
+2. Recursively break into subproblems
+3. Before computing, check if answer already cached
+4. If cached: return it | If not: compute and cache
+
+ANALOGY: You're asked a hard question. You think recursively
+but write down answers you've figured out on a notepad.
 ```
 
 **Approach 2:** BOTTOM-UP (TABULATION)
 
 ```text
-┌─────────────────────────────────────────────────────────────┐
-│ 1. Identify base cases (smallest subproblems) │
-│ 2. Fill table starting from base cases │
-│ 3. Build up to the answer iteratively │
-│ 4. Final cell contains the answer │
-│ │
-│ ANALOGY: Building a pyramid brick by brick from the bottom. │
-│ Each brick relies on the ones below it. │
-└─────────────────────────────────────────────────────────────┘
+1. Identify base cases (smallest subproblems)
+2. Fill table starting from base cases
+3. Build up to the answer iteratively
+4. Final cell contains the answer
+
+ANALOGY: Building a pyramid brick by brick from the bottom.
+Each brick relies on the ones below it.
 ```
 
 **Comparison:** 
 
-```text
-┌───────────────────────┬───────────────────────────────────────┐
-│ Top-Down (Memo) │ Bottom-Up (Tabulation) │
-├───────────────────────┼───────────────────────────────────────┤
-│ Easier to write │ Usually faster (no recursion) │
-│ Only solves needed │ Solves ALL subproblems │
-│ Risk of stack overflow│ No stack overflow │
-│ Lazy evaluation │ Eager evaluation │
-└───────────────────────┴───────────────────────────────────────┘
-```
+| Top-Down (Memo) | Bottom-Up (Tabulation) |
+| --- | --- |
+| Easier to write | Usually faster (no recursion) |
+| Only solves needed | Solves ALL subproblems |
+| Risk of stack overflow | No stack overflow |
+| Lazy evaluation | Eager evaluation |
 
 ### Difficulties & common pitfalls
 
@@ -172,18 +160,14 @@ Tip: Store "choice made" at each step, then backtrack
 
 COMPLEXITY IMPROVEMENT (Why DP is Powerful):
 
-```text
-┌──────────────────────┬─────────────────────┬────────────────────────────┐
-│ Problem │ Brute Force │ With DP │
-├──────────────────────┼─────────────────────┼────────────────────────────┤
-│ Fibonacci │ O(2^n) │ O(n) │
-│ Longest Common Subseq│ O(2^(m+n)) │ O(m×n) │
-│ 0/1 Knapsack │ O(2^n) │ O(n×W) │
-│ Edit Distance │ O(3^n) │ O(m×n) │
-│ Matrix Chain │ O(n!) │ O(n³) │
-│ Coin Change │ O(amount^n) │ O(n×amount) │
-└──────────────────────┴─────────────────────┴────────────────────────────┘
-```
+| Problem | Brute Force | With DP |
+| --- | --- | --- |
+| Fibonacci | O(2^n) | O(n) |
+| Longest Common Subseq | O(2^(m+n)) | O(m×n) |
+| 0/1 Knapsack | O(2^n) | O(n×W) |
+| Edit Distance | O(3^n) | O(m×n) |
+| Matrix Chain | O(n!) | O(n³) |
+| Coin Change | O(amount^n) | O(n×amount) |
 
 **Typical dp output:** 
 

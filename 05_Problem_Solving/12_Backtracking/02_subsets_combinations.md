@@ -11,25 +11,14 @@
 
 **LeetCode 78** 🔗 https://leetcode.com/problems/subsets/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SUBSETS - All possible subsets (power set)                    │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [1, 2, 3]                                              │
-│                                                                │
-│  Decision Tree:                                                │
-│                    []                                          │
-│           ┌────────┴────────┐                                  │
-│        include 1         skip 1                                │
-│          [1]               []                                  │
-│       ┌───┴───┐        ┌───┴───┐                               │
-│      [1,2]   [1]      [2]     []                               │
-│     ┌─┴─┐   ┌─┴─┐   ┌─┴─┐   ┌─┴─┐                              │
-│  [1,2,3][1,2][1,3][1][2,3][2] [3] []                           │
-│                                                                │
-│  Output: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]     │
-└────────────────────────────────────────────────────────────────┘
-```
+### SUBSETS - All possible subsets (power set)
+
+nums = [1, 2, 3]
+
+Decision tree: at each element choose **include** or **skip**, giving eight leaves (see the tree for subsets of `[1, 2, 3]` in the backtracking template).
+
+
+Output: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]
 
 **Solution:**
 
@@ -58,17 +47,15 @@ private void backtrack(int[] nums, int start, List<Integer> path,
 
 **LeetCode 90** 🔗 https://leetcode.com/problems/subsets-ii/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SUBSETS II - Skip duplicates                                  │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [1, 2, 2]                                              │
-│                                                                │
-│  Without skip: [1,2], [1,2] would appear twice                 │
-│  Key: Skip nums[i] if nums[i] == nums[i-1] at same level       │
-│                                                                │
-│  Output: [[], [1], [1,2], [1,2,2], [2], [2,2]]                 │
-└────────────────────────────────────────────────────────────────┘
+**SUBSETS II - Skip duplicates**
+
+```text
+nums = [1, 2, 2]
+
+Without skip: [1,2], [1,2] would appear twice
+Key: Skip nums[i] if nums[i] == nums[i-1] at same level
+
+Output: [[], [1], [1,2], [1,2,2], [2], [2,2]]
 ```
 
 **Solution:**
@@ -102,18 +89,16 @@ private void backtrack(int[] nums, int start, List<Integer> path,
 
 **LeetCode 39** 🔗 https://leetcode.com/problems/combination-sum/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  COMBINATION SUM - Unlimited use of each number                │
-├────────────────────────────────────────────────────────────────┤
-│  candidates = [2, 3, 6, 7], target = 7                         │
-│                                                                │
-│  Can reuse same number:                                        │
-│  2 + 2 + 3 = 7 ✓                                               │
-│  7 = 7 ✓                                                       │
-│                                                                │
-│  Output: [[2,2,3], [7]]                                        │
-└────────────────────────────────────────────────────────────────┘
+**COMBINATION SUM - Unlimited use of each number**
+
+```text
+candidates = [2, 3, 6, 7], target = 7
+
+Can reuse same number:
+2 + 2 + 3 = 7 ✓
+7 = 7 ✓
+
+Output: [[2,2,3], [7]]
 ```
 
 **Solution:**
@@ -148,16 +133,14 @@ private void backtrack(int[] candidates, int remain, int start,
 
 **LeetCode 40** 🔗 https://leetcode.com/problems/combination-sum-ii/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  COMBINATION SUM II - Each number used once                    │
-├────────────────────────────────────────────────────────────────┤
-│  candidates = [10,1,2,7,6,1,5], target = 8                     │
-│                                                                │
-│  Output: [[1,1,6], [1,2,5], [1,7], [2,6]]                      │
-│                                                                │
-│  Key: Sort + skip duplicates at same level                     │
-└────────────────────────────────────────────────────────────────┘
+**COMBINATION SUM II - Each number used once**
+
+```text
+candidates = [10,1,2,7,6,1,5], target = 8
+
+Output: [[1,1,6], [1,2,5], [1,7], [2,6]]
+
+Key: Sort + skip duplicates at same level
 ```
 
 **Solution:**
@@ -194,15 +177,13 @@ private void backtrack(int[] candidates, int remain, int start,
 
 **LeetCode 77** 🔗 https://leetcode.com/problems/combinations/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  COMBINATIONS - Choose k from n                                │
-├────────────────────────────────────────────────────────────────┤
-│  n = 4, k = 2                                                  │
-│  Choose 2 numbers from [1, 2, 3, 4]                            │
-│                                                                │
-│  Output: [[1,2], [1,3], [1,4], [2,3], [2,4], [3,4]]            │
-└────────────────────────────────────────────────────────────────┘
+**COMBINATIONS - Choose k from n**
+
+```text
+n = 4, k = 2
+Choose 2 numbers from [1, 2, 3, 4]
+
+Output: [[1,2], [1,3], [1,4], [2,3], [2,4], [3,4]]
 ```
 
 **Solution:**
@@ -252,22 +233,16 @@ With `i > 0`: for input `[1,1,6]` target 8, at the root level (start=0), i=1 see
 
 **LeetCode 46** 🔗 https://leetcode.com/problems/permutations/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  PERMUTATIONS - All arrangements                               │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [1, 2, 3]                                              │
-│                                                                │
-│  Tree (swap approach):                                         │
-│                [1,2,3]                                         │
-│        ┌─────────┼─────────┐                                   │
-│     [1,2,3]   [2,1,3]   [3,2,1]                                │
-│      ┌─┴─┐     ┌─┴─┐     ┌─┴─┐                                 │
-│  [1,2,3][1,3,2][2,1,3][2,3,1][3,2,1][3,1,2]                    │
-│                                                                │
-│  Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]     │
-└────────────────────────────────────────────────────────────────┘
-```
+### PERMUTATIONS - All arrangements
+
+nums = [1, 2, 3]
+
+Tree (swap approach):  
+[1,2,3]  
+[1,2,3]   [2,1,3]   [3,2,1]  
+[1,2,3][1,3,2][2,1,3][2,3,1][3,2,1][3,1,2]
+
+Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
 
 **Solution:**
 
@@ -303,16 +278,14 @@ private void backtrack(int[] nums, List<Integer> path, boolean[] used,
 
 **LeetCode 47** 🔗 https://leetcode.com/problems/permutations-ii/
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  PERMUTATIONS II - Unique permutations                         │
-├────────────────────────────────────────────────────────────────┤
-│  nums = [1, 1, 2]                                              │
-│                                                                │
-│  Output: [[1,1,2], [1,2,1], [2,1,1]]                           │
-│                                                                │
-│  Key: Sort + skip if same as previous AND previous not used    │
-└────────────────────────────────────────────────────────────────┘
+**PERMUTATIONS II - Unique permutations**
+
+```text
+nums = [1, 1, 2]
+
+Output: [[1,1,2], [1,2,1], [2,1,1]]
+
+Key: Sort + skip if same as previous AND previous not used
 ```
 
 **Solution:**

@@ -4,37 +4,21 @@
 > Page 4 of 5 in **Fenwick & Segment Trees — Advanced Data Structure Patterns**
 
 
-```
-QUADTREE: Tree where each node has exactly 4 children
-          Used for: 2D spatial indexing, collision detection, image compression
+**Quadtree:** a tree where each node has exactly 4 children. Used for 2D spatial indexing, collision detection and image compression.
 
-STRUCTURE:
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│    ┌─────────────┬─────────────┐                                │
-│    │             │             │                                │
-│    │     NW      │     NE      │                                │
-│    │             │             │                                │
-│    ├─────────────┼─────────────┤                                │
-│    │             │             │                                │
-│    │     SW      │     SE      │                                │
-│    │             │             │                                │
-│    └─────────────┴─────────────┘                                │
-│                                                                 │
-│  Each quadrant can be subdivided further if needed              │
-│                                                                 │
-│  Example: Storing points (3,7), (5,2), (8,8), (1,4)             │
-│                                                                 │
-│    10┌─────────────┬─────────────┐                              │
-│      │    (3,7)    │    (8,8)    │                              │
-│    5 │    (1,4)    │             │                              │
-│      ├─────────────┼─────────────┤                              │
-│      │             │    (5,2)    │                              │
-│    0 │             │             │                              │
-│      └─────────────┴─────────────┘                              │
-│      0      5      10                                           │
-└─────────────────────────────────────────────────────────────────┘
-```
+**Structure.** Each region is split into four quadrants, and any quadrant can be subdivided further if needed:
+
+| | West | East |
+| --- | --- | --- |
+| **North** | NW | NE |
+| **South** | SW | SE |
+
+**Example:** storing the points (3,7), (5,2), (8,8) and (1,4) in a 10 × 10 area, with the split at x = 5 and y = 5:
+
+| | x < 5 (west) | x ≥ 5 (east) |
+| --- | --- | --- |
+| **y ≥ 5 (north)** | NW: (3,7) | NE: (8,8) |
+| **y < 5 (south)** | SW: (1,4) | SE: (5,2) |
 
 ```java
 class QuadTree {
@@ -127,31 +111,29 @@ class QuadTree {
 
 ## Merkle Tree (Hash Tree)
 
-```
+```text
 MERKLE TREE: Tree where each leaf is hash of data block,
              and each non-leaf is hash of its children's hashes
 
 Used in: Blockchain, Git, Databases (PostgreSQL), P2P networks
 
 STRUCTURE:
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│                    [Root Hash: abcd1234]                        │
-│                           /        \                            │
-│              [Hash: ab12]           [Hash: cd34]                │
-│               /       \              /        \                 │
-│         [H: a1]    [H: b2]     [H: c3]     [H: d4]              │
-│            |          |           |           |                 │
-│         Block A   Block B     Block C     Block D               │
-│                                                                 │
-│  VERIFICATION:                                                  │
-│  To verify Block C is unchanged:                                │
-│  1. Hash Block C → should match [H: c3]                         │
-│  2. Combine with [H: d4] → should match [Hash: cd34]            │
-│  3. Combine with [Hash: ab12] → should match Root               │
-│                                                                 │
-│  Only need O(log n) hashes to verify any block!                 │
-└─────────────────────────────────────────────────────────────────┘
+
+                   [Root Hash: abcd1234]
+                          /        \
+             [Hash: ab12]           [Hash: cd34]
+              /       \              /        \
+        [H: a1]    [H: b2]     [H: c3]     [H: d4]
+           |          |           |           |
+        Block A   Block B     Block C     Block D
+
+ VERIFICATION:
+ To verify Block C is unchanged:
+ 1. Hash Block C → should match [H: c3]
+ 2. Combine with [H: d4] → should match [Hash: cd34]
+ 3. Combine with [Hash: ab12] → should match Root
+
+ Only need O(log n) hashes to verify any block!
 ```
 
 ```java
@@ -248,82 +230,64 @@ class MerkleTree {
 
 ### Practice Problems Mapped to DS
 
-```
-TRIE:
-├── LC 208: Implement Trie (Prefix Tree)          ⭐ Medium
-├── LC 211: Design Add and Search Words           ⭐ Medium
-├── LC 212: Word Search II                        🔥 Hard
-├── LC 648: Replace Words                         ⭐ Medium
-└── LC 1268: Search Suggestions System            ⭐ Medium
+**TRIE:**
 
-SEGMENT TREE:
-├── LC 307: Range Sum Query - Mutable             ⭐ Medium
-├── LC 315: Count of Smaller Numbers After Self   🔥 Hard
-├── LC 493: Reverse Pairs                         🔥 Hard
-└── LC 327: Count of Range Sum                    🔥 Hard
+- LC 208: Implement Trie (Prefix Tree)          ⭐ Medium
+- LC 211: Design Add and Search Words           ⭐ Medium
+- LC 212: Word Search II                        🔥 Hard
+- LC 648: Replace Words                         ⭐ Medium
+- LC 1268: Search Suggestions System            ⭐ Medium
 
-DISJOINT SET (UNION-FIND):
-├── LC 200: Number of Islands                     ⭐ Medium
-├── LC 547: Number of Provinces                   ⭐ Medium
-├── LC 684: Redundant Connection                  ⭐ Medium
-├── LC 721: Accounts Merge                        ⭐ Medium
-├── LC 990: Satisfiability of Equality Equations  ⭐ Medium
-└── LC 1584: Min Cost to Connect All Points       ⭐ Medium
+**SEGMENT TREE:**
 
-MONOTONIC STACK:
-├── LC 84: Largest Rectangle in Histogram         🔥 Hard
-├── LC 85: Maximal Rectangle                      🔥 Hard
-├── LC 496: Next Greater Element I                ⭐ Easy
-├── LC 503: Next Greater Element II               ⭐ Medium
-├── LC 739: Daily Temperatures                    ⭐ Medium
-└── LC 901: Online Stock Span                     ⭐ Medium
+- LC 307: Range Sum Query - Mutable             ⭐ Medium
+- LC 315: Count of Smaller Numbers After Self   🔥 Hard
+- LC 493: Reverse Pairs                         🔥 Hard
+- LC 327: Count of Range Sum                    🔥 Hard
 
-LRU CACHE:
-├── LC 146: LRU Cache                             ⭐ Medium
-├── LC 460: LFU Cache                             🔥 Hard
-└── LC 1472: Design Browser History               ⭐ Medium
+**DISJOINT SET (UNION-FIND):**
 
-HEAP/PRIORITY QUEUE:
-├── LC 23: Merge k Sorted Lists                   🔥 Hard
-├── LC 295: Find Median from Data Stream          🔥 Hard
-├── LC 347: Top K Frequent Elements               ⭐ Medium
-├── LC 373: Find K Pairs with Smallest Sums       ⭐ Medium
-└── LC 767: Reorganize String                     ⭐ Medium
-```
+- LC 200: Number of Islands                     ⭐ Medium
+- LC 547: Number of Provinces                   ⭐ Medium
+- LC 684: Redundant Connection                  ⭐ Medium
+- LC 721: Accounts Merge                        ⭐ Medium
+- LC 990: Satisfiability of Equality Equations  ⭐ Medium
+- LC 1584: Min Cost to Connect All Points       ⭐ Medium
+
+**MONOTONIC STACK:**
+
+- LC 84: Largest Rectangle in Histogram         🔥 Hard
+- LC 85: Maximal Rectangle                      🔥 Hard
+- LC 496: Next Greater Element I                ⭐ Easy
+- LC 503: Next Greater Element II               ⭐ Medium
+- LC 739: Daily Temperatures                    ⭐ Medium
+- LC 901: Online Stock Span                     ⭐ Medium
+
+**LRU CACHE:**
+
+- LC 146: LRU Cache                             ⭐ Medium
+- LC 460: LFU Cache                             🔥 Hard
+- LC 1472: Design Browser History               ⭐ Medium
+
+**HEAP/PRIORITY QUEUE:**
+
+- LC 23: Merge k Sorted Lists                   🔥 Hard
+- LC 295: Find Median from Data Stream          🔥 Hard
+- LC 347: Top K Frequent Elements               ⭐ Medium
+- LC 373: Find K Pairs with Smallest Sums       ⭐ Medium
+- LC 767: Reorganize String                     ⭐ Medium
 
 ---
 
 ## 📋 Part 13: Complexity Cheat Sheet (extended)
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    COMPLETE COMPLEXITY REFERENCE                            │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ DATA STRUCTURE      │ ACCESS │ SEARCH │ INSERT │ DELETE │ SPACE             │
-├─────────────────────┼────────┼────────┼────────┼────────┼───────────────────┤
-│ Array               │ O(1)   │ O(n)   │ O(n)   │ O(n)   │ O(n)              │
-│ Dynamic Array       │ O(1)   │ O(n)   │ O(1)*  │ O(n)   │ O(n)              │
-│ Singly Linked List  │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)              │
-│ Doubly Linked List  │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)              │
-│ Stack               │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)              │
-│ Queue               │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)              │
-│ Hash Table          │ N/A    │ O(1)*  │ O(1)*  │ O(1)*  │ O(n)              │
-│ BST (balanced)      │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
-│ BST (worst)         │ O(n)   │ O(n)   │ O(n)   │ O(n)   │ O(n)              │
-│ AVL Tree            │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
-│ Red-Black Tree      │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
-│ B-Tree              │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
-│ Heap                │ O(1)†  │ O(n)   │ O(logn)│ O(logn)│ O(n)              │
-│ Trie                │ O(m)   │ O(m)   │ O(m)   │ O(m)   │ O(ALPHABET*m*n)   │
-│ Segment Tree        │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(4n)             │
-│ Fenwick Tree        │ N/A    │ O(logn)│ O(logn)│ N/A    │ O(n)              │
-│ Sparse Table        │ O(1)   │ O(1)   │ N/A    │ N/A    │ O(n log n)        │
-│ Disjoint Set        │ N/A    │ O(α)   │ O(α)   │ N/A    │ O(n)              │
-│ Skip List           │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n log n)*       │
-│ Bloom Filter        │ N/A    │ O(k)   │ O(k)   │ N/A    │ O(m) bits         │
-│ QuadTree            │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
-└─────────────────────┴────────┴────────┴────────┴────────┴───────────────────┘
+**COMPLETE COMPLEXITY REFERENCE**
 
+| DATA STRUCTURE | ACCESS | SEARCH | INSERT | DELETE | SPACE |
+| --- | --- | --- | --- | --- | --- |
+| Array<br>Dynamic Array<br>Singly Linked List<br>Doubly Linked List<br>Stack<br>Queue<br>Hash Table<br>BST (balanced)<br>BST (worst)<br>AVL Tree<br>Red-Black Tree<br>B-Tree<br>Heap<br>Trie<br>Segment Tree<br>Fenwick Tree<br>Sparse Table<br>Disjoint Set<br>Skip List<br>Bloom Filter<br>QuadTree | O(1)<br>O(1)<br>O(n)<br>O(n)<br>O(n)<br>O(n)<br>N/A<br>O(logn)<br>O(n)<br>O(logn)<br>O(logn)<br>O(logn)<br>O(1)†<br>O(m)<br>O(logn)<br>N/A<br>O(1)<br>N/A<br>O(logn)<br>N/A<br>O(logn) | O(n)<br>O(n)<br>O(n)<br>O(n)<br>O(n)<br>O(n)<br>O(1)*<br>O(logn)<br>O(n)<br>O(logn)<br>O(logn)<br>O(logn)<br>O(n)<br>O(m)<br>O(logn)<br>O(logn)<br>O(1)<br>O(α)<br>O(logn)<br>O(k)<br>O(logn) | O(n)<br>O(1)*<br>O(1)<br>O(1)<br>O(1)<br>O(1)<br>O(1)*<br>O(logn)<br>O(n)<br>O(logn)<br>O(logn)<br>O(logn)<br>O(logn)<br>O(m)<br>O(logn)<br>O(logn)<br>N/A<br>O(α)<br>O(logn)<br>O(k)<br>O(logn) | O(n)<br>O(n)<br>O(1)<br>O(1)<br>O(1)<br>O(1)<br>O(1)*<br>O(logn)<br>O(n)<br>O(logn)<br>O(logn)<br>O(logn)<br>O(logn)<br>O(m)<br>O(logn)<br>N/A<br>N/A<br>N/A<br>O(logn)<br>N/A<br>O(logn) | O(n)<br>O(n)<br>O(n)<br>O(n)<br>O(n)<br>O(n)<br>O(n)<br>O(n)<br>O(n)<br>O(n)<br>O(n)<br>O(n)<br>O(n)<br>O(ALPHABET*m*n)<br>O(4n)<br>O(n)<br>O(n log n)<br>O(n)<br>O(n log n)*<br>O(m) bits<br>O(n) |
+
+```
 * = amortized or average case
 † = O(1) for peek/min, O(log n) for extract
 α = inverse Ackermann function ≈ O(1) for practical purposes

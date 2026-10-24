@@ -232,27 +232,35 @@ class BloomFilter {
 
 ### Concept
 
+**LRU (least recently used) cache:** a fixed-size cache that evicts the least recently used item when it is full.
+
+**Operations needed**
+
+- GET: O(1), using a hash map.
+- PUT: O(1), using a hash map plus an update to the order.
+- EVICT: O(1), using a doubly linked list.
+
+**Structure:** a hash map plus a doubly linked list.
+
+```mermaid
+flowchart LR
+  subgraph HM["HashMap"]
+    ka["'A' → nodeA"]
+    kb["'B' → nodeB"]
+    kc["'C' → nodeC"]
+  end
+  subgraph DLL["Doubly linked list"]
+    direction LR
+    H["HEAD"] <--> A["A (most recent)"] <--> B["B"] <--> C["C (least recent)"] <--> T["TAIL"]
+  end
+  ka -.-> A
+  kb -.-> B
+  kc -.-> C
 ```
-LRU (Least Recently Used) CACHE:
-Fixed-size cache that evicts least recently used item when full.
 
-Operations needed:
-- GET: O(1) - HashMap
-- PUT: O(1) - HashMap + update order
-- EVICT: O(1) - Doubly Linked List
+**How to read this diagram.** The map jumps straight to a node (dotted arrows), and the list keeps the usage order: the node next to HEAD is the most recent, and the node next to TAIL is the first to be evicted.
 
-Structure: HashMap + Doubly Linked List
-
-        HashMap                 Doubly Linked List
-    ┌─────────────┐         HEAD ←→ A ←→ B ←→ C ←→ TAIL
-    │ "A" → nodeA │                 ↑           ↑
-    │ "B" → nodeB │              Most         Least
-    │ "C" → nodeC │             Recent       Recent
-    └─────────────┘
-
-Access B → Move B to front:
-HEAD ←→ B ←→ A ←→ C ←→ TAIL
-```
+**Access B:** move B to the front, giving `HEAD ←→ B ←→ A ←→ C ←→ TAIL`.
 
 ### Implementation
 
@@ -385,20 +393,18 @@ WHY B+ TREE for DATABASES?
 
 ## ⚖️ Part 10: Comparison Table
 
-```
-┌───────────────────┬─────────────┬─────────────┬─────────────────────┐
-│ Data Structure    │ Search      │ Insert      │ Space               │
-├───────────────────┼─────────────┼─────────────┼─────────────────────┤
-│ Trie              │ O(m)        │ O(m)        │ O(ALPHABET × m × n) │
-│ Segment Tree      │ O(log n)    │ O(log n)    │ O(4n)               │
-│ Fenwick Tree      │ O(log n)    │ O(log n)    │ O(n)                │
-│ Disjoint Set      │ O(α(n))≈O(1)│ O(α(n))≈O(1)│ O(n)                │
-│ Skip List         │ O(log n)*   │ O(log n)*   │ O(n)*               │
-│ Bloom Filter      │ O(k)        │ O(k)        │ O(m) bits           │
-│ LRU Cache         │ O(1)        │ O(1)        │ O(n)                │
-│ B-Tree (order m)  │ O(log n)    │ O(log n)    │ O(n)                │
-└───────────────────┴─────────────┴─────────────┴─────────────────────┘
+| Data Structure | Search | Insert | Space |
+| --- | --- | --- | --- |
+| Trie | O(m) | O(m) | O(ALPHABET × m × n) |
+| Segment Tree | O(log n) | O(log n) | O(4n) |
+| Fenwick Tree | O(log n) | O(log n) | O(n) |
+| Disjoint Set | O(α(n))≈O(1) | O(α(n))≈O(1) | O(n) |
+| Skip List | O(log n)* | O(log n)* | O(n)* |
+| Bloom Filter | O(k) | O(k) | O(m) bits |
+| LRU Cache | O(1) | O(1) | O(n) |
+| B-Tree (order m) | O(log n) | O(log n) | O(n) |
 
+```
 * = average case for Skip List
 m = string length for Trie
 k = number of hash functions for Bloom Filter
@@ -415,7 +421,7 @@ _These data structures are the building blocks of modern systems!_ 🏗️
 
 ### Sparse Table (Range Minimum Query)
 
-```
+```text
 SPARSE TABLE: Precompute answers for all power-of-2 ranges
               Perfect for STATIC arrays with repeated queries
 
@@ -424,12 +430,10 @@ IDEA: Any range can be covered by at most 2 overlapping power-of-2 ranges
 Array: [3, 1, 4, 1, 5, 9, 2, 6]
 
 Sparse Table (for MIN):
-┌───────────────────────────────────────────────────────────────┐
-│ k=0 (2^0=1): [3, 1, 4, 1, 5, 9, 2, 6]  (each element itself)  │
-│ k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -]  (min of 2)             │
-│ k=2 (2^2=4): [1, 1, 1, 1, 2, 2, -, -]  (min of 4)             │
-│ k=3 (2^3=8): [1, -, -, -, -, -, -, -]  (min of 8)             │
-└───────────────────────────────────────────────────────────────┘
+k=0 (2^0=1): [3, 1, 4, 1, 5, 9, 2, 6]  (each element itself)
+k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -]  (min of 2)
+k=2 (2^2=4): [1, 1, 1, 1, 2, 2, -, -]  (min of 4)
+k=3 (2^3=8): [1, -, -, -, -, -, -, -]  (min of 8)
 
 Query(2, 6): min(sparse[2][2], sparse[3][2]) = min(1, 2) = 1
              Using k=2 (length 4), overlapping ranges [2-5] and [3-6]
@@ -487,32 +491,28 @@ class SparseTable {
 
 ## Monotonic Stack
 
-```
-MONOTONIC STACK: Stack that maintains increasing/decreasing order
-                 Reveals relationships between elements
+**Monotonic stack:** a stack that maintains increasing or decreasing order. It reveals relationships between elements.
 
-USE CASES:
-├── Next Greater Element
-├── Previous Greater Element
-├── Next Smaller Element
-├── Stock Span Problem
-├── Largest Rectangle in Histogram
-└── Trapping Rain Water
+**Use cases**
 
-VISUAL EXAMPLE - Next Greater Element:
-Array: [4, 5, 2, 10, 8]
+- Next greater element
+- Previous greater element
+- Next smaller element
+- Stock span problem
+- Largest rectangle in a histogram
+- Trapping rain water
 
-Step by step (decreasing stack, process right to left):
-┌────────────────────────────────────────────────────────────────┐
-│ i=4: arr[4]=8   Stack=[]      → NGE=-1   Stack=[8]             │
-│ i=3: arr[3]=10  Stack=[8]     → 10>8, pop → NGE=-1  Stack=[10] │
-│ i=2: arr[2]=2   Stack=[10]    → 2<10 → NGE=10  Stack=[10,2]    │
-│ i=1: arr[1]=5   Stack=[10,2]  → 5>2, pop → NGE=10  Stack=[10,5]│
-│ i=0: arr[0]=4   Stack=[10,5]  → 4<5 → NGE=5   Stack=[10,5,4]   │
-└────────────────────────────────────────────────────────────────┘
+**Visual example: next greater element** for `[4, 5, 2, 10, 8]`, using a decreasing stack and processing right to left:
 
-Result: [5, 10, 10, -1, -1]
-```
+| Step | `arr[i]` | Stack before | Action | NGE | Stack after |
+| --- | --- | --- | --- | --- | --- |
+| `i=4` | 8 | `[]` | Stack is empty | -1 | `[8]` |
+| `i=3` | 10 | `[8]` | 10 > 8, pop | -1 | `[10]` |
+| `i=2` | 2 | `[10]` | 2 < 10 | 10 | `[10, 2]` |
+| `i=1` | 5 | `[10, 2]` | 5 > 2, pop | 10 | `[10, 5]` |
+| `i=0` | 4 | `[10, 5]` | 4 < 5 | 5 | `[10, 5, 4]` |
+
+Result: `[5, 10, 10, -1, -1]`
 
 ```java
 // Next Greater Element
@@ -577,7 +577,7 @@ public int largestRectangleArea(int[] heights) {
 
 ## Monotonic Deque (Sliding Window Maximum)
 
-```
+```text
 MONOTONIC DEQUE: Deque that maintains decreasing order
                  Front always has maximum of current window
 
@@ -585,14 +585,12 @@ PROBLEM: Find maximum in each sliding window of size k
 
 Array: [1, 3, -1, -3, 5, 3, 6, 7], k=3
 
-┌─────────────────────────────────────────────────────────────────┐
-│ Window [1,3,-1]     Deque: [3,-1]     Max: 3                    │
-│ Window [3,-1,-3]    Deque: [3,-1,-3]  Max: 3                    │
-│ Window [-1,-3,5]    Deque: [5]        Max: 5                    │
-│ Window [-3,5,3]     Deque: [5,3]      Max: 5                    │
-│ Window [5,3,6]      Deque: [6]        Max: 6                    │
-│ Window [3,6,7]      Deque: [7]        Max: 7                    │
-└─────────────────────────────────────────────────────────────────┘
+Window [1,3,-1]     Deque: [3,-1]     Max: 3
+Window [3,-1,-3]    Deque: [3,-1,-3]  Max: 3
+Window [-1,-3,5]    Deque: [5]        Max: 5
+Window [-3,5,3]     Deque: [5,3]      Max: 5
+Window [5,3,6]      Deque: [6]        Max: 6
+Window [3,6,7]      Deque: [7]        Max: 7
 
 Result: [3, 3, 5, 5, 6, 7]
 ```
@@ -631,34 +629,20 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 
 ## Circular Buffer (Ring Buffer)
 
-```
 RING BUFFER: Fixed-size buffer that wraps around
-             Used in: Audio processing, Network buffers, Logging
+Used in: Audio processing, Network buffers, Logging
 
 STRUCTURE:
-┌─────────────────────────────────────────────────────────┐
-│         ┌───┬───┬───┬───┬───┬───┬───┬───┐               │
-│         │ A │ B │ C │ D │ E │   │   │   │               │
-│         └───┴───┴───┴───┴───┴───┴───┴───┘               │
-│           ↑                   ↑                         │
-│         HEAD                TAIL                        │
-│         (read)              (write)                     │
-│                                                         │
-│  After adding F, G, H, I:                               │
-│         ┌───┬───┬───┬───┬───┬───┬───┬───┐               │
-│         │ A │ B │ C │ D │ E │ F │ G │ H │               │
-│         └───┴───┴───┴───┴───┴───┴───┴───┘               │
-│           ↑                               ↑             │
-│         HEAD                            TAIL            │
-│                                                         │
-│  After adding I (wraps around):                         │
-│         ┌───┬───┬───┬───┬───┬───┬───┬───┐               │
-│         │ I │ B │ C │ D │ E │ F │ G │ H │               │
-│         └───┴───┴───┴───┴───┴───┴───┴───┘               │
-│             ↑ ↑                                         │
-│          TAIL HEAD                                      │
-└─────────────────────────────────────────────────────────┘
-```
+
+|  | A | B | C | D | E |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ↑                   ↑<br>HEAD                TAIL (read)              (write) |  |  |  |  |  |  |  |  |  |
+| After adding F, G, H, I: |  |  |  |  |  |  |  |  |  |
+|  | A | B | C | D | E | F | G | H |  |
+| ↑                               ↑<br>HEAD                            TAIL |  |  |  |  |  |  |  |  |  |
+| After adding I (wraps around): |  |  |  |  |  |  |  |  |  |
+|  | I | B | C | D | E | F | G | H |  |
+| ↑ ↑<br>TAIL HEAD |  |  |  |  |  |  |  |  |  |
 
 ```java
 class CircularBuffer<T> {

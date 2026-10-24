@@ -4,44 +4,42 @@
 > Page 5 of 5 in **Fenwick & Segment Trees — Advanced Data Structure Patterns**
 
 
-```
-START: What problem are you solving?
+**START: What problem are you solving?**
 
-├── Need KEY-VALUE lookup?
-│   ├── Keys are strings with prefix search? → TRIE
-│   ├── Need O(1) operations? → HASH MAP
-│   └── Need ordered keys? → TREE MAP (Red-Black)
-│
-├── Need RANGE operations?
-│   ├── Static array, many queries? → SPARSE TABLE
-│   ├── Updates needed?
-│   │   ├── Point update + range query? → SEGMENT TREE or FENWICK
-│   │   └── Range update + range query? → SEGMENT TREE with LAZY PROP
-│   └── Range minimum specifically? → SPARSE TABLE (if static)
-│
-├── Need to track CONNECTIVITY?
-│   └── Merge sets dynamically? → DISJOINT SET (UNION-FIND)
-│
-├── Need ORDERING with fast access?
-│   ├── Min/Max quickly? → HEAP / PRIORITY QUEUE
-│   ├── Next greater/smaller? → MONOTONIC STACK
-│   └── Sliding window max? → MONOTONIC DEQUE
-│
-├── Need SPATIAL queries?
-│   ├── 2D points? → QUADTREE
-│   ├── Higher dimensions? → KD-TREE
-│   └── Rectangles? → R-TREE
-│
-├── Need APPROXIMATE membership?
-│   └── Fast "definitely not" check? → BLOOM FILTER
-│
-├── Need CACHING?
-│   ├── Least recently used eviction? → LRU CACHE
-│   └── Least frequently used eviction? → LFU CACHE
-│
-└── Need INTEGRITY verification?
-    └── Efficient proof of data? → MERKLE TREE
-```
+- Need KEY-VALUE lookup?
+- Keys are strings with prefix search? → TRIE
+- Need O(1) operations? → HASH MAP
+- Need ordered keys? → TREE MAP (Red-Black)
+
+- Need RANGE operations?
+- Static array, many queries? → SPARSE TABLE
+- Updates needed?
+  - Point update + range query? → SEGMENT TREE or FENWICK
+  - Range update + range query? → SEGMENT TREE with LAZY PROP
+- Range minimum specifically? → SPARSE TABLE (if static)
+
+- Need to track CONNECTIVITY?
+- Merge sets dynamically? → DISJOINT SET (UNION-FIND)
+
+- Need ORDERING with fast access?
+- Min/Max quickly? → HEAP / PRIORITY QUEUE
+- Next greater/smaller? → MONOTONIC STACK
+- Sliding window max? → MONOTONIC DEQUE
+
+- Need SPATIAL queries?
+- 2D points? → QUADTREE
+- Higher dimensions? → KD-TREE
+- Rectangles? → R-TREE
+
+- Need APPROXIMATE membership?
+- Fast "definitely not" check? → BLOOM FILTER
+
+- Need CACHING?
+- Least recently used eviction? → LRU CACHE
+- Least frequently used eviction? → LFU CACHE
+
+- Need INTEGRITY verification?
+  - Efficient proof of data? → MERKLE TREE
 
 ---
 

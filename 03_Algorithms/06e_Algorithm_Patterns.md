@@ -92,27 +92,22 @@ P (Polynomial Time):
 - Example: Halting Problem (undecidable!)
   VISUAL RELATIONSHIP (if P ≠ NP):
 
-```text
-NP-Hard
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                 │
-│  ┌────────────────────────────── NP ─────────────────────────────────────────┐  │
-│  │                                                                           │  │
-│  │  ┌────────────── P ──────────────┐   ┌──────── NP-Complete ────────────┐ │  │
-│  │  │                               │   │ • SAT                            │ │  │
-│  │  │                               │   │ • 3-SAT                          │ │  │
-│  │  └───────────────────────────────┘   │ • Vertex Cover                   │ │  │
-│  │                                      │ • Hamiltonian Path               │ │  │
-│  │                                      │ • Traveling Salesman             │ │  │
-│  │                                      │ • Graph Coloring                 │ │  │
-│  │                                      │ • Subset Sum                     │ │  │
-│  │                                      └───────────────────────────────────┘ │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                 │
-│  NP-Hard may also contain problems outside NP (e.g., Halting Problem).         │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+  subgraph NPH["NP-Hard"]
+    subgraph NPS["NP"]
+      subgraph PS["P"]
+        p1["Sorting, shortest path, ..."]
+      end
+      subgraph NPC["NP-Complete"]
+        c1["SAT, 3-SAT, Vertex Cover, Hamiltonian Path,<br/>Traveling Salesman (decision), Graph Coloring, Subset Sum"]
+      end
+    end
+    h1["Problems outside NP, e.g. the Halting Problem"]
+  end
 ```
+
+**How to read this diagram.** Each box sits inside the larger class. It assumes P ≠ NP, so P and NP-Complete are disjoint inside NP. NP-Hard also contains problems that are not in NP at all, such as the Halting Problem.
 
 PROVING NP-COMPLETENESS:
 To show problem X is NP-Complete:
@@ -155,54 +150,48 @@ public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
 }
 ```
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ EXAMPLE 2: SET COVER (log n - Approximation)                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│ Problem: Given universe U and sets S₁...Sₘ, find minimum number of sets that  │
-│ cover all elements.                                                             │
-│                                                                                 │
-│ Greedy Algorithm:                                                               │
-│ 1. While uncovered elements exist:                                              │
-│    a. Pick set Sᵢ that covers most uncovered elements                          │
-│    b. Add Sᵢ to solution                                                        │
-│    c. Mark covered elements                                                     │
-│                                                                                 │
-│ Approximation ratio: O(log n), where n = |U|                                   │
-│ (This is optimal unless P = NP.)                                                │
-│                                                                                 │
-│ EXAMPLE 3: TSP with Triangle Inequality (1.5-Approximation)                     │
-│ Christofides Algorithm:                                                         │
-│ 1. Find MST of graph                                                            │
-│ 2. Find minimum weight perfect matching on odd-degree vertices                  │
-│ 3. Combine MST + matching (Eulerian graph)                                      │
-│ 4. Find Euler tour                                                              │
-│ 5. Shortcut to Hamiltonian cycle                                                │
-│                                                                                 │
-│ Approximation ratio: 3/2 = 1.5                                                  │
-│ (Best known for metric TSP.)                                                    │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**EXAMPLE 2: SET COVER (log n - Approximation)**
+
+```text
+Problem: Given universe U and sets S₁...Sₘ, find minimum number of sets that
+cover all elements.
+
+Greedy Algorithm:
+1. While uncovered elements exist:
+   a. Pick set Sᵢ that covers most uncovered elements
+   b. Add Sᵢ to solution
+   c. Mark covered elements
+
+Approximation ratio: O(log n), where n = |U|
+(This is optimal unless P = NP.)
+
+EXAMPLE 3: TSP with Triangle Inequality (1.5-Approximation)
+Christofides Algorithm:
+1. Find MST of graph
+2. Find minimum weight perfect matching on odd-degree vertices
+3. Combine MST + matching (Eulerian graph)
+4. Find Euler tour
+5. Shortcut to Hamiltonian cycle
+
+Approximation ratio: 3/2 = 1.5
+(Best known for metric TSP.)
 ```
 
 ## 📌 Randomized Algorithms
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ RANDOMIZED ALGORITHMS - DEEP DIVE                                               │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ TWO TYPES:                                                                      │
-│ ───────────                                                                     │
-│ 1. Las Vegas: Always correct, expected polynomial time                          │
-│ Example: Randomized QuickSort                                                   │
-│                                                                                 │
-│ 2. Monte Carlo: May be wrong, but guaranteed polynomial time                    │
-│ Example: Primality testing, Min-Cut                                             │
-│                                                                                 │
-│                                                                                 │
-│ RANDOMIZED QUICKSORT:                                                           │
-│ ─────────────────────                                                           │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**RANDOMIZED ALGORITHMS - DEEP DIVE**
+
+```text
+TWO TYPES:
+───────────
+1. Las Vegas: Always correct, expected polynomial time
+Example: Randomized QuickSort
+
+2. Monte Carlo: May be wrong, but guaranteed polynomial time
+Example: Primality testing, Min-Cut
+
+RANDOMIZED QUICKSORT:
+─────────────────────
 ```
 
 ```java
@@ -222,25 +211,23 @@ void randomizedQuickSort(int[] arr, int low, int high) {
 // Worst case: O(n²) but probability is 1/n! → negligible
 ```
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ KARGER'S MIN-CUT ALGORITHM                                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│ Find minimum cut in undirected graph.                                          │
-│                                                                                 │
-│ Algorithm:                                                                      │
-│ 1. While more than 2 vertices:                                                 │
-│    a. Pick random edge (u, v)                                                  │
-│    b. Contract u and v into single vertex                                      │
-│    c. Remove self-loops                                                        │
-│ 2. Return number of edges between final 2 vertices                             │
-│                                                                                 │
-│ Probability of finding min-cut: ≥ 1/n²                                         │
-│ Run n² log n times → P(failure) < 1/n                                          │
-│ Total time: O(n⁴ log n) basic, O(n² log³ n) improved                           │
-│                                                                                 │
-│ MILLER-RABIN PRIMALITY TEST:                                                    │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**KARGER'S MIN-CUT ALGORITHM**
+
+```text
+Find minimum cut in undirected graph.
+
+Algorithm:
+1. While more than 2 vertices:
+   a. Pick random edge (u, v)
+   b. Contract u and v into single vertex
+   c. Remove self-loops
+2. Return number of edges between final 2 vertices
+
+Probability of finding min-cut: ≥ 1/n²
+Run n² log n times → P(failure) < 1/n
+Total time: O(n⁴ log n) basic, O(n² log³ n) improved
+
+MILLER-RABIN PRIMALITY TEST:
 ```
 
 ```java
@@ -285,31 +272,22 @@ private boolean millerRabinTest(long n, long d, int r, long a) {
 
 ## 📝 Advanced String Algorithms
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ STRING MATCHING ALGORITHMS - COMPLETE COMPARISON                                │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ ALGORITHM COMPARISON:                                                           │
-│ ┌─────────────────────┬────────────────┬────────────────┬──────────────────┐    │
-│ │ Algorithm │ Preprocessing │ Search Time │ Space │                             │
-│ ├─────────────────────┼────────────────┼────────────────┼──────────────────┤    │
-│ │ Naive │ O(1) │ O(nm) │ O(1) │                                                 │
-│ │ KMP │ O(m) │ O(n) │ O(m) │                                                    │
-│ │ Boyer-Moore │ O(m + σ) │ O(nm) worst │ O(m + σ) │                             │
-│ │ │ │ O(n/m) best │ │                                                           │
-│ │ Rabin-Karp │ O(m) │ O(nm) worst │ O(1) │                                      │
-│ │ │ │ O(n+m) expected│ │                                                        │
-│ │ Z-Algorithm │ O(m) │ O(n) │ O(n+m) │                                          │
-│ │ Suffix Array │ O(n log n) │ O(m log n) │ O(n) │                               │
-│ │ Suffix Tree │ O(n) │ O(m) │ O(n) │                                            │
-│ │ Aho-Corasick │ O(Σ|patterns|) │ O(n+matches) │ O(Σ|patterns|·σ) │             │
-│ └─────────────────────┴────────────────┴────────────────┴──────────────────┘    │
-│                                                                                 │
-│ n = text length, m = pattern length, σ = alphabet size                          │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### String Matching Algorithms - Complete Comparison
+
+**Algorithm Comparison**:
+
+| Algorithm | Preprocessing | Search Time | Space |
+| --- | --- | --- | --- |
+| Naive | O(1) | O(nm) | O(1) |
+| KMP | O(m) | O(n) | O(m) |
+| Boyer-Moore | O(m + σ) | O(nm) worst<br>O(n/m) best | O(m + σ) |
+| Rabin-Karp | O(m) | O(nm) worst<br>O(n+m) expected | O(1) |
+| Z-Algorithm | O(m) | O(n) | O(n+m) |
+| Suffix Array | O(n log n) | O(m log n) | O(n) |
+| Suffix Tree | O(n) | O(m) | O(n) |
+| Aho-Corasick | O(Σ\|patterns\|) | O(n+matches) | O(Σ\|patterns\|·σ) |
+
+n = text length, m = pattern length, σ = alphabet size
 
 ```java
 // Z-ALGORITHM: Find all occurrences of pattern in text
@@ -417,27 +395,20 @@ class AhoCorasick {
 
 ## 🌐 Network Flow Algorithms
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ MAXIMUM FLOW - COMPLETE GUIDE                                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ PROBLEM: Find maximum flow from source s to sink t in a directed graph          │
-│ with edge capacities                                                            │
-│                                                                                 │
-│ ALGORITHM COMPARISON:                                                           │
-│ ┌─────────────────────┬────────────────────────┬────────────────────────────┐   │
-│ │ Algorithm │ Time Complexity │ Notes │                                         │
-│ ├─────────────────────┼────────────────────────┼────────────────────────────┤   │
-│ │ Ford-Fulkerson │ O(E × maxFlow) │ Uses DFS, may not terminate│                │
-│ │ Edmonds-Karp │ O(V × E²) │ Uses BFS for augmenting │                          │
-│ │ Dinic │ O(V² × E) │ Level graph + blocking flow│                              │
-│ │ Push-Relabel │ O(V² × E) │ Different approach │                               │
-│ │ Dinic (unit cap) │ O(E × √V) │ For unit capacity graphs │                     │
-│ └─────────────────────┴────────────────────────┴────────────────────────────┘   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### Maximum Flow - Complete Guide
+
+PROBLEM: Find maximum flow from source s to sink t in a directed graph  
+with edge capacities
+
+**Algorithm Comparison**:
+
+| Algorithm | Time Complexity | Notes |
+| --- | --- | --- |
+| Ford-Fulkerson | O(E × maxFlow) | Uses DFS, may not terminate |
+| Edmonds-Karp | O(V × E²) | Uses BFS for augmenting |
+| Dinic | O(V² × E) | Level graph + blocking flow |
+| Push-Relabel | O(V² × E) | Different approach |
+| Dinic (unit cap) | O(E × √V) | For unit capacity graphs |
 
 ```java
 // DINIC'S ALGORITHM - O(V²E)
@@ -516,13 +487,8 @@ class Dinic {
 
 ## 📌 Computational Geometry Basics
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ COMPUTATIONAL GEOMETRY - ESSENTIAL ALGORITHMS                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+**COMPUTATIONAL GEOMETRY - ESSENTIAL ALGORITHMS**
+
 
 ```java
 // CONVEX HULL - Graham Scan O(n log n)
@@ -604,56 +570,53 @@ boolean onSegment(int[] a, int[] b, int[] c) {
 
 ## 📋 Algorithm Design Paradigms — Summary
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE WHICH PARADIGM                                                      │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│ DIVIDE AND CONQUER:                                                             │
-│ • Problem can be split into independent subproblems                             │
-│ • Subproblems are similar to original                                           │
-│ • Examples: Merge Sort, Quick Sort, Binary Search, Strassen's Matrix            │
-│                                                                                 │
-│ DYNAMIC PROGRAMMING:                                                            │
-│ • Optimal substructure: optimal solution uses optimal subsolutions              │
-│ • Overlapping subproblems: same subproblems solved multiple times               │
-│ • Examples: Fibonacci, Knapsack, LCS, Edit Distance, Matrix Chain               │
-│                                                                                 │
-│ GREEDY:                                                                         │
-│ • Local optimal choice leads to global optimal                                  │
-│ • No need to reconsider past choices                                            │
-│ • Examples: Huffman, Activity Selection, Dijkstra, MST (Prim, Kruskal)          │
-│                                                                                 │
-│ BACKTRACKING:                                                                   │
-│ • Find all (or some) solutions                                                  │
-│ • Build solution incrementally, abandon if invalid                              │
-│ • Examples: N-Queens, Sudoku, Subset Sum, Permutations                          │
-│                                                                                 │
-│ BRANCH AND BOUND:                                                               │
-│ • Optimization problems                                                         │
-│ • Use bounds to prune search space                                              │
-│ • Examples: TSP, Integer Linear Programming, 0/1 Knapsack                       │
-│                                                                                 │
-│                                                                                 │
-│ COMPLEXITY CHEAT SHEET:                                                         │
-│ ┌──────────────────────┬────────────────────────────────────────────────────┐   │
-│ │ If you see... │ Think about... │                                              │
-│ ├──────────────────────┼────────────────────────────────────────────────────┤   │
-│ │ Sorted array │ Binary search O(log n) │                                       │
-│ │ Find all subsets │ 2^n solutions (exponential) │                              │
-│ │ Find all permutations│ n! solutions (factorial) │                             │
-│ │ Shortest path │ BFS (unweighted), Dijkstra (weighted) │                       │
-│ │ Connected components │ DFS/BFS/Union-Find │                                   │
-│ │ Optimal order │ DP on intervals │                                             │
-│ │ Maximum/Minimum │ DP, Greedy, or Binary search on answer │                    │
-│ │ Graph with cycles │ May need to detect or handle cycles │                     │
-│ │ String matching │ KMP, Z-algorithm, Rolling hash │                            │
-│ │ Range queries │ Segment Tree, Fenwick Tree │                                  │
-│ │ Multiple patterns │ Trie, Aho-Corasick │                                      │
-│ └──────────────────────┴────────────────────────────────────────────────────┘   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### When to USE Which Paradigm
+
+**Divide and Conquer**:
+
+- Problem can be split into independent subproblems
+- Subproblems are similar to original
+- Examples: Merge Sort, Quick Sort, Binary Search, Strassen's Matrix
+
+**Dynamic Programming**:
+
+- Optimal substructure: optimal solution uses optimal subsolutions
+- Overlapping subproblems: same subproblems solved multiple times
+- Examples: Fibonacci, Knapsack, LCS, Edit Distance, Matrix Chain
+
+**Greedy**:
+
+- Local optimal choice leads to global optimal
+- No need to reconsider past choices
+- Examples: Huffman, Activity Selection, Dijkstra, MST (Prim, Kruskal)
+
+**Backtracking**:
+
+- Find all (or some) solutions
+- Build solution incrementally, abandon if invalid
+- Examples: N-Queens, Sudoku, Subset Sum, Permutations
+
+**Branch and Bound**:
+
+- Optimization problems
+- Use bounds to prune search space
+- Examples: TSP, Integer Linear Programming, 0/1 Knapsack
+
+**Complexity Cheat Sheet**:
+
+| If you see... | Think about... |
+| --- | --- |
+| Sorted array | Binary search O(log n) |
+| Find all subsets | 2^n solutions (exponential) |
+| Find all permutations | n! solutions (factorial) |
+| Shortest path | BFS (unweighted), Dijkstra (weighted) |
+| Connected components | DFS/BFS/Union-Find |
+| Optimal order | DP on intervals |
+| Maximum/Minimum | DP, Greedy, or Binary search on answer |
+| Graph with cycles | May need to detect or handle cycles |
+| String matching | KMP, Z-algorithm, Rolling hash |
+| Range queries | Segment Tree, Fenwick Tree |
+| Multiple patterns | Trie, Aho-Corasick |
 
 ---
 

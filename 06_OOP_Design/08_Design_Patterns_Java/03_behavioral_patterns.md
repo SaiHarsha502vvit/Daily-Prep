@@ -6,12 +6,10 @@
 
 ## 8. Strategy — Swap Algorithms at Runtime
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Multiple ways to do something — want to swap easily.       ║
-║  ANALOGY: Different routes to work — GPS selects based on traffic.   ║
-║  USE: Sorting, validation, pricing, authentication strategies.       ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Multiple ways to do something — want to swap easily.
+ANALOGY: Different routes to work — GPS selects based on traffic.
+USE: Sorting, validation, pricing, authentication strategies.
 ```
 
 ```java
@@ -66,13 +64,11 @@ cart.setDiscountStrategy(price -> price * 0.9); // 10% off inline
 
 ## 9. Observer — Notify When State Changes
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Object changes → multiple others need to know.             ║
-║  ANALOGY: YouTube subscription — when channel uploads, you get       ║
-║           notified (along with all other subscribers).               ║
-║  USE: Event systems, UI updates, pub/sub, reactive programming.      ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Object changes → multiple others need to know.
+ANALOGY: YouTube subscription — when channel uploads, you get
+         notified (along with all other subscribers).
+USE: Event systems, UI updates, pub/sub, reactive programming.
 ```
 
 ```java
@@ -133,13 +129,11 @@ orderService.placeOrder(new Order(/*...*/));
 
 ## 10. Template Method — Define Algorithm Skeleton
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Same algorithm steps, different implementation details.    ║
-║  ANALOGY: A recipe — same steps (prep, cook, serve) but              ║
-║           ingredients/method differ for each dish.                   ║
-║  USE: Frameworks (Spring's JdbcTemplate), data processing pipes      ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Same algorithm steps, different implementation details.
+ANALOGY: A recipe — same steps (prep, cook, serve) but
+         ingredients/method differ for each dish.
+USE: Frameworks (Spring's JdbcTemplate), data processing pipes
 ```
 
 ```java
@@ -204,12 +198,10 @@ importer.importData(); // runs the whole pipeline
 
 ## 11. Chain of Responsibility — Pass Request Along a Chain
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Multiple handlers, unknown which one handles request.      ║
-║  ANALOGY: Customer support escalation — Level 1 → 2 → Manager.       ║
-║  USE: Middleware, validation chains, logging, servlet filters.       ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+PROBLEM: Multiple handlers, unknown which one handles request.
+ANALOGY: Customer support escalation — Level 1 → 2 → Manager.
+USE: Middleware, validation chains, logging, servlet filters.
 ```
 
 ```java
@@ -286,48 +278,39 @@ chain.handle(request);
 
 ## Patterns in Spring Boot — Where You Already Use Them
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PATTERN               │  WHERE IT APPEARS IN SPRING                 ║
-╠════════════════════════╪═════════════════════════════════════════════╣
-║  Singleton             │  @Component, @Service, @Bean (default)      ║
-║  Factory               │  BeanFactory, FactoryBean                   ║
-║  Builder               │  ResponseEntity.ok().body(data).build()     ║
-║  Proxy                 │  @Transactional, @Cacheable, @Async         ║
-║  Template Method       │  JdbcTemplate, RestTemplate                 ║
-║  Observer              │  ApplicationEvent + @EventListener          ║
-║  Strategy              │  AuthenticationProvider implementations     ║
-║  Decorator             │  HttpServletRequestWrapper                  ║
-║  Adapter               │  HandlerAdapter in MVC                      ║
-║  Chain of Resp         │  Security Filter Chain                      ║
-║  Facade                │  Spring Data JPA Repository                 ║
-║  Composite             │  CompositeCacheManager                      ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+| Pattern | Where it appears in Spring |
+| --- | --- |
+| Singleton | `@Component`, `@Service`, `@Bean` (default scope) |
+| Factory | `BeanFactory`, `FactoryBean` |
+| Builder | `ResponseEntity.ok().body(data).build()` |
+| Proxy | `@Transactional`, `@Cacheable`, `@Async` |
+| Template Method | `JdbcTemplate`, `RestTemplate` |
+| Observer | `ApplicationEvent` and `@EventListener` |
+| Strategy | `AuthenticationProvider` implementations |
+| Decorator | `HttpServletRequestWrapper` |
+| Adapter | `HandlerAdapter` in Spring MVC |
+| Chain of Responsibility | Security filter chain |
+| Facade | Spring Data JPA repository |
+| Composite | `CompositeCacheManager` |
 
 ---
 
 ## Pattern Selection Guide
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHEN YOU NEED TO...              │  USE THIS PATTERN                ║
-╠═══════════════════════════════════╪══════════════════════════════════╣
-║  Create objects flexibly          │  Factory / Abstract Factory      ║
-║  Build complex objects step by    │  Builder                         ║
-║  step                             │                                  ║
-║  Ensure one instance              │  Singleton                       ║
-║  Make incompatible code work      │  Adapter                         ║
-║  Add behavior without modifying   │  Decorator                       ║
-║  Simplify a complex subsystem     │  Facade                          ║
-║  Control access or add caching    │  Proxy                           ║
-║  Swap algorithms at runtime       │  Strategy                        ║
-║  Notify subscribers of changes    │  Observer                        ║
-║  Define algorithm skeleton        │  Template Method                 ║
-║  Process through multiple steps   │  Chain of Responsibility         ║
-║  Represent tree structures        │  Composite                       ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+| If you need to… | Use |
+| --- | --- |
+| Create objects flexibly | Factory or Abstract Factory |
+| Build complex objects step by step | Builder |
+| Ensure one instance | Singleton |
+| Make incompatible code work together | Adapter |
+| Add behaviour without modifying a class | Decorator |
+| Simplify a complex subsystem | Facade |
+| Control access or add caching | Proxy |
+| Swap algorithms at run time | Strategy |
+| Notify subscribers of changes | Observer |
+| Define an algorithm skeleton | Template Method |
+| Process a request through multiple steps | Chain of Responsibility |
+| Represent tree structures | Composite |
 
 ---
 
@@ -372,373 +355,208 @@ A: Global state, hard to test (use DI instead), hides dependencies,
 
 ## Mental Model: Patterns as Communication
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  Design patterns are a SHARED VOCABULARY between developers.         ║
-║                                                                      ║
-║  Without patterns:                                                   ║
-║  "I made a class that wraps another class and adds logging           ║
-║   before calling the original method and..."                         ║
-║                                                                      ║
-║  With patterns:                                                      ║
-║  "I used a Decorator for logging."                                   ║
-║  → Everyone immediately understands the architecture.                ║
-║                                                                      ║
-║  ⚠️ WARNING: Don't force patterns where they're not needed.          ║
-║  The cure shouldn't be worse than the disease.                       ║
-║  Simple problems deserve simple solutions.                           ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+Design patterns are a SHARED VOCABULARY between developers.
+
+Without patterns:
+"I made a class that wraps another class and adds logging
+ before calling the original method and..."
+
+With patterns:
+"I used a Decorator for logging."
+→ Everyone immediately understands the architecture.
+
+⚠️ WARNING: Don't force patterns where they're not needed.
+The cure shouldn't be worse than the disease.
+Simple problems deserve simple solutions.
 ```
 
 ## PLUS Enhancements
 
 ### Diagram 1: Singleton Double-Checked Locking with volatile (Memory Layout)
 
+### Without `volatile`: the broken path
+
+Thread A runs `getInstance()` and creates the `Logger`. The JVM and CPU may reorder the three underlying steps:
+
+| Step | What happens | State other threads can see |
+| --- | --- | --- |
+| 1 | Allocate memory for the `Logger` object | Reference not yet published; fields are default values (`null`) |
+| 2 | **Reordering:** the reference is assigned to `instance` *before* the constructor runs | `instance` is non-null, but the object is still uninitialised |
+| 3 | The constructor runs and writes the fields (for example `fileWriter`) | Object is fully built, but too late for a thread that already looked |
+
+If Thread B reaches `if (instance == null)` between steps 2 and 3, it sees a non-null `instance`, returns a **partially constructed** `Logger`, and fails with a `NullPointerException` when it touches `fileWriter`.
+
+### With `volatile`: the correct path
+
+Declaring the field `private static volatile Logger instance;` gives the write a **happens-before** relationship with later reads:
+
+1. Allocate memory.
+2. Run the constructor.
+3. Publish the reference. The volatile write cannot be reordered ahead of the constructor's writes, so any thread that sees the reference also sees the fully constructed object.
+
+### The double-checked locking code
+
+```java
+public static Logger getInstance() {
+    if (instance == null) {                 // first check: fast path, no lock
+        synchronized (Logger.class) {
+            if (instance == null) {         // second check: under the lock
+                instance = new Logger();
+            }
+        }
+    }
+    return instance;
+}
 ```
-  WITHOUT volatile — THE BROKEN PATH:
-  ═══════════════════════════════════
 
-  Thread A (getInstance, creates Logger):
-  ─────────────────────────────────────────
+- Thread A holds the lock and creates the instance.
+- Thread B waits at `synchronized`, then acquires the lock, sees `instance != null` and returns it.
 
-  Step 1: allocate memory for Logger object
-         ┌─────────────────────────────────┐
-         │  instance ─────────────────┐    │
-         │  fields: null              │    │
-         │  ┌──────────────────────┐  │    │
-         │  │ (uninitialized data) │  │    │
-         │  └──────────────────────┘  │    │
-         └─────────────────────────────────┘
-                    │
-                    │ INSTRUCTION REORDERING HAPPENS HERE
-                    ▼
-  Step 2: instance = reference (pointer set)
-         ┌─────────────────────────────────┐
-         │  instance ─────────────────┐    │
-         │  fields: null              │    │
-         │  ┌──────────────────────┐  │    │
-         │  │ (still uninitialized)│  │    │
-         │  └──────────────────────┘  │    │
-         └─────────────────────────────────┘
-                    │
-                    │ (constructor NOT yet run!)
-                    ▼
-  Step 3: run constructor (writes to fields)
-         ┌─────────────────────────────────┐
-         │  instance ─────────────────┐    │
-         │  fields: fileWriter=...    │    │
-         │  ┌──────────────────────┐  │    │
-         │  │ FileWriter ready     │  │    │
-         │  └──────────────────────┘  │    │
-         └─────────────────────────────────┘
-
-  Thread B arrives at if(instance==null)? → SEES instance ≠ null
-         → RETURNS PARTIALLY CONSTRUCTED Logger!
-         → fileWriter == null → NullPointerException!
-
-  WITH volatile — THE CORRECT PATH:
-  ══════════════════════════════════
-
-  volatile creates a happens-before memory barrier:
-
-  Step 1: allocate memory
-  Step 2: instance = reference  ──────┐
-  Step 3: run constructor              │ happens-before
-         └─────────────────────────────┘
-
-  The volatile write (Step 2) happens-before
-  any subsequent volatile read (Thread B sees fully constructed object)
-
-  THE DOUBLE-CHECK DIAGRAM:
-  ═════════════════════════
-
-  public static Logger getInstance() {
-      if (instance == null) {          ◀── First check: fast path (no lock)
-          synchronized(Logger.class) {   │
-              if (instance == null) {    ◀── Second check: with lock
-                  instance = new Logger();│
-              }                          │
-          }                              │
-      }                                  │
-      return instance;                   │
-  }
-                                        │
-  Thread A: holds lock → creates        │
-  Thread B: waits at synchronized       │
-  Thread B: acquires lock → sees        │
-            instance ≠ null → returns   │
-            (Thread A completed)         │
-
-  WHY TWO CHECKS?
-  Without first check: every call acquires lock → massive overhead
-  Without second check: two threads both acquire lock → create twice
-```
+**Why two checks?** Without the first check, every call acquires the lock, which is a large overhead. Without the second check, two threads that both passed the first check would each create an instance.
 
 ## Diagram 2: Decorator Pattern — "Russian Doll" Wrapping Visualization
 
+### Component interface
+
+```mermaid
+classDiagram
+  class DataSource {
+    <<interface>>
+    +read() String
+    +write(data String) void
+  }
+  DataSource <|.. FileDataSource : base concrete
+  DataSource <|.. NetworkSource
+  DataSource <|.. CompressionDecorator
+  DataSource <|.. EncryptionDecorator
+  CompressionDecorator o-- DataSource : wrappee
+  EncryptionDecorator o-- DataSource : wrappee
 ```
-  COMPONENT INTERFACE
-  ════════════════════
 
-  ┌────────────────────────────────────────────────────┐
-  │ <<interface>> DataSource                           │
-  ├────────────────────────────────────────────────────┤
-  │ + read(): String                                   │
-  │ + write(data: String): void                        │
-  └────────────────────────────────────────────────────┘
-                              △
-                              │ implements
-          ┌───────────────────┴──────────────────┐
-          │                                      │
-  ┌───────────────┐                      ┌───────────────┐
-  │FileDataSource │                      │NetworkSource  │
-  │(base concrete)│                      │               │
-  └───────────────┘                      └───────────────┘
+**How to read this diagram.** Decorators implement the same interface as the object they wrap, so they can be stacked in any order.
 
-  DECORATOR CHAIN (wrapping = "russian doll"):
-  ══════════════════════════════════════════
+### Decorator chain (wrapping like a Russian doll)
 
-  At usage time:
-  DataSource source = new CompressionDecorator(
-                          new EncryptionDecorator(
-                              new FileDataSource("data.txt")));
-
-  Visualization of the chain:
-  ════════════════════
-
-  ┌─────────────────────────────────────────────────────┐
-  │                  CompressionDecorator               │
-  │  wrappee: ────────────▶ ┌────────────────────────┐ │
-  │  compress(write)        │  EncryptionDecorator    │ │
-  │  decompress(read)       │  wrappee: ────────────▶│ │
-  │                         │  encrypt(write)         │ │
-  │                         │  decrypt(read)          │ │
-  │                         │                         │ │
-  │                         │  wrappee: ────────────▶│ │
-  │                         │  FileDataSource        │ │
-  │                         │  readFromFile()        │ │
-  │                         │  writeToFile()         │ │
-  │                         └────────────────────────┘ │
-  └─────────────────────────────────────────────────────┘
-
-  WRITE FLOW (outside-in):
-  ══════════════════════
-
-  client.write("sensitive data")
-       │
-       ▼
-  ┌────────────────────────────────────┐
-  │ CompressionDecorator.write(data)   │
-  │   compressed = compress(data)      │
-  │   super.write(compressed)          │
-  │       ▼                           │
-  │   ┌──────────────────────────────┐│
-  │   │ EncryptionDecorator.write()  ││
-  │   │   encrypted = encrypt(comp)  ││
-  │   │   super.write(encrypted)     ││
-  │   │       ▼                      ││
-  │   │   ┌────────────────────────┐ ││
-  │   │   │ FileDataSource.write() │ ││
-  │   │   │   writeToFile(enc)     │ ││
-  │   │   └────────────────────────┘ ││
-  │   └──────────────────────────────┘│
-  └────────────────────────────────────┘
-
-  READ FLOW (inside-out):
-  ══════════════════════
-  FileDataSource.read() → FileDataSource.readFromFile()
-       │
-  EncryptionDecorator.read() → decrypt(raw) ──────────────▶
-       │
-  CompressionDecorator.read() → decompress(decrypted) ────▶
-       │
-  client.read() → returns fully processed data
-
-  KEY PROPERTY: Decorators are STACKABLE and COMPOSABLE.
-  New decorators added with ZERO changes to existing code (OCP).
+```java
+DataSource source = new CompressionDecorator(
+                        new EncryptionDecorator(
+                            new FileDataSource("data.txt")));
 ```
+
+```mermaid
+flowchart LR
+  C["client"] --> CD["CompressionDecorator<br/>compress on write, decompress on read"]
+  CD --> ED["EncryptionDecorator<br/>encrypt on write, decrypt on read"]
+  ED --> FD["FileDataSource<br/>readFromFile() / writeToFile()"]
+```
+
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
+
+**Write flow (outside in):** `client.write("sensitive data")` → `CompressionDecorator.write` compresses → `EncryptionDecorator.write` encrypts the compressed bytes → `FileDataSource.write` writes them to the file.
+
+**Read flow (inside out):** `FileDataSource.read()` reads the raw bytes → `EncryptionDecorator.read()` decrypts → `CompressionDecorator.read()` decompresses → the client receives the fully processed data.
+
+> [!IMPORTANT]
+> **Key property:** decorators are stackable and composable. New decorators are added with zero changes to existing code (Open/Closed Principle).
 
 ## Diagram 3: Proxy Pattern (Spring AOP) — Transaction/Async Sequence
 
+### Spring AOP proxy chain (how `@Transactional` works)
+
+**Without a proxy (what you might expect):** the client calls `TargetService.method()` directly.
+
+**With a Spring proxy (what actually happens):**
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant P as Generated proxy (CGLIB subclass or JDK proxy)
+  participant T as Target bean (UserService)
+  C->>P: userService.method()
+  P->>P: BEFORE: begin transaction (@Transactional), check cache (@Cacheable), submit to thread pool (@Async)
+  P->>T: invoke the real method
+  T-->>P: result
+  P->>P: AFTER: commit or roll back, put result in cache
+  P-->>C: result
 ```
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │           SPRING AOP PROXY CHAIN (how @Transactional works)              │
-  └──────────────────────────────────────────────────────────────────────────┘
 
-  WITHOUT SPRING PROXY (what you might expect):
-  ══════════════════════════════════════════════
-  Client ──────────────────────────────▶ TargetService.method()
+**How to read this diagram.** The client never talks to the real bean: it talks to a proxy that wraps each call with advice. For `@Async` the proxy submits the work to a thread pool and returns a `CompletableFuture` to the caller immediately.
 
-  WITH SPRING PROXY (what actually happens):
-  ══════════════════════════════════════════════
+**Bean post-processor lifecycle**
 
-  Client
-    │
-    │ userService.method()
-    ▼
-  ┌─────────────────────────────────────────────────────────────────────────┐
-  │  CGLIB-generated Proxy (extends UserService)                            │
-  │                                                                         │
-  │  method() {                                                             │
-  │    // BEFORE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━       │
-  │    // @Transactional: DataSourceUtils.getConnection()                   │
-  │    // Connection.setAutoCommit(false)                                   │
-  │    // TransactionSynchronizationManager.bindResource()                  │
-  │    // @Async: submit to thread pool, return CompletableFuture          │
-  │    // @Cacheable: check cache, return if hit                            │
-  │    //                                                                   │
-  │    ┌───────────────────────────────────────────────────────────────┐   │
-  │    │                    TARGET METHOD                               │   │
-  │    │              super.method()  ──────────────────────────────▶ │   │
-  │    │              (actual UserService logic executes here)         │   │
-  │    └───────────────────────────────────────────────────────────────┘   │
-  │                                                                         │
-  │    // AFTER ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━     │
-  │    // @Transactional: Connection.commit() or Connection.rollback()     │
-  │    // @Cacheable: put result in cache                                   │
-  │    // @Async: already returned CompletableFuture to caller              │
-  │  }                                                                      │
-  └─────────────────────────────────────────────────────────────────────────┘
-
-  BEAN POST-PROCESSOR LIFECYCLE:
-  ═══════════════════════════════════
-
-  Spring Container starts
-       │
-       ▼
-  Bean instantiated (new UserServiceImpl())
-       │
-       ▼
-  BeanPostProcessor.postProcessAfterInitialization()
-       │
-       ▼
-  ┌─────────────────────────────────────────────────────────┐
-  │  Creates proxy wrapping the bean                        │
-  │  If @Transactional on class/method:                     │
-  │    → Creates TransactionInterceptor                     │
-  │    → Wraps target in JdkDynamicProxy or CGLIB           │
-  │  If @Async on method:                                  │
-  │    → Wraps in AsyncExecutionInterceptor                │
-  └─────────────────────────────────────────────────────────┘
-       │
-       ▼
-  Proxy injected into all @Autowired fields
-  (client code never sees the real object — only the proxy)
-
-  SPRING AOP ATTRIBUTE FLOW (annotation → behavior):
-  ═══════════════════════════════════════════════════
-
-  @Transactional              @Cacheable           @Async
-  ─────────────               ───────────          ──────
-  Before: begin tx            Before: check cache  Before: submit to thread pool
-  After:  commit/rollback     After:  put in cache  After:  returns Future
-
-  Annotation → Aspect → Pointcut → Advice → Proxy
-  ────────────────────────────────────────────────
-  @Transactional → TransactionAspect → execution(* *..*Service.*(..))
-                  → @Before + @AfterReturning/AfterThrowing
-                  → TransactionInterceptor.invoke()
-
-  THE "SELF-INVOCATION" PROBLEM:
-  ════════════════════════════════
-  Inside UserService:
-    methodA() { this.methodB(); }  ← this bypasses proxy!
-    @Transactional
-    methodB() { /* no transaction! */ }  ← proxy not called
-
-  Fix: inject self (self-injection) or use TransactionTemplate.
+```mermaid
+flowchart TD
+  A["Spring container starts"] --> B["Bean instantiated: new UserServiceImpl()"]
+  B --> C["BeanPostProcessor.postProcessAfterInitialization()"]
+  C --> D["Creates a proxy wrapping the bean<br/>@Transactional: TransactionInterceptor<br/>@Async: AsyncExecutionInterceptor<br/>JDK dynamic proxy or CGLIB"]
+  D --> E["Proxy injected into every @Autowired field"]
 ```
+
+**How to read this diagram.** Arrows show the direction of flow from one step or component to the next.
+
+Client code never sees the real object, only the proxy.
+
+**Annotation → behaviour**
+
+| Annotation | Before | After |
+| --- | --- | --- |
+| `@Transactional` | Begin transaction | Commit or roll back |
+| `@Cacheable` | Check cache | Put result in cache |
+| `@Async` | Submit to thread pool | Caller already has a `Future` |
+
+The chain is: annotation → aspect/interceptor → pointcut → advice → proxy. For example, `@Transactional` is applied by a `TransactionInterceptor` whose `invoke()` wraps the target call.
+
+> [!WARNING]
+> **The self-invocation problem.** Inside `UserService`, `methodA() { this.methodB(); }` bypasses the proxy because `this` is the target, not the proxy. If `methodB` is `@Transactional`, no transaction starts. Fix: move `methodB` to another bean, inject the bean into itself, or use `TransactionTemplate`.
 
 ## Mechanism Deep-Dive: Spring's AOP Proxy Chain
 
 **How the BeanPostProcessor creates the proxy at startup:**
 
+### Spring container bootstrap sequence
+
+1. A scanner parses `@Component` / `@Service` classes and registers bean definitions, for example `"userService"` → `UserServiceImpl.class`.
+2. `BeanFactoryPostProcessor`s process the definitions. When transaction management is enabled, this registers the transaction infrastructure (an auto-proxy creator, a transaction advisor and interceptor, and your `TransactionManager`).
+3. **Instantiation:** `new UserServiceImpl()` runs, so the real object exists.
+4. `BeanPostProcessor.postProcessAfterInitialization()` runs. The auto-proxy creator (itself a `BeanPostProcessor`) wraps every bean that matches a pointcut, such as any bean with `@Transactional`, in a proxy.
+
+> [!NOTE]
+> With Spring AOP the advice is `TransactionInterceptor`, applied by an auto-proxy creator. With AspectJ weaving (`mode = ASPECTJ`) the aspect is `AnnotationTransactionAspect` and no proxy is involved.
+
+### Proxy type selection
+
+| Situation | Proxy used | How it works |
+| --- | --- | --- |
+| The bean implements an interface and proxy-target-class is off (classic default) | **JDK dynamic proxy** | The proxy implements the same interfaces; calls go to an `InvocationHandler` |
+| The bean has no interface, or proxy-target-class is on | **CGLIB** | The proxy is a **subclass** of `UserServiceImpl` that overrides methods to add interception |
+
+Spring Boot enables proxy-target-class by default, so CGLIB is what you usually get. A CGLIB proxy cannot intercept `final` methods or a `final` class.
+
+### How `@Transactional` creates transaction boundaries
+
+```java
+@Transactional
+public void transfer(Account from, Account to, double amount) {
+    debit(from, amount);
+    credit(to, amount);
+    // exception -> rollback
+    // success   -> commit
+}
 ```
-  SPRING CONTAINER BOOTSTRAP SEQUENCE:
-  ══════════════════════════════════════
 
-  1. BeanDefinitionReader parses @Component / @Service
-     → Registers bean definition: "userService" → UserServiceImpl.class
+What actually executes in `TransactionInterceptor.invoke(MethodInvocation)`:
 
-  2. BeanFactoryPostProcessor processes bean definitions
-     → Finds @Transactional annotations
-     → Registers transaction infrastructure beans (DataSource, TransactionManager)
-
-  3. BeanInstantiation: new UserServiceImpl()
-     → Real object created (constructor runs)
-
-  4. BeanPostProcessor.postProcessAfterInitialization()
-     → Wraps real object in proxy
-
-  ┌──────────────────────────────────────────────────────────────────┐
-  │  AnnotationTransactionAspect (aspectJ-based) or                  │
-  │  TransactionInterceptor (JDK dynamic proxy)                      │
-  │  is registered as a BeanPostProcessor.                          │
-  │  It wraps every bean that has @Transactional.                   │
-  └──────────────────────────────────────────────────────────────────┘
-
-  PROXY TYPE SELECTION:
-  ════════════════════
-
-  If UserServiceImpl implements an interface (e.g., UserService):
-    → Spring uses JDK Dynamic Proxy
-    → Proxy implements UserService, extends InvocationHandler
-    → Proxy.method() → InvocationHandler.invoke()
-
-  If UserServiceImpl does NOT implement an interface:
-    → Spring uses CGLIB (code generation library)
-    → Proxy SUBCLASSES UserServiceImpl
-    → Overrides every method to add intercept logic
-    → Proxy is a subclass — may fail if methods are final
-
-  HOW @Transactional TRIGGERS TRANSACTION BOUNDARIES:
-  ═════════════════════════════════════════════════════
-
-  @Transactional
-  public void transfer(Account from, Account to, double amount) {
-      debit(from, amount);
-      credit(to, amount);
-      // if exception → rollback
-      // if success → commit
-  }
-
-  What actually executes:
-  ═════════════════════
-
-  TransactionInterceptor.invoke(MethodInvocation):
-
-  1. Determine transaction attributes:
-     Read propagation, isolation level, timeout from annotation
-
-  2. Check transaction propagation:
-     Is there already a transaction on this thread?
-     → PROPAGATION.REQUIRED: join existing (don't suspend)
-     → PROPAGATION.REQUIRES_NEW: suspend existing, start new
-
-  3. Get connection from DataSource:
-     Connection conn = DataSourceUtils.getConnection(dataSource);
-
-  4. Set isolation level:
-     conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-
-  5. Set autoCommit = false:
-     conn.setAutoCommit(false);
-
-  6. Bind to ThreadLocal (so nested @Transactional calls join):
-     TransactionSynchronizationManager.bindResource(ds, connection)
-
-  7. INVOKE TARGET METHOD (user code runs here)
-     invocation.proceed()
-
-  8a. If NO exception: Connection.commit()
-  8b. If EXCEPTION thrown: Connection.rollback()
-
-  9. Unbind from ThreadLocal:
-      TransactionSynchronizationManager.unbindResource(ds)
-
-  10. Return connection to pool:
-      DataSourceUtils.releaseConnection(conn, ds)
-```
+1. **Determine transaction attributes:** read propagation, isolation level and timeout from the annotation.
+2. **Check propagation:** is there already a transaction on this thread? `REQUIRED` joins the existing one; `REQUIRES_NEW` suspends it and starts a new one.
+3. **Get a connection** from the `DataSource` (`DataSourceUtils.getConnection(dataSource)`).
+4. **Set the isolation level** if the annotation specifies one (otherwise the database default applies).
+5. **Set `autoCommit = false`.**
+6. **Bind the connection to a `ThreadLocal`** (`TransactionSynchronizationManager.bindResource`) so nested `@Transactional` calls join the same transaction.
+7. **Invoke the target method** (your code runs here): `invocation.proceed()`.
+8. **Commit or roll back:** no exception → `commit()`. By default a `RuntimeException` or `Error` triggers `rollback()`; checked exceptions do not unless you set `rollbackFor`.
+9. **Unbind** from the `ThreadLocal`.
+10. **Return the connection** to the pool (`DataSourceUtils.releaseConnection`).
 
 ---
 

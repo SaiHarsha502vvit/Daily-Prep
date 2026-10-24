@@ -4,113 +4,109 @@
 > Page 1 of 2 in **SECTION: DESIGN PROBLEMS**
 
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║          DESIGN PROBLEMS — COMPLETE UNDERSTANDING & GROWTH MINDSET           ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**Design Problems — Complete Understanding & Growth Mindset**
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE REAL-WORLD ORIGIN                                                        │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 📖 LRU Cache: Every CPU has an LRU cache. When L1 cache is full, the          │
-│    Least Recently Used line gets evicted. Your browser uses LRU for its      │
-│    tab memory management. CDNs use LRU for content caching.                  │
-│                                                                              │
-│ 📖 Min Stack: Trading systems need to track the minimum stock price seen      │
-│    so far in O(1). Each new price is "pushed" and we need instant access     │
-│    to the running minimum for stop-loss calculations.                        │
-│                                                                              │
-│ 📖 Trie: Every search engine autocomplete (Google, VSCode Ctrl+P) uses a      │
-│    Trie. When you type "mer", it instantly finds "merge", "mercury",         │
-│    "merchant" by walking the prefix tree — O(L) instead of O(N·L).           │
-│                                                                              │
-│ 📖 Iterator: Java's Iterator pattern (hasNext/next) powers every for-each     │
-│    loop. Database cursors, file line readers, paginated APIs — all iterators.│
-│                                                                              │
-│ FUNDAMENTAL PRINCIPLE:                                                       │
-│ Design problems test your ability to COMBINE basic data structures           │
-│ to achieve better time complexity than any single structure offers.          │
-│                                                                              │
-│ LRU Cache = HashMap (O(1) lookup) + Doubly Linked List (O(1) removal)        │
-│ Neither alone gives O(1) get AND O(1) eviction. Together they do.            │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+### The Real-world Origin
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE MENTAL MODEL: "What operations do I need and at what cost?"              │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  STEP 1: List all required operations                                        │
-│  STEP 2: For each, what's the target time complexity?                        │
-│  STEP 3: What single DS gives that? If none, COMBINE.                        │
-│                                                                              │
-│  THE COMBINATION RECIPES:                                                    │
-│  ┌─────────────────────────┬────────────────────────────────────────────┐    │
-│  │ Need                    │ Combine                                    │    │
-│  ├─────────────────────────┼────────────────────────────────────────────┤    │
-│  │ O(1) access + O(1) order│ HashMap + Doubly Linked List              │     │
-│  │ O(1) access + O(1) rand │ HashMap + ArrayList                       │     │
-│  │ O(1) min + O(1) push/pop│ Two stacks (main + min tracker)           │     │
-│  │ O(L) prefix + O(1) check│ Trie (array of children)                  │     │
-│  │ O(log n) rank queries   │ TreeMap + augmented BST                    │    │
-│  └─────────────────────────┴────────────────────────────────────────────┘    │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+📖 LRU Cache: Every CPU has an LRU cache. When L1 cache is full, the  
+Least Recently Used line gets evicted. Your browser uses LRU for its  
+tab memory management. CDNs use LRU for content caching.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ COMMON MISTAKES                                                              │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. Starting to code before listing ALL operations and their target complexity│
-│ 2. Using a single HashMap when you need both key→value AND order management  │
-│ 3. Forgetting edge cases: empty structure, single element, capacity=0        │
-│ 4. Not separating the "what" (interface) from "how" (implementation)         │
-│ 5. Using LinkedHashMap in interviews — shows framework knowledge but not     │
-│    understanding. Implement from scratch first, mention LinkedHashMap as     │
-│    "production shortcut".                                                    │
-│ 6. Thread-safety: interviewers sometimes ask "what if concurrent?" Know      │
-│    ConcurrentHashMap, ReadWriteLock, lock striping.                          │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+📖 Min Stack: Trading systems need to track the minimum stock price seen  
+so far in O(1). Each new price is "pushed" and we need instant access  
+to the running minimum for stop-loss calculations.
+
+📖 Trie: Every search engine autocomplete (Google, VSCode Ctrl+P) uses a  
+Trie. When you type "mer", it instantly finds "merge", "mercury",  
+"merchant" by walking the prefix tree — O(L) instead of O(N·L).
+
+📖 Iterator: Java's Iterator pattern (hasNext/next) powers every for-each  
+loop. Database cursors, file line readers, paginated APIs — all iterators.
+
+**Fundamental Principle**:
+
+Design problems test your ability to COMBINE basic data structures  
+to achieve better time complexity than any single structure offers.
+
+LRU Cache = HashMap (O(1) lookup) + Doubly Linked List (O(1) removal)  
+Neither alone gives O(1) get AND O(1) eviction. Together they do.
+
+### THE MENTAL MODEL: "What operations do I need and at what cost?"
+
+**Step 1: List all required operations**
+
+**Step 2: For each, what's the target time complexity?**
+
+**Step 3: What single DS gives that? If none, COMBINE.**
+
+**The Combination Recipes**:
+
+| Need | Combine |
+| --- | --- |
+| O(1) access + O(1) order | HashMap + Doubly Linked List |
+| O(1) access + O(1) rand | HashMap + ArrayList |
+| O(1) min + O(1) push/pop | Two stacks (main + min tracker) |
+| O(L) prefix + O(1) check | Trie (array of children) |
+| O(log n) rank queries | TreeMap + augmented BST |
+
+### Common Mistakes
+
+1. Starting to code before listing ALL operations and their target complexity
+2. Using a single HashMap when you need both key→value AND order management
+3. Forgetting edge cases: empty structure, single element, capacity=0
+4. Not separating the "what" (interface) from "how" (implementation)
+5. Using LinkedHashMap in interviews — shows framework knowledge but not
+understanding. Implement from scratch first, mention LinkedHashMap as  
+"production shortcut".  
+6. Thread-safety: interviewers sometimes ask "what if concurrent?" Know
+ConcurrentHashMap, ReadWriteLock, lock striping.
 
 ---
 
 ## PROBLEM 1: LRU Cache (LC 146) — The #1 Design Problem
 
+| | |
+| --- | --- |
+| **Difficulty** | Medium (but hard to get right in an interview) |
+| **Companies** | Amazon, Facebook, Google, Microsoft, Apple, Netflix |
+| **Pattern** | HashMap + doubly linked list |
+
+**Problem:** design an LRU cache with:
+
+- `get(key)`: return the value if it exists, else -1. Mark the entry as used.
+- `put(key, value)`: insert or update. If at capacity, evict the least recently used item.
+- Both operations must be O(1).
+
+**Why this is the #1 interview problem.** It tests HashMap, linked lists, pointer manipulation and edge cases, and it is one of the most frequently asked design questions.
+
+**The key insight**
+
+- A HashMap alone gives O(1) `get`, but cannot track access order.
+- A linked list alone tracks order, but searching is O(n).
+- Combine them: `Map<Key, Node>` plus a doubly linked list.
+
+```mermaid
+flowchart LR
+  subgraph HM["HashMap"]
+    k1["key1 → Node1"]
+    k2["key2 → Node2"]
+    k3["key3 → Node3"]
+  end
+  subgraph DLL["Doubly linked list"]
+    direction LR
+    H["HEAD"] <--> N1["Node1 (most recent)"] <--> N2["Node2"] <--> N3["Node3 (least recent, evict)"] <--> T["TAIL"]
+  end
+  k1 -.-> N1
+  k2 -.-> N2
+  k3 -.-> N3
 ```
-DIFFICULTY: Medium (but Hard to get right in interview)
-COMPANIES: Amazon, Facebook, Google, Microsoft, Apple, Netflix
-PATTERN: HashMap + Doubly Linked List
 
-PROBLEM: Design LRU cache with:
-  get(key)       → return value if exists, else -1. Mark as used.
-  put(key, value)→ insert/update. If at capacity, evict LRU item.
-  Both operations must be O(1).
+**How to read this diagram.** The map finds a node in O(1) (dotted arrows). The list keeps the usage order, so moving a node to the front and evicting the node before TAIL are both O(1) pointer changes.
 
-WHY THIS IS #1 INTERVIEW PROBLEM:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  Tests: HashMap, Linked List, pointer manipulation, edge cases.
-  Asked at nearly EVERY top company. 120+ million submissions on LC.
+- **GET:** HashMap lookup O(1) → find the node → move it to the front O(1).
+- **PUT:** create a node → add it to the front → `HashMap.put` O(1). If over capacity: remove `TAIL.prev` → `HashMap.remove` O(1).
 
-THE KEY INSIGHT:
-  HashMap alone → O(1) get, but can't track access order
-  LinkedList alone → tracks order, but O(n) search
-  COMBINE: Map<Key, Node> + Doubly Linked List
-
-  ┌─────────────────────────────────────────────────┐
-  │                   HashMap                       │
-  │ key1 → Node1, key2 → Node2, key3 → Node3        │
-  └────────┬──────────┬──────────┬──────────────────┘
-           ↓          ↓          ↓
-  HEAD ←→ Node1 ←→ Node2 ←→ Node3 ←→ TAIL
-  (most recent)              (least recent = evict)
-
-  GET: HashMap O(1) → find node → move to front O(1)
-  PUT: create node → add to front → HashMap put O(1)
-       if over capacity: remove TAIL.prev → HashMap remove O(1)
-
-SOLUTION:
-```
+**Solution:**
 
 ```java
 class LRUCache {

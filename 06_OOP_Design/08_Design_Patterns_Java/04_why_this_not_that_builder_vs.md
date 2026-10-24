@@ -4,246 +4,162 @@
 > Page 4 of 4 in **Design Patterns in Java — Gang of Four & Beyond**
 
 
+## The problem: constructor telescoping
+
+A `User` has 3 required fields and 5 optional ones. If every combination of optionals had its own constructor, you would need 2⁵ = 32 constructors. Even the strict telescoping form (each constructor adds one more optional) leaves call sites that are hard to read:
+
+```java
+User("John")                         // which optionals?
+User("John", null)                   // which one is null?
+User("John", null, null)             // confusing
+User("John", null, null, null)       // which one is the address?
+User("John", null, null, null, null) // impossible to read
 ```
-  THE PROBLEM: CONSTRUCTOR TELESCOPING
-  ══════════════════════════════════════════
 
-  User has 3 required + 5 optional fields:
-
-  // Without telescoping: 2^5 = 32 constructors needed!
-  User("John")                         ← which optionals?
-  User("John", null)                   ← which is null?
-  User("John", null, null)             ← confusing
-  User("John", null, null, null)       ← which is address?
-  User("John", null, null, null, null) ← impossible to read
-
-  // Telescoping pattern: each constructor adds one optional
-  public User(String firstName) {
-      this(firstName, null, null, null, null, null);
-  }
-  public User(String firstName, String lastName) {
-      this(firstName, lastName, null, null, null, null);
-  }
-  public User(String firstName, String lastName, String email) {
-      this(firstName, lastName, email, null, null, null);
-  }
-  // ... 32 variations
-
-  MAINTENANCE COST: Adding one more optional field requires
-  adding 16 new constructors (half of 32).
-
-  THE BUILDER SOLUTION:
-  ════════════════════════
-
-  User user = new User.Builder("John", "Doe", "john@example.com")
-      .phone("1234567890")
-      .address("123 Main St")
-      .age(30)
-      .build();
-
-  COMPARISON TABLE:
-  ════════════════════════
-
-  ┌────────────────────────────────┬──────────────────────┬─────────────────────┐
-  │  DIMENSION                    │  BUILDER             │  TELESCOPING         │
-  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
-  │  N optional params             │  1 class             │  2^N constructors   │
-  │  (where N = 5)                │  + 1 Builder inner   │  required!          │
-  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
-  │  Readability at call site     │  YES: Clear names    │  NO: positional args│
-  │                                │    .phone("123")     │    User("John",     │
-  │                                │                      │    null, "john@",   │
-  │                                │                      │    null, 30)        │
-  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
-  │  Immutability                 │  YES: final fields   │  NO: mutable during │
-  │                                │    set in constructor│    construction     │
-  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
-  │  Validation                   │  YES: Centralized    │  NO: scattered      │
-  │                                │    in build()        │    across ctors     │
-  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
-  │  Adding optional param         │  2 lines: setter +   │  16 constructor     │
-  │                                │  field               │  variants modified! │
-  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
-  │  IDE auto-complete            │  YES: Builder        │  NO: positional,    │
-  │                                │    methods named     │    no name hints    │
-  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
-  │  Lombok @Builder              │  YES: One annotation │  NO: manual all 32  │
-  │  (zero-boilerplate)           │    generates all     │    constructors     │
-  └────────────────────────────────┴──────────────────────┴─────────────────────┘
-
-  BUILDER + FLUENT INTERFACE:
-  ══════════════════════════
-
-  The key insight: Builder methods RETURN THE BUILDER, not void.
-
-  return this;  // enables method chaining
-
-  This is called the FLUENT INTERFACE pattern.
-  Used in: StringBuilder, Stream API, JUnit assertions, HttpClient.
-
-  BUILDER + VALIDATION:
-  ══════════════════════════
-
-  public User build() {
-      if (firstName == null || firstName.isBlank()) {
-          throw new IllegalStateException("firstName required");
-      }
-      if (age != null && age < 0) {
-          throw new IllegalStateException("age must be positive");
-      }
-      // Cross-field validation
-      if (phone != null && !phone.matches("\\d{10}")) {
-          throw new IllegalStateException("Invalid phone");
-      }
-      return new User(this);
-  }
-
-  Validation happens ONCE at build(), never scattered.
-  Impossible with telescoping: each constructor would need its own validation.
-
-  WHEN NOT TO USE BUILDER:
-  ─────────────────────────
-  1. 1-2 required fields, no optionals → plain constructor is fine
-  2. All parameters required → no benefit
-  3. Simple DTO with Jackson/JSON → @Data + @Builder for Jackson integration
-  4. Performance-critical (GC pressure from Builder allocation) → consider static factory
+```java
+// Telescoping pattern: each constructor adds one optional
+public User(String firstName) {
+    this(firstName, null, null, null, null, null);
+}
+public User(String firstName, String lastName) {
+    this(firstName, lastName, null, null, null, null);
+}
+public User(String firstName, String lastName, String email) {
+    this(firstName, lastName, email, null, null, null);
+}
+// ... and so on
 ```
+
+**Maintenance cost:** every new optional field forces you to touch or add constructors, and if you support arbitrary combinations the count doubles with each new field.
+
+## The Builder solution
+
+```java
+User user = new User.Builder("John", "Doe", "john@example.com")
+    .phone("1234567890")
+    .address("123 Main St")
+    .age(30)
+    .build();
+```
+
+### Comparison table
+
+| DIMENSION | BUILDER | TELESCOPING |
+| --- | --- | --- |
+| N optional params (where N = 5) | 1 class + 1 Builder inner | Up to 2^N constructors to cover every combination |
+| Readability at call site | YES: Clear names .phone("123") | NO: positional args<br>User("John", null, "john@", null, 30) |
+| Immutability | YES: final fields set in constructor | NO: mutable during construction |
+| Validation | YES: Centralized in build() | NO: scattered across ctors |
+| Adding optional param | 2 lines: setter + field | Many constructor variants to add or modify |
+| IDE auto-complete | YES: Builder methods named | NO: positional, no name hints |
+| Lombok @Builder (zero-boilerplate) | YES: One annotation generates all | NO: every constructor written by hand |
+
+## Builder + fluent interface
+
+The key insight: Builder methods **return the builder**, not `void`.
+
+```java
+return this;  // enables method chaining
+```
+
+This is called the **fluent interface** pattern. It is used in `StringBuilder`, the Stream API, JUnit assertions and `HttpClient`.
+
+## Builder + validation
+
+```java
+public User build() {
+    if (firstName == null || firstName.isBlank()) {
+        throw new IllegalStateException("firstName required");
+    }
+    if (age != null && age < 0) {
+        throw new IllegalStateException("age must be positive");
+    }
+    // Cross-field validation
+    if (phone != null && !phone.matches("\\d{10}")) {
+        throw new IllegalStateException("Invalid phone");
+    }
+    return new User(this);
+}
+```
+
+Validation happens **once**, in `build()`, never scattered. That is impossible with telescoping, where each constructor would need its own validation.
+
+## When not to use Builder
+
+1. 1-2 required fields and no optionals: a plain constructor is fine.
+2. All parameters are required: there is no benefit.
+3. A simple DTO with Jackson/JSON: use `@Data` + `@Builder` for Jackson integration.
+4. Performance-critical code (GC pressure from Builder allocation): consider a static factory.
 
 ## Breadth Comparison 1: Creational Pattern Selection Table
 
-```
-┌─────────────────┬───────────────────┬─────────────────┬────────────────────────────┐
-│  PATTERN        │  WHEN TO USE      │  TRADE-OFFS     │  SELECTION CRITERIA        │
-├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
-│  Factory        │  Type determined  │  Decouples      │  Do you need to create     │
-│  Method         │  at subclass      │  creator from   │  ONE family of related     │
-│                 │  (Collection.     │  concrete type; │  objects with shared       │
-│                 │  iterator())      │  adds indirection│  configuration?           │
-├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
-│  Abstract       │  Creating         │  More complex   │  Need Button + Scrollbar   │
-│  Factory        │  families of      │  (many factory  │  to both be Windows-style  │
-│                 │  related objects  │  classes);      │  or both Mac-style? Use    │
-│                 │  (e.g., UI:       │  hard to add    │  Abstract Factory          │
-│                 │  Button+TextField │  new product    │                             │
-│                 │  must match style)│  families       │                             │
-├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
-│  Builder        │  Complex object,  │  More code      │  Object has 4+ fields,     │
-│                 │  many optional    │  (Builder class);│  some required, some      │
-│                 │  params, need     │  1 extra object │  optional; or validation   │
-│                 │  immutability     │  allocation     │  needed; or want readable  │
-│                 │                   │                 │  call site                 │
-├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
-│  Prototype      │  Creating objects │  Cloning can    │  Need copies of complex   │
-│                 │  by cloning       │  be complex for │  objects; avoid rebuilding│
-│                 │  existing one     │  deep copies    │  from scratch; e.g.,      │
-│                 │  (Shape.clone())  │  (circular refs)│  prototype registry       │
-├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
-│  Singleton      │  One instance,    │  Global state;  │  Framework globals (log,  │
-│  (use DI)       │  globally         │  hides deps;    │  config); but prefer DI   │
-│                 │  accessible       │  untestable     │  + Spring @Component      │
-│                 │  (Registry)       │                 │  over self-managed        │
-│                 │                   │                 │  getInstance()            │
-├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
-│  Object Pool    │  Reuse expensive  │  Must manage    │  DB connections, thread   │
-│  (not GoF)      │  objects          │  pool lifecycle;│  pools, string pool       │
-│                 │                   │  memory if pool │  (reuse String literals)  │
-│                 │                   │  too large      │                            │
-└─────────────────┴───────────────────┴─────────────────┴────────────────────────────┘
+| PATTERN | WHEN TO USE | TRADE-OFFS | SELECTION CRITERIA |
+| --- | --- | --- | --- |
+| Factory<br>Method | Type determined at subclass (Collection. iterator()) | Decouples creator from concrete type; adds indirection | Do you need to create<br>ONE family of related objects with shared configuration? |
+| Abstract<br>Factory | Creating families of related objects (e.g., UI:<br>Button+TextField must match style) | More complex (many factory classes); hard to add new product families | Need Button + Scrollbar to both be Windows-style or both Mac-style? Use<br>Abstract Factory |
+| Builder | Complex object, many optional params, need immutability | More code (Builder class);<br>1 extra object allocation | Object has 4+ fields, some required, some optional; or validation needed; or want readable call site |
+| Prototype | Creating objects by cloning existing one (Shape.clone()) | Cloning can be complex for deep copies (circular refs) | Need copies of complex objects; avoid rebuilding from scratch; e.g., prototype registry |
+| Singleton (use DI) | One instance, globally accessible (Registry) | Global state; hides deps; untestable | Framework globals (log, config); but prefer DI + Spring @Component over self-managed getInstance() |
+| Object Pool (not GoF) | Reuse expensive objects | Must manage pool lifecycle; memory if pool too large | DB connections, thread pools, string pool (reuse String literals) |
 
-  QUICK DECISION GUIDE:
-  ══════════════════════════
-  Need ONE of something, global access?  → Singleton (or DI)
-  Create by type parameter?              → Factory Method
-  Create families of related objects?    → Abstract Factory
-  Create complex objects step-by-step?   → Builder
-  Create copies of existing objects?     → Prototype
-  Reuse expensive resources?             → Object Pool
+### Quick decision guide
 
-  MOST USED IN PRODUCTION: Builder (#1), Factory (#2), DI/Singleton (#3)
-```
+| Need | Pattern |
+| --- | --- |
+| ONE of something, with global access | Singleton (or DI) |
+| Create by type parameter | Factory Method |
+| Create families of related objects | Abstract Factory |
+| Create complex objects step by step | Builder |
+| Create copies of existing objects | Prototype |
+| Reuse expensive resources | Object Pool |
+
+Most used in production: **Builder (#1), Factory (#2), DI/Singleton (#3)**. This ranking is a rule of thumb and varies by codebase.
 
 ## Breadth Comparison 2: Structural Pattern Comparison — Adapter vs Decorator vs Proxy vs Facade
 
+### Adapter, Decorator, Proxy and Facade compared
+
+| Dimension | Adapter | Decorator | Proxy | Facade |
+| --- | --- | --- | --- | --- |
+| **Wraps** | An interface (converts it) | An interface (adds to it) | An interface (controls it) | A subsystem (simplifies it) |
+| **What changes** | The interface shape | Behaviour (adds new) | Access (same operation, guarded) | The API (many → one) |
+| **Client sees** | A new interface (the target) | The same interface (component) | The same interface (service) | A simpler interface |
+| **Can stack?** | No (wrap once) | Yes, many layers | No (single level) | No (one level) |
+| **Intention** | Make things work together | Add behaviour dynamically | Control access (lazy, cache, auth, log) | Simplify complexity |
+| **Java example** | `Arrays.asList` (array → `List`) | `BufferedReader` wrapping `FileReader` | `@Transactional` (Spring AOP), lazy init (Hibernate) | `OrderFacade.placeOrder()` |
+| **Spring use** | `HandlerAdapter` | `HttpServletRequestWrapper` | `@Transactional`, `@Cacheable`, `@Async` | Repository (hides JPA complexity) |
+
+### The common structure
+
+All four share the wrapper idea:
+
+```mermaid
+classDiagram
+  class TargetInterface { <<interface>> }
+  class Wrapper
+  class Wrapped
+  Client --> TargetInterface
+  TargetInterface <|.. Wrapper : implements
+  TargetInterface <|.. Wrapped : implements
+  Wrapper o-- Wrapped : wrappee
 ```
-┌──────────────────┬───────────────┬───────────────┬───────────────┬──────────────┐
-│  DIMENSION       │  ADAPTER      │  DECORATOR    │  PROXY        │  FACADE      │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  WRAPS           │  Interface    │  Interface    │  Interface    │  Subsystem   │
-│  (what)          │  (converts)   │  (adds)       │  (controls)   │  (simplifies)│
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  CHANGES         │  Interface    │  Behavior     │  Access       │  API         │
-│  (what changes)  │  shape        │  (add new)    │  (same op,    │  (many -> 1) │
-│                  │               │               │  guarded)     │              │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  CLIENT SEES     │  New interface│  Same interface│  Same interface│  Simple     │
-│                  │  (target)     │  (component)   │  (service)    │  interface   │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  CAN STACK       │  No (wrap     │  YES - stack  │  No (single   │  No (one     │
-│  (multiple)      │  once)        │  many layers  │  level)       │  level)      │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  LOCATION        │  Anywhere     │  Same package │  Same package │  Client side │
-│                  │  (bridges)    │  (extension)  │  (control)    │  (isolation) │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  INTENTION       │  Make work    │  Add behavior │  Control access│  Simplify   │
-│  (why)           │  together     │  dynamically  │  (lazy, cache,│  complexity  │
-│                  │               │               │  auth, log)   │              │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  JAVA EXAMPLE    │  Arrays.asList│  BufferedReader│  @Transactional│  OrderFacade│
-│                  │  (ListAdapter)│  wrapping     │  (Spring AOP) │  (placeOrder)│
-│                  │               │  FileReader   │  Lazy init    │              │
-│                  │               │               │  (Hibernate)  │              │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  SPRING USE      │  HandlerAdapter│ HttpServlet  │  @Transactional│  Repository │
-│  CASE            │  (converts    │  RequestWrap │  @Cacheable   │  (hides JPA  │
-│                  │  HTTP request) │  (adds gzip) │  @Async       │  complexity) │
-├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
-│  STRUCTURAL      │  Target <-> Adaptee Component<-> │  Real<->Proxy │ Client<->  │
-│  PARITY          │  (compatible) │  Decorator<-> │  (transparent)│  Subsystem   │
-│                  │               │  Concrete     │               │  (all hidden)│
-└──────────────────┴───────────────┴───────────────┴───────────────┴──────────────┘
 
-  THE COMMON STRUCTURE (all four wrap):
-  ═════════════════════════════════════════
+**How to read this diagram.** The wrapper (adapter, decorator, proxy or facade) holds a reference to what it wraps. What differs is the wrapper's behaviour:
 
-  All four structural patterns share the WRAPPER pattern:
+- **Adapter:** wraps an incompatible interface and makes it look like the target.
+- **Decorator:** wraps the same interface and adds new behaviour (stacking is fine).
+- **Proxy:** wraps the same interface and controls access (caching, auth, laziness).
+- **Facade:** wraps several interfaces and provides one simple entry point.
 
-  ┌────────────────┐
-  │    Client      │
-  └───────┬────────┘
-          │
-          ▼
-  ┌────────────────┐     implements      ┌────────────────────┐
-  │  Wrapper       │────────────────────▶│  Target Interface  │
-  │  (Adapter/     │                     └────────────────────┘
-  │   Decorator/   │                            ▲
-  │   Proxy/Facade)│                            │ implements
-  │                │                     ┌──────┴──────────────┐
-  │  wrappee: ────▶│                     │                     │
-  └────────────────┘                     │                     │
-                                          └─────────────────────┘
+> [!TIP]
+> **Remember:** an adapter makes things *work* together, a decorator makes things *do more*, a proxy makes things *accessible safely*, and a facade makes things *simpler*.
 
-  WHAT DIFFERS IS THE WRAPPER'S BEHAVIOR:
-  ════════════════════════════════════
+**Structural similarity, practical difference**
 
-  ADAPTER:    Wraps incompatible interface → makes it look like target
-  DECORATOR:  Wraps same interface → adds NEW behavior (stacking OK)
-  PROXY:      Wraps same interface → CONTROLS access (caching, auth)
-  FACADE:     Wraps MULTIPLE interfaces → provides SIMPLE entry point
-
-  REMEMBER:
-  ─────────
-  "Adapter makes things WORK together."
-  "Decorator makes things DO MORE."
-  "Proxy makes things ACCESS SAFELY."
-  "Facade makes things SIMPLER."
-
-  STRUCTURAL SIMILARITY → PRACTICAL DIFFERENCE:
-  ══════════════════════════════════════════════
-  Adapter:   I have X but need Y → adapt X to look like Y
-  Decorator: I have X and need X + logging → wrap X with logging
-  Proxy:     I have X but don't want to load it until called → lazy X
-  Facade:    I have A+B+C+D and client only knows E → E hides A+B+C+D
-```
+- **Adapter:** I have X but need Y, so adapt X to look like Y.
+- **Decorator:** I have X and need X plus logging, so wrap X with logging.
+- **Proxy:** I have X but do not want to load it until it is called, so use a lazy X.
+- **Facade:** I have A, B, C and D and the client only knows E, so E hides A, B, C and D.
 
 ---
 

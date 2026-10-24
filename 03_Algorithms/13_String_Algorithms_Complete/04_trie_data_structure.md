@@ -6,31 +6,23 @@
 
 ## What is a Trie?
 
-```
-Trie = Prefix Tree
+**Trie = prefix tree.** It stores strings efficiently for:
 
-Stores strings efficiently for:
 - Prefix search
 - Autocomplete
 - Spell checking
 - Word games (Boggle, Scrabble)
 
-┌─────── root ───────┐
-│                    │
-▼                    ▼
-a                    t
-│                    │
-▼                    ▼
-p ──► e              o
-      │              │
-      ▼              ▼
-      ✓              ✓
-     (ape)          (to)
-
-Words stored: "ape", "to"
-Each node = character
-✓ = end of word marker
+```mermaid
+flowchart TD
+  root(("root")) --> a(("a"))
+  root --> t(("t"))
+  a --> p(("p"))
+  p --> e(("e ✓"))
+  t --> o(("o ✓"))
 ```
+
+**How to read this diagram.** The trie stores the words `ape` and `to`. Each node is a character, and ✓ marks the end of a word.
 
 ## Trie Implementation
 

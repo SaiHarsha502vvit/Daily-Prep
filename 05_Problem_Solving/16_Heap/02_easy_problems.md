@@ -4,11 +4,10 @@
 > Page 2 of 3 in **Heap**
 
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                         EASY — 5 PROBLEMS                                    ║
-║  Build intuition: direct heap usage, simple simulations                      ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**EASY — 5 PROBLEMS**
+
+```text
+Build intuition: direct heap usage, simple simulations
 ```
 
 ## 1. [Kth Largest Element in a Stream](https://leetcode.com/problems/kth-largest-element-in-a-stream/) (LC 703) ⭐ Easy
@@ -259,11 +258,10 @@ The problem requires always smashing the TWO HEAVIEST stones. Max-heap gives O(1
 
 ## 🧩 Part 2: Medium Problems
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                        MEDIUM — 10 PROBLEMS                                  ║
-║  Core patterns: Top-K, Two Heaps, Merge K, Greedy + Heap                     ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**MEDIUM — 10 PROBLEMS**
+
+```text
+Core patterns: Top-K, Two Heaps, Merge K, Greedy + Heap
 ```
 
 ### 1. [Kth Largest Element in an Array](https://leetcode.com/problems/kth-largest-element-in-an-array/) (LC 215) ⭐ Medium

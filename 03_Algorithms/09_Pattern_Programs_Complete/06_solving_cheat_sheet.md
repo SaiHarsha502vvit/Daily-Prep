@@ -1,35 +1,31 @@
-# 🎯 PATTERN PROBLEM SOLVING CHEAT SHEET
+# Pattern Problem-Solving Cheat Sheet
 
-> **Navigation**: [← ═══════════════════════════════════════════════════════════](05_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md)
+> **Navigation**: [← Part 5 — Interview Pattern Questions](05_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md)
 > Page 6 of 6 in **Complete Pattern Programs - From Zero to Hero**
 
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                        PATTERN SOLVING FORMULAS                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  RIGHT TRIANGLE:  Row i → print (i+1) items, starting col=0                     │
-│  LEFT TRIANGLE:   Row i → print (n-i) spaces, then (i+1) items                  │
-│  PYRAMID:         Row i → print (n-i-1) spaces, then (2i+1) items               │
-│  INVERTED:        Row i → print i spaces, then (2(n-i)-1) items                 │
-│  DIAMOND:         Pyramid (0 to n-1) + Inverted Pyramid (n-2 to 0)              │
-│  SANDGLASS:       Inverted (0 to n-1) + Pyramid (1 to n-1)                      │
-│                                                                                 │
-│  HOLLOW:          Print content only when:                                      │
-│                   i==0 OR i==n-1 OR j==0 OR j==current_row_width-1              │
-│                                                                                 │
-│  NUMBER PATTERNS:                                                               │
-│    Row number:     Print (i) for all columns                                    │
-│    Column number:  Print (j) for all columns                                    │
-│    Floyd's:        Use single counter (num++), don't reset                      │
-│    Pascal's:       value = prev_value * (row - col) / col                       │
-│                                                                                 │
-│  CHARACTER PATTERNS:                                                            │
-│    Convert: 'A' + index gives character                                         │
-│    Wrap:    if (ch > 'Z') ch = 'A' or use '*'                                   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+**PATTERN SOLVING FORMULAS**
+
+```text
+RIGHT TRIANGLE:  Row i → print (i+1) items, starting col=0
+LEFT TRIANGLE:   Row i → print (n-i) spaces, then (i+1) items
+PYRAMID:         Row i → print (n-i-1) spaces, then (2i+1) items
+INVERTED:        Row i → print i spaces, then (2(n-i)-1) items
+DIAMOND:         Pyramid (0 to n-1) + Inverted Pyramid (n-2 to 0)
+SANDGLASS:       Inverted (0 to n-1) + Pyramid (1 to n-1)
+
+HOLLOW:          Print content only when:
+                 i==0 OR i==n-1 OR j==0 OR j==current_row_width-1
+
+NUMBER PATTERNS:
+  Row number:     Print (i) for all columns
+  Column number:  Print (j) for all columns
+  Floyd's:        Use single counter (num++), don't reset
+  Pascal's:       value = prev_value * (row - col) / col
+
+CHARACTER PATTERNS:
+  Convert: 'A' + index gives character
+  Wrap:    if (ch > 'Z') ch = 'A' or use '*'
 ```
 
 ---
@@ -145,4 +141,4 @@ while (!queue.isEmpty()) {
 
 ---
 
-[← ═══════════════════════════════════════════════════════════](05_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md)
+[← Part 5 — Interview Pattern Questions](05_section.md) | [Chapter overview](../09_Pattern_Programs_Complete.md)

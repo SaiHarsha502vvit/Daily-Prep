@@ -120,40 +120,19 @@ This table is the single most practical page in this chapter. Almost every "how 
 
 ## 2. The Algorithm Design Loop
 
+```mermaid
+flowchart TD
+  s1["1. SPECIFY<br/>Inputs, outputs, constraints, and the cost budget<br/>implied by the input bounds (n ≤ 10⁵ ⇒ O(n log n))"]
+  s2["2. BRUTE FORCE<br/>Write it, or state it precisely. Get its complexity."]
+  s3["3. FIND THE REPEATED WORK<br/>Use the §1.2 taxonomy. Name the row."]
+  s4["4. NAME THE STRUCTURAL PROPERTY<br/>WHY may that work be skipped? (optimal substructure,<br/>monotonicity, exchange property, triangle inequality…)<br/>This is the creative step, and the one that proves"]
+  s5["5. CHOOSE THE PARADIGM<br/>The property from step 4 selects it (§3)"]
+  s6["6. PROVE CORRECTNESS<br/>Invariant / exchange argument / induction (§5)"]
+  s7["7. BOUND THE COST, THEN CHECK THE FLOOR<br/>Recurrence → Master Theorem. Compare with the lower bound (§6).<br/>Equal ⇒ you are DONE. Gap ⇒ keep going, or prove the gap is inherent."]
+  s1 --> s2 --> s3 --> s4 --> s5 --> s6 --> s7
 ```
-┌─ 1. SPECIFY ─────────────────────────────────────────────┐
-│  Inputs, outputs, constraints, and the COST BUDGET       │
-│  implied by the input bounds (n ≤ 10⁵ ⇒ O(n log n)).     │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 2. BRUTE FORCE ─────────────────────────────────────────┐
-│  Write it (or state it precisely). Get its complexity.   │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 3. FIND THE REPEATED WORK ──────────────────────────────┐
-│  Use the §1.2 taxonomy. Name the row.                    │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 4. NAME THE STRUCTURAL PROPERTY ────────────────────────┐
-│  WHY may that work be skipped? (optimal substructure,    │
-│  monotonicity, exchange property, triangle inequality…)  │
-│  ← this is the creative step, and the one that proves    │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 5. CHOOSE THE PARADIGM ─────────────────────────────────┐
-│  The property from step 4 selects it (§3).               │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 6. PROVE CORRECTNESS ───────────────────────────────────┐
-│  Invariant / exchange argument / induction (§5)          │
-└──────────────────────┬───────────────────────────────────┘
-                       ▼
-┌─ 7. BOUND THE COST, THEN CHECK THE FLOOR ────────────────┐
-│  Recurrence → Master Theorem. Compare vs lower bound(§6).│
-│  Equal ⇒ you are DONE. Gap ⇒ keep going, or prove the    │
-│  gap is inherent.                                        │
-└──────────────────────────────────────────────────────────┘
-```
+
+**How to read this diagram.** Work top to bottom. Step 4 is the creative step: naming *why* repeated work can be skipped decides the paradigm in step 5 and gives you the proof in step 6.
 
 **Step 4 is the whole game.** "I can skip that work" is a *claim about the problem*, and stating it precisely is simultaneously the design insight and the seed of the proof. If you cannot name the property, you have a hunch, not an algorithm — and hunches are exactly where wrong-greedy solutions come from.
 
@@ -163,25 +142,21 @@ This table is the single most practical page in this chapter. Almost every "how 
 
 Most courses present the paradigms as a list. A list makes you try them in sequence. What you want is a **decision procedure keyed on the structural property from step 4.**
 
+```mermaid
+flowchart TD
+  q1{"Optimal substructure?<br/>(an optimal solution contains optimal solutions to subproblems)"}
+  q1 -->|"No"| q2{"Search over a space with prunable branches?"}
+  q2 -->|"Yes"| bt["BACKTRACKING / BRANCH-AND-BOUND"]
+  q2 -->|"No"| q3{"NP-hard?"}
+  q3 -->|"Yes"| ap["APPROXIMATION / HEURISTIC (§7)"]
+  q1 -->|"Yes"| q4{"Do the subproblems overlap?"}
+  q4 -->|"No"| dc["DIVIDE & CONQUER<br/>(merge sort, quickselect, FFT, Karatsuba)"]
+  q4 -->|"Yes"| q5{"Does a LOCAL choice provably lead to a global optimum?<br/>(test: does an exchange argument close? §5.2)"}
+  q5 -->|"Yes"| gr["GREEDY: cheapest, always test for this"]
+  q5 -->|"No"| dp["DYNAMIC PROGRAMMING"]
 ```
-Does the problem have OPTIMAL SUBSTRUCTURE?
-(an optimal solution contains optimal solutions to subproblems)
-│
-├─ NO ──► Is it a search over a space with prunable branches?
-│         ├─ YES ──► BACKTRACKING / BRANCH-AND-BOUND
-│         └─ NO  ──► Is it NP-hard? ──► APPROXIMATION / HEURISTIC (§7)
-│
-└─ YES ─► Do the subproblems OVERLAP?
-          │
-          ├─ NO ──► DIVIDE & CONQUER
-          │         (merge sort, quickselect, FFT, Karatsuba)
-          │
-          └─ YES ─► Does a LOCAL choice provably lead to a global optimum?
-                    (test: does an exchange argument close? §5.2)
-                    │
-                    ├─ YES ──► GREEDY   ← cheapest, always test for this
-                    └─ NO  ──► DYNAMIC PROGRAMMING
-```
+
+**How to read this diagram.** Start at the top question and follow the Yes/No answers to a paradigm. Test for greedy first because it is the cheapest solution when it works.
 
 **Read the tree in that order deliberately.** Greedy is tested before DP because greedy is strictly cheaper when it applies (O(n log n) with O(1) state versus a table). The failure mode of skipping the test is a correct-but-oversized DP; the failure mode of *assuming* greedy without the exchange argument is a wrong answer that passes your examples (§5.2).
 
@@ -369,15 +344,19 @@ Two lessons: (1) the "structure the brute force ignores" (§1) can be a property
 **Do not read ahead.** This algorithm looks like a magic trick when presented finished; derived, it is forced.
 
 ### Step 1: Specify
+
 Given an array of n elements where **some element appears more than n/2 times**, find it. Constraint: **O(n) time and O(1) extra space.**
 
 ### Step 2: Brute force
+
 For each candidate, count its occurrences: O(n²). Or sort and take the middle: O(n log n) time, and sorting mutates or copies. Or a hash map of counts: O(n) time but **O(n) space** — violates the budget.
 
 ### Step 3: Repeated work / blocked row
+
 The hash-map solution fails only on *space*. So the question sharpens: **what is the minimum information we must carry to identify the majority?** We clearly cannot store all counts. Can one candidate plus one counter suffice?
 
 ### Step 4: The structural property — this is the invention
+
 The majority element appears **more than n/2** times. Therefore:
 
 > If we repeatedly **remove a pair of two different elements**, the majority element remains the majority of what is left.
@@ -387,6 +366,7 @@ The majority element appears **more than n/2** times. Therefore:
 **That property is the algorithm.** Everything below implements it.
 
 ### Step 5: Implement the pairing without storing anything
+
 We do not need to *physically* remove pairs — we only need to count how many unpaired copies of the current candidate remain.
 
 ```java
@@ -413,6 +393,7 @@ int majorityElement(int[] a) {
 **Cost:** one pass, two variables → **O(n) time, O(1) space.** ✅ Meets a contract that the hash-map approach could not.
 
 ### Step 6: Attack it (§10 stage 4)
+
 What if **no** majority exists? The function still returns something — garbage. The precondition was load-bearing. The production-correct version adds a **verification pass**:
 
 ```java

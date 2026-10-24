@@ -6,153 +6,65 @@
 
 ## What is User Flow?
 
+### User flow fundamentals
+
+**Definition.** A user flow is the path a user takes through your application to complete a goal.
+
+**Components**
+
+1. **Entry point:** where the user starts (homepage, link, notification).
+2. **Steps:** actions the user takes (click, type, swipe).
+3. **Decisions:** points where the user chooses (log in or register).
+4. **Exit point:** where the user ends (success page, logout).
+
+**Simple example: login**
+
+```mermaid
+flowchart LR
+  A["Visit website"] --> B["Login page"] --> C["Enter credentials"] --> D["Submit"]
+  D -->|valid| E["Success! Dashboard"]
+  D -->|invalid| F["Invalid credentials"] --> G["Show error, try again"]
+  G --> B
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                         USER FLOW FUNDAMENTALS                               ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-DEFINITION:
-User Flow = The path a user takes through your application to complete a goal
-
-COMPONENTS:
-1. ENTRY POINT: Where user starts (homepage, link, notification)
-2. STEPS: Actions user takes (click, type, swipe)
-3. DECISIONS: Points where user chooses (login vs register)
-4. EXIT POINT: Where user ends (success page, logout)
-
-SIMPLE USER FLOW EXAMPLE - LOGIN:
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                                                                             │
-│   ┌──────────┐     ┌───────────────┐     ┌────────────┐     ┌──────────┐    │
-│   │  Visit   │────▶│  Login Page   │────▶│  Enter     │────▶│  Submit  │    │
-│   │  Website │     │               │     │  Credentials│    │          │    │
-│   └──────────┘     └───────────────┘     └────────────┘     └────┬─────┘    │
-│                                                                   │         │
-│                           ┌───────────────────────────────────────┤         │
-│                           ▼                                       ▼         │
-│                    ┌──────────────┐                        ┌──────────────┐ │
-│                    │   Invalid    │                        │   Success!   │ │
-│                    │  Credentials │                        │  Dashboard   │ │
-│                    └──────┬───────┘                        └──────────────┘ │
-│                           │                                                 │
-│                           ▼                                                 │
-│                    ┌──────────────┐                                         │
-│                    │  Show Error  │──────▶ Back to Login                    │
-│                    │  Try Again   │                                         │
-│                    └──────────────┘                                         │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+**How to read this diagram.** The happy path runs left to right; a failed submit shows an error and returns to the login page.
 
 ## Flow Notation Symbols
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                         STANDARD FLOW SYMBOLS                                ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Standard flow symbols
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ SYMBOL                    │ MEANING                                         │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│ ┌──────────────┐          RECTANGLE: Screen/Page/State                      │
-│ │              │          A UI screen or application state                  │
-│ └──────────────┘                                                            │
-│                                                                             │
-│ ◇                         DIAMOND: Decision Point                           │
-│ / \                       User makes a choice or system checks condition    │
-│                                                                             │
-│ ────────────▶             ARROW: Flow Direction                             │
-│                           Shows the path of movement                        │
-│                                                                             │
-│ (  )                      OVAL: Start/End Points                            │
-│                           Entry or exit of the flow                         │
-│                                                                             │
-│ [ ]                       BRACKET: Action/Process                           │
-│                           Something happens (API call, calculation)         │
-│                                                                             │
-│ ═══════════════           DOUBLE LINE: Parallel Process                     │
-│                           Multiple things happen simultaneously             │
-│                                                                             │
-│ - - - - - - - ▶           DASHED ARROW: Optional/Conditional Path           │
-│                           May or may not happen                             │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+| Symbol | Meaning | Notes |
+| --- | --- | --- |
+| Rectangle | Screen, page or state | A UI screen or application state |
+| Diamond | Decision point | The user makes a choice or the system checks a condition |
+| Arrow | Flow direction | Shows the path of movement |
+| Oval | Start or end | Entry or exit of the flow |
+| Bracket or process box | Action or process | Something happens (API call, calculation) |
+| Double line | Parallel process | Several things happen simultaneously |
+| Dashed arrow | Optional or conditional path | May or may not happen |
 
 ## Complete User Flow Example: E-commerce Checkout
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    E-COMMERCE CHECKOUT USER FLOW                             ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### E-commerce checkout user flow
 
-    (Start: User has items in cart)
-                │
-                ▼
-    ┌───────────────────────┐
-    │   Cart Summary Page   │
-    │   - View items        │
-    │   - Update quantities │
-    │   - Apply coupon      │
-    └───────────┬───────────┘
-                │
-                ▼
-         ◇─────────────────◇
-        /                   \
-    [Logged In?]      [Guest Checkout?]
-        │                   │
-        │YES                │YES
-        ▼                   ▼
-    ┌─────────────┐   ┌─────────────────┐
-    │ Use saved   │   │ Enter shipping  │
-    │ address     │   │ address         │
-    └──────┬──────┘   └────────┬────────┘
-           │                   │
-           └────────┬──────────┘
-                    │
-                    ▼
-    ┌───────────────────────┐
-    │  Shipping Method      │
-    │  - Standard (5 days)  │
-    │  - Express (2 days)   │
-    │  - Overnight          │
-    └───────────┬───────────┘
-                │
-                ▼
-    ┌───────────────────────┐
-    │   Payment Method      │
-    │   - Credit Card       │
-    │   - PayPal            │
-    │   - Apple Pay         │
-    └───────────┬───────────┘
-                │
-                ▼
-    ┌───────────────────────┐
-    │   Order Review        │
-    │   - Items summary     │
-    │   - Total with tax    │
-    │   - Shipping cost     │
-    └───────────┬───────────┘
-                │
-                ▼
-         ◇─────────────────────◇
-        / \                   / \
-    [Payment Success?]   [Payment Failed?]
-        │                     │
-        │YES                  │
-        ▼                     ▼
-    ┌─────────────┐    ┌─────────────────┐
-    │ Confirmation│    │ Error Message   │
-    │ Page        │    │ Retry or change │
-    │ - Order #   │    │ payment method  │
-    │ - ETA       │    └────────┬────────┘
-    │ - Email sent│             │
-    └─────────────┘             │
-                                │
-    (End: Order Placed)    Back to Payment
+```mermaid
+flowchart TD
+  S(["Start: user has items in cart"]) --> CS["Cart summary page<br/>view items, update quantities, apply coupon"]
+  CS --> Q{"Logged in?"}
+  Q -->|Yes| SA["Use saved address"]
+  Q -->|"No: guest checkout"| EA["Enter shipping address"]
+  SA --> SM["Shipping method<br/>standard (5 days), express (2 days), overnight"]
+  EA --> SM
+  SM --> PM["Payment method<br/>credit card, PayPal, Apple Pay"]
+  PM --> OR["Order review<br/>items summary, total with tax, shipping cost"]
+  OR --> PS{"Payment successful?"}
+  PS -->|Yes| CF["Confirmation page<br/>order number, ETA, email sent"]
+  PS -->|No| ER["Error message<br/>retry or change payment method"]
+  ER --> PM
+  CF --> E(["End: order placed"])
 ```
+
+**How to read this diagram.** Two branches rejoin: logged-in users reuse a saved address while guests enter one. A failed payment loops back to the payment step instead of losing the cart.
 
 ---
 
@@ -187,77 +99,41 @@ DATA FLOW TYPES:
 
 ### Data Flow Example: User Registration
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    USER REGISTRATION DATA FLOW                               ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### User registration data flow
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                                                                             │
-│  ┌───────────┐    ┌────────────────┐    ┌──────────────┐    ┌───────────┐   │
-│  │   USER    │    │    FRONTEND    │    │    BACKEND   │    │  DATABASE │   │
-│  │  (Input)  │    │  (Validation)  │    │  (Process)   │    │  (Store)  │   │
-│  └─────┬─────┘    └────────┬───────┘    └──────┬───────┘    └─────┬─────┘   │
-│        │                   │                   │                  │         │
-│        │  Form Data        │                   │                  │         │
-│        │  {                │                   │                  │         │
-│        │   name: "John",   │                   │                  │         │
-│        │   email: "j@e.c", │                   │                  │         │
-│        │   password: "123" │                   │                  │         │
-│        │  }                │                   │                  │         │
-│        │──────────────────▶│                   │                  │         │
-│        │                   │                   │                  │         │
-│        │                   │  VALIDATE:        │                  │         │
-│        │                   │  - Email format ✓ │                  │         │
-│        │                   │  - Password 8+ ✗  │                  │         │
-│        │                   │                   │                  │         │
-│        │  Error: Password  │                   │                  │         │
-│        │◀──too short──────│                   │                  │          │
-│        │                   │                   │                  │         │
-│        │  Fixed password:  │                   │                  │         │
-│        │  "SecurePass123"  │                   │                  │         │
-│        │──────────────────▶│                   │                  │         │
-│        │                   │                   │                  │         │
-│        │                   │  All valid ✓      │                  │         │
-│        │                   │──────────────────▶│                  │         │
-│        │                   │                   │                  │         │
-│        │                   │                   │  PROCESS:        │         │
-│        │                   │                   │  1. Check if     │         │
-│        │                   │                   │     email exists │         │
-│        │                   │                   │  2. Hash password│         │
-│        │                   │                   │  3. Generate ID  │         │
-│        │                   │                   │──────────────────▶         │
-│        │                   │                   │                  │         │
-│        │                   │                   │  INSERT user     │         │
-│        │                   │                   │  {               │         │
-│        │                   │                   │   id: "uuid",    │         │
-│        │                   │                   │   name: "John",  │         │
-│        │                   │                   │   email: "j@e.c",│         │
-│        │                   │                   │   pwd_hash: "..."│         │
-│        │                   │                   │  }               │         │
-│        │                   │                   │◀─────────────────│         │
-│        │                   │                   │  Success         │         │
-│        │                   │◀──────────────────│                  │         │
-│        │                   │  User created     │                  │         │
-│        │◀──────────────────│  Response:        │                  │         │
-│        │  Success!         │  { id, name }     │                  │         │
-│        │                   │                   │                  │         │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-DATA TRANSFORMATIONS:
-┌────────────────────────────────────────────────────────────────────────────┐
-│ STAGE           │ DATA FORMAT                  │ TRANSFORMATION            │
-├────────────────────────────────────────────────────────────────────────────┤
-│ User Input      │ Form fields (strings)        │ None                      │
-│ Frontend Valid. │ JSON object                  │ Trim, type check          │
-│ API Request     │ JSON over HTTPS              │ Serialize to JSON         │
-│ Backend Valid.  │ Request DTO                  │ Deserialize, validate     │
-│ Processing      │ Domain object                │ Hash password, generate ID│
-│ Database        │ SQL/Document                 │ ORM mapping               │
-│ Response        │ Response DTO                 │ Strip sensitive fields    │
-│ Frontend        │ JSON                         │ Display formatting        │
-└────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+sequenceDiagram
+  participant U as User (input)
+  participant F as Frontend (validation)
+  participant B as Backend (process)
+  participant D as Database (store)
+  U->>F: form data {name: "John", email: "j@e.c", password: "123"}
+  F->>F: validate: email format OK, password 8+ characters FAILS
+  F-->>U: error: password too short
+  U->>F: fixed password "SecurePass123"
+  F->>F: all valid
+  F->>B: submit
+  B->>B: check email exists, hash password, generate ID
+  B->>D: INSERT user {id: uuid, name, email, pwd_hash}
+  D-->>B: success
+  B-->>F: user created, response {id, name}
+  F-->>U: success
 ```
+
+**How to read this diagram.** Validation fails fast in the frontend. Only a valid request reaches the backend, which hashes the password and stores the record. The response contains only safe fields (`id`, `name`).
+
+**Data transformations**
+
+| Stage | Data format | Transformation |
+| --- | --- | --- |
+| User input | Form fields (strings) | None |
+| Frontend validation | JSON object | Trim, type check |
+| API request | JSON over HTTPS | Serialise to JSON |
+| Backend validation | Request DTO | Deserialise, validate |
+| Processing | Domain object | Hash password, generate ID |
+| Database | SQL or document | ORM mapping |
+| Response | Response DTO | Strip sensitive fields |
+| Frontend | JSON | Display formatting |
 
 ---
 
@@ -265,86 +141,28 @@ DATA TRANSFORMATIONS:
 
 ### How a Request Flows Through a Modern System
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    COMPLETE REQUEST FLOW IN MODERN SYSTEM                    ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### Complete request flow in a modern system
 
-USER REQUEST: GET /api/products/123
+Request: `GET /api/products/123`
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                                                                             │
-│                               ┌─────────┐                                   │
-│                               │  USER   │                                   │
-│                               │ Browser │                                   │
-│                               └────┬────┘                                   │
-│                                    │ 1. HTTP Request                        │
-│                                    ▼                                        │
-│                              ┌───────────┐                                  │
-│                              │    DNS    │ 2. Resolve domain to IP          │
-│                              └─────┬─────┘                                  │
-│                                    │                                        │
-│                                    ▼                                        │
-│                              ┌───────────┐                                  │
-│                              │    CDN    │ 3. Check cache (static assets)   │
-│                              └─────┬─────┘                                  │
-│                                    │ Cache Miss                             │
-│                                    ▼                                        │
-│                           ┌───────────────┐                                 │
-│                           │ LOAD BALANCER │ 4. Route to available server    │
-│                           └───────┬───────┘                                 │
-│                                   │                                         │
-│                    ┌──────────────┼──────────────┐                          │
-│                    ▼              ▼              ▼                          │
-│              ┌──────────┐  ┌──────────┐  ┌──────────┐                       │
-│              │ Server 1 │  │ Server 2 │  │ Server 3 │                       │
-│              └────┬─────┘  └──────────┘  └──────────┘                       │
-│                   │                                                         │
-│                   ▼ 5. Hit API Gateway                                      │
-│            ┌──────────────┐                                                 │
-│            │  API GATEWAY │                                                 │
-│            │ - Auth check │                                                 │
-│            │ - Rate limit │                                                 │
-│            │ - Logging    │                                                 │
-│            └──────┬───────┘                                                 │
-│                   │                                                         │
-│                   ▼ 6. Route to service                                     │
-│            ┌───────────────┐                                                │
-│            │ PRODUCT       │                                                │
-│            │ SERVICE       │                                                │
-│            │               │                                                │
-│            │ - Business    │                                                │
-│            │   logic       │                                                │
-│            └───────┬───────┘                                                │
-│                    │                                                        │
-│          ┌────────┴────────┐                                                │
-│          │                 │                                                │
-│          ▼                 ▼                                                │
-│    ┌──────────┐      ┌──────────┐                                           │
-│    │  CACHE   │      │ DATABASE │ 7. Check cache first, then DB             │
-│    │ (Redis)  │      │(Postgres)│                                           │
-│    └────┬─────┘      └────┬─────┘                                           │
-│         │ Cache Hit       │ Cache Miss                                      │
-│         │                 │                                                 │
-│         └────────┬────────┘                                                 │
-│                  │                                                          │
-│                  ▼                                                          │
-│            ┌───────────────┐                                                │
-│            │   RESPONSE    │ 8. Format and return                           │
-│            │   {           │                                                │
-│            │     id: 123,  │                                                │
-│            │     name: ... │                                                │
-│            │   }           │                                                │
-│            └───────────────┘                                                │
-│                  │                                                          │
-│                  │ Reverse path back to user                                │
-│                  ▼                                                          │
-│             ┌─────────┐                                                     │
-│             │  USER   │ 9. Receives JSON response                           │
-│             └─────────┘                                                     │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  U["User (browser)"] -->|"1. HTTP request"| DNS["DNS<br/>2. resolve domain to IP"]
+  DNS --> CDN["CDN<br/>3. check cache (static assets)"]
+  CDN -->|cache miss| LB["Load balancer<br/>4. route to an available server"]
+  LB --> S1["Server 1"]
+  LB --> S2["Server 2"]
+  LB --> S3["Server 3"]
+  S1 -->|"5. hit API gateway"| GW["API gateway<br/>auth check, rate limit, logging"]
+  GW -->|"6. route to service"| PS["Product service<br/>business logic"]
+  PS -->|"7. check cache first"| RC[("Cache (Redis)")]
+  PS -->|"on a miss"| DB[("Database (Postgres)")]
+  RC -->|hit| RESP["Response {id: 123, name: ...}<br/>8. format and return"]
+  DB --> RESP
+  RESP -->|"reverse path back to user"| U2["User<br/>9. receives JSON response"]
 ```
+
+**How to read this diagram.** The numbers follow the request. The CDN answers static assets without touching the origin; dynamic requests go through the load balancer and gateway to the service, which reads from Redis first and falls back to the database.
 
 ---
 

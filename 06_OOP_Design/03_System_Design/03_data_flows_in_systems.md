@@ -4,97 +4,83 @@
 > Page 3 of 5 in **System Design & Feature Creation Guide**
 
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    DATA FLOWS - COMPLETE UNDERSTANDING                       ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+### What is a data flow?
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS A DATA FLOW?                                                         │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ A DATA FLOW shows how data moves through a system - from input to storage    │
-│ to output, including all transformations along the way.                      │
-│                                                                              │
-│ KEY INSIGHT: Follow the DATA to understand any system!                       │
-│                                                                              │
-│ EXAMPLE - Order Processing Data Flow:                                        │
-│                                                                              │
-│ User Input     API Gateway     Order Service    Database      Notification   │
-│ ──────────     ───────────     ─────────────    ────────      ────────────   │
-│                                                                              │
-│ {               {               {               INSERT         Email/SMS     │
-│  items: [...],   validated      order_id: 123,  INTO orders    "Order        │
-│  address: ...    sanitized      status: NEW,    VALUES (...)   confirmed!"   │
-│  payment: ...    authenticated  total: $99                                   │
-│ }             }              }                                               │
-│                                                                              │
-│ ────▶ Transforms at each step! ────▶                                         │
-└──────────────────────────────────────────────────────────────────────────────┘
+A **data flow** shows how data moves through a system, from input to storage to output, including every transformation along the way.
+
+> [!IMPORTANT]
+> **Key insight:** follow the data to understand any system.
+
+**Example: order-processing data flow**
+
+```mermaid
+flowchart LR
+  U["User input<br/>items, address, payment"] -->|"validate, sanitise, authenticate"| G["API gateway"]
+  G -->|"order_id: 123, status: NEW, total: $99"| O["Order service"]
+  O -->|"INSERT INTO orders"| DB[("Database")]
+  O --> N["Notification<br/>email or SMS: 'Order confirmed!'"]
+```
+
+**How to read this diagram.** The data changes shape at each step: raw user input becomes a validated request, then an order record, then a stored row and a notification.
 
 ## Types of Data Flows
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ 1. SYNCHRONOUS DATA FLOW                                                     │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ User ───▶ API ───▶ Service ───▶ Database                                     │
-│   │                                   │                                      │
-│   └───────────────◀───────────────────┘                                      │
-│                Response                                                      │
-│                                                                              │
-│ CHARACTERISTICS:                                                             │
-│ • Request waits for response                                                 │
-│ • Simple to understand                                                       │
-│ • Limited scalability                                                        │
-│                                                                              │
-│ USE WHEN:                                                                    │
-│ • User needs immediate response                                              │
-│ • Operation is fast (<100ms)                                                 │
-│ • Data consistency is critical                                               │
-└──────────────────────────────────────────────────────────────────────────────┘
+### 1. Synchronous data flow
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ 2. ASYNCHRONOUS DATA FLOW                                                    │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ User ───▶ API ───▶ Message Queue ───▶ Worker ───▶ Database                   │
-│   │          │                                                               │
-│   └◀─────────┘                                                               │
-│   "Accepted"                                                                 │
-│                                                                              │
-│ CHARACTERISTICS:                                                             │
-│ • Request returns immediately                                                │
-│ • Processing happens in background                                           │
-│ • Highly scalable                                                            │
-│                                                                              │
-│ USE WHEN:                                                                    │
-│ • Operation is slow (sending email, generating report)                       │
-│ • High throughput needed                                                     │
-│ • Can tolerate eventual consistency                                          │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ 3. EVENT-DRIVEN DATA FLOW                                                    │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                        Event Bus                                             │
-│                           │                                                  │
-│    ┌──────────────────────┼──────────────────────┐                           │
-│    │                      │                      │                           │
-│    ▼                      ▼                      ▼                           │
-│ ┌──────┐             ┌──────┐              ┌──────┐                          │
-│ │Notif.│             │Analyt│              │Invent│                          │
-│ │Service│            │Service│             │Service│                         │
-│ └──────┘             └──────┘              └──────┘                          │
-│                                                                              │
-│ CHARACTERISTICS:                                                             │
-│ • Services react to events                                                   │
-│ • Loose coupling                                                             │
-│ • Multiple consumers per event                                               │
-│                                                                              │
-│ USE WHEN:                                                                    │
-│ • Multiple services need same data                                           │
-│ • Services should be independent                                             │
-│ • Need to add new consumers easily                                           │
-└──────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant A as API
+  participant S as Service
+  participant D as Database
+  U->>A: request
+  A->>S: call
+  S->>D: query
+  D-->>S: result
+  S-->>A: response
+  A-->>U: response
 ```
+
+**How to read this diagram.** The caller waits at every hop until the answer travels back.
+
+| Characteristics | Use when |
+| --- | --- |
+| The request waits for the response | The user needs an immediate response |
+| Simple to understand | The operation is fast (well under 100 ms) |
+| Limited scalability | Data consistency is critical |
+
+### 2. Asynchronous data flow
+
+```mermaid
+flowchart LR
+  U["User"] --> A["API"] --> Q[["Message queue"]] --> W["Worker"] --> D[("Database")]
+  A -.->|"'Accepted' immediately"| U
+```
+
+**How to read this diagram.** The API answers "accepted" at once and the worker finishes the job in the background.
+
+| Characteristics | Use when |
+| --- | --- |
+| The request returns immediately | The operation is slow (sending email, generating a report) |
+| Processing happens in the background | High throughput is needed |
+| Highly scalable | Eventual consistency is acceptable |
+
+### 3. Event-driven data flow
+
+```mermaid
+flowchart TB
+  B[["Event bus"]] --> N["Notification service"]
+  B --> A["Analytics service"]
+  B --> I["Inventory service"]
+```
+
+**How to read this diagram.** A producer publishes an event once; every interested service consumes it independently.
+
+| Characteristics | Use when |
+| --- | --- |
+| Services react to events | Several services need the same data |
+| Loose coupling | Services should be independent |
+| Multiple consumers per event | New consumers must be easy to add |
 
 ---
 

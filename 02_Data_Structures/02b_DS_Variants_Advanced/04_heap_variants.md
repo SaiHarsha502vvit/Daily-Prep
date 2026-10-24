@@ -236,10 +236,12 @@ public class MinHeap {
 1. SEPARATE CHAINING (External Chaining):
    Each bucket contains a linked list
 
-Index 0: -> null
-Index 1: -> [15] -> [25] -> null  (15 % 10 = 5, 25 % 10 = 5)
-Index 2: -> [12] -> null
-...
+| Bucket (`key % 10`) | Chain |
+| --- | --- |
+| 0 | empty |
+| 2 | 12 → null |
+| 5 | 15 → 25 → null (both keys hash to 5) |
+| … | … |
 
 Pros: Simple, unlimited capacity
 Cons: Extra memory for pointers, cache unfriendly

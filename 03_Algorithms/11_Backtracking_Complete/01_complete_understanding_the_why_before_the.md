@@ -96,23 +96,14 @@ Today it's the foundation for:
 
 ### The Core Idea
 
-```
-Backtracking = DFS + Undo
+**Backtracking = DFS + Undo — Explore all possible paths. — When you hit a dead end, GO BACK and try a different path. — BACKTRACKING FLOW**
 
-Explore all possible paths.
-When you hit a dead end, GO BACK and try a different path.
+```text
+1. CHOOSE    →    2. EXPLORE    →    3. UNCHOOSE
 
-┌─────────────────────────────────────────────────────────────────┐
-│                     BACKTRACKING FLOW                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│    1. CHOOSE    →    2. EXPLORE    →    3. UNCHOOSE             │
-│                                                                 │
-│    Make a            Recursively         Undo the               │
-│    decision          explore with        decision               │
-│                      that choice         (backtrack)            │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+Make a            Recursively         Undo the
+decision          explore with        decision
+                  that choice         (backtrack)
 ```
 
 ### Visual: Decision Tree
@@ -135,18 +126,16 @@ Result: [[], [1], [2], [1,2]]
 
 ### When to Use Backtracking?
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              USE BACKTRACKING WHEN YOU SEE:                     │
-├─────────────────────────────────────────────────────────────────┤
-│  ✓ "Generate all..."                                            │
-│  ✓ "Find all possible..."                                       │
-│  ✓ "Print all combinations/permutations/subsets"                │
-│  ✓ "All ways to..."                                             │
-│  ✓ Constraint satisfaction (Sudoku, N-Queens)                   │
-│  ✓ Path finding with constraints                                │
-│  ✓ Game solving (word search, crossword)                        │
-└─────────────────────────────────────────────────────────────────┘
+**USE BACKTRACKING WHEN YOU SEE:**
+
+```text
+ ✓ "Generate all..."
+ ✓ "Find all possible..."
+ ✓ "Print all combinations/permutations/subsets"
+ ✓ "All ways to..."
+ ✓ Constraint satisfaction (Sudoku, N-Queens)
+ ✓ Path finding with constraints
+ ✓ Game solving (word search, crossword)
 
 Time Complexity usually: O(2^n) or O(n!) - exponential
 That's OK! Problem asks for ALL solutions.
@@ -222,25 +211,21 @@ public class BacktrackingTemplate {
 
 ### Critical Points
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                  CRITICAL IMPLEMENTATION NOTES                  │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  1. ALWAYS COPY before adding to result:                        │
-│     result.add(new ArrayList<>(current));  ✓                    │
-│     result.add(current);  ✗ (adds reference, will be modified)  │
-│                                                                 │
-│  2. REMOVE from END (last element):                             │
-│     current.remove(current.size() - 1);  ✓                      │
-│     current.remove(element);  ✗ (removes by value, slower)      │
-│                                                                 │
-│  3. 'start' parameter controls:                                 │
-│     start = i + 1  →  No duplicates, subsets/combinations       │
-│     start = i      →  Can reuse elements                        │
-│     No start       →  Permutations (use visited array)          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+**CRITICAL IMPLEMENTATION NOTES**
+
+```text
+1. ALWAYS COPY before adding to result:
+   result.add(new ArrayList<>(current));  ✓
+   result.add(current);  ✗ (adds reference, will be modified)
+
+2. REMOVE from END (last element):
+   current.remove(current.size() - 1);  ✓
+   current.remove(element);  ✗ (removes by value, slower)
+
+3. 'start' parameter controls:
+   start = i + 1  →  No duplicates, subsets/combinations
+   start = i      →  Can reuse elements
+   No start       →  Permutations (use visited array)
 ```
 
 ---
@@ -346,42 +331,41 @@ private void backtrack(int[] nums, int start,
 
 ### Visual Trace
 
-```
-backtrack(start=0, current=[])
-├── Add []
-├── i=0: Choose 1
-│   └── backtrack(start=1, current=[1])
-│       ├── Add [1]
-│       ├── i=1: Choose 2
-│       │   └── backtrack(start=2, current=[1,2])
-│       │       ├── Add [1,2]
-│       │       ├── i=2: Choose 3
-│       │       │   └── backtrack(start=3, current=[1,2,3])
-│       │       │       └── Add [1,2,3]
-│       │       └── Unchoose 3
-│       │       └── return
-│       ├── Unchoose 2
-│       ├── i=2: Choose 3
-│       │   └── backtrack(start=3, current=[1,3])
-│       │       └── Add [1,3]
-│       └── Unchoose 3
-│       └── return
-├── Unchoose 1
-├── i=1: Choose 2
-│   └── backtrack(start=2, current=[2])
-│       ├── Add [2]
-│       ├── i=2: Choose 3
-│       │   └── backtrack(start=3, current=[2,3])
-│       │       └── Add [2,3]
-│       └── Unchoose 3
-├── Unchoose 2
-├── i=2: Choose 3
-│   └── backtrack(start=3, current=[3])
-│       └── Add [3]
-└── Unchoose 3
+**backtrack(start=0, current=[])**
 
-Result: [[], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]]
-```
+- Add []
+- i=0: Choose 1
+- backtrack(start=1, current=[1])
+  - Add [1]
+  - i=1: Choose 2
+    - backtrack(start=2, current=[1,2])
+      - Add [1,2]
+      - i=2: Choose 3
+        - backtrack(start=3, current=[1,2,3])
+          - Add [1,2,3]
+      - Unchoose 3
+      - return
+  - Unchoose 2
+  - i=2: Choose 3
+    - backtrack(start=3, current=[1,3])
+      - Add [1,3]
+  - Unchoose 3
+  - return
+- Unchoose 1
+- i=1: Choose 2
+- backtrack(start=2, current=[2])
+  - Add [2]
+  - i=2: Choose 3
+    - backtrack(start=3, current=[2,3])
+      - Add [2,3]
+  - Unchoose 3
+- Unchoose 2
+- i=2: Choose 3
+- backtrack(start=3, current=[3])
+  - Add [3]
+- Unchoose 3
+
+**Result: [[], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]]**
 
 ### Subsets II - With Duplicates (LeetCode 90)
 

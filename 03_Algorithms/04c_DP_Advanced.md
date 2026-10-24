@@ -51,25 +51,23 @@ A **packing list as a checklist of ticked boxes**: the pattern of ticks (a bitma
 
 ### 5W1H: Mastering Advanced DP
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHAT: Advanced DP techniques: Digit DP, Bitmask DP, Interval DP, Tree DP,   ║
-║        and Monotonic Optimization for solving complex CP/interview problems. ║
-║                                                                              ║
-║  WHY:  Standard 1D/2D DP fails when state spaces are subsets (Bitmask),      ║
-║        when boundaries are dynamic (Interval), or when numbers are massive   ║
-║        (Digit DP). Advanced states encapsulate more complex constraints.     ║
-║                                                                              ║
-║  WHO:  Senior engineers and competitive programmers preparing for hard       ║
-║        technical interviews or optimizing complex real-world constraints.    ║
-║                                                                              ║
-║  WHEN: Use when N is very small (N≤20) → Bitmask DP.                         ║
-║        Use when counting numbers with digit rules → Digit DP.                ║
-║        Use for optimal splitting/parenthesization → Interval DP.             ║
-║                                                                              ║
-║  HOW:  By mastering state compression (bitmasks), specialized loop bounds    ║
-║        (interval lengths), and combining subtree results (Tree DP).          ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+```text
+WHAT: Advanced DP techniques: Digit DP, Bitmask DP, Interval DP, Tree DP,
+      and Monotonic Optimization for solving complex CP/interview problems.
+
+WHY:  Standard 1D/2D DP fails when state spaces are subsets (Bitmask),
+      when boundaries are dynamic (Interval), or when numbers are massive
+      (Digit DP). Advanced states encapsulate more complex constraints.
+
+WHO:  Senior engineers and competitive programmers preparing for hard
+      technical interviews or optimizing complex real-world constraints.
+
+WHEN: Use when N is very small (N≤20) → Bitmask DP.
+      Use when counting numbers with digit rules → Digit DP.
+      Use for optimal splitting/parenthesization → Interval DP.
+
+HOW:  By mastering state compression (bitmasks), specialized loop bounds
+      (interval lengths), and combining subtree results (Tree DP).
 ```
 
 ### Historical Evolution

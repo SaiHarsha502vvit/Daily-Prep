@@ -356,30 +356,26 @@ public class TreeSerializer {
 
 ## Tree Challenge Patterns Summary
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│                    TREE PROBLEM RECOGNITION GUIDE                                │
-├──────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  "Find common ancestor..."             → LCA algorithm                           │
-│  "Tree given as array [1,2,3,#,4]..."  → Parent at (i-1)/2, children at 2i+1,2i+2│
-│  "Distance between nodes..."           → LCA + distance from LCA to each node    │
-│  "Path between nodes..."               → Find LCA, then paths from LCA           │
-│  "Serialize tree..."                   → Preorder with null markers              │
-│  "Validate BST..."                     → Inorder should be sorted                │
-│                                                                                  │
-│  TREE ARRAY INDEX FORMULAS (0-indexed):                                          │
-│  • Parent of i:       (i - 1) / 2                                                │
-│  • Left child of i:   2 * i + 1                                                  │
-│  • Right child of i:  2 * i + 2                                                  │
-│                                                                                  │
-│  LCA APPROACHES:                                                                 │
-│  • Recursive: O(n) time, O(h) space                                              │
-│  • Parent map: O(n) time, O(n) space                                             │
-│  • BST optimized: O(h) time, O(1) space                                          │
-│  • Binary lifting: O(n log n) preprocess, O(log n) query                         │
-│                                                                                  │
-└──────────────────────────────────────────────────────────────────────────────────┘
+**TREE PROBLEM RECOGNITION GUIDE**
+
+```text
+"Find common ancestor..."             → LCA algorithm
+"Tree given as array [1,2,3,#,4]..."  → Parent at (i-1)/2, children at 2i+1,2i+2
+"Distance between nodes..."           → LCA + distance from LCA to each node
+"Path between nodes..."               → Find LCA, then paths from LCA
+"Serialize tree..."                   → Preorder with null markers
+"Validate BST..."                     → Inorder should be sorted
+
+TREE ARRAY INDEX FORMULAS (0-indexed):
+• Parent of i:       (i - 1) / 2
+• Left child of i:   2 * i + 1
+• Right child of i:  2 * i + 2
+
+LCA APPROACHES:
+• Recursive: O(n) time, O(h) space
+• Parent map: O(n) time, O(n) space
+• BST optimized: O(h) time, O(1) space
+• Binary lifting: O(n log n) preprocess, O(log n) query
 ```
 
 ---

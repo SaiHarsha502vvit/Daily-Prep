@@ -279,31 +279,29 @@ int fib(int n) {
 
 "What's a stable sort and when does it matter?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  Stable: Equal elements keep their ORIGINAL order.               ║
-║  Unstable: Equal elements can be rearranged.                     ║
-║                                                                  ║
-║  THE SPREADSHEET ANALOGY:                                        ║
-║                                                                  ║
-║  You have records sorted by NAME:                                ║
-║  [Alice-A, Alice-B, Bob-A, Charlie-A]                            ║
-║                                                                  ║
-║  Now sort by DEPARTMENT (all Alice entries same dept):           ║
-║  Stable:   [Alice-A, Alice-B, Bob-A, Charlie-A]                  ║
-║             ↑ Original name order preserved within department    ║
-║  Unstable: [Alice-B, Alice-A, Bob-A, Charlie-A]                  ║
-║             ↑ Alice's might swap — previous sort lost!           ║
-║                                                                  ║
-║  WHEN IT MATTERS:                                                ║
-║  • Multi-column sorting (sort by city, then by name)             ║
-║  • Database ORDER BY with ties                                   ║
-║  • UI tables where user sorts by multiple columns                ║
-║  • Any time relative order of "equal" elements has meaning       ║
-║                                                                  ║
-║  STABLE: Merge sort, Insertion sort, TimSort, Bubble sort        ║
-║  UNSTABLE: Quicksort, Heap sort, Selection sort                  ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+Stable: Equal elements keep their ORIGINAL order.
+Unstable: Equal elements can be rearranged.
+
+THE SPREADSHEET ANALOGY:
+
+You have records sorted by NAME:
+[Alice-A, Alice-B, Bob-A, Charlie-A]
+
+Now sort by DEPARTMENT (all Alice entries same dept):
+Stable:   [Alice-A, Alice-B, Bob-A, Charlie-A]
+           ↑ Original name order preserved within department
+Unstable: [Alice-B, Alice-A, Bob-A, Charlie-A]
+           ↑ Alice's might swap — previous sort lost!
+
+WHEN IT MATTERS:
+• Multi-column sorting (sort by city, then by name)
+• Database ORDER BY with ties
+• UI tables where user sorts by multiple columns
+• Any time relative order of "equal" elements has meaning
+
+STABLE: Merge sort, Insertion sort, TimSort, Bubble sort
+UNSTABLE: Quicksort, Heap sort, Selection sort
 ```
 
 ---
@@ -314,31 +312,29 @@ int fib(int n) {
 
 "When and how to use the two-pointer technique?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THREE PATTERNS of Two Pointers:                                 ║
-║                                                                  ║
-║  PATTERN 1: Opposite ends (sorted array)                         ║
-║  [1, 3, 5, 7, 9]                                                 ║
-║   L→          ←R                                                 ║
-║  Use: Two Sum (sorted), Container With Most Water, Valid         ║
-║       Palindrome, 3Sum                                           ║
-║                                                                  ║
-║  PATTERN 2: Same direction (fast & slow)                         ║
-║  [1, 1, 2, 3, 3, 4]                                              ║
-║   S  F→                                                          ║
-║  Use: Remove duplicates, Linked list cycle detection (Floyd's),  ║
-║       Move zeroes, Remove element                                ║
-║                                                                  ║
-║  PATTERN 3: Two arrays / merge                                   ║
-║  [1, 3, 5]  [2, 4, 6]                                            ║
-║   i→          j→                                                 ║
-║  Use: Merge sorted arrays, Intersection, Compare strings         ║
-║                                                                  ║
-║  WHY IT WORKS: Reduces O(n²) brute force to O(n) by              ║
-║  eliminating impossible pairs. Each pointer moves one direction  ║
-║  → total work is O(n), not O(n²).                                ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+THREE PATTERNS of Two Pointers:
+
+PATTERN 1: Opposite ends (sorted array)
+[1, 3, 5, 7, 9]
+ L→          ←R
+Use: Two Sum (sorted), Container With Most Water, Valid
+     Palindrome, 3Sum
+
+PATTERN 2: Same direction (fast & slow)
+[1, 1, 2, 3, 3, 4]
+ S  F→
+Use: Remove duplicates, Linked list cycle detection (Floyd's),
+     Move zeroes, Remove element
+
+PATTERN 3: Two arrays / merge
+[1, 3, 5]  [2, 4, 6]
+ i→          j→
+Use: Merge sorted arrays, Intersection, Compare strings
+
+WHY IT WORKS: Reduces O(n²) brute force to O(n) by
+eliminating impossible pairs. Each pointer moves one direction
+→ total work is O(n), not O(n²).
 ```
 
 ---
@@ -357,32 +353,30 @@ The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3S
 
 "If HashMap is O(1), why would anyone use a TreeMap/BST?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  HashMap: O(1) average but GIVES UP ordering.                    ║
-║  TreeMap/BST: O(log n) but KEEPS elements sorted.                ║
-║                                                                  ║
-║  Things TreeMap can do that HashMap CANNOT:                      ║
-║                                                                  ║
-║  1. "Give me all keys between 50 and 100"                        ║
-║     treeMap.subMap(50, 100)     → O(log n + k)                   ║
-║     HashMap: must scan ALL entries → O(n)                        ║
-║                                                                  ║
-║  2. "What's the smallest key greater than 75?"                   ║
-║     treeMap.higherKey(75)       → O(log n)                       ║
-║     HashMap: scan all → O(n)                                     ║
-║                                                                  ║
-║  3. "What's the min/max key?"                                    ║
-║     treeMap.firstKey() / lastKey() → O(log n)                    ║
-║     HashMap: scan all → O(n)                                     ║
-║                                                                  ║
-║  4. "Iterate in sorted order"                                    ║
-║     TreeMap: naturally sorted                                    ║
-║     HashMap: random order, must sort separately O(n log n)       ║
-║                                                                  ║
-║  RULE: Need only lookup by key? → HashMap.                       ║
-║        Need ordering, ranges, min/max? → TreeMap.                ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+HashMap: O(1) average but GIVES UP ordering.
+TreeMap/BST: O(log n) but KEEPS elements sorted.
+
+Things TreeMap can do that HashMap CANNOT:
+
+1. "Give me all keys between 50 and 100"
+   treeMap.subMap(50, 100)     → O(log n + k)
+   HashMap: must scan ALL entries → O(n)
+
+2. "What's the smallest key greater than 75?"
+   treeMap.higherKey(75)       → O(log n)
+   HashMap: scan all → O(n)
+
+3. "What's the min/max key?"
+   treeMap.firstKey() / lastKey() → O(log n)
+   HashMap: scan all → O(n)
+
+4. "Iterate in sorted order"
+   TreeMap: naturally sorted
+   HashMap: random order, must sort separately O(n log n)
+
+RULE: Need only lookup by key? → HashMap.
+      Need ordering, ranges, min/max? → TreeMap.
 ```
 
 ---
@@ -415,39 +409,37 @@ Choose `TreeMap` only when order is part of the problem: sorted traversal, prede
 
 "Textbook says LinkedList has O(1) insertion. Why does everyone use ArrayList?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  TEXTBOOK vs REALITY                                             ║
-║                                                                  ║
-║  Textbook:                                                       ║
-║  LinkedList insert at known position: O(1)                       ║
-║  ArrayList insert in middle: O(n) (shift elements)               ║
-║  "LinkedList wins for insertions!"                               ║
-║                                                                  ║
-║  Reality:                                                        ║
-║  LinkedList insert: O(1) for the insert, but O(n) to FIND        ║
-║  the position first! Plus pointer overhead + cache misses.       ║
-║                                                                  ║
-║  THE SUPERMARKET SHELF ANALOGY:                                  ║
-║  Array = Items on a shelf, side by side.                         ║
-║  → To find item 50: grab from shelf position 50. Instant.        ║
-║  → To insert in middle: shift everything right. Slow.            ║
-║  → But CPU cache loads the whole shelf area. Traversal is FAST.  ║
-║                                                                  ║
-║  LinkedList = Items in boxes, each with a note saying            ║
-║  "next box is in aisle 47, shelf 3."                             ║
-║  → To insert: change one note. Fast.                             ║
-║  → To find item 50: follow 50 notes. Slow.                       ║
-║  → Each next pointer jumps to random memory. Cache MISSES.       ║
-║                                                                  ║
-║  BENCHMARK REALITY:                                              ║
-║  ArrayList is faster than LinkedList for ALMOST everything       ║
-║  in practice due to CPU cache efficiency. LinkedList only wins   ║
-║  for frequent add/remove at BOTH ends (use ArrayDeque instead).  ║
-║                                                                  ║
-║  Java's own guidance: "Use ArrayList. Use LinkedList only if     ║
-║  you specifically need a doubly-linked list."                    ║
-╚══════════════════════════════════════════════════════════════════╝
+```text
+TEXTBOOK vs REALITY
+
+Textbook:
+LinkedList insert at known position: O(1)
+ArrayList insert in middle: O(n) (shift elements)
+"LinkedList wins for insertions!"
+
+Reality:
+LinkedList insert: O(1) for the insert, but O(n) to FIND
+the position first! Plus pointer overhead + cache misses.
+
+THE SUPERMARKET SHELF ANALOGY:
+Array = Items on a shelf, side by side.
+→ To find item 50: grab from shelf position 50. Instant.
+→ To insert in middle: shift everything right. Slow.
+→ But CPU cache loads the whole shelf area. Traversal is FAST.
+
+LinkedList = Items in boxes, each with a note saying
+"next box is in aisle 47, shelf 3."
+→ To insert: change one note. Fast.
+→ To find item 50: follow 50 notes. Slow.
+→ Each next pointer jumps to random memory. Cache MISSES.
+
+BENCHMARK REALITY:
+ArrayList is faster than LinkedList for ALMOST everything
+in practice due to CPU cache efficiency. LinkedList only wins
+for frequent add/remove at BOTH ends (use ArrayDeque instead).
+
+Java's own guidance: "Use ArrayList. Use LinkedList only if
+you specifically need a doubly-linked list."
 ```
 
 ---
