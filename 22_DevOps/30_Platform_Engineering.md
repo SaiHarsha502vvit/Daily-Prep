@@ -1,4 +1,4 @@
-**Navigation**: [← Microservices](29_Microservices_On_The_Platform.md) | [Index](00_INDEX.md) | [Learning path, Stage 9](00_INDEX.md#-learning-path--first-principles-to-advanced) | Related: [31 DevSecOps](31_DevSecOps_Supply_Chain_And_Policy.md) · [28 Enterprise architecture](28_Enterprise_Reference_Architecture.md) · [35 Organisation](00_INDEX.md)
+**Navigation**: [← Microservices](29_Microservices_On_The_Platform.md) | [Index](00_INDEX.md) | [Learning path, Stage 9](00_INDEX.md#-learning-path--first-principles-to-advanced) | Related: [31 DevSecOps](31_DevSecOps_Supply_Chain_And_Policy.md) · [28 Enterprise architecture](28_Enterprise_Reference_Architecture.md) · [35 Organisation](35_Organisation_And_Operating_Model.md)
 
 # 🏗️ Chapter 30: Platform Engineering — Building the Paved Road
 
