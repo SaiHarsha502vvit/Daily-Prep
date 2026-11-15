@@ -72,18 +72,18 @@
 
 2004 — FACEBOOK LAUNCHES:
   The web shifts from documents to APPLICATIONS.
-  AJAX (Asynchronous JavaScript and XML) enables real-time updates.
+  AJAX (named 2005: Asynchronous JavaScript and XML) enables in-page updates without reloads.
   The browser becomes an application platform → REST APIs emerge.
 
 2015 — HTTP/2:
   Binary protocol (not text). Multiplexing (many requests, one connection).
-  Header compression (HPACK). Server push.
+  Header compression (HPACK). Server push (in the spec, effectively dead: Chrome removed it in 2022).
   Designed by Google (based on SPDY).
 
 2022 — HTTP/3 (QUIC):
   Replaces TCP with UDP + custom reliability.
-  0-RTT connection establishment. No head-of-line blocking.
-  Built by Google, standardized by IETF.
+  New connections: 1 RTT (TLS 1.3 merged in); 0-RTT only on resumption. No head-of-line blocking between streams.
+  Built by Google, standardized by IETF (QUIC = RFC 9000, 2021; HTTP/3 = RFC 9114, 2022).
 
 2024+ — The Present:
   WiFi 7 (802.11be): 46 Gbps theoretical.
@@ -91,6 +91,29 @@
   Starlink: satellite internet, 50-200 Mbps, 20-40ms latency.
   Submarine cables: 500+ Tbps capacity across oceans.
 ```
+
+---
+
+### Why packet switching won, and what the timeline gets wrong
+
+The pain in 1960s data networking was that a phone call reserves a whole circuit, but computer traffic is **bursty**: a terminal sends a few characters, then nothing for seconds. A reserved circuit sits idle most of the time, and if any link on it fails, the call dies. Paul Baran (RAND, early 1960s) and Donald Davies (NPL, mid 1960s) independently proposed chopping messages into small blocks that find their own way, so that many users share each link and a failure only reroutes the blocks. ARPANET (1969) was the first large demonstration; its first four nodes were UCLA, the Stanford Research Institute (SRI), UC Santa Barbara and the University of Utah. The price of the idea is exactly the list in the text: out-of-order arrival, loss when buffers fill, and variable delay. TCP exists to hide the first two, and QoS and queue management exist to bound the third.
+
+Corrections to the timeline above, so you do not repeat them in an interview:
+
+- **AJAX** was named in 2005 (Jesse James Garrett); the XMLHttpRequest idea predates it, and Facebook's 2004 launch did not depend on it.
+- **HTTP/2 server push** was in the specification but proved hard to use well and was removed from Chrome (version 106, 2022); treat it as dead.
+- **HTTP/3 and QUIC**: QUIC is RFC 9000 (2021) and HTTP/3 is RFC 9114 (2022). A *new* QUIC connection takes 1 RTT (transport and TLS 1.3 handshake are merged); **0-RTT** applies only when resuming a previous connection, and 0-RTT data is replayable, so it is limited to idempotent requests. No head-of-line blocking *between streams*, because each stream has its own loss recovery.
+- Wi-Fi "generation" names: the Wi-Fi Alliance named **Wi-Fi 4, 5, 6/6E and 7**; "Wi-Fi 1/2/3" for 802.11b/a/g are informal retroactive labels.
+
+🔬 **Section Challenge — Packet vs circuit switching**
+
+**Challenge 1 (Reasoning):** A voice call needs a constant 64 kbit/s and cannot tolerate delay variation; a web page load needs 5 Mbit/s for 2 seconds then nothing for 60. Which switching model suits each, and why is voice-over-IP viable on a packet network at all?
+
+<details><summary>Answer</summary>
+
+Voice is steady, small and jitter-sensitive: the circuit model fits naturally (reserved bandwidth, fixed delay). The page load is bursty, so a reserved circuit would be idle 97% of the time (2 s of use per 62 s); packet switching lets dozens of such users share the same link. VoIP works on packet networks because voice packets are small (typically 20 ms of audio, about 160 bytes), the receiver uses a short **jitter buffer** (tens of milliseconds) to smooth variable arrival, a lost packet is concealed rather than retransmitted (so UDP, not TCP), and the network can prioritise voice with QoS markings (DSCP EF) so queuing delay stays bounded.
+
+</details>
 
 ---
 
@@ -124,16 +147,16 @@ HOW IT WORKS:
   But it's more complex than that. Modern Ethernet uses ENCODING SCHEMES:
 
   Manchester encoding (old, 10 Mbps):
-    1 = transition HIGH→LOW  within the bit period
+    1 = transition HIGH→LOW  within the bit period   (one convention; IEEE 802.3 uses the opposite polarity)
     0 = transition LOW→HIGH  within the bit period
     Self-clocking: receiver can detect timing from transitions.
 
-  4B/5B + NRZI (Fast Ethernet, 100 Mbps):
+  4B/5B + MLT-3 (100BASE-TX copper; 100BASE-FX fibre uses 4B/5B + NRZI):
     Encode 4 data bits as 5 signal bits (avoids long sequences of same voltage).
 
-  PAM-5 (Gigabit Ethernet):
+  PAM-5 (Gigabit Ethernet, 1000BASE-T):
     5 voltage levels: -2, -1, 0, +1, +2
-    Each symbol carries more than 1 bit → higher data rate on same wire.
+    Each symbol carries 2 data bits; 125 Msymbols/s x 4 pairs x 2 bits = 1 Gbit/s (all 4 pairs needed).
 
 CABLE CATEGORIES:
   Cat 5:   100 Mbps, 100 MHz bandwidth (legacy, don't use)
@@ -189,15 +212,15 @@ TWO TYPES:
   Single-Mode Fiber (SMF):
     Core diameter: 9 μm (microns — thinner than a hair!)
     One path of light (one "mode").
-    Distance: up to 80 km without amplification.
+    Distance: set by the transceiver, not the glass: 10 km (LR), ~40 km (ER), ~80 km (ZR) without amplification.
     Used for: long-haul, datacenter interconnects, ISP backbones.
 
   Multi-Mode Fiber (MMF):
     Core diameter: 50 or 62.5 μm.
     Multiple paths of light (modes) bounce at different angles.
-    Distance: up to 550m (limited by modal dispersion — different modes arrive at different times).
+    Distance: 550m at 1 Gbit/s, but only ~300m (OM3) / ~400m (OM4) at 10 Gbit/s (limited by modal dispersion — different modes arrive at different times).
     Used for: within buildings, short datacenter runs.
-    CHEAPER than single-mode (LED vs laser, wider core = easier alignment).
+    CHEAPER than single-mode (short-reach VCSEL/LED optics, wider core = easier alignment).
 
   ANALOGY:
   Single-mode = a perfectly straight highway tunnel. One lane. Light goes straight.
@@ -241,7 +264,8 @@ HOW IT WORKS:
   BPSK = Morse code: only 2 symbols (dot, dash). Slow but works over noisy line.
   1024-QAM = spoken language: thousands of distinct sounds. Fast but unclear if noisy.
 
-WIFI STANDARDS EVOLUTION:
+WIFI STANDARDS EVOLUTION  (the Wi-Fi Alliance only named Wi-Fi 4, 5, 6/6E, 7; "Wi-Fi 1-3" are informal retro labels;
+speeds are theoretical PHY maximums, real throughput is often around half or less):
   ┌────────────┬─────────┬───────────┬──────────┬────────────┐
   │ Standard    │ Name    │ Frequency │ Max Speed│ Year       │
   ├────────────┼─────────┼───────────┼──────────┼────────────┤
@@ -266,7 +290,7 @@ KEY INNOVATION PER GENERATION:
     Each device gets its own narrow lane → less waiting, lower latency.
     Also: uplink MU-MIMO (devices talk to AP simultaneously).
   WiFi 7 (be): MLO (Multi-Link Operation) — use 2.4 + 5 + 6 GHz bands SIMULTANEOUSLY.
-    Triple the bandwidth by aggregating all three bands.
+    Up to ~3x the bandwidth by aggregating bands (needs AP and client both to support MLO).
     Also: 4096-QAM (12 bits/symbol), 320 MHz channel width.
 
 2.4 GHz vs 5 GHz vs 6 GHz:
@@ -289,6 +313,50 @@ KEY INNOVATION PER GENERATION:
     ✗ Shortest range of all three bands
     ✗ Requires WiFi 6E/7 devices (not backward compatible on 6 GHz)
 ```
+
+---
+
+### Physical layer: the arithmetic, the failure signatures, and the choice table
+
+**Why gigabit over four copper pairs works.** 1000BASE-T runs at **125 million symbols per second on each of 4 pairs**, sending and receiving on all four at once, with each PAM-5 symbol carrying 2 data bits (the fifth voltage level and extra coding provide error correction): `4 pairs x 125 Msymbols/s x 2 bits = 1,000 Mbit/s`. That is also why a gigabit link needs **all four pairs intact**: a cable with one broken pair (or a badly punched jack) often still *links up* but negotiates **100 Mbit/s**, because 100BASE-TX uses only two pairs (pins 1,2 and 3,6). "My gigabit port runs at 100" is a physical fault until proven otherwise.
+
+Corrections to the encoding notes above: 100BASE-TX uses **4B/5B with MLT-3** line coding (NRZI is what 100BASE-FX fibre uses). And the Manchester polarity convention differs by standard (IEEE 802.3 uses the opposite polarity to the one shown); what matters is that every bit has a mid-bit transition the receiver can lock its clock to, at the price of doubling the signalling rate.
+
+**Distances are optics-dependent, not fibre-dependent.** The "80 km" figure for single-mode is what an 80 km (ZR-class) transceiver can reach; ordinary 10G-LR optics reach 10 km, ER about 40 km. Multi-mode reach also shrinks with speed: at 10 Gbit/s about 300 m on OM3 and 400 m on OM4, not 550 m (that figure belongs to 1 Gbit/s on 50 um fibre). Short-reach multi-mode optics today use VCSEL lasers rather than LEDs. Always match **fibre type and transceiver** (single-mode optic on multi-mode fibre will not give a reliable link).
+
+| Need | Choose | Why / when not |
+| --- | --- | --- |
+| Office desk, 1-2.5 Gbit/s, up to 100 m | Cat 5e/6 copper | cheapest; not near heavy electrical machinery |
+| 10 Gbit/s, full 100 m | Cat 6a | Cat 6 only reaches about 55 m at 10G |
+| Between buildings or electrically noisy plant | single-mode fibre | immune to EMI and ground-potential differences between buildings |
+| Rack-to-rack in a data centre, under 5 m | DAC (direct-attach copper) cable | cheaper than optics; too short and stiff for long runs |
+| Access points, cameras, phones | copper with PoE (af 15.4 W, at 30 W, bt 60/90-100 W at the source) | budget the *switch's total PoE power*, not just the per-port limit |
+
+**Failure signatures.** At the physical and link layers errors are counted, so look at counters before blaming software:
+
+```bash
+$ ip -s link show eth0          # RX/TX errors, dropped, carrier changes
+$ ethtool eth0                  # negotiated speed/duplex (ethtool was not installed in my WSL image, so this line is not verified here)
+```
+
+| Symptom | Likely cause |
+| --- | --- |
+| Link flaps (carrier changes climbing) | bad cable/connector, failing transceiver, PoE overload resetting the device |
+| Link up but 100 Mbit/s on a gigabit port | broken pair or poor termination |
+| CRC / FCS errors climbing | EMI, damaged cable, over-length run, duplex mismatch |
+| Slow transfers + late collisions + one side half duplex | duplex mismatch (one end auto-negotiates, the other is hard-set): leave both on auto |
+
+**Wi-Fi: reading the table honestly.** The "Max Speed" column is the theoretical PHY rate with the maximum number of spatial streams and widest channel; a phone with 2 streams on an 80 MHz channel gets a fraction of it, and Wi-Fi is a **shared, half-duplex medium** (everyone on a channel takes turns), so real application throughput is often around half the negotiated link rate or less. Wider channels trade capacity for neighbours: 160/320 MHz channels leave few non-overlapping channels, so dense offices use 20 or 40 MHz channels on many APs rather than a few very wide ones. The Wi-Fi 7 "Multi-Link Operation" lets a device use more than one band at once for throughput or reliability; the "triple the bandwidth" figure is a best case that needs a client and AP that both implement it. Choose 2.4 GHz for range and simple IoT devices, 5 GHz as the default, and 6 GHz where clients support it and you want the cleanest spectrum (it is also the shortest range). Enterprise design (channel planning, roaming, RADIUS) is in [Chapter 12](12_WiFi_AP_Enterprise.md).
+
+🔬 **Section Challenge — Physical layer**
+
+**Challenge 1 (Debugging):** A newly installed desk port links at 100 Mbit/s although the switch and PC are both gigabit and a cable tester shows pins 4,5,7,8 open. What does that tell you, and what do you do?
+
+<details><summary>Answer</summary>
+
+Pairs 4,5 and 7,8 are not connected, so only pairs 1,2 and 3,6 carry signal. Gigabit Ethernet needs all four pairs, so auto-negotiation falls back to 100BASE-TX, which uses just those two pairs. The fault is in the termination (a mis-punched jack, a cable with two pairs cut, or a two-pair "telephone-grade" patch lead), not in the NIC or switch config. Re-terminate or replace the cable and confirm with the cable tester that all eight conductors map correctly; do not force the port speed, it cannot work.
+
+</details>
 
 ---
 
@@ -334,10 +402,10 @@ THROUGHPUT: Actual bits transferred per second (real-world).
   • Packet loss: retransmissions waste bandwidth
   • Distance: TCP window sizes limit throughput over long distances
 
-THE BANDWIDTH-LATENCY PRODUCT:
-  How many bits are "in flight" between source and destination.
+THE BANDWIDTH-DELAY PRODUCT (uses the ROUND-TRIP time):
+  How many bits are "in flight" (sent but not yet acknowledged) between source and destination.
 
-  100 Mbps bandwidth × 50ms latency =
+  100 Mbps bandwidth × 50ms RTT =
   100,000,000 × 0.050 = 5,000,000 bits = 625 KB in flight
 
   TCP's receive window must be AT LEAST this large.
@@ -359,11 +427,55 @@ PRACTICAL EXAMPLES:
   └──────────────────────┴──────────┴─────────┴──────────────┘
 
   Note: Satellite GEO has 600ms latency because the satellite is 35,786 km away.
-  Signal travels: Earth → satellite → Earth = 71,572 km at speed of light ≈ 238ms ONE WAY.
-  Round trip (request + response) = ~600ms. TCP handshake alone takes 3 × 238ms!
+  Signal travels: Earth → satellite → Earth = 71,572 km at speed of light ≈ 239ms ONE WAY (physical floor).
+  Round trip (request + response) = ~480ms floor, ~600ms in practice. The TCP handshake costs one full RTT
+  before the client can even send its request, and TLS adds another.
 
   Starlink LEO: satellites at 550 km → latency ~30ms. Game-changer for rural areas.
 ```
+
+---
+
+### Bandwidth, latency, throughput: the numbers, measured and calculated
+
+Two corrections first. The **bandwidth-delay product** uses the **round-trip time** (data in flight is unacknowledged until the ACK returns), not the one-way latency: with `100 Mbit/s` and a `50 ms` RTT the pipe holds `100,000,000 x 0.050 = 5,000,000 bits = 625,000 bytes` (about 610 KiB). And the GEO satellite note above is imprecise: the signal covers `2 x 35,786 km` between user and ground station via the satellite, which at the speed of light is about **239 ms one way**, so the physical round-trip floor is about **477 ms** (the "600 ms" in the table includes processing and ground-station hops). A TCP client can send its request after **one** RTT (SYN, SYN-ACK, then data with the ACK), so about half a second before the first byte leaves, and with TLS 1.3 about another RTT before the request is sent.
+
+I computed the rest with a short script so you can reproduce it, and checked the Linux defaults on my machine:
+
+```text
+Ethernet efficiency with 1500-byte IP packets: 1500 / (1500 + 14 header + 4 FCS + 8 preamble + 12 inter-frame gap) = 97.53%
+Goodput on a 1 Gbit/s link (1460 B TCP payload / 1538 B on the wire): 949.3 Mbit/s    <- the "why is my gigabit 940?" answer
+
+Window-limited TCP throughput = window / RTT:
+  64 KiB window (no window scaling), RTT 100 ms  ->   5.24 Mbit/s
+  64 KiB window,                      RTT 600 ms  ->   0.87 Mbit/s   (GEO satellite)
+   4 MiB window,                      RTT 100 ms  -> 335.54 Mbit/s
+
+$ sysctl net.ipv4.tcp_window_scaling net.ipv4.tcp_rmem
+net.ipv4.tcp_window_scaling = 1
+net.ipv4.tcp_rmem = 4096  131072  6291456            # min, default, max receive buffer in bytes
+$ ping -c 3 1.1.1.1
+64 bytes from 1.1.1.1: icmp_seq=3 ttl=252 time=3.63 ms     # rtt min/avg/max = 3.416/3.630/3.845 ms (from WSL2, one run)
+```
+
+The first two lines show why **throughput is always below bandwidth** even on a perfect link: 2.5% is Ethernet framing and a further 2.6% is IP and TCP headers. The window table shows the second reason: with a 64 KiB window a connection can send at most 64 KiB per round trip, so on a 100 ms path it cannot exceed 5.24 Mbit/s **no matter how fast the link is**. That is the practical reason TCP window scaling (RFC 7323, 1 = enabled above) exists and why `tcp_rmem`'s maximum matters on long fat networks. The `ttl=252` shows the reply started at 255 and crossed 3 routers; TTL is decremented per hop, which is what `traceroute` exploits.
+
+| You observe | Probably limited by | Fix |
+| --- | --- | --- |
+| Small requests are slow, big downloads fine | latency (many round trips) | fewer round trips: keep-alive, HTTP/2, batching, CDN |
+| Large transfers cap far below the link speed on a long path | window / RTT | larger buffers, window scaling, parallel streams, BBR |
+| Speed collapses at certain hours | queueing or congestion | measure loss/RTT under load; fix the bottleneck link |
+| Transfer fast at first, then slow | token-bucket shaping or a congested path | check the provider's policy; compare with a test to a different destination |
+
+🔬 **Section Challenge — Bandwidth, latency, throughput**
+
+**Challenge 1 (Calculation):** A backup runs between two datacenters 80 ms RTT apart over a 1 Gbit/s link. A single TCP connection with a 256 KiB maximum window achieves what throughput, how large must the window be to fill the link, and what is one other way to use the link fully?
+
+<details><summary>Answer</summary>
+
+Throughput = window / RTT = 262,144 B x 8 / 0.080 s = **26.2 Mbit/s** (2.6% of the link). To fill 1 Gbit/s the window must equal the bandwidth-delay product: `1,000,000,000 x 0.080 / 8 = 10,000,000 bytes` = **about 9.5 MiB**, so the socket buffers (`tcp_rmem` / `tcp_wmem` maxima) must allow that, with window scaling on. The other way: run several parallel connections (for example 8 x 256 KiB windows is about 210 Mbit/s, so you need roughly 40 streams without tuning), which is what multi-stream backup tools do. A modern congestion control such as BBR also helps when the path has loss.
+
+</details>
 
 ---
 
@@ -430,7 +542,7 @@ TCP/IP MODEL (4 layers — practical, what the internet uses):
   ├──────────────────┤
   │ Internet         │  = OSI L3 (IP, ICMP)
   ├──────────────────┤
-  │ Network Acces    │  = OSI L1-L2 (Ethernet, WiFi)
+  │ Network Access   │  = OSI L1-L2 (Ethernet, WiFi)
   └──────────────────┘
 
 ENCAPSULATION — How Data Gets Wrapped:
@@ -455,6 +567,42 @@ MNEMONIC FOR OSI LAYERS:
   "Please Do Not Throw Sausage Pizza Away"
   Physical, Data Link, Network, Transport, Session, Presentation, Application
 ```
+
+---
+
+### What changes at each hop: the one idea that makes layering click
+
+Layering is not just "7 boxes"; it is a rule about **which addresses are rewritten and where**. When a packet crosses routers, the **IP addresses stay the same end to end** (except where NAT rewrites them) while the **MAC addresses are rewritten at every hop**, because a MAC address only means something on one link.
+
+```mermaid
+flowchart LR
+    H["Your PC<br/>IP 192.168.1.100"] -->|"Ethernet: PC MAC to home-router MAC<br/>IP: 192.168.1.100 to 54.123.45.67"| R1["Home router<br/>NAT"]
+    R1 -->|"Ethernet: router WAN MAC to ISP MAC<br/>IP: 203.45.67.89 to 54.123.45.67 (source rewritten by NAT)"| R2["ISP router"]
+    R2 -->|"Ethernet: new MACs<br/>IP unchanged, TTL minus 1"| S["Server<br/>54.123.45.67"]
+```
+
+**How to read this diagram.** Each arrow is one link and the label says what the frame (layer 2) and packet (layer 3) look like on it. The destination IP never changes along the way, but the Ethernet addresses are different on every arrow, because each router strips the old frame and builds a new one for the next link. The one other thing that changes is the *source* IP at the home router, where NAT swaps the private address for the public one. When you debug, this tells you which tool to use for which question: `ip neigh` / ARP answers "can I reach the next hop?", `ip route` answers "which next hop will be chosen?", and `traceroute` shows the sequence of hops.
+
+The practical layer-triage you want, mapping the model above onto commands:
+
+| Layer | Question | Command | A failure looks like |
+| --- | --- | --- | --- |
+| Link (1-2) | Is the cable/Wi-Fi up, do I have a MAC for the next hop? | `ip -br link`, `ip neigh` | `NO-CARRIER`; neighbour entry `FAILED` or `INCOMPLETE` |
+| Network (3) | Do I have an IP and a route? Can I reach the gateway? | `ip -br addr`, `ip route`, `ping GATEWAY` | no default route; ping to gateway fails |
+| Transport (4) | Does the port accept connections? | `nc -zv HOST PORT`, `ss -tn` | refused (RST) vs timeout (drop) |
+| Application (7) | Does the service answer correctly? | `curl -v` | HTTP 4xx/5xx, TLS error |
+
+Always work **bottom up** and stop at the first failing layer; most "the network is down" reports end at layer 1 or 2 (a cable, a Wi-Fi association, a port in the wrong VLAN).
+
+🔬 **Section Challenge — Layers and hops**
+
+**Challenge 1 (Reasoning):** A packet from your PC to a server three router hops away is captured at each hop. Which of these fields are identical at all captures: source MAC, destination MAC, source IP, destination IP, TTL, TCP source port? Ignore NAT for this question.
+
+<details><summary>Answer</summary>
+
+**Identical:** source IP, destination IP, TCP source port (and destination port, payload). **Different at every hop:** source MAC and destination MAC (each router builds a new frame addressed to the next link's neighbour) and TTL (decremented by one at each router). With NAT at the edge, the source IP and source port would also change at that device. The practical use: a capture showing the destination MAC equal to the *router's* MAC and the destination IP equal to a *remote* address is normal; a capture showing the destination MAC equal to the remote server's MAC for an off-subnet address would mean the host believes the server is on-link (a wrong netmask).
+
+</details>
 
 ---
 
@@ -547,6 +695,85 @@ ip link show eth0           # Linux
 
 ---
 
+### Switch learning, executed — and your own machine's tables
+
+The "how a switch learns" list is easy to nod along to and hard to internalise, so here is the whole algorithm as a runnable Python simulation (a 4-port switch; the output is what the script printed):
+
+```python
+class Switch:
+    def __init__(self, ports):
+        self.ports = ports
+        self.table = {}                      # MAC -> port  (the CAM table)
+
+    def receive(self, in_port, src, dst):
+        self.table[src] = in_port            # LEARN: the source MAC is reachable via the ingress port
+        if dst == "ff:ff:ff:ff:ff:ff" or dst not in self.table:
+            out = [p for p in range(1, self.ports + 1) if p != in_port]
+            action = "FLOOD to ports " + str(out)
+        else:
+            action = "forward to port %d only" % self.table[dst]
+        print("  port %d: %s -> %s   => %s" % (in_port, src, dst, action))
+
+sw = Switch(4)
+A, B, C = "aa:aa", "bb:bb", "cc:cc"
+print("1. A (port 1) talks to B (port 3), B is unknown:");   sw.receive(1, A, B)
+print("2. B replies to A:");                                 sw.receive(3, B, A)
+print("3. A talks to B again:");                             sw.receive(1, A, B)
+print("4. C (port 2) broadcasts an ARP request:");           sw.receive(2, C, "ff:ff:ff:ff:ff:ff")
+print("table:", sw.table)
+```
+
+```text
+1. A (port 1) talks to B (port 3), B is unknown:
+  port 1: aa:aa -> bb:bb   => FLOOD to ports [2, 3, 4]
+2. B replies to A:
+  port 3: bb:bb -> aa:aa   => forward to port 1 only
+3. A talks to B again:
+  port 1: aa:aa -> bb:bb   => forward to port 3 only
+4. C (port 2) broadcasts an ARP request:
+  port 2: cc:cc -> ff:ff:ff:ff:ff:ff   => FLOOD to ports [1, 3, 4]
+table: {'aa:aa': 1, 'bb:bb': 3, 'cc:cc': 2}
+```
+
+Note what the code makes obvious: the switch learns from the **source** of every frame, never from the destination; unknown-unicast and broadcast frames are **flooded**; and the table is finite (real ones hold thousands of entries and age out idle entries after about 5 minutes). Two failure modes follow directly. A **loop** (two cables between the same switches, no spanning tree) makes flooded frames circulate forever: a *broadcast storm* that saturates every link within seconds, which is why STP/RSTP exists and why "someone plugged a cable into the wrong wall port" can take down a floor. And **MAC flooding** (an attacker filling the table with fake sources) makes the switch fail open and flood everything, which is the reason for port-security limits. The `PoE` supply on a switch is budgeted in total watts, so a floor of APs may exceed it even if each port is within its limit.
+
+On my own machine (WSL2 Ubuntu, one run), the commands from the block above produce, in this order, my interface, the routing table that decides the next hop, and the ARP/neighbour entry that supplies that hop's MAC:
+
+```text
+$ ip -br addr show eth0
+eth0   UP   172.24.93.105/20 fe80::215:5dff:fe74:6e8d/64
+$ ip route show
+default via 172.24.80.1 dev eth0 proto kernel
+172.24.80.0/20 dev eth0 proto kernel scope link src 172.24.93.105
+$ ip neigh show
+172.24.80.1 dev eth0 lladdr 00:15:5d:b9:07:72 DELAY
+$ cat /sys/class/net/eth0/mtu
+1500
+```
+
+Read it like the machine does for a packet to `1.1.1.1`: not inside `172.24.80.0/20`, so use the **default** route, next hop `172.24.80.1`; the neighbour table already holds that gateway's MAC (`00:15:5d:b9:07:72`), so no ARP request is needed; the frame goes to that MAC while the IP destination stays `1.1.1.1`. The neighbour state names matter in debugging: `REACHABLE` (recently confirmed), `STALE`/`DELAY` (will re-verify when used), `INCOMPLETE`/`FAILED` (ARP asked, nobody answered: layer 2 problem or wrong VLAN).
+
+**Switch, router, L3 switch: which to buy/configure.**
+
+| You need | Use | Notes |
+| --- | --- | --- |
+| Connect devices in one subnet | switch | no IP config needed; managed switches add VLANs and STP |
+| Connect to another network or the internet; NAT; firewall | router / firewall | forwarding is by IP; may be CPU-bound at high rates |
+| Fast routing between many internal VLANs | L3 switch | ASIC forwarding at line rate; limited NAT/firewall features |
+| Isolation between tenants with real security guarantees | firewall between segments | a VLAN alone is a broadcast-domain boundary, not a security boundary |
+
+🔬 **Section Challenge — Switching and tables**
+
+**Challenge 1 (Debugging):** `ping 192.168.1.20` from a PC fails. `ip neigh` shows `192.168.1.20 dev eth0 FAILED`. Is this an IP, DNS, firewall or layer-2 problem, and what do you check next?
+
+<details><summary>Answer</summary>
+
+Layer 2: `FAILED` means the PC broadcast ARP requests ("who has 192.168.1.20?") and received no reply, so it never learned a MAC address and never sent an IP packet. DNS is not involved (a raw IP was used) and a host firewall would produce a *reply-less ping* only after ARP succeeded. Check: is the target powered and on the same VLAN and subnet (compare netmasks; a /24 vs /25 mismatch makes hosts disagree about who is on-link), is the switch port in the right VLAN (`show vlan`/port config), is the cable/port up, and does the target have the address configured (it may be using a different one). Capture with `tcpdump -n arp` on the PC: repeated requests with no replies confirm it.
+
+</details>
+
+---
+
 # PART 6: How Data Flows — A Complete Journey
 
 ---
@@ -617,6 +844,44 @@ TOTAL TIME: ~50-200ms depending on distance and server processing.
 
 ---
 
+### The journey with real artifacts, and where each step can fail
+
+Three details in the walkthrough above deserve precision. Step 2 (DNS) and Step 6 (ARP) are **cached**: on a warm laptop neither generates any packet. The TLS step differs by version: in TLS 1.3 the handshake costs one round trip (as shown), in TLS 1.2 it costs two. And in Step 7 the NAT device keeps a **translation table** entry `(private IP, private port) <-> (public IP, public port)` so that the reply, addressed to the public side, can be mapped back; a connection with no traffic for the NAT timeout (often minutes for TCP, tens of seconds for UDP) loses its entry, which is why long-idle connections die silently behind NAT and why keep-alives exist (see [IP Addressing](05_IP_Addressing_Subnets.md) for NAT in depth).
+
+You can observe the steps on any Linux box. From my WSL2 run against a public host (same commands you can use):
+
+```text
+$ getent hosts example.com                      # Step 2: DNS (returns IPv6 first on my network)
+$ curl -s -o /dev/null -w 'dns=%{time_namelookup} tcp=%{time_connect} tls=%{time_appconnect} ttfb=%{time_starttransfer}\n' https://example.com/
+dns=0.048887 tcp=0.060172 tls=0.084000 ttfb=0.100125       # Steps 2-5, cumulative seconds
+$ ss -tn state established '( dport = :443 )'  # Step 3: the connection's 4-tuple while a transfer is running
+172.24.93.105:60982  104.20.23.154:443  users:(("curl",pid=400,fd=5))
+```
+
+The four-tuple `(172.24.93.105, 60982, 104.20.23.154, 443)` is the identity of the connection: a source port picked by the OS from the ephemeral range, and a fixed destination port. Everything below the application (ARP, routing, NAT) works on those numbers.
+
+| Step | Fails with | How to tell |
+| --- | --- | --- |
+| DNS | `Could not resolve host` | `getent hosts NAME` fails; try another resolver |
+| ARP to gateway | all off-subnet traffic fails | `ip neigh` shows the gateway `FAILED` |
+| Routing | `Network is unreachable` | `ip route get 54.123.45.67` has no route |
+| TCP | refused (instant) or timeout (after 5 to 130 s) | `nc -zv`; compare with a known-good port |
+| NAT / return path | request sent, no reply | capture on both sides: packet leaves, nothing returns |
+| TLS | certificate or protocol error | `openssl s_client -connect HOST:443` |
+| HTTP | 4xx/5xx | `curl -v` |
+
+🔬 **Section Challenge — Tracing a request**
+
+**Challenge 1 (Debugging):** `curl http://10.20.30.40` from your laptop on `192.168.1.0/24` returns `Network is unreachable` immediately, while `curl http://192.168.1.50` works. Which step of the journey failed, and why does the error appear instantly?
+
+<details><summary>Answer</summary>
+
+Step 6, route selection: the kernel found **no route** to `10.20.30.40` (no matching prefix and no default gateway), so it refuses to send anything and returns the error without any network traffic, which is why it is instant (compare a timeout, which means packets *were* sent). Check `ip route show` for a `default via ...` line and `ip route get 10.20.30.40`. Typical causes: the default route disappeared after a VPN disconnected or a DHCP lease problem, or the laptop is on Wi-Fi with no gateway assigned. If a default route exists but the network beyond drops the packet, you would instead see a timeout.
+
+</details>
+
+---
+
 # PART 7: VLANs — Virtual Network Segmentation
 
 ---
@@ -657,6 +922,41 @@ INTER-VLAN ROUTING:
   2. L3 switch: handles routing between VLANs at hardware speed (preferred).
   3. Firewall: route between VLANs with granular security policies.
 ```
+
+---
+
+### VLANs: the frame on the wire, and the limits of the isolation
+
+An 802.1Q tag is 4 bytes inserted after the source MAC: a 16-bit tag protocol identifier (`0x8100`), 3 priority bits, 1 drop-eligible bit, and a **12-bit VLAN id**. Twelve bits give 4096 values; ids 0 and 4095 are reserved, so 4094 usable VLANs. The frame grows from 1518 to 1522 bytes (hence "baby giant" frames and the need to check switch MTU settings on trunks). VLANs were introduced because a flat Layer-2 network has one **broadcast domain**: every ARP request and DHCP discover reaches every host, which stops scaling past a few hundred hosts, and because physical separation (one switch per department) is expensive.
+
+```text
+access port (untagged)           trunk port (tagged)                access port
+PC in VLAN 10  ---frame--->  [switch A] ==frame + 802.1Q tag 10==> [switch B] ---frame---> PC in VLAN 10
+                                         (tag removed at the access port on the way out)
+```
+
+**The limits to teach honestly:**
+
+- A VLAN separates *broadcast domains*; separation of *traffic policy* only exists if the inter-VLAN routing point (router, L3 switch or firewall) enforces ACLs. Without them, VLAN 10 can reach VLAN 20 through the router.
+- **VLAN hopping**: with a misconfigured trunk (dynamic trunking negotiation left on, or an access port that accepts tagged frames), an attacker can reach other VLANs, including by **double tagging** against the native VLAN. Mitigations: set access ports to `switchport mode access`, disable negotiation, never use the native VLAN for user traffic, change it from VLAN 1, and prune unused VLANs from trunks.
+- Maximum size: trunk MTU must allow the tag, and tunnelling (VXLAN, used in data centres and cloud) adds 50 bytes more, so overlay networks commonly set MTU 1450 or enable jumbo frames underneath. Mismatched MTU shows up as "small packets work, large transfers hang" (an MTU black hole).
+
+| Choose | When |
+| --- | --- |
+| VLANs | separating broadcast domains and groups in one building; guest vs staff Wi-Fi; voice vs data |
+| Separate switches / physical separation | regulated environments where a misconfiguration must not be able to bridge networks |
+| Firewall between segments | any time the question is "what may talk to what" and not only "who hears broadcasts" |
+| VXLAN / overlay | more than 4094 segments, or L2 domains stretched across routed networks (data centre, cloud) |
+
+🔬 **Section Challenge — VLANs**
+
+**Challenge 1 (Debugging):** After adding VLAN 30 to switch A and to the trunk to switch B, hosts on VLAN 30 on switch B cannot reach hosts on VLAN 30 on switch A. Both access ports are assigned correctly. List the first three things to check.
+
+<details><summary>Answer</summary>
+
+(1) The trunk's **allowed VLAN list** on both ends: many trunks permit only an explicit list, and VLAN 30 must be in it at both switches (and at any switch in between). (2) VLAN 30 **exists in the VLAN database** on switch B (on some platforms an assigned-but-undefined VLAN leaves the port in an inactive state). (3) **Native VLAN mismatch or tagging mismatch** on the trunk, and a spanning-tree state that blocks VLAN 30 on the trunk (per-VLAN STP can block one VLAN's path). Verify with `show interfaces trunk` and `show vlan brief` (Cisco-style) or the platform equivalent, and confirm the MAC of a VLAN 30 host appears in the MAC table on the *remote* switch's trunk port.
+
+</details>
 
 ---
 

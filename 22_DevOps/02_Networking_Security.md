@@ -83,11 +83,12 @@ STEP 3 — TLS HANDSHAKE (encrypt the connection):
 
   WHAT TLS PROTECTS:
   • Confidentiality: data is encrypted (nobody can read it)
-  • Integrity: HMAC ensures data isn't modified in transit
+  • Integrity: every record is authenticated, so tampering is detected (TLS 1.3 uses AEAD ciphers such as AES-GCM;
+    TLS 1.2 and older used a separate HMAC)
   • Authentication: certificate proves server identity
 
   CERTIFICATE CHAIN:
-  Root CA (pre-installed in browser: DigiCert, Let's Encrypt)
+  Root CA (pre-installed in the OS/browser trust store, e.g. DigiCert, ISRG Root X1 for Let's Encrypt)
     → Intermediate CA (signed by root)
       → Your domain cert (signed by intermediate)
 
@@ -100,26 +101,122 @@ STEP 4 — HTTP REQUEST (application data):
   Accept: application/json
 
   HTTP/2 improvements over HTTP/1.1:
-  • Multiplexing: multiple requests over ONE TCP connection (no head-of-line blocking)
+  • Multiplexing: multiple requests over ONE TCP connection (removes HTTP-level head-of-line blocking;
+    TCP-level blocking remains: one lost packet stalls EVERY stream until it is retransmitted)
   • Header compression: HPACK algorithm (repeated headers aren't resent)
-  • Server push: server can proactively send resources
+  • Server push: in the spec, but effectively dead. Chrome removed it in version 106 (2022); don't design around it
 
   HTTP/3 (QUIC): replaces TCP with UDP + reliability built in
-  • 0-RTT connection establishment (TLS built into QUIC)
-  • No head-of-line blocking even at the transport layer
+  • Transport + TLS 1.3 handshake combined: 1 RTT for a NEW connection, 0-RTT only when RESUMING a
+    previous session (0-RTT data can be replayed by an attacker, so only send idempotent requests in it)
+  • No head-of-line blocking between streams (each stream has its own loss recovery)
   • Used by Google, Cloudflare, Facebook
 
 THE FULL JOURNEY:
   DNS → TCP → TLS → HTTP → Load Balancer → Web Server → App → DB → Response
-  Total initial latency breakdown:
+  Total initial latency breakdown (illustrative; measured for real in "Trace it yourself" below):
     DNS:     50ms (if not cached)
     TCP:     20ms (1 RTT to server)
-    TLS:     20ms (1 RTT for TLS 1.3)
+    TLS:     20ms (1 RTT for TLS 1.3, plus a little CPU for the key exchange)
     HTTP:    varies (depends on your app)
 
   FIRST REQUEST: ~90ms overhead before first byte!
   SUBSEQUENT: TCP + TLS reused via keep-alive → near zero overhead.
 ```
+
+---
+
+## Trace it yourself — measure each step, then read the failure signature
+
+*Measured in WSL2 Ubuntu (curl 8.5.0, OpenSSL 3.0.13) against a public site, 2026-10-24. Your numbers will differ; the **shape** is what matters.*
+
+```bash
+$ curl -s -o /dev/null -w 'dns=%{time_namelookup} tcp=%{time_connect} tls=%{time_appconnect} ttfb=%{time_starttransfer} http=%{http_version}\n' https://example.com/
+dns=0.048887 tcp=0.060172 tls=0.084000 ttfb=0.100125 http=2
+```
+
+curl's timers are **cumulative from the start of the request**, not per-step. Subtract: DNS 49 ms, TCP handshake 11 ms (`0.060 - 0.049`), TLS 24 ms (`0.084 - 0.060`), server think-time + first byte 16 ms. TLS cost more than the TCP round trip because the key exchange and the certificate signature check burn CPU on top of the one RTT. Now fetch the URL **twice in one command** so curl reuses the connection:
+
+```bash
+$ curl -s -o /dev/null -o /dev/null -w 'dns=%{time_namelookup} tcp=%{time_connect} tls=%{time_appconnect} ttfb=%{time_starttransfer} new_connections=%{num_connects}\n' https://example.com/ https://example.com/
+dns=0.041091 tcp=0.051716 tls=0.076615 ttfb=0.092633 new_connections=1
+dns=0.000011 tcp=0.000000 tls=0.000000 ttfb=0.014885 new_connections=0
+```
+
+The second request pays **0 ms** for DNS, TCP and TLS: the keep-alive connection is already open. That is the entire reason `keepalive` appears in the nginx `upstream` block below, and why a load balancer that opens a fresh connection per request to the backend wastes the handshake on every call.
+
+Look at what TLS 1.3 negotiated, and what the certificate chain looked like:
+
+```bash
+$ echo | openssl s_client -connect example.com:443 -servername example.com -tls1_3 2>&1 | egrep -i "depth|Verification|Cipher|Server Temp Key"
+depth=3 C = US, O = SSL Corporation, CN = SSL.com TLS ECC Root CA 2022
+depth=2 C = US, O = SSL Corporation, CN = SSL.com TLS Transit ECC CA R2
+depth=1 C = US, O = SSL Corporation, CN = Cloudflare TLS Issuing ECC CA 3
+depth=0 CN = example.com
+Server Temp Key: X25519, 253 bits
+Verification: OK
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+```
+
+Read it bottom-up: `TLS_AES_256_GCM_SHA384` is an **AEAD** cipher (encryption and integrity in one primitive, which is why the older "HMAC" wording had to change), `X25519` is the Diffie-Hellman group that produced the shared secret (forward secrecy: stealing the server key later does not decrypt recorded traffic), and the chain has **four** levels here, not the textbook three: the server must send the intermediates, the client already trusts the root. The same site's certificate was valid `Sep 26 2026 -> Dec 25 2026` (about 90 days), so rotation must be automated; see [TLS & Encryption](09_TLS_Encryption.md).
+
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant R as Recursive resolver
+    participant S as Server
+    B->>R: A record for api.myapp.com?
+    R-->>B: 54.123.45.67 with a TTL
+    B->>S: SYN
+    S-->>B: SYN-ACK
+    B->>S: ACK
+    B->>S: ClientHello with SNI and key share
+    S-->>B: ServerHello, Certificate, Finished
+    B->>S: Finished, then GET /users encrypted
+    S-->>B: 200 OK encrypted
+```
+
+**How to read this diagram.** Three participants: the browser, the recursive resolver that answers DNS on its behalf, and the origin server. Order top to bottom: one DNS round trip, then the three TCP messages, then the TLS 1.3 exchange (one round trip, after which the browser already sends its encrypted request), then the HTTP response. Notice that DNS talks to a *different machine* than everything below it, and that each arrow pair before the `GET` is latency you pay again on every brand-new connection.
+
+### The same trace as a debugging table
+
+Each layer fails in a way that names itself. Reproduced here with real exit codes:
+
+| Symptom (curl) | Layer that broke | Reproduction I ran | First command to run |
+| --- | --- | --- | --- |
+| `(6) Could not resolve host` | DNS | `curl https://nonexistent.invalid/` gave exit 6 | `getent hosts NAME`, then `resolvectl query NAME` |
+| `(7) Failed to connect ... Couldn't connect` (instant) | TCP RST: host up, **nothing listening** | `curl http://127.0.0.1:9/` gave exit 7 after 0 ms | `ss -ltn \| grep :PORT` on the server |
+| `(28) ... Timeout was reached` (after the full timeout) | TCP SYN dropped: firewall, security group, wrong route | `curl --connect-timeout 2 http://10.255.255.1/` gave exit 28 after 2003 ms | `nc -zv -w 3 HOST PORT`; check security groups and NACLs |
+| `(60) SSL certificate problem` | TLS trust: self-signed, expired, missing intermediate, wrong name | `curl https://localhost:8443/` against a self-signed `openssl s_server` gave exit 60; with `--cacert ss.crt` it returned 200 | `openssl s_client -connect H:443 -servername H -showcerts` |
+| 502 / 503 / 504 | Proxy reached, **upstream** failed | see the nginx lab in Part 2 | proxy error log, then curl the upstream directly |
+
+*Refused is instant, timeout is slow* is the single most useful distinction: a refusal means a packet got all the way to the host and the kernel answered "no listener" (an `RST`), while a timeout means the packets disappeared, which is almost always a filter in between.
+
+### History in five dates
+
+- **1974**: Cerf and Kahn publish the TCP/IP design paper; the layered split (reliable stream on top of best-effort packets) is why a lost packet is a TCP problem, not an application problem.
+- **1983-1987**: DNS replaces the shared `HOSTS.TXT` file (RFC 882/883, then RFC 1034/1035 in 1987); the pain was one file everyone had to copy.
+- **1995-2018**: SSL (Netscape) becomes TLS 1.0 (RFC 2246, 1999); TLS 1.2 follows in 2008 (RFC 5246); TLS 1.3 (RFC 8446, 2018) cuts the handshake to one round trip and removes the weak legacy options.
+- **2015**: HTTP/2 (RFC 7540, revised as RFC 9113 in 2022) multiplexes streams over one connection.
+- **2021-2022**: QUIC (RFC 9000) and HTTP/3 (RFC 9114) move the transport to UDP to escape TCP head-of-line blocking.
+
+🔬 **Section Challenge — Where did the time and the packet go?**
+
+**Challenge 1 (Debugging):** Users in one office report `curl https://api.myapp.com/health` hangs for about two minutes and then fails; everyone else is fine. From the office laptop `getent hosts api.myapp.com` returns an IP immediately. Which layer is broken, what exit code do you expect, and what do you run next?
+
+<details><summary>Answer</summary>
+
+DNS works (the lookup returned instantly), so the failure is after resolution. A long hang followed by failure, rather than an instant error, means **packets are being dropped, not rejected**: the TCP SYN gets no reply. With default `tcp_syn_retries=6` the kernel gives up after roughly two minutes; curl then reports `(7)` "Connection timed out" (or `(28)` if you set `--connect-timeout`). An instant refusal (`(7)` after about 0 ms) would have pointed at a closed port instead. Next: `nc -zv -w 3 api.myapp.com 443` from the office to confirm, `traceroute -T -p 443 api.myapp.com` to see where it dies (not verified here), then ask what is special about that office: its egress NAT IP missing from the server's security-group or WAF allow-list, or a corporate proxy that blocks the destination. Do **not** start with `openssl` or the app logs: nothing reached the app.
+
+</details>
+
+**Challenge 2 (Calculation):** Using the measured timings above (DNS 49 ms, TCP 11 ms, TLS 24 ms, first byte 16 ms), a page needs 30 sequential API calls to the same host. Estimate total network overhead with (a) a new connection per call and no DNS cache, (b) one keep-alive connection.
+
+<details><summary>Answer</summary>
+
+(a) Each call pays at most `49 + 11 + 24 + 16 = 100 ms` before the first byte: 30 x 100 = **3.0 s** (a local DNS cache would remove the 49 ms from calls 2 to 30, giving about 100 + 29 x 51 = 1.6 s). (b) One setup (84 ms) plus 30 x 16 ms first-byte = 84 + 480 = **about 0.56 s**. Keep-alive and HTTP/2 multiplexing are worth roughly a 3x to 5x difference here, and the gap grows with RTT: on a 150 ms intercontinental path every handshake round trip costs 150 ms instead of 11 to 24 ms, while the reused connection pays no handshake at all.
+
+</details>
 
 ---
 
@@ -170,7 +267,8 @@ IP Hash:             hash(client_ip) % num_servers → always same server.
   Session affinity without cookies. Problem: add/remove server → reshuffling.
 
 Consistent Hashing:  Servers mapped to a ring → add/remove only affects neighbors.
-  Used by: CDNs, database sharding, Kubernetes kube-proxy.
+  Used by: CDNs, cache clusters, database sharding, Envoy's ring-hash / Maglev policies.
+  (NOT kube-proxy: its iptables mode picks a backend at random, IPVS mode offers rr/lc/sh policies.)
   SEE: DS in Production → Hash Tables → Consistent Hashing.
 ```
 
@@ -187,9 +285,11 @@ upstream api_servers {
     server 10.0.1.12:8000 weight=1;
     server 10.0.1.13:8000 backup;       # only if all others are down!
 
-    # Health check: fail after 3 failures, recover after 2 successes
-    # 30s timeout between checks
-    keepalive 32;   # keep connections alive for reuse
+    # Open-source nginx has PASSIVE health checks only: a server that errors or times out
+    # max_fails times (default 1) within fail_timeout (default 10s) is skipped for fail_timeout.
+    # Active probing (health_check) is an nginx Plus feature; HAProxy does it for free (see chapter 11).
+    keepalive 32;   # idle connections to upstreams kept for reuse; needs proxy_http_version 1.1
+                    # and proxy_set_header Connection "" in the location (set below)
 }
 
 upstream static_servers {
@@ -198,7 +298,8 @@ upstream static_servers {
 }
 
 server {
-    listen 443 ssl http2;
+    listen 443 ssl;
+    http2 on;          # nginx >= 1.25.1; older versions use `listen 443 ssl http2;` (deprecated since 1.25.1)
     server_name api.myapp.com;
 
     # TLS configuration
@@ -209,6 +310,8 @@ server {
     # Route /api/* to API servers
     location /api/ {
         proxy_pass http://api_servers;
+        proxy_http_version 1.1;               # required for upstream keepalive
+        proxy_set_header Connection "";       # drop the default "Connection: close"
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -227,14 +330,91 @@ server {
         add_header Cache-Control "public, immutable";
     }
 
-    # Rate limiting
-    limit_req_zone $binary_remote_addr zone=api:10m rate=100r/s;
+    # Rate limiting: the zone is DEFINED in the http{} block (above `server`), USED here.
     location /api/v1/ {
         limit_req zone=api burst=20 nodelay;
+        limit_req_status 429;                 # default is 503, which looks like an outage
         proxy_pass http://api_servers;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
     }
 }
+
+# In http{}, next to the upstream blocks (a limit_req_zone inside server{} is a hard config error):
+limit_req_zone $binary_remote_addr zone=api:10m rate=100r/s;
 ```
+
+---
+
+## Lab — prove what the nginx config really does
+
+*Verified with nginx 1.24.0 (extracted from the Ubuntu 24.04 package into a home directory and run as a normal user on high ports) and three tiny Python backends on 8001/8002/8003. `http2 on;` needs nginx 1.25.1+, so that one line is **not verified here**.*
+
+**1. The original rate-limit placement is a hard error.** `limit_req_zone` is only legal in `http{}`:
+
+```text
+$ nginx -t -c bad.conf        # limit_req_zone placed inside server { }
+nginx: [emerg] "limit_req_zone" directive is not allowed here in bad.conf:5
+nginx: configuration file bad.conf test failed
+```
+
+**2. Weights and `backup`.** Config: `server :8001 weight=3; server :8002 weight=1; server :8003 backup;` and 20 requests:
+
+```text
+$ for i in $(seq 20); do curl -s localhost:8080/x | cut -d' ' -f1; done | sort | uniq -c
+     15 backend=A
+      5 backend=B
+```
+
+Exactly 3:1, and the `backup` server C received nothing while A and B were healthy.
+
+**3. Failure and failover, with the client seeing nothing.** Kill A, then send 8 requests:
+
+```text
+8 x HTTP 200     (all served by B)
+error.log: connect() failed (111: Connection refused) while connecting to upstream ... upstream: "http://127.0.0.1:8001/x"
+```
+
+The user saw no error because nginx's default `proxy_next_upstream error timeout` retried the *same request* on the next server, and it marked A as failed for `fail_timeout` (10 s). Kill B too and every response comes from the `backup` server C. The lesson: **a dead backend is invisible to users and visible only in the error log**, so alert on upstream errors, not on user-facing 5xx.
+
+**4. Rate limiting, measured.** `rate=5r/s`, `burst=5 nodelay`, `limit_req_status 429`, 20 requests fired back-to-back:
+
+```text
+      6 200
+     14 429
+```
+
+6 = 1 (the allowed rate) + 5 (the burst). `nodelay` serves the burst immediately instead of spacing it out; without it the extra requests would be queued and delayed to 5 per second. Choose 429 so clients and dashboards can tell "you were throttled" from "we are down" (503).
+
+### Choosing: L4, L7 or neither
+
+| Situation | Choose | Why |
+| --- | --- | --- |
+| Non-HTTP protocol (database, MQTT, raw TCP), or you must not terminate TLS | L4 (NLB, HAProxy `mode tcp`, IPVS) | no parsing, preserves the TCP stream, lowest latency |
+| Route by host/path/header, redirects, per-route rate limits, WAF, retries | L7 (ALB, nginx, Envoy, HAProxy `mode http`) | needs to read the request |
+| WebSockets, gRPC streams, long uploads | L7 with `least_conn` and long `proxy_read_timeout` | round-robin spreads *connections* evenly, not *work* |
+| One server, no HA requirement, traffic fits | **no load balancer** | an extra hop is an extra failure point and an extra TLS termination to manage |
+| Need session stickiness | Fix the app (move the session to Redis) before using `ip_hash` | sticky sessions pin load unevenly and break on every scale event |
+
+`ip_hash` is a trap behind a CDN or a corporate NAT: thousands of users share one source IP, so they all land on one server.
+
+🔬 **Section Challenge — Load balancer behavior**
+
+**Challenge 1 (Reasoning):** After a deploy, the nginx error log fills with `connect() failed (111: Connection refused) while connecting to upstream` for one backend, yet the monitoring dashboard shows 0% 5xx. Is the dashboard wrong?
+
+<details><summary>Answer</summary>
+
+No, and this is the lab above. nginx retries a failed connect on the next upstream inside the same client request, so the client gets a 200 from another server. The error log is the only signal that one backend is out of rotation, and the remaining servers now carry its share (capacity is reduced silently). Alert on the *upstream error rate* (`$upstream_status`, or the `nginx_upstream_*` exporter metrics) and on "healthy backends < N", not just on client-facing 5xx. Also check whether `proxy_next_upstream` was widened to include `http_500`: retrying non-idempotent POSTs on a 500 can double-charge a customer.
+
+</details>
+
+**Challenge 2 (Design):** You set `limit_req zone=api burst=20 nodelay` with `rate=100r/s` keyed on `$binary_remote_addr`. Your API sits behind a CDN. A single abusive client is not stopped, but legitimate users start getting 429s. Why, and what is the fix?
+
+<details><summary>Answer</summary>
+
+Behind the CDN, `$remote_addr` is the CDN edge's address, so the key identifies *the CDN node*, not the user: all users behind that edge share one bucket (innocent users get 429) and the abuser is mixed in. Fix: restore the real client IP with the `realip` module (`set_real_ip_from <CDN ranges>; real_ip_header X-Forwarded-For;` or the CDN's own header such as `CF-Connecting-IP`) and key on that, or key on an API token (`$http_authorization`) instead of the IP. Only trust the forwarded header from the CDN's published ranges, otherwise clients can spoof their own key.
+
+</details>
 
 ---
 
@@ -299,18 +479,17 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}  # required for repos owned by an organization
+          # (alternative with no license: run the open-source gitleaks CLI directly in a `run:` step)
 
   sast:
     runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep          # the old returntocorp/semgrep-action is deprecated; run the CLI image
     steps:
       - uses: actions/checkout@v4
       - name: SAST with Semgrep
-        uses: returntocorp/semgrep-action@v1
-        with:
-          config: >-
-            p/owasp-top-ten
-            p/javascript
-            p/python
+        run: semgrep scan --config p/owasp-top-ten --config p/javascript --config p/python --error
 
   dependency-check:
     runs-on: ubuntu-latest
@@ -329,7 +508,7 @@ jobs:
       - name: Build image
         run: docker build -t myapp:${{ github.sha }} .
       - name: Scan with Trivy
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@<release-tag-or-full-commit-SHA>   # never @master: a moving branch is a supply-chain hole
         with:
           image-ref: myapp:${{ github.sha }}
           severity: "CRITICAL,HIGH"
@@ -379,7 +558,62 @@ OWASP TOP 10 (2021) — What Hackers Target:
   8. Data Integrity Failures (insecure deserialization, unsigned updates)
   9. Logging Failures (no audit trail, missing security events)
   10. Server-Side Request Forgery (SSRF — making server fetch internal URLs)
+
+  The list is revised every few years. The 2025 edition (check owasp.org for the final text) folds SSRF into
+  Broken Access Control, moves Security Misconfiguration up to #2, and adds Software Supply Chain Failures and
+  Mishandling of Exceptional Conditions. The categories change; the habit (design for abuse) does not.
 ```
+
+---
+
+## Why shift-left exists, and what each scanner can and cannot see
+
+The pain it fixes is **cost of change over time**: a hard-coded key found in the commit that introduced it costs a `git commit --amend`; the same key found in a pen test six months later costs a rotation across every system that ever saw it, plus a hunt through logs for misuse. Once a secret has been pushed, treat it as leaked: **rotate first, then clean history** (rewriting history does not un-leak a secret that GitHub, forks, CI logs or a clone already holds).
+
+| Tool class | Finds | Misses | Typical false-positive source | Run it |
+| --- | --- | --- | --- | --- |
+| Secret scan (gitleaks) | committed keys, tokens | secrets typed into a console, stored in a vault with wide access | high-entropy test fixtures | pre-commit **and** CI |
+| SAST (Semgrep, CodeQL) | injection patterns, unsafe APIs in your code | logic flaws, runtime config, anything needing data flow it cannot model | pattern matches in dead code | every PR |
+| SCA / dependency scan (npm audit, pip-audit, Dependabot) | known CVEs in direct and transitive packages | zero-days, malicious *new* packages | CVEs in code paths you never call | every PR + nightly (new CVEs appear after you merged) |
+| Image scan (Trivy) | CVEs in OS packages and language packages in the image | your own app logic | base-image CVEs with no fix available | build, then registry scheduled rescan |
+| DAST (ZAP) | what a running app exposes: headers, injection, misconfigured auth | code you did not exercise | tests against a stub environment | staging, per release |
+| Runtime (Falco) | shells in containers, unexpected file/syscall activity | slow, legitimate-looking abuse | legitimate debugging sessions | production |
+
+A finding is not a failure of the tool: the real design choice is the **gate policy**. Failing the build on every `HIGH` blocks the team on CVEs with no fix; failing only on `CRITICAL` with a fix available (`--ignore-unfixed` in Trivy) plus a dashboard for the rest is the usual compromise. Keep an expiring allow-list file with a ticket per suppression, otherwise "ignored" becomes permanent.
+
+**Alternatives to a hosted vault.** A Kubernetes `Secret` is base64, not encryption; anyone who can `get secrets` in the namespace can read it, and unless etcd encryption-at-rest is on it is stored in plain text. Options in rising order of effort: sealed secrets (encrypted blob safe to commit, decrypted in-cluster), SOPS (encrypt the values in your Git files with a KMS key), External Secrets Operator or the CSI secrets driver (fetch from AWS/Vault at runtime), and Vault dynamic credentials (short-lived DB users created per request, nothing long-lived to leak). Environment variables are the weakest delivery: they appear in `/proc/<pid>/environ`, in crash dumps, and in `docker inspect`.
+
+```mermaid
+flowchart LR
+    A["Commit"] --> B["Pre-commit: secret scan"]
+    B --> C["CI: SAST + dependency scan"]
+    C --> D["Build image"]
+    D --> E["Image scan + sign"]
+    E --> F["Admission check: signed and scanned only"]
+    F --> G["Production"]
+    G --> H["Runtime detection"]
+    H -.->|"new CVE or incident"| A
+```
+
+**How to read this diagram.** Each box is a gate that can stop the change; read left to right in the order a change travels. Cheap, fast checks (secret scan, SAST) are on the left so a developer learns within a minute; slower checks (image scan, signing, admission) sit after the build; the right edge is production detection. The dotted arrow is the part people forget: production findings and newly published CVEs must flow back into the start of the pipeline, otherwise the pipeline only protects the code as it was on the day it was merged.
+
+🔬 **Section Challenge — Secrets and pipeline gates**
+
+**Challenge 1 (Incident):** Gitleaks flags an AWS access key committed 3 weeks ago on a feature branch that was already merged. A teammate proposes `git filter-repo` to delete the key from history and move on. What is wrong with that plan, and what is the correct order?
+
+<details><summary>Answer</summary>
+
+Deleting it from history does not make it safe: the key was readable in the remote, in every clone and fork, in CI logs and caches for 3 weeks, and may already be scraped (public repos are scanned by bots within minutes). Correct order: (1) **revoke/rotate the key now** in IAM; (2) check CloudTrail for use of that key since the commit date; (3) replace it with a vault/OIDC-issued short-lived credential so no long-lived key exists; (4) only then rewrite history if policy requires, and coordinate a force-push and fresh clones; (5) add the pre-commit hook and a CI scan so the next one is caught before the push.
+
+</details>
+
+**Challenge 2 (Trade-off):** Your Trivy step uses `severity: HIGH,CRITICAL` and `exit-code: 1`. After a base-image update the whole organization's builds go red overnight for a CVE that has no patched version. What do you change and what do you refuse to change?
+
+<details><summary>Answer</summary>
+
+Change the policy, not the visibility: add `ignore-unfixed: true` so only vulnerabilities with an available fix break the build, keep the unfixed ones in the report, and record any explicit suppression in a dated, ticketed `.trivyignore` entry that expires. Refuse to (a) set `exit-code: 0` globally (the gate then protects nothing), (b) pin the image forever to avoid the finding (you stop receiving fixes), or (c) let each team keep its own ignore list with no owner. Also check whether the vulnerable package is even present in the final stage of a multi-stage build; moving to a slimmer or distroless base often removes the finding entirely.
+
+</details>
 
 ---
 
@@ -391,7 +625,8 @@ OWASP TOP 10 (2021) — What Hackers Target:
 KUBERNETES NETWORKING MODEL:
   Every pod gets its own IP address (no NAT, no port mapping).
   Pods on the same node communicate via virtual bridge.
-  Pods on different nodes communicate via overlay network (flannel, calico, cilium).
+  Pods on different nodes communicate via the CNI plugin: an overlay (flannel VXLAN, Calico IP-in-IP/VXLAN),
+  plain routing (Calico BGP, Cilium native routing), or the cloud's own VPC addresses (AWS VPC CNI).
 
   KEY RULES:
   1. Every pod can reach every other pod (by default, no firewall)
@@ -408,14 +643,18 @@ SERVICES — How Traffic Reaches Your Pods:
     Good for: dev/testing, exposing to external load balancer.
 
   LoadBalancer: Creates a cloud load balancer (AWS ELB, GCP LB).
-    External traffic → cloud LB → NodePort → pod.
-    The standard for production web services.
+    External traffic → cloud LB → NodePort → pod (many clouds can also target pod IPs directly).
+    The standard for production web services. One cloud LB PER Service gets expensive: put an
+    Ingress/Gateway in front and use a single LB.
 
   Ingress: HTTP/HTTPS routing rules (like nginx, but K8s-native).
     Route by HOST:  api.myapp.com → api service, www.myapp.com → frontend
     Route by PATH:  /api/* → backend, /static/* → CDN
     TLS termination: Ingress handles HTTPS, pods receive plain HTTP.
-    Ingress controllers: nginx-ingress, traefik, AWS ALB Ingress Controller.
+    Ingress controllers: ingress-nginx, traefik, AWS Load Balancer Controller.
+    Note: the Kubernetes project announced the retirement of ingress-nginx (best-effort maintenance ended
+    March 2026) and points new work at the Gateway API (Gateway, HTTPRoute); check the current status
+    before choosing a controller. The Ingress API is frozen; Gateway API is where new features land.
 
 NETWORK POLICIES — The Firewall for Pods:
 ```
@@ -457,6 +696,55 @@ spec:
 # Result: database is invisible to everything except the API service.
 # Even if an attacker compromises the frontend pod → can't reach DB.
 ```
+
+Three traps when you apply `default-deny-all` above (YAML follows the `networking.k8s.io/v1` schema; not applied to a cluster here, no cluster in my lab):
+
+1. **Egress deny also blocks DNS.** Pods resolve names through CoreDNS in `kube-system`. With `Egress` in `policyTypes` and no allow rule, every `curl http://service` fails with "Could not resolve host", which looks like a DNS bug. Add an egress rule to port 53 (UDP and TCP) toward the DNS pods (select `kube-system` by its `kubernetes.io/metadata.name` label).
+2. **The allow-rule on the database is only half the path.** If egress is also default-denied, the *api* pods need an egress rule toward the database on 5432, because both ends are filtered.
+3. **A NetworkPolicy object does nothing unless the CNI enforces it.** Calico, Cilium and Antrea enforce; plain flannel does not. `kubectl apply` succeeds either way, so test it: from a pod that should be blocked, `nc -zv -w 2 database 5432` must time out.
+
+---
+
+### Which Service type, and how a packet really reaches a pod
+
+| You need | Use | Not |
+| --- | --- | --- |
+| Pod-to-pod inside the cluster | `ClusterIP` + DNS name `svc.namespace.svc.cluster.local` | a NodePort or LoadBalancer "because it works" |
+| Quick external access on a lab cluster | `NodePort` or `kubectl port-forward` | NodePort in production (every node is now an entry point, port range 30000-32767 is firewall-hostile) |
+| One public TCP/UDP service | `LoadBalancer` | many LoadBalancers for many HTTP apps (one cloud LB each) |
+| Many HTTP apps behind one address, host/path routing, TLS | Ingress or Gateway API behind a single LoadBalancer | hand-rolled nginx pods you forget to patch |
+| Stable DNS to each individual pod (databases, StatefulSets) | headless Service (`clusterIP: None`) | a normal ClusterIP, which load-balances away the identity |
+
+A ClusterIP is not an interface on any machine. It is a **virtual IP rewritten by `kube-proxy` rules** on every node (iptables or IPVS) or by eBPF in Cilium: the packet to `10.96.0.10:80` has its destination replaced by one chosen pod IP before it leaves the node. Consequences you can debug with: `ping` to a ClusterIP fails (no ICMP rule), the Service only works if `kubectl get endpointslices -l kubernetes.io/service-name=NAME` lists ready pod IPs, and a Service whose selector matches no pod has *no endpoints* and returns connection refused or timeouts.
+
+```mermaid
+flowchart TD
+    C["Client pod resolves my-svc"] --> D["CoreDNS returns ClusterIP"]
+    D --> K["Node rules (kube-proxy or eBPF) pick one ready endpoint"]
+    K --> P1["Pod A 10.244.1.5"]
+    K --> P2["Pod B 10.244.2.7"]
+    R["Readiness probe fails"] -.->|"endpoint removed"| K
+```
+
+**How to read this diagram.** Follow the solid arrows: the client asks DNS for the Service name, DNS answers with the stable virtual IP, the node's packet rules rewrite that IP to one real pod, and the packet is delivered. The dashed arrow is the control loop that makes this safe: when a pod's readiness probe fails, its address is removed from the endpoint list and new connections stop going to it. Notice that DNS never returns pod IPs for a normal Service, so a pod that is unready is protected even if a client cached the ClusterIP.
+
+🔬 **Section Challenge — Kubernetes networking**
+
+**Challenge 1 (Debugging):** You apply `default-deny-all` (Ingress and Egress) in namespace `production`, then the allow rule for `api -> database`. The API pods now crash-loop with "could not resolve host database". The allow rule is correct. What is missing?
+
+<details><summary>Answer</summary>
+
+Egress from the API pods to the cluster DNS. With `Egress` denied by default, the pod cannot reach CoreDNS in `kube-system` on port 53 (UDP, and TCP for large answers), so name resolution fails before any connection to the database is attempted. Add a NetworkPolicy with an egress rule to `namespaceSelector: {matchLabels: {kubernetes.io/metadata.name: kube-system}}` plus the DNS pod label, ports 53/UDP and 53/TCP. Separately, the API pods still need an egress rule to the database on 5432, because the database's *ingress* rule only opens the receiving side. Verify with `kubectl exec api-pod -- nslookup database` (must succeed) and `nc -zv -w 2 database 5432`.
+
+</details>
+
+**Challenge 2 (Reasoning):** `kubectl get svc web` shows a ClusterIP, but `curl web` from another pod hangs. `kubectl get pods -l app=web` shows 3 pods `Running`. What do you check first and why?
+
+<details><summary>Answer</summary>
+
+`kubectl get endpointslices -l kubernetes.io/service-name=web` (or `kubectl get endpoints web`). If it is empty, the Service has nothing to route to even though pods are Running, which means either the Service `selector` does not match the pod labels (a typo like `app: web` vs `app: webapp`) or the pods are not **Ready** (readiness probe failing, so they are held out of the endpoints). A Running pod is not a Ready pod. Also confirm `targetPort` matches the container's real listening port: `kubectl exec pod -- ss -ltn`.
+
+</details>
 
 ---
 
@@ -518,6 +806,48 @@ SIDECAR PATTERN:
   Your app doesn't know about the sidecar — it just makes HTTP calls.
   Sidecar intercepts, adds encryption, auth, retries, metrics… transparently.
 ```
+
+---
+
+### When each pattern backfires
+
+| Pattern | Use when | Do NOT use when / failure mode |
+| --- | --- | --- |
+| Retry with backoff + jitter | failure is transient (connection reset, 503 during a deploy) and the call is **idempotent** | the call is not idempotent (payment POST without an idempotency key), or the dependency is overloaded: retries add load to a system already failing |
+| Circuit breaker | a dependency has a failure mode that makes calls slow, not just failed | the threshold is lower than normal error noise (it flaps), or no fallback exists so "open" is just a faster error |
+| Bulkhead | one slow dependency must not exhaust shared threads/connections | pools are so small that normal bursts are rejected |
+| Timeouts (the one nobody lists) | **always**: every network call needs one | "no timeout" means a stuck dependency holds a thread forever, the root of most cascading failures |
+
+**Retry amplification is arithmetic, not opinion.** If three layers (browser -> gateway -> service -> database) each make up to 3 attempts, one user click can become 3 x 3 x 3 = **27** database attempts exactly when the database is struggling. Rules that keep it safe: retry at *one* layer (usually the edge), set a retry budget (for example at most 10% extra requests), and propagate a deadline so inner calls stop when the outer caller has already given up.
+
+Backoff with full jitter in code (Python, runs as is):
+
+```python
+import random, time
+
+def call_with_retry(fn, attempts=5, base=0.1, cap=5.0):
+    for n in range(attempts):
+        try:
+            return fn()
+        except ConnectionError:
+            if n == attempts - 1:
+                raise
+            time.sleep(random.uniform(0, min(cap, base * 2 ** n)))   # full jitter: random in [0, backoff]
+```
+
+Without the `random.uniform`, 10,000 clients that failed together retry together at 0.1 s, 0.2 s, 0.4 s: the "thundering herd" the text above describes, now as a synchronized wave.
+
+**Liveness probes that check the database kill the whole fleet.** If liveness calls the DB and the DB has a 30-second blip, Kubernetes restarts *every* app pod at once, which then stampede the recovering database with new connection pools. Liveness answers only "is this process wedged?"; dependency health belongs in readiness, and even there prefer degraded responses over hard failure when the dependency is optional.
+
+🔬 **Section Challenge — Reliability patterns**
+
+**Challenge 1 (Calculation):** A service has a 2 s timeout and 3 retries (4 total attempts) with no backoff, called by 500 clients each making 1 request/s. The backend degrades and every call times out. What load does the backend see, and what is the minimal fix?
+
+<details><summary>Answer</summary>
+
+Normal load 500 req/s. Under failure each request makes 4 attempts, but each attempt takes 2 s, so each client has 4 attempts in flight over 8 s while new requests keep arriving every second: in steady state about 500 x 4 = **2,000 req/s** (a 4x amplification) hitting a backend that is already failing, and it holds roughly 2,000 x 2 s = 4,000 connections open. Minimal fix: cap total retries with a budget or a deadline (give up after the caller's own 2 s limit, not after 8 s), add exponential backoff with jitter, and add a circuit breaker so after N consecutive timeouts calls fail in microseconds instead of holding a socket for 2 s.
+
+</details>
 
 ---
 
