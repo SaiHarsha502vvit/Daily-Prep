@@ -59,11 +59,14 @@ DEVOPS EMERGES (2009):
   "The DevOps Handbook" (2016): Practical implementation
   "Accelerate" (2018): DORA research — what actually works
 
-TODAY (2024):
-  Elite teams deploy 973x more frequently than low performers.
-  Change failure rates: 0-15% (elite) vs 46-60% (low)
-  MTTR: Hours vs Months
-  Source: DORA State of DevOps 2023
+TODAY (as of the DORA metrics guide, last updated January 2026):
+  DORA measures software delivery with FIVE metrics:
+    Throughput:  change lead time, deployment frequency, failed deployment recovery time
+    Instability: change fail rate, deployment rework rate
+  (An earlier set of four 'key metrics' used MTTR; failed deployment recovery time replaced it.)
+  DORA's guide states top performers do well across all five metrics and low performers poorly.
+  Benchmark numbers change with every yearly report: read the current report at dora.dev
+  instead of trusting a figure copied into a document (including this one).
 ```
 
 ---
@@ -734,9 +737,10 @@ INCIDENT MANAGEMENT:
   4. RESOLVE:  Root cause found and fixed properly
   5. REVIEW:   Blameless post-mortem: "HOW did this happen?" not "WHO?"
 
-  MTTR (Mean Time To Recovery) = key SRE metric
-  Elite teams: MTTR < 1 hour
-  Low performers: MTTR > 1 week
+  Recovery time is the key reliability measure. DORA now calls the delivery-side metric
+  'failed deployment recovery time' (how long to recover from a deployment that needs
+  immediate intervention). Track it as a distribution (median and tail), not one average.
+  Chapter 35 explains how to use these metrics without turning them into targets.
 
 TOIL REDUCTION:
   Toil = repetitive, manual work that scales linearly with service size.
