@@ -6,6 +6,38 @@
 
 ---
 
+## 🧭 Learning Path — First Principles to Advanced
+
+Read in this order. Each stage only uses ideas from earlier stages, so nothing is a black box when you meet it. **Numbered chapters** (00–23) are the canonical home of each topic; the **internals series (I-chapters)** goes below the tool to the kernel/mechanism and is linked from the numbered chapter, never copied into it. Planned chapters are marked 🔜.
+
+| Stage | You learn | Why it comes here | Read, in order |
+| --- | --- | --- | --- |
+| **0. Orientation** | What problem DevOps solves, the delivery pipeline, the vocabulary | You need the map before the territory | [00 Fundamentals](00_DevOps_Fundamentals.md) (skim; return to [01 Advanced](01_DevOps_Advanced.md) at Stage 8) |
+| **1. The machine** | Processes, memory, files, scheduling, users, services | Every container, pipeline and pod is a Linux process | [I01 `ls`](internals/I01_What_Really_Happens_When_You_Type_ls.md) → I02 🔜 files/VFS → I03 🔜 virtual memory → I04 🔜 scheduling → [16 Linux Administration](16_Linux_Administration.md) → I09 🔜 systemd/boot |
+| **2. The network** | Bits to packets to connections to names to HTTP to TLS | Everything distributed is a conversation over a network | [04](04_Networking_Complete.md) → [05 IP](05_IP_Addressing_Subnets.md) → [06 TCP/UDP](06_TCP_UDP_Deep_Dive.md) → [07 DNS](07_DNS_Complete.md) → [08 HTTP](08_HTTP_Complete.md) → [09 TLS](09_TLS_Encryption.md) → [10 Firewalls](10_Firewalls_Access_Control.md) → [14 SSH](14_SSH_Remote_Access.md) → [15 Debugging](15_Network_Debugging.md) → I07 🔜 kernel networking; [11 Load balancing](11_Load_Balancing_Proxies.md), [12 WiFi](12_WiFi_AP_Enterprise.md) (optional), [13 VPC](13_Cloud_Networking_VPC.md) after Stage 6 basics |
+| **3. Isolation** | Namespaces, cgroups, images, runtimes, privilege | A container is a process with a restricted view, not a small VM | I05 🔜 container by hand → I06 🔜 runtimes and images → I08 🔜 security primitives → [17 Docker](17_Docker_Complete.md) |
+| **4. Orchestration** | Declarative desired state, schedulers, controllers, service discovery | One machine's problems multiply across many machines | [18 Kubernetes](18_Kubernetes_Complete.md) → I11 🔜 Kubernetes internals → [03 Service mesh and cloud-native](03_ServiceMesh_CloudNative.md) |
+| **5. Delivery** | Version control, build, test, release, rollback, supply chain | Shipping safely is a system, not a script | Git in [13 Developer Essentials](../13_Developer_Essentials/01_Git_Version_Control.md) → [19 CI/CD](19_CICD_Pipelines.md) → [Jenkins J01–J12](jenkins/README.md) 🔜 → [23 GitOps](23_GitOps_Deployments.md) → I12 🔜 supply chain |
+| **6. Infrastructure and cloud** | Infrastructure as code, cloud primitives, identity, secrets, configuration | Infrastructure you cannot recreate from text is a liability | [20 Terraform](20_Terraform_IaC.md) → I13 🔜 IaC + AWS on LocalStack → 24 🔜 cloud fundamentals (IAM, compute, storage) → 25 🔜 secrets → 26 🔜 configuration management |
+| **7. Operate** | Metrics, logs, traces, SLOs, incidents, capacity, backup and recovery | You cannot fix or promise what you cannot measure | [21 Monitoring](21_Monitoring_Observability.md) → I10 🔜 observing the kernel → [22 SRE](22_SRE_Practices.md) → I14 🔜 operating model → 27 🔜 backup, disaster recovery, capacity |
+| **8. Secure and scale the organisation** | DevSecOps, platform engineering, FinOps, compliance | Tools are the easy part; ownership and cost are not | [02 Networking and security](02_Networking_Security.md) → [01 DevOps Advanced](01_DevOps_Advanced.md) |
+| **9. Capstones** | Build, ship and run a system end to end | Proof you can combine the stages | [22_PROBLEM_SETS](22_PROBLEM_SETS.md) → capstone projects 🔜 |
+
+**Every chapter ends with the same four things** so progress is checkable: a **Lab** with an expected result and a check command, **Challenges** (scenario questions with worked answers), a **Reality Check** (misconceptions corrected), and **Books** — where to read more (see [BOOKS.md](BOOKS.md)). The chapter spine is defined in [CONTEXT.md](CONTEXT.md).
+
+**Canonical homes (no duplicate teaching).**
+
+| Topic | Teach in | Deeper mechanism | Short pointer only in |
+| --- | --- | --- | --- |
+| Linux processes, files, memory | [16 Linux Administration](16_Linux_Administration.md) | I01–I04 | [13/02 Linux CLI](../13_Developer_Essentials/02_Linux_CLI_Shell.md) |
+| Containers | [17 Docker](17_Docker_Complete.md) | I05, I06 | [13/03 Docker](../13_Developer_Essentials/03_Docker_Containers.md) |
+| CI/CD | [19 CI/CD](19_CICD_Pipelines.md), Jenkins | I12 | [13/04 CI/CD](../13_Developer_Essentials/04_CICD_Pipelines.md) |
+| Infrastructure as code | [20 Terraform](20_Terraform_IaC.md) | I13 | [13/16 IaC](../13_Developer_Essentials/16_IaC_Terraform.md) |
+| Monitoring and observability | [21 Monitoring](21_Monitoring_Observability.md) | I10, I14 | [13/12 Monitoring](../13_Developer_Essentials/12_Monitoring_Observability.md) |
+| Servers, ports, networking basics | [04](04_Networking_Complete.md)–[08](08_HTTP_Complete.md) | I07 | [13/17 Servers and ports](../13_Developer_Essentials/17_Servers_Ports_Networking.md) |
+
+---
+
 ## 📚 Chapter Map
 
 ### Foundation Guides (Overview Level)
